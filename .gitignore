@@ -5,3 +5,4 @@
 /composer.phar
 /files/base/layout/css/bundle.min.css
 app/config/parameters.yml
+.idea/deployment.xml
