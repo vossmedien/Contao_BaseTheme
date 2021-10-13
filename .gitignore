@@ -1,0 +1,7 @@
+/files/syncCto_backups/
+/auth.json
+/composer.json
+/composer.lock
+/composer.phar
+/files/base/layout/css/bundle.min.css
+app/config/parameters.yml

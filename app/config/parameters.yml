@@ -1,8 +1,0 @@
-# This file has been auto-generated during installation
-parameters:
-    database_host: localhost
-    database_port: 3306
-    database_user: d0350f36
-    database_password: xq25DGwqhHDKfZRB
-    database_name: d0350f36
-    secret: 0cd6049ca558d26c884d2952920432a14c04083b37aa0c4937b585a2aefbe9d0
