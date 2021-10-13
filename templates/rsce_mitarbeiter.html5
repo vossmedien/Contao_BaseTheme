@@ -1,0 +1,54 @@
+<div <?php echo $this->cssID;?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner container">
+        <?php if ($this->headline || $this->subline): ?>
+        <div class="ce--headline">
+
+                <?php if ($this->headline): ?>
+                <<?php echo($this->hl); ?> data-sal="slide-up" >
+                <?php echo($this->headline); ?>
+            </<?php echo($this->hl); ?>>
+            <?php endif; ?>
+            <?php if ($this->subline): ?>
+                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+            <?php endif; ?>
+
+    </div>
+    <?php endif; ?>
+
+        <div class="ce--mitarbeiter">
+
+
+
+        <div class="row small-gutters">
+
+            <?php foreach ($this->mitarbeiter as $ma): ?>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="ma--element" data-sal="slide-up">
+
+                    <?php if ($ma->bild): ?>
+                    <div class="ma--image">
+                        <a data-lightbox title="<?php echo $ma->name ?>" class="cboxElement"
+                           href="<?= \Image::get(\FilesModel::findByUuid($ma->bild)->path, null, null, null); ?>">
+                            <img src="<?= \Image::get(\FilesModel::findByUuid($ma->bild)->path, null, null, 1); ?>">
+                        </a>
+                    </div>
+                    <?php endif; ?>
+
+                    <div class="ma--details">
+                        <span class="h3">
+                            <?php echo $ma->name ?>
+                        </span>
+
+                        <?php if ($ma->beschreibung): ?>
+                            <div class="job-desc">
+                                <p> <?php echo $ma->beschreibung ?></p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach;?>
+        </div>
+    </div>
+    </div>
+</div>

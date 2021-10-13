@@ -1,0 +1,43 @@
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner container">
+
+        <?php if ($this->headline || $this->subline): ?>
+        <div class="ce--headline">
+
+                <?php if ($this->headline): ?>
+                <<?php echo($this->hl); ?> data-sal="slide-up" >
+                <?php echo($this->headline); ?>
+            </<?php echo($this->hl); ?>>
+            <?php endif; ?>
+            <?php if ($this->subline): ?>
+                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+            <?php endif; ?>
+
+    </div>
+    <?php endif; ?>
+
+        <div class="ce--content-slider ">
+
+
+
+            <div class="swiper">
+                <!-- Additional required wrapper -->
+                <div class="swiper-wrapper">
+                    <!-- Slides -->
+                    <?php foreach ($this->galery as $slide): ?>
+                        <div class="swiper-slide">
+                            <img src="<?= \Image::get(\FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>">
+                        </div>
+                    <?php endforeach ?>
+                </div>
+
+
+                <?php if (count($this->galery) > 1): ?>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>

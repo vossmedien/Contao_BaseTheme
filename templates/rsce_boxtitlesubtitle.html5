@@ -1,0 +1,77 @@
+<div <?php echo $this->cssID;?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner container">
+
+        <?php if ($this->headline || $this->subline): ?>
+        <div class="ce--headline">
+
+                <?php if ($this->headline): ?>
+                <<?php echo($this->hl); ?> data-sal="slide-up" >
+                <?php echo($this->headline); ?>
+            </<?php echo($this->hl); ?>>
+            <?php endif; ?>
+            <?php if ($this->subline): ?>
+                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+            <?php endif; ?>
+
+    </div>
+    <?php endif; ?>
+
+
+    <div class="ce--boxtitlesubtitle ">
+
+
+        <div class="row justify-content-center">
+            <?php foreach ($this->box as $b): ?>
+
+            <div class="col-12 col-md-4">
+                <div class="boxtitlesubtitle">
+                    <?php if (!$b->images):?>
+                        <a class="bts--url" href="<?php echo $b->url;?>"></a>
+                    <?php endif;?>
+                    <div class="bts--image"  >
+
+                        <?php if ($b->images):  $rand = rand(1,100);?>
+
+                        <script>
+                            $(function() {
+                                $(".group_<?php echo $rand;?>").colorbox({rel:"group_<?php echo $rand;?>", current: "Bild {current} von {total}", maxWidth: '95%', maxHeight: '95%'});
+                            });
+                        </script>
+
+
+
+                            <a href="<?= \Image::get(\FilesModel::findByUuid($b->images[0])->path, null, null, null); ?>" class="main--image group_<?php echo $rand;?> bts-cboxElement cboxElement">
+                                <img src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                            </a>
+
+                            <div class="invisible">
+                                <?php foreach($b->images as $i=>$img):?>
+                                <?php if ($i > 0): ?>
+                                    <a href="<?= \Image::get(\FilesModel::findByUuid($img)->path, null, null, null); ?>" class="group_<?php echo $rand;?> bts-cboxElement cboxElement"></a>
+                                <?php endif;?> 
+                                <?php endforeach;?>
+                            </div>
+
+                        <?php else:?>
+                            <img src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                        <?php endif;?>
+
+
+                    </div>
+
+                    <div class="bts--content"  >
+                        <div class="bts--headline">
+                            <?php echo $b->title;?>
+                        </div>
+                        <div class="bts--subline">
+                            <?php echo $b->subtitle;?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <?php endforeach;?>
+        </div>
+    </div>
+    </div>
+</div>

@@ -1,0 +1,138 @@
+<div <?php echo $this->cssID;?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner container">
+
+        <?php if ($this->headline || $this->subline): ?>
+        <div class="ce--headline">
+                <?php if ($this->headline): ?>
+                <<?php echo($this->hl); ?> data-sal="slide-up" >
+                <?php echo($this->headline); ?>
+            </<?php echo($this->hl); ?>>
+            <?php endif; ?>
+            <?php if ($this->subline): ?>
+                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+            <?php endif; ?>
+    </div>
+    <?php endif; ?>
+
+
+    <?php if($this->row):?>
+
+        <?php foreach ($this->row as $row): ?>
+
+        <div class="row mb-5 <?php if ($row->swapcolumns): ?>flex-row-reverse<?php endif; ?>">
+            <div class="col-12 col-md-6 left--col">
+                <div class="left-col--inner">
+                    <div class="equal--box" data-sal="slide-up">
+                        <?php if($row->main_url):?>
+                            <a href="<?php echo $row->main_url;?>"></a>
+                        <?php endif;?>
+
+                        <div class="box--inner" style="background: url(<?= \Image::get(\FilesModel::findByUuid($row->main_image)->path, null, null, null); ?>) center center no-repeat; background-size: cover;">
+
+
+                            <div class="box--content">
+
+                            <div class="box--headline">
+                                <?php if ($row->main_headline): ?>
+                                <?php if (!$row->main_onlystyle): ?>
+                                <<?php echo $row->main_headline_type; ?>>
+                                <?php echo $row->main_headline; ?>
+                            </<?php echo $row->main_headline_type; ?>>
+
+                            <?php if ($row->main_subline): ?>
+                                <span class="box--subline" data-sal="slide-up">
+                        <?php echo $row->main_subline; ?>
+                    </span>
+                            <?php endif; ?>
+
+                            <?php else: ?>
+                                <span class="<?php echo $row->main_headline_type; ?>">
+                         <?php echo $row->main_headline; ?>
+                         </span>
+
+                                <?php if ($row->main_subline): ?>
+                                    <span class="box--subline" data-sal="slide-up">
+                        <?php echo $row->main_subline; ?>
+                    </span>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                            <?php endif; ?>
+                        </div>
+                        <?php if($row->main_content):?>
+                            <div class="box--text">
+                                <?php echo $row->main_content;?>
+                            </div>
+                        <?php endif; ?>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <?php if($row->boxes):?>
+            <div class="col-12 col-md-6 right--col">
+                <div class="right-col--inner">
+
+
+                        <?php foreach ($row->boxes as $box): ?>
+                            <div class="equal--box" data-sal="slide-up">
+                                <?php if($box->url):?>
+                                    <a href="<?php echo $box->url;?>"></a>
+                                <?php endif;?>
+
+                                <div class="box--inner" style="background: url(<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover;">
+
+
+                                    <div class="box--content">
+
+                                    <?php if ($box->headline): ?>
+                                    <div class="box--headline"  >
+
+                                        <?php if (!$box->onlystyle): ?>
+                                        <<?php echo $box->headline_type; ?>>
+                                        <?php echo $box->headline; ?>
+                                    </<?php echo $box->headline_type; ?>>
+
+                                <?php if ($box->subline): ?>
+                                    <span class="box--subline" >
+                        <?php echo $box->subline; ?>
+                    </span>
+                                <?php endif; ?>
+
+                                <?php else: ?>
+                                    <span class="<?php echo $box->headline_type; ?>" >
+                         <?php echo $box->headline; ?>
+                         </span>
+
+                                    <?php if ($box->subline): ?>
+                                        <span class="box--subline" >
+                        <?php echo $box->subline; ?>
+                    </span>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+
+                                </div>
+                                <?php endif; ?>
+
+                                <?php if($box->content):?>
+                                    <div class="box--text" >
+                                        <?php echo $box->content;?>
+                                    </div>
+                                <?php endif; ?>
+                                </div>
+                                </div>
+                    </div>
+                        <?php endforeach;?>
+                    </div>
+
+
+            </div>
+            <?php endif;?>
+        </div>
+
+        <?php endforeach;?>
+
+    <?php endif;?>
+
+    </div>
+</div>

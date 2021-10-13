@@ -1,0 +1,14 @@
+<?php
+$this->class = $this->class." ce_bs-grid-gallery--$this->id";
+$this->extend($this->isRandomOrder ? 'block_unsearchable' : 'block_searchable');
+?>
+
+
+<?php $this->block('content'); ?>
+
+<div class="container" style="z-index: 10; position: relative;" data-sal="slide-up">
+	     <?= $this->images ?>
+</div>
+ 
+
+<?php $this->endblock(); ?>

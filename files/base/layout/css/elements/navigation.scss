@@ -1,0 +1,19 @@
+.navActivator{
+  text-decoration: none;
+  line-height: 1;
+  @include font-size(16px);
+  vertical-align: middle;
+  font-weight: $font-weight-bold;
+
+  i{
+    //vertical-align: middle;
+  }
+}
+
+
+
+// MobileNav
+
+#mobileNav{
+  //z-index: 10;
+}

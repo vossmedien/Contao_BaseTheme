@@ -1,0 +1,73 @@
+<div <?php echo $this->cssID;?> class="content--element <?php echo $this->class; ?>">
+
+    <div class="ce--inner container">
+        <?php if ($this->headline || $this->subline): ?>
+        <div class="ce--headline">
+
+                <?php if ($this->headline): ?>
+                <<?php echo($this->hl); ?> data-sal="slide-up" >
+                <?php echo($this->headline); ?>
+            </<?php echo($this->hl); ?>>
+            <?php endif; ?>
+            <?php if ($this->subline): ?>
+                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+            <?php endif; ?>
+
+    </div>
+    <?php endif; ?>
+
+    <div class="ce--kachelfeld ">
+
+
+
+        <div class="row">
+        <?php foreach ($this->kachel as $b): ?>
+            <div class="col-12 col-md-4 ">
+                <div class="kachelbox" data-sal="slide-up">
+                    <a class="kachel--url" href="<?php echo $b->link_url;?>"></a>
+                    <div class="kachelbox--inner">
+
+                        <?php if($b->image || $b->icon):?>
+                        <div class="kb--image">
+                            <?php if ($b->icon): ?>
+                                <i class="<?php echo $b->icon;?>"></i>
+                            <?php elseif($b->image):?>
+                                <img src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                            <?php endif;?>
+                        </div>
+                        <?php endif;?>
+
+
+                        <div class="kb--content">
+                            <?php if ($b->headline): ?>
+                            <div class="box--headline">
+                            <<?php echo $b->headline_type;?> class="h5">
+                             <?php echo $b->headline;?>
+                            </<?php echo $b->headline_type;?>>
+                        </div>
+                    <?php endif; ?>
+
+                        <?php if ($b->text): ?>
+                            <div class="box--text mt-3">
+                                <?php echo $b->text;?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($b->link_text): ?>
+                            <div class="box--button mt-3" data-sal="slide-up">
+                                <a class="d-inline-block btn <?php if ($b->link_size): ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
+                                   href="<?php echo $b->link_url; ?><?php if ($b->link_betreff): ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?>
+                                </a>
+                            </div>
+                        <?php endif; ?>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        <?php endforeach;?>
+        </div>
+    </div>
+</div>
+</div>

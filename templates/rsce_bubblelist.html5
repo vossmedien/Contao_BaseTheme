@@ -1,0 +1,42 @@
+<?php $this->block('content'); ?>
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+
+    <div class="ce--inner">
+        <?php if ($this->headline || $this->subline): ?>
+        <div class="ce--headline">
+            <div class="container">
+                <?php if ($this->headline): ?>
+                <<?php echo($this->hl); ?> data-sal="slide-up" >
+                <?php echo($this->headline); ?>
+            </<?php echo($this->hl); ?>>
+            <?php endif; ?>
+            <?php if ($this->subline): ?>
+                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <div class="ce--bubble-list"
+             <?php if ($this->backgroundcolor): ?>style="background-color: <?php echo $this->backgroundcolor; ?>"<?php endif; ?>>
+            <div class="bl--inner container">
+                <div class="bl--list">
+                    <?php foreach ($this->galery as $item): ?>
+                        <div class="bl--item <?php echo strtolower(str_replace(' ', '_', $item->text)); ?>">
+                            <a href="<?php echo $item->url; ?>"></a>
+
+                            <div class="bl-i--image">
+                                <img src="<?= \Image::get(\FilesModel::findByUuid($item->img)->path, null, null, null); ?>">
+                            </div>
+                            <div class="bl-i--text"
+                                 <?php if ($this->linkcolor): ?>style="color: <?php echo $this->linkcolor; ?>"<?php endif; ?>>
+                                <?php echo $item->text; ?>
+                            </div>
+                        </div>
+                    <?php endforeach ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php $this->endblock(); ?>

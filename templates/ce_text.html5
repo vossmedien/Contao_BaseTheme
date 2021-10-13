@@ -1,0 +1,26 @@
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+<div data-sal="slide-up" class="text--wrapper <?php  if($this->addImage):?>with-image image-<?php echo $this->floating;?><?php endif;?> ">
+
+
+  <?php if (!$this->addBefore): ?>
+    <div class="text">
+    <?= $this->text ?>
+    </div>
+  <?php endif; ?>
+
+
+  <?php if ($this->addImage): ?>
+      <div class="image">
+    <?php $this->insert('image', $this->arrData); ?>
+    </div>
+  <?php endif; ?>
+
+  <?php if ($this->addBefore): ?>
+    <div class="text">
+    <?= $this->text ?>
+    </div>
+  <?php endif; ?>
+</div>
+<?php $this->endblock(); ?>

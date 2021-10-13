@@ -1,0 +1,27 @@
+*:focus, *:active{
+  //box-shadow: none;
+  outline: 0px;
+}
+
+.invisible{
+  display: none;
+}
+
+
+.make-fullwidth {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+
+main, footer {
+  .row > *:not(:last-child){
+    @include media-breakpoint-down(lg) {
+      //margin-bottom: 1.5rem;
+    }
+  }
+}

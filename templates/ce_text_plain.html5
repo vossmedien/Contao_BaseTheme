@@ -1,0 +1,23 @@
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+<div class="text--wrapper <?php  if($this->floating):?>with-image<?php endif;?> image-<?php echo $this->floating;?>">
+    <?php if (!$this->addBefore): ?>
+        <div class="text">
+            <?= $this->text ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->addImage): ?>
+        <div class="image">
+            <?php $this->insert('image', $this->arrData); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->addBefore): ?>
+        <div class="text">
+            <?= $this->text ?>
+        </div>
+    <?php endif; ?>
+</div>
+<?php $this->endblock(); ?>

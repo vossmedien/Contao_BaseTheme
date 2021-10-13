@@ -1,0 +1,33 @@
+@import "variables";
+@import "mixins";
+
+@import "../_vendor/vendor";
+@import "../_fonts/fonts";
+
+@import "scaffolding/typo";
+@import "scaffolding/forms";
+@import "scaffolding/buttons";
+@import "scaffolding/hacks";
+
+
+html {
+  body {
+    &#tinymce {
+      @include padding(7px 12px);
+    }
+
+    @import "areas/header";
+    @import "areas/header_type1";
+
+    @import "areas/main";
+
+    @import "areas/footer";
+    @import "areas/footer_type1";
+
+    @import "elements/navigation";
+    @import "elements/modal";
+    @import "elements/elements";
+    @import "elements/slider";
+  }
+}
+

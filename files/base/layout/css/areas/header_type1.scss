@@ -1,0 +1,117 @@
+.header--content {
+  &.type--1 {
+    position: relative;
+    z-index: 15;
+
+    .hc--top {
+      background-color: $primary;
+      @include font-size(14px);
+
+      .hc-top--inside {
+        padding-top: rfs-value(10px);
+        padding-bottom: rfs-value(10px);
+
+        .row {
+          flex-flow: nowrap;
+
+          ul {
+            margin: 0px;
+            white-space: nowrap;
+
+            li {
+
+              a {
+                color: $white;
+                text-decoration: none;
+                display: inline-block;
+
+                span{
+                  @include font-size(16px);
+                }
+
+                &:hover {
+                  opacity: .7;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .hc--bottom {
+      padding: 1rem 0;
+
+      &.is--scrolling {
+        position: fixed;
+        transform: translateZ(0);
+        z-index: 99;
+        top: 15px;
+        width: 100%;
+        padding: 0px;
+
+        .hc-bottom--left-col {
+          img{
+            display: none;
+          }
+        }
+
+        &.hc-bottom--right-col {
+
+        }
+      }
+
+      .hc-bottom--inside {
+        .row {
+          flex-wrap: nowrap;
+
+          .hc-bottom--left-col {
+
+            img{
+              max-height: rfs-value(80px);
+            }
+          }
+
+          .hc-bottom--right-col {
+            padding: rfs-value(7px 20px 10px 20px);
+            background-color: $body-bg;
+            border-radius: rfs-value(15px);
+            box-shadow: $box-shadow;
+            display: inline-block;
+            text-align: right;
+
+            nav#mainNav {
+
+
+              ul {
+                list-style-type: none;
+                padding: 0px;
+                margin: 0px;
+                text-align: right;
+                white-space: nowrap;
+
+                > li {
+                  display: inline-block;
+
+                  &:not(:first-child) {
+                    margin-left: 1rem;
+                  }
+
+                  > a, strong{
+                    text-decoration: none;
+                    font-weight: $font-weight-bold;
+                    color: $text-color;
+
+                    &.active, &:hover{
+                      color: $primary;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+$fa-font-path: "../_fonts/fontawesome/webfonts/";
+
+
+
+// Sal Config:
+$sal-animation-duration: 0.5s;
+$sal-animation-delay: 0s;
+$sal-slide-offset: 20%;
+$sal-zoom-in-scale: 0.5;
+$sal-zoom-out-scale: 1.1;
+$sal-flip-rotate: 90deg;
+
+
+$yellow: #ecc747;
+$orange: #ee7c0d;
+$red: #c42420;
+$pink: #eb4960;
+$blue: #79cef3;
+
+$gray-100: #f7f7f7;
+$gray-300: #c1d1de;
+$gray-700: #686868;
+$gray-800: #394653;
+$gray-900: #2e3439;
+
+$black: black;
+$white: white;
+
+
+$primary: $red;
+$primary-light: lighten($primary, 15%);
+$primary-lighter: lighten($primary, 30%);
+$primary-dark: darken($primary, 15%);
+$primary-darker: darken($primary, 30%);
+
+$secondary: $gray-900;
+$secondary-light: $secondary;
+$secondary-lighter: $secondary;
+$secondary-dark: $secondary;
+$secondary-darker: $secondary;
+
+
+//$body-bg: $black;
+//$body-color: $white;
+
+// Footer
+
+$footer-top-bg: #1b1b1b;
+$footer-middle-bg: #161616;
+$footer-bottom-bg: #000000;
+
+$text-color-inverse: white;
+$text-color: $text-color-inverse;
+
+
+$font-family-base: 'Open Sans', sans-serif;
+$font-family-sans-serif: 'Montserrat', sans-serif;
+$font-weight-semibold: 600;
+
+
+//Swiper
+$themeColor: $primary;
+

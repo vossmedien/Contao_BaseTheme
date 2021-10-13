@@ -1,0 +1,82 @@
+.footer--content {
+  &.type--1 {
+    $footer-color: darken($text-color-inverse, 40%);
+    font-family: $font-family-base;
+    border-top: 5px solid $primary;
+
+
+    .row > div:not(:first-child){
+      @include media-breakpoint-down(lg) {
+        margin-top: 2rem;
+      }
+    }
+
+
+    .fc--top {
+      padding: rfs-fluid-value(5rem 0);
+      color: $text-color-inverse;
+
+
+      .social--list{
+        ul{
+          margin-bottom: 0px;
+
+          a{
+            color: $text-color-inverse;
+            width: rfs-value(40px);
+            line-height: rfs-value(36px);
+            display: inline-block;
+            border-radius: 50%;
+            text-align: center;
+            border: 2px solid $primary;
+            transition: all .3s ease;
+
+            &:hover{
+              background-color: $primary;
+            }
+          }
+        }
+      }
+    }
+
+    .fc--middle {
+
+
+      padding: rfs-fluid-value(1.5rem 0);
+      color: $footer-color;
+    }
+
+    .fc--bottom {
+      padding: rfs-fluid-value(1rem 0);
+      color:  $footer-color;
+      @include font-size(14px);
+
+      #footerNav {
+        ul {
+          list-style-type: none;
+          padding: 0px;
+          margin: 0px;
+          text-align: right;
+
+          > li {
+            display: inline-block;
+            &:not(:first-child){
+              margin-left: 1rem;
+            }
+
+            > a, > strong {
+              text-decoration: none;
+              font-weight: normal;
+              color:$footer-color;
+
+              &.active{
+                color: $primary;
+              }
+            }
+          }
+        }
+      }
+
+    }
+  }
+}

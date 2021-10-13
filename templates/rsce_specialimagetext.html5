@@ -1,0 +1,58 @@
+<div <?php echo $this->cssID;?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner container">
+
+        <?php if ($this->headline || $this->subline): ?>
+        <div class="ce--headline">
+
+                <?php if ($this->headline): ?>
+                <<?php echo($this->hl); ?> data-sal="slide-up" >
+                <?php echo($this->headline); ?>
+            </<?php echo($this->hl); ?>>
+            <?php endif; ?>
+            <?php if ($this->subline): ?>
+                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+            <?php endif; ?>
+
+    </div>
+    <?php endif; ?>
+
+        <div class="ce--specialimagetext ">
+
+            <div class="row">
+                <div class="col-12 col-md-7">
+                    <div class="image--wrapper image-left">
+                        <img data-sal="slide-right" src="<?= \Image::get(\FilesModel::findByUuid($this->image_left)->path, null, null, null); ?>">
+                    </div>
+                </div>
+                <div class="col-12 col-md-5">
+                    <div class="content--wrapper">
+                        <div class="headline--wrapper">
+                            <div class="col-12 col-lg headline" data-sal="slide-down">
+                                <?php if (!$this->onlystyle): ?>
+                                <<?php echo $this->headline_type; ?> <?php if ($this->headline_image): ?>class="mb-0"<?php endif; ?>
+                                >
+                                <?php echo $this->headline; ?>
+                            </<?php echo $this->headline_type; ?>>
+                            <?php else: ?>
+                                <span class="<?php if ($this->headline_image): ?>mb-0<?php endif; ?> <?php echo $this->headline_type; ?>">
+                                 <?php echo $this->headline; ?>
+                            </span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="text--wrapper" data-sal="slide-up">
+                        <?php echo $this->text; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="image--wrapper image-bottom">
+                    <img data-sal="slide-up" src="<?= \Image::get(\FilesModel::findByUuid($this->image_bottom)->path, null, null, null); ?>">
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</div>

@@ -1,0 +1,51 @@
+.ce_form {
+
+  > *:not(form):first-child{
+    margin-bottom:2rem;
+  }
+
+  .formbody{
+    > .row{
+      margin-bottom: 1.25rem;
+      .input-group{
+        .input-group-append{
+
+          .input-group-text{
+            height: 100%;
+            background-color: $primary;
+          }
+        }
+      }
+    }
+
+    .input-group-text{
+      opacity: 0;
+      &.transformed{
+        opacity: 1;
+      }
+    }
+  }
+
+
+  .widget{
+    &:not(:last-child) {
+      margin-bottom: 1.25rem;
+    }
+
+    &.widget-textarea{
+      textarea{
+        min-height: 100px;
+      }
+    }
+  }
+
+
+  // Floating Labels
+  .form-floating{
+    > label{
+      z-index: 5;
+      color: $input-placeholder-color;
+    }
+  }
+
+}

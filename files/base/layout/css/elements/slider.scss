@@ -1,0 +1,28 @@
+.swiper{
+  .swiper-button-prev{
+
+  }
+
+  .swiper-button-next{
+
+  }
+
+  .swiper-pagination{
+    bottom: rfs-value(25px);
+    background-color: $white;
+    padding: rfs-value(0px 5px 5px 5px);
+    border-radius: 10px;
+    line-height: 1;
+    right: 50%;
+    transform: translate(50%, -50%);
+    left: auto;
+    width: auto;
+    box-shadow: $box-shadow;
+
+    .swiper-pagination-bullet{
+      &.swiper-pagination-bullet-active{
+
+      }
+    }
+  }
+}
