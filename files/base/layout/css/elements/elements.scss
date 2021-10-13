@@ -991,9 +991,9 @@
             &:after {
               content: '';
               display: block;
-              height: 10px;
+              height: 2px;
               width: rfs-fluid-value(50px);
-              margin-top: 4px;
+              margin-top: 10px;
               background-color: $primary;
               transition: all .3s ease;
             }
