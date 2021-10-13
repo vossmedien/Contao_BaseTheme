@@ -1631,9 +1631,13 @@
 
 
         .box--content {
-          position: absolute;
-          bottom: 0;
-          left: 0;
+          @include media-breakpoint-up(md) {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+          }
+
+
           padding: 1.5rem;
           color: $white;
 
