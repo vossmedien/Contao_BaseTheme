@@ -1664,10 +1664,10 @@
 
         &:hover{
           .box--content {
-            background-color: rgba(0,0,0,.75);
+            background-color: rgba(0,0,0,.25);
             .box--text{
               height: auto;
-              max-height: 1000px;
+              max-height: 800px;
               opacity: 1;
             }
           }
@@ -1677,7 +1677,7 @@
         .box--content {
           padding: 1.5rem;
           color: $white;
-          transition: all .75s ease;
+          transition: background-color .5s ease;
 
           .box--headline {
             > * {
@@ -1691,8 +1691,8 @@
           }
 
           .box--text {
-            overflow: hidden;
-            transition: all 1.5s ease-in-out;
+            margin-top: 1rem;
+            transition: max-height .75s ease-in-out, opacity .35s ease;
             max-height: 0px;
             opacity: 0;
           }
