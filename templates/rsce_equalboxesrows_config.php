@@ -74,13 +74,13 @@ return array(
                     'label' => array('Subline', ''),
                     'inputType' => 'text',
                 ),
-/*
+
                 'main_content' => array(
                     'label' => array('Text', ''),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE'),
                 ),
-*/
+
 
 
                 'boxes' => array(
