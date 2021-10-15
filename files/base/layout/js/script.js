@@ -23,6 +23,7 @@ $(function () {
     var lazyLoadInstance = new LazyLoad();
 
 
+
     //Anchor Scrolling
     function changeNavLinks(){
         $('#mainNav li > *').each(function (index) {
@@ -154,21 +155,55 @@ $(function () {
         });
     }
     if ($('.ce_form').length) {
-        $('.input-group-text').each(function (index) {
-            $(this).html($(this).text());
-            $(this).addClass("transformed");
-        });
 
-        $('.widget.widget-text, .widget.widget-textarea').each(function (index) {
-            var placeholder = $(this).find("input, textarea").attr("placeholder");
-            var id = $(this).find("input, textarea").attr("id");
-            $(this).find("input, textarea").parent("div").addClass("form-floating")
-            $(this).find("input, textarea").parent("div").append("<label for='" + id + "'>" + placeholder + "</label>");
-        });
+        function addPlaceholders(){
+            $('.widget.widget-text, .widget.widget-textarea').each(function (index) {
+                var placeholder = $(this).find("input, textarea").attr("placeholder");
+                var id = $(this).find("input, textarea").attr("id");
+                $(this).find("input, textarea").parent("div").addClass("form-floating")
+                $(this).find("input, textarea").parent("div").append("<label for='" + id + "'>" + placeholder + "</label>");
+            });
+        }
+
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.ce_form form')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+
+
+        $(".ce_form form").submit(function (e) {
+
+            setTimeout(function () {
+                addPlaceholders();
+            }, 250);
+
+        })
+
+
+        addPlaceholders();
     }
     if ($('.ce_rsce_headimagelogo').length) {
         $(".ce_rsce_headimagelogo .image--holder").css("min-height", "calc(100vh - " + $('header').height() + "px)");
     }
+
+
+
+
+
+
+
+
+
 });
 
 if ($('.scrollToTop').length) {

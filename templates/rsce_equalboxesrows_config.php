@@ -136,13 +136,12 @@ return array(
                             'inputType' => 'text',
                         ),
 
-                        /*
-                            'content' => array(
+                        'content' => array(
                             'label' => array('Text', ''),
                             'inputType' => 'textarea',
                             'eval' => array('rte' => 'tinyMCE'),
                         ),
-                         */
+
 
                     ),
                 ),

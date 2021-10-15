@@ -1,55 +1,111 @@
-<div <?php echo $this->cssID;?> class="content--element <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
-
         <?php if ($this->headline || $this->subline): ?>
         <div class="ce--headline">
 
-                <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?> data-sal="slide-up" >
-                <?php echo($this->headline); ?>
-            </<?php echo($this->hl); ?>>
-            <?php endif; ?>
-            <?php if ($this->subline): ?>
-                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
-            <?php endif; ?>
+            <?php if ($this->headline): ?>
+            <<?php echo($this->hl); ?> data-sal="slide-up" >
+            <?php echo($this->headline); ?>
+        </<?php echo($this->hl); ?>>
+    <?php endif; ?>
+        <?php if ($this->subline): ?>
+            <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+        <?php endif; ?>
 
     </div>
     <?php endif; ?>
 
-        <?php if ($this->boxes): ?>
-            <div class="row">
-                <?php foreach ($this->boxes as $box): ?>
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="link--box <?php echo $this->box_style; ?> " data-sal="slide-up">
 
-                            <?php if ($box->link): ?>
-                                <a href="<?php echo $box->link; ?>"></a>
-                            <?php endif; ?>
 
-                            <?php if ($box->image): ?>
+    <?php if ($this->boxes): ?>
+        <div class="row">
+            <?php foreach ($this->boxes as $i => $box): ?>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="link--box <?php echo $this->box_style; ?> " data-sal="slide-up">
+
+                        <?php if ($box->link): ?>
+                            <a href="<?php echo $box->link; ?>"></a>
+                        <?php elseif (($box->modal_longtext || $box->modal_image)): ?>
+                            <span data-bs-toggle="modal"
+                                  data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"></span>
+                        <?php endif; ?>
+
+
+                        <?php if ($box->image): ?>
                             <div class="box--upper">
                                 <div class="image--holder lazy"
                                      style="background-size: cover; background-repeat: no-repeat; background-position: center center;"
                                      data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, null); ?>">
                                 </div>
                             </div>
+                        <?php endif; ?>
+                        <div class="box--lower  <?php if ($box->link || ($box->modal_longtext || $box->modal_image)): ?>with-url<?php endif; ?>">
+                            <?php if ($box->text): ?>
+                                <span><?php echo $box->text; ?></span>
                             <?php endif; ?>
-                            <div class="box--lower">
-                                <?php if ($box->text): ?>
-                                    <span><?php echo $box->text; ?></span>
+
+                            <?php if ($box->longtext): ?>
+                                <div class="box--longtext">
+                                    <?php echo $box->longtext; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                    </div>
+                </div>
+            <?php endforeach ?>
+        </div>
+    <?php endif; ?>
+</div>
+</div>
+
+
+<?php if ($this->boxes): ?>
+    <?php foreach ($this->boxes as $i => $box): ?>
+        <!-- Button trigger modal -->
+
+        <?php if ($box->modal_longtext || $box->modal_image): ?>
+            <!-- Modal -->
+            <div class="modal fade" id="linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>" tabindex="-1"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <?php if ($box->text): ?>
+                                <h5 class="modal-title">
+                                    <?php echo $box->text; ?>
+                                </h5>
+                            <?php endif; ?>
+
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Schließen"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="row">
+                                <?php if ($box->modal_image): ?>
+                                    <div class="col-12 mb-3 mb-md-0 <?php if ($box->modal_longtext): ?>col-md-6<?php endif; ?>">
+                                        <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($box->modal_image)->path, null, null, null); ?>">
+                                    </div>
                                 <?php endif; ?>
 
-                                <?php if ($box->longtext): ?>
-                                    <div class="box--longtext">
-                                        <?php echo $box->longtext; ?>
+                                <?php if ($box->modal_longtext): ?>
+                                    <div class="col-12 <?php if ($box->modal_image): ?>col-md-6<?php endif; ?>">
+                                        <?php echo $box->modal_longtext; ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
 
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
                         </div>
                     </div>
-                <?php endforeach ?>
+                </div>
             </div>
         <?php endif; ?>
-    </div>
-</div>
+
+    <?php endforeach ?>
+<?php endif; ?>

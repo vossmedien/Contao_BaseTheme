@@ -19,7 +19,7 @@
 
         <?php foreach ($this->row as $row): ?>
 
-        <div class="row mb-5 <?php if ($row->swapcolumns): ?>flex-row-reverse<?php endif; ?>">
+        <div class="row <?php if ($row->swapcolumns): ?>flex-row-reverse<?php endif; ?>">
             <div class="col-12 col-md-6 left--col">
                 <div class="left-col--inner">
                     <div class="equal--box" data-sal="slide-up">

@@ -60,6 +60,25 @@ return array(
                     'label' => array('Verlinkung', ''),
                     'inputType' => 'url',
                 ),
+
+                'modal_longtext' => array(
+                    'label' => array('Text für modales Fenster', '(überschreibt Verlinkung und öffnet modales Fenster)'),
+                    'inputType' => 'textarea',
+                    'eval' => array('rte' => 'tinyMCE'),
+                ),
+
+                'modal_image' => array(
+                    'label' => array('Bild für modales Fenster', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'jpg,jpeg,png,svg',
+                    ),
+                ),
+
+
             ),
         ),
     ),
