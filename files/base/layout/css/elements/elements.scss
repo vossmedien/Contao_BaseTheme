@@ -743,8 +743,9 @@
 
 
         .box--content {
-          text-align: right;
-          margin-left: 1.3rem;
+          @include media-breakpoint-up(xl) {
+            padding: 5rem 5vw 5rem 3rem;
+          }
         }
       }
     }
@@ -760,8 +761,9 @@
 
 
           .box--content {
-            text-align: right;
-            margin-left: 1.3rem;
+            @include media-breakpoint-up(xl) {
+              padding: 5rem 5vw 5rem 3rem;
+            }
           }
         }
       }
@@ -1707,6 +1709,7 @@
             transition: max-height .75s ease-in-out, opacity .35s ease;
             max-height: 0px;
             opacity: 0;
+            overflow: hidden;
           }
         }
       }
