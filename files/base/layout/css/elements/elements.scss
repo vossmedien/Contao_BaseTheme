@@ -1,4 +1,4 @@
-.content--element, #main .mod_article > div > *[class^='ce_'] {
+.content--element, .mod_article > div > *[class^='ce_'] {
   @include margin(75px auto);
   position: relative;
   z-index: 10;
@@ -8,7 +8,7 @@
   }
 }
 
-#main div[class^='ce_']{
+.mod_article > div > *[class^='ce_']{
   @extend .container;
 }
 
@@ -733,10 +733,24 @@
       }
     }
 
+    .row.flex-row-reverse{
+      @include media-breakpoint-up(md) {
+        flex-flow: row-reverse;
+
+        img {
+          right: 5vw;
+        }
+
+
+        .box--content {
+          text-align: right;
+          margin-left: 1.3rem;
+        }
+      }
+    }
 
     &:nth-child(even) {
-      .row, &.row-reverse {
-
+      .row  {
         @include media-breakpoint-up(md) {
           flex-flow: row-reverse;
 
@@ -750,8 +764,6 @@
             margin-left: 1.3rem;
           }
         }
-
-
       }
     }
   }
