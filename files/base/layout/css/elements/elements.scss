@@ -8,23 +8,23 @@
   }
 }
 
-.mod_article > div > *[class^='ce_']{
+.mod_article > div > *[class^='ce_'] {
   @extend .container;
 }
 
-.content--element{
-  &.content--box{
+.content--element {
+  &.content--box {
     position: relative;
     z-index: 10;
     padding: 2rem;
   }
 
-  &[class*='bg-']{
+  &[class*='bg-'] {
     padding-top: 2rem;
     padding-bottom: 2rem;
   }
 
-  &[class*='bg-'].container{
+  &[class*='bg-'].container {
     //padding: 2rem;
   }
 }
@@ -720,50 +720,50 @@
       .row {
 
         .box--content {
-          @include media-breakpoint-up(md) {
+          @include media-breakpoint-up(lg) {
             margin-right: 1.3rem;
           }
         }
 
         img {
-          @include media-breakpoint-up(md) {
+          @include media-breakpoint-up(lg) {
             left: -10vw;
           }
         }
       }
     }
 
-    .row.flex-row-reverse{
-      @include media-breakpoint-up(md) {
+    .row.flex-row-reverse {
+      @include media-breakpoint-up(lg) {
         flex-flow: row-reverse;
 
         img {
           right: 5vw;
+          left: auto;
         }
 
 
         .box--content {
-          @include media-breakpoint-up(xl) {
-            padding: 5rem 5vw 5rem 3rem;
-          }
+          padding: 3rem 5vw 3rem 3rem;
+
         }
       }
     }
 
     &:nth-child(even) {
-      .row  {
-        @include media-breakpoint-up(md) {
+      .row {
+        @include media-breakpoint-up(lg) {
           flex-flow: row-reverse;
 
           img {
             right: 5vw;
+            left: auto;
           }
 
 
           .box--content {
-            @include media-breakpoint-up(xl) {
-              padding: 5rem 5vw 5rem 3rem;
-            }
+            padding: 3rem 5vw 3rem 3rem;
+
           }
         }
       }
@@ -773,7 +773,7 @@
   .box--image {
     position: relative;
     border-radius: 25px 25px 0px 0px;
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(lg) {
       max-width: calc(100% + 15vw);
       border-radius: 25px;
     }
@@ -783,27 +783,18 @@
 
   .box--content {
     border: 7px solid $primary;
-    padding: rfs-value(30px);
+    padding: 3rem 3rem 3rem 5vw;
     z-index: 10;
     position: relative;
     border-radius: 0px 0px 15px 15px;
-    @include media-breakpoint-down(md) {
+    @include media-breakpoint-down(lg) {
       top: 0 !important;
     }
 
-    @include media-breakpoint-up(md) {
-      padding: rfs-value(40px);
-      border-radius: 15px;
-
-    }
 
     @include media-breakpoint-up(lg) {
       padding: rfs-value(80px);
       border-radius: 15px;
-    }
-
-    @include media-breakpoint-up(xl) {
-      padding: 5rem 3rem 5rem 5vw;
     }
 
 
@@ -1117,7 +1108,6 @@
       padding: 0px;
 
 
-
       .box--upper {
         .image--holder {
           height: rfs-value(250px);
@@ -1131,7 +1121,7 @@
         text-align: center;
         border-radius: 0px 0px 20px 20px;
 
-        &.with-url{
+        &.with-url {
           > a:before, > span:before {
             @extend %fa-icon;
             @extend .far;
@@ -1168,19 +1158,19 @@
         background-color: $gray-200;
         color: $text-color;
 
-        *{
+        * {
           transition: all .3s ease;
         }
 
-        a{
+        a {
           text-decoration: none;
         }
 
-        > span{
+        > span {
           font-weight: $font-weight-bold;
         }
 
-        &.with-url{
+        &.with-url {
           &:after {
             @extend %fa-icon;
             @extend .fal;
@@ -1595,7 +1585,7 @@
 .ce_rsce_equalboxesrows {
   .row {
 
-    &:not(:last-of-type){
+    &:not(:last-of-type) {
       margin-bottom: 3rem;
     }
 
@@ -1670,16 +1660,15 @@
         min-height: rfs-fluid-value(450px);
 
 
-
         @include media-breakpoint-up(md) {
           margin-top: 0px;
           min-height: 0px;
         }
 
-        &:hover{
+        &:hover {
           .box--content {
 
-            .box--text{
+            .box--text {
               height: auto;
               max-height: 800px;
               opacity: 1;
@@ -1691,7 +1680,7 @@
         .box--content {
           padding: 1.5rem;
           color: $white;
-          background-color: rgba(0,0,0,.5);
+          background-color: rgba(0, 0, 0, .5);
 
           .box--headline {
             > * {
@@ -1700,7 +1689,7 @@
             }
           }
 
-          .box--subline{
+          .box--subline {
             @extend .ce--subline;
           }
 
