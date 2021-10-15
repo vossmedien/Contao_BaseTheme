@@ -83,18 +83,31 @@ $(function () {
             $(this).wrapInner("<span><span></span></span>");
         });
     }
-    if ($('[data-sal]').length) {
-        const scrollAnimations = sal({
-            threshold: .2,
-            once: true,
-            selector: "[data-sal]",
-            animateClassName: "sal-animate",
-            disabledClassName: "sal-disabled",
-            rootMargin: "0% 50%",
-            enterEventName: "sal:in",
-            exitEventName: "sal:out"
+
+    if ($('[data-josh-anim-name]').length) {
+
+        $('[data-josh-anim-name]').each(function (index) {
+            $(this).addClass("josh-js");
+        });
+
+        const josh = new Josh({
+            // DOM CSS class to Animate, default is "josh-js"
+            initClass: "josh-js",
+
+            // Animation CSS class from Animate.css library
+            animClass: "animate__animated",
+
+            // Element distance of viewport to triggering the animation. default is 0.2 means 20% of element view animation will trigger
+            offset: 0.2,
+
+            // Animation will trigger on Mobile or not. Default is true
+            animateInMobile: true,
+
+            // Animation will trigger on newly added element or not. Default is false
+            onDOMChange: false,
         });
     }
+
     if ($('.count').length) {
         function startCounter() {
             $('.count').each(function (index) {

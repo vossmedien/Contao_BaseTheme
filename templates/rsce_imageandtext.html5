@@ -6,12 +6,12 @@
         <div class="ce--headline">
 
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?> data-sal="slide-up" >
+                <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
             <?php endif; ?>
 
     </div>
@@ -25,11 +25,11 @@
             <div class="row">
             <?php foreach ($this->rows as $row): ?>
 
-            <?php if(!$this->as_rows):?><div class="col-md-4" data-sal="slide-up"><div class="col--inner"><div class="row"><?php endif;?>
+            <?php if(!$this->as_rows):?><div class="col-md-4" data-josh-anim-name="fadeInUp"><div class="col--inner"><div class="row"><?php endif;?>
 
-            <?php if($this->as_rows):?><div class="col-12" data-sal="slide-up"><div class="col--inner"><div class="row"><?php endif;?>
+            <?php if($this->as_rows):?><div class="col-12" data-josh-anim-name="fadeInUp"><div class="col--inner"><div class="row"><?php endif;?>
 
-                <div data-sal="slide-up" class="col-12 image <?php if($this->as_rows):?>col-md-4 col-lg-3<?php endif;?>  <?php if(!$this->as_rows):?>order-2<?php endif;?>">
+                <div data-josh-anim-name="fadeInUp" class="col-12 image <?php if($this->as_rows):?>col-md-4 col-lg-3<?php endif;?>  <?php if(!$this->as_rows):?>order-2<?php endif;?>">
                     <div class="image--wrapper">
                         <img src="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>">
                     </div>
@@ -38,7 +38,7 @@
                 <?php if($this->as_rows):?><div class="col-md-8 col-lg-9"><div class="col--inner"><?php endif;?>
 
 
-                    <div data-sal="slide-up" class="headline col-12  <?php if(!$this->as_rows):?>order-1<?php endif;?>">
+                    <div data-josh-anim-name="fadeInUp" class="headline col-12  <?php if(!$this->as_rows):?>order-1<?php endif;?>">
                         <?php if (!$row->onlystyle): ?>
                                 <<?php echo $row->headline_type; ?> <?php if ($row->headline_image): ?>class="mb-0"<?php endif;?>>
                                 <?php echo $row->headline; ?>
@@ -52,7 +52,7 @@
 
 
 
-                <div data-sal="slide-up" class="text col-12  <?php if(!$this->as_rows):?>order-3<?php endif;?>">
+                <div data-josh-anim-name="fadeInUp" class="text col-12  <?php if(!$this->as_rows):?>order-3<?php endif;?>">
                     <?php echo $row->text;?>
                 </div>
                 <?php if(!$this->as_rows):?></div></div><?php endif;?>

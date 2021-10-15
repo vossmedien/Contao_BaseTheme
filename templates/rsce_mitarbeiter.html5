@@ -4,12 +4,12 @@
         <div class="ce--headline">
 
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?> data-sal="slide-up" >
+                <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
             <?php endif; ?>
 
     </div>
@@ -23,7 +23,7 @@
 
             <?php foreach ($this->mitarbeiter as $ma): ?>
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="ma--element" data-sal="slide-up">
+                <div class="ma--element" data-josh-anim-name="fadeInUp">
 
                     <?php if ($ma->bild): ?>
                     <div class="ma--image">

@@ -4,12 +4,12 @@
         <div class="ce--headline">
 
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?> data-sal="slide-up" >
+                <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
             <?php endif; ?>
 
     </div>
@@ -20,7 +20,7 @@
         <div class="row">
             <?php foreach ($this->boxes as $box): ?>
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="number-box--wrapper lazy" data-sal="slide-up"
+                <div class="number-box--wrapper lazy" data-josh-anim-name="fadeInUp"
                      data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, null); ?>">
 
 

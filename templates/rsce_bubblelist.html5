@@ -6,12 +6,12 @@
         <div class="ce--headline">
             <div class="container">
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?> data-sal="slide-up" >
+                <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class="ce--subline" data-sal="slide-up"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
@@ -22,7 +22,7 @@
             <div class="bl--inner container">
                 <div class="bl--list">
                     <?php foreach ($this->galery as $item): ?>
-                        <div class="bl--item <?php echo strtolower(str_replace(' ', '_', $item->text)); ?>">
+                        <div data-josh-anim-name="fadeInUp" class="bl--item <?php echo strtolower(str_replace(' ', '_', $item->text)); ?>">
                             <a href="<?php echo $item->url; ?>"></a>
 
                             <div class="bl-i--image">
