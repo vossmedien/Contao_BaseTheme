@@ -22,6 +22,12 @@ return array(
             'minItems' => 1,
             'maxItems' => 10,
             'fields' => array(
+
+                'reverse' => array(
+                    'label' => array('Manuell umkehren', 'Sonst ist jedes zweites Element automatisch auf der anderen Seite'),
+                    'inputType' => 'checkbox',
+                ),
+
                 'image' => array(
                     'label' => array('Boxen-Bild', ''),
                     'inputType' => 'fileTree',

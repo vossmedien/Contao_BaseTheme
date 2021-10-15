@@ -1,4 +1,4 @@
-.content--element, #main div[class^='ce_'] {
+.content--element, #main .mod_article > div > *[class^='ce_'] {
   @include margin(75px auto);
   position: relative;
   z-index: 10;
@@ -721,7 +721,7 @@
 
         .box--content {
           @include media-breakpoint-up(md) {
-            margin-right: 2rem;
+            margin-right: 1.3rem;
           }
         }
 
@@ -735,7 +735,7 @@
 
 
     &:nth-child(even) {
-      .row {
+      .row, &.row-reverse {
 
         @include media-breakpoint-up(md) {
           flex-flow: row-reverse;
@@ -747,7 +747,7 @@
 
           .box--content {
             text-align: right;
-            margin-left: 2rem;
+            margin-left: 1.3rem;
           }
         }
 
@@ -789,7 +789,7 @@
     }
 
     @include media-breakpoint-up(xl) {
-      padding: 5rem 5vw;
+      padding: 5rem 3rem 5rem 5vw;
     }
 
 
@@ -1653,7 +1653,7 @@
         display: flex;
         flex-flow: column nowrap;
         justify-content: flex-end;
-        min-height: rfs-fluid-value(350px);
+        min-height: rfs-fluid-value(450px);
 
 
 
@@ -1664,7 +1664,7 @@
 
         &:hover{
           .box--content {
-            background-color: rgba(0,0,0,.25);
+
             .box--text{
               height: auto;
               max-height: 800px;
@@ -1677,7 +1677,7 @@
         .box--content {
           padding: 1.5rem;
           color: $white;
-          transition: background-color .5s ease;
+          background-color: rgba(0,0,0,.5);
 
           .box--headline {
             > * {

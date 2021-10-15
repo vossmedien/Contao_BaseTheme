@@ -21,7 +21,7 @@
         <?php foreach ($this->box as $b): ?>
 
         <div class="boxes--outer" <?php if($b->versatz && (strpos($b->versatz, '-') !== false)):?>style="margin-top: <?php echo str_replace("-", "",$b->versatz);?>px"<?php endif;?>>
-            <div class="row">
+            <div class="row <?php if($b->reverse):?>row-reverse<?php endif;?>">
                 <div class="col-12 col-md-6">
                     <img class="box--image" data-sal="slide-up" src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                 </div>
