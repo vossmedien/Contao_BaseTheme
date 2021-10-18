@@ -7,6 +7,10 @@
   display: none;
 }
 
+*[data-josh-anim-name]{
+  visibility: hidden;
+}
+
 
 .make-fullwidth {
   width: 100vw;

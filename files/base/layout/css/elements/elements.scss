@@ -273,6 +273,11 @@
       background-position: center center;
       overflow: hidden;
 
+      @media (orientation: landscape) {
+        height: rfs-value(450px);
+      }
+
+
       video {
         min-width: 100%;
         min-height: 100%;

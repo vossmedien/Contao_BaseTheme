@@ -69,11 +69,12 @@
 
             img{
               max-height: rfs-value(80px);
+              width: auto;
             }
           }
 
           .hc-bottom--right-col {
-            padding: rfs-value(7px 20px 10px 20px);
+            padding: rfs-value(10px 20px 10px 20px);
             background-color: $body-bg;
             border-radius: rfs-value(15px);
             box-shadow: $box-shadow;
@@ -92,6 +93,7 @@
 
                 > li {
                   display: inline-block;
+                  vertical-align: sub;
 
                   &:not(:first-child) {
                     margin-left: 1rem;
@@ -101,6 +103,7 @@
                     text-decoration: none;
                     font-weight: $font-weight-bold;
                     color: $text-color;
+                    display: inline-block;
 
                     &.active, &:hover{
                       color: $primary;

@@ -1,6 +1,6 @@
 function isOnScreen(elem) {
     // if the element doesn't exist, abort
-    if( elem.length == 0 ) {
+    if (elem.length == 0) {
         return;
     }
     var $window = jQuery(window)
@@ -18,18 +18,16 @@ function isOnScreen(elem) {
 }
 
 
-
 $(function () {
     var lazyLoadInstance = new LazyLoad();
 
 
-
     //Anchor Scrolling
-    function changeNavLinks(){
+    function changeNavLinks() {
         $('#mainNav li > *').each(function (index) {
             var hash = window.location.hash;
 
-            if($(this).attr('href') == hash){
+            if ($(this).attr('href') == hash) {
                 $('#mainNav .active').removeClass("active");
                 $(this).addClass("active");
             }
@@ -38,7 +36,7 @@ $(function () {
         $('#mobileNav li > *').each(function (index) {
             var hash = window.location.hash;
 
-            if($(this).attr('href') == hash){
+            if ($(this).attr('href') == hash) {
                 $('#mobileNav .active').removeClass("active");
                 $('#mobileNav .mm-listitem_selected').removeClass("mm-listitem_selected");
                 $(this).addClass("active");
@@ -47,7 +45,7 @@ $(function () {
         });
     }
 
-    $('nav a[href^="#"]').click(function() {
+    $('nav a[href^="#"]').click(function () {
         var href = $.attr(this, 'href');
 
         $('html, body').animate({
@@ -141,13 +139,13 @@ $(function () {
         navOffset = navContainer.offset().top - 15;
 
 
-        function setHeaderHeight(){
-            header  = $('.header--content.type--1');
+        function setHeaderHeight() {
+            header = $('.header--content.type--1');
             headerHeight = navWrapper.innerHeight() + $('.hc--top').innerHeight();
             header.height(headerHeight);
         }
 
-        function detectIfScrolled(){
+        function detectIfScrolled() {
             if ($(this).scrollTop() > navOffset) {
                 navWrapper.addClass('is--scrolling');
             } else {
@@ -163,13 +161,15 @@ $(function () {
             detectIfScrolled();
         });
 
-        $(window).resize(function () {
-            //setHeaderHeight();
-        });
+        if (window.matchMedia('(min-width: 768px) and (orientation: portrait)').matches) {
+            $(window).resize(function () {
+                setHeaderHeight();
+            });
+        }
     }
     if ($('.ce_form').length) {
 
-        function addPlaceholders(){
+        function addPlaceholders() {
             $('.widget.widget-text, .widget.widget-textarea').each(function (index) {
                 var placeholder = $(this).find("input, textarea").attr("placeholder");
                 var id = $(this).find("input, textarea").attr("id");
@@ -184,14 +184,14 @@ $(function () {
 
         // Loop over them and prevent submission
         Array.prototype.slice.call(forms).forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-                    form.classList.add('was-validated')
-                }, false)
-            })
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
 
 
         $(".ce_form form").submit(function (e) {
@@ -208,13 +208,6 @@ $(function () {
     if ($('.ce_rsce_headimagelogo').length) {
         $(".ce_rsce_headimagelogo .image--holder").css("min-height", "calc(100vh - " + $('header').height() + "px)");
     }
-
-
-
-
-
-
-
 
 
 });
