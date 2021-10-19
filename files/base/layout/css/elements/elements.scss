@@ -1,11 +1,8 @@
-.content--element, .mod_article > div > *[class^='ce_'] {
+.content--element,
+.mod_article > div > *[class^='ce_'] {
   @include margin(75px auto);
   position: relative;
   z-index: 10;
-
-  &:first-child {
-    margin-top: 0px;
-  }
 }
 
 .mod_article > div > *[class^='ce_'] {
@@ -170,7 +167,7 @@
 }
 
 .ce_rsce_headimagelogo {
-
+  margin-top: 0px;
   .ce--mainimage {
     position: relative;
     overflow: hidden;
@@ -412,6 +409,9 @@
 
 .ce_rsce_coloredrows {
 
+  .ce--coloredrows + .ce--coloredrows{
+    margin-top: 3rem;
+  }
 
   .headline--wrapper {
     @include padding(15px 0px);
@@ -798,7 +798,7 @@
 
 
     @include media-breakpoint-up(lg) {
-      padding: rfs-value(80px);
+      padding: rfs-value(80px 80px 80px 5vw);
       border-radius: 15px;
     }
 
@@ -1707,6 +1707,37 @@
           }
         }
       }
+    }
+  }
+}
+
+.social--list{
+  .social-list--label{
+    display: none;
+    margin: 0px;
+    vertical-align: middle;
+    line-height: 1.3;
+  }
+
+  ul{
+    margin: rfs-value(0px 0px 0px 20px);
+    vertical-align: middle;
+  }
+}
+
+&.start{
+  .mod_pageimage{
+    .page-image--holder{
+      min-height: 75vh;
+      background-attachment: fixed;
+    }
+  }
+}
+
+&:not(.start){
+  .mod_pageimage{
+    .page-image--holder{
+      min-height: rfs-fluid-value(300px);
     }
   }
 }

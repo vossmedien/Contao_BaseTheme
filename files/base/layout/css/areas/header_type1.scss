@@ -91,6 +91,11 @@
                 text-align: right;
                 white-space: nowrap;
 
+
+                &.level_2{
+                  display: none; // Bisher keine Subnav nötig
+                }
+
                 > li {
                   display: inline-block;
                   vertical-align: sub;

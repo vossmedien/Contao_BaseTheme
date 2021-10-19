@@ -19,4 +19,8 @@
 
 #mobileNav{
   //z-index: 10;
+
+  .mm-listitem::after{
+    left: 0;
+  }
 }

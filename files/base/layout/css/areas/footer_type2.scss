@@ -1,0 +1,110 @@
+.footer--content {
+  &.type--2 {
+    .fc--top{
+      padding: 1rem 0rem;
+      #footerNav2{
+        ul{
+          display: flex;
+          justify-content: center;
+          margin: 0px;
+          list-style-type: none;
+          padding: 0px;
+
+
+          > li{
+            padding: 0 2rem;
+
+
+            > a, > strong{
+              text-decoration: none;
+              color: $white;
+              display: block;
+              white-space: nowrap;
+              @include font-size(18px);
+              &.active, &:hover{
+                text-decoration: underline;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .fc--middle{
+      padding: 1.5rem 0 1rem 0;
+
+      @include media-breakpoint-up(md) {
+        padding: 3rem 0 1rem 0;
+      }
+
+      figure{
+        margin-bottom: 0px;
+        img{
+          max-height: rfs-value(100px);
+          width: auto;
+        }
+      }
+
+    }
+
+    .fc--bottom{
+      padding: .75rem 0;
+
+      #footerNav{
+        ul{
+          @extend .list-inline;
+          margin: 0px;
+          @include font-size(12px);
+
+          @include media-breakpoint-up(lg) {
+            text-align: center;
+          }
+
+          > li{
+            @extend .list-inline-item;
+
+            &:not(:last-child){
+              &:after{
+                content:'|';
+                color: $white;
+                padding-left: .65rem;
+              }
+            }
+
+            > a, > strong{
+              text-decoration: none;
+              color: $white;
+
+              &.active, &:hover{
+                text-decoration: underline;
+              }
+            }
+          }
+        }
+      }
+
+      .social--list{
+        .social-list--label{
+          display: inline-block;
+          color: $text-color-inverse;
+          span{
+            display: block;
+          }
+        }
+
+        ul{
+          margin-bottom: 0px;
+          display: inline-block;
+          font-size: 2rem;
+          li{
+            a{
+              color: $text-color-inverse;
+
+            }
+          }
+        }
+      }
+
+    }
+  }
+}

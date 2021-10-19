@@ -1,0 +1,107 @@
+.header--content {
+  &.type--2 {
+    position: relative;
+
+    .hc--top{
+      // PageIMAGE
+    }
+
+    .hc--middle{
+      position: absolute;
+      top: 0;
+      width: 100%;
+      text-align: center;
+
+      img{
+        max-height: rfs-value(200px);
+        width: auto;
+      }
+    }
+
+    .hc--bottom{
+      position: absolute;
+      bottom: 3rem;
+      width: 100%;
+      z-index: 10;
+      text-align: right;
+      @include background-opacity($primary, .85);
+
+      #mainNav{
+        text-align: left;
+        ul{
+          > li{
+            > a, > strong{
+              color: $text-color-inverse;
+              display: block;
+              border-bottom: 5px solid transparent;
+
+              &:hover, &.active, &.trail{
+                border-bottom-color: $secondary;
+              }
+            }
+          }
+
+          &.level_1{
+            list-style-type: none;
+            padding: 0px;
+            margin: 0px;
+            display: flex;
+            justify-content: center;
+
+            > li{
+              display: inline-block;
+              padding: 0 1.5rem 0 1.25rem;
+
+              > a, > strong{
+                display: inline-block;
+                @include font-size(18px);
+                padding: 2rem 0 1.5rem 0;
+                text-decoration: none;
+
+                &:hover, &.active, &.trail{
+                  border-bottom-color: $secondary;
+                }
+              }
+
+              &:hover{
+                > ul.level_2{
+                  max-height: rfs-fluid-value(200px);
+                }
+              }
+            }
+          }
+
+          &.level_2{
+            transition: all .3s ease;
+            @include background-opacity($primary, .85);
+            list-style-type: none;
+            padding: 0px;
+            margin: 0px 0px 0px -1.5rem;
+            max-height: 0px;
+            overflow: hidden;
+            position: absolute;
+
+
+            > li{
+              display: block;
+              padding: 0 1.25rem;
+              > a, > strong {
+                padding: .75rem 0rem;
+                text-decoration: none;
+
+                &:hover, &.active, &.trail{
+
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .navActivator{
+        background-color: $white;
+        padding: .75rem;
+      }
+    }
+  }
+}

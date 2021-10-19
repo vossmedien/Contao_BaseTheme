@@ -29,7 +29,7 @@
                         <div class="swiper-slide">
                             <a class="video-link cboxElement" data-lightbox
                                href='http://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'>
-                                <img src="<?= \Image::get(\FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
+                                <img src="<?= \Image::get(\FilesModel::findByUuid($slide->image)->path, null, null, 1); ?>">
                             </a>
                             <?php if($slide->text):?>
                             <span class="slide-caption"><?php echo $slide->text; ?></span>
