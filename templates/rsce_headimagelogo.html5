@@ -22,6 +22,10 @@
     <?php
         $filename = \FilesModel::findByUuid($this->image)->path;
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
+
+
+        $filename_mobile = \FilesModel::findByUuid($this->mobile_image)->path;
+        $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
     ?>
         <div class="ce--mainimage <?php if($this->diagonal_cut):?>with-diagonalCut<?php endif;?> <?php echo $this->text_style; ?>        <?php if ($this->pull_content): ?>pull-content<?php endif;?>">
             <div class="image--holder       <?php if($ext != "mp4"):?>lazy   <?php endif;?>"
@@ -33,9 +37,15 @@
 
 
                 <?php if($ext == "mp4"):?>
-                <video autoplay muted loop playsinline>
+                <video <?php if($ext_mobile == "mp4" && $ext_mobile):?>class="d-none d-md-block"<?php endif;?> autoplay muted loop playsinline>
                     <source type="video/mp4" src="{{file::<?= $this->image ?>}}">
                 </video>
+                <?php endif;?>
+
+                <?php if($ext_mobile == "mp4" && $ext_mobile):?>
+                    <video class="d-md-none" autoplay muted loop playsinline>
+                        <source type="video/mp4" src="{{file::<?= $this->mobile_image ?>}}">
+                    </video>
                 <?php endif;?>
 
                 <?php if ($this->text_firstline || $this->text_secondline): ?>

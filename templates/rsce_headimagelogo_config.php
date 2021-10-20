@@ -23,12 +23,26 @@ return array(
                 'fieldType' => 'radio',
                 'filesOnly' => true,
                 'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
+                'tl_class' => 'w50'
+            ),
+        ),
+
+        'mobile_image' => array(
+            'label' => array('Bild / Video (Mobile)', 'Video-Format: MP4'),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
+                'tl_class' => 'w50'
             ),
         ),
 
         'diagonal_cut' => array(
             'label' => array('Mit diagonalem Abschluss', ''),
             'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
         ),
 
         'pull_content' => array(
@@ -55,10 +69,12 @@ return array(
         'text_firstline' => array(
             'label' => array('Erste Zeile', ''),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
         'text_secondline' => array(
             'label' => array('Zweite Zeile', ''),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
 
@@ -67,6 +83,7 @@ return array(
                 'de' => array('Button-Beschriftung', 'Button befindet sich rechts unter dem Text'),
             ),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'clr'),
         ),
 
         'link_type' => array(

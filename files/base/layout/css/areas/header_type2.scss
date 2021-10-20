@@ -25,6 +25,19 @@
       z-index: 10;
       text-align: right;
       @include background-opacity($primary, .85);
+      box-shadow: $box-shadow;
+
+      &.is--scrolling{
+        position: fixed;
+        top: 0;
+        bottom: auto;
+        z-index: 15;
+
+        #mainNav ul.level_1 > li > a,
+        #mainNav ul.level_1 > li > strong{
+          padding: .5rem 0;
+        }
+      }
 
       #mainNav{
         text-align: left;

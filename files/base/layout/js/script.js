@@ -167,6 +167,33 @@ $(function () {
             });
         }
     }
+2
+
+    if ($('.header--content.type--2').length) {
+
+        navWrapper = $('.hc--bottom');
+        navContainer = navWrapper;
+        navOffset = navContainer.offset().top - 15;
+
+
+        function detectIfScrolled() {
+            if ($(this).scrollTop() > navOffset) {
+                navWrapper.addClass('is--scrolling');
+            } else {
+                navWrapper.removeClass('is--scrolling');
+            }
+        }
+
+
+        detectIfScrolled();
+
+
+        $(window).scroll(function () {
+            detectIfScrolled();
+        });
+    }
+
+
     if ($('.ce_form').length) {
 
         function addPlaceholders() {
@@ -208,8 +235,6 @@ $(function () {
     if ($('.ce_rsce_headimagelogo').length) {
         $(".ce_rsce_headimagelogo .image--holder").css("min-height", "calc(100vh - " + $('header').height() + "px)");
     }
-
-
 });
 
 if ($('.scrollToTop').length) {

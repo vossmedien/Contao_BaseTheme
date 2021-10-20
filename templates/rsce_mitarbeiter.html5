@@ -22,26 +22,32 @@
         <div class="row small-gutters">
 
             <?php foreach ($this->mitarbeiter as $ma): ?>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="<?php if ($ma->column_width): ?><?php echo $ma->column_width;?><?php else:?>col-12 col-sm-6 col-md-4 col-lg-3<?php endif;?>">
                 <div class="ma--element" data-josh-anim-name="fadeInUp">
 
                     <?php if ($ma->bild): ?>
                     <div class="ma--image">
                         <a data-lightbox title="<?php echo $ma->name ?>" class="cboxElement"
                            href="<?= \Image::get(\FilesModel::findByUuid($ma->bild)->path, null, null, null); ?>">
-                            <img src="<?= \Image::get(\FilesModel::findByUuid($ma->bild)->path, null, null, 1); ?>">
+                            <img src="<?= \Image::get(\FilesModel::findByUuid($ma->bild)->path, null, null, 2); ?>">
                         </a>
                     </div>
                     <?php endif; ?>
 
-                    <div class="ma--details">
-                        <span class="h3">
+                    <div class="ma--details <?php if ($ma->alternate_background): ?>with-bg<?php endif; ?> <?php if($ma->textalign):?><?php echo $ma->textalign;?><?php endif;?>" style="<?php if ($ma->alternate_textcolor): ?>color:<?php echo $ma->alternate_textcolor;?>;<?php endif;?><?php if ($ma->alternate_background): ?>background-color:<?php echo $ma->alternate_background;?><?php endif; ?>">
+                        <span class="text-primary">
                             <?php echo $ma->name ?>
                         </span>
 
+                        <?php if ($ma->subline): ?>
+                            <div class="job-subline">
+                               <?php echo $ma->subline ?>
+                            </div>
+                        <?php endif; ?>
+
                         <?php if ($ma->beschreibung): ?>
                             <div class="job-desc">
-                                <p> <?php echo $ma->beschreibung ?></p>
+                               <?php echo $ma->beschreibung ?>
                             </div>
                         <?php endif; ?>
                     </div>

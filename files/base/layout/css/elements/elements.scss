@@ -17,9 +17,9 @@
   }
 
   &[class*='bg-'] {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    @include padding(50px 0px);
   }
+
 
   &[class*='bg-'].container {
     //padding: 2rem;
@@ -251,7 +251,7 @@
         bottom: 0;
         left: 0;
         border-right: 100vw solid $body-bg;
-        border-top: 75px solid transparent;
+        border-top: 10vw solid transparent;
       }
     }
 
@@ -1041,10 +1041,18 @@
 }
 
 .ce_rsce_mitarbeiter {
-  margin-bottom: rfs-fluid-value(-50px);
+  margin-bottom: rfs-value(-25px);
+
+
+  .row > div{
+    margin-bottom: rfs-value(25px);
+  }
 
   .ma--element {
-    margin-bottom: rfs-fluid-value(50px);
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+
 
     .ma--image {
       position: relative;
@@ -1057,17 +1065,25 @@
     }
 
     .ma--details {
-      margin-top: 20px;
-      text-align: center;
+      @include padding(10px 0px 0px 0px);
       @include font-size(18px);
+      flex: 1;
 
-      .h3 {
-        font-weight: $font-weight-bold;
-        @include font-size(18px);
+      &.with-bg{
+        @include padding(10px 20px 20px 20px);
+      }
+
+      .job-subline{
+        @include font-size(14px);
+        min-height: rfs-value(42px);
       }
 
       .job-desc {
+        @include font-size(14px);
 
+        a{
+          text-decoration: none;
+        }
       }
     }
   }
@@ -1092,10 +1108,16 @@
 
 .ce_rsce_linkboxen {
 
+  .row > *{
+    margin-bottom: 1.5rem;
+  }
+
   .link--box {
     position: relative;
-    margin-bottom: 1.5rem;
     transition: all .3s ease;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
     //cursor: pointer;
 
     > a, > span {
@@ -1171,9 +1193,7 @@
           text-decoration: none;
         }
 
-        > span {
-          font-weight: $font-weight-bold;
-        }
+
 
         &.with-url {
           &:after {
@@ -1198,19 +1218,29 @@
       }
     }
 
+    .box--lower{
+      flex: 1;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+
+
+      .box--headline{
+        font-weight: $font-weight-bold;
+      }
+
+      .box--subline{
+        color: $primary;
+      }
+
+      .box--longtext{
+        margin-top: .75rem;
+      }
+    }
+
 
     &:hover {
       box-shadow: $box-shadow;
-
-      .box--lower {
-        * {
-          color: $primary;
-        }
-
-        &:after {
-          color: $primary;
-        }
-      }
     }
   }
 }
@@ -1729,7 +1759,9 @@
   .mod_pageimage{
     .page-image--holder{
       min-height: 75vh;
-      background-attachment: fixed;
+      @include media-breakpoint-up(md) {
+        background-attachment: fixed;
+      }
     }
   }
 }

@@ -1,72 +1,10 @@
-<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
-    <div class="ce--inner container">
-        <?php if ($this->headline || $this->subline): ?>
-        <div class="ce--headline">
-
-            <?php if ($this->headline): ?>
-            <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
-            <?php echo($this->headline); ?>
-        </<?php echo($this->hl); ?>>
-    <?php endif; ?>
-        <?php if ($this->subline): ?>
-            <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
-        <?php endif; ?>
-
-    </div>
-    <?php endif; ?>
-
-
-
-    <?php if ($this->boxes): ?>
-        <div class="row">
-            <?php foreach ($this->boxes as $i => $box): ?>
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class=" link--box <?php echo $this->box_style; ?> " data-josh-anim-name="fadeInUp">
-
-                        <?php if ($box->link): ?>
-                            <a href="<?php echo $box->link; ?>"></a>
-                        <?php elseif (($box->modal_longtext || $box->modal_image)): ?>
-                            <span data-bs-toggle="modal"
-                                  data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"></span>
-                        <?php endif; ?>
-
-
-                        <?php if ($box->image): ?>
-                            <div class="box--upper">
-                                <div class="image--holder lazy"
-                                     style="background-size: cover; background-repeat: no-repeat; background-position: center center;"
-                                     data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, null); ?>">
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                        <div class="box--lower  <?php if ($box->link || ($box->modal_longtext || $box->modal_image)): ?>with-url<?php endif; ?>">
-                            <?php if ($box->text): ?>
-                                <span><?php echo $box->text; ?></span>
-                            <?php endif; ?>
-
-                            <?php if ($box->longtext): ?>
-                                <div class="box--longtext">
-                                    <?php echo $box->longtext; ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-
-                    </div>
-                </div>
-            <?php endforeach ?>
-        </div>
-    <?php endif; ?>
-</div>
-</div>
-
-
 <?php if ($this->boxes): ?>
     <?php foreach ($this->boxes as $i => $box): ?>
         <!-- Button trigger modal -->
 
         <?php if ($box->modal_longtext || $box->modal_image): ?>
             <!-- Modal -->
-            <div class="modal fade" id="linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>" tabindex="-1"
+            <section class="modal fade" id="linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>" tabindex="-1"
                  aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
@@ -104,8 +42,77 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         <?php endif; ?>
 
     <?php endforeach ?>
 <?php endif; ?>
+
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner container">
+        <?php if ($this->headline || $this->subline): ?>
+        <div class="ce--headline">
+
+            <?php if ($this->headline): ?>
+            <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
+            <?php echo($this->headline); ?>
+        </<?php echo($this->hl); ?>>
+    <?php endif; ?>
+        <?php if ($this->subline): ?>
+            <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
+        <?php endif; ?>
+
+    </div>
+    <?php endif; ?>
+
+
+
+    <?php if ($this->boxes): ?>
+        <div class="row">
+            <?php foreach ($this->boxes as $i => $box): ?>
+                <div class="<?php if ($box->column_width): ?><?php echo $box->column_width;?><?php else:?>col-12 col-md-6 col-lg-4<?php endif;?>">
+                    <div class="link--box <?php echo $this->box_style; ?> " data-josh-anim-name="fadeInUp">
+
+                        <?php if ($box->link): ?>
+                            <a href="<?php echo $box->link; ?>"></a>
+                        <?php elseif (($box->modal_longtext || $box->modal_image)): ?>
+                            <span data-bs-toggle="modal"
+                                  data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"></span>
+                        <?php endif; ?>
+
+
+                        <?php if ($box->image): ?>
+                            <div class="box--upper">
+                                <div class="image--holder lazy"
+                                     style="background-size: cover; background-repeat: no-repeat; background-position: center center;"
+                                     data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, 3); ?>">
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <div class="box--lower <?php if($box->textalign):?><?php echo $box->textalign;?><?php endif;?> <?php if (($box->link || ($box->modal_longtext || $box->modal_image)) && !$box->hide_arrow): ?>with-url<?php endif; ?>" style="<?php if ($box->alternate_textcolor): ?>color:<?php echo $box->alternate_textcolor;?>;<?php endif;?><?php if ($box->alternate_background): ?>background-color:<?php echo $box->alternate_background;?><?php endif; ?>">
+                            <?php if ($box->text): ?>
+                                <span class="box--headline"><?php echo $box->text; ?></span>
+                            <?php endif; ?>
+
+                            <?php if ($box->subline): ?>
+                                <span class="box--subline"><?php echo $box->subline; ?></span>
+                            <?php endif; ?>
+
+                            <?php if ($box->longtext): ?>
+                                <div class="box--longtext">
+                                    <?php echo $box->longtext; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                    </div>
+                </div>
+            <?php endforeach ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+
+
+
+</div>

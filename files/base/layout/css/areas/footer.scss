@@ -1,4 +1,6 @@
 #footer{
+  @include margin-top(75px);
+
   .fc--top{
     background-color: $footer-top-bg;
   }
