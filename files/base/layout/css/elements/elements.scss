@@ -907,7 +907,7 @@
 
   .row > div {
 
-    @include media-breakpoint-down(md) {
+    @include media-breakpoint-down(lg) {
       margin-top: rfs-value(20px);
     }
 
