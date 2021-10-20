@@ -22,7 +22,7 @@
 
         <div class="row">
         <?php foreach ($this->kachel as $b): ?>
-            <div class="col-12 col-md-4 ">
+            <div class="col-12 col-lg-4 ">
                 <div class="kachelbox" data-josh-anim-name="fadeInUp">
                     <a class="kachel--url" href="<?php echo $b->link_url;?>"></a>
                     <div class="kachelbox--inner">

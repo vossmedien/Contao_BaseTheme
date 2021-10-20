@@ -1,9 +1,8 @@
 <?php if ($this->boxes): ?>
     <?php foreach ($this->boxes as $i => $box): ?>
-        <!-- Button trigger modal -->
 
         <?php if ($box->modal_longtext || $box->modal_image): ?>
-            <!-- Modal -->
+
             <section class="modal fade" id="linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>" tabindex="-1"
                  aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
