@@ -24,7 +24,9 @@
         <?php foreach ($this->kachel as $b): ?>
             <div class="col-12 col-lg-4 ">
                 <div class="kachelbox" data-josh-anim-name="fadeInUp">
+                    <?php if($b->link_url):?>
                     <a class="kachel--url" href="<?php echo $b->link_url;?>"></a>
+                    <?php endif;?>
                     <div class="kachelbox--inner">
 
                         <?php if($b->image || $b->icon):?>
@@ -53,7 +55,7 @@
                             </div>
                         <?php endif; ?>
 
-                        <?php if ($b->link_text): ?>
+                        <?php if ($b->link_url): ?>
                             <div class="box--button mt-3" data-josh-anim-name="fadeInUp">
                                 <a class="d-inline-block btn <?php if ($b->link_size): ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
                                    href="<?php echo $b->link_url; ?><?php if ($b->link_betreff): ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?>

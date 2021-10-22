@@ -34,7 +34,7 @@ return array(
 
         'headline_type' => array(
             'label' => array(
-                'de' => array('Typ der Überschrift', 'Ausrichtung der Elemente'),
+                'de' => array('Typ der Überschrift', ''),
             ),
             'inputType' => 'select',
             'options' => array(

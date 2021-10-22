@@ -66,7 +66,9 @@ return array(
             'inputType' => 'select',
             'options' => array(
                 'btn-primary' => 'Hauptfarbe',
+                'btn-outline-primary' => 'Hauptfarbe (Outline)',
                 'btn-secondary' => 'Sekundär-Farbe',
+                'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
             ),
         ),
 

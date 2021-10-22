@@ -95,8 +95,10 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'btn-primary' => 'Rot',
-                        'btn-secondary' => 'Dunkelgrau',
+                        'btn-primary' => 'Hauptfarbe',
+                        'btn-outline-primary' => 'Hauptfarbe (Outline)',
+                        'btn-secondary' => 'Sekundär-Farbe',
+                        'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
                     ),
                 ),
                 'link_size' => array(
