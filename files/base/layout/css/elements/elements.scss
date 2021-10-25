@@ -5,7 +5,7 @@
   z-index: 10;
 
   &.ce_headline{
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     & + *[class^='ce_']{
       margin-top: 0px;
     }
@@ -1096,10 +1096,7 @@
 
       .job-desc {
         @include font-size(14px);
-
-        @include media-breakpoint-down(md) {
-          margin-top: .75rem;
-        }
+        margin-top: .75rem;
 
         a{
           text-decoration: none;
