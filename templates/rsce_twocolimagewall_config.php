@@ -23,13 +23,6 @@ return array(
             'maxItems' => 10,
             'fields' => array(
 
-                'reverse' => array(
-                    'label' => array('Spalten umkehren', 'Funktioniert NUR mit 50% Spalten!'),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'w50, m12'),
-                ),
-
-
                 'column_width' => array(
                     'label' => array(
                         'de' => array('Inhalts-Spaltenbreite', ''),
@@ -43,8 +36,15 @@ return array(
                         'col-12 col-lg-9' => '75%',
                         'col-12' => 'Volle Breite',
                     ),
-                    'eval' => array('tl_class' => 'w50'),
                 ),
+
+
+                'reverse' => array(
+                    'label' => array('Spalten umkehren', 'Funktioniert NUR mit 50% Spalten!'),
+                    'inputType' => 'checkbox',
+                ),
+
+
 
 
 
@@ -57,7 +57,6 @@ return array(
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,svg',
-                        'tl_class' => 'clr'
                     ),
                 ),
 
