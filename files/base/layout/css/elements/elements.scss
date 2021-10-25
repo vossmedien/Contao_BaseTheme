@@ -1,5 +1,5 @@
 .content--element,
-.mod_article > div > *[class^='ce_'] {
+.mod_article > div > *[class^='ce_']:not(.ce_headline) {
   @include margin(75px auto);
   position: relative;
   z-index: 10;
