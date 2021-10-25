@@ -84,7 +84,7 @@ return array(
                 'subline' => array(
                     'label' => array('Subline', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
 
 

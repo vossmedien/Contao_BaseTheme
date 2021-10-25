@@ -23,6 +23,13 @@ return array(
             'maxItems' => 10,
             'fields' => array(
 
+                'reverse' => array(
+                    'label' => array('Spalten umkehren', 'Funktioniert NUR mit 50% Spalten!'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50, m12'),
+                ),
+
+
                 'column_width' => array(
                     'label' => array(
                         'de' => array('Inhalts-Spaltenbreite', ''),
@@ -39,11 +46,6 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
-                'reverse' => array(
-                    'label' => array('Spalten umkehren', 'Funktioniert NUR mit 50% Spalten!'),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'w50, m12'),
-                ),
 
 
 
