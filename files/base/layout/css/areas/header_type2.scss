@@ -68,7 +68,7 @@
               > a, > strong{
                 display: inline-block;
                 @include font-size(18px);
-                padding: 1.3rem 0 1rem 0;
+                padding: 1.5rem 0 1rem 0;
                 text-decoration: none;
 
                 &:hover, &.active, &.trail{
