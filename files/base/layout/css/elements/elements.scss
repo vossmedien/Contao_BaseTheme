@@ -7,6 +7,10 @@
 
 .mod_article > div > *[class^='ce_'] {
   @extend .container;
+
+  &.ce_bs_gridStart.row{
+    padding: 0px;
+  }
 }
 
 .content--element {
@@ -18,7 +22,7 @@
 
   &[class*='bg-'] {
     @include padding(50px 0px);
-  }
+  } 
 
 
   &[class*='bg-'].container {
@@ -1077,11 +1081,18 @@
 
       .job-subline{
         @include font-size(14px);
-        min-height: rfs-value(42px);
+
+        @include media-breakpoint-up(md) {
+          min-height: rfs-value(42px);
+        }
       }
 
       .job-desc {
         @include font-size(14px);
+
+        @include media-breakpoint-down(md) {
+          margin-top: .75rem;
+        }
 
         a{
           text-decoration: none;
