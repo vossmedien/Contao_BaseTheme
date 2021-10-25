@@ -1,5 +1,6 @@
 .content--element,
-.mod_article > div > *[class^='ce_'] {
+.mod_article > div > *[class^='ce_'],
+.mod_article > div > *[class^='mod_']{
   @include margin(75px auto);
   position: relative;
   z-index: 10;
@@ -12,7 +13,8 @@
   }
 }
 
-.mod_article > div > *[class^='ce_'] {
+.mod_article > div > *[class^='ce_'],
+.mod_article > div > *[class^='mod_']{
   @extend .container;
 
   &.ce_bs_gridStart.row{
@@ -1902,6 +1904,47 @@
   .mod_pageimage{
     .page-image--holder{
       min-height: rfs-fluid-value(300px);
+    }
+  }
+}
+
+
+
+.text--wrapper {
+  &.with-image {
+    @extend .row;
+
+    &.image-right {
+      flex-flow: row-reverse;
+
+      .image {
+        @extend .col-lg-6;
+
+        @include media-breakpoint-down(md) {
+          margin-top: 1rem;
+        }
+
+      }
+
+      .text {
+        @extend .col-lg-6;
+        @include padding-right(35px);
+      }
+    }
+
+    &.image-left {
+      .image {
+        @extend .col-lg-6;
+
+        @include media-breakpoint-down(md) {
+          margin-top: 1rem;
+        }
+      }
+
+      .text {
+        @extend .col-lg-6;
+        @include padding-left(35px);
+      }
     }
   }
 }
