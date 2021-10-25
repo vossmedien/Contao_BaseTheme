@@ -41,7 +41,7 @@
 
             & + .mod_article{
                 &[class*='bg-']{
-                    margin-top: rfs-value(-75px);
+                    //margin-top: rfs-value(-75px);
                 }
 
                 .content--element[class*='bg-']:first-of-type{
