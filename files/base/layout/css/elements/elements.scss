@@ -1195,9 +1195,12 @@
     &.style-2 {
       .box--lower {
         position: relative;
-        @include padding(25px 25px);
+        @include padding(15px 25px);
         background-color: $gray-200;
         color: $text-color;
+        @include font-size(18px);
+        line-height: 1.3;
+
 
         * {
           transition: all .3s ease;
