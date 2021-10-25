@@ -93,11 +93,12 @@
             max-height: 0px;
             overflow: hidden;
             position: absolute;
+            min-width: rfs-value(200px);
 
 
             > li{
               display: block;
-              padding: 0 1.25rem;
+              padding: 0 1.5rem;
               > a, > strong {
                 padding: .75rem 0rem;
                 text-decoration: none;
