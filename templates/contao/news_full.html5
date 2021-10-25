@@ -1,33 +1,25 @@
 
 <div class="layout_full block<?= $this->class ?>">
 
+    <?php if ($this->hasMetaFields): ?>
+        <p class="info"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?> <?= $this->commentCount ?></p>
+    <?php endif; ?>
+
   <h1><?= $this->newsHeadline ?></h1>
 
-  <?php if ($this->hasMetaFields): ?>
-    <p class="info"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?> <?= $this->commentCount ?></p>
-  <?php endif; ?>
-
   <?php if ($this->hasSubHeadline): ?>
-    <h2><?= $this->subHeadline ?></h2>
+    <span class="ce--subline"><?= $this->subHeadline ?></span>
   <?php endif; ?>
 
-  <?php if ($this->hasText): ?>
-    <?= $this->text ?>
-  <?php else: ?>
-    <div class="ce_text block">
-      <?php if (!$this->addBefore): ?>
-        <?= $this->teaser ?>
-      <?php endif; ?>
 
-      <?php if ($this->addImage): ?>
-        <?php $this->insert('image', $this->arrData); ?>
-      <?php endif; ?>
-
-      <?php if ($this->addBefore): ?>
-        <?= $this->teaser ?>
-      <?php endif; ?>
+    <div class="mt-4">
+        <?php if ($this->text): ?>
+            <div class="text">
+                <?= $this->text ?>
+            </div>
+        <?php endif; ?>
     </div>
-  <?php endif; ?>
+
 
   <?php if ($this->enclosure): ?>
     <ul class="enclosure">
