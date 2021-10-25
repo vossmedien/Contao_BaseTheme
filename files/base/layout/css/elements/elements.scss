@@ -3,6 +3,13 @@
   @include margin(75px auto);
   position: relative;
   z-index: 10;
+
+  &.ce_headline{
+    margin-bottom: 2rem;
+    & + *[class^='ce_']{
+      margin-top: 0px;
+    }
+  }
 }
 
 .mod_article > div > *[class^='ce_'] {
