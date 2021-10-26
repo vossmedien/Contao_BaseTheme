@@ -14,12 +14,12 @@
     <?php $this->endblock(); ?>
 
     <?= $this->viewport ?>
-    <?= $this->framework ?>
-    <?= $this->stylesheets ?>
 
-
+    <!-- From Top -->
     <?= $this->mooScripts ?>
     <?= $this->head ?>
+    <!-- From Top END -->
+
   <?php $this->endblock(); ?>
 
 </head>
@@ -93,6 +93,11 @@
 
     <?php $this->sections('bottom'); ?>
   <?php $this->endblock(); ?>
+
+  <!-- From Top -->
+  <?= $this->framework ?>
+  <?= $this->stylesheets ?>
+  <!-- From Top END -->
 
   <?= $this->mootools ?>
 
