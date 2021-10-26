@@ -1,7 +1,7 @@
 <?php $this->extend('block_searchable'); ?>
 
 <?php $this->block('content'); ?>
-<div data-josh-anim-name="fadeInUp" class="text--wrapper <?php  if($this->addImage):?>with-image image-<?php echo $this->floating;?><?php endif;?> ">
+<div class="text--wrapper <?php  if($this->addImage):?>with-image image-<?php echo $this->floating;?><?php endif;?> ">
 
   <?php if ($this->addImage): ?>
       <div class="image">

@@ -1,0 +1,15 @@
+
+<!-- indexer::stop -->
+<div data-josh-anim-name="fadeInUp" class="<?= $this->class ?> block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+<div class="custom-contao-container">
+  <?php $this->block('headline'); ?>
+    <?php if ($this->headline): ?>
+      <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
+    <?php endif; ?>
+  <?php $this->endblock(); ?>
+
+  <?php $this->block('content'); ?>
+  <?php $this->endblock(); ?>
+</div>
+</div>
+<!-- indexer::continue -->

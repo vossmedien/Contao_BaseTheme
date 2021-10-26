@@ -5,11 +5,7 @@
   position: relative;
   z-index: 10;
 
-
-  &[class*='bg-'] {
-    @include padding(50px);
-  }
-
+  /*
   &.content--box.container,
   &[class*='bg-']{
     @include media-breakpoint-up(sm) {
@@ -30,6 +26,11 @@
       max-width: 1290px;
     }
   }
+   */
+}
+
+[class*='bg-'] {
+  @include padding(50px);
 }
 
 .mod_article > div > *[class^='ce_']{
@@ -42,6 +43,7 @@
 }
 
 
+/*
 .mod_article > div > *[class^='ce_'],
 .mod_article > div > *[class^='mod_']{
   @extend .container;
@@ -50,6 +52,7 @@
     padding: 0px;
   }
 }
+ */
 
 .content--element {
   &.content--box {

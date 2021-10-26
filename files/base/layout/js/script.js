@@ -89,9 +89,9 @@ $(function () {
         });
     }
 
-    if ($('[data-josh-anim-name]').length) {
+    if ($('#main [data-josh-anim-name]').length) {
 
-        $('[data-josh-anim-name]').each(function (index) {
+        $('#main [data-josh-anim-name]').each(function (index) {
             $(this).addClass("josh-js");
         });
 
