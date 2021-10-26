@@ -19,10 +19,10 @@
 
                 > div >  *{
                     &:not(:last-child):not(.ce_headline){
-                        margin: rfs-value(75px auto);
+                        margin: rfs-value($basic-gutter auto);
 
                         &.ce_rsce_linkboxen{
-                            margin-bottom: rfs-value(50px);
+                            margin-bottom: rfs-value($basic-gutter);
                         }
                     }
 
