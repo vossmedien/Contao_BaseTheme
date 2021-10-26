@@ -21,6 +21,12 @@ body {
 
   p{
     //overflow: auto;
+
+    >a.alert{
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
     a{
       color: $primary;
 

@@ -3,7 +3,11 @@
 .mod_article > div > *[class^='mod_'],
 .mod_article > div > .custom-contao-container{
   @include margin-top(50px);
-  @include margin-bottom(50px);
+
+  &:not(:last-child){
+    @include margin-bottom(50px);
+  }
+
   position: relative;
   z-index: 10;
 
@@ -31,15 +35,20 @@
    */
 }
 
+.custom-contao-container{
+  margin-top: 0px;
+}
+
 [class*='bg-'] {
-  @include padding(50px);
+  @include padding($basic-gutter);
 }
 
 .mod_article > div > *[class^='ce_']{
   &.ce_headline{
-    margin-bottom: 1.5rem;
-    & + *[class^='ce_']{
-      margin-top: 0px;
+    margin-bottom: revert;
+
+    & + *{
+      margin-top: 0px !important;
     }
   }
 }
@@ -67,7 +76,7 @@
 .content--box {
   border-radius: 20px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  padding: rfs-value(50px);
+  padding: rfs-value($basic-gutter);
   position: relative;
   z-index: 5;
 

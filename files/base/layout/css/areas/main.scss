@@ -3,7 +3,7 @@
         .mod_article{
             &:last-child{
                 .content--element[class*='bg-']:last-of-type{
-                    margin-bottom: rfs-value(-75px);
+                    margin-bottom: rfs-value(-$basic-gutter);
                 }
             }
 
@@ -17,11 +17,17 @@
                 //padding: rfs-value(50px 0px);
                 overflow: auto;
 
-                .content--element{
-                    margin: rfs-value(75px auto);
+                > div >  *{
+                    &:not(:last-child):not(.ce_headline){
+                        margin: rfs-value(75px auto);
 
-                    &.ce_rsce_linkboxen{
-                        margin-bottom: rfs-value(50px);
+                        &.ce_rsce_linkboxen{
+                            margin-bottom: rfs-value(50px);
+                        }
+                    }
+
+                    &:first-child{
+                        margin-top: 0px;
                     }
                 }
 
@@ -45,7 +51,7 @@
 
             & + .mod_article{
                 &[class*='bg-']{
-                    //margin-top: rfs-value(-75px);
+                    margin-top: rfs-value($basic-gutter);
                 }
 
                 .content--element[class*='bg-']:first-of-type{
@@ -54,8 +60,11 @@
             }
 
             > div > .custom-contao-container,
-            > div > [class*='mod_']{
+            > div > [class*='mod_']  > .custom-contao-container,
+            > div > [class*='ce_']  > .custom-contao-container,
+            span.custom-contao-container{
                 @extend .container;
+                display: block;
             }
 
         }

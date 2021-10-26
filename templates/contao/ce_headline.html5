@@ -1,5 +1,6 @@
-<div class="custom-contao-container">
+
 <<?= $this->hl ?> class="<?= $this->class ?>"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+<span class="custom-contao-container" data-josh-anim-name="fadeInUp">
   <?= $this->headline ?>
+</span>
 </<?= $this->hl ?>>
-</div>
