@@ -20,12 +20,17 @@
 
     .hc--bottom{
       position: absolute;
-      bottom: 3rem;
+      top: rfs-value(258px);
       width: 100%;
       z-index: 10;
       text-align: right;
       @include background-opacity($primary, .85);
       box-shadow: $box-shadow;
+
+      @include media-breakpoint-up(md) {
+        bottom: 3rem;
+        top: auto;
+      }
 
       &.is--scrolling{
         position: fixed;

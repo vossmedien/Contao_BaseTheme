@@ -1903,7 +1903,7 @@
 &:not(.start){
   .mod_pageimage{
     .page-image--holder{
-      min-height: rfs-fluid-value(300px);
+      min-height: rfs-value(300px);
     }
   }
 }
