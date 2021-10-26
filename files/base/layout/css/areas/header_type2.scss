@@ -28,7 +28,7 @@
       box-shadow: $box-shadow;
 
       @include media-breakpoint-up(md) {
-        bottom: 3rem;
+        bottom: 2.5rem;
         top: auto;
       }
 
@@ -72,9 +72,27 @@
 
               > a, > strong{
                 display: inline-block;
-                @include font-size(18px);
+                @include font-size(14px);
                 padding: 1.5rem 0 1rem 0;
                 text-decoration: none;
+                white-space: nowrap;
+
+                @include media-breakpoint-up(md) {
+                  @include font-size(14px);
+                }
+
+                @include media-breakpoint-up(lg) {
+                  @include font-size(15px);
+                }
+
+                @include media-breakpoint-up(xl) {
+                  @include font-size(16px);
+                }
+
+                @include media-breakpoint-up(xxl) {
+                  @include font-size(18px);
+                }
+
 
                 &:hover, &.active, &.trail{
                   border-bottom-color: $secondary;
