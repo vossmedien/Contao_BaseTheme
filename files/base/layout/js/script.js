@@ -70,6 +70,13 @@ $(function () {
     }
 
 
+    if ($('#main table').length) {
+        $('#main table').each(function (index) {
+           $(this).wrap ('<div class="table-responsive"></div>')
+           $(this).addClass("table").addClass("table-striped").addClass("table-hover");
+        });
+    }
+
     if ($('[data-bs-toggle="tooltip"]').length) {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
