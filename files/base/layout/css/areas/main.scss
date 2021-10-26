@@ -53,7 +53,8 @@
                 }
             }
 
-            .custom-contao-container{
+            > div > .custom-contao-container,
+            > div > [class*='mod_']{
                 @extend .container;
             }
 

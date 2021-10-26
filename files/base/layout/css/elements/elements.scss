@@ -1,7 +1,9 @@
 .content--element,
 .mod_article > div > *[class^='ce_'],
-.mod_article > div > *[class^='mod_']{
-  @include margin(75px auto);
+.mod_article > div > *[class^='mod_'],
+.mod_article > div > .custom-contao-container{
+  @include margin-top(50px);
+  @include margin-bottom(50px);
   position: relative;
   z-index: 10;
 
