@@ -34,6 +34,8 @@ return array(
                         'col-12 col-lg-8' => '66.66%',
                         'col-12 col-lg-9' => '75%',
                         'col-12' => 'Volle Breite',
+                        'col-12 col-md-auto' => 'Automatische Breite (füllend)',
+                        'col-12 col-md' => 'Breite anhand des Inhalts',
                     ),
                 ),
 

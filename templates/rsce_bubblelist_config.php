@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Bubble-List', ''),
+    'label' => array('Custom | Runde Boxen mit Icon / Bild sowie Verlinkung', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',

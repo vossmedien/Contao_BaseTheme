@@ -22,7 +22,8 @@
 
         <div class="row">
         <?php foreach ($this->kachel as $b): ?>
-            <div class="col-12 col-lg-4 ">
+                <div class="<?php if ($b->column_width): ?><?php echo $b->column_width;?><?php else:?>col-12 col-lg-4<?php endif;?>">
+
                 <div class="kachelbox" data-josh-anim-name="fadeInUp">
                     <?php if($b->link_url):?>
                     <a class="kachel--url" href="<?php echo $b->link_url;?>"></a>

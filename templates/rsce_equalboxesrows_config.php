@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | 50% Spalte links, mehrere Boxen auf gleicher Höhe rechts', ''),
+    'label' => array('Custom | 50% Spalte & mehrere Boxen auf gleicher Höhe auf anderer Spalte', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',

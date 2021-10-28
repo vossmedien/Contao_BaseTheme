@@ -86,7 +86,7 @@
 }
 
 .ce--headline {
-  margin-bottom: 2.5rem;
+  margin-bottom: $headline-spacing;
 
   * {
     margin-bottom: 0px;
@@ -1375,7 +1375,7 @@
 }
 
 .ce_rsce_2colscontent {
-  .column--wrapper {
+  .row--wrapper {
     &:not(:last-child) {
       margin-bottom: rfs-value(40px);
     }
@@ -1391,24 +1391,31 @@
       }
     }
 
-    .left-column--wrapper {
-      .left-col--headline {
-        position: relative;
+    .column--wrapper{
 
-        * {
-          text-align: left;
+      .col--headline{
+        margin-bottom: $headline-spacing;
+      }
 
-          &:after {
-            margin-left: 0;
-            left: 0;
+      .column--content{
+        flex-flow: column wrap;
+        &.flex-column-reverse{
+          .col--image{
+            margin-top: 1.25rem;
+            margin-bottom: 0rem;
           }
         }
+
+        .col--image{
+          margin-bottom: 1.25rem;
+        }
+      }
+
+      .col--buttons{
+        margin-top: 2rem;
       }
     }
 
-    .right-column--wrapper {
-
-    }
   }
 }
 
@@ -1654,9 +1661,7 @@
 
       .advantages--box {
         .advantages--headline {
-          > * {
-            margin-bottom: 0px;
-          }
+
         }
 
         .advantages--subline {

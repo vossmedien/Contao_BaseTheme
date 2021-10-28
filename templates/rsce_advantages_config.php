@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | 3-Spaltige Textboxen', ''),
+    'label' => array('Custom | Mehrspaltige Textboxen (old)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -23,6 +23,24 @@ return array(
             'minItems' => 1,
             'maxItems' => 99,
             'fields' => array(
+
+                'column_width' => array(
+                    'label' => array(
+                        'de' => array('Spaltenbreite', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'col-12 col-md-6 col-lg-3' => '25%',
+                        'col-12 col-md-6 col-lg-4' => '33%',
+                        'col-12 col-md-6' => '50%',
+                        'col-12 col-lg-8' => '66.66%',
+                        'col-12 col-lg-9' => '75%',
+                        'col-12' => 'Volle Breite',
+                        'col-12 col-md-auto' => 'Automatische Breite (füllend)',
+                        'col-12 col-md' => 'Breite anhand des Inhalts',
+                    ),
+                ),
+
                 'headline_type' => array(
                     'label' => array(
                         'de' => array('Typ der Überschrift', ''),

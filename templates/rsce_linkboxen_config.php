@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Boxen mit Bild, Text & Verlinkung', ''),
+    'label' => array('Custom | Boxen mit Bild, Text, Verlinkung, ggf. modales Fenster', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -46,6 +46,8 @@ return array(
                         'col-12 col-lg-8' => '66.66%',
                         'col-12 col-lg-9' => '75%',
                         'col-12' => 'Volle Breite',
+                        'col-12 col-md-auto' => 'Automatische Breite (füllend)',
+                        'col-12 col-md' => 'Breite anhand des Inhalts',
                     ),
                 ),
 

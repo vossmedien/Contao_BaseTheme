@@ -19,8 +19,8 @@
     <?php if ($this->boxes): ?>
         <div class="row">
             <?php foreach ($this->boxes as $box): ?>
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="advantages--box" data-josh-anim-name="fadeInUp">
+            <div class="<?php if ($box->column_width): ?><?php echo $box->column_width;?><?php else:?>col-12 col-md-6 col-lg-4<?php endif;?>">
+            <div class="advantages--box" data-josh-anim-name="fadeInUp">
 
 
                             <?php if ($box->ce_headline): ?>

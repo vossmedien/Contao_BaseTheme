@@ -3,125 +3,137 @@
 
         <?php if ($this->headline || $this->subline): ?>
         <div class="ce--headline">
-            <div class="container">
                 <?php if ($this->headline): ?>
                 <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
+                <span class="ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
             <?php endif; ?>
-        </div>
     </div>
     <?php endif; ?>
 
 
     <?php if ($this->rows): ?>
         <?php foreach ($this->rows as $row): ?>
-        <div data-josh-anim-name="fadeInUp" class="column--wrapper <?php if ($row->asbox): ?>content--box<?php endif; ?>">
-            <div class="ce--headline">
-                <?php if ($row->headline && $row->aboverow): ?>
+        <div data-josh-anim-name="fadeInUp" class="row--wrapper <?php if ($row->asbox): ?>content--box<?php endif; ?>">
+
+                <?php if ($row->ce_headline ): ?>
+                    <div class="ce--headline row--headline">
                 <?php if (!$row->onlystyle): ?>
                 <<?php echo $row->headline_type; ?>>
-                <?php echo $row->headline; ?>
-                <?php if ($row->leftcol_subline): ?>
+                <?php echo $row->ce_headline; ?>
+                <?php if ($row->ce_subline): ?>
                     <span class="ce--subline" data-josh-anim-name="fadeInUp">
-                        <?php echo $row->leftcol_subline; ?>
+                        <?php echo $row->ce_subline; ?>
                     </span>
                 <?php endif; ?>
             </<?php echo $row->headline_type; ?>>
             <?php else: ?>
                 <span class="<?php echo $row->headline_type; ?>">
-                                                          <?php echo $row->headline; ?>
-                    <?php if ($row->leftcol_subline): ?>
+                                                          <?php echo $row->ce_headline; ?>
+                    <?php if ($row->ce_subline): ?>
                         <span class="ce--subline" data-josh-anim-name="fadeInUp">
-                        <?php echo $row->leftcol_subline; ?>
+                        <?php echo $row->ce_subline; ?>
                     </span>
                     <?php endif; ?>
                                                     </span>
             <?php endif; ?>
-            <?php endif; ?>
         </div>
+            <?php endif; ?>
 
-        <div class="row <?php if ($row->swapcolumns): ?>flex-row-reverse<?php endif; ?>">
-            <div class="col-12 <?php if (!$row->headline && !$row->subline && !$row->leftcol_text && $row->leftcol_image): ?>col-md-3<?php elseif ($row->rightcol_text): ?>col-md-4<?php else: ?>col<?php endif; ?>">
-                <div class="left-column--wrapper">
 
-                    <?php if ($row->headline && !$row->aboverow): ?>
-                    <div class="left-col--headline mb-3">
-                        <?php if (!$row->onlystyle): ?>
-                        <<?php echo $row->headline_type; ?>>
-                        <?php echo $row->headline; ?>
-                    </<?php echo $row->headline_type; ?>>
+        <div class="row gx-5 <?php if ($row->swapcolumns): ?>flex-row-reverse<?php endif; ?>">
+            
+             <?php foreach ($row->columns as $column): ?>
 
-                <?php if ($row->leftcol_subline): ?>
-                    <span class="ce--subline" data-josh-anim-name="fadeInUp">
-                        <?php echo $row->leftcol_subline; ?>
-                    </span>
-                <?php endif; ?>
-                <?php else: ?>
-                    <span class="<?php echo $row->headline_type; ?>">
+             <?php if ($row->headline): ?>
+                 <div class="col-12">
+
+                     <div class="headline mb-3">
+                     <?php if ($row->headline): ?>
+
+                         <?php if (!$row->onlystyle): ?>
+                         <<?php echo $row->headline_type; ?>>
+                         <?php echo $row->headline; ?>
+                     </<?php echo $row->headline_type; ?>>
+
+                     <?php else:?>
+                         <span class="<?php echo $row->headline_type; ?>">
                                       <?php echo $row->headline; ?>
                                 </span>
+                     <?php endif;?>
 
-                    <?php if ($row->leftcol_subline): ?>
-                        <span class="ce--subline" data-josh-anim-name="fadeInUp">
-                        <?php echo $row->leftcol_subline; ?>
-                    </span>
+
+                         <?php if ($row->subline): ?>
+                             <span class="ce--subline" data-josh-anim-name="fadeInUp">
+                                <?php echo $row->subline; ?>
+                            </span>
+                         <?php endif; ?>
+
+                 </div>
                     <?php endif; ?>
-                <?php endif; ?>
+                 </div>
+             <?php endif;?>
 
+
+                 <div class="<?php if ($column->column_width): ?><?php echo $column->column_width;?><?php else:?>col-12 col-md-6<?php endif;?>">
+
+                 <div class="column--wrapper <?php if ($column->asbox): ?>content--box<?php endif; ?>">
+
+                     <?php if ($column->headline ): ?>
+                         <div class="col--headline">
+                             <?php if (!$column->onlystyle): ?>
+                             <<?php echo $column->headline_type; ?>>
+                             <?php echo $column->headline; ?>
+                         </<?php echo $column->headline_type; ?>>
+
+                         <?php else:?>
+                             <span class="<?php echo $column->headline_type; ?>">
+                                      <?php echo $column->headline; ?>
+                                </span>
+                         <?php endif;?>
+
+                         <?php if ($column->subline): ?>
+                             <span class="ce--subline" data-josh-anim-name="fadeInUp">
+                                <?php echo $column->subline; ?>
+                            </span>
+                         <?php endif; ?>
+                     </div>
+                     <?php endif;?>
+
+                     <div class="column--content d-flex <?php if ($column->image_position == "image_below"): ?>flex-column-reverse<?php endif;?>">
+                         <?php if ($column->image): ?>
+                             <div class="col--image">
+                                 <img class="lazy"
+                                      data-src="<?= \Image::get(\FilesModel::findByUuid($column->image)->path, null, null, null); ?>">
+                             </div>
+                         <?php endif; ?>
+                         <?php if ($column->text): ?>
+                             <div class="col--text" data-josh-anim-name="fadeInUp">
+                                 <?php echo $column->text; ?>
+                             </div>
+                         <?php endif; ?>
+                     </div>
+
+                     <?php if ($column->link_text && $column->rightcol_text == ""): ?>
+                         <div class="col--buttons" data-josh-anim-name="fadeInUp">
+                             <a class="d-inline-block btn <?php if ($column->link_size): ?><?php echo $column->link_size; ?><?php endif; ?> <?php echo $column->link_type; ?>"
+                                href="<?php echo $column->link_url; ?><?php if ($column->link_betreff): ?>?subject=<?php echo $column->link_betreff; ?><?php endif; ?>"><?php echo $column->link_text; ?>
+                             </a>
+                         </div>
+                     <?php endif; ?>
+
+                    
+                 </div>
                 </div>
-                <?php endif; ?>
 
+             <?php endforeach ?>
+            
 
-                <?php if ($row->leftcol_text): ?>
-                    <div class="left-col--text" data-josh-anim-name="fadeInUp">
-                        <?php echo $row->leftcol_text; ?>
-                    </div>
-                <?php endif; ?>
-
-
-
-                <?php if ($row->link_text && $row->rightcol_text == ""): ?>
-                        <div class="ce--buttons mt-3" data-josh-anim-name="fadeInUp">
-                            <a class="d-inline-block btn <?php if ($row->link_size): ?><?php echo $row->link_size; ?><?php endif; ?> <?php echo $row->link_type; ?>"
-                               href="<?php echo $row->link_url; ?><?php if ($row->link_betreff): ?>?subject=<?php echo $row->link_betreff; ?><?php endif; ?>"><?php echo $row->link_text; ?>
-                                </a>
-                        </div>
-                <?php endif; ?>
-
-                <?php if ($row->leftcol_image): ?>
-                    <div class="left-col--image">
-                        <img class="lazy"
-                             data-src="<?= \Image::get(\FilesModel::findByUuid($row->leftcol_image)->path, null, null, null); ?>">
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
-        <?php if ($row->rightcol_text): ?>
-            <div class="col-12 <?php if (!$row->headline && !$row->subline && !$row->leftcol_text && $row->leftcol_image): ?>col-md-9<?php else: ?>col-md-8<?php endif; ?>">
-                <div class="right-column--wrapper">
-
-                    <?php if ($row->rightcol_text): ?>
-                        <div class="right-col--text" data-josh-anim-name="fadeInUp">
-                            <?php echo $row->rightcol_text; ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if ($row->link_text): ?>
-                        <div class="right-col--buttons">
-                            <div class="ce--buttons mt-3" data-josh-anim-name="fadeInUp">
-                                <a class="d-inline-block btn <?php if ($row->link_size): ?><?php echo $row->link_size; ?><?php endif; ?> <?php echo $row->link_type; ?>"
-                                   href="<?php echo $row->link_url; ?><?php if ($row->link_betreff): ?>?subject=<?php echo $row->link_betreff; ?><?php endif; ?>"><?php echo $row->link_text; ?>
-                                    </a>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        <?php endif; ?>
+    
+    
     </div>
 </div>
 <?php endforeach ?>

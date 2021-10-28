@@ -40,22 +40,36 @@ body {
     }
   }
 
+  h1, .h1,
+  h2, .h2{
+    & + .ce--subline{
+      margin-top: -$headline-spacing;
+    }
+  }
 
   h1, .h1 {
     font-weight: $font-weight-bold;
-    margin-bottom: 1.5rem;
+    margin-bottom: $headline-spacing;
+    display: block;
   }
 
   h2, .h2 {
     font-weight: $font-weight-bold;
-    margin-bottom: 1.5rem;
+    margin-bottom: $headline-spacing;
+    display: block;
   }
 
   h3, .h3 {
-    font-weight: $font-weight-light;
-    margin-bottom: .5rem;
-    font-size: 1.25rem;
+    font-weight: $font-weight-medium;
+    margin-bottom: $headline-spacing / 2;
+    font-size: 1.5rem;
     color: $primary;
+    display: block;
+
+
+    & + .ce--subline{
+      margin-top: -$headline-spacing/2;
+    }
   }
 
 
