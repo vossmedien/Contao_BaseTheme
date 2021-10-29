@@ -44,7 +44,7 @@
                         </<?php echo $row->headline_type; ?>>
 
                     <?php if ($row->ce_subline): ?>
-                        <span class="content-col--subline" data-josh-anim-name="fadeInUp">
+                        <span class="ce--subline content-col--subline" data-josh-anim-name="fadeInUp">
                         <?php echo $row->ce_subline; ?>
                     </span>
                     <?php endif; ?>
@@ -56,7 +56,7 @@
                 </span>
 
                         <?php if ($row->ce_subline): ?>
-                            <span class="content-col--subline" data-josh-anim-name="fadeInUp">
+                            <span class="ce--subline content-col--subline" data-josh-anim-name="fadeInUp">
                         <?php echo $row->ce_subline; ?>
                     </span>
                         <?php endif; ?>

@@ -94,11 +94,11 @@
                             <?php endif; ?>
 
                             <?php if ($box->subline): ?>
-                                <span class="box--subline"><?php echo $box->subline; ?></span>
+                                <span class="ce--subline box--subline"><?php echo $box->subline; ?></span>
                             <?php endif; ?>
 
                             <?php if ($box->longtext): ?>
-                                <div class="box--longtext">
+                                <div class="box--longtext <?php if($box->expand_longtext):?>expandable<?php endif;?>">
                                     <?php echo $box->longtext; ?>
                                 </div>
                             <?php endif; ?>

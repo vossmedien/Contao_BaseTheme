@@ -33,7 +33,7 @@
             </div>
 
             <?php if ($this->ce_subline): ?>
-                <div class="teaser--subline" data-josh-anim-name="fadeInUp"><?php echo $this->ce_subline; ?></div>
+                <div class="teaser--subline ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->ce_subline; ?></div>
             <?php endif; ?>
 
             <?php endif; ?>

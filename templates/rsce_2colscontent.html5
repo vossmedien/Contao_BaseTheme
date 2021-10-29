@@ -24,21 +24,21 @@
                 <?php if (!$row->onlystyle): ?>
                 <<?php echo $row->headline_type; ?>>
                 <?php echo $row->ce_headline; ?>
+            </<?php echo $row->headline_type; ?>>
+        <?php if ($row->ce_subline): ?>
+            <span class="ce--subline" data-josh-anim-name="fadeInUp">
+                        <?php echo $row->ce_subline; ?>
+                    </span>
+        <?php endif; ?>
+            <?php else: ?>
+                <span class="<?php echo $row->headline_type; ?>">
+                    <?php echo $row->ce_headline; ?>
+                </span>
                 <?php if ($row->ce_subline): ?>
                     <span class="ce--subline" data-josh-anim-name="fadeInUp">
                         <?php echo $row->ce_subline; ?>
                     </span>
                 <?php endif; ?>
-            </<?php echo $row->headline_type; ?>>
-            <?php else: ?>
-                <span class="<?php echo $row->headline_type; ?>">
-                                                          <?php echo $row->ce_headline; ?>
-                    <?php if ($row->ce_subline): ?>
-                        <span class="ce--subline" data-josh-anim-name="fadeInUp">
-                        <?php echo $row->ce_subline; ?>
-                    </span>
-                    <?php endif; ?>
-                                                    </span>
             <?php endif; ?>
         </div>
             <?php endif; ?>

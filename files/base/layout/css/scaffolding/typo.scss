@@ -1,4 +1,4 @@
-body {
+html body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   -moz-hyphens: auto ;
@@ -40,23 +40,32 @@ body {
     }
   }
 
-  h1, .h1,
-  h2, .h2{
-    & + .ce--subline{
-      margin-top: -$headline-spacing;
-    }
+  h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1{
+    line-height: 1;
   }
+
+
 
   h1, .h1 {
     font-weight: $font-weight-bold;
     margin-bottom: $headline-spacing;
     display: block;
+
+    & + .ce--subline{
+      margin-top: -$headline-spacing / 1.25;
+      @include font-size(1.5rem);
+    }
   }
 
   h2, .h2 {
     font-weight: $font-weight-bold;
-    margin-bottom: $headline-spacing;
+    margin-bottom: $headline-spacing / 1.25;
     display: block;
+
+    & + .ce--subline{
+      margin-top: -$headline-spacing/1.5;
+      @include font-size(1.5rem);
+    }
   }
 
   h3, .h3 {
@@ -75,6 +84,9 @@ body {
 
   h4, .h4{
 
+    & + .ce--subline{
+      margin-top: -$headline-spacing/3.35;
+    }
   }
 
   ul {

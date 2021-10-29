@@ -40,7 +40,7 @@
                             </<?php echo $row->main_headline_type; ?>>
 
                             <?php if ($row->main_subline): ?>
-                                <span class="box--subline" data-josh-anim-name="fadeInUp">
+                                <span class="ce--subline box--subline" data-josh-anim-name="fadeInUp">
                         <?php echo $row->main_subline; ?>
                     </span>
                             <?php endif; ?>
@@ -51,7 +51,7 @@
                          </span>
 
                                 <?php if ($row->main_subline): ?>
-                                    <span class="box--subline" data-josh-anim-name="fadeInUp">
+                                    <span class="ce--subline box--subline" data-josh-anim-name="fadeInUp">
                         <?php echo $row->main_subline; ?>
                     </span>
                                 <?php endif; ?>
@@ -94,7 +94,7 @@
                                     </<?php echo $box->headline_type; ?>>
 
                                 <?php if ($box->subline): ?>
-                                    <span class="box--subline" >
+                                    <span class="ce--subline box--subline" >
                         <?php echo $box->subline; ?>
                     </span>
                                 <?php endif; ?>
@@ -105,7 +105,7 @@
                          </span>
 
                                     <?php if ($box->subline): ?>
-                                        <span class="box--subline" >
+                                        <span class="ce--subline box--subline" >
                         <?php echo $box->subline; ?>
                     </span>
                                     <?php endif; ?>

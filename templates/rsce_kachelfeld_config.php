@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Boxen mit Icon, Verlinkung & Button', ''),
+    'label' => array('Custom | Boxen mit Icon / Bild, Link, Text & Button', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',

@@ -31,7 +31,7 @@
                         </<?php echo $box->headline_type; ?>>
 
                     <?php if ($box->ce_subline): ?>
-                        <span class="advantages--subline" data-josh-anim-name="fadeInUp">
+                        <span class="ce--subline advantages--subline" data-josh-anim-name="fadeInUp">
                         <?php echo $box->ce_subline; ?>
                     </span>
                     <?php endif; ?>
@@ -43,7 +43,7 @@
                                                     </span>
 
                             <?php if ($box->ce_subline): ?>
-                                <span class="advantages--subline" data-josh-anim-name="fadeInUp">
+                                <span class="ce--subline advantages--subline" data-josh-anim-name="fadeInUp">
                         <?php echo $box->ce_subline; ?>
                     </span>
                             <?php endif; ?>

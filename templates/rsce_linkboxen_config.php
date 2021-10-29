@@ -91,7 +91,11 @@ return array(
                     'label' => array('Langtext', ''),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE','tl_class' => 'clr'),
+                ),
 
+                'expand_longtext' => array(
+                    'label' => array('Langtext beschränken und nach Hover aufklappen', ''),
+                    'inputType' => 'checkbox',
                 ),
 
                 'textalign' => array(
