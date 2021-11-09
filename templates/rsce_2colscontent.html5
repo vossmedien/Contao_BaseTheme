@@ -17,12 +17,12 @@
 
     <?php if ($this->rows): ?>
         <?php foreach ($this->rows as $row): ?>
-        <div data-josh-anim-name="fadeInUp" class="row--wrapper <?php if ($row->asbox): ?>content--box<?php endif; ?>">
+        <div class="row--wrapper <?php if ($row->asbox): ?>content--box<?php endif; ?>">
 
                 <?php if ($row->ce_headline ): ?>
-                    <div class="ce--headline row--headline">
+                    <div class="ce--headline row--headline" >
                 <?php if (!$row->onlystyle): ?>
-                <<?php echo $row->headline_type; ?>>
+                <<?php echo $row->headline_type; ?> data-josh-anim-name="fadeInUp" >
                 <?php echo $row->ce_headline; ?>
             </<?php echo $row->headline_type; ?>>
         <?php if ($row->ce_subline): ?>
@@ -31,7 +31,7 @@
                     </span>
         <?php endif; ?>
             <?php else: ?>
-                <span class="<?php echo $row->headline_type; ?>">
+                <span class="<?php echo $row->headline_type; ?>" data-josh-anim-name="fadeInUp" >
                     <?php echo $row->ce_headline; ?>
                 </span>
                 <?php if ($row->ce_subline): ?>
@@ -51,16 +51,16 @@
              <?php if ($row->headline): ?>
                  <div class="col-12">
 
-                     <div class="headline mb-3">
+                     <div class="headline mb-3" >
                      <?php if ($row->headline): ?>
 
                          <?php if (!$row->onlystyle): ?>
-                         <<?php echo $row->headline_type; ?>>
+                         <<?php echo $row->headline_type; ?> data-josh-anim-name="fadeInUp" >
                          <?php echo $row->headline; ?>
                      </<?php echo $row->headline_type; ?>>
 
                      <?php else:?>
-                         <span class="<?php echo $row->headline_type; ?>">
+                         <span class="<?php echo $row->headline_type; ?>" data-josh-anim-name="fadeInUp" >
                                       <?php echo $row->headline; ?>
                                 </span>
                      <?php endif;?>
@@ -83,14 +83,14 @@
                  <div class="column--wrapper <?php if ($column->asbox): ?>content--box<?php endif; ?>">
 
                      <?php if ($column->headline ): ?>
-                         <div class="col--headline">
+                         <div class="col--headline" data-josh-anim-name="fadeInUp" >
                              <?php if (!$column->onlystyle): ?>
                              <<?php echo $column->headline_type; ?>>
                              <?php echo $column->headline; ?>
                          </<?php echo $column->headline_type; ?>>
 
                          <?php else:?>
-                             <span class="<?php echo $column->headline_type; ?>">
+                             <span class="<?php echo $column->headline_type; ?>" data-josh-anim-name="fadeInUp" >
                                       <?php echo $column->headline; ?>
                                 </span>
                          <?php endif;?>
@@ -105,7 +105,7 @@
 
                      <div class="column--content d-flex <?php if ($column->image_position == "image_below"): ?>flex-column-reverse<?php endif;?>">
                          <?php if ($column->image): ?>
-                             <div class="col--image">
+                             <div class="col--image" data-josh-anim-name="fadeInUp" >
                                  <img class="lazy"
                                       data-src="<?= \Image::get(\FilesModel::findByUuid($column->image)->path, null, null, null); ?>">
                              </div>
