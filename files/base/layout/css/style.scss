@@ -1,4 +1,5 @@
 @import "variables";
+@import "_theme/variables";
 @import "mixins";
 
 @import "../_vendor/vendor";
@@ -44,8 +45,6 @@ html {
 
   body {
 
-
-
     &#tinymce {
       @include padding(7px 12px);
     }
@@ -68,3 +67,5 @@ html {
   }
 }
 
+
+@import "_theme/styles";
