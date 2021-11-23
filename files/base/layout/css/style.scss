@@ -3,6 +3,9 @@
 @import "mixins";
 
 @import "../_vendor/vendor";
+// Swiper ist auskommentiert
+
+
 @import "../_fonts/fonts";
 
 @import "scaffolding/helper-classes";
@@ -50,13 +53,13 @@ html {
     }
 
     @import "areas/header";
-    @import "areas/header_type1";
+    //@import "areas/header_type1";
     @import "areas/header_type2";
 
     @import "areas/main";
 
     @import "areas/footer";
-    @import "areas/footer_type1";
+    //@import "areas/footer_type1";
     @import "areas/footer_type2";
 
     @import "elements/navigation";
@@ -66,6 +69,7 @@ html {
     @import "elements/news";
   }
 }
+
 
 
 @import "_theme/styles";

@@ -1,0 +1,138 @@
+html body .ce_rsce_linkboxen .link--box.style-2 .box--lower{
+  padding-top: rfs-value(18px);
+}
+
+html body .ce_rsce_linkboxen .link--box .box--lower .box--headline{
+  font-weight: $font-weight-light;
+  @include font-size(20px);
+}
+
+body h1, body .h1{
+  font-weight: $font-weight-light;
+  color: $primary;
+  @include font-size(30px);
+}
+
+body h2, body .h2{
+  font-weight: $font-weight-light;
+  @include font-size(30px);
+  color: $primary;
+}
+
+#headerLogo{
+  margin-top: -2.5rem;
+}
+
+.alert-info{
+  background-color: $primary-light;
+  color: $primary;
+}
+
+
+.ce_image{
+  figcaption{
+    color: $primary;
+    font-weight: $font-weight-bold;
+    @include font-size(18px);
+    text-align: center;
+    line-height: 1.2;
+    margin-top: 1.5rem;
+  }
+}
+
+
+html body .content--box,
+html body .layout_latest,
+html body .ce_rsce_headline .ce--main-image + .box--holder,
+html body .ce_rsce_linkboxen .link--box.style-1{
+  border-radius: 0px;
+  box-shadow: none;
+  background-color: $primary-light;
+  padding: rfs-value(50px);
+}
+
+
+
+.bg-light{
+  background-color: #f3f3f3;
+  h1,.h1,h2,.h2{
+    color: $black;
+  }
+}
+
+.bg-primary{
+  h1,.h1,h2,.h2{
+    color: $text-color-inverse;
+  }
+
+  a{
+    color: $text-color-inverse;
+    text-decoration: none;
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+}
+
+.btn{
+  @include font-size(18px);
+  @include padding(15px 20px 10px 20px);
+}
+
+form label{
+  position: relative;
+  top: 2px;
+}
+
+.custom-image-element{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  figcaption{
+    @include font-size(14px);
+    color: $text-color;
+    font-weight: $font-weight-normal;
+    text-align: left;
+    margin-top: .75rem;
+  }
+}
+
+.ce_bs_gridStart{
+  > *{
+    &:not(:last-child){
+      @include media-breakpoint-down(md) {
+        margin-bottom: 1.5rem;
+      }
+    }
+  }
+}
+
+.link--box{
+  > a{
+    transition: all .3s ease;
+
+
+    &:after{
+      content:'';
+      background-image: url('/files/base/layout/img/hover-icon.svg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 125px;
+      height: 65px;
+      position: absolute;
+      top: 44%;
+      right: 50%;
+      transform: translate(50%,-50%);
+      opacity: 0;
+      transition: all .3s ease;
+    }
+  }
+
+  &:hover{
+    > a{
+      background: rgba(115, 22, 14, .4);
+      &:after{
+        opacity: .5;
+      }
+    }
+  }
+}
