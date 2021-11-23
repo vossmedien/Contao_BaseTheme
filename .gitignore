@@ -6,3 +6,5 @@
 /files/base/layout/_vendor/node_modules
 app/config/parameters.yml
 /.idea
+/files/base/layout/css/_theme/
+/files/base/layout/img/
