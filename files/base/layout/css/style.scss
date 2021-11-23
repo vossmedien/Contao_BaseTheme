@@ -51,13 +51,11 @@ html {
 
     @import "areas/header";
     @import "areas/header_type1";
-    @import "areas/header_type2";
 
     @import "areas/main";
 
     @import "areas/footer";
     @import "areas/footer_type1";
-    @import "areas/footer_type2";
 
     @import "elements/navigation";
     @import "elements/modal";
@@ -66,6 +64,5 @@ html {
     @import "elements/news";
   }
 }
-
 
 @import "_theme/styles";

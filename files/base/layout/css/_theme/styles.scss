@@ -1,0 +1,33 @@
+.ce_rsce_linkboxen .link--box.style-2 .box--lower{
+  color: $black;
+  a{
+    color: $black;
+
+    &:hover{
+      color: $primary;
+    }
+  }
+}
+
+
+
+html body .header--content.type--1 .hc--bottom .hc-bottom--inside .row .hc-bottom--right-col nav#mainNav ul > li > a, html body .header--content.type--1 .hc--bottom .hc-bottom--inside .row .hc-bottom--right-col nav#mainNav ul > li strong{
+  color: $text-color-inverse;
+}
+
+.form-check-input[type="checkbox"]{
+  border-color: $white;
+}
+
+
+html body .header--content.type--1 .hc--bottom .hc-bottom--inside .row .hc-bottom--left-col img{
+  max-width: rfs-value(175px);
+}
+
+html body .ce_rsce_boxenfeld .box--content{
+  z-index: 1;
+}
+
+html body .ce_rsce_boxenfeld .box--image{
+  z-index: 5;
+}
