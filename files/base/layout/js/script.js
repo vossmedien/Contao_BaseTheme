@@ -45,12 +45,12 @@ $(function () {
         });
     }
 
-    $('nav a[href^="#"]').click(function () {
+    $('a[href^="#"]').click(function () {
         var href = $.attr(this, 'href');
 
         $('html, body').animate({
-            scrollTop: $(href).offset().top - 50
-        }, 1500, function () {
+            scrollTop: $(href).offset().top - 75
+        }, 1000, function () {
             window.location.hash = href;
             changeNavLinks(href);
         });
@@ -64,8 +64,8 @@ $(function () {
         if ($(hash).length) {
             changeNavLinks();
             $('html, body').animate({
-                scrollTop: $(hash).offset().top - 50
-            }, 1500);
+                scrollTop: $(hash).offset().top - 75
+            }, 1000);
         }
     }
 
@@ -246,7 +246,7 @@ $(function () {
 
 if ($('.scrollToTop').length) {
     $(function () {
-        $(".").click(function () {
+        $(".scrollToTop").click(function () {
             $("html,body").animate({scrollTop: $("#top").offset().top}, "500");
             return false
         })
