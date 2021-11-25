@@ -1768,6 +1768,7 @@
     .equal--box {
       position: relative;
       margin-top: 1rem;
+      z-index: 5;
       @include media-breakpoint-up(md) {
         margin-top: 0px;
       }
