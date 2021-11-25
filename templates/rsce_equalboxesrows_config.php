@@ -32,8 +32,8 @@ return array(
                     'label' => array('Boxen-Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
-                        'multiple' => false,
-                        'fieldType' => 'radio',
+                        'multiple' => true,
+                        'fieldType' => 'checkbox',
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,svg',
                     ),
@@ -94,8 +94,8 @@ return array(
                             'label' => array('Boxen-Bild', ''),
                             'inputType' => 'fileTree',
                             'eval' => array(
-                                'multiple' => false,
-                                'fieldType' => 'radio',
+                                'multiple' => true,
+                                'fieldType' => 'checkbox',
                                 'filesOnly' => true,
                                 'extensions' => 'jpg,jpeg,png,svg',
                             ),

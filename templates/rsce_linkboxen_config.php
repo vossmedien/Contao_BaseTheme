@@ -93,8 +93,24 @@ return array(
                     'eval' => array('rte' => 'tinyMCE','tl_class' => 'clr'),
                 ),
 
+                'expand_image' => array(
+                    'label' => array('Bild für Ausklapp-Box', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'jpg,jpeg,png,svg',
+                    ),
+                ),
+
                 'expand_longtext' => array(
-                    'label' => array('Langtext beschränken und nach Hover aufklappen', ''),
+                    'label' => array('Langtext beschränken und nach Hover aufklappen', 'Ansonsten wird kompletter Langtext angezeigt'),
+                    'inputType' => 'checkbox',
+                ),
+
+                'hide_preview' => array(
+                    'label' => array('Langtext eingangs komplett ausblenden und nur bei Hover anzeigen', ''),
                     'inputType' => 'checkbox',
                 ),
 

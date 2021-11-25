@@ -1155,6 +1155,12 @@
       cursor: pointer;
     }
 
+    > div{
+      transition: all .3s ease-in-out;
+    }
+
+
+
     &.style-1 {
       @extend .content--box;
       @extend .bg-gradient-white;
@@ -1170,8 +1176,7 @@
 
       .box--lower {
         background: linear-gradient(#fff 0%, #f8f8f8 100%);
-        padding: rfs-value(15px);
-        text-align: center;
+        padding: rfs-value(15px 25px);
         border-radius: 0px 0px $border-radius $border-radius;
 
         &.with-url {
@@ -1197,14 +1202,17 @@
           text-transform: uppercase;
           //min-height: 60px;
         }
-
-        .box--longtext {
-          margin-top: 10px;
-        }
       }
     }
 
     &.style-2 {
+      &:hover{
+        .box--lower{
+          background-color: $primary;
+          color: $text-color-inverse;
+        }
+      }
+
       .box--lower {
         position: relative;
         @include padding(15px 25px);
@@ -1212,6 +1220,7 @@
         color: $text-color;
         @include font-size(16px);
         line-height: 1.3;
+        transition: all .3s ease-in-out;
 
 
         * {
@@ -1239,6 +1248,13 @@
           }
         }
       }
+      .box-lower--expand {
+        background-color: $gray-200;
+        color: $text-color;
+        @include font-size(16px);
+        line-height: 1.3;
+        @include padding(15px 0px 15px 0px);
+      }
     }
 
     .box--upper {
@@ -1261,21 +1277,33 @@
       .box--subline {
         color: $primary;
       }
+    }
 
-      .box--longtext {
-        margin-top: .75rem;
-        min-height: rfs-value(42px);
 
-        &.expandable{
-          overflow: hidden;
-          text-overflow: ellipsis;
-          transition: all 0.75s cubic-bezier(0, 1, 0, 1);
-          max-height: 50px;
-          z-index: 20;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-        }
+    .box-lower--expand {
+      //padding-top: .75rem;
+      min-height: rfs-value(42px);
+
+      &.expandable{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: all 0.75s cubic-bezier(0, 1, 0, 1);
+        max-height: 42px;
+        z-index: 20;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      &.hide-preview{
+        max-height: 0px;
+        min-height: 0px;
+        overflow: hidden;
+        padding: 0px;
+      }
+
+      .box--longtext{
+        @include padding(0px 25px 0px 25px);
       }
     }
 
@@ -1283,14 +1311,13 @@
     &:hover {
       box-shadow: $box-shadow;
 
-      .box--lower{
-        .box--longtext{
-          &.expandable{
-            max-height: 500px;
-            transition: all 1s ease-in-out;
-            display: -webkit-box;
-            -webkit-line-clamp: 99;
-          }
+      .box-lower--expand{
+        &.expandable{
+          max-height: 800px;
+          transition: all 1s ease-in-out;
+          display: -webkit-box;
+          -webkit-line-clamp: 99;
+          padding-bottom: rfs-value(15px);
         }
       }
     }
@@ -1781,6 +1808,8 @@
           padding: 1.5rem;
           color: $white;
           background-color: rgba(0, 0, 0, .5);
+          min-height: 100%;
+          z-index: 10;
 
           .box--headline {
             > * {
