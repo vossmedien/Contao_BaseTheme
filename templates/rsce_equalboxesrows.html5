@@ -22,7 +22,7 @@
         <div class="row <?php if ($row->swapcolumns): ?>flex-row-reverse<?php endif; ?>">
             <div class="col-12 col-md-6 left--col">
                 <div class="left-col--inner">
-                    <div class="equal--box">
+                    <div class="equal--box" style="z-index: 5;">
                         <?php if($row->main_url):?>
                             <a href="<?php echo $row->main_url;?>"></a>
                         <?php endif;?>
@@ -88,7 +88,7 @@
 
 
                         <?php foreach ($row->boxes as $box): ?>
-                            <div class="equal--box" >
+                            <div class="equal--box" style="z-index: 5;">
                                 <?php if($box->url):?>
                                     <a href="<?php echo $box->url;?>"></a>
                                 <?php endif;?>
