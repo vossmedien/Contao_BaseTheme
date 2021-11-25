@@ -52,7 +52,7 @@
                                 <?php endif; ?>
                             </div>
 
-
+                            <?php if ($box->expand_image || $box->longtext): ?>
                             <div class="box-lower--expand <?php if ($box->expand_longtext): ?>expandable<?php endif; ?> <?php if ($box->hide_preview): ?>hide-preview<?php endif; ?>">
                                 <?php if ($box->expand_image): ?>
                                     <div class="box--expand-image mb-3 text-center">
@@ -66,6 +66,7 @@
                                     </div>
                                 <?php endif; ?>
                             </div>
+                            <?php endif; ?>
                         </div>
 
 
