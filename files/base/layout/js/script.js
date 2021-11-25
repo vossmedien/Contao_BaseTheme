@@ -49,8 +49,8 @@ $(function () {
         var href = $.attr(this, 'href');
 
         $('html, body').animate({
-            scrollTop: $(href).offset().top
-        }, 850, function () {
+            scrollTop: $(href).offset().top - 50
+        }, 1500, function () {
             window.location.hash = href;
             changeNavLinks(href);
         });
@@ -64,8 +64,8 @@ $(function () {
         if ($(hash).length) {
             changeNavLinks();
             $('html, body').animate({
-                scrollTop: $(hash).offset().top
-            }, 850);
+                scrollTop: $(hash).offset().top - 50
+            }, 1500);
         }
     }
 
