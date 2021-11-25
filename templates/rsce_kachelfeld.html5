@@ -56,7 +56,7 @@
                             </div>
                         <?php endif; ?>
 
-                        <?php if ($b->link_url): ?>
+                        <?php if ($b->link_text): ?>
                             <div class="box--button mt-3" data-josh-anim-name="fadeInUp">
                                 <a class="d-inline-block btn <?php if ($b->link_size): ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
                                    href="<?php echo $b->link_url; ?><?php if ($b->link_betreff): ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?>

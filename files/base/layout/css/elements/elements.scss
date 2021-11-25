@@ -955,6 +955,7 @@
 
         .kb--content {
           .box--headline .h5 {
+            color: $text-color-inverse;
             &:after {
               background-color: $text-color-inverse;
             }
