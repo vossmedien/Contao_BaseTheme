@@ -27,8 +27,16 @@
                     <!-- Slides -->
                     <?php foreach ($this->elements as $slide): ?>
                         <div class="swiper-slide">
-                            <a class="video-link cboxElement" data-lightbox
-                               href='http://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'>
+                            <a
+                                    <?php if($slide->open_tab):?>
+                                    target="_blank"
+                                    <?php else:?>
+                                        class="video-link cboxElement" data-lightbox
+                                    <?php endif;?>
+
+                               href='http://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'
+
+                            >
                                 <img src="<?= \Image::get(\FilesModel::findByUuid($slide->image)->path, null, null, 1); ?>">
                             </a>
                             <?php if($slide->text):?>

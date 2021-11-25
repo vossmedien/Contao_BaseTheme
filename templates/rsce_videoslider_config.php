@@ -52,6 +52,11 @@ return array(
                     'inputType' => 'text',
                 ),
 
+                'open_tab' => array(
+                    'label' => array('Video in neuen Tab öffnen', 'und nicht in modalem Fenster'),
+                    'inputType' => 'checkbox',
+                ),
+
                 'image' => array(
                     'label' => array('Vorschaubild', ''),
                     'inputType' => 'fileTree',
