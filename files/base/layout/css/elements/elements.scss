@@ -1810,12 +1810,16 @@
         .box--content {
           padding: 1.5rem;
           color: $white;
-          background-color: rgba(0, 0, 0, .5);
+          background-color: rgba(0, 0, 0, .75);
           z-index: 10;
 
           .box--headline {
             > * {
               display: block;
+
+              &:not(span){
+                color: $text-color-inverse;
+              }
             }
           }
 
