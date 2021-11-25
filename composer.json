@@ -13,6 +13,7 @@
         "madeyourday/contao-rocksolid-custom-elements": "2.3.*",
         "menatwork/synccto": "^4.0",
         "netzmacht/contao-font-awesome-inserttag": "^2.2",
+        "numero2/contao-opengraph3": "^4.2",
         "oveleon/contao-component-style-manager": "^2.6",
         "terminal42/contao-ajaxform": "^1.1",
         "terminal42/contao-easy_themes": "^2.2",
