@@ -1307,6 +1307,7 @@
         @include padding(0px 25px 5px 25px);
         @include font-size(14px);
         line-height: 1.5;
+        text-align: justify;
       }
     }
 
@@ -1811,7 +1812,7 @@
         .box--content {
           padding: 1.5rem;
           color: $white;
-          background-color: rgba(0, 0, 0, .75);
+          background-color: rgba(0, 0, 0, .4);
           z-index: 10;
 
           .box--headline {
@@ -1829,11 +1830,16 @@
           }
 
           .box--text {
-            margin-top: 1rem;
+
             transition: max-height .75s ease-in-out, opacity .35s ease;
             max-height: 0px;
             opacity: 0;
             overflow: hidden;
+            text-align: justify;
+
+            > *:first-child{
+              padding-top: 1rem;
+            }
           }
         }
       }
