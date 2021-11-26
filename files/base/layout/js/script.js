@@ -22,7 +22,6 @@ $(function () {
     var lazyLoadInstance = new LazyLoad();
 
 
-    //Anchor Scrolling
     function changeNavLinks() {
         $('#mainNav li > *').each(function (index) {
             var hash = window.location.hash;
@@ -30,6 +29,8 @@ $(function () {
             if ($(this).attr('href') == hash) {
                 $('#mainNav .active').removeClass("active");
                 $(this).addClass("active");
+            } else if ($(this).attr('href') == "#top") {
+                $('#mainNav .level_1 > .first > a').addClass("active");
             }
         });
 
@@ -41,9 +42,13 @@ $(function () {
                 $('#mobileNav .mm-listitem_selected').removeClass("mm-listitem_selected");
                 $(this).addClass("active");
                 $(this).parent().addClass("mm-listitem_selected");
+            } else if ($(this).attr('href') == "#top") {
+                $('#mobileNav .level_1 > .first').addClass("listitem_selected");
             }
         });
     }
+
+    changeNavLinks();
 
     $('a[href^="#"]').click(function () {
         var href = $.attr(this, 'href');
