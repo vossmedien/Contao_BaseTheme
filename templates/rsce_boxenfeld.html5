@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="col-12 col-lg-6">
-                    <div class="box--content"  <?php if($b->versatz):?>style="position: relative; top: <?php echo $b->versatz;?>px"<?php endif;?>>
+                    <div class="box--content"  data-aos="animate__fadeInDown" <?php if($b->versatz):?>style="position: relative; top: <?php echo $b->versatz;?>px"<?php endif;?>>
                         <?php  if($b->headline):?>
                         <div class="box--headline" data-aos="animate__fadeInDown">
                             <<?php echo $b->headline_type;?>  class="h2">
