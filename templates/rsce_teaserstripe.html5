@@ -1,5 +1,3 @@
-<?php $this->block('content'); ?>
-
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
 
 
@@ -8,12 +6,12 @@
         <div class="ce--headline">
             <div class="container">
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
+                <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
@@ -26,26 +24,26 @@
                 <?php if ($this->ce_headline || $this->ce_subline): ?>
                 <div class="teaser--headline">
                         <?php if ($this->ce_headline): ?>
-                        <<?php echo($this->headline_type); ?> data-josh-anim-name="fadeInUp">
+                        <<?php echo($this->headline_type); ?> data-aos="animate__fadeInUp">
                         <?php echo($this->ce_headline); ?>
                     </<?php echo($this->headine_type); ?>>
                     <?php endif; ?>
             </div>
 
             <?php if ($this->ce_subline): ?>
-                <div class="teaser--subline ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->ce_subline; ?></div>
+                <div class="teaser--subline ce--subline" data-aos="animate__fadeInUp"><?php echo $this->ce_subline; ?></div>
             <?php endif; ?>
 
             <?php endif; ?>
 
-            <div class="ts--text mt-4">
+            <div class="ts--text mt-4" data-aos="animate__fadeInUp">
                 <?php echo $this->text;?>
             </div>
 
             <?php if ($this->link_text): ?>
-            <div class="ts--buttons mt-3">
+            <div class="ts--buttons mt-3" data-aos="animate__fadeInUp">
                     <div class="right-col--buttons">
-                        <div class="ce--buttons mt-3" data-josh-anim-name="fadeInUp">
+                        <div class="ce--buttons mt-3" >
                             <a class="d-inline-block btn <?php if ($this->link_size): ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"
                                href="<?php echo $this->link_url; ?><?php if ($this->link_betreff): ?>?subject=<?php echo $this->link_betreff; ?><?php endif; ?>"><?php echo $this->link_text; ?>
                                 </a>
@@ -63,4 +61,4 @@
 </div>
 
 
-<?php $this->endblock(); ?>
+

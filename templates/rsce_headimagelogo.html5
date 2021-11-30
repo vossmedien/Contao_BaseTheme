@@ -5,12 +5,12 @@
         <div class="ce--headline">
             <div class="container">
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
+                <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
@@ -49,7 +49,7 @@
                 <?php endif;?>
 
                 <?php if ($this->text_firstline || $this->text_secondline): ?>
-                    <div class="mainimage--content" data-josh-anim-name="fadeInUp">
+                    <div class="mainimage--content" data-aos="animate__fadeInUp">
                         <div class="container">
                             <div class="mainimage--content-inner" <?php if ($this->text_color): ?>style="color: <?php echo $this->text_color;?>;"<?php endif; ?>>
 
@@ -58,7 +58,7 @@
                                 <span class="mt-2"><?php echo $this->text_secondline; ?></span>
                                 <?php endif; ?>
                                 <?php if ($this->link_text): ?>
-                                        <div class="button--wrapper" data-josh-anim-name="fadeInUp">
+                                        <div class="button--wrapper" data-aos="animate__fadeInUp">
                                             <a class="d-inline-block btn <?php if ($this->link_size): ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"
                                                href="<?php echo $this->link_url; ?><?php if ($this->link_betreff): ?>?subject=<?php echo $this->link_betreff; ?><?php endif; ?>"><?php echo $this->link_text; ?>
                                             </a>

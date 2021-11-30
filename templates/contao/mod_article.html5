@@ -52,7 +52,7 @@
     <?php if ($this->backlink): ?>
       <?php $this->block('backlink'); ?>
         <!-- indexer::stop -->
-        <p data-josh-anim-name="fadeInUp" class="back"><a href="<?= $this->backlink ?>" title="<?= $this->back ?>"><?= $this->back ?></a></p>
+        <p data-aos="animate__fadeInUp" class="back"><a href="<?= $this->backlink ?>" title="<?= $this->back ?>"><?= $this->back ?></a></p>
         <!-- indexer::continue -->
       <?php $this->endblock(); ?>
     <?php endif; ?>

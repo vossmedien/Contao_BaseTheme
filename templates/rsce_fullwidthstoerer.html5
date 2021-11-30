@@ -5,12 +5,12 @@
         <div class="ce--headline">
             <div class="container">
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
+                <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
@@ -25,24 +25,24 @@
                     <div class="row align-items-center">
                         <?php if ($this->image): ?>
                             <div class="d-none col-6 d-md-block">
-                                <img data-josh-anim-name="fadeInRight"
+                                <img data-aos="fadeInRight"
                                      src="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>">
                             </div>
                         <?php endif; ?>
                         <div class="col">
-                            <div class="stoerer--content-column" data-josh-anim-name="fadeInLeft">
+                            <div class="stoerer--content-column" data-aos="fadeInLeft">
 
                                 <?php if ($this->ce_headline): ?>
                                 <div class="stoerer--headline">
                                         <?php if ($this->ce_headline): ?>
-                                        <<?php echo($this->headline_type); ?> data-josh-anim-name="fadeInUp" >
+                                        <<?php echo($this->headline_type); ?> data-aos="animate__fadeInUp" >
                                         <?php echo($this->ce_headline); ?>
                                     </<?php echo($this->headine_type); ?>>
                                     <?php endif; ?>
                             </div>
                             <?php endif; ?>
                             <?php if ($this->ce_subline): ?>
-                                <div class="stoerer--subline" data-josh-anim-name="fadeInUp"><?php echo $this->ce_subline; ?></div>
+                                <div class="stoerer--subline" data-aos="animate__fadeInUp"><?php echo $this->ce_subline; ?></div>
                             <?php endif; ?>
 
                             <?php if ($this->content): ?>

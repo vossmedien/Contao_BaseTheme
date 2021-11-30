@@ -3,7 +3,7 @@
         .mod_article{
             &:last-child{
                 .content--element[class*='bg-']:last-of-type{
-                    margin-bottom: rfs-value(-$basic-gutter);
+                    margin-bottom: rfs-value(-$basic-gutter*1.5);
                 }
             }
 
@@ -32,7 +32,7 @@
                 }
 
                 &:last-of-type{
-                    margin-bottom: rfs-value(-75px);
+                    margin-bottom: rfs-value(-$basic-gutter*1.5);
                 }
 
                 & + .mod_article{

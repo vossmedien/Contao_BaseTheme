@@ -1,3 +1,4 @@
+
 <div <?php echo $this->cssID;?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
 
@@ -5,12 +6,12 @@
         <div class="ce--headline">
 
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
+                <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
             <?php endif; ?>
 
     </div>
@@ -23,26 +24,26 @@
         <div class="boxes--outer" <?php if($b->versatz && (strpos($b->versatz, '-') !== false)):?>style="margin-top: <?php echo str_replace("-", "",$b->versatz);?>px"<?php endif;?>>
             <div class="row <?php if($b->reverse):?>flex-row-reverse <?php endif;?>">
                 <div class="col-12 col-lg-6">
-                    <img class="box--image" data-josh-anim-name="fadeInUp" src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                    <img class="box--image" data-aos="animate__fadeInUp" src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                 </div>
 
                 <div class="col-12 col-lg-6">
-                    <div class="box--content" data-josh-anim-name="fadeInDown" <?php if($b->versatz):?>style="position: relative; top: <?php echo $b->versatz;?>px"<?php endif;?>>
+                    <div class="box--content"  <?php if($b->versatz):?>style="position: relative; top: <?php echo $b->versatz;?>px"<?php endif;?>>
                         <?php  if($b->headline):?>
-                        <div class="box--headline">
+                        <div class="box--headline" data-aos="animate__fadeInDown">
                             <<?php echo $b->headline_type;?>  class="h2">
                             <?php echo $b->headline;?>
                         </<?php echo $b->headline_type;?>>
                         </div>
                     <?php endif;?>
                     <?php  if($b->content):?>
-                    <div class="box--text">
+                    <div class="box--text" data-aos="animate__fadeInDown">
                         <?php echo $b->content;?>
                     </div>
                     <?php endif;?>
 
                     <?php  if($b->button_url):?>
-                    <div class="box--button">
+                    <div class="box--button" data-aos="animate__fadeInDown">
                         <a class="btn btn-primary" href="<?php echo $b->button_url;?>"><?php echo $b->button_text;?></a>
                     </div>
                     <?php endif;?>

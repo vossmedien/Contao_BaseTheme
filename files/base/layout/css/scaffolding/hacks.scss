@@ -7,10 +7,13 @@
   display: none;
 }
 
-#main *[data-josh-anim-name]{
+
+[data-aos] {
   visibility: hidden;
 }
-
+[data-aos].animate__animated {
+  visibility: visible;
+}
 
 .make-fullwidth {
   width: 100vw;

@@ -1,6 +1,6 @@
 
 <<?= $this->hl ?> class="<?= $this->class ?>"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
-<span class="custom-contao-container" data-josh-anim-name="fadeInUp">
+<span class="custom-contao-container" data-aos="animate__fadeInUp">
   <?= $this->headline ?>
 </span>
 </<?= $this->hl ?>>

@@ -5,18 +5,18 @@
         <div class="ce--headline">
 
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
+                <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
             <?php endif; ?>
 
     </div>
     <?php endif; ?>
 
-        <div class="ce--content-slider " data-josh-anim-name="fadeInUp">
+        <div class="ce--content-slider" data-aos="animate__fadeInUp">
 
             <div class="swiper">
                 <!-- Additional required wrapper -->
@@ -39,3 +39,32 @@
         </div>
     </div>
 </div>
+
+<script>
+    if ($('.swiper:not(.custom)').length) {
+        const basicSlider = () => {
+            let basicSliders = document.querySelectorAll('.swiper:not(.custom)')
+            let prevArrow = document.querySelectorAll('.swiper:not(.custom) > .swiper-button-prev')
+            let nextArrow = document.querySelectorAll('.swiper:not(.custom) > .swiper-button-next')
+            let pagination = document.querySelectorAll('.swiper:not(.custom) >.swiper-pagination')
+            basicSliders.forEach((slider, index) => {
+                const swiper = new Swiper(slider, {
+                    direction: 'horizontal',
+                    loop: true,
+                    preloadImages: true,
+                    lazy: false,
+                    navigation: {
+                        // the 'index' bit below is just the order of the class in the queryselectorAll array, so the first one would be NextArrow[0] etc
+                        nextEl: nextArrow[index],
+                        prevEl: prevArrow[index],
+                    },
+                    pagination: {
+                        el: pagination[index],
+                        clickable: true
+                    }
+                });
+            })
+        }
+        window.addEventListener('load', basicSlider)
+    }
+</script>

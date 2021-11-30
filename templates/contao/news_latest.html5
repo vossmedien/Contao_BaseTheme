@@ -1,5 +1,5 @@
 
-<div class="layout_latest arc_<?= $this->archive->id ?> block<?= $this->class ?>" data-josh-anim-name="fadeInUp">
+<div class="layout_latest arc_<?= $this->archive->id ?> block<?= $this->class ?>"  data-aos="animate__fadeInUp">
 
   <?php if ($this->hasMetaFields): ?>
     <p class="info"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?> <?= $this->commentCount ?></p>

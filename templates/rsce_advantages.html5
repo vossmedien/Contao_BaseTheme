@@ -1,3 +1,4 @@
+
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
 
@@ -5,12 +6,12 @@
         <div class="ce--headline">
 
             <?php if ($this->headline): ?>
-            <<?php echo($this->hl); ?>  data-josh-anim-name="fadeInUp" >
+            <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
             <?php echo($this->headline); ?>
         </<?php echo($this->hl); ?>>
     <?php endif; ?>
         <?php if ($this->subline): ?>
-            <span class=" ce--subline" data-josh-anim-name="fadeInUp"><?php echo $this->subline; ?></span>
+            <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
         <?php endif; ?>
 
     </div>
@@ -20,30 +21,30 @@
         <div class="row">
             <?php foreach ($this->boxes as $box): ?>
             <div class="<?php if ($box->column_width): ?><?php echo $box->column_width;?><?php else:?>col-12 col-md-6 col-lg-4<?php endif;?>">
-            <div class="advantages--box" data-josh-anim-name="fadeInUp">
+            <div class="advantages--box" data-aos="animate__fadeInUp">
 
 
                             <?php if ($box->ce_headline): ?>
                                 <div class="advantages--headline">
                             <?php if (!$box->onlystyle): ?>
-                            <<?php echo $box->headline_type; ?>>
+                            <<?php echo $box->headline_type; ?> data-aos="animate__fadeInDown">
                             <?php echo $box->ce_headline; ?>
                         </<?php echo $box->headline_type; ?>>
 
                     <?php if ($box->ce_subline): ?>
-                        <span class="ce--subline advantages--subline" data-josh-anim-name="fadeInUp">
+                        <span class="ce--subline advantages--subline" data-aos="animate__fadeInUp">
                         <?php echo $box->ce_subline; ?>
                     </span>
                     <?php endif; ?>
 
                         <?php else: ?>
-                            <span class="<?php echo $box->headline_type; ?>">
+                            <span class="<?php echo $box->headline_type; ?>" data-aos="animate__fadeInDown">
                                                           <?php echo $box->ce_headline; ?>
 
                                                     </span>
 
                             <?php if ($box->ce_subline): ?>
-                                <span class="ce--subline advantages--subline" data-josh-anim-name="fadeInUp">
+                                <span class="ce--subline advantages--subline" data-aos="animate__fadeInUp">
                         <?php echo $box->ce_subline; ?>
                     </span>
                             <?php endif; ?>
@@ -54,7 +55,7 @@
 
 
                     <?php if ($box->text): ?>
-                            <div class="advantages--text">
+                            <div class="advantages--text" data-aos="animate__fadeInDown">
                                 <?php echo $box->text; ?>
                             </div>
                         <?php endif; ?>

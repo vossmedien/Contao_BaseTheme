@@ -5,7 +5,7 @@
   <?= $this->articles ?>
 
   <!-- indexer::stop -->
-  <p data-josh-anim-name="fadeInUp" class="back"><a href="<?= $this->referer ?>" title="<?= $this->back ?>"><?= $this->back ?></a></p>
+  <p data-aos="animate__fadeInUp" class="back"><a href="<?= $this->referer ?>" title="<?= $this->back ?>"><?= $this->back ?></a></p>
   <!-- indexer::continue -->
 
   <?php if ($this->allowComments): ?>
