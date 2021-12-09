@@ -1188,6 +1188,9 @@
               max-width: 100%;
               height: auto;
             }
+
+            video::-webkit-media-controls-mute-button { display: none !important;}
+            video::-webkit-media-controls-fullscreen-button { display: none !important;}
           }
         }
       }
