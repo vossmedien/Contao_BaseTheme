@@ -50,7 +50,7 @@
 
                                 <?php if($ext == "mp4"):?>
                                 <div class="image--holder is--video">
-                                    <video autoplay muted  playsinline>
+                                    <video autoplay muted controls playsinline>
                                         <source type="video/mp4" src="{{file::<?= $box->image ?>}}">
                                     </video>
                                 </div>
