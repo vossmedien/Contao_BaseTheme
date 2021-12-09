@@ -1237,6 +1237,10 @@
         .box--lower{
           background-color: $primary;
           color: $text-color-inverse;
+
+          .ce--subline{
+            color: $white;
+          }
         }
       }
 
@@ -1301,8 +1305,10 @@
         font-weight: $font-weight-bold;
       }
 
-      .box--subline {
+      .box--subline.ce--subline {
         color: $primary;
+        margin-bottom: 0px;
+        @include font-size(15px);
       }
     }
 
