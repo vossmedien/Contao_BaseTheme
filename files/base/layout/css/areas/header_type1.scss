@@ -52,7 +52,9 @@
 
         .hc-bottom--left-col {
           img{
-            display: none;
+            opacity: 0;
+            position: relative;
+            top: -15px;
           }
         }
 
@@ -70,6 +72,7 @@
             img{
               max-height: rfs-value(80px);
               width: auto;
+              transition: opacity .15s ease;
             }
           }
 

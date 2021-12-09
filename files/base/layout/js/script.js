@@ -263,8 +263,8 @@ Promise.all(promises)
 
             addPlaceholders();
         }
-        if ($('.ce_rsce_headimagelogo').length) {
-            $(".ce_rsce_headimagelogo .image--holder").css("min-height", "calc(100vh - " + $('header').height() + "px)");
+        if ($('.ce--mainimage:not(.not-fullHeight)').length) {
+            $(".ce--mainimage:not(.not-fullHeight) .image--holder").css("min-height", "calc(100vh - " + $('header').height() + "px)");
         }
         if ($('.scrollToTop').length) {
             $(".scrollToTop").click(function () {

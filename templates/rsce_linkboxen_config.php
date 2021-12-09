@@ -53,13 +53,14 @@ return array(
 
 
                 'image' => array(
-                    'label' => array('Bild', ''),
+                    'label' => array('Bild / Video', 'Video-Format: MP4'),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
+                        'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
+                        'tl_class' => 'w50'
                     ),
                 ),
 
@@ -91,6 +92,11 @@ return array(
                     'label' => array('Langtext', ''),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE','tl_class' => 'clr'),
+                ),
+
+                'remove_padding' => array(
+                    'label' => array('Innenabstand entfernen', ''),
+                    'inputType' => 'checkbox',
                 ),
 
                 'expand_image' => array(

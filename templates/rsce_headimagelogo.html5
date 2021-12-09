@@ -27,7 +27,7 @@
         $filename_mobile = \FilesModel::findByUuid($this->mobile_image)->path;
         $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
     ?>
-        <div class="ce--mainimage <?php if($this->diagonal_cut):?>with-diagonalCut<?php endif;?> <?php echo $this->text_style; ?>        <?php if ($this->pull_content): ?>pull-content<?php endif;?>">
+        <div class="ce--mainimage <?php if($this->not_fullheight):?>not-fullHeight<?php endif;?> <?php if($this->diagonal_cut):?>with-diagonalCut<?php endif;?> <?php echo $this->text_style; ?>        <?php if ($this->pull_content): ?>pull-content<?php endif;?>">
             <div class="image--holder       <?php if($ext != "mp4"):?>lazy   <?php endif;?>"
                  <?php if($ext != "mp4"):?>
                  data-bg="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>"

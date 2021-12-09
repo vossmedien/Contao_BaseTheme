@@ -192,6 +192,11 @@
     overflow: hidden;
 
 
+    &.ce--mainimage{
+
+    }
+
+
     &.style-1 {
       .mainimage--content {
         &:before {
@@ -275,7 +280,7 @@
     }
 
     &.pull-content {
-      margin-bottom: -30vh;
+      margin-bottom: rfs-value(-200px);
 
       .mainimage--content {
         top: 35%;
@@ -284,7 +289,8 @@
     }
 
     .image--holder {
-      min-height: 80vh;
+      height: 55vh;
+      min-height: 600px;
       background-size: cover !important;
       background-position: center center;
       overflow: hidden;
@@ -1172,8 +1178,25 @@
         .image--holder {
           height: rfs-value(250px);
           border-radius: $border-radius $border-radius 0px 0px;
+          overflow: hidden;
+
+          &.is--video{
+            height: auto;
+            line-height: 0;
+
+            video{
+              max-width: 100%;
+              height: auto;
+            }
+          }
         }
       }
+
+      > .box-lower--wrapper:first-child > .box--lower{
+        border-radius: $border-radius $border-radius 0px 0px;
+      }
+
+
 
       .box--lower {
         background: linear-gradient(#fff 0%, #f8f8f8 100%);
@@ -1308,6 +1331,14 @@
         @include font-size(14px);
         line-height: 1.5;
         text-align: justify;
+
+        iframe{
+          width: 100%;
+        }
+
+        &.p-0{
+          line-height: 0;
+        }
       }
     }
 

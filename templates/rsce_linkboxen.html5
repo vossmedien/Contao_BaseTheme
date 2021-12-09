@@ -32,11 +32,32 @@
 
 
                         <?php if ($box->image): ?>
+
+                            <?php
+                            $filename = \FilesModel::findByUuid($box->image)->path;
+                            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                            ?>
+
                             <div class="box--upper">
-                                <div class="image--holder lazy"
-                                     style="background-size: cover; background-repeat: no-repeat; background-position: center center;"
-                                     data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, 3); ?>">
+
+
+                                <?php if($ext != "mp4"):?>
+                                    <div class="image--holder lazy"
+                                         style="background-size: cover; background-repeat: no-repeat; background-position: center center;"
+                                         data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, 3); ?>">
+                                    </div>
+                                <?php endif;?>
+
+                                <?php if($ext == "mp4"):?>
+                                <div class="image--holder is--video">
+                                    <video autoplay muted  playsinline>
+                                        <source type="video/mp4" src="{{file::<?= $box->image ?>}}">
+                                    </video>
                                 </div>
+                                <?php endif;?>
+
+
+
                             </div>
                         <?php endif; ?>
 
@@ -61,7 +82,7 @@
                                 <?php endif; ?>
 
                                 <?php if ($box->longtext): ?>
-                                    <div class="box--longtext">
+                                    <div class="box--longtext <?php if ($box->remove_padding):?>p-0<?php endif;?>">
                                         <?php echo $box->longtext; ?>
                                     </div>
                                 <?php endif; ?>

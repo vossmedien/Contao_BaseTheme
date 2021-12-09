@@ -50,6 +50,11 @@ return array(
             'inputType' => 'checkbox',
         ),
 
+        'not_fullheight' => array(
+            'label' => array('Nicht auf maximale Höhe strecken', ''),
+            'inputType' => 'checkbox',
+        ),
+
         'text_style' => array(
             'label' => array(
                 'de' => array('Text-Darstellungstyp', ''),
