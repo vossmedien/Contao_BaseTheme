@@ -1306,8 +1306,9 @@
       }
 
       .box--subline.ce--subline {
-        color: $primary;
+        color: inherit;
         margin-bottom: 0px;
+        margin-top: 2px;
         @include font-size(15px);
       }
     }
