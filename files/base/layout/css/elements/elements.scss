@@ -995,7 +995,7 @@
 
     .kachelbox--inner {
       padding: rfs-value(0px 30px 30px 30px);
-      height: 100%;
+      min-height: 100%;
       .kb--image {
         height: rfs-fluid-value(200px);
         line-height: rfs-fluid-value(200px);
