@@ -82,6 +82,11 @@ return array(
             'eval' => array('tl_class' => 'w50'),
         ),
 
+        'text_infotext' => array(
+            'label' => array('Langtext unterhalb der Überschriften', ''),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+        ),
 
         'link_text' => array(
             'label' => array(

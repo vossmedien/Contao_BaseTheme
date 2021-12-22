@@ -192,8 +192,11 @@
     overflow: hidden;
 
 
-    &.ce--mainimage{
-
+    &.not-fullHeight{
+      .mainimage--content{
+        top: auto;
+        bottom: rfs-value(40px);
+      }
     }
 
 
@@ -335,7 +338,6 @@
           max-width: 530px;
         }
 
-
         span {
           display: block;
           line-height: 1;
@@ -349,6 +351,10 @@
             @include font-size(18px);
             margin-top: 8px;
           }
+        }
+
+        .infotext--text{
+          margin-top: 1.25rem;
         }
       }
     }
@@ -989,7 +995,7 @@
 
     .kachelbox--inner {
       padding: rfs-value(0px 30px 30px 30px);
-
+      height: 100%;
       .kb--image {
         height: rfs-fluid-value(200px);
         line-height: rfs-fluid-value(200px);
@@ -1034,8 +1040,20 @@
         }
       }
 
-      .kb--content {
+
+
+
+      > .kb--content {
         margin-top: rfs-value(5px);
+        height: 100%;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+
+        &:first-child {
+          padding-top: 1.5rem;
+        }
+
 
         .box--headline {
           .h5 {
@@ -1058,7 +1076,7 @@
         }
 
         .box--button {
-
+          align-self: flex-end;
         }
 
 
@@ -1909,6 +1927,33 @@
           padding-right: 0px;
         }
 
+        &:not(.only-text--right-col) {
+          .image--col, .content--col{
+            @include media-breakpoint-up(md) {
+              min-height: rfs-value(500px);
+            }
+          }
+        }
+
+        &.only-text--right-col{
+          @include media-breakpoint-up(md) {
+            align-items: flex-start !important;
+            .image--col, .content--col{
+              @include padding(75px 0px);
+
+              .content-col--inner{
+                padding-top: 0px;
+                padding-bottom: 0px;
+              }
+
+              .image-col--extra-text{
+                padding-left: 1.75rem;
+              }
+            }
+          }
+        }
+
+
         @include media-breakpoint-up(md) {
           &.reverse-cols {
             flex-flow: row-reverse;
@@ -1932,12 +1977,11 @@
           //position: relative;
           z-index: 5;
 
-          @include media-breakpoint-up(md) {
-            min-height: rfs-value(500px);
-          }
+
 
 
           .image-col--inner {
+
 
 
             @include media-breakpoint-up(md) {
@@ -1957,7 +2001,6 @@
 
           @include media-breakpoint-up(md) {
             position: relative;
-            min-height: rfs-value(500px);
           }
 
           &.darkened-content {
@@ -1972,13 +2015,13 @@
           }
 
           .content-col--inner {
-            padding: 2.5rem 3.5rem 1rem 0;
+            padding: 2.5rem 1.75rem 1rem 0;
             position: relative;
             z-index: 7;
             width: 100%;
 
             @include media-breakpoint-up(md) {
-              padding: 2.5rem 3.5rem 2.5rem 0;
+              padding: 2.5rem 1.75rem 2.5rem 0;
             }
 
             .content-col--headline-wrapper {

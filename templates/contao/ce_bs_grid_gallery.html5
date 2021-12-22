@@ -6,9 +6,8 @@ $this->extend($this->isRandomOrder ? 'block_unsearchable' : 'block_searchable');
 
 <?php $this->block('content'); ?>
 
-<div class="container" style="z-index: 10; position: relative;" data-aos="animate__fadeInUp">
-	     <?= $this->images ?>
-</div>
+<?= $this->images ?>
+
  
 
 <?php $this->endblock(); ?>

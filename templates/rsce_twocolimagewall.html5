@@ -28,7 +28,7 @@
 
         <div class="container">
 
-            <div  class="row <?php if ($row->reverse): ?>reverse-cols<?php endif; ?>">
+            <div  class="row <?php if ($row->reverse): ?>reverse-cols<?php endif; ?> <?php if($row->content_rightcol && !$row->alternate_image):?>only-text--right-col<?php endif;?>">
 
                 <div
                     class="content--col d-flex align-items-center <?php echo $row->column_width; ?> <?php if ($row->darken_content): ?>darkened-content<?php endif; ?>">
@@ -80,7 +80,6 @@
             </div>
             <div class="image--col col-12 col-md">
                 <div data-aos="animate__fadeInUp" class="image-col--inner
-
  <?php if($row->column_width =="col-12 col-md-6 col-lg-3"):?>
         col-12 col-md-6 col-lg-9
         <?php elseif($row->column_width =="col-12 col-md-6 col-lg-4"):?>
@@ -101,8 +100,16 @@
                     <?php if ($row->alternate_image): ?>
                         <?php echo html_entity_decode($row->alternate_image); ?>
                     <?php endif; ?>
-
                 </div>
+
+
+                <?php if ($row->content_rightcol): ?>
+                    <div class="image-col--extra-text" data-aos="animate__fadeInUp">
+                        <?php echo $row->content_rightcol;?>
+                    </div>
+                <?php endif;?>
+
+
             </div>
 
 

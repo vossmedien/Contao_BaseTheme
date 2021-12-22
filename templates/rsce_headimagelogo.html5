@@ -57,6 +57,13 @@
                                 <?php if ($this->text_secondline): ?>
                                 <span class="mt-2"><?php echo $this->text_secondline; ?></span>
                                 <?php endif; ?>
+
+                                <?php if ($this->text_infotext): ?>
+                                <div class="infotext--text">
+                                    <?php echo $this->text_infotext;?>
+                                </div>
+                                <?php endif; ?>
+
                                 <?php if ($this->link_text): ?>
                                         <div class="button--wrapper" data-aos="animate__fadeInUp">
                                             <a class="d-inline-block btn <?php if ($this->link_size): ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"

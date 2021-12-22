@@ -1,0 +1,68 @@
+.footer--content {
+  &.type--3 {
+    background-color: $footer-top-bg;
+    color: $text-color-inverse;
+    @include padding(50px 0px);
+    @include font-size(22px);
+
+
+    .row{
+      > div:not(:last-child){
+        @include media-breakpoint-down(lg) {
+          margin-bottom: 1.5rem;
+        }
+      }
+    }
+
+
+    a, h3{
+      color: $text-color-inverse;
+      text-decoration: none;
+    }
+
+    h3{
+      display: flex;
+
+      @include media-breakpoint-up(lg) {
+        height: 60px;
+      }
+
+      > span{
+        align-self: center;
+      }
+    }
+
+
+    figure.image_container, .ce_headline{
+      @include media-breakpoint-up(lg) {
+        margin-bottom: 50px;
+      }
+    }
+
+
+    #footerNav{
+      ul{
+        list-style-type: none;
+        padding: 0px;
+        margin: 0px;
+
+        > li{
+          display: inline-block;
+          vertical-align: middle;
+
+          &:not(:last-child){
+            &:after{
+              content:'|';
+              display: inline-block;
+              vertical-align: middle;
+              margin: 0 5px 0px 3px;
+            }
+          }
+        }
+      }
+    }
+
+
+
+  }
+}

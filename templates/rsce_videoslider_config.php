@@ -72,6 +72,11 @@ return array(
                     'label' => array('Bezeichnung', ''),
                     'inputType' => 'text',
                 ),
+
+                'longtext' => array(
+                    'label' => array('Beschreibung', ''),
+                    'inputType' => 'text',
+                ),
             ),
         ),
     ),

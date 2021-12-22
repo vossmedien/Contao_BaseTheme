@@ -141,14 +141,22 @@ return array(
                 ),
 
                 'content' => array(
-                    'label' => array('Text', ''),
+                    'label' => array('Text (linke Spalte)', ''),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE'),
                 ),
 
 
+
+
+                'content_rightcol' => array(
+                    'label' => array('Extra Textfeld für rechte Spalte', ''),
+                    'inputType' => 'textarea',
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+                ),
+
                 'buttons' => array(
-                    'label' => array('Buttons', ''),
+                    'label' => array('Buttons für Inhaltsspalte (links)', ''),
                     'elementLabel' => '%s. Button',
                     'inputType' => 'list',
                     'minItems' => 0,
@@ -193,6 +201,7 @@ return array(
                         ),
                     ),
                 ),
+
 
             ),
         ),
