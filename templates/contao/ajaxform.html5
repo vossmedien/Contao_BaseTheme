@@ -74,6 +74,11 @@
         form.action = action;
         form.innerHTML = data;
         addButtonEvents(form);
+
+
+        $('html, body').animate({
+            scrollTop: $("#top").offset().top
+        }, 1000);
     }
 
     form.addEventListener('submit', function(e) {
@@ -83,6 +88,8 @@
         if (triggeredButton) {
             formData.append(triggeredButton.name, triggeredButton.value);
         }
+
+
 
         request('POST', form.action, formData, function () {
             var location = this.getResponseHeader('X-Ajax-Location');

@@ -1,7 +1,8 @@
 .btn{
-  padding-top: rfs-value(8px);
+  padding-top: rfs-value(10px);
   line-height: 1;
   padding-bottom: rfs-value(10px);
+  border-radius: $border-radius;
 
   &.btn-outline-secondary{
 

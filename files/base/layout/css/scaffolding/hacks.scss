@@ -15,6 +15,14 @@
   visibility: visible;
 }
 
+header, footer{
+  *[data-aos]{
+    transition: none !important;
+    animation: none !important;
+    visibility: visible !important;
+  }
+}
+
 .make-fullwidth {
   width: 100vw;
   position: relative;

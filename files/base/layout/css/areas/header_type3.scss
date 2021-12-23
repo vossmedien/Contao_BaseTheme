@@ -1,3 +1,15 @@
+&.theme-3{
+  &:not(.start){
+    #main{
+      padding-top: rfs-value(60px);
+
+      @include media-breakpoint-up(lg) {
+        padding-top: rfs-value(90px);
+      }
+    }
+  }
+}
+
 .header--content {
   &.type--3 {
     position: fixed;

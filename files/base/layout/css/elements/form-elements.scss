@@ -1,0 +1,143 @@
+.form-summary {
+  div {
+    display: inline-block;
+
+    &.label {
+      display: none;
+    }
+
+    &:not(:last-child) {
+      &:after {
+        content: '|';
+        display: inline-block;
+        margin-left: 5px;
+      }
+    }
+  }
+}
+
+
+.form--image-select {
+  .ce--headline {
+    font-size: 3rem;
+    margin-bottom: 3.5rem;
+    border-bottom: 1px solid $gray-400;
+
+    h1, .h1, h2, .h2 {
+      font-size: 3rem;
+    }
+
+    .ce--subline {
+
+    }
+
+
+  }
+
+  .image-select--item {
+    min-height: 100%;
+    display: flex;
+    flex-flow: column wrap;
+    cursor: pointer;
+    position: relative;
+    transition: all .3s ease;
+    margin-bottom: 2rem;
+    padding-bottom: 2.5rem;
+
+
+    .item--headline {
+      text-align: center;
+
+
+      h3 {
+        position: relative;
+        padding-bottom: 1rem;
+        color: $text-color;
+        @include font-size(28px);
+        font-weight: $font-weight-bold;
+        margin-bottom: 1rem;
+
+        &:after {
+          content: '';
+          height: 5px;
+          width: 90px;
+          left: 50%;
+          margin-left: -45px;
+          display: inline-block;
+          position: absolute;
+          bottom: 0;
+          background-color: $primary;
+        }
+      }
+
+
+    }
+
+    .item--text-top {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+
+    }
+
+    .item--image {
+      margin: 1.5rem 0;
+
+    }
+
+    .item--text-bottom {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      padding-bottom: 1rem;
+    }
+
+    .item--input {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+
+      .form-check {
+        font-size: 1.5rem;
+        font-weight: $font-weight-bold;
+      }
+    }
+
+    .item--preview-links {
+      margin-top: .5rem;
+      text-align: center;
+      @include font-size(14px);
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0px;
+      margin: 0px;
+
+      li {
+        a {
+          text-decoration: none;
+          font-weight: $font-weight-bold;
+          display: block;
+
+        }
+      }
+    }
+  }
+
+  .col-right {
+    @include media-breakpoint-up(xl) {
+      padding-left: 5rem;
+      max-width: rfs-value(550px);
+      margin: 0 0 0 auto;
+    }
+
+    h3 {
+      font-weight: $font-weight-bold;
+    }
+  }
+
+
+}

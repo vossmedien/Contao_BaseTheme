@@ -237,6 +237,7 @@ Promise.all(promises)
             }
 
 
+            /*
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
             var forms = document.querySelectorAll('.ce_form form')
 
@@ -251,6 +252,7 @@ Promise.all(promises)
                 }, false)
             })
 
+             */
 
             $(".ce_form form").submit(function (e) {
 
@@ -263,6 +265,7 @@ Promise.all(promises)
 
             addPlaceholders();
         }
+
         if ($('.ce--mainimage:not(.not-fullHeight)').length) {
             $(".ce--mainimage:not(.not-fullHeight) .image--holder").css("min-height", "calc(100vh - " + $('header').height() + "px)");
         }
