@@ -21,6 +21,7 @@
 html {
 
   body {
+    color: $text-color;
 
     &#tinymce {
       @include padding(7px 12px);

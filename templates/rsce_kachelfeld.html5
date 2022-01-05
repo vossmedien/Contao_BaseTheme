@@ -5,12 +5,12 @@
         <div class="ce--headline">
 
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
+                <<?php echo($this->hl); ?> data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
             <?php endif; ?>
 
     </div>
@@ -24,7 +24,7 @@
         <?php foreach ($this->kachel as $b): ?>
                 <div class="<?php if ($b->column_width): ?><?php echo $b->column_width;?><?php else:?>col-12 col-lg-4<?php endif;?>">
 
-                <div class="kachelbox" data-aos="animate__fadeInUp">
+                <div class="kachelbox" data-aos="<?php if($b->animation_type):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                     <?php if($b->link_url):?>
                     <a class="kachel--url" href="<?php echo $b->link_url;?>"></a>
                     <?php endif;?>
@@ -57,7 +57,7 @@
                         <?php endif; ?>
 
                         <?php if ($b->link_text): ?>
-                            <div class="box--button mt-3" data-aos="animate__fadeInUp">
+                            <div class="box--button mt-3" data-aos="<?php if($b->animation_type):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                                 <a class="d-inline-block btn <?php if ($b->link_size): ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
                                    href="<?php echo $b->link_url; ?><?php if ($b->link_betreff): ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?>
                                 </a>

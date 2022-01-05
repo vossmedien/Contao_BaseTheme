@@ -5,79 +5,97 @@
         <div class="ce--headline">
             <div class="container">
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
+                <<?php echo($this->hl); ?> data-aos="<?php if($this->animation_type != ""):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
+                <span class="ce--subline" data-aos="<?php if($this->animation_type != ""):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
     <?php endif; ?>
 
 
-    <?php if ($this->image): ?>
+
+
 
     <?php
-        $filename = \FilesModel::findByUuid($this->image)->path;
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+    $filename = \FilesModel::findByUuid($this->image)->path;
+    $ext = pathinfo($filename, PATHINFO_EXTENSION);
 
-
-        $filename_mobile = \FilesModel::findByUuid($this->mobile_image)->path;
-        $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
+    $filename_mobile = \FilesModel::findByUuid($this->mobile_image)->path;
+    $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
     ?>
-        <div class="ce--mainimage <?php if($this->not_fullheight):?>not-fullHeight<?php endif;?> <?php if($this->diagonal_cut):?>with-diagonalCut<?php endif;?> <?php echo $this->text_style; ?>        <?php if ($this->pull_content): ?>pull-content<?php endif;?>">
-            <div class="image--holder       <?php if($ext != "mp4"):?>lazy   <?php endif;?>"
-                 <?php if($ext != "mp4"):?>
-                 data-bg="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
-                 <?php endif;?>
-            >
+
+    <?php if ($this->as_bodybg): ?>
+        <style>
+            body {
+                background: url(<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+            }
+        </style>
+    <?php endif; ?>
+
+    <div class="ce--mainimage <?php if ($this->not_fullheight): ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut): ?>with-diagonalCut<?php endif; ?> <?php echo $this->text_style; ?>        <?php if ($this->pull_content): ?>pull-content<?php endif; ?>">
+        <div class="image--holder       <?php if ($ext != "mp4"): ?>lazy   <?php endif; ?>"
+            <?php if ($ext != "mp4" && !$this->as_bodybg): ?>
+                data-bg="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
+            <?php endif; ?>
+        >
 
 
-
-                <?php if($ext == "mp4"):?>
-                <video <?php if($ext_mobile == "mp4" && $ext_mobile):?>class="d-none d-md-block"<?php endif;?> autoplay muted loop playsinline>
+            <?php if ($ext == "mp4" && !$this->as_bodybg): ?>
+                <video <?php if ($ext_mobile == "mp4" && $ext_mobile): ?>class="d-none d-md-block"<?php endif; ?>
+                       autoplay muted loop playsinline>
                     <source type="video/mp4" src="{{file::<?= $this->image ?>}}">
                 </video>
-                <?php endif;?>
+            <?php endif; ?>
 
-                <?php if($ext_mobile == "mp4" && $ext_mobile):?>
-                    <video class="d-md-none" autoplay muted loop playsinline>
-                        <source type="video/mp4" src="{{file::<?= $this->mobile_image ?>}}">
-                    </video>
-                <?php endif;?>
+            <?php if ($ext_mobile == "mp4" && $ext_mobile && !$this->as_bodybg): ?>
+                <video class="d-md-none" autoplay muted loop playsinline>
+                    <source type="video/mp4" src="{{file::<?= $this->mobile_image ?>}}">
+                </video>
+            <?php endif; ?>
 
-                <?php if ($this->text_firstline || $this->text_secondline): ?>
-                    <div class="mainimage--content" data-aos="animate__fadeInUp">
-                        <div class="container">
-                            <div class="mainimage--content-inner" <?php if ($this->text_color): ?>style="color: <?php echo $this->text_color;?>;"<?php endif; ?>>
+            <?php if ($this->text_firstline || $this->text_secondline): ?>
+                <div class="mainimage--content" data-aos="<?php if($this->animation_type != ""):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
+                    <div class="container">
+                        <div class="mainimage--content-inner"
+                             <?php if ($this->text_color): ?>style="color: <?php echo $this->text_color; ?>;"<?php endif; ?>>
 
+                            <?php if ($this->firstline_headline): ?>
+                                <h1><?php echo $this->text_firstline; ?></h1>
+                            <?php else:?>
                                 <span><?php echo $this->text_firstline; ?></span>
-                                <?php if ($this->text_secondline): ?>
+                            <?php endif; ?>
+
+
+                            <?php if ($this->text_secondline): ?>
                                 <span class="mt-2"><?php echo $this->text_secondline; ?></span>
-                                <?php endif; ?>
+                            <?php endif; ?>
 
-                                <?php if ($this->text_infotext): ?>
+                            <?php if ($this->text_infotext): ?>
                                 <div class="infotext--text">
-                                    <?php echo $this->text_infotext;?>
+                                    <?php echo $this->text_infotext; ?>
                                 </div>
-                                <?php endif; ?>
+                            <?php endif; ?>
 
-                                <?php if ($this->link_text): ?>
-                                        <div class="button--wrapper" data-aos="animate__fadeInUp">
-                                            <a class="d-inline-block btn <?php if ($this->link_size): ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"
-                                               href="<?php echo $this->link_url; ?><?php if ($this->link_betreff): ?>?subject=<?php echo $this->link_betreff; ?><?php endif; ?>"><?php echo $this->link_text; ?>
-                                            </a>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+                            <?php if ($this->link_text): ?>
+                                <div class="button--wrapper" data-aos="<?php if($this->animation_type != ""):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
+                                    <a class="d-inline-block btn <?php if ($this->link_size): ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"
+                                       href="<?php echo $this->link_url; ?><?php if ($this->link_betreff): ?>?subject=<?php echo $this->link_betreff; ?><?php endif; ?>"><?php echo $this->link_text; ?>
+                                    </a>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
-                <?php endif; ?>
+                </div>
+            <?php endif; ?>
 
-            </div>
         </div>
-    <?php endif; ?>
+    </div>
+
 </div>
 </div>

@@ -4,12 +4,12 @@
         <div class="ce--headline">
 
             <?php if ($this->headline): ?>
-            <<?php echo($this->hl); ?> data-aos="animate__fadeInUp" >
+            <<?php echo($this->hl); ?> data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
             <?php echo($this->headline); ?>
         </<?php echo($this->hl); ?>>
     <?php endif; ?>
         <?php if ($this->subline): ?>
-            <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
+            <span class=" ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
         <?php endif; ?>
 
     </div>
@@ -21,7 +21,7 @@
         <div class="row">
             <?php foreach ($this->boxes as $i => $box): ?>
                 <div class="<?php if ($box->column_width): ?><?php echo $box->column_width; ?><?php else: ?>col-12 col-md-6 col-lg-4<?php endif; ?>">
-                    <div class="link--box <?php echo $this->box_style; ?> " data-aos="animate__fadeInUp">
+                    <div class="link--box <?php echo $this->box_style; ?> " data-aos="<?php if($box->animation_type):?><?php echo $box->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
 
                         <?php if ($box->link): ?>
                             <a href="<?php echo $box->link; ?>"></a>
@@ -42,14 +42,14 @@
 
 
                                 <?php if($ext != "mp4"):?>
-                                    <div class="image--holder lazy"
+                                    <div class="image--holder lazy <?php if ($box->longtext): ?>rounded<?php endif;?>"
                                          style="background-size: cover; background-repeat: no-repeat; background-position: center center;"
                                          data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, 3); ?>">
                                     </div>
                                 <?php endif;?>
 
                                 <?php if($ext == "mp4"):?>
-                                <div class="image--holder is--video">
+                                <div class="image--holder is--video <?php if ($box->longtext): ?>rounded<?php endif;?>">
                                     <video autoplay muted controls playsinline>
                                         <source type="video/mp4" src="{{file::<?= $box->image ?>}}">
                                     </video>
@@ -60,7 +60,7 @@
 
                             </div>
                         <?php endif; ?>
-
+                        <?php if ($box->longtext): ?>
                         <div class="box-lower--wrapper  <?php if ($box->textalign): ?><?php echo $box->textalign; ?><?php endif; ?>">
                             <div class="box--lower <?php if (($box->link || ($box->modal_longtext || $box->modal_image)) && !$box->hide_arrow): ?>with-url<?php endif; ?>"
                                  style="<?php if ($box->alternate_textcolor): ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background): ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
@@ -89,7 +89,7 @@
                             </div>
                             <?php endif; ?>
                         </div>
-
+                        <?php endif; ?>
 
 
 

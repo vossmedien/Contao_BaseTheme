@@ -5,12 +5,12 @@
         <div class="ce--headline">
             <div class="container">
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?> data-aos="animate__fadeInUp" >
+                <<?php echo($this->hl); ?> data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
@@ -32,7 +32,7 @@
 
                 <div
                     class="content--col d-flex align-items-center <?php echo $row->column_width; ?> <?php if ($row->darken_content): ?>darkened-content<?php endif; ?>">
-                    <div class="content-col--inner" data-aos="animate__fadeInUp">
+                    <div class="content-col--inner" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                         <?php if ($row->ce_headline): ?>
                         <div class="content-col--headline-wrapper">
                             <?php if (!$row->onlystyle): ?>
@@ -42,19 +42,19 @@
                         </<?php echo $row->headline_type; ?>>
 
                     <?php if ($row->ce_subline): ?>
-                        <span class="ce--subline content-col--subline" data-aos="animate__fadeInUp">
+                        <span class="ce--subline content-col--subline" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                         <?php echo $row->ce_subline; ?>
                     </span>
                     <?php endif; ?>
 
                     <?php else: ?>
                         <span class="<?php echo $row->headline_type; ?> content-col--headline"
-                              data-aos="animate__fadeInUp">
+                              data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                       <?php echo $row->ce_headline; ?>
                 </span>
 
                         <?php if ($row->ce_subline): ?>
-                            <span class="ce--subline content-col--subline" data-aos="animate__fadeInUp">
+                            <span class="ce--subline content-col--subline" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                         <?php echo $row->ce_subline; ?>
                     </span>
                         <?php endif; ?>
@@ -63,15 +63,15 @@
                     <?php endif; ?>
 
                     <?php if ($row->content): ?>
-                        <div class="content-col--text mt-3" data-aos="animate__fadeInUp">
+                        <div class="content-col--text mt-3" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                             <?php echo $row->content; ?>
                         </div>
                     <?php endif; ?>
 
                     <?php if ($row->buttons[0]->link_text != ""): ?>
-                        <div class="ce--buttons mt-3" data-aos="animate__fadeInUp">
+                        <div class="ce--buttons mt-3">
                             <?php foreach ($row->buttons as $b): ?>
-                                <a class="d-inline-block btn <?php if ($b->link_size): ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
+                                <a class="d-inline-block btn <?php if ($b->link_size): ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>" data-aos="<?php if($b->animation_type):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"
                                    href="<?php echo $b->link_url; ?><?php if ($b->link_betreff): ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
                             <?php endforeach ?>
                         </div>
@@ -104,7 +104,7 @@
 
 
                 <?php if ($row->content_rightcol): ?>
-                    <div class="image-col--extra-text" data-aos="animate__fadeInUp">
+                    <div class="image-col--extra-text" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                         <?php echo $row->content_rightcol;?>
                     </div>
                 <?php endif;?>

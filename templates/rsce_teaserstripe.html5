@@ -6,12 +6,12 @@
         <div class="ce--headline">
             <div class="container">
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
+                <<?php echo($this->hl); ?> data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
@@ -24,24 +24,24 @@
                 <?php if ($this->ce_headline || $this->ce_subline): ?>
                 <div class="teaser--headline">
                         <?php if ($this->ce_headline): ?>
-                        <<?php echo($this->headline_type); ?> data-aos="animate__fadeInUp">
+                        <<?php echo($this->headline_type); ?> data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                         <?php echo($this->ce_headline); ?>
                     </<?php echo($this->headine_type); ?>>
                     <?php endif; ?>
             </div>
 
             <?php if ($this->ce_subline): ?>
-                <div class="teaser--subline ce--subline" data-aos="animate__fadeInUp"><?php echo $this->ce_subline; ?></div>
+                <div class="teaser--subline ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->ce_subline; ?></div>
             <?php endif; ?>
 
             <?php endif; ?>
 
-            <div class="ts--text mt-4" data-aos="animate__fadeInUp">
+            <div class="ts--text mt-4" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                 <?php echo $this->text;?>
             </div>
 
             <?php if ($this->link_text): ?>
-            <div class="ts--buttons mt-3" data-aos="animate__fadeInUp">
+            <div class="ts--buttons mt-3" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                     <div class="right-col--buttons">
                         <div class="ce--buttons mt-3" >
                             <a class="d-inline-block btn <?php if ($this->link_size): ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"

@@ -15,6 +15,8 @@ return array(
             'inputType' => 'text',
         ),
 
+
+
         'image' => array(
             'label' => array('Bild', ''),
             'inputType' => 'fileTree',

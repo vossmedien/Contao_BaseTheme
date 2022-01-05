@@ -48,6 +48,7 @@
   padding: rfs-value($basic-gutter/2);
   position: relative;
   z-index: 5;
+  background-color: $body-bg;
 
   @include media-breakpoint-up(md) {
     padding: rfs-value($basic-gutter);
@@ -264,6 +265,11 @@
             }
           }
 
+          h1{
+            @include font-size(70px);
+            margin-bottom: 0px;
+          }
+
           .button--wrapper {
             margin-top: 2.25rem;
           }
@@ -292,14 +298,14 @@
     }
 
     .image--holder {
-      height: 55vh;
-      min-height: 600px;
+      height: 500px;
+
       background-size: cover !important;
       background-position: center center;
       overflow: hidden;
 
       @media (orientation: landscape) {
-        height: rfs-value(450px);
+        //height: rfs-value(450px);
       }
 
 
@@ -328,6 +334,7 @@
 
 
       .mainimage--content-inner {
+        display: inline-block;
 
         @include media-breakpoint-up(sm) {
           padding: 10px 10px 10px 0px;
@@ -351,6 +358,11 @@
             @include font-size(18px);
             margin-top: 8px;
           }
+        }
+
+        h1{
+          @include font-size(36px);
+          font-weight: $font-weight-bold;
         }
 
         .infotext--text{
@@ -1198,6 +1210,10 @@
           border-radius: $border-radius $border-radius 0px 0px;
           overflow: hidden;
 
+          &.image--holder{
+            border-radius: $border-radius;
+          }
+
           &.is--video{
             height: auto;
             line-height: 0;
@@ -1355,7 +1371,7 @@
       }
 
       .box--longtext{
-        @include padding(0px 25px 5px 25px);
+        @include padding(0px 25px 25px 25px);
         @include font-size(14px);
         line-height: 1.5;
         text-align: justify;

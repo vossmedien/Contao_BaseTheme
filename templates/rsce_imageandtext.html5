@@ -6,12 +6,12 @@
         <div class="ce--headline">
 
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
+                <<?php echo($this->hl); ?>  data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
             <?php endif; ?>
 
     </div>
@@ -25,11 +25,11 @@
             <div class="row">
             <?php foreach ($this->rows as $row): ?>
 
-            <?php if(!$this->as_rows):?><div class="col-md-4" data-aos="animate__fadeInUp"><div class="col--inner"><div class="row"><?php endif;?>
+            <?php if(!$this->as_rows):?><div class="col-md-4" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><div class="col--inner"><div class="row"><?php endif;?>
 
-            <?php if($this->as_rows):?><div class="col-12" data-aos="animate__fadeInUp"><div class="col--inner"><div class="row"><?php endif;?>
+            <?php if($this->as_rows):?><div class="col-12" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><div class="col--inner"><div class="row"><?php endif;?>
 
-                <div data-aos="animate__fadeInUp" class="col-12 image <?php if($this->as_rows):?>col-md-4 col-lg-3<?php endif;?>  <?php if(!$this->as_rows):?>order-2<?php endif;?>">
+                <div data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" class="col-12 image <?php if($this->as_rows):?>col-md-4 col-lg-3<?php endif;?>  <?php if(!$this->as_rows):?>order-2<?php endif;?>">
                     <div class="image--wrapper">
                         <img src="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>">
                     </div>
@@ -38,7 +38,7 @@
                 <?php if($this->as_rows):?><div class="col-md-8 col-lg-9"><div class="col--inner"><?php endif;?>
 
 
-                    <div data-aos="animate__fadeInUp" class="headline col-12  <?php if(!$this->as_rows):?>order-1<?php endif;?>">
+                    <div data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" class="headline col-12  <?php if(!$this->as_rows):?>order-1<?php endif;?>">
                         <?php if (!$row->onlystyle): ?>
                                 <<?php echo $row->headline_type; ?> <?php if ($row->headline_image): ?>class="mb-0"<?php endif;?>>
                                 <?php echo $row->headline; ?>
@@ -52,7 +52,7 @@
 
 
 
-                <div data-aos="animate__fadeInUp" class="text col-12  <?php if(!$this->as_rows):?>order-3<?php endif;?>">
+                <div data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" class="text col-12  <?php if(!$this->as_rows):?>order-3<?php endif;?>">
                     <?php echo $row->text;?>
                 </div>
                 <?php if(!$this->as_rows):?></div></div><?php endif;?>

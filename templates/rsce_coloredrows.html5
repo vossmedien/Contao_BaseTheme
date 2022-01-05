@@ -5,12 +5,12 @@
         <div class="ce--headline">
             <div class="container">
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
+                <<?php echo($this->hl); ?> data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
@@ -23,7 +23,7 @@
             <?php if ($row->headline): ?>
                 <div class="headline--wrapper color-<?php echo $row->headline_color;?>">
                 <div class="container">
-                <div class="row align-items-center" data-aos="animate__fadeInUp">
+                <div class="row align-items-center" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                     <?php if ($row->headline_image): ?>
                         <div class="col-auto">
                             <div class="image--wrapper">
@@ -56,7 +56,7 @@
                             <?php foreach ($row->cols as $col): ?>
                             <div class="col-6 col-lg-3" >
 
-                                <div class="col--inner" data-aos="animate__fadeInUp">
+                                <div class="col--inner" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                                     <div class="cr--headline">
                                         <?php echo $col->headline;?>
                                     </div>

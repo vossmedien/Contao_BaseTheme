@@ -6,12 +6,12 @@
         <div class="ce--headline">
 
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-aos="animate__fadeInUp" >
+                <<?php echo($this->hl); ?>  data-aos="<?php if($this->animation_type != ""):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
+                <span class=" ce--subline" data-aos="<?php if($this->animation_type != ""):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
             <?php endif; ?>
 
     </div>
@@ -29,7 +29,7 @@
                     <?php if (!$b->images):?>
                         <a class="bts--url" href="<?php echo $b->url;?>"></a>
                     <?php endif;?>
-                    <div class="bts--image" data-aos="animate__fadeInUp">
+                    <div class="bts--image" data-aos="<?php if($b->animation_type != ""):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
 
                         <?php if ($b->images):  $rand = rand(1,100);?>
 
@@ -61,10 +61,10 @@
                     </div>
 
                     <div class="bts--content">
-                        <div class="bts--headline" data-aos="animate__fadeInUp">
+                        <div class="bts--headline" data-aos="<?php if($b->animation_type != ""):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                             <?php echo $b->title;?>
                         </div>
-                        <div class="bts--subline" data-aos="animate__fadeInUp">
+                        <div class="bts--subline" data-aos="<?php if($b->animation_type != ""):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                             <?php echo $b->subtitle;?>
                         </div>
                     </div>

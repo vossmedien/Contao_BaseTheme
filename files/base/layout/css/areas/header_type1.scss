@@ -3,6 +3,19 @@
     position: relative;
     z-index: 15;
 
+    &.fixed{
+
+      .hc--bottom{
+        position: absolute;
+        width: 100%;
+
+        .hc-bottom--right-col{
+
+        }
+      }
+    }
+
+
     .hc--top {
       background-color: $primary;
       @include font-size(14px);
