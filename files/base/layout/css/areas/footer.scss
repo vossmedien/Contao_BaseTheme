@@ -1,5 +1,6 @@
 #footer{
-  @include margin-top(75px);
+  @include padding-top(75px);
+  margin-top: auto;
 
   .fc--top{
     background-color: $footer-top-bg;

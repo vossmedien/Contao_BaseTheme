@@ -42,7 +42,7 @@
     <?php endif; ?>
 
     <div  class="ce--mainimage <?php if ($this->not_fullheight || $this->image_height): ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut): ?>with-diagonalCut<?php endif; ?> <?php echo $this->text_style; ?> <?php if ($this->pull_content): ?>pull-content<?php endif; ?>">
-        <div <?php if($this->image_height):?>style="max-height: <?php echo $this->image_height;?>vh" data-height="<?php echo $this->image_height;?>"<?php endif;?> class="image--holder <?php if ($ext != "mp4"): ?>lazy   <?php endif; ?>"
+        <div <?php if($this->image_height):?>style="max-height: <?php echo $this->image_height;?>vh;" data-height="<?php echo $this->image_height;?>"<?php endif;?> class="image--holder <?php if ($ext != "mp4"): ?>lazy   <?php endif; ?>"
             <?php if ($ext != "mp4" && !$this->as_bodybg): ?>
                 data-bg="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
             <?php endif; ?>
@@ -63,7 +63,7 @@
             <?php endif; ?>
 
             <?php if ($this->text_firstline || $this->text_secondline): ?>
-                <div class="mainimage--content"
+                <div class="mainimage--content"  <?php if($this->image_height < 50):?>style="top: auto; bottom: 0;"<?php endif;?>
                      data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
                     <div class="container">
                         <div class="mainimage--content-inner"
