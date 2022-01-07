@@ -60,8 +60,10 @@
 
                             </div>
                         <?php endif; ?>
-                        <?php if ($box->longtext): ?>
+                        <?php if ($box->longtext || $box->text || $box->expand_image || $box->expand_image || $box->modal_longtext || $box->modal_image): ?>
                         <div class="box-lower--wrapper  <?php if ($box->textalign): ?><?php echo $box->textalign; ?><?php endif; ?>">
+
+
                             <div class="box--lower <?php if (($box->link || ($box->modal_longtext || $box->modal_image)) && !$box->hide_arrow): ?>with-url<?php endif; ?>"
                                  style="<?php if ($box->alternate_textcolor): ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background): ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
                                 <?php if ($box->text): ?>
