@@ -10,6 +10,13 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="1agency.de #Borderland-Camping">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home" local="$PROJECT_DIR$/../../__THEMEPROJEKTE/borderlandcamping" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="1agency.de #Elbert Gruppe">
         <serverdata>
           <mappings>
@@ -139,6 +146,14 @@
         </serverdata>
       </paths>
       <paths name="Kindergarten Biberbau - AT">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping local="$PROJECT_DIR$/files/base/layout/_vendor/node_modules" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="Localhost">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
