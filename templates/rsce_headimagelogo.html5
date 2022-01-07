@@ -5,12 +5,15 @@
         <div class="ce--headline">
             <div class="container">
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?> data-aos="<?php if($this->animation_type != ""):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
+                <<?php echo($this->hl); ?>
+                data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>
+                " >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class="ce--subline" data-aos="<?php if($this->animation_type != ""):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
+                <span class="ce--subline"
+                      data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
@@ -38,8 +41,8 @@
         </style>
     <?php endif; ?>
 
-    <div class="ce--mainimage <?php if ($this->not_fullheight): ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut): ?>with-diagonalCut<?php endif; ?> <?php echo $this->text_style; ?>        <?php if ($this->pull_content): ?>pull-content<?php endif; ?>">
-        <div class="image--holder       <?php if ($ext != "mp4"): ?>lazy   <?php endif; ?>"
+    <div  class="ce--mainimage <?php if ($this->not_fullheight || $this->image_height): ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut): ?>with-diagonalCut<?php endif; ?> <?php echo $this->text_style; ?> <?php if ($this->pull_content): ?>pull-content<?php endif; ?>">
+        <div <?php if($this->image_height):?>style="max-height: <?php echo $this->image_height;?>vh" data-height="<?php echo $this->image_height;?>"<?php endif;?> class="image--holder <?php if ($ext != "mp4"): ?>lazy   <?php endif; ?>"
             <?php if ($ext != "mp4" && !$this->as_bodybg): ?>
                 data-bg="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
             <?php endif; ?>
@@ -60,20 +63,21 @@
             <?php endif; ?>
 
             <?php if ($this->text_firstline || $this->text_secondline): ?>
-                <div class="mainimage--content" data-aos="<?php if($this->animation_type != ""):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
+                <div class="mainimage--content"
+                     data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
                     <div class="container">
                         <div class="mainimage--content-inner"
                              <?php if ($this->text_color): ?>style="color: <?php echo $this->text_color; ?>;"<?php endif; ?>>
 
                             <?php if ($this->firstline_headline): ?>
-                                <h1><?php echo $this->text_firstline; ?></h1>
-                            <?php else:?>
-                                <span><?php echo $this->text_firstline; ?></span>
+                                <h1 class="first-line"><?php echo $this->text_firstline; ?></h1>
+                            <?php else: ?>
+                                <span class="first-line"><?php echo $this->text_firstline; ?></span>
                             <?php endif; ?>
 
 
                             <?php if ($this->text_secondline): ?>
-                                <span class="mt-2"><?php echo $this->text_secondline; ?></span>
+                                <span class="second-line mt-2"><?php echo $this->text_secondline; ?></span>
                             <?php endif; ?>
 
                             <?php if ($this->text_infotext): ?>
@@ -83,7 +87,8 @@
                             <?php endif; ?>
 
                             <?php if ($this->link_text): ?>
-                                <div class="button--wrapper" data-aos="<?php if($this->animation_type != ""):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
+                                <div class="button--wrapper"
+                                     data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
                                     <a class="d-inline-block btn <?php if ($this->link_size): ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"
                                        href="<?php echo $this->link_url; ?><?php if ($this->link_betreff): ?>?subject=<?php echo $this->link_betreff; ?><?php endif; ?>"><?php echo $this->link_text; ?>
                                     </a>
@@ -94,8 +99,17 @@
                 </div>
             <?php endif; ?>
 
+
+
         </div>
     </div>
+
+    <?php if ($this->boxed_image): ?>
+        <div class="boxed-logo" data-aos="animate__fadeIn">
+            <img src="<?= \Image::get(\FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
+        </div>
+    <?php endif; ?>
+
 
 </div>
 </div>

@@ -2,18 +2,19 @@
 
 
 
-        <?php if ($this->headline || $this->subline): ?>
-        <div class="ce--headline">
-            <?php if ($this->headline): ?>
-            <<?php echo($this->headline_type); ?> data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
-            <?php echo($this->headline); ?>
-        </<?php echo($this->headline_type); ?>>
-            <?php endif; ?>
-                <?php if ($this->subline): ?>
-                    <span class="ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
-                <?php endif; ?>
-        </div>
-        <?php endif; ?>
+    <?php if ($this->headline || $this->subline): ?>
+    <div class="ce--headline"
+         data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
+        <?php if ($this->headline): ?>
+        <<?php echo($this->hl); ?> >
+        <?php echo($this->headline); ?>
+    </<?php echo($this->hl); ?>>
+<?php endif; ?>
+    <?php if ($this->subline): ?>
+        <span class="ce--subline"><?php echo $this->subline; ?></span>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
 
 
     <?php if($this->text_right):?>

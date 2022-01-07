@@ -22,8 +22,8 @@ return array(
             'inputType' => 'select',
             'options' => array(
                 /* Fading entrances  */
-                              'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
-              'no-animation' => 'Keine Animation',
+                'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
+                'no-animation' => 'Keine Animation',
                 'animate__fadeIn' => 'fadeIn',
                 'animate__fadeInDown' => 'fadeInDown',
                 'animate__fadeInDownBig' => 'fadeInDownBig',
@@ -376,8 +376,8 @@ return array(
                             'inputType' => 'select',
                             'options' => array(
                                 'options' => array(
-                                    'no-animation' => 'Keine Animation',
                                     'animate__fadeInUp' => 'fade-up (Standard)',
+                                    'no-animation' => 'Keine Animation',
                                     'animate__fade' => 'fade',
                                     'animate__fadeDown' => 'fade-down',
                                     'animate__fadeLeft' => 'fade-left',
