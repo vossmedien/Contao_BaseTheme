@@ -155,6 +155,7 @@ return array(
             'eval'=> array('chosen'=>'true')
         ),
 
+
         'image' => array(
             'label' => array('Bild / Video', 'Video-Format: MP4'),
             'inputType' => 'fileTree',
@@ -179,12 +180,24 @@ return array(
             ),
         ),
 
-
         'as_bodybg' => array(
             'label' => array('Als Hintergrund-Bild für den Body', 'funktioniert (aktuell) nur mit Bildern!'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
+
+        'boxed_image' => array(
+            'label' => array('Bild mittig unten liegend', 'Meistens ein Logo'),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,svg',
+            ),
+        ),
+
+
 
         'diagonal_cut' => array(
             'label' => array('Mit diagonalem Abschluss', ''),
@@ -197,9 +210,14 @@ return array(
             'inputType' => 'checkbox',
         ),
 
-        'not_fullheight' => array(
+        /*'not_fullheight' => array(
             'label' => array('Nicht auf maximale Höhe strecken', ''),
             'inputType' => 'checkbox',
+        ),*/
+
+        'image_height' => array(
+            'label' => array('Höhe des Bildes in %', 'Standard sind "100", also 100% Viewport-Height'),
+            'inputType' => 'text',
         ),
 
         'text_style' => array(
@@ -224,13 +242,11 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
-
         'text_firstline' => array(
             'label' => array('Erste Zeile', ''),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
-
 
         'text_secondline' => array(
             'label' => array('Zweite Zeile', ''),
@@ -254,7 +270,7 @@ return array(
 
         'link_type' => array(
             'label' => array(
-                'de' => array('Farbe des Buttons', ''),
+                'de' => array('Optik des Buttons', ''),
             ),
             'inputType' => 'select',
             'options' => array(
@@ -262,6 +278,7 @@ return array(
                 'btn-outline-primary' => 'Hauptfarbe (Outline)',
                 'btn-secondary' => 'Sekundär-Farbe',
                 'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
+                'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
             ),
         ),
 

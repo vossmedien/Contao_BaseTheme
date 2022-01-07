@@ -200,7 +200,7 @@ return array(
 
         'link_type' => array(
             'label' => array(
-                'de' => array('Farbe des Buttons', ''),
+                'de' => array('Optik des Buttons', ''),
             ),
             'inputType' => 'select',
             'options' => array(
@@ -208,6 +208,7 @@ return array(
                 'btn-outline-primary' => 'Hauptfarbe (Outline)',
                 'btn-secondary' => 'Sekundär-Farbe',
                 'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
+                'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
             ),
         ),
 

@@ -5,17 +5,24 @@
     border-top: 5px solid $primary;
 
 
-    .row > div:not(:first-child){
-      @include media-breakpoint-down(lg) {
-        margin-top: 2rem;
-      }
-    }
 
 
     .fc--top {
       padding: rfs-fluid-value(5rem 0);
       color: $text-color-inverse;
 
+      .row > div:not(:first-child){
+        @include media-breakpoint-down(lg) {
+          margin-top: 2rem;
+        }
+      }
+
+
+      .text--wrapper{
+        *{
+          margin-bottom: 0px;
+        }
+      }
 
       .social--list{
         ul{
@@ -40,8 +47,6 @@
     }
 
     .fc--middle {
-
-
       padding: rfs-fluid-value(1.5rem 0);
       color: $footer-color;
     }
