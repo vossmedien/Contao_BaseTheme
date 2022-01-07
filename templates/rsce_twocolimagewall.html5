@@ -30,8 +30,35 @@
 
             <div  class="row <?php if ($row->reverse): ?>reverse-cols<?php endif; ?> <?php if($row->content_rightcol && !$row->alternate_image):?>only-text--right-col<?php endif;?>">
 
-                <div
-                    class="content--col d-flex align-items-center <?php echo $row->column_width; ?> <?php if ($row->darken_content): ?>darkened-content<?php endif; ?>">
+                <div class="content--col d-flex align-items-center <?php echo $row->column_width; ?> <?php if ($row->darken_content): ?>darkened-content<?php endif; ?>" style="<?php if ($row->alternate_background): ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
+
+
+                 <?php if ($row->boxed_headline): ?>
+                 <div class="content-col--boxed-headline" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
+                      <?php if (!$row->boxed_headline_onlystyle): ?>
+                            <<?php echo $row->boxed_headline_type; ?>>
+                            <?php echo $row->boxed_headline; ?>
+                        </<?php echo $row->boxed_headline_type; ?>>
+
+                            <?php if ($row->boxed_subheadline): ?>
+                                <span class="ce--subline" >
+                                    <?php echo $row->boxed_subheadline; ?>
+                                </span>
+                            <?php endif; ?>
+
+                             <?php else: ?>
+                        <span class="<?php echo $row->boxed_headline_type; ?>"><?php echo $row->boxed_headline; ?></span>
+                                 <?php if ($row->boxed_subheadline): ?>
+                                     <span class="ce--subline" >
+                        <?php echo $row->boxed_subheadline; ?>
+                    </span>
+                                 <?php endif; ?>
+                    </span>
+                        <?php endif; ?>
+                 </div>
+                 <?php endif; ?>
+
+
                     <div class="content-col--inner" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                         <?php if ($row->ce_headline): ?>
                         <div class="content-col--headline-wrapper">
@@ -69,7 +96,7 @@
                     <?php endif; ?>
 
                     <?php if ($row->buttons[0]->link_text != ""): ?>
-                        <div class="ce--buttons mt-3">
+                        <div class="ce--buttons mt-4 text-md-end">
                             <?php foreach ($row->buttons as $b): ?>
                                 <a class="d-inline-block btn <?php if ($b->link_size): ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>" data-aos="<?php if($b->animation_type):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"
                                    href="<?php echo $b->link_url; ?><?php if ($b->link_betreff): ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
@@ -79,7 +106,7 @@
                 </div>
             </div>
             <div class="image--col col-12 col-md">
-                <div data-aos="animate__fadeInUp" class="image-col--inner
+                <div data-aos="animate__fadeIn" class="image-col--inner
  <?php if($row->column_width =="col-12 col-md-6 col-lg-3"):?>
         col-12 col-md-6 col-lg-9
         <?php elseif($row->column_width =="col-12 col-md-6 col-lg-4"):?>
