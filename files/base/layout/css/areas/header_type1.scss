@@ -1,12 +1,10 @@
-
-
-
 .header--content {
   &.type--1 {
     position: relative;
     z-index: 15;
 
     &.fixed{
+
       .hc--bottom{
         position: absolute;
         width: 100%;
