@@ -1412,7 +1412,7 @@
       }
 
       .box--longtext {
-        @include padding(0px 25px 25px 25px);
+        @include padding(0px 25px 18px 25px);
         @include font-size(14px);
         line-height: 1.5;
         text-align: justify;
@@ -1437,7 +1437,7 @@
           transition: all 1s ease-in-out;
           display: -webkit-box;
           -webkit-line-clamp: 99;
-          padding-bottom: rfs-value(15px);
+          //padding-bottom: rfs-value(15px);
         }
       }
     }
