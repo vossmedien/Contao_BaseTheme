@@ -319,9 +319,47 @@ return array(
 
 
                 'reverse' => array(
-                    'label' => array('Spalten umkehren', 'Funktioniert NUR mit 50% Spalten!'),
+                    'label' => array('Spalten umkehren', ''),
                     'inputType' => 'checkbox',
                 ),
+
+
+
+                'boxed_headline_type' => array(
+                    'label' => array(
+                        'de' => array('Typ der Überschrift', 'Ausrichtung der Elemente'),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'h1' => 'H1',
+                        'h2' => 'H2',
+                        'h3' => 'H3',
+                        'h4' => 'H4',
+                        'h5' => 'H5',
+                    ),
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+                'boxed_headline_onlystyle' => array(
+                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+                'boxed_headline' => array(
+                    'label' => array('Überschrift auf Spaltenmitte liegend', ''),
+                    'inputType' => 'text',
+                    'eval' => array('allowHtml' => true),
+                ),
+
+                'boxed_subheadline' => array(
+                    'label' => array('Subline', ''),
+                    'inputType' => 'text',
+                    'eval' => array('allowHtml' => true),
+                ),
+
+
+
 
 
                 'image' => array(
@@ -589,7 +627,7 @@ return array(
 
                         'link_type' => array(
                             'label' => array(
-                                'de' => array('Farbe des Buttons', ''),
+                                'de' => array('Optik des Buttons', ''),
                             ),
                             'inputType' => 'select',
                             'options' => array(
@@ -597,6 +635,7 @@ return array(
                                 'btn-outline-primary' => 'Hauptfarbe (Outline)',
                                 'btn-secondary' => 'Sekundär-Farbe',
                                 'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
+                                'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
                             ),
                         ),
                         'link_size' => array(

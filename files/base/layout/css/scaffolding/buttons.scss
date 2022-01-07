@@ -4,8 +4,28 @@
   padding-bottom: rfs-value(10px);
   border-radius: $border-radius;
 
-  &.btn-outline-secondary{
+  &.btn-link{
+    padding: 0px;
+    &:hover, &:focus{
+      outline: none;
+      box-shadow: none;
+    }
 
+    &.with-arrow{
+      text-decoration: none;
+
+      &:before{
+        @extend %fa-icon;
+        @extend .fal;
+        content: fa-content($fa-var-angle-double-right);
+        display: inline-block;
+        margin-right: rfs-value(5px);
+        vertical-align: middle;
+        white-space: nowrap;
+        @include font-size(20px);
+
+      }
+    }
   }
 }
 
