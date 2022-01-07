@@ -1,59 +1,119 @@
-html body .footer--content.type--1 .fc--bottom #footerNav ul > li > a,
-html body .footer--content.type--1 .fc--bottom #footerNav ul > li > strong,
-html body .footer--content.type--1 .fc--bottom{
+html body{
+  h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1{
+    font-weight: $font-weight-semibold;
+    line-height: 1.2;
+    hyphens: none;
+  }
+
+  h2, .h2,{
+    @include font-size(2.5rem);
+    font-weight: $font-weight-bold;
+  }
+}
+
+
+
+html body .ce_rsce_headimagelogo .ce--mainimage.style-2 .mainimage--content .mainimage--content-inner span:last-of-type{
+  @include font-size(26px);
+  font-weight: $font-weight-normal;
+  margin-top: 1.25rem !important;
+}
+
+html body .ce_rsce_headimagelogo .ce--mainimage.style-2 .mainimage--content .mainimage--content-inner span:first-of-type{
+  @include font-size(52px);
+  hyphens: none;
+}
+
+
+html body .btn-primary{
+  color: $text-color-inverse;
+}
+
+html body .btn-outline-secondary{
+  border-width: 3px;
+  font-weight: $font-weight-medium;
+
+  &.btn-lg{
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    min-width: rfs-value(225px);
+    @include font-size(24px);
+  }
+}
+
+
+
+html body .ce_rsce_kachelfeld .kachelbox .kachelbox--inner .kb--content .box--button a.btn,
+html body .ce_rsce_kachelfeld .kachelbox .kachelbox--inner .kb--content .box--button .layout_full + p.back a,
+html body .layout_full + p.back .ce_rsce_kachelfeld .kachelbox .kachelbox--inner .kb--content .box--button a{
+  border-width: 2px;
+  min-width: 180px;
+  font-weight: $font-weight-bold;
+  @include font-size(22px);
+  border-color: $white;
   color: $white;
-  //font-weight: $font-weight-bold;
 }
 
-
-html body .header--content.type--1 .hc--bottom{
-  height: 112px;
-}
-
-html body .header--content.type--1 .hc--bottom .hc-bottom--inside .row .hc-bottom--left-col img, html body
-.header--content.type--1 .hc--bottom .hc-bottom--inside .text--wrapper.with-image .hc-bottom--left-col img{
-  max-height: 250px;
-}
-
-html body .header--content.type--1 .hc--bottom .hc-bottom--inside .row,
-html body .header--content.type--1 .hc--bottom .hc-bottom--inside .text--wrapper.with-image{
-  align-items: initial !important;
-}
-
-html body .header--content.type--1 .hc--bottom:not(.is--scrolling) .hc-bottom--inside .row .hc-bottom--right-col,
-html body .header--content.type--1 .hc--bottom:not(.is--scrolling) .hc-bottom--inside .text--wrapper.with-image .hc-bottom--right-col{
-  margin-top: 1rem;
-}
-
-html body .footer--content.type--1 .fc--top{
-  color: $text-color;
-}
-
-html body .footer--content.type--1 .fc--top .social--list ul a{
-  color: $text-color;
-}
-
-html body .footer--content.type--1{
-  border-top: 0px;
-}
-
-.btn-primary, .btn-primary:hover html body .layout_full + p.back a{
-  color: $white;
+html body .ce_rsce_kachelfeld .kachelbox .kachelbox--inner > .kb--content .box--headline .h5{
+  line-height: 1.2;
 }
 
 
 
-html body .ce_rsce_headimagelogo .ce--mainimage .mainimage--content .mainimage--content-inner{
-  background-color: rgba(255,255,255,.65);
-  padding: 1rem 1.5rem;
-  max-width: 600px;
-  border-radius: $border-radius;
+html body .ce_rsce_kachelfeld .kachelbox {
+  border-radius: rfs-value(20px);
+  transition: all .3s ease;
+
+  background: rgb(40,111,181);
+  background: linear-gradient(57deg, rgba(40,111,181,1) 0%, rgba(8,24,105,1) 100%);
+
+  &:hover{
+    background: rgb(249,90,0);
+    background: linear-gradient(57deg, rgba(249,90,0,1) 0%, rgba(255,0,110,1) 100%);
+  }
+
+  > .kachelbox--inner {
+
+    > .kb--content{
+
+      .box--headline .h5{
+        position: relative;
+        padding-bottom: 30px;
+        color: $text-color-inverse;
+
+        &:after{
+          height: 5px;
+          width: 90px;
+          left: 50%;
+          margin-left: -45px;
+          display: inline-block;
+          position: absolute;
+          bottom: 0;
+          background-color: $text-color-inverse;
+        }
+      }
+
+
+    }
+  }
 }
 
-html body .ce_rsce_headimagelogo .ce--mainimage{
-  margin-top: -112px;
+.pseudo-hidden{
+  visibility: hidden;
+  opacity: 0;
+  height: 0px;
+  overflow: hidden;
 }
 
-html body .ce_rsce_headimagelogo .ce--mainimage:not(.not-fullHeight) .image--holder{
-  min-height: calc(-40px + 100vh) !important;
+html body form .button--wrapper{
+  margin-top: 2rem;
+
+  @include media-breakpoint-down(sm) {
+    .btn{
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
 }
+
+
