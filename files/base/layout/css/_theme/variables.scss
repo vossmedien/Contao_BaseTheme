@@ -1,10 +1,19 @@
-$font-family-base: 'Montserrat', sans-serif;
+$blue:    #025577;
+$red:     #73160E;
 
-$red: #fb3829;
-$primary: $red;
+$primary: $blue;
+$primary-light: #c9d9e0;
+$primary-lighter: #d3e3ea;
 
-$gray-800: #262c38;
+$info: $primary-light;
 
-$footer-top-bg: $gray-800;
+$secondary: $red;
 
-$border-radius: 0px;
+$footer-top-bg: $primary;
+$footer-middle-bg: $primary;
+$footer-bottom-bg: $primary;
+
+$font-family-base: 'FreightSans Pro', sans-serif;
+$font-family-sans-serif: 'FreightSans Pro', sans-serif;
+
+$grid-gutter-width: 2rem;
