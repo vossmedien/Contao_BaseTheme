@@ -42,14 +42,14 @@
 
 
                                 <?php if($ext != "mp4"):?>
-                                    <div class="image--holder lazy <?php if (!$box->longtext): ?>rounded<?php endif;?>"
+                                    <div class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image): ?>rounded<?php endif;?>"
                                          style="background-size: cover; background-repeat: no-repeat; background-position: center center;"
                                          data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, 3); ?>">
                                     </div>
                                 <?php endif;?>
 
                                 <?php if($ext == "mp4"):?>
-                                <div class="image--holder is--video <?php if ($box->longtext): ?>rounded<?php endif;?>">
+                                <div class="image--holder is--video <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image): ?>rounded<?php endif;?>">
                                     <video autoplay muted controls playsinline>
                                         <source type="video/mp4" src="{{file::<?= $box->image ?>}}">
                                     </video>
