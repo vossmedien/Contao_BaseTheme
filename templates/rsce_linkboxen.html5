@@ -42,7 +42,7 @@
 
 
                                 <?php if($ext != "mp4"):?>
-                                    <div class="image--holder lazy <?php if ($box->longtext): ?>rounded<?php endif;?>"
+                                    <div class="image--holder lazy <?php if (!$box->longtext): ?>rounded<?php endif;?>"
                                          style="background-size: cover; background-repeat: no-repeat; background-position: center center;"
                                          data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, 3); ?>">
                                     </div>
