@@ -1,9 +1,13 @@
+
+
+
 .header--content {
   &.type--1 {
     position: relative;
     z-index: 15;
 
     &.fixed{
+      padding-bottom: rfs-value(100px); // Temporary?
 
       .hc--bottom{
         position: absolute;

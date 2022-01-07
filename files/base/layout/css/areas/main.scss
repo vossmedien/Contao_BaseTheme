@@ -1,4 +1,10 @@
 #wrapper{
+    min-height: 100vh;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-between;
+
+
     #main{
         .mod_article{
             &:last-child{
