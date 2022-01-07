@@ -31,11 +31,9 @@
     }
 
     .fc--middle{
-      padding: 1.5rem 0 1rem 0;
+      padding: 1.5rem 0 1.5rem 0;
 
-      @include media-breakpoint-up(md) {
-        padding: 2.5rem 0 0.5rem 0;
-      }
+
 
       figure{
         margin-bottom: 0px;
@@ -87,6 +85,7 @@
         .social-list--label{
           display: inline-block;
           color: $text-color-inverse;
+          @include font-size(14px);
           span{
             display: block;
           }
