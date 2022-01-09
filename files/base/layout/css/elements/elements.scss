@@ -1193,12 +1193,19 @@
 
 .ce_rsce_videoslider {
   .swiper-slide {
+
+    a{
+      text-decoration: none;
+    }
+
     .slide-caption {
       display: block;
       padding-top: rfs-value(5px);
       text-align: center;
       font-weight: $font-weight-semibold;
       @include font-size(14px);
+      text-decoration: none;
+      color: $body-color;
     }
   }
 }

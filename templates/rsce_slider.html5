@@ -24,7 +24,7 @@
                     <!-- Slides -->
                     <?php foreach ($this->galery as $slide): ?>
                         <div class="swiper-slide">
-                            <img src="<?= \Image::get(\FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>">
+                            <img class="swiper-lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>">
                         </div>
                     <?php endforeach ?>
                 </div>
@@ -51,7 +51,7 @@
                 const swiper = new Swiper(slider, {
                     direction: 'horizontal',
                     loop: true,
-                    preloadImages: true,
+                    preloadImages: false,
                     lazy: true,
                     navigation: {
                         // the 'index' bit below is just the order of the class in the queryselectorAll array, so the first one would be NextArrow[0] etc

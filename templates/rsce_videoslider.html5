@@ -9,7 +9,7 @@
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
+                <span class="ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
@@ -37,11 +37,17 @@
                                href='https://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'
 
                             >
-                                <img src="<?= \Image::get(\FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
+                                <img class="swiper-lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
+
+                                <?php if($slide->text):?>
+                                    <span class="slide-caption"><?php echo $slide->text; ?></span>
+                                <?php endif;?>
+
                             </a>
-                            <?php if($slide->text):?>
-                            <span class="slide-caption"><?php echo $slide->text; ?></span>
-                            <?php endif;?>
+
+
+                            <div class="swiper-lazy-preloader"></div>
+
                         </div>
                     <?php endforeach ?>
                 </div>
@@ -84,10 +90,11 @@
                     },
 
                     loop: true,
-                    preloadImages: true,
+                    preloadImages: false,
                     lazy: true,
                     slidesPerView: 1,
                     spaceBetween: 10,
+                    checkInView: true,
                     // Responsive breakpoints
                     breakpoints: {
                         320: {
