@@ -7,7 +7,11 @@
         .mod_article{
             &:last-child{
                 .content--element[class*='bg-']:last-of-type{
-                    margin-bottom: rfs-value(-$basic-gutter*1.5);
+                    margin-bottom: 0;
+                }
+
+                > div > div:last-of-type{
+                    margin-bottom: rfs-value($basic-gutter);
                 }
             }
 

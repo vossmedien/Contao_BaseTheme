@@ -52,7 +52,7 @@
                     direction: 'horizontal',
                     loop: true,
                     preloadImages: true,
-                    lazy: false,
+                    lazy: true,
                     navigation: {
                         // the 'index' bit below is just the order of the class in the queryselectorAll array, so the first one would be NextArrow[0] etc
                         nextEl: nextArrow[index],

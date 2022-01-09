@@ -59,7 +59,7 @@
 
 
             <div class="item--image" >
-                <img src="<?= \Image::get(\FilesModel::findByUuid($input->image)->path, null, null, null); ?>">
+                <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($input->image)->path, null, null, null); ?>">
             </div>
 
             <?php if ($input->text_bottom): ?>

@@ -35,7 +35,7 @@
                             <?php if ($b->icon): ?>
                                 <i class="<?php echo $b->icon;?>"></i>
                             <?php elseif($b->image):?>
-                                <img src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                                <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                             <?php endif;?>
                         </div>
                         <?php endif;?>

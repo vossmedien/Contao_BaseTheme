@@ -40,7 +40,9 @@ $secondary-darker: $secondary;
 
 $font-weight-medium: 500;
 
-
+$border-radius: 10px;
+$basic-gutter: 50px;
+$headline-spacing: 2.5rem;
 
 // Footer
 
@@ -58,9 +60,10 @@ $font-family-base: 'Open Sans', sans-serif;
 $font-family-sans-serif: 'Montserrat', sans-serif;
 $font-weight-semibold: 600;
 
+$fa-font-display: swap;
 
 //Swiper
 $themeColor: $primary;
-$border-radius: 10px;
-$basic-gutter: 50px;
-$headline-spacing: 1.75rem;
+
+
+

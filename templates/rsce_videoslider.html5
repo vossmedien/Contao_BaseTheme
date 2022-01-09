@@ -84,8 +84,8 @@
                     },
 
                     loop: true,
-                    preloadImages: false,
-                    lazy: false,
+                    preloadImages: true,
+                    lazy: true,
                     slidesPerView: 1,
                     spaceBetween: 10,
                     // Responsive breakpoints

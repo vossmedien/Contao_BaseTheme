@@ -26,7 +26,7 @@
                         <?php if ($this->image): ?>
                             <div class="d-none col-6 d-md-block">
                                 <img data-aos="fadeInRight"
-                                     src="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>">
+                                     class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>">
                             </div>
                         <?php endif; ?>
                         <div class="col">

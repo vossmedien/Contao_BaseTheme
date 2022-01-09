@@ -27,7 +27,7 @@
                     <?php if ($row->headline_image): ?>
                         <div class="col-auto">
                             <div class="image--wrapper">
-                             <img src="<?= \Image::get(\FilesModel::findByUuid($row->headline_image)->path, null, null, null); ?>">
+                             <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($row->headline_image)->path, null, null, null); ?>">
                             </div>
                         </div>
                     <?php endif; ?>
@@ -62,7 +62,7 @@
                                     </div>
 
                                     <div class="cr--image">
-                                        <img src="<?= \Image::get(\FilesModel::findByUuid($col->image)->path, null, null, null); ?>">
+                                        <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($col->image)->path, null, null, null); ?>">
                                     </div>
 
                                     <div class="cr--content">

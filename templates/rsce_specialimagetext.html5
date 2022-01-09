@@ -21,7 +21,7 @@
         <div class="row">
             <div class="col-12 col-md-7">
                 <div class="image--wrapper image-left">
-                    <img data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" src="<?= \Image::get(\FilesModel::findByUuid($this->image_left)->path, null, null, null); ?>">
+                    <img data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($this->image_left)->path, null, null, null); ?>">
                 </div>
             </div>
             <div class="col-12 col-md-5">
@@ -64,7 +64,7 @@
         </div>
         <div class="col-12">
             <div class="image--wrapper image-bottom">
-                <img data-aos="animate__fadeInUp" src="<?= \Image::get(\FilesModel::findByUuid($this->image_bottom)->path, null, null, null); ?>">
+                <img data-aos="animate__fadeInUp" class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($this->image_bottom)->path, null, null, null); ?>">
             </div>
         </div>
     </div>

@@ -29,7 +29,7 @@
                     <div class="ma--image">
                         <a data-lightbox title="<?php echo $ma->name ?>" class="cboxElement"
                            href="<?= \Image::get(\FilesModel::findByUuid($ma->bild)->path, null, null, null); ?>">
-                            <img src="<?= \Image::get(\FilesModel::findByUuid($ma->bild)->path, null, null, 2); ?>">
+                            <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($ma->bild)->path, null, null, 2); ?>">
                         </a>
                     </div>
                     <?php endif; ?>

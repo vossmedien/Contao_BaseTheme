@@ -41,7 +41,7 @@
 
 
                             <a href="<?= \Image::get(\FilesModel::findByUuid($b->images[0])->path, null, null, null); ?>" class="main--image group_<?php echo $rand;?> bts-cboxElement cboxElement">
-                                <img src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                                <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                             </a>
 
                             <div class="invisible">
@@ -53,7 +53,7 @@
                             </div>
 
                         <?php else:?>
-                            <img src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                            <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                         <?php endif;?>
 
 

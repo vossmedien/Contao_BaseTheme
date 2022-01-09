@@ -102,29 +102,53 @@ Promise.all(promises)
 
         });
 
-        $('a[href^="#"]').click(function () {
+        $('body').on('click', 'a[href^="#"]', function(e) {
+            e.preventDefault();
+            var targetSelector = this.hash;
+            var $target = $(targetSelector);
             var href = $.attr(this, 'href');
 
-            $('html, body').animate({
-                scrollTop: $(href).offset().top
-            }, 1000, function () {
-                window.location.hash = href;
-                changeNavLinks(href);
-            });
+            window.location.hash = href;
+            changeNavLinks(href);
 
-            return false;
+            $('html, body').animate(
+                {
+                    scrollTop: $target.offset().top
+                }, {
+                    duration: 2500,
+                    step: function( now, fx ) {
+                        var newOffset = $target.offset().top - 50;
+                        if(fx.end !== newOffset)
+                            fx.end = newOffset;
+                    }
+                }
+            );
         });
+
 
         if (window.location.hash) {
             var hash = window.location.hash;
 
             if ($(hash).length) {
                 changeNavLinks();
-                $('html, body').animate({
-                    scrollTop: $(hash).offset().top
-                }, 1000);
+
+                $('html, body').animate(
+                    {
+                        scrollTop: $(hash).offset().top
+                    }, {
+                        duration: 2500,
+                        step: function( now, fx ) {
+                            var newOffset =  $(hash).offset().top - 50;
+                            if(fx.end !== newOffset)
+                                fx.end = newOffset;
+                        }
+                    }
+                );
+
             }
         }
+
+
         if ($('#main table').length) {
             $('#main table').each(function (index) {
                 $(this).wrap('<div class="table-responsive"></div>')

@@ -1,4 +1,5 @@
 <IfModule mod_headers.c>
+    Header append Cache-Control "public"
     # Allow access from all domains for webfonts (see contao/core-bundle#528)
     <FilesMatch "\.(ttf|ttc|otf|eot|woff2?|font\.css)$">
         Header set Access-Control-Allow-Origin "*"
@@ -84,60 +85,74 @@ AddOutputFilterByType DEFLATE application/x-font-ttf application/x-font-opentype
 ExpiresActive On
 
 <IfModule mod_expires.c>
-    ## Enable expiration control
-    ExpiresActive On
+    # Fonts
+    # Add correct content-type for fonts
+    AddType application/vnd.ms-fontobject .eot
+    AddType application/x-font-ttf .ttf
+    AddType application/x-font-opentype .otf
+    AddType application/x-font-woff .woff
+    AddType image/svg+xml .svg
+    AddType application/x-font-woff2 .woff2
+
+    # Compress compressible fonts
+    # only uncomment if you dont have compression turned on already. Otherwise it will cause all other filestypes not to get compressed
+    # AddOutputFilterByType DEFLATE application/x-font-ttf application/x-font-opentype image/svg+xml
+
+    ExpiresActive on
+
+    # Add a far future Expires header for fonts
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
+    ExpiresByType application/x-font-ttf "access plus 1 year"
+    ExpiresByType application/x-font-opentype "access plus 1 year"
+    ExpiresByType application/x-font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2  "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType application/x-font-woff2  "access plus 1 year"
 
     ## CSS and JS expiration: 1 week after request
     ExpiresByType text/css "now plus 1 week"
     ExpiresByType application/javascript "now plus 1 week"
     ExpiresByType application/x-javascript "now plus 1 week"
 
-    ## Image files expiration: 1 month after request
-    ExpiresByType image/bmp "now plus 1 month"
-    ExpiresByType image/gif "now plus 1 month"
-    ExpiresByType image/jpeg "now plus 1 month"
-    ExpiresByType image/jp2 "now plus 1 month"
-    ExpiresByType image/pipeg "now plus 1 month"
-    ExpiresByType image/png "now plus 1 month"
-    ExpiresByType image/svg+xml "now plus 1 month"
-    ExpiresByType image/tiff "now plus 1 month"
-    ExpiresByType image/x-icon "now plus 1 month"
-    ExpiresByType image/ico "now plus 1 month"
-    ExpiresByType image/icon "now plus 1 month"
-    ExpiresByType text/ico "now plus 1 month"
-    ExpiresByType application/ico "now plus 1 month"
-    ExpiresByType image/vnd.wap.wbmp "now plus 1 month"
+    ## Image files expiration: 1 year after request
+    ExpiresByType image/bmp "now plus 1 year"
+    ExpiresByType image/gif "now plus 1 year"
+    ExpiresByType image/jpeg "now plus 1 year"
+    ExpiresByType image/jp2 "now plus 1 year"
+    ExpiresByType image/pipeg "now plus 1 year"
+    ExpiresByType image/png "now plus 1 year"
+    ExpiresByType image/svg+xml "now plus 1 year"
+    ExpiresByType image/tiff "now plus 1 year"
+    ExpiresByType image/x-icon "now plus 1 year"
+    ExpiresByType image/ico "now plus 1 year"
+    ExpiresByType image/icon "now plus 1 year"
+    ExpiresByType text/ico "now plus 1 year"
+    ExpiresByType application/ico "now plus 1 year"
+    ExpiresByType image/vnd.wap.wbmp "now plus 1 year"
 
-    ## Font files expiration: 1 week after request
-    ExpiresByType application/x-font-ttf "now plus 1 week"
-    ExpiresByType application/x-font-opentype "now plus 1 week"
-    ExpiresByType application/x-font-woff "now plus 1 week"
-    ExpiresByType font/woff2 "now plus 1 week"
-    ExpiresByType image/svg+xml "now plus 1 week"
-    ExpiresByType application/x-font-woff2 "access plus 1 year"
 
-    ## Audio files expiration: 1 month after request
-    ExpiresByType audio/ogg "now plus 1 month"
-    ExpiresByType application/ogg "now plus 1 month"
-    ExpiresByType audio/basic "now plus 1 month"
-    ExpiresByType audio/mid "now plus 1 month"
-    ExpiresByType audio/midi "now plus 1 month"
-    ExpiresByType audio/mpeg "now plus 1 month"
-    ExpiresByType audio/mp3 "now plus 1 month"
-    ExpiresByType audio/x-aiff "now plus 1 month"
-    ExpiresByType audio/x-mpegurl "now plus 1 month"
-    ExpiresByType audio/x-pn-realaudio "now plus 1 month"
-    ExpiresByType audio/x-wav "now plus 1 month"
+    ## Audio files expiration: 1 year after request
+    ExpiresByType audio/ogg "now plus 1 year"
+    ExpiresByType application/ogg "now plus 1 year"
+    ExpiresByType audio/basic "now plus 1 year"
+    ExpiresByType audio/mid "now plus 1 year"
+    ExpiresByType audio/midi "now plus 1 year"
+    ExpiresByType audio/mpeg "now plus 1 year"
+    ExpiresByType audio/mp3 "now plus 1 year"
+    ExpiresByType audio/x-aiff "now plus 1 year"
+    ExpiresByType audio/x-mpegurl "now plus 1 year"
+    ExpiresByType audio/x-pn-realaudio "now plus 1 year"
+    ExpiresByType audio/x-wav "now plus 1 year"
 
-    ## Movie files expiration: 1 month after request
-    ExpiresByType application/x-shockwave-flash "now plus 1 month"
-    ExpiresByType x-world/x-vrml "now plus 1 month"
-    ExpiresByType video/x-msvideo "now plus 1 month"
-    ExpiresByType video/mpeg "now plus 1 month"
-    ExpiresByType video/mp4 "now plus 1 month"
-    ExpiresByType video/quicktime "now plus 1 month"
-    ExpiresByType video/x-la-asf "now plus 1 month"
-    ExpiresByType video/x-ms-asf "now plus 1 month"
+    ## Movie files expiration: 1 year after request
+    ExpiresByType application/x-shockwave-flash "now plus 1 year"
+    ExpiresByType x-world/x-vrml "now plus 1 year"
+    ExpiresByType video/x-msvideo "now plus 1 year"
+    ExpiresByType video/mpeg "now plus 1 year"
+    ExpiresByType video/mp4 "now plus 1 year"
+    ExpiresByType video/quicktime "now plus 1 year"
+    ExpiresByType video/x-la-asf "now plus 1 year"
+    ExpiresByType video/x-ms-asf "now plus 1 year"
 </IfModule>
 
 

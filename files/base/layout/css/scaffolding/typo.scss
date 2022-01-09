@@ -63,6 +63,7 @@ html body {
 
     & + .ce--subline{
       margin-top: -$headline-spacing / 1.25;
+      margin-bottom: $headline-spacing;
       @include font-size(1.5rem);
     }
   }
@@ -74,28 +75,32 @@ html body {
 
     & + .ce--subline{
       margin-top: -$headline-spacing/1.5;
+      margin-bottom: $headline-spacing / 1.25;
       @include font-size(1.5rem);
     }
   }
 
   h3, .h3 {
     font-weight: $font-weight-medium;
-    margin-bottom: $headline-spacing / 2;
+    margin-bottom: $headline-spacing / 1.5;
     font-size: 1.5rem;
     color: $primary;
     display: block;
 
 
     & + .ce--subline{
-      margin-top: -$headline-spacing/2;
+      margin-top: -$headline-spacing / 1.75;
+      margin-bottom: $headline-spacing / 1.5;
     }
   }
 
 
   h4, .h4{
+    margin-bottom: $headline-spacing;
 
     & + .ce--subline{
-      margin-top: -$headline-spacing/3.35;
+      margin-top: -$headline-spacing/1.25;
+      margin-bottom: $headline-spacing;
     }
   }
 

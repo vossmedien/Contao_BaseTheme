@@ -6,8 +6,7 @@
             <div class="container">
                 <?php if ($this->headline): ?>
                 <<?php echo($this->hl); ?>
-                data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>
-                " >
+                data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
@@ -103,8 +102,8 @@
     </div>
 
     <?php if ($this->boxed_image): ?>
-        <div class="boxed-logo" data-aos="animate__fadeIn">
-            <img src="<?= \Image::get(\FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
+        <div class="boxed-logo" >
+            <img data-aos="<?php if ($this->boxed_image_animation_type): ?><?php echo $this->boxed_image_animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>" class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
         </div>
     <?php endif; ?>
 

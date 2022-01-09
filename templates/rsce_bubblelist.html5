@@ -27,7 +27,7 @@
                             <a href="<?php echo $item->url; ?>"></a>
 
                             <div class="bl-i--image" data-aos="<?php if($item->animation_type != ""):?><?php echo $item->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
-                                <img src="<?= \Image::get(\FilesModel::findByUuid($item->img)->path, null, null, null); ?>">
+                                <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($item->img)->path, null, null, null); ?>">
                             </div>
                             <div class="bl-i--text" data-aos="<?php if($item->animation_type != ""):?><?php echo $item->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"
                                  <?php if ($this->linkcolor): ?>style="color: <?php echo $this->linkcolor; ?>"<?php endif; ?>>
