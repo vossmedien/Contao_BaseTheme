@@ -93,10 +93,12 @@
 
     <?php $this->sections('bottom'); ?>
   <?php $this->endblock(); ?>
+
+
+
+
   <?= $this->mooScripts ?>
   <?= $this->mootools ?>
-
-
 
 </body>
 </html>

@@ -19,7 +19,7 @@
     <?php foreach ($this->row as $row): ?>
 
 
-    <div class="ce--imagetextwall lazy" data-bg="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>" style="
+    <div class="ce--imagetextwall lazy" <?php if ($row->image && $row->image_both): ?>data-bg="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>"      <?php endif; ?> style="
         <?php if ($row->image && $row->image_both): ?>
        background-position: center center; background-repeat: no-repeat; background-size: cover;
         <?php endif; ?>
