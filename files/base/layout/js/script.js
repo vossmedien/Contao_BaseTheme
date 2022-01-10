@@ -1,18 +1,17 @@
 function loadScript(url) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         let script = document.createElement('script');
         script.src = url;
         script.async = false;
-        script.onload = function() {
+        script.onload = function () {
             resolve(url);
         };
-        script.onerror = function() {
+        script.onerror = function () {
             reject(url);
         };
         document.body.appendChild(script);
     });
 }
-
 
 
 let scripts = [
@@ -27,12 +26,12 @@ let scripts = [
 
 // save all Promises as array
 let promises = [];
-scripts.forEach(function(url) {
+scripts.forEach(function (url) {
     promises.push(loadScript(url));
 });
 
 Promise.all(promises)
-    .then(function() {
+    .then(function () {
 
         function isOnScreen(elem) {
             // if the element doesn't exist, abort
@@ -52,6 +51,7 @@ Promise.all(promises)
                 (bottom > viewport_top && bottom <= viewport_bottom) ||
                 (height > viewport_height && top <= viewport_top && bottom >= viewport_bottom)
         }
+
         function changeNavLinks() {
             $('#mainNav li > *').each(function (index) {
                 var hash = window.location.hash;
@@ -104,7 +104,7 @@ Promise.all(promises)
 
         });
 
-        $('body.onepage').on('click', '#mainNav a[href^="#"]', function(e) {
+        $('body.onepage').on('click', '#mainNav a[href^="#"]', function (e) {
             e.preventDefault();
             var targetSelector = this.hash;
             var $target = $(targetSelector);
@@ -118,16 +118,16 @@ Promise.all(promises)
                     scrollTop: $target.offset().top
                 }, {
                     duration: 2500,
-                    step: function( now, fx ) {
+                    step: function (now, fx) {
                         var newOffset = $target.offset().top - 50;
-                        if(fx.end !== newOffset)
+                        if (fx.end !== newOffset)
                             fx.end = newOffset;
                     }
                 }
             );
         });
 
-        $('body').on('click', '#main .mod_article a[href^="#"]', function(e) {
+        $('body').on('click', '#main .mod_article a[href^="#"]', function (e) {
             e.preventDefault();
             var targetSelector = this.hash;
             var $target = $(targetSelector);
@@ -141,9 +141,9 @@ Promise.all(promises)
                     scrollTop: $target.offset().top
                 }, {
                     duration: 2500,
-                    step: function( now, fx ) {
+                    step: function (now, fx) {
                         var newOffset = $target.offset().top - 50;
-                        if(fx.end !== newOffset)
+                        if (fx.end !== newOffset)
                             fx.end = newOffset;
                     }
                 }
@@ -161,9 +161,9 @@ Promise.all(promises)
                         scrollTop: $(hash).offset().top
                     }, {
                         duration: 2500,
-                        step: function( now, fx ) {
-                            var newOffset =  $(hash).offset().top - 50;
-                            if(fx.end !== newOffset)
+                        step: function (now, fx) {
+                            var newOffset = $(hash).offset().top - 50;
+                            if (fx.end !== newOffset)
                                 fx.end = newOffset;
                         }
                     }
@@ -219,32 +219,31 @@ Promise.all(promises)
         if ($('.header--content.type--1:not(.fixed)').length) {
 
             navWrapper = $('.hc--bottom');
+            navWrapperHeight = $('.hc--bottom').outerHeight();
             navContainer = $('.hc-bottom--right-col');
-            navOffset = navContainer.offset().top - 15;
+            navOffset = navContainer.offset().top - 30;
             imageHeight = $('.ce--mainimage > .image--holder').data("height");
 
-            if(!imageHeight){
+            if (!imageHeight) {
                 imageHeight = 100;
             }
 
 
-            $(".ce--mainimage .image--holder").css({ 'max-height': 'calc(' + imageHeight + 'vh - ' + $('header').height()+ 'px)' });
+            $(".ce--mainimage .image--holder").css({'max-height': 'calc(' + imageHeight + 'vh - ' + $('header').height() + 'px)'});
 
-            function setHeaderHeight() {
-                header = $('.header--content.type--1');
-                headerHeight = navWrapper.innerHeight() + $('.hc--top').innerHeight();
-                header.height(headerHeight);
-            }
 
             function detectIfScrolled() {
                 if ($(this).scrollTop() > navOffset) {
                     navWrapper.addClass('is--scrolling');
+                    $('.header--content .hc--top').css("margin-bottom", navWrapperHeight + 'px')
+
                 } else {
                     navWrapper.removeClass('is--scrolling');
+                    $('.header--content .hc--top').css("margin-bottom", '0px')
                 }
             }
 
-            setHeaderHeight();
+
             detectIfScrolled();
 
 
@@ -252,11 +251,7 @@ Promise.all(promises)
                 detectIfScrolled();
             });
 
-            if (window.matchMedia('(min-width: 768px) and (orientation: portrait)').matches) {
-                $(window).resize(function () {
-                    setHeaderHeight();
-                });
-            }
+
         }
 
         if ($('.header--content.type--1.fixed').length) {
@@ -266,12 +261,6 @@ Promise.all(promises)
             navOffset = navContainer.offset().top - 15;
 
 
-            function setHeaderHeight() {
-                header = $('.header--content.type--1');
-                //headerHeight = navWrapper.innerHeight() + $('.hc--top').innerHeight();
-                //header.height(headerHeight);
-            }
-
             function detectIfScrolled() {
                 if ($(this).scrollTop() > navOffset) {
                     navWrapper.addClass('is--scrolling');
@@ -280,7 +269,7 @@ Promise.all(promises)
                 }
             }
 
-            //setHeaderHeight();
+
             detectIfScrolled();
 
 
@@ -288,11 +277,7 @@ Promise.all(promises)
                 detectIfScrolled();
             });
 
-            if (window.matchMedia('(min-width: 768px) and (orientation: portrait)').matches) {
-                $(window).resize(function () {
-                    //setHeaderHeight();
-                });
-            }
+
         }
 
         if ($('.header--content.type--2').length) {
@@ -374,7 +359,7 @@ Promise.all(promises)
         }
 
 
-    }).catch(function(script) {
+    }).catch(function (script) {
     console.log(script + ' failed to load');
 });
 
