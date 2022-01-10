@@ -1,0 +1,226 @@
+.ce_rsce_headimagelogo {
+  margin-top: 0px;
+
+  .boxed-logo {
+
+    display: inline-block;
+
+    position: absolute;
+    right: 50%;
+    transform: translate(50%, -15%);
+    bottom: 0;
+    text-align: center;
+
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+    }
+
+    @include media-breakpoint-up(md) {
+      transform: translate(50%, 15%);
+    }
+
+
+    img {
+      max-width: rfs-value(300px);
+      width: 100%;
+      height: auto;
+      padding: 2rem;
+      background-color: $body-bg;
+      box-shadow: $box-shadow;
+    }
+  }
+
+  .ce--mainimage {
+    position: relative;
+    overflow: hidden;
+
+
+    &.not-fullHeight {
+
+      .image--holder {
+        max-height: 700px;
+      }
+
+      .mainimage--content {
+        //top: auto;
+        //bottom: rfs-value(40px);
+      }
+    }
+
+
+    &.style-1 {
+      .mainimage--content {
+        &:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          width: 40vw;
+          background-color: $white;
+          height: 100%;
+
+          @media all and (max-width: 2280px) {
+            max-width: 580px;
+          }
+
+          .container {
+            @include media-breakpoint-down(sm) {
+              padding: 0px;
+            }
+          }
+        }
+
+        .mainimage--content-inner {
+          position: relative;
+          z-index: 10;
+          padding: 10px 10px 10px 10px;
+          background-color: $white;
+
+          @include media-breakpoint-up(sm) {
+            padding: 10px 10px 10px 0px;
+            &:after {
+              content: '';
+              display: block;
+              position: absolute;
+              right: -35px;
+              top: 0;
+              width: 0;
+              height: 0;
+              border-top: 150px solid $white;
+              border-right: 36px solid transparent;
+            }
+          }
+
+          .button--wrapper {
+            margin-top: 1.5rem;
+          }
+        }
+      }
+    }
+
+
+    &.style-2 {
+      .mainimage--content {
+        .mainimage--content-inner {
+          span {
+            &:first-of-type {
+              @include font-size(70px);
+            }
+
+            &:last-of-type {
+              @include font-size(60px);
+            }
+          }
+
+          h1 {
+            @include font-size(70px);
+            margin-bottom: 0px;
+          }
+
+          .button--wrapper {
+            margin-top: 2.25rem;
+          }
+        }
+      }
+    }
+
+    &.with-diagonalCut {
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        border-right: 100vw solid $body-bg;
+        border-top: 10vw solid transparent;
+      }
+    }
+
+    &.pull-content {
+      margin-bottom: rfs-value(-200px);
+
+      .mainimage--content {
+        top: 35%;
+        transform: translate(0%, -35%) !important;
+      }
+    }
+
+    .image--holder {
+      height: 100vh;
+      position: relative;
+      background-size: cover !important;
+      background-position: center center;
+      overflow: hidden;
+
+      @media (orientation: landscape) {
+        //height: rfs-value(450px);
+      }
+
+
+      video {
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -1000;
+        overflow: hidden;
+
+        transform: translate(-50%, -50%);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+      }
+
+      .mainimage--content {
+        width: 100vw;
+        position: absolute;
+        top: 40%;
+        left: 0;
+        transform: translate(0%, -50%) !important;
+
+
+        .mainimage--content-inner {
+          display: inline-block;
+
+          @include media-breakpoint-up(sm) {
+            padding: 10px 10px 10px 0px;
+            max-width: 560px;
+          }
+
+          @include media-breakpoint-up(xxl) {
+            max-width: 530px;
+          }
+
+          span {
+            display: block;
+            line-height: 1;
+
+            &.first-line {
+              @include font-size(36px);
+              font-weight: $font-weight-bold;
+            }
+
+            &.second-line {
+              @include font-size(18px);
+              margin-top: 8px;
+            }
+          }
+
+          h1 {
+            @include font-size(36px);
+            font-weight: $font-weight-bold;
+          }
+
+          .infotext--text {
+            margin-top: 1.25rem;
+          }
+        }
+      }
+
+
+    }
+
+
+  }
+
+
+}

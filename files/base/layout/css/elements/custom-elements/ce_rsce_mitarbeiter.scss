@@ -1,0 +1,52 @@
+.ce_rsce_mitarbeiter {
+  margin-bottom: rfs-value(-25px);
+
+
+  .row > div {
+    margin-bottom: rfs-value(25px);
+  }
+
+  .ma--element {
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+
+
+    .ma--image {
+      position: relative;
+
+      > a {
+        display: block;
+        position: relative;
+        z-index: 22;
+      }
+    }
+
+    .ma--details {
+      @include padding(10px 0px 0px 0px);
+      @include font-size(18px);
+      flex: 1;
+
+      &.with-bg {
+        @include padding(15px 20px 15px 20px);
+      }
+
+      .job-subline {
+        @include font-size(14px);
+
+        @include media-breakpoint-up(md) {
+          min-height: rfs-value(42px);
+        }
+      }
+
+      .job-desc {
+        @include font-size(14px);
+        margin-top: .75rem;
+
+        a {
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}

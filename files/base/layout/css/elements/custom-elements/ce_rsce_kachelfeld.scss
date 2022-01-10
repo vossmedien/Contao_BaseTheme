@@ -1,0 +1,149 @@
+.ce_rsce_kachelfeld {
+
+  .row > div:not(:last-child) {
+
+    @include media-breakpoint-down(lg) {
+      margin-bottom: rfs-value(20px);
+    }
+
+  }
+
+  .kachelbox {
+    height: 100%;
+    background-color: $gray-900;
+    position: relative;
+    transition: background-color .3s ease;
+    box-shadow: $box-shadow;
+    color: $text-color-inverse;
+
+
+    &:hover {
+      background-color: $primary;
+
+
+      .kachelbox--inner {
+        .kb--image {
+          i {
+            color: $text-color-inverse;
+          }
+        }
+
+        .kb--content {
+          .box--headline .h5 {
+            color: $text-color-inverse;
+
+            &:after {
+              background-color: $text-color-inverse;
+            }
+          }
+
+          .box--button {
+            a.btn {
+              background-color: $text-color-inverse;
+              color: $primary;
+            }
+          }
+        }
+      }
+    }
+
+    a.kachel--url {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      display: block;
+    }
+
+
+    .kachelbox--inner {
+      padding: rfs-value(0px 30px 30px 30px);
+      min-height: 100%;
+
+      .kb--image {
+        height: rfs-fluid-value(200px);
+        line-height: rfs-fluid-value(200px);
+        text-align: center;
+
+        @include media-breakpoint-up(lg) {
+          height: rfs-fluid-value(150px);
+          line-height: rfs-fluid-value(150px);
+        }
+
+        @include media-breakpoint-up(xxl) {
+          height: rfs-value(200px);
+          line-height: rfs-value(200px);
+        }
+
+        img {
+          width: auto;
+          max-height: 100%;
+          padding-top: rfs-value(15px);
+          padding-bottom: rfs-value(15px);
+
+          @include media-breakpoint-up(lg) {
+            padding-top: rfs-value(30px);
+            padding-bottom: rfs-value(30px);
+          }
+        }
+
+        i {
+          @include font-size(100px);
+          color: $primary;
+          transition: all .3s ease;
+
+          line-height: rfs-fluid-value(200px);
+
+          @include media-breakpoint-up(lg) {
+            line-height: rfs-fluid-value(150px);
+          }
+
+          @include media-breakpoint-up(xxl) {
+            line-height: rfs-value(200px);
+          }
+        }
+      }
+
+
+      > .kb--content {
+        margin-top: rfs-value(5px);
+        height: 100%;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+
+        &:first-child {
+          padding-top: 1.5rem;
+        }
+
+
+        .box--headline {
+          .h5 {
+            font-weight: $font-weight-bold;
+
+            &:after {
+              content: '';
+              display: block;
+              height: 2px;
+              width: rfs-fluid-value(50px);
+              margin-top: 10px;
+              background-color: $primary;
+              transition: all .3s ease;
+            }
+          }
+        }
+
+        .box--text {
+
+        }
+
+        .box--button {
+          align-self: flex-end;
+        }
+
+
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+.ce_rsce_boxtitlesubtitle {
+
+
+  .boxtitlesubtitle {
+    position: relative;
+
+
+    @include media-breakpoint-down(sm) {
+      margin-top: rfs-value(40px);
+    }
+
+
+    .bts--url {
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    &:hover {
+      img {
+        opacity: .8;
+      }
+    }
+
+    .bts--image {
+      text-align: center;
+
+      img {
+        transition: opacity .3s ease;
+      }
+    }
+
+    .bts--content {
+      margin-top: rfs-value(12.5px);
+      text-align: center;
+
+      @include media-breakpoint-up(md) {
+        margin-top: rfs-value(25px);
+      }
+
+      .bts--headline {
+        color: $primary;
+        font-weight: bold;
+      }
+
+      .bts--subline {
+        color: $secondary;
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+.ce_rsce_headline {
+  margin-bottom: rfs-fluid-value(4rem);
+  margin-top: rfs-fluid-value(4rem);
+
+
+  .ce--main-image {
+    @extend .make-fullwidth;
+
+    .image--holder {
+      height: 50vh;
+      background-size: cover !important;
+      position: relative;
+      box-shadow: inset 0px 25px 40px rgb(0 0 0 / 50%);
+
+      &:after {
+        content: '';
+        height: rfs-fluid-value(200px);
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 5;
+        background: linear-gradient(rgba(255, 255, 255, 0) 0%, #fff 100%);
+      }
+
+
+      background-position: center center;
+      position: relative;
+
+
+      /*
+      &:after{
+        content:'';
+        position: absolute;
+        right: 0;
+        left: auto;
+        height: 100%;
+        width: 150px;
+        background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,1) 100%);
+        background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.5) 50%,rgba(255,255,255,1) 100%);
+        background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.5) 50%,rgba(255,255,255,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 );
+
+      }
+      &:before{
+        content:'';
+        position: absolute;
+        left: 0;
+        right: auto;
+        height: 100%;
+        width: 150px;
+        background: -moz-linear-gradient(left,  rgba(255,255,255,1) 0%, rgba(255,255,255,0.45) 55%, rgba(255,255,255,0) 100%);
+        background: -webkit-linear-gradient(left,  rgba(255,255,255,1) 0%,rgba(255,255,255,0.45) 55%,rgba(255,255,255,0) 100%);
+        background: linear-gradient(to right,  rgba(255,255,255,1) 0%,rgba(255,255,255,0.45) 55%,rgba(255,255,255,0) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=1 );
+      }
+
+       */
+    }
+
+    & + .box--holder {
+      @extend .content--box;
+      @extend .bg-gradient-white;
+      //margin-top: rfs-fluid-value(-10rem);
+      position: relative;
+      z-index: 5;
+    }
+  }
+
+  .box--holder {
+
+  }
+}

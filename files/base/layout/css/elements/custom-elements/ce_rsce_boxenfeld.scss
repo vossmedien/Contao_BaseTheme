@@ -1,0 +1,98 @@
+.ce_rsce_boxenfeld {
+  .boxes--outer {
+    &:not(:last-child) {
+      padding-bottom: 3rem;
+    }
+
+    &:nth-child(odd) {
+      .row {
+
+        .box--content {
+          @include media-breakpoint-up(lg) {
+            margin-right: 1.3rem;
+          }
+        }
+
+        img {
+          @include media-breakpoint-up(lg) {
+            left: -10vw;
+          }
+        }
+      }
+    }
+
+    .row.flex-row-reverse {
+      @include media-breakpoint-up(lg) {
+        flex-flow: row-reverse;
+
+        img {
+          right: 5vw;
+          left: auto;
+        }
+
+
+        .box--content {
+          padding: 3rem 5vw 3rem 3rem;
+
+        }
+      }
+    }
+
+    &:nth-child(even) {
+      .row {
+        @include media-breakpoint-up(lg) {
+          flex-flow: row-reverse;
+
+          img {
+            right: 5vw;
+            left: auto;
+          }
+
+
+          .box--content {
+            padding: 3rem 5vw 3rem 3rem;
+
+          }
+        }
+      }
+    }
+  }
+
+  .box--image {
+    position: relative;
+    border-radius: $border-radius $border-radius 0px 0px;
+    @include media-breakpoint-up(lg) {
+      max-width: calc(100% + 15vw);
+      border-radius: 25px;
+    }
+
+
+  }
+
+  .box--content {
+    border: 7px solid $primary;
+    padding: 3rem 3rem 3rem 5vw;
+    z-index: 10;
+    position: relative;
+    border-radius: 0px 0px $border-radius $border-radius;
+    @include media-breakpoint-down(lg) {
+      top: 0 !important;
+    }
+
+
+    @include media-breakpoint-up(lg) {
+      padding: rfs-value(80px 80px 80px 5vw);
+      border-radius: $border-radius;
+    }
+
+
+    .box--headline:first-child > * {
+      margin-top: 0px;
+    }
+
+    .box--button {
+      margin-top: 1.5rem;
+    }
+
+  }
+}
