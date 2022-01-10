@@ -104,7 +104,7 @@ Promise.all(promises)
 
         });
 
-        $('body').on('click', 'a[href^="#"]', function(e) {
+        $('body.onepage').on('click', '#mainNav a[href^="#"]', function(e) {
             e.preventDefault();
             var targetSelector = this.hash;
             var $target = $(targetSelector);
@@ -127,6 +127,28 @@ Promise.all(promises)
             );
         });
 
+        $('body').on('click', '#main .mod_article a[href^="#"]', function(e) {
+            e.preventDefault();
+            var targetSelector = this.hash;
+            var $target = $(targetSelector);
+            var href = $.attr(this, 'href');
+
+            window.location.hash = href;
+            changeNavLinks(href);
+
+            $('html, body').animate(
+                {
+                    scrollTop: $target.offset().top
+                }, {
+                    duration: 2500,
+                    step: function( now, fx ) {
+                        var newOffset = $target.offset().top - 50;
+                        if(fx.end !== newOffset)
+                            fx.end = newOffset;
+                    }
+                }
+            );
+        });
 
         if (window.location.hash) {
             var hash = window.location.hash;
