@@ -106,7 +106,7 @@
             </div>
 
 
-        <?php if ($row->image && !$row->image_both): ?>
+        <?php if (($row->image && !$row->image_both) || $row->alternate_image || $row->content_rightcol): ?>
             <div class="image--col col-12 col-md">
 
                 <div data-aos="animate__fadeIn" class="image-col--inner lazy
