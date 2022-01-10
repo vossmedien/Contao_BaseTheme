@@ -391,10 +391,18 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
+
+
                 'alternate_textcolor' => array(
                     'label' => array('Alternative Textfarbe', 'In HEX angeben'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'innerpadding' => array(
+                    'label' => array('Innenabstand (oben/unten) innerhalb der Zeile', 'Funktioniert nur bei alternativem Hintergrund'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
                 ),
 
                 'textalign' => array(
@@ -407,7 +415,7 @@ return array(
                         'text-center' => 'Zentriert',
                         'text-end' => 'Rechtsbündig',
                     ),
-                    'eval' => array('tl_class' => 'clr'),
+
                 ),
 
 
