@@ -2006,7 +2006,7 @@
         &.with-bg {
           .content-col--inner {
             @include media-breakpoint-up(md) {
-              padding-left: 1.75rem !important;
+              //padding-left: 1.75rem !important;
             }
 
             @include media-breakpoint-up(lg) {
@@ -2140,7 +2140,7 @@
               //right: 0;
               background-color: rgba(0, 0, 0, .5);
               position: absolute;
-              left: 0;
+              //left: 0;
             }
           }
 
@@ -2176,14 +2176,6 @@
                 }
               }
             }
-
-            &.col-lg-3 {
-              & + .image--col {
-                .image-col--inner {
-                  width: 75vw;
-                }
-              }
-            }
           }
 
 
@@ -2194,7 +2186,7 @@
             margin-left: auto;
             margin-right: auto;
 
-            @include media-breakpoint-up(lg) {
+            @include media-breakpoint-up(md) {
               white-space: nowrap;
               margin-top: 1rem;
               position: absolute;
