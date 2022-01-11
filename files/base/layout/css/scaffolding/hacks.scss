@@ -10,9 +10,19 @@
 
 [data-aos] {
   visibility: hidden;
+  &.animate__animated {
+    visibility: visible;
+  }
 }
-[data-aos].animate__animated {
-  visibility: visible;
+
+
+.lazy{
+  opacity: 0;
+  transition: opacity .3s ease;
+
+  &.entered{
+    opacity: 1;
+  }
 }
 
 header, footer{
