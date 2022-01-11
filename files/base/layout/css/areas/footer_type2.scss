@@ -5,22 +5,34 @@
       #footerNav2{
         ul{
           display: flex;
-          justify-content: center;
-          margin: 0px;
+          justify-content: space-between;
+          margin: 0px -1rem;
           list-style-type: none;
           padding: 0px;
+          flex-flow: row wrap;
 
+          @include media-breakpoint-up(xxl) {
+            margin: 0px -2rem;
+          }
 
           > li{
-            padding: 0 2rem;
+            padding: 0 1rem;
 
+            @include media-breakpoint-up(xxl) {
+              padding: 0 2rem;
+            }
 
             > a, > strong{
               text-decoration: none;
               color: $white;
               display: block;
               white-space: nowrap;
-              @include font-size(18px);
+              @include font-size(14px);
+
+              @include media-breakpoint-up(xxl) {
+                @include font-size(18px);
+              }
+
               &.active, &:hover{
                 text-decoration: underline;
               }
