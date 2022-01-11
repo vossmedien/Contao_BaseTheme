@@ -34,27 +34,30 @@
 
                 <div class="content--col d-flex align-items-center <?php if ($row->alternate_background): ?>with-bg<?php endif;?> <?php echo $row->column_width; ?> <?php if ($row->darken_content): ?>darkened-content<?php endif; ?>" style="<?php if ($row->alternate_background): ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
                     <?php if ($row->boxed_headline): ?>
-                    <div class="content-col--boxed-headline" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
-                        <?php if (!$row->boxed_headline_onlystyle): ?>
-                        <<?php echo $row->boxed_headline_type; ?>>
-                        <?php echo $row->boxed_headline; ?>
-                    </<?php echo $row->boxed_headline_type; ?>>
+                    <div class="content-col--boxed-headline">
+                        <div class="headline--wrapper" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
+                            <?php if (!$row->boxed_headline_onlystyle): ?>
+                            <<?php echo $row->boxed_headline_type; ?>>
+                            <?php echo $row->boxed_headline; ?>
+                        </<?php echo $row->boxed_headline_type; ?>>
 
-                <?php if ($row->boxed_subheadline): ?>
-                    <span class="ce--subline" >
+                        <?php if ($row->boxed_subheadline): ?>
+                            <span class="ce--subline" >
                                     <?php echo $row->boxed_subheadline; ?>
                                 </span>
-                <?php endif; ?>
+                        <?php endif; ?>
 
-                <?php else: ?>
-                    <span class="<?php echo $row->boxed_headline_type; ?>"><?php echo $row->boxed_headline; ?></span>
-                    <?php if ($row->boxed_subheadline): ?>
-                        <span class="ce--subline" >
+                        <?php else: ?>
+                            <span class="<?php echo $row->boxed_headline_type; ?>"><?php echo $row->boxed_headline; ?></span>
+                            <?php if ($row->boxed_subheadline): ?>
+                                <span class="ce--subline" >
                         <?php echo $row->boxed_subheadline; ?>
                     </span>
-                    <?php endif; ?>
-                    </span>
-                <?php endif; ?>
+                            <?php endif; ?>
+                            </span>
+                        <?php endif; ?>
+                        </div>
+
                 </div>
                 <?php endif; ?>
 

@@ -86,7 +86,7 @@
             margin-top: -1.5rem;
             @include media-breakpoint-up(md) {
               margin-top: 0px;
-              transform: translate(-50%, 0%) !important;
+              transform: translate(-50%, 0%);
               left: auto;
             }
           }
@@ -222,26 +222,28 @@
               white-space: nowrap;
               margin-top: 1rem;
               position: absolute;
-              transform: translate(-50%, 0%) !important;
+              transform: translate(-50%, 0%);
               left: 100%;
               z-index: 15;
             }
 
 
-            padding: 1.25rem 2rem;
-            background-color: $body-bg;
-            box-shadow: $box-shadow;
+            .headline--wrapper{
+              padding: 1.25rem 2rem;
+              background-color: $body-bg;
+              box-shadow: $box-shadow;
 
-            > * {
-              margin-bottom: 0px;
-              color: $body-color;
-              @include font-size(20px);
-              font-weight: $font-weight-normal;
-            }
+              > * {
+                margin-bottom: 0px;
+                color: $body-color;
+                @include font-size(20px);
+                font-weight: $font-weight-normal;
+              }
 
-            .ce--subline {
-              margin-top: 0.5rem;
-              line-height: 1.25;
+              .ce--subline {
+                margin-top: 0.5rem;
+                line-height: 1.25;
+              }
             }
           }
 
