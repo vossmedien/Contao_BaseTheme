@@ -32,7 +32,7 @@
 
   .ce--mainimage {
     position: relative;
-    overflow: hidden;
+    //overflow: hidden;
 
 
     &.not-fullHeight {
@@ -140,7 +140,7 @@
 
       .mainimage--content {
         top: 35%;
-        transform: translate(0%, -35%) !important;
+        //transform: translate(0%, -35%) !important;
       }
     }
 
@@ -149,7 +149,7 @@
       position: relative;
       background-size: cover !important;
       background-position: center center;
-      overflow: hidden;
+      //overflow: hidden;
 
       @media (orientation: landscape) {
         //height: rfs-value(450px);
@@ -175,7 +175,7 @@
         position: absolute;
         top: 40%;
         left: 0;
-        transform: translate(0%, -50%) !important;
+        //transform: translate(0%, -50%) !important;
 
 
         .mainimage--content-inner {
