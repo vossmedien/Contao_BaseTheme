@@ -1,0 +1,104 @@
+.ce_rsce_extendedimagecolumns{
+  .row{
+    > div.col-md-6{
+      &:nth-child(even) {
+        .box--image{
+          @include media-breakpoint-up(md) {
+            left: 0;
+          }
+        }
+
+        .box--content{
+          @include media-breakpoint-up(md) {
+            margin: 0 auto 0 2rem;
+          }
+        }
+      }
+
+      &:nth-child(odd) {
+        .box--image{
+          @include media-breakpoint-up(md) {
+            right: 0;
+          }
+        }
+
+        .box--content{
+          @include media-breakpoint-up(md) {
+            margin: 0 2rem 0 auto;
+          }
+        }
+      }
+    }
+    > div:not(.col-md-6){
+      .box--image-holder{
+        .box--image{
+          @extend .make-fullwidth;
+        }
+      }
+      .box--content{
+        max-width: rfs-value(650px);
+      }
+    }
+
+    > div:not(:last-child){
+      @include media-breakpoint-down(md) {
+        margin-bottom: 3rem;
+      }
+    }
+  }
+
+  .box--image-holder{
+    min-height: rfs-fluid-value(350px);
+    position: relative;
+
+    @include media-breakpoint-up(xxl) {
+      min-height: rfs-value(450px);
+    }
+    
+    .box--image{
+      min-height: rfs-fluid-value(350px);
+
+      @include media-breakpoint-down(md) {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+      }
+
+      @include media-breakpoint-up(xxl) {
+        min-height: rfs-value(450px);
+      }
+
+      @include media-breakpoint-up(md) {
+        position: absolute;
+        width: calc(50vw - calc(var(--bs-gutter-x) * .4));
+      }
+    }
+  }
+
+  .box--content{
+    max-width: rfs-value(400px);
+    text-align: center;
+    margin: 0 auto;
+
+    .headline--wrapper{
+      margin-top: -3rem;
+      margin-bottom: 2rem;
+      &.as-box{
+        background-color: $body-bg;
+        color: $body-color;
+        box-shadow: $box-shadow;
+        padding: 1.5rem 2rem;
+        text-align: center;
+        display: inline-block;
+
+        > *{
+          margin: 0px;
+        }
+      }
+    }
+  }
+
+}

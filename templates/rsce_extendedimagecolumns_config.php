@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Boxen mit Bild, Text, Verlinkung, ggf. modales Fenster', ''),
+    'label' => array('Custom | Gestrecktes Bild mit Headline, Text und Button (2-Spaltig)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -22,8 +22,8 @@ return array(
             'inputType' => 'select',
             'options' => array(
                 /* Fading entrances  */
-                              'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
-              'no-animation' => 'Keine Animation',
+                'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
+                'no-animation' => 'Keine Animation',
                 'animate__fadeIn' => 'fadeIn',
                 'animate__fadeInDown' => 'fadeInDown',
                 'animate__fadeInDownBig' => 'fadeInDownBig',
@@ -155,23 +155,12 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
-        'box_style' => array(
-            'label' => array(
-                'de' => array('Darstellungstyp der Boxen', ''),
-            ),
-            'inputType' => 'select',
-            'options' => array(
-                'style-1' => 'Typ 1: Abgerundete Ecken, Schatten, zentriert',
-                'style-2' => 'Typ 2: Grauer Hintergrund, linksbündig, Pfeil auf rechter Seite',
-            ),
-        ),
-
-        'boxes' => array(
+        'box' => array(
             'label' => array('Boxen', ''),
             'elementLabel' => '%s. Box',
             'inputType' => 'list',
             'minItems' => 1,
-            'maxItems' => 99,
+            'maxItems' => 10,
             'fields' => array(
                 'animation_type' => array(
                     'label' => array(
@@ -179,7 +168,7 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                                                /* Fading entrances  */
+                        /* Fading entrances  */
                         'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
                         'no-animation' => 'Keine Animation',
                         'animate__fadeIn' => 'fadeIn',
@@ -313,86 +302,10 @@ return array(
                     'eval' => array('chosen' => 'true')
                 ),
 
-                'column_width' => array(
-                    'label' => array(
-                        'de' => array('Spaltenbreite', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'col-12 col-md-6 col-lg-3' => '25%',
-                        'col-12 col-md-6 col-lg-4' => '33%',
-                        'col-12 col-md-6' => '50%',
-                        'col-12 col-lg-8' => '66.66%',
-                        'col-12 col-lg-9' => '75%',
-                        'col-12' => 'Volle Breite',
-                        'col-12 col-md-auto' => 'Automatische Breite (füllend)',
-                        'col-12 col-md' => 'Breite anhand des Inhalts',
-                    ),
-                ),
 
 
                 'image' => array(
-                    'label' => array('Bild / Video', 'Video-Format: MP4'),
-                    'inputType' => 'fileTree',
-                    'eval' => array(
-                        'multiple' => false,
-                        'fieldType' => 'radio',
-                        'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
-                    ),
-                ),
-
-                'alternate_background' => array(
-                    'label' => array('Alternative Hintergrundfarbe für Text', 'In HEX angeben, für Darstellungstyp 2'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-
-                'alternate_textcolor' => array(
-                    'label' => array('Alternative Textfarbe', 'In HEX angeben'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-
-                'as_box' => array(
-                    'label' => array('Überschrift und Subline in Box mit Schatten darstellen', ''),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr'),
-                ),
-
-
-                'text' => array(
-                    'label' => array('Überschrift', ''),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-
-                'subline' => array(
-                    'label' => array('Subline', ''),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-
-                'longtext' => array(
-                    'label' => array('Langtext', ''),
-                    'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
-                ),
-
-                'textalign' => array(
-                    'label' => array(
-                        'de' => array('Text-Ausrichtung', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'text-start' => 'Linksbündig',
-                        'text-center' => 'Zentriert',
-                        'text-end' => 'Rechtsbündig',
-                    ),
-                ),
-
-                'expand_image' => array(
-                    'label' => array('Bild für Ausklapp-Box', ''),
+                    'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'multiple' => false,
@@ -402,35 +315,65 @@ return array(
                     ),
                 ),
 
-                'remove_padding' => array(
-                    'label' => array('Innenabstand entfernen', ''),
+
+                'asbox' => array(
+                    'label' => array('Headline als Box mit Schatten darstellen', ''),
                     'inputType' => 'checkbox',
                 ),
 
 
-                'expand_longtext' => array(
-                    'label' => array('Langtext beschränken und nach Hover aufklappen', 'Ansonsten wird kompletter Langtext angezeigt'),
+                'onlystyle' => array(
+                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                     'inputType' => 'checkbox',
                 ),
 
-                'hide_preview' => array(
-                    'label' => array('Langtext eingangs komplett ausblenden und nur bei Hover anzeigen', ''),
-                    'inputType' => 'checkbox',
+                'headline_type' => array(
+                    'label' => array(
+                        'de' => array('Typ der Überschrift', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'h1' => 'H1',
+                        'h2' => 'H2',
+                        'h3' => 'H3',
+                        'h4' => 'H4',
+                        'h5' => 'H5',
+                    ),
+                    'eval' => array('tl_class' => 'clr'),
                 ),
 
 
+                'headline' => array(
+                    'label' => array('Überschrift', ''),
+                    'inputType' => 'text',
+                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
+                ),
 
-                'link' => array(
-                    'label' => array('Verlinkung', ''),
-                    'inputType' => 'url',
+
+                'subline' => array(
+                    'label' => array('Subline', ''),
+                    'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'content' => array(
+                    'label' => array('Text', ''),
+                    'inputType' => 'textarea',
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
 
                 'link_text' => array(
                     'label' => array(
-                        'de' => array('Button-Beschriftung', 'Wenn leer, wird Button ausgeblendet'),
+                        'de' => array('Button-Beschriftung', ''),
                     ),
                     'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'link_url' => array(
+                    'label' => array('Verlinkung der Beschriftung', ''),
+                    'inputType' => 'url',
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
@@ -449,7 +392,6 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
-
                 'link_size' => array(
                     'label' => array(
                         'de' => array('Größe des Buttons', ''),
@@ -462,32 +404,8 @@ return array(
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
-
-                'hide_arrow' => array(
-                    'label' => array('Link-Symbol ausblenden', ''),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr'),
-                ),
-
-                'modal_longtext' => array(
-                    'label' => array('Text für modales Fenster', '(überschreibt Verlinkung und öffnet modales Fenster)'),
-                    'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
-                ),
-
-                'modal_image' => array(
-                    'label' => array('Bild für modales Fenster', ''),
-                    'inputType' => 'fileTree',
-                    'eval' => array(
-                        'multiple' => false,
-                        'fieldType' => 'radio',
-                        'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
-                    ),
-                ),
-
-
             ),
         ),
+
     ),
 );

@@ -1,5 +1,8 @@
 <?php
 // rsce_my_element_config.php
+
+// @TODO FullWidthStoerer und TeaserStripe zusammenfassen
+
 return array(
     'label' => array('Custom | Full-Width Störer', ''),
     'types' => array('content'),

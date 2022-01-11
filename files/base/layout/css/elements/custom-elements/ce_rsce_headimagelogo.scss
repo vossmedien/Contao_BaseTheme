@@ -155,6 +155,9 @@
         //height: rfs-value(450px);
       }
 
+      &.with-video{
+        overflow: hidden;
+      }
 
       video {
         min-width: 100%;
