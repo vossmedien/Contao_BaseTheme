@@ -343,7 +343,7 @@ return array(
                 ),
 
                 'alternate_background' => array(
-                    'label' => array('Alternative Hintergrundfarbe für Text', 'In HEX angeben, für Darstellungstyp 2'),
+                    'label' => array('Alternative Hintergrundfarbe für Text', 'In HEX angeben, für Darstellungstyp 2 (Standard: Hellgrau)'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),

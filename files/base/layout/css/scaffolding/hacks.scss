@@ -8,7 +8,7 @@
 }
 
 
-[data-aos] {
+[data-aos]:not([data-aos="no-animation"]) {
   visibility: hidden;
   &.animate__animated {
     visibility: visible;

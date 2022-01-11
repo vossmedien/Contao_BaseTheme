@@ -1,5 +1,5 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
-    <div class="ce--inner">
+    <div class="ce--inner <?php if ($this->boxed_image): ?>with-boxed-logo<?php endif;?>" >
 
         <?php if ($this->headline || $this->subline): ?>
         <div class="ce--headline">
@@ -17,10 +17,6 @@
         </div>
     </div>
     <?php endif; ?>
-
-
-
-
 
     <?php
     $filename = \FilesModel::findByUuid($this->image)->path;

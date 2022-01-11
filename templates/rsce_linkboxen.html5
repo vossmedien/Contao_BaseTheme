@@ -65,7 +65,7 @@
                             <div class="box-lower--wrapper  <?php if ($box->textalign): ?><?php echo $box->textalign; ?><?php endif; ?>">
 
                                 <?php if ($box->text || $box->subline): ?>
-                                    <div class="box--lower <?php if ($box->as_box): ?>as-box<?php endif; ?> <?php if (($box->link || ($box->modal_longtext || $box->modal_image)) && !$box->hide_arrow): ?>with-url<?php endif; ?>" style="<?php if ($box->alternate_textcolor): ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background): ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
+                                    <div class="box--lower <?php if ($box->as_box): ?>as-box<?php endif; ?> <?php if (($box->link || ($box->modal_longtext || $box->modal_image)) && !$box->hide_arrow): ?>with-url<?php endif; ?>" style="<?php if ($box->alternate_textcolor): ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background && !$box->as_box): ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
                                         <div class="headline--wrapper">
                                             <?php if ($box->text): ?>
                                                 <span class="box--headline"><?php echo $box->text; ?></span>
@@ -78,8 +78,8 @@
                                     </div>
                                 <?php endif;?>
 
-                                <?php if ($box->expand_image || $box->longtext): ?>
-                                    <div class="box-lower--expand <?php if ($box->expand_longtext): ?>expandable<?php endif; ?> <?php if ($box->hide_preview): ?>hide-preview<?php endif; ?>">
+                                <?php if ($box->expand_image || $box->longtext || $box->link_text): ?>
+                                    <div class="box-lower--expand <?php if ($box->expand_longtext): ?>expandable<?php endif; ?> <?php if ($box->hide_preview): ?>hide-preview<?php endif; ?>" style="<?php if ($box->alternate_textcolor): ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background): ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
                                         <?php if ($box->expand_image): ?>
                                             <div class="box--expand-image mb-3 text-center">
                                                 <img class="lazy"

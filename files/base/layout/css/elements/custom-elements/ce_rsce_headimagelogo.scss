@@ -1,15 +1,21 @@
 .ce_rsce_headimagelogo {
   margin-top: 0px;
 
+  .with-boxed-logo{
+    margin-bottom: 6rem;
+  }
+
   .boxed-logo {
-
     display: inline-block;
-
     position: absolute;
     right: 50%;
     transform: translate(50%, -15%);
     bottom: 0;
     text-align: center;
+
+    @include media-breakpoint-down(md) {
+      bottom: rfs-value(-70px);
+    }
 
     @include media-breakpoint-down(sm) {
       width: 100%;
@@ -21,7 +27,7 @@
 
 
     img {
-      max-width: rfs-value(300px);
+      //max-width: rfs-value(300px);
       width: 100%;
       height: auto;
       padding: 2rem;

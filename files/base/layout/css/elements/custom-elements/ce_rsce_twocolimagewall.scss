@@ -22,6 +22,7 @@
       }
 
       .content--col {
+        background-color: $body-bg;
         &.with-bg {
           .content-col--inner {
             @include media-breakpoint-up(md) {
@@ -82,7 +83,9 @@
           }
 
           .content--col .content-col--boxed-headline {
+            margin-top: -1.5rem;
             @include media-breakpoint-up(md) {
+              margin-top: 0px;
               transform: translate(-50%, 0%) !important;
               left: auto;
             }

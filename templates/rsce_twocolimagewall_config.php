@@ -409,9 +409,9 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'text-start' => 'Linksbündig',
-                        'text-center' => 'Zentriert',
-                        'text-end' => 'Rechtsbündig',
+                        'text-md-start' => 'Linksbündig',
+                        'text-md-center' => 'Zentriert',
+                        'text-md-end' => 'Rechtsbündig',
                     ),
 
                 ),

@@ -58,7 +58,7 @@
                 </div>
                 <?php endif; ?>
 
-                    <div class="content-col--inner" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
+                    <div class="content-col--inner <?php echo $row->textalign;?>" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
                         <?php if ($row->ce_headline): ?>
                         <div class="content-col--headline-wrapper">
                             <?php if (!$row->onlystyle): ?>
