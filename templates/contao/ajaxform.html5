@@ -75,6 +75,12 @@
         form.innerHTML = data;
         addButtonEvents(form);
 
+        $( form ).find(".widget-text input, .widget-textarea textarea").each(function( index ) {
+
+            $(this).parent("div").addClass("form-floating");
+            $("<label>" + $(this).attr("placeholder") + "</label>").insertAfter(this);
+
+        });
 
         $('html, body').animate({
             scrollTop: $(".ce_form").offset().top - 125
