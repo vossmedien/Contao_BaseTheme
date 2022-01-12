@@ -77,7 +77,7 @@
             .box--headline {
               color: $primary;
               font-weight: $font-weight-bolder;
-              @include font-size(20px);
+              @include font-size(22px);
               text-decoration: none;
               display: block;
               text-transform: uppercase;
@@ -253,7 +253,7 @@
 
           > .headline--wrapper > span.box--headline {
             color: $text-color;
-            @include font-size(24px);
+            @include font-size(22px);
           }
         }
       }

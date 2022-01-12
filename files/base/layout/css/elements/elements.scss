@@ -22,7 +22,7 @@
 
 .mod_article > div > *[class^='ce_'] {
   &.ce_headline {
-    margin-bottom: revert;
+    margin-bottom: $headline-spacing;
 
     & + * {
       margin-top: 0px !important;

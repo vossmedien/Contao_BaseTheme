@@ -76,12 +76,12 @@ html body {
 
   h2, .h2 {
     font-weight: $font-weight-bold;
-    margin-bottom: $headline-spacing / 1.25;
+    margin-bottom: $headline-spacing / 1.75;
     display: block;
 
     & + .ce--subline{
-      margin-top: -$headline-spacing/1.5;
-      margin-bottom: $headline-spacing / 1.25;
+      margin-top: -$headline-spacing/2;
+      margin-bottom: $headline-spacing / 1.75;
       @include font-size(1.5rem);
     }
   }

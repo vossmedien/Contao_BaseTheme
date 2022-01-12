@@ -156,12 +156,24 @@ return array(
         ),
 
         'row' => array(
-            'label' => array('Boxen', ''),
-            'elementLabel' => '%s. Box',
+            'label' => array('Zeilen', ''),
+            'elementLabel' => '%s. Zeile',
             'inputType' => 'list',
             'minItems' => 1,
             'maxItems' => 10,
             'fields' => array(
+                'row_name' => array(
+                    'label' => array('Zeilen-Bezeichnung', 'dient rein zur Orientierung, hat keinen Einfluss auf Frontend'),
+                    'inputType' => 'text',
+                ),
+
+
+                'settings_1' => array(
+                    'label' => array('Einstellungen', ''),
+                    'inputType' => 'group',
+                ),
+
+
                 'animation_type' => array(
                     'label' => array(
                         'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -302,30 +314,38 @@ return array(
                     'eval' => array('chosen' => 'true')
                 ),
 
-                'column_width' => array(
-                    'label' => array(
-                        'de' => array('Inhalts-Spaltenbreite', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'col-12 col-md-6 col-lg-4' => '33%',
-                        'col-12 col-md-6' => '50%',
-                        'col-12 col-lg-8' => '66.66%',
-                        'col-12 col-lg-9' => '75%'
-                    ),
-                ),
-
 
                 'reverse' => array(
                     'label' => array('Spalten umkehren', ''),
                     'inputType' => 'checkbox',
                 ),
 
+                'bottom_spacing' => array(
+                    'label' => array('Abstand zur nächsten Zeile', 'Ansonsten liegen beide Zeilen direkt aneinander'),
+                    'inputType' => 'checkbox',
+                ),
 
+                'darken_content' => array(
+                    'label' => array('Inhaltsspalte abdunkeln', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+
+                'innerpadding' => array(
+                    'label' => array('Innenabstand (oben/unten) innerhalb der Zeile', 'Funktioniert nur bei alternativer Hintergrundfarbe'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+                'settings_2' => array(
+                    'label' => array('Boxed-Headline', ''),
+                    'inputType' => 'group',
+                ),
 
                 'boxed_headline_type' => array(
                     'label' => array(
-                        'de' => array('Typ der Überschrift', 'Ausrichtung der Elemente'),
+                        'de' => array('Typ der Überschrift', ''),
                     ),
                     'inputType' => 'select',
                     'options' => array(
@@ -335,7 +355,7 @@ return array(
                         'h4' => 'H4',
                         'h5' => 'H5',
                     ),
-                    'eval' => array('tl_class' => 'clr'),
+                    'eval' => array('tl_class' => 'clr '),
                 ),
 
                 'boxed_headline_onlystyle' => array(
@@ -345,43 +365,35 @@ return array(
                 ),
 
                 'boxed_headline' => array(
-                    'label' => array('Überschrift auf Spaltenmitte liegend', ''),
+                    'label' => array('Überschrift auf Spaltenmitte liegend', 'In weißer Box mit schatten'),
                     'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
+                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
                 ),
 
                 'boxed_subheadline' => array(
                     'label' => array('Subline', ''),
                     'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
+                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
                 ),
 
+                'settings_3' => array(
+                    'label' => array('Inhaltsspalte (linke Spalte)', ''),
+                    'inputType' => 'group',
+                ),
 
-
-
-
-                'image' => array(
-                    'label' => array('Bild', ''),
-                    'inputType' => 'fileTree',
-                    'eval' => array(
-                        'multiple' => false,
-                        'fieldType' => 'radio',
-                        'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
+                'column_width' => array(
+                    'label' => array(
+                        'de' => array('Inhalts-Spaltenbreite', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'col-12 col-md-6 col-lg-4' => '33%',
+                        'col-12 col-md-6 col-lg-5' => 'ca. 40%',
+                        'col-12 col-md-6' => '50%',
+                        'col-12 col-lg-8' => '66.66%',
+                        'col-12 col-lg-9' => '75%'
                     ),
                 ),
-
-                'image_both' => array(
-                    'label' => array('Bild als Hintergrund für beide Spalten', 'Sonst ist jedes zweites Element automatisch auf der anderen Seite'),
-                    'inputType' => 'checkbox',
-                ),
-
-
-                'alternate_image' => array(
-                    'label' => array('Code als alternative zum Bild in Spalte anzeigen', 'z. B. Googlemap-Frame'),
-                    'inputType' => 'textarea',
-                ),
-
 
                 'alternate_background' => array(
                     'label' => array('Alternative Hintergrundfarbe Inhaltsspalte', 'In HEX angeben'),
@@ -390,36 +402,15 @@ return array(
                 ),
 
 
-
                 'alternate_textcolor' => array(
                     'label' => array('Alternative Textfarbe', 'In HEX angeben'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
-                'innerpadding' => array(
-                    'label' => array('Innenabstand (oben/unten) innerhalb der Zeile', 'Funktioniert nur bei alternativem Hintergrund'),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr'),
-                ),
-
-                'textalign' => array(
-                    'label' => array(
-                        'de' => array('Text-Ausrichtung', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'text-md-start' => 'Linksbündig',
-                        'text-md-center' => 'Zentriert',
-                        'text-md-end' => 'Rechtsbündig',
-                    ),
-
-                ),
-
-
                 'headline_type' => array(
                     'label' => array(
-                        'de' => array('Typ der Überschrift', 'Ausrichtung der Elemente'),
+                        'de' => array('Typ der Überschrift', ''),
                     ),
                     'inputType' => 'select',
                     'options' => array(
@@ -429,13 +420,13 @@ return array(
                         'h4' => 'H4',
                         'h5' => 'H5',
                     ),
+                    'eval' => array('tl_class' => 'clr'),
                 ),
 
                 'onlystyle' => array(
                     'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                     'inputType' => 'checkbox',
                 ),
-
 
                 'ce_headline' => array(
                     'label' => array('Überschrift', ''),
@@ -449,22 +440,59 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
-
-                'darken_content' => array(
-                    'label' => array('Inhaltsspalte abdunkeln', ''),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr'),
-                ),
-
                 'content' => array(
                     'label' => array('Text (linke Spalte)', ''),
                     'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE'),
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
 
+                'textalign' => array(
+                    'label' => array(
+                        'de' => array('Text-Ausrichtung', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'text-md-start' => 'Linksbündig',
+                        'text-md-center' => 'Zentriert',
+                        'text-md-end' => 'Rechtsbündig',
+                    ),
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+                'settings_4' => array(
+                    'label' => array('Bildspalte (rechte Spalte)', ''),
+                    'inputType' => 'group',
+                ),
+
+                'not_as_bg' => array(
+                    'label' => array('Bild nicht als "Hintergrund" einfügen', 'sondern in die Spalte "legen" damit es proportional mitskaliert.'),
+                    'inputType' => 'checkbox',
+                ),
+
+                'image_both' => array(
+                    'label' => array('Bild als Hintergrund für beide Spalten', 'Sonst ist jedes zweites Element automatisch auf der anderen Seite'),
+                    'inputType' => 'checkbox',
+                ),
+
+                'image' => array(
+                    'label' => array('Bild', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'jpg,jpeg,png,svg',
+                        'tl_class' => 'clr'
+                    ),
+                ),
+
+                'alternate_image' => array(
+                    'label' => array('Code als alternative zum Bild in Spalte anzeigen', 'z. B. Googlemap-Frame'),
+                    'inputType' => 'textarea',
+                ),
 
                 'content_rightcol' => array(
-                    'label' => array('Extra Textfeld für rechte Spalte', ''),
+                    'label' => array('Extra Textfeld für rechte Spalte', 'Liegt auf dem Bild'),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
@@ -620,15 +648,21 @@ return array(
                             'label' => array('Link-Beschriftung', ''),
                             'inputType' => 'text',
                         ),
-                        'link_url' => array(
-                            'label' => array('Verlinkung der Beschriftung', ''),
-                            'inputType' => 'url',
-                        ),
+
 
                         'link_betreff' => array(
                             'label' => array('Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
                             'inputType' => 'text',
+                            'eval' => array('tl_class' => 'w50'),
                         ),
+
+                        'link_url' => array(
+                            'label' => array('Verlinkung der Beschriftung', ''),
+                            'inputType' => 'url',
+                            'eval' => array('tl_class' => 'w50'),
+                        ),
+
+
 
                         'link_type' => array(
                             'label' => array(
@@ -642,6 +676,7 @@ return array(
                                 'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
                                 'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
                             ),
+                            'eval' => array('tl_class' => 'w50'),
                         ),
                         'link_size' => array(
                             'label' => array(
@@ -653,11 +688,10 @@ return array(
                                 'btn-sm' => 'Klein',
                                 'btn-lg' => 'Groß',
                             ),
+                            'eval' => array('tl_class' => 'w50'),
                         ),
                     ),
                 ),
-
-
             ),
         ),
 
