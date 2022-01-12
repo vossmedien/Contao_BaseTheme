@@ -1,44 +1,15 @@
 .ce_rsce_twocolimagewall {
   position: relative;
 
-
-
   .container {
     padding: rfs-value(0 10px);
   }
-
-
+  
   .ce--inner {
     .ce--imagetextwall {
       position: relative;
       overflow: hidden;
       transition: background-color .3s ease-in-out;
-
-      &:hover{
-        background-color: $gray-200;
-        .content--col{
-          background-color: $gray-200;
-        }
-
-        .image--col .image-col--inner{
-          transform: scale(1.05,1.05);
-          background-color: $gray-200;
-        }
-
-        &.with-custom-bgcolor{
-          background-color: transparent !important;
-          .content--col{
-            &:not(.with-bg){
-              background-color: transparent !important;
-            }
-            &.with-bg{
-              background-color: $body-bg !important;
-            }
-          }
-
-
-        }
-      }
 
       &.not-as-bg {
         .image-col--inner {
@@ -125,6 +96,7 @@
               min-height: rfs-value(500px);
             }
           }
+
         }
 
         &.only-text--right-col {
@@ -141,6 +113,14 @@
               .image-col--extra-text {
                 padding-left: 1.75rem;
               }
+            }
+
+            .image-col--inner{
+              background-color: transparent;
+            }
+
+            .content--col{
+              background-color: transparent;
             }
           }
         }

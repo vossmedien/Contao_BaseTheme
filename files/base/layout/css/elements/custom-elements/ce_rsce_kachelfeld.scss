@@ -1,11 +1,14 @@
 .ce_rsce_kachelfeld {
 
-  .row > div:not(:last-child) {
+  .row {
+    justify-content: center;
+    > div:not(:last-child) {
 
-    @include media-breakpoint-down(lg) {
-      margin-bottom: rfs-value(20px);
+      @include media-breakpoint-down(lg) {
+        margin-bottom: rfs-value(20px);
+      }
+
     }
-
   }
 
   .kachelbox {
