@@ -20,10 +20,10 @@
     <?php foreach ($this->row as $row): ?>
 
 
-    <div class="ce--imagetextwall <?php if ($row->innerpadding && $row->alternate_background): ?>with-border<?php endif;?> <?php if ($row->not_as_bg): ?>not-as-bg<?php endif; ?> <?php if ($row->bottom_spacing): ?>mb-5<?php endif; ?> <?php if ($row->image && $row->image_both): ?>lazy<?php endif; ?>"
+    <div class="ce--imagetextwall <?php if ($row->alternate_background): ?>with-custom-bgcolor<?php endif;?> <?php if ($row->innerpadding && $row->alternate_background): ?>with-border<?php endif;?> <?php if ($row->not_as_bg): ?>not-as-bg<?php endif; ?> <?php if ($row->bottom_spacing): ?>mb-5<?php endif; ?> <?php if ($row->image && $row->image_both): ?>lazy<?php endif; ?>"
          <?php if ($row->image && $row->image_both): ?>data-bg="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>" <?php endif; ?>
          style="
-         <?php if ($row->innerpadding && $row->alternate_background): ?>border-top: 2rem solid <?php echo $row->alternate_background; ?>; border-bottom: 2rem solid <?php echo $row->alternate_background; ?>;<?php endif; ?>
+
          <?php if ($row->image && $row->image_both): ?>
                  background-position: center center; background-repeat: no-repeat; background-size: cover;
          <?php endif; ?>
@@ -140,7 +140,7 @@
                 >
 
                     <?php if ($row->not_as_bg): ?>
-                        <div class="image--wrapper">
+                        <div class="image--wrapper" style="<?php if ($row->alternate_background): ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
                             <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>">
                         </div>
                     <?php endif; ?>

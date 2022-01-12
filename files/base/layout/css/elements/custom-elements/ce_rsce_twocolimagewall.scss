@@ -1,6 +1,8 @@
 .ce_rsce_twocolimagewall {
   position: relative;
 
+
+
   .container {
     padding: rfs-value(0 10px);
   }
@@ -9,6 +11,34 @@
   .ce--inner {
     .ce--imagetextwall {
       position: relative;
+      overflow: hidden;
+      transition: background-color .3s ease-in-out;
+
+      &:hover{
+        background-color: $gray-200;
+        .content--col{
+          background-color: $gray-200;
+        }
+
+        .image--col .image-col--inner{
+          transform: scale(1.05,1.05);
+          background-color: $gray-200;
+        }
+
+        &.with-custom-bgcolor{
+          background-color: transparent !important;
+          .content--col{
+            &:not(.with-bg){
+              background-color: transparent !important;
+            }
+            &.with-bg{
+              background-color: $body-bg !important;
+            }
+          }
+
+
+        }
+      }
 
       &.not-as-bg {
         .image-col--inner {
@@ -33,12 +63,17 @@
           .image-col--inner .image--wrapper {
             max-height: calc(100% + 4rem);
           }
+
+          .content--col, .image--col{
+            //padding-top: 2rem;
+            //padding-bottom: 2rem;
+          }
         }
 
 
         > .container > .row > .content--col > .content-col--inner {
-          padding-left: 0px;
-          padding-right: 0px;
+          //padding-left: 0px;
+          //padding-right: 0px;
         }
       }
 
@@ -55,6 +90,7 @@
 
       .content--col {
         background-color: $body-bg;
+        transition: background-color .3s ease-in-out;
 
         &.with-bg {
           .content-col--inner {
@@ -129,14 +165,13 @@
 
             .content--col {
               .content-col--inner {
-                padding: 3.5rem 0rem 3.5rem 3.5rem;
+                padding: 1.5rem 0rem 1.5rem 3.5rem;
               }
             }
 
             .image--col {
               .image-col--inner {
                 left: 0;
-
               }
             }
           }
@@ -166,10 +201,17 @@
 
           .image-col--inner {
             min-height: rfs-value(200px);
+            transition: all .3s ease-in-out;
             //right: 0;
             @include media-breakpoint-up(md) {
               height: 100%;
               position: absolute;
+              top: 0;
+            }
+
+
+            .image--wrapper{
+              background-color: $body-bg;
             }
 
 
@@ -278,7 +320,7 @@
             }
 
             & + .content-col--inner {
-              padding-top: rfs-value(100px);
+              padding-top: rfs-value(125px);
             }
 
 
@@ -308,7 +350,7 @@
             width: 100%;
 
             @include media-breakpoint-up(md) {
-              padding: 3.5rem 3.5rem 3.5rem 0;
+              padding: 1.5rem 3.5rem 1.5rem 0;
             }
 
             .content-col--headline-wrapper {

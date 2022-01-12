@@ -10,7 +10,8 @@
 
         .box--content{
           @include media-breakpoint-up(md) {
-            margin: 0 auto 0 2rem;
+            padding: 0 2rem 0 2rem;
+            margin:0 auto 0 0;
           }
         }
       }
@@ -24,7 +25,8 @@
 
         .box--content{
           @include media-breakpoint-up(md) {
-            margin: 0 2rem 0 auto;
+            padding: 0 2rem 0 2rem;
+            margin:0 0 0 auto;
           }
         }
       }
@@ -39,7 +41,6 @@
         max-width: rfs-value(650px);
       }
     }
-
     > div:not(:last-child){
       @include media-breakpoint-down(md) {
         margin-bottom: 3rem;
@@ -57,7 +58,11 @@
     
     .box--image{
       min-height: rfs-fluid-value(350px);
+      transition: all 0.3s ease-in-out;
 
+      &:hover{
+        transform: scale(1.05,1.05);
+      }
       @include media-breakpoint-down(md) {
         width: 100vw;
         position: relative;
@@ -82,6 +87,11 @@
     max-width: rfs-value(400px);
     text-align: center;
     margin: 0 auto;
+    transition: background-color .3s ease;
+    &:hover{
+      background-color: $gray-200;
+    }
+
 
     .headline--wrapper{
       margin-top: -3rem;

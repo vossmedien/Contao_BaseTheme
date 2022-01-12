@@ -25,7 +25,7 @@
                     <div class="link--box <?php if ($box->link || $box->modal_longtext || $box->modal_image || $box->expand_longtext): ?>with-link<?php endif; ?> <?php echo $this->box_style; ?> "
                          data-aos="<?php if ($box->animation_type): ?><?php echo $box->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
 
-                        <?php if ($box->link): ?>
+                        <?php if ($box->link && !$box->link_text): ?>
                             <a href="<?php echo $box->link; ?>"></a>
                         <?php elseif (($box->modal_longtext || $box->modal_image)): ?>
                             <span data-bs-toggle="modal"
