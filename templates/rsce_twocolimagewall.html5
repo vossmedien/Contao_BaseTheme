@@ -5,9 +5,7 @@
         <div class="ce--headline">
             <div class="container">
                 <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>
-                data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>
-                " >
+                <<?php echo($this->hl); ?> data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>" >
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
@@ -72,8 +70,7 @@
                     <?php if ($row->ce_headline): ?>
                     <div class="content-col--headline-wrapper">
                         <?php if (!$row->onlystyle): ?>
-                        <<?php echo $row->headline_type; ?> class="content-col--headline"
-                        data-aos="animate__fadeInUp">
+                        <<?php echo $row->headline_type; ?> class="content-col--headline" data-aos="animate__fadeInUp">
                         <?php echo $row->ce_headline; ?>
                     </<?php echo $row->headline_type; ?>>
 
