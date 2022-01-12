@@ -77,7 +77,7 @@
 
 
         $('html, body').animate({
-            scrollTop: $("#top").offset().top
+            scrollTop: $(".ce_form").offset().top - 125
         }, 1000);
     }
 
