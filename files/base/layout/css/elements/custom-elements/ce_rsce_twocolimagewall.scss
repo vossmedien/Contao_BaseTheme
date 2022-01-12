@@ -1,15 +1,24 @@
 .ce_rsce_twocolimagewall {
   position: relative;
 
+
+
   .container {
     padding: rfs-value(0 10px);
   }
-  
+
+
   .ce--inner {
     .ce--imagetextwall {
       position: relative;
       overflow: hidden;
       transition: background-color .3s ease-in-out;
+
+      &:hover{
+        .image--col .image-col--inner{
+          transform: scale(1.05,1.05);
+        }
+      }
 
       &.not-as-bg {
         .image-col--inner {
