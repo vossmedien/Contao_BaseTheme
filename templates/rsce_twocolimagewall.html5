@@ -120,7 +120,7 @@
         <?php if (($row->image && !$row->image_both) || $row->alternate_image || $row->content_rightcol): ?>
             <div class="image--col col-12 col-md">
 
-                <div data-aos="animate__fadeIn" style="<?php if ($row->alternate_background): ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
+                <div data-aos="animate__fadeIn" style="<?php if ($row->alternate_background): ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
                      class="image-col--inner <?php if (!$row->not_as_bg && !$row->alternate_image): ?>lazy<?php endif; ?>
         <?php if ($row->column_width == "col-12 col-md-6 col-lg-5"): ?>
         col-12 col-md-6 col-lg-7
