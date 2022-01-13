@@ -14,9 +14,11 @@
       overflow: hidden;
       transition: background-color .3s ease-in-out;
 
-      &:hover{
+      &:not(.with-code):hover{
         .image--col .image-col--inner{
-          transform: scale(1.05,1.05);
+          @include media-breakpoint-up(md) {
+            transform: scale(1.05,1.05);
+          }
         }
       }
 
@@ -41,7 +43,7 @@
 
         &.with-border {
           .image-col--inner .image--wrapper {
-            max-height: calc(100% + 4rem);
+            //max-height: calc(100% + 4rem);
           }
 
           .content--col, .image--col{
@@ -141,7 +143,7 @@
           }
 
           .content--col .content-col--boxed-headline {
-            margin-top: -1.5rem;
+
             @include media-breakpoint-up(md) {
               margin-top: 1rem;
               transform: translate(-50%, 0%);
@@ -191,6 +193,7 @@
           .image-col--inner {
             min-height: rfs-value(200px);
             transition: all .3s ease-in-out;
+            background-color: $body-bg;
             //right: 0;
             @include media-breakpoint-up(md) {
               height: 100%;
@@ -200,7 +203,7 @@
 
 
             .image--wrapper{
-              background-color: $body-bg;
+              //background-color: $body-bg;
             }
 
 
@@ -215,7 +218,7 @@
               }
 
               @include media-breakpoint-up(lg) {
-                width: 85%;
+                width: 90%;
               }
             }
           }
@@ -277,7 +280,7 @@
             &.col-lg-5 {
               & + .image--col {
                 .image-col--inner {
-                  width: 66vw;
+                  width: 60vw;
                 }
               }
             }
@@ -293,11 +296,10 @@
 
 
           .content-col--boxed-headline {
-            //margin-top: -2rem;
-            top: 0;
             text-align: center;
             margin-left: auto;
             margin-right: auto;
+            margin-top: -1.5rem;
 
             @include media-breakpoint-up(md) {
               white-space: nowrap;
@@ -306,10 +308,13 @@
               transform: translate(-50%, 0%);
               left: 100%;
               z-index: 15;
+              top: 0;
             }
 
             & + .content-col--inner {
-              padding-top: rfs-value(125px);
+              @include media-breakpoint-up(md) {
+                padding-top: rfs-value(140px);
+              }
             }
 
 

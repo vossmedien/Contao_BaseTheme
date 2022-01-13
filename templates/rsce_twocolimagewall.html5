@@ -20,7 +20,7 @@
     <?php foreach ($this->row as $row): ?>
 
 
-    <div class="ce--imagetextwall <?php if ($row->alternate_background): ?>with-custom-bgcolor<?php endif;?> <?php if ($row->innerpadding && $row->alternate_background): ?>with-border<?php endif;?> <?php if ($row->not_as_bg): ?>not-as-bg<?php endif; ?> <?php if ($row->bottom_spacing): ?>mb-5<?php endif; ?> <?php if ($row->image && $row->image_both): ?>lazy<?php endif; ?>"
+    <div class="ce--imagetextwall <?php if ($row->alternate_image): ?>with-code<?php endif;?> <?php if ($row->alternate_background): ?>with-custom-bgcolor<?php endif;?> <?php if ($row->innerpadding && $row->alternate_background): ?>with-border<?php endif;?> <?php if ($row->not_as_bg): ?>not-as-bg<?php endif; ?> <?php if ($row->bottom_spacing): ?>mb-5<?php endif; ?> <?php if ($row->image && $row->image_both): ?>lazy<?php endif; ?>"
          <?php if ($row->image && $row->image_both): ?>data-bg="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>" <?php endif; ?>
          style="
 
@@ -120,8 +120,8 @@
         <?php if (($row->image && !$row->image_both) || $row->alternate_image || $row->content_rightcol): ?>
             <div class="image--col col-12 col-md">
 
-                <div data-aos="animate__fadeIn"
-                     class="image-col--inner <?php if (!$row->not_as_bg): ?>lazy<?php endif; ?>
+                <div data-aos="animate__fadeIn" style="<?php if ($row->alternate_background): ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
+                     class="image-col--inner <?php if (!$row->not_as_bg && !$row->alternate_image): ?>lazy<?php endif; ?>
         <?php if ($row->column_width == "col-12 col-md-6 col-lg-5"): ?>
         col-12 col-md-6 col-lg-7
         <?php elseif ($row->column_width == "col-12 col-md-6 col-lg-4"): ?>
@@ -134,13 +134,10 @@
         col-12 col-lg-3
         <?php endif; ?>
 "
-                    <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg): ?>
-                        data-bg="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>" style="background-position: center center; background-repeat: no-repeat; background-size: cover;"
-                    <?php endif; ?>
-                >
+                    <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg): ?>data-bg="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>" <?php endif; ?>>
 
                     <?php if ($row->not_as_bg): ?>
-                        <div class="image--wrapper" style="<?php if ($row->alternate_background): ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
+                        <div class="image--wrapper">
                             <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>">
                         </div>
                     <?php endif; ?>
