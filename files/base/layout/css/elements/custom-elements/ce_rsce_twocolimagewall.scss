@@ -193,7 +193,7 @@
           .image-col--inner {
             min-height: rfs-value(200px);
             transition: all .3s ease-in-out;
-            background-color: $body-bg;
+            //background-color: $body-bg;
             //right: 0;
             @include media-breakpoint-up(md) {
               height: 100%;
