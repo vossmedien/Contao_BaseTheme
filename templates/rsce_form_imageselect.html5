@@ -59,7 +59,7 @@
 
 
             <div class="item--image" >
-                <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($input->image)->path, null, null, null); ?>">
+                <img src="<?= \Image::get(\FilesModel::findByUuid($input->image)->path, null, null, null); ?>">
             </div>
 
             <?php if ($input->text_bottom): ?>
@@ -74,7 +74,7 @@
                     <input type="<?php echo($this->input_type); ?>" name="<?= $this->name ?>[]"
                            id="opt_<?php echo $inputId; ?>_<?php echo $index; ?>"
                            class="<?php echo($this->input_type); ?> form-check-input"
-                           value="<?php echo($input->input_value); ?>">
+                           value="<?php echo($input->input_value); ?>[<?php echo($input->price); ?>]">
                     <label id="lbl_<?php echo $inputId; ?>_<?php echo $index; ?>" for="opt_<?php echo $inputId; ?>_<?php echo $index; ?>" class="form-check-label">
                         <?php echo($input->price); ?> €
                     </label>
