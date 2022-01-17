@@ -5,6 +5,14 @@
   }
 
   .formbody {
+
+
+    > *{
+      &:not(:last-child){
+        margin-bottom: 1.25rem;
+      }
+    }
+
     .input-group {
       .input-group-append, .input-group-prepend {
         z-index: 1;
@@ -45,9 +53,6 @@
 
 
   .widget {
-    &:not(:last-child){
-      margin-bottom: 1.25rem;
-    }
 
     input[type="text"],
     input[type="email"],
