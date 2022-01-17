@@ -22,6 +22,12 @@
         }
       }
 
+      &.with-code{
+        .row .image--col, .text--wrapper.with-image .image--col{
+          z-index: 10;
+        }
+      }
+
       &.not-as-bg {
         .image-col--inner {
           display: flex;
@@ -212,13 +218,13 @@
               height: 100%;
 
               @include media-breakpoint-up(md) {
-                width: 70%;
+                //width: 70%;
                 display: block;
                 margin: 0 0 0 auto;
               }
 
               @include media-breakpoint-up(lg) {
-                width: 85%;
+                //width: 85%;
               }
             }
           }
