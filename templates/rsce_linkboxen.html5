@@ -43,10 +43,16 @@
                             <div class="box--upper">
 
 
-                                <?php if ($ext != "mp4"): ?>
+                                <?php if ($ext != "mp4" && !$box->not_as_bg): ?>
                                     <div class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image): ?>rounded<?php endif; ?>"
                                          style="background-size: cover; background-repeat: no-repeat; background-position: center center;"
                                          data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, 3); ?>">
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($ext != "mp4" && $box->not_as_bg): ?>
+                                    <div style="height: auto; text-align: center;" class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image): ?>rounded<?php endif; ?>">
+                                        <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, null); ?>">
                                     </div>
                                 <?php endif; ?>
 

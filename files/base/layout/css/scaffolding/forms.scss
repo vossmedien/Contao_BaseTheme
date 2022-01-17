@@ -45,7 +45,9 @@
 
 
   .widget {
-    margin-bottom: 1.25rem;
+    &:not(:last-child){
+      margin-bottom: 1.25rem;
+    }
 
     input[type="text"],
     input[type="email"],

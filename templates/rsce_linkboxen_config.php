@@ -342,6 +342,12 @@ return array(
                     ),
                 ),
 
+                'not_as_bg' => array(
+                    'label' => array('Bild nicht als Hintergrund sondern als skalierbares Bild einfügen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
                 'alternate_background' => array(
                     'label' => array('Alternative Hintergrundfarbe für Text', 'In HEX angeben, für Darstellungstyp 2 (Standard: Hellgrau)'),
                     'inputType' => 'text',
