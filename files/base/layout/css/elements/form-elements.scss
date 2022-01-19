@@ -18,17 +18,38 @@
 
 
 .form--image-select {
+  margin-bottom: 5rem;
+
+
+
+  &:not(.widget){
+    margin-top: rfs-value(75px);
+    .ce--headline{
+      border-bottom: 1px solid $gray-400;
+    }
+  }
+
   .ce--headline {
-    font-size: 3rem;
-    margin-bottom: 3.5rem;
-    border-bottom: 1px solid $gray-400;
+    //font-size: 3rem;
+    //margin-bottom: 3.5rem;
+
 
     h1, .h1, h2, .h2 {
-      font-size: 3rem;
+      font-size: 2.25rem;
+    }
+
+    h3,.h3{
+      color: $body-color;
+      border: 0px;
+      margin-bottom: 2rem;
+      margin-top: 4rem;
+      font-size: 2rem;
+      font-weight: $font-weight-bold;
+      text-align: center;
     }
 
     .ce--subline {
-
+      font-size: 1.25rem;
     }
 
 
