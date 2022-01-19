@@ -385,6 +385,12 @@ return array(
                     'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
 
+                'is_map' => array(
+                    'label' => array('Langtext beinhaltet GoogleMap', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
                 'textalign' => array(
                     'label' => array(
                         'de' => array('Text-Ausrichtung', ''),

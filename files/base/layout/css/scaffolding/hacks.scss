@@ -43,10 +43,9 @@ header, footer{
 }
 
 
-main, footer {
-  .row > *:not(:last-child){
-    @include media-breakpoint-down(lg) {
-      //margin-bottom: 1.5rem;
-    }
+.content--element.container{
+  .container{
+    max-width: none;
+    padding: 0px;
   }
 }

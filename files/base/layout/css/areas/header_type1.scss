@@ -15,6 +15,17 @@
       }
     }
 
+    &.keep-logo{
+      .hc--bottom{
+        &.is--scrolling{
+          .hc-bottom--left-col{
+            img{
+              opacity: 1;
+            }
+          }
+        }
+      }
+    }
 
     .hc--top {
       background-color: $primary;

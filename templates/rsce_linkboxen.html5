@@ -85,7 +85,7 @@
                                 <?php endif;?>
 
                                 <?php if ($box->expand_image || $box->longtext || $box->link_text): ?>
-                                    <div class="box-lower--expand <?php if ($box->expand_longtext): ?>expandable<?php endif; ?> <?php if ($box->hide_preview): ?>hide-preview<?php endif; ?>" style="<?php if ($box->alternate_textcolor): ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background): ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
+                                    <div class="box-lower--expand <?php if ($box->is_map): ?>is-map p-0<?php endif; ?> <?php if ($box->expand_longtext): ?>expandable<?php endif; ?> <?php if ($box->hide_preview): ?>hide-preview<?php endif; ?>" style="<?php if ($box->alternate_textcolor): ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background): ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
                                         <?php if ($box->expand_image): ?>
                                             <div class="box--expand-image mb-3 text-center">
                                                 <img class="lazy"

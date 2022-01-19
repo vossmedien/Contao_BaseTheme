@@ -92,7 +92,17 @@
         }
 
         .box-lower--expand {
-          padding: rfs-value(0px 25px 15px 25px);
+          &:not(.is-map){
+            padding: rfs-value(15px 25px 15px 25px);
+          }
+
+          &.is-map{
+            iframe{
+              min-height: rfs-value(450px);
+              border-radius: $border-radius;
+            }
+          }
+
 
           .box--longtext {
             padding-left: 0px;

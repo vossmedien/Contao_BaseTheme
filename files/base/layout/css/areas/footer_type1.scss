@@ -61,7 +61,11 @@
           list-style-type: none;
           padding: 0px;
           margin: 0px;
-          text-align: right;
+
+          @include media-breakpoint-up(md) {
+            text-align: right;
+          }
+
 
           > li {
             display: inline-block;
@@ -80,6 +84,10 @@
             }
           }
         }
+      }
+
+      .social--list ul{
+        margin-left: 0px;
       }
 
     }

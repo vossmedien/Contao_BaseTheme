@@ -44,12 +44,18 @@
     &.not-fullHeight {
 
       .image--holder {
-        max-height: 700px;
+        //max-height: 700px;
       }
 
       .mainimage--content {
         //top: auto;
         //bottom: rfs-value(40px);
+      }
+    }
+
+    &:not(.not-fullHeight){
+      .image--holder {
+        height: 100vh;
       }
     }
 
@@ -151,7 +157,6 @@
     }
 
     .image--holder {
-      height: 100vh;
       position: relative;
       background-size: cover !important;
       background-position: center center;
