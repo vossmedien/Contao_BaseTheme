@@ -53,7 +53,7 @@
       }
     }
 
-    &:not(.not-fullHeight){
+    &:not(.not-fullHeight):not(.no-text){
       .image--holder {
         height: 100vh;
       }

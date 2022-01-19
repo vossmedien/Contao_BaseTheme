@@ -354,7 +354,7 @@ return array(
         ),*/
 
         'image_height' => array(
-            'label' => array('Höhe des Bildes in %', 'Standard sind "100", also 100% Viewport-Height'),
+            'label' => array('Höhe des Bereichs in %', 'Standard sind "100", also 100% Viewport-Height'),
             'inputType' => 'text',
         ),
 
