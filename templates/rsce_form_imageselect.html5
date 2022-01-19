@@ -1,22 +1,22 @@
 <div class="form--image-select widget widget-<?php echo($this->input_type); ?>  form-group">
 
 
-
     <?php if ($this->headline || $this->subline): ?>
     <div class="ce--headline">
         <?php if ($this->headline): ?>
-        <<?php echo($this->headline_type); ?> data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
+        <<?php echo($this->headline_type); ?> data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>" >
         <?php echo($this->headline); ?>
     </<?php echo($this->headline_type); ?>>
 <?php endif; ?>
     <?php if ($this->subline): ?>
-        <span class="ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
+        <span class="ce--subline"
+              data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
     <?php endif; ?>
 </div>
 <?php endif; ?>
 
 
-<?php if($this->text_right):?>
+<?php if ($this->text_right): ?>
 <div class="row align-items-center">
     <div class="col-12 col-xl-6">
         <?php endif;?>
@@ -33,15 +33,15 @@
             ?>
             <?php foreach ($this->inputs as $index => $input): ?>
 
-            <div class="col-12 <?php if($this->text_right):?>col-md-6 col-lg-4 col-xl-6 <?php else:?>col-md-6 col-lg-4 col-xl-3<?php endif;?>">
+            <div class="col-12 <?php if ($this->text_right): ?>col-md-6 col-lg-4 col-xl-6 <?php else: ?>col-md-6 col-lg-4 col-xl-3<?php endif; ?>">
 
 
-
-                <label class="image-select--item" for="opt_<?php echo $inputId; ?>_<?php echo $index; ?>" data-aos="<?php if($input->animation_type):?><?php echo $input->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
+                <label class="image-select--item" for="opt_<?php echo $inputId; ?>_<?php echo $index; ?>"
+                       data-aos="<?php if ($input->animation_type): ?><?php echo $input->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
 
 
                     <?php if ($input->headline): ?>
-                    <div class="item--headline" >
+                    <div class="item--headline">
                         <?php if ($input->headline): ?>
                         <<?php echo($input->headline_type); ?>>
                         <?php echo($input->headline); ?>
@@ -52,37 +52,38 @@
 
 
             <?php if ($input->text_top): ?>
-            <div class="item--text-top" >
+            <div class="item--text-top">
                 <?php echo($input->text_top); ?>
             </div>
             <?php endif; ?>
 
 
-            <div class="item--image" >
+            <div class="item--image">
                 <img src="<?= \Image::get(\FilesModel::findByUuid($input->image)->path, null, null, null); ?>">
             </div>
 
             <?php if ($input->text_bottom): ?>
-            <div class="item--text-bottom" >
+            <div class="item--text-bottom">
                 <?php echo($input->text_bottom); ?>
             </div>
             <?php endif; ?>
 
 
-            <div class="item--input" >
+            <div class="item--input price-relevant">
                 <div class="form-check">
                     <input type="<?php echo($this->input_type); ?>" name="<?= $this->name ?>[]"
                            id="opt_<?php echo $inputId; ?>_<?php echo $index; ?>"
                            class="<?php echo($this->input_type); ?> form-check-input"
-                           value="<?php echo($input->input_value); ?>[<?php echo($input->price); ?>]">
-                    <label id="lbl_<?php echo $inputId; ?>_<?php echo $index; ?>" for="opt_<?php echo $inputId; ?>_<?php echo $index; ?>" class="form-check-label">
-                        <?php echo($input->price); ?> €
+                           value="<?php echo($input->input_value); ?>">
+                    <label id="lbl_<?php echo $inputId; ?>_<?php echo $index; ?>"
+                           for="opt_<?php echo $inputId; ?>_<?php echo $index; ?>" class="form-check-label">
+                        <span class="item--price"><?php echo($input->price); ?></span> €
                     </label>
                 </div>
             </div>
 
             <?php if ($input->preview_links): ?>
-            <div class="item--preview-links" >
+            <div class="item--preview-links">
                 <?php echo($input->preview_links); ?>
             </div>
             <?php endif; ?>
@@ -92,17 +93,18 @@
         </div>
         <?php endforeach; ?>
     </div>
-    <?php if($this->text_right):?>
+    <?php if ($this->text_right): ?>
 
 </div>
 
     <div class="col-12 col-xl-6">
-        <div class="col-right" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
-            <?php echo $this->text_right;?>
+        <div class="col-right"
+             data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
+            <?php echo $this->text_right; ?>
         </div>
     </div>
     </div>
-<?php endif;?>
+<?php endif; ?>
 
 
 
