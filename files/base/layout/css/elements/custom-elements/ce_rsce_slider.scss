@@ -1,3 +1,9 @@
 .ce_rsce_slider {
-
+  .slider-subline{
+    display: block;
+    background-color: $primary;
+    font-weight: $font-weight-bold;
+    color: $text-color-inverse;
+    padding: rfs-value(2px 5px 5px 5px);
+  }
 }

@@ -155,12 +155,49 @@ return array(
             'eval'=> array('chosen'=>'true')
         ),
 
+
+        'selecttype' => array(
+            'label' => array('Bilder ', ''),
+            'inputType' => 'radio',
+            'options' => array(
+                'multiple' => 'Mehrere Bilder oder Ordner auswählen',
+                'single' => 'Bilder einzeln auswählen und optional Bildbeschreibung und Bildtitel hinzufügen',
+            ),
+        ),
+
+
+        'multiSRC' => array(
+            'inputType' => 'standardField',
+
+
+            'dependsOn' => array(
+                'field' => 'selecttype',  // Name des Feldes das geprüft werden soll
+                'value' => 'multiple',      // Der Wert der mit dem Feldwert übereinstimmen muss
+            ),
+
+            'eval'      => array(
+                'multiple'   => true,
+                'fieldType'  => 'checkbox',
+                'orderField' => 'orderSRC',
+                'files'      => true,
+                'mandatory'  => false,
+                'isGallery'  => true,
+                'extensions' => 'jpg,jpeg,png,svg',
+            ),
+        ),
+
         'galery' => array(
             'label' => array('Slides', ''),
             'elementLabel' => '%s. Slide',
             'inputType' => 'list',
             'minItems' => 1,
             'maxItems' => 20,
+
+            'dependsOn' => array(
+                'field' => 'selecttype',  // Name des Feldes das geprüft werden soll
+                'value' => 'single',      // Der Wert der mit dem Feldwert übereinstimmen muss
+            ),
+
             'fields' => array(
                 'slide' => array(
                     'label' => array('Bild', ''),
@@ -172,7 +209,14 @@ return array(
                         'extensions' => 'jpg,jpeg,png,svg',
                     ),
                 ),
+
+                'slide_text' => array(
+                    'label' => array('Text-Bezeichnung', ''),
+                    'inputType' => 'text',
+                ),
             ),
+
         ),
+
     ),
 );
