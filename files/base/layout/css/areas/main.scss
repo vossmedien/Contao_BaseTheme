@@ -10,7 +10,9 @@
                     margin-bottom: 0;
                 }
 
-                > div:not(.row) > div:last-of-type, > div.row:last-of-type{
+                > div:not(.row):not(.content--element) > div:last-of-type,
+                > div.row:last-of-type,
+                > div.content--element:last-of-type{
                     margin-bottom: rfs-value($basic-gutter);
                 }
             }
