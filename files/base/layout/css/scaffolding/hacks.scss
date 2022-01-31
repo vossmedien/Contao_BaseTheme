@@ -1,21 +1,14 @@
-*:focus, *:active{
-  //box-shadow: none;
-  outline: 0px;
-}
+
 
 .invisible{
   display: none;
 }
-
-
 [data-aos]:not([data-aos="no-animation"]) {
   visibility: hidden;
   &.animate__animated {
     visibility: visible;
   }
 }
-
-
 .lazy{
   opacity: 0;
   transition: opacity .3s ease;
@@ -24,7 +17,6 @@
     opacity: 1;
   }
 }
-
 header, footer{
   *[data-aos]{
     transition: none !important;
@@ -32,7 +24,6 @@ header, footer{
     visibility: visible !important;
   }
 }
-
 .make-fullwidth {
   width: 100vw;
   position: relative;
@@ -43,9 +34,19 @@ header, footer{
 }
 
 
-.content--element.container{
+.container{
   .container{
     max-width: none;
     padding: 0px;
+  }
+}
+
+
+#main .mod_article > div:not(.content--element):not(.container){
+  @extend .container;
+
+  &.row{
+    padding-left: 0px;
+    padding-right: 0px;
   }
 }

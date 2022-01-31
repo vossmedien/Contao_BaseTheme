@@ -1,3 +1,0 @@
-<div class="custom-contao-container">
-<div<?= $this->cssID; ?> class="<?= $this->class ?> <?= $this->rowClasses ?>">
-    <div class="<?= $this->columnClasses ?>">
