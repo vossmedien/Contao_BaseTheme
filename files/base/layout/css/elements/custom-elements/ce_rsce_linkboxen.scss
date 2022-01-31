@@ -252,9 +252,6 @@
           width: 100%;
           max-width: 75%;
 
-          @include media-breakpoint-up(lg) {
-            max-width: 60%;
-          }
 
           & + .box-lower--expand {
             padding-top: 2rem;

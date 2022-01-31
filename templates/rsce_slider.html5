@@ -5,9 +5,7 @@
         <div class="ce--headline">
 
             <?php if ($this->headline): ?>
-            <<?php echo($this->hl); ?>
-            data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>
-            " >
+            <<?php echo($this->hl); ?> data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>" >
             <?php echo($this->headline); ?>
         </<?php echo($this->hl); ?>>
     <?php endif; ?>
