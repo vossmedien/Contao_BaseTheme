@@ -74,11 +74,11 @@
                                     <div class="box--lower <?php if ($box->as_box): ?>as-box<?php endif; ?> <?php if (($box->link || ($box->modal_longtext || $box->modal_image)) && !$box->hide_arrow): ?>with-url<?php endif; ?>" style="<?php if ($box->alternate_textcolor): ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background && !$box->as_box): ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
                                         <div class="headline--wrapper">
                                             <?php if ($box->text): ?>
-                                                <span class="box--headline"><?php echo $box->text; ?></span>
+                                                <span class="box--headline" style="<?php if ($box->alternate_textcolor): ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?>"><?php echo $box->text; ?></span>
                                             <?php endif; ?>
 
                                             <?php if ($box->subline): ?>
-                                                <span class="ce--subline box--subline"><?php echo $box->subline; ?></span>
+                                                <span class="ce--subline box--subline"  style="<?php if ($box->alternate_textcolor): ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?>"><?php echo $box->subline; ?></span>
                                             <?php endif; ?>
                                         </div>
                                     </div>

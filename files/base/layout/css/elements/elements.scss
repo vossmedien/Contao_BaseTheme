@@ -1,7 +1,8 @@
 .content--element,
 .mod_article > div:not(.row) > *[class^='ce_'],
 .mod_article > div:not(.row) > *[class^='mod_'],
-.mod_article > div.row{
+.mod_article > div.row,
+.mod_article > .ce_headline{
   @include margin-top($basic-gutter);
 
   &:not(:last-child) {
@@ -10,6 +11,15 @@
 
   position: relative;
   z-index: 10;
+}
+
+.mod_article + .mod_article{
+  > .content--element:first-child,
+  > div:not(.row):first-child > *[class^='ce_'],
+  > div:not(.row):first-child > *[class^='mod_'],
+  > *:first-child{
+    margin-top: 0px;
+  }
 }
 
 .custom-contao-container {

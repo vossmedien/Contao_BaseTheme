@@ -35,14 +35,14 @@ header, footer{
 
 
 .container{
-  .container{
+  .container:not(.ce_headline){
     max-width: none;
     padding: 0px;
   }
 }
 
 
-#main .mod_article > div:not(.content--element):not(.container){
+#main .mod_article > *:not(.content--element):not(.container){
   @extend .container;
 
   &.row{
