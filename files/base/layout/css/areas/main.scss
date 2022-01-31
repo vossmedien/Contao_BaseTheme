@@ -4,6 +4,7 @@
     flex-flow: column nowrap;
 
     #main{
+        overflow: hidden;
         .mod_article{
             &:last-child{
                 .content--element[class*='bg-']:last-of-type{
