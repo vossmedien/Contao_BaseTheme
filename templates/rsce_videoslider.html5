@@ -14,13 +14,10 @@
                 </div>
             </div>
         <?php endif; ?>
-
         <div class="ce--videoslider" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-
             <?php if (!$this->fullwidth) : ?>
                 <div class="container">
                 <?php endif; ?>
-
                 <div class="video-slider swiper custom ">
                     <!-- Additional required wrapper -->
                     <div class="swiper-wrapper ">
@@ -29,38 +26,26 @@
                             <div class="swiper-slide">
                                 <a <?php if ($slide->open_tab) : ?> target="_blank" <?php else : ?> class="video-link cboxElement" data-lightbox <?php endif; ?> href='https://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'>
                                     <img class="swiper-lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
-
                                     <?php if ($slide->text) : ?>
                                         <span class="slide-caption"><?php echo $slide->text; ?></span>
                                     <?php endif; ?>
-
                                 </a>
-
-
                                 <div class="swiper-lazy-preloader"></div>
-
                             </div>
                         <?php endforeach ?>
                     </div>
-
                     <?php if (count($this->elements) > 1) : ?>
                         <div class="swiper-pagination swiper-pagination-clickable"></div>
                         <div class="swiper-button-prev"></div>
                         <div class="swiper-button-next"></div>
                     <?php endif; ?>
-
                 </div>
-
                 <?php if (!$this->fullwidth) : ?>
                 </div>
             <?php endif; ?>
-
-
         </div>
     </div>
 </div>
-
-
 <script>
     if ($('.video-slider.custom').length) {
         const videoSlider = () => {
@@ -79,7 +64,6 @@
                         el: pagination[index],
                         clickable: true
                     },
-
                     loop: true,
                     preloadImages: false,
                     lazy: true,
@@ -92,12 +76,10 @@
                             slidesPerView: 1,
                             spaceBetween: <?php echo $this->gutter; ?>
                         },
-
                         480: {
                             slidesPerView: 2,
                             spaceBetween: <?php echo $this->gutter; ?>
                         },
-
                         <?php if ($this->columns == 6) : ?>
                             768: {
                                 slidesPerView: 3,
@@ -121,7 +103,6 @@
                                 spaceBetween: <?php echo $this->gutter; ?>
                             },
                         <?php endif; ?>
-
                     },
                 });
             })

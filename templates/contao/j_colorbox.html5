@@ -1,10 +1,7 @@
 <?php
-
 // Add the colorbox style sheet
 $GLOBALS['TL_CSS'][] = 'assets/colorbox/css/colorbox.min.css|static';
-
 ?>
-
 <script src="<?= $this->asset('js/colorbox.min.js', 'contao-components/colorbox') ?>"></script>
 <script>
     jQuery(function($) {
@@ -17,15 +14,12 @@ $GLOBALS['TL_CSS'][] = 'assets/colorbox/css/colorbox.min.css|static';
                 maxHeight: '95%'
             });
         });
-
-
         $('.video-link').colorbox({
             iframe: true,
             width: '95%',
             height: '95%',
             maxWidth: '1024px',
             maxHeight: '576px',
-
             href: function() {
                 var videoId = new RegExp('[\\?&]v=([^&#]*)').exec(this.href);
                 if (videoId && videoId[1]) {
@@ -33,7 +27,5 @@ $GLOBALS['TL_CSS'][] = 'assets/colorbox/css/colorbox.min.css|static';
                 }
             }
         });
-
-
     });
 </script>

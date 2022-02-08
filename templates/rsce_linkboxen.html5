@@ -2,7 +2,6 @@
     <div class="ce--inner container">
         <?php if ($this->headline || $this->subline) : ?>
             <div class="ce--headline">
-
                 <?php if ($this->headline) : ?>
                     <<?php echo ($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                         <?php echo ($this->headline); ?>
@@ -11,46 +10,33 @@
                 <?php if ($this->subline) : ?>
                     <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
                 <?php endif; ?>
-
             </div>
         <?php endif; ?>
-
-
-
         <?php if ($this->boxes) : ?>
             <div class="row">
                 <?php foreach ($this->boxes as $i => $box) : ?>
                     <div class="<?php if ($box->column_width) : ?><?php echo $box->column_width; ?><?php else : ?>col-12 col-md-6 col-lg-4<?php endif; ?>">
                         <div class="link--box <?php if ($box->link || $box->modal_longtext || $box->modal_image || $box->expand_longtext) : ?>with-link<?php endif; ?> <?php echo $this->box_style; ?> " data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-
                             <?php if ($box->link && !$box->link_text) : ?>
                                 <a href="<?php echo $box->link; ?>"></a>
                             <?php elseif (($box->modal_longtext || $box->modal_image)) : ?>
                                 <span data-bs-toggle="modal" data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"></span>
                             <?php endif; ?>
-
-
                             <?php if ($box->image) : ?>
-
                                 <?php
                                 $filename = \FilesModel::findByUuid($box->image)->path;
                                 $ext = pathinfo($filename, PATHINFO_EXTENSION);
                                 ?>
-
                                 <div class="box--upper">
-
-
                                     <?php if ($ext != "mp4" && !$box->not_as_bg) : ?>
                                         <div class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>" style="background-size: cover; background-repeat: no-repeat; background-position: center center;" data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, 3); ?>">
                                         </div>
                                     <?php endif; ?>
-
                                     <?php if ($ext != "mp4" && $box->not_as_bg) : ?>
                                         <div style="height: auto; text-align: center;" class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
                                             <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, null); ?>">
                                         </div>
                                     <?php endif; ?>
-
                                     <?php if ($ext == "mp4") : ?>
                                         <div class="image--holder is--video <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
                                             <video autoplay muted controls playsinline>
@@ -58,27 +44,22 @@
                                             </video>
                                         </div>
                                     <?php endif; ?>
-
-
                                 </div>
                             <?php endif; ?>
                             <?php if ($box->longtext || $box->text || $box->expand_image || $box->expand_image || $box->modal_longtext || $box->modal_image) : ?>
                                 <div class="box-lower--wrapper  <?php if ($box->textalign) : ?><?php echo $box->textalign; ?><?php endif; ?>">
-
                                     <?php if ($box->text || $box->subline) : ?>
                                         <div class="box--lower <?php if ($box->as_box) : ?>as-box<?php endif; ?> <?php if (($box->link || ($box->modal_longtext || $box->modal_image)) && !$box->hide_arrow) : ?>with-url<?php endif; ?>" style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background && !$box->as_box) : ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
                                             <div class="headline--wrapper">
                                                 <?php if ($box->text) : ?>
                                                     <span class="box--headline" style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?>"><?php echo $box->text; ?></span>
                                                 <?php endif; ?>
-
                                                 <?php if ($box->subline) : ?>
                                                     <span class="ce--subline box--subline" style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?>"><?php echo $box->subline; ?></span>
                                                 <?php endif; ?>
                                             </div>
                                         </div>
                                     <?php endif; ?>
-
                                     <?php if ($box->expand_image || $box->longtext || $box->link_text) : ?>
                                         <div class="box-lower--expand <?php if ($box->is_map) : ?>is-map p-0<?php endif; ?> <?php if ($box->expand_longtext) : ?>expandable<?php endif; ?> <?php if ($box->hide_preview) : ?>hide-preview<?php endif; ?>" style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background) : ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
                                             <?php if ($box->expand_image) : ?>
@@ -86,13 +67,11 @@
                                                     <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($box->expand_image)->path, null, null, 3); ?>">
                                                 </div>
                                             <?php endif; ?>
-
                                             <?php if ($box->longtext) : ?>
                                                 <div class="box--longtext <?php if ($box->remove_padding) : ?>p-0<?php endif; ?>">
                                                     <?php echo $box->longtext; ?>
                                                 </div>
                                             <?php endif; ?>
-
                                             <?php if ($box->link_text) : ?>
                                                 <div class="button--wrapper">
                                                     <a class="d-inline-block btn <?php if ($box->link_size) : ?><?php echo $box->link_size; ?><?php endif; ?> <?php echo $box->link_type; ?>" href="<?php echo $box->link; ?><?php if ($box->link_betreff) : ?>?subject=<?php echo $box->link_betreff; ?><?php endif; ?>"><?php echo $box->link_text; ?>
@@ -103,8 +82,6 @@
                                     <?php endif; ?>
                                 </div>
                             <?php endif; ?>
-
-
                         </div>
                     </div>
                 <?php endforeach ?>
@@ -112,42 +89,33 @@
         <?php endif; ?>
     </div>
 </div>
-
 <?php if ($this->boxes) : ?>
     <?php foreach ($this->boxes as $i => $box) : ?>
-
         <?php if ($box->modal_longtext || $box->modal_image) : ?>
-
             <section class="modal fade" id="linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
-
                             <?php if ($box->text) : ?>
                                 <h5 class="modal-title">
                                     <?php echo $box->text; ?>
                                 </h5>
                             <?php endif; ?>
-
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
                         </div>
                         <div class="modal-body">
-
                             <div class="row">
                                 <?php if ($box->modal_image) : ?>
                                     <div class="col-12 mb-3 mb-md-0 <?php if ($box->modal_longtext) : ?>col-md-6<?php endif; ?>">
                                         <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($box->modal_image)->path, null, null, null); ?>">
                                     </div>
                                 <?php endif; ?>
-
                                 <?php if ($box->modal_longtext) : ?>
                                     <div class="col-12 <?php if ($box->modal_image) : ?>col-md-6<?php endif; ?>">
                                         <?php echo $box->modal_longtext; ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
-
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
@@ -156,6 +124,5 @@
                 </div>
             </section>
         <?php endif; ?>
-
     <?php endforeach ?>
 <?php endif; ?>

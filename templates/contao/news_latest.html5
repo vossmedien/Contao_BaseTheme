@@ -4,21 +4,17 @@
             <time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?> <?= $this->commentCount ?>
         </p>
     <?php endif; ?>
-
     <?php if ($this->hasText) : ?>
         <h2 class="with-url"><?= $this->linkHeadline ?></h2>
     <?php else : ?>
         <h2><?= $this->headline ?></h2>
     <?php endif; ?>
-
-
     <div class="text--wrapper <?php if ($this->addImage) : ?>with-image image-<?php echo $this->floating; ?><?php endif; ?> ">
         <?php if ($this->addImage) : ?>
             <div class="image">
                 <?php $this->insert('image', $this->arrData); ?>
             </div>
         <?php endif; ?>
-
         <div class="text ce_text block">
             <?= $this->teaser ?>
             <?php if ($this->hasText) : ?>
@@ -27,9 +23,7 @@
         </div>
     </div>
 </div>
-
 <?php
-
 // This template is used as a news list template by default, so we only add
 // JSON-LD data in case this is a news article without a reader
 if (!$this->hasReader) {

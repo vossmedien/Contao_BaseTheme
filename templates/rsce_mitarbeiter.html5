@@ -2,7 +2,6 @@
     <div class="ce--inner container">
         <?php if ($this->headline || $this->subline) : ?>
             <div class="ce--headline">
-
                 <?php if ($this->headline) : ?>
                     <<?php echo ($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                         <?php echo ($this->headline); ?>
@@ -11,20 +10,13 @@
                 <?php if ($this->subline) : ?>
                     <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
                 <?php endif; ?>
-
             </div>
         <?php endif; ?>
-
         <div class="ce--mitarbeiter">
-
-
-
             <div class="row small-gutters">
-
                 <?php foreach ($this->mitarbeiter as $ma) : ?>
                     <div class="<?php if ($ma->column_width) : ?><?php echo $ma->column_width; ?><?php else : ?>col-12 col-sm-6 col-md-4 col-lg-3<?php endif; ?>">
                         <div class="ma--element" data-aos="<?php if ($ma->animation_type) : ?><?php echo $ma->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-
                             <?php if ($ma->bild) : ?>
                                 <div class="ma--image">
                                     <a data-lightbox title="<?php echo $ma->name ?>" class="cboxElement" href="<?= \Image::get(\FilesModel::findByUuid($ma->bild)->path, null, null, null); ?>">
@@ -32,18 +24,15 @@
                                     </a>
                                 </div>
                             <?php endif; ?>
-
                             <div class="ma--details <?php if ($ma->alternate_background) : ?>with-bg<?php endif; ?> <?php if ($ma->textalign) : ?><?php echo $ma->textalign; ?><?php endif; ?>" style="<?php if ($ma->alternate_textcolor) : ?>color:<?php echo $ma->alternate_textcolor; ?>;<?php endif; ?><?php if ($ma->alternate_background) : ?>background-color:<?php echo $ma->alternate_background; ?><?php endif; ?>">
                                 <span class="text-primary">
                                     <?php echo $ma->name ?>
                                 </span>
-
                                 <?php if ($ma->subline) : ?>
                                     <div class="job-subline">
                                         <?php echo $ma->subline ?>
                                     </div>
                                 <?php endif; ?>
-
                                 <?php if ($ma->beschreibung) : ?>
                                     <div class="job-desc">
                                         <?php echo $ma->beschreibung ?>

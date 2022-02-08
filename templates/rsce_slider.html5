@@ -1,9 +1,7 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
-
         <?php if ($this->headline || $this->subline) : ?>
             <div class="ce--headline">
-
                 <?php if ($this->headline) : ?>
                     <<?php echo ($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                         <?php echo ($this->headline); ?>
@@ -12,13 +10,9 @@
                 <?php if ($this->subline) : ?>
                     <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
                 <?php endif; ?>
-
             </div>
         <?php endif; ?>
-
-
         <?php
-
         if ($this->selecttype == "multiple") {
             $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
             foreach ($dataSorted as $data) {
@@ -29,15 +23,11 @@
             }
         }
         ?>
-
-
         <div class="ce--content-slider" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-
             <div class="swiper">
                 <!-- Additional required wrapper -->
                 <div class="swiper-wrapper">
                     <!-- Slides -->
-
                     <?php if ($dataSorted) : ?>
                         <?php foreach ($dataSorted as $data) : ?>
                             <?php if ($image = $this->getImageObject($data, $this->size)) : ?>
@@ -50,7 +40,6 @@
                         <?php foreach ($this->galery as $slide) : ?>
                             <div class="swiper-slide">
                                 <img class="swiper-lazy" title="<?php echo $slide->slide_text; ?>" data-src="<?= \Image::get(\FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>">
-
                                 <?php if ($slide->slide_text) : ?>
                                     <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
                                 <?php endif; ?>
@@ -58,8 +47,6 @@
                         <?php endforeach ?>
                     <?php endif; ?>
                 </div>
-
-
                 <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
                     <div class="swiper-pagination"></div>
                     <div class="swiper-button-prev"></div>
@@ -69,7 +56,6 @@
         </div>
     </div>
 </div>
-
 <script>
     if ($('.swiper:not(.custom)').length) {
         const basicSlider = () => {

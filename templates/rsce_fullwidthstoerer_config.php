@@ -1,8 +1,6 @@
 <?php
 // rsce_my_element_config.php
-
 // @TODO FullWidthStoerer und TeaserStripe zusammenfassen
-
 return array(
     'label' => array('Custom | Full-Width Störer', ''),
     'types' => array('content'),
@@ -17,9 +15,6 @@ return array(
             'label' => array('Subline', ''),
             'inputType' => 'text',
         ),
-
-
-
         'image' => array(
             'label' => array('Bild', ''),
             'inputType' => 'fileTree',
@@ -30,13 +25,11 @@ return array(
                 'extensions' => 'jpg,jpeg,png,svg',
             ),
         ),
-
         'ce_headline' => array(
             'label' => array('Überschrift', ''),
             'inputType' => 'text',
             'eval' => array('allowHtml' => true),
         ),
-
         'headline_type' => array(
             'label' => array(
                 'de' => array('Typ der Überschrift', ''),
@@ -54,23 +47,18 @@ return array(
             'label' => array('Subline', ''),
             'inputType' => 'text',
         ),
-
         'content' => array(
             'label' => array('Text', ''),
             'inputType' => 'textarea',
             'eval' => array('rte' => 'tinyMCE'),
         ),
-
-
         'button_text' => array(
             'label' => array('Button-Beschriftung', ''),
             'inputType' => 'text',
         ),
-
         'button_url' => array(
             'label' => array('Button-Link', ''),
             'inputType' => 'url',
         ),
-
     ),
 );

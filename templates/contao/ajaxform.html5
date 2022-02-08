@@ -1,13 +1,10 @@
 <?php $this->extend('block_searchable'); ?>
-
 <?php $this->block('content'); ?>
 <!-- indexer::stop -->
 <div class="<?php echo $this->class; ?> <?php echo $this->tableless ? 'tableless' : 'tableform'; ?> block" <?php echo $this->cssID; ?><?php if ($this->style) : ?> style="<?php echo $this->style; ?>" <?php endif; ?>>
     <?php if ($this->headline) : ?>
-
         <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
     <?php endif; ?>
-
     <form novalidate action="<?php echo $this->action; ?>" <?php if ($this->formId) : ?> id="<?php echo $this->formId; ?>" <?php endif; ?> method="<?php echo $this->method; ?>" enctype="<?php echo $this->enctype; ?>" <?php echo $this->attributes; ?><?php echo $this->novalidate; ?>>
         <div class="formbody">
             <?php if ($this->method != 'get') : ?>
@@ -24,16 +21,13 @@
             endif; ?>
         </div>
     </form>
-
     <script>
         (function() {
             var form = document.querySelector('input[name="FORM_SUBMIT"][value="<?= $this->formSubmit; ?>"]').form;
             if (!form) {
                 return;
             }
-
             var triggeredButton = null;
-
             function request(method, uri, body, callback) {
                 var body = body || null;
                 var request = new XMLHttpRequest();
@@ -41,82 +35,60 @@
                 request.setRequestHeader('Accept', 'text/html');
                 request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                 request.setRequestHeader('Contao-Ajax-Form', '<?= $this->formSubmit; ?>');
-
                 form.classList.add('ajax-loading');
-
                 request.onload = function() {
                     form.classList.remove('ajax-loading');
-
                     callback.apply(this);
-
                     var event = new Event('ajax_change');
                     form.dispatchEvent(event);
                     window.dispatchEvent(event);
                 };
                 request.send(body)
             }
-
             function addButtonEvents(form) {
                 var buttons = form.querySelectorAll('input[type="submit"],button[type="submit"]');
                 for (var i = 0; i < buttons.length; i++) {
-
                     buttons[i].addEventListener('click', function(e) {
                         triggeredButton = e.currentTarget;
                     });
                 }
-
             }
-
             function updateContent(form, data, action) {
                 var action = action || form.action;
-
                 if ('true' === data) {
                     return;
                 }
-
                 form.action = action;
                 form.innerHTML = data;
                 addButtonEvents(form);
-
                 $(form).find(".widget-text input, .widget-textarea textarea").each(function(index) {
-
                     $(this).parent("div").addClass("form-floating");
                     $("<label>" + $(this).attr("placeholder") + "</label>").insertAfter(this);
-
                 });
-
                 $('html, body').animate({
                     scrollTop: $(".ce_form").offset().top - 125
                 }, 1000);
             }
-
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 var formData = new FormData(form);
-
                 if (triggeredButton) {
                     formData.append(triggeredButton.name, triggeredButton.value);
                 }
-
-
-
                 request('POST', form.action, formData, function() {
                     var location = this.getResponseHeader('X-Ajax-Location');
                     if (!location) {
                         updateContent(form, this.responseText);
                         return;
                     }
-
                     request('GET', location, null, function() {
                         updateContent(form, this.responseText, location);
                     });
                 });
             });
-
             addButtonEvents(form);
         })();
     </script>
-
 </div>
 <!-- indexer::continue -->
 <?php $this->endblock(); ?>

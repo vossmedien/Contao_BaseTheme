@@ -1,9 +1,6 @@
 <?php
-
 namespace Contao;
-
 if ($GLOBALS['TL_CONFIG']['useRTE']) :
-
   // Use document.write() here in case TinyMCE is loaded in a subpalette (see #1424)
 ?>
   <script>
@@ -30,7 +27,6 @@ if ($GLOBALS['TL_CONFIG']['useRTE']) :
           Backend.getScrollOffset();
         });
       },
-
       <?php $this->block('picker'); ?>
       file_picker_callback: function(callback, value, meta) {
         Backend.openModalSelector({
@@ -44,34 +40,26 @@ if ($GLOBALS['TL_CONFIG']['useRTE']) :
       },
       file_picker_types: <?= json_encode($this->fileBrowserTypes) ?>,
       <?php $this->endblock(); ?>
-
-
       <?php $this->block('content_css'); ?>
       content_css: ['system/themes/<?= Backend::getTheme() ?>/tinymce.min.css', 'files/base/layout/css/bundle.min.css', ],
       importcss_selector_converter: function(selector) {
         return false;
       },
       <?php $this->endblock(); ?>
-
       <?php $this->block('plugins'); ?>
       plugins: 'autosave charmap code fullscreen image importcss link lists paste searchreplace stripnbsp tabfocus table visualblocks visualchars',
       <?php $this->endblock(); ?>
-
       <?php $this->block('valid_elements'); ?>
       extended_valid_elements: 'q[cite|class|title],article,section,hgroup,figure,figcaption',
       <?php $this->endblock(); ?>
-
       <?php $this->block('menubar'); ?>
       menubar: 'edit insert format table',
       <?php $this->endblock(); ?>
-
       <?php $this->block('toolbar'); ?>
       toolbar: 'styleselect | link unlink | image | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code ',
       <?php $this->endblock(); ?>
-
       <?php $this->block('custom'); ?>
       <?php $this->endblock(); ?>
-
       browser_spellcheck: true,
       tabfocus_elements: ':prev,:next',
       importcss_append: true,

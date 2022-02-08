@@ -1,9 +1,7 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
-
         <?php if ($this->headline || $this->subline) : ?>
             <div class="ce--headline">
-
                 <?php if ($this->headline) : ?>
                     <<?php echo ($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                         <?php echo ($this->headline); ?>
@@ -12,12 +10,9 @@
                 <?php if ($this->subline) : ?>
                     <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
                 <?php endif; ?>
-
             </div>
         <?php endif; ?>
-
         <div class="ce--specialimagetext ">
-
             <div class="row">
                 <div class="col-12 col-md-7">
                     <div class="image--wrapper image-left">
@@ -26,8 +21,6 @@
                 </div>
                 <div class="col-12 col-md-5">
                     <div class="content--wrapper">
-
-
                         <?php if ($this->ce_headline || $this->ce_subline) : ?>
                             <div class="headline--wrapper ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
                                 <?php if ($this->ce_headline) : ?>
@@ -35,13 +28,11 @@
                                         <<?php echo $this->headline_type; ?>>
                                             <?php echo $this->ce_headline; ?>
                                         </<?php echo $this->headline_type; ?>>
-
                                         <?php if ($this->ce_subline) : ?>
                                             <span class="ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                                 <?php echo $this->ce_subline; ?>
                                             </span>
                                         <?php endif; ?>
-
                                     <?php else : ?>
                                         <span class="<?php echo $this->headline_type; ?>">
                                             <?php echo $this->ce_headline; ?>
@@ -55,8 +46,6 @@
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
-
-
                         <div class="text--wrapper" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                             <?php echo $this->text; ?>
                         </div>
@@ -68,8 +57,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 </div>

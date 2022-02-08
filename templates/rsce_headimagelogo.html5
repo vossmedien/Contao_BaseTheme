@@ -1,8 +1,6 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>">
-
         <!---->
-
         <?php if ($this->headline || $this->subline) : ?>
             <div class="ce--headline">
                 <div class="container">
@@ -17,15 +15,12 @@
                 </div>
             </div>
         <?php endif; ?>
-
         <?php
         $filename = \FilesModel::findByUuid($this->image)->path;
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
-
         $filename_mobile = \FilesModel::findByUuid($this->mobile_image)->path;
         $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
         ?>
-
         <?php if ($this->as_bodybg) : ?>
             <style>
                 body {
@@ -35,45 +30,35 @@
                 }
             </style>
         <?php endif; ?>
-
         <div class="ce--mainimage <?php if (!$this->text_firstline && !$this->text_secondline) : ?>no-text<?php endif; ?> <?php if ($this->image_height) : ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut) : ?>with-diagonalCut<?php endif; ?> <?php echo $this->text_style; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>">
             <div <?php if ($this->image_height) : ?>style="height: <?php echo $this->image_height; ?>vh; min-height: 300px;" data-height="<?php echo $this->image_height; ?>" <?php endif; ?> class="image--holder <?php if ($ext != "mp4") : ?>lazy<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>" <?php if ($ext != "mp4" && !$this->as_bodybg) : ?> data-bg="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>" <?php endif; ?>>
-
-
                 <?php if ($ext == "mp4" && !$this->as_bodybg) : ?>
                     <video <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class="d-none d-md-block" <?php endif; ?> autoplay muted loop playsinline>
                         <source type="video/mp4" src="{{file::<?= $this->image ?>}}">
                     </video>
                 <?php endif; ?>
-
                 <?php if ($ext_mobile == "mp4" && $ext_mobile && !$this->as_bodybg) : ?>
                     <video class="d-md-none" autoplay muted loop playsinline>
                         <source type="video/mp4" src="{{file::<?= $this->mobile_image ?>}}">
                     </video>
                 <?php endif; ?>
-
                 <?php if ($this->text_firstline || $this->text_secondline) : ?>
                     <div class="mainimage--content" <?php if ($this->image_height < 50 && $this->image_height != "") : ?>style="top: auto; bottom: 25px;" <?php endif; ?>>
                         <div class="container" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                             <div class="mainimage--content-inner" <?php if ($this->text_color) : ?>style="color: <?php echo $this->text_color; ?>;" <?php endif; ?>>
-
                                 <?php if ($this->firstline_headline) : ?>
                                     <h1 class="first-line"><?php echo $this->text_firstline; ?></h1>
                                 <?php else : ?>
                                     <span class="first-line"><?php echo $this->text_firstline; ?></span>
                                 <?php endif; ?>
-
-
                                 <?php if ($this->text_secondline) : ?>
                                     <span class="second-line mt-2"><?php echo $this->text_secondline; ?></span>
                                 <?php endif; ?>
-
                                 <?php if ($this->text_infotext) : ?>
                                     <div class="infotext--text">
                                         <?php echo $this->text_infotext; ?>
                                     </div>
                                 <?php endif; ?>
-
                                 <?php if ($this->link_text) : ?>
                                     <div class="button--wrapper">
                                         <a class="d-inline-block btn <?php if ($this->link_size) : ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>" href="<?php echo $this->link_url; ?><?php if ($this->link_betreff) : ?>?subject=<?php echo $this->link_betreff; ?><?php endif; ?>"><?php echo $this->link_text; ?>
@@ -84,18 +69,12 @@
                         </div>
                     </div>
                 <?php endif; ?>
-
-
-
             </div>
         </div>
-
         <?php if ($this->boxed_image) : ?>
             <div class="boxed-logo">
                 <img data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
             </div>
         <?php endif; ?>
-
-
     </div>
 </div>

@@ -1,6 +1,4 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
-
-
     <div class="ce--inner">
         <?php if ($this->headline || $this->subline) : ?>
             <div class="ce--headline">
@@ -16,11 +14,9 @@
                 </div>
             </div>
         <?php endif; ?>
-
         <div class="ce--teaser-stripe <?php echo $this->class; ?>">
             <div class="ts--inner">
                 <div class="container text-center">
-
                     <?php if ($this->ce_headline || $this->ce_subline) : ?>
                         <div class="teaser--headline">
                             <?php if ($this->ce_headline) : ?>
@@ -29,17 +25,13 @@
                                 </<?php echo ($this->headine_type); ?>>
                             <?php endif; ?>
                         </div>
-
                         <?php if ($this->ce_subline) : ?>
                             <div class="teaser--subline ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->ce_subline; ?></div>
                         <?php endif; ?>
-
                     <?php endif; ?>
-
                     <div class="ts--text mt-4" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                         <?php echo $this->text; ?>
                     </div>
-
                     <?php if ($this->link_text) : ?>
                         <div class="ts--buttons mt-3" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                             <div class="right-col--buttons">
@@ -52,9 +44,6 @@
                     <?php endif; ?>
                 </div>
             </div>
-
         </div>
-
     </div>
-
 </div>

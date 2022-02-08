@@ -1,14 +1,11 @@
 <?php $this->extend('block_searchable'); ?>
-
 <?php $this->block('content'); ?>
 <div class="text--wrapper <?php if ($this->addImage) : ?>with-image image-<?php echo $this->floating; ?><?php endif; ?> ">
-
   <?php if ($this->addImage) : ?>
     <div class="image">
       <?php $this->insert('image', $this->arrData); ?>
     </div>
   <?php endif; ?>
-
   <?php if ($this->text) : ?>
     <div class="text">
       <?= $this->text ?>

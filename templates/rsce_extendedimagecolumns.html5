@@ -14,23 +14,15 @@
     </div>
     <?php endif; ?>-->
         <div class="container">
-
-
             <div class="row">
-
                 <?php foreach ($this->box as $b) : ?>
                     <div class="col-12 <?php if (count($this->box) > 1) : ?>col-md-6<?php endif; ?>">
-
-
                         <div class="box--image-holder" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                             <div class="box--image-overflow-wrapper">
                                 <div class="box--image lazy" data-bg="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>" style="background-size: cover; background-repeat: no-repeat; background-position: center center;"></div>
                             </div>
                         </div>
-
-
                         <div class="box--content" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>" <?php if ($b->versatz) : ?>style="position: relative; top: <?php echo $b->versatz; ?>px" <?php endif; ?>>
-
                             <?php if ($b->headline) : ?>
                                 <div class="headline--wrapper <?php if ($b->asbox) : ?>as-box<?php endif; ?>">
                                     <?php if (!$b->onlystyle) : ?>
@@ -38,7 +30,6 @@
                                         <?php if ($b->subline) : ?>
                                             <span class="ce--subline"><?php echo $b->subline; ?></span>
                                         <?php endif; ?>
-
                                     <?php else : ?>
                                         <span class="<?php echo $b->headline_type; ?>"><?php echo $b->headline; ?></span>
                                         <?php if ($b->subline) : ?>
@@ -47,13 +38,11 @@
                                     <?php endif; ?>
                                 </div>
                             <?php endif; ?>
-
                             <?php if ($b->content) : ?>
                                 <div class="box--text" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
                                     <?php echo $b->content; ?>
                                 </div>
                             <?php endif; ?>
-
                             <?php if ($b->link_text) : ?>
                                 <div class="button--wrapper mt-4" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
                                     <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>" href="<?php echo $b->link; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?>
@@ -61,7 +50,6 @@
                                 </div>
                             <?php endif; ?>
                         </div>
-
                     </div>
                 <?php endforeach; ?>
             </div>

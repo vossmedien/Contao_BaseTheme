@@ -1,6 +1,5 @@
 <div class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
-
         <?php if ($this->headline || $this->subline) : ?>
             <div class="ce--headline">
                 <div class="container">
@@ -15,22 +14,15 @@
                 </div>
             </div>
         <?php endif; ?>
-
         <?php foreach ($this->row as $row) : ?>
-
-
             <div class="ce--imagetextwall <?php if ($row->alternate_image) : ?>with-code<?php endif; ?> <?php if ($row->alternate_background) : ?>with-custom-bgcolor<?php endif; ?> <?php if ($row->innerpadding && $row->alternate_background) : ?>with-border<?php endif; ?> <?php if ($row->not_as_bg) : ?>not-as-bg<?php endif; ?> <?php if ($row->bottom_spacing) : ?>mb-5<?php endif; ?> <?php if ($row->image && $row->image_both) : ?>lazy<?php endif; ?>" <?php if ($row->image && $row->image_both) : ?>data-bg="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>" <?php endif; ?> style="
-
          <?php if ($row->image && $row->image_both) : ?>
                  background-position: center center; background-repeat: no-repeat; background-size: cover;
          <?php endif; ?>
          <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?><?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>
                  ">
-
                 <div class="container">
-
                     <div class="row <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
-
                         <div class="content--col d-flex align-items-center <?php if ($row->alternate_background) : ?>with-bg<?php endif; ?> <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>" style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
                             <?php if ($row->boxed_headline) : ?>
                                 <div class="content-col--boxed-headline">
@@ -39,13 +31,11 @@
                                             <<?php echo $row->boxed_headline_type; ?>>
                                                 <?php echo $row->boxed_headline; ?>
                                             </<?php echo $row->boxed_headline_type; ?>>
-
                                             <?php if ($row->boxed_subheadline) : ?>
                                                 <span class="ce--subline">
                                                     <?php echo $row->boxed_subheadline; ?>
                                                 </span>
                                             <?php endif; ?>
-
                                         <?php else : ?>
                                             <span class="<?php echo $row->boxed_headline_type; ?>"><?php echo $row->boxed_headline; ?></span>
                                             <?php if ($row->boxed_subheadline) : ?>
@@ -56,10 +46,8 @@
                                             </span>
                                         <?php endif; ?>
                                     </div>
-
                                 </div>
                             <?php endif; ?>
-
                             <div class="content-col--inner <?php echo $row->textalign; ?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                 <?php if ($row->ce_headline) : ?>
                                     <div class="content-col--headline-wrapper">
@@ -67,18 +55,15 @@
                                             <<?php echo $row->headline_type; ?> class="content-col--headline" data-aos="animate__fadeInUp">
                                                 <?php echo $row->ce_headline; ?>
                                             </<?php echo $row->headline_type; ?>>
-
                                             <?php if ($row->ce_subline) : ?>
                                                 <span class="ce--subline content-col--subline" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                                     <?php echo $row->ce_subline; ?>
                                                 </span>
                                             <?php endif; ?>
-
                                         <?php else : ?>
                                             <span class="<?php echo $row->headline_type; ?> content-col--headline" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                                 <?php echo $row->ce_headline; ?>
                                             </span>
-
                                             <?php if ($row->ce_subline) : ?>
                                                 <span class="ce--subline content-col--subline" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                                     <?php echo $row->ce_subline; ?>
@@ -87,13 +72,11 @@
                                         <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
-
                                 <?php if ($row->content) : ?>
                                     <div class="content-col--text" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                         <?php echo $row->content; ?>
                                     </div>
                                 <?php endif; ?>
-
                                 <?php if ($row->buttons[0]->link_text != "") : ?>
                                     <div class="ce--buttons mt-4 text-md-end">
                                         <?php foreach ($row->buttons as $b) : ?>
@@ -103,11 +86,8 @@
                                 <?php endif; ?>
                             </div>
                         </div>
-
-
                         <?php if (($row->image && !$row->image_both) || $row->alternate_image || $row->content_rightcol) : ?>
                             <div class="image--col col-12 col-md">
-
                                 <div data-aos="animate__fadeIn" style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;" class="image-col--inner <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
         <?php if ($row->column_width == "col-12 col-md-6 col-lg-5") : ?>
         col-12 col-md-6 col-lg-7
@@ -121,33 +101,24 @@
         col-12 col-lg-3
         <?php endif; ?>
 " <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>data-bg="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>" <?php endif; ?>>
-
                                     <?php if ($row->not_as_bg) : ?>
                                         <div class="image--wrapper">
                                             <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>">
                                         </div>
                                     <?php endif; ?>
-
                                     <?php if ($row->alternate_image) : ?>
                                         <?php echo html_entity_decode($row->alternate_image); ?>
                                     <?php endif; ?>
                                 </div>
-
-
                                 <?php if ($row->content_rightcol) : ?>
                                     <div class="image-col--extra-text" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                         <?php echo $row->content_rightcol; ?>
                                     </div>
                                 <?php endif; ?>
-
-
                             </div>
                         <?php endif; ?>
-
                     </div>
                 </div>
-
-
             </div>
         <?php endforeach; ?>
     </div>

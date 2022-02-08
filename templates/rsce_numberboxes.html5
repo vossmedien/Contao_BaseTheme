@@ -2,7 +2,6 @@
     <div class="ce--inner container">
         <?php if ($this->headline || $this->subline) : ?>
             <div class="ce--headline">
-
                 <?php if ($this->headline) : ?>
                     <<?php echo ($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                         <?php echo ($this->headline); ?>
@@ -11,19 +10,13 @@
                 <?php if ($this->subline) : ?>
                     <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
                 <?php endif; ?>
-
             </div>
         <?php endif; ?>
-
         <div class="ce--number-boxes">
-
             <div class="row">
                 <?php foreach ($this->boxes as $box) : ?>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="number-box--wrapper lazy" data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, null); ?>">
-
-
-
                             <?php if ($box->headline) : ?>
                                 <div class="number-box--title">
                                     <?php if (!$box->onlystyle) : ?>
@@ -36,10 +29,7 @@
                                         </span>
                                     <?php endif; ?>
                                 </div>
-
                             <?php endif; ?>
-
-
                             <div class="number-box--content">
                                 <div class="row align-items-center">
                                     <div class="col-6 left--col">

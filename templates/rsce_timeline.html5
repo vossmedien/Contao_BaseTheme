@@ -1,9 +1,7 @@
 <div class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
-
         <?php if ($this->headline || $this->subline) : ?>
             <div class="ce--headline">
-
                 <?php if ($this->headline) : ?>
                     <<?php echo ($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                         <?php echo ($this->headline); ?>
@@ -14,8 +12,6 @@
                 <?php endif; ?>
             </div>
         <?php endif; ?>
-
-
         <?php if ($this->rows) : ?>
             <div class="ce--timeline">
                 <?php foreach ($this->rows as $i => $row) : ?>
@@ -24,7 +20,6 @@
                             <div class="year--content">
                                 <div class="right-col--text" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                     <span class="h2"><?php echo $row->year; ?></span>
-
                                     <div class="year--description">
                                         <?php echo $row->description; ?>
                                     </div>

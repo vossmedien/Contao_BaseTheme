@@ -1,6 +1,5 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
-
         <?php if ($this->headline || $this->subline) : ?>
             <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                 <?php if ($this->headline) : ?>
@@ -13,12 +12,8 @@
                 <?php endif; ?>
             </div>
         <?php endif; ?>
-
-
         <?php if ($this->row) : ?>
-
             <?php foreach ($this->row as $row) : ?>
-
                 <div class="row <?php if ($row->swapcolumns) : ?>flex-row-reverse<?php endif; ?>">
                     <div class="col-12 col-md-6 left--col">
                         <div class="left-col--inner">
@@ -26,9 +21,7 @@
                                 <?php if ($row->main_url) : ?>
                                     <a href="<?php echo $row->main_url; ?>"></a>
                                 <?php endif; ?>
-
                                 <div class="box--inner lazy" <?php if (count($row->main_image) == 1) : ?>data-bg="<?= \Image::get(\FilesModel::findByUuid($row->main_image[0])->path, null, null, null); ?>" style="background-position: center center; background-repeat: no-repeat; center center no-repeat; background-size: cover;" <?php endif; ?>>
-
                                     <?php if (count($row->main_image) > 1) : ?>
                                         <div class="swiper custom background-slider" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0;">
                                             <div class="swiper-wrapper">
@@ -40,28 +33,22 @@
                                             </div>
                                         </div>
                                     <?php endif; ?>
-
-
                                     <div class="box--content">
-
                                         <div class="box--headline">
                                             <?php if ($row->main_headline) : ?>
                                                 <?php if (!$row->main_onlystyle) : ?>
                                                     <<?php echo $row->main_headline_type; ?>>
                                                         <?php echo $row->main_headline; ?>
                                                     </<?php echo $row->main_headline_type; ?>>
-
                                                     <?php if ($row->main_subline) : ?>
                                                         <span class="ce--subline box--subline">
                                                             <?php echo $row->main_subline; ?>
                                                         </span>
                                                     <?php endif; ?>
-
                                                 <?php else : ?>
                                                     <span class="<?php echo $row->main_headline_type; ?>">
                                                         <?php echo $row->main_headline; ?>
                                                     </span>
-
                                                     <?php if ($row->main_subline) : ?>
                                                         <span class="ce--subline box--subline">
                                                             <?php echo $row->main_subline; ?>
@@ -80,22 +67,15 @@
                             </div>
                         </div>
                     </div>
-
                     <?php if ($row->boxes) : ?>
                         <div class="col-12 col-md-6 right--col">
                             <div class="right-col--inner">
-
-
                                 <?php foreach ($row->boxes as $box) : ?>
                                     <div class="equal--box" style="z-index: 5; position: relative;" data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                         <?php if ($box->url) : ?>
                                             <a href="<?php echo $box->url; ?>"></a>
                                         <?php endif; ?>
-
-
                                         <div class="box--inner lazy" <?php if (count($box->image) == 1) : ?>data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image[0])->path, null, null, null); ?>" style="background-position: center center; background-repeat: no-repeat; background-size: cover;" <?php endif; ?>>
-
-
                                             <?php if (count($box->image) > 1) : ?>
                                                 <div class="swiper custom background-slider" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0;">
                                                     <div class="swiper-wrapper">
@@ -107,39 +87,30 @@
                                                     </div>
                                                 </div>
                                             <?php endif; ?>
-
                                             <div class="box--content">
-
                                                 <?php if ($box->headline) : ?>
                                                     <div class="box--headline">
-
                                                         <?php if (!$box->onlystyle) : ?>
                                                             <<?php echo $box->headline_type; ?>>
                                                                 <?php echo $box->headline; ?>
                                                             </<?php echo $box->headline_type; ?>>
-
-
                                                             <?php if ($box->subline) : ?>
                                                                 <span class="ce--subline box--subline">
                                                                     <?php echo $box->subline; ?>
                                                                 </span>
                                                             <?php endif; ?>
-
                                                         <?php else : ?>
                                                             <span class="<?php echo $box->headline_type; ?>">
                                                                 <?php echo $box->headline; ?>
                                                             </span>
-
                                                             <?php if ($box->subline) : ?>
                                                                 <span class="ce--subline box--subline">
                                                                     <?php echo $box->subline; ?>
                                                                 </span>
                                                             <?php endif; ?>
                                                         <?php endif; ?>
-
                                                     </div>
                                                 <?php endif; ?>
-
                                                 <?php if ($box->content) : ?>
                                                     <div class="box--text">
                                                         <?php echo $box->content; ?>
@@ -150,20 +121,13 @@
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-
-
                         </div>
                     <?php endif; ?>
                 </div>
-
             <?php endforeach; ?>
-
         <?php endif; ?>
-
     </div>
 </div>
-
-
 <script>
     if ($('.swiper.background-slider').length) {
         const backgroundSlider = () => {
@@ -179,7 +143,6 @@
                     spaceBetween: 0,
                     speed: 1500,
                     effect: 'fade',
-
                 });
             })
         }
