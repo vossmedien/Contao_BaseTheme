@@ -22,8 +22,8 @@ return array(
             'inputType' => 'select',
             'options' => array(
                 /* Fading entrances  */
-                              'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
-              'no-animation' => 'Keine Animation',
+                'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
+                'no-animation' => 'Keine Animation',
                 'animate__fadeIn' => 'fadeIn',
                 'animate__fadeInDown' => 'fadeInDown',
                 'animate__fadeInDownBig' => 'fadeInDownBig',

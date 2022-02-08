@@ -1,56 +1,54 @@
-
-<div <?php echo $this->cssID;?> class="content--element <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
 
-        <?php if ($this->headline || $this->subline): ?>
-        <div class="ce--headline"
-             data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
-            <?php if ($this->headline): ?>
-            <<?php echo($this->hl); ?> >
-            <?php echo($this->headline); ?>
-        </<?php echo($this->hl); ?>>
-    <?php endif; ?>
-        <?php if ($this->subline): ?>
-            <span class="ce--subline"><?php echo $this->subline; ?></span>
-        <?php endif; ?>
-    </div>
-    <?php endif; ?>
-
-    <div class="ce--boxenfeld ">
-
-        <?php foreach ($this->box as $b): ?>
-
-        <div class="boxes--outer" <?php if($b->versatz && (strpos($b->versatz, '-') !== false)):?>style="margin-top: <?php echo str_replace("-", "",$b->versatz);?>px"<?php endif;?>>
-            <div class="row <?php if($b->reverse):?>flex-row-reverse <?php endif;?>">
-                <div class="col-12 col-lg-6">
-                    <img class="lazy box--image" data-aos="<?php if($b->animation_type != ""):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
-                </div>
-
-                <div class="col-12 col-lg-6">
-                    <div class="box--content"  data-aos="<?php if($b->animation_type != ""):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInDown<?php endif;?>" <?php if($b->versatz):?>style="position: relative; top: <?php echo $b->versatz;?>px"<?php endif;?>>
-                        <?php  if($b->headline):?>
-                        <div class="box--headline" data-aos="<?php if($b->animation_type != ""):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInDown<?php endif;?>">
-                            <<?php echo $b->headline_type;?>  class="h2">
-                            <?php echo $b->headline;?>
-                        </<?php echo $b->headline_type;?>>
-                        </div>
-                    <?php endif;?>
-                    <?php  if($b->content):?>
-                    <div class="box--text" data-aos="<?php if($b->animation_type != ""):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInDown<?php endif;?>">
-                        <?php echo $b->content;?>
-                    </div>
-                    <?php endif;?>
-
-                    <?php  if($b->button_url):?>
-                    <div class="box--button" data-aos="<?php if($b->animation_type != ""):?><?php echo $b->animation_type;?><?php else:?>animate__fadeInDown<?php endif;?>">
-                        <a class="btn btn-primary" href="<?php echo $b->button_url;?>"><?php echo $b->button_text;?></a>
-                    </div>
-                    <?php endif;?>
-                    </div>
-                </div>
+        <?php if ($this->headline || $this->subline) : ?>
+            <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <?php if ($this->headline) : ?>
+                    <<?php echo ($this->hl); ?>>
+                        <?php echo ($this->headline); ?>
+                    </<?php echo ($this->hl); ?>>
+                <?php endif; ?>
+                <?php if ($this->subline) : ?>
+                    <span class="ce--subline"><?php echo $this->subline; ?></span>
+                <?php endif; ?>
             </div>
+        <?php endif; ?>
+
+        <div class="ce--boxenfeld ">
+
+            <?php foreach ($this->box as $b) : ?>
+
+                <div class="boxes--outer" <?php if ($b->versatz && (strpos($b->versatz, '-') !== false)) : ?>style="margin-top: <?php echo str_replace("-", "", $b->versatz); ?>px" <?php endif; ?>>
+                    <div class="row <?php if ($b->reverse) : ?>flex-row-reverse <?php endif; ?>">
+                        <div class="col-12 col-lg-6">
+                            <img class="lazy box--image" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="box--content" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>" <?php if ($b->versatz) : ?>style="position: relative; top: <?php echo $b->versatz; ?>px" <?php endif; ?>>
+                                <?php if ($b->headline) : ?>
+                                    <div class="box--headline" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
+                                        <<?php echo $b->headline_type; ?> class="h2">
+                                            <?php echo $b->headline; ?>
+                                        </<?php echo $b->headline_type; ?>>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($b->content) : ?>
+                                    <div class="box--text" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
+                                        <?php echo $b->content; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($b->button_url) : ?>
+                                    <div class="box--button" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
+                                        <a class="btn btn-primary" href="<?php echo $b->button_url; ?>"><?php echo $b->button_text; ?></a>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
-        <?php endforeach;?>
-    </div>
-</div>
 </div>

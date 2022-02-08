@@ -8,7 +8,7 @@ return array(
     'standardFields' => array('headline', 'cssID'),
     'wrapper' => array(
         'type' => 'none',
-    ), 
+    ),
     'fields' => array(
         'subline' => array(
             'label' => array('Subline', ''),
@@ -22,8 +22,8 @@ return array(
             'inputType' => 'select',
             'options' => array(
                 /* Fading entrances  */
-                              'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
-              'no-animation' => 'Keine Animation',
+                'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
+                'no-animation' => 'Keine Animation',
                 'animate__fadeIn' => 'fadeIn',
                 'animate__fadeInDown' => 'fadeInDown',
                 'animate__fadeInDownBig' => 'fadeInDownBig',
@@ -152,7 +152,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval'=> array('chosen'=>'true')
+            'eval' => array('chosen' => 'true')
         ),
 
         'headline_type' => array(

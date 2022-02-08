@@ -1,19 +1,19 @@
-<div <?php if(!strpos($this->class, 'animate__')):?>data-aos="animate__fadeInUp"<?php endif;?> class="layout_latest arc_<?= $this->archive->id ?> block<?= $this->class ?>">
-    <?php if ($this->hasMetaFields): ?>
+<div <?php if (!strpos($this->class, 'animate__')) : ?>data-aos="animate__fadeInUp" <?php endif; ?> class="layout_latest arc_<?= $this->archive->id ?> block<?= $this->class ?>">
+    <?php if ($this->hasMetaFields) : ?>
         <p class="info">
             <time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?> <?= $this->commentCount ?>
         </p>
     <?php endif; ?>
 
-    <?php if ($this->hasText): ?>
+    <?php if ($this->hasText) : ?>
         <h2 class="with-url"><?= $this->linkHeadline ?></h2>
-    <?php else: ?>
+    <?php else : ?>
         <h2><?= $this->headline ?></h2>
     <?php endif; ?>
 
 
-    <div class="text--wrapper <?php if ($this->addImage): ?>with-image image-<?php echo $this->floating; ?><?php endif; ?> ">
-        <?php if ($this->addImage): ?>
+    <div class="text--wrapper <?php if ($this->addImage) : ?>with-image image-<?php echo $this->floating; ?><?php endif; ?> ">
+        <?php if ($this->addImage) : ?>
             <div class="image">
                 <?php $this->insert('image', $this->arrData); ?>
             </div>
@@ -21,7 +21,7 @@
 
         <div class="text ce_text block">
             <?= $this->teaser ?>
-            <?php if ($this->hasText): ?>
+            <?php if ($this->hasText) : ?>
                 <p class="more"><?= $this->more ?></p>
             <?php endif; ?>
         </div>

@@ -23,8 +23,8 @@ return array(
             'inputType' => 'select',
             'options' => array(
                 /* Fading entrances  */
-                              'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
-              'no-animation' => 'Keine Animation',
+                'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
+                'no-animation' => 'Keine Animation',
                 'animate__fadeIn' => 'fadeIn',
                 'animate__fadeInDown' => 'fadeInDown',
                 'animate__fadeInDownBig' => 'fadeInDownBig',
@@ -153,9 +153,9 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval'=> array('chosen'=>'true')
+            'eval' => array('chosen' => 'true')
         ),
-        
+
         'fullwidth' => array(
             'label' => array('Boxen auf die volle Breite des Viewports anzeigen', ''),
             'inputType' => 'checkbox',
@@ -187,7 +187,7 @@ return array(
             'maxItems' => 999,
             'fields' => array(
 
-                
+
                 'video_id' => array(
                     'label' => array('Youtube-Video ID', 'in der URL nach /watch?v='),
                     'inputType' => 'text',

@@ -1,66 +1,65 @@
-<div <?php echo $this->cssID;?> class="content--element <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
-        <?php if ($this->headline || $this->subline): ?>
-        <div class="ce--headline">
+        <?php if ($this->headline || $this->subline) : ?>
+            <div class="ce--headline">
 
-                <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>  data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
-                <?php echo($this->headline); ?>
-            </<?php echo($this->hl); ?>>
-            <?php endif; ?>
-            <?php if ($this->subline): ?>
-                <span class=" ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
-            <?php endif; ?>
+                <?php if ($this->headline) : ?>
+                    <<?php echo ($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                        <?php echo ($this->headline); ?>
+                    </<?php echo ($this->hl); ?>>
+                <?php endif; ?>
+                <?php if ($this->subline) : ?>
+                    <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
+                <?php endif; ?>
 
-    </div>
-    <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
-    <div class="ce--number-boxes">
+        <div class="ce--number-boxes">
 
-        <div class="row">
-            <?php foreach ($this->boxes as $box): ?>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="number-box--wrapper lazy" data-aos="<?php if($box->animation_type):?><?php echo $box->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"
-                     data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, null); ?>">
-
+            <div class="row">
+                <?php foreach ($this->boxes as $box) : ?>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="number-box--wrapper lazy" data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" data-bg="<?= \Image::get(\FilesModel::findByUuid($box->image)->path, null, null, null); ?>">
 
 
-                    <?php if($box->headline):?>
-                     <div class="number-box--title">
-                            <?php if (!$box->onlystyle): ?>
-                            <<?php echo $box->headline_type; ?>>
-                            <?php echo $box->headline; ?>
-                        </<?php echo $box->headline_type; ?>>
-                    <?php else: ?>
-                        <span class="<?php echo $box->headline_type; ?>">
-                      <?php echo $box->headline; ?>
-                    </span>
-                    <?php endif; ?>
-                     </div>
 
-                    <?php endif;?>
-
-
-                    <div class="number-box--content">
-                        <div class="row align-items-center">
-                            <div class="col-6 left--col">
-                                <div class="left-col--inner">
-                                <span class="count"><?php echo $box->text_left_1; ?></span>
-                                <span><?php echo $box->text_left_2; ?></span>
+                            <?php if ($box->headline) : ?>
+                                <div class="number-box--title">
+                                    <?php if (!$box->onlystyle) : ?>
+                                        <<?php echo $box->headline_type; ?>>
+                                            <?php echo $box->headline; ?>
+                                        </<?php echo $box->headline_type; ?>>
+                                    <?php else : ?>
+                                        <span class="<?php echo $box->headline_type; ?>">
+                                            <?php echo $box->headline; ?>
+                                        </span>
+                                    <?php endif; ?>
                                 </div>
-                            </div>
-                            <div class="col-6 right--col">
-                                <div class="right-col--inner">
-                                <span><?php echo $box->text_right_1; ?></span>
-                                <span><?php echo $box->text_right_2; ?></span>
+
+                            <?php endif; ?>
+
+
+                            <div class="number-box--content">
+                                <div class="row align-items-center">
+                                    <div class="col-6 left--col">
+                                        <div class="left-col--inner">
+                                            <span class="count"><?php echo $box->text_left_1; ?></span>
+                                            <span><?php echo $box->text_left_2; ?></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 right--col">
+                                        <div class="right-col--inner">
+                                            <span><?php echo $box->text_right_1; ?></span>
+                                            <span><?php echo $box->text_right_2; ?></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
         </div>
     </div>
-</div>
 </div>

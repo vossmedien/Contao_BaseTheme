@@ -1,72 +1,63 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
-        <?php if ($this->headline || $this->subline): ?>
-        <div class="ce--headline">
-            <div class="container">
-                <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?> data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
-                <?php echo($this->headline); ?>
-            </<?php echo($this->hl); ?>>
-            <?php endif; ?>
-            <?php if ($this->subline): ?>
-                <span class="ce--subline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>"><?php echo $this->subline; ?></span>
-            <?php endif; ?>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <div class="ce--videoslider" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
-
-        <?php if (!$this->fullwidth): ?>
-        <div class="container">
-            <?php endif; ?>
-
-            <div class="video-slider swiper custom ">
-                <!-- Additional required wrapper -->
-                <div class="swiper-wrapper ">
-                    <!-- Slides -->
-                    <?php foreach ($this->elements as $slide): ?>
-                        <div class="swiper-slide">
-                            <a
-                                    <?php if($slide->open_tab):?>
-                                    target="_blank"
-                                    <?php else:?>
-                                        class="video-link cboxElement" data-lightbox
-                                    <?php endif;?>
-
-                               href='https://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'
-
-                            >
-                                <img class="swiper-lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
-
-                                <?php if($slide->text):?>
-                                    <span class="slide-caption"><?php echo $slide->text; ?></span>
-                                <?php endif;?>
-
-                            </a>
-
-
-                            <div class="swiper-lazy-preloader"></div>
-
-                        </div>
-                    <?php endforeach ?>
+        <?php if ($this->headline || $this->subline) : ?>
+            <div class="ce--headline">
+                <div class="container">
+                    <?php if ($this->headline) : ?>
+                        <<?php echo ($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                            <?php echo ($this->headline); ?>
+                        </<?php echo ($this->hl); ?>>
+                    <?php endif; ?>
+                    <?php if ($this->subline) : ?>
+                        <span class="ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
+                    <?php endif; ?>
                 </div>
+            </div>
+        <?php endif; ?>
 
-                <?php if (count($this->elements) > 1): ?>
-                    <div class="swiper-pagination swiper-pagination-clickable"></div>
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-button-next"></div>
+        <div class="ce--videoslider" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+
+            <?php if (!$this->fullwidth) : ?>
+                <div class="container">
                 <?php endif; ?>
 
-            </div>
+                <div class="video-slider swiper custom ">
+                    <!-- Additional required wrapper -->
+                    <div class="swiper-wrapper ">
+                        <!-- Slides -->
+                        <?php foreach ($this->elements as $slide) : ?>
+                            <div class="swiper-slide">
+                                <a <?php if ($slide->open_tab) : ?> target="_blank" <?php else : ?> class="video-link cboxElement" data-lightbox <?php endif; ?> href='https://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'>
+                                    <img class="swiper-lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
 
-            <?php if (!$this->fullwidth): ?>
+                                    <?php if ($slide->text) : ?>
+                                        <span class="slide-caption"><?php echo $slide->text; ?></span>
+                                    <?php endif; ?>
+
+                                </a>
+
+
+                                <div class="swiper-lazy-preloader"></div>
+
+                            </div>
+                        <?php endforeach ?>
+                    </div>
+
+                    <?php if (count($this->elements) > 1) : ?>
+                        <div class="swiper-pagination swiper-pagination-clickable"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    <?php endif; ?>
+
+                </div>
+
+                <?php if (!$this->fullwidth) : ?>
+                </div>
+            <?php endif; ?>
+
+
         </div>
-    <?php endif; ?>
-
-
     </div>
-</div>
 </div>
 
 
@@ -99,37 +90,37 @@
                     breakpoints: {
                         320: {
                             slidesPerView: 1,
-                            spaceBetween: <?php echo $this->gutter;?>
+                            spaceBetween: <?php echo $this->gutter; ?>
                         },
 
                         480: {
                             slidesPerView: 2,
-                            spaceBetween: <?php echo $this->gutter;?>
+                            spaceBetween: <?php echo $this->gutter; ?>
                         },
 
-                        <?php if($this->columns == 6): ?>
-                        768: {
-                            slidesPerView: 3,
-                            spaceBetween: <?php echo $this->gutter;?>
-                        },
-                        992: {
-                            slidesPerView: 4,
-                            spaceBetween: <?php echo $this->gutter;?>
-                        },
-                        1200: {
-                            slidesPerView: 5,
-                            spaceBetween: <?php echo $this->gutter;?>
-                        },
-                        1400: {
-                            slidesPerView: 6,
-                            spaceBetween: <?php echo $this->gutter;?>
-                        },
-                        <?php else:?>
-                        768: {
-                            slidesPerView: <?php echo $this->columns;?>,
-                            spaceBetween: <?php echo $this->gutter;?>
-                        },
-                        <?php endif;?>
+                        <?php if ($this->columns == 6) : ?>
+                            768: {
+                                slidesPerView: 3,
+                                spaceBetween: <?php echo $this->gutter; ?>
+                            },
+                            992: {
+                                slidesPerView: 4,
+                                spaceBetween: <?php echo $this->gutter; ?>
+                            },
+                            1200: {
+                                slidesPerView: 5,
+                                spaceBetween: <?php echo $this->gutter; ?>
+                            },
+                            1400: {
+                                slidesPerView: 6,
+                                spaceBetween: <?php echo $this->gutter; ?>
+                            },
+                        <?php else : ?>
+                            768: {
+                                slidesPerView: <?php echo $this->columns; ?>,
+                                spaceBetween: <?php echo $this->gutter; ?>
+                            },
+                        <?php endif; ?>
 
                     },
                 });

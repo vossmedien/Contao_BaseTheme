@@ -1,135 +1,126 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
 
-        <?php if ($this->headline || $this->subline): ?>
-        <div class="ce--headline" data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
-            <?php if ($this->headline): ?>
-            <<?php echo($this->hl); ?> >
-            <?php echo($this->headline); ?>
-        </<?php echo($this->hl); ?>>
-    <?php endif; ?>
-        <?php if ($this->subline): ?>
-            <span class="ce--subline"><?php echo $this->subline; ?></span>
-        <?php endif; ?>
-    </div>
-    <?php endif; ?>
-
-
-    <?php if ($this->rows): ?>
-    <?php foreach ($this->rows as $row): ?>
-    <div class="row--wrapper <?php if ($row->asbox): ?>content--box<?php endif; ?>"
-         <?php if ($row->asbox): ?>data-aos="<?php if ($row->animation_type != ""): ?><?php echo $row->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?><?php endif; ?>">
-
-        <?php if ($row->ce_headline): ?>
-        <div class="ce--headline row--headline" data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
-            <?php if (!$row->onlystyle): ?>
-            <<?php echo $row->headline_type; ?>>
-            <?php echo $row->ce_headline; ?>
-        </<?php echo $row->headline_type; ?>>
-    <?php if ($row->ce_subline): ?>
-        <span class="ce--subline"><?php echo $row->ce_subline; ?></span>
-    <?php endif; ?>
-    <?php else: ?>
-        <span class="<?php echo $row->headline_type; ?>"><?php echo $row->ce_headline; ?></span>
-        <?php if ($row->ce_subline): ?>
-            <span class="ce--subline"><?php echo $row->ce_subline; ?></span>
-        <?php endif; ?>
-    <?php endif; ?>
-    </div>
-<?php endif; ?>
-
-
-    <div class="row gx-5 <?php if ($row->swapcolumns): ?>flex-row-reverse<?php endif; ?>">
-
-        <?php foreach ($row->columns as $column): ?>
-
-        <?php if ($row->headline): ?>
-        <div class="col-12">
-
-            <div class="headline mb-3" data-aos="<?php if ($row->animation_type): ?><?php echo $row->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
-                <?php if ($row->headline): ?>
-
-                <?php if (!$row->onlystyle): ?>
-                <<?php echo $row->headline_type; ?>  >
-                <?php echo $row->headline; ?>
-            </<?php echo $row->headline_type; ?>>
-
-            <?php else: ?>
-                <span class="<?php echo $row->headline_type; ?>">
-                                      <?php echo $row->headline; ?>
-                                </span>
-            <?php endif; ?>
-
-
-            <?php if ($row->subline): ?>
-                <span class="ce--subline">
-                                <?php echo $row->subline; ?>
-                            </span>
-            <?php endif; ?>
-
-        </div>
-    <?php endif; ?>
-    </div>
-<?php endif; ?>
-
-
-    <div class="<?php if ($column->column_width): ?><?php echo $column->column_width; ?><?php else: ?>col-12 col-md-6<?php endif; ?>">
-
-        <div class="column--wrapper <?php if ($column->asbox): ?>content--box<?php endif; ?>"
-             <?php if ($column->asbox): ?>data-aos="<?php if ($column->animation_type != ""): ?><?php echo $column->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?><?php endif; ?>">
-
-            <?php if ($column->headline): ?>
-            <div class="col--headline"
-                 data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
-                <?php if (!$column->onlystyle): ?>
-                <<?php echo $column->headline_type; ?>>
-                <?php echo $column->headline; ?>
-            </<?php echo $column->headline_type; ?>>
-
-        <?php else: ?>
-            <span class="<?php echo $column->headline_type; ?>"><?php echo $column->headline; ?></span>
-        <?php endif; ?>
-
-            <?php if ($column->subline): ?>
-                <span class="ce--subline">
-                                <?php echo $column->subline; ?>
-                            </span>
-            <?php endif; ?>
-        </div>
-        <?php endif; ?>
-
-        <div class="column--content d-flex <?php if ($column->image_position == "image_below"): ?>flex-column-reverse<?php endif; ?>"
-             data-aos="<?php if ($column->animation_type != ""): ?><?php echo $column->animation_type; ?><?php else: ?>animate__fadeInUp<?php endif; ?>">
-            <?php if ($column->image): ?>
-                <div class="col--image"
-                     data-aos="<?php if ($column->animation_type != ""): ?><?php echo $column->animation_type; ?><?php else: ?>animate__fadeInDown<?php endif; ?>">
-                    <img class="lazy"
-                         data-src="<?= \Image::get(\FilesModel::findByUuid($column->image)->path, null, null, null); ?>">
-                </div>
-            <?php endif; ?>
-            <?php if ($column->text): ?>
-                <div class="col--text"
-                     data-aos="<?php if ($column->animation_type != ""): ?><?php echo $column->animation_type; ?><?php else: ?>animate__fadeInDown<?php endif; ?>">
-                    <?php echo $column->text; ?>
-                </div>
-            <?php endif; ?>
-        </div>
-
-        <?php if ($column->link_text && $column->rightcol_text == ""): ?>
-            <div class="col--buttons"
-                 data-aos="<?php if ($this->animation_type): ?><?php echo $this->animation_type; ?><?php else: ?>animate__fadeInDown<?php endif; ?>">
-                <a class="d-inline-block btn <?php if ($column->link_size): ?><?php echo $column->link_size; ?><?php endif; ?> <?php echo $column->link_type; ?>"
-                   href="<?php echo $column->link_url; ?><?php if ($column->link_betreff): ?>?subject=<?php echo $column->link_betreff; ?><?php endif; ?>"><?php echo $column->link_text; ?>
-                </a>
+        <?php if ($this->headline || $this->subline) : ?>
+            <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <?php if ($this->headline) : ?>
+                    <<?php echo ($this->hl); ?>>
+                        <?php echo ($this->headline); ?>
+                    </<?php echo ($this->hl); ?>>
+                <?php endif; ?>
+                <?php if ($this->subline) : ?>
+                    <span class="ce--subline"><?php echo $this->subline; ?></span>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
-    </div>
-</div>
 
-<?php endforeach ?>
-</div>
-</div>
-<?php endforeach ?>
-<?php endif; ?>
-</div>
+
+        <?php if ($this->rows) : ?>
+            <?php foreach ($this->rows as $row) : ?>
+                <div class="row--wrapper <?php if ($row->asbox) : ?>content--box<?php endif; ?>" <?php if ($row->asbox) : ?>data-aos="<?php if ($row->animation_type != "") : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?><?php endif; ?>">
+
+                    <?php if ($row->ce_headline) : ?>
+                        <div class="ce--headline row--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                            <?php if (!$row->onlystyle) : ?>
+                                <<?php echo $row->headline_type; ?>>
+                                    <?php echo $row->ce_headline; ?>
+                                </<?php echo $row->headline_type; ?>>
+                                <?php if ($row->ce_subline) : ?>
+                                    <span class="ce--subline"><?php echo $row->ce_subline; ?></span>
+                                <?php endif; ?>
+                            <?php else : ?>
+                                <span class="<?php echo $row->headline_type; ?>"><?php echo $row->ce_headline; ?></span>
+                                <?php if ($row->ce_subline) : ?>
+                                    <span class="ce--subline"><?php echo $row->ce_subline; ?></span>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
+
+                    <div class="row gx-5 <?php if ($row->swapcolumns) : ?>flex-row-reverse<?php endif; ?>">
+
+                        <?php foreach ($row->columns as $column) : ?>
+
+                            <?php if ($row->headline) : ?>
+                                <div class="col-12">
+
+                                    <div class="headline mb-3" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                        <?php if ($row->headline) : ?>
+
+                                            <?php if (!$row->onlystyle) : ?>
+                                                <<?php echo $row->headline_type; ?>>
+                                                    <?php echo $row->headline; ?>
+                                                </<?php echo $row->headline_type; ?>>
+
+                                            <?php else : ?>
+                                                <span class="<?php echo $row->headline_type; ?>">
+                                                    <?php echo $row->headline; ?>
+                                                </span>
+                                            <?php endif; ?>
+
+
+                                            <?php if ($row->subline) : ?>
+                                                <span class="ce--subline">
+                                                    <?php echo $row->subline; ?>
+                                                </span>
+                                            <?php endif; ?>
+
+                                    </div>
+                                <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+
+
+                            <div class="<?php if ($column->column_width) : ?><?php echo $column->column_width; ?><?php else : ?>col-12 col-md-6<?php endif; ?>">
+
+                                <div class="column--wrapper <?php if ($column->asbox) : ?>content--box<?php endif; ?>" <?php if ($column->asbox) : ?>data-aos="<?php if ($column->animation_type != "") : ?><?php echo $column->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?><?php endif; ?>">
+
+                                    <?php if ($column->headline) : ?>
+                                        <div class="col--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                            <?php if (!$column->onlystyle) : ?>
+                                                <<?php echo $column->headline_type; ?>>
+                                                    <?php echo $column->headline; ?>
+                                                </<?php echo $column->headline_type; ?>>
+
+                                            <?php else : ?>
+                                                <span class="<?php echo $column->headline_type; ?>"><?php echo $column->headline; ?></span>
+                                            <?php endif; ?>
+
+                                            <?php if ($column->subline) : ?>
+                                                <span class="ce--subline">
+                                                    <?php echo $column->subline; ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <div class="column--content d-flex <?php if ($column->image_position == "image_below") : ?>flex-column-reverse<?php endif; ?>" data-aos="<?php if ($column->animation_type != "") : ?><?php echo $column->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                        <?php if ($column->image) : ?>
+                                            <div class="col--image" data-aos="<?php if ($column->animation_type != "") : ?><?php echo $column->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
+                                                <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($column->image)->path, null, null, null); ?>">
+                                            </div>
+                                        <?php endif; ?>
+                                        <?php if ($column->text) : ?>
+                                            <div class="col--text" data-aos="<?php if ($column->animation_type != "") : ?><?php echo $column->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
+                                                <?php echo $column->text; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <?php if ($column->link_text && $column->rightcol_text == "") : ?>
+                                        <div class="col--buttons" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
+                                            <a class="d-inline-block btn <?php if ($column->link_size) : ?><?php echo $column->link_size; ?><?php endif; ?> <?php echo $column->link_type; ?>" href="<?php echo $column->link_url; ?><?php if ($column->link_betreff) : ?>?subject=<?php echo $column->link_betreff; ?><?php endif; ?>"><?php echo $column->link_text; ?>
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                        <?php endforeach ?>
+                    </div>
+                </div>
+            <?php endforeach ?>
+        <?php endif; ?>
+    </div>
 </div>
