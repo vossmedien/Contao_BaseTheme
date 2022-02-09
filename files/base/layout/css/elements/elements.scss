@@ -1,6 +1,8 @@
 .content--element,
 .mod_article > div:not(.row) > *[class^='ce_'],
 .mod_article > div:not(.row) > *[class^='mod_'],
+.mod_article > div.container > *[class^='ce_'],
+.mod_article > div.container > *[class^='mod_'],
 .mod_article > div.row,
 .mod_article > .ce_headline {
   @include margin-top($basic-gutter);
