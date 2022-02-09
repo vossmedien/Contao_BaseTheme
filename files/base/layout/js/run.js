@@ -3,16 +3,16 @@ init(optionalScripts);
 Promise.all(promises)
     .then(function () {
 
-        if(options_lazyload){
+        if (options_lazyload) {
             var lazyLoadInstance = new LazyLoad();
         }
-        if(options_aos) {
-            $( "div:not([data-aos])[class*=\"animate__\"]" ).each(function( index ) {
-                var classes = $.grep(this.className.split(" "), function(v, i){
+        if (options_aos) {
+            $("div:not([data-aos])[class*=\"animate__\"]").each(function (index) {
+                var classes = $.grep(this.className.split(" "), function (v, i) {
                     return v.indexOf('animate__') === 0;
                 }).join();
                 $(this).removeClass(classes);
-                $(this).attr("data-aos",classes);
+                $(this).attr("data-aos", classes);
             });
 
             AOS.init({
@@ -37,7 +37,7 @@ Promise.all(promises)
                 anchorPlacement: 'top-bottom', // defines which position of the element regarding to window should trigger the animation
             });
         }
-        if(options_popper) {
+        if (options_popper) {
             if ($('[data-bs-toggle="tooltip"]').length) {
                 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
                 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -47,7 +47,7 @@ Promise.all(promises)
         }
 
         /* Wrap Elements that are not custom-elements in container */
-        $( "#main .mod_article > div:not(.content--element)" ).each(function( index ) {
+        $("#main .mod_article > div:not(.content--element)").each(function (index) {
             $(this).wrap('<div class="container"></div>');
         });
         /* END */

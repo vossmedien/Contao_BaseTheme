@@ -62,33 +62,43 @@ function loadScript(url) {
     });
 }
 
-function scriptsActivator(lazyload = true, swiper = true, popper = true, bootstrap = true, aos = true) {
+function scriptsActivator(lazyload = false, swiper = false, popper = false, bootstrap = false, aos = false) {
     scripts = [];
     scripts.push("/files/base/layout/_vendor/node_modules/dom7/dom7.min.js", "/files/base/layout/_vendor/node_modules/ssr-window/ssr-window.umd.min.js");
 
     if (lazyload) {
         scripts.push("/files/base/layout/_vendor/node_modules/vanilla-lazyload/dist/lazyload.min.js");
         options_lazyload = true;
+    } else {
+        options_lazyload = false;
     }
 
     if (swiper) {
         scripts.push("/files/base/layout/_vendor/node_modules/swiper/swiper-bundle.min.js")
         options_swiper = true;
+    } else {
+        options_swiper = false;
     }
 
     if (popper) {
         scripts.push("/files/base/layout/_vendor/node_modules/@popperjs/core/dist/umd/popper.min.js");
         options_popper = true;
+    } else {
+        options_popper = false;
     }
 
     if (bootstrap) {
         scripts.push("/files/base/layout/_vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js")
         options_bootstrap = true;
+    } else {
+        options_bootstrap = false;
     }
 
     if (aos) {
         scripts.push("/files/base/layout/_vendor/node_modules/aos/dist/aos.js");
         options_aos = true;
+    } else {
+        options_aos = false;
     }
 }
 
@@ -106,7 +116,7 @@ function init(optionalScripts) {
     changeNavLinks();
 }
 
-scriptsActivator();
+//scriptsActivator();
 
 
 let themeScripts = ["/files/base/layout/js/_theme/theme.js", "/files/base/layout/js/run.js"];
