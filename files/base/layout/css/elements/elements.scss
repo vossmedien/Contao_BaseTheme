@@ -2,7 +2,7 @@
 .mod_article > div:not(.row) > *[class^='ce_'],
 .mod_article > div:not(.row) > *[class^='mod_'],
 .mod_article > div.row,
-.mod_article > .ce_headline{
+.mod_article > .ce_headline {
   @include margin-top($basic-gutter);
 
   &:not(:last-child) {
@@ -13,12 +13,11 @@
   z-index: 10;
 }
 
-.mod_article + .mod_article{
+.mod_article + .mod_article {
   > .content--element:first-child,
   > div:not(.row):first-child > *[class^='ce_'],
-  > div:not(.row):first-child > *[class^='mod_'],
-  > *:first-child{
-    margin-top: 0px;
+  > div:not(.row):first-child > *[class^='mod_'] {
+    //margin-top: 0px;
   }
 }
 
@@ -28,6 +27,13 @@
 
 [class*='bg-'] {
   @include padding($basic-gutter);
+}
+
+
+.mod_article {
+  &[class*='bg-'] {
+    padding-top: 0px;
+  }
 }
 
 .mod_article > div > *[class^='ce_'] {
@@ -79,7 +85,7 @@
   }
 }
 
-.stoerer--social-media{
+.stoerer--social-media {
   background-color: $body-bg;
   padding: rfs-value(5px);
   box-shadow: $box-shadow;
@@ -88,26 +94,27 @@
   top: 40vh;
   z-index: 20;
 
-  ul.list-inline{
+  ul.list-inline {
     margin: 0px;
-    > li.list-inline-item{
+
+    > li.list-inline-item {
       display: block;
       margin-right: 0px;
       margin-top: rfs-value(2px);
 
 
-      > a{
+      > a {
         font-size: 1.75rem;
         line-height: 1;
         display: block;
         text-align: center;
 
-        &:hover{
+        &:hover {
           color: $body-color;
         }
       }
 
-      &:not(:last-child){
+      &:not(:last-child) {
         margin-bottom: rfs-value(5px);
       }
     }
