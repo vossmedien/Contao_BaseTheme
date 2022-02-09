@@ -21,8 +21,10 @@
         "terminal42/contao-leads": "^1.4",
         "terminal42/contao-node": "^1.5",
         "terminal42/contao-pageimage": "^4.1",
+        "terminal42/contao-url-rewrite": "^1.6",
         "terminal42/notification_center": "^1.6",
-        "trilobit-gmbh/contao-tiles-bundle": "^1.0"
+        "trilobit-gmbh/contao-tiles-bundle": "^1.0",
+        "inspiredminds/contao-news-facebook": "^7.0"
     },
     "extra": {
         "contao-component-dir": "assets"
@@ -34,5 +36,11 @@
         "post-update-cmd": [
             "Contao\\ManagerBundle\\Composer\\ScriptHandler::initializeApplication"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://gitlab.com/inspiredminds/contao-news-facebook.git"
+        }
+    ]
 }
