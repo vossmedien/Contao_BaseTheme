@@ -7,7 +7,7 @@ Promise.all(promises)
             var lazyLoadInstance = new LazyLoad();
         }
         if (options_aos) {
-            $("div:not([data-aos])[class*=\"animate__\"]").each(function (index) {
+            $("*:not([data-aos])[class*=\"animate__\"]").each(function (index) {
                 var classes = $.grep(this.className.split(" "), function (v, i) {
                     return v.indexOf('animate__') === 0;
                 }).join();
