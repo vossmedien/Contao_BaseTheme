@@ -43,7 +43,7 @@
                     </video>
                 <?php endif; ?>
                 <?php if ($this->text_firstline || $this->text_secondline) : ?>
-                    <div class="mainimage--content" <?php if ($this->image_height < 50 && $this->image_height != "") : ?>style="top: auto; bottom: 25px;" <?php endif; ?>>
+                    <div class="mainimage--content" <?php if ($this->image_height < 50 && $this->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
                         <div class="container" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                             <div class="mainimage--content-inner" <?php if ($this->text_color) : ?>style="color: <?php echo $this->text_color; ?>;" <?php endif; ?>>
                                 <?php if ($this->firstline_headline) : ?>
