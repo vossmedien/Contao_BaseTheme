@@ -31,7 +31,7 @@
             </style>
         <?php endif; ?>
         <div class="ce--mainimage <?php if (!$this->text_firstline && !$this->text_secondline) : ?>no-text<?php endif; ?> <?php if ($this->image_height) : ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut) : ?>with-diagonalCut<?php endif; ?> <?php echo $this->text_style; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>">
-            <div <?php if ($this->image_height) : ?>style="height: <?php echo $this->image_height; ?>vh; min-height: 300px;" data-height="<?php echo $this->image_height; ?>" <?php endif; ?> class="image--holder <?php if ($ext != "mp4") : ?>lazy<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>" <?php if ($ext != "mp4" && !$this->as_bodybg) : ?> data-bg="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>" <?php endif; ?>>
+            <div <?php if ($this->image_height) : ?>style="height: <?php echo $this->image_height; ?>vh; min-height: 250px;" data-height="<?php echo $this->image_height; ?>" <?php endif; ?> class="image--holder <?php if ($ext != "mp4") : ?>lazy<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>" <?php if ($ext != "mp4" && !$this->as_bodybg) : ?> data-bg="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>" <?php endif; ?>>
                 <?php if ($ext == "mp4" && !$this->as_bodybg) : ?>
                     <video <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class="d-none d-md-block" <?php endif; ?> autoplay muted loop playsinline>
                         <source type="video/mp4" src="{{file::<?= $this->image ?>}}">
