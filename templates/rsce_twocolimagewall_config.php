@@ -574,6 +574,7 @@ return array(
                             'inputType' => 'url',
                             'eval' => array('tl_class' => 'w50'),
                         ),
+
                         'link_type' => array(
                             'label' => array(
                                 'de' => array('Optik des Buttons', ''),
@@ -599,6 +600,11 @@ return array(
                                 'btn-lg' => 'Groß',
                             ),
                             'eval' => array('tl_class' => 'w50'),
+                        ),
+
+                        'new_tab' => array(
+                            'label' => array('Link in neuen Tab öffnen', ''),
+                            'inputType' => 'checkbox',
                         ),
                     ),
                 ),

@@ -268,8 +268,10 @@ Promise.all(promises)
                 $('.widget.widget-text, .widget.widget-textarea').each(function (index) {
                     var placeholder = $(this).find("input, textarea").attr("placeholder");
                     var id = $(this).find("input, textarea").attr("id");
-                    $(this).find("input, textarea").parent("div").addClass("form-floating")
-                    $(this).find("input, textarea").parent("div").append("<label for='" + id + "'>" + placeholder + "</label>");
+                    if (placeholder) {
+                        $(this).find("input, textarea").parent("div").addClass("form-floating")
+                        $(this).find("input, textarea").parent("div").append("<label for='" + id + "'>" + placeholder + "</label>");
+                    }
                 });
             }
 
