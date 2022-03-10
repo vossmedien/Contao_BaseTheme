@@ -3,24 +3,56 @@
   min-height: 100vh;
   flex-flow: column nowrap;
 
-  #main {
+  #container {
     overflow: hidden;
 
+    @include media-breakpoint-up(md) {
+      &.with--left-col:not(.with--right-col) {
+        #main {
+          max-width: calc(100% - #{$left-col--width});
+        }
+      }
+
+      &.with--right-col:not(.with--left-col) {
+        #main {
+          max-width: calc(100% - #{$right-col--width});
+        }
+      }
+
+      &.with--right-col.with--left-col {
+        #main {
+          max-width: calc(100% - (#{$right-col--width} + #{$left-col--width}));
+        }
+      }
+    }
+
+
+  }
+
+
+  #main {
+    //overflow: hidden;
+
+
     .mod_article {
+      > *:not(.ce_headline) {
+        margin-bottom: $basic-gutter;
+      }
+
       &:last-child {
-        .content--element[class*='bg-']:last-of-type {
+        *[class*='bg-']:last-of-type {
           margin-bottom: 0;
         }
 
         > div:not(.row):not(.content--element) > div:last-of-type,
         > div.row:last-of-type,
         > div.content--element:last-of-type {
-          margin-bottom: rfs-value($basic-gutter);
+          //margin-bottom: rfs-value($basic-gutter);
         }
       }
 
       &:first-child {
-        .content--element[class*='bg-']:first-of-type {
+        *[class*='bg-']:first-of-type {
           margin-top: 0px;
         }
       }
@@ -71,13 +103,15 @@
         }
       }
 
-      > div > .custom-contao-container,
+      /*
+            > div > .custom-contao-container,
       > div > [class*='mod_'] > .custom-contao-container,
       > div > [class*='ce_'] > .custom-contao-container,
       span.custom-contao-container {
         @extend .container;
         display: block;
       }
+       */
 
     }
   }

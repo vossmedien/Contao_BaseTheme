@@ -1,0 +1,21 @@
+.ce_accordionStart {
+  margin-bottom: 1rem;
+
+  .toggler {
+    @extend .btn, .btn-primary, .btn-lg;
+    width: 100%;
+
+
+    &.active {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+  }
+
+  .accordion {
+    .content--box {
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+    }
+  }
+}

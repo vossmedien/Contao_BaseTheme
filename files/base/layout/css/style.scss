@@ -27,18 +27,9 @@ html {
     }
 
     @import "areas/header";
-    @import "areas/header_type1";
-    @import "areas/header_type2";
-    @import "areas/header_type3";
-    @import "areas/header_type4";
-
     @import "areas/main";
-
+    @import "areas/aside";
     @import "areas/footer";
-    @import "areas/footer_type1";
-    @import "areas/footer_type2";
-    @import "areas/footer_type3";
-    @import "areas/footer_type4";
 
     @import "elements/navigation";
     @import "elements/modal";
@@ -46,6 +37,10 @@ html {
     @import "elements/form-elements";
     @import "elements/slider";
     @import "elements/news";
+    @import "elements/contao-accordions";
+
+
+    @import "_theme/includes";
   }
 }
 

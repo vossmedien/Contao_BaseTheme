@@ -1,67 +1,67 @@
-<div <?php echo $this->cssID;?> class="content--element <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner">
-        <?php if ($this->headline || $this->subline): ?>
-        <div class="ce--headline" data-aos="<?php if($this->animation_type):?><?php echo $this->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>" >
-            <div class="container">
-                <?php if ($this->headline): ?>
-                <<?php echo($this->hl); ?>>
-                <?php echo($this->headline); ?>
-            </<?php echo($this->hl); ?>>
-            <?php endif; ?>
-            <?php if ($this->subline): ?>
-                <span class=" ce--subline" ><?php echo $this->subline; ?></span>
-            <?php endif; ?>
-        </div>
-    </div>
-    <?php endif; ?>
-    <?php foreach ($this->rows as $row): ?>
-            <div class="ce--coloredrows" >
-            <?php if ($row->headline): ?>
-                <div class="headline--wrapper color-<?php echo $row->headline_color;?>">
+        <?php if ($this->headline || $this->subline) : ?>
+            <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                 <div class="container">
-                <div class="row align-items-center" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
-                    <?php if ($row->headline_image): ?>
-                        <div class="col-auto">
-                            <div class="image--wrapper">
-                             <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($row->headline_image)->path, null, null, null); ?>">
-                            </div>
-                        </div>
+                    <?php if ($this->headline) : ?>
+                        <<?php echo ($this->hl); ?>>
+                            <?php echo ($this->headline); ?>
+                        </<?php echo ($this->hl); ?>>
                     <?php endif; ?>
-                    <div class="col">
-                        <div class="headline">
-                        <?php if (!$row->onlystyle): ?>
-                                <<?php echo $row->headline_type; ?> <?php if ($row->headline_image): ?>class="mb-0"<?php endif;?>>
-                                <?php echo $row->headline; ?>
-                            </<?php echo $row->headline_type; ?>>
-                        <?php else: ?>
-                            <span class="<?php if ($row->headline_image): ?>mb-0<?php endif;?> <?php echo $row->headline_type; ?>">
-                                 <?php echo $row->headline; ?>
-                            </span>
-                        <?php endif; ?>
-                    </div>
-                    </div>
+                    <?php if ($this->subline) : ?>
+                        <span class=" ce--subline"><?php echo $this->subline; ?></span>
+                    <?php endif; ?>
                 </div>
-        </div>
             </div>
-            <?php endif; ?>
-                <div  class="colored--row <?php if($row->headline_image):?>has--image<?php endif;?> <?php if($row->colored_row):?>is--colored<?php endif;?>">
-                    <div class="container">
-                        <div class="row">
-                            <?php foreach ($row->cols as $col): ?>
-                            <div class="col-6 col-lg-3" >
-                                <div class="col--inner" data-aos="<?php if($row->animation_type):?><?php echo $row->animation_type;?><?php else:?>animate__fadeInUp<?php endif;?>">
-                                    <div class="cr--headline">
-                                        <?php echo $col->headline;?>
+        <?php endif; ?>
+        <?php foreach ($this->rows as $row) : ?>
+            <div class="ce--coloredrows">
+                <?php if ($row->headline) : ?>
+                    <div class="headline--wrapper color-<?php echo $row->headline_color; ?>">
+                        <div class="container">
+                            <div class="row align-items-center" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                <?php if ($row->headline_image) : ?>
+                                    <div class="col-auto">
+                                        <div class="image--wrapper">
+                                            <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($row->headline_image)->path, null, null, null); ?>">
+                                        </div>
                                     </div>
-                                    <div class="cr--image">
-                                        <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($col->image)->path, null, null, null); ?>">
-                                    </div>
-                                    <div class="cr--content">
-                                        <span class="count"><?php echo $col->text_1;?></span>
-                                        <span><?php echo $col->text_2;?></span>
+                                <?php endif; ?>
+                                <div class="col">
+                                    <div class="headline">
+                                        <?php if (!$row->onlystyle) : ?>
+                                            <<?php echo $row->headline_type; ?> <?php if ($row->headline_image) : ?>class="mb-0" <?php endif; ?>>
+                                                <?php echo $row->headline; ?>
+                                            </<?php echo $row->headline_type; ?>>
+                                        <?php else : ?>
+                                            <span class="<?php if ($row->headline_image) : ?>mb-0<?php endif; ?> <?php echo $row->headline_type; ?>">
+                                                <?php echo $row->headline; ?>
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <div class="colored--row <?php if ($row->headline_image) : ?>has--image<?php endif; ?> <?php if ($row->colored_row) : ?>is--colored<?php endif; ?>">
+                    <div class="container">
+                        <div class="row">
+                            <?php foreach ($row->cols as $col) : ?>
+                                <div class="col-6 col-lg-3">
+                                    <div class="col--inner" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                        <div class="cr--headline">
+                                            <?php echo $col->headline; ?>
+                                        </div>
+                                        <div class="cr--image">
+                                            <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($col->image)->path, null, null, null); ?>">
+                                        </div>
+                                        <div class="cr--content">
+                                            <span class="count"><?php echo $col->text_1; ?></span>
+                                            <span><?php echo $col->text_2; ?></span>
+                                        </div>
+                                    </div>
+                                </div>
                             <?php endforeach; ?>
                         </div>
                     </div>

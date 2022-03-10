@@ -7,3 +7,4 @@
 app/config/parameters.yml
 /.idea
 /files/base/layout/css/_theme/
+/composer.json

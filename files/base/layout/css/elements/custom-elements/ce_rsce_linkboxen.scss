@@ -1,5 +1,5 @@
 .ce_rsce_linkboxen {
-  margin-bottom: -1.5rem;
+  //margin-bottom: -1.5rem;
 
   .row > * {
     margin-bottom: 1.5rem;
@@ -41,7 +41,7 @@
           overflow: hidden;
 
           &.image--holder {
-            border-radius: $border-radius;
+            //border-radius: $border-radius;
           }
         }
       }
@@ -92,12 +92,12 @@
         }
 
         .box-lower--expand {
-          &:not(.is-map){
+          &:not(.is-map) {
             padding: rfs-value(15px 25px 15px 25px);
           }
 
-          &.is-map{
-            iframe{
+          &.is-map {
+            iframe {
               min-height: rfs-value(450px);
               border-radius: $border-radius;
             }
@@ -109,7 +109,7 @@
             padding-right: 0px;
           }
 
-          .button--wrapper{
+          .button--wrapper {
             margin-bottom: 1rem;
           }
         }
@@ -259,7 +259,7 @@
           }
 
           > .headline--wrapper > span.box--headline {
-            color: $text-color;
+            color: $body-color;
             @include font-size(22px);
           }
         }
@@ -301,7 +301,7 @@
           }
         }
 
-        .button--wrapper{
+        .button--wrapper {
           margin-top: 1rem;
         }
       }

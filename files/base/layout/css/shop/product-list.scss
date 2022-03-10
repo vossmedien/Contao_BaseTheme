@@ -1,0 +1,26 @@
+.mod_iso_productlist {
+
+  &#productRecommendations {
+    > h3 {
+      color: $gray-700;
+      margin-bottom: 2.5rem;
+      padding-left: 4rem;
+    }
+
+    .product-slider--wrapper {
+      padding-left: 4rem;
+      padding-right: 4rem;
+      position: relative;
+
+      .swiper-button-prev {
+
+      }
+
+      .swiper-button-next {
+
+      }
+    }
+  }
+
+
+}

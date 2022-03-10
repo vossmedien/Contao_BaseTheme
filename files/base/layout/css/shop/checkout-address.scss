@@ -1,0 +1,36 @@
+#iso_mod_checkout_address {
+
+  h2 {
+    margin-bottom: 2rem;
+  }
+
+  .formbody {
+
+    @include media-breakpoint-up(md) {
+      display: flex;
+      flex-flow: row wrap;
+      margin-left: -1rem;
+      margin-right: -1rem;
+    }
+
+
+    .address {
+      @include media-breakpoint-up(md) {
+        width: 50%;
+        padding-right: 1rem;
+        padding-left: 1rem;
+      }
+
+
+      #shippingaddress_new {
+        margin-top: 2rem;
+      }
+    }
+  }
+
+  .submit_container {
+    justify-content: flex-end;
+  }
+
+
+}

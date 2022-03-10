@@ -1,0 +1,141 @@
+<?php if (!empty($this->actions)) : ?>
+    <form action="<?php echo $this->action; ?>" id="<?php echo $this->formId; ?>" method="post">
+        <div class="formbody">
+            <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
+            <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+        <?php endif; ?>
+
+        <?php if ($this->collection->hasErrors()) : ?>
+            <p class="error"><?php echo implode('</p><p class="error">', $this->collection->getErrors()); ?></p>
+        <?php endif; ?>
+
+        <div class="collection">
+
+            <?php if (!$this->isEditable && !$this->collection->isLocked()) : ?>
+                <div class="boxed">
+                    <a href="/shop/warenkorb" class="edit">
+                        Warenkorb bearbeiten <i class="fas fa-pencil"></i>
+                    </a>
+                </div>
+            <?php endif; ?>
+
+            <?php foreach ($this->items as $item) : $i = 0; ?>
+                <div class="<?php echo $item['rowClass']; ?>"><?php if (!$this->isNotification) : ?>
+                        <div class="col_<?php echo $i++; ?> col_first image"><?php echo $this->getGallery('images', $item['item'])->generateMainImage(); ?></div><?php endif; ?>
+                    <div class="col_<?php echo $i++; ?><?php if ($this->isNotification) echo ' col_first'; ?> name">
+                        <?php if ($this->linkProducts && $item['href']) : ?><a href="<?php echo $item['href']; ?>"><?php echo $item['name']; ?></a><?php else : ?><?php echo $item['name']; ?><?php endif; ?>
+                            <?php if (!empty($item['attributes']) || $item['sku']) : ?>
+                                <ul>
+                                    <?php if ($item['sku']) : ?>
+                                        <li class="attribute" itemprop="sku">
+                                            <span class="label">Artikelnr.:</span> <?php echo $item['sku']; ?>
+                                        </li><?php endif; ?>
+                                    <?php foreach ($item['attributes'] as $name => $value) : ?>
+                                        <li>
+                                            <strong>
+                                                <?= $this->attributeLabel($name) ?>:
+                                            </strong>
+                                            <?= $this->attributeValue($name, $value, ['html' => true, 'item' => $item['item']]) ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+                    </div>
+                    <div class="col_<?php echo $i++; ?> quantity">
+                        <?php if ($this->isEditable) : ?>
+                            <input name="quantity[<?php echo $item['id']; ?>]" type="text" class="text form-control" value="<?php echo $item['quantity']; ?>" maxlength="10">
+                        <?php else : ?>
+                            <?php echo $item['quantity']; ?> x
+                        <?php endif; ?>
+                    </div>
+                    <div class="col_<?php echo $i++; ?> price"><?php echo $item['price']; ?></div>
+                    <div class="col_<?php echo $i++;
+                                    if (!$this->isEditable && $this->total_tax_ids < 2) echo ' col_last'; ?> price total"><?php echo $item['total']; ?></div><?php if ($this->total_tax_ids > 1) : ?>
+                        <div class="col_<?php echo $i++;
+                                                                                                                                                if (!$this->isEditable) echo ' col_last'; ?> tax"><?php echo $item['tax_id']; ?></div><?php endif;
+                                                                                                                                            if ($this->isEditable) : ?>
+                        <div class="col_<?php echo $i++; ?> col_last actions">
+                            <?php /* if ($item['edit_href']): ?><a href="<?php echo $item['edit_href']; ?>" class="edit" title="<?php echo $item['edit_title']; ?>"><?php echo $item['edit_link']; ?></a><?php endif; */ ?>
+                            <a href="<?php echo $item['remove_href']; ?>" class="remove" title="<?php echo $item['remove_title']; ?>"></a>
+                        </div><?php endif; ?>
+                </div><?php if ($item['item']->hasErrors()) : ?>
+                    <div class="<?php echo $item['rowClass']; ?>">
+                        <div colspan="<?php echo $i; ?>">
+                            <p class="error"><?php echo implode('</p><p class="error">', $item['item']->getErrors()); ?></p>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            <div class="summary foot_0 foot_first subtotal">
+                <?php $i = 0;
+                if (!$this->isNotification) : ?>
+                    <div class="col_<?php echo $i++; ?> col_first">&nbsp;</div><?php endif; ?>
+                <div class="col_<?php echo $i++;
+                                $i++; ?><?php if ($this->isNotification) echo ' col_first'; ?> name" colspan="2"><?php echo $GLOBALS['TL_LANG']['MSC']['subTotalLabel']; ?></div>
+                <div class="col_<?php echo $i++; ?> price">&nbsp;</div>
+                <div class="col_<?php echo $i++;
+                                if (!$this->isEditable && $this->total_tax_ids < 2) echo ' col_last'; ?> price total"><?php echo $this->subtotal; ?></div><?php if ($this->total_tax_ids > 1) : ?>
+                    <div class="col_<?php echo $i++;
+                                                                                                                                                if (!$this->isEditable) echo ' col_last'; ?> tax">&nbsp;</div><?php endif;
+                                                                                                                                            if ($this->isEditable) : ?>
+                    <div class="col_<?php echo $i++; ?> col_last remove">&nbsp;</div><?php endif; ?>
+            </div>
+            <?php foreach ($this->surcharges as $surcharge) : $i = 0; ?>
+                <div class="summary <?php echo $surcharge['rowClass']; ?>">
+                    <?php if (!$this->isNotification) : ?>
+                        <div class="col_<?php echo $i++; ?> col_first">&nbsp;</div><?php endif; ?>
+                    <div class="col_<?php echo $i++;
+                                    $i++; ?><?php if ($this->isNotification) echo ' col_first'; ?> name" colspan="2"><?php echo $surcharge['label']; ?>
+                    </div>
+                    <div class="col_<?php echo $i++; ?> price"><?php echo $surcharge['price']; ?></div>
+                    <div class="col_<?php echo $i++;
+                                    if (!$this->isEditable && $this->total_tax_ids < 2) echo ' col_last'; ?> price total"><?php echo $surcharge['total_price']; ?></div><?php if ($this->total_tax_ids > 1) : ?>
+                        <div class="col_<?php echo $i++;
+                                                                                                                                                            if (!$this->isEditable) echo ' col_last'; ?> tax"><?php echo $surcharge['tax_id']; ?></div><?php endif;
+                                                                                                                                                        if ($this->isEditable) : ?>
+                        <div class="col_<?php echo $i++; ?> col_last remove">&nbsp;</div><?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+            <div class="summary foot_<?php echo count($this->surcharges) + 1; ?> foot_last total">
+                <?php $i = 0;
+                if (!$this->isNotification) : ?>
+                    <div class="col_<?php echo $i++; ?> col_first">&nbsp;</div><?php endif; ?>
+                <div class="col_<?php echo $i++;
+                                $i++ ?><?php if ($this->isNotification) echo ' col_first'; ?> name" colspan="2"><?php echo $GLOBALS['TL_LANG']['MSC']['grandTotalLabel']; ?></div>
+                <div class="col_<?php echo $i++; ?> price">&nbsp;</div>
+                <div class="col_<?php echo $i++;
+                                if (!$this->isEditable && $this->total_tax_ids < 2) echo ' col_last'; ?> price total"><?php echo $this->total; ?></div><?php if ($this->total_tax_ids > 1) : ?>
+                    <div class="col_<?php echo $i++;
+                                                                                                                                            if (!$this->isEditable) echo ' col_last'; ?> tax">&nbsp;</div><?php endif;
+                                                                                                                                        if ($this->isEditable) : ?>
+                    <div class="col_<?php echo $i++; ?> col_last remove">&nbsp;</div><?php endif; ?>
+            </div>
+        </div>
+
+        <?php if (!empty($this->buttons)) : ?>
+        </div>
+        <div class="submit_container">
+            <?php //foreach($this->actions as $action) echo $action->generate($this->collection).' '; 
+            ?>
+            <?php foreach ($this->buttons as $action) : ?>
+                <button type="<?php echo $action['type']; ?>" class="<?php echo $action['type']; ?> <?php echo $action['name']; ?>" name="<?php echo $action['name']; ?>" id="ctrl_<?php echo $action['name']; ?>_<?php echo $this->id; ?>" value="1"><?php echo $action['label']; ?></button>
+            <?php endforeach; ?>
+        </div>
+    </form>
+<?php endif; ?>
+
+<?php if (!$this->isEditable && count($this->downloads)) : ?>
+    <div class="downloads">
+        <h2><?php echo $GLOBALS['TL_LANG']['MSC']['downloadsLabel']; ?></h2>
+        <ul>
+            <?php foreach ($this->downloads as $download) : ?>
+                <li class="<?php echo $download['downloadable'] ? 'available' : 'unavailable'; ?>"><?php if ($download['downloadable'] && $download['href']) : ?>
+                        <a href="<?php echo $download['href']; ?>"><?php endif;
+                                                                                                    echo $download['title'];
+                                                                                                    if ($download['downloadable'] && $download['href']) : ?></a><?php endif;
+                                                                                                    echo $download['remaining']; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>

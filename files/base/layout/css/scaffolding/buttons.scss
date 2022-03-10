@@ -1,20 +1,24 @@
-.btn{
-  padding-top: rfs-value(10px);
+.btn {
   line-height: 1;
-  padding-bottom: rfs-value(10px);
   border-radius: $border-radius;
 
-  &.btn-link{
+  &:not(.btn-sm) {
+    padding-top: rfs-value(9px);
+    padding-bottom: rfs-value(11px);
+  }
+
+  &.btn-link {
     padding: 0px;
-    &:hover, &:focus{
+
+    &:hover, &:focus {
       outline: none;
       box-shadow: none;
     }
 
-    &.with-arrow{
+    &.with-arrow {
       text-decoration: none;
 
-      &:before{
+      &:before {
         @extend %fa-icon;
         @extend .fal;
         content: fa-content($fa-var-angle-double-right);

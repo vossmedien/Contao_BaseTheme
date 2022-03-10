@@ -12,7 +12,7 @@
       @include font-size(18px);
     }
 
-    a{
+    a {
       text-decoration: none;
     }
 
@@ -51,9 +51,15 @@
         > li {
           display: inline-block;
           padding: 0 5px 0 5px;
+          transition: all .15s ease;
 
           @include media-breakpoint-up(xl) {
             padding: 0 15px 0 15px;
+          }
+
+          &:hover {
+            background-color: rgba(255, 255, 255, .80);
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
           }
 
           > a, > strong {
@@ -66,7 +72,7 @@
             font-weight: $font-weight-semibold;
             color: $body-color;
 
-            span{
+            span {
               display: inline;
               transition: all .3s ease;
             }
@@ -74,7 +80,7 @@
             &.active, &:hover {
               color: $primary;
 
-              span{
+              span {
                 border-bottom: 1px solid $body-color;
               }
             }
@@ -88,42 +94,46 @@
         }
       }
 
-      ul.level_2{
+      ul.level_2 {
         transition: all .5s ease;
         background-color: rgba(255, 255, 255, .80);
         list-style-type: none;
-        margin: 0;
+        margin: 0 0 0 -5px;
         max-height: 0px;
         padding: 0px;
         overflow: hidden;
         position: absolute;
-        min-width: rfs-value(200px);
         text-align: left;
         border-radius: 0 0 $border-radius $border-radius;
         box-shadow: $box-shadow;
         z-index: 5;
 
-        > li{
+        @include media-breakpoint-up(xl) {
+          margin-left: -15px;
+        }
+
+
+        > li {
           display: block;
           padding: 0 1rem;
           transition: all .3s ease;
 
-          &:first-child{
+          &:first-child {
             padding-top: 5px;
           }
 
-          &:last-child{
+          &:last-child {
             padding-bottom: 5px;
           }
 
-          &:not(:last-child){
+          &:not(:last-child) {
             border-bottom: 1px solid $gray-200;
           }
 
-          &:hover, &.active, &.trail, &:focus{
+          &:hover, &.active, &.trail, &:focus {
             > a,
-            > strong{
-              color: $gray-500;
+            > strong {
+              color: $primary;
             }
           }
 
@@ -132,13 +142,14 @@
             text-decoration: none;
             font-weight: $font-weight-normal;
             display: block;
+            color: $body-color;
             @include font-size(15px);
           }
         }
       }
     }
 
-    .navActivator{
+    .navActivator {
 
     }
   }

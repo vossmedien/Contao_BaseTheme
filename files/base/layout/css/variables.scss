@@ -39,8 +39,13 @@ $secondary-darker: $secondary;
 $font-weight-medium: 500;
 
 $border-radius: 10px;
-$basic-gutter: 50px;
-$headline-spacing: $basic-gutter;
+
+
+// Spalten
+
+$left-col--width: 275px;
+$right-col--width: 250px;
+
 
 // Footer
 
@@ -63,17 +68,50 @@ $fa-font-display: swap;
 //Swiper
 $themeColor: $primary;
 
-$spacer: 1rem;
+$spacer: 1.5rem;
 $spacers: (
-  0: 0,
-  1: $spacer,
-  2: $spacer * 2,
-  3: $spacer * 3,
-  4: $spacer * 4,
-  5: $spacer * 5,
-  6: $spacer * 6,
-  7: $spacer * 7,
-  8: $spacer * 8,
-  9: $spacer * 9,
-  10: $spacer * 10,
+        0: 0,
+        1: $spacer * .25,
+        2: $spacer * .5,
+        3: $spacer * .75,
+        4: $spacer,
+        5: $spacer * 1.25,
+        6: $spacer * 1.5,
+        7: $spacer * 1.75,
+        8: $spacer * 2,
+        9: $spacer * 2.25,
+        10: $spacer * 2.5,
+        11: $spacer * 2.75,
+        12: $spacer * 3,
+        13: $spacer * 3.25,
+        14: $spacer * 3.5,
+        15: $spacer * 3.75,
+        16: $spacer * 4,
+        17: $spacer * 4.25,
+        18: $spacer * 4.5,
+        19: $spacer * 4.75,
+        110: $spacer * 5,
+);
+
+$basic-gutter: $spacer*2;
+$headline-spacing: $spacer;
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1400px
+);
+
+
+$grid-gutter-width: 1rem;
+$gutters: (
+        0: 0,
+        1: $grid-gutter-width * .25,
+        2: $grid-gutter-width * .5,
+        3: $grid-gutter-width,
+        4: $grid-gutter-width * 1.5,
+        5: $grid-gutter-width * 3,
 );

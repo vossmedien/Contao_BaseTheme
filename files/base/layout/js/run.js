@@ -25,7 +25,7 @@ Promise.all(promises)
                 disableMutationObserver: false, // disables automatic mutations' detections (advanced)
                 debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
                 throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
-                
+
                 // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
                 offset: 60, // offset (in px) from the original trigger point
 
@@ -48,8 +48,8 @@ Promise.all(promises)
             }
         }
 
-        /* Wrap Elements that are not custom-elements in container */
-        $("#main .mod_article > div:not(.content--element)").each(function (index) {
+        /* Wrap Elements that are not custom-elements in container (as fallback)
+        $("#main .mod_article > div:not(.content--element):not(.container)").each(function (index) {
             $(this).wrap('<div class="container"></div>');
         });
         /* END */

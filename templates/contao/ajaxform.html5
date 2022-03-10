@@ -6,7 +6,7 @@
         <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
     <?php endif; ?>
     <form novalidate action="<?php echo $this->action; ?>" <?php if ($this->formId) : ?> id="<?php echo $this->formId; ?>" <?php endif; ?> method="<?php echo $this->method; ?>" enctype="<?php echo $this->enctype; ?>" <?php echo $this->attributes; ?><?php echo $this->novalidate; ?>>
-        <div class="formbody">
+        <div class="formbody row">
             <?php if ($this->method != 'get') : ?>
                 <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
                 <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
@@ -28,6 +28,7 @@
                 return;
             }
             var triggeredButton = null;
+
             function request(method, uri, body, callback) {
                 var body = body || null;
                 var request = new XMLHttpRequest();
@@ -45,6 +46,7 @@
                 };
                 request.send(body)
             }
+
             function addButtonEvents(form) {
                 var buttons = form.querySelectorAll('input[type="submit"],button[type="submit"]');
                 for (var i = 0; i < buttons.length; i++) {
@@ -53,6 +55,7 @@
                     });
                 }
             }
+
             function updateContent(form, data, action) {
                 var action = action || form.action;
                 if ('true' === data) {
@@ -65,10 +68,16 @@
                     $(this).parent("div").addClass("form-floating");
                     $("<label>" + $(this).attr("placeholder") + "</label>").insertAfter(this);
                 });
+
+                $(form).find(".formbody").each(function(index) {
+                    $(this).addClass("row");
+                });
+
                 $('html, body').animate({
                     scrollTop: $(".ce_form").offset().top - 125
                 }, 1000);
             }
+
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 var formData = new FormData(form);

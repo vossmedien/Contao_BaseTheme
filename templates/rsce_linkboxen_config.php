@@ -154,6 +154,12 @@ return array(
             'minItems' => 1,
             'maxItems' => 99,
             'fields' => array(
+
+                'settings_1' => array(
+                    'label' => array('Einstellungen', ''),
+                    'inputType' => 'group',
+                ),
+
                 'animation_type' => array(
                     'label' => array(
                         'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -275,7 +281,7 @@ return array(
                         'animate__slideOutRight' => 'slideOutRight',
                         'animate__slideOutUp' => 'slideOutUp',
                     ),
-                    'eval' => array('chosen' => 'true')
+                    'eval' => array('chosen' => 'true', 'tl_class' => 'w50')
                 ),
                 'column_width' => array(
                     'label' => array(
@@ -292,7 +298,16 @@ return array(
                         'col-12 col-md-auto' => 'Automatische Breite (füllend)',
                         'col-12 col-md' => 'Breite anhand des Inhalts',
                     ),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
+
+
+                'settings_image' => array(
+                    'label' => array('Bild', ''),
+                    'inputType' => 'group',
+                ),
+
+
                 'image' => array(
                     'label' => array('Bild / Video', 'Video-Format: MP4'),
                     'inputType' => 'fileTree',
@@ -308,21 +323,21 @@ return array(
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
-                'alternate_background' => array(
-                    'label' => array('Alternative Hintergrundfarbe für Text', 'In HEX angeben, für Darstellungstyp 2 (Standard: Hellgrau)'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+
+
+                'settings_2' => array(
+                    'label' => array('Box mit Schatten', ''),
+                    'inputType' => 'group',
                 ),
-                'alternate_textcolor' => array(
-                    'label' => array('Alternative Textfarbe', 'In HEX angeben'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
+
+
                 'as_box' => array(
                     'label' => array('Überschrift und Subline in Box mit Schatten darstellen', ''),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
+
+
                 'text' => array(
                     'label' => array('Überschrift', ''),
                     'inputType' => 'text',
@@ -333,16 +348,62 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
+
+                'shadowbox_background' => array(
+                    'label' => array('Alternative Hintergrundfarbe', 'In HEX angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'shadowbox_textcolor' => array(
+                    'label' => array('Alternative Textfarbe', 'In HEX angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'settings_3' => array(
+                    'label' => array('Inhalte', ''),
+                    'inputType' => 'group',
+                ),
+
                 'longtext' => array(
                     'label' => array('Langtext', ''),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
+
                 'is_map' => array(
                     'label' => array('Langtext beinhaltet GoogleMap', ''),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
+
+                'expand_longtext' => array(
+                    'label' => array('Langtext beschränken und nach Hover aufklappen', 'Ansonsten wird kompletter Langtext angezeigt'),
+                    'inputType' => 'checkbox',
+                ),
+                'hide_preview' => array(
+                    'label' => array('Langtext eingangs komplett ausblenden und nur bei Hover anzeigen', ''),
+                    'inputType' => 'checkbox',
+                ),
+
+                'settings_text' => array(
+                    'label' => array('Text-Formatierungen', ''),
+                    'inputType' => 'group',
+                ),
+
+
+                'alternate_background' => array(
+                    'label' => array('Alternative Hintergrundfarbe für Text', 'In HEX angeben, für Darstellungstyp 2 (Standard: Hellgrau)'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'alternate_textcolor' => array(
+                    'label' => array('Alternative Textfarbe', 'In HEX angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
                 'textalign' => array(
                     'label' => array(
                         'de' => array('Text-Ausrichtung', ''),
@@ -353,6 +414,13 @@ return array(
                         'text-center' => 'Zentriert',
                         'text-end' => 'Rechtsbündig',
                     ),
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'settings_collapse' => array(
+                    'label' => array('Ausklappbox', ''),
+                    'inputType' => 'group',
                 ),
                 'expand_image' => array(
                     'label' => array('Bild für Ausklapp-Box', ''),
@@ -368,14 +436,13 @@ return array(
                     'label' => array('Innenabstand entfernen', ''),
                     'inputType' => 'checkbox',
                 ),
-                'expand_longtext' => array(
-                    'label' => array('Langtext beschränken und nach Hover aufklappen', 'Ansonsten wird kompletter Langtext angezeigt'),
-                    'inputType' => 'checkbox',
+
+
+                'settings_4' => array(
+                    'label' => array('Verlinkung', ''),
+                    'inputType' => 'group',
                 ),
-                'hide_preview' => array(
-                    'label' => array('Langtext eingangs komplett ausblenden und nur bei Hover anzeigen', ''),
-                    'inputType' => 'checkbox',
-                ),
+
                 'link' => array(
                     'label' => array('Verlinkung', ''),
                     'inputType' => 'url',
@@ -419,11 +486,13 @@ return array(
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
-                'modal_longtext' => array(
-                    'label' => array('Text für modales Fenster', '(überschreibt Verlinkung und öffnet modales Fenster)'),
-                    'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+
+                'settings_5' => array(
+                    'label' => array('Modales Fenster', ''),
+                    'inputType' => 'group',
                 ),
+
+
                 'modal_image' => array(
                     'label' => array('Bild für modales Fenster', ''),
                     'inputType' => 'fileTree',
@@ -433,6 +502,11 @@ return array(
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,svg',
                     ),
+                ),
+                'modal_longtext' => array(
+                    'label' => array('Text für modales Fenster', '(überschreibt Verlinkung und öffnet modales Fenster)'),
+                    'inputType' => 'textarea',
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
             ),
         ),

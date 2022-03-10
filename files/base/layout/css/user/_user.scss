@@ -1,0 +1,11 @@
+@import "login";
+@import "register";
+@import "order-history";
+@import "user-password";
+@import "user-addresses";
+
+&.theme-user {
+  h1 {
+    margin-bottom: 3rem;
+  }
+}

@@ -1,0 +1,24 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<div class="dropdown--basket">
+
+    <div class="dropdown">
+        <span class="open-dropdown" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-shopping-basket"></i> {{cart::quantity}}</span>
+        <div class="dropdown-menu dropdown-menu-end">
+            <div class="mini--basket">
+                <?php if ($this->message) : ?>
+                    <p class="<?php echo $this->type; ?> message"><?php echo $this->message; ?></p>
+                <?php endif; ?>
+
+                <?php echo $this->products; ?>
+                <?php echo $this->custom; ?>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<?php $this->endblock(); ?>

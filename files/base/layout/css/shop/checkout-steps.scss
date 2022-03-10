@@ -1,0 +1,61 @@
+.steps {
+  background-color: $gray-100,;
+  margin-bottom: 3rem;
+
+
+  ol {
+    padding: 0;
+    list-style: none;
+    color: $primary;
+    text-transform: uppercase;
+    font-weight: 600;
+    @include font-size(14px);
+    letter-spacing: 0.2em;
+    min-height: 4em;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+    > li {
+      flex: 0 1 auto;
+      text-align: center;
+      padding: 1.5em 10px;
+      position: relative;
+
+      a {
+        text-decoration: none;
+      }
+
+      &.active {
+        color: $primary;
+
+        &:before {
+          content: '';
+          display: block;
+          position: absolute;
+          left: 50%;
+          bottom: 0;
+          border-bottom: 15px $primary solid;
+          border-left: 15px transparent solid;
+          border-right: 15px transparent solid;
+          margin-left: -15px;
+
+          @include media-breakpoint-down(md) {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    ul {
+      flex-direction: column;
+
+      > * {
+        padding: 5px 0;
+        margin-left: 0;
+      }
+    }
+  }
+}

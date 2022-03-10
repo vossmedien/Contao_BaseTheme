@@ -2,7 +2,6 @@
   position: relative;
 
 
-
   .container {
     padding: rfs-value(0 10px);
   }
@@ -14,10 +13,10 @@
       overflow: hidden;
       transition: background-color .3s ease-in-out;
 
-      &:not(.with-code):hover{
-        .image--col .image-col--inner{
+      &:not(.with-code):hover {
+        .image--col .image-col--inner {
           @include media-breakpoint-up(md) {
-            transform: scale(1.05,1.05);
+            transform: scale(1.05, 1.05);
           }
         }
       }
@@ -29,10 +28,10 @@
           justify-content: center;
           text-align: center;
 
-          .image--wrapper{
+          .image--wrapper {
             max-height: 100%;
 
-            img{
+            img {
               max-height: 100%;
               width: auto;
               max-width: 95%;
@@ -46,7 +45,7 @@
             //max-height: calc(100% + 4rem);
           }
 
-          .content--col, .image--col{
+          .content--col, .image--col {
             //padding-top: 2rem;
             //padding-bottom: 2rem;
           }
@@ -126,11 +125,11 @@
               }
             }
 
-            .image-col--inner{
+            .image-col--inner {
               background-color: transparent;
             }
 
-            .content--col{
+            .content--col {
               background-color: transparent;
             }
           }
@@ -156,7 +155,7 @@
 
             .content--col {
               .content-col--inner {
-                padding: 1.5rem 0rem 1.5rem 3.5rem;
+                padding: 3.5rem 0rem 3.5rem 3.5rem;
               }
             }
 
@@ -202,7 +201,7 @@
             }
 
 
-            .image--wrapper{
+            .image--wrapper {
               //background-color: $body-bg;
             }
 
@@ -344,7 +343,7 @@
             width: 100%;
 
             @include media-breakpoint-up(md) {
-              padding: 1.5rem 3.5rem 1.5rem 0;
+              padding: 3.5rem 3.5rem 3.5rem 0;
             }
 
             .content-col--headline-wrapper {

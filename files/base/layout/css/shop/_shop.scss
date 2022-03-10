@@ -1,0 +1,65 @@
+@import "basket";
+@import "basket-mini";
+
+@import "checkout-address";
+@import "checkout-overview";
+@import "checkout-shipping_payment";
+@import "checkout-steps";
+
+@import "product-box";
+@import "product-detail";
+@import "product-list";
+@import "product-filter";
+
+@import "messages";
+
+&.theme-shop {
+  #container {
+    background-color: $gray-200;
+  }
+}
+
+div[class^="mod_iso_"] {
+  .form-check {
+    padding: 1rem;
+    background-color: $gray-100;
+
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+
+    .form-check-input {
+      margin-left: 0px;
+      margin-right: .5rem;
+    }
+  }
+
+  .widget-submit {
+    margin-top: 2rem;
+  }
+
+  .submit_container {
+    margin-top: 2rem;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+
+    input.button {
+      @extend .btn, .btn-lg;
+
+      &.next {
+        @extend .btn-primary;
+      }
+
+      &.previous {
+        @extend .btn-outline-primary;
+      }
+
+      &.confirm {
+        @extend .btn-success;
+      }
+
+    }
+  }
+}
+

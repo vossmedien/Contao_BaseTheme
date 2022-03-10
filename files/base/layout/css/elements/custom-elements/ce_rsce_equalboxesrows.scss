@@ -1,8 +1,7 @@
 .ce_rsce_equalboxesrows {
   .row {
-
     &:not(:last-of-type) {
-      margin-bottom: 1rem;
+      margin-bottom: $grid-gutter-width;
     }
 
     .left-col--inner {
@@ -17,13 +16,15 @@
 
       .equal--box {
         height: 100%;
-        margin-top: 0px;
+
       }
     }
 
     .right--col {
+      margin-top: -$grid-gutter-width/2;
+      margin-bottom: -$grid-gutter-width/2;
       @include media-breakpoint-up(md) {
-        margin: rfs-value(-15px 0px);
+        //margin: rfs-value(-15px 0px);
       }
 
       .right-col--inner {
@@ -36,10 +37,10 @@
 
 
         .equal--box {
+          padding: $grid-gutter-width/2 0px;
           @include media-breakpoint-up(md) {
             flex: 1;
             width: 100%;
-            padding: rfs-value(15px 0px);
           }
 
 
@@ -53,11 +54,6 @@
 
     .equal--box {
       position: relative;
-      margin-top: 1rem;
-
-      @include media-breakpoint-up(md) {
-        margin-top: 0px;
-      }
 
       > a {
         display: block;

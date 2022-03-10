@@ -1,0 +1,180 @@
+#wrapper #main .mod_article > .mod_iso_productreader {
+  margin-top: 0px;
+  margin-bottom: 0px;
+
+  .iso--product-reader {
+    &.variant-v1 {
+      background-color: $white;
+      padding: 1.5rem 0;
+
+
+      .image--col {
+        .image-col--inner {
+          padding-left: 1rem;
+          text-align: center;
+
+          .product--main-image {
+
+          }
+
+          .product--thumbnails {
+            figure {
+              display: inline-block;
+              margin-bottom: 0px;
+            }
+          }
+        }
+      }
+
+      .content--col {
+        .content-col--inner {
+          padding-top: 2rem;
+          padding-left: rfs-value(25px);
+          padding-right: rfs-value(25px);
+
+          @include media-breakpoint-up(xl) {
+            padding-top: 0rem;
+            padding-left: 0px;
+            padding-right: rfs-value(50px);
+          }
+
+          @include media-breakpoint-up(xxl) {
+            padding-right: rfs-value(75px);
+          }
+
+
+          .content--section {
+            padding: 2rem 3rem;
+            background-color: $gray-200;
+
+            &:not(:last-child) {
+              margin-bottom: 1rem;
+            }
+
+            &.content--section-1 {
+              text-align: center;
+
+              h1 {
+                @include font-size(32px);
+                font-weight: $font-weight-semibold;
+                color: $body-color;
+                line-height: 1.35;
+              }
+
+              .price {
+                margin-top: 1.5rem;
+                margin-bottom: .75rem;
+                line-height: 1;
+                color: $primary;
+                @include font-size(44px);
+                font-weight: $font-weight-semibold;
+              }
+
+              .item--short-informations {
+                @include font-size(12px);
+
+                > span {
+                  display: inline-block;
+                  vertical-align: top;
+
+                  &:first-child {
+                    margin-right: 3px;
+                    vertical-align: middle;
+                  }
+
+                  &:last-child {
+                    vertical-align: middle;
+                    margin-left: 3px;
+                  }
+                }
+              }
+
+              .tax-note {
+                @include font-size(12px);
+
+                a {
+                  text-decoration: none;
+                }
+              }
+
+              .options {
+                margin-top: 1.5rem;
+
+                select {
+                  line-height: rfs-value(25px);
+                  min-height: rfs-value(25px);
+                }
+
+                input {
+                  @extend .form-control;
+                }
+
+                .widget {
+                  text-align: left;
+
+                  &:not(:last-child) {
+                    margin-bottom: 1rem;
+                  }
+                }
+              }
+
+              .submit_container {
+                margin-top: 3rem;
+
+                .quantity_container {
+                  input.form-control {
+                    width: rfs-value(50px);
+                    text-align: center;
+                    color: $primary;
+                    background-color: transparent;
+                    border: 1px solid $primary;
+                  }
+
+                  label {
+                    @include font-size(10px);
+                    display: block;
+                    color: $primary;
+                    margin-top: rfs-value(2px);
+                  }
+                }
+
+                .actions_container {
+                  padding-left: rfs-value(8px);
+                  flex: 1;
+
+                  input.submit {
+                    @extend .btn, .btn-primary;
+                    display: block;
+                    width: 100%;
+                  }
+                }
+
+
+              }
+
+            }
+
+            &.content--section-2 {
+
+            }
+
+            &.content--section-3 {
+
+            }
+
+            &.content--section-4 {
+
+            }
+          }
+        }
+      }
+
+
+    }
+  }
+
+  p.back {
+    text-align: right;
+    margin-top: 1rem;
+  }
+}

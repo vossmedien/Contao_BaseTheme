@@ -1,0 +1,11 @@
+.mod_login {
+  @extend .content--box;
+  padding: 1rem;
+  
+
+  small {
+    display: block;
+    margin-top: .5rem;
+    text-align: right;
+  }
+}

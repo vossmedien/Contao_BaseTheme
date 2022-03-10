@@ -1,6 +1,22 @@
 <div class="mod_pageimage">
-    <?php foreach ($this->allImages as $image) : ?>
-        <div class="page-image--holder lazy" data-bg="<?php echo $image['picture']['img']['src']; ?>" style="background-position: center center; background-repeat: no-repeat; background-size: cover;">
+    <?php
+
+    $productheadImage = $this->replaceInsertTags('{{product::kopfbild}}');
+
+    if ($productheadImage != ""):?>
+        <div class="page-image--holder lazy"
+             data-bg="<?php echo \Image::get(\FilesModel::findByUuid($productheadImage)->path, null, null, null); ?>"
+             style="background-position: center center; background-repeat: no-repeat; background-size: cover;">
         </div>
-    <?php endforeach; ?>
-</div>
+    <?php else: ?>
+
+
+        <?php foreach ($this->allImages as $image) : ?>
+            <div class="page-image--holder lazy" data-bg="<?php echo $image['picture']['img']['src']; ?>"
+                 style="background-position: center center; background-repeat: no-repeat; background-size: cover;">
+            </div>
+        <?php endforeach; ?>
+
+
+    <?php endif; ?>
+

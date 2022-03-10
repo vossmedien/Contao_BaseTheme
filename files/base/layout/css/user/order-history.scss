@@ -1,0 +1,57 @@
+.mod_iso_orderhistory {
+  table {
+    @extend .table, .table-striped;
+
+    td {
+      vertical-align: middle;
+
+      &.link {
+        text-align: right;
+
+        a {
+          @extend .btn, .btn-sm;
+
+          &:first-child {
+            @extend .btn-primary;
+          }
+
+          &:last-child {
+            @extend .btn-secondary;
+          }
+        }
+      }
+    }
+  }
+}
+
+&.theme-user {
+
+  .mod_iso_orderdetails {
+
+    .collection .product {
+      .image {
+        flex: 100%;
+        @include media-breakpoint-up(xl) {
+          flex: 0 0 75px;
+        }
+
+
+        text-align: center;
+      }
+
+      .name {
+        @include media-breakpoint-down(xl) {
+          flex: 100%;
+        }
+
+        @include media-breakpoint-up(xl) {
+          flex-grow: 4;
+        }
+      }
+    }
+
+
+  }
+
+
+}

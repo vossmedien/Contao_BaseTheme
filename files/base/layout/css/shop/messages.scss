@@ -1,0 +1,11 @@
+#iso_ajaxBox {
+  border: 0px;
+  width: 550px;
+  max-width: 85%;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  left: auto;
+}

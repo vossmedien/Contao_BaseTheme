@@ -1,0 +1,106 @@
+.mod_iso_addressbook {
+  width: auto !important;
+  @include media-breakpoint-up(lg) {
+    display: flex;
+    flex-flow: row wrap;
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+
+    > * {
+      padding-right: 1rem;
+      padding-left: 1rem;
+    }
+  }
+
+  .clear {
+    display: none;
+  }
+
+  h1, p {
+    width: 100%;
+  }
+
+  p.empty {
+    text-align: center;
+    @extend .alert, .bg-info;
+  }
+
+  p {
+    margin-bottom: 2rem;
+    text-align: right;
+
+    a.add {
+      text-decoration: none;
+
+      @extend .btn, .btn-outline-primary;
+
+      &:after {
+        @extend %fa-icon;
+        @extend .fas;
+        content: fa-content($fa-var-plus);
+        margin-left: rfs-value(8px);
+        vertical-align: middle;
+      }
+    }
+  }
+
+  > div {
+    position: relative;
+
+    @include media-breakpoint-up(lg) {
+      width: 50%;
+      margin-bottom: 2rem;
+    }
+
+  }
+
+
+  .vcard {
+    background-color: $gray-100;
+    padding: 1rem 2rem 1rem 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .buttons {
+    position: absolute;
+    right: .75rem;
+    top: .25rem;
+
+    @include media-breakpoint-up(lg) {
+      right: 1.75rem;
+    }
+
+
+    a {
+      color: transparent;
+      font-size: 0px;
+      margin-left: 5px;
+
+      &:after {
+        font-size: 1rem;
+        color: $primary;
+      }
+
+      &.edit {
+        &:after {
+          @extend %fa-icon;
+          @extend .fas;
+          content: fa-content($fa-var-pen);
+        }
+
+      }
+
+      &.delete {
+
+        &:after {
+          @extend %fa-icon;
+          @extend .fas;
+          content: fa-content($fa-var-trash);
+        }
+
+      }
+    }
+  }
+
+
+}

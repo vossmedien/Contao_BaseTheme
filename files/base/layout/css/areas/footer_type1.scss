@@ -5,30 +5,29 @@
     border-top: 5px solid $primary;
 
 
-
-
     .fc--top {
       padding: rfs-fluid-value(5rem 0);
       color: $text-color-inverse;
 
-      .row > div:not(:first-child){
+      .row > div:not(:first-child) {
         @include media-breakpoint-down(lg) {
           margin-top: 2rem;
         }
       }
 
 
-      .text--wrapper{
-        *{
+      .text--wrapper {
+        * {
           margin-bottom: 0px;
         }
       }
 
-      .social--list{
-        ul{
+      .social--list {
+        ul {
           margin-bottom: 0px;
+          margin-left: 0px;
 
-          a{
+          a {
             color: $text-color-inverse;
             width: rfs-value(40px);
             line-height: rfs-value(36px);
@@ -38,7 +37,7 @@
             border: 2px solid $primary;
             transition: background-color .3s ease;
 
-            &:hover{
+            &:hover {
               background-color: $primary;
             }
           }
@@ -53,7 +52,7 @@
 
     .fc--bottom {
       padding: rfs-fluid-value(1rem 0);
-      color:  $footer-color;
+      color: $footer-color;
       @include font-size(14px);
 
       #footerNav {
@@ -69,16 +68,17 @@
 
           > li {
             display: inline-block;
-            &:not(:first-child){
+
+            &:not(:first-child) {
               margin-left: 1rem;
             }
 
             > a, > strong {
               text-decoration: none;
               font-weight: normal;
-              color:$footer-color;
+              color: $footer-color;
 
-              &.active{
+              &.active {
                 color: $primary;
               }
             }
@@ -86,7 +86,7 @@
         }
       }
 
-      .social--list ul{
+      .social--list ul {
         margin-left: 0px;
       }
 

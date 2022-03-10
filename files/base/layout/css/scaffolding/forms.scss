@@ -1,19 +1,13 @@
-.ce_form {
+form {
+  min-width: 100%;
 
-  > *:not(form):first-child {
+  > *:not(form):first-child:not(.formbody) {
     margin-bottom: 2rem;
   }
 
   .formbody {
-
-
-    > *{
-      &:not(:last-child){
-        margin-bottom: 1.25rem;
-      }
-    }
-
-    .input-group {
+    /*
+        .input-group {
       .input-group-append, .input-group-prepend {
         z-index: 1;
 
@@ -49,59 +43,48 @@
         left: rfs-value(41px);
       }
     }
+     */
   }
 
 
   .widget {
+    > label:first-child {
+      padding: 2px .75rem 2px .75rem;
+      border-radius: $border-radius $border-radius 0px 0px;
+      background-color: $primary;
+      color: $text-color-inverse;
+      @include font-size(14px);
 
-    input[type="text"],
-    input[type="email"],
-    &.widget-captcha > input {
-      min-height: rfs-value(58px);
+      & + * {
+        border-radius: 0px $border-radius $border-radius $border-radius;
+      }
     }
 
-    ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-      color: transparent;
-      transition: color .3s ease;
+    &:not(:last-child) {
+      margin-bottom: 1.5rem;
     }
 
-    ::-moz-placeholder { /* Firefox 19+ */
-      color: transparent;
-      transition: color .3s ease;
+    .form-label {
+      margin-bottom: 0px;
     }
 
-    :-ms-input-placeholder { /* IE 10+ */
-      color: transparent;
-      transition: color .3s ease;
-    }
-
-    :-moz-placeholder { /* Firefox 18- */
-      color: transparent;
-      transition: color .3s ease;
-    }
-
-
-    //Focus
-
-    *:focus::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-      color: transparent;
-    }
-
-    *:focus::-moz-placeholder { /* Firefox 19+ */
-      color: transparent;
-    }
-
-    *:focus:-ms-input-placeholder { /* IE 10+ */
-      color: transparent;
-    }
-
-    *:focus:-moz-placeholder { /* Firefox 18- */
-      color: transparent;
+    input:not(.form-control) {
+      &[type="text"],
+      &[type="email"],
+      &[type="tel"],
+      &[type="password"], {
+        @extend .form-control;
+      }
     }
 
 
     &.error {
       color: $danger;
+
+      > input, > textarea {
+        border-bottom-right-radius: 0px;
+        border-bottom-left-radius: 0px;
+      }
 
       label {
         color: $danger;
@@ -114,28 +97,48 @@
       }
     }
 
-    &.widget-upload {
-      input.upload {
-        margin-top: rfs-value(10px);
-        @extend .btn;
-        background-color: $gray-200;
+
+    &.widget-checkbox, &.widget-radio {
+      p.error {
+        padding-left: rfs-value(30px);
+        background-color: transparent;
+        color: $danger;
+        font-weight: $font-weight-bold;
       }
     }
 
-    &.widget-checkbox, &.widget-radio{
-      p.error{
-        padding-left: rfs-value(23px);
+    &.widget-select {
+      select {
+        @extend .form-select;
+        border-radius: 0px $border-radius $border-radius $border-radius;
       }
     }
 
-    input:focus {
-      & + label {
-        opacity: 1;
+    .fields + .widget-submit {
+      margin-top: 1.5rem;
+    }
+
+    &.widget-submit {
+      text-align: right;
+
+
+      button {
+        @extend .btn, .btn-primary;
       }
+    }
+
+
+    .captcha_text {
+      margin-bottom: 5px;
     }
 
     p.error {
+      border-radius: 0px 0px $border-radius $border-radius;
       margin-bottom: 0px;
+      @include padding(5px .75rem);
+      @include font-size(14px);
+      color: $text-color-inverse;
+      background-color: $danger;
     }
   }
 
@@ -145,7 +148,22 @@
     > label {
       z-index: 5;
       color: $input-placeholder-color;
-      line-height: 1.2;
+      //line-height: 1.2;
+      margin-left: calc(var(--bs-gutter-x) / 2);
+    }
+
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    select,
+    &.widget-captcha > input {
+      min-height: rfs-value(58px);
+    }
+
+    .form-select {
+      line-height: rfs-value(44px);
     }
   }
 
