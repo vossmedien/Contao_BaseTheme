@@ -1,5 +1,4 @@
-<form action="<?php echo $this->action; ?>" id="<?php echo $this->formId; ?>" name="iso<?php echo rand(); ?>"
-      method="post" enctype="<?php echo $this->enctype; ?>">
+<form action="<?php echo $this->action; ?>" id="<?php echo $this->formId; ?>" name="iso<?php echo rand(); ?>" method="post" enctype="<?php echo $this->enctype; ?>">
     <div class="iso--product-reader variant-v1 formbody" itemscope itemtype="http://schema.org/Product">
         <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
         <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
@@ -29,8 +28,7 @@
                         if ($price = $this->product->getPrice()) : ?>
                             <div class="offer" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                                 <meta itemprop="priceCurrency" content="<?= \Isotope\Isotope::getConfig()->currency ?>">
-                                <div class="price" itemprop="price"
-                                     content="<?= \Isotope\Isotope::roundPrice($price->getAmount(1, $this->product->getOptions())) ?>">
+                                <div class="price" itemprop="price" content="<?= \Isotope\Isotope::roundPrice($price->getAmount(1, $this->product->getOptions())) ?>">
                                     <?php echo $this->generatePrice(); ?>
                                 </div>
                             </div>
@@ -68,15 +66,11 @@
                                 <div class="d-flex w-100">
                                     <?php if ($this->useQuantity) : ?>
                                         <div class="quantity_container">
-                                            <input type="text" class="form-control text"
-                                                   id="quantity_requested_<?php echo $this->raw['id']; ?>"
-                                                   name="quantity_requested"
-                                                   placeholder="<?php echo $this->minimum_quantity; ?>"
-                                                   value="<?php if (specialchars(Input::post('quantity_requested'))) {
-                                                       echo specialchars(Input::post('quantity_requested'));
-                                                   } else {
-                                                       echo "1";
-                                                   } ?>" maxlength="10">
+                                            <input type="text" class="form-control text" id="quantity_requested_<?php echo $this->raw['id']; ?>" name="quantity_requested" placeholder="<?php echo $this->minimum_quantity; ?>" value="<?php if (specialchars(Input::post('quantity_requested'))) {
+                                                                                                                                                                                                                                            echo specialchars(Input::post('quantity_requested'));
+                                                                                                                                                                                                                                        } else {
+                                                                                                                                                                                                                                            echo "1";
+                                                                                                                                                                                                                                        } ?>" maxlength="10">
                                             <label for="quantity_requested_<?php echo $this->raw['id']; ?>">Stück</label>
                                         </div>
                                     <?php endif; ?>
@@ -94,8 +88,7 @@
 
                             <span class="h3 text-center">Beschreibung</span>
 
-                            <div class="description"
-                                 itemprop="description"><?php echo $this->generateAttribute('description'); ?></div>
+                            <div class="description" itemprop="description"><?php echo $this->generateAttribute('description'); ?></div>
                         </div>
                     <?php endif; ?>
 

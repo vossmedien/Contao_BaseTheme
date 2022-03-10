@@ -52,8 +52,8 @@
                     <div class="col_<?php echo $i++;
                                     if (!$this->isEditable && $this->total_tax_ids < 2) echo ' col_last'; ?> price total"><?php echo $item['total']; ?></div><?php if ($this->total_tax_ids > 1) : ?>
                         <div class="col_<?php echo $i++;
-                                                                                                                                                if (!$this->isEditable) echo ' col_last'; ?> tax"><?php echo $item['tax_id']; ?></div><?php endif;
-                                                                                                                                            if ($this->isEditable) : ?>
+                                                                                                                                                                    if (!$this->isEditable) echo ' col_last'; ?> tax"><?php echo $item['tax_id']; ?></div><?php endif;
+                                                                                                                                                                                                                                    if ($this->isEditable) : ?>
                         <div class="col_<?php echo $i++; ?> col_last actions">
                             <?php /* if ($item['edit_href']): ?><a href="<?php echo $item['edit_href']; ?>" class="edit" title="<?php echo $item['edit_title']; ?>"><?php echo $item['edit_link']; ?></a><?php endif; */ ?>
                             <a href="<?php echo $item['remove_href']; ?>" class="remove" title="<?php echo $item['remove_title']; ?>"></a>
@@ -76,8 +76,8 @@
                 <div class="col_<?php echo $i++;
                                 if (!$this->isEditable && $this->total_tax_ids < 2) echo ' col_last'; ?> price total"><?php echo $this->subtotal; ?></div><?php if ($this->total_tax_ids > 1) : ?>
                     <div class="col_<?php echo $i++;
-                                                                                                                                                if (!$this->isEditable) echo ' col_last'; ?> tax">&nbsp;</div><?php endif;
-                                                                                                                                            if ($this->isEditable) : ?>
+                                                                                                                                                                if (!$this->isEditable) echo ' col_last'; ?> tax">&nbsp;</div><?php endif;
+                                                                                                                                                                                                            if ($this->isEditable) : ?>
                     <div class="col_<?php echo $i++; ?> col_last remove">&nbsp;</div><?php endif; ?>
             </div>
             <?php foreach ($this->surcharges as $surcharge) : $i = 0; ?>
@@ -91,8 +91,8 @@
                     <div class="col_<?php echo $i++;
                                     if (!$this->isEditable && $this->total_tax_ids < 2) echo ' col_last'; ?> price total"><?php echo $surcharge['total_price']; ?></div><?php if ($this->total_tax_ids > 1) : ?>
                         <div class="col_<?php echo $i++;
-                                                                                                                                                            if (!$this->isEditable) echo ' col_last'; ?> tax"><?php echo $surcharge['tax_id']; ?></div><?php endif;
-                                                                                                                                                        if ($this->isEditable) : ?>
+                                                                                                                                                                            if (!$this->isEditable) echo ' col_last'; ?> tax"><?php echo $surcharge['tax_id']; ?></div><?php endif;
+                                                                                                                                                                                                                                                    if ($this->isEditable) : ?>
                         <div class="col_<?php echo $i++; ?> col_last remove">&nbsp;</div><?php endif; ?>
                 </div>
             <?php endforeach; ?>
@@ -106,8 +106,8 @@
                 <div class="col_<?php echo $i++;
                                 if (!$this->isEditable && $this->total_tax_ids < 2) echo ' col_last'; ?> price total"><?php echo $this->total; ?></div><?php if ($this->total_tax_ids > 1) : ?>
                     <div class="col_<?php echo $i++;
-                                                                                                                                            if (!$this->isEditable) echo ' col_last'; ?> tax">&nbsp;</div><?php endif;
-                                                                                                                                        if ($this->isEditable) : ?>
+                                                                                                                                                            if (!$this->isEditable) echo ' col_last'; ?> tax">&nbsp;</div><?php endif;
+                                                                                                                                                                                                        if ($this->isEditable) : ?>
                     <div class="col_<?php echo $i++; ?> col_last remove">&nbsp;</div><?php endif; ?>
             </div>
         </div>
@@ -133,7 +133,7 @@
                         <a href="<?php echo $download['href']; ?>"><?php endif;
                                                                                                     echo $download['title'];
                                                                                                     if ($download['downloadable'] && $download['href']) : ?></a><?php endif;
-                                                                                                    echo $download['remaining']; ?>
+                                                                                                                                                            echo $download['remaining']; ?>
                 </li>
             <?php endforeach; ?>
         </ul>
