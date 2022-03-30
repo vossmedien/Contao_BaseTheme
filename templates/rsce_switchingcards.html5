@@ -1,0 +1,91 @@
+<div class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner container">
+        <?php if ($this->headline || $this->subline) : ?>
+            <div class="ce--headline">
+                <?php if ($this->headline) : ?>
+                    <<?php echo ($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                        <?php echo ($this->headline); ?>
+                    </<?php echo ($this->hl); ?>>
+                <?php endif; ?>
+                <?php if ($this->subline) : ?>
+                    <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+        <?php if ($this->rows) : ?>
+        <div class="row">
+            <?php foreach ($this->rows as $i => $row) : ?>
+                <div class="<?php echo $row->column_width;?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                    <div class="flipping-card--wrapper">
+
+                        <div class="flipping-card--inner">
+
+                            <div    style="<?php if($row->front_background):?>background-color: <?php echo $row->front_background;?>;<?php endif;?> <?php if($row->front_textcolor):?>color: <?php echo $row->front_textcolor;?><?php endif;?>"
+                                    class="flipping-card--front <?php echo $row->front_textalign;?>">
+                                <?php if($row->image_front):?>
+                                    <div class="fc--image">
+                                        <img src="<?= \Image::get(\FilesModel::findByUuid($row->image_front)->path, null, null, null); ?>">
+                                    </div>
+                                <?php endif;?>
+                                <?php if($row->front_headline):?>
+                                    <div class="fc--headline">
+                                        <span><?php echo $row->front_headline;?></span>
+                                    </div>
+                                <?php endif;?>
+                                <?php if($row->front_content_headline):?>
+                                    <div class="fc--content-headline">
+                                        <span><?php echo $row->front_content_headline;?></span>
+                                    </div>
+                                <?php endif;?>
+                                <?php if($row->front_content_text):?>
+                                    <div class="fc--content-text">
+                                        <span><?php echo $row->front_content_text;?></span>
+                                    </div>
+                                <?php endif;?>
+                            </div>
+
+                            <div style="
+                            <?php if($row->front_background):?>border-color: <?php echo $row->front_background;?>;<?php endif;?>
+                            <?php if($row->back_background):?>background-color: <?php echo $row->back_background;?>;<?php endif;?>
+                            <?php if($row->back_textcolor):?>color: <?php echo $row->back_textcolor;?><?php endif;?>
+                                    "
+                                    class="flipping-card--back">
+                                <?php if($row->image_back):?>
+                                <div class="fc--image">
+                                    <img src="<?= \Image::get(\FilesModel::findByUuid($row->image_back)->path, null, null, null); ?>">
+                                </div>
+                                <?php endif;?>
+                                <?php if($row->back_headline):?>
+                                    <div class="fc--headline">
+                                        <?php echo $row->back_headline;?>
+                                    </div>
+                                <?php endif;?>
+                                <?php if($row->back_content_headline):?>
+                                    <div class="fc--content-headline">
+                                        <span><?php echo $row->back_content_headline;?></span>
+                                    </div>
+                                <?php endif;?>
+                                <?php if($row->back_content_text):?>
+                                    <div class="fc--content-text">
+                                        <span><?php echo $row->back_content_text;?></span>
+                                    </div>
+                                <?php endif;?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach ?>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+
+<script>
+    if ($('.flipping-card--wrapper').length) {
+        $('body').on('click', '.flipping-card--wrapper', function (e) {
+            $('.flipping-card--wrapper.active').removeClass("active");
+            $(this).addClass("active");
+        });
+    }
+</script>

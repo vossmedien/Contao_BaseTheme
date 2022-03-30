@@ -56,6 +56,7 @@ Promise.all(promises)
 
         /* Smooth Scrolling and set correct Item active */
         $('body.onepage').on('click', '#mainNav a[href^="#"]', function (e) {
+
             e.preventDefault();
             var targetSelector = this.hash;
             var $target = $(targetSelector);
@@ -77,6 +78,7 @@ Promise.all(promises)
                 }
             );
         });
+
         $('body').on('click', '#main .mod_article a[href^="#"]', function (e) {
             e.preventDefault();
             var targetSelector = this.hash;
@@ -231,8 +233,6 @@ Promise.all(promises)
             $(window).scroll(function () {
                 detectIfScrolled();
             });
-
-
         }
         /* END */
 
