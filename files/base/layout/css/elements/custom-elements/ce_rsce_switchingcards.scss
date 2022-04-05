@@ -2,6 +2,10 @@
 
   .row > div{
     margin-bottom: 1.5rem;
+
+    @include media-breakpoint-down(md) {
+      width: 100%;
+    }
   }
 
 
@@ -25,6 +29,11 @@
       }
     }
 
+    img{
+      max-height: 60px;
+      max-width: 60px;
+    }
+
     .flipping-card--inner {
       //position: absolute;
       width: 100%;
@@ -41,7 +50,9 @@
         -webkit-backface-visibility: hidden; /* Safari */
         backface-visibility: hidden;
         padding: .25rem 1rem 1rem 1rem;
-
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: space-around;
 
         .fc--image{
           text-align: center;
@@ -65,16 +76,23 @@
           margin-top: .25rem;
         }
 
+        .fc--content-button{
+          margin-top: 1rem;
+        }
 
       }
 
       .flipping-card--front {
         background-color: $primary;
         color: $text-color-inverse;
+        .front--inner{
+          padding: .25rem 1rem 1rem 1rem;
 
-        .fc--content-text{
-          font-size: 95%;
+          .fc--content-text{
+            font-size: 95%;
+          }
         }
+
       }
 
       .flipping-card--back {
@@ -85,9 +103,15 @@
         top: 0;
         border: 1px solid $primary;
 
-        .fc--content-text{
-          font-size: 75%;
+        .back--inner{
+          padding: .25rem 1rem 1rem 1rem;
+
+          .fc--content-text{
+            font-size: 75%;
+          }
         }
+
+
       }
 
 

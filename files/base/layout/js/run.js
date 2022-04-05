@@ -141,6 +141,19 @@ Promise.all(promises)
         }
         /* END */
 
+
+
+        if ($('.ce_rsce_switchingcards').length) {
+            $( ".flipping-card--wrapper" ).each(function( index ) {
+                var front = $(this).find(".flipping-card--front");
+                var back = $(this).find(".flipping-card--back");
+                var frontHeight = front.height();
+                back.css('height',  frontHeight);
+            });
+        }
+
+
+
         /* Animated Upcounting when Element is in Viewport */
         if ($('.count').length) {
             function startCounter() {
@@ -285,7 +298,14 @@ Promise.all(promises)
         }
         /* END */
 
-        /* Add Floating Placeholders to Inputs */
+
+
+
+
+
+
+
+
         if ($('.scrollToTop').length) {
             $(".scrollToTop").click(function () {
                 $("html,body").animate({scrollTop: $("#top").offset().top}, "500");
