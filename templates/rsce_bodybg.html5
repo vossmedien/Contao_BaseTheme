@@ -1,0 +1,7 @@
+<style>
+    body {
+        background: url(<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+    }
+</style>
