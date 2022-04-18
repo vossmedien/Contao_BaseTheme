@@ -1,6 +1,10 @@
 .ce_rsce_twocolimagewall {
   position: relative;
 
+  &.no-spacing{
+    margin-bottom: 0px !important;
+    margin-top: -$basic-gutter !important;
+  }
 
   .container {
     padding: rfs-value(0 10px);

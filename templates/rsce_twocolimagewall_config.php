@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Zeile mit zwei Spalten & vollflächigen Bildern', ''),
+    'label' => array('Custom | Zeile mit zwei Spalten & vollflächigen Bildern (twocolimagewall)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -137,6 +137,12 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
+
+        'no_padding' => array(
+            'label' => array('Abstand komplett entfernen', 'Das vorherige und nächste Element bzw. der Footer "hängen" dann direkt an diesem Element'),
+            'inputType' => 'checkbox',
+        ),
+
         'row' => array(
             'label' => array('Zeilen', ''),
             'elementLabel' => '%s. Zeile',
@@ -293,6 +299,8 @@ return array(
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
+
+
                 'settings_2' => array(
                     'label' => array('Boxed-Headline', ''),
                     'inputType' => 'group',
