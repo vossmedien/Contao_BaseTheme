@@ -1,6 +1,9 @@
 .ce_rsce_extendedimagecolumns {
+  margin-bottom: $basic-gutter;
   .row {
     > div.col-md-6 {
+      margin-bottom: $basic-gutter;;
+
       &:nth-child(even) {
         @include media-breakpoint-up(md) {
           .box--image-overflow-wrapper {

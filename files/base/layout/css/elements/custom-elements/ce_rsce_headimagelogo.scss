@@ -1,3 +1,12 @@
+//Adjust the Centering of Text if Header is fixed
+
+&.theme-4 {
+  .ce_rsce_headimagelogo .mainimage--content .mainimage--content-inner {
+    margin-top: rfs-value(40px);
+  }
+}
+
+
 .ce_rsce_headimagelogo {
   margin-top: 0px !important;
 
@@ -86,9 +95,9 @@
       .mainimage--content {
         .mainimage--content-inner {
 
-              @include media-breakpoint-down(sm) {
-                width: 75%;
-              }
+          @include media-breakpoint-down(sm) {
+            width: 75%;
+          }
 
 
           span {
@@ -136,13 +145,19 @@
             position: absolute;
             right: 0;
             bottom: 0;
-            width: 100vw;
+            width: 100%;
             background-color: $white;
             height: 100%;
+
+            @include media-breakpoint-up(sm) {
+              width: 100vw;
+            }
           }
+
 
           .mainimage--content-inner--wrapper {
             padding: 10px 10px 10px 10px;
+
             @include media-breakpoint-up(sm) {
               &:after {
                 content: '';
@@ -155,6 +170,10 @@
                 width: 200px;
                 height: 100%;
               }
+            }
+
+            > * {
+              position: relative;
             }
 
             .button--wrapper {
@@ -208,20 +227,32 @@
           transform: translate(50%, -50%);
           padding: 10px 10px 10px 10px;
 
+          @include media-breakpoint-down(sm) {
+            width: 85%;
+          }
+
 
           span {
             display: block;
             line-height: 1;
 
             &.first-line {
-              @include font-size(36px);
+              @include font-size(26px);
               font-weight: $font-weight-bold;
+
+              @include media-breakpoint-up(md) {
+                @include font-size(36px);
+              }
             }
 
             &.second-line {
-              @include font-size(22px);
+              @include font-size(18px);
               margin-top: 8px;
-                 font-weight: $font-weight-semibold;
+              font-weight: $font-weight-semibold;
+
+              @include media-breakpoint-up(md) {
+                @include font-size(22px);
+              }
             }
           }
 

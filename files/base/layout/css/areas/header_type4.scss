@@ -50,11 +50,11 @@
 
         > li {
           display: inline-block;
-          padding: 0 5px 0 5px;
+          padding: rfs-value(0 7.5px 0 7.5px);
           transition: all .15s ease;
 
           @include media-breakpoint-up(xl) {
-            padding: 0 15px 0 15px;
+            padding: rfs-value(0 15px 0 15px);
           }
 
           &:hover {

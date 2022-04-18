@@ -47,6 +47,8 @@
                                             $color = str_replace("&#41", ")",$color);
                                             $color = str_replace("&#40", "(",$color);
                                             $color = str_replace("(;", "(",$color);
+                                            $color = str_replace("&#35;", "#",$color);
+
                                         ?>
 
                                         html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner:before,
@@ -96,7 +98,7 @@
                                                         </div>
                                                     <?php endif; ?>
 
-                                                    <?php if ($slide->buttons) : ?>
+                                                    <?php if (count($slide->buttons) > 1) : ?>
                                                         <div class="button--wrapper">
                                                             <?php foreach ($slide->buttons as $button) : ?>
                                                                 <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="d-inline-block mt-2  me-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>" href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>

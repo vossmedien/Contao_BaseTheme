@@ -312,7 +312,7 @@
 
             & + .content-col--inner {
               @include media-breakpoint-up(md) {
-                padding-top: rfs-value(140px);
+                //padding-top: rfs-value(140px); warum?
               }
             }
 
@@ -325,7 +325,7 @@
               > * {
                 margin-bottom: 0px;
                 color: $body-color;
-                @include font-size(22px);
+                //@include font-size(22px);
                 font-weight: $font-weight-normal;
               }
 
