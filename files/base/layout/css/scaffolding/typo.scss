@@ -64,6 +64,7 @@ html body {
     @include font-size(18px);
     display: block;
     margin-bottom: $headline-spacing;
+    line-height: 1.15;
   }
 
   h1, .h1 {

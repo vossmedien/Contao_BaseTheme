@@ -43,7 +43,7 @@
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($b->text) : ?>
-                                        <div class="box--text mt-3">
+                                        <div class="box--text">
                                             <?php echo $b->text; ?>
                                         </div>
                                     <?php endif; ?>
