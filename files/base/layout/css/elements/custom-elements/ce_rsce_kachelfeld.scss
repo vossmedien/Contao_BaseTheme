@@ -1,14 +1,16 @@
 .ce_rsce_kachelfeld {
+  margin-bottom: calc(#{$basic-gutter} - 25px) !important;
 
   .row {
     justify-content: center;
-    > div:not(:last-child) {
 
-      @include media-breakpoint-down(lg) {
-        margin-bottom: rfs-value(20px);
-      }
-
+    > div {
+      margin-bottom: rfs-value(25px);
     }
+  }
+
+  .ce--headline + .ce--kachelfeld{
+    margin-top: 1.5rem;
   }
 
   .kachelbox {
@@ -78,6 +80,13 @@
           height: rfs-value(200px);
           line-height: rfs-value(200px);
         }
+
+
+          .kb--image-holder {
+            min-height: 95%;
+            margin-left: rfs-value(-30px);
+            margin-right: rfs-value(-30px);
+          }
 
         img {
           width: auto;

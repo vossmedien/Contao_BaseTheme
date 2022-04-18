@@ -13,7 +13,7 @@
             </div>
         <?php endif; ?>
         <div class="ce--kachelfeld ">
-            <div class="row">
+            <div class="row gx-4">
                 <?php foreach ($this->kachel as $b) : ?>
                     <div class="<?php if ($b->column_width) : ?><?php echo $b->column_width; ?><?php else : ?>col-12 col-lg-4<?php endif; ?>">
                         <div class="kachelbox" data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -26,7 +26,11 @@
                                         <?php if ($b->icon) : ?>
                                             <i class="<?php echo $b->icon; ?>"></i>
                                         <?php elseif ($b->image) : ?>
+                                           <?php if (!$b->image_as_bg) : ?>
                                             <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                                            <?php else:?>
+                                                <div style="background: url(<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover;" class="kb--image-holder"></div>
+                                            <?php endif; ?>
                                         <?php endif; ?>
                                     </div>
                                 <?php endif; ?>

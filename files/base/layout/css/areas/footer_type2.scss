@@ -59,6 +59,12 @@
 
     .fc--bottom{
       padding: .75rem 0;
+      @include font-size(14px);
+
+       a{
+          color: $white;
+        }
+
 
       #footerNav{
         ul{

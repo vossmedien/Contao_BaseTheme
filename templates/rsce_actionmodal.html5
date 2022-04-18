@@ -1,0 +1,28 @@
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner ">
+
+        <section class="modal fade" id="linkBoxModal_<?php echo $this->id; ?>" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                            <h5 class="modal-title">
+                               xxx
+                            </h5>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($box->modal_image)->path, null, null, 4); ?>">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>

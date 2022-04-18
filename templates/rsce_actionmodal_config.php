@@ -1,19 +1,21 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Boxen mit Icon / Bild, Link, Text & Button (Kachelfeld)', ''),
+    'label' => array('Custom | Modales Fenster für Aktionen (actionmodal)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('headline', 'cssID'),
+    'standardFields' => array('cssID'),
     'wrapper' => array(
         'type' => 'none',
     ),
     'fields' => array(
-        'subline' => array(
-            'label' => array('Subline', ''),
-            'inputType' => 'text',
+
+        'settings_modal' => array(
+            'label' => array('Einstellungen für modales Fenster', ''),
+            'inputType' => 'group',
         ),
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -137,9 +139,63 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
-        'kachel' => array(
-            'label' => array('Kacheln', ''),
-            'elementLabel' => '%s. Kachel',
+        'cookie_hide' => array(
+            'label' => array('Verstecken nach gesetztem Cookie', 'Nachdem das Fenster geschlossen wurde, wird ein Cookie gesetzt und das modale Fenster wird nicht erneut angezeigt.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'hide_footer' => array(
+            'label' => array('Modal-Fußzeile ausblenden', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+        'settings_image' => array(
+            'label' => array('Bild', ''),
+            'inputType' => 'group',
+        ),
+
+        'image' => array(
+            'label' => array('Bild / Video', 'Video-Format: MP4'),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
+            ),
+        ),
+
+        'as_bg' => array(
+            'label' => array('Bild als Hintergrund', 'dadurch bekommt der Bereich eine feste Höhe und das Bild wird evtl. beschnitten'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'icon' => array(
+            'label' => array('Feste Höhe', 'Bild-Bereich eine feste Höhe zuweisen'),
+            'inputType' => 'text',
+        ),
+
+
+        'settings_text' => array(
+            'label' => array('Text', ''),
+            'inputType' => 'group',
+        ),
+
+        'longtext' => array(
+            'label' => array('Langtext', 'es können auch Inserttags verwendet werden um Nodes, Artikel oder andere Elemente zu inkludieren'),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+        ),
+
+        'settings_4' => array(
+            'label' => array('Buttons', ''),
+            'inputType' => 'group',
+        ),
+        'buttons' => array(
+            'label' => array('Button', ''),
+            'elementLabel' => '%s. Button',
             'inputType' => 'list',
             'minItems' => 1,
             'maxItems' => 10,
@@ -267,81 +323,19 @@ return array(
                     ),
                     'eval' => array('chosen' => 'true')
                 ),
-                'column_width' => array(
-                    'label' => array(
-                        'de' => array('Spaltenbreite', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'col-12 col-md-6 col-lg-3' => '25%',
-                        'col-12 col-md-6 col-lg-4' => '33%',
-                        'col-12 col-md-6' => '50%',
-                        'col-12 col-lg-8' => '66.66%',
-                        'col-12 col-lg-9' => '75%',
-                        'col-12' => 'Volle Breite',
-                        'col-12 col-md-auto' => 'Automatische Breite (füllend)',
-                        'col-12 col-md' => 'Breite anhand des Inhalts',
-                    ),
-                ),
-                'image' => array(
-                    'label' => array('Bild', ''),
-                    'inputType' => 'fileTree',
-                    'eval' => array(
-                        'multiple' => false,
-                        'fieldType' => 'radio',
-                        'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
-                    ),
-                ),
-
-                'image_as_bg' => array(
-                    'label' => array('Bild als Hintergrund mit fester Höhe einbinden', 'Bild wird dadurch möglicherweise beschnitten'),
-                    'inputType' => 'checkbox',
-                ),
-
-                'icon' => array(
-                    'label' => array('Alternativ zum Bild Font-Awesome Klasse angeben', 'überschreibt das Bild, z. B. fa-facebook fab'),
-                    'inputType' => 'text',
-                ),
-                'headline_type' => array(
-                    'label' => array(
-                        'de' => array('Typ der Überschrift', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'h1' => 'H1',
-                        'h2' => 'H2',
-                        'h3' => 'H3',
-                        'h4' => 'H4',
-                        'h5' => 'H5',
-                    ),
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-                'headline' => array(
-                    'label' => array('Überschrift', ''),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-                'text' => array(
-                    'label' => array('Text', ''),
-                    'inputType' => 'text',
-                    'eval' => array(
-                        'allowHtml' => true,
-                        'rte' => 'tinyMCE',
-                        'tl_class' => 'clr'
-                    ),
-                ),
                 'link_text' => array(
                     'label' => array(
                         'de' => array('Button-Beschriftung', 'Button befindet sich rechts unter dem Text'),
                     ),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'link_url' => array(
-                    'label' => array('Verlinkung der Beschriftung', ''),
+                    'label' => array('Verlinkung der Beschriftung', 'z. B. mailto:info@gmx.de'),
                     'inputType' => 'url',
-                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'link_betreff' => array(
+                    'label' => array('Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
+                    'inputType' => 'text',
                 ),
                 'link_type' => array(
                     'label' => array(
@@ -353,7 +347,6 @@ return array(
                         'btn-outline-primary' => 'Hauptfarbe (Outline)',
                         'btn-secondary' => 'Sekundär-Farbe',
                         'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
-                        'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -371,5 +364,6 @@ return array(
                 ),
             ),
         ),
+
     ),
 );

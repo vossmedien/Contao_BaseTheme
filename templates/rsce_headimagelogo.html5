@@ -20,7 +20,7 @@
     <?php endif; ?>
 -->
 
-        <div class="swiper mainslider mainslider_<?php echo $this->id; ?> <?php if ($this->image_height) : ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut) : ?>with-diagonalCut<?php endif; ?>">
+        <div class=" <?php if (count($this->slides) > 1) : ?>swiper<?php endif;?> mainslider mainslider_<?php echo $this->id; ?> <?php if ($this->image_height) : ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut) : ?>with-diagonalCut<?php endif; ?>">
             <!-- Additional required wrapper -->
             <div class="swiper-wrapper">
                 <!-- Slides -->
@@ -115,7 +115,9 @@
                     </div>
                 <?php endforeach ?>
             </div>
-            <?php if (count($this->slides) > 1) : ?><?php if (!$this->boxed_image) : ?>
+            <?php if (count($this->slides) > 1) : ?>
+
+                <?php if (!$this->boxed_image) : ?>
                 <div class="swiper-pagination"></div>
             <?php endif; ?>
                 <div class="swiper-button-prev"></div>
