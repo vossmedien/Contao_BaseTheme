@@ -64,7 +64,10 @@ function loadScript(url) {
 
 function scriptsActivator(lazyload = false, swiper = false, popper = false, bootstrap = false, aos = false) {
     scripts = [];
-    scripts.push("/files/base/layout/_vendor/node_modules/dom7/dom7.min.js", "/files/base/layout/_vendor/node_modules/ssr-window/ssr-window.umd.min.js");
+    scripts.push(
+        "/files/base/layout/_vendor/node_modules/dom7/dom7.min.js",
+        "/files/base/layout/_vendor/node_modules/ssr-window/ssr-window.umd.min.js",
+        "/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js");
 
     if (lazyload) {
         scripts.push("/files/base/layout/_vendor/node_modules/vanilla-lazyload/dist/lazyload.min.js");
