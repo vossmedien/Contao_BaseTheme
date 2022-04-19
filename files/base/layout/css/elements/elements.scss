@@ -72,6 +72,10 @@
   }
 }
 
+.progress{
+  background-color: $gray-100;
+}
+
 .social--list {
   .social-list--label {
     display: none;
@@ -85,6 +89,7 @@
     vertical-align: middle;
   }
 }
+
 
 .stoerer--social-media {
   background-color: $body-bg;
@@ -217,6 +222,7 @@
 }
 
 @import "custom-elements/ce_rsce_2colscontent";
+@import "custom-elements/ce_rsce_actionmodal";
 @import "custom-elements/ce_rsce_advantages";
 @import "custom-elements/ce_rsce_boxenfeld";
 @import "custom-elements/ce_rsce_boxtitlesubtitle";

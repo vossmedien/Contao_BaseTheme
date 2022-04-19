@@ -10,10 +10,27 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-
         'settings_modal' => array(
             'label' => array('Einstellungen für modales Fenster', ''),
             'inputType' => 'group',
+        ),
+
+        'modal_headline' => array(
+            'label' => array('Überschrift für Modal-Header', 'Wenn leer, wird der Header ausgeblendet'),
+            'inputType' => 'text',
+        ),
+        'modal_size' => array(
+            'label' => array(
+                'de' => array('Größe des modalen Fensters', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                '' => 'Standard',
+                'modal-sm' => 'Klein',
+                'modal-lg' => 'Groß',
+                'modal-xl' => 'Sehr groß',
+            ),
+            'eval' => array('tl_class' => 'w50'),
         ),
 
         'animation_type' => array(
@@ -137,32 +154,73 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'w50')
         ),
+
+        'modal_backgroundcolor' => array(
+            'label' => array('Hintergrundfarbe für das gesamte Modal', 'in HEX oder RGB angeben, Standard: Weiß'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
         'cookie_hide' => array(
             'label' => array('Verstecken nach gesetztem Cookie', 'Nachdem das Fenster geschlossen wurde, wird ein Cookie gesetzt und das modale Fenster wird nicht erneut angezeigt.'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
 
-        'hide_footer' => array(
-            'label' => array('Modal-Fußzeile ausblenden', ''),
+
+        'show_footer_close' => array(
+            'label' => array('Schließen Button zum Footer hinzufügen', ''),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
+        'remove_image_padding' => array(
+            'label' => array('Außenabstand des Bildes entfernen', 'das Bild liegt dann an der Kante'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
         'settings_image' => array(
             'label' => array('Bild', ''),
             'inputType' => 'group',
         ),
 
+        'image_headline_left' => array(
+            'label' => array('Überschrift für die linke Spalte des Bildes', '(ca. 35% breit)'),
+            'inputType' => 'text',
+            'eval' => array('allowHtml' => true),
+        ),
+
+        'image_headline_right' => array(
+            'label' => array('Überschrift für Textbereich auf der rechten Seite', ''),
+            'inputType' => 'text',
+        ),
+
+        'image_text_right' => array(
+            'label' => array('Langtext für Textbereich auf der rechten Seite', ''),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE'),
+        ),
+
+        'image_right_col_background_color' => array(
+            'label' => array('Hintergrundfarbe für rechte Spalte', 'in HEX oder RGB angeben, Standard: Schwarz mit .75 Deckungskraft'),
+            'inputType' => 'text',
+        ),
+
+        'image_right_col_text_color' => array(
+            'label' => array('Textfarbe für rechte Spalte', 'in HEX oder RGB angeben, Standard: weiß'),
+            'inputType' => 'text',
+        ),
+
         'image' => array(
-            'label' => array('Bild / Video', 'Video-Format: MP4'),
+            'label' => array('Bild', ''),
             'inputType' => 'fileTree',
             'eval' => array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
+                'extensions' => 'jpg,jpeg,png',
             ),
         ),
 
@@ -172,8 +230,8 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
-        'icon' => array(
-            'label' => array('Feste Höhe', 'Bild-Bereich eine feste Höhe zuweisen'),
+        'fixed_height' => array(
+            'label' => array('Feste Höhe', 'Bild-Bereich eine feste Höhe inkl. Einheit (z. B. px) zuweisen'),
             'inputType' => 'text',
         ),
 
@@ -183,18 +241,36 @@ return array(
             'inputType' => 'group',
         ),
 
-        'longtext' => array(
+        'headline' => array(
+            'label' => array('Überschrift', ''),
+            'inputType' => 'text',
+        ),
+
+        'progress_image' => array(
+            'label' => array('Bild für Fortschrittsanzeige', 'Alternative'),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
+            ),
+        ),
+
+        'progress_amount' => array(
+            'label' => array('Fortschrittsanzeige', 'Angeben, wie oft das Bild der Fortschrittsanzeige wiederholt werden soll oder zu wie viel % die Anzeige fortgeschritten sein soll, wenn kein Bild ausgewählt ist'),
+            'inputType' => 'text',
+        ),
+
+        'text' => array(
             'label' => array('Langtext', 'es können auch Inserttags verwendet werden um Nodes, Artikel oder andere Elemente zu inkludieren'),
             'inputType' => 'textarea',
             'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
         ),
 
-        'settings_4' => array(
-            'label' => array('Buttons', ''),
-            'inputType' => 'group',
-        ),
+
         'buttons' => array(
-            'label' => array('Button', ''),
+            'label' => array('Button', 'Ohne Buttons wird der  Footer ausgeblendet'),
             'elementLabel' => '%s. Button',
             'inputType' => 'list',
             'minItems' => 1,
@@ -365,5 +441,29 @@ return array(
             ),
         ),
 
+
+        'sponsors' => array(
+            'label' => array('Sponsoren-Logos', 'rechts unten, blendet ggf. den schließen-Button aus'),
+            'elementLabel' => '%s. Logo',
+            'inputType' => 'list',
+            'minItems' => 1,
+            'maxItems' => 20,
+            'fields' => array(
+                'image' => array(
+                    'label' => array('Bild', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'jpg,jpeg,png,svg',
+                    ),
+                ),
+                'link' => array(
+                    'label' => array('Verlinkung', 'optional'),
+                    'inputType' => 'url',
+                ),
+            ),
+        ),
     ),
 );

@@ -127,7 +127,7 @@
 
 
         <?php if ($this->boxed_image) : ?>
-            <div class="boxed-logo">
+            <div class="boxed-logo d-none d-lg-block">
                 <img data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
             </div>
         <?php endif; ?>
