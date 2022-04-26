@@ -305,12 +305,12 @@ return array(
                     ),
                 ),
                 'alternate_background' => array(
-                    'label' => array('Alternative Hintergrundfarbe für Text', 'In HEX angeben'),
+                    'label' => array('Alternative Hintergrundfarbe für Text', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
                 'alternate_textcolor' => array(
-                    'label' => array('Alternative Textfarbe', 'In HEX angeben'),
+                    'label' => array('Alternative Textfarbe', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),

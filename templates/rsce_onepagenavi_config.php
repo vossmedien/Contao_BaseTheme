@@ -1,7 +1,7 @@
 <?php
-// rsce_boxes_config.php
+// rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Streifen mit Text auf volle Breite', ''),
+    'label' => array('Custom | Anker-Navigation (onepagenavi)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -10,17 +10,6 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-        'subline' => array(
-            'label' => array('Subline', ''),
-            'inputType' => 'text',
-        ),
-
-
-        'settings' => array(
-            'label' => array('Einstellungen', ''),
-            'inputType' => 'group',
-        ),
-
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -145,110 +134,56 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
-        'nocolumns' => array(
-            'label' => array('Text & Button untereinander anzeigen', ''),
+        'offset' => array(
+            'label' => array('Wie viel PX soll gescrollt werden,  bis die Navigation sichtbar wird', 'Standard: 300'),
+            'inputType' => 'text',
+        ),
+
+
+        'background_color' => array(
+            'label' => array('Hintergrundfarbe', 'Standard: Hauptfarbe'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'text_color' => array(
+            'label' => array('Schriftfarbe', 'Standard: Weiß'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'add_totopbutton' => array(
+            'label' => array('"Nach oben"-Button hinzufügen', ''),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
 
-        'background_color' => array(
-            'label' => array('Hintergrundfarbe', 'In HEX oder rgb(a) angeben'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-        'text_color' => array(
-            'label' => array('Alternative Textfarbe', 'In HEX oder rgb(a) angeben'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-        'settings_content' => array(
-            'label' => array('Inhalte', ''),
-            'inputType' => 'group',
+        'hide_mobile' => array(
+            'label' => array('Auf dem Handy ausblenden', ''),
+            'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
 
-        'headline_type' => array(
-            'label' => array(
-                'de' => array('Typ der Überschrift', ''),
-            ),
-            'inputType' => 'select',
-            'options' => array(
-                'h1' => 'H1 (Haupt-Headline für SEO, darf nur 1x vorkommen)',
-                'h2' => 'H2 (Sollte H1 thematisch untergeordnet sein)',
-                'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
-                'h4' => 'H4',
-                'h5' => 'H5',
-            ),
-        ),
 
-        'ce_headline' => array(
-            'label' => array('Überschrift für Streifen', ''),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-        'ce_subline' => array(
-            'label' => array('Subline für Streifen', ''),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-        'text' => array(
-            'label' => array('Text', ''),
-            'inputType' => 'text',
-            'eval' => array(
-                'allowHtml' => true,
-                'rte' => 'tinyMCE',
-                'tl_class' => 'clr'
+        'urls' => array(
+            'label' => array('Link', ''),
+            'elementLabel' => '%s. Link',
+            'inputType' => 'list',
+            'minItems' => 1,
+            'maxItems' => 999,
+            'eval' => array('tl_class' => 'clr'),
+            'fields' => array(
+                'text' => array(
+                    'label' => array('Bezeichnung', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'link' => array(
+                    'label' => array('Link', 'Anker-ID eingeben, z. B. "#anker"'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
             ),
         ),
-
-
-        'settings_button' => array(
-            'label' => array('Button', ''),
-            'inputType' => 'group',
-        ),
-
-        'link_type' => array(
-            'label' => array(
-                'de' => array('Optik des Buttons', ''),
-            ),
-            'inputType' => 'select',
-            'options' => array(
-                'btn-primary' => 'Hauptfarbe',
-                'btn-outline-primary' => 'Hauptfarbe (Outline)',
-                'btn-secondary' => 'Sekundär-Farbe',
-                'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
-                'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
-            ),
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-        'link_size' => array(
-            'label' => array(
-                'de' => array('Größe des Buttons', ''),
-            ),
-            'inputType' => 'select',
-            'options' => array(
-                '' => 'Standard',
-                'btn-sm' => 'Klein',
-                'btn-lg' => 'Groß',
-            ),
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-        'link_text' => array(
-            'label' => array(
-                'de' => array('Button-Beschriftung', ''),
-            ),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-        'link_url' => array(
-            'label' => array('Verlinkung der Beschriftung', ''),
-            'inputType' => 'url',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
     ),
 );

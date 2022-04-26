@@ -1,30 +1,31 @@
 .header--content {
   &.type--2 {
     position: relative;
+    z-index: 499;
 
-    .hc--top{
+    .hc--top {
       // PageIMAGE
     }
 
-    .hc--middle{
+    .hc--middle {
       position: absolute;
       top: 0;
       width: 100%;
       text-align: center;
 
-      img{
+      img {
         max-height: rfs-value(200px);
         width: auto;
       }
     }
 
-    .hc--bottom{
+    .hc--bottom {
       position: absolute;
       top: rfs-value(258px);
       width: 100%;
       z-index: 10;
       text-align: right;
-      @include background-opacity($primary, .85);
+      @include background-opacity($primary, 0.85);
       box-shadow: $box-shadow;
 
       @include media-breakpoint-up(md) {
@@ -32,45 +33,51 @@
         top: auto;
       }
 
-      &.is--scrolling{
+      &.is--scrolling {
         position: fixed;
         top: 0;
         bottom: auto;
         z-index: 15;
 
         #mainNav ul.level_1 > li > a,
-        #mainNav ul.level_1 > li > strong{
-          padding: .75rem 0 .5rem 0;
+        #mainNav ul.level_1 > li > span {
+          padding: 0.75rem 0 0.5rem 0;
         }
       }
 
-      #mainNav{
+      #mainNav {
         text-align: left;
-        ul{
-          > li{
-            > a, > strong{
+
+        ul {
+          > li {
+            > a,
+            > span,
+            > strong {
               color: $text-color-inverse;
               display: block;
               border-bottom: 5px solid transparent;
 
-              &:hover, &.active, &.trail{
+              &:hover,
+              &.active,
+              &.trail {
                 border-bottom-color: $secondary;
               }
             }
           }
 
-          &.level_1{
+          &.level_1 {
             list-style-type: none;
             padding: 0px;
             margin: 0px;
             display: flex;
             justify-content: center;
 
-            > li{
+            > li {
               display: inline-block;
               padding: 0 1.5rem 0 1.25rem;
 
-              > a, > strong{
+              > a,
+              > strong {
                 display: inline-block;
                 @include font-size(14px);
                 padding: 1.5rem 0 1rem 0;
@@ -93,23 +100,24 @@
                   @include font-size(18px);
                 }
 
-
-                &:hover, &.active, &.trail{
+                &:hover,
+                &.active,
+                &.trail {
                   border-bottom-color: $secondary;
                 }
               }
 
-              &:hover{
-                > ul.level_2{
+              &:hover {
+                > ul.level_2 {
                   max-height: rfs-fluid-value(200px);
                 }
               }
             }
           }
 
-          &.level_2{
-            transition: all .3s ease;
-            @include background-opacity($primary, .85);
+          &.level_2 {
+            transition: all 0.3s ease;
+            @include background-opacity($primary, 0.85);
             list-style-type: none;
             padding: 0px;
             margin: 0px 0px 0px -1.5rem;
@@ -118,16 +126,19 @@
             position: absolute;
             min-width: rfs-value(200px);
 
-
-            > li{
+            > li {
               display: block;
               padding: 0 1.5rem;
-              > a, > strong {
-                padding: .75rem 0rem;
+
+              > a,
+              > span,
+              > strong {
+                padding: 0.75rem 0rem;
                 text-decoration: none;
 
-                &:hover, &.active, &.trail{
-
+                &:hover,
+                &.active,
+                &.trail {
                 }
               }
             }
@@ -135,9 +146,9 @@
         }
       }
 
-      .navActivator{
+      .navActivator {
         background-color: $white;
-        padding: .75rem;
+        padding: 0.75rem;
       }
     }
   }

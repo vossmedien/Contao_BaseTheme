@@ -11,17 +11,13 @@
 @import "scaffolding/buttons";
 @import "scaffolding/hacks";
 
-
 :root {
   --animate-duration: 1500ms;
-  --animate-delay: .75s;
+  --animate-delay: 0.75s;
 }
 
-
 html {
-
   body {
-
     &#tinymce {
       @include padding(7px 12px);
     }
@@ -38,11 +34,11 @@ html {
     @import "elements/slider";
     @import "elements/news";
     @import "elements/contao-accordions";
-
+    @import "elements/ce_downloads";
+    @import "elements/megamenu";
 
     @import "_theme/includes";
   }
 }
-
 
 @import "_theme/styles";

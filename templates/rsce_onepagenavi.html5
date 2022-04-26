@@ -1,0 +1,51 @@
+<div class="content--element m-0 <?php echo $this->class; ?> <?php if ($this->hide_mobile): ?>d-none d-md-block<?php endif; ?>">
+    <div class="ce--inner container">
+        <?php if ($this->urls): ?>
+            <div style="float: right;">
+                <div class="ce--onepagenavi d-none" data-offset="<?php if ($this->offset): ?><?= $this->offset; ?><?php else: ?>300<?php endif; ?>" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+
+                    <?php if (!$this->hide_mobile): ?>
+                        <div class="onepage-nav--mobile-toggle d-md-none">
+                            <span style="
+                            <?php if ($this->background_color): ?>background-color: <?= $this->background_color; ?>;<?php endif; ?>
+                            <?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>
+                                    ">
+                                <i class="far fa-chevron-double-left"></i>
+                            </span>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="onepagenavi--wrapper"
+
+                         style="
+                         <?php if ($this->background_color): ?>background-color: <?= $this->background_color; ?>;<?php endif; ?>
+                         <?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>
+                                 "
+
+                    >
+                        <span class="onepagenavi--headline" style="<?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>">
+                            <?= $this->headline; ?>
+                        </span>
+
+                        <ul>
+                            <?php foreach ($this->urls as $x => $e) : ?>
+                                <li>
+                                    <a style="<?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>" href="<?= $e->link; ?>">
+                                        <span><?= $e->text; ?></span>
+                                    </a>
+                                </li>
+                            <?php endforeach ?>
+                        </ul>
+                    </div>
+                    <?php if ($this->add_totopbutton): ?>
+                        <span class="scrollToTop">
+                            <i class="fal fa-angle-up"></i>
+                        </span>
+                    <?php endif; ?>
+                </div>
+
+            </div>
+        <?php endif; ?>
+
+    </div>
+</div>

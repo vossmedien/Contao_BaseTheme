@@ -1,0 +1,111 @@
+.ce_rsce_colorpalettes {
+  .colorpalettes-top {
+    .selected-color-element--outer {
+      position: relative;
+
+      .selected-color--element {
+        > span {
+          position: absolute;
+          display: block;
+          bottom: 0;
+          left: 0;
+          background-color: rgba(255, 255, 255, 0.8);
+          padding: 0.5rem 0.75rem;
+          text-align: center;
+          @include font-size(20px);
+          width: 100%;
+        }
+      }
+    }
+
+    .color-palette--content {
+      height: 100%;
+
+      .color-palette-content--inner {
+        min-height: 100%;
+
+        &.with-padding {
+          padding: 2rem;
+        }
+
+        .color-palette--headline {
+        }
+
+        .color-palette--desc {
+        }
+      }
+    }
+
+    & + .colorpalettes-bottom {
+      .color-list--element {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .colorpalettes-bottom {
+    margin-top: $spacer;
+
+    .color-list--wrapper {
+      display: flex;
+      flex-flow: row wrap;
+      margin-left: -$mini-spacing;
+      margin-right: -$mini-spacing;
+
+      .color-list-element--outer {
+        padding: 0 $mini-spacing;
+        margin-bottom: $mini-spacing;
+
+        &:not(.wider) {
+          width: 33.333%;
+
+          @include media-breakpoint-up(sm) {
+            width: 25%;
+          }
+
+          @include media-breakpoint-up(md) {
+            width: 20%;
+          }
+
+          @include media-breakpoint-up(lg) {
+            width: 16.66%;
+          }
+
+          @include media-breakpoint-up(xl) {
+            width: 11.11%;
+          }
+        }
+
+        &.wider {
+          width: 50%;
+
+          @include media-breakpoint-up(md) {
+            width: 33.333%;
+          }
+
+          @include media-breakpoint-up(lg) {
+            width: 25%;
+          }
+        }
+
+        .color-list--element {
+          .color-list-element--image-holder {
+            position: relative;
+
+            > span {
+              position: absolute;
+              display: block;
+              bottom: 0;
+              left: 0;
+              background-color: rgba(255, 255, 255, 0.8);
+              padding: 0.35rem 0.5rem;
+              text-align: center;
+              @include font-size(16px);
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

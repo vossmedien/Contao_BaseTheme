@@ -1,25 +1,23 @@
 .header--content {
   &.type--1 {
-    position: relative;
+    //position: relative;
     z-index: 15;
 
-    &.fixed{
-
-      .hc--bottom{
+    &.fixed {
+      .hc--bottom {
         position: absolute;
         width: 100%;
 
-        .hc-bottom--right-col{
-
+        .hc-bottom--right-col {
         }
       }
     }
 
-    &.keep-logo{
-      .hc--bottom{
-        &.is--scrolling{
-          .hc-bottom--left-col{
-            img{
+    &.keep-logo {
+      .hc--bottom {
+        &.is--scrolling {
+          .hc-bottom--left-col {
+            img {
               opacity: 1;
             }
           }
@@ -43,18 +41,17 @@
             white-space: nowrap;
 
             li {
-
               a {
                 color: $white;
                 text-decoration: none;
                 display: inline-block;
 
-                span{
+                span {
                   @include font-size(16px);
                 }
 
                 &:hover {
-                  opacity: .7;
+                  opacity: 0.7;
                 }
               }
             }
@@ -75,7 +72,7 @@
         padding: 0px;
 
         .hc-bottom--left-col {
-          img{
+          img {
             opacity: 0;
             position: relative;
             //top: -15px;
@@ -85,7 +82,6 @@
         }
 
         &.hc-bottom--right-col {
-
         }
       }
 
@@ -94,11 +90,10 @@
           flex-wrap: nowrap;
 
           .hc-bottom--left-col {
-
-            img{
+            img {
               max-height: rfs-value(80px);
               width: auto;
-              transition: opacity .15s ease;
+              transition: opacity 0.15s ease;
             }
           }
 
@@ -111,7 +106,6 @@
             text-align: right;
 
             nav#mainNav {
-
               ul {
                 list-style-type: none;
                 padding: 0px;
@@ -119,24 +113,35 @@
                 text-align: right;
                 white-space: nowrap;
 
-                &.level_1{
-                  position: relative;
+                &.level_1 {
+                  //position: relative;
                   z-index: 6;
-                  > li{
+
+                  > li {
                     display: inline-block;
-                    position: relative;
+
+
+                    &:not(.mm_container) {
+                      position: relative;
+                    }
 
                     &:not(:first-child) {
                       margin-left: 1rem;
                     }
 
-                    > a, > strong{
+                    > a,
+                    > span,
+                    > strong {
                       text-decoration: none;
                       font-weight: $font-weight-bold;
                       color: $body-color;
                       display: inline-block;
+                      z-index: 5001;
+                      position: relative;
 
-                      &:hover, &.active, &.trail{
+                      &:hover,
+                      &.active,
+                      &.trail {
                         text-decoration: none;
                         font-weight: $font-weight-bold;
                         color: $primary;
@@ -144,18 +149,16 @@
                       }
                     }
 
-
-
-                    &:hover{
-                      > ul.level_2{
+                    &:hover {
+                      > ul.level_2 {
                         max-height: rfs-value(400px);
                       }
                     }
                   }
                 }
 
-                &.level_2{
-                  transition: all .5s ease;
+                &.level_2 {
+                  transition: all 0.5s ease;
                   @include background-opacity($white, 1);
                   list-style-type: none;
                   margin: 10px 0 0 -15px;
@@ -170,41 +173,43 @@
                   z-index: 5;
                   left: 0;
 
-                  > li{
+                  > li {
                     display: block;
                     padding: 0 1rem;
-                    transition: all .3s ease;
+                    transition: all 0.3s ease;
 
-                    &:first-child{
+                    &:first-child {
                       padding-top: 5px;
                     }
 
-                    &:last-child{
+                    &:last-child {
                       padding-bottom: 5px;
                     }
 
-                    &:not(:last-child){
+                    &:not(:last-child) {
                       border-bottom: 1px solid $gray-100;
                     }
 
-                    &:hover, &.active, &.trail{
+                    &:hover,
+                    &.active,
+                    &.trail {
                       background-color: $gray-100;
 
                       > a,
-                      > strong{
+                      > span {
                         color: $primary;
                       }
                     }
 
-                    > a, > strong {
-                      padding: .25rem 0rem;
+                    > a,
+                    > span,
+                    > strong {
+                      padding: 0.25rem 0rem;
                       text-decoration: none;
                       color: $body-color;
                       font-weight: $font-weight-normal;
                       display: block;
                       @include font-size(15px);
-
-
                     }
                   }
                 }

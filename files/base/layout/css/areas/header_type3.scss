@@ -1,6 +1,6 @@
-&.theme-3{
-  &:not(.start){
-    #main{
+&.theme-3 {
+  &:not(.start) {
+    #main {
       padding-top: rfs-value(60px);
 
       @include media-breakpoint-up(lg) {
@@ -16,18 +16,15 @@
     left: 0;
     width: 100%;
     top: 0;
-    background-color: rgba(0, 0, 0, .80);
+    background-color: rgba(0, 0, 0, 0.8);
     z-index: 20;
-    border-bottom: 1px solid $text-color-inverse;;
+    border-bottom: 1px solid $text-color-inverse;
 
-
-    .row{
+    .row {
       flex-flow: nowrap;
     }
 
-
     #headerLogo {
-
       img {
         height: auto;
         max-width: rfs-value(250px);
@@ -38,8 +35,6 @@
           width: auto;
         }
       }
-
-
     }
 
     #mainNav {
@@ -53,19 +48,21 @@
           display: inline-block;
           @include margin(0 0 0 50px);
 
-          > a, > strong {
-            color: $text-color-inverse;;
+          > a,
+          > span,
+          > strong {
+            color: $text-color-inverse;
             text-decoration: none;
             display: block;
             white-space: nowrap;
             line-height: 90px;
             position: relative;
-            transition: all .3s ease;
+            transition: all 0.3s ease;
             @include font-size(16px);
             font-weight: $font-weight-semibold;
 
             &:after {
-              content: '';
+              content: "";
               display: block;
               height: 5px;
               width: 0px;
@@ -73,11 +70,12 @@
               bottom: 0;
               left: 50%;
               margin-left: -32.5px;
-              transition: all .3s ease;
+              transition: all 0.3s ease;
             }
 
-            &.active, &:hover {
-              color: $text-color-inverse;;
+            &.active,
+            &:hover {
+              color: $text-color-inverse;
 
               &:after {
                 width: 65px;
@@ -94,9 +92,9 @@
         }
       }
 
-      ul.level_2{
-        transition: all .5s ease;
-        background-color: rgba(0, 0, 0, .80);
+      ul.level_2 {
+        transition: all 0.5s ease;
+        background-color: rgba(0, 0, 0, 0.8);
         list-style-type: none;
         margin: 0;
         max-height: 0px;
@@ -109,32 +107,37 @@
         box-shadow: $box-shadow;
         z-index: 5;
 
-        > li{
+        > li {
           display: block;
           padding: 0 1rem;
-          transition: all .3s ease;
+          transition: all 0.3s ease;
 
-          &:first-child{
+          &:first-child {
             padding-top: 5px;
           }
 
-          &:last-child{
+          &:last-child {
             padding-bottom: 5px;
           }
 
-          &:not(:last-child){
+          &:not(:last-child) {
             border-bottom: 1px solid $gray-800;
           }
 
-          &:hover, &.active, &.trail, &:focus{
+          &:hover,
+          &.active,
+          &.trail,
+          &:focus {
             > a,
-            > strong{
+            > span {
               color: $gray-500;
             }
           }
 
-          > a, > strong {
-            padding: .25rem 0rem;
+          > a,
+          > span,
+          > strong {
+            padding: 0.25rem 0rem;
             text-decoration: none;
             color: $text-color-inverse;
             font-weight: $font-weight-normal;
@@ -145,7 +148,7 @@
       }
     }
 
-    .navActivator{
+    .navActivator {
       color: $text-color-inverse;
     }
   }

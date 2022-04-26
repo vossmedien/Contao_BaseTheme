@@ -59,12 +59,12 @@ return array(
                 ),
 
                 'front_background' => array(
-                    'label' => array('Alternative Hintergrundfarbe Vorderseite', 'In HEX angeben, ansonsten Hauptfarbe'),
+                    'label' => array('Alternative Hintergrundfarbe Vorderseite', 'In HEX oder rgb(a) angeben, ansonsten Hauptfarbe'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
                 'front_textcolor' => array(
-                    'label' => array('Alternative Textfarbe', 'In HEX angeben'),
+                    'label' => array('Alternative Textfarbe', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -121,12 +121,12 @@ return array(
                 ),
 
                 'back_background' => array(
-                    'label' => array('Alternative Hintergrundfarbe Rückseite', 'In HEX angeben, ansonsten Grau'),
+                    'label' => array('Alternative Hintergrundfarbe Rückseite', 'In HEX oder rgb(a) angeben, ansonsten Grau'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
                 'back_textcolor' => array(
-                    'label' => array('Alternative Textfarbe', 'In HEX angeben'),
+                    'label' => array('Alternative Textfarbe', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),

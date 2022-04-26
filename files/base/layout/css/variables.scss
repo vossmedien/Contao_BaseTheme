@@ -40,12 +40,10 @@ $font-weight-medium: 500;
 
 $border-radius: 10px;
 
-
 // Spalten
 
 $left-col--width: 275px;
 $right-col--width: 250px;
-
 
 // Footer
 
@@ -65,53 +63,68 @@ $font-weight-semibold: 600;
 
 $fa-font-display: swap;
 
+// Megamenü
+$megamenu-width: 960px;
+$megamenu-background: rgba(0, 0, 0, 0.85);
+$megamenu-overlay-background: rgba(255, 255, 255, 0.5);
+$megamenu-lvl1-color: $text-color-inverse;
+$megamenu-lvl2-color: $primary;
+$megamenu-lvl3-color: $white;
+$megamenu-imageHeight: 125px;
+
 //Swiper
 $themeColor: $primary;
 
+//Abstände
 $spacer: 1.5rem;
 $spacers: (
-        0: 0,
-        1: $spacer * .25,
-        2: $spacer * .5,
-        3: $spacer * .75,
-        4: $spacer,
-        5: $spacer * 1.25,
-        6: $spacer * 1.5,
-        7: $spacer * 1.75,
-        8: $spacer * 2,
-        9: $spacer * 2.25,
-        10: $spacer * 2.5,
-        11: $spacer * 2.75,
-        12: $spacer * 3,
-        13: $spacer * 3.25,
-        14: $spacer * 3.5,
-        15: $spacer * 3.75,
-        16: $spacer * 4,
-        17: $spacer * 4.25,
-        18: $spacer * 4.5,
-        19: $spacer * 4.75,
-        110: $spacer * 5,
+  0: 0,
+  1: $spacer * 0.25,
+  2: $spacer * 0.5,
+  3: $spacer * 0.75,
+  4: $spacer,
+  5: $spacer * 1.25,
+  6: $spacer * 1.5,
+  7: $spacer * 1.75,
+  8: $spacer * 2,
+  9: $spacer * 2.25,
+  10: $spacer * 2.5,
+  11: $spacer * 2.75,
+  12: $spacer * 3,
+  13: $spacer * 3.25,
+  14: $spacer * 3.5,
+  15: $spacer * 3.75,
+  16: $spacer * 4,
+  17: $spacer * 4.25,
+  18: $spacer * 4.5,
+  19: $spacer * 4.75,
+  110: $spacer * 5,
 );
 
-$basic-gutter: $spacer*2;
+$basic-gutter: $spacer * 2;
 $headline-spacing: $spacer;
+$mini-spacing: $spacer/2;
 
 $grid-breakpoints: (
-        xs: 0,
-        sm: 576px,
-        md: 768px,
-        lg: 992px,
-        xl: 1200px,
-        xxl: 1400px
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px,
 );
-
 
 $grid-gutter-width: 1rem;
 $gutters: (
-        0: 0,
-        1: $grid-gutter-width * .25,
-        2: $grid-gutter-width * .5,
-        3: $grid-gutter-width,
-        4: $grid-gutter-width * 1.5,
-        5: $grid-gutter-width * 3,
+  0: 0,
+  1: $grid-gutter-width * 0.25,
+  2: $grid-gutter-width * 0.5,
+  3: $grid-gutter-width,
+  4: $grid-gutter-width * 1.5,
+  5: $grid-gutter-width * 3,
 );
+
+$modal-sm: 520px;
+$modal-md: 760px;
+$modal-lg: 940px;
+$modal-xl: 1140px;

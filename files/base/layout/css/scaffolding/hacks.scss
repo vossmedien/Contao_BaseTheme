@@ -10,16 +10,21 @@
   }
 }
 
+[data-aos] {
+  z-index: 1;
+}
+
 .lazy {
   opacity: 0;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
 
   &.entered {
     opacity: 1;
   }
 }
 
-header, footer {
+header,
+footer {
   *[data-aos] {
     transition: none !important;
     animation: none !important;
@@ -36,7 +41,6 @@ header, footer {
   margin-right: -50vw;
 }
 
-
 .container {
   .container:not(.ce_headline) {
     max-width: none;
@@ -44,12 +48,10 @@ header, footer {
   }
 }
 
-
 #main .mod_article > *:not(.content--element):not(.container),
 #main > .inside > div[class^="mod_"]:not(.mod_article) {
   @extend .container;
 }
-
 
 .ce_form {
   .row.boostrap5 {

@@ -142,7 +142,6 @@ return array(
             'label' => array('Einstellungen', ''),
             'inputType' => 'group',
         ),
-
         'image_height' => array(
             'label' => array('Höhe des Bereichs in %', 'Standard sind "100", also 100% Viewport-Height'),
             'inputType' => 'text',
@@ -158,11 +157,52 @@ return array(
         ),
 
 
+        'slide_effect' => array(
+            'label' => array(
+                'de' => array('Slide-Effekt', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                'slide' => 'Slide (Standard)',
+                'coverflow' => 'Coverflow',
+                /*
+                    'fade' => 'Fade',
+                    'flip' => 'Flip',
+                    'creative' => 'Creative',
+                    'cards' => 'Cards',
+                    'cube' => 'Cube',
+                 */
+            ),
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'transition_time' => array(
+            'label' => array('Animationszeit in ms', 'Standard: 1500'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+
+        'autoplay' => array(
+            'label' => array('Autoplay aktivieren', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'autoplay_time' => array(
+            'label' => array('Autoplay-Zyklus', 'nach wie viel MS soll zum nächsten Slide gewechselt werden, Standard: 3000'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'autoplay',
+            ),
+        ),
+
+
         'settings_2' => array(
             'label' => array('Boxed-Image (z. B. ein Logo)', ''),
             'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
         ),
-
         'boxed_image' => array(
             'label' => array('Bild mittig unten liegend', 'Meistens ein Logo'),
             'inputType' => 'fileTree',
@@ -296,8 +336,6 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
-
-
         'slides' => array(
             'label' => array('Slides', ''),
             'elementLabel' => '%s. Slide',
@@ -694,7 +732,5 @@ return array(
 
             ),
         ),
-
-
     ),
 );

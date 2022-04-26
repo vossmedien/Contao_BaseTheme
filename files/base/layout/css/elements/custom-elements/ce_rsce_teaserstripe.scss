@@ -1,13 +1,12 @@
-.ce_rsce_teaserstripe{
+.ce_rsce_teaserstripe {
   .ce--teaser-stripe {
     .ts--inner {
-      background-color: $secondary;
+      background-color: $primary;
       padding: rfs-value(30px);
-      color: $white;
-
+      color: $text-color-inverse;
 
       .teaser--subline {
-
+        color: $text-color-inverse;
       }
     }
   }

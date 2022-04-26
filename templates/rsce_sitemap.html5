@@ -1,0 +1,78 @@
+<div class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner">
+
+
+        <?php if ($this->lvl1): ?>
+            <div class="ce--sitemap">
+                <div class="row gx-0">
+                    <?php foreach ($this->lvl1 as $x => $lvl1_element) : ?>
+                        <div class="<?= $lvl1_element->column_width; ?>" data-aos="<?php if ($lvl1_element->animation_type) : ?><?php echo $lvl1_element->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                            <div class="sitemap-column">
+                                <div class="mm_level_1">
+
+
+                                    <?php if ($lvl1_element->link_lvl1): ?>
+                                    <a href="<?= $lvl1_element->link_lvl1; ?>">
+                                        <?php else: ?>
+                                        <span>
+                                            <?php endif; ?>
+                                            <span><?= $lvl1_element->text_lvl1; ?></span>
+
+                                            <?php if ($lvl1_element->image_lvl1): ?>
+                                                <span class="sitemap--image-container" style="">
+                                                    <img src="<?= Image::get(FilesModel::findByUuid($lvl1_element->image_lvl1)->path, null, null, null); ?>">
+                                                </span>
+                                            <?php endif; ?>
+                                            <?php if ($lvl1_element->link_lvl1): ?>
+                                    </a>
+                                <?php else: ?>
+                                    </span>
+                                <?php endif; ?>
+
+                                    <?php if ($lvl1_element->lvl2): ?>
+                                        <div class="mm_level_2">
+                                            <?php foreach ($lvl1_element->lvl2 as $y => $lvl2_element) : ?>
+                                                <div>
+                                                    <?php if ($lvl2_element->link_lvl2): ?>
+                                                    <a href="<?= $lvl2_element->link_lvl2; ?>">
+                                                        <?php else: ?>
+                                                        <span>
+                                                            <?php endif; ?>
+                                                            <span><?= $lvl2_element->text_lvl2; ?></span>
+                                                            <?php if ($lvl2_element->link_lvl2): ?>
+                                                    </a>
+                                                <?php else: ?>
+                                                    </span>
+                                                <?php endif; ?>
+                                                    <?php if ($lvl2_element->lvl3): ?>
+                                                        <div class="mm_level_3">
+                                                            <?php foreach ($lvl2_element->lvl3 as $z => $lvl3_element) : ?>
+                                                                <div>
+                                                                    <?php if ($lvl3_element->link_lvl3): ?>
+                                                                    <a href="<?= $lvl3_element->link_lvl3; ?>">
+                                                                        <?php else: ?>
+                                                                        <span>
+                                                                            <?php endif; ?>
+                                                                            <span><?= $lvl3_element->text_lvl3; ?></span>
+                                                                            <?php if ($lvl3_element->link_lvl3): ?>
+                                                                    </a>
+                                                                <?php else: ?>
+                                                                    </span>
+                                                                <?php endif; ?>
+                                                                </div>
+                                                            <?php endforeach; ?>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach ?>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>

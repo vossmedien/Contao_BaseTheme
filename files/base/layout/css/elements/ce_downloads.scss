@@ -1,0 +1,50 @@
+.ce_downloads {
+  ul {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px -0.5rem;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+
+    > li {
+      margin-bottom: 1.5rem;
+      padding: 0 0.5rem;
+      @include media-breakpoint-up(md) {
+        max-width: 25%;
+      }
+
+      &:hover a {
+        color: $primary;
+      }
+
+      figure {
+        img {
+          border: 1px solid $gray-400;
+        }
+
+        & + a {
+          text-align: center;
+          display: table;
+          text-decoration: none;
+          color: $body-color;
+          margin: 0 auto;
+
+          span.size {
+            display: none;
+          }
+
+          &:before {
+            @extend %fa-icon;
+            @extend .fal;
+            content: fa-content($fa-var-download);
+            display: table-cell;
+            padding-right: rfs-value(10px);
+            color: $primary;
+          }
+        }
+      }
+    }
+  }
+}

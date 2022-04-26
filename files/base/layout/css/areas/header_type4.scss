@@ -4,7 +4,7 @@
     left: 0;
     width: 100%;
     top: 0;
-    background-color: rgba(255, 255, 255, .80);
+    background-color: rgba(255, 255, 255, 0.8);
     z-index: 20;
 
     @include font-size(16px);
@@ -17,7 +17,6 @@
     }
 
     #headerLogo {
-
       img {
         height: auto;
         //max-width: rfs-value(150px);
@@ -29,8 +28,6 @@
           margin: rfs-value(10px 0px);
         }
       }
-
-
     }
 
     #mainNav {
@@ -47,37 +44,39 @@
           justify-content: space-around;
         }
 
-
         > li {
           display: inline-block;
           padding: rfs-value(0 7.5px 0 7.5px);
-          transition: all .15s ease;
+          transition: all 0.15s ease;
 
           @include media-breakpoint-up(xl) {
             padding: rfs-value(0 15px 0 15px);
           }
 
           &:hover {
-            background-color: rgba(255, 255, 255, .80);
-            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
           }
 
-          > a, > strong {
+          > a,
+          > span,
+          > strong {
             text-decoration: none;
             display: block;
             white-space: nowrap;
             position: relative;
-            transition: all .3s ease;
+            transition: all 0.3s ease;
             line-height: 90px;
             font-weight: $font-weight-semibold;
             color: $body-color;
 
             span {
               display: inline;
-              transition: all .3s ease;
+              transition: all 0.3s ease;
             }
 
-            &.active, &:hover {
+            &.active,
+            &:hover {
               color: $primary;
 
               span {
@@ -95,8 +94,8 @@
       }
 
       ul.level_2 {
-        transition: all .5s ease;
-        background-color: rgba(255, 255, 255, .80);
+        transition: all 0.5s ease;
+        background-color: rgba(255, 255, 255, 0.8);
         list-style-type: none;
         margin: 0 0 0 -5px;
         max-height: 0px;
@@ -112,11 +111,10 @@
           margin-left: -15px;
         }
 
-
         > li {
           display: block;
           padding: 0 1rem;
-          transition: all .3s ease;
+          transition: all 0.3s ease;
 
           &:first-child {
             padding-top: 5px;
@@ -130,15 +128,20 @@
             border-bottom: 1px solid $gray-200;
           }
 
-          &:hover, &.active, &.trail, &:focus {
+          &:hover,
+          &.active,
+          &.trail,
+          &:focus {
             > a,
-            > strong {
+            > span {
               color: $primary;
             }
           }
 
-          > a, > strong {
-            padding: .25rem 0rem;
+          > a,
+          > span,
+          > strong {
+            padding: 0.25rem 0rem;
             text-decoration: none;
             font-weight: $font-weight-normal;
             display: block;
@@ -150,7 +153,6 @@
     }
 
     .navActivator {
-
     }
   }
 }

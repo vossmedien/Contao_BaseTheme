@@ -1,0 +1,63 @@
+.mod_navigation li.mm_container:hover > a::after,
+.mod_navigation li.mm_container:hover > span::after {
+  display: none;
+}
+
+.mod_navigation li.mm_container {
+  &:hover {
+    .mm_dropdown {
+      opacity: 1;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+  }
+
+  .mm_dropdown {
+    max-width: rfs-value($megamenu-width);
+    text-align: left;
+    left: auto;
+    right: 50%;
+    transform: translate(50%, 0%);
+    display: block !important;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    height: 0;
+    overflow: hidden;
+    width: 0;
+
+    &:before {
+      content: "";
+      position: fixed;
+      z-index: 4900;
+      background-color: $megamenu-overlay-background;
+      width: 200vw;
+      height: 100vw;
+      left: -50vw;
+      right: -50vw;
+      top: 0vw;
+    }
+
+    .inner {
+      position: relative;
+      z-index: 4901;
+      padding: 0px;
+      border: 0px;
+      background-color: $megamenu-background;
+      box-shadow: $box-shadow;
+    }
+  }
+}
+
+.header--content {
+  &.type--1 {
+    .mm_dropdown {
+      border-top: rfs-value(40px) solid transparent;
+
+      &:before {
+        height: 200vw;
+        top: -50vw;
+      }
+    }
+  }
+}

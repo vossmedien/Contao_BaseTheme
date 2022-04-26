@@ -10,21 +10,6 @@
   .modal--image {
     position: relative;
 
-    .btn--close {
-      position: absolute;
-      right: 10px;
-      top: 5px;
-      background-color: transparent;
-      padding: 0px;
-      margin: 0px;
-      color: $text-color-inverse;
-      border: 0px;
-      font-size: rfs-value(24px);
-      line-height: 1;
-      z-index: 5;
-
-    }
-
     &.without-padding {
       margin: -1.5rem;
     }

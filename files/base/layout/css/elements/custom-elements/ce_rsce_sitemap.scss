@@ -1,0 +1,107 @@
+.ce_rsce_sitemap {
+  .ce--sitemap {
+    margin-top: -1px;
+
+    .sitemap-column {
+      border-right: 1px solid $body-bg;
+      border-top: 1px solid $body-bg;
+      min-height: 100%;
+      padding-top: 1.5rem;
+      padding-bottom: 1.5rem;
+      text-align: left;
+
+      a,
+      span {
+        text-decoration: none;
+        display: block;
+        line-height: 1.15;
+        white-space: normal;
+      }
+
+      a {
+        &:hover,
+        &.active {
+          text-decoration: underline;
+        }
+      }
+
+      .mm_level_1 {
+        color: $megamenu-lvl1-color;
+        @include font-size(20px);
+
+        > a,
+        > span {
+          color: $megamenu-lvl1-color;
+
+          &:hover {
+            span.sitemap--image-container {
+              img {
+                transform: scale(1.15);
+              }
+            }
+          }
+
+          > span {
+            &:first-child {
+              padding-left: 1.5rem;
+              padding-right: 1.5rem;
+            }
+
+            &.sitemap--image-container {
+              height: $megamenu-imageHeight;
+              position: relative;
+              overflow: hidden;
+              margin: 0.75rem 0px 1.25rem 0px;
+
+              img {
+                position: absolute;
+                left: 0;
+                top: 0;
+                transition: all 0.3s ease;
+              }
+            }
+          }
+        }
+      }
+
+      .mm_level_2 {
+        @include font-size(18px);
+        color: $megamenu-lvl2-color;
+
+        > div {
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+
+          &:not(:last-child) {
+            border-bottom: 1px solid $body-bg;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+          }
+
+          a {
+            color: $megamenu-lvl2-color;
+
+            > span {
+            }
+          }
+        }
+      }
+
+      .mm_level_3 {
+        @include font-size(16px);
+        color: $megamenu-lvl3-color;
+
+        > div {
+          margin-top: 0.35rem;
+
+          a {
+            color: $megamenu-lvl3-color;
+
+            > span {
+            }
+          }
+        }
+      }
+    }
+  }
+}

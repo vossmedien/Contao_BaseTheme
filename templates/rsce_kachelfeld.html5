@@ -1,64 +1,136 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
         <?php if ($this->headline || $this->subline) : ?>
-            <div class="ce--headline">
-                <?php if ($this->headline) : ?>
-                    <<?php echo ($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                        <?php echo ($this->headline); ?>
-                    </<?php echo ($this->hl); ?>>
-                <?php endif; ?>
-                <?php if ($this->subline) : ?>
-                    <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
-                <?php endif; ?>
-            </div>
+        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <?php if ($this->headline) : ?>
+            <<?php echo($this->hl); ?>><?php echo($this->headline); ?></<?php echo($this->hl); ?>>
+    <?php endif; ?>
+        <?php if ($this->subline) : ?>
+            <span class=" ce--subline"><?php echo $this->subline; ?></span>
         <?php endif; ?>
-        <div class="ce--kachelfeld ">
-            <div class="row gx-4">
-                <?php foreach ($this->kachel as $b) : ?>
-                    <div class="<?php if ($b->column_width) : ?><?php echo $b->column_width; ?><?php else : ?>col-12 col-lg-4<?php endif; ?>">
-                        <div class="kachelbox" data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                            <?php if ($b->link_url) : ?>
-                                <a class="kachel--url" href="<?php echo $b->link_url; ?>"></a>
+    </div>
+    <?php endif; ?>
+    <div class="ce--kachelfeld">
+        <div class="row gx-4">
+            <?php foreach ($this->kachel as $i => $b) : ?>
+            <div class="<?php if ($b->column_width) : ?><?php echo $b->column_width; ?><?php else : ?>col-12 col-lg-4<?php endif; ?>">
+                <div id="kachelbox_<?=$this->id;?>_<?= $i;?>" class="kachelbox" data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+
+                style="<?php if($b->column_background_color):?>
+                        background-color: <?= $b->column_background_color;?>;
+                        <?php endif;?>
+
+                         <?php if($b->column_text_color):?>
+                            color: <?= $b->column_text_color;?>;
+                        <?php endif;?>"
+
+                >
+                    <?php if ($b->link_url) : ?>
+                        <a class="kachel--url" href="<?php echo $b->link_url; ?>"></a>
+                    <?php endif; ?>
+
+                    <style>
+                        <?php if($b->column_background_hover_color):?>
+                               <?php
+                                    $backgroundColor = $b->column_background_hover_color;
+                                    $backgroundColor = str_replace("&#41", ")",$backgroundColor);
+                                    $backgroundColor = str_replace("&#40", "(",$backgroundColor);
+                                    $backgroundColor = str_replace("(;", "(",$backgroundColor);
+                                    $backgroundColor = str_replace("&#35;", "#",$backgroundColor);
+                                ?>
+
+                            #kachelbox_<?=$this->id;?>_<?= $i;?>:hover{
+                                background-color: <?= $backgroundColor;?> !important;
+                            }
+                        <?php endif;?>
+
+                         <?php if($b->column_text_hover_color):?>
+                                <?php
+                                    $textColor = $b->column_text_hover_color;
+                                    $textColor = str_replace("&#41", ")",$textColor);
+                                    $textColor = str_replace("&#40", "(",$textColor);
+                                    $textColor = str_replace("(;", "(",$textColor);
+                                    $textColor = str_replace("&#35;", "#",$textColor);
+                                ?>
+                            #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .kb--content   .box--headline .h5,
+                             #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .kb--image i{
+                                color: <?= $textColor;?> !important;
+                            }
+                        <?php endif;?>
+                    </style>
+
+                    <div class="kachelbox--inner">
+                        <?php if ($b->image || $b->icon) : ?>
+                            <div class="kb--image <?php if ($b->image_as_bg) : ?>as-bg<?php endif; ?>">
+                                <?php if ($b->icon) : ?>
+                                    <i class="<?php echo $b->icon; ?>"></i>
+                                <?php elseif ($b->image) : ?><?php if (!$b->image_as_bg) : ?>
+                                    <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                                <?php else: ?>
+                                    <div style="background: url(<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover;" class="kb--image-holder"></div>
+                                <?php endif; ?><?php endif; ?>
+
+
+
+                                <?php if ($b->kachel_top_text): ?>
+
+                                    <div class="column-kachel--wrapper  <?php if ($b->kachel_top_url): ?> with-url<?php endif; ?> <?php echo $b->kachel_top_position; ?>">
+                                        <div class="column--kachel <?php echo $b->kachel_top_text_position; ?>" data-aos="<?php if ($b->animation_type_left_kachel) : ?><?php echo $b->animation_type_left_kachel; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" style="
+                                        <?php if ($b->kachel_top_background_color): ?>
+                                                background-color: <?= $b->kachel_top_background_color;?>;
                             <?php endif; ?>
-                            <div class="kachelbox--inner">
-                                <?php if ($b->image || $b->icon) : ?>
-                                    <div class="kb--image">
-                                        <?php if ($b->icon) : ?>
-                                            <i class="<?php echo $b->icon; ?>"></i>
-                                        <?php elseif ($b->image) : ?>
-                                           <?php if (!$b->image_as_bg) : ?>
-                                            <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
-                                            <?php else:?>
-                                                <div style="background: url(<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover;" class="kb--image-holder"></div>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
+
+                                        <?php if ($b->kachel_top_text_color): ?>
+                                                color: <?= $b->kachel_top_text_color;?>;
+                            <?php endif; ?>
+                                                ">
+
+                                            <div class="column-kachel--inner">
+                                                <span>
+                                                    <?php echo $b->kachel_top_text; ?>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
+
                                 <?php endif; ?>
-                                <div class="kb--content">
-                                    <?php if ($b->headline) : ?>
-                                        <div class="box--headline">
-                                            <<?php echo $b->headline_type; ?> class="h5">
-                                                <?php echo $b->headline; ?>
-                                            </<?php echo $b->headline_type; ?>>
-                                        </div>
-                                    <?php endif; ?>
-                                    <?php if ($b->text) : ?>
-                                        <div class="box--text">
-                                            <?php echo $b->text; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                    <?php if ($b->link_text) : ?>
-                                        <div class="box--button mt-3" data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                            <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>" href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?>
-                                            </a>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+
+
                             </div>
+                        <?php endif; ?>
+                        <div class="kb--content     <?= $b->textalign; ?>">
+                            <?php if ($b->headline) : ?>
+                            <div class="box--headline">
+                                <<?php echo $b->headline_type; ?> class="h5">
+                                <?php echo $b->headline; ?>
+                            </<?php echo $b->headline_type; ?>>
                         </div>
+                    <?php endif; ?>
+                        <?php if ($b->text) : ?>
+                            <div class="box--text">
+                                <?php echo $b->text; ?>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($b->link_text) : ?>
+                            <div class="box--button mt-3" data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>" href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?>
+                                </a>
+                            </div>
+                        <?php endif; ?>
+
+
+                        <?php if ($b->buttons[0]->link_text != "") : ?>
+                            <div class="box--button mt-7">
+                                <?php foreach ($b->buttons as $button) : ?>
+                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
+                                       class="d-block mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>" data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
+                                <?php endforeach ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                <?php endforeach; ?>
+                </div>
             </div>
         </div>
+        <?php endforeach; ?>
     </div>
-</div>
+</div></div></div>

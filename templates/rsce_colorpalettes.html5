@@ -1,0 +1,71 @@
+<div class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner container">
+
+        <?php if ($this->headline || $this->subline) : ?>
+        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <?php if ($this->headline) : ?>
+            <<?php echo($this->hl); ?>>
+            <?php echo($this->headline); ?>
+        </<?php echo($this->hl); ?>>
+    <?php endif; ?>
+        <?php if ($this->subline) : ?>
+            <span class="ce--subline"><?php echo $this->subline; ?></span>
+        <?php endif; ?>
+
+    </div>
+    <?php endif; ?>
+
+    <?php if ($this->activate_top): ?>
+        <div class="colorpalettes-top" data-basicdesc="<?= $this->basic_desc; ?>" data-basicheadline="<?= $this->basic_headline; ?>" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <div class="row gx-4 flex-lg-row-reverse">
+                <div class="col-12 col-lg-7">
+                    <div class="color-palette--content">
+                        <div class="color-palette-content--inner <?php if ($this->alternate_background_color): ?>with-padding<?php endif; ?>" style="
+                        <?php if ($this->alternate_background_color): ?>background-color: <?= $this->alternate_background_color; ?>;<?php endif; ?>
+                        <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>
+                                ">
+
+                            <h3 class="color-palette--headline"><?= $this->basic_headline; ?></h3>
+
+                            <div class="color-palette--desc">
+                                <?= $this->basic_desc; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-5">
+                    <div class="selected-color-element--outer">
+                        <div class="selected-color--element">
+                            <img class="selected-color-element--img lazy" data-src="<?= Image::get(FilesModel::findByUuid($this->elements[0]->img)->path, null, null, 6); ?>">
+                            <span class="selected-color-element--title"><?= $this->elements[0]->title; ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+    <?php if ($this->elements): ?>
+        <div class="colorpalettes-bottom">
+            <div class="color-list--wrapper">
+                <?php foreach ($this->elements as $x => $e) : ?>
+                    <div class="color-list-element--outer <?php if (!$this->show_tooltip): ?>wider<?php endif; ?>">
+                        <div class="color-list--element" data-headline="<?= $e->alternate_headline; ?>" data-desc="<?= $e->desc; ?>" data-img="<?= Image::get(FilesModel::findByUuid($e->img)->path, null, null, 6); ?>" data-title="<?= $e->title; ?>" <?php if ($this->show_tooltip): ?>title="<?= $e->title; ?>" data-bs-toggle="tooltip"<?php endif; ?>>
+                            <div class="color-list-element--image-holder" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                <?php if ($this->show_tooltiptitle): ?>
+                                    <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($e->img)->path, null, null, 4); ?>">
+                                <?php else: ?>
+                                    <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($e->img)->path, null, null, 7); ?>">
+                                <?php endif; ?>
+
+                                <?php if (!$this->show_tooltip && $e->title): ?>
+                                    <span><?= $e->title; ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+            </div>
+        </div>
+    <?php endif; ?>
+</div></div>

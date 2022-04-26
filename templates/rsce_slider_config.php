@@ -148,8 +148,8 @@ return array(
         'multiSRC' => array(
             'inputType' => 'standardField',
             'dependsOn' => array(
-                'field' => 'selecttype',  // Name des Feldes das geprüft werden soll
-                'value' => 'multiple',      // Der Wert der mit dem Feldwert übereinstimmen muss
+                'field' => 'selecttype',
+                'value' => 'multiple',
             ),
             'eval'      => array(
                 'multiple'   => true,
@@ -168,8 +168,8 @@ return array(
             'minItems' => 1,
             'maxItems' => 20,
             'dependsOn' => array(
-                'field' => 'selecttype',  // Name des Feldes das geprüft werden soll
-                'value' => 'single',      // Der Wert der mit dem Feldwert übereinstimmen muss
+                'field' => 'selecttype',
+                'value' => 'single',
             ),
             'fields' => array(
                 'slide' => array(

@@ -1,176 +1,181 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>">
     <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>">
 
-        <!--
         <?php if ($this->headline || $this->subline) : ?>
-        <div class="ce--headline">
+        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <div class="container">
                 <?php if ($this->headline) : ?>
-                <<?php echo($this->hl); ?>
-                data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>
-                ">
+                <<?php echo($this->hl); ?>>
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline) : ?>
-                <span class="ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
+                <span class="ce--subline"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
     <?php endif; ?>
--->
 
-        <div class=" <?php if (count($this->slides) > 1) : ?>swiper<?php endif;?> mainslider mainslider_<?php echo $this->id; ?> <?php if ($this->image_height) : ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut) : ?>with-diagonalCut<?php endif; ?>">
-            <!-- Additional required wrapper -->
-            <div class="swiper-wrapper">
-                <!-- Slides -->
+    <div class=" <?php if (count($this->slides) > 1) : ?>swiper<?php endif; ?> mainslider mainslider_<?php echo $this->id; ?> <?php if ($this->image_height) : ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut) : ?>with-diagonalCut<?php endif; ?>">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+            <!-- Slides -->
 
-                <?php foreach ($this->slides as $key => $slide) : ?>
+            <?php foreach ($this->slides as $key => $slide) : ?>
 
-                    <?php
-                    $filename = \FilesModel::findByUuid($slide->image)->path;
-                    $ext = pathinfo($filename, PATHINFO_EXTENSION);
-                    $filename_mobile = \FilesModel::findByUuid($slide->mobile_image)->path;
-                    $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
-                    ?>
+                <?php
+                $filename = FilesModel::findByUuid($slide->image)->path;
+                $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                $filename_mobile = FilesModel::findByUuid($slide->mobile_image)->path;
+                $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
+                ?>
 
-                    <div class="swiper-slide">
-                        <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline) : ?>no-text<?php endif; ?> ">
-                            <div class="image--holder <?php if ($ext != "mp4") : ?>lazy<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>" data-bg="<?= \Image::get(\FilesModel::findByUuid($slide->image)->path, null, null, null); ?>" <?php if ($this->image_height) : ?>style="height: <?php echo $this->image_height; ?>vh; min-height: 250px;" data-height="<?php echo $this->image_height; ?>" <?php endif; ?>
-                            >
+                <div class="swiper-slide">
+                    <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline) : ?>no-text<?php endif; ?> ">
+                        <div class="image--holder <?php if ($ext != "mp4") : ?>lazy<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>" data-bg="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>" <?php if ($this->image_height) : ?>style="height: <?php echo $this->image_height; ?>vh; min-height: 250px;" data-height="<?php echo $this->image_height; ?>" <?php endif; ?>
+                        >
 
-                                <?php if ($slide->alternate_background_color): ?>
-                                    <style>
+                            <?php if ($slide->alternate_background_color): ?>
+                                <style>
 
-                                        <?php
-                                            $color = $slide->alternate_background_color;
-                                            $color = str_replace("&#41", ")",$color);
-                                            $color = str_replace("&#40", "(",$color);
-                                            $color = str_replace("(;", "(",$color);
-                                            $color = str_replace("&#35;", "#",$color);
+                                    <?php
+                                        $color = $slide->alternate_background_color;
+                                        $color = str_replace("&#41", ")",$color);
+                                        $color = str_replace("&#40", "(",$color);
+                                        $color = str_replace("(;", "(",$color);
+                                        $color = str_replace("&#35;", "#",$color);
+                                    ?>
 
-                                        ?>
+                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner:before,
+                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner .mainimage--content-inner--wrapper:after {
+                                        background-color: <?= $color; ?> !important;
+                                    }
 
-                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner:before,
-                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner .mainimage--content-inner--wrapper:after {
-                                            background-color: <?= $color; ?> !important;
-                                        }
+                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-1 .mainimage--content .mainimage--content-inner {
+                                        background-color: <?= $color; ?> !important;
+                                        padding: 20px;
+                                        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+                                    }
 
-                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-1 .mainimage--content .mainimage--content-inner {
-                                            background-color: <?= $color; ?> !important;
-                                            padding: 20px;
-                                            box-shadow: 0 .5rem 1rem rgba(0,0,0, .15);
-                                        }
+                                </style>
+                            <?php endif; ?>
 
-                                    </style>
-                                <?php endif; ?>
+                            <?php if ($ext == "mp4") : ?>
+                                <video <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class=" d-none d-md-block" <?php endif; ?>
+                                       autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
+                                    <source type="video/mp4" src="{{file::<?= $slide->image ?>}}">
+                                </video>
+                            <?php endif; ?>
+                            <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>
+                                <video class=" d-md-none" src="{{file::<?= $slide->mobile_image ?>}}" autoplay muted loop playsinline>
+                                    <source type="video/mp4" src="{{file::<?= $slide->mobile_image ?>}}">
+                                </video>
+                            <?php endif; ?>
 
-                                <?php if ($ext == "mp4") : ?>
-                                    <video <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class=" d-none d-md-block" <?php endif; ?>
-                                           autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
-                                        <source type="video/mp4" src="{{file::<?= $slide->image ?>}}">
-                                    </video>
-                                <?php endif; ?>
-                                <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>
-                                    <video class=" d-md-none" src="{{file::<?= $slide->mobile_image ?>}}" autoplay muted loop playsinline>
-                                        <source type="video/mp4" src="{{file::<?= $slide->mobile_image ?>}}">
-                                    </video>
-                                <?php endif; ?>
+                            <?php if ($slide->text_firstline || $slide->text_secondline) : ?>
+                                <div data-aos="<?php if ($slide->animation_type) : ?><?php echo $slide->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="mainimage--content" <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
+                                    <div class="container">
+                                        <div class="mainimage--content-inner <?php if ($slide->text_align) : ?><?php echo $slide->text_align; ?><?php endif; ?>" <?php if ($slide->text_color) : ?>style="color: <?php echo $slide->text_color; ?>;" <?php endif; ?>>
 
-                                <?php if ($slide->text_firstline || $slide->text_secondline) : ?>
-                                    <div data-aos="<?php if ($slide->animation_type) : ?><?php echo $slide->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="mainimage--content" <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
-                                        <div class="container">
-                                            <div class="mainimage--content-inner <?php if ($slide->text_align) : ?><?php echo $slide->text_align; ?><?php endif; ?>" <?php if ($slide->text_color) : ?>style="color: <?php echo $slide->text_color; ?>;" <?php endif; ?>>
+                                            <div class="mainimage--content-inner--wrapper">
 
-                                                <div class="mainimage--content-inner--wrapper">
+                                                <?php if ($slide->firstline_headline) : ?>
+                                                    <h1 class="first-line"><?php echo $slide->text_firstline; ?></h1>
+                                                <?php else : ?>
+                                                    <span class="first-line"><?php echo $slide->text_firstline; ?></span>
+                                                <?php endif; ?>
+                                                <?php if ($slide->text_secondline) : ?>
+                                                    <span class="second-line mt-2"><?php echo $slide->text_secondline; ?></span>
+                                                <?php endif; ?>
+                                                <?php if ($slide->text_infotext) : ?>
+                                                    <div class="infotext--text">
+                                                        <?php echo $slide->text_infotext; ?>
+                                                    </div>
+                                                <?php endif; ?>
 
-                                                    <?php if ($slide->firstline_headline) : ?>
-                                                        <h1 class="first-line"><?php echo $slide->text_firstline; ?></h1>
-                                                    <?php else : ?>
-                                                        <span class="first-line"><?php echo $slide->text_firstline; ?></span>
-                                                    <?php endif; ?>
-                                                    <?php if ($slide->text_secondline) : ?>
-                                                        <span class="second-line mt-2"><?php echo $slide->text_secondline; ?></span>
-                                                    <?php endif; ?>
-                                                    <?php if ($slide->text_infotext) : ?>
-                                                        <div class="infotext--text">
-                                                            <?php echo $slide->text_infotext; ?>
-                                                        </div>
-                                                    <?php endif; ?>
-
-                                                    <?php if (count($slide->buttons) > 1) : ?>
-                                                        <div class="button--wrapper">
-                                                            <?php foreach ($slide->buttons as $button) : ?>
-                                                                <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="d-inline-block mt-2  me-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>" href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
-                                                            <?php endforeach ?>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
+                                                <?php if (count($slide->buttons) > 1) : ?>
+                                                    <div class="button--wrapper">
+                                                        <?php foreach ($slide->buttons as $button) : ?>
+                                                            <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="d-inline-block mt-2  me-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>" href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
+                                                        <?php endforeach ?>
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </div>
-                                <?php endif; ?>
-                            </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
-                <?php endforeach ?>
-            </div>
-            <?php if (count($this->slides) > 1) : ?>
+                </div>
+            <?php endforeach ?>
+        </div>
+        <?php if (count($this->slides) > 1) : ?>
 
-                <?php if (!$this->boxed_image) : ?>
+            <?php if (!$this->boxed_image) : ?>
                 <div class="swiper-pagination"></div>
             <?php endif; ?>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
-            <?php endif; ?>
-        </div>
-
-
-        <?php if ($this->boxed_image) : ?>
-            <div class="boxed-logo d-none d-lg-block">
-                <img data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
-            </div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
         <?php endif; ?>
     </div>
 
-    <script>
-        if ($('.swiper.mainslider').length) {
-            const mainSliders = () => {
-                let mainSliderElements = document.querySelectorAll('.swiper.mainslider')
-                let prevArrow = document.querySelectorAll('.swiper.mainslider > .swiper-button-prev')
-                let nextArrow = document.querySelectorAll('.swiper.mainslider > .swiper-button-next')
-                let pagination = document.querySelectorAll('.swiper.mainslider >.swiper-pagination')
-
-                mainSliderElements.forEach((slider, index) => {
-                    const swiper = new Swiper(slider, {
-                        direction: 'horizontal',
-                        loop: true,
-                        preloadImages: false,
-                        lazy: true,
-                        navigation: {
-                            // the 'index' bit below is just the order of the class in the queryselectorAll array, so the first one would be NextArrow[0] etc
-                            nextEl: nextArrow[index],
-                            prevEl: prevArrow[index],
-                        },
-                        pagination: {
-                            el: pagination[index],
-                            clickable: true
-                        },
-
-                        on: {
-                            realIndexChange: function () {
-                                $('.ce--mainimage .mainimage--content').hide();
-                                $('.ce--mainimage *[data-aos]').removeClass('aos-init').removeClass('aos-animate');
-                            },
-                            slideChangeTransitionEnd: function () {
-                                $('.ce--mainimage .mainimage--content').show();
-                            },
-                        }
-                    });
-                })
-            }
-            window.addEventListener('load', mainSliders)
-        }
-    </script>
+    <?php if ($this->boxed_image) : ?>
+        <div class="boxed-logo d-none d-lg-block">
+            <img data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
+        </div>
+    <?php endif; ?>
 </div>
+
+<script>
+    if ($('.swiper.mainslider').length) {
+        const mainSliders = () => {
+            let mainSliderElements = document.querySelectorAll('.swiper.mainslider')
+            let prevArrow = document.querySelectorAll('.swiper.mainslider > .swiper-button-prev')
+            let nextArrow = document.querySelectorAll('.swiper.mainslider > .swiper-button-next')
+            let pagination = document.querySelectorAll('.swiper.mainslider >.swiper-pagination')
+
+            mainSliderElements.forEach((slider, index) => {
+                const swiper = new Swiper(slider, {
+                    direction: 'horizontal',
+                    loop: true,
+                    preloadImages: false,
+                    lazy: true,
+                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
+
+                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
+                    'slide'<?php endif;?>,
+
+
+                    <?php if ($this->autoplay) : ?>
+                    autoplay: {
+                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                    },
+                    <?php endif; ?>
+
+                    navigation: {
+                        // the 'index' bit below is just the order of the class in the queryselectorAll array, so the first one would be NextArrow[0] etc
+                        nextEl: nextArrow[index],
+                        prevEl: prevArrow[index],
+                    },
+                    pagination: {
+                        el: pagination[index],
+                        clickable: true
+                    },
+
+                    on: {
+                        realIndexChange: function () {
+                            $('.swiper-slide:not(.swiper-slide-active) .ce--mainimage *[data-aos]').removeClass('aos-init').removeClass('aos-animate');
+                            $('.swiper-slide:not(.swiper-slide-active) .ce--mainimage .mainimage--content').hide();
+                        },
+                        slideChangeTransitionEnd: function () {
+                            $('.swiper-slide.swiper-slide-active .ce--mainimage .mainimage--content').show();
+                        },
+                    }
+                });
+            })
+        }
+        window.addEventListener('load', mainSliders)
+    }
+</script></div>
 
