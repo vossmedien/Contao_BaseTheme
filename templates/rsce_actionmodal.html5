@@ -15,7 +15,6 @@
                 <?php endif; ?>
                 <div class="modal-body">
 
-
                     <?php if ($this->image): ?>
                         <div class="modal--image mb-3 <?php if ($this->remove_image_padding): ?>without-padding<?php endif; ?>">
                             <?php if (!$this->modal_headline): ?>
@@ -26,11 +25,10 @@
 
 
                             <?php if ($this->as_bg): ?>
-                                <div class="modal-image--wrapper" style="background: url(<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover; <?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>"></div>
+                                <div class="modal-image--wrapper" style="background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover; <?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>"></div>
                             <?php else: ?>
-                                <img style="<?php if ($this->fixed_height): ?>height: <?php echo $this->fixed_height; ?><?php endif; ?>" class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>">
+                                <img style="<?php if ($this->fixed_height): ?>height: <?php echo $this->fixed_height; ?><?php endif; ?>" class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>">
                             <?php endif; ?>
-
 
                             <div class="image--content">
                                 <div class="row gx-1">
@@ -66,15 +64,15 @@
 
                     <?php if ($this->progress_amount): ?>
                         <div class="modal--progress mb-3" data-aos="animate__fadeInUp">
-                            <?php if (!$this->progress_image): ?>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="<?php echo $this->progress_amount; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $this->progress_amount; ?>%"></div>
-                                </div>
-                            <?php else: ?>
+                            <?php if ($this->progress_image): ?>
                                 <div class="progressbar--images">
                                     <?php for ($i = 0; $i <= $this->progress_amount; $i++) : ?>
-                                        <img class="lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($this->progress_image)->path, null, null, null); ?>">
+                                        <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($this->progress_image)->path, null, null, null); ?>">
                                     <?php endfor; ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="<?php echo $this->progress_amount; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $this->progress_amount; ?>%"></div>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -107,12 +105,10 @@
                         <?php endif; ?>
                         <?php if ($this->sponsors): ?>
                             <div class="text-end mt-3">
-                                <?php foreach ($this->sponsors as $s) : ?>
-                                    <?php if($s->link):?>
-                                        <a href="<?php echo $s->link;?>" target="_blank"><?php endif;?>
-                                            <img class="lazy d-inline-block ms-2" data-src="<?= \Image::get(\FilesModel::findByUuid($s->image)->path, null, null, null); ?>">
-                                     <?php if($s->link):?></a><?php endif;?>
-                                <?php endforeach ?>
+                                <?php foreach ($this->sponsors as $s) : ?><?php if ($s->link): ?>
+                                    <a href="<?php echo $s->link; ?>" target="_blank"><?php endif; ?>
+                                    <img class="lazy d-inline-block ms-2" data-src="<?= Image::get(FilesModel::findByUuid($s->image)->path, null, null, null); ?>">
+                                    <?php if ($s->link): ?></a><?php endif; ?><?php endforeach ?>
                             </div>
                         <?php endif; ?>
                     </div>
