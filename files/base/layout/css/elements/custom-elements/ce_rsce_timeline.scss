@@ -1,40 +1,37 @@
 .ce_rsce_timeline {
-
   .ce--timeline {
     position: relative;
     margin-top: rfs-fluid-value(4rem);
 
     @include media-breakpoint-up(md) {
       &:before {
-        content: '';
+        content: "";
         width: 1px;
         height: 100%;
         left: 50%;
         top: 0;
         position: absolute;
-        background-color: $gray-500;
+        background-color: var(--bs-gray-500);
       }
     }
 
-
     .year--wrapper {
-
       > div {
         position: relative;
 
         @include media-breakpoint-up(md) {
           &:after {
-            content: '';
+            content: "";
             height: 1px;
             width: 50px;
             position: absolute;
             top: 35px;
             display: block;
-            background-color: $gray-500;
+            background-color: var(--bs-gray-500);
           }
 
           &:before {
-            content: '';
+            content: "";
             display: block;
             width: 20px;
             height: 20px;
@@ -46,8 +43,6 @@
             z-index: 3;
           }
         }
-
-
       }
 
       &:first-child {
@@ -82,7 +77,6 @@
             }
           }
         }
-
       }
 
       &:nth-child(odd) {
@@ -113,7 +107,6 @@
 
         @include media-breakpoint-up(md) {
           max-width: 300px;
-
         }
       }
     }

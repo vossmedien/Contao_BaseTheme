@@ -15,14 +15,14 @@
 
 &.theme-shop {
   #container {
-    background-color: $gray-200;
+    background-color: var(--bs-gray-200);
   }
 }
 
 div[class^="mod_iso_"] {
   .form-check {
     padding: 1rem;
-    background-color: $gray-100;
+    background-color: var(--bs-gray-100);
 
     &:not(:last-child) {
       margin-bottom: 1rem;
@@ -30,7 +30,7 @@ div[class^="mod_iso_"] {
 
     .form-check-input {
       margin-left: 0px;
-      margin-right: .5rem;
+      margin-right: 0.5rem;
     }
   }
 
@@ -58,8 +58,6 @@ div[class^="mod_iso_"] {
       &.confirm {
         @extend .btn-success;
       }
-
     }
   }
 }
-

@@ -1,48 +1,46 @@
-.layout_latest{
+.layout_latest {
   @extend .content--box;
 
-  &:not(.last){
+  &:not(.last) {
     margin-bottom: 2rem;
   }
 
-  p.info{
+  p.info {
     @include font-size(14px);
     color: $primary;
-    margin-bottom: .25rem;
+    margin-bottom: 0.25rem;
   }
 
-  h2{
+  h2 {
     color: $primary;
-    padding-bottom: .5rem;
-    border-bottom: 1px solid $primary;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--bs-primary);
     font-weight: $font-weight-normal;
     margin-bottom: 2.5rem;
 
-    &.with-url{
-      &:hover{
-        color: $primary-dark;
-        border-bottom-color: $primary-dark;
+    &.with-url {
+      &:hover {
+        color: $primary;
+        border-bottom-color: $primary;
       }
     }
 
-    a{
+    a {
       text-decoration: none;
     }
   }
-
 }
 
-.layout_full{
-  h1{
+.layout_full {
+  h1 {
     margin-bottom: 0px;
   }
-  .ce--subline{
 
+  .ce--subline {
   }
 
-
-  & + p.back{
-    a{
+  & + p.back {
+    a {
       @extend .btn, .btn-primary;
     }
   }

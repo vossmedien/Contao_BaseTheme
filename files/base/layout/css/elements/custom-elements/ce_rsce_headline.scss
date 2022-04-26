@@ -2,7 +2,6 @@
   margin-bottom: rfs-fluid-value(4rem);
   margin-top: rfs-fluid-value(4rem);
 
-
   .ce--main-image {
     @extend .make-fullwidth;
 
@@ -13,20 +12,18 @@
       box-shadow: inset 0px 25px 40px rgb(0 0 0 / 50%);
 
       &:after {
-        content: '';
+        content: "";
         height: rfs-fluid-value(200px);
         width: 100%;
         position: absolute;
         bottom: 0;
         left: 0;
         z-index: 5;
-        background: linear-gradient(rgba(255, 255, 255, 0) 0%, #fff 100%);
+        background: linear-gradient(rgba(var(--bs-white-rgb), 0) 0%, #fff 100%);
       }
-
 
       background-position: center center;
       position: relative;
-
 
       /*
       &:after{
@@ -68,6 +65,5 @@
   }
 
   .box--holder {
-
   }
 }

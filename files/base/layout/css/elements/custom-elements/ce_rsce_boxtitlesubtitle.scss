@@ -1,14 +1,10 @@
 .ce_rsce_boxtitlesubtitle {
-
-
   .boxtitlesubtitle {
     position: relative;
-
 
     @include media-breakpoint-down(sm) {
       margin-top: rfs-value(40px);
     }
-
 
     .bts--url {
       display: block;
@@ -21,7 +17,7 @@
 
     &:hover {
       img {
-        opacity: .8;
+        opacity: 0.8;
       }
     }
 
@@ -29,7 +25,7 @@
       text-align: center;
 
       img {
-        transition: opacity .3s ease;
+        transition: opacity 0.3s ease;
       }
     }
 

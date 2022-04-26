@@ -46,9 +46,9 @@
         position: absolute;
         right: 1rem;
         top: 1rem;
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(var(--bs-white-rgb), 0.8);
         border-radius: 50%;
-        border: 1px solid $primary;
+        border: 1px solid var(--bs-primary);
         padding: 0px;
         line-height: 2.9rem;
         text-align: center;

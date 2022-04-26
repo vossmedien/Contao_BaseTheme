@@ -12,10 +12,9 @@ aside {
     }
   }
 
-
   .inside {
     .mod_navigation {
-      margin-top: -.25rem;
+      margin-top: -0.25rem;
 
       ul {
         list-style-type: none;
@@ -23,25 +22,27 @@ aside {
         margin: 0px;
 
         li {
-          a, strong {
-            transition: all .1s ease;
+          a,
+          strong {
+            transition: all 0.1s ease;
           }
         }
       }
 
       ul.level_1 {
         > li {
-
-
-          > a, > strong {
+          > a,
+          > strong {
             font-size: rfs-value(20px);
             color: $primary;
             text-decoration: none;
             display: block;
-            padding: .75rem 0;
+            padding: 0.75rem 0;
             line-height: 1;
 
-            &.active, &:hover, &.trail {
+            &.active,
+            &:hover,
+            &.trail {
               color: $body-color;
             }
           }
@@ -49,18 +50,21 @@ aside {
       }
 
       ul.level_2 {
-        margin-bottom: .25rem;
+        margin-bottom: 0.25rem;
 
         > li {
-          > a, > strong {
+          > a,
+          > strong {
             font-size: rfs-value(18px);
-            padding: .35rem 1.25rem;
+            padding: 0.35rem 1.25rem;
             display: block;
             text-decoration: none;
             color: $body-color;
 
-            &.active, &:hover, &.trail {
-              background-color: $gray-300;
+            &.active,
+            &:hover,
+            &.trail {
+              background-color: var(--bs-gray-300);
             }
           }
         }
@@ -70,10 +74,9 @@ aside {
     > * {
       &:not(:first-child) {
         padding-top: $basic-gutter;
-        border-top: 1px solid $primary;
+        border-top: 1px solid var(--bs-primary);
         margin-top: $basic-gutter;
       }
     }
   }
 }
-

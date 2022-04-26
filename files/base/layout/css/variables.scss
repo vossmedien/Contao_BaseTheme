@@ -1,43 +1,106 @@
+:root {
+  --bs-blue: #0d6efd;
+  --bs-indigo: #6610f2;
+  --bs-purple: #6f42c1;
+  --bs-pink: #d63384;
+  --bs-red: #871623;
+  --bs-orange: #fd7e14;
+  --bs-yellow: #ffc107;
+  --bs-green: #198754;
+  --bs-teal: #20c997;
+  --bs-cyan: #0dcaf0;
+  --bs-white: #fff;
+  --bs-black: #000;
+  --bs-gray: #6c757d;
+  --bs-gray-dark: #343a40;
+  --bs-gray-100: #f8f9fa;
+  --bs-gray-200: #e9ecef;
+  --bs-gray-300: #dee2e6;
+  --bs-gray-400: #ced4da;
+  --bs-gray-500: #adb5bd;
+  --bs-gray-600: #6c757d;
+  --bs-gray-700: #495057;
+  --bs-gray-800: #343a40;
+  --bs-gray-900: #212529;
+  --bs-primary: var(--bs-red);
+
+  --bs-secondary: var(--bs-gray-900);
+
+  --bs-success: #198754;
+  --bs-info: #0dcaf0;
+  --bs-warning: #ffc107;
+  --bs-danger: #dc3545;
+  --bs-light: #f8f9fa;
+  --bs-dark: #212529;
+  --bs-primary-rgb: 135, 22, 35;
+  --bs-secondary-rgb: 33, 37, 41;
+  --bs-success-rgb: 25, 135, 84;
+  --bs-info-rgb: 13, 202, 240;
+  --bs-warning-rgb: 255, 193, 7;
+  --bs-danger-rgb: 220, 53, 69;
+  --bs-light-rgb: 248, 249, 250;
+  --bs-dark-rgb: 33, 37, 41;
+  --bs-white-rgb: 255, 255, 255;
+  --bs-black-rgb: 0, 0, 0;
+  --bs-body-color-rgb: 33, 37, 41;
+  --bs-body-bg-rgb: 255, 255, 255;
+  --bs-font-sans-serif: "Open Sans", sans-serif;
+  --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --bs-gradient: linear-gradient(
+    180deg,
+    rgba(var(--bs-white-rgb), 0.15),
+    rgba(var(--bs-white-rgb), 0)
+  );
+  --bs-body-font-family: var(--bs-font-sans-serif);
+  --bs-body-font-size: 1rem;
+  --bs-body-font-weight: 400;
+  --bs-body-line-height: 1.5;
+  --bs-body-color: #212529;
+  --bs-body-color-inverse: #fff;
+  --bs-body-bg: #fff;
+
+  --swiper-theme-color: var(--bs-primary);
+
+  --mm-line-height: 20px;
+  --mm-listitem-size: 44px;
+  --mm-navbar-size: 44px;
+  --mm-offset-top: 0;
+  --mm-offset-right: 0;
+  --mm-offset-bottom: 0;
+  --mm-offset-left: 0;
+  --mm-color-border: rgba(0, 0, 0, 0.1);
+  --mm-color-button: rgba(0, 0, 0, 0.3);
+  --mm-color-text: rgba(0, 0, 0, 0.75);
+  --mm-color-text-dimmed: rgba(0, 0, 0, 0.3);
+  --mm-color-background: #f3f3f3;
+  --mm-color-background-highlight: rgba(0, 0, 0, 0.05);
+  --mm-color-background-emphasis: rgba(var(--bs-white-rgb), 0.4);
+  --mm-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
 $fa-font-path: "../_fonts/fontawesome/webfonts/";
 
-$blue: #0d6efd;
-$indigo: #6610f2;
-$purple: #6f42c1;
-$pink: #d63384;
-$red: #871623;
-$orange: #fd7e14;
-$yellow: #ffc107;
-$green: #198754;
-$teal: #20c997;
-$cyan: #0dcaf0;
+$white: var(--bs-white);
+$black: var(--bs-black);
 
-$gray-100: #f8f9fa;
-$gray-200: #e9ecef;
-$gray-300: #dee2e6;
-$gray-400: #ced4da;
-$gray-500: #adb5bd;
-$gray-600: #6c757d;
-$gray-700: #495057;
-$gray-800: #343a40;
-$gray-900: #212529;
+$primary: var(--bs-primary);
+$primary-light: $primary;
+$primary-lighter: $primary;
+$primary-dark: $primary;
+$primary-darker: $primary;
 
-$black: black;
-$white: white;
+$primary-rgb: var(--bs-primary-rgb);
 
-$primary: $red;
-$primary-light: lighten($primary, 15%);
-$primary-lighter: lighten($primary, 30%);
-$primary-dark: darken($primary, 15%);
-$primary-darker: darken($primary, 30%);
-
-$secondary: $gray-900;
+$secondary: var(--bs-secondary);
 $secondary-light: $secondary;
 $secondary-lighter: $secondary;
 $secondary-dark: $secondary;
 $secondary-darker: $secondary;
 
-$font-weight-medium: 500;
+$secondary-rgb: var(--bs-secondary-rgb);
 
+$font-weight-medium: 500;
 $border-radius: 10px;
 
 // Spalten
@@ -47,17 +110,18 @@ $right-col--width: 250px;
 
 // Footer
 
-$footer-top-bg: $gray-900;
+$footer-top-bg: $secondary;
 $footer-middle-bg: $primary;
 $footer-bottom-bg: $black;
 
-$text-color-inverse: white;
-$text-color: $gray-900;
+$text-color-inverse: var(--bs-body-color-inverse);
+$text-color: var(--bs-body-color);
 
-$body-bg: $white;
+$body-bg: var(--bs-body-bg);
 $body-color: $text-color;
+$link-color: $primary;
 
-$font-family-base: "Open Sans", sans-serif;
+$font-family-base: var(--bs-font-sans-serif);
 $font-family-sans-serif: "Montserrat", sans-serif;
 $font-weight-semibold: 600;
 
@@ -66,14 +130,11 @@ $fa-font-display: swap;
 // Megamenü
 $megamenu-width: 960px;
 $megamenu-background: rgba(0, 0, 0, 0.85);
-$megamenu-overlay-background: rgba(255, 255, 255, 0.5);
+$megamenu-overlay-background: rgba(var(--bs-white-rgb), 0.5);
 $megamenu-lvl1-color: $text-color-inverse;
 $megamenu-lvl2-color: $primary;
 $megamenu-lvl3-color: $white;
 $megamenu-imageHeight: 125px;
-
-//Swiper
-$themeColor: $primary;
 
 //Abstände
 $spacer: 1.5rem;

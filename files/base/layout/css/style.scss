@@ -1,8 +1,10 @@
-@import "variables";
-@import "_theme/variables";
+@import "../_vendor/vendor";
+
 @import "mixins";
 
-@import "../_vendor/vendor";
+@import "variables";
+@import "_theme/variables";
+
 @import "../_fonts/fonts";
 
 @import "scaffolding/helper-classes";

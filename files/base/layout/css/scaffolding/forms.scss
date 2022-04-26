@@ -46,10 +46,9 @@ form {
      */
   }
 
-
   .widget {
     > label:first-child {
-      padding: 2px .75rem 2px .75rem;
+      padding: 2px 0.75rem 2px 0.75rem;
       border-radius: $border-radius $border-radius 0px 0px;
       background-color: $primary;
       color: $text-color-inverse;
@@ -72,16 +71,16 @@ form {
       &[type="text"],
       &[type="email"],
       &[type="tel"],
-      &[type="password"], {
+      &[type="password"] {
         @extend .form-control;
       }
     }
 
-
     &.error {
       color: $danger;
 
-      > input, > textarea {
+      > input,
+      > textarea {
         border-bottom-right-radius: 0px;
         border-bottom-left-radius: 0px;
       }
@@ -97,8 +96,8 @@ form {
       }
     }
 
-
-    &.widget-checkbox, &.widget-radio {
+    &.widget-checkbox,
+    &.widget-radio {
       p.error {
         padding-left: rfs-value(30px);
         background-color: transparent;
@@ -121,12 +120,10 @@ form {
     &.widget-submit {
       text-align: right;
 
-
       button {
         @extend .btn, .btn-primary;
       }
     }
-
 
     .captcha_text {
       margin-bottom: 5px;
@@ -135,13 +132,12 @@ form {
     p.error {
       border-radius: 0px 0px $border-radius $border-radius;
       margin-bottom: 0px;
-      @include padding(5px .75rem);
+      @include padding(5px 0.75rem);
       @include font-size(14px);
       color: $text-color-inverse;
       background-color: $danger;
     }
   }
-
 
   // Floating Labels
   .form-floating {
@@ -151,7 +147,6 @@ form {
       //line-height: 1.2;
       margin-left: calc(var(--bs-gutter-x) / 2);
     }
-
 
     input[type="text"],
     input[type="email"],
@@ -166,5 +161,4 @@ form {
       line-height: rfs-value(44px);
     }
   }
-
 }

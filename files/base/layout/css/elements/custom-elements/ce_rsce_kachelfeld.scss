@@ -15,12 +15,11 @@
 
   .kachelbox {
     height: 100%;
-    background-color: $gray-900;
+    background-color: $secondary;
     position: relative;
-    transition: background-color .3s ease;
+    transition: background-color 0.3s ease;
     box-shadow: $box-shadow;
     color: $text-color-inverse;
-
 
     a.kachel--url {
       position: absolute;
@@ -30,7 +29,6 @@
       width: 100%;
       display: block;
     }
-
 
     .kachelbox--inner {
       padding: rfs-value(0px 30px 30px 30px);
@@ -69,14 +67,13 @@
         i {
           @include font-size(100px);
           color: $primary;
-          transition: all .3s ease;
+          transition: all 0.3s ease;
           line-height: rfs-fluid-value(200px);
 
           @include media-breakpoint-up(xxl) {
             line-height: rfs-value(300px);
           }
         }
-
 
         .column-kachel--wrapper {
           @include media-breakpoint-up(md) {
@@ -87,7 +84,6 @@
             width: 100%;
             height: 100%;
           }
-
 
           &.pos-centered {
             @include media-breakpoint-up(md) {
@@ -162,14 +158,13 @@
             }
           }
 
-
           .column--kachel {
             height: 100%;
             width: 100%;
             display: flex;
             flex-flow: column wrap;
             padding: 1rem;
-            transition: all .5s ease;
+            transition: all 0.5s ease;
             overflow: hidden;
 
             @include media-breakpoint-up(md) {
@@ -190,7 +185,7 @@
                 max-width: rfs-value(400px);
               }
               text-align: left;
-              transition: all .5s ease;
+              transition: all 0.5s ease;
 
               > span {
                 display: block;
@@ -199,10 +194,7 @@
             }
           }
         }
-
-
       }
-
 
       > .kb--content {
         margin-top: 2rem;
@@ -210,11 +202,9 @@
         display: flex;
         flex-flow: column wrap;
 
-
         &:first-child {
           padding-top: 1.5rem;
         }
-
 
         .box--headline {
           .h5 {
@@ -223,14 +213,11 @@
         }
 
         .box--text {
-
         }
 
         .box--button {
           //align-self: flex-end;
         }
-
-
       }
     }
   }

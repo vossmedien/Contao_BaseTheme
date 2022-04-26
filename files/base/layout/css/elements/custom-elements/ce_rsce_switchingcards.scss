@@ -1,13 +1,11 @@
 .ce_rsce_switchingcards {
-
-  .row > div{
+  .row > div {
     margin-bottom: 1.5rem;
 
     @include media-breakpoint-down(md) {
       width: 100%;
     }
   }
-
 
   .flipping-card--wrapper {
     perspective: 1000px;
@@ -16,20 +14,18 @@
     height: 100%;
     cursor: pointer;
 
-
-
     &:hover,
     &.active {
       .flipping-card--inner {
         transform: rotateY(180deg);
 
-        .flipping-card--front{
+        .flipping-card--front {
           //opacity: 0;
         }
       }
     }
 
-    img{
+    img {
       max-height: 60px;
       max-width: 60px;
     }
@@ -49,76 +45,67 @@
         min-height: 100%;
         -webkit-backface-visibility: hidden; /* Safari */
         backface-visibility: hidden;
-        padding: .25rem 1rem 1rem 1rem;
+        padding: 0.25rem 1rem 1rem 1rem;
         display: flex;
         flex-flow: column wrap;
         justify-content: space-around;
 
-        .fc--image{
+        .fc--image {
           text-align: center;
-          margin-bottom: .25rem;
-          margin-top: .25rem;
+          margin-bottom: 0.25rem;
+          margin-top: 0.25rem;
         }
 
-        .fc--headline{
-          font-size: .8rem;
+        .fc--headline {
+          font-size: 0.8rem;
           font-weight: $font-weight-bold;
-          margin: .5rem 0;
+          margin: 0.5rem 0;
         }
 
-        .fc--content-headline{
+        .fc--content-headline {
           font-size: 1.25rem;
           font-weight: $font-weight-bold;
-          margin-top: .5rem;
+          margin-top: 0.5rem;
         }
 
-        .fc--content-text{
-          margin-top: .25rem;
+        .fc--content-text {
+          margin-top: 0.25rem;
         }
 
-        .fc--content-button{
+        .fc--content-button {
           margin-top: 1rem;
         }
-
       }
 
       .flipping-card--front {
         background-color: $primary;
         color: $text-color-inverse;
-        .front--inner{
-          padding: .25rem 1rem 1rem 1rem;
 
-          .fc--content-text{
+        .front--inner {
+          padding: 0.25rem 1rem 1rem 1rem;
+
+          .fc--content-text {
             font-size: 95%;
           }
         }
-
       }
 
       .flipping-card--back {
         transform: rotateY(180deg);
-        background-color: $gray-200;
+        background-color: var(--bs-gray-200);
         color: $text-color;
         position: absolute;
         top: 0;
-        border: 1px solid $primary;
+        border: 1px solid var(--bs-primary);
 
-        .back--inner{
-          padding: .25rem 1rem 1rem 1rem;
+        .back--inner {
+          padding: 0.25rem 1rem 1rem 1rem;
 
-          .fc--content-text{
+          .fc--content-text {
             font-size: 75%;
           }
         }
-
-
       }
-
-
-
-
-
-
     }
   }
 }

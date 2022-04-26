@@ -2,8 +2,6 @@
 #cart,
 .mod_iso_checkout .orderproducts,
 .mod_iso_orderdetails {
-
-
   .collection {
     font-weight: lighter;
     position: relative;
@@ -27,7 +25,6 @@
         flex: 1;
         margin: 0 $basic-gutter/2;
       }
-
 
       ul {
         list-style-type: none;
@@ -108,7 +105,7 @@
     .summary {
       display: flex;
       align-items: flex-start;
-      background-color: $gray-100;
+      background-color: var(--bs-gray-100);
       //margin: 0 -#{$gutter-default/2};
 
       &.foot_0 {
@@ -133,10 +130,8 @@
 
       .name {
         flex: 4 1 3em;
-        margin-left: $basic-gutter*1.5;
+        margin-left: $basic-gutter * 1.5;
         text-align: right;
-
-
       }
     }
   }
@@ -168,6 +163,4 @@
       }
     }
   }
-
-
 }

@@ -6,10 +6,8 @@
   }
 }
 
-
 .ce_rsce_headimagelogo {
   margin-top: 0px !important;
-
 
   .swiper-slide {
     overflow: hidden;
@@ -55,7 +53,6 @@
       transform: translate(50%, 15%);
     }
 
-
     img {
       //max-width: rfs-value(300px);
       width: 100%;
@@ -69,7 +66,7 @@
   .mainslider {
     &.with-diagonalCut {
       &:after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: 0;
         left: 0;
@@ -78,7 +75,6 @@
         z-index: 9;
       }
     }
-
 
     &:not(.not-fullHeight):not(.no-text) {
       .image--holder {
@@ -94,11 +90,9 @@
     &.style-1 {
       .mainimage--content {
         .mainimage--content-inner {
-
           @include media-breakpoint-down(sm) {
             width: 75%;
           }
-
 
           span {
             &:first-of-type {
@@ -123,7 +117,6 @@
     }
 
     &.style-2 {
-
       .mainimage--content {
         .container {
           @include media-breakpoint-down(sm) {
@@ -131,22 +124,20 @@
           }
         }
 
-
         .mainimage--content-inner {
           position: relative;
           z-index: 10;
 
-          //background-color: $white;
+          //background-color: var(--bs-white);
           //overflow: hidden;
 
-
           &:before {
-            content: '';
+            content: "";
             position: absolute;
             right: 0;
             bottom: 0;
             width: 100%;
-            background-color: $white;
+            background-color: var(--bs-white);
             height: 100%;
 
             @include media-breakpoint-up(sm) {
@@ -154,19 +145,18 @@
             }
           }
 
-
           .mainimage--content-inner--wrapper {
             padding: 10px 10px 10px 10px;
 
             @include media-breakpoint-up(sm) {
               &:after {
-                content: '';
+                content: "";
                 display: block;
                 position: absolute;
                 left: 100%;
                 top: 0;
                 clip-path: polygon(0 0, 0% 100%, 100% 0);
-                background-color: $white;
+                background-color: var(--bs-white);
                 width: 200px;
                 height: 100%;
               }
@@ -180,8 +170,6 @@
               margin-top: 1.5rem;
             }
           }
-
-
         }
       }
     }
@@ -218,7 +206,6 @@
         height: 100%;
         width: 100vw;
 
-
         .mainimage--content-inner {
           display: inline-block;
           position: absolute;
@@ -230,7 +217,6 @@
           @include media-breakpoint-down(sm) {
             width: 85%;
           }
-
 
           span {
             display: block;
@@ -266,12 +252,6 @@
           }
         }
       }
-
-
     }
-
-
   }
-
-
 }

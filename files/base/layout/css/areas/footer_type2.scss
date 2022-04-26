@@ -1,9 +1,10 @@
 .footer--content {
   &.type--2 {
-    .fc--top{
+    .fc--top {
       padding: 1rem 0rem;
-      #footerNav2{
-        ul{
+
+      #footerNav2 {
+        ul {
           display: flex;
           justify-content: space-between;
           margin: 0px -1rem;
@@ -15,16 +16,17 @@
             margin: 0px -2rem;
           }
 
-          > li{
+          > li {
             padding: 0 1rem;
 
             @include media-breakpoint-up(xxl) {
               padding: 0 2rem;
             }
 
-            > a, > strong{
+            > a,
+            > strong {
               text-decoration: none;
-              color: $white;
+              color: var(--bs-white);
               display: block;
               white-space: nowrap;
               @include font-size(14px);
@@ -33,7 +35,8 @@
                 @include font-size(18px);
               }
 
-              &.active, &:hover{
+              &.active,
+              &:hover {
                 text-decoration: underline;
               }
             }
@@ -42,32 +45,29 @@
       }
     }
 
-    .fc--middle{
+    .fc--middle {
       padding: 1.5rem 0 1.5rem 0;
 
-
-
-      figure{
+      figure {
         margin-bottom: 0px;
-        img{
+
+        img {
           max-height: rfs-value(100px);
           width: auto;
         }
       }
-
     }
 
-    .fc--bottom{
-      padding: .75rem 0;
+    .fc--bottom {
+      padding: 0.75rem 0;
       @include font-size(14px);
 
-       a{
-          color: $white;
-        }
+      a {
+        color: var(--bs-white);
+      }
 
-
-      #footerNav{
-        ul{
+      #footerNav {
+        ul {
           @extend .list-inline;
           margin: 0px;
           @include font-size(12px);
@@ -76,22 +76,24 @@
             text-align: center;
           }
 
-          > li{
+          > li {
             @extend .list-inline-item;
 
-            &:not(:last-child){
-              &:after{
-                content:'|';
-                color: $white;
-                padding-left: .65rem;
+            &:not(:last-child) {
+              &:after {
+                content: "|";
+                color: var(--bs-white);
+                padding-left: 0.65rem;
               }
             }
 
-            > a, > strong{
+            > a,
+            > strong {
               text-decoration: none;
-              color: $white;
+              color: var(--bs-white);
 
-              &.active, &:hover{
+              &.active,
+              &:hover {
                 text-decoration: underline;
               }
             }
@@ -99,29 +101,29 @@
         }
       }
 
-      .social--list{
-        .social-list--label{
+      .social--list {
+        .social-list--label {
           display: inline-block;
           color: $text-color-inverse;
           @include font-size(14px);
-          span{
+
+          span {
             display: block;
           }
         }
 
-        ul{
+        ul {
           margin-bottom: 0px;
           display: inline-block;
           font-size: 2rem;
-          li{
-            a{
-              color: $text-color-inverse;
 
+          li {
+            a {
+              color: $text-color-inverse;
             }
           }
         }
       }
-
     }
   }
 }

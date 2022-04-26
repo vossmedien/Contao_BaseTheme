@@ -40,7 +40,7 @@
         content: "";
         width: rfs-value(60px);
         height: 2px;
-        background-color: $gray-700;
+        background-color: var(--bs-gray-700);
         position: absolute;
         left: 0;
         top: rfs-value(5px);

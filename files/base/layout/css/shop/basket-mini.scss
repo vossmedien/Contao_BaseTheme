@@ -2,7 +2,7 @@
   .open-dropdown {
     cursor: pointer;
     display: inline-block;
-    margin-left: .5rem;
+    margin-left: 0.5rem;
 
     i {
       color: $primary;
@@ -29,11 +29,10 @@
           position: relative;
 
           &:not(:last-child) {
-            margin-bottom: .75rem;
-            padding-bottom: .75rem;
-            border-bottom: 1px solid $primary;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--bs-primary);
           }
-
 
           .image_container {
             margin-bottom: 0px;
@@ -60,25 +59,21 @@
             ul {
               list-style-type: none;
               padding: 0px;
-              margin: .5rem 0px;
+              margin: 0.5rem 0px;
               @include font-size(12px);
-
             }
           }
         }
       }
-
 
       .subtotal {
         font-weight: $font-weight-semibold;
         text-align: right;
         margin-top: 1rem;
         color: $primary;
-        padding-top: .5rem;
+        padding-top: 0.5rem;
         border-top-style: double;
       }
     }
   }
-
-
 }

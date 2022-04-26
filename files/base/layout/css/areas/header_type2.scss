@@ -25,7 +25,7 @@
       width: 100%;
       z-index: 10;
       text-align: right;
-      @include background-opacity($primary, 0.85);
+      background-color: rgba($primary-rgb, 0.85);
       box-shadow: $box-shadow;
 
       @include media-breakpoint-up(md) {
@@ -147,7 +147,7 @@
       }
 
       .navActivator {
-        background-color: $white;
+        background-color: var(--bs-white);
         padding: 0.75rem;
       }
     }

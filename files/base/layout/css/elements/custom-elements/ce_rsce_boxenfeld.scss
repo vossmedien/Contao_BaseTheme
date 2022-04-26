@@ -6,7 +6,6 @@
 
     &:nth-child(odd) {
       .row {
-
         .box--content {
           @include media-breakpoint-up(lg) {
             margin-right: 1.3rem;
@@ -30,10 +29,8 @@
           left: auto;
         }
 
-
         .box--content {
           padding: 3rem 5vw 3rem 3rem;
-
         }
       }
     }
@@ -48,10 +45,8 @@
             left: auto;
           }
 
-
           .box--content {
             padding: 3rem 5vw 3rem 3rem;
-
           }
         }
       }
@@ -65,12 +60,10 @@
       max-width: calc(100% + 15vw);
       border-radius: 25px;
     }
-
-
   }
 
   .box--content {
-    border: 7px solid $primary;
+    border: 7px solid var(--bs-primary);
     padding: 3rem 3rem 3rem 5vw;
     z-index: 10;
     position: relative;
@@ -79,12 +72,10 @@
       top: 0 !important;
     }
 
-
     @include media-breakpoint-up(lg) {
       padding: rfs-value(80px 80px 80px 5vw);
       border-radius: $border-radius;
     }
-
 
     .box--headline:first-child > * {
       margin-top: 0px;
@@ -93,6 +84,5 @@
     .box--button {
       margin-top: 1.5rem;
     }
-
   }
 }

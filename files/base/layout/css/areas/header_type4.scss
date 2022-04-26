@@ -4,7 +4,7 @@
     left: 0;
     width: 100%;
     top: 0;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(var(--bs-white-rgb), 0.8);
     z-index: 20;
 
     @include font-size(16px);
@@ -54,7 +54,7 @@
           }
 
           &:hover {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(var(--bs-white-rgb), 0.8);
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
           }
 
@@ -95,7 +95,7 @@
 
       ul.level_2 {
         transition: all 0.5s ease;
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(var(--bs-white-rgb), 0.8);
         list-style-type: none;
         margin: 0 0 0 -5px;
         max-height: 0px;
@@ -125,7 +125,7 @@
           }
 
           &:not(:last-child) {
-            border-bottom: 1px solid $gray-200;
+            border-bottom: 1px solid var(--bs-gray-200);
           }
 
           &:hover,

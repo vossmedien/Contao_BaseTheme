@@ -5,7 +5,7 @@
     display: flex;
     align-items: flex-end;
     position: relative;
-    color: $white;
+    color: var(--bs-white);
     margin-bottom: 1rem;
     background-position: center;
 
@@ -30,7 +30,7 @@
         margin-bottom: 0px;
         font-weight: $font-weight-bolder;
         @include font-size(34px);
-        color: $white;
+        color: var(--bs-white);
         line-height: 1;
       }
     }
@@ -40,7 +40,6 @@
       line-height: 1;
 
       .left--col {
-
         .left-col--inner {
           padding: 1rem 0.5rem 1rem 1rem;
           white-space: nowrap;
@@ -51,8 +50,6 @@
             @include font-size(30px);
           }
         }
-
-
       }
 
       .right--col {
@@ -69,6 +66,5 @@
         }
       }
     }
-
   }
 }

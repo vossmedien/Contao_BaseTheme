@@ -1,4 +1,4 @@
-.ce_rsce_bubblelist{
+.ce_rsce_bubblelist {
   .ce--bubble-list {
     .bl--list {
       display: flex;
@@ -26,9 +26,8 @@
           flex: 1;
         }
 
-
         * {
-          transition: all .3s ease;
+          transition: all 0.3s ease;
         }
 
         > a {
@@ -42,7 +41,7 @@
 
         &:hover {
           .bl-i--text {
-            color: $gray-900;
+            color: $secondary;
           }
 
           .bl-i--image {
@@ -50,16 +49,16 @@
               > g > path,
               > g > g:first-child > path, // komische SVGs
               > g > g:first-child > g > *,
-              > g > g:first-child > g > * > path { // komische SVGs
+              > g > g:first-child > g > * > path {
+                // komische SVGs
                 fill: $primary;
               }
             }
           }
-
         }
 
         .bl-i--image {
-          border: 3px solid $primary;
+          border: 3px solid var(--bs-primary);
           border-radius: 50%;
           height: rfs-value(150px);
           width: rfs-value(150px);

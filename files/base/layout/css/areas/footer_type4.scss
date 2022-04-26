@@ -4,44 +4,45 @@
     color: $text-color-inverse;
     @include padding(50px 0px 25px 0px);
 
-
-    .row{
-      > div:not(:last-child){
+    .row {
+      > div:not(:last-child) {
         @include media-breakpoint-down(lg) {
           margin-bottom: 1.5rem;
         }
       }
     }
 
-    a{
+    a {
       color: $text-color-inverse;
       text-decoration: none;
     }
 
-    ul{
+    ul {
       list-style-type: none;
       padding: 0px;
       margin: 0px;
 
-      > li{
+      > li {
         display: block;
       }
     }
 
-    #footerNav2{
-
-      ul{
-        li{
-          &:not(:last-child){
+    #footerNav2 {
+      ul {
+        li {
+          &:not(:last-child) {
             margin-bottom: 1rem;
           }
-          a{
+
+          a {
             text-transform: uppercase;
-            &.active, &:hover{
+
+            &.active,
+            &:hover {
               color: $primary;
             }
 
-            &.active{
+            &.active {
               font-weight: $font-weight-bold;
             }
           }
@@ -49,20 +50,20 @@
       }
     }
 
-    .social--list{
+    .social--list {
       margin-top: 2rem;
-      ul{
-        li{
+
+      ul {
+        li {
           display: inline-block;
         }
       }
     }
 
-    #footerLogo{
-      img{
+    #footerLogo {
+      img {
         max-width: 320px;
       }
     }
-
   }
 }

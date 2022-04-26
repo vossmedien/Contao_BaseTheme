@@ -16,7 +16,8 @@
     display: none;
   }
 
-  h1, p {
+  h1,
+  p {
     width: 100%;
   }
 
@@ -51,25 +52,22 @@
       width: 50%;
       margin-bottom: 2rem;
     }
-
   }
 
-
   .vcard {
-    background-color: $gray-100;
+    background-color: var(--bs-gray-100);
     padding: 1rem 2rem 1rem 1rem;
     margin-bottom: 2rem;
   }
 
   .buttons {
     position: absolute;
-    right: .75rem;
-    top: .25rem;
+    right: 0.75rem;
+    top: 0.25rem;
 
     @include media-breakpoint-up(lg) {
       right: 1.75rem;
     }
-
 
     a {
       color: transparent;
@@ -87,20 +85,15 @@
           @extend .fas;
           content: fa-content($fa-var-pen);
         }
-
       }
 
       &.delete {
-
         &:after {
           @extend %fa-icon;
           @extend .fas;
           content: fa-content($fa-var-trash);
         }
-
       }
     }
   }
-
-
 }

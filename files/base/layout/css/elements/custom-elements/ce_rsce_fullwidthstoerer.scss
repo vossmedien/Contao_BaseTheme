@@ -1,15 +1,12 @@
 .ce_rsce_fullwidthstoerer {
-
-
   .fullwidthstoerer--inner {
     background-color: $secondary;
-    color: $white;
+    color: var(--bs-white);
     overflow: hidden;
 
     .stoerer--content-column {
       padding: 2rem 0;
     }
-
 
     .stoerer--headline {
       > * {
@@ -18,16 +15,13 @@
     }
 
     img {
-
     }
 
     .stoerer--button {
       margin-top: 1.5rem;
 
       a.btn {
-
       }
     }
-
   }
 }
