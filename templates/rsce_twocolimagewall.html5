@@ -21,10 +21,9 @@
              <?php endif; ?>
              <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?><?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>
                      ">
-            <div class="container">
+            <div class="container force-container">
                 <div class="row <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
                     <div class="content--col d-flex align-items-center <?php if ($row->spacing_between) : ?>spacing-between<?php endif; ?> <?php if ($row->alternate_background) : ?>with-bg<?php endif; ?> <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>" style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
-
 
                         <?php if ($row->ce_headline || $row->content || $row->buttons[0]->link_text != ""): ?>
                         <div class="content-col--inner <?php echo $row->textalign; ?>">
@@ -110,7 +109,6 @@
                                             </div>
                                         <?php endif; ?>
 
-
                                     </div>
                                 </div>
                             </div>
@@ -145,7 +143,6 @@
                     </div>
                 </div>
             <?php endif; ?>
-
 
                 <div data-aos="animate__fadeIn" style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;" class="image-col--inner <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
         <?php if ($row->column_width == "col-12 col-md-6 col-lg-5") : ?>

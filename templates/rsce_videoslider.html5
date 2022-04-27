@@ -1,112 +1,111 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
         <?php if ($this->headline || $this->subline) : ?>
-            <div class="ce--headline">
-                <div class="container">
-                    <?php if ($this->headline) : ?>
-                        <<?php echo ($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                            <?php echo ($this->headline); ?>
-                        </<?php echo ($this->hl); ?>>
-                    <?php endif; ?>
-                    <?php if ($this->subline) : ?>
-                        <span class="ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
-                    <?php endif; ?>
-                </div>
-            </div>
-        <?php endif; ?>
-        <div class="ce--videoslider" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-            <?php if (!$this->fullwidth) : ?>
-                <div class="container">
-                <?php endif; ?>
-                <div class="video-slider swiper custom ">
-                    <!-- Additional required wrapper -->
-                    <div class="swiper-wrapper ">
-                        <!-- Slides -->
-                        <?php foreach ($this->elements as $slide) : ?>
-                            <div class="swiper-slide">
-                                <a <?php if ($slide->open_tab) : ?> target="_blank" <?php else : ?> class="video-link cboxElement" data-lightbox <?php endif; ?> href='https://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'>
-                                    <img class="swiper-lazy" data-src="<?= \Image::get(\FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
-                                    <?php if ($slide->text) : ?>
-                                        <span class="slide-caption"><?php echo $slide->text; ?></span>
-                                    <?php endif; ?>
-                                </a>
-                                <div class="swiper-lazy-preloader"></div>
-                            </div>
-                        <?php endforeach ?>
-                    </div>
-                    <?php if (count($this->elements) > 1) : ?>
-                        <div class="swiper-pagination swiper-pagination-clickable"></div>
-                        <div class="swiper-button-prev"></div>
-                        <div class="swiper-button-next"></div>
-                    <?php endif; ?>
-                </div>
-                <?php if (!$this->fullwidth) : ?>
-                </div>
+        <div class="ce--headline">
+            <div class="container">
+                <?php if ($this->headline) : ?>
+                <<?php echo($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <?php echo($this->headline); ?>
+            </<?php echo($this->hl); ?>>
+            <?php endif; ?>
+            <?php if ($this->subline) : ?>
+                <span class="ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
-</div>
+    <?php endif; ?>
+    <div class="ce--videoslider" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+        <?php if (!$this->fullwidth) : ?>
+        <div class="container">
+            <?php endif; ?>
+            <div class="video-slider video-slider_<?= $this->id; ?> swiper custom">
+                <!-- Additional required wrapper -->
+                <div class="swiper-wrapper ">
+                    <!-- Slides -->
+                    <?php foreach ($this->elements as $slide) : ?>
+                        <div class="swiper-slide">
+                            <a <?php if ($slide->open_tab) : ?> target="_blank" <?php else : ?> class="video-link cboxElement" data-lightbox <?php endif; ?> href='https://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'>
+                                <img class="swiper-lazy" data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
+                                <?php if ($slide->text) : ?>
+                                    <span class="slide-caption"><?php echo $slide->text; ?></span>
+                                <?php endif; ?>
+                            </a>
+                            <div class="swiper-lazy-preloader"></div>
+                        </div>
+                    <?php endforeach ?>
+                </div>
+                <?php if (count($this->elements) > 1) : ?>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                <?php endif; ?>
+            </div>
+            <?php if (!$this->fullwidth) : ?>
+        </div>
+    <?php endif; ?>
+    </div>
+</div></div>
+
 <script>
-    if ($('.video-slider.custom').length) {
-        const videoSlider = () => {
-            let videoSliders = document.querySelectorAll('.video-slider.custom')
-            let prevArrow = document.querySelectorAll('.video-slider.custom > .swiper-button-prev')
-            let nextArrow = document.querySelectorAll('.video-slider.custom > .swiper-button-next')
-            let pagination = document.querySelectorAll('.video-slider.custom > .swiper-pagination')
-            videoSliders.forEach((slider, index) => {
-                const swiper = new Swiper(slider, {
-                    direction: 'horizontal',
-                    navigation: {
-                        nextEl: nextArrow[index],
-                        prevEl: prevArrow[index]
+    window.addEventListener('load', function () {
+        if ($('.swiper.video-slider_<?= $this->id;?>').length) {
+
+            const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.video-slider_<?php echo $this->id; ?>', {
+                direction: 'horizontal',
+
+                <?php if (count($this->elements) > 1) : ?>
+                navigation: {
+                    nextEl: '.swiper.video-slider_<?= $this->id;?> .swiper-button-next',
+                    prevEl: '.swiper.video-slider_<?= $this->id;?> .swiper-button-prev',
+                },
+
+                pagination: {
+                    el: '.swiper.video-slider_<?php echo $this->id; ?> .swiper-pagination',
+                    clickable: true,
+                },
+                <?php endif; ?>
+
+                loop: true,
+                preloadImages: false,
+                lazy: true,
+                slidesPerView: 1,
+                spaceBetween: 10,
+                checkInView: true,
+                // Responsive breakpoints
+                breakpoints: {
+                    320: {
+                        slidesPerView: 1,
+                        spaceBetween: <?php echo $this->gutter; ?>
                     },
-                    pagination: {
-                        el: pagination[index],
-                        clickable: true
+                    480: {
+                        slidesPerView: 2,
+                        spaceBetween: <?php echo $this->gutter; ?>
                     },
-                    loop: true,
-                    preloadImages: false,
-                    lazy: true,
-                    slidesPerView: 1,
-                    spaceBetween: 10,
-                    checkInView: true,
-                    // Responsive breakpoints
-                    breakpoints: {
-                        320: {
-                            slidesPerView: 1,
-                            spaceBetween: <?php echo $this->gutter; ?>
-                        },
-                        480: {
-                            slidesPerView: 2,
-                            spaceBetween: <?php echo $this->gutter; ?>
-                        },
-                        <?php if ($this->columns == 6) : ?>
-                            768: {
-                                slidesPerView: 3,
-                                spaceBetween: <?php echo $this->gutter; ?>
-                            },
-                            992: {
-                                slidesPerView: 4,
-                                spaceBetween: <?php echo $this->gutter; ?>
-                            },
-                            1200: {
-                                slidesPerView: 5,
-                                spaceBetween: <?php echo $this->gutter; ?>
-                            },
-                            1400: {
-                                slidesPerView: 6,
-                                spaceBetween: <?php echo $this->gutter; ?>
-                            },
-                        <?php else : ?>
-                            768: {
-                                slidesPerView: <?php echo $this->columns; ?>,
-                                spaceBetween: <?php echo $this->gutter; ?>
-                            },
-                        <?php endif; ?>
+                    <?php if ($this->columns == 6) : ?>
+                    768: {
+                        slidesPerView: 3,
+                        spaceBetween: <?php echo $this->gutter; ?>
                     },
-                });
-            })
+                    992: {
+                        slidesPerView: 4,
+                        spaceBetween: <?php echo $this->gutter; ?>
+                    },
+                    1200: {
+                        slidesPerView: 5,
+                        spaceBetween: <?php echo $this->gutter; ?>
+                    },
+                    1400: {
+                        slidesPerView: 6,
+                        spaceBetween: <?php echo $this->gutter; ?>
+                    },
+                    <?php else : ?>
+                    768: {
+                        slidesPerView: <?php echo $this->columns; ?>,
+                        spaceBetween: <?php echo $this->gutter; ?>
+                    },
+                    <?php endif; ?>
+                },
+            });
         }
-        window.addEventListener('load', videoSlider)
-    }
+    })
 </script>

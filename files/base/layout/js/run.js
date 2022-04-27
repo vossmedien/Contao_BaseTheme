@@ -28,11 +28,6 @@ Promise.all(promises)
         // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
         offset: 60, // offset (in px) from the original trigger point
 
-        //Settings VIA CSS under :root {}
-        //delay: 0, // values from 0 to 3000, with step 50ms
-        //duration: 400, // values from 0 to 3000, with step 50ms
-        //easing: 'ease', // default easing for AOS animations
-
         once: false, // whether animation should happen only once - while scrolling down
         mirror: false, // whether elements should animate out while scrolling past them
         anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
@@ -48,12 +43,6 @@ Promise.all(promises)
         });
       }
     }
-
-    /* Wrap Elements that are not custom-elements in container (as fallback)
-                                                                        $("#main .mod_article > div:not(.content--element):not(.container)").each(function (index) {
-                                                                            $(this).wrap('<div class="container"></div>');
-                                                                        });
-                                                                        /* END */
 
     /* Smooth Scrolling and set correct Item active */
     $("body").on(

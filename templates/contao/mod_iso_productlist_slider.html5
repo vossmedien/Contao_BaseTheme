@@ -5,59 +5,53 @@
 <?php if ($this->message) : ?>
     <p class="alert alert-info <?php echo $this->type; ?> message"><?php echo $this->message; ?></p>
 <?php endif; ?>
+
 <?php if (!empty($this->products)) : ?>
     <div class="product-slider--wrapper">
-        <div class="swiper product-slider">
-            <!-- Additional required wrapper -->
+        <div class="swiper product-slider product-slider_<?= $this->id; ?>">
             <div class="swiper-wrapper">
                 <!-- Slides -->
                 <?php foreach ($this->products as $product) : ?>
                     <div<?php echo $product['cssID']; ?> class="swiper-slide <?php echo $product['class']; ?>">
                         <?php echo $product['html']; ?>
+                    </div>
+                <?php endforeach; ?>
+                <?php foreach ($this->products as $product) : ?>
+                    <div<?php echo $product['cssID']; ?> class="swiper-slide <?php echo $product['class']; ?>">
+                        <?php echo $product['html']; ?>
+                    </div>
+                <?php endforeach; ?>
+                <?php foreach ($this->products as $product) : ?>
+                    <div<?php echo $product['cssID']; ?> class="swiper-slide <?php echo $product['class']; ?>">
+                        <?php echo $product['html']; ?>
+                    </div>
+                <?php endforeach; ?>
+                <?php foreach ($this->products as $product) : ?>
+                    <div<?php echo $product['cssID']; ?> class="swiper-slide <?php echo $product['class']; ?>">
+                        <?php echo $product['html']; ?>
+                    </div>
+                <?php endforeach; ?>
             </div>
-        <?php endforeach; ?>
-        <?php foreach ($this->products as $product) : ?>
-            <div<?php echo $product['cssID']; ?> class="swiper-slide <?php echo $product['class']; ?>">
-                <?php echo $product['html']; ?>
         </div>
-    <?php endforeach; ?>
-    <?php foreach ($this->products as $product) : ?>
-        <div<?php echo $product['cssID']; ?> class="swiper-slide <?php echo $product['class']; ?>">
-            <?php echo $product['html']; ?>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
     </div>
-<?php endforeach; ?>
-<?php foreach ($this->products as $product) : ?>
-    <div<?php echo $product['cssID']; ?> class="swiper-slide <?php echo $product['class']; ?>">
-        <?php echo $product['html']; ?>
-        </div>
-    <?php endforeach; ?>
-    </div>
-
-
-    </div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
-    </div>
-
 
 <?php endif; ?>
-<script>
-    if ($('.swiper.product-slider').length) {
-        const basicSlider = () => {
-            let basicSliders = document.querySelectorAll('.swiper.product-slider')
-            let prevArrow = document.querySelectorAll('.product-slider--wrapper > .swiper-button-prev')
-            let nextArrow = document.querySelectorAll('.product-slider--wrapper > .swiper-button-next')
 
-            basicSliders.forEach((slider, index) => {
-                const swiper = new Swiper(slider, {
+    <script>
+        window.addEventListener('load', function () {
+            if ($('.swiper.product-slider_<?= $this->id;?>').length) {
+
+                const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.product-slider_<?= $this->id;?>', {
+                    navigation: {
+                        nextEl: '.swiper.product-slider_<?= $this->id;?> .swiper-button-next',
+                        prevEl: '.swiper.product-slider_<?= $this->id;?> .swiper-button-prev',
+                    },
+
                     direction: 'horizontal',
                     loop: true,
                     preloadImages: true,
-                    navigation: {
-                        // the 'index' bit below is just the order of the class in the queryselectorAll array, so the first one would be NextArrow[0] etc
-                        nextEl: nextArrow[index],
-                        prevEl: prevArrow[index],
-                    },
 
                     breakpoints: {
 
@@ -82,9 +76,8 @@
                         }
                     }
                 });
-            })
-        }
-        window.addEventListener('load', basicSlider)
-    }
-</script>
+            }
+        })
+    </script>
+
 <?php $this->endblock(); ?>

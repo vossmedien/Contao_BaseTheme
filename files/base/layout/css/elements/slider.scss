@@ -1,4 +1,8 @@
 .swiper {
+  &:not(.mainslider) {
+    padding-bottom: rfs-value(40px);
+  }
+
   .swiper-wrapper {
     align-items: center;
     text-align: center;
@@ -22,23 +26,46 @@
     }
   }
 
+  .swiper-button-prev,
+  .swiper-button-next {
+    margin-top: rfs-value(-40px);
+    width: rfs-value(35px);
+    height: rfs-value(35px);
+    line-height: rfs-value(25px);
+    text-align: center;
+    box-shadow: $box-shadow;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    opacity: 0.2;
+    background-color: var(--bs-white);
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &:after {
+      font-size: rfs-value(20px);
+    }
+  }
+
   .swiper-button-prev {
+    padding-right: 3px;
   }
 
   .swiper-button-next {
+    padding-left: 3px;
   }
 
   .swiper-pagination {
-    bottom: rfs-value(25px);
+    bottom: rfs-value(0px);
     background-color: var(--bs-white);
     padding: rfs-value(0px 5px 5px 5px);
-    border-radius: 10px;
+    border-radius: var(--bs-base-border-radius);
     line-height: 1;
     right: 50%;
     transform: translate(50%, -50%);
     left: auto;
     width: auto;
-    box-shadow: $box-shadow;
 
     .swiper-pagination-bullet {
       &.swiper-pagination-bullet-active {

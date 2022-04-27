@@ -46,11 +46,17 @@
   --bs-body-bg-rgb: 255, 255, 255;
   --bs-font-sans-serif: "Open Sans", sans-serif;
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  "Liberation Mono", "Courier New", monospace;
+
+
+  --bs-font-primary: var(--bs-font-sans-serif);
+  --bs-font-secondary: var(--bs-font-monospace);
+  --bs-font-tertiary: "Montserrat", sans-serif;
+
   --bs-gradient: linear-gradient(
-    180deg,
-    rgba(var(--bs-white-rgb), 0.15),
-    rgba(var(--bs-white-rgb), 0)
+                  180deg,
+                  rgba(var(--bs-white-rgb), 0.15),
+                  rgba(var(--bs-white-rgb), 0)
   );
   --bs-body-font-family: var(--bs-font-sans-serif);
   --bs-body-font-size: 1rem;
@@ -59,6 +65,9 @@
   --bs-body-color: #212529;
   --bs-body-color-inverse: #fff;
   --bs-body-bg: #fff;
+
+  --bs-base-border-radius: 10px;
+  
 
   --swiper-theme-color: var(--bs-primary);
 
@@ -101,7 +110,7 @@ $secondary-darker: $secondary;
 $secondary-rgb: var(--bs-secondary-rgb);
 
 $font-weight-medium: 500;
-$border-radius: 10px;
+$border-radius: var(--bs-base-border-radius);
 
 // Spalten
 
@@ -121,8 +130,13 @@ $body-bg: var(--bs-body-bg);
 $body-color: $text-color;
 $link-color: $primary;
 
-$font-family-base: var(--bs-font-sans-serif);
-$font-family-sans-serif: "Montserrat", sans-serif;
+
+$font-family-primary: var(--bs-font-primary);
+$font-family-secondary: var(--bs-font-secondary);
+$font-family-tertiary: var(--bs-font-tertiary);
+
+$font-family-base: $font-family-primary;
+
 $font-weight-semibold: 600;
 
 $fa-font-display: swap;
@@ -139,27 +153,27 @@ $megamenu-imageHeight: 125px;
 //Abstände
 $spacer: 1.5rem;
 $spacers: (
-  0: 0,
-  1: $spacer * 0.25,
-  2: $spacer * 0.5,
-  3: $spacer * 0.75,
-  4: $spacer,
-  5: $spacer * 1.25,
-  6: $spacer * 1.5,
-  7: $spacer * 1.75,
-  8: $spacer * 2,
-  9: $spacer * 2.25,
-  10: $spacer * 2.5,
-  11: $spacer * 2.75,
-  12: $spacer * 3,
-  13: $spacer * 3.25,
-  14: $spacer * 3.5,
-  15: $spacer * 3.75,
-  16: $spacer * 4,
-  17: $spacer * 4.25,
-  18: $spacer * 4.5,
-  19: $spacer * 4.75,
-  110: $spacer * 5,
+        0: 0,
+        1: $spacer * 0.25,
+        2: $spacer * 0.5,
+        3: $spacer * 0.75,
+        4: $spacer,
+        5: $spacer * 1.25,
+        6: $spacer * 1.5,
+        7: $spacer * 1.75,
+        8: $spacer * 2,
+        9: $spacer * 2.25,
+        10: $spacer * 2.5,
+        11: $spacer * 2.75,
+        12: $spacer * 3,
+        13: $spacer * 3.25,
+        14: $spacer * 3.5,
+        15: $spacer * 3.75,
+        16: $spacer * 4,
+        17: $spacer * 4.25,
+        18: $spacer * 4.5,
+        19: $spacer * 4.75,
+        110: $spacer * 5,
 );
 
 $basic-gutter: $spacer * 2;
@@ -167,22 +181,22 @@ $headline-spacing: $spacer;
 $mini-spacing: $spacer/2;
 
 $grid-breakpoints: (
-  xs: 0,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-  xxl: 1400px,
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1400px,
 );
 
 $grid-gutter-width: 1rem;
 $gutters: (
-  0: 0,
-  1: $grid-gutter-width * 0.25,
-  2: $grid-gutter-width * 0.5,
-  3: $grid-gutter-width,
-  4: $grid-gutter-width * 1.5,
-  5: $grid-gutter-width * 3,
+        0: 0,
+        1: $grid-gutter-width * 0.25,
+        2: $grid-gutter-width * 0.5,
+        3: $grid-gutter-width,
+        4: $grid-gutter-width * 1.5,
+        5: $grid-gutter-width * 3,
 );
 
 $modal-sm: 520px;

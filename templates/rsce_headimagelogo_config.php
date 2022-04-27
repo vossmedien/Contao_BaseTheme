@@ -165,13 +165,10 @@ return array(
             'options' => array(
                 'slide' => 'Slide (Standard)',
                 'coverflow' => 'Coverflow',
-                /*
-                    'fade' => 'Fade',
-                    'flip' => 'Flip',
-                    'creative' => 'Creative',
-                    'cards' => 'Cards',
-                    'cube' => 'Cube',
-                 */
+                'fade' => 'Fade',
+                'flip' => 'Flip',
+                'cube' => 'Cube',
+
             ),
             'eval' => array('tl_class' => 'w50'),
         ),
