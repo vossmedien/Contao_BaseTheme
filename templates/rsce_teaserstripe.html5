@@ -28,7 +28,7 @@
             <div class="container">
 
                 <div class="<?php if (!$this->nocolumns) : ?>row<?php else: ?>text-center<?php endif; ?> gx-5 align-items-center justify-content-center">
-                    <?php if ($this->ce_headline || $this->ce_subline) : ?>
+                    <?php if ($this->ce_headline || $this->ce_subline || $this->text) : ?>
                     <div class="col-12 <?php if ($this->link_text) : ?>col-md-auto<?php endif; ?>">
 
                         <?php if ($this->ce_headline) : ?>
@@ -46,7 +46,7 @@
                         <?php endif; ?>"><?php echo $this->ce_subline; ?></div>
                     <?php endif; ?>
 
-                    <div class="ts--text mt-4">
+                    <div class="ts--text  <?php if ($this->ce_headline || $this->ce_subline) : ?>mt-4<?php endif; ?>">
                         <?php echo $this->text; ?>
                     </div>
                 </div>

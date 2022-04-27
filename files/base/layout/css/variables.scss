@@ -9,8 +9,10 @@
   --bs-green: #198754;
   --bs-teal: #20c997;
   --bs-cyan: #0dcaf0;
+
   --bs-white: #fff;
   --bs-black: #000;
+
   --bs-gray: #6c757d;
   --bs-gray-dark: #343a40;
   --bs-gray-100: #f8f9fa;
@@ -22,8 +24,8 @@
   --bs-gray-700: #495057;
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
-  --bs-primary: var(--bs-red);
 
+  --bs-primary: var(--bs-red);
   --bs-secondary: var(--bs-gray-900);
 
   --bs-success: #198754;
@@ -32,6 +34,7 @@
   --bs-danger: #dc3545;
   --bs-light: #f8f9fa;
   --bs-dark: #212529;
+
   --bs-primary-rgb: 135, 22, 35;
   --bs-secondary-rgb: 33, 37, 41;
   --bs-success-rgb: 25, 135, 84;
@@ -44,20 +47,17 @@
   --bs-black-rgb: 0, 0, 0;
   --bs-body-color-rgb: 33, 37, 41;
   --bs-body-bg-rgb: 255, 255, 255;
-  --bs-font-sans-serif: "Open Sans", sans-serif;
-  --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
-  "Liberation Mono", "Courier New", monospace;
 
+  --bs-font-sans-serif: "Open Sans", sans-serif;
+  --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   --bs-font-primary: var(--bs-font-sans-serif);
   --bs-font-secondary: var(--bs-font-monospace);
   --bs-font-tertiary: "Montserrat", sans-serif;
 
-  --bs-gradient: linear-gradient(
-                  180deg,
-                  rgba(var(--bs-white-rgb), 0.15),
-                  rgba(var(--bs-white-rgb), 0)
-  );
+  --bs-gradient: linear-gradient(180deg, rgba(var(--bs-white-rgb), 0.15), rgba(var(--bs-white-rgb), 0));
+
+
   --bs-body-font-family: var(--bs-font-sans-serif);
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
@@ -67,9 +67,23 @@
   --bs-body-bg: #fff;
 
   --bs-base-border-radius: 10px;
-  
+
+  --bs-footer-top-bg: var(--bs-secondary);
+  --bs-footer-middle-bg: var(--bs-primary);
+  --bs-footer-bottom-bg: var(--bs-black);
 
   --swiper-theme-color: var(--bs-primary);
+
+
+  --bs-megamenu-width: 960px;
+  --bs-megamenu-background: rgba(0, 0, 0, 0.85);
+  --bs-megamenu-overlay-background: rgba(var(--bs-white-rgb), 0.5);
+  --bs-megamenu-lvl1-color: var(--bs-body-color-inverse);
+  --bs-megamenu-lvl2-color: var(--bs-primary);
+  --bs-megamenu-lvl3-color: var(--bs-body-color-inverse);
+  --bs-megamenu-imageHeight: 125px;
+
+
 
   --mm-line-height: 20px;
   --mm-listitem-size: 44px;
@@ -110,6 +124,9 @@ $secondary-darker: $secondary;
 $secondary-rgb: var(--bs-secondary-rgb);
 
 $font-weight-medium: 500;
+$font-weight-semibold: 600;
+
+
 $border-radius: var(--bs-base-border-radius);
 
 // Spalten
@@ -119,9 +136,13 @@ $right-col--width: 250px;
 
 // Footer
 
-$footer-top-bg: $secondary;
-$footer-middle-bg: $primary;
-$footer-bottom-bg: $black;
+$footer-top-bg: var(--bs-footer-top-bg);
+$footer-middle-bg: var(--bs-footer-middle-bg);
+$footer-bottom-bg: var(--bs-footer-bottom-bg);
+
+
+
+// Weitere Farben
 
 $text-color-inverse: var(--bs-body-color-inverse);
 $text-color: var(--bs-body-color);
@@ -130,25 +151,22 @@ $body-bg: var(--bs-body-bg);
 $body-color: $text-color;
 $link-color: $primary;
 
-
 $font-family-primary: var(--bs-font-primary);
 $font-family-secondary: var(--bs-font-secondary);
 $font-family-tertiary: var(--bs-font-tertiary);
 
 $font-family-base: $font-family-primary;
 
-$font-weight-semibold: 600;
-
 $fa-font-display: swap;
 
 // Megamenü
-$megamenu-width: 960px;
-$megamenu-background: rgba(0, 0, 0, 0.85);
-$megamenu-overlay-background: rgba(var(--bs-white-rgb), 0.5);
-$megamenu-lvl1-color: $text-color-inverse;
-$megamenu-lvl2-color: $primary;
-$megamenu-lvl3-color: $white;
-$megamenu-imageHeight: 125px;
+$megamenu-width: var(--bs-megamenu-width);
+$megamenu-background: var(--bs-megamenu-background);
+$megamenu-overlay-background: var(--bs-megamenu-overlay-background);
+$megamenu-lvl1-color: var(--bs-megamenu-lvl1-color);
+$megamenu-lvl2-color: var(--bs-megamenu-lvl2-color);
+$megamenu-lvl3-color: var(--bs-megamenu-lvl3-color);
+$megamenu-imageHeight: var(--bs-megamenu-imageHeight);
 
 //Abstände
 $spacer: 1.5rem;
@@ -173,7 +191,7 @@ $spacers: (
         17: $spacer * 4.25,
         18: $spacer * 4.5,
         19: $spacer * 4.75,
-        110: $spacer * 5,
+        20: $spacer * 5,
 );
 
 $basic-gutter: $spacer * 2;

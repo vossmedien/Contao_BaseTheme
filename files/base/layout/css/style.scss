@@ -19,6 +19,7 @@
 }
 
 html {
+  scroll-behavior: smooth;
   body {
     &#tinymce {
       @include padding(7px 12px);
@@ -38,9 +39,17 @@ html {
     @import "elements/contao-accordions";
     @import "elements/ce_downloads";
     @import "elements/megamenu";
+    @import "elements/breadcrumb";
 
     @import "_theme/includes";
   }
 }
 
 @import "_theme/styles";
+
+:target:before {
+    content: "";
+    display: block;
+    height: 100px;
+    margin: -100px 0 0;
+}

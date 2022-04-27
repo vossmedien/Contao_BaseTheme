@@ -17,7 +17,7 @@
 }
  */
 
-[class*="bg-"]:not(.alert) {
+[class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall) {
   @include padding($basic-gutter);
 }
 

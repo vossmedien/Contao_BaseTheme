@@ -111,16 +111,10 @@
                                 <?php echo $b->text; ?>
                             </div>
                         <?php endif; ?>
-                        <?php if ($b->link_text) : ?>
-                            <div class="box--button mt-3" data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>" href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?>
-                                </a>
-                            </div>
-                        <?php endif; ?>
 
 
                         <?php if ($b->buttons[0]->link_text != "") : ?>
-                            <div class="box--button mt-7">
+                            <div class="box--button">
                                 <?php foreach ($b->buttons as $button) : ?>
                                     <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
                                        class="d-block mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>" data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>

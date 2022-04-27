@@ -155,7 +155,10 @@ return array(
             'label' => array('Inhalt darunter "hochziehen"', ''),
             'inputType' => 'checkbox',
         ),
-
+        'show_breadcrumb' => array(
+            'label' => array('Breadcrumb darunter anzeigen', ''),
+            'inputType' => 'checkbox',
+        ),
 
         'slide_effect' => array(
             'label' => array(
@@ -704,10 +707,11 @@ return array(
                             ),
                             'inputType' => 'select',
                             'options' => array(
-                                'btn-primary' => 'Hauptfarbe',
+                                           'btn-primary' => 'Hauptfarbe',
                                 'btn-outline-primary' => 'Hauptfarbe (Outline)',
                                 'btn-secondary' => 'Sekundär-Farbe',
                                 'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
+                                'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
                             ),
                             'eval' => array('tl_class' => 'w50'),
                         ),

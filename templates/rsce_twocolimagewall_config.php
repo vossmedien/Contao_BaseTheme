@@ -514,12 +514,14 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'justify-content-center align-items-center' => 'Mittig',
+                          'justify-content-center align-items-center' => 'Mittig',
                         'justify-content-center align-items-end' => 'Mittig rechts',
                         'justify-content-center' => 'Mittig links',
                         'align-items-end' => 'Oben rechts',
+                        'text-center' => 'Oben zentriert',
                         'justify-content-end align-items-end' => 'Unten rechts',
                         'justify-content-end' => 'Unten links',
+                        'justify-content-end text-center' => 'Unten zentriert',
                         '' => 'Oben links'
                     ),
                     'eval' => array('tl_class' => 'w50'),
@@ -739,8 +741,10 @@ return array(
                         'justify-content-center align-items-end' => 'Mittig rechts',
                         'justify-content-center' => 'Mittig links',
                         'align-items-end' => 'Oben rechts',
+                        'text-center' => 'Oben zentriert',
                         'justify-content-end align-items-end' => 'Unten rechts',
                         'justify-content-end' => 'Unten links',
+                        'justify-content-end text-center' => 'Unten zentriert',
                         '' => 'Oben links'
                     ),
                     'eval' => array('tl_class' => 'w50'),

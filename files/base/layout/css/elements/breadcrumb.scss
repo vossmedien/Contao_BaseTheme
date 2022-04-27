@@ -1,0 +1,36 @@
+.mod_breadcrumb {
+  margin-top: .25rem;
+  ul {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    text-transform: uppercase;
+    @include font-size(16px);
+
+    li {
+      display: inline-block;
+        color: $secondary;
+      &:not(:last-child) {
+        &:after {
+          @extend %fa-icon;
+          @extend .far;
+          content: fa-content($fa-var-angle-right);
+          display: inline-block;
+            color: $primary;
+          margin: 0 5px 0px 8px;
+        }
+      }
+
+      > a{
+        display: inline-block;
+        text-decoration: none;
+        color: $primary;
+
+        &:hover{
+          text-decoration: underline;
+        }
+      }
+
+    }
+  }
+}

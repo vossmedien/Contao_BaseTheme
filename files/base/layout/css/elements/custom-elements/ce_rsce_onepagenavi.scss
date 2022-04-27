@@ -137,7 +137,8 @@
 
 @include media-breakpoint-up(lg) {
   #main.with-onepage-nav {
-    .mod_article .content--element:not(.ce_rsce_onepagenavi) .container:not(.force-container) {
+    .mod_article .content--element:not(.ce_rsce_onepagenavi) .container:not(.force-container),
+    .mod_article > :not(.content--element):not(.container):not(.force-container){
       padding-right: rfs-value(300px);
     }
   }

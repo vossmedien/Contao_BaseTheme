@@ -1,7 +1,7 @@
 .btn {
   line-height: 1;
   border-radius: $border-radius;
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
 
   &:hover,
   &:focus,
@@ -19,6 +19,11 @@
     background-color: $primary;
     color: var(--bs-white);
     border-color: $primary;
+
+    &:hover{
+      background-color: transparent;
+      color: $primary;
+    }
   }
 
   &.btn-outline-primary {
