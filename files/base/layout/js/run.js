@@ -80,12 +80,12 @@ Promise.all(promises)
             }
             if (scrollTo) {
                 var current_position = document.documentElement.scrollTop;
-                animate(document.scrollingElement, "scrollTop", "", current_position, scrollTo.offsetTop - 100, 250, true);
+                animate(document.scrollingElement, "scrollTop", "", current_position, scrollTo.offsetTop - 100, 750, true);
             }
         }
 
         window.onload = function () {
-            var anchorLinks = document.querySelectorAll('a[href^="#"]');
+            var anchorLinks = document.querySelectorAll('#mainNav a[href^="#"], .onepagenavi--wrapper a[href^="#"]');
             for (var i = 0; i < anchorLinks.length; i++) {
                 anchorLinks[i].addEventListener('click', scrollToAnchor);
             }
@@ -182,7 +182,7 @@ Promise.all(promises)
                 }
 
                 if (storeImg) {
-                    parentDiv.find(".selected-color-element--img").attr("src", storeImg);
+                    parentDiv.find(".image-holder").css("background-image", "url(" + storeImg + ")");
                 } else {
                 }
             });
@@ -382,8 +382,8 @@ Promise.all(promises)
 
                     if (refElement.position()) {
                         if (
-                            refElement.position().top - 250 <= scrollPos &&
-                            refElement.position().top - 250 + refElement.height() > scrollPos
+                            refElement.position().top  - 500 <= scrollPos &&
+                            refElement.position().top  - 500 + refElement.height() > scrollPos
                         ) {
                             $("#mainNav .active").removeClass("active");
                             currLink.addClass("active");
@@ -401,13 +401,13 @@ Promise.all(promises)
 
                     if (refElement.position()) {
                         if (
-                            refElement.position().top - 250 <= scrollPos &&
-                            refElement.position().top - 250 + refElement.height() > scrollPos
+                            refElement.position().top - 500  <= scrollPos &&
+                            refElement.position().top - 500  + refElement.height() > scrollPos
                         ) {
                             $(".onepagenavi--wrapper .active").removeClass("active");
                             currLink.addClass("active");
                         } else {
-                            currLink.removeClass("active");
+
                         }
                     }
                 });

@@ -15,6 +15,11 @@
     padding-bottom: rfs-value(11px);
   }
 
+  &.btn-sm{
+    @include font-size(14px);
+    padding-bottom: rfs-value(6px);
+  }
+
   &.btn-primary {
     background-color: $primary;
     color: var(--bs-white);
@@ -29,16 +34,31 @@
   &.btn-outline-primary {
     border-color: $primary;
     color: $primary;
+
+    &:hover{
+      background-color: $primary;
+      color: $text-color-inverse;
+    }
   }
 
   &.btn-secondary {
     background-color: $secondary;
     border-color: $secondary;
+
+    &:hover{
+      background-color: transparent;
+      color: $secondary;
+    }
   }
 
   &.btn-outline-secondary {
     border-color: $secondary;
     color: $secondary;
+
+        &:hover{
+      background-color: $secondary;
+      color: $text-color-inverse;
+    }
   }
 
   &.btn-link {

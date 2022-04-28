@@ -1,4 +1,4 @@
-<div class="content--element <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?>  class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
 
         <?php if ($this->headline || $this->subline) : ?>
@@ -35,9 +35,11 @@
                 </div>
 
                 <div class="col-12 col-lg-5">
-                    <div class="selected-color-element--outer">
-                        <div class="selected-color--element">
-                            <img class="selected-color-element--img lazy" data-src="<?= Image::get(FilesModel::findByUuid($this->elements[0]->img)->path, null, null, 6); ?>">
+                    <div class="selected-color-element--outer h-100">
+                        <div class="selected-color--element  h-100">
+
+                            <div class="image-holder h-100 w-100" style="background: url(<?= Image::get(FilesModel::findByUuid($this->elements[0]->img)->path, null, null, null); ?>) center center no-repeat; background-size: cover;"></div>
+
                             <span class="selected-color-element--title"><?= $this->elements[0]->title; ?></span>
                         </div>
                     </div>
@@ -57,6 +59,7 @@
                                 <?php else: ?>
                                     <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($e->img)->path, null, null, 7); ?>">
                                 <?php endif; ?>
+
 
                                 <?php if (!$this->show_tooltip && $e->title): ?>
                                     <span><?= $e->title; ?></span>

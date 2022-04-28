@@ -1,14 +1,26 @@
 .ce_rsce_sitemap {
+  margin-right: -1px;
+  margin-bottom: -1px;
+  margin-top: -1px;
+
   .ce--sitemap {
-    margin-top: -1px;
+
+
+    .row > div:not(:last-child) {
+      .sitemap-column {
+        //border-bottom: 1px solid $body-bg;
+      }
+    }
 
     .sitemap-column {
-      border-right: 1px solid $body-bg;
-      border-top: 1px solid $body-bg;
+      border-bottom: 1px solid $body-bg;
       min-height: 100%;
-      padding-top: 1.5rem;
-      padding-bottom: 1.5rem;
+      padding-top: 1rem;
+      //padding-bottom: 1.5rem;
       text-align: left;
+      border-right: 1px solid $body-bg;
+
+      //margin-top: -1px;
 
       a,
       span {
@@ -43,15 +55,20 @@
 
           > span {
             &:first-child {
-              padding-left: 1.5rem;
-              padding-right: 1.5rem;
+              padding-left: 1.25rem;
+              padding-right: 1.25rem;
+              display: flex;
+              flex-flow: column wrap;
+              justify-content: flex-end;
+              min-height: rfs-value(54px);
+              padding-bottom: .5rem;
             }
 
             &.sitemap--image-container {
               height: $megamenu-imageHeight;
               position: relative;
               overflow: hidden;
-              margin: 0.75rem 0px 1.25rem 0px;
+              margin: 0.75rem 0px 0rem 0px;
 
               img {
                 position: absolute;
@@ -67,15 +84,18 @@
       .mm_level_2 {
         @include font-size(18px);
         color: $megamenu-lvl2-color;
+        margin-top: 1.25rem;
+        padding-bottom: 1.5rem;
 
         > div {
-          padding-left: 1.5rem;
-          padding-right: 1.5rem;
+          padding-left: 1.25rem;
+          padding-right: 1.25rem;
 
-          &:not(:last-child) {
-            border-bottom: 1px solid $body-bg;
-            padding-bottom: 1.5rem;
-            margin-bottom: 1.5rem;
+
+          &:not(:first-child) {
+            padding-top: 1.25rem;
+            margin-top: 1.25rem;
+            border-top: 1px solid $body-bg;
           }
 
           a {

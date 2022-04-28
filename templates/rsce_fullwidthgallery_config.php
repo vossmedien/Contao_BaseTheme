@@ -193,7 +193,7 @@ return array(
                 ),
 
                 'desc' => array(
-                    'label' => array('Alternative Beschreibung', 'Hinfällig wenn oberer Bereich deaktiviert ist'),
+                    'label' => array('Text', 'sichtbar nach Hover'),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),

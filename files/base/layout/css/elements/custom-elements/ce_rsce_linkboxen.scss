@@ -10,7 +10,7 @@
     transition: all 0.3s ease;
     display: flex;
     flex-flow: column nowrap;
-    //height: 100%;
+    min-height: 100%;
     //cursor: pointer;
 
     > a,
@@ -196,7 +196,9 @@
 
     .box-lower--wrapper {
       position: relative;
-
+      flex: 1;
+display: flex;
+flex-flow: column wrap;
       .box--lower {
         flex: 1;
         display: flex;
@@ -278,6 +280,7 @@
 
         .button--wrapper {
           white-space: pre-line;
+          text-align: center;
           @include padding(0px 25px 0px 25px);
 
           > .btn + .btn {

@@ -29,21 +29,35 @@
             <!-- Additional required wrapper -->
             <div class="swiper-wrapper">
                 <!-- Slides -->
-                <?php if ($dataSorted) : ?><?php foreach ($dataSorted as $data) : ?><?php if ($image = $this->getImageObject($data, $this->size)) : ?>
+                <?php if ($dataSorted) : ?>
+
+                    <?php foreach ($dataSorted as $data) : ?>
+                        <?php if ($image = $this->getImageObject($data, $this->size)) : ?>
+                            <div class="swiper-slide">
+                                <img class="swiper-lazy" data-src="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, null, null, null); ?>">
+                            </div>
+                        <?php endif; ?>
+
+                    <?php endforeach ?>
+
+                <?php else : ?>
+
+                    <?php foreach ($this->galery as $slide) : ?>
                     <div class="swiper-slide">
-                        <img class="swiper-lazy" data-src="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, null, null, null); ?>">
-                    </div>
-                <?php endif; ?><?php endforeach ?><?php else : ?><?php foreach ($this->galery as $slide) : ?>
-                    <div class="swiper-slide">
-                        <img class="swiper-lazy" title="<?php echo $slide->slide_text; ?>" data-src="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>">
+                        <img class="swiper-lazy"  data-src="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>">
                         <?php if ($slide->slide_text) : ?>
                             <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
                         <?php endif; ?>
                     </div>
-                <?php endforeach ?><?php endif; ?>
+                <?php endforeach ?>
+
+                <?php endif; ?>
             </div>
             <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
-                <div class="swiper-pagination"></div>
+
+                <?php if ($this->show_pagination): ?>
+                    <div class="swiper-pagination"></div>
+                <?php endif; ?>
                 <div class="swiper-button-prev"></div>
                 <div class="swiper-button-next"></div>
             <?php endif; ?>
@@ -55,10 +69,12 @@
         if ($('.swiper.content-slider_<?= $this->id;?>').length) {
 
             const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
-
+centeredSlides: true,
+                slidesPerView: 1.5,
                 direction: 'horizontal',
+                spaceBetween: 30,
                 loop: true,
-                preloadImages: false,
+                preloadImages: true,
                 lazy: true,
                 <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
                 navigation: {

@@ -20,8 +20,11 @@
     z-index: 20;
     border-bottom: 1px solid $text-color-inverse;
 
-    .row {
-      flex-flow: nowrap;
+
+    .hc--inside {
+      > .row {
+        //flex-flow: nowrap;
+      }
     }
 
     #headerLogo {

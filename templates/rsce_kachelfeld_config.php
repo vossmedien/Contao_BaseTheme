@@ -137,12 +137,21 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
+
+        'image_height' => array(
+            'label' => array('Alternative Bildhöhe in px', ''),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50',),
+        ),
+
+
         'kachel' => array(
             'label' => array('Kacheln', ''),
             'elementLabel' => '%s. Kachel',
             'inputType' => 'list',
             'minItems' => 1,
             'maxItems' => 10,
+            'eval' => array('tl_class' => 'clr',),
             'fields' => array(
 
 
@@ -294,23 +303,23 @@ return array(
                 'column_background_color' => array(
                     'label' => array('Hintergrundfarbe', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
-                    'eval' => array( 'tl_class' => 'w50',),
+                    'eval' => array('tl_class' => 'w50',),
                 ),
                 'column_text_color' => array(
                     'label' => array('Textfarbe', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
-                    'eval' => array( 'tl_class' => 'w50',),
+                    'eval' => array('tl_class' => 'w50',),
                 ),
 
                 'column_background_hover_color' => array(
                     'label' => array('Hintergrundfarbe (hover)', 'In HEX oder rgb(a) angeben, Standard: Hauptfarbe'),
                     'inputType' => 'text',
-                    'eval' => array( 'tl_class' => 'w50',),
+                    'eval' => array('tl_class' => 'w50',),
                 ),
                 'column_text_hover_color' => array(
                     'label' => array('Textfarbe (hover)', 'In HEX oder rgb(a) angeben, Standard: Weiß'),
                     'inputType' => 'text',
-                    'eval' => array( 'tl_class' => 'w50',),
+                    'eval' => array('tl_class' => 'w50',),
                 ),
 
                 'settings_2' => array(
@@ -525,7 +534,7 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                                'justify-content-center align-items-center' => 'Mittig',
+                        'justify-content-center align-items-center' => 'Mittig',
                         'justify-content-center align-items-end' => 'Mittig rechts',
                         'justify-content-center' => 'Mittig links',
                         'align-items-end' => 'Oben rechts',
@@ -542,7 +551,7 @@ return array(
                 'kachel_top_background_color' => array(
                     'label' => array('Hintergrundfarbe', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
-                    'eval' => array( 'tl_class' => 'w50',),
+                    'eval' => array('tl_class' => 'w50',),
                 ),
                 'kachel_top_text_color' => array(
                     'label' => array('Textfarbe', 'In HEX oder rgb(a) angeben'),
@@ -591,7 +600,7 @@ return array(
                     ),
                 ),
 
-                  'textalign' => array(
+                'textalign' => array(
                     'label' => array(
                         'de' => array('Text-Ausrichtung', ''),
                     ),
@@ -607,7 +616,7 @@ return array(
                 'add_buttons' => array(
                     'label' => array('Buttons hinzufügen', ''),
                     'inputType' => 'checkbox',
-                           'eval' => array('tl_class' => 'clr'),
+                    'eval' => array('tl_class' => 'clr'),
                     'options' => array(
                         '1' => 'Buttons hinzufügen',
                     ),
@@ -794,7 +803,7 @@ return array(
                         'new_tab' => array(
                             'label' => array('Link in neuen Tab öffnen', ''),
                             'inputType' => 'checkbox',
-                                      'eval' => array('tl_class' => 'clr'),
+                            'eval' => array('tl_class' => 'clr'),
                         ),
                     ),
                 ),

@@ -5,12 +5,14 @@
     justify-content: center;
 
     > div {
-      margin-bottom: rfs-value(25px);
+      &:not(:last-child){
+        margin-bottom: 1rem;
+      }
     }
   }
 
   .ce--headline + .ce--kachelfeld {
-    margin-top: 1.5rem;
+    //margin-top: 1.5rem;
   }
 
   .kachelbox {
@@ -37,17 +39,17 @@
       flex-flow: column wrap;
 
       .kb--image {
-        height: rfs-fluid-value(200px);
         text-align: center;
         position: relative;
 
-        @include media-breakpoint-up(xxl) {
-          height: rfs-value(300px);
-        }
-
         &.as-bg {
+          height: rfs-fluid-value(200px);
           margin-left: rfs-value(-30px);
           margin-right: rfs-value(-30px);
+
+          @include media-breakpoint-up(xxl) {
+            height: rfs-value(300px);
+          }
         }
 
         .kb--image-holder {

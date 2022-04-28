@@ -12,7 +12,7 @@
     </div>
     <?php endif; ?>
     <?php if ($this->boxes) : ?>
-        <div class="row align-items-center">
+        <div class="row">
             <?php foreach ($this->boxes as $i => $box) : ?>
                 <div class="<?php if ($box->column_width) : ?><?php echo $box->column_width; ?><?php else : ?>col-12 col-md-6 col-lg-4<?php endif; ?>">
                     <div id="linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>" class="link--box <?php if ($box->linkoverlay || $box->expand_longtext) : ?>with-link<?php endif; ?> <?php echo $box->box_style; ?> " data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -86,9 +86,7 @@
                         <?php endif; ?>
                         <?php if ($box->longtext || $box->text || $box->expand_image || $box->expand_image || $box->modal_longtext || $box->modal_image) : ?>
                             <div class="box-lower--wrapper <?php echo $box->textalign; ?>"
-
                                  style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background) : ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>"
-
                             >
                                 <?php if ($box->text || $box->subline) : ?>
                                     <div class="box--lower <?php if ($box->as_box) : ?>as-box<?php endif; ?> <?php if ($box->linkoverlay && !$box->hide_arrow) : ?>with-url<?php endif; ?>" style="
@@ -108,7 +106,7 @@
                                         </div>
                                     </div>
                                 <?php endif; ?>
-                                <?php if ($box->expand_image || $box->longtext || $box->link_text) : ?>
+                                <?php if ($box->add_items) : ?>
                                     <div class="box-lower--expand <?php if ($box->is_map == "code") : ?>is-map p-0<?php endif; ?> <?php if ($box->expand_longtext && $box->expand_longtext != "show_all") : ?>expandable<?php endif; ?> <?php if ($box->expand_longtext == "hide_preview") : ?>hide-preview<?php endif; ?>">
                                         <?php if ($box->expand_image) : ?>
                                             <div class="box--expand-image mb-3 text-center">

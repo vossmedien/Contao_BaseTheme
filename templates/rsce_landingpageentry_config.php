@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Kopfbild (oder Slider) mit Text', ''),
+    'label' => array('Custom | Landingpage-Entry', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -138,65 +138,6 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
-        'settings_1' => array(
-            'label' => array('Einstellungen', ''),
-            'inputType' => 'group',
-        ),
-        'image_height' => array(
-            'label' => array('Höhe des Bereichs in %', 'Standard sind "100", also 100% Viewport-Height'),
-            'inputType' => 'text',
-        ),
-        'diagonal_cut' => array(
-            'label' => array('Mit diagonalem Abschluss', ''),
-            'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'clr'),
-        ),
-        'pull_content' => array(
-            'label' => array('Inhalt darunter "hochziehen"', ''),
-            'inputType' => 'checkbox',
-        ),
-        'show_breadcrumb' => array(
-            'label' => array('Breadcrumb darunter anzeigen', ''),
-            'inputType' => 'checkbox',
-        ),
-
-        'slide_effect' => array(
-            'label' => array(
-                'de' => array('Slide-Effekt', ''),
-            ),
-            'inputType' => 'select',
-            'options' => array(
-                'slide' => 'Slide (Standard)',
-                'coverflow' => 'Coverflow',
-                'fade' => 'Fade',
-                'flip' => 'Flip',
-                'cube' => 'Cube',
-
-            ),
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-        'transition_time' => array(
-            'label' => array('Animationszeit in ms', 'Standard: 1500'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-
-        'autoplay' => array(
-            'label' => array('Autoplay aktivieren', ''),
-            'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-        'autoplay_time' => array(
-            'label' => array('Autoplay-Zyklus', 'nach wie viel MS soll zum nächsten Slide gewechselt werden, Standard: 3000'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-            'dependsOn' => array(
-                'field' => 'autoplay',
-            ),
-        ),
-
 
         'settings_2' => array(
             'label' => array('Boxed-Image (z. B. ein Logo)', ''),
@@ -204,7 +145,7 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
         'boxed_image' => array(
-            'label' => array('Bild mittig unten liegend', 'Meistens ein Logo'),
+            'label' => array('Bild', ''),
             'inputType' => 'fileTree',
             'eval' => array(
                 'multiple' => false,
@@ -336,46 +277,18 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
-        'slides' => array(
-            'label' => array('Slides', ''),
-            'elementLabel' => '%s. Slide',
+
+        'kachel' => array(
+            'label' => array('Kacheln', ''),
+            'elementLabel' => '%s. Kachel',
             'inputType' => 'list',
             'minItems' => 1,
             'maxItems' => 10,
+            'eval' => array('tl_class' => 'clr',),
             'fields' => array(
 
-                'settings_3' => array(
-                    'label' => array('Bild', ''),
-                    'inputType' => 'group',
-                ),
-
-                'image' => array(
-                    'label' => array('Bild / Video', 'Video-Format: MP4'),
-                    'inputType' => 'fileTree',
-                    'eval' => array(
-                        'multiple' => false,
-                        'fieldType' => 'radio',
-                        'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
-                        'tl_class' => 'w50'
-                    ),
-                ),
-
-                'mobile_image' => array(
-                    'label' => array('Video für mobile-Ansicht', 'Nur in Verbindung mit einem Video in der Desktop-Ansicht, Video-Format: MP4'),
-                    'inputType' => 'fileTree',
-                    'eval' => array(
-                        'multiple' => false,
-                        'fieldType' => 'radio',
-                        'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
-                        'tl_class' => 'w50'
-                    ),
-                ),
-
-
-                'settings_4' => array(
-                    'label' => array('Text-Inhalt', ''),
+                'settings_1' => array(
+                    'label' => array('Einstellungen', ''),
                     'inputType' => 'group',
                 ),
 
@@ -502,24 +415,131 @@ return array(
                     ),
                     'eval' => array('chosen' => 'true')
                 ),
-
-                'text_style' => array(
+                'column_width' => array(
                     'label' => array(
-                        'de' => array('Text-Darstellungstyp', ''),
+                        'de' => array('Spaltenbreite', ''),
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'style-1' => 'Style 1: Überschrift in groß darstellen',
-                        'style-2' => 'Style 2: Überschrift auf Hintergrund mit Diagonale legen',
+                        'col-12 col-md-6 col-lg-3' => '25%',
+                        'col-12 col-md-6 col-lg-4' => '33%',
+                        'col-12 col-md-6' => '50%',
+                        'col-12 col-lg-8' => '66.66%',
+                        'col-12 col-lg-9' => '75%',
+                        'col-12' => 'Volle Breite',
+                        'col-12 col-md-auto' => 'Automatische Breite (füllend)',
+                        'col-12 col-md' => 'Breite anhand des Inhalts',
                     ),
                 ),
 
-                'alternate_background_color' => array(
-                    'label' => array('Alternative Hintergrundfarbe für Inhalt', 'Standardmäßig transparent (Style 1) oder weiß (Style 2)'),
-                    'inputType' => 'text',
+
+                'settings_3' => array(
+                    'label' => array('Oberer "Bild"-Bereich', ''),
+                    'inputType' => 'group',
                 ),
 
-                'text_align' => array(
+
+                'image' => array(
+                    'label' => array('Bild', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'jpg,jpeg,png,svg',
+                        'tl_class' => 'clr',
+                    ),
+                ),
+
+                'top_background_hover_color' => array(
+                    'label' => array('Hintergrundfarbe (hover)', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50',),
+                ),
+
+
+                'settings_4' => array(
+                    'label' => array('Mittlerer "Link"-Bereich', ''),
+                    'inputType' => 'group',
+                ),
+
+                'middle_background_color' => array(
+                    'label' => array('Hintergrundfarbe', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50',),
+                ),
+                'middle_text_color' => array(
+                    'label' => array('Textfarbe', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50',),
+                ),
+
+                'middle_text_hover_color' => array(
+                    'label' => array('Textfarbe (hover)', 'In HEX oder rgb(a) angeben, Standard: Weiß'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50',),
+                ),
+
+                'middle_link_text' => array(
+                    'label' => array('Link-Beschriftung', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'middle_link_url' => array(
+                    'label' => array('Verlinkung der Beschriftung', ''),
+                    'inputType' => 'url',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'settings_5' => array(
+                    'label' => array('Unterer "Inhalts"-Bereich', ''),
+                    'inputType' => 'group',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+                'bottom_background_color' => array(
+                    'label' => array('Hintergrundfarbe', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50',),
+                ),
+                'bottom_text_color' => array(
+                    'label' => array('Textfarbe', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50',),
+                ),
+
+                'headline_type' => array(
+                    'label' => array(
+                        'de' => array('Typ der Überschrift', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'h1' => 'H1',
+                        'h2' => 'H2',
+                        'h3' => 'H3',
+                        'h4' => 'H4',
+                        'h5' => 'H5',
+                    ),
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'content_headline' => array(
+                    'label' => array('Überschrift', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'text' => array(
+                    'label' => array('Text', ''),
+                    'inputType' => 'text',
+                    'eval' => array(
+                        'allowHtml' => true,
+                        'rte' => 'tinyMCE',
+                        'tl_class' => 'clr'
+                    ),
+                ),
+
+                'textalign' => array(
                     'label' => array(
                         'de' => array('Text-Ausrichtung', ''),
                     ),
@@ -529,40 +549,49 @@ return array(
                         'text-center' => 'Zentriert',
                         'text-end' => 'Rechtsbündig',
                     ),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
-                'text_color' => array(
-                    'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
-                    'inputType' => 'text',
-                ),
-                'firstline_headline' => array(
-                    'label' => array('Erste Zeile ist eine Hauptüberschrift (H1)', ''),
+                'add_buttons' => array(
+                    'label' => array('Buttons hinzufügen', ''),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
+                    'options' => array(
+                        '1' => 'Buttons hinzufügen',
+                    ),
                 ),
-                'text_firstline' => array(
-                    'label' => array('Erste Zeile', ''),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
-                ),
-                'text_secondline' => array(
-                    'label' => array('Zweite Zeile', ''),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
-                ),
-                'text_infotext' => array(
-                    'label' => array('Langtext unterhalb der Überschriften', ''),
-                    'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+
+
+                'button_textalign' => array(
+                    'label' => array(
+                        'de' => array('Button-Ausrichtung', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'text-start' => 'Linksbündig',
+                        'text-center' => 'Zentriert',
+                        'text-end' => 'Rechtsbündig',
+                    ),
+
+                    'dependsOn' => array(
+                        'field' => 'add_buttons',
+                        'value' => '1',
+                    ),
                 ),
 
 
                 'buttons' => array(
-                    'label' => array('Button', ''),
+                    'label' => array('Buttons', ''),
                     'elementLabel' => '%s. Button',
                     'inputType' => 'list',
-                    'minItems' => 0,
-                    'maxItems' => 10,
+                    'minItems' => 1,
+                    'maxItems' => 20,
+
+                    'dependsOn' => array(
+                        'field' => 'add_buttons',
+                        'value' => '1',
+                    ),
+
                     'fields' => array(
                         'animation_type' => array(
                             'label' => array(
@@ -688,26 +717,33 @@ return array(
                             'eval' => array('chosen' => 'true')
                         ),
                         'link_text' => array(
-                            'label' => array(
-                                'de' => array('Button-Beschriftung', 'Button befindet sich rechts unter dem Text'),
-                            ),
+                            'label' => array('Link-Beschriftung', ''),
                             'inputType' => 'text',
-                        ),
-                        'link_url' => array(
-                            'label' => array('Verlinkung der Beschriftung', 'z. B. mailto:info@gmx.de'),
-                            'inputType' => 'url',
                         ),
                         'link_betreff' => array(
                             'label' => array('Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
                             'inputType' => 'text',
+                            'eval' => array('tl_class' => 'w50'),
                         ),
+                        'link_url' => array(
+                            'label' => array('Verlinkung der Beschriftung', ''),
+                            'inputType' => 'url',
+                            'eval' => array('tl_class' => 'w50'),
+                        ),
+
+                        'new_tab' => array(
+                            'label' => array('Link in neuen Tab öffnen', ''),
+                            'inputType' => 'checkbox',
+                            'eval' => array('tl_class' => 'clr'),
+                        ),
+
                         'link_type' => array(
                             'label' => array(
                                 'de' => array('Optik des Buttons', ''),
                             ),
                             'inputType' => 'select',
                             'options' => array(
-                                           'btn-primary' => 'Hauptfarbe',
+                                'btn-primary' => 'Hauptfarbe',
                                 'btn-outline-primary' => 'Hauptfarbe (Outline)',
                                 'btn-secondary' => 'Sekundär-Farbe',
                                 'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
@@ -727,6 +763,8 @@ return array(
                             ),
                             'eval' => array('tl_class' => 'w50'),
                         ),
+
+
                     ),
                 ),
 

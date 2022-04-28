@@ -48,7 +48,7 @@ footer {
   }
 }
 
-#main .mod_article > *:not(.content--element):not(.container),
+#main .mod_article > *:not(.content--element):not(.container):not(.ce_html),
 #main > .inside > div[class^="mod_"]:not(.mod_article) {
   @extend .container;
 }

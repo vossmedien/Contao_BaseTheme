@@ -4,6 +4,7 @@
       position: relative;
 
       .selected-color--element {
+        min-height: rfs-value(300px);
         > span {
           position: absolute;
           display: block;
@@ -49,12 +50,12 @@
     .color-list--wrapper {
       display: flex;
       flex-flow: row wrap;
-      margin-left: -$mini-spacing;
-      margin-right: -$mini-spacing;
+      margin-left: -$mini-spacing/2;
+      margin-right: -$mini-spacing/2;
 
       .color-list-element--outer {
-        padding: 0 $mini-spacing;
-        margin-bottom: $mini-spacing;
+        padding: 0 $mini-spacing/2;
+        margin-bottom: $mini-spacing/2;
 
         &:not(.wider) {
           width: 33.333%;

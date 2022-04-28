@@ -35,7 +35,7 @@
 
 
     .mod_article {
-      > *:not(.ce_headline) {
+      > *:not(.ce_headline):not(.ce_html) {
         margin-bottom: $basic-gutter;
       }
 
@@ -76,7 +76,7 @@
         }
 
         &:last-of-type {
-          margin-bottom: rfs-value(-$basic-gutter*1.5);
+          margin-bottom: rfs-value(-$basic-gutter);
         }
 
         & + .mod_article {

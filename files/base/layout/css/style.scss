@@ -20,6 +20,7 @@
 
 html {
   scroll-behavior: smooth;
+
   body {
     &#tinymce {
       @include padding(7px 12px);
@@ -38,6 +39,9 @@ html {
     @import "elements/news";
     @import "elements/contao-accordions";
     @import "elements/ce_downloads";
+    @import "elements/ce_image";
+    @import "elements/ce_gallery";
+
     @import "elements/megamenu";
     @import "elements/breadcrumb";
 
@@ -46,10 +50,3 @@ html {
 }
 
 @import "_theme/styles";
-
-:target:before {
-    content: "";
-    display: block;
-    height: 100px;
-    margin: -100px 0 0;
-}

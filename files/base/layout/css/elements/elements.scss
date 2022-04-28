@@ -17,7 +17,7 @@
 }
  */
 
-[class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall) {
+[class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery) {
   @include padding($basic-gutter);
 }
 
@@ -250,3 +250,4 @@
 @import "custom-elements/ce_rsce_colorpalettes";
 @import "custom-elements/ce_rsce_fullwidthgallery";
 @import "custom-elements/ce_rsce_onepagenavi";
+@import "custom-elements/ce_rsce_landingpageentry";

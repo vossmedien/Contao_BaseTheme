@@ -1,4 +1,4 @@
-<div class="form--image-select widget widget-<?php echo ($this->input_type); ?>  form-group">
+<div <?php echo $this->cssID; ?>  class="<?= $this->class;?> form--image-select widget widget-<?php echo ($this->input_type); ?>  form-group">
     <?php if ($this->headline || $this->subline) : ?>
         <div class="ce--headline">
             <?php if ($this->headline) : ?>

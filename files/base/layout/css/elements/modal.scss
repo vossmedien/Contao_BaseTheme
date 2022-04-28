@@ -1,5 +1,6 @@
 .modal {
   max-width: 100% !important;
+  z-index: 9000;
 
   .btn--close {
     position: absolute;

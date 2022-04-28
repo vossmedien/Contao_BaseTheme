@@ -145,19 +145,25 @@ return array(
                 'single' => 'Bilder einzeln auswählen und optional Bildbeschreibung und Bildtitel hinzufügen',
             ),
         ),
+
+        'show_pagination' => array(
+            'label' => array('Paginierung anzeigen', 'mittig unter dem Slider, in Form von Punkten'),
+            'inputType' => 'checkbox',
+        ),
+
         'multiSRC' => array(
             'inputType' => 'standardField',
             'dependsOn' => array(
                 'field' => 'selecttype',
                 'value' => 'multiple',
             ),
-            'eval'      => array(
-                'multiple'   => true,
-                'fieldType'  => 'checkbox',
+            'eval' => array(
+                'multiple' => true,
+                'fieldType' => 'checkbox',
                 'orderField' => 'orderSRC',
-                'files'      => true,
-                'mandatory'  => false,
-                'isGallery'  => true,
+                'files' => true,
+                'mandatory' => false,
+                'isGallery' => true,
                 'extensions' => 'jpg,jpeg,png,svg',
             ),
         ),
@@ -183,8 +189,9 @@ return array(
                     ),
                 ),
                 'slide_text' => array(
-                    'label' => array('Text-Bezeichnung', ''),
-                    'inputType' => 'text',
+                    'label' => array('Beschreibung', ''),
+                    'inputType' => 'textarea',
+                    'eval' => array('rte' => 'tinyMCE'),
                 ),
             ),
         ),

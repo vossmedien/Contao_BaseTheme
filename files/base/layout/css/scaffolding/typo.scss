@@ -25,9 +25,9 @@ html body {
   }
 
   video {
-  width: 100%;
-  max-height: 100%;
-}
+    width: 100%;
+    max-height: 100%;
+  }
 
   a {
     transition: color 0.3s ease;
@@ -132,6 +132,38 @@ html body {
 
   main ul {
     padding-left: 15px;
+
+    &.list-downloads {
+      list-style-type: none;
+      padding: 0px;
+      margin: 0px;
+
+      > li {
+
+        position: relative;
+        &:not(:last-child){
+          margin-bottom: 8px;
+        }
+
+
+        a{
+          text-decoration: none;
+          color: $text-color;
+                  padding-left: 35px;
+          display: block;
+            &:before {
+          @extend %fa-icon;
+          @extend .fal;
+          content: fa-content($fa-var-download);
+          position: absolute;
+          padding-right: rfs-value(10px);
+          color: $primary;
+          left: 0;
+          top: 7px;
+        }
+        }
+      }
+    }
   }
 
   table.table {
@@ -161,6 +193,44 @@ html body {
       }
     }
 
+
+    &.table-technical-data {
+      border: 0px;
+      width: 100% !important;
+      height: auto !important;
+      margin-top: 2.5rem;
+
+      > tbody {
+        > tr {
+
+          &:nth-child(even) {
+            background-color: var(--bs-gray-300);
+          }
+
+          &:nth-child(odd) {
+            background-color: var(--bs-gray-400);
+          }
+
+          &:first-child {
+            background-color: var(--bs-blue);
+
+            td {
+              color: $text-color-inverse;
+            }
+          }
+
+
+          td {
+            padding: rfs-value(5px 10px);
+            width: auto !important;
+            height: auto !important;
+            border-bottom: 0px;
+            color: var(--bs-gray-700);
+          }
+        }
+      }
+    }
+
     tr {
       td {
         width: auto;
@@ -179,6 +249,8 @@ html body {
       vertical-align: sub;
     }
   }
+
+
 }
 
 .text-primary {
