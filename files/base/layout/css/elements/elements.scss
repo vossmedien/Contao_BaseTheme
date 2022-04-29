@@ -18,7 +18,9 @@
  */
 
 [class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery) {
-  @include padding($basic-gutter);
+    @include media-breakpoint-up(md) {
+       @include padding($basic-gutter);
+    }
 }
 
 .mod_article {

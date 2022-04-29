@@ -135,7 +135,7 @@ Promise.all(promises)
         }
         /* END */
 
-        if ($(".ce_rsce_onepagenavi").length) {
+        if ($(".ce_rsce_onepagenavi.with-smaller-containers").length) {
             $("#main").addClass("with-onepage-nav");
 
             $(".onepage-nav--mobile-toggle").click(function () {

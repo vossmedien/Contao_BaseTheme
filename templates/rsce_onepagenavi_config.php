@@ -152,6 +152,13 @@ return array(
             'eval' => array('tl_class' => 'w50'),
         ),
 
+        'smaller_containers' => array(
+            'label' => array('"Container" auf der Seite schmäler machen, damit OnepageNavi den Content nicht überlagert', 'Greift nicht bei Elementen die auf die volle Breite gehen'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
         'add_totopbutton' => array(
             'label' => array('"Nach oben"-Button hinzufügen', ''),
             'inputType' => 'checkbox',

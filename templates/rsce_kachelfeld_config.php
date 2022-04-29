@@ -289,8 +289,8 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'col-12 col-md-6 col-lg-3' => '25%',
-                        'col-12 col-md-6 col-lg-4' => '33%',
+                        'col-12 col-md-6 col-xl-3' => '25%',
+                        'col-12 col-md-6 col-xl-4' => '33%',
                         'col-12 col-md-6' => '50%',
                         'col-12 col-lg-8' => '66.66%',
                         'col-12 col-lg-9' => '75%',

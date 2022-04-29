@@ -1,4 +1,4 @@
-<div <?php echo $this->cssID; ?>  class="content--element m-0 <?php echo $this->class; ?> <?php if ($this->hide_mobile): ?>d-none d-md-block<?php endif; ?>">
+<div <?php echo $this->cssID; ?>  class="<?php if ($this->smaller_containers): ?>with-smaller-containers<?php endif; ?> content--element m-0 <?php echo $this->class; ?> <?php if ($this->hide_mobile): ?>d-none d-md-block<?php endif; ?>">
     <div class="ce--inner container">
         <?php if ($this->urls): ?>
             <div style="float: right;">

@@ -5,9 +5,7 @@
     justify-content: center;
 
     > div {
-      &:not(:last-child){
-        margin-bottom: 1rem;
-      }
+         margin-bottom: 1rem;
     }
   }
 

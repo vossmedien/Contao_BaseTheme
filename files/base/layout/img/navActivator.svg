@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="99.615" height="101.417" viewBox="0 0 99.615 101.417">
+  <defs>
+    <filter id="Pfad_20" x="0" y="0" width="99.615" height="101.417" filterUnits="userSpaceOnUse">
+      <feOffset dy="5" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Gruppe_14" data-name="Gruppe 14" transform="translate(-1517 -23.287)">
+    <g transform="matrix(1, 0, 0, 1, 1517, 23.29)" filter="url(#Pfad_20)">
+      <path id="Pfad_20-2" data-name="Pfad 20" d="M0,0H75.615V77.417H0Z" transform="translate(12 7)" fill="#fff" opacity="0.591"/>
+    </g>
+    <g id="Gruppe_13" data-name="Gruppe 13" transform="translate(1536 42.543)">
+      <line id="Linie_2" data-name="Linie 2" x2="61" fill="none" stroke="#d6782c" stroke-width="2"/>
+      <line id="Linie_3" data-name="Linie 3" x2="61" transform="translate(0 14.707)" fill="none" stroke="#d6782c" stroke-width="2"/>
+      <line id="Linie_4" data-name="Linie 4" x2="61" transform="translate(0 30.027)" fill="none" stroke="#d6782c" stroke-width="2"/>
+    </g>
+    <text id="Menü" transform="translate(1567 102)" fill="#e57200" font-size="18" font-family="AcuminPro-Regular, Acumin Pro"><tspan x="-26.415" y="0">MENÜ</tspan></text>
+  </g>
+</svg>
