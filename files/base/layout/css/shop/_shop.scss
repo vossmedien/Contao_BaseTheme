@@ -45,14 +45,15 @@ div[class^="mod_iso_"] {
     justify-content: space-between;
 
     input.button {
-      @extend .btn, .btn-lg;
+    @extend .btn;
+    @extend .btn-lg;
 
       &.next {
-        @extend .btn-primary;
+        @extend .btn.btn-primary;
       }
 
       &.previous {
-        @extend .btn-outline-primary;
+        @extend .btn.btn-outline-primary;
       }
 
       &.confirm {

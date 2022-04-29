@@ -2,6 +2,7 @@
   line-height: 1;
   border-radius: $border-radius;
   transition: all 0.3s ease;
+  cursor: pointer;
 
   &:hover,
   &:focus,
@@ -15,7 +16,7 @@
     padding-bottom: rfs-value(11px);
   }
 
-  &.btn-sm{
+  &.btn-sm {
     @include font-size(14px);
     padding-bottom: rfs-value(6px);
   }
@@ -25,7 +26,7 @@
     color: var(--bs-white);
     border-color: $primary;
 
-    &:hover{
+    &:hover {
       background-color: transparent;
       color: $primary;
     }
@@ -35,7 +36,7 @@
     border-color: $primary;
     color: $primary;
 
-    &:hover{
+    &:hover {
       background-color: $primary;
       color: $text-color-inverse;
     }
@@ -45,7 +46,7 @@
     background-color: $secondary;
     border-color: $secondary;
 
-    &:hover{
+    &:hover {
       background-color: transparent;
       color: $secondary;
     }
@@ -55,7 +56,7 @@
     border-color: $secondary;
     color: $secondary;
 
-        &:hover{
+    &:hover {
       background-color: $secondary;
       color: $text-color-inverse;
     }

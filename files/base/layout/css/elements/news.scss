@@ -41,7 +41,9 @@
 
   & + p.back {
     a {
-      @extend .btn, .btn-primary;
+    @extend .btn;
+    @extend .btn.btn-primary;
+
     }
   }
 }

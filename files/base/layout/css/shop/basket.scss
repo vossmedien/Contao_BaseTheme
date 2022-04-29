@@ -142,12 +142,14 @@
 
     button {
       &.button_update {
-        @extend .btn, .btn-outline-primary;
+    @extend .btn;
+    @extend .btn.btn-outline-primary;
         margin-right: auto;
       }
 
       &.button_checkout {
-        @extend .btn, .btn-primary;
+    @extend .btn;
+    @extend .btn.btn-outline-primary;
         margin-left: auto;
       }
     }

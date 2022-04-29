@@ -1,0 +1,74 @@
+$fa-font-path: "../_fonts/fontawesome/webfonts/";
+
+
+//Abstände
+$spacer: 1.5rem;
+$spacers: (
+        0: 0,
+        1: $spacer * 0.25,
+        2: $spacer * 0.5,
+        3: $spacer * 0.75,
+        4: $spacer,
+        5: $spacer * 1.25,
+        6: $spacer * 1.5,
+        7: $spacer * 1.75,
+        8: $spacer * 2,
+        9: $spacer * 2.25,
+        10: $spacer * 2.5,
+        11: $spacer * 2.75,
+        12: $spacer * 3,
+        13: $spacer * 3.25,
+        14: $spacer * 3.5,
+        15: $spacer * 3.75,
+        16: $spacer * 4,
+        17: $spacer * 4.25,
+        18: $spacer * 4.5,
+        19: $spacer * 4.75,
+        20: $spacer * 5,
+);
+
+$basic-gutter: $spacer * 2;
+$headline-spacing: $spacer;
+$mini-spacing: $spacer/2;
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1400px,
+);
+
+$grid-gutter-width: 1rem;
+$gutters: (
+        0: 0,
+        1: $grid-gutter-width * 0.25,
+        2: $grid-gutter-width * 0.5,
+        3: $grid-gutter-width,
+        4: $grid-gutter-width * 1.5,
+        5: $grid-gutter-width * 3,
+);
+
+
+$container-max-widths: (
+        sm: 540px,
+        md: 720px,
+        lg: 960px,
+        xl: 1140px,
+        xxl: 1320px
+);
+
+
+// Spalten
+
+$left-col--width: 275px;
+$right-col--width: 250px;
+
+
+// Modales Fenster
+
+$modal-sm: 520px;
+$modal-md: 760px;
+$modal-lg: 940px;
+$modal-xl: 1140px;

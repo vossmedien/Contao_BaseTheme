@@ -5,45 +5,9 @@ form {
     margin-bottom: 2rem;
   }
 
-  .formbody {
-    /*
-        .input-group {
-      .input-group-append, .input-group-prepend {
-        z-index: 1;
-
-        .input-group-text {
-          //opacity: 0;
-          height: 100%;
-          background-color: $primary;
-          color: $text-color-inverse;
-          border: 0px;
-
-
-          &.transformed {
-            //opacity: 1;
-          }
-        }
-      }
-    }
-
-    .input-group-append {
-      .input-group-text {
-        border-top-left-radius: 0px;
-        border-bottom-left-radius: 0px;
-      }
-    }
-
-    .input-group-prepend {
-      .input-group-text {
-        border-top-right-radius: 0px;
-        border-bottom-right-radius: 0px;
-      }
-
-      & + * + label {
-        left: rfs-value(41px);
-      }
-    }
-     */
+  .form-check-input:checked {
+    background-color: $primary;
+    border-color: $primary;
   }
 
   .widget {
@@ -121,7 +85,8 @@ form {
       text-align: right;
 
       button {
-        @extend .btn, .btn-primary;
+        @extend .btn;
+        @extend .btn.btn-primary;
       }
     }
 
