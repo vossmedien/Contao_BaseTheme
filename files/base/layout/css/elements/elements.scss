@@ -18,9 +18,9 @@
  */
 
 [class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery) {
-    @include media-breakpoint-up(md) {
-       @include padding($basic-gutter);
-    }
+  @include media-breakpoint-up(md) {
+    @include padding($basic-gutter);
+  }
 }
 
 .mod_article {
@@ -147,6 +147,7 @@
   .mod_pageimage {
     .page-image--holder {
       min-height: rfs-value(275px);
+      margin-bottom: 2rem;
     }
   }
 }

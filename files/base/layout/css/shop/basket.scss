@@ -5,8 +5,12 @@
   .collection {
     font-weight: lighter;
     position: relative;
-    font-size: 22px;
+    @include font-size(16px);
     margin-bottom: $basic-gutter;
+
+    @include media-breakpoint-up(lg) {
+      @include font-size(22px);
+    }
 
     .product {
       display: flex;
@@ -16,14 +20,19 @@
       padding: $basic-gutter/2 0;
       border-top: 1px $primary solid;
 
+
       &.row_first {
         border-top: none;
-        padding-top: 0px;
+        //padding-top: 0px;
       }
 
       > * {
         flex: 1;
-        margin: 0 $basic-gutter/2;
+        margin: 0 $basic-gutter/4;
+
+        @include media-breakpoint-up(lg) {
+          margin: 0 $basic-gutter/2;
+        }
       }
 
       ul {
@@ -39,8 +48,18 @@
       }
 
       .image {
-        flex: 0 0 75px;
+        flex: auto;
+        width: 25%;
         text-align: center;
+
+        @include media-breakpoint-down(lg) {
+          margin: 0px 0px 1.25rem 0;
+        }
+
+        @include media-breakpoint-up(lg) {
+          flex: 0 0 75px;
+          width: auto;
+        }
 
         figure {
           margin-bottom: 0px;
@@ -48,8 +67,20 @@
       }
 
       .name {
-        flex-grow: 4;
         align-self: center;
+        flex: auto;
+        width: 75%;
+        text-align: center;
+
+        @include media-breakpoint-down(lg) {
+          margin: 0px 0px 1.25rem 0;
+          padding-left: 1.5rem;
+        }
+
+        @include media-breakpoint-up(lg) {
+          width: auto;
+          flex-grow: 4;
+        }
 
         a {
           text-decoration: none;
@@ -121,17 +152,46 @@
 
       > * {
         flex: 1;
-        margin: 0 $basic-gutter/2;
+        margin: 0 $basic-gutter/4;
+
+        @include media-breakpoint-up(lg) {
+          margin: 0 $basic-gutter/2;
+        }
       }
 
       .col_0 {
         flex: 0 0 75px;
+
+        @include media-breakpoint-down(lg) {
+          display: none;
+        }
+      }
+
+      .col_last.remove {
+        margin-left: 0rem;
+
+
+        @include media-breakpoint-up(lg) {
+          margin-right: .75rem;
+        }
+
+        @include media-breakpoint-up(xl) {
+          margin-right: 1.5rem;
+        }
+
+        @include media-breakpoint-down(lg) {
+          display: none;
+        }
       }
 
       .name {
         flex: 4 1 3em;
-        margin-left: $basic-gutter * 1.5;
+        margin-left: 1rem;
         text-align: right;
+
+        @include media-breakpoint-up(lg) {
+          margin-left: $basic-gutter * 1.5;
+        }
       }
     }
   }
@@ -142,19 +202,19 @@
 
     button {
       &.button_update {
-    @extend .btn;
-    @extend .btn.btn-outline-primary;
+        @extend .btn;
+        @extend .btn.btn-outline-primary;
         margin-right: auto;
       }
 
       &.button_checkout {
-    @extend .btn;
-    @extend .btn.btn-outline-primary;
+        @extend .btn;
+        @extend .btn.btn-outline-primary;
         margin-left: auto;
       }
     }
 
-    @include media-breakpoint-down(md) {
+    @include media-breakpoint-down(lg) {
       flex-direction: column;
       align-items: center;
 
