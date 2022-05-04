@@ -51,7 +51,7 @@
           padding: rfs-value(15px 25px);
           display: inline-flex;
           flex-flow: row nowrap;
-          align-items: center;
+          //align-items: center;
           width: 100%;
 
           &.with-url {
@@ -197,10 +197,11 @@
     .box-lower--wrapper {
       position: relative;
       flex: 1;
-display: flex;
-flex-flow: column wrap;
+      display: flex;
+      flex-flow: column wrap;
+
       .box--lower {
-        flex: 1;
+        //flex: 1;
         display: flex;
         flex-flow: row nowrap;
 

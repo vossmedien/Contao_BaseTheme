@@ -9,14 +9,15 @@
         text-align: right;
 
         a {
-          @extend .btn, .btn-sm;
+          @extend .btn;
+          @extend .btn-sm;
 
           &:first-child {
-            @extend .btn-primary;
+            @extend .btn.btn-primary;
           }
 
           &:last-child {
-            @extend .btn-secondary;
+            @extend .btn.btn-secondary;
           }
         }
       }

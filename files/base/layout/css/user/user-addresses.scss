@@ -33,7 +33,9 @@
     a.add {
       text-decoration: none;
 
-      @extend .btn, .btn-outline-primary;
+      @extend .btn;
+      @extend .btn.btn-outline-primary;
+
 
       &:after {
         @extend %fa-icon;

@@ -2,7 +2,9 @@
   margin-bottom: 1rem;
 
   .toggler {
-    @extend .btn, .btn-primary, .btn-lg;
+    @extend .btn;
+    @extend .btn.btn-primary;
+    @extend .btn-lg;
     width: 100%;
 
 

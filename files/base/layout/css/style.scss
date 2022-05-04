@@ -1,11 +1,12 @@
-@import "../_vendor/vendor";
-
 @import "mixins";
+@import "variables-layout";
+@import "_theme/variables-layout";
+
+@import "../_fonts/fonts";
+@import "../_vendor/vendor";
 
 @import "variables";
 @import "_theme/variables";
-
-@import "../_fonts/fonts";
 
 @import "scaffolding/helper-classes";
 @import "scaffolding/typo";
