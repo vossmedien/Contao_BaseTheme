@@ -233,7 +233,7 @@
           max-width: 75%;
 
           & + .box-lower--expand {
-            padding-top: 2rem;
+            padding-top: 2.25rem;
           }
 
           > .headline--wrapper > span.box--headline {
@@ -269,6 +269,10 @@
           @include padding(0px 25px 18px 25px);
           @include font-size(14px);
           line-height: 1.5;
+
+          &:last-child{
+            padding-bottom: 0px;
+          }
 
           iframe {
             width: 100%;

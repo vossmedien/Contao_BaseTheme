@@ -1,0 +1,41 @@
+<div <?php echo $this->cssID; ?>class="content--element <?php echo $this->class; ?>" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+     style="
+     <?php if ($this->alternate_top_position): ?>
+             top: <?= $this->alternate_top_position;?>;
+ <?php endif; ?>
+
+     <?php if ($this->alternate_bottom_position): ?>
+             top: auto;
+             bottom: <?= $this->alternate_bottom_position;?>;
+ <?php endif; ?>
+
+     <?php if ($this->alternate_right_position): ?>
+             right:  <?= $this->alternate_right_position;?>;
+ <?php endif; ?>
+
+     <?php if ($this->alternate_left_position): ?>
+             right:  auto;
+             left:   <?= $this->alternate_left_position;?>;
+ <?php endif; ?>
+
+             <?php if ($this->is_fixed): ?>
+             position: fixed;
+              <?php endif; ?>
+             ">
+    <div class="ce--inner">
+        <div class="ce--stoerer" style="<?php if ($this->text_rotation): ?>transform: rotate(<?= $this->text_rotation;?>deg);<?php endif; ?>">
+            <?php if ($this->img): ?>
+                <img src="<?= Image::get(FilesModel::findByUuid($this->img)->path, null, null, null); ?>">
+            <?php endif; ?>
+            <?php if ($this->content): ?>
+                <div class="stoerer--content"
+                        <?php if ($this->alternate_text_color): ?>
+                            style="color: <?= $this->alternate_text_color; ?>"
+                        <?php endif; ?>
+                >
+                    <?= $this->content; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

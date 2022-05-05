@@ -14,17 +14,27 @@
     </div>
     <?php endif; ?>
     <?php if ($this->rows) : ?>
-        <div class="row">
+        <div class="row justify-content-center">
             <?php foreach ($this->rows as $i => $row) : ?>
                 <div class="<?php echo $row->column_width; ?>">
-                    <div class="flipping-card--wrapper">
+                    <div class="flipping-card--wrapper"  data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+
+                        <?php if($row->back_link):?>
+                        <a href="<?= $row->back_link;?>"></a>
+                        <?php endif;?>
 
                         <div class="flipping-card--inner">
 
-                            <div style="<?php if ($row->front_background): ?>background-color: <?php echo $row->front_background; ?>;<?php endif; ?> <?php if ($row->front_textcolor): ?>color: <?php echo $row->front_textcolor; ?><?php endif; ?>"
+                            <div style="
+                            <?php if ($row->front_background): ?>background-color: <?php echo $row->front_background; ?>;<?php endif; ?> <?php if ($row->front_textcolor): ?>color: <?php echo $row->front_textcolor; ?><?php endif; ?>
+                                    <?php if ($row->image_front && $row->front_as_bg): ?>background: url(<?= \Image::get(\FilesModel::findByUuid($row->image_front)->path, null, null, null); ?>) center center no-repeat; background-size: cover;<?php endif;?>
+                                    "
                                  class="flipping-card--front <?php echo $row->front_textalign; ?>">
-                                <div class="front--inner">
-                                    <?php if ($row->image_front): ?>
+                                <div class="front--inner"
+                                style="<?php if ($row->front_background): ?>background-color: <?php echo $row->front_background; ?>;<?php endif; ?> <?php if ($row->front_textcolor): ?>color: <?php echo $row->front_textcolor; ?><?php endif; ?>"
+
+                                >
+                                    <?php if ($row->image_front && !$row->front_as_bg): ?>
                                         <div class="fc--image">
                                             <img src="<?= \Image::get(\FilesModel::findByUuid($row->image_front)->path, null, null, null); ?>">
                                         </div>
