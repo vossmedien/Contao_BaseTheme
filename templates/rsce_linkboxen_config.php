@@ -138,6 +138,20 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
+
+        'size' => array(
+            'label' => array('Bildbreite und Bildhöhe', ''),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'tl_class' => 'w50',
+                'includeBlankOption' => true,
+            ),
+        ),
+
+
         'boxes' => array(
             'label' => array('Boxen', ''),
             'elementLabel' => '%s. Box',
@@ -362,6 +376,8 @@ return array(
                         'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
                     ),
                 ),
+
+
                 'not_as_bg' => array(
                     'label' => array('Bild nicht als Hintergrund sondern als skalierbares Bild einfügen', ''),
                     'inputType' => 'checkbox',

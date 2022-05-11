@@ -1,7 +1,7 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
         <?php if ($this->headline || $this->subline) : ?>
-        <div class="ce--headline mb-5" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?php if ($this->headline) : ?> <<?php echo($this->hl); ?>>
             <?php echo($this->headline); ?>
         </<?php echo($this->hl); ?>>
@@ -12,7 +12,7 @@
     </div>
     <?php endif; ?>
     <?php if ($this->boxes) : ?>
-        <div class="row align-items-center justify-content-center">
+        <div class="row">
             <?php foreach ($this->boxes as $i => $box) : ?>
                 <div class="<?php if ($box->column_width) : ?><?php echo $box->column_width; ?><?php else : ?>col-12 col-md-6 col-lg-4<?php endif; ?>">
                     <div id="linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>" class="link--box <?php if ($box->linkoverlay || $box->expand_longtext) : ?>with-link<?php endif; ?> <?php echo $box->box_style; ?> " data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -47,8 +47,8 @@
 
 
                                 #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper,
-                                #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:not(.as-box) > .headline--wrapper > .box--headline,
-                                #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:not(.as-box) > .headline--wrapper > .box--subline {
+                                #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower > .headline--wrapper > .box--headline,
+                                #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower > .headline--wrapper > .box--subline {
                                     color: <?= $textColor;?> !important;
                                 }
 
@@ -58,7 +58,7 @@
 
 
                         <?php if ($box->linkoverlay && ($box->buttons[0]->link_url)) : ?>
-                            <a <?php if($box->buttons[0]->new_tab):?>target="_blank"<?php endif;?> href="<?php echo $box->buttons[0]->link_url; ?>"></a>
+                            <a href="<?php echo $box->buttons[0]->link_url; ?>"></a>
                         <?php elseif ($box->linkoverlay && ($box->modal_longtext || $box->modal_image)) : ?>
                             <span data-bs-toggle="modal" data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"></span>
                         <?php endif; ?>
@@ -68,11 +68,11 @@
                             ?>
                             <div class="box--upper">
                                 <?php if ($ext != "mp4" && !$box->not_as_bg) : ?>
-                                    <div class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>" style="background-size: cover; background-repeat: no-repeat; background-position: center center;" data-bg="<?= Image::get(FilesModel::findByUuid($box->image)->path, null, null, 8); ?>"></div>
+                                    <div class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>" style="background-size: cover; background-repeat: no-repeat; background-position: center center;" data-bg="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"></div>
                                 <?php endif; ?>
                                 <?php if ($ext != "mp4" && $box->not_as_bg) : ?>
                                     <div style="height: auto; text-align: center;" class="image--holder <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
-                                        <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->image)->path, null, null, 8); ?>">
+                                        <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                     </div>
                                 <?php endif; ?>
                                 <?php if ($ext == "mp4") : ?>
@@ -85,9 +85,7 @@
                             </div>
                         <?php endif; ?>
                         <?php if ($box->longtext || $box->text || $box->expand_image || $box->expand_image || $box->modal_longtext || $box->modal_image) : ?>
-                            <div class="box-lower--wrapper <?php echo $box->textalign; ?>"
-                                 style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background) : ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>"
-                            >
+                            <div class="box-lower--wrapper <?php echo $box->textalign; ?>" style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background) : ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
                                 <?php if ($box->text || $box->subline) : ?>
                                     <div class="box--lower <?php if ($box->as_box) : ?>as-box<?php endif; ?> <?php if ($box->linkoverlay && !$box->hide_arrow) : ?>with-url<?php endif; ?>" style="
                                     <?php if ($box->shadowbox_background && $box->as_box) : ?>background-color:<?php echo $box->shadowbox_background; ?><?php endif; ?>
@@ -106,11 +104,11 @@
                                         </div>
                                     </div>
                                 <?php endif; ?>
-                                <?php if ($box->add_items || $box->longtext) : ?>
+                                <?php if ($box->add_items) : ?>
                                     <div class="box-lower--expand <?php if ($box->is_map == "code") : ?>is-map p-0<?php endif; ?> <?php if ($box->expand_longtext && $box->expand_longtext != "show_all") : ?>expandable<?php endif; ?> <?php if ($box->expand_longtext == "hide_preview") : ?>hide-preview<?php endif; ?>">
                                         <?php if ($box->expand_image) : ?>
                                             <div class="box--expand-image mb-3 text-center">
-                                                <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->expand_image)->path, null, null, 8); ?>">
+                                                <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->expand_image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                             </div>
                                         <?php endif; ?>
                                         <?php if ($box->longtext) : ?>
@@ -128,14 +126,14 @@
                                         <?php if ($box->add_items == "buttons" && !$box->linkoverlay) : ?>
                                             <div class="button--wrapper">
                                                 <?php foreach ($box->buttons as $button) : ?>
-                                                    <a <?php if($button->new_tab):?>target="_blank"<?php endif;?> data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>" href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
+                                                    <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>" href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
                                                 <?php endforeach ?>
                                             </div>
                                         <?php endif; ?>
 
                                         <?php if ($box->add_items == "modal" && !$box->linkoverlay) : ?>
                                             <div class="button--wrapper">
-                                                <span class="d-inline-block btn     <?php if ($box->modal_button_size) : ?><?php echo $box->modal_button_size; ?><?php endif; ?> <?php echo $box->modal_button_type; ?>" data-aos="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" data-bs-toggle="modal" data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"><?php echo $box->modal_button_text; ?></span>
+                                                <span class="d-inline-block btn <?php if ($box->modal_button_size) : ?><?php echo $box->modal_button_size; ?><?php endif; ?> <?php echo $box->modal_button_type; ?>" data-aos="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" data-bs-toggle="modal" data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"><?php echo $box->modal_button_text; ?></span>
                                             </div>
                                         <?php endif; ?>
                                     </div>
@@ -160,7 +158,7 @@
                     <div class="row gx-5">
                         <?php if ($box->modal_image) : ?>
                             <div class="col-12 mb-3 mb-md-0 <?php if ($box->modal_longtext) : ?>col-md-6<?php endif; ?>">
-                                <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->modal_image)->path, null, null, 8); ?>">
+                                <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->modal_image)->path, null, null, null); ?>">
                             </div>
                         <?php endif; ?>
                         <?php if ($box->modal_longtext) : ?>
