@@ -25,31 +25,50 @@
     }
     ?>
     <div class="ce--content-slider" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+        <?php $rand = rand(1, 100); ?>
+
+        <?php if($this->open_lightbox):?>
+        <script>
+            $(function () {
+                $(".group_<?php echo $rand; ?>").colorbox({
+                    rel: "group_<?php echo $rand; ?>",
+                    current: "Bild {current} von {total}",
+                    maxWidth: '95%',
+                    maxHeight: '95%'
+                });
+            });
+        </script>
+        <?php endif;?>
+
+
         <div class="swiper content-slider_<?= $this->id; ?>">
             <!-- Additional required wrapper -->
             <div class="swiper-wrapper">
                 <!-- Slides -->
                 <?php if ($dataSorted) : ?>
 
-                    <?php foreach ($dataSorted as $data) : ?>
-                        <?php if ($image = $this->getImageObject($data, $this->size)) : ?>
-                            <div class="swiper-slide">
-                                <img class="swiper-lazy" data-src="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, null, null, null); ?>">
-                            </div>
-                        <?php endif; ?>
+                    <?php foreach ($dataSorted as $data) : ?><?php if ($image = $this->getImageObject($data, $this->size)) : ?>
+                        <div class="swiper-slide">
+                             <?php if($this->open_lightbox):?> <a href="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, null, null, null); ?>" class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif;?>
+                                <img src="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, null, null, null); ?>">
+                              <?php if($this->open_lightbox):?></a><?php endif;?>
+                        </div>
+                    <?php endif; ?>
 
                     <?php endforeach ?>
 
                 <?php else : ?>
 
                     <?php foreach ($this->galery as $slide) : ?>
-                    <div class="swiper-slide">
-                        <img class="swiper-lazy"  data-src="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>">
-                        <?php if ($slide->slide_text) : ?>
-                            <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach ?>
+                        <div class="swiper-slide">
+                             <?php if($this->open_lightbox):?> <a href="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>" class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif;?>
+                            <img src="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>">
+                             <?php if($this->open_lightbox):?> </a><?php endif;?>
+                            <?php if ($slide->slide_text) : ?>
+                                <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach ?>
 
                 <?php endif; ?>
             </div>
@@ -69,13 +88,28 @@
         if ($('.swiper.content-slider_<?= $this->id;?>').length) {
 
             const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
-centeredSlides: true,
-                slidesPerView: 1.5,
                 direction: 'horizontal',
-                spaceBetween: 30,
+
                 loop: true,
                 preloadImages: true,
-                lazy: true,
+                lazy: false,
+
+                spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
+                centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
+                slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>1<?php endif;?>,
+
+                speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
+                effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
+                'slide'<?php endif;?>,
+
+                <?php if ($this->autoplay) : ?>
+                autoplay: {
+                    delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                },
+                <?php endif; ?>
+
+
+
                 <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
                 navigation: {
                     nextEl: '.swiper.content-slider_<?= $this->id;?> .swiper-button-next',

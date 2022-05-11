@@ -277,7 +277,7 @@ Promise.all(promises)
         imageHeight = 100;
       }
 
-      $(".ce--mainimage .image--holder").css({
+      $(".ce--mainimage .image--holder:not(.with-maxheight)").css({
         "max-height":
           "calc(" + imageHeight + "vh - " + $("header").height() + "px)",
       });

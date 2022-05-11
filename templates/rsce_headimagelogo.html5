@@ -32,7 +32,7 @@
 
                 <div class="swiper-slide">
                     <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline) : ?>no-text<?php endif; ?> ">
-                        <div class="image--holder <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>" style="background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>) center center no-repeat;  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; min-height: 250px;<?php endif; ?>">
+                        <div class="image--holder <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif;?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>" style="background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>) center center no-repeat; <?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; min-height: 250px;<?php endif; ?>">
 
                             <?php if ($slide->alternate_background_color): ?>
                                 <style>
@@ -127,11 +127,17 @@
             if ($('.swiper.mainslider_<?php echo $this->id; ?>').length) {
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {
 
-                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
                     loop: true,
+
+                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
                     effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
                     'slide'<?php endif;?>,
 
+                    <?php if ($this->autoplay) : ?>
+                    autoplay: {
+                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                    },
+                    <?php endif; ?>
 
                     <?php if (count($this->slides) > 1) : ?>
                     navigation: {
@@ -146,11 +152,6 @@
                     <?php endif; ?>
                     <?php endif; ?>
 
-                    <?php if ($this->autoplay) : ?>
-                    autoplay: {
-                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
-                    },
-                    <?php endif; ?>
 
                     on: {
                         realIndexChange: function () {

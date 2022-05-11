@@ -146,10 +146,87 @@ return array(
             ),
         ),
 
+
+        'settings_1' => array(
+            'label' => array('Slider-Einstellungen', ''),
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
+        'space_between' => array(
+            'label' => array('Abstand zwischen den Slides in PX', 'Standard: 30'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'slides_per_view' => array(
+            'label' => array('Wie viele Slides sind sichtbar', 'Beispielsweise 1.5 um rechts und links eine Vorschau des nächsten Slides anzuzeigen'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+
+        'slide_effect' => array(
+            'label' => array(
+                'de' => array('Slide-Effekt', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                'slide' => 'Slide (Standard)',
+                'coverflow' => 'Coverflow',
+                'fade' => 'Fade',
+                'flip' => 'Flip',
+                'cube' => 'Cube',
+
+            ),
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'transition_time' => array(
+            'label' => array('Animationszeit in ms', 'Standard: 1500'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'open_lightbox' => array(
+            'label' => array('Bilder in Lightbox öffnen', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
         'show_pagination' => array(
             'label' => array('Paginierung anzeigen', 'mittig unter dem Slider, in Form von Punkten'),
             'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
         ),
+
+        'centered_slides' => array(
+            'label' => array('Slides mittig ausrichten', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'autoplay' => array(
+            'label' => array('Autoplay aktivieren', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'autoplay_time' => array(
+            'label' => array('Autoplay-Zyklus', 'nach wie viel MS soll zum nächsten Slide gewechselt werden, Standard: 3000'),
+            'inputType' => 'text',
+            'dependsOn' => array(
+                'field' => 'autoplay',
+            ),
+        ),
+
+        'settings_2' => array(
+            'label' => array('Slides', ''),
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
 
         'multiSRC' => array(
             'inputType' => 'standardField',
