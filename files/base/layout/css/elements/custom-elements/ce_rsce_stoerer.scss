@@ -4,6 +4,17 @@
   top: 150px;
   z-index: 10;
 
+
+  @include media-breakpoint-down(xxl) {
+    &.right-pos {
+      right: 15px !important;
+    }
+
+    &.left-pos {
+      left: 15px !important;
+    }
+  }
+
   .ce--stoerer {
     position: relative;
 

@@ -49,6 +49,11 @@ html body {
     &:last-child {
       margin-bottom: 0px;
     }
+
+    & + h2,
+    & + .h2{
+      margin-top: 2rem;
+    }
   }
 
   h6,
@@ -171,6 +176,8 @@ html body {
       }
     }
   }
+
+
 
   table.table {
     margin-bottom: 0px;

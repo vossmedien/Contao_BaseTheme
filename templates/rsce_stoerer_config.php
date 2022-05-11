@@ -11,6 +11,12 @@ return array(
     ),
     'fields' => array(
 
+        'settings_A' => array(
+            'label' => array('Animation', ''),
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -132,9 +138,20 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'w50')
         ),
 
+        'animate_speed' => array(
+            'label' => array('Geschwindigkeit der Animation in Sekunden', 'z. B. 1.5'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'settings_P' => array(
+            'label' => array('Position', ''),
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
+        ),
 
         'alternate_top_position' => array(
             'label' => array('Abstand von oberer Bildschirmkante', 'Standard: 150px - entweder OBEN oder UNTEN ausfüllen'),
@@ -160,24 +177,28 @@ return array(
             'eval' => array('tl_class' => 'w50'),
         ),
 
-
-        'alternate_text_color' => array(
-            'label' => array('Schriftfarbe als HEX-Wert', 'Standard-Farbe ist die Basis-Textfarbe'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
         'text_rotation' => array(
             'label' => array('Falls der Störer im Uhrzeigersinn geneigt werden soll', ''),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
 
+
         'is_fixed' => array(
             'label' => array('Störer scrollt mit', ''),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
+
+
+        'settings_D' => array(
+            'label' => array('Darstellung & Inhalt', ''),
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
+
 
         'img' => array(
             'label' => array('Bild', ''),
@@ -195,5 +216,11 @@ return array(
             'inputType' => 'textarea',
             'eval' => array('rte' => 'tinyMCE'),
         ),
+
+               'alternate_text_color' => array(
+            'label' => array('Schriftfarbe als HEX-Wert', 'Standard-Farbe ist die Basis-Textfarbe'),
+            'inputType' => 'text',
+        ),
+
     ),
 );

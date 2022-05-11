@@ -145,7 +145,15 @@ return array(
         'image_height' => array(
             'label' => array('Höhe des Bereichs in %', 'Standard sind "100", also 100% Viewport-Height'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
+
+        'image_maxheight' => array(
+            'label' => array('Maximale Höhe des Bereichs', 'Einheit (px, rem, vh usw.) bitte angeben'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
         'diagonal_cut' => array(
             'label' => array('Mit diagonalem Abschluss', ''),
             'inputType' => 'checkbox',
@@ -707,7 +715,7 @@ return array(
                             ),
                             'inputType' => 'select',
                             'options' => array(
-                                           'btn-primary' => 'Hauptfarbe',
+                                'btn-primary' => 'Hauptfarbe',
                                 'btn-outline-primary' => 'Hauptfarbe (Outline)',
                                 'btn-secondary' => 'Sekundär-Farbe',
                                 'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
