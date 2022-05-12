@@ -137,6 +137,18 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
+
+        'size' => array(
+            'label' => array('Bildbreite und Bildhöhe', ''),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+            ),
+        ),
+
         'selecttype' => array(
             'label' => array('Bilder ', ''),
             'inputType' => 'radio',
