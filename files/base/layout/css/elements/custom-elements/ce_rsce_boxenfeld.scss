@@ -1,7 +1,16 @@
 .ce_rsce_boxenfeld {
   .boxes--outer {
     &:not(:last-child) {
-      padding-bottom: 3rem;
+      @include media-breakpoint-up(lg) {
+        padding-bottom: 3rem;
+      }
+
+    }
+
+    > .row {
+      @include media-breakpoint-down(lg) {
+        margin-bottom: 0px !important;
+      }
     }
 
     &:nth-child(odd) {
