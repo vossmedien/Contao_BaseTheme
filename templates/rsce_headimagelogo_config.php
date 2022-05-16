@@ -138,10 +138,13 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
+
         'settings_1' => array(
             'label' => array('Einstellungen', ''),
             'inputType' => 'group',
         ),
+
+
         'image_height' => array(
             'label' => array('Höhe des Bereichs in %', 'Standard sind "100", also 100% Viewport-Height'),
             'inputType' => 'text',
@@ -357,6 +360,9 @@ return array(
                     'inputType' => 'group',
                 ),
 
+
+
+
                 'image' => array(
                     'label' => array('Bild / Video', 'Video-Format: MP4'),
                     'inputType' => 'fileTree',
@@ -378,6 +384,18 @@ return array(
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
                         'tl_class' => 'w50'
+                    ),
+                ),
+
+                         'size' => array(
+                    'label' => array('Bildbreite und Bildhöhe', ''),
+                    'inputType' => 'imageSize',
+                    'options' => System::getImageSizes(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                           'tl_class' => 'clr w50',
+                        'includeBlankOption' => true,
                     ),
                 ),
 

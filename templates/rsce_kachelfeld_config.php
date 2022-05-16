@@ -138,10 +138,17 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
-        'image_height' => array(
-            'label' => array('Alternative Bildhöhe in px', ''),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50',),
+
+        'size' => array(
+            'label' => array('Bildbreite und Bildhöhe', ''),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'tl_class' => 'w50',
+                'includeBlankOption' => true,
+            ),
         ),
 
 
@@ -360,6 +367,16 @@ return array(
                         'value' => '1',
                     ),
                 ),
+
+
+                'image_height' => array(
+                    'label' => array('Alternative Bildhöhe in px', ''),
+                    'inputType' => 'text',
+                    'dependsOn' => array(
+                        'field' => 'image_as_bg',
+                    ),
+                ),
+
 
                 'icon' => array(
                     'label' => array('Alternativ zum Bild Font-Awesome Klasse angeben', 'überschreibt das Bild, z. B. fa-facebook fab'),

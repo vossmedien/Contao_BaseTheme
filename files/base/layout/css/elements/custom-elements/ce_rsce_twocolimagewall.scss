@@ -475,7 +475,7 @@
           }
 
           &:not(.reverse-cols) {
-            .image--col .image-col--inner {
+            .image--col .image-col--inner:not(.with-iframe) {
               right: 0;
             }
           }
