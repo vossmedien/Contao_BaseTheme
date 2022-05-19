@@ -26,13 +26,17 @@
         //padding-top: 0px;
       }
 
-      > * {
+      > *:not([colspan="6"]) {
         flex: 1;
         margin: 0 $basic-gutter/4;
 
         @include media-breakpoint-up(lg) {
           margin: 0 $basic-gutter/2;
         }
+      }
+
+      >div[colspan="6"]{
+        width: 100%;
       }
 
       ul {
