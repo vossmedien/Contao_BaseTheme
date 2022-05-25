@@ -23,7 +23,7 @@
                     <?php endif; ?>
                     <div class="box--inner lazy" <?php if (count($row->main_image) == 1) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->main_image[0])->path, null, null, null); ?>" style="background-position: center center; background-repeat: no-repeat; center center no-repeat; background-size: cover;" <?php endif; ?>>
                         <?php if (count($row->main_image) > 1) : ?>
-                            <div class="swiper custom background-slider background-slider_<?= $this->id; ?>" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0;">
+                            <div class="swiper custom pb-0 background-slider background-slider_<?= $this->id; ?>" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0;">
                                 <div class="swiper-wrapper">
                                     <?php foreach ($row->main_image as $slide) : ?>
                                         <div class="swiper-slide">
