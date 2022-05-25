@@ -68,11 +68,13 @@
                             ?>
                             <div class="box--upper">
                                 <?php if ($ext != "mp4" && !$box->not_as_bg) : ?>
-                                    <div class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>" style="background-size: cover; background-repeat: no-repeat; background-position: center center;" data-bg="<?= Image::get(FilesModel::findByUuid($box->image)->path, null, null, 8); ?>"></div>
+                                    <div class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>" style="background-size: cover; background-repeat: no-repeat; background-position: center center;"
+                                         data-bg="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
+                                    ></div>
                                 <?php endif; ?>
                                 <?php if ($ext != "mp4" && $box->not_as_bg) : ?>
                                     <div style="height: auto; text-align: center;" class="image--holder <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
-                                        <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->image)->path, null, null, 8); ?>">
+                                        <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                     </div>
                                 <?php endif; ?>
                                 <?php if ($ext == "mp4") : ?>
@@ -110,7 +112,7 @@
                                     <div class="box-lower--expand <?php if ($box->is_map == "code") : ?>is-map p-0<?php endif; ?> <?php if ($box->expand_longtext && $box->expand_longtext != "show_all") : ?>expandable<?php endif; ?> <?php if ($box->expand_longtext == "hide_preview") : ?>hide-preview<?php endif; ?>">
                                         <?php if ($box->expand_image) : ?>
                                             <div class="box--expand-image mb-3 text-center">
-                                                <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->expand_image)->path, null, null, 8); ?>">
+                                                <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->expand_image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                             </div>
                                         <?php endif; ?>
                                         <?php if ($box->longtext) : ?>
@@ -160,7 +162,7 @@
                     <div class="row gx-5">
                         <?php if ($box->modal_image) : ?>
                             <div class="col-12 mb-3 mb-md-0 <?php if ($box->modal_longtext) : ?>col-md-6<?php endif; ?>">
-                                <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->modal_image)->path, null, null, 8); ?>">
+                                <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->modal_image)->path, null, null, null); ?>">
                             </div>
                         <?php endif; ?>
                         <?php if ($box->modal_longtext) : ?>
