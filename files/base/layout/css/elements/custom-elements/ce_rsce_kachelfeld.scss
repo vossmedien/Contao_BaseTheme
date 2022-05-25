@@ -67,13 +67,15 @@
         }
 
         i {
-          @include font-size(100px);
+          @include font-size(85px);
           color: $primary;
           transition: all 0.3s ease;
-          line-height: rfs-fluid-value(200px);
+          line-height: rfs-fluid-value(150px);
+          position: relative;
+          top: rfs-value(15px);
 
           @include media-breakpoint-up(xxl) {
-            line-height: rfs-value(300px);
+            //line-height: rfs-value(300px);
           }
         }
 
@@ -205,6 +207,7 @@
         }
 
         .box--text {
+
         }
 
         .box--button {

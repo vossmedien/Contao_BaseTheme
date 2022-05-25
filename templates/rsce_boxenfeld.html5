@@ -15,30 +15,34 @@
     <div class="ce--boxenfeld ">
         <?php foreach ($this->box as $b) : ?>
         <div class="boxes--outer" <?php if ($b->versatz && (strpos($b->versatz, '-') !== false)) : ?>style="margin-top: <?php echo str_replace("-", "", $b->versatz); ?>px" <?php endif; ?>>
-            <div class="row <?php if ($b->reverse) : ?>flex-row-reverse <?php endif; ?>">
-                <div class="col-12 col-lg-6">
-                    <img class="lazy box--image" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
-                </div>
-                <div class="col-12 col-lg-6">
-                    <div class="box--content" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>" <?php if ($b->versatz) : ?>style="position: relative; top: <?php echo $b->versatz; ?>px" <?php endif; ?>>
-                        <?php if ($b->headline) : ?>
-                        <div class="box--headline" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
-                            <<?php echo $b->headline_type; ?> class="h2">
-                            <?php echo $b->headline; ?>
-                        </<?php echo $b->headline_type; ?>>
+            <div class="row <?php if ($b->reverse) : ?>flex-row-reverse <?php endif; ?>" style="<?php if ($b->versatz && (strpos($b->versatz, '-') === false)) : ?>margin-bottom: <?php echo $b->versatz*1.5; ?>px;<?php endif; ?>">
+                <?php if ($b->image): ?>
+                    <div class="col-12 col-lg-6">
+                        <img class="box--image" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                     </div>
-                    <?php endif; ?>
-                    <?php if ($b->content) : ?>
-                        <div class="box--text" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
-                            <?php echo $b->content; ?>
+                <?php endif; ?>
+                <?php if ($b->headline || $b->content || $b->button_url): ?>
+                    <div class="col-12 <?php if ($b->image): ?>col-lg-6<?php endif;?>">
+                        <div class="box--content" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>" <?php if ($b->versatz) : ?>style="position: relative; top: <?php echo $b->versatz; ?>px" <?php endif; ?>>
+                            <?php if ($b->headline) : ?>
+                            <div class="box--headline" >
+                                <<?php echo $b->headline_type; ?> >
+                                <?php echo $b->headline; ?>
+                            </<?php echo $b->headline_type; ?>>
                         </div>
-                    <?php endif; ?>
-                    <?php if ($b->button_url) : ?>
-                        <div class="box--button" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
-                            <a class="btn btn-primary" href="<?php echo $b->button_url; ?>"><?php echo $b->button_text; ?></a>
-                        </div>
-                    <?php endif; ?>
-                </div>
+                        <?php endif; ?>
+                        <?php if ($b->content) : ?>
+                            <div class="box--text" >
+                                <?php echo $b->content; ?>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($b->button_url) : ?>
+                            <div class="box--button">
+                                <a class="btn btn-primary" href="<?php echo $b->button_url; ?>"><?php echo $b->button_text; ?></a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

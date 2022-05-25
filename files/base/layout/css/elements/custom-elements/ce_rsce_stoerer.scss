@@ -1,0 +1,31 @@
+.ce_rsce_stoerer {
+  position: absolute;
+  right: 25px;
+  top: 150px;
+  z-index: 10;
+
+
+  @include media-breakpoint-down(xxl) {
+    &.right-pos {
+      right: 15px !important;
+    }
+
+    &.left-pos {
+      left: 15px !important;
+    }
+  }
+
+  .ce--stoerer {
+    position: relative;
+
+    .stoerer--content {
+      position: absolute;
+      width: 80%;
+      top: 50%;
+      right: 50%;
+      transform: translate(50%, -50%);
+      padding: 0rem .75rem;
+      @include font-size(18px);
+    }
+  }
+}

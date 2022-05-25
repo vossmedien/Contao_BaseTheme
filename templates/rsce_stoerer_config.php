@@ -1,19 +1,22 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Slider', ''),
+    'label' => array('Custom | Fixed Störer', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('headline', 'cssID'),
+    'standardFields' => array('cssID'),
     'wrapper' => array(
         'type' => 'none',
     ),
     'fields' => array(
-        'subline' => array(
-            'label' => array('Subline', ''),
-            'inputType' => 'text',
+
+        'settings_A' => array(
+            'label' => array('Animation', ''),
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
         ),
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -135,154 +138,89 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'w50')
         ),
 
-        'size' => array(
-            'label' => array('Bildbreite und Bildhöhe', ''),
-            'inputType' => 'imageSize',
-            'options' => System::getImageSizes(),
-            'reference' => &$GLOBALS['TL_LANG']['MSC'],
-            'eval' => array(
-                'rgxp' => 'digit',
-                'includeBlankOption' => true,
-            ),
+        'animate_speed' => array(
+            'label' => array('Geschwindigkeit der Animation in Sekunden', 'z. B. 1.5'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
-        'selecttype' => array(
-            'label' => array('Bilder ', ''),
-            'inputType' => 'radio',
-            'options' => array(
-                'multiple' => 'Mehrere Bilder oder Ordner auswählen',
-                'single' => 'Bilder einzeln auswählen und optional Bildbeschreibung und Bildtitel hinzufügen',
-            ),
+        'settings_P' => array(
+            'label' => array('Position', ''),
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'alternate_top_position' => array(
+            'label' => array('Abstand von oberer Bildschirmkante', 'Standard: 150px - entweder OBEN oder UNTEN ausfüllen'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'alternate_bottom_position' => array(
+            'label' => array('Abstand von unterer Bildschirmkante', 'entweder OBEN oder UNTEN ausfüllen'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'alternate_right_position' => array(
+            'label' => array('Abstand von rechter Bildschirmkante', 'Standard: 25px - entweder RECHTS oder LINKS ausfüllen'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'alternate_left_position' => array(
+            'label' => array('Abstand von linker Bildschirmkante', 'entweder RECHTS oder LINKS ausfüllen'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'text_rotation' => array(
+            'label' => array('Falls der Störer im Uhrzeigersinn geneigt werden soll', ''),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
 
-        'settings_1' => array(
-            'label' => array('Slider-Einstellungen', ''),
+        'is_fixed' => array(
+            'label' => array('Störer scrollt mit', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
+        'settings_D' => array(
+            'label' => array('Darstellung & Inhalt', ''),
             'inputType' => 'group',
             'eval' => array('tl_class' => 'clr'),
         ),
 
 
-        'space_between' => array(
-            'label' => array('Abstand zwischen den Slides in PX', 'Standard: 30'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-        'slides_per_view' => array(
-            'label' => array('Wie viele Slides sind sichtbar', 'Beispielsweise 1.5 um rechts und links eine Vorschau des nächsten Slides anzuzeigen'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
 
 
-        'slide_effect' => array(
-            'label' => array(
-                'de' => array('Slide-Effekt', ''),
-            ),
-            'inputType' => 'select',
-            'options' => array(
-                'slide' => 'Slide (Standard)',
-                'coverflow' => 'Coverflow',
-                'fade' => 'Fade',
-                'flip' => 'Flip',
-                'cube' => 'Cube',
-
-            ),
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-        'transition_time' => array(
-            'label' => array('Animationszeit in ms', 'Standard: 1500'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-        'open_lightbox' => array(
-            'label' => array('Bilder in Lightbox öffnen', ''),
-            'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr'),
-        ),
-
-        'show_pagination' => array(
-            'label' => array('Paginierung anzeigen', 'mittig unter dem Slider, in Form von Punkten'),
-            'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr'),
-        ),
-
-        'centered_slides' => array(
-            'label' => array('Slides mittig ausrichten', ''),
-            'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr'),
-        ),
-
-        'autoplay' => array(
-            'label' => array('Autoplay aktivieren', ''),
-            'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr'),
-        ),
-
-        'autoplay_time' => array(
-            'label' => array('Autoplay-Zyklus', 'nach wie viel MS soll zum nächsten Slide gewechselt werden, Standard: 3000'),
-            'inputType' => 'text',
-            'dependsOn' => array(
-                'field' => 'autoplay',
-            ),
-        ),
-
-        'settings_2' => array(
-            'label' => array('Slides', ''),
-            'inputType' => 'group',
-            'eval' => array('tl_class' => 'clr'),
-        ),
-
-
-        'multiSRC' => array(
-            'inputType' => 'standardField',
-            'dependsOn' => array(
-                'field' => 'selecttype',
-                'value' => 'multiple',
-            ),
+        'img' => array(
+            'label' => array('Bild', ''),
+            'inputType' => 'fileTree',
             'eval' => array(
-                'multiple' => true,
-                'fieldType' => 'checkbox',
-                'orderField' => 'orderSRC',
-                'files' => true,
-                'mandatory' => false,
-                'isGallery' => true,
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
                 'extensions' => 'jpg,jpeg,png,svg',
             ),
         ),
-        'galery' => array(
-            'label' => array('Slides', ''),
-            'elementLabel' => '%s. Slide',
-            'inputType' => 'list',
-            'minItems' => 1,
-            'maxItems' => 20,
-            'dependsOn' => array(
-                'field' => 'selecttype',
-                'value' => 'single',
-            ),
-            'fields' => array(
-                'slide' => array(
-                    'label' => array('Bild', ''),
-                    'inputType' => 'fileTree',
-                    'eval' => array(
-                        'multiple' => false,
-                        'fieldType' => 'radio',
-                        'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
-                    ),
-                ),
-                'slide_text' => array(
-                    'label' => array('Beschreibung', ''),
-                    'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE'),
-                ),
-            ),
+
+        'content' => array(
+            'label' => array('Text', ''),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE'),
         ),
+
+               'alternate_text_color' => array(
+            'label' => array('Schriftfarbe als HEX-Wert', 'Standard-Farbe ist die Basis-Textfarbe'),
+            'inputType' => 'text',
+        ),
+
     ),
 );

@@ -53,7 +53,7 @@
                                     $textColor = str_replace("&#35;", "#",$textColor);
                                 ?>
                             #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .kb--content   .box--headline .h5,
-                             #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .kb--image i{
+                             #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .kb--image i, #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .box--text p a{
                                 color: <?= $textColor;?> !important;
                             }
                         <?php endif;?>
@@ -61,13 +61,13 @@
 
                     <div class="kachelbox--inner">
                         <?php if ($b->image || $b->icon) : ?>
-                            <div class="kb--image <?php if ($b->image_as_bg) : ?>as-bg<?php endif; ?>" style="<?php if ($b->image_as_bg && $this->image_height) : ?>height: <?= $this->image_height;?>px<?php endif; ?>">
+                            <div class="kb--image <?php if ($b->image_as_bg) : ?>as-bg<?php endif; ?>" style="<?php if ($b->image_as_bg && $b->image_height) : ?>height: <?= $b->image_height;?>px<?php endif; ?>">
                                 <?php if ($b->icon) : ?>
                                     <i class="<?php echo $b->icon; ?>"></i>
                                 <?php elseif ($b->image) : ?><?php if (!$b->image_as_bg) : ?>
-                                    <img class="lazy <?php if (!$b->headline) : ?>pb-3<?php endif; ?>" data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                                    <img class="lazy <?php if (!$b->headline) : ?>pb-3<?php endif; ?>" data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                 <?php else: ?>
-                                    <div style="background: url(<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover;" class="kb--image-holder"></div>
+                                    <div style="background: url(<?= \Image::get(\FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>) center center no-repeat; background-size: cover;" class="kb--image-holder"></div>
                                 <?php endif; ?><?php endif; ?>
 
 

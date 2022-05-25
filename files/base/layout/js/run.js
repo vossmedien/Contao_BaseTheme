@@ -28,7 +28,7 @@ Promise.all(promises)
         // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
         offset: 60, // offset (in px) from the original trigger point
 
-        once: true, // whether animation should happen only once - while scrolling down
+        once: false, // whether animation should happen only once - while scrolling down
         mirror: false, // whether elements should animate out while scrolling past them
         anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
       });
@@ -94,7 +94,7 @@ Promise.all(promises)
 
     window.onload = function () {
       var anchorLinks = document.querySelectorAll(
-        '#mainNav a[href^="#"], .onepagenavi--wrapper a[href^="#"], #mobileNav a[href^="#"]'
+        '#mainNav a[href^="#"]:not(.invisible), .onepagenavi--wrapper a[href^="#"], #mobileNav a[href^="#"]'
       );
       for (var i = 0; i < anchorLinks.length; i++) {
         anchorLinks[i].addEventListener("click", scrollToAnchor);
@@ -218,7 +218,15 @@ Promise.all(promises)
         var front = $(this).find(".flipping-card--front");
         var back = $(this).find(".flipping-card--back");
         var frontHeight = front.height();
-        back.css("height", frontHeight);
+        var backHeight = back.height();
+
+
+        if(backHeight > frontHeight){
+           front.css("height", backHeight);
+        } else{
+           back.css("height", frontHeight);
+        }
+
       });
     }
 
@@ -269,7 +277,7 @@ Promise.all(promises)
         imageHeight = 100;
       }
 
-      $(".ce--mainimage .image--holder").css({
+      $(".ce--mainimage .image--holder:not(.with-maxheight)").css({
         "max-height":
           "calc(" + imageHeight + "vh - " + $("header").height() + "px)",
       });
@@ -387,10 +395,10 @@ Promise.all(promises)
     $(document).on("scroll", function () {
       var scrollPos = $(document).scrollTop();
 
-      if ($('#mainNav a[href^="#"]').length) {
-        $('#mainNav a[href^="#"]').each(function () {
+      if ($('#mainNav a[href*="#"]').length) {
+        $('#mainNav a[href*="#"]:not(.invisible)').each(function () {
           var currLink = $(this);
-          var refElement = $(currLink.attr("href"));
+          var refElement = $(currLink.attr("href").replace('/',''));
 
           if (refElement.position()) {
             if (
@@ -406,8 +414,8 @@ Promise.all(promises)
         });
       }
 
-      if ($('.onepagenavi--wrapper a[href^="#"]').length) {
-        $('.onepagenavi--wrapper a[href^="#"]').each(function () {
+      if ($('.onepagenavi--wrapper a[href*="#"]').length) {
+        $('.onepagenavi--wrapper a[href*="#"]').each(function () {
           var currLink = $(this);
           var refElement = $(currLink.attr("href"));
 

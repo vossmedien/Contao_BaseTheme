@@ -30,12 +30,13 @@
     #headerLogo {
       img {
         height: auto;
+        width: auto;
         max-width: rfs-value(250px);
         max-height: rfs-value(65px);
+
         @include media-breakpoint-down(lg) {
           max-height: rfs-value(40px);
           margin: rfs-value(10px 0px);
-          width: auto;
         }
       }
     }
