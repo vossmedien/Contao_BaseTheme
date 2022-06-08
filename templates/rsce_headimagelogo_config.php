@@ -361,8 +361,6 @@ return array(
                 ),
 
 
-
-
                 'image' => array(
                     'label' => array('Bild / Video', 'Video-Format: MP4'),
                     'inputType' => 'fileTree',
@@ -382,19 +380,19 @@ return array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
+                        'extensions' => 'mp4,webm,ogv',
                         'tl_class' => 'w50'
                     ),
                 ),
 
-                         'size' => array(
+                'size' => array(
                     'label' => array('Bildbreite und Bildhöhe', ''),
                     'inputType' => 'imageSize',
                     'options' => System::getImageSizes(),
                     'reference' => &$GLOBALS['TL_LANG']['MSC'],
                     'eval' => array(
                         'rgxp' => 'digit',
-                           'tl_class' => 'clr w50',
+                        'tl_class' => 'clr w50',
                         'includeBlankOption' => true,
                     ),
                 ),
@@ -529,6 +527,7 @@ return array(
                     'eval' => array('chosen' => 'true')
                 ),
 
+
                 'text_style' => array(
                     'label' => array(
                         'de' => array('Text-Darstellungstyp', ''),
@@ -538,11 +537,43 @@ return array(
                         'style-1' => 'Style 1: Überschrift in groß darstellen',
                         'style-2' => 'Style 2: Überschrift auf Hintergrund mit Diagonale legen',
                     ),
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'textbox_position' => array(
+                    'label' => array(
+                        'de' => array('Textbox-Position', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'pos-centered' => 'Mittig',
+                        'pos-centered-right' => 'Mittig rechts',
+                        'pos-centered-left' => 'Mittig links',
+                        'pos-bottom-right' => 'Unten rechts',
+                        'pos-bottom-left' => 'Unten links',
+                        'pos-bottom-center' => 'Unten mittig',
+                        'pos-top-right' => 'Oben rechts',
+                        'pos-top-left' => 'Oben links',
+                        'pos-top-center' => 'Oben mittig'
+                    ),
+                    'eval' => array('tl_class' => 'w50'),
+
+                    'dependsOn' => array(
+                        'field' => 'text_style',
+                        'value' => 'style-1',
+                    ),
                 ),
 
                 'alternate_background_color' => array(
                     'label' => array('Alternative Hintergrundfarbe für Inhalt', 'Standardmäßig transparent (Style 1) oder weiß (Style 2)'),
                     'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'text_color' => array(
+                    'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
                 'text_align' => array(
@@ -555,12 +586,16 @@ return array(
                         'text-center' => 'Zentriert',
                         'text-end' => 'Rechtsbündig',
                     ),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
-                'text_color' => array(
-                    'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
+                'maxWidth' => array(
+                    'label' => array('Maximale Breite der Textbox', 'inkl. Maßeinheit, z. B. 400px'),
                     'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
+
+
                 'firstline_headline' => array(
                     'label' => array('Erste Zeile ist eine Hauptüberschrift (H1)', ''),
                     'inputType' => 'checkbox',
@@ -720,11 +755,11 @@ return array(
                             'inputType' => 'text',
                         ),
                         'link_url' => array(
-                            'label' => array('Verlinkung der Beschriftung', 'z. B. mailto:info@gmx.de'),
+                            'label' => array('Verlinkung', 'z . B . mailto:info@gmx . de'),
                             'inputType' => 'url',
                         ),
                         'link_betreff' => array(
-                            'label' => array('Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
+                            'label' => array('Betreffzeile für "mailto:" - Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
                             'inputType' => 'text',
                         ),
                         'link_type' => array(
@@ -734,10 +769,12 @@ return array(
                             'inputType' => 'select',
                             'options' => array(
                                 'btn-primary' => 'Hauptfarbe',
-                                'btn-outline-primary' => 'Hauptfarbe (Outline)',
-                                'btn-secondary' => 'Sekundär-Farbe',
-                                'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
-                                'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                                'btn-outline-primary' => 'Hauptfarbe(Outline)',
+                                'btn-secondary' => 'Sekundär - Farbe',
+                                'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
+                                'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
+                                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                                'btn-white' => 'Weißer Button mit schwarzer Schrift',
                             ),
                             'eval' => array('tl_class' => 'w50'),
                         ),

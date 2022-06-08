@@ -1,0 +1,76 @@
+<div class="event layout_teaser<?= $this->classList ?>">
+
+    <?php if ($this->hasDetails): ?>
+        <h3 title="<?= $this->title ?> (<?php if ($this->day): ?><?= $this->day ?>, <?php endif; ?><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?>)"
+            data-bs-toggle="modal" data-bs-target="#eventModal_<?= $this->id; ?>">
+            <?= $this->title ?>
+        </h3>
+    <?php else: ?>
+        <h3><?= $this->title ?></h3>
+    <?php endif; ?>
+
+    <span class="time">
+        <time datetime="<?= $this->datetime ?>"><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?></time>
+    </span>
+
+    <?php if ($this->location): ?>
+        |
+        <span class="location"><?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></span>
+    <?php endif; ?>
+
+</div>
+
+<?php if ($this->details): ?>
+    <!-- Modal -->
+    <div style="display: none;" class="modal fade details-modal modal-dialog-centered modal-xl"
+         id="eventModal_<?= $this->id; ?>" tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <div class="container container">
+                        <button type="button" class="btn--close" data-bs-dismiss="modal" aria-label="Schließen">
+                            <i class="fal fa-times"></i>
+                        </button>
+
+                        <div class="row gx-3">
+
+                            <?php if ($this->addImage): ?>
+                                <div class="col-md-6">
+                                    <div class="event--modal-image-wrapper lazy" data-bg="<?= $this->singleSRC; ?>"
+                                         style="background: url() center center no-repeat; background-size: cover;">
+
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            <div class="col-12 <?php if ($this->addImage): ?>col-md-6<?php endif; ?>">
+                                <span class="h2"><?= $this->title ?></span>
+
+                                <?php if ($this->time): ?>
+                                    <strong class="time">
+                                        <time datetime="<?= $this->datetime ?>"><?= $this->time ?></time>
+                                        | </strong>
+                                <?php endif; ?>
+                                <?php if ($this->location): ?>
+                                    <strong class="location"> <?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></strong>
+                                <?php endif; ?>
+
+                                <?= $this->details; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+<?php
+
+// This template is used as an event list template by default, so we only add
+// JSON-LD data in case this is an event without a reader
+if (!$this->hasReader) {
+    $this->addSchemaOrg($this->getSchemaOrgData());
+}

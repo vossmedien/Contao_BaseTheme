@@ -1,0 +1,48 @@
+.footer--content {
+  &.type--5 {
+    background-color: $footer-top-bg;
+    color: $text-color-inverse;
+    @include padding(50px 0px 50px 0px);
+    font-weight: $font-weight-lighter;
+    font-size: rfs-value(16px);
+    line-height: 1.75;
+    white-space: nowrap;
+    background-image: url("/files/base/layout/img/footer-bg.svg");
+    background-position: center 0px;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+
+    .row {
+      > div {
+        @include media-breakpoint-down(lg) {
+          margin-top: rfs-value(20px);
+        }
+      }
+    }
+
+    a:not(.btn) {
+      color: $text-color-inverse;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    h3 {
+      font-size: 1rem;
+      color: $text-color-inverse;
+      font-weight: $font-weight-bold;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0px;
+      margin: 0px;
+
+      > li {
+        display: block;
+      }
+    }
+  }
+}

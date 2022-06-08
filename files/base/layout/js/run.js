@@ -22,13 +22,13 @@ Promise.all(promises)
         animatedClassName: "animate__animated", // class applied on animation
         useClassNames: true, // if true, will add content of `data-aos` as classes on scroll
         disableMutationObserver: false, // disables automatic mutations' detections (advanced)
-        debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
-        throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
+        //debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
+        //throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
 
         // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-        offset: 60, // offset (in px) from the original trigger point
+        //offset: 0, // offset (in px) from the original trigger point
 
-        once: false, // whether animation should happen only once - while scrolling down
+        once: true, // whether animation should happen only once - while scrolling down
         mirror: false, // whether elements should animate out while scrolling past them
         anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
       });
@@ -94,7 +94,7 @@ Promise.all(promises)
 
     window.onload = function () {
       var anchorLinks = document.querySelectorAll(
-        '#mainNav a[href^="#"]:not(.invisible), .onepagenavi--wrapper a[href^="#"], #mobileNav a[href^="#"]'
+        '#mainNav a[href^="#"]:not(.invisible), .onepagenavi--wrapper a[href^="#"], #mobileNav a[href^="#"]:not(.mm-btn)'
       );
       for (var i = 0; i < anchorLinks.length; i++) {
         anchorLinks[i].addEventListener("click", scrollToAnchor);
@@ -220,13 +220,11 @@ Promise.all(promises)
         var frontHeight = front.height();
         var backHeight = back.height();
 
-
-        if(backHeight > frontHeight){
-           front.css("height", backHeight);
-        } else{
-           back.css("height", frontHeight);
+        if (backHeight > frontHeight) {
+          front.css("height", backHeight);
+        } else {
+          back.css("height", frontHeight);
         }
-
       });
     }
 
@@ -265,7 +263,7 @@ Promise.all(promises)
     }
     /* END */
 
-    /* Behavior of Header Type 1 (fixed) */
+    /* Behavior of Header Type 1 (not fixed) */
     if ($(".header--content.type--1:not(.fixed)").length) {
       navWrapper = $(".hc--bottom");
       navWrapperHeight = $(".hc--bottom").outerHeight();
@@ -303,7 +301,7 @@ Promise.all(promises)
     }
     /* END */
 
-    /* Behavior of Header Type 1 (not fixed) */
+    /* Behavior of Header Type 1 (fixed) */
     if ($(".header--content.type--1.fixed").length) {
       navWrapper = $(".hc--bottom");
       navContainer = $(".hc-bottom--right-col");
@@ -378,6 +376,10 @@ Promise.all(promises)
     }
     /* END */
 
+    if ($(".modal").length) {
+      $(".modal").appendTo("body");
+    }
+
     if ($(".scrollToTop").length) {
       $(".scrollToTop").click(function () {
         $("html,body").animate({ scrollTop: $("#top").offset().top }, "500");
@@ -398,7 +400,7 @@ Promise.all(promises)
       if ($('#mainNav a[href*="#"]').length) {
         $('#mainNav a[href*="#"]:not(.invisible)').each(function () {
           var currLink = $(this);
-          var refElement = $(currLink.attr("href").replace('/',''));
+          var refElement = $(currLink.attr("href").replace("/", ""));
 
           if (refElement.position()) {
             if (

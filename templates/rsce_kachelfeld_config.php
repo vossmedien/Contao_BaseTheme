@@ -152,6 +152,28 @@ return array(
         ),
 
 
+        'column_gap' => array(
+            'label' => array(
+                'de' => array('Spaltenabstand', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                '' => 'Standard',
+                'gx-0' => 'kein Abstand',
+                'gx-1' => 'XS',
+                'gx-2' => 'SM',
+                'gx-3' => 'MD',
+                'gx-4' => 'LG',
+                'gx-5' => 'XL',
+            ),
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'columns_evenly' => array(
+            'label' => array('Boxhöhen gleichmäßig auf 100% Höhe verteilen', ''),
+            'inputType' => 'checkbox',
+        ),
+
         'kachel' => array(
             'label' => array('Kacheln', ''),
             'elementLabel' => '%s. Kachel',
@@ -537,10 +559,12 @@ return array(
                         'pos-centered' => 'Mittig',
                         'pos-centered-right' => 'Mittig rechts',
                         'pos-centered-left' => 'Mittig links',
-                        'pos-top-right' => 'Oben rechts',
                         'pos-bottom-right' => 'Unten rechts',
                         'pos-bottom-left' => 'Unten links',
-                        'pos-top-left' => 'Oben links'
+                        'pos-bottom-center' => 'Unten mittig',
+                        'pos-top-right' => 'Oben rechts',
+                        'pos-top-left' => 'Oben links',
+                        'pos-top-center' => 'Oben mittig'
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -576,11 +600,40 @@ return array(
                     'eval' => array('tl_class' => 'w50',),
                 ),
                 'kachel_top_text' => array(
-                    'label' => array('Text für Kachel in rechter Spalte', 'HTML ist erlaubt'),
+                    'label' => array('Text für Kachel', 'HTML ist erlaubt'),
                     'inputType' => 'text',
                     'eval' => array('allowHtml' => true, 'tl_class' => 'clr w50'),
                 ),
 
+
+                'kachel_top_url' => array(
+                    'label' => array('Verlinkung der Kachel', ''),
+                    'inputType' => 'url',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'kachel_new_tab' => array(
+                    'label' => array('Link in neuen Tab öffnen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'kachel_hovereffect' => array(
+                    'label' => array('Kachel nach Hover mit Effekt vergrößern', 'Ermöglicht die Eingabe von zusätzlichem Text'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+                'kachel_hover_text' => array(
+                    'label' => array('Hover-Text für Kachel (optional)', ''),
+                    'inputType' => 'textarea',
+                    'eval' => array('tl_class' => 'clr', 'rte' => 'tinyMCE'),
+                    'dependsOn' => array(
+                        'field' => 'kachel_hovereffect',
+                    ),
+
+                ),
 
                 'settings_3' => array(
                     'label' => array('Inhalte', ''),
@@ -785,7 +838,7 @@ return array(
                             'eval' => array('tl_class' => 'w50'),
                         ),
                         'link_url' => array(
-                            'label' => array('Verlinkung der Beschriftung', ''),
+                            'label' => array('Verlinkung', ''),
                             'inputType' => 'url',
                             'eval' => array('tl_class' => 'w50'),
                         ),
@@ -797,10 +850,12 @@ return array(
                             'inputType' => 'select',
                             'options' => array(
                                 'btn-primary' => 'Hauptfarbe',
-                                'btn-outline-primary' => 'Hauptfarbe (Outline)',
-                                'btn-secondary' => 'Sekundär-Farbe',
-                                'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
-                                'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                                'btn-outline-primary' => 'Hauptfarbe(Outline)',
+                                'btn-secondary' => 'Sekundär - Farbe',
+                                'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
+                                'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
+                                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                                'btn-white' => 'Weißer Button mit schwarzer Schrift',
                             ),
                             'eval' => array('tl_class' => 'w50'),
                         ),

@@ -21,6 +21,10 @@
   @include media-breakpoint-up(md) {
     @include padding($basic-gutter);
   }
+
+  > *:last-child {
+    margin-bottom: 0px !important;
+  }
 }
 
 .mod_article {
@@ -255,3 +259,4 @@
 @import "custom-elements/ce_rsce_onepagenavi";
 @import "custom-elements/ce_rsce_landingpageentry";
 @import "custom-elements/ce_rsce_stoerer";
+@import "custom-elements/ce_rsce_row1start";

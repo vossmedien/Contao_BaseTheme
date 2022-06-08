@@ -1,7 +1,12 @@
-#header{
-  .header--content{
+#header {
+  .header--content {
+    &.fixed {
+      position: absolute;
+      width: 100%;
+      z-index: 5;
+    }
 
-    figure{
+    figure {
       margin-bottom: 0px;
     }
   }

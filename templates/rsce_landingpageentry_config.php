@@ -487,13 +487,13 @@ return array(
                 ),
 
                 'middle_link_url' => array(
-                    'label' => array('Verlinkung der Beschriftung', ''),
+                    'label' => array('Verlinkung', ''),
                     'inputType' => 'url',
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
                 'settings_5' => array(
-                    'label' => array('Unterer "Inhalts"-Bereich', ''),
+                    'label' => array('Unterer "Inhalts" - Bereich', ''),
                     'inputType' => 'group',
                     'eval' => array('tl_class' => 'clr'),
                 ),
@@ -541,13 +541,13 @@ return array(
 
                 'textalign' => array(
                     'label' => array(
-                        'de' => array('Text-Ausrichtung', ''),
+                        'de' => array('Text - Ausrichtung', ''),
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'text-start' => 'Linksbündig',
-                        'text-center' => 'Zentriert',
-                        'text-end' => 'Rechtsbündig',
+                        'text - start' => 'Linksbündig',
+                        'text - center' => 'Zentriert',
+                        'text - end' => 'Rechtsbündig',
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -564,13 +564,13 @@ return array(
 
                 'button_textalign' => array(
                     'label' => array(
-                        'de' => array('Button-Ausrichtung', ''),
+                        'de' => array('Button - Ausrichtung', ''),
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'text-start' => 'Linksbündig',
-                        'text-center' => 'Zentriert',
-                        'text-end' => 'Rechtsbündig',
+                        'text - start' => 'Linksbündig',
+                        'text - center' => 'Zentriert',
+                        'text - end' => 'Rechtsbündig',
                     ),
 
                     'dependsOn' => array(
@@ -582,7 +582,7 @@ return array(
 
                 'buttons' => array(
                     'label' => array('Buttons', ''),
-                    'elementLabel' => '%s. Button',
+                    'elementLabel' => ' % s . Button',
                     'inputType' => 'list',
                     'minItems' => 1,
                     'maxItems' => 20,
@@ -726,7 +726,7 @@ return array(
                             'eval' => array('tl_class' => 'w50'),
                         ),
                         'link_url' => array(
-                            'label' => array('Verlinkung der Beschriftung', ''),
+                            'label' => array('Verlinkung', ''),
                             'inputType' => 'url',
                             'eval' => array('tl_class' => 'w50'),
                         ),
@@ -744,10 +744,12 @@ return array(
                             'inputType' => 'select',
                             'options' => array(
                                 'btn-primary' => 'Hauptfarbe',
-                                'btn-outline-primary' => 'Hauptfarbe (Outline)',
-                                'btn-secondary' => 'Sekundär-Farbe',
-                                'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
-                                'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                                'btn-outline-primary' => 'Hauptfarbe(Outline)',
+                                'btn-secondary' => 'Sekundär - Farbe',
+                                'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
+                                'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
+                                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                                'btn-white' => 'Weißer Button mit schwarzer Schrift',
                             ),
                             'eval' => array('tl_class' => 'w50'),
                         ),

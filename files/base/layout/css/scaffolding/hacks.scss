@@ -32,6 +32,12 @@ footer {
   }
 }
 
+main {
+  [class*="animate__"]:not(.no-animation) {
+    opacity: 0;
+  }
+}
+
 .make-fullwidth {
   width: 100vw;
   position: relative;
@@ -42,7 +48,7 @@ footer {
 }
 
 .container {
-  .container:not(.ce_headline) {
+  .container:not(.ce_headline):not(.container.container) {
     max-width: none;
     padding: 0px;
   }
@@ -60,9 +66,27 @@ footer {
 }
 
 .container {
-  --bs-gutter-x: #{$grid-gutter-width};
+  --bs-gutter-x: 0;
+}
+
+.container {
+  @include media-breakpoint-down(sm) {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .container {
+    @include media-breakpoint-down(sm) {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+  }
 }
 
 .alpdeskfee-article {
   margin: 0px !important;
+}
+
+*[data-bs-toggle] {
+  cursor: pointer;
 }

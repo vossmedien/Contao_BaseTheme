@@ -1,6 +1,25 @@
 .modal {
   max-width: 100% !important;
-  z-index: 9000;
+  //z-index: -1;
+
+  &:not(.show) {
+    width: 0px;
+    height: 0px;
+  }
+
+  &.modal-dialog-centered {
+    &.show {
+      display: flex !important;
+    }
+
+    .modal-dialog {
+      margin: auto;
+      width: 100%;
+
+      .modal-content.container {
+      }
+    }
+  }
 
   .btn--close {
     position: absolute;
@@ -14,5 +33,42 @@
     font-size: rfs-value(24px);
     line-height: 1;
     z-index: 5;
+  }
+}
+
+.modal.details-modal.modal-xl {
+  .modal-dialog {
+    max-width: 100%;
+
+    .modal-body {
+      padding-bottom: 0px;
+      padding-top: 0px;
+
+      .container.container {
+        position: relative;
+        padding-top: 3rem;
+        padding-bottom: 4rem;
+
+        .btn--close {
+          top: 1rem;
+          right: 0;
+        }
+
+        .event--modal-image-wrapper {
+          height: 100%;
+          width: 100%;
+        }
+
+        .ce_text {
+          a.btn {
+            margin-top: 2.5rem;
+          }
+
+          .text--wrapper {
+            font-weight: $font-weight-light;
+          }
+        }
+      }
+    }
   }
 }

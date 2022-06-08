@@ -1,11 +1,45 @@
 .ce_rsce_kachelfeld {
-  margin-bottom: calc(#{$basic-gutter} - 25px) !important;
+  margin-bottom: calc(#{$basic-gutter} - 25px);
 
   .row {
     justify-content: center;
 
     > div {
-         margin-bottom: 1rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &.columns-evenly {
+    margin-bottom: 0px;
+
+    .ce--inner {
+      height: 100%;
+
+      .ce--kachelfeld {
+        height: 100%;
+
+        .row {
+          height: calc(100% + var(--bs-gutter-x));
+          margin-top: calc(-1 * var(--bs-gutter-x) * 0.5);
+          margin-bottom: calc(-1 * var(--bs-gutter-x) * 0.5);
+
+          > div {
+            margin-bottom: 0px;
+            padding-top: calc(var(--bs-gutter-x) * 0.5);
+            padding-bottom: calc(var(--bs-gutter-x) * 0.5);
+          }
+
+          .kb--image {
+            flex: 1;
+            display: flex;
+            flex-flow: column wrap;
+
+            .kb--image-holder {
+              flex: 1;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -52,6 +86,11 @@
 
         .kb--image-holder {
           min-height: 100%;
+          height: 100%;
+
+          @include media-breakpoint-up(md) {
+            min-height: rfs-value(200px);
+          }
         }
 
         img {
@@ -80,85 +119,39 @@
         }
 
         .column-kachel--wrapper {
-          @include media-breakpoint-up(md) {
-            position: absolute;
-          }
+          transition: all 0.5s ease;
+          position: absolute;
 
           @include media-breakpoint-down(md) {
             width: 100%;
             height: 100%;
           }
 
-          &.pos-centered {
-            @include media-breakpoint-up(md) {
-              transform: translate(-50%, -50%);
-              left: 50%;
-              top: 50%;
-            }
-
-            .column--kachel {
-              position: relative;
-              margin: 0 auto;
-            }
-          }
-
-          &.pos-centered-right {
-            transform: translate(0%, -50%);
-            right: 0;
-            top: 50%;
-
-            .column--kachel {
-              right: 0;
-            }
-          }
-
-          &.pos-centered-left {
-            transform: translate(0%, -50%);
+          > a {
+            position: absolute;
             left: 0;
-            top: 50%;
-
-            .column--kachel {
-              left: 0;
-            }
-          }
-
-          &.pos-top-right {
             top: 0;
-            right: 0;
-
-            .column--kachel {
-              top: 0;
-              right: 0;
-            }
+            width: 100%;
+            height: 100%;
+            z-index: 5;
           }
 
-          &.pos-bottom-right {
-            bottom: 0;
-            right: 0;
+          &.with-effect {
+            width: 100%;
+            height: 100%;
+            display: flex;
 
-            .column--kachel {
-              bottom: 0;
-              right: 0;
-            }
-          }
+            &:hover {
+              .column--kachel {
+                width: 100%;
+                height: 100%;
 
-          &.pos-bottom-left {
-            bottom: 0;
-            left: 0;
-
-            .column--kachel {
-              bottom: 0;
-              left: 0;
-            }
-          }
-
-          &.pos-top-left {
-            top: 0;
-            left: 0;
-
-            .column--kachel {
-              top: 0;
-              left: 0;
+                .column-kachel--hover-text {
+                  opacity: 1;
+                  visibility: visible;
+                  height: auto;
+                }
+              }
             }
           }
 
@@ -184,6 +177,14 @@
                 display: block;
                 @include font-size(18px);
               }
+
+              .column-kachel--hover-text {
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.5s ease-in-out;
+                height: 0;
+                overflow: hidden;
+              }
             }
           }
         }
@@ -207,7 +208,6 @@
         }
 
         .box--text {
-
         }
 
         .box--button {

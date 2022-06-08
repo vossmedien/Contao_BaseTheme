@@ -1,0 +1,103 @@
+<div class="event layout_list<?= $this->classList ?>" data-aos="animate__fadeInUp">
+
+    <div class="row gx-3">
+        <div class="col-md-4">
+            <div class="event--image-wrapper" data-bs-toggle="modal" data-bs-target="#eventModal_<?= $this->id; ?>">
+                <?php if ($this->singleSRC): ?>
+                    <img class="lazy" data-src="<?= $this->singleSRC; ?>">
+                <?php endif; ?>
+                <span class="date"><?= date('d. F Y', strtotime($this->datetime)); ?></span>
+            </div>
+        </div>
+        <div class="col-md-8 mt-1 mt-md-0">
+            <div class="event--content-wrapper h-100">
+                <h2 data-bs-toggle="modal" data-bs-target="#eventModal_<?= $this->id; ?>"
+                    title="<?= $this->title ?> (<?php if ($this->day): ?><?= $this->day ?>, <?php endif; ?><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?>)">
+                    <?= $this->title ?>
+                </h2>
+
+                <div class="event--data-wrapper">
+                    <?php if ($this->time): ?>
+                        <strong class="time">
+                            <time datetime="<?= $this->datetime ?>"><?= $this->time ?></time>
+                            | </strong>
+                    <?php endif; ?>
+                    <?php if ($this->location): ?>
+                        <strong class="location"> <?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></strong>
+                    <?php endif; ?>
+                </div>
+
+                <?php if ($this->teaser): ?>
+                    <div class="ce_text mt-2 block pb-1">
+                        <?= $this->teaser ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($this->details): ?>
+                    <div class="event--button text-md-end">
+                        <a data-bs-toggle="modal" data-bs-target="#eventModal_<?= $this->id; ?>"
+                           class="btn btn-outline-black btn-sm">Weiterlesen</a>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php if ($this->details): ?>
+    <!-- Modal -->
+    <div class="modal fade details-modal modal-dialog-centered modal-xl" style="display: none;"
+         id="eventModal_<?= $this->id; ?>" tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog">
+
+            <div class="modal-content ">
+
+                <div class="modal-body">
+                    <div class="container container">
+                        <button type="button" class="btn--close" data-bs-dismiss="modal" aria-label="Schließen">
+                            <i class="fal fa-times"></i>
+                        </button>
+
+                        <div class="row gx-3">
+
+                            <?php if ($this->addImage): ?>
+                                <div class="col-md-6">
+                                    <div class="event--modal-image-wrapper lazy" data-bg="<?= $this->singleSRC; ?>"
+                                         style="background: url() center center no-repeat; background-size: cover;">
+
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            <div class="col-12  <?php if ($this->addImage): ?>col-md-6<?php endif; ?>">
+                                <span class="h2">   <?= $this->title ?></span>
+
+                                <?php if ($this->time): ?>
+                                    <strong class="time">
+                                        <time datetime="<?= $this->datetime ?>"><?= $this->time ?></time>
+                                        | </strong>
+                                <?php endif; ?>
+                                <?php if ($this->location): ?>
+                                    <strong class="location"> <?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></strong>
+                                <?php endif; ?>
+
+                                <?= $this->details; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php
+
+// This template is used as an event list template by default, so we only add
+// JSON-LD data in case this is an event without a reader
+if (!$this->hasReader) {
+    $this->addSchemaOrg($this->getSchemaOrgData());
+}
+
+

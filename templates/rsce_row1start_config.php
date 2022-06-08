@@ -11,7 +11,7 @@ return array(
     ),
     'wrapperClose' => 'rsce_row2end',
     'fields' => array(
-         'subline' => array(
+        'subline' => array(
             'label' => array('Subline', ''),
             'inputType' => 'text',
         ),
@@ -138,5 +138,22 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
+
+
+        'add_mid_element' => array(
+            'label' => array('Mittiges Element hinzufügen, liegt über beiden Spalten', 'Funktioniert nur bei 50/50 Spalten und fügt einen mittigen Balken in Body-Background Farbe sowie größere Spaltenabstände hinzu'),
+            'inputType' => 'checkbox',
+        ),
+
+        'mid_element_content' => array(
+            'label' => array('Text für Element', ''),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+
+            'dependsOn' => array(
+                'field' => 'add_mid_element',
+            ),
+        ),
+
     ),
 );

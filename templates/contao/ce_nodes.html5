@@ -1,9 +1,9 @@
 <?php if ($this->nodesWrapper) : ?>
-    <div class="<?= $this->class ?> <?php echo $this->styleManager->get('spaltengroesse'); ?> <?php echo $this->styleManager->get('spaltengroesse_sm'); ?> <?php echo $this->styleManager->get('spaltengroesse_md'); ?> <?php echo $this->styleManager->get('spaltengroesse_lg'); ?> <?php echo $this->styleManager->get('spaltengroesse_xl'); ?> <?php echo $this->styleManager->get('spaltengroesse_xxl'); ?>" <?= $this->cssID ?>>
-    <?php endif; ?>
+    <div class="<?= $this->class ?>   <?= $this->styleManager->get('columnsettings', ['spaltenausrichtung']); ?> <?php echo $this->styleManager->get('spaltengroesse'); ?> <?php echo $this->styleManager->get('spaltengroesse_sm'); ?> <?php echo $this->styleManager->get('spaltengroesse_md'); ?> <?php echo $this->styleManager->get('spaltengroesse_lg'); ?> <?php echo $this->styleManager->get('spaltengroesse_xl'); ?> <?php echo $this->styleManager->get('spaltengroesse_xxl'); ?>" <?= $this->cssID ?>>
+<?php endif; ?>
+    
+<?= implode("\n", $this->nodes) ?>
 
-    <?= implode("\n", $this->nodes) ?>
-
-    <?php if ($this->nodesWrapper) : ?>
+<?php if ($this->nodesWrapper) : ?>
     </div>
 <?php endif; ?>

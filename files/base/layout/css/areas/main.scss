@@ -25,14 +25,10 @@
         }
       }
     }
-
-
   }
-
 
   #main {
     //overflow: hidden;
-
 
     .mod_article {
       > *:not(.ce_headline):not(.ce_html) {
@@ -40,7 +36,7 @@
       }
 
       &:last-child {
-        *[class*='bg-']:last-of-type {
+        *[class*="bg-"]:last-of-type {
           margin-bottom: 0;
         }
 
@@ -52,14 +48,29 @@
       }
 
       &:first-child {
-        *[class*='bg-']:first-of-type {
+        *[class*="bg-"]:first-of-type {
           margin-top: 0px;
         }
       }
 
-      &[class*='bg-'] {
+      &[class*="bg-"] {
         //padding: rfs-value(50px 0px);
-        overflow: auto;
+        //overflow: auto;
+        overflow: hidden;
+
+        .ce_rsce_headimagelogo {
+          &:first-child {
+            margin-top: -$basic-gutter !important;
+          }
+
+          margin-left: -$basic-gutter;
+          margin-right: -$basic-gutter;
+          margin-bottom: $basic-gutter/2;
+
+          > .ce--inner {
+            margin-bottom: 0px !important;
+          }
+        }
 
         > div > * {
           &:not(:last-child):not(.ce_headline) {
@@ -71,34 +82,33 @@
           }
 
           &:first-child {
-            //margin-top: 0px;
+            margin-top: 0px !important; // ??
           }
         }
 
         &:last-of-type {
-          margin-bottom: rfs-value(-$basic-gutter);
+          //margin-bottom: rfs-value(-$basic-gutter);
         }
 
         & + .mod_article {
           .content--element:first-child {
-            &[class*='bg-'] {
+            &[class*="bg-"] {
               margin-top: 0px;
             }
           }
         }
       }
 
-
-      *[class*='bg-dark'] {
+      *[class*="bg-dark"] {
         color: $text-color-inverse;
       }
 
       & + .mod_article {
-        &[class*='bg-'] {
+        &[class*="bg-"] {
           margin-top: rfs-value($basic-gutter);
         }
 
-        .content--element[class*='bg-']:first-of-type {
+        .content--element[class*="bg-"]:first-of-type {
           margin-top: 0px;
         }
       }
@@ -112,7 +122,6 @@
         display: block;
       }
        */
-
     }
   }
 }

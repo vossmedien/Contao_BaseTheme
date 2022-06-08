@@ -1,21 +1,30 @@
-
-<div <?php echo $this->cssID; ?>  class="content--element row-wrapper <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element row-wrapper <?php echo $this->class; ?>">
 
     <div class="container">
 
-                    <?php if ($this->headline || $this->subline) : ?>
-        <div class="ce--headline">
+        <?php if ($this->headline || $this->subline) : ?>
+        <div class="ce--headline"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?php if ($this->headline) : ?>
-            <<?php echo($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <<?php echo($this->hl); ?>>
             <?php echo($this->headline); ?>
         </<?php echo($this->hl); ?>>
     <?php endif; ?>
         <?php if ($this->subline) : ?>
-            <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
+            <span class=" ce--subline"
+                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
         <?php endif; ?>
     </div>
     <?php endif; ?>
 
+    <div class="row <?php if ($this->mid_element_content): ?>with-mid-content<?php endif; ?> <?= $this->styleManager->get('spaltenausrichtung', ['ausrichtung']); ?> <?= $this->styleManager->get('spaltenausrichtung', ['ausrichtung_horizontal']); ?> <?= $this->styleManager->get('spaltenausrichtung', ['umkehren']); ?> <?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende']); ?>"
+         data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+        
+        <?php if ($this->mid_element_content): ?>
+            <div class="row-mid-content">
+                <div class="row-mid-content--inner">
+                    <?= $this->mid_element_content; ?>
+                </div>
+            </div>
+        <?php endif; ?>
 
-
-    <div class="row <?=$this->styleManager->get('spaltenausrichtung', ['ausrichtung']);?> <?=$this->styleManager->get('spaltenausrichtung', ['umkehren']);?> <?=$this->styleManager->get('spaltenabstand', ['spaltenabstaende']);?>" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">

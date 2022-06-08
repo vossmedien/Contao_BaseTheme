@@ -147,7 +147,7 @@ return array(
             'label' => array('Zeilen', ''),
             'elementLabel' => '%s. Zeile',
             'inputType' => 'list',
-            'minItems' => 1,
+            'minItems' => 0,
             'maxItems' => 10,
             'fields' => array(
                 'row_name' => array(
@@ -499,10 +499,12 @@ return array(
                         'pos-centered' => 'Mittig',
                         'pos-centered-right' => 'Mittig rechts',
                         'pos-centered-left' => 'Mittig links',
-                        'pos-top-right' => 'Oben rechts',
                         'pos-bottom-right' => 'Unten rechts',
                         'pos-bottom-left' => 'Unten links',
-                        'pos-top-left' => 'Oben links'
+                        'pos-bottom-center' => 'Unten mittig',
+                        'pos-top-right' => 'Oben rechts',
+                        'pos-top-left' => 'Oben links',
+                        'pos-top-center' => 'Oben mittig'
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -514,7 +516,7 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                          'justify-content-center align-items-center' => 'Mittig',
+                        'justify-content-center align-items-center' => 'Mittig',
                         'justify-content-center align-items-end' => 'Mittig rechts',
                         'justify-content-center' => 'Mittig links',
                         'align-items-end' => 'Oben rechts',
@@ -562,7 +564,7 @@ return array(
 
 
                 'kachel_left_hover_text' => array(
-                    'label' => array('Text für Kachel in rechter Spalte', 'HTML ist erlaubt'),
+                    'label' => array('Text für Kachel', 'HTML ist erlaubt'),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE'),
                     'dependsOn' => array(
@@ -723,10 +725,12 @@ return array(
                         'pos-centered' => 'Mittig',
                         'pos-centered-right' => 'Mittig rechts',
                         'pos-centered-left' => 'Mittig links',
-                        'pos-top-right' => 'Oben rechts',
                         'pos-bottom-right' => 'Unten rechts',
                         'pos-bottom-left' => 'Unten links',
-                        'pos-top-left' => 'Oben links'
+                        'pos-bottom-center' => 'Unten mittig',
+                        'pos-top-right' => 'Oben rechts',
+                        'pos-top-left' => 'Oben links',
+                        'pos-top-center' => 'Oben mittig'
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -786,7 +790,7 @@ return array(
 
 
                 'kachel_right_hover_text' => array(
-                    'label' => array('Text für Kachel in rechter Spalte', 'HTML ist erlaubt'),
+                    'label' => array('Text für Kachel', 'HTML ist erlaubt'),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE'),
                     'dependsOn' => array(
@@ -1062,7 +1066,7 @@ return array(
                             'eval' => array('tl_class' => 'w50'),
                         ),
                         'link_url' => array(
-                            'label' => array('Verlinkung der Beschriftung', ''),
+                            'label' => array('Verlinkung', ''),
                             'inputType' => 'url',
                             'eval' => array('tl_class' => 'w50'),
                         ),
@@ -1078,6 +1082,8 @@ return array(
                                 'btn-secondary' => 'Sekundär-Farbe',
                                 'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
                                 'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                                'btn-white' => 'Weißer Button mit schwarzer Schrift',
                             ),
                             'eval' => array('tl_class' => 'w50'),
                         ),
@@ -1097,6 +1103,7 @@ return array(
                         'new_tab' => array(
                             'label' => array('Link in neuen Tab öffnen', ''),
                             'inputType' => 'checkbox',
+                            'eval' => array('tl_class' => 'clr'),
                         ),
                     ),
                 ),

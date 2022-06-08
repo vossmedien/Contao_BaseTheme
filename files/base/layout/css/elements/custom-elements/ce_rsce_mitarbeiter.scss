@@ -1,7 +1,6 @@
 .ce_rsce_mitarbeiter {
   margin-bottom: rfs-value(-25px);
 
-
   .row > div {
     margin-bottom: rfs-value(25px);
   }
@@ -10,7 +9,6 @@
     display: flex;
     flex-flow: column nowrap;
     height: 100%;
-
 
     .ma--image {
       position: relative;
@@ -29,7 +27,7 @@
       flex: 1;
 
       &.with-bg {
-        @include padding(15px 20px 15px 20px);
+        padding: 1.5rem 1rem;
       }
 
       .job-subline {
@@ -42,7 +40,7 @@
 
       .job-desc {
         @include font-size(14px);
-        margin-top: .75rem;
+        margin-top: 0.75rem;
 
         a {
           text-decoration: none;

@@ -1,23 +1,35 @@
-.ce_accordionStart {
+.ce_accordion {
   margin-bottom: 1rem;
 
   .toggler {
-    @extend .btn;
-    @extend .btn.btn-primary;
-    @extend .btn-lg;
-    width: 100%;
+    background-color: $gray-200;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    @include font-size(28px);
+    color: $primary;
+  }
 
+  .accordion {
+    background-color: $gray-200;
 
-    &.active {
-      border-bottom-left-radius: 0px;
-      border-bottom-right-radius: 0px;
+    > div {
+      padding: 0rem 1.5rem 1.5rem 1.5rem;
+    }
+  }
+
+  &:nth-child(even) {
+    .toggler {
+      background-color: $gray-100;
+    }
+
+    .accordion {
+      background-color: $gray-100;
     }
   }
 
   .accordion {
     .content--box {
-      border-top-left-radius: 0px;
-      border-top-right-radius: 0px;
     }
   }
 }

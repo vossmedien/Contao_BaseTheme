@@ -219,6 +219,8 @@ return array(
                 'btn-secondary' => 'Sekundär-Farbe',
                 'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
                 'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                'btn-white' => 'Weißer Button mit schwarzer Schrift',
             ),
             'eval' => array('tl_class' => 'w50'),
         ),
@@ -245,7 +247,7 @@ return array(
         ),
 
         'link_url' => array(
-            'label' => array('Verlinkung der Beschriftung', ''),
+            'label' => array('Verlinkung', ''),
             'inputType' => 'url',
             'eval' => array('tl_class' => 'w50'),
         ),

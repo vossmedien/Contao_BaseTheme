@@ -317,11 +317,11 @@ return array(
                     'inputType' => 'text',
                 ),
                 'link_url' => array(
-                    'label' => array('Verlinkung der Beschriftung', ''),
+                    'label' => array('Verlinkung', ''),
                     'inputType' => 'url',
                 ),
                 'link_betreff' => array(
-                    'label' => array('Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
+                    'label' => array('Betreffzeile für "mailto:" - Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
                     'inputType' => 'text',
                 ),
                 'link_type' => array(
@@ -331,10 +331,12 @@ return array(
                     'inputType' => 'select',
                     'options' => array(
                         'btn-primary' => 'Hauptfarbe',
-                        'btn-outline-primary' => 'Hauptfarbe (Outline)',
-                        'btn-secondary' => 'Sekundär-Farbe',
-                        'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
-                        'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                        'btn-outline-primary' => 'Hauptfarbe(Outline)',
+                        'btn-secondary' => 'Sekundär - Farbe',
+                        'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
+                        'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
+                        'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                        'btn-white' => 'Weißer Button mit schwarzer Schrift',
                     ),
                 ),
                 'link_size' => array(

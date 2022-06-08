@@ -62,6 +62,28 @@
     }
   }
 
+  &.btn-white {
+    border-color: $white;
+    color: $body-color;
+    background-color: $white;
+
+    &:hover {
+      background-color: $body-color;
+      color: $white;
+    }
+  }
+
+  &.btn-outline-black {
+    border-color: $black;
+    color: $black;
+    background-color: transparent;
+
+    &:hover {
+      background-color: $black;
+      color: $white;
+    }
+  }
+
   &.btn-link {
     padding: 0px;
     color: $primary;

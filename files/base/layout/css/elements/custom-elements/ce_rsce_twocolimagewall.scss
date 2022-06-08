@@ -106,79 +106,6 @@
         height: 100%;
       }
 
-      &.pos-centered {
-        @include media-breakpoint-up(md) {
-          transform: translate(-50%, -50%);
-          left: 50%;
-          top: 50%;
-        }
-
-        .column--kachel {
-          position: relative;
-          margin: 0 auto;
-        }
-      }
-
-      &.pos-centered-right {
-        transform: translate(0%, -50%);
-        right: 0;
-        top: 50%;
-
-        .column--kachel {
-          right: 0;
-        }
-      }
-
-      &.pos-centered-left {
-        transform: translate(0%, -50%);
-        left: 0;
-        top: 50%;
-
-        .column--kachel {
-          left: 0;
-        }
-      }
-
-      &.pos-top-right {
-        top: 0;
-        right: 0;
-
-        .column--kachel {
-          top: 0;
-          right: 0;
-        }
-      }
-
-      &.pos-bottom-right {
-        bottom: 0;
-        right: 0;
-
-        .column--kachel {
-          bottom: 0;
-          right: 0;
-        }
-      }
-
-      &.pos-bottom-left {
-        bottom: 0;
-        left: 0;
-
-        .column--kachel {
-          bottom: 0;
-          left: 0;
-        }
-      }
-
-      &.pos-top-left {
-        top: 0;
-        left: 0;
-
-        .column--kachel {
-          top: 0;
-          left: 0;
-        }
-      }
-
       .column--kachel {
         height: 100%;
         width: 100%;
@@ -213,9 +140,11 @@
             display: block;
             @include font-size(22px);
           }
-              @include media-breakpoint-down(md) {
-        text-align: left !important;
-      }
+
+          @include media-breakpoint-down(md) {
+            text-align: left !important;
+          }
+
           .kachel-hover--content {
             transition: all 0.5s ease;
             @include media-breakpoint-up(md) {
@@ -223,8 +152,6 @@
               height: 0px;
               overflow: hidden;
             }
-
-
 
             .kachel--long-text {
               margin-top: 2rem;
@@ -241,7 +168,6 @@
       }
     }
 
-
     &.expandable:hover {
       .column-kachel--wrapper {
         width: 100%;
@@ -254,10 +180,8 @@
           .column-kachel--inner {
             text-align: left !important;
 
-
             @include media-breakpoint-up(md) {
               padding: 2.5rem;
-
             }
 
             .kachel-hover--content {
@@ -269,8 +193,6 @@
         }
       }
     }
-
-
   }
 
   .ce--inner {
@@ -677,7 +599,7 @@
                   & + .image--col {
                     &:hover .image-col--inner:not(.with-iframe) {
                       width: calc(
-                              33.333vw + 2.5% - #{$mini-spacing}
+                        33.333vw + 2.5% - #{$mini-spacing}
                       ) !important;
                       right: -2.5%;
                     }
@@ -725,7 +647,7 @@
                   & + .image--col {
                     &:hover .image-col--inner:not(.with-iframe) {
                       width: calc(
-                              41.777vw + 2.5% - #{$mini-spacing}
+                        41.777vw + 2.5% - #{$mini-spacing}
                       ) !important;
                       right: -2.5%;
                     }
@@ -773,7 +695,7 @@
                   & + .image--col {
                     &:hover .image-col--inner:not(.with-iframe) {
                       width: calc(
-                              58.444vw + 2.5% - #{$mini-spacing}
+                        58.444vw + 2.5% - #{$mini-spacing}
                       ) !important;
                       right: -2.5%;
                     }
@@ -821,7 +743,7 @@
                   & + .image--col {
                     &:hover .image-col--inner:not(.with-iframe) {
                       width: calc(
-                              66.666vw + 2.5% - #{$mini-spacing}
+                        66.666vw + 2.5% - #{$mini-spacing}
                       ) !important;
                       right: -2.5%;
                     }

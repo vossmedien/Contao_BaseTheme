@@ -1,3 +1,96 @@
-.bg-gradient-white{
+.bg-gradient-white {
   background: linear-gradient(#fff 0%, #f8f8f8 100%);
+}
+
+.pos-centered {
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+
+  .column--kachel {
+    position: relative;
+    margin: auto;
+  }
+}
+
+.pos-centered-right {
+  transform: translate(0%, -50%);
+  right: 0;
+  top: 50%;
+
+  .column--kachel {
+    right: 0;
+  }
+}
+
+.pos-centered-left {
+  transform: translate(0%, -50%);
+  left: 0;
+  top: 50%;
+
+  .column--kachel {
+    left: 0;
+  }
+}
+
+.pos-top-right {
+  top: 0;
+  right: 0;
+
+  .column--kachel {
+    top: 0;
+    right: 0;
+  }
+}
+
+.pos-top-left {
+  top: 0;
+  left: 0;
+
+  .column--kachel {
+    top: 0;
+    left: 0;
+  }
+}
+
+.pos-top-center {
+  transform: translate(-50%, 50px);
+  left: 50%;
+  top: 0;
+
+  .column--kachel {
+    position: relative;
+    margin: 0 auto;
+  }
+}
+
+.pos-bottom-right {
+  bottom: 0;
+  right: 0;
+
+  .column--kachel {
+    bottom: 0;
+    right: 0;
+  }
+}
+
+.pos-bottom-left {
+  bottom: 0;
+  left: 0;
+
+  .column--kachel {
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.pos-bottom-center {
+  transform: translate(-50%, 0px);
+  left: 50%;
+  bottom: 0;
+
+  .column--kachel {
+    position: relative;
+    margin: 0 auto;
+  }
 }

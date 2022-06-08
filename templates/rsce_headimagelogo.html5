@@ -32,7 +32,7 @@
 
                 <div class="swiper-slide">
                     <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline) : ?>no-text<?php endif; ?> ">
-                        <div class="image--holder <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif;?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>" style="background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat; <?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; min-height: 250px;<?php endif; ?>">
+                        <div class="image--holder <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>" style="background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat; <?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; min-height: 250px;<?php endif; ?>">
 
                             <?php if ($slide->alternate_background_color): ?>
                                 <style>
@@ -73,7 +73,7 @@
                             <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1) : ?>
                                 <div data-aos="<?php if ($slide->animation_type) : ?><?php echo $slide->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="mainimage--content" <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
                                     <div class="container">
-                                        <div class="mainimage--content-inner <?php if ($slide->text_align) : ?><?php echo $slide->text_align; ?><?php endif; ?>" <?php if ($slide->text_color) : ?>style="color: <?php echo $slide->text_color; ?>;" <?php endif; ?>>
+                                        <div class="mainimage--content-inner <?php echo $slide->textbox_position; ?> <?php echo $slide->text_align; ?>" style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?> <?php if ($slide->maxWidth) : ?>max-width: <?php echo $slide->maxWidth; ?>;<?php endif; ?>">
 
                                             <div class="mainimage--content-inner--wrapper">
                                                 <?php if ($slide->firstline_headline) : ?>
@@ -93,7 +93,7 @@
                                                 <?php if (count($slide->buttons) >= 1) : ?>
                                                     <div class="button--wrapper">
                                                         <?php foreach ($slide->buttons as $button) : ?>
-                                                            <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="d-inline-block mt-2  me-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>" href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
+                                                            <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>" href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
                                                         <?php endforeach ?>
                                                     </div>
                                                 <?php endif; ?>
@@ -122,57 +122,57 @@
     <?php endif; ?>
 </div>
 
-    <script>
-        window.addEventListener('load', function () {
-            if ($('.swiper.mainslider_<?php echo $this->id; ?>').length) {
-                const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {
+<script>
+    window.addEventListener('load', function () {
+        if ($('.swiper.mainslider_<?php echo $this->id; ?>').length) {
+            const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {
 
-                    loop: true,
+                loop: true,
 
-                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
-                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
-                    'slide'<?php endif;?>,
+                speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
+                effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
+                'slide'<?php endif;?>,
 
-                    <?php if ($this->autoplay) : ?>
-                    autoplay: {
-                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                <?php if ($this->autoplay) : ?>
+                autoplay: {
+                    delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                },
+                <?php endif; ?>
+
+                <?php if (count($this->slides) > 1) : ?>
+                navigation: {
+                    nextEl: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-button-next',
+                    prevEl: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-button-prev',
+                },
+                <?php if (!$this->boxed_image) : ?>
+                pagination: {
+                    el: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-pagination',
+                    clickable: true,
+                },
+                <?php endif; ?>
+                <?php endif; ?>
+
+
+                on: {
+                    realIndexChange: function () {
+                        $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage *[data-aos]').removeClass('aos-init').removeClass('aos-animate');
+                        $('.mainslider_<?php echo $this->id; ?> .swiper-slide:not(.swiper-slide-active) .ce--mainimage .mainimage--content').hide();
+
+                        setTimeout(function () {
+                            $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage .mainimage--content').show();
+                        }, 500);
                     },
-                    <?php endif; ?>
+                }
+            });
+        }
+    })
+</script>
 
-                    <?php if (count($this->slides) > 1) : ?>
-                    navigation: {
-                        nextEl: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-button-next',
-                        prevEl: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-button-prev',
-                    },
-                    <?php if (!$this->boxed_image) : ?>
-                    pagination: {
-                        el: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-pagination',
-                        clickable: true,
-                    },
-                    <?php endif; ?>
-                    <?php endif; ?>
-
-
-                    on: {
-                        realIndexChange: function () {
-                            $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage *[data-aos]').removeClass('aos-init').removeClass('aos-animate');
-                            $('.mainslider_<?php echo $this->id; ?> .swiper-slide:not(.swiper-slide-active) .ce--mainimage .mainimage--content').hide();
-
-                            setTimeout(function () {
-                                $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage .mainimage--content').show();
-                            }, 500);
-                        },
-                    }
-                });
-            }
-        })
-    </script>
-
- <?php if ($this->show_breadcrumb) : ?>
-<div class="container mb-5">
-    {{insert_module::48}}
-</div>
-    <?php endif; ?>
+<?php if ($this->show_breadcrumb) : ?>
+    <div class="container mb-5">
+        {{insert_module::48}}
+    </div>
+<?php endif; ?>
 
 </div>
 

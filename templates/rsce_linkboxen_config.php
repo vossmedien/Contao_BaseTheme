@@ -142,7 +142,7 @@ return array(
         'size' => array(
             'label' => array('Bildbreite und Bildhöhe', ''),
             'inputType' => 'imageSize',
-            'options' => \System::getImageSizes(),
+            'options' => System::getImageSizes(),
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
             'eval' => array(
                 'rgxp' => 'digit',
@@ -151,12 +151,17 @@ return array(
             ),
         ),
 
+        'imagearea_height' => array(
+            'label' => array('Höhe des Bildbereichs', 'inkl. Maßeinheit, z. B. 400px'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => ' w50'),
+        ),
 
         'boxes' => array(
             'label' => array('Boxen', ''),
             'elementLabel' => '%s. Box',
             'inputType' => 'list',
-            'minItems' => 1,
+            'minItems' => 0,
             'maxItems' => 99,
             'fields' => array(
 
@@ -172,7 +177,7 @@ return array(
                     'inputType' => 'select',
                     'options' => array(
                         'style-1' => 'Typ 1: Abgerundete Ecken, Schatten, zentriert',
-                        'style-2' => 'Typ 2: Grauer Hintergrund, linksbündig, Pfeil auf rechter Seite',
+                        'style-2' => 'Typ 2: Farbiger Hintergrund, linksbündig, Pfeil auf rechter Seite',
                     ),
                 ),
 
@@ -463,6 +468,49 @@ return array(
                 ),
 
 
+                'add_imagetext' => array(
+                    'label' => array('', ''),
+                    'inputType' => 'checkbox',
+                    'options' => array(
+                        '1' => 'Text nach Hover im Bildbereich anzeigen',
+                    ),
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+                'alternate_hoverbackground' => array(
+                    'label' => array('Alternative Hover-Hintergrundfarbe', 'In HEX oder rgb(a) angeben, Standard: Halbtransparentes weiß'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'add_imagetext',
+                        'value' => '1',
+                    ),
+                ),
+
+
+                'alternate_hovertext' => array(
+                    'label' => array('Alternative Hover-Textfarbe', 'In HEX oder rgb(a) angeben, Standard: Basis-Textfarbe'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'add_imagetext',
+                        'value' => '1',
+                    ),
+                ),
+
+
+                'imagetext' => array(
+                    'label' => array('Hovertext auf Bildfläche', ''),
+                    'inputType' => 'textarea',
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+
+                    'dependsOn' => array(
+                        'field' => 'add_imagetext',
+                        'value' => '1',
+                    ),
+                ),
+
+
                 'add_collapsableBox' => array(
                     'label' => array('', ''),
                     'inputType' => 'checkbox',
@@ -563,9 +611,10 @@ return array(
                     ),
                 ),
 
+
                 'modal_button_animation' => array(
                     'label' => array(
-                        'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
+                        'de' => array('Art der Einblendeanimation des Buttons', 'Siehe https://animate.style/ für Beispiele'),
                     ),
                     'inputType' => 'select',
                     'options' => array(
@@ -701,6 +750,8 @@ return array(
                         'btn-secondary' => 'Sekundär-Farbe',
                         'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
                         'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                        'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                        'btn-white' => 'Weißer Button mit schwarzer Schrift',
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -717,6 +768,7 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
+
                 'modal_image' => array(
                     'label' => array('Bild für modales Fenster', ''),
                     'inputType' => 'fileTree',
@@ -725,7 +777,19 @@ return array(
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,svg',
-                        'tl_class' => 'clr'
+                        'tl_class' => 'w50'
+                    ),
+
+                ),
+                'modal_logo' => array(
+                    'label' => array('Logo welches unten links auf dem Bild platziert wird', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'jpg,jpeg,png,svg',
+                        'tl_class' => 'w50'
                     ),
 
                 ),
@@ -734,6 +798,13 @@ return array(
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
+
+
+                'modal_row_reverse' => array(
+                    'label' => array('Spalten umkehren', ''),
+                    'inputType' => 'checkbox',
+                ),
+
 
                 'modal_backgroundcolor' => array(
                     'label' => array('Hintergrundfarbe für das gesamte Modal', 'in HEX oder RGB angeben, Standard: Weiß'),
@@ -749,7 +820,7 @@ return array(
                         '' => 'Standard',
                         'modal-sm' => 'Klein',
                         'modal-lg' => 'Groß',
-                        'modal-xl' => 'Sehr groß',
+                        'modal-xl' => 'Volle Breite',
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -1024,7 +1095,7 @@ return array(
                             'eval' => array('tl_class' => 'w50'),
                         ),
                         'link_url' => array(
-                            'label' => array('Verlinkung der Beschriftung', ''),
+                            'label' => array('Verlinkung', ''),
                             'inputType' => 'url',
                             'eval' => array('tl_class' => 'w50'),
                         ),
@@ -1036,10 +1107,12 @@ return array(
                             'inputType' => 'select',
                             'options' => array(
                                 'btn-primary' => 'Hauptfarbe',
-                                'btn-outline-primary' => 'Hauptfarbe (Outline)',
-                                'btn-secondary' => 'Sekundär-Farbe',
-                                'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
-                                'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                                'btn-outline-primary' => 'Hauptfarbe(Outline)',
+                                'btn-secondary' => 'Sekundär - Farbe',
+                                'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
+                                'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
+                                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                                'btn-white' => 'Weißer Button mit schwarzer Schrift',
                             ),
                             'eval' => array('tl_class' => 'w50'),
                         ),
