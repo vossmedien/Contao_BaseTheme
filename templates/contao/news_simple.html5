@@ -15,7 +15,7 @@
                 <h2><?= $this->linkHeadline ?></h2>
 
                 <?php if ($this->teaser): ?>
-                    <div class="ce_text mt-2 block pb-1">
+                    <div class="ce_text mt-1 block pb-1">
                         <?= $this->teaser ?>
                     </div>
                 <?php endif; ?>

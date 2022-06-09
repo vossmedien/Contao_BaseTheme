@@ -119,10 +119,10 @@
           z-index: 5;
 
           @include media-breakpoint-up(xl) {
-            margin-left: -7.5px;
+            margin-left: -15px;
           }
 
-          > div.col > .nav-link {
+          > .nav-link {
             display: block;
             padding: 0 1rem;
             transition: all 0.3s ease;

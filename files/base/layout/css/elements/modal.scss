@@ -21,6 +21,10 @@
     }
   }
 
+  .modal-content{
+    border-radius: $border-radius;
+  }
+
   .btn--close {
     position: absolute;
     right: 10px;

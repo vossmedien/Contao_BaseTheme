@@ -19,7 +19,7 @@
                 <div class="event--data-wrapper">
                     <?php if ($this->time): ?>
                         <strong class="time">
-                            <time datetime="<?= $this->datetime ?>"><?= $this->time ?></time>
+                            <time datetime="<?= $this->datetime ?>"><?= $this->time ?></time> Uhr
                             | </strong>
                     <?php endif; ?>
                     <?php if ($this->location): ?>
@@ -28,13 +28,13 @@
                 </div>
 
                 <?php if ($this->teaser): ?>
-                    <div class="ce_text mt-2 block pb-1">
+                    <div class="ce_text mt-1 block pb-1">
                         <?= $this->teaser ?>
                     </div>
                 <?php endif; ?>
 
                 <?php if ($this->details): ?>
-                    <div class="event--button text-md-end">
+                    <div class="event--button pt-1 text-md-end">
                         <a data-bs-toggle="modal" data-bs-target="#eventModal_<?= $this->id; ?>"
                            class="btn btn-outline-black btn-sm">Weiterlesen</a>
                     </div>

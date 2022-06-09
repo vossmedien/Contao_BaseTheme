@@ -34,7 +34,7 @@
       }
 
       &:nth-child(odd) {
-        background-color: $gray-200;
+        background-color: var(--bs-gray-200);
       }
 
       .event--image-wrapper {
@@ -50,7 +50,7 @@
         span.date {
           position: absolute;
           background-color: $primary;
-          padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+          padding: 0.5rem 1rem 0.5rem 1.5rem;
           color: $text-color-inverse;
           font-weight: $font-weight-light;
           top: 1.5rem;
