@@ -59,10 +59,12 @@
 
   &.border-top {
     padding-top: $basic-gutter;
+    margin-top: $basic-gutter;
   }
 
   &.border-bottom {
     padding-bottom: $basic-gutter;
+    margin-bottom: $basic-gutter;
   }
 }
 

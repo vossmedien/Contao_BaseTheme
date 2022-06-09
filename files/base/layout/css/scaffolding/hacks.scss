@@ -33,7 +33,7 @@ footer {
 }
 
 main {
-  [class*="animate__"]:not(.no-animation) {
+  [class*="animate__"]:not(.no-animation):not(.animate__animated) {
     opacity: 0;
   }
 }
