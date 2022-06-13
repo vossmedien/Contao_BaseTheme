@@ -18,18 +18,22 @@
  */
 
 [class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery) {
-  @include media-breakpoint-up(md) {
-    @include padding($basic-gutter);
-  }
+  padding: $basic-gutter;
 
   > *:last-child {
     margin-bottom: 0px !important;
+  }
+
+  .content--element:first-child .row-mid-content {
+    @include media-breakpoint-down(md) {
+      padding-top: 0px;
+    }
   }
 }
 
 .mod_article {
   &[class*="bg-"] {
-    padding-top: 0px;
+    //padding-top: 0px;
   }
 }
 

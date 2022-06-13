@@ -150,7 +150,7 @@
                   opacity: 1;
                   font-size: 1rem;
                   max-height: 1000px;
-                   transition: all .5s ease;
+                  transition: all .5s ease;
                 }
               }
             }
@@ -178,19 +178,25 @@
               padding-left: 1rem;
               padding-right: 1rem;
 
-              *{
-              transition: all 0.5s ease-in-out;
-            }
+              * {
+                transition: all 0.5s ease-in-out;
+              }
 
               > span {
                 display: block;
                 @include font-size(18px);
               }
 
+
               .column-kachel--hover-text {
-                opacity: 0;
-                max-height: 0px;
-                font-size: 0px;
+
+                @include media-breakpoint-up(md) {
+                  opacity: 0;
+                  max-height: 0px;
+                  font-size: 0px;
+                }
+
+
                 transition: all .5s ease;
               }
             }
