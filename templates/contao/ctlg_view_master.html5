@@ -1,0 +1,266 @@
+<!-- start
+    *
+    * The code below should not be used. You can replace it with your own code. Just follow the instruction:
+    *
+    * All catalog values are located in the "$this" Variable. Access individual values ​​with the arrow operator.
+    * For Example:
+    * Output simple string: $this->yourFieldname
+    * Format numbers: number_format( $this->yourFieldname, 2, ',', '.' ) €
+    * Output joins: $this->tablenameYourFieldname
+    * Output array: implode ( ', ', $this->yourFieldname )
+    * Output associative array: implode( ', ', array_map( function( $arrValue ) { return $arrValue['title'] }, $this->yourFieldname ) )
+    *
+-->
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org/",
+        "@type": "JobPosting",
+        "title": "<?= $this->title; ?>",
+        "description": "<?= $this->description_1; ?>",
+        "identifier": {
+            "@type": "PropertyValue",
+            "name": "cosee GmbH"
+        },
+        "datePosted": "<?= date(DATE_ISO8601, strtotime($this->tstamp)); ?>",
+        "employmentType": "FULL_TIME",
+        "hiringOrganization": {
+            "@type": "Organization",
+            "name": "cosee GmbH",
+            "sameAs": "https://www.cosee.biz/",
+            "logo": "{{env::url}}/files/base/layout/img/logo.svg"
+        },
+        "jobLocation": {
+            "@type": "Place",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Mina-Rees-Straße 8",
+                "addressLocality": "Darmstadt",
+                "addressRegion": "HE",
+                "postalCode": "64295",
+                "addressCountry": "DE"
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+<div class="content--element ce_rsce_boxenfeld mt-4 <?= $this->cssClass ?>">
+    <div class="ce--inner container ">
+
+        <div class="ce--boxenfeld ">
+            <div class="boxes--outer">
+                <div class="row">
+
+                    <?php if ($this->content_image_1["src"]): ?>
+                        <div class="col-12 col-lg-6">
+                            <img class="box--image" src="<?= $this->content_image_1["src"]; ?>">
+                        </div>
+                    <?php endif; ?>
+                    <div class="col-12 col-lg-6">
+                        <div class="box--content"
+                             data-aos="animate__fadeInUp"
+                             style="position: relative; top: 75px">
+                            <div class="box--headline">
+                                <h1><?= $this->title; ?> <span><?= $this->subtitle; ?></span></h1>
+                            </div>
+                            <?php if ($this->description_1): ?>
+                                <div class="box--text">
+                                    <?= $this->description_1; ?>
+                                    <div class="box--button">
+                                        <a class="btn btn-primary btn-lg" href="#ansprechpartner">Bewirb dich jetzt!</a>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content--element three-cols--content">
+    <div class="ce--inner container">
+
+        <div class="ce--headline" data-aos="animate__fadeIn">
+            <h2><?= $this->content_headline_1; ?></h2>
+        </div>
+
+        <div class="row gx-4">
+            <?php if ($this->content_image_2): ?>
+                <div class="col-lg-4" data-aos="animate__fadeInLeft">
+                    <?= $this->content_image_2; ?>
+                </div>
+            <?php endif; ?>
+            <?php if ($this->description_2): ?>
+                <div class="col-lg-8" data-aos="animate__fadeInRight">
+                    <div class="two-column-text">
+                        <?= $this->description_2; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<?php if ($this->selected_benefits): ?>
+    <div class="content--element benefits bg-dark text-center">
+        <div class="ce--inner container">
+            <div class="ce--headline">
+                <h2 data-aos="animate__fadeIn">Das bieten wir dir</h2>
+            </div>
+            <div class="row gx-lg-5 justify-content-center">
+                <?php foreach ($this->selected_benefits as $benefit) : ?>
+                    <div class="col-lg-4 col-lg-3 mt-2">
+
+                        <div class="benefit--box" data-aos="animate__fadeInUp">
+                            <div class="benefit-box--upper">
+                                <?= $benefit["content_image_1"]; ?>
+                            </div>
+                            <div class="benefit-box--lower">
+                                <div class="benefit--title">
+                                    <?= $benefit["title"]; ?>
+                                </div>
+
+                                <div class="benefit--desc">
+                                    <?= $benefit["description_1"]; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<div class="content--element testimonials--top">
+    <div class="ce--inner container">
+        <div class="row gx-4 flex-lg-row-reverse">
+            <div class="col-lg-4">
+                <div class="testimonial-person--box mb-3 mb-lg-0" data-aos="animate__fadeInRight">
+                    <span class="h2"><?= $this->testimonial_name; ?></span>
+                    <div class="testimonial--personal-note">
+                        <?= $this->testimonial_description; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <h2 data-aos="animate__fadeIn">
+                    <?= $this->content_headline_2; ?>
+                </h2>
+                <div class="row gx-4" data-aos="animate__fadeInLeft">
+                    <div class="col-lg-6">
+                        <?= $this->description_3; ?>
+                    </div>
+                    <div class="col-lg-6">
+                        <?= $this->description_4; ?>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="content--element ce_rsce_boxenfeld testimonials--bottom">
+    <div class="ce--inner container">
+
+        <div class="ce--boxenfeld">
+            <div class="boxes--outer">
+                <div class="row flex-row-reverse">
+                    <?php if ($this->content_image_3["src"]): ?>
+                        <div class="col-12 col-lg-6">
+                            <img class="box--image" src="<?= $this->content_image_3["src"]; ?>">
+                        </div>
+                    <?php endif; ?>
+                    <div class="col-12 col-lg-6">
+                        <div class="box--content"
+                             data-aos="animate__fadeInUp"
+                             style="position: relative; top: 25px">
+                            <div class="box--headline">
+                                <h2>
+                                    <?= $this->content_headline_3; ?> </h2>
+                            </div>
+                            <div class="box--text">
+                                <?= $this->description_5; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<?php if ($this->selected_contact_persons): ?>
+    <div class="content--element contact--persons">
+        <div class="ce--inner container" id="ansprechpartner">
+            <h2 data-aos="animate__fadeIn">Ansprechpartner</h2>
+
+            <div class="contact--person" data-aos="animate__fadeInUp">
+                <div class="row gx-4 align-items-center">
+                    <?php foreach ($this->selected_contact_persons as $person) : ?>
+
+                        <?php if ($person["image"]): ?>
+                            <div class="col-md-3 mb-3 mb-md-0 col-xxl-2">
+                                <?= $person["image"]; ?>
+                            </div>
+                        <?php endif; ?>
+                        <div class="col">
+                            <div class="contact-person--name">
+                                <?= $person["title"]; ?>
+                            </div>
+                            <?php if ($person["department"]): ?>
+                                <div class="contact-person--department">
+                                    <?= $person["department"]; ?>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($person["description"]): ?>
+                                <div class="contact-person--description">
+                                    <?= $person["description"]; ?>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($person["phone"]): ?>
+                                <div class="contact-person--phone">
+                                    <a href="tel:<?= $person["phone"]; ?>"><i
+                                                class="fas fa-phone-alt"></i> <?= $person["phone"]; ?></a>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($person["email"]): ?>
+                                <div class="contact-person--email">
+                                    <a href="mailto:<?= $person["email"]; ?>"><i
+                                                class="fas fa-envelope"></i> <?= $person["email"]; ?></a>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<div class="container text-end">
+    <?php if ($this->hasGoBackLink): ?>
+        <p class="back"><a class="btn btn-outline-primary"
+                           href="<?= $this->goBackLink ?>"><?= $this->goBackLabel; ?></a></p>
+    <?php endif; ?>
+</div>

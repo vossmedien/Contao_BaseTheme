@@ -54,7 +54,9 @@ main {
   }
 }
 
-#main .mod_article > *:not(.content--element):not(.container):not(.ce_html),
+#main
+  .mod_article
+  > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_catalogUniversalView),
 #main > .inside > div[class^="mod_"]:not(.mod_article) {
   @extend .container;
 }

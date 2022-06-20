@@ -20,6 +20,11 @@
 [class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery) {
   padding: $basic-gutter;
 
+  @include media-breakpoint-down(md) {
+    padding-left: 0rem;
+    padding-right: 0rem;
+  }
+
   > *:last-child {
     margin-bottom: 0px !important;
   }

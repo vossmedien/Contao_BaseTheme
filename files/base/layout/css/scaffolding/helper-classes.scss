@@ -94,3 +94,13 @@
     margin: 0 auto;
   }
 }
+
+.two-column-text {
+
+  @include media-breakpoint-up(lg) {
+    column-count: 2;
+    column-gap: var(--bs-gutter-x);
+  }
+
+
+}

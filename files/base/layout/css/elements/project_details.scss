@@ -1,0 +1,55 @@
+.mod_catalogMasterView {
+  .content--element {
+    margin-bottom: $basic-gutter;
+
+    &.benefits {
+      .benefit--box {
+        text-align: center;
+
+        .benefit--title {
+          text-transform: uppercase;
+          font-weight: $font-weight-bold;
+          margin-bottom: 0px;
+        }
+      }
+    }
+
+    &.testimonials--top {
+      .testimonial-person--box {
+        background-color: $primary;
+        padding: 2rem;
+
+        @include media-breakpoint-up(lg) {
+          min-height: 100%;
+        }
+      }
+    }
+
+    &.contact--persons {
+      figure {
+        margin-bottom: 0px;
+
+        img {
+          border-radius: 50%;
+        }
+      }
+
+      a {
+        text-decoration: none;
+
+        i {
+          margin-right: .25rem;
+        }
+      }
+
+      .contact-person--name {
+        font-weight: $font-weight-bold;
+      }
+
+      .contact-person--description {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}

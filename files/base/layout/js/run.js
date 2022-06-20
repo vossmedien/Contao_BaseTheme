@@ -94,7 +94,7 @@ Promise.all(promises)
 
     window.onload = function () {
       var anchorLinks = document.querySelectorAll(
-        '#mainNav a[href^="#"]:not(.invisible), .onepagenavi--wrapper a[href^="#"], #mobileNav a[href^="#"]:not(.mm-btn)'
+        '#mainNav a[href^="#"]:not(.invisible), .onepagenavi--wrapper a[href^="#"], #mobileNav a[href^="#"]:not(.mm-btn), #main .mod_article a[href^="#"]'
       );
       for (var i = 0; i < anchorLinks.length; i++) {
         anchorLinks[i].addEventListener("click", scrollToAnchor);
@@ -147,7 +147,8 @@ Promise.all(promises)
 
     if ($(".ce_rsce_onepagenavi.with-smaller-containers").length) {
       $("#main").addClass("with-onepage-nav");
-
+    }
+    if ($(".ce_rsce_onepagenavi").length) {
       $(".onepage-nav--mobile-toggle").click(function () {
         $(this).parent("div").toggleClass("visible");
       });
@@ -161,7 +162,6 @@ Promise.all(promises)
         }
       });
     }
-
     if ($(".ce_rsce_colorpalettes").length) {
       $(".color-list--element").click(function () {
         var storeDesc = $(this).data("desc");

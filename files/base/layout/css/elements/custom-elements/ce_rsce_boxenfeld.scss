@@ -4,7 +4,6 @@
       @include media-breakpoint-up(lg) {
         padding-bottom: 3rem;
       }
-
     }
 
     > .row {
@@ -24,6 +23,10 @@
         img {
           @include media-breakpoint-up(lg) {
             left: -10vw;
+          }
+
+          @include media-breakpoint-up(xxl) {
+            left: -3vw;
           }
         }
       }
@@ -68,6 +71,15 @@
     @include media-breakpoint-up(lg) {
       max-width: calc(100% + 15vw);
       border-radius: 25px;
+    }
+
+    img {
+      position: relative;
+      border-radius: $border-radius $border-radius 0px 0px;
+      @include media-breakpoint-up(lg) {
+        max-width: calc(100% + 15vw);
+        border-radius: 25px;
+      }
     }
   }
 

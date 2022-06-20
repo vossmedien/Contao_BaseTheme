@@ -4,14 +4,16 @@
 }
 
 .mod_navigation li.mm_container {
-  &:hover {
-    .mm_dropdown {
+  /*
+  a:hover {
+    & + .mm_dropdown {
       opacity: 1;
       width: 100%;
       height: auto;
       overflow: visible;
     }
   }
+   */
 
   .mm_dropdown {
     max-width: rfs-value($megamenu-width);
@@ -26,17 +28,27 @@
     overflow: hidden;
     width: 0;
 
+    &:hover {
+      opacity: 1;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    /*
     &:before {
       content: "";
       position: fixed;
       z-index: 4900;
       background-color: $megamenu-overlay-background;
       width: 200vw;
-      height: 100vw;
+      height: 200vh;
       left: -50vw;
       right: -50vw;
-      top: 0vw;
+      top: -100vh;
     }
+   
+     */
 
     .inner {
       position: relative;

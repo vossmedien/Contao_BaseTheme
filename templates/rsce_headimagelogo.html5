@@ -1,8 +1,10 @@
-<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>">
+<div <?php echo $this->cssID; ?>
+        class="content--element <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>">
     <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>">
 
         <?php if ($this->headline || $this->subline) : ?>
-        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+        <div class="ce--headline"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <div class="container">
                 <?php if ($this->headline) : ?>
                 <<?php echo($this->hl); ?>>
@@ -32,7 +34,8 @@
 
                 <div class="swiper-slide">
                     <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline) : ?>no-text<?php endif; ?> ">
-                        <div class="image--holder <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>" style="background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat; <?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; min-height: 250px;<?php endif; ?>">
+                        <div class="image--holder <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>"
+                             style="background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat; <?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; min-height: 250px;<?php endif; ?>">
 
                             <?php if ($slide->alternate_background_color): ?>
                                 <style>
@@ -59,30 +62,35 @@
                             <?php endif; ?>
 
                             <?php if ($ext == "mp4") : ?>
-                                <video <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class=" d-none d-md-block" <?php endif; ?>
-                                       autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
+                                <video
+                                    <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class=" d-none d-md-block" <?php endif; ?>
+                                    autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
                                     <source type="video/mp4" src="{{file::<?= $slide->image ?>}}">
                                 </video>
                             <?php endif; ?>
                             <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>
-                                <video class="d-md-none" src="{{file::<?= $slide->mobile_image ?>}}" autoplay muted loop playsinline>
+                                <video class="d-md-none" src="{{file::<?= $slide->mobile_image ?>}}" autoplay muted loop
+                                       playsinline>
                                     <source type="video/mp4" src="{{file::<?= $slide->mobile_image ?>}}">
                                 </video>
                             <?php endif; ?>
 
                             <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1) : ?>
-                                <div data-aos="<?php if ($slide->animation_type) : ?><?php echo $slide->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="mainimage--content" <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
+                                <div data-aos="<?php if ($slide->animation_type) : ?><?php echo $slide->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                     class="mainimage--content"
+                                     <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
                                     <div class="container">
-                                        <div class="mainimage--content-inner <?php echo $slide->textbox_position; ?> <?php echo $slide->text_align; ?>" style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?> <?php if ($slide->maxWidth) : ?>max-width: <?php echo $slide->maxWidth; ?>;<?php endif; ?>">
+                                        <div class="mainimage--content-inner <?php echo $slide->textbox_position; ?> <?php echo $slide->text_align; ?>"
+                                             style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?> <?php if ($slide->maxWidth) : ?>max-width: <?php echo $slide->maxWidth; ?>;<?php endif; ?>">
 
                                             <div class="mainimage--content-inner--wrapper">
                                                 <?php if ($slide->firstline_headline) : ?>
-                                                    <h1 class="first-line"><?php echo $slide->text_firstline; ?></h1>
+                                                    <h1 class="first-line mb-0"><?php echo $slide->text_firstline; ?></h1>
                                                 <?php else : ?>
-                                                    <span class="first-line"><?php echo $slide->text_firstline; ?></span>
+                                                    <span class="first-line mb-0"><?php echo $slide->text_firstline; ?></span>
                                                 <?php endif; ?>
                                                 <?php if ($slide->text_secondline) : ?>
-                                                    <span class="second-line mt-2"><?php echo $slide->text_secondline; ?></span>
+                                                    <span class="second-line"><?php echo $slide->text_secondline; ?></span>
                                                 <?php endif; ?>
                                                 <?php if ($slide->text_infotext) : ?>
                                                     <div class="infotext--text">
@@ -93,7 +101,9 @@
                                                 <?php if (count($slide->buttons) >= 1) : ?>
                                                     <div class="button--wrapper">
                                                         <?php foreach ($slide->buttons as $button) : ?>
-                                                            <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>" href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
+                                                            <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                                               class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                                               href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
                                                         <?php endforeach ?>
                                                     </div>
                                                 <?php endif; ?>
@@ -117,7 +127,9 @@
 
     <?php if ($this->boxed_image) : ?>
         <div class="boxed-logo d-none d-lg-block">
-            <img data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
+            <img data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                 class="lazy"
+                 data-src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
         </div>
     <?php endif; ?>
 </div>

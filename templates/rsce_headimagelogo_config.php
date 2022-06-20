@@ -381,7 +381,8 @@ return array(
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => 'mp4,webm,ogv',
-                        'tl_class' => 'w50'
+                        'tl_class' => 'w50',
+                        'mandatory' => false,
                     ),
                 ),
 

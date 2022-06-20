@@ -1,0 +1,37 @@
+<!-- start
+    *
+    * The code below should not be used. You can replace it with your own code. Just follow the instruction:
+    *
+    * All catalog values are located in the "$this" Variable. Access individual values ​​with the arrow operator.
+    * For Example:
+    * Output simple string: $this->yourFieldname
+    * Format numbers: number_format( $this->yourFieldname, 2, ',', '.' ) €
+    * Output joins: $this->tablenameYourFieldname
+    * Output array: implode ( ', ', $this->yourFieldname )
+    * Output associative array: implode( ', ', array_map( function( $arrValue ) { return $arrValue['title'] }, $this->yourFieldname ) )
+    *
+-->
+
+<!-- end -->
+
+
+<div class="col-12 col-md-4">
+    <div class="project--box" data-aos="animate__fadeInUp"
+         style="background: linear-gradient(black, black),url(<?= $this->listing_image["src"]; ?>)  center center no-repeat; background-size: cover;">
+
+
+        <div class="project-box--flex-wrapper">
+            <div class="project-box--inner">
+                <a href="<?= $this->masterUrl ?>"></a>
+                <div class="project--title">
+                    <?= $this->title; ?>
+                </div>
+                <div class="project--more-button">
+                    <a class="btn btn-primary" href="<?= $this->masterUrl ?>">Mehr erfahren</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
