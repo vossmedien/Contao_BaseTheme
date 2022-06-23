@@ -26,6 +26,13 @@
             <?php foreach ($this->slides as $key => $slide) : ?>
 
                 <?php
+                if (!property_exists($slide, "size")) {
+                    $slide->{"size"} = "";
+                }
+                ?>
+
+
+                <?php
                 $filename = FilesModel::findByUuid($slide->image)->path;
                 $ext = pathinfo($filename, PATHINFO_EXTENSION);
                 $filename_mobile = FilesModel::findByUuid($slide->mobile_image)->path;

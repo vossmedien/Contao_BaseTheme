@@ -1,14 +1,22 @@
+<?php
+if (!property_exists($this, "size")) {
+    $this->{"size"} = "";
+}
+?>
+
+
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
         <?php if ($this->headline || $this->subline) : ?>
-        <div class="ce--headline">
+        <div class="ce--headline"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?php if ($this->headline) : ?>
-            <<?php echo($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <<?php echo($this->hl); ?>>
             <?php echo($this->headline); ?>
         </<?php echo($this->hl); ?>>
     <?php endif; ?>
         <?php if ($this->subline) : ?>
-            <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
+            <span class=" ce--subline"><?php echo $this->subline; ?></span>
         <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -16,15 +24,10 @@
     <?php
     if ($this->selecttype == "multiple") {
         $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
-        foreach ($dataSorted as $data) {
-            if ($image = $this->getImageObject($data, $this->size)) {
-                //$this->insert('picture_default', $image->picture);
-                //var_dump($image->picture);
-            }
-        }
     }
     ?>
-    <div class="ce--content-slider" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+    <div class="ce--content-slider"
+         data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
         <?php $rand = rand(1, 100); ?>
 
         <?php if ($this->open_lightbox): ?>
@@ -40,7 +43,7 @@
             </script>
         <?php endif; ?>
 
-        <div class="swiper content-slider_<?= $this->id; ?>"    >
+        <div class="swiper content-slider_<?= $this->id; ?>">
             <!-- Additional required wrapper -->
             <div class="swiper-wrapper">
                 <!-- Slides -->
@@ -49,7 +52,8 @@
                     <?php foreach ($dataSorted as $data) : ?><?php if ($image = $this->getImageObject($data, $this->size)) : ?>
                         <div class="swiper-slide">
                             <?php if ($this->open_lightbox): ?>
-                            <a href="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, null, null, null); ?>" class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
+                            <a href="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, null, null, null); ?>"
+                               class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
                                 <img src="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                 <?php if ($this->open_lightbox): ?></a><?php endif; ?>
                         </div>
@@ -62,7 +66,8 @@
                     <?php foreach ($this->galery as $slide) : ?>
                         <div class="swiper-slide">
                             <?php if ($this->open_lightbox): ?>
-                            <a href="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>" class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
+                            <a href="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>"
+                               class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
                                 <img src="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                 <?php if ($this->open_lightbox): ?> </a><?php endif; ?>
                             <?php if ($slide->slide_text) : ?>
