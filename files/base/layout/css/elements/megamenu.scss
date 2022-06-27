@@ -3,8 +3,13 @@
   display: none;
 }
 
+#header .header--content.type--1 {
+  #mainNav .mm_dropdown {
+    margin-top: -10px;
+  }
+}
+
 .mod_navigation li.mm_container {
-  /*
   a:hover {
     & + .mm_dropdown {
       opacity: 1;
@@ -13,7 +18,6 @@
       overflow: visible;
     }
   }
-   */
 
   .mm_dropdown {
     max-width: rfs-value($megamenu-width);
