@@ -123,6 +123,24 @@ Promise.all(promises)
     }
     /* END */
 
+    $(document).on("mouseenter", ".mod_navigation li > a", function () {
+      $(".mod_navigation li.mm_container").removeClass("active");
+
+      if ($(this).parent().hasClass("mm_container")) {
+        $(this).parent().addClass("active");
+      }
+    });
+
+    $(document).on(
+      "mouseleave",
+      ".mod_navigation li.mm_container .mm_dropdown > .inner",
+      function () {
+        setTimeout(function () {
+          $(".mod_navigation li.mm_container").removeClass("active");
+        }, 500);
+      }
+    );
+
     /* Transform tables in Elements to Bootstrap Tables (styled) */
     if ($("#main .ce_text table").length) {
       $("#main table").each(function (index) {

@@ -9,6 +9,12 @@
   }
 }
 
+#mainNav {
+  .level_1 > li > a {
+    z-index: 500;
+  }
+}
+
 // MobileNav
 
 #mobileNav {
