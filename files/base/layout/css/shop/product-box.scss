@@ -70,11 +70,11 @@
         }
 
         .submit_container {
-          margin-top: .5rem;
+          margin-top: 0.5rem;
 
           .submit {
             @extend .btn;
-            @extend .btn.btn-primary;
+            @extend .btn, .btn-primary;
             @extend .btn-lg;
           }
         }

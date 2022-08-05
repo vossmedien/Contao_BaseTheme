@@ -167,7 +167,7 @@
     & + p.back {
       a {
         @extend .btn;
-        @extend .btn.btn-primary;
+        @extend .btn, .btn-primary;
       }
     }
   }

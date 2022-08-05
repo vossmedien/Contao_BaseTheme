@@ -20,7 +20,6 @@
       padding: $basic-gutter/2 0;
       border-top: 1px $primary solid;
 
-
       &.row_first {
         border-top: none;
         //padding-top: 0px;
@@ -35,7 +34,7 @@
         }
       }
 
-      >div[colspan="6"]{
+      > div[colspan="6"] {
         width: 100%;
       }
 
@@ -174,9 +173,8 @@
       .col_last.remove {
         margin-left: 0rem;
 
-
         @include media-breakpoint-up(lg) {
-          margin-right: .75rem;
+          margin-right: 0.75rem;
         }
 
         @include media-breakpoint-up(xl) {
@@ -207,13 +205,13 @@
     button {
       &.button_update {
         @extend .btn;
-        @extend .btn.btn-outline-primary;
+        @extend .btn, .btn-outline-primary;
         margin-right: auto;
       }
 
       &.button_checkout {
         @extend .btn;
-        @extend .btn.btn-outline-primary;
+        @extend .btn, .btn-outline-primary;
         margin-left: auto;
       }
     }

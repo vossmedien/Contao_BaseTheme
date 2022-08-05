@@ -34,8 +34,7 @@
       text-decoration: none;
 
       @extend .btn;
-      @extend .btn.btn-outline-primary;
-
+      @extend .btn, .btn-outline-primary;
 
       &:after {
         @extend %fa-icon;

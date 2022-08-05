@@ -22,7 +22,7 @@
       <envs />
     </TaskOptions>
     <enabled-global>
-      <option value="SCSS (Bundle)" />
+      <option value="SCSS" />
     </enabled-global>
   </component>
 </project>

@@ -140,8 +140,8 @@
                   flex: 1;
 
                   input.submit {
-              @extend .btn;
-    @extend .btn.btn-primary;
+                    @extend .btn;
+                    @extend .btn, .btn-primary;
 
                     display: block;
                     width: 100%;

@@ -62,8 +62,7 @@
 
   .filter-toggle-control {
     @extend .btn;
-    @extend .btn.btn-primary;
-
+    @extend .btn, .btn-primary;
 
     &:after {
       @extend %fa-icon;
