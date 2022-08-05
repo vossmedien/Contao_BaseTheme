@@ -43,7 +43,9 @@
 
           ul {
             margin: 0px;
-            white-space: nowrap;
+            @include media-breakpoint-up(md) {
+              white-space: nowrap;
+            }
 
             li {
               a {
