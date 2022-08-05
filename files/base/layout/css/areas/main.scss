@@ -2,10 +2,9 @@
   display: flex;
   min-height: 100vh;
   flex-flow: column nowrap;
+  overflow: hidden;
 
   #container {
-    overflow: hidden;
-
     @include media-breakpoint-up(md) {
       &.with--left-col:not(.with--right-col) {
         #main {
@@ -36,8 +35,6 @@
       }
 
       &:last-child {
-
-
         *[class*="bg-"]:last-of-type {
           margin-bottom: 0;
         }
