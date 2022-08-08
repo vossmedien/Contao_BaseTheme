@@ -35,30 +35,8 @@
     <?php $this->block('header'); ?>
     <?php if ($this->header) : ?>
         <header id="header">
-            <div class="header--content container">
+            <div class="inside">
                 <?= $this->header ?>
-
-                <!-- Suchwidgets -->
-                <?php if (str_contains($_SERVER['HTTP_HOST'], '.de')): ?>
-                    {{iflng::de}}
-                    {{insert_module::60}}
-                    {{iflng}}
-                    {{ifnlng::de}}
-                    {{insert_module::63}}
-                    {{ifnlng}}
-                <?php elseif (str_contains($_SERVER['HTTP_HOST'], '.at')): ?>
-                    {{iflng::de}}
-                    {{insert_module::65}}
-                    {{iflng}}
-                    {{ifnlng::de}}
-                    {{insert_module::66}}
-                    {{ifnlng}}
-                <?php endif; ?>
-
-                <div class="navActivator--wrapper">
-                    <a class="btn btn-primary navActivator" href="#mobileNav">Menü</a>
-                </div>
-
             </div>
         </header>
     <?php endif; ?>
@@ -111,7 +89,7 @@
     <?php $this->block('footer'); ?>
     <?php if ($this->footer) : ?>
         <footer id="footer">
-            <div class="footer-content container">
+            <div class="inside">
                 <?= $this->footer ?>
             </div>
         </footer>
@@ -120,7 +98,6 @@
 </div>
 <?php $this->sections('bottom'); ?>
 <?php $this->endblock(); ?>
-
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>
 </body>
