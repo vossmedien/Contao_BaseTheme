@@ -1,5 +1,7 @@
+
+
 <?php
-if (!property_exists($this, "size")) {
+if (!isset($this->size)) {
     $this->{"size"} = "";
 }
 ?>
@@ -79,7 +81,6 @@ if (!property_exists($this, "size")) {
                 <?php endif; ?>
             </div>
             <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
-
                 <?php if ($this->show_pagination): ?>
                     <div class="swiper-pagination"></div>
                 <?php endif; ?>

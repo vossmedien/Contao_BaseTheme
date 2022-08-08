@@ -6,9 +6,11 @@
         <?php if (strpos($item['class'], 'logo') !== false): ?>
             </div>
             <div class="col col-sm-auto logo text-center">
-                <a href="/">
-                    <img src="/files/base/layout/img/logo_header.svg">
-                </a>
+                <div class="banner">
+                    <a href="/">
+                        <img src="/files/base/layout/img/logo.png">
+                    </a>
+                </div>
             </div>
             <div class="col col-sm d-none d-lg-block text-lg-start">
         <?php else: ?>
@@ -27,6 +29,17 @@
             <?php endif; ?>
         <?php endif; ?>
         <?php if (strpos($item['class'], 'last') !== false && $this->level == "level_1"): ?>
+
+        <div class="nav-link" style="position: relative; z-index: 10;">
+             {{insert_module::42}}
+                {{insert_module::41}}
+        </div>
+
+            <div class="nav-link" style="position: relative; z-index: 10;">
+
+                {{insert_module::46}}
+                {{insert_module::28}}
+            </div>
             </div>
         <?php endif; ?>
     <?php endforeach; ?>

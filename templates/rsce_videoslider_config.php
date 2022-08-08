@@ -147,6 +147,7 @@ return array(
             ),
             'inputType' => 'select',
             'options' => array(
+                 '1' => '1 Spaltig',
                 '2' => '2 Spaltig',
                 '3' => '3 Spaltig',
                 '4' => '4 Spaltig',

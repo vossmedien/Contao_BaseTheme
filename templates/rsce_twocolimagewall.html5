@@ -1,5 +1,5 @@
 <?php
-if (!property_exists($this, "size")) {
+if (!isset($this->size)) {
     $this->{"size"} = "";
 }
 ?>

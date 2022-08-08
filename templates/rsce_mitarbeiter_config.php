@@ -329,6 +329,24 @@ return array(
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
+
+                'link_url' => array(
+                    'label' => array('Verlinkung', ''),
+                    'inputType' => 'url',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'link_betreff' => array(
+                    'label' => array('Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'new_tab' => array(
+                    'label' => array('Link in neuen Tab öffnen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
             ),
         ),
     ),

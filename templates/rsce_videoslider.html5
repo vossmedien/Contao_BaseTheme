@@ -1,3 +1,5 @@
+
+<?php header('Access-Control-Allow-Origin: *'); ?>
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
         <?php if ($this->headline || $this->subline) : ?>
@@ -26,10 +28,18 @@
                         <div class="swiper-slide">
                             <a <?php if ($slide->open_tab) : ?> target="_blank" <?php else : ?> class="video-link cboxElement" data-lightbox <?php endif; ?> href='https://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'>
                                 <img class="swiper-lazy" data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
-                                <?php if ($slide->text) : ?>
+
+
+                            </a>
+                                       <?php if ($slide->text) : ?>
                                     <span class="slide-caption"><?php echo $slide->text; ?></span>
                                 <?php endif; ?>
-                            </a>
+
+
+                                <?php if ($slide->longtext) : ?>
+                                    <span class="slide-description"><?php echo $slide->longtext; ?></span>
+                                <?php endif; ?>
+
                             <div class="swiper-lazy-preloader"></div>
                         </div>
                     <?php endforeach ?>
@@ -102,9 +112,9 @@
                     768: {
                         slidesPerView: <?php echo $this->columns; ?>,
                         spaceBetween: <?php echo $this->gutter; ?>
-                    },
+                    }
                     <?php endif; ?>
-                },
+                }
             });
         }
     })

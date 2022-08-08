@@ -11,9 +11,13 @@
         padding-top: rfs-value(5px);
         text-align: center;
         font-weight: $font-weight-semibold;
-        @include font-size(14px);
+        @include font-size(15px);
         text-decoration: none;
         color: $body-color;
+      }
+
+      .slide-description {
+        @include font-size(14px);
       }
     }
 

@@ -382,7 +382,6 @@ return array(
                         'filesOnly' => true,
                         'extensions' => 'mp4,webm,ogv',
                         'tl_class' => 'w50',
-                        'mandatory' => false,
                     ),
                 ),
 
