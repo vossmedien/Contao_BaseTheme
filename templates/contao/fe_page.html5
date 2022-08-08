@@ -1,94 +1,128 @@
 <!DOCTYPE html>
 <html lang="<?= $this->language ?>" <?php if ($this->isRTL) : ?> dir="rtl" <?php endif; ?>>
 
-    <head>
-        <?php $this->block('head'); ?>
-        <meta charset="<?= $this->charset ?>">
-        <title><?= $this->title ?></title>
-        <base href="<?= $this->base ?>">
-        <?php $this->block('meta'); ?>
-        <meta name="robots" content="<?= $this->robots ?>">
-        <meta name="description" content="<?= $this->description ?>">
-        <meta name="generator" content="Contao Open Source CMS">
-        <?php $this->endblock(); ?>
-        <?= $this->viewport ?>
-        <?= $this->framework ?>
-        <?= $this->stylesheets ?>
-        <?= $this->head ?>
-        <?php $this->endblock(); ?>
-    </head>
+<head>
 
-    <body id="top" <?php if ($this->class) : ?> class="<?= $this->class ?>" <?php endif; ?><?php if ($this->onload) : ?> onload="<?= $this->onload ?>" <?php endif; ?> itemscope itemtype="http://schema.org/WebPage">
-        <?php $this->block('body'); ?>
-        <?php $this->sections('top'); ?>
-        <div id="wrapper">
-            <?php $this->block('header'); ?>
-            <?php if ($this->header) : ?>
-                <header id="header">
-                    <div class="inside">
-                        <?= $this->header ?>
-                    </div>
-                </header>
-            <?php endif; ?>
-            <?php $this->endblock(); ?>
-            <?php $this->sections('before'); ?>
-            <?php $this->block('container'); ?>
-            <div id="container" class="<?php if ($this->left) : ?>with--left-col<?php endif; ?> <?php if ($this->right) : ?>with--right-col<?php endif; ?>">
-                <?php if ($this->left || $this->right) : ?>
-                <div class="pt-md-3 pb-3 container"><?php endif; ?>
-                    <div class="row gx-md-5">
+    <?php $this->block('head'); ?>
+    <meta charset="<?= $this->charset ?>">
+    <title><?= $this->title ?></title>
+    <base href="<?= $this->base ?>">
 
-                        <?php $this->block('left'); ?>
-                        <?php if ($this->left) : ?>
-                            <aside id="left" class="col-12 col-md-auto ">
-                                <div class="inside">
-                                    <?= $this->left ?>
-                                </div>
-                            </aside>
-                        <?php endif; ?>
-                        <?php $this->endblock(); ?>
+    <?php $this->block('meta'); ?>
+    <meta name="robots" content="<?= $this->robots ?>">
+    <meta name="description" content="<?= Contao\StringUtil::substr($this->description, 320) ?>">
+    <meta name="generator" content="Contao Open Source CMS">
+    <?php $this->endblock(); ?>
 
-                        <?php $this->block('main'); ?>
-                        <main id="main" class="col col-md-12">
-                            <div class="inside">
-                                <?= $this->main ?>
-                            </div>
-                            <?php $this->sections('main'); ?>
-                        </main>
-                        <?php $this->endblock(); ?>
+    <?php if ($this->canonical): ?>
+        <link rel="canonical" href="<?= $this->canonical ?>">
+    <?php endif; ?>
 
+    <?= $this->viewport ?>
+    <?= $this->framework ?>
+    <?= $this->stylesheets ?>
+    <?= $this->mooScripts ?>
+    <?= $this->head ?>
+    <?php $this->endblock(); ?>
 
-                        <?php $this->block('right'); ?>
-                        <?php if ($this->right) : ?>
-                            <aside id="right" class="col-12 col-md-auto ">
-                                <div class="inside">
-                                    <?= $this->right ?>
-                                </div>
-                            </aside>
-                        <?php endif; ?>
-                        <?php $this->endblock(); ?>
+</head>
 
-                    </div>
-                    <?php if ($this->left || $this->right) : ?>
-                </div><?php endif; ?>
+<body id="top" <?php if ($this->class) : ?> class="<?= $this->class ?>" <?php endif; ?><?php if ($this->onload) : ?> onload="<?= $this->onload ?>" <?php endif; ?>
+      itemscope itemtype="http://schema.org/WebPage">
+<?php $this->block('body'); ?>
+<?php $this->sections('top'); ?>
+<div id="wrapper">
+    <?php $this->block('header'); ?>
+    <?php if ($this->header) : ?>
+        <header id="header">
+            <div class="header--content container">
+                <?= $this->header ?>
+
+                <!-- Suchwidgets -->
+                <?php if (str_contains($_SERVER['HTTP_HOST'], '.de')): ?>
+                    {{iflng::de}}
+                    {{insert_module::60}}
+                    {{iflng}}
+                    {{ifnlng::de}}
+                    {{insert_module::63}}
+                    {{ifnlng}}
+                <?php elseif (str_contains($_SERVER['HTTP_HOST'], '.at')): ?>
+                    {{iflng::de}}
+                    {{insert_module::65}}
+                    {{iflng}}
+                    {{ifnlng::de}}
+                    {{insert_module::66}}
+                    {{ifnlng}}
+                <?php endif; ?>
+
+                <div class="navActivator--wrapper">
+                    <a class="btn btn-primary navActivator" href="#mobileNav">Menü</a>
+                </div>
 
             </div>
-            <?php $this->endblock(); ?>
-            <?php $this->sections('after'); ?>
-            <?php $this->block('footer'); ?>
-            <?php if ($this->footer) : ?>
-                <footer id="footer">
+        </header>
+    <?php endif; ?>
+    <?php $this->endblock(); ?>
+    <?php $this->sections('before'); ?>
+    <?php $this->block('container'); ?>
+    <div id="container"
+         class="<?php if ($this->left) : ?>with--left-col<?php endif; ?> <?php if ($this->right) : ?>with--right-col<?php endif; ?>">
+        <?php if ($this->left || $this->right) : ?>
+        <div class="pt-md-3 pb-3 container"><?php endif; ?>
+            <div class="row gx-md-5">
+
+                <?php $this->block('left'); ?>
+                <?php if ($this->left) : ?>
+                    <aside id="left" class="col-12 col-md-auto ">
+                        <div class="inside">
+                            <?= $this->left ?>
+                        </div>
+                    </aside>
+                <?php endif; ?>
+                <?php $this->endblock(); ?>
+
+                <?php $this->block('main'); ?>
+                <main id="main" class="col col-md-12">
                     <div class="inside">
-                        <?= $this->footer ?>
+                        <?= $this->main ?>
                     </div>
-                </footer>
-            <?php endif; ?>
-            <?php $this->endblock(); ?>
-        </div>
-        <?php $this->sections('bottom'); ?>
-        <?php $this->endblock(); ?>
-        <?= $this->mooScripts ?>
-        <?= $this->mootools ?>
-    </body>
+                    <?php $this->sections('main'); ?>
+                </main>
+                <?php $this->endblock(); ?>
+
+
+                <?php $this->block('right'); ?>
+                <?php if ($this->right) : ?>
+                    <aside id="right" class="col-12 col-md-auto ">
+                        <div class="inside">
+                            <?= $this->right ?>
+                        </div>
+                    </aside>
+                <?php endif; ?>
+                <?php $this->endblock(); ?>
+
+            </div>
+            <?php if ($this->left || $this->right) : ?>
+        </div><?php endif; ?>
+
+    </div>
+    <?php $this->endblock(); ?>
+    <?php $this->sections('after'); ?>
+    <?php $this->block('footer'); ?>
+    <?php if ($this->footer) : ?>
+        <footer id="footer">
+            <div class="footer-content container">
+                <?= $this->footer ?>
+            </div>
+        </footer>
+    <?php endif; ?>
+    <?php $this->endblock(); ?>
+</div>
+<?php $this->sections('bottom'); ?>
+<?php $this->endblock(); ?>
+
+<?= $this->mootools ?>
+<?= $this->jsonLdScripts ?>
+</body>
 
 </html>
