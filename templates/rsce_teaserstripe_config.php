@@ -151,11 +151,33 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
+
         'background_color' => array(
-            'label' => array('Hintergrundfarbe', 'In HEX oder rgb(a) angeben'),
+            'label' => array(
+                'de' => array('Hintergrundfarbe', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                'var(--bs-primary)' => 'Hauptfarbe',
+                'var(--bs-secondary)' => 'Sekundärfarbe',
+                'var(--bs-blue)' => 'Blau',
+                'var(--bs-blue-light)' => 'Hellblau',
+                'var(--bs-blue-lighter)' => 'Helleres Blau',
+                'var(--bs-pink)' => 'Pink',
+                'var(--bs-brown)' => 'Braun',
+                'var(--bs-brown-light)' => 'Hellbraun',
+                'var(--bs-brown-dark)' => 'Dunkelbraun',
+                'var(--bs-yellow)' => 'Gelb',
+                'var(--bs-green)' => 'Grün',
+            ),
+        ),
+
+        'alternate_background_color' => array(
+            'label' => array('Hintergrundfarbe', 'In HEX oder rgb(a) angeben !! überschreibt Farbauswahl !!'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
+
         'text_color' => array(
             'label' => array('Alternative Textfarbe', 'In HEX oder rgb(a) angeben'),
             'inputType' => 'text',
@@ -185,7 +207,7 @@ return array(
         'ce_headline' => array(
             'label' => array('Überschrift für Streifen', ''),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
         'ce_subline' => array(
             'label' => array('Subline für Streifen', ''),

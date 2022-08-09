@@ -240,6 +240,43 @@
   }
 }
 
+.BodyScrollToTop {
+  width: rfs-value(60px);
+  height: rfs-value(60px);
+  line-height: rfs-value(55px);
+  text-align: center;
+  color: var(--bs-white);
+  border: 2px solid var(--bs-secondary);
+  background-color: var(--bs-secondary);
+  border-radius: 50%;
+  margin: 1.5rem auto 0 auto;
+  transition: all 0.3s ease;
+  @include font-size(45px);
+  cursor: pointer;
+  bottom: 100px;
+  right: 50px;
+  position: fixed;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: $box-shadow;
+  z-index: 5;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+
+  i {
+    line-height: rfs-value(56px);
+  }
+
+  &:hover {
+    color: var(--bs-secondary);
+    background-color: var(--bs-white);
+  }
+}
+
 @import "custom-elements/ce_rsce_2colscontent";
 @import "custom-elements/ce_rsce_actionmodal";
 @import "custom-elements/ce_rsce_advantages";
@@ -271,3 +308,4 @@
 @import "custom-elements/ce_rsce_landingpageentry";
 @import "custom-elements/ce_rsce_stoerer";
 @import "custom-elements/ce_rsce_row1start";
+@import "custom-elements/ce_rsce_equalboxfield";

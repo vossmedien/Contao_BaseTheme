@@ -24,6 +24,21 @@ html {
   font-size: var(--bs-body-font-size);
 
   body {
+    transition: padding-top .5s ease;
+
+    *[id] {
+      scroll-behavior: smooth;
+      scroll-margin-top: 175px;
+    }
+
+    &.is--scrolling {
+      *[id] {
+        scroll-behavior: smooth;
+        scroll-margin-top: 100px;
+      }
+    }
+
+
     &#tinymce {
       @include padding(7px 12px);
     }
@@ -50,6 +65,8 @@ html {
 
     @import "_theme/includes";
   }
+
+
 }
 
 @import "_theme/styles";

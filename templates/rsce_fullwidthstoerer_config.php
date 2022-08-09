@@ -60,5 +60,35 @@ return array(
             'label' => array('Button-Link', ''),
             'inputType' => 'url',
         ),
+
+        'button_type' => array(
+            'label' => array(
+                'de' => array('Optik des Buttons', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                'btn-primary' => 'Hauptfarbe',
+                'btn-outline-primary' => 'Hauptfarbe (Outline)',
+                'btn-secondary' => 'Sekundär-Farbe',
+                'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
+                'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                'btn-white' => 'Weißer Button mit schwarzer Schrift',
+            ),
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'button_size' => array(
+            'label' => array(
+                'de' => array('Größe des Buttons', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                '' => 'Standard',
+                'btn-sm' => 'Klein',
+                'btn-lg' => 'Groß',
+            ),
+            'eval' => array('tl_class' => 'w50'),
+        ),
     ),
 );

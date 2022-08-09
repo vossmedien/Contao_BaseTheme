@@ -21,23 +21,26 @@
              <?php if ($this->background_color) : ?>
                      background-color: <?= $this->background_color;?>;
              <?php endif; ?>
+                     <?php if ($this->alternate_background_color) : ?>
+                     background-color: <?= $this->alternate_background_color;?>;
+             <?php endif; ?>
              <?php if ($this->text_color) : ?>
                      color: <?= $this->text_color;?>;
              <?php endif; ?>
                      ">
             <div class="container">
 
-                <div class="<?php if (!$this->nocolumns) : ?>row<?php else: ?>text-center<?php endif; ?> gx-5 align-items-center justify-content-center">
+                <div class="<?php if (!$this->nocolumns) : ?>row<?php else: ?>text-center<?php endif; ?>  align-items-center justify-content-center">
                     <?php if ($this->ce_headline || $this->ce_subline || $this->text) : ?>
-                    <div class="col-12 <?php if ($this->link_text) : ?>col-md-auto<?php endif; ?>">
+                    <div class="col">
 
                         <?php if ($this->ce_headline) : ?>
                         <div class="teaser--headline" style="
                         <?php if ($this->text_color) : ?>
                                 color: <?= $this->text_color;?>;
                         <?php endif; ?>">
-                            <<?php echo($this->headline_type); ?>
-                            ><?php echo($this->ce_headline); ?></<?php echo($this->headine_type); ?>>
+                            <span class="mb-0 <?php echo($this->headline_type); ?>"
+                            ><?php echo($this->ce_headline); ?></span>
                     </div>
                 <?php endif; ?>
                     <?php if ($this->ce_subline) : ?>
@@ -45,15 +48,16 @@
                                 color: <?= $this->text_color;?>;
                         <?php endif; ?>"><?php echo $this->ce_subline; ?></div>
                     <?php endif; ?>
-
+           <?php if ($this->text) : ?>
                     <div class="ts--text  <?php if ($this->ce_headline || $this->ce_subline) : ?>mt-4<?php endif; ?>">
                         <?php echo $this->text; ?>
                     </div>
+                             <?php endif; ?>
                 </div>
                 <?php endif; ?>
                 <?php if ($this->link_text) : ?>
                     <div class="col-12 col-md-auto">
-                        <div class="ts--buttons <?php if ($this->nocolumns) : ?>mt-5<?php else: ?>mt-4 mt-md-0 ps-md-5<?php endif; ?>">
+                        <div class="ts--buttons <?php if ($this->nocolumns) : ?>mt-2<?php else: ?>mt-2 mt-md-0 <?php endif; ?>">
                             <a class="d-inline-block btn <?php if ($this->link_size) : ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>" href="<?php echo $this->link_url; ?><?php if ($this->link_betreff) : ?>?subject=<?php echo $this->link_betreff; ?><?php endif; ?>"><?php echo $this->link_text; ?></a>
                         </div>
                     </div>
