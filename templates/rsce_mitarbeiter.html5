@@ -1,17 +1,15 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
         <?php if ($this->headline || $this->subline) : ?>
-        <div class="ce--headline">
+        <div class="ce--headline"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?php if ($this->headline) : ?>
-            <<?php echo($this->hl); ?>
-            data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>
-            ">
+            <<?php echo($this->hl); ?>>
             <?php echo($this->headline); ?>
         </<?php echo($this->hl); ?>>
     <?php endif; ?>
         <?php if ($this->subline) : ?>
-            <span class=" ce--subline"
-                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
+            <span class="ce--subline"><?php echo $this->subline; ?></span>
         <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -24,30 +22,32 @@
                         <?php if ($ma->bild) : ?>
                             <div class="ma--image">
 
-                                    <?php if($ma->link_url):?>
-                                <a <?php if ($ma->new_tab): ?>target="_blank"<?php endif; ?> href="<?php echo $ma->link_url; ?><?php if ($ma->link_betreff) : ?>?subject=<?php echo $ma->link_betreff; ?><?php endif; ?>">
-<?php else:?>
-                                <a data-lightbox title="<?php echo $ma->name ?>" class="cboxElement"
-                                   href="<?= \Image::get(\FilesModel::findByUuid($ma->bild)->path, null, null, null); ?>">
-                                    <?php endif;?>
-                                    <img class="lazy"
-                                         data-src="<?= \Image::get(\FilesModel::findByUuid($ma->bild)->path, null, null, 2); ?>">
-                                </a>
+                                <?php if ($ma->link_url): ?>
+                                <a <?php if ($ma->new_tab): ?>target="_blank"<?php endif; ?>
+                                   href="<?php echo $ma->link_url; ?><?php if ($ma->link_betreff) : ?>?subject=<?php echo $ma->link_betreff; ?><?php endif; ?>">
+                                    <?php else: ?>
+                                    <a data-lightbox title="<?php echo $ma->name ?>" class="cboxElement"
+                                       href="<?= Image::get(FilesModel::findByUuid($ma->bild)->path, null, null, null); ?>">
+                                        <?php endif; ?>
+                                        <img class="lazy"
+                                             data-src="<?= Image::get(FilesModel::findByUuid($ma->bild)->path, null, null, 2); ?>">
+                                    </a>
                             </div>
                         <?php endif; ?>
                         <div class="ma--details <?php if ($ma->alternate_background) : ?>with-bg<?php endif; ?> <?php if ($ma->textalign) : ?><?php echo $ma->textalign; ?><?php endif; ?>"
                              style="<?php if ($ma->alternate_textcolor) : ?>color:<?php echo $ma->alternate_textcolor; ?>;<?php endif; ?><?php if ($ma->alternate_background) : ?>background-color:<?php echo $ma->alternate_background; ?><?php endif; ?>">
 
-                            <?php if($ma->link_url):?>
-                            <a <?php if ($ma->new_tab): ?>target="_blank"<?php endif; ?> href="<?php echo $ma->link_url; ?><?php if ($ma->link_betreff) : ?>?subject=<?php echo $ma->link_betreff; ?><?php endif; ?>">
-                                <?php endif;?>
+                            <?php if ($ma->link_url): ?>
+                            <a <?php if ($ma->new_tab): ?>target="_blank"<?php endif; ?>
+                               href="<?php echo $ma->link_url; ?><?php if ($ma->link_betreff) : ?>?subject=<?php echo $ma->link_betreff; ?><?php endif; ?>">
+                                <?php endif; ?>
 
                                 <span class="text-primary">
                                     <?php echo $ma->name ?>
                                 </span>
-                                 <?php if($ma->link_url):?>
+                                <?php if ($ma->link_url): ?>
                             </a>
-                            <?php endif;?>
+                        <?php endif; ?>
                             <?php if ($ma->subline) : ?>
                                 <div class="job-subline">
                                     <?php echo $ma->subline ?>

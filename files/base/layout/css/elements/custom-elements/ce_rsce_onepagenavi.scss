@@ -11,6 +11,30 @@
       right: rfs-value(-225px);
     }
 
+    .scrollToTop {
+      width: rfs-value(60px);
+      height: rfs-value(60px);
+      line-height: rfs-value(55px);
+      text-align: center;
+      background-color: rgba(var(--bs-white-rgb), 0.7);
+      color: $primary;
+      border-radius: 50%;
+      display: block;
+      margin: 1.5rem auto 0 auto;
+      transition: all 0.3s ease;
+      @include font-size(80px);
+      cursor: pointer;
+
+      i {
+        line-height: rfs-value(56px);
+      }
+
+      &:hover {
+        background-color: $primary;
+        color: $text-color-inverse;
+      }
+    }
+
     &.visible {
       right: 0;
 
@@ -108,8 +132,6 @@
         }
       }
     }
-
-
   }
 }
 
