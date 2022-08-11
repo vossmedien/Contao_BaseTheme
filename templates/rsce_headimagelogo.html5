@@ -86,15 +86,19 @@
                                 <div data-aos="<?php if ($slide->animation_type) : ?><?php echo $slide->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                                      class="mainimage--content"
                                      <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
+
+
                                     <div class="container">
+
+
                                         <div class="mainimage--content-inner <?php echo $slide->textbox_position; ?> <?php echo $slide->text_align; ?>"
                                              style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?> <?php if ($slide->maxWidth) : ?>max-width: <?php echo $slide->maxWidth; ?>;<?php endif; ?>">
 
                                             <div class="mainimage--content-inner--wrapper">
                                                 <?php if ($slide->firstline_headline) : ?>
-                                                    <h1 class="first-line mb-0"><?php echo $slide->text_firstline; ?></h1>
+                                                    <h1 style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?>" class="first-line mb-0"><?php echo $slide->text_firstline; ?></h1>
                                                 <?php else : ?>
-                                                    <span class="first-line mb-0"><?php echo $slide->text_firstline; ?></span>
+                                                    <span style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?>" class="first-line mb-0"><?php echo $slide->text_firstline; ?></span>
                                                 <?php endif; ?>
                                                 <?php if ($slide->text_secondline) : ?>
                                                     <span class="second-line"><?php echo $slide->text_secondline; ?></span>
@@ -116,7 +120,9 @@
                                                 <?php endif; ?>
                                             </div>
                                         </div>
+
                                     </div>
+
                                 </div>
                             <?php endif; ?>
                         </div>

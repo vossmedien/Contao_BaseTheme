@@ -41,6 +41,7 @@
   --mm-color-border: transparent;
   --mm-color-button: white;
   --mm-color-text: white;
+  --mm-color-text-highlighted: var(--bs-body-color-inverse);
   --mm-color-text-dimmed: rgba(0, 0, 0, 0.3);
   --mm-color-background: var(--bs-primary);
   --mm-color-background-highlight: rgba(0, 0, 0, 0.05);
@@ -60,7 +61,7 @@
           content: "";
           width: calc(100% + 80px);
           height: 100px;
-          background: var(--bs-primary) url("/files/base/layout/img/logo.svg") center center no-repeat;
+          background: var(--mm-color-background) url("/files/base/layout/img/logo.svg") center center no-repeat;
           background-size: contain;
           margin: 50px -40px;
         }
@@ -75,8 +76,12 @@
 
   .mm-listview.level_1 {
     > li {
-      > a {
+      > a, > span {
         text-transform: uppercase;
+      }
+
+      > span,>a:hover{
+        color: var(--mm-color-text-highlighted);
       }
     }
   }

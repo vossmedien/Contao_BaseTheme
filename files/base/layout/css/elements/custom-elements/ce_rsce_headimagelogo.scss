@@ -87,6 +87,108 @@
     position: relative;
     //overflow: hidden;
 
+      .image--holder {
+      position: relative;
+      background-size: cover !important;
+      background-position: center center;
+      //overflow: hidden;
+
+      @media (orientation: landscape) {
+        //height: rfs-value(450px);
+      }
+
+      &.with-video {
+        overflow: hidden;
+      }
+
+      video {
+        min-width: 100vw;
+        min-height: 100vh;
+        width: auto;
+        height: auto;
+        z-index: -1000;
+        overflow: hidden;
+        max-width: none;
+
+        transform: translate(-50%, -50%);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+      }
+
+      .mainimage--content {
+        height: 100%;
+        width: 100vw;
+
+        > .container{
+          position: relative;
+          height: 100%;
+        }
+
+        .mainimage--content-inner {
+          display: inline-block;
+          position: absolute;
+
+          &:not([class*="pos-"]) {
+            transform: translate(0%, -50%);
+            top: 50%;
+            left: 0;
+          }
+
+          padding: 10px 2rem 10px 0px;
+
+          @include media-breakpoint-down(sm) {
+            width: 85%;
+          }
+
+          &[class*="-bottom"] {
+            bottom: rfs-value(75px);
+          }
+
+          span {
+            display: block;
+            line-height: 1;
+
+            &.first-line {
+              @include font-size(26px);
+              font-weight: $font-weight-bold;
+
+              @include media-breakpoint-up(md) {
+                @include font-size(36px);
+              }
+            }
+
+            &.second-line {
+              @include font-size(18px);
+              margin-top: 8px;
+              font-weight: $font-weight-semibold;
+
+              @include media-breakpoint-up(md) {
+                @include font-size(22px);
+              }
+            }
+          }
+
+          h1 {
+            @include font-size(36px);
+            font-weight: $font-weight-bold;
+          }
+
+          .infotext--text {
+            margin-top: 1.25rem;
+          }
+
+          .button--wrapper {
+            > .btn {
+              margin-bottom: rfs-value(5px);
+            }
+          }
+        }
+      }
+    }
+
+
+
     &.style-1 {
       .mainimage--content {
         .mainimage--content-inner {
@@ -146,7 +248,7 @@
           }
 
           .mainimage--content-inner--wrapper {
-            padding: 10px 10px 10px 10px;
+            padding: 10px 2rem 10px 0px;
 
             @include media-breakpoint-up(sm) {
               &:after {
@@ -174,99 +276,6 @@
       }
     }
 
-    .image--holder {
-      position: relative;
-      background-size: cover !important;
-      background-position: center center;
-      //overflow: hidden;
 
-      @media (orientation: landscape) {
-        //height: rfs-value(450px);
-      }
-
-      &.with-video {
-        overflow: hidden;
-      }
-
-      video {
-        min-width: 100vw;
-        min-height: 100vh;
-        width: auto;
-        height: auto;
-        z-index: -1000;
-        overflow: hidden;
-        max-width: none;
-
-        transform: translate(-50%, -50%);
-        position: absolute;
-        top: 50%;
-        left: 50%;
-      }
-
-      .mainimage--content {
-        height: 100%;
-        width: 100vw;
-
-        .mainimage--content-inner {
-          display: inline-block;
-          position: absolute;
-
-          &:not([class*="pos-"]) {
-            transform: translate(-50%, -50%);
-            top: 50%;
-            left: 50%;
-          }
-
-          padding: 10px 10px 10px 10px;
-
-          @include media-breakpoint-down(sm) {
-            width: 85%;
-          }
-
-          &[class*="-bottom"] {
-            bottom: rfs-value(75px);
-          }
-
-          span {
-            display: block;
-            line-height: 1;
-
-            &.first-line {
-              @include font-size(26px);
-              font-weight: $font-weight-bold;
-
-              @include media-breakpoint-up(md) {
-                @include font-size(36px);
-              }
-            }
-
-            &.second-line {
-              @include font-size(18px);
-              margin-top: 8px;
-              font-weight: $font-weight-semibold;
-
-              @include media-breakpoint-up(md) {
-                @include font-size(22px);
-              }
-            }
-          }
-
-          h1 {
-            @include font-size(36px);
-            font-weight: $font-weight-bold;
-          }
-
-          .infotext--text {
-            margin-top: 1.25rem;
-          }
-
-          .button--wrapper {
-            > .btn {
-              margin-bottom: rfs-value(5px);
-            }
-          }
-        }
-      }
-    }
   }
 }
