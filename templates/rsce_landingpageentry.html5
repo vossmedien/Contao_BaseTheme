@@ -38,6 +38,7 @@
                              $top_background_hover_color = str_replace("&#40", "(",$top_background_hover_color);
                              $top_background_hover_color = str_replace("(;", "(",$top_background_hover_color);
                              $top_background_hover_color = str_replace("&#35;", "#",$top_background_hover_color);
+                                $top_background_hover_color = str_replace(");", ")",$top_background_hover_color);
                          ?>
 
                         #landingpageColumn_<?=$this->id;?>_<?= $i;?>:hover .lp--top:after {
@@ -53,6 +54,7 @@
                              $middle_text_hover_color = str_replace("&#40", "(",$middle_text_hover_color);
                              $middle_text_hover_color = str_replace("(;", "(",$middle_text_hover_color);
                              $middle_text_hover_color = str_replace("&#35;", "#",$middle_text_hover_color);
+                             $middle_text_hover_color = str_replace(");", ")",$middle_text_hover_color);
                          ?>
 
                         #landingpageColumn_<?=$this->id;?>_<?= $i;?>:hover .lp--middle .middle--content a:hover {

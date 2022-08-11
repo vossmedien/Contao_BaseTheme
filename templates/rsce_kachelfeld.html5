@@ -46,6 +46,7 @@ if (!isset($this->size)) {
                              $backgroundColor = str_replace("&#40", "(",$backgroundColor);
                              $backgroundColor = str_replace("(;", "(",$backgroundColor);
                              $backgroundColor = str_replace("&#35;", "#",$backgroundColor);
+                             $backgroundColor = str_replace(");", ")",$backgroundColor);
                          ?>
 
                         #kachelbox_<?=$this->id;?>_<?= $i;?>:hover {
@@ -61,6 +62,7 @@ if (!isset($this->size)) {
                             $textColor = str_replace("&#40", "(",$textColor);
                             $textColor = str_replace("(;", "(",$textColor);
                             $textColor = str_replace("&#35;", "#",$textColor);
+                                $textColor = str_replace(");", ")",$textColor);
                         ?>
                         #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .kb--content .box--headline .h5,
                         #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .kb--image i, #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .box--text p a {

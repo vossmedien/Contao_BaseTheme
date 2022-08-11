@@ -36,6 +36,7 @@ if (!isset($this->size)) {
                                        $backgroundColor = str_replace("&#40", "(",$backgroundColor);
                                        $backgroundColor = str_replace("(;", "(",$backgroundColor);
                                        $backgroundColor = str_replace("&#35;", "#",$backgroundColor);
+                                       $backgroundColor = str_replace(");", ")",$backgroundColor);
                                    ?>
 
 
@@ -52,6 +53,7 @@ if (!isset($this->size)) {
                                         $textColor = str_replace("&#40", "(",$textColor);
                                         $textColor = str_replace("(;", "(",$textColor);
                                         $textColor = str_replace("&#35;", "#",$textColor);
+                                         $textColor = str_replace(");", ")",$textColor);
                                     ?>
 
 
@@ -72,6 +74,7 @@ if (!isset($this->size)) {
                                        $backgroundColor = str_replace("&#40", "(",$backgroundColor);
                                        $backgroundColor = str_replace("(;", "(",$backgroundColor);
                                        $backgroundColor = str_replace("&#35;", "#",$backgroundColor);
+                                        $backgroundColor = str_replace(");", ")",$backgroundColor);
                                    ?>
 
 
@@ -88,6 +91,7 @@ if (!isset($this->size)) {
                                         $textColor = str_replace("&#40", "(",$textColor);
                                         $textColor = str_replace("(;", "(",$textColor);
                                         $textColor = str_replace("&#35;", "#",$textColor);
+                                         $textColor = str_replace(");", ")",$textColor);
                                     ?>
 
 
