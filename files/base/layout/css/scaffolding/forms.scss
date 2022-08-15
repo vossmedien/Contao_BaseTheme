@@ -46,6 +46,12 @@ form {
       }
     }
 
+    .form-control[type=file]{
+      padding-top: 0px;
+      padding-bottom: 0px;
+      line-height: rfs-value(50px);
+    }
+
     &.error {
       color: $danger;
 
@@ -117,6 +123,7 @@ form {
     > label {
       z-index: 5;
       color: $input-placeholder-color;
+      padding-left: 1.5rem;
       //line-height: 1.2;
       //margin-left: calc(var(--bs-gutter-x) / 2);
     }

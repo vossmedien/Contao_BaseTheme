@@ -44,7 +44,7 @@
                                 </div>
                             <?php endif; ?>
                             <?php if ($b->link_text) : ?>
-                                <div class="button--wrapper mt-4" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
+                                <div class="button--wrapper mt-2" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
                                     <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>" href="<?php echo $b->link; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?>
                                     </a>
                                 </div>
