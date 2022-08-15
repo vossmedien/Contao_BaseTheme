@@ -22,9 +22,9 @@
                                 <div class="box--image lazy" data-bg="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>" style="background-size: cover; background-repeat: no-repeat; background-position: center center;"></div>
                             </div>
                         </div>
-                        <div class="box--content" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>" <?php if ($b->versatz) : ?>style="position: relative; top: <?php echo $b->versatz; ?>px" <?php endif; ?>>
+                        <div class="box--content <?php if ($b->asbox) : ?>as-box<?php endif; ?>" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>" <?php if ($b->versatz) : ?>style="position: relative; top: <?php echo $b->versatz; ?>px" <?php endif; ?>>
                             <?php if ($b->headline) : ?>
-                                <div class="headline--wrapper <?php if ($b->asbox) : ?>as-box<?php endif; ?>">
+                                <div class="headline--wrapper ">
                                     <?php if (!$b->onlystyle) : ?>
                                         <<?php echo $b->headline_type; ?>><?php echo $b->headline; ?></<?php echo $b->headline_type; ?>>
                                         <?php if ($b->subline) : ?>

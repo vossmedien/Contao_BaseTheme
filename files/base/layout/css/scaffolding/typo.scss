@@ -79,6 +79,7 @@ html body {
   .h1 {
     line-height: 1.2;
     transition: color 0.3s ease;
+    color: var(--bs-headline-color);
 
     > span {
       display: block;
