@@ -298,7 +298,7 @@ Promise.all(promises)
     /* Add Floating Placeholders to Inputs */
     if ($(".ce_form").length) {
       function addPlaceholders() {
-        $(".widget.widget-text, .widget.widget-textarea").each(function (
+        $(".widget").each(function (
           index
         ) {
           var placeholder = $(this).find("input, textarea").attr("placeholder");
@@ -312,6 +312,8 @@ Promise.all(promises)
               .find("input, textarea")
               .parent("div")
               .append("<label for='" + id + "'>" + placeholder + "</label>");
+
+            $(this).find("label:first-child").remove();
           }
         });
       }

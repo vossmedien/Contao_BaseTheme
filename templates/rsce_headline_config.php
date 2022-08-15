@@ -14,6 +14,13 @@ return array(
             'label' => array('Subline', ''),
             'inputType' => 'text',
         ),
+
+
+        'settings_1' => array(
+            'label' => array('Einstellungen', ''),
+            'inputType' => 'group',
+        ),
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -137,6 +144,31 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
+
+        'asbox' => array(
+            'label' => array('Inhalt in einer Box mit Schatten darstellen', ''),
+            'inputType' => 'checkbox',
+        ),
+
+
+        'hide_gradient' => array(
+            'label' => array('Verlauf verstecken', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
+        'not_fullwidth' => array(
+            'label' => array('Bild nicht auf volle Breite strecken', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'settings_2' => array(
+            'label' => array('Bild', ''),
+            'inputType' => 'group',
+        ),
+
         'image' => array(
             'label' => array('Großes Bild', ''),
             'inputType' => 'fileTree',
@@ -147,10 +179,38 @@ return array(
                 'extensions' => 'jpg,jpeg,png,svg',
             ),
         ),
-        'asbox' => array(
-            'label' => array('Als Box mit Schatten darstellen', 'Automatisch ausgewählt, wenn Bild ausgewählt wurde'),
-            'inputType' => 'checkbox',
+
+        'image_height' => array(
+            'label' => array('Höhe des Bereichs in %', 'Standard sind "50", also 50% Viewport-Height'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
+
+        'image_maxheight' => array(
+            'label' => array('Maximale Höhe des Bereichs', 'Einheit (px, rem, vh usw.) bitte angeben'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+
+        'settings_3' => array(
+            'label' => array('Inhalte', ''),
+            'inputType' => 'group',
+        ),
+
+
+        'textalign' => array(
+            'label' => array(
+                'de' => array('Text-Ausrichtung', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                'text-center' => 'Zentriert',
+                'text-start' => 'Linksbündig',
+                'text-end' => 'Rechtsbündig',
+            ),
+        ),
+
         'headline_type' => array(
             'label' => array(
                 'de' => array('Typ der Überschrift', ''),

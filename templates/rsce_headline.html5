@@ -15,14 +15,14 @@
             </div>
         <?php endif; ?>
         <?php if ($this->image) : ?>
-            <div class="ce--main-image">
-                <div data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="image--holder lazy" style="background-size: cover; background-repeat: no-repeat; background-position: center center;" data-bg="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>"></div>
+            <div class="ce--main-image <?php if($this->not_fullwidth):?>container<?php endif;?>">
+                <div data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="image--holder lazy <?php if ($this->hide_gradient):?>hide-gradient<?php endif;?><?php if($this->hide_gradient && !$this->asbox):?> mb-2<?php endif;?>" style="<?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?><?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; min-height: 250px;<?php endif; ?>background-size: cover; background-repeat: no-repeat; background-position: center center;" data-bg="<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>"></div>
             </div>
         <?php endif; ?>
-        <div class="container text-center">
+        <div class="container <?php if ($this->textalign) : ?><?php echo $this->textalign; ?><?php endif; ?>">
             <div data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="box--holder <?php if ($this->asbox) : ?>content--box<?php endif; ?>">
-                <?php if ($this->headline || $this->subline) : ?>
-                    <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
+                <?php if ($this->ce_headline || $this->subline) : ?>
+                    <div class="ce--headline <?php if ($this->textalign) : ?><?php echo $this->textalign; ?><?php endif; ?>" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
                         <?php if ($this->ce_headline) : ?>
                             <?php if (!$this->onlystyle) : ?>
                                 <<?php echo $this->headline_type; ?>>

@@ -31,6 +31,12 @@ form {
       margin-bottom: 0px;
     }
 
+    .form-control{
+      //border: 0px;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+
     input:not(.form-control) {
       &[type="text"],
       &[type="email"],
@@ -72,6 +78,8 @@ form {
 
     &.widget-select {
       select {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
         @extend .form-select;
         border-radius: 0px $border-radius $border-radius $border-radius;
       }
@@ -110,7 +118,7 @@ form {
       z-index: 5;
       color: $input-placeholder-color;
       //line-height: 1.2;
-      margin-left: calc(var(--bs-gutter-x) / 2);
+      //margin-left: calc(var(--bs-gutter-x) / 2);
     }
 
     input[type="text"],

@@ -2,18 +2,13 @@
   ul {
     list-style-type: none;
     padding: 0px;
-    margin: 0px -0.5rem;
-    display: flex;
-    flex-flow: row wrap;
     //justify-content: center;
     //align-items: center;
 
     > li {
       margin-bottom: 1.5rem;
-      padding: 0 0.5rem;
-      @include media-breakpoint-up(md) {
-        max-width: 25%;
-      }
+      text-align: center;
+
 
       &:hover a {
         color: $primary;
@@ -25,11 +20,14 @@
         }
 
         & + a {
-          text-align: center;
-          display: table;
           text-decoration: none;
           color: $body-color;
           margin: 0 auto;
+          white-space: nowrap;
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
 
           span.size {
             display: none;
@@ -39,8 +37,7 @@
             @extend %fa-icon;
             @extend .fal;
             content: fa-content($fa-var-download);
-            display: table-cell;
-            padding-right: rfs-value(10px);
+            padding-right: rfs-value(5px);
             color: $primary;
           }
         }
