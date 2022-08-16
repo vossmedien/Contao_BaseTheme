@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Mehrspaltige Textboxen (old)', ''),
+    'label' => array('Custom | Mehrspaltige Textboxen', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',

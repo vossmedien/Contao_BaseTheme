@@ -10,5 +10,11 @@ return array(
         'type' => 'start',
     ),
     'wrapperClose' => 'rsce_row4sepend',
-    'fields' => array(),
+    'fields' => array(
+        'background_color' => array(
+            'label' => array('Spalten-Hintergrundfarbe', 'In HEX oder rgb(a) angeben, funktioniert bei 2 Spalten!'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+    ),
 );

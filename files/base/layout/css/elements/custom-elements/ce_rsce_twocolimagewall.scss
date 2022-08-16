@@ -287,7 +287,7 @@
             left: 0;
             top: 0;
             transition: all 0.3s ease-in-out;
-            min-height: rfs-value(200px);
+            //min-height: rfs-value(200px);
 
             @include media-breakpoint-up(md) {
               position: absolute;
@@ -300,7 +300,11 @@
           margin: 0px;
 
           @include media-breakpoint-down(md) {
-            flex-flow: column-reverse;
+
+
+            &:not(.align-items-center){
+                  flex-flow: column-reverse;
+            }
           }
 
           > div {
@@ -312,11 +316,11 @@
             .image--col,
             .content--col {
               @include media-breakpoint-up(md) {
-                min-height: rfs-value(425px);
+                //min-height: rfs-value(425px);
               }
 
               @include media-breakpoint-up(xl) {
-                min-height: rfs-value(500px);
+                //min-height: rfs-value(500px);
               }
             }
           }
@@ -382,7 +386,7 @@
 
                 & + .image--col {
                   &:hover {
-                    .image-col--inner:not(.with-iframe) {
+                    .image-col--inner:not(.with-iframe):not(.with-video) {
                       left: -2.5%;
                       right: auto !important;
                     }
@@ -412,8 +416,17 @@
               position: relative;
             }
 
+            &.with-video{
+              min-height: 0px !important;
+              .image-col--inner{
+                width: auto !important;
+                position: relative;
+                height: auto;
+              }
+            }
+
             .image-col--inner {
-              min-height: rfs-value(200px);
+              //min-height: rfs-value(200px);
               transition: all 0.3s ease-in-out;
               //background-color: $body-bg;
               //right: 0;
@@ -487,7 +500,7 @@
                     width: 50vw;
                   }
 
-                  &:hover .image-col--inner:not(.with-iframe) {
+                  &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                     height: 102.5%;
                     width: calc(50vw + 2.5%) !important;
                     right: -2.5%;
@@ -507,7 +520,7 @@
                   }
 
                   & + .image--col {
-                    &:hover .image-col--inner:not(.with-iframe) {
+                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(50vw + 2.5% - #{$mini-spacing}) !important;
                       right: -2.5%;
                     }
@@ -539,7 +552,7 @@
                 }
 
                 & + .image--col {
-                  &:hover .image-col--inner:not(.with-iframe) {
+                  &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                     height: 102.5%;
                     width: calc(25vw + 2.5%) !important;
                     right: -2.5%;
@@ -553,7 +566,7 @@
 
                 &.spacing-between {
                   & + .image--col {
-                    &:hover .image-col--inner:not(.with-iframe) {
+                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(25vw + 2.5% - #{$mini-spacing}) !important;
                       right: -2.5%;
                     }
@@ -585,7 +598,7 @@
                 }
 
                 & + .image--col {
-                  &:hover .image-col--inner:not(.with-iframe) {
+                  &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                     height: 102.5%;
                     width: calc(33.333vw + 2.5%) !important;
                     right: -2.5%;
@@ -599,7 +612,7 @@
 
                 &.spacing-between {
                   & + .image--col {
-                    &:hover .image-col--inner:not(.with-iframe) {
+                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
                         33.333vw + 2.5% - #{$mini-spacing}
                       ) !important;
@@ -633,7 +646,7 @@
                 }
 
                 & + .image--col {
-                  &:hover .image-col--inner:not(.with-iframe) {
+                  &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                     height: 102.5%;
                     width: calc(41.777vw + 2.5%) !important;
                     right: -2.5%;
@@ -647,7 +660,7 @@
 
                 &.spacing-between {
                   & + .image--col {
-                    &:hover .image-col--inner:not(.with-iframe) {
+                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
                         41.777vw + 2.5% - #{$mini-spacing}
                       ) !important;
@@ -681,7 +694,7 @@
                 }
 
                 & + .image--col {
-                  &:hover .image-col--inner:not(.with-iframe) {
+                  &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                     height: 102.5%;
                     width: calc(58.444vw + 2.5%) !important;
                     right: -2.5%;
@@ -695,7 +708,8 @@
 
                 &.spacing-between {
                   & + .image--col {
-                    &:hover .image-col--inner:not(.with-iframe) {
+
+                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
                         58.444vw + 2.5% - #{$mini-spacing}
                       ) !important;
@@ -729,7 +743,7 @@
                 }
 
                 & + .image--col {
-                  &:hover .image-col--inner:not(.with-iframe) {
+                  &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                     height: 102.5%;
                     width: calc(66.666vw + 2.5%) !important;
                     right: -2.5%;
@@ -743,7 +757,7 @@
 
                 &.spacing-between {
                   & + .image--col {
-                    &:hover .image-col--inner:not(.with-iframe) {
+                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
                         66.666vw + 2.5% - #{$mini-spacing}
                       ) !important;

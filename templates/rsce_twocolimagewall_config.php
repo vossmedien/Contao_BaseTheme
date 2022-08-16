@@ -1120,6 +1120,7 @@ return array(
                     'options' => array(
                         '1' => 'Ein Bild einbinden',
                         '2' => 'Ein iFrame, z. B. eine Google-Map einbinden',
+                        '3' => 'Ein Video (mp4) einbinden',
                     ),
                 ),
 
@@ -1175,6 +1176,21 @@ return array(
                     ),
                 ),
 
+                'video' => array(
+                    'label' => array('Video', 'Dateiformat: mp4'),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'mp4',
+                        'tl_class' => 'clr'
+                    ),
+                    'dependsOn' => array(
+                        'field' => 'contentType',
+                        'value' => '3',
+                    ),
+                ),
             ),
         ),
     ),

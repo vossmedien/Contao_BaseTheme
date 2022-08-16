@@ -138,6 +138,18 @@ if (!isset($this->size)) {
                                     <?php endif; ?>
 
 
+                                    <?php if ($box->image_headline_background): ?>
+                                        <span style="background-color: <?= $box->image_headline_background; ?>"
+                                              class="design-element"></span>
+                                    <?php endif; ?>
+
+                                    <?php if ($box->image_headline): ?>
+                                        <div class="box-upper--image-text">
+                                            <span><?= $box->image_headline; ?></span>
+                                        </div>
+                                    <?php endif; ?>
+
+
                                     <?php if ($box->imagetext) : ?>
                                         <div class="hover-text">
                                             <div class="hover-text--inner">
@@ -145,7 +157,6 @@ if (!isset($this->size)) {
                                             </div>
                                         </div>
                                     <?php endif; ?>
-
                                 </div>
                             <?php endif; ?>
                             <?php if ($box->longtext || $box->text || $box->expand_image || $box->expand_image || $box->modal_longtext || $box->modal_image) : ?>

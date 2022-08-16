@@ -18,7 +18,7 @@
  */
 
 [class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery) {
-  padding: $basic-gutter;
+  padding: $basic-gutter 0px;
 
   @include media-breakpoint-down(md) {
     padding-left: 0rem;
@@ -317,4 +317,5 @@
 @import "custom-elements/ce_rsce_stoerer";
 @import "custom-elements/ce_rsce_row1start";
 @import "custom-elements/ce_rsce_equalboxfield";
+@import "custom-elements/ce_rsce_row3sepstart";
 @import "custom-elements/ce_rsce_quotebox";

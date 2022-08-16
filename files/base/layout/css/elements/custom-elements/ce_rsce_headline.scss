@@ -25,6 +25,10 @@
       }
     }
 
+    & + .container{
+      margin-top: 1.5rem;
+    }
+
     & + .box--holder {
       @extend .content--box;
       @extend .bg-gradient-white;

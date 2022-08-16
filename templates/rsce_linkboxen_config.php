@@ -416,6 +416,19 @@ return array(
                 ),
 
 
+                'image_headline' => array(
+                    'label' => array('Text auf Bildbereich unten links', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'image_headline_background' => array(
+                    'label' => array('Hintergrundfarbe für Text', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
                 'settings_3' => array(
                     'label' => array('Inhalte', ''),
                     'inputType' => 'group',
