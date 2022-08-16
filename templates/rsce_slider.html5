@@ -28,7 +28,10 @@ if (!isset($this->size)) {
         $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
     }
     ?>
-    <div class="ce--content-slider"
+
+
+
+    <div class="ce--content-slider <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif;?>"
          data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
         <?php $rand = rand(1, 100); ?>
 
@@ -97,7 +100,9 @@ if (!isset($this->size)) {
             const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
                 direction: 'horizontal',
 
+                <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>
                 loop: true,
+                <?php endif;?>
                 preloadImages: true,
                 lazy: false,
 

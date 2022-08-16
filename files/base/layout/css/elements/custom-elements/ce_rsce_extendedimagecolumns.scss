@@ -70,6 +70,22 @@
     }
   }
 
+
+  .row {
+    > div:nth-child(even) {
+      video {
+        margin-right: auto;
+      }
+    }
+
+    > div:nth-child(odd) {
+      video {
+        margin-left: auto;
+      }
+    }
+  }
+
+
   .box--image-holder {
     min-height: rfs-fluid-value(350px);
     position: relative;
@@ -78,33 +94,62 @@
       min-height: rfs-value(450px);
     }
 
+    .background-holder {
+      position: absolute;
+      z-index: -1;
+      height: 100%;
+      width: 50vw;
+      display: block;
+      right: 0;
+      top: 0;
+    }
+
+    &.is-video--holder {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      line-height: 0;
+
+      video {
+        //width: auto;
+      }
+    }
 
     .box--image-overflow-wrapper {
       overflow: hidden;
-      width: calc(50vw - calc(var(--bs-gutter-x) * .4));
-      position: absolute;
+      max-height: 100%;
 
 
-      @include media-breakpoint-down(md) {
-        width: 100vw;
-        position: relative;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
+      &:not(.is-video--wrapper) {
+        width: calc(50vw - calc(var(--bs-gutter-x) * .4));
+        position: absolute;
+
+
+        @include media-breakpoint-down(md) {
+          width: 100vw;
+          position: relative;
+          left: 50%;
+          right: 50%;
+          margin-left: -50vw;
+          margin-right: -50vw;
+        }
       }
+
 
       .box--image {
         transition: all 0.3s ease-in-out;
 
-        min-height: rfs-fluid-value(350px);
-        @include media-breakpoint-up(xxl) {
-          min-height: rfs-value(450px);
-        }
 
+        &:not(.is-video) {
+          min-height: rfs-fluid-value(350px);
 
-        &:hover {
-          transform: scale(1.05, 1.05);
+          @include media-breakpoint-up(xxl) {
+            min-height: rfs-value(450px);
+          }
+
+          &:hover {
+            transform: scale(1.05, 1.05);
+          }
         }
       }
     }
@@ -117,7 +162,7 @@
     transition: background-color .3s ease;
     position: relative;
 
-    &:not(.as-box){
+    &:not(.as-box) {
       background-color: var(--bs-body-bg);
     }
 

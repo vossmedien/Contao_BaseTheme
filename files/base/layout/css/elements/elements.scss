@@ -94,6 +94,14 @@
   }
 }
 
+.ce_text{
+  figure.float_above{
+    text-align: center;
+  }
+}
+
+
+
 .progress {
   background-color: var(--bs-gray-100);
 }
@@ -309,3 +317,4 @@
 @import "custom-elements/ce_rsce_stoerer";
 @import "custom-elements/ce_rsce_row1start";
 @import "custom-elements/ce_rsce_equalboxfield";
+@import "custom-elements/ce_rsce_quotebox";

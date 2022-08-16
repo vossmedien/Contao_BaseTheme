@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Gestrecktes Bild mit Headline, Text und Button (2-Spaltig)', ''),
+    'label' => array('Custom | Box mit Logo, Zitat und Person', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -137,12 +137,12 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
-        'box' => array(
-            'label' => array('Boxen', ''),
-            'elementLabel' => '%s. Box',
+        'quote' => array(
+            'label' => array('Zitate', ''),
+            'elementLabel' => '%s. Zitat',
             'inputType' => 'list',
             'minItems' => 1,
-            'maxItems' => 10,
+            'maxItems' => 999,
             'fields' => array(
                 'animation_type' => array(
                     'label' => array(
@@ -267,98 +267,64 @@ return array(
                     ),
                     'eval' => array('chosen' => 'true')
                 ),
-                'image' => array(
-                    'label' => array('Bild / Video (mp4)', ''),
+                'column_width' => array(
+                    'label' => array(
+                        'de' => array('Spaltenbreite', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'col-12 col-md-6 col-lg-3' => '25%',
+                        'col-12 col-md-6 col-lg-4' => '33%',
+                        'col-12 col-md-6' => '50%',
+                        'col-12 col-lg-8' => '66.66%',
+                        'col-12 col-lg-9' => '75%',
+                        'col-12' => 'Volle Breite',
+                        'col-12 col-md-auto' => 'Automatische Breite (füllend)',
+                        'col-12 col-md' => 'Breite anhand des Inhalts',
+                    ),
+                ),
+                'bild' => array(
+                    'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,mp4',
+                        'extensions' => 'jpg,jpeg,png,svg',
                     ),
                 ),
 
-                'alternate_background' => array(
-                    'label' => array('Alternative Hintergrundfarbe für Bild/Video-Hintergrund', 'In HEX oder rgb(a) angeben'),
-                    'inputType' => 'text',
-                ),
-
-                'asbox' => array(
-                    'label' => array('Headline als Box mit Schatten darstellen', ''),
-                    'inputType' => 'checkbox',
-                ),
-                'onlystyle' => array(
-                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
-                    'inputType' => 'checkbox',
-                ),
-                'headline_type' => array(
+                'textalign' => array(
                     'label' => array(
-                        'de' => array('Typ der Überschrift', ''),
+                        'de' => array('Text-Ausrichtung', ''),
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'h1' => 'H1',
-                        'h2' => 'H2',
-                        'h3' => 'H3',
-                        'h4' => 'H4',
-                        'h5' => 'H5',
+                        'text-start' => 'Linksbündig',
+                        'text-center' => 'Zentriert',
+                        'text-end' => 'Rechtsbündig',
                     ),
-                    'eval' => array('tl_class' => 'clr'),
                 ),
-                'headline' => array(
-                    'label' => array('Überschrift', ''),
-                    'inputType' => 'text',
-                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
-                ),
-                'subline' => array(
-                    'label' => array('Subline', ''),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-                'content' => array(
-                    'label' => array('Text', ''),
+
+                'beschreibung' => array(
+                    'label' => array('Zitat', ''),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
-                'link_text' => array(
-                    'label' => array(
-                        'de' => array('Button-Beschriftung', ''),
-                    ),
+
+                'name' => array(
+                    'label' => array('Name', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
                 ),
+
                 'link_url' => array(
                     'label' => array('Verlinkung', ''),
                     'inputType' => 'url',
-                    'eval' => array('tl_class' => 'w50'),
                 ),
-                'link_type' => array(
-                    'label' => array(
-                        'de' => array('Optik des Buttons', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'btn-primary' => 'Hauptfarbe',
-                        'btn-outline-primary' => 'Hauptfarbe(Outline)',
-                        'btn-secondary' => 'Sekundär - Farbe',
-                        'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
-                        'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
-                        'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
-                        'btn-white' => 'Weißer Button mit schwarzer Schrift',
-                    ),
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-                'link_size' => array(
-                    'label' => array(
-                        'de' => array('Größe des Buttons', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        '' => 'Standard',
-                        'btn-sm' => 'Klein',
-                        'btn-lg' => 'Groß',
-                    ),
-                    'eval' => array('tl_class' => 'w50'),
+
+                'new_tab' => array(
+                    'label' => array('Link in neuen Tab öffnen', ''),
+                    'inputType' => 'checkbox',
                 ),
             ),
         ),

@@ -9,14 +9,6 @@
 
   }
 
-  .swiper:not(.swiper-coverflow) {
-    .swiper-slide {
-      &.swiper-slide-next, &.swiper-slide-prev {
-        opacity: .6;
-      }
-    }
-  }
-
 
   .swiper.swiper-coverflow {
     .swiper-slide {

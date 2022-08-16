@@ -35,6 +35,8 @@ form {
       //border: 0px;
       padding-top: 1rem;
       padding-bottom: 1rem;
+      border-radius: $border-radius;
+      border-color: var(--bs-border-color);
     }
 
     input:not(.form-control) {
@@ -99,7 +101,6 @@ form {
       text-align: right;
 
       button {
-        @extend .btn;
         @extend .btn, .btn-primary;
       }
     }
@@ -123,7 +124,7 @@ form {
     > label {
       z-index: 5;
       color: $input-placeholder-color;
-      padding-left: 1.5rem;
+      padding-left: rfs-value(20px);
       //line-height: 1.2;
       //margin-left: calc(var(--bs-gutter-x) / 2);
     }

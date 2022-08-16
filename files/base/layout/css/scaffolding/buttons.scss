@@ -12,7 +12,7 @@
   }
 
   &:not(.btn-sm) {
-    padding-top: rfs-value(9px);
+    padding-top: rfs-value(11px);
     padding-bottom: rfs-value(11px);
   }
 
@@ -55,6 +55,7 @@
   &.btn-outline-secondary {
     border-color: $secondary;
     color: $secondary;
+    background-color: transparent;
 
     &:hover {
       background-color: $secondary;

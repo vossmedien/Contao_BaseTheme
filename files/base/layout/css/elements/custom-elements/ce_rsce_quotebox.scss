@@ -1,0 +1,55 @@
+.ce_rsce_quotebox {
+  .quote--element {
+
+    @include media-breakpoint-up(xl) {
+      max-width: 75%;
+      margin: 0 auto;
+    }
+
+    .quote--image {
+      margin-bottom: 1.5rem;
+      height: rfs-value(100px);
+      display: flex;
+      flex-flow: column wrap;
+      justify-content: center;
+
+      img {
+        max-height: rfs-value(100px);
+        max-width: rfs-value(285px);
+      }
+    }
+
+    .quote--detail {
+      .quote--text {
+        position: relative;
+        padding: 0rem 2.25rem;
+
+        &::before {
+          left: 0;
+          top: 0;
+          content: fa-content($fa-var-quote-left);
+        }
+
+        &::after {
+          bottom: 0;
+          right: 0;
+          content: fa-content($fa-var-quote-right);
+        }
+
+        &:before, &:after {
+          @include font-size(24px);
+          position: absolute;
+
+          @extend .fas;
+        }
+      }
+
+      .quote--name {
+        padding: 0 2.25rem;
+        display: block;
+        margin-top: .5rem;
+        @include font-size(14px);
+      }
+    }
+  }
+}

@@ -139,6 +139,7 @@
 
           @include media-breakpoint-down(sm) {
             width: 85%;
+            padding-left: rfs-value(15px);
           }
 
           &[class*="-bottom"] {
