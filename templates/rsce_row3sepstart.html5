@@ -1,2 +1,2 @@
 <div class="<?php if($this->background_color):?>with-bg<?php endif;?> <?php echo $this->class; ?>">
-    <?php if($this->background_color):?><span style="background-color: <?= $this->background_color;?>"></span><?php endif;?>
+    <?php if($this->background_color):?><span data-aos="animate__fadeIn" style="background-color: <?= $this->background_color;?>"></span><?php endif;?>
