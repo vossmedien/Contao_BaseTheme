@@ -87,8 +87,10 @@ if (!isset($this->size)) {
                 <?php if ($this->show_pagination): ?>
                     <div class="swiper-pagination"></div>
                 <?php endif; ?>
+               <?php if ($this->show_arrows): ?>
                 <div class="swiper-button-prev"></div>
                 <div class="swiper-button-next"></div>
+               <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

@@ -213,6 +213,12 @@ return array(
             'eval' => array('tl_class' => ' clr'),
         ),
 
+       'show_arrows' => array(
+            'label' => array('Pfeile anzeigen', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
         'centered_slides' => array(
             'label' => array('Slides mittig ausrichten', ''),
             'inputType' => 'checkbox',
