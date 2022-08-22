@@ -70,7 +70,6 @@
       background-color: $body-bg;
       box-shadow: $box-shadow;
 
-
       > * {
         margin-bottom: 0px;
         color: $body-color;
@@ -300,10 +299,8 @@
           margin: 0px;
 
           @include media-breakpoint-down(md) {
-
-
-            &:not(.align-items-center){
-                  flex-flow: column-reverse;
+            &:not(.align-items-center) {
+              flex-flow: column-reverse;
             }
           }
 
@@ -412,13 +409,17 @@
 
             @include media-breakpoint-down(md) {
               margin-top: 1.5rem;
-              margin-bottom: 1.5rem;
               position: relative;
+
+              > div {
+                min-height: rfs-value(200px);
+              }
             }
 
-            &.with-video{
+            &.with-video {
               min-height: 0px !important;
-              .image-col--inner{
+
+              .image-col--inner {
                 width: auto !important;
                 position: relative;
                 height: auto;
@@ -442,7 +443,6 @@
 
               iframe {
                 width: 100%;
-
 
                 @include media-breakpoint-up(md) {
                   //width: 70%;
@@ -520,7 +520,8 @@
                   }
 
                   & + .image--col {
-                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
+                    &:hover
+                      .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(50vw + 2.5% - #{$mini-spacing}) !important;
                       right: -2.5%;
                     }
@@ -566,7 +567,8 @@
 
                 &.spacing-between {
                   & + .image--col {
-                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
+                    &:hover
+                      .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(25vw + 2.5% - #{$mini-spacing}) !important;
                       right: -2.5%;
                     }
@@ -612,7 +614,8 @@
 
                 &.spacing-between {
                   & + .image--col {
-                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
+                    &:hover
+                      .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
                         33.333vw + 2.5% - #{$mini-spacing}
                       ) !important;
@@ -660,7 +663,8 @@
 
                 &.spacing-between {
                   & + .image--col {
-                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
+                    &:hover
+                      .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
                         41.777vw + 2.5% - #{$mini-spacing}
                       ) !important;
@@ -708,8 +712,8 @@
 
                 &.spacing-between {
                   & + .image--col {
-
-                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
+                    &:hover
+                      .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
                         58.444vw + 2.5% - #{$mini-spacing}
                       ) !important;
@@ -757,7 +761,8 @@
 
                 &.spacing-between {
                   & + .image--col {
-                    &:hover .image-col--inner:not(.with-iframe):not(.with-video) {
+                    &:hover
+                      .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
                         66.666vw + 2.5% - #{$mini-spacing}
                       ) !important;
