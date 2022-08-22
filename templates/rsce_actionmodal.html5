@@ -28,8 +28,9 @@
 
 
                         <?php if ($this->as_bg): ?>
-                            <div class="modal-image--wrapper"
-                                 style="background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover; <?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>"></div>
+                            <div class="modal-image--wrapper lazy"
+                                 data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
+                                 style="background-position: center center; background-repeat: no-repeat; background-size: cover; <?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>"></div>
                         <?php else: ?>
                             <img style="<?php if ($this->fixed_height): ?>height: <?php echo $this->fixed_height; ?><?php endif; ?>"
                                  class="lazy"
@@ -142,6 +143,6 @@
     var myActionModal = document.getElementById('actionModal_<?php echo $this->id; ?>')
     myActionModal.addEventListener('hidden.bs.modal', function (event) {
         Cookies.set('actionModal_<?php echo $this->id; ?>', 'true', {secure: true, expires: 7, sameSite: 'strict'})
-    })
+    }, {passive: true})
     <?php endif; ?>
 </script>

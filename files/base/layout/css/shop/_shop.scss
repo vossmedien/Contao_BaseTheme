@@ -49,11 +49,11 @@ div[class^="mod_iso_"] {
       @extend .btn-lg;
 
       &.next {
-        @extend .btn, .btn-primary;
+        @extend .btn-primary;
       }
 
       &.previous {
-        @extend .btn, .btn-outline-primary;
+        @extend .btn-outline-primary;
       }
 
       &.confirm {

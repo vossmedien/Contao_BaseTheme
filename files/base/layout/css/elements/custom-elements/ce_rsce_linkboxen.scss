@@ -6,9 +6,9 @@
   }
 
 
-  .row.same-height{
-    .link--box{
-          min-height: 100%;
+  .row.same-height {
+    .link--box {
+      min-height: 100%;
     }
   }
 
@@ -35,9 +35,9 @@
     }
 
     &.style-1 {
-      @extend .content--box;
+      @include content-box(0px);
       @extend .bg-gradient-white;
-      padding: 0px;
+
 
       .box--upper {
         .image--holder {
@@ -232,9 +232,9 @@
         left: 0;
         padding: .5rem .75rem;
 
-             @include media-breakpoint-up(xxl) {
-                 padding: .75rem 1rem;
-             }
+        @include media-breakpoint-up(xxl) {
+          padding: .75rem 1rem;
+        }
 
         span {
           position: relative;
@@ -243,9 +243,9 @@
           font-weight: $font-weight-bold;
           color: var(--bs-body-color-inverse);
 
-           @include media-breakpoint-up(xxl) {
-                  @include font-size(18px);
-           }
+          @include media-breakpoint-up(xxl) {
+            @include font-size(18px);
+          }
         }
       }
 

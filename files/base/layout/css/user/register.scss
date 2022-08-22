@@ -1,9 +1,6 @@
 .mod_registration {
-  @extend .content--box;
-  padding: 1rem;
-
+  @include content-box(1rem);
 
   form {
-
   }
 }

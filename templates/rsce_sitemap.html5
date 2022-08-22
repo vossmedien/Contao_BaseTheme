@@ -1,4 +1,4 @@
-<div  <?php echo $this->cssID; ?>  class="content--element <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner">
 
 
@@ -6,7 +6,8 @@
             <div class="ce--sitemap">
                 <div class="row gx-0">
                     <?php foreach ($this->lvl1 as $x => $lvl1_element) : ?>
-                        <div class="<?= $lvl1_element->column_width; ?>" data-aos="<?php if ($lvl1_element->animation_type) : ?><?php echo $lvl1_element->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                        <div class="<?= $lvl1_element->column_width; ?>"
+                             data-aos="<?php if ($lvl1_element->animation_type) : ?><?php echo $lvl1_element->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                             <div class="sitemap-column">
                                 <div class="mm_level_1">
 
@@ -20,7 +21,8 @@
 
                                             <?php if ($lvl1_element->image_lvl1): ?>
                                                 <span class="sitemap--image-container" style="">
-                                                    <img src="<?= Image::get(FilesModel::findByUuid($lvl1_element->image_lvl1)->path, null, null, null); ?>">
+                                                    <img class="lazy"
+                                                         data-src="<?= Image::get(FilesModel::findByUuid($lvl1_element->image_lvl1)->path, null, null, null); ?>">
                                                 </span>
                                             <?php endif; ?>
                                             <?php if ($lvl1_element->link_lvl1): ?>

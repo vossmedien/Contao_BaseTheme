@@ -82,8 +82,9 @@ if (!isset($this->size)) {
                                     <img class="lazy <?php if (!$b->headline) : ?>pb-3<?php endif; ?>"
                                          data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                 <?php else: ?>
-                                    <div style="background: url(<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>) center center no-repeat; background-size: cover;"
-                                         class="kb--image-holder"></div>
+                                    <div data-bg="<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
+                                         style="background-position: center center; background-repeat: no-repeat; background-size: cover;"
+                                         class="kb--image-holder lazy"></div>
                                 <?php endif; ?><?php endif; ?>
 
                                 <?php if ($b->kachel_top_text): ?>

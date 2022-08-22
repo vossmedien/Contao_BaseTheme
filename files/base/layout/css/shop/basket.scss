@@ -204,13 +204,11 @@
 
     button {
       &.button_update {
-        @extend .btn;
         @extend .btn, .btn-outline-primary;
         margin-right: auto;
       }
 
       &.button_checkout {
-        @extend .btn;
         @extend .btn, .btn-outline-primary;
         margin-left: auto;
       }

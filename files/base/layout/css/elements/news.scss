@@ -34,7 +34,7 @@
 
 .mod_newslist {
   .layout_latest {
-    @extend .content--box;
+    @include content-box();
 
     &:not(.last) {
       margin-bottom: 2rem;
@@ -166,7 +166,6 @@
 
     & + p.back {
       a {
-        @extend .btn;
         @extend .btn, .btn-primary;
       }
     }
