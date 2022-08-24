@@ -20,6 +20,7 @@
 
     & + * {
       z-index: 5;
+      position: relative;
     }
 
     .mainimage--content {
@@ -228,6 +229,7 @@
         .mainimage--content-inner {
           position: absolute;
           z-index: 10;
+          min-width: 50vw;
 
           //background-color: var(--bs-white);
           //overflow: hidden;

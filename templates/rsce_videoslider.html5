@@ -33,11 +33,13 @@
 
                             <?php if ($slide->video_type == "inline"): ?>
                                 <div class="video_container">
-                                    <iframe src="https://www.youtube-nocookie.com/embed/<?php echo $slide->video_id; ?>"
+                                    <iframe src="https://www.youtube.com/embed/<?php echo $slide->video_id; ?>"
                                             title="<?php echo $slide->text; ?>" frameborder="0"
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                             allowfullscreen></iframe>
                                 </div>
+
+
                             <?php else: ?>
 
                                 <a <?php if ($slide->video_type == "new_tab"): ?> target="_blank" <?php else : ?> class="video-link cboxElement" data-lightbox <?php endif; ?>

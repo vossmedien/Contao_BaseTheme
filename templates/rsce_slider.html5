@@ -94,6 +94,8 @@ if (!isset($this->size)) {
     </div>
 </div></div>
 <script>
+    console.log(<?= $this->slides_per_view; ?>);
+
     window.addEventListener('load', function () {
         if ($('.swiper.content-slider_<?= $this->id;?>').length) {
 
@@ -150,13 +152,12 @@ if (!isset($this->size)) {
                         slidesPerView: 2,
                     },
                     768: {
-                        slidesPerView: <?= $this->slides_per_view / 2; ?>,
+                        slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view / 2; ?><?php else:?>1<?php endif;?>,
                     },
                     992: {
-                        slidesPerView: <?= $this->slides_per_view; ?>,
+                        slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>3<?php endif;?>,
                     }
                 }
-
             });
         }
     })
