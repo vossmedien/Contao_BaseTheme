@@ -4,9 +4,9 @@
         <div class="ce--headline container"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?php if ($this->headline) : ?>
-            <<?php echo ($this->hl); ?> >
-            <?php echo ($this->headline); ?>
-        </<?php echo ($this->hl); ?>>
+            <<?php echo($this->hl); ?> >
+            <?php echo($this->headline); ?>
+        </<?php echo($this->hl); ?>>
     <?php endif; ?>
         <?php if ($this->subline) : ?>
             <span class="ce--subline"><?php echo $this->subline; ?></span>
@@ -15,73 +15,76 @@
     <?php endif; ?>
 
 
+    <div class="container">
+        <div class="row">
+            <?php foreach ($this->box as $b) : ?>
 
 
+            <?php
+            $filename = FilesModel::findByUuid($b->image)->path;
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            ?>
 
-        <div class="container">
-            <div class="row">
-                <?php foreach ($this->box as $b) : ?>
+            <div class="col-12 <?php if (count($this->box) > 1) : ?>col-md-6<?php endif; ?>">
+                <div class="box--image-holder  <?php if ($ext == "mp4") : ?>is-video--holder<?php endif; ?>"
+                     data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
-
-                        <?php
-                $filename = FilesModel::findByUuid($b->image)->path;
-                $ext = pathinfo($filename, PATHINFO_EXTENSION);
-                ?>
-
-                    <div class="col-12 <?php if (count($this->box) > 1) : ?>col-md-6<?php endif; ?>">
-                        <div class="box--image-holder  <?php if ($ext == "mp4") : ?>is-video--holder<?php endif;?>" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-
- <?php if($b->alternate_background):?>
-                          <div class="background-holder" style="background-color: <?= $b->alternate_background;?>">
-                          </div>
-                          <?php endif;?>
-                            <div class="box--image-overflow-wrapper  <?php if ($ext == "mp4") : ?>is-video--wrapper<?php endif;?>">
+                    <?php if ($b->alternate_background): ?>
+                        <div class="background-holder" style="background-color: <?= $b->alternate_background; ?>">
+                        </div>
+                    <?php endif; ?>
+                    <div class="box--image-overflow-wrapper  <?php if ($ext == "mp4") : ?>is-video--wrapper<?php endif; ?>">
 
 
-
-                                <div class="box--image lazy <?php if ($ext == "mp4") : ?>is-video<?php endif;?>"
-                                        <?php if ($ext != "mp4") : ?>data-bg="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>" style="background-size: cover; background-repeat: no-repeat; background-position: center center;"<?php endif;?>
-                                >
-                                     <?php if ($ext == "mp4") : ?>
-                                     <video controls playsinline data-src="{{file::<?= $b->image ?>}}">
+                        <div class="box--image lazy <?php if ($ext == "mp4") : ?>is-video<?php endif; ?>"
+                             <?php if ($ext != "mp4") : ?>data-bg="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>"
+                             style="background-size: cover; background-repeat: no-repeat; background-position: center center;"<?php endif; ?>
+                        >
+                            <?php if ($ext == "mp4") : ?>
+                                <video controls playsinline data-src="{{file::<?= $b->image ?>}}">
                                     <source type="video/mp4" src="{{file::<?= $b->image ?>}}">
                                 </video>
-                                    <?php endif;?>
+                            <?php endif; ?>
 
-                                </div>
-                            </div>
-                        </div>
-                        <div class="box--content <?php if ($b->asbox) : ?>as-box<?php endif; ?>" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>" <?php if ($b->versatz) : ?>style="position: relative; top: <?php echo $b->versatz; ?>px" <?php endif; ?>>
-                            <?php if ($b->headline) : ?>
-                                <div class="headline--wrapper ">
-                                    <?php if (!$b->onlystyle) : ?>
-                                        <<?php echo $b->headline_type; ?>><?php echo $b->headline; ?></<?php echo $b->headline_type; ?>>
-                                        <?php if ($b->subline) : ?>
-                                            <span class="ce--subline"><?php echo $b->subline; ?></span>
-                                        <?php endif; ?>
-                                    <?php else : ?>
-                                        <span class="<?php echo $b->headline_type; ?>"><?php echo $b->headline; ?></span>
-                                        <?php if ($b->subline) : ?>
-                                            <span class="ce--subline"><?php echo $b->subline; ?></span>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endif; ?>
-                            <?php if ($b->content) : ?>
-                                <div class="box--text" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
-                                    <?php echo $b->content; ?>
-                                </div>
-                            <?php endif; ?>
-                            <?php if ($b->link_text) : ?>
-                                <div class="button--wrapper mt-2" data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
-                                    <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>" href="<?php echo $b->link; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?>
-                                    </a>
-                                </div>
-                            <?php endif; ?>
                         </div>
                     </div>
-                <?php endforeach; ?>
+                </div>
+                <div class="box--content <?php if ($b->asbox) : ?>as-box<?php endif; ?>"
+                     data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>"
+                     <?php if ($b->versatz) : ?>style="position: relative; top: <?php echo $b->versatz; ?>px" <?php endif; ?>>
+                    <?php if ($b->headline) : ?>
+                    <div class="headline--wrapper ">
+                        <?php if (!$b->onlystyle) : ?>
+                        <<?php echo $b->headline_type; ?>><?php echo $b->headline; ?></<?php echo $b->headline_type; ?>>
+                <?php if ($b->subline) : ?>
+                    <span class="ce--subline"><?php echo $b->subline; ?></span>
+                <?php endif; ?>
+                <?php else : ?>
+                    <span class="<?php echo $b->headline_type; ?>"><?php echo $b->headline; ?></span>
+                    <?php if ($b->subline) : ?>
+                        <span class="ce--subline"><?php echo $b->subline; ?></span>
+                    <?php endif; ?>
+                <?php endif; ?>
+                </div>
+                <?php endif; ?>
+                <?php if ($b->content) : ?>
+                    <div class="box--text"
+                         data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
+                        <?php echo $b->content; ?>
+                    </div>
+                <?php endif; ?>
+                <?php if ($b->link_text) : ?>
+                    <div class="button--wrapper mt-2"
+                         data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
+                        <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
+                           href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
+        <?php endforeach; ?>
     </div>
+</div>
+</div>
 </div>
