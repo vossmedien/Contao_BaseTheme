@@ -50,25 +50,36 @@
 
   --bs-font-sans-serif: "Open Sans", sans-serif;
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  "Liberation Mono", "Courier New", monospace;
 
   --bs-font-primary: var(--bs-font-sans-serif);
   --bs-font-secondary: var(--bs-font-monospace);
   --bs-font-tertiary: "Montserrat", sans-serif;
 
   --bs-gradient: linear-gradient(
-    180deg,
-    rgba(var(--bs-white-rgb), 0.15),
-    rgba(var(--bs-white-rgb), 0)
+                  180deg,
+                  rgba(var(--bs-white-rgb), 0.15),
+                  rgba(var(--bs-white-rgb), 0)
   );
+
+  --bs-font-weight-100: 100;
+  --bs-font-weight-200: 200;
+  --bs-font-weight-300: 300;
+  --bs-font-weight-400: 400;
+  --bs-font-weight-500: 500;
+  --bs-font-weight-600: 600;
+  --bs-font-weight-700: 700;
+  --bs-font-weight-800: 800;
+  --bs-font-weight-900: 900;
 
   --bs-body-font-family: var(--bs-font-primary);
   --bs-body-font-size: 1rem;
-  --bs-body-font-weight: 400;
+  --bs-body-font-weight: var(--bs-font-weight-300);
   --bs-body-line-height: 1.5;
   --bs-body-color: #212529;
   --bs-body-color-inverse: #fff;
   --bs-headline-color: var(--bs-body-color);
+  --bs-headline-font-weight: var(--bs-font-weight-700);
   --bs-body-bg: #fff;
 
   --bs-base-border-radius: 10px;
@@ -126,8 +137,8 @@ $secondary-darker: $secondary;
 
 $secondary-rgb: var(--bs-secondary-rgb);
 
-$font-weight-medium: 500;
-$font-weight-semibold: 600;
+$font-weight-medium: var(--bs-font-weight-500);
+$font-weight-semibold: var(--bs-font-weight-600);
 
 $border-radius: var(--bs-base-border-radius);
 

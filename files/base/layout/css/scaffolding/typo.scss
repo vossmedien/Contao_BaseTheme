@@ -80,6 +80,7 @@ html body {
     line-height: 1.2;
     transition: color 0.3s ease;
     color: var(--bs-headline-color);
+    font-weight: var(--bs-headline-font-weight);
 
     > span {
       display: block;
@@ -97,7 +98,7 @@ html body {
 
   h1,
   .h1 {
-    font-weight: $font-weight-bold;
+
     margin-bottom: $headline-spacing;
     display: block;
 
@@ -110,7 +111,7 @@ html body {
 
   h2,
   .h2 {
-    font-weight: $font-weight-bold;
+
     margin-bottom: $headline-spacing / 1.75;
     display: block;
 
@@ -123,7 +124,7 @@ html body {
 
   h3,
   .h3 {
-    font-weight: $font-weight-medium;
+    font-weight: var(--bs-font-weight-500);
     margin-bottom: $headline-spacing / 2.5;
     font-size: 1.5rem;
     color: $primary;
