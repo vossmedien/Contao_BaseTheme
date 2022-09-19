@@ -85,15 +85,16 @@
 
   .box--content {
     border: 7px solid var(--bs-primary);
-    padding: 3rem 3rem 3rem 5vw;
+    padding: 3rem 3rem 3rem 5.5vw;
     z-index: 10;
     position: relative;
-    border-radius: 0px 0px $border-radius $border-radius;
+    border-radius: $border-radius;
     @include media-breakpoint-down(lg) {
       top: 0 !important;
+      border-radius: 0px 0px $border-radius $border-radius;
     }
 
-    @include media-breakpoint-up(lg) {
+    @include media-breakpoint-up(xxl) {
       padding: rfs-value(80px 80px 80px 14vw);
       border-radius: $border-radius;
     }
