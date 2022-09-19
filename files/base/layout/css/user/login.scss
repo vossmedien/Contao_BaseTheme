@@ -1,11 +1,9 @@
 .mod_login {
-  @extend .content--box;
-  padding: 1rem;
-  
+  @include content-box(1rem);
 
   small {
     display: block;
-    margin-top: .5rem;
+    margin-top: 0.5rem;
     text-align: right;
   }
 }

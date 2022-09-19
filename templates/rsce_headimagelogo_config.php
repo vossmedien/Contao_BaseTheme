@@ -380,7 +380,7 @@ return array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'mp4,webm,ogv',
+                        'extensions' => 'mp4',
                         'tl_class' => 'w50',
                         'mandatory' => false,
                     ),

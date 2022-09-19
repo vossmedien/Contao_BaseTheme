@@ -3,7 +3,6 @@
   margin-top: rfs-fluid-value(4rem);
 
   .ce--main-image {
-
     .image--holder {
       height: 50vh;
       background-size: cover !important;
@@ -20,13 +19,20 @@
           bottom: 0;
           left: 0;
           z-index: 5;
-          background: linear-gradient(rgba(var(--bs-white-rgb), 0) 0%, #fff 100%);
+          background: linear-gradient(
+            rgba(var(--bs-white-rgb), 0) 0%,
+            #fff 100%
+          );
         }
       }
     }
 
+    & + .container {
+      margin-top: 1.5rem;
+    }
+
     & + .box--holder {
-      @extend .content--box;
+      @include content-box();
       @extend .bg-gradient-white;
     }
   }
@@ -35,7 +41,6 @@
     position: relative;
     z-index: 5;
     margin: 0 auto;
-
 
     &.content--box {
       margin-top: -4rem;

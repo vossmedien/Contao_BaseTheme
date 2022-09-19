@@ -12,7 +12,7 @@
   }
 
   &:not(.btn-sm) {
-    padding-top: rfs-value(9px);
+    padding-top: rfs-value(11px);
     padding-bottom: rfs-value(11px);
   }
 
@@ -22,6 +22,8 @@
   }
 
   &.btn-primary {
+    --bs-btn-hover-border-color: $primary;
+
     background-color: $primary;
     color: var(--bs-white);
     border-color: $primary;
@@ -33,6 +35,7 @@
   }
 
   &.btn-outline-primary {
+    --bs-btn-hover-border-color: $primary;
     border-color: $primary;
     color: $primary;
 
@@ -43,6 +46,7 @@
   }
 
   &.btn-secondary {
+    --bs-btn-hover-border-color: $secondary;
     background-color: $secondary;
     border-color: $secondary;
 
@@ -53,8 +57,10 @@
   }
 
   &.btn-outline-secondary {
+    --bs-btn-hover-border-color: $secondary;
     border-color: $secondary;
     color: $secondary;
+    background-color: transparent;
 
     &:hover {
       background-color: $secondary;
@@ -63,6 +69,7 @@
   }
 
   &.btn-white {
+    --bs-btn-hover-border-color: $body-color;
     border-color: $white;
     color: $body-color;
     background-color: $white;
@@ -74,6 +81,7 @@
   }
 
   &.btn-outline-black {
+    --bs-btn-hover-border-color: $black;
     border-color: $black;
     color: $black;
     background-color: transparent;

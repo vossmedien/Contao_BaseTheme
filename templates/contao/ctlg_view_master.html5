@@ -54,6 +54,7 @@
 
 
 
+
 </script>
 
 
@@ -66,7 +67,7 @@
 
                     <?php if ($this->content_image_1["src"]): ?>
                         <div class="col-12 col-lg-6">
-                            <img class="box--image" src="<?= $this->content_image_1["src"]; ?>">
+                            <img class="box--image lazy" data-src="<?= $this->content_image_1["src"]; ?>">
                         </div>
                     <?php endif; ?>
                     <div class="col-12 col-lg-6">
@@ -186,7 +187,7 @@
                 <div class="row flex-row-reverse">
                     <?php if ($this->content_image_3["src"]): ?>
                         <div class="col-12 col-lg-6">
-                            <img class="box--image" src="<?= $this->content_image_3["src"]; ?>">
+                            <img class="lazy box--image" data-src="<?= $this->content_image_3["src"]; ?>">
                         </div>
                     <?php endif; ?>
                     <div class="col-12 col-lg-6">

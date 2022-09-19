@@ -293,6 +293,13 @@ return array(
                         'extensions' => 'jpg,jpeg,png,svg',
                     ),
                 ),
+
+                'badge' => array(
+                    'label' => array('Badge', 'liegt unten links auf dem Bild'),
+                    'inputType' => 'text',
+                ),
+
+
                 'textalign' => array(
                     'label' => array(
                         'de' => array('Text-Ausrichtung', ''),

@@ -80,7 +80,8 @@
             }
 
             &.active,
-            &:hover {
+            &:hover,
+            &.trail {
               color: $text-color-inverse;
 
               &:after {
@@ -92,7 +93,7 @@
 
           &:hover {
             > ul.level_2 {
-              max-height: rfs-fluid-value(200px);
+              max-height: rfs-fluid-value(400px);
             }
           }
         }

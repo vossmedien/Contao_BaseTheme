@@ -31,7 +31,7 @@ if (!isset($this->size)) {
              <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?><?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>
                      ">
             <div class="container force-container">
-                <div class="row <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
+                <div class="row <?php if ($row->video) : ?>align-items-center<?php endif; ?> <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
                     <div class="content--col d-flex align-items-center <?php if ($row->spacing_between) : ?>spacing-between<?php endif; ?> <?php if ($row->alternate_background) : ?>with-bg<?php endif; ?> <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>"
                          style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
 
@@ -137,8 +137,9 @@ if (!isset($this->size)) {
                     <?php endif; ?>
 
                 </div>
-                <?php if (($row->image && !$row->image_both) || $row->alternate_image || $row->content_rightcol) : ?>
-                <div class="image--col col-12 col-md">
+                <?php if (($row->image && !$row->image_both) || $row->alternate_image || $row->content_rightcol || $row->video) : ?>
+                <div class="image--col col-12 col-md  <?php if ($row->video) : ?>with-video col-md-6<?php endif; ?>"
+                     data-aos="animate__fadeIn">
 
                     <?php if ($row->boxed_headline) : ?>
                     <div class="boxed-headline">
@@ -166,9 +167,9 @@ if (!isset($this->size)) {
                 </div>
             <?php endif; ?>
 
-                <div data-aos="animate__fadeIn"
-                     style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
-                     class="image-col--inner <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
+                <div
+                        style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
+                        class="image-col--inner <?php if ($row->video) : ?>with-video<?php endif; ?> <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
         <?php if ($row->column_width == "col-12 col-md-6 col-lg-5") : ?>
         col-12 col-md-6 col-lg-7
         <?php elseif ($row->column_width == "col-12 col-md-6 col-lg-4") : ?>
@@ -181,7 +182,7 @@ if (!isset($this->size)) {
         col-12 col-lg-3
         <?php endif; ?>
 "
-                     <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, null, null, null); ?>" <?php endif; ?>>
+                        <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, null, null, null); ?>" <?php endif; ?>>
                     <?php if ($row->not_as_bg) : ?>
                         <div class="image--wrapper">
                             <img class="lazy"
@@ -189,6 +190,18 @@ if (!isset($this->size)) {
                         </div>
                     <?php endif; ?>
                     <?php if ($row->alternate_image) : ?><?php echo html_entity_decode($row->alternate_image); ?><?php endif; ?>
+
+
+
+                    <?php if ($row->video) : ?>
+                        <div class="video--wrapper">
+                            <video controls data-src="{{file::<?= $row->video ?>}}">
+                                <source type="video/mp4" src="{{file::<?= $row->video ?>}}">
+                            </video>
+                        </div>
+                    <?php endif; ?>
+
+
                 </div>
                 <?php if ($row->content_rightcol) : ?>
                     <div class="image-col--extra-text"

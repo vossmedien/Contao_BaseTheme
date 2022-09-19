@@ -175,7 +175,7 @@ return array(
         'slides_per_view' => array(
             'label' => array('Wie viele Slides sind sichtbar', 'Beispielsweise 1.5 um rechts und links eine Vorschau des nächsten Slides anzuzeigen'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50', 'mandatory' => true),
         ),
 
 
@@ -209,6 +209,12 @@ return array(
 
         'show_pagination' => array(
             'label' => array('Paginierung anzeigen', 'mittig unter dem Slider, in Form von Punkten'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'show_arrows' => array(
+            'label' => array('Pfeile anzeigen', ''),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
         ),

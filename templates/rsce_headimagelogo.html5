@@ -193,7 +193,7 @@
                 }
             });
         }
-    })
+    }, {passive: true})
 </script>
 
 <?php if ($this->show_breadcrumb) : ?>

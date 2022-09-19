@@ -77,7 +77,7 @@
                     }
                 });
             }
-        })
+        }, {passive: true})
     </script>
 
 <?php $this->endblock(); ?>

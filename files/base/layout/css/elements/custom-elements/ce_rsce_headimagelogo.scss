@@ -20,6 +20,7 @@
 
     & + * {
       z-index: 5;
+      position: relative;
     }
 
     .mainimage--content {
@@ -87,7 +88,7 @@
     position: relative;
     //overflow: hidden;
 
-      .image--holder {
+    .image--holder {
       position: relative;
       background-size: cover !important;
       background-position: center center;
@@ -109,7 +110,7 @@
         z-index: -1000;
         overflow: hidden;
         max-width: none;
-
+        object-fit: fill;
         transform: translate(-50%, -50%);
         position: absolute;
         top: 50%;
@@ -120,7 +121,7 @@
         height: 100%;
         width: 100vw;
 
-        > .container{
+        > .container {
           position: relative;
           height: 100%;
         }
@@ -139,6 +140,7 @@
 
           @include media-breakpoint-down(sm) {
             width: 85%;
+            padding-left: rfs-value(15px);
           }
 
           &[class*="-bottom"] {
@@ -187,8 +189,6 @@
       }
     }
 
-
-
     &.style-1 {
       .mainimage--content {
         .mainimage--content-inner {
@@ -227,8 +227,9 @@
         }
 
         .mainimage--content-inner {
-          position: relative;
+          position: absolute;
           z-index: 10;
+          min-width: 50vw;
 
           //background-color: var(--bs-white);
           //overflow: hidden;
@@ -275,7 +276,5 @@
         }
       }
     }
-
-
   }
 }

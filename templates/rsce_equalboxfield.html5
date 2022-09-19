@@ -26,18 +26,19 @@ if (!isset($this->size)) {
                          data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
                         <?php if ($box->link_url): ?>
-                        <a <?php if ($box->new_tab): ?>target="_blank" class="box--link"
-                           <?php endif; ?>href="<?php echo $box->link_url; ?><?php if ($box->link_betreff) : ?>?subject=<?php echo $box->link_betreff; ?><?php endif; ?>">
-                        </a>
-                        <?php endif;?>
+                            <a <?php if ($box->new_tab): ?>target="_blank" class="box--link"
+                               <?php endif; ?>href="<?php echo $box->link_url; ?><?php if ($box->link_betreff) : ?>?subject=<?php echo $box->link_betreff; ?><?php endif; ?>">
+                            </a>
+                        <?php endif; ?>
 
-                        <div class="row gx-0  <?php if ($box->reverse_columns) : ?>flex-row-reverse<?php endif;?>">
+                        <div class="row gx-0  <?php if ($box->reverse_columns) : ?>flex-row-reverse<?php endif; ?>">
                             <?php if ($box->image) : ?>
                                 <div class="<?php echo $box->image_column_width; ?>">
 
                                     <div class="box--image">
-                                        <div class="box-image--holder"
-                                             style="background: url(<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>) center center no-repeat; background-size: cover;"></div>
+                                        <div class="box-image--holder lazy"
+                                             data-bg="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
+                                             style="background-position: center center; background-repeat: no-repeat; background-size: cover;"></div>
                                     </div>
 
                                 </div>

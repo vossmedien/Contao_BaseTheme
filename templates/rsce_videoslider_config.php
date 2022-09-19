@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Slider mit Video in modaler Box', ''),
+    'label' => array('Custom | Slider mit Video, optional in modaler Box', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -138,16 +138,16 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
         'fullwidth' => array(
-            'label' => array('Boxen auf die volle Breite des Viewports anzeigen', ''),
+            'label' => array('Boxen auf die volle Breite des Viewports anzeigen', 'Funktioniert nicht innerhalb von Elementen'),
             'inputType' => 'checkbox',
         ),
         'columns' => array(
             'label' => array(
-                'de' => array('Anzahl der Spalten', ''),
+                'de' => array('Anzahl der Spalten im Slider', ''),
             ),
             'inputType' => 'select',
             'options' => array(
-                 '1' => '1 Spaltig',
+                '1' => '1 Spaltig',
                 '2' => '2 Spaltig',
                 '3' => '3 Spaltig',
                 '4' => '4 Spaltig',
@@ -155,7 +155,7 @@ return array(
             ),
         ),
         'gutter' => array(
-            'label' => array('Spaltenabstand', ''),
+            'label' => array('Abstand zwischen den Slides', ''),
             'inputType' => 'text',
         ),
         'elements' => array(
@@ -169,10 +169,17 @@ return array(
                     'label' => array('Youtube-Video ID', 'in der URL nach /watch?v='),
                     'inputType' => 'text',
                 ),
-                'open_tab' => array(
-                    'label' => array('Video in neuen Tab öffnen', 'und nicht in modalem Fenster'),
-                    'inputType' => 'checkbox',
+
+                'video_type' => array(
+                    'label' => array('Video... ', ''),
+                    'inputType' => 'radio',
+                    'options' => array(
+                        'modal' => '...in modalem Fenster darstellen',
+                        'inline' => '...als Youtube-Iframe einbinden',
+                        'new_tab' => '...in neuem Tab öffnen',
+                    ),
                 ),
+
                 'image' => array(
                     'label' => array('Vorschaubild', ''),
                     'inputType' => 'fileTree',
@@ -182,7 +189,12 @@ return array(
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,svg',
                     ),
+                    'dependsOn' => array(
+                        'field' => 'video_type',
+                        'value' => ['modal', 'new_tab'],
+                    ),
                 ),
+
                 'text' => array(
                     'label' => array('Bezeichnung', ''),
                     'inputType' => 'text',

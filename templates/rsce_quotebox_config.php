@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Mehrspaltige Textboxen', ''),
+    'label' => array('Custom | Box mit Logo, Zitat und Person', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -137,12 +137,12 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
-        'boxes' => array(
-            'label' => array('Boxen', ''),
-            'elementLabel' => '%s. Box',
+        'quote' => array(
+            'label' => array('Zitate', ''),
+            'elementLabel' => '%s. Zitat',
             'inputType' => 'list',
             'minItems' => 1,
-            'maxItems' => 99,
+            'maxItems' => 999,
             'fields' => array(
                 'animation_type' => array(
                     'label' => array(
@@ -283,36 +283,48 @@ return array(
                         'col-12 col-md' => 'Breite anhand des Inhalts',
                     ),
                 ),
-                'headline_type' => array(
+                'bild' => array(
+                    'label' => array('Bild', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'jpg,jpeg,png,svg',
+                    ),
+                ),
+
+                'textalign' => array(
                     'label' => array(
-                        'de' => array('Typ der Überschrift', ''),
+                        'de' => array('Text-Ausrichtung', ''),
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'h1' => 'H1 (Haupt-Headline für SEO, darf nur 1x vorkommen)',
-                        'h2' => 'H2 (Sollte H1 thematisch untergeordnet sein)',
-                        'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
-                        'h4' => 'H4',
-                        'h5' => 'H5',
+                        'text-start' => 'Linksbündig',
+                        'text-center' => 'Zentriert',
+                        'text-end' => 'Rechtsbündig',
                     ),
                 ),
-                'ce_headline' => array(
-                    'label' => array('Überschrift', ''),
-                    'inputType' => 'text',
-                ),
-                'onlystyle' => array(
-                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
-                    'inputType' => 'checkbox',
-                ),
-                'ce_subline' => array(
-                    'label' => array('Subline', ''),
-                    'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
-                ),
-                'text' => array(
-                    'label' => array('Text', ''),
+
+                'beschreibung' => array(
+                    'label' => array('Zitat', ''),
                     'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE'),
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+                ),
+
+                'name' => array(
+                    'label' => array('Name', ''),
+                    'inputType' => 'text',
+                ),
+
+                'link_url' => array(
+                    'label' => array('Verlinkung', ''),
+                    'inputType' => 'url',
+                ),
+
+                'new_tab' => array(
+                    'label' => array('Link in neuen Tab öffnen', ''),
+                    'inputType' => 'checkbox',
                 ),
             ),
         ),

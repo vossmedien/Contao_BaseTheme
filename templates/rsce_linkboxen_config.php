@@ -157,6 +157,32 @@ return array(
             'eval' => array('tl_class' => ' w50'),
         ),
 
+
+        'row_align' => array(
+            'label' => array(
+                'de' => array('Textausrichtung innerhalb der Kachel', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                '' => 'Oben (Standard)',
+                'align-items-center' => 'Mittig',
+                'align-items-end' => 'Unten',
+            ),
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+
+
+         'same_height' => array(
+            'label' => array('Boxen haben gleiche Höhe', 'Funktioniert nur, wenn Spalten "oben" ausgerichtet sind.'),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'Boxen haben gleiche Höhe',
+            ),
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
         'boxes' => array(
             'label' => array('Boxen', ''),
             'elementLabel' => '%s. Box',
@@ -389,6 +415,19 @@ return array(
                     'eval' => array('tl_class' => 'clr'),
                 ),
 
+
+                'image_headline' => array(
+                    'label' => array('Text auf Bildbereich unten links', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'image_headline_background' => array(
+                    'label' => array('Hintergrundfarbe für Text', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
 
                 'settings_3' => array(
                     'label' => array('Inhalte', ''),

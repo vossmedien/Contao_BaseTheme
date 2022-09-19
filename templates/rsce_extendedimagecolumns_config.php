@@ -268,15 +268,21 @@ return array(
                     'eval' => array('chosen' => 'true')
                 ),
                 'image' => array(
-                    'label' => array('Bild', ''),
+                    'label' => array('Bild / Video (mp4)', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
+                        'extensions' => 'jpg,jpeg,png,svg,mp4',
                     ),
                 ),
+
+                'alternate_background' => array(
+                    'label' => array('Alternative Hintergrundfarbe für Bild/Video-Hintergrund', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                ),
+
                 'asbox' => array(
                     'label' => array('Headline als Box mit Schatten darstellen', ''),
                     'inputType' => 'checkbox',

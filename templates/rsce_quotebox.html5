@@ -1,0 +1,53 @@
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner container">
+        <?php if ($this->headline || $this->subline) : ?>
+        <div class="ce--headline"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <?php if ($this->headline) : ?>
+            <<?php echo($this->hl); ?>>
+            <?php echo($this->headline); ?>
+        </<?php echo($this->hl); ?>>
+    <?php endif; ?>
+        <?php if ($this->subline) : ?>
+            <span class="ce--subline"><?php echo $this->subline; ?></span>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
+    <div class="ce--quote">
+        <div class="row gx-5">
+            <?php foreach ($this->quote as $quote) : ?>
+                <div class="<?php echo $quote->column_width; ?>">
+                    <div class="quote--element mb-3 mb-lg-5"
+                         data-aos="<?php if ($quote->animation_type) : ?><?php echo $quote->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                        <?php if ($quote->bild) : ?>
+                            <div class="quote--image">
+                                <?php if ($quote->link_url): ?>
+                                <a <?php if ($quote->new_tab): ?>target="_blank"<?php endif; ?>
+                                   href="<?php echo $quote->link_url; ?>">
+                                    <?php endif; ?>
+
+                                    <img class="lazy"
+                                         data-src="<?= Image::get(FilesModel::findByUuid($quote->bild)->path, null, null, null); ?>">
+                                    <?php if ($quote->link_url): ?>
+                                </a>
+                            <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                        <div class="quote--detail <?php if ($quote->textalign) : ?><?php echo $quote->textalign; ?><?php endif; ?>">
+                            <?php if ($quote->beschreibung) : ?>
+                                <div class="quote--text">
+                                    <?php echo $quote->beschreibung ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <span class="quote--name">
+                                    <?php echo $quote->name ?>
+                                </span>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+</div>

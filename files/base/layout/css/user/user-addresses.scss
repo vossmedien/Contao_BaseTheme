@@ -33,7 +33,6 @@
     a.add {
       text-decoration: none;
 
-      @extend .btn;
       @extend .btn, .btn-outline-primary;
 
       &:after {

@@ -1,22 +1,24 @@
-
 <?php header('Access-Control-Allow-Origin: *'); ?>
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
         <?php if ($this->headline || $this->subline) : ?>
-        <div class="ce--headline">
+        <div class="ce--headline"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <div class="container">
                 <?php if ($this->headline) : ?>
-                <<?php echo($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <<?php echo($this->hl); ?>>
                 <?php echo($this->headline); ?>
             </<?php echo($this->hl); ?>>
             <?php endif; ?>
             <?php if ($this->subline) : ?>
-                <span class="ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
+                <span class="ce--subline"
+                      data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
             <?php endif; ?>
         </div>
     </div>
     <?php endif; ?>
-    <div class="ce--videoslider" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+    <div class="ce--videoslider"
+         data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
         <?php if (!$this->fullwidth) : ?>
         <div class="container">
             <?php endif; ?>
@@ -25,22 +27,38 @@
                 <div class="swiper-wrapper ">
                     <!-- Slides -->
                     <?php foreach ($this->elements as $slide) : ?>
-                        <div class="swiper-slide">
-                            <a <?php if ($slide->open_tab) : ?> target="_blank" <?php else : ?> class="video-link cboxElement" data-lightbox <?php endif; ?> href='https://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'>
-                                <img class="swiper-lazy" data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
+                        <div class="swiper-slide"
+                        >
 
 
-                            </a>
-                                       <?php if ($slide->text) : ?>
-                                    <span class="slide-caption"><?php echo $slide->text; ?></span>
-                                <?php endif; ?>
+                            <?php if ($slide->video_type == "inline"): ?>
+                                <div class="video_container">
+                                    <iframe src="https://www.youtube.com/embed/<?php echo $slide->video_id; ?>"
+                                            title="<?php echo $slide->text; ?>" frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen></iframe>
+                                </div>
 
 
-                                <?php if ($slide->longtext) : ?>
-                                    <span class="slide-description"><?php echo $slide->longtext; ?></span>
-                                <?php endif; ?>
+                            <?php else: ?>
 
-                            <div class="swiper-lazy-preloader"></div>
+                                <a <?php if ($slide->video_type == "new_tab"): ?> target="_blank" <?php else : ?> class="video-link cboxElement" data-lightbox <?php endif; ?>
+                                        href='https://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'>
+                                    <img class="lazy"
+                                         data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
+                                </a>
+                            <?php endif; ?>
+
+
+                            <?php if ($slide->text) : ?>
+                                <span class="slide-caption"><?php echo $slide->text; ?></span>
+                            <?php endif; ?>
+
+
+                            <?php if ($slide->longtext) : ?>
+                                <span class="slide-description"><?php echo $slide->longtext; ?></span>
+                            <?php endif; ?>
+
                         </div>
                     <?php endforeach ?>
                 </div>
@@ -73,11 +91,12 @@
                     el: '.swiper.video-slider_<?php echo $this->id; ?> .swiper-pagination',
                     clickable: true,
                 },
-                <?php endif; ?>
 
                 loop: true,
-                preloadImages: false,
-                lazy: true,
+                <?php endif; ?>
+
+                preloadImages: true,
+                lazy: false,
                 slidesPerView: 1,
                 spaceBetween: 10,
                 checkInView: true,
