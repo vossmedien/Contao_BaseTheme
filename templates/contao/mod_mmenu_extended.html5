@@ -1,0 +1,13 @@
+<!-- indexer::stop -->
+<nav class="mmenu-extended <?= $this->class; ?>"<?= $this->cssID; ?><?php if ($this->style): ?> style="<?= $this->style; ?>"<?php endif; ?>>
+
+    <?php if ($this->headline): ?>
+    <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
+<?php endif; ?>
+
+<?= $this->items ?>
+
+</nav>
+
+
+<!-- indexer::continue -->

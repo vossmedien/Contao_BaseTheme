@@ -306,6 +306,58 @@ Promise.all(promises)
         }
         /* END */
 
+
+        /* Behavior of Header Type 6 */
+        if ($(".header--content.type--6").length) {
+
+            function detectIfScrolled() {
+                var scroll = $(window).scrollTop();
+                var os = $('#header').offset().top;
+                var ht = $('#header').height();
+                if (scroll > os + ht) {
+                    $('body').addClass('is--scrolling');
+                } else {
+                    $('body').removeClass('is--scrolling');
+                }
+            }
+
+            detectIfScrolled();
+
+            $(window).scroll(function () {
+                detectIfScrolled();
+            });
+        }
+        /* END */
+
+
+
+         if ($(".accordion-nav").length) {
+             $(".accordion-nav").find("i").click(function (e) {
+                $(this).closest("li").toggleClass("expanded");
+            });
+         }
+
+
+
+
+
+
+
+        if ($(".mod_mmenuHtml a.offCanvasBasketOpener").length) {
+            $(".mod_mmenuHtml a.offCanvasBasketOpener").click(function (e) {
+                setTimeout(function () {
+                    $('body').addClass("mm-wrapper_opened mm-wrapper_blocking")
+                }, 1000);
+            });
+        }
+
+        if ($(".mmenu_close_button").length) {
+            $(".mmenu_close_button").click(function (e) {
+                e.preventDefault();
+            });
+        }
+
+
         /* Add Floating Placeholders to Inputs */
         if ($(".ce_form").length) {
             function addPlaceholders() {
@@ -364,3 +416,5 @@ Promise.all(promises)
     .catch(function (script) {
         console.log(script + " failed to load");
     });
+
+

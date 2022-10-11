@@ -5,11 +5,7 @@
     @include padding(50px 0px 25px 0px);
 
     .row {
-      > div:not(:last-child) {
-        @include media-breakpoint-down(lg) {
-          margin-bottom: 1.5rem;
-        }
-      }
+
     }
 
     a {

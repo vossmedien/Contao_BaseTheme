@@ -12,6 +12,7 @@
 @import "scaffolding/typo";
 @import "scaffolding/forms";
 @import "scaffolding/buttons";
+@import "scaffolding/spacing";
 @import "scaffolding/hacks";
 
 :root {
@@ -60,6 +61,8 @@ html {
     @import "elements/ce_gallery";
     @import "elements/megamenu";
     @import "elements/breadcrumb";
+    @import "elements/mmenu";
+    @import "elements/offcanvas";
 
     //Custom Elements
     @import "elements/custom-elements/ce_rsce_2colscontent";

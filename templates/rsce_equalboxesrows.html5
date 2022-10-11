@@ -14,126 +14,129 @@
     </div>
     <?php endif; ?>
     <?php if ($this->row) : ?>
+
     <?php foreach ($this->row as $row) : ?>
-    <div class="row <?php if ($row->swapcolumns) : ?>flex-row-reverse<?php endif; ?>">
-        <div class="col-12 col-md-6 left--col">
-            <div class="left-col--inner">
+    <div class="row-container">
+        <div class="row <?php if ($row->swapcolumns) : ?>flex-row-reverse<?php endif; ?>">
+            <div class="col-12 col-md-6 left--col">
+                <div class="left-col--inner">
+                    <div class="equal--box" style="z-index: 5; position: relative;"
+                         data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                        <?php if ($row->main_url) : ?>
+                            <a href="<?php echo $row->main_url; ?>"></a>
+                        <?php endif; ?>
+                        <div class="box--inner lazy"
+                             <?php if (count($row->main_image) == 1) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->main_image[0])->path, null, null, null); ?>"
+                             style="background-position: center center; background-repeat: no-repeat; center center no-repeat; background-size: cover;" <?php endif; ?>>
+                            <?php if (count($row->main_image) > 1) : ?>
+                                <div class="swiper custom pb-0 background-slider background-slider_<?= $this->id; ?>"
+                                     style="width: 100%; height: 100%; position: absolute; left: 0; top: 0;">
+                                    <div class="swiper-wrapper">
+                                        <?php foreach ($row->main_image as $slide) : ?>
+                                            <div class="swiper-slide">
+                                                <div class="swiper-lazy"
+                                                     data-background="<?= Image::get(FilesModel::findByUuid($slide)->path, null, null, null); ?>"
+                                                     style="width: 100%; height: 100%; background-size: cover; background-repeat: no-repeat; background-position: center center;"></div>
+                                            </div>
+                                        <?php endforeach ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            <div class="box--content">
+                                <div class="box--headline">
+                                    <?php if ($row->main_headline) : ?>
+                                    <?php if (!$row->main_onlystyle) : ?>
+                                    <<?php echo $row->main_headline_type; ?>>
+                                    <?php echo $row->main_headline; ?>
+                                </<?php echo $row->main_headline_type; ?>>
+                                <?php if ($row->main_subline) : ?>
+                                    <span class="ce--subline box--subline">
+                                    <?php echo $row->main_subline; ?>
+                                </span>
+                                <?php endif; ?>
+                                <?php else : ?>
+                                    <span class="<?php echo $row->main_headline_type; ?>">
+                                    <?php echo $row->main_headline; ?>
+                                </span>
+                                    <?php if ($row->main_subline) : ?>
+                                        <span class="ce--subline box--subline">
+                                        <?php echo $row->main_subline; ?>
+                                    </span>
+                                    <?php endif; ?><?php endif; ?>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($row->main_content) : ?>
+                                <div class="box--text">
+                                    <?php echo $row->main_content; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php if ($row->boxes) : ?>
+        <div class="col-12 col-md-6 right--col">
+            <div class="right-col--inner">
+                <?php foreach ($row->boxes as $box) : ?>
                 <div class="equal--box" style="z-index: 5; position: relative;"
-                     data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                    <?php if ($row->main_url) : ?>
-                        <a href="<?php echo $row->main_url; ?>"></a>
+                     data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                    <?php if ($box->url) : ?>
+                        <a href="<?php echo $box->url; ?>"></a>
                     <?php endif; ?>
                     <div class="box--inner lazy"
-                         <?php if (count($row->main_image) == 1) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->main_image[0])->path, null, null, null); ?>"
-                         style="background-position: center center; background-repeat: no-repeat; center center no-repeat; background-size: cover;" <?php endif; ?>>
-                        <?php if (count($row->main_image) > 1) : ?>
-                            <div class="swiper custom pb-0 background-slider background-slider_<?= $this->id; ?>"
+                         <?php if (count($box->image) == 1) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($box->image[0])->path, null, null, null); ?>"
+                         style="background-position: center center; background-repeat: no-repeat; background-size: cover;" <?php endif; ?>>
+                        <?php if (count($box->image) > 1) : ?>
+                            <div class="swiper pb-0 custom background-slider background-slider_<?= $this->id; ?>"
                                  style="width: 100%; height: 100%; position: absolute; left: 0; top: 0;">
                                 <div class="swiper-wrapper">
-                                    <?php foreach ($row->main_image as $slide) : ?>
+                                    <?php foreach ($box->image as $slide) : ?>
                                         <div class="swiper-slide">
                                             <div class="swiper-lazy"
                                                  data-background="<?= Image::get(FilesModel::findByUuid($slide)->path, null, null, null); ?>"
-                                                 style="width: 100%; height: 100%; background-size: cover; background-repeat: no-repeat; background-position: center center;"></div>
+                                                 style="background-position: center center; background-repeat: no-repeat; width: 100%; height: 100%; background-size: cover;"></div>
                                         </div>
                                     <?php endforeach ?>
                                 </div>
                             </div>
                         <?php endif; ?>
                         <div class="box--content">
+                            <?php if ($box->headline) : ?>
                             <div class="box--headline">
-                                <?php if ($row->main_headline) : ?>
-                                <?php if (!$row->main_onlystyle) : ?>
-                                <<?php echo $row->main_headline_type; ?>>
-                                <?php echo $row->main_headline; ?>
-                            </<?php echo $row->main_headline_type; ?>>
-                            <?php if ($row->main_subline) : ?>
+                                <?php if (!$box->onlystyle) : ?>
+                                <<?php echo $box->headline_type; ?>>
+                                <?php echo $box->headline; ?>
+                            </<?php echo $box->headline_type; ?>>
+                        <?php if ($box->subline) : ?>
+                            <span class="ce--subline box--subline">
+                            <?php echo $box->subline; ?>
+                        </span>
+                        <?php endif; ?>
+                        <?php else : ?>
+                            <span class="<?php echo $box->headline_type; ?>">
+                            <?php echo $box->headline; ?>
+                        </span>
+                            <?php if ($box->subline) : ?>
                                 <span class="ce--subline box--subline">
-                                    <?php echo $row->main_subline; ?>
-                                </span>
-                            <?php endif; ?>
-                            <?php else : ?>
-                                <span class="<?php echo $row->main_headline_type; ?>">
-                                    <?php echo $row->main_headline; ?>
-                                </span>
-                                <?php if ($row->main_subline) : ?>
-                                    <span class="ce--subline box--subline">
-                                        <?php echo $row->main_subline; ?>
-                                    </span>
-                                <?php endif; ?><?php endif; ?>
-                            <?php endif; ?>
+                                <?php echo $box->subline; ?>
+                            </span>
+                            <?php endif; ?><?php endif; ?>
                         </div>
-                        <?php if ($row->main_content) : ?>
+                    <?php endif; ?>
+                        <?php if ($box->content) : ?>
                             <div class="box--text">
-                                <?php echo $row->main_content; ?>
+                                <?php echo $box->content; ?>
                             </div>
                         <?php endif; ?>
                     </div>
                 </div>
             </div>
+            <?php endforeach; ?>
         </div>
     </div>
-    <?php if ($row->boxes) : ?>
-    <div class="col-12 col-md-6 right--col">
-        <div class="right-col--inner">
-            <?php foreach ($row->boxes as $box) : ?>
-            <div class="equal--box" style="z-index: 5; position: relative;"
-                 data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                <?php if ($box->url) : ?>
-                    <a href="<?php echo $box->url; ?>"></a>
-                <?php endif; ?>
-                <div class="box--inner lazy"
-                     <?php if (count($box->image) == 1) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($box->image[0])->path, null, null, null); ?>"
-                     style="background-position: center center; background-repeat: no-repeat; background-size: cover;" <?php endif; ?>>
-                    <?php if (count($box->image) > 1) : ?>
-                        <div class="swiper pb-0 custom background-slider background-slider_<?= $this->id; ?>"
-                             style="width: 100%; height: 100%; position: absolute; left: 0; top: 0;">
-                            <div class="swiper-wrapper">
-                                <?php foreach ($box->image as $slide) : ?>
-                                    <div class="swiper-slide">
-                                        <div class="swiper-lazy"
-                                             data-background="<?= Image::get(FilesModel::findByUuid($slide)->path, null, null, null); ?>"
-                                             style="background-position: center center; background-repeat: no-repeat; width: 100%; height: 100%; background-size: cover;"></div>
-                                    </div>
-                                <?php endforeach ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                    <div class="box--content">
-                        <?php if ($box->headline) : ?>
-                        <div class="box--headline">
-                            <?php if (!$box->onlystyle) : ?>
-                            <<?php echo $box->headline_type; ?>>
-                            <?php echo $box->headline; ?>
-                        </<?php echo $box->headline_type; ?>>
-                    <?php if ($box->subline) : ?>
-                        <span class="ce--subline box--subline">
-                            <?php echo $box->subline; ?>
-                        </span>
-                    <?php endif; ?>
-                    <?php else : ?>
-                        <span class="<?php echo $box->headline_type; ?>">
-                            <?php echo $box->headline; ?>
-                        </span>
-                        <?php if ($box->subline) : ?>
-                            <span class="ce--subline box--subline">
-                                <?php echo $box->subline; ?>
-                            </span>
-                        <?php endif; ?><?php endif; ?>
-                    </div>
-                <?php endif; ?>
-                    <?php if ($box->content) : ?>
-                        <div class="box--text">
-                            <?php echo $box->content; ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-        <?php endforeach; ?>
-    </div>
-</div>
 <?php endif; ?>
+</div>
 </div>
 <?php endforeach; ?>
 <?php endif; ?>

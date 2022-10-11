@@ -1,0 +1,19 @@
+.footer--content {
+  &.type--6 {
+    font-size: rfs-value(14px);
+    hyphens: none;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    a {
+      text-decoration: none;
+      font-weight: var(--bs-font-weight-700);
+    }
+
+    #footerLogo {
+      figure {
+        margin-bottom: 0px;
+      }
+    }
+  }
+}

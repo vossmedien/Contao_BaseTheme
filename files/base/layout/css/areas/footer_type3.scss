@@ -6,47 +6,44 @@
     @include font-size(22px);
 
 
-    .row{
-      > div:not(:last-child){
-        @include media-breakpoint-down(lg) {
-          margin-bottom: 1.5rem;
-        }
-      }
+    .row {
+
     }
 
-    .social--list{
-      ul{
+    .social--list {
+      ul {
         margin-left: 0px;
       }
     }
 
-    a, h3{
+    a, h3 {
       color: $text-color-inverse;
       text-decoration: none;
     }
 
-    h3{
+    h3 {
       display: flex;
 
       @include media-breakpoint-up(lg) {
         height: 60px;
       }
 
-      > span{
+      > span {
         align-self: center;
       }
     }
 
 
-    figure.image_container, .ce_headline{
+    figure.image_container, .ce_headline {
       @include media-breakpoint-up(lg) {
         margin-bottom: 50px;
       }
     }
 
-    #footerLogo{
+    #footerLogo {
       text-align: left !important;
-      img{
+
+      img {
         max-width: rfs-value(250px);
         max-height: rfs-value(60px);
         height: auto;
@@ -55,22 +52,20 @@
     }
 
 
-
-
-    #footerNav{
-      ul{
+    #footerNav {
+      ul {
         list-style-type: none;
         padding: 0px;
         margin: .5rem 0 0 0;
         @include font-size(16px);
 
-        > li{
+        > li {
           display: inline-block;
           vertical-align: middle;
 
-          &:not(:last-child){
-            &:after{
-              content:'|';
+          &:not(:last-child) {
+            &:after {
+              content: '|';
               display: inline-block;
               vertical-align: middle;
               margin: 0 2px 0px 6px;
@@ -79,7 +74,6 @@
         }
       }
     }
-
 
 
   }

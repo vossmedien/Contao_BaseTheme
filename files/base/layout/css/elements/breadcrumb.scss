@@ -1,5 +1,6 @@
 .mod_breadcrumb {
   margin-top: .25rem;
+
   ul {
     list-style-type: none;
     padding: 0px;
@@ -9,24 +10,25 @@
 
     li {
       display: inline-block;
-        color: $secondary;
+      color: $secondary;
+
       &:not(:last-child) {
         &:after {
           @extend %fa-icon;
           @extend .far;
           content: fa-content($fa-var-angle-right);
           display: inline-block;
-            color: $primary;
+          color: $primary;
           margin: 0 5px 0px 8px;
         }
       }
 
-      > a{
+      > a {
         display: inline-block;
         text-decoration: none;
         color: $primary;
 
-        &:hover{
+        &:hover {
           text-decoration: underline;
         }
       }

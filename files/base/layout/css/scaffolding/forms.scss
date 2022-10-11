@@ -1,6 +1,22 @@
 form {
   min-width: 100%;
 
+  .formbody:not(.row) {
+    @extend .row;
+  }
+
+  fieldset {
+
+    legend {
+      @extend .h2;
+      margin-bottom: 20px !important;
+    }
+
+    & + fieldset {
+      margin-top: 1.5rem !important;
+    }
+  }
+
   > *:not(form):first-child:not(.formbody) {
     margin-bottom: 2rem;
   }
@@ -9,6 +25,7 @@ form {
     background-color: $primary;
     border-color: $primary;
   }
+
 
   .widget {
     > label:first-child {
@@ -23,20 +40,21 @@ form {
       }
     }
 
-    &:not(:last-child) {
-      margin-bottom: 1.5rem;
-    }
 
     .form-label {
       margin-bottom: 0px;
     }
 
-    .form-control{
+    .form-control {
       //border: 0px;
       padding-top: 1rem;
       padding-bottom: 1rem;
       border-radius: $border-radius;
       border-color: var(--bs-border-color);
+    }
+
+    label + input:not(.form-control) {
+      border-top-left-radius: 0px !important;
     }
 
     input:not(.form-control) {
@@ -48,7 +66,7 @@ form {
       }
     }
 
-    .form-control[type=file]{
+    .form-control[type=file] {
       padding-top: 0px;
       padding-bottom: 0px;
       line-height: rfs-value(50px);
@@ -91,10 +109,6 @@ form {
         @extend .form-select;
         border-radius: 0px $border-radius $border-radius $border-radius;
       }
-    }
-
-    .fields + .widget-submit {
-      margin-top: 1.5rem;
     }
 
     &.widget-submit {

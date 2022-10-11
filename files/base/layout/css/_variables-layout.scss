@@ -6,12 +6,12 @@ $enable-rounded: true;
 //Abstände
 $spacer: 2rem;
 $spacers: (
-  0: 0,
-  1: 1rem,
-  2: 2rem,
-  3: 3rem,
-  4: 4rem,
-  5: 5rem,
+        0: 0,
+        1: 1rem,
+        2: 2rem,
+        3: 3rem,
+        4: 4rem,
+        5: 5rem,
 );
 
 $basic-gutter: $spacer * 2;
@@ -19,30 +19,30 @@ $headline-spacing: $spacer * 1.5;
 $mini-spacing: $spacer/2;
 
 $grid-breakpoints: (
-  xs: 0,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-  xxl: 1640px,
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1640px,
 );
 
 $grid-gutter-width: 1rem;
 $gutters: (
-  0: 0,
-  1: $grid-gutter-width * 0.5,
-  2: $grid-gutter-width,
-  3: $grid-gutter-width * 2,
-  4: $grid-gutter-width * 3,
-  5: $grid-gutter-width * 4,
+        0: 0,
+        1: $grid-gutter-width * 0.5,
+        2: $grid-gutter-width,
+        3: $grid-gutter-width * 2,
+        4: $grid-gutter-width * 3,
+        5: $grid-gutter-width * 4,
 );
 
 $container-max-widths: (
-  sm: 540px,
-  md: 720px,
-  lg: 960px,
-  xl: 1140px,
-  xxl: 1600px,
+        sm: 540px,
+        md: 720px,
+        lg: 960px,
+        xl: 1140px,
+        xxl: 1600px,
 );
 
 // Spalten

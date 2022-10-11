@@ -94,8 +94,6 @@ if (!isset($this->size)) {
     </div>
 </div></div>
 <script>
-    console.log(<?= $this->slides_per_view; ?>);
-
     window.addEventListener('load', function () {
         if ($('.swiper.content-slider_<?= $this->id;?>').length) {
 
@@ -160,5 +158,5 @@ if (!isset($this->size)) {
                 }
             });
         }
-    })
+    }, {passive: true})
 </script>

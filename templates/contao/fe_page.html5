@@ -27,6 +27,7 @@
 
 </head>
 
+
 <body id="top" <?php if ($this->class) : ?> class="<?= $this->class ?>" <?php endif; ?><?php if ($this->onload) : ?> onload="<?= $this->onload ?>" <?php endif; ?>
       itemscope itemtype="http://schema.org/WebPage">
 <?php $this->block('body'); ?>
@@ -47,7 +48,7 @@
          class="<?php if ($this->left) : ?>with--left-col<?php endif; ?> <?php if ($this->right) : ?>with--right-col<?php endif; ?>">
         <?php if ($this->left || $this->right) : ?>
         <div class="pt-md-3 pb-3 container"><?php endif; ?>
-            <div class="row gx-md-5">
+            <div class="row gx-md-5" style="--bs-gutter-y: 0rem;">
 
                 <?php $this->block('left'); ?>
                 <?php if ($this->left) : ?>
@@ -97,9 +98,14 @@
     <?php $this->endblock(); ?>
 </div>
 <?php $this->sections('bottom'); ?>
+
+
 <?php $this->endblock(); ?>
+
+
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>
+
 </body>
 
 </html>

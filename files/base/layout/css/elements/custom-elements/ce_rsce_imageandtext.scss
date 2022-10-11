@@ -2,9 +2,8 @@
   .ce--image-text {
     &.as--rows {
       > .row {
-        > *:not(:last-child) {
-          margin-bottom: 2rem;
-        }
+        --bs-gutter-y: 2rem;
+
 
         > * {
           .col--inner > .row {
@@ -40,13 +39,16 @@
     }
 
     &:not(.as--rows) {
-      > .row > div:not(:last-child) {
-        margin-bottom: 2rem;
-        @include media-breakpoint-up(md) {
-          margin-bottom: 0rem;
-          border-right: 2px solid $body-color;
+      > .row {
+        --bs-gutter-y: 2rem;
+
+        > div:not(:last-child) {
+          @include media-breakpoint-up(md) {
+            border-right: 2px solid $body-color;
+          }
         }
       }
+
 
       .col--inner {
         @include media-breakpoint-up(xl) {

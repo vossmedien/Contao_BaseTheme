@@ -15,9 +15,11 @@ html body {
   img {
     max-width: 100%;
     height: auto;
+    width: auto;
   }
 
-  strong {
+  strong, b {
+    font-weight: var(--bs-font-weight-700);
   }
 
   iframe {
@@ -38,7 +40,12 @@ html body {
     }
   }
 
+  span {
+    line-height: 1.5;
+  }
+
   p {
+    line-height: 1.5;
     //overflow: auto;
 
     &.error {

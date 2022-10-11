@@ -182,35 +182,38 @@ return array(
         ),
 
         'settings_image' => array(
-            'label' => array('Bild', ''),
+            'label' => array('Kopfbereich', ''),
             'inputType' => 'group',
         ),
 
         'image_headline_left' => array(
             'label' => array('Überschrift für die linke Spalte des Bildes', '(ca. 35% breit)'),
             'inputType' => 'text',
-            'eval' => array('allowHtml' => true),
+            'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
         ),
 
         'image_headline_right' => array(
             'label' => array('Überschrift für Textbereich auf der rechten Seite', ''),
             'inputType' => 'text',
+            'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
         ),
 
         'image_text_right' => array(
             'label' => array('Langtext für Textbereich auf der rechten Seite', ''),
             'inputType' => 'textarea',
-            'eval' => array('rte' => 'tinyMCE'),
+            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
         ),
 
         'image_right_col_background_color' => array(
             'label' => array('Hintergrundfarbe für rechte Spalte', 'in HEX oder RGB angeben, Standard: Schwarz mit .75 Deckungskraft'),
             'inputType' => 'text',
+            'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
         ),
 
         'image_right_col_text_color' => array(
             'label' => array('Textfarbe für rechte Spalte', 'in HEX oder RGB angeben, Standard: weiß'),
             'inputType' => 'text',
+            'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
         ),
 
         'image' => array(
@@ -221,6 +224,7 @@ return array(
                 'fieldType' => 'radio',
                 'filesOnly' => true,
                 'extensions' => 'jpg,jpeg,png',
+                'tl_class' => 'w50'
             ),
         ),
 
@@ -233,19 +237,16 @@ return array(
         'fixed_height' => array(
             'label' => array('Feste Höhe', 'Bild-Bereich eine feste Höhe inkl. Einheit (z. B. px) zuweisen'),
             'inputType' => 'text',
+            'dependsOn' => array(
+                'field' => 'as_bg',
+            ),
         ),
 
 
-        'settings_text' => array(
-            'label' => array('Text', ''),
+        'settings_progressbar' => array(
+            'label' => array('Fortschrittsanzeige', ''),
             'inputType' => 'group',
         ),
-
-        'headline' => array(
-            'label' => array('Überschrift', ''),
-            'inputType' => 'text',
-        ),
-
         'progress_image' => array(
             'label' => array('Bild für Fortschrittsanzeige', 'Alternative'),
             'inputType' => 'fileTree',
@@ -262,6 +263,30 @@ return array(
             'inputType' => 'text',
         ),
 
+
+        'settings_text' => array(
+            'label' => array('Unterer Bereich', ''),
+            'inputType' => 'group',
+        ),
+
+
+        'image_left' => array(
+            'label' => array('Bild für linke Spalte', 'ca. 35% breit'),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png',
+            ),
+        ),
+
+
+        'headline' => array(
+            'label' => array('Überschrift', ''),
+            'inputType' => 'text',
+        ),
+
         'text' => array(
             'label' => array('Langtext', 'es können auch Inserttags verwendet werden um Nodes, Artikel oder andere Elemente zu inkludieren'),
             'inputType' => 'textarea',
@@ -273,7 +298,7 @@ return array(
             'label' => array('Button', 'Ohne Buttons wird der  Footer ausgeblendet'),
             'elementLabel' => '%s. Button',
             'inputType' => 'list',
-            'minItems' => 1,
+            'minItems' => 0,
             'maxItems' => 10,
             'fields' => array(
                 'animation_type' => array(
@@ -446,10 +471,10 @@ return array(
 
 
         'sponsors' => array(
-            'label' => array('Sponsoren - Logos', 'rechts unten, blendet ggf . den schließen - Button aus'),
+            'label' => array('Logos (z. B. Sponsoren)', 'rechts unten, blendet ggf . den schließen - Button aus'),
             'elementLabel' => ' % s . Logo',
             'inputType' => 'list',
-            'minItems' => 1,
+            'minItems' => 0,
             'maxItems' => 20,
             'fields' => array(
                 'image' => array(

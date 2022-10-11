@@ -13,6 +13,9 @@
   .content--col {
     .kachel-column-width--indicator {
       left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
 
       .column-kachel--inner.with-hover-content {
         margin: 0 0 0 auto;
@@ -204,6 +207,7 @@
       }
 
       .ce--imagetextwall {
+        min-height: rfs-value(500px);
         position: relative;
         transition: background-color 0.3s ease-in-out;
 
@@ -522,7 +526,7 @@
 
                   & + .image--col {
                     &:hover
-                      .image-col--inner:not(.with-iframe):not(.with-video) {
+                    .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(50vw + 2.5% - #{$mini-spacing}) !important;
                       right: -2.5%;
                     }
@@ -569,7 +573,7 @@
                 &.spacing-between {
                   & + .image--col {
                     &:hover
-                      .image-col--inner:not(.with-iframe):not(.with-video) {
+                    .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(25vw + 2.5% - #{$mini-spacing}) !important;
                       right: -2.5%;
                     }
@@ -616,9 +620,9 @@
                 &.spacing-between {
                   & + .image--col {
                     &:hover
-                      .image-col--inner:not(.with-iframe):not(.with-video) {
+                    .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
-                        33.333vw + 2.5% - #{$mini-spacing}
+                              33.333vw + 2.5% - #{$mini-spacing}
                       ) !important;
                       right: -2.5%;
                     }
@@ -665,9 +669,9 @@
                 &.spacing-between {
                   & + .image--col {
                     &:hover
-                      .image-col--inner:not(.with-iframe):not(.with-video) {
+                    .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
-                        41.777vw + 2.5% - #{$mini-spacing}
+                              41.777vw + 2.5% - #{$mini-spacing}
                       ) !important;
                       right: -2.5%;
                     }
@@ -714,9 +718,9 @@
                 &.spacing-between {
                   & + .image--col {
                     &:hover
-                      .image-col--inner:not(.with-iframe):not(.with-video) {
+                    .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
-                        58.444vw + 2.5% - #{$mini-spacing}
+                              58.444vw + 2.5% - #{$mini-spacing}
                       ) !important;
                       right: -2.5%;
                     }
@@ -763,9 +767,9 @@
                 &.spacing-between {
                   & + .image--col {
                     &:hover
-                      .image-col--inner:not(.with-iframe):not(.with-video) {
+                    .image-col--inner:not(.with-iframe):not(.with-video) {
                       width: calc(
-                        66.666vw + 2.5% - #{$mini-spacing}
+                              66.666vw + 2.5% - #{$mini-spacing}
                       ) !important;
                       right: -2.5%;
                     }

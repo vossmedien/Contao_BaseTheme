@@ -5,6 +5,7 @@
 
       .selected-color--element {
         min-height: rfs-value(300px);
+
         > span {
           position: absolute;
           display: block;
@@ -45,7 +46,7 @@
   }
 
   .colorpalettes-bottom {
-    margin-top: $spacer;
+    margin-top: $grid-gutter-width;
 
     .color-list--wrapper {
       display: flex;

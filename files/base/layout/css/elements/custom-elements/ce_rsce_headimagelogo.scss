@@ -193,7 +193,8 @@
       .mainimage--content {
         .mainimage--content-inner {
           @include media-breakpoint-down(sm) {
-            width: 75%;
+            width: 75% !important;
+            max-width: 75% !important;
           }
 
           span {

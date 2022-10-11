@@ -1,9 +1,7 @@
 .ce_rsce_2colscontent {
 
-  .row > div:not(:last-child) {
-    @include media-breakpoint-down(md) {
-      margin-bottom: 2.5rem;
-    }
+  .row {
+    --bs-gutter-y: 2.5rem;
   }
 
   .row--wrapper {

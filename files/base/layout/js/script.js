@@ -115,7 +115,7 @@ function scriptsActivator(
 ) {
   scripts = [];
   scripts.push(
-    //"/files/base/layout/_vendor/node_modules/dom7/dom7.min.js",
+
     //"/files/base/layout/_vendor/node_modules/ssr-window/ssr-window.umd.min.js",
     "/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js"
   );
@@ -131,7 +131,7 @@ function scriptsActivator(
 
   if (swiper) {
     scripts.push(
-      "/files/base/layout/_vendor/node_modules/swiper/swiper-bundle.min.js"
+        "/files/base/layout/_vendor/node_modules/swiper/swiper-bundle.min.js",
     );
     options_swiper = true;
   } else {
@@ -157,8 +157,11 @@ function scriptsActivator(
   }
 
   if (aos) {
-    scripts.push("/files/base/layout/_vendor/node_modules/aos/dist/aos.js");
+    scripts.push(
+        "/files/base/layout/_vendor/node_modules/aos/dist/aos.js",
+    );
     options_aos = true;
+
   } else {
     options_aos = false;
   }

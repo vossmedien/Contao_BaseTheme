@@ -39,11 +39,7 @@
           margin-bottom: 0;
         }
 
-        > div:not(.row):not(.content--element) > div:last-of-type,
-        > div.row:last-of-type,
-        > div.content--element:last-of-type {
-          //margin-bottom: rfs-value($basic-gutter);
-        }
+
       }
 
       &:first-child {
@@ -53,8 +49,6 @@
       }
 
       &[class*="bg-"] {
-        //padding: rfs-value(50px 0px);
-        //overflow: auto;
         overflow: hidden;
 
         .ce_rsce_headimagelogo {
@@ -111,16 +105,6 @@
           margin-top: 0px;
         }
       }
-
-      /*
-            > div > .custom-contao-container,
-      > div > [class*='mod_'] > .custom-contao-container,
-      > div > [class*='ce_'] > .custom-contao-container,
-      span.custom-contao-container {
-        @extend .container;
-        display: block;
-      }
-       */
     }
   }
 }

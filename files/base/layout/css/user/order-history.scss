@@ -24,26 +24,24 @@
   }
 }
 
-&.theme-user {
-  .mod_iso_orderdetails {
-    .collection .product {
-      .image {
-        flex: 100%;
-        @include media-breakpoint-up(xl) {
-          flex: 0 0 75px;
-        }
-
-        text-align: center;
+.mod_iso_orderdetails {
+  .collection .product {
+    .image {
+      flex: 100%;
+      @include media-breakpoint-up(xl) {
+        flex: 0 0 75px;
       }
 
-      .name {
-        @include media-breakpoint-down(xl) {
-          flex: 100%;
-        }
+      text-align: center;
+    }
 
-        @include media-breakpoint-up(xl) {
-          flex-grow: 4;
-        }
+    .name {
+      @include media-breakpoint-down(xl) {
+        flex: 100%;
+      }
+
+      @include media-breakpoint-up(xl) {
+        flex-grow: 4;
       }
     }
   }
