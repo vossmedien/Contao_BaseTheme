@@ -13,7 +13,7 @@
         }
 
         .name {
-          font-weight: var(--bs-font-weight-700);
+          font-weight: $font-weight-bold;
         }
 
         .info {
@@ -38,7 +38,7 @@
     }
 
     .subtotal {
-      font-weight: var(--bs-font-weight-700);
+      font-weight: $font-weight-bold;
       text-transform: uppercase;
       display: flex;
       flex-flow: row nowrap;
@@ -47,7 +47,7 @@
 
       .price {
         font-size: rfs-value(24px);
-        font-weight: var(--bs-font-weight-700);
+        font-weight: $font-weight-bold;
       }
 
       & + .row {

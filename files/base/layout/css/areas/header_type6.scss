@@ -52,7 +52,7 @@
               @include font-size(22px);
             }
 
-            font-weight: var(--bs-font-weight-700);
+            font-weight: $font-weight-bold;
             text-decoration: none;
             text-transform: uppercase;
           }
@@ -96,7 +96,7 @@
           gap: 0px 25px;
 
           > li {
-            font-weight: var(--bs-font-weight-700);
+            font-weight: $font-weight-bold;
           }
         }
       }

@@ -74,12 +74,12 @@
 
   --bs-body-font-family: var(--bs-font-primary);
   --bs-body-font-size: 1rem;
-  --bs-body-font-weight: var(--bs-font-weight-300);
+  --bs-body-font-weight: $font-weight-light;
   --bs-body-line-height: 1.5;
   --bs-body-color: #212529;
   --bs-body-color-inverse: #fff;
   --bs-headline-color: var(--bs-body-color);
-  --bs-headline-font-weight: var(--bs-font-weight-700);
+  --bs-headline-font-weight: $font-weight-bold;
   --bs-body-bg: #fff;
 
   --bs-base-border-radius: 10px;
@@ -140,8 +140,13 @@ $secondary-darker: $secondary;
 
 $secondary-rgb: var(--bs-secondary-rgb);
 
+$font-weight-lighter: var(--bs-font-weight-200);
+$font-weight-light: var(--bs-font-weight-300);
+$font-weight-regular: var(--bs-font-weight-400);
 $font-weight-medium: var(--bs-font-weight-500);
 $font-weight-semibold: var(--bs-font-weight-600);
+$font-weight-bold: var(--bs-font-weight-700);
+$font-weight-black: var(--bs-font-weight-800);
 
 $border-radius: var(--bs-base-border-radius);
 

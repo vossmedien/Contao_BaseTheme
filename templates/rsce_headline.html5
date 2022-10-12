@@ -9,7 +9,7 @@
                         </<?php echo ($this->hl); ?>>
                     <?php endif; ?>
                     <?php if ($this->subline) : ?>
-                        <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
+                        <span class="ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -25,11 +25,11 @@
                     <div class="ce--headline <?php if ($this->textalign) : ?><?php echo $this->textalign; ?><?php endif; ?>" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
                         <?php if ($this->ce_headline) : ?>
                             <?php if (!$this->onlystyle) : ?>
-                                <<?php echo $this->headline_type; ?>>
+                                <<?php echo $this->headline_type; ?> class="mt-0">
                                     <?php echo $this->ce_headline; ?>
                                 </<?php echo $this->headline_type; ?>>
                                 <?php if ($this->subline) : ?>
-                                    <span class="ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                    <span class="ce--subline mt-0" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                         <?php echo $this->subline; ?>
                                     </span>
                                 <?php endif; ?>

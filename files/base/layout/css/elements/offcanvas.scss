@@ -17,7 +17,7 @@
     text-transform: uppercase;
 
     span {
-      font-weight: var(--bs-font-weight-700);
+      font-weight: $font-weight-bold;
       vertical-align: middle;
       font-size: rfs-value(20px);
       display: inline-block;
