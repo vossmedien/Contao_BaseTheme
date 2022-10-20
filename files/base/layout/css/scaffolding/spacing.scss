@@ -115,8 +115,8 @@ html body {
   }
 
   .row {
-    margin-top: calc(-1 * calc(var(--bs-gutter-y) / 2));
-    margin-bottom: calc(-1 * calc(var(--bs-gutter-y) / 2));
+    margin-top: calc(-1 * var(--bs-gutter-y) / 2);
+    //margin-bottom: calc(-1 * calc(var(--bs-gutter-y) / 2));
 
 
     &:not([class*="gy-"]) {
@@ -130,5 +130,12 @@ html body {
       padding-top: calc(var(--bs-gutter-y) / 2);
       padding-bottom: calc(var(--bs-gutter-y) / 2);
     }
+  }
+}
+
+.row {
+  &:not([class*="gy-"]):not([class*="g-"]):not([class*="gx-"]) {
+    --bs-gutter-y: calc(#{$grid-gutter-width} / 2);
+    --bs-gutter-x: calc(#{$grid-gutter-width} / 2);
   }
 }

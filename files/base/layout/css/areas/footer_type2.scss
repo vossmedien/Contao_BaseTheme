@@ -68,7 +68,7 @@
 
       #footerNav {
         ul {
-          @extend .list-inline;
+          //@extend .list-inline;
           margin: 0px;
           @include font-size(12px);
 
@@ -77,7 +77,7 @@
           }
 
           > li {
-            @extend .list-inline-item;
+            //@extend .list-inline-item;
 
             &:not(:last-child) {
               &:after {

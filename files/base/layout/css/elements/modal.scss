@@ -1,6 +1,6 @@
 .modal {
   --bs-modal-title-line-height: 1;
-
+  z-index: 5500;
   max-width: 100% !important;
   //z-index: -1;
 
@@ -13,7 +13,7 @@
     &.show {
       display: flex !important;
     }
- 
+
     .modal-dialog {
       margin: auto;
       width: 100%;

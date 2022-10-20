@@ -1,12 +1,9 @@
 .ce_rsce_equalboxesrows {
-
   .row-container:not(:last-child) {
-    margin-bottom: 1rem;
+    margin-bottom: rfs-value(10px); // Refactor??
   }
 
-
   .row {
-
     .left-col--inner {
       height: 100%;
       min-height: rfs-fluid-value(500px);
@@ -21,8 +18,8 @@
     }
 
     .right--col {
-      margin-top: -$grid-gutter-width/2;
-      margin-bottom: -$grid-gutter-width/2;
+      //margin-top: -$grid-gutter-width/2;
+      //margin-bottom: -$grid-gutter-width/2;
       @include media-breakpoint-up(md) {
         //margin: rfs-value(-15px 0px);
       }
@@ -33,10 +30,11 @@
           display: flex;
           flex-flow: column nowrap;
           align-items: center;
+          gap: var(--bs-gutter-x);
         }
 
         .equal--box {
-          padding: $grid-gutter-width/2 0px;
+          //padding: $grid-gutter-width/2 0px;
           @include media-breakpoint-up(md) {
             flex: 1;
             width: 100%;
@@ -93,7 +91,7 @@
             > * {
               display: block;
 
-              &:not(span) {
+              &:not(.ce--subline) {
                 color: $text-color-inverse;
               }
             }

@@ -2,7 +2,7 @@ form {
   min-width: 100%;
 
   .formbody:not(.row) {
-    @extend .row;
+    //@extend .row;
   }
 
   fieldset {
@@ -59,6 +59,7 @@ form {
 
     input:not(.form-control) {
       &[type="text"],
+      &[type="search"],
       &[type="email"],
       &[type="tel"],
       &[type="password"] {
@@ -115,7 +116,7 @@ form {
       text-align: right;
 
       button {
-        @extend .btn, .btn-primary;
+        //@extend .btn, .btn-primary;
       }
     }
 
@@ -133,17 +134,22 @@ form {
     }
   }
 
+
   // Floating Labels
   .form-floating {
-    > label {
+    label {
       z-index: 5;
       color: $input-placeholder-color;
-      padding-left: rfs-value(20px);
+      padding-left: 1.25rem;
+      line-height: 70px;
+      padding-top: 0px;
+      padding-bottom: 0px;
       //line-height: 1.2;
       //margin-left: calc(var(--bs-gutter-x) / 2);
     }
 
     input[type="text"],
+    input[type="search"],
     input[type="email"],
     input[type="tel"],
     input[type="password"],
@@ -154,6 +160,34 @@ form {
 
     .form-select {
       line-height: rfs-value(44px);
+    }
+  }
+
+
+  .input-group {
+    &.form-floating {
+      label {
+        padding: 0 0.75rem;
+        line-height: 52px;
+      }
+    }
+
+    .input-group-append {
+      > .btn {
+        height: 100%;
+        min-width: rfs-value(50px);
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+      }
+    }
+
+    .input-group-prepend {
+      > .btn {
+        height: 100%;
+        min-width: rfs-value(50px);
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+      }
     }
   }
 }

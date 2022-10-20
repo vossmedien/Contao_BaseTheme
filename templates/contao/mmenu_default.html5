@@ -23,7 +23,6 @@ if ($this->options['drag']['menu']['open'] ?? false) {
                     trails.item(trails.length - 1).classList.add('active');
                 }
             }
-            new Mmenu('#<?= $this->elementId ?>', <?= json_encode($this->options) ?>, <?= json_encode($this->configuration) ?>);
 
 
             if ($('.mmenu_close_button').length) {
@@ -37,6 +36,8 @@ if ($this->options['drag']['menu']['open'] ?? false) {
                         mmenu.API.close();
                     });
                 }
+            } else {
+                new Mmenu('#<?= $this->elementId ?>', <?= json_encode($this->options) ?>, <?= json_encode($this->configuration) ?>);
             }
 
         }

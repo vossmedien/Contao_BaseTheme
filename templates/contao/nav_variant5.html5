@@ -31,9 +31,8 @@
         <?php endif; ?>
         <?php if (strpos($item['class'], 'last') !== false && $this->level == "level_1"): ?>
 
-            <div class="nav-link" style="position: relative; z-index: 10;">
-                {{insert_module::46}}
-                {{insert_module::28}}
+            <div class="nav-link">
+                <a class="offCanvasBasketOpener" href="#offCanvasBasket"><i class="fal fa-shopping-cart"></i></a>
             </div>
             </div>
         <?php endif; ?>

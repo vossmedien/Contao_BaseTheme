@@ -1,8 +1,10 @@
+
 html body .btn {
   line-height: 1;
   border-radius: $border-radius;
-  transition: all 0.3s ease;
+  transition: all .25s ease;
   cursor: pointer;
+
 
   &:hover,
   &:focus,

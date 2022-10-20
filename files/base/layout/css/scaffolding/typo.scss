@@ -40,7 +40,7 @@ html body {
     }
   }
 
-  span {
+  span:not([data-bs-toggle="dropdown"]) {
     line-height: 1.5;
   }
 
@@ -49,8 +49,8 @@ html body {
     //overflow: auto;
 
     &.error {
-      @extend .bg-danger;
-      @extend .alert;
+      //@extend .bg-danger;
+      //@extend .alert;
       color: $text-color-inverse;
       font-size: 1rem;
       font-weight: $font-weight-normal;

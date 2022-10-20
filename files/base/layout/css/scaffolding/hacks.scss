@@ -1,3 +1,27 @@
+//JS / CSS Anpassung @extend
+
+p.back > a, .widget-submit > button,
+.submit_container > input.button,
+.submit_container button,
+.submit_container .submit,
+.actions_container .submit,
+.filter-toggle-control,
+.mod_iso_orderhistory td.link > a,
+.mod_iso_addressbook a.add,
+p.empty,
+#footerNav ul,
+#footerNav ul > li,
+.tl_confirm,
+.message,
+#main .mod_article > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_catalogUniversalView), #main > .inside > div[class^="mod_"]:not(.mod_article),
+p.error,
+.widget-radio span.note,
+.formbody:not(.row) {
+  opacity: 0;
+  animation: .3s ease 0s normal forwards 1 fadein;
+}
+
+
 .invisible {
   display: none;
 }
@@ -47,6 +71,15 @@ main {
   margin-right: -50vw;
 }
 
+%make-fullwidth {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
 .container {
   .container:not(.ce_headline):not(.container.container) {
     max-width: none;
@@ -56,7 +89,7 @@ main {
 
 #main .mod_article > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_catalogUniversalView),
 #main > .inside > div[class^="mod_"]:not(.mod_article) {
-  @extend .container;
+  //@extend .container;
 }
 
 .ce_form {

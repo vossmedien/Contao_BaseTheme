@@ -48,7 +48,7 @@
       .box--image-holder {
 
         .box--image-overflow-wrapper {
-          @extend .make-fullwidth;
+          @extend %make-fullwidth;
 
           .box--image {
 

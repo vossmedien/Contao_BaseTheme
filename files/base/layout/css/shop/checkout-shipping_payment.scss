@@ -1,7 +1,7 @@
 #iso_mod_checkout_payment, #iso_mod_checkout_shipping {
   .widget-radio {
     span.note {
-      @extend .alert, .bg-primary;
+      //@extend .alert, .bg-primary;
       display: block;
       margin-top: .75rem;
       padding: .35rem .75rem;

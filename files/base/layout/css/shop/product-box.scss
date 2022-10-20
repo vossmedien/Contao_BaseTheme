@@ -1,11 +1,10 @@
 .product {
-  margin-bottom: 1rem;
+  //margin-bottom: 1rem;
 }
 
 .iso--product-box {
   &.variant-v1 {
     background-color: var(--bs-white);
-
     height: 100%;
     transition: all 0.3s ease;
 
@@ -20,7 +19,7 @@
       .formbody {
         height: 100%;
         display: flex;
-        flex-flow: column wrap;
+        //flex-flow: column wrap;
 
         .image_container {
           padding: 1rem 1rem 2rem 1rem;
@@ -73,8 +72,8 @@
           margin-top: 0.5rem;
 
           .submit {
-            @extend .btn, .btn-primary;
-            @extend .btn-lg;
+            //@extend .btn, .btn-primary;
+            //@extend .btn-lg;
           }
         }
       }

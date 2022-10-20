@@ -170,19 +170,19 @@
 }
 
 .message {
-  @extend .alert;
+  //@extend .alert;
 
   &.success {
-    @extend .bg-success;
+    //@extend .bg-success;
   }
 
   &.empty {
-    @extend .bg-primary;
+    //@extend .bg-primary;
     color: $text-color-inverse;
   }
 
   &.error {
-    @extend .bg-danger;
+    //@extend .bg-danger;
     color: $text-color-inverse;
   }
 }

@@ -8,15 +8,16 @@
 <?php endif; ?>
 <?php if (!empty($this->products)) : ?>
 
-    <div class="product_list row gx-1 justify-content-center">
+    <div class="product_list row g-1 justify-content-center">
 
         <?php foreach ($this->products as $product) : ?>
-            <div<?php echo $product['cssID']; ?> class="col-12 col-md-6 col-lg-4 col-xxl-3 <?php echo $product['class']; ?>">
+            <div<?php echo $product['cssID']; ?>
+                    class="col-12 col-md-6 col-lg-4 col-xxl-3 <?php echo $product['class']; ?>">
                 <?php echo $product['html']; ?>
+            </div>
+        <?php endforeach; ?>
     </div>
-<?php endforeach; ?>
-</div>
-<?php echo $this->pagination; ?>
+    <?php echo $this->pagination; ?>
 <?php endif; ?>
 
 <?php $this->endblock(); ?>

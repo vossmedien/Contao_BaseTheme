@@ -27,7 +27,7 @@ $grid-breakpoints: (
         xxl: 1640px,
 );
 
-$grid-gutter-width: 1rem;
+$grid-gutter-width: 2rem;
 $gutters: (
         0: 0,
         1: $grid-gutter-width * 0.5,

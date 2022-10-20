@@ -46,19 +46,19 @@ div[class^="mod_iso_"] {
     justify-content: space-between;
 
     input.button {
-      @extend .btn;
-      @extend .btn-lg;
+      //@extend .btn;
+      //@extend .btn-lg;
 
       &.next {
-        @extend .btn-primary;
+        //@extend .btn-primary;
       }
 
       &.previous {
-        @extend .btn-outline-primary;
+        //@extend .btn-outline-primary;
       }
 
       &.confirm {
-        @extend .btn-success;
+        //@extend .btn-success;
       }
     }
   }
