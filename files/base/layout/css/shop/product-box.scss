@@ -28,7 +28,7 @@
 
         .content_container {
           border-top: calc(#{$grid-gutter-width} / 4) solid var(--bs-gray-200);
-          padding: 1rem;
+          padding: 1rem 1rem 2rem 1rem;
           display: flex;
           flex-flow: column wrap;
           flex: 1;
