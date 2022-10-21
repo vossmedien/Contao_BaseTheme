@@ -115,7 +115,7 @@ html body {
   }
 
   .row {
-    margin-top: calc(-1 * var(--bs-gutter-y) / 2);
+    //margin-top: calc(-1 * var(--bs-gutter-y) / 2);
     //margin-bottom: calc(-1 * calc(var(--bs-gutter-y) / 2));
 
 
@@ -127,8 +127,8 @@ html body {
       margin-top: 0;
       padding-left: calc(var(--bs-gutter-x) / 2);
       padding-right: calc(var(--bs-gutter-x) / 2);
-      padding-top: calc(var(--bs-gutter-y) / 2);
-      padding-bottom: calc(var(--bs-gutter-y) / 2);
+      padding-top: calc(var(--bs-gutter-y));
+      //padding-bottom: calc(var(--bs-gutter-y) / 2);
     }
   }
 }
