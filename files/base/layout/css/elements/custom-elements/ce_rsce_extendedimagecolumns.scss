@@ -170,7 +170,7 @@
     &.as-box {
       .headline--wrapper {
         background-color: $body-bg;
-        color: $body-color;
+        color: var(--bs-body-color);
         box-shadow: $box-shadow;
         padding: 1.5rem 2rem;
         text-align: center;

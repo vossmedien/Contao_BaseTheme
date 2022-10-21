@@ -41,7 +41,7 @@
 
         &:hover {
           .bl-i--text {
-            color: $secondary;
+            color: var(--bs-secondary);
           }
 
           .bl-i--image {
@@ -51,7 +51,7 @@
               > g > g:first-child > g > *,
               > g > g:first-child > g > * > path {
                 // komische SVGs
-                fill: $primary;
+                fill: var(--bs-primary);
               }
             }
           }
@@ -88,7 +88,7 @@
           text-transform: uppercase;
           margin-top: rfs-value(10px);
           font-size: rfs-value(20px);
-          color: $primary;
+          color: var(--bs-primary);
           line-height: 1.2;
         }
       }

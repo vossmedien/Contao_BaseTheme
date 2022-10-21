@@ -48,7 +48,7 @@
 
         padding: 1rem;
         margin-top: rfs-value(75px);
-        color: $text-color-inverse;
+        color: var(--bs-body-color-inverse);
         @include font-size(20px);
         font-weight: $font-weight-bold;
         text-transform: uppercase;

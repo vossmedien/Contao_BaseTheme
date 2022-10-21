@@ -71,7 +71,7 @@
             flex: 1;
 
             .box--headline {
-              color: $primary;
+              color: var(--bs-primary);
               font-weight: $font-weight-bolder;
               @include font-size(22px);
               text-decoration: none;
@@ -118,7 +118,7 @@
         //transition: all .3s ease;
 
         &:not(.as-box) {
-          color: $body-color;
+          color: var(--bs-body-color);
           @include font-size(16px);
 
           .box--headline {
@@ -289,7 +289,7 @@
 
         &.as-box {
           background-color: $body-bg;
-          color: $body-color;
+          color: var(--bs-body-color);
           box-shadow: $box-shadow;
           padding: 1.5rem 2rem;
           position: absolute;
@@ -306,7 +306,7 @@
           }
 
           > .headline--wrapper > span.box--headline {
-            color: $body-color;
+            color: var(--bs-body-color);
             @include font-size(22px);
           }
         }

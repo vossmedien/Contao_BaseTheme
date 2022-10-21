@@ -36,8 +36,8 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background-color: $primary;
-            border: 3px solid $white;
+            background-color: var(--bs-primary);
+            border: 3px solid var(--bs-white);
             position: absolute;
             top: 25px;
             z-index: 3;

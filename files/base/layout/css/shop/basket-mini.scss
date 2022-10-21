@@ -5,7 +5,7 @@
     margin-left: 0.5rem;
 
     i {
-      color: $primary;
+      color: var(--bs-primary);
     }
   }
 
@@ -70,7 +70,7 @@
         font-weight: $font-weight-semibold;
         text-align: right;
         margin-top: 1rem;
-        color: $primary;
+        color: var(--bs-primary);
         padding-top: 0.5rem;
         border-top-style: double;
       }

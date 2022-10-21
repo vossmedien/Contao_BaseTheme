@@ -70,12 +70,12 @@
       @extend .fas;
       content: fa-content($fa-var-pen);
       font-size: 1rem;
-      color: $primary;
+      color: var(--bs-primary);
     }
   }
 
   h3 {
-    color: $body-color;
+    color: var(--bs-body-color);
     @include font-size(16px);
     font-weight: $font-weight-bold;
     padding-right: 1rem;

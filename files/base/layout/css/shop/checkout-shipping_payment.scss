@@ -5,7 +5,7 @@
       display: block;
       margin-top: .75rem;
       padding: .35rem .75rem;
-      color: $text-color-inverse;
+      color: var(--bs-body-color-inverse);
       @include font-size(14px);
     }
   }

@@ -53,14 +53,14 @@
             > a,
             > span,
             > strong {
-              color: $text-color-inverse;
+              color: var(--bs-body-color-inverse);
               display: block;
               border-bottom: 5px solid transparent;
 
               &:hover,
               &.active,
               &.trail {
-                border-bottom-color: $secondary;
+                border-bottom-color: var(--bs-secondary);
               }
             }
           }
@@ -103,7 +103,7 @@
                 &:hover,
                 &.active,
                 &.trail {
-                  border-bottom-color: $secondary;
+                  border-bottom-color: var(--bs-secondary);
                 }
               }
 

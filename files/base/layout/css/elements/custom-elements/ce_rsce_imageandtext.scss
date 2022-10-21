@@ -11,7 +11,7 @@
 
             > div {
               .col--inner {
-                border-bottom: 2px solid $body-color;
+                border-bottom: 2px solid var(--bs-body-color);
                 @include padding-bottom(40px);
               }
             }
@@ -33,7 +33,7 @@
         h2,
         .h2 {
           font-weight: $font-weight-semibold;
-          color: $black;
+          color: var(--bs-black);;
         }
       }
     }
@@ -44,7 +44,7 @@
 
         > div:not(:last-child) {
           @include media-breakpoint-up(md) {
-            border-right: 2px solid $body-color;
+            border-right: 2px solid var(--bs-body-color);
           }
         }
       }
@@ -75,10 +75,10 @@
           font-weight: $font-weight-semibold;
           text-decoration: none;
           display: inline-block;
-          color: $body-color;
+          color: var(--bs-body-color);
 
           &:hover {
-            color: $primary;
+            color: var(--bs-primary);
           }
 
           &:after {

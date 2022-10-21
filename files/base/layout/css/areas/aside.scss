@@ -34,7 +34,7 @@ aside {
           > a,
           > strong {
             font-size: rfs-value(20px);
-            color: $primary;
+            color: var(--bs-primary);
             text-decoration: none;
             display: block;
             padding: 0.75rem 0;
@@ -43,7 +43,7 @@ aside {
             &.active,
             &:hover,
             &.trail {
-              color: $body-color;
+              color: var(--bs-body-color);
             }
           }
         }
@@ -59,7 +59,7 @@ aside {
             padding: 0.35rem 1.25rem;
             display: block;
             text-decoration: none;
-            color: $body-color;
+            color: var(--bs-body-color);
 
             &.active,
             &:hover,

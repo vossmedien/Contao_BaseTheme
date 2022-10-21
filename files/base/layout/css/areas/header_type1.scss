@@ -31,7 +31,7 @@
     }
 
     .hc--top {
-      background-color: $primary;
+      background-color: var(--bs-primary);
       @include font-size(14px);
 
       .hc-top--inside {
@@ -140,7 +140,7 @@
                     > strong {
                       text-decoration: none;
                       font-weight: $font-weight-bold;
-                      color: $body-color;
+                      color: var(--bs-body-color);
                       display: inline-block;
                       z-index: 5001;
                       position: relative;
@@ -152,7 +152,7 @@
                       &.trail {
                         text-decoration: none;
                         font-weight: $font-weight-bold;
-                        color: $primary;
+                        color: var(--bs-primary);
                         display: inline-block;
                       }
                     }
@@ -205,7 +205,7 @@
 
                       > a,
                       > span {
-                        color: $primary;
+                        color: var(--bs-primary);
                       }
                     }
 
@@ -214,7 +214,7 @@
                     > strong {
                       padding: 0.25rem 0rem;
                       text-decoration: none;
-                      color: $body-color;
+                      color: var(--bs-body-color);
                       font-weight: $font-weight-normal;
                       display: block;
                       @include font-size(15px);

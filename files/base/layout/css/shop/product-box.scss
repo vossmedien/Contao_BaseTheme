@@ -39,7 +39,7 @@
             a {
               text-decoration: none;
               @include font-size(18px);
-              color: $body-color;
+              color: var(--bs-body-color);
             }
           }
 
@@ -52,7 +52,7 @@
             .price {
               margin-top: 1.25rem;
               line-height: 1;
-              color: $primary;
+              color: var(--bs-primary);
               @include font-size(30px);
               font-weight: $font-weight-semibold;
             }
@@ -87,7 +87,7 @@
       a {
         text-decoration: none;
         @include font-size(18px);
-        color: $body-color;
+        color: var(--bs-body-color);
       }
     }
   }

@@ -11,7 +11,7 @@
 
 
       &:hover a {
-        color: $primary;
+        color: var(--bs-primary);
       }
 
       figure {
@@ -21,7 +21,7 @@
 
         & + a {
           text-decoration: none;
-          color: $body-color;
+          color: var(--bs-body-color);
           margin: 0 auto;
           white-space: nowrap;
           display: block;
@@ -38,7 +38,7 @@
             @extend .fal;
             content: fa-content($fa-var-download);
             padding-right: rfs-value(5px);
-            color: $primary;
+            color: var(--bs-primary);
           }
         }
       }

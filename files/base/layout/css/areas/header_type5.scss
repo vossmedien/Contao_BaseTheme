@@ -78,7 +78,7 @@
               position: relative;
               transition: all 0.3s ease;
               line-height: $line-height;
-              color: $body-color;
+              color: var(--bs-body-color);
               font-size: rfs-value(15px);
               font-weight: $font-weight-bold;
               z-index: 10;
@@ -90,10 +90,10 @@
 
               &.active,
               &:hover {
-                color: $primary;
+                color: var(--bs-primary);
 
                 span {
-                  border-bottom: 1px solid $primary;
+                  border-bottom: 1px solid var(--bs-primary);
                 }
               }
             }
@@ -141,7 +141,7 @@
             &:focus {
               > a,
               > span {
-                color: $primary;
+                color: var(--bs-primary);
               }
             }
 
@@ -152,7 +152,7 @@
               text-decoration: none;
               font-weight: $font-weight-normal;
               display: block;
-              color: $body-color;
+              color: var(--bs-body-color);
               @include font-size(15px);
             }
           }

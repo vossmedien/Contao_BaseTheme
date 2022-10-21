@@ -1,7 +1,7 @@
 .footer--content {
   &.type--4 {
     background-color: $footer-top-bg;
-    color: $text-color-inverse;
+    color: var(--bs-body-color-inverse);
     @include padding(50px 0px 25px 0px);
 
     .row {
@@ -9,7 +9,7 @@
     }
 
     a {
-      color: $text-color-inverse;
+      color: var(--bs-body-color-inverse);
       text-decoration: none;
     }
 
@@ -35,7 +35,7 @@
 
             &.active,
             &:hover {
-              color: $primary;
+              color: var(--bs-primary);
             }
 
             &.active {

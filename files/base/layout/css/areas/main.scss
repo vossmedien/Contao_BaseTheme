@@ -93,7 +93,7 @@
       }
 
       *[class*="bg-dark"] {
-        color: $text-color-inverse;
+        color: var(--bs-body-color-inverse);
       }
 
       & + .mod_article {

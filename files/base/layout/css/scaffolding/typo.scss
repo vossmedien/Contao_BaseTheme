@@ -5,7 +5,7 @@ html body {
   -ms-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
-  color: $body-color;
+  color: var(--bs-body-color);
 
   *:focus,
   *:active {
@@ -33,10 +33,10 @@ html body {
 
   a {
     transition: color 0.3s ease;
-    color: $primary;
+    color: var(--bs-primary);
 
     &:hover {
-      color: $secondary;
+      color: var(--bs-secondary);
     }
   }
 
@@ -51,7 +51,7 @@ html body {
     &.error {
       //@extend .bg-danger;
       //@extend .alert;
-      color: $text-color-inverse;
+      color: var(--bs-body-color-inverse);
       font-size: 1rem;
       font-weight: $font-weight-normal;
       width: 100%;
@@ -96,7 +96,7 @@ html body {
 
   .ce--subline {
     font-weight: $font-weight-bold;
-    color: $primary;
+    color: var(--bs-primary);
     @include font-size(18px);
     display: block;
     margin-bottom: $headline-spacing;
@@ -134,7 +134,7 @@ html body {
     font-weight: var(--bs-font-weight-500);
     margin-bottom: $headline-spacing / 2.5;
     font-size: 1.5rem;
-    color: $primary;
+    color: var(--bs-primary);
     display: block;
 
     & + .ce--subline {
@@ -174,7 +174,7 @@ html body {
 
         a {
           text-decoration: none;
-          color: $text-color;
+          color: var(--bs-body-color);
           padding-left: 35px;
           display: block;
 
@@ -184,7 +184,7 @@ html body {
             content: fa-content($fa-var-download);
             position: absolute;
             padding-right: rfs-value(10px);
-            color: $primary;
+            color: var(--bs-primary);
             left: 0;
             top: 7px;
           }
@@ -208,7 +208,7 @@ html body {
           padding-bottom: 0.25rem;
 
           &:first-child {
-            color: $primary;
+            color: var(--bs-primary);
             padding-left: 0px;
             font-family: $font-family-tertiary;
           }
@@ -240,7 +240,7 @@ html body {
             background-color: var(--bs-blue);
 
             td {
-              color: $text-color-inverse;
+              color: var(--bs-body-color-inverse);
             }
           }
 

@@ -92,7 +92,7 @@
               display: block;
 
               &:not(.ce--subline) {
-                color: $text-color-inverse;
+                color: var(--bs-body-color-inverse);
               }
             }
           }

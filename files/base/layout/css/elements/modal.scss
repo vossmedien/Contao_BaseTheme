@@ -43,7 +43,7 @@
 
   .btn-close {
     padding: .25rem;
-    color: $primary;
+    color: var(--bs-primary);
     font-size: rfs-value(24px);
     opacity: 1;
     background: var(--bs-primary);
@@ -60,7 +60,7 @@
     background-color: transparent;
     padding: 0px;
     margin: 0px;
-    color: $primary;
+    color: var(--bs-primary);
     border: 0px;
     font-size: rfs-value(50px);
     line-height: 1;

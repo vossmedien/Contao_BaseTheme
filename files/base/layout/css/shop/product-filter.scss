@@ -1,7 +1,7 @@
 .mod_iso_productfilter {
   h3 {
     @include font-size(20px);
-    color: $primary;
+    color: var(--bs-primary);
     text-decoration: none;
     display: block;
     font-weight: $font-weight-normal;
@@ -42,7 +42,7 @@
   }
 
   .clearall {
-    color: $primary;
+    color: var(--bs-primary);
     text-decoration: none;
     @include font-size(14px);
     margin-left: rfs-value(10px);
@@ -56,7 +56,7 @@
     }
 
     &:hover {
-      color: $body-color;
+      color: var(--bs-body-color);
     }
   }
 
@@ -75,7 +75,7 @@
 
     &:checked {
       + .filter-toggle-control {
-        background-color: $primary;
+        background-color: var(--bs-primary);
         border-radius: $border-radius $border-radius 0px 0px;
 
         &:before,
@@ -110,7 +110,7 @@
     background-color: var(--bs-gray-100);
     border-radius: 0px $border-radius $border-radius $border-radius;
     transition: height 0.3s ease;
-    color: $body-color;
+    color: var(--bs-body-color);
     text-transform: uppercase;
     font-weight: $font-weight-medium;
     display: flex;
@@ -188,7 +188,7 @@
                 }
 
                 strong {
-                  color: $primary;
+                  color: var(--bs-primary);
                 }
               }
             }
@@ -198,7 +198,7 @@
           strong {
             //@include transition(all 0.25s);
             display: block;
-            color: $body-color;
+            color: var(--bs-body-color);
             text-transform: uppercase;
             font-weight: 600;
             @include font-size(12px);
@@ -232,7 +232,7 @@
               &:after {
                 width: 16px;
                 height: 16px;
-                background-color: $primary;
+                background-color: var(--bs-primary);
                 opacity: 0;
                 visibility: hidden;
                 position: absolute;
@@ -242,7 +242,7 @@
             }
 
             &:hover {
-              color: $primary;
+              color: var(--bs-primary);
 
               &:after {
                 opacity: 0.7;
@@ -254,7 +254,7 @@
       }
 
       &.trail {
-        color: $primary;
+        color: var(--bs-primary);
       }
 
       &.nav {
@@ -264,7 +264,7 @@
           .list-wrapper {
             margin-top: 2px;
             padding: 5px 20px;
-            background-color: $secondary;
+            background-color: var(--bs-secondary);
 
             overflow: hidden;
 

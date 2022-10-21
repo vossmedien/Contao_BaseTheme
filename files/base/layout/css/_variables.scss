@@ -125,18 +125,18 @@ $white: var(--bs-white);
 $black: var(--bs-black);
 
 $primary: var(--bs-primary);
-$primary-light: $primary;
-$primary-lighter: $primary;
-$primary-dark: $primary;
-$primary-darker: $primary;
+$primary-light: var(--bs-primary);
+$primary-lighter: var(--bs-primary);
+$primary-dark: var(--bs-primary);
+$primary-darker: var(--bs-primary);
 
 $primary-rgb: var(--bs-primary-rgb);
 
 $secondary: var(--bs-secondary);
-$secondary-light: $secondary;
-$secondary-lighter: $secondary;
-$secondary-dark: $secondary;
-$secondary-darker: $secondary;
+$secondary-light: var(--bs-secondary);
+$secondary-lighter: var(--bs-secondary);
+$secondary-dark: var(--bs-secondary);
+$secondary-darker: var(--bs-secondary);
 
 $secondary-rgb: var(--bs-secondary-rgb);
 
@@ -166,7 +166,7 @@ $text-color: var(--bs-body-color);
 
 $body-bg: var(--bs-body-bg);
 $body-color: $text-color;
-$link-color: $primary;
+$link-color: var(--bs-primary);
 
 
 $font-family-primary: var(--bs-font-primary);

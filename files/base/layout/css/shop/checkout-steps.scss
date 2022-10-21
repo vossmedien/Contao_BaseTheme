@@ -5,7 +5,7 @@
   ol {
     padding: 0;
     list-style: none;
-    color: $primary;
+    color: var(--bs-primary);
     text-transform: uppercase;
     font-weight: 600;
     @include font-size(14px);
@@ -32,7 +32,7 @@
       }
 
       &.active {
-        color: $primary;
+        color: var(--bs-primary);
 
         &:before {
           content: "";

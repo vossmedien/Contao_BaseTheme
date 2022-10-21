@@ -22,8 +22,8 @@ form {
   }
 
   .form-check-input:checked {
-    background-color: $primary;
-    border-color: $primary;
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
   }
 
 
@@ -31,8 +31,8 @@ form {
     > label:first-child {
       padding: 2px 0.75rem 2px 0.75rem;
       border-radius: $border-radius $border-radius 0px 0px;
-      background-color: $primary;
-      color: $text-color-inverse;
+      background-color: var(--bs-primary);
+      color: var(--bs-body-color-inverse);
       @include font-size(14px);
 
       & + * {
@@ -129,7 +129,7 @@ form {
       margin-bottom: 0px;
       @include padding(5px 0.75rem);
       @include font-size(14px);
-      color: $text-color-inverse;
+      color: var(--bs-body-color-inverse);
       background-color: $danger;
     }
   }

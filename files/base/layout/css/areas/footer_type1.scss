@@ -1,12 +1,12 @@
 .footer--content {
   &.type--1 {
-    $footer-color: $text-color-inverse;
+    $footer-color: var(--bs-body-color-inverse);
     font-family: $font-family-base;
     border-top: 5px solid var(--bs-primary);
 
     .fc--top {
       padding: rfs-fluid-value(5rem 0);
-      color: $text-color-inverse;
+      color: var(--bs-body-color-inverse);
 
       .row > div:not(:first-child) {
         @include media-breakpoint-down(lg) {
@@ -47,7 +47,7 @@
           margin-left: 0px;
 
           a {
-            color: $text-color-inverse;
+            color: var(--bs-body-color-inverse);
             width: rfs-value(40px);
             line-height: rfs-value(36px);
             display: inline-block;
@@ -57,7 +57,7 @@
             transition: background-color 0.3s ease;
 
             &:hover {
-              background-color: $primary;
+              background-color: var(--bs-primary);
             }
           }
         }
@@ -98,7 +98,7 @@
               color: $footer-color;
 
               &.active {
-                color: $primary;
+                color: var(--bs-primary);
               }
             }
           }

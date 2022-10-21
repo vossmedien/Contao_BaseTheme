@@ -129,7 +129,7 @@
         text-align: center;
 
         &:hover {
-          color: $body-color;
+          color: var(--bs-body-color);
         }
       }
 
@@ -178,12 +178,12 @@
 
   &.empty {
     //@extend .bg-primary;
-    color: $text-color-inverse;
+    color: var(--bs-body-color-inverse);
   }
 
   &.error {
     //@extend .bg-danger;
-    color: $text-color-inverse;
+    color: var(--bs-body-color-inverse);
   }
 }
 

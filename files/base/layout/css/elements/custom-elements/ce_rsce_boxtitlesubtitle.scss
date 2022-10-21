@@ -38,12 +38,12 @@
       }
 
       .bts--headline {
-        color: $primary;
+        color: var(--bs-primary);
         font-weight: bold;
       }
 
       .bts--subline {
-        color: $secondary;
+        color: var(--bs-secondary);
       }
     }
   }

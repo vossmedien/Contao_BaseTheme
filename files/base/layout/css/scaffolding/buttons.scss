@@ -24,79 +24,79 @@ html body .btn {
   }
 
   &.btn-primary {
-    --bs-btn-hover-border-color: $primary;
+    --bs-btn-hover-border-color: var(--bs-primary);
 
-    background-color: $primary;
+    background-color: var(--bs-primary);
     color: var(--bs-white);
-    border-color: $primary;
+    border-color: var(--bs-primary);
 
     &:hover {
       background-color: transparent;
-      color: $primary;
+      color: var(--bs-primary);
     }
   }
 
   &.btn-outline-primary {
-    --bs-btn-hover-border-color: $primary;
-    border-color: $primary;
-    color: $primary;
+    --bs-btn-hover-border-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: var(--bs-primary);
 
     &:hover {
-      background-color: $primary;
-      color: $text-color-inverse;
+      background-color: var(--bs-primary);
+      color: var(--bs-body-color-inverse);
     }
   }
 
   &.btn-secondary {
-    --bs-btn-hover-border-color: $secondary;
-    background-color: $secondary;
-    border-color: $secondary;
+    --bs-btn-hover-border-color: var(--bs-secondary);
+    background-color: var(--bs-secondary);
+    border-color: var(--bs-secondary);
 
     &:hover {
       background-color: transparent;
-      color: $secondary;
+      color: var(--bs-secondary);
     }
   }
 
   &.btn-outline-secondary {
-    --bs-btn-hover-border-color: $secondary;
-    border-color: $secondary;
-    color: $secondary;
+    --bs-btn-hover-border-color: var(--bs-secondary);
+    border-color: var(--bs-secondary);
+    color: var(--bs-secondary);
     background-color: transparent;
 
     &:hover {
-      background-color: $secondary;
-      color: $text-color-inverse;
+      background-color: var(--bs-secondary);
+      color: var(--bs-body-color-inverse);
     }
   }
 
   &.btn-white {
-    --bs-btn-hover-border-color: $body-color;
-    border-color: $white;
-    color: $body-color;
-    background-color: $white;
+    --bs-btn-hover-border-color: var(--bs-body-color);
+    border-color: var(--bs-white);
+    color: var(--bs-body-color);
+    background-color: var(--bs-white);
 
     &:hover {
-      background-color: $body-color;
-      color: $white;
+      background-color: var(--bs-body-color);
+      color: var(--bs-white);
     }
   }
 
   &.btn-outline-black {
-    --bs-btn-hover-border-color: $black;
-    border-color: $black;
-    color: $black;
+    --bs-btn-hover-border-color: var(--bs-black);;
+    border-color: var(--bs-black);;
+    color: var(--bs-black);;
     background-color: transparent;
 
     &:hover {
-      background-color: $black;
-      color: $white;
+      background-color: var(--bs-black);;
+      color: var(--bs-white);
     }
   }
 
   &.btn-link {
     padding: 0px;
-    color: $primary;
+    color: var(--bs-primary);
 
     &:hover,
     &:focus {

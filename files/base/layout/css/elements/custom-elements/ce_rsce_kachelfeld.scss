@@ -49,11 +49,11 @@
 
   .kachelbox {
     height: 100%;
-    background-color: $secondary;
+    background-color: var(--bs-secondary);
     position: relative;
     transition: background-color 0.3s ease;
     box-shadow: $box-shadow;
-    color: $text-color-inverse;
+    color: var(--bs-body-color-inverse);
 
     a.kachel--url {
       position: absolute;
@@ -107,7 +107,7 @@
 
         i {
           @include font-size(85px);
-          color: $primary;
+          color: var(--bs-primary);
           transition: all 0.3s ease;
           line-height: rfs-fluid-value(150px);
           position: relative;

@@ -16,7 +16,7 @@
 
     &.testimonials--top {
       .testimonial-person--box {
-        background-color: $primary;
+        background-color: var(--bs-primary);
         padding: 2rem;
 
         @include media-breakpoint-up(lg) {

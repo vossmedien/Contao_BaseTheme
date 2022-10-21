@@ -68,7 +68,7 @@
             transition: all 0.3s ease;
             line-height: 90px;
             font-weight: $font-weight-semibold;
-            color: $body-color;
+            color: var(--bs-body-color);
 
             span {
               display: inline;
@@ -77,10 +77,10 @@
 
             &.active,
             &:hover {
-              color: $primary;
+              color: var(--bs-primary);
 
               span {
-                border-bottom: 1px solid $body-color;
+                border-bottom: 1px solid var(--bs-body-color);
               }
             }
           }
@@ -134,7 +134,7 @@
           &:focus {
             > a,
             > span {
-              color: $primary;
+              color: var(--bs-primary);
             }
           }
 
@@ -145,7 +145,7 @@
             text-decoration: none;
             font-weight: $font-weight-normal;
             display: block;
-            color: $body-color;
+            color: var(--bs-body-color);
             @include font-size(15px);
           }
         }

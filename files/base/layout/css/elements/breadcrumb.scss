@@ -10,7 +10,7 @@
 
     li {
       display: inline-block;
-      color: $secondary;
+      color: var(--bs-secondary);
 
       &:not(:last-child) {
         &:after {
@@ -18,7 +18,7 @@
           @extend .far;
           content: fa-content($fa-var-angle-right);
           display: inline-block;
-          color: $primary;
+          color: var(--bs-primary);
           margin: 0 5px 0px 8px;
         }
       }
@@ -26,7 +26,7 @@
       > a {
         display: inline-block;
         text-decoration: none;
-        color: $primary;
+        color: var(--bs-primary);
 
         &:hover {
           text-decoration: underline;
