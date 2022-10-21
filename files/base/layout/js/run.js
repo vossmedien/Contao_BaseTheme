@@ -389,7 +389,7 @@ Promise.all(promises)
         /* Change Buttons with JS instead of CSS */
 
 
-        $('p.back > a, .widget-submit > button').each(function (index) {
+        $('p.back > a:not(.btn), .widget-submit > button').each(function (index) {
             $(this).addClass("btn btn-primary");
         });
 
@@ -410,16 +410,12 @@ Promise.all(promises)
             }
         });
 
-        $('.submit_container  button').each(function (index) {
+        $('.submit_container  button:not(.btn)').each(function (index) {
             $(this).addClass("btn");
 
             if ($(this).hasClass("button_update") || $(this).hasClass("button_checkout")) {
                 $(this).addClass("btn-outline-primary");
             }
-        });
-
-        $('.submit_container .submit').each(function (index) {
-            //$(this).addClass("btn btn-primary btn-lg");
         });
 
         $('.actions_container .submit').each(function (index) {

@@ -55,6 +55,11 @@
 
 
 
+
+
+
+
+
 </script>
 
 
@@ -63,7 +68,7 @@
 
         <div class="ce--boxenfeld ">
             <div class="boxes--outer">
-                <div class="row">
+                <div class="row gy-0">
 
                     <?php if ($this->content_image_1["src"]): ?>
                         <div class="col-12 col-lg-6">
@@ -121,12 +126,12 @@
 <?php if ($this->selected_benefits): ?>
     <div class="content--element benefits bg-dark text-center">
         <div class="ce--inner container">
-            <div class="ce--headline">
+            <div class="ce--headline mb-3">
                 <h2 data-aos="animate__fadeIn">Das bieten wir dir</h2>
             </div>
-            <div class="row gx-lg-5 justify-content-center">
+            <div class="row gx-lg-5 gy-3 justify-content-center">
                 <?php foreach ($this->selected_benefits as $benefit) : ?>
-                    <div class="col-lg-4 col-lg-3 mt-2">
+                    <div class="col-lg-4 col-lg-3">
 
                         <div class="benefit--box" data-aos="animate__fadeInUp">
                             <div class="benefit-box--upper">
@@ -184,7 +189,7 @@
 
         <div class="ce--boxenfeld">
             <div class="boxes--outer">
-                <div class="row flex-row-reverse">
+                <div class="row gy-0 flex-row-reverse">
                     <?php if ($this->content_image_3["src"]): ?>
                         <div class="col-12 col-lg-6">
                             <img class="lazy box--image" data-src="<?= $this->content_image_3["src"]; ?>">

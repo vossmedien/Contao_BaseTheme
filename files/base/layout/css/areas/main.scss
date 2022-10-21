@@ -94,6 +94,10 @@
 
       *[class*="bg-dark"] {
         color: var(--bs-body-color-inverse);
+
+        * {
+          color: inherit;
+        }
       }
 
       & + .mod_article {

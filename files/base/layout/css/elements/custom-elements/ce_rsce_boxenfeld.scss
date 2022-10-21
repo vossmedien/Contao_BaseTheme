@@ -95,7 +95,7 @@
     }
 
     @include media-breakpoint-up(xxl) {
-      padding: rfs-value(80px 80px 80px 14vw);
+      padding: rfs-value(80px 80px 80px 5.5vw);
       border-radius: $border-radius;
     }
 
