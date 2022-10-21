@@ -56,7 +56,7 @@ if (!isset($this->size)) {
                             <?php if ($this->open_lightbox): ?>
                             <a href="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, null, null, null); ?>"
                                class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
-                                <img class="lazy"
+                                <img class="swiper-lazy"
                                      data-src="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                 <?php if ($this->open_lightbox): ?></a><?php endif; ?>
                         </div>
@@ -71,7 +71,8 @@ if (!isset($this->size)) {
                             <?php if ($this->open_lightbox): ?>
                             <a href="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>"
                                class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
-                                <img src="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+                                <img class="swiper-lazy"
+                                     data-src="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                 <?php if ($this->open_lightbox): ?> </a><?php endif; ?>
                             <?php if ($slide->slide_text) : ?>
                                 <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
@@ -100,11 +101,14 @@ if (!isset($this->size)) {
             const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
                 direction: 'horizontal',
 
-                <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>
-                loop: true,
-                <?php endif;?>
-                preloadImages: true,
-                lazy: false,
+
+                loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
+
+
+                preloadImages: false,
+                lazy: {
+                    loadPrevNext: true,
+                },
 
                 spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
                 centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
@@ -127,7 +131,7 @@ if (!isset($this->size)) {
                     stretch: 0, // Stretch space between slides (in px)
                     depth: 100, // Depth offset in px (slides translate in Z axis)
                     modifier: 1, // Effect multipler
-                    slideShadows: false, // Enables slides shadows
+                    slideShadows: true, // Enables slides shadows
                 },
                 <?php endif;?>
 

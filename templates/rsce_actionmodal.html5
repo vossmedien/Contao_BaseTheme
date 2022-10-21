@@ -150,15 +150,23 @@
 
 <script type="text/javascript">
     $(window).on('load', function () {
-        <?php if ($this->cookie_hide) : ?>    if (!Cookies.get('actionModal_<?php echo $this->id; ?>')) {    <?php endif; ?>
+        <?php if ($this->cookie_hide) : ?>
+        if (!Cookies.get('actionModal_<?php echo $this->id; ?>')) {
+            <?php endif; ?>
             $('#actionModal_<?php echo $this->id; ?>').modal('show');
-            <?php if ($this->cookie_hide) : ?>  }  <?php endif; ?>
+            <?php if ($this->cookie_hide) : ?>
+        }
+        <?php endif; ?>
     });
 
     <?php if ($this->cookie_hide) : ?>
     var myActionModal = document.getElementById('actionModal_<?php echo $this->id; ?>')
     myActionModal.addEventListener('hidden.bs.modal', function (event) {
-        Cookies.set('actionModal_<?php echo $this->id; ?>', 'true', {secure: true, expires: 7, sameSite: 'strict'})
+
+        if (Cookies.get('cookie_basefeatures')) {
+            Cookies.set('actionModal_<?php echo $this->id; ?>', 'true', {secure: true, expires: 7, sameSite: 'strict'})
+        }
+
     }, {passive: true})
     <?php endif; ?>
 </script>

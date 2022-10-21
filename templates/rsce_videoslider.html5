@@ -33,18 +33,16 @@
 
                             <?php if ($slide->video_type == "inline"): ?>
                                 <div class="video_container">
-                                    <iframe src="https://www.youtube.com/embed/<?php echo $slide->video_id; ?>"
+                                    <iframe data-source="https://www.youtube-nocookie.com/embed/<?php echo $slide->video_id; ?>"
                                             title="<?php echo $slide->text; ?>" frameborder="0"
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                             allowfullscreen></iframe>
                                 </div>
-
-
                             <?php else: ?>
 
                                 <a <?php if ($slide->video_type == "new_tab"): ?> target="_blank" <?php else : ?> class="video-link cboxElement" data-lightbox <?php endif; ?>
-                                        href='https://www.youtube.com/watch?v=<?php echo $slide->video_id; ?>'>
-                                    <img class="lazy"
+                                        href='https://www.youtube-nocookie.com/watch?v=<?php echo $slide->video_id; ?>'>
+                                    <img class="swiper-lazy"
                                          data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
                                 </a>
                             <?php endif; ?>
@@ -95,8 +93,10 @@
                 loop: true,
                 <?php endif; ?>
 
-                preloadImages: true,
-                lazy: false,
+                preloadImages: false,
+                lazy: {
+                    loadPrevNext: true,
+                },
                 slidesPerView: 1,
                 spaceBetween: 10,
                 checkInView: true,

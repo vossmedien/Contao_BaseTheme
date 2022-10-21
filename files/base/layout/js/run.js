@@ -475,7 +475,6 @@ Promise.all(promises)
             }
         });
 
-
         $('#footerNav ul').each(function (index) {
             $(this).addClass("list-inline");
         });
@@ -483,6 +482,7 @@ Promise.all(promises)
         $('#footerNav ul > li ').each(function (index) {
             $(this).addClass("list-inline-item");
         });
+
 
         $('#main .mod_article > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_catalogUniversalView)').each(function (index) {
             $(this).addClass("container");
@@ -492,7 +492,7 @@ Promise.all(promises)
             $(this).addClass("container");
         });
 
-            $('.formbody:not(.row)').each(function (index) {
+        $('.formbody:not(.row)').each(function (index) {
             $(this).addClass("row");
         });
 
@@ -517,6 +517,51 @@ Promise.all(promises)
         $(document).on("scroll", function () {
             changeAnchorLinks();
         });
+
+
+        function setupFunctions() {
+            if (Cookies.get('cookie_iframes')) {
+                initFrames();
+            }
+
+            if (Cookies.get('cookie_basefeatures')) {
+                InitBasefeatures()
+            }
+        }
+
+
+        function initFrames() {
+            $('iframe[data-source]').each(function (index) {
+                $(this).attr('src', $(this).data("source"));
+            });
+
+            $('.video-link').colorbox({
+                iframe: true,
+                width: '95%',
+                height: '95%',
+                maxWidth: '1024px',
+                maxHeight: '576px',
+                href: function () {
+                    var videoId = new RegExp('[\\?&]v=([^&#]*)').exec(this.href);
+                    if (videoId && videoId[1]) {
+                        return 'https://www.youtube-nocookie.com/embed/' + videoId[1] + '?rel=0&wmode=transparent&autoplay=1';
+                    }
+                }
+            });
+        }
+
+        function InitBasefeatures() {
+
+        }
+
+
+        window.addEventListener('cookiebar_save', function (e) {
+            setupFunctions()
+        }, false);
+
+
+        setupFunctions()
+
     })
     .catch(function (script) {
         console.log(script + " failed to load");

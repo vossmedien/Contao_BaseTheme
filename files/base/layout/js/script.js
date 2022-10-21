@@ -117,7 +117,7 @@ function scriptsActivator(
   scripts.push(
 
     //"/files/base/layout/_vendor/node_modules/ssr-window/ssr-window.umd.min.js",
-    "/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js"
+    //"/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js"
   );
 
   if (lazyload) {
