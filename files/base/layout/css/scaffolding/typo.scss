@@ -41,11 +41,11 @@ html body {
   }
 
   span:not([data-bs-toggle="dropdown"]) {
-    line-height: 1.5;
+    line-height: var(--bs-body-line-height);
   }
 
   p {
-    line-height: 1.5;
+    line-height: var(--bs-body-line-height-lg);
     //overflow: auto;
 
     &.error {
@@ -97,11 +97,24 @@ html body {
   .ce--subline {
     font-weight: $font-weight-bold;
     color: var(--bs-primary);
-    @include font-size(18px);
+    @include font-size(22px);
     display: block;
     margin-bottom: $headline-spacing;
-    line-height: 1.15;
+    line-height: var(--bs-body-line-height);
   }
+
+  .ce--topline {
+    font-weight: $font-weight-light;
+    color: var(--bs-primary);
+    @include font-size(22px);
+    display: block;
+    line-height: var(--bs-body-line-height);
+
+    &:not(:last-child) {
+      margin-bottom: $mini-spacing;
+    }
+  }
+
 
   h1,
   .h1 {
@@ -281,4 +294,21 @@ html body {
 
 .text-secondary {
   color: $secondary !important;
+}
+
+
+.dynamic-fontsize-lg {
+  font-size: calc(4.5vh + 4.5vw);
+  line-height: var(--bs-body-line-height-sm);
+}
+
+.dynamic-fontsize {
+  font-size: calc(3.5vh + 3.5vw);
+  line-height: var(--bs-body-line-height-sm);
+}
+
+
+.dynamic-fontsize-sm {
+  font-size: calc(2.5vh + 2.5vw);
+  line-height: var(--bs-body-line-height-sm);
 }

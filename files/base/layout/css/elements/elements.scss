@@ -96,7 +96,7 @@
     display: none;
     margin: 0px;
     vertical-align: middle;
-    line-height: 1.3;
+    line-height: var(--bs-body-line-height);
   }
 
   ul {

@@ -1,7 +1,11 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
-        <?php if ($this->headline || $this->subline) : ?>
-        <div class="ce--headline container" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
+        <div class="ce--headline container"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <?php if ($this->topline) : ?>
+                <span class="ce--topline"><?php echo $this->topline; ?></span>
+            <?php endif; ?>
             <?php if ($this->headline) : ?>
             <<?php echo($this->hl); ?>><?php echo($this->headline); ?></<?php echo($this->hl); ?>>
     <?php endif; ?>
@@ -13,8 +17,10 @@
     <div class="ce--landingpage-entry">
 
         <?php if ($this->boxed_image): ?>
-            <div class="boxed--image" >
-                <img class="lazy" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" data-src="<?= \Image::get(\FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
+            <div class="boxed--image">
+                <img class="lazy"
+                     data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                     data-src="<?= \Image::get(\FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
             </div>
         <?php endif; ?>
 
@@ -22,12 +28,13 @@
             <?php foreach ($this->kachel as $i => $b) : ?>
 
             <div class="<?php echo $b->column_width; ?>">
-                <div id="landingpageColumn_<?= $this->id; ?>_<?= $i; ?>" class="landingpage-column"  style="<?php if ($b->column_background_color): ?>
-                        background-color: <?= $b->column_background_color;?>;
+                <div id="landingpageColumn_<?= $this->id; ?>_<?= $i; ?>" class="landingpage-column"
+                     style="<?php if ($b->column_background_color): ?>
+                             background-color: <?= $b->column_background_color;?>;
                         <?php endif; ?>
 
-                <?php if ($b->column_text_color): ?>
-                        color: <?= $b->column_text_color;?>;
+                     <?php if ($b->column_text_color): ?>
+                             color: <?= $b->column_text_color;?>;
                         <?php endif; ?>">
 
                     <style>
@@ -67,10 +74,12 @@
 
                     <div class="lp--inner">
 
-                        <div class="lp--top" style="<?php if ($b->image_as_bg && $this->image_height) : ?>height: <?= $this->image_height;?>px<?php endif; ?>">
+                        <div class="lp--top"
+                             style="<?php if ($b->image_as_bg && $this->image_height) : ?>height: <?= $this->image_height;?>px<?php endif; ?>">
                             <a href="<?= $b->middle_link_url; ?>"></a>
 
-                            <div style=" background: url(<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover;" class="lp--image-holder"></div>
+                            <div style=" background: url(<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover;"
+                                 class="lp--image-holder"></div>
                         </div>
 
                         <div class="lp--middle">
@@ -82,7 +91,9 @@
                                     color: <?= $b->middle_text_color;?>;
                         <?php endif; ?>">
 
-                                <a href="<?= $b->middle_link_url; ?>"  data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" style="color: <?= $b->middle_text_color; ?>;"
+                                <a href="<?= $b->middle_link_url; ?>"
+                                   data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                   style="color: <?= $b->middle_text_color; ?>;"
 
                                 ><?= $b->middle_link_text; ?></a>
 
@@ -96,12 +107,13 @@
                         <?php if ($b->bottom_text_color): ?>
                                 color: <?= $b->bottom_text_color;?>;
                         <?php endif; ?>">
-                            <div class="content--inner"  data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                            <div class="content--inner"
+                                 data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                 <?php if ($b->content_headline) : ?>
                                 <div class="headline">
                                     <<?php echo $b->headline_type; ?> style=" <?php if ($b->bottom_text_color): ?>
-                                color: <?= $b->bottom_text_color;?>;
-                        <?php endif; ?>">
+                                        color: <?= $b->bottom_text_color; ?>;
+                                    <?php endif; ?>">
                                     <?php echo $b->content_headline; ?>
                                 </<?php echo $b->headline_type; ?>>
                             </div>
@@ -116,7 +128,9 @@
                                 <div class="buttons mt-5 <?= $b->button_textalign; ?>">
                                     <?php foreach ($b->buttons as $button) : ?>
                                         <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                           class="mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>" data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
+                                           class="mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                           data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                           href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
                                     <?php endforeach ?>
                                 </div>
                             <?php endif; ?>

@@ -1,9 +1,25 @@
-<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="lazy content--element <?php echo $this->class; ?>"
+
+                                 data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
+
+                                 style="
+
+                                         background-position: center center; background-repeat:no-repeat; background-size: cover;
+
+                                 <?php if ($this->text_color) : ?>
+                                         color: <?= $this->text_color;?>;
+             <?php endif; ?>
+                                         "
+
+>
     <div class="ce--inner">
-        <?php if ($this->headline || $this->subline) : ?>
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <div class="container">
+                <?php if ($this->topline) : ?>
+                    <span class="ce--topline"><?php echo $this->topline; ?></span>
+                <?php endif; ?>
                 <?php if ($this->headline) : ?>
                 <<?php echo($this->hl); ?>>
                 <?php echo($this->headline); ?>
@@ -15,7 +31,8 @@
         </div>
     </div>
     <?php endif; ?>
-    <div class="ce--teaser-stripe <?php echo $this->class; ?>">
+    <div class="ce--teaser-stripe"
+    >
         <div class="ts--inner"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
 
@@ -26,16 +43,18 @@
              <?php if ($this->alternate_background_color) : ?>
                      background-color: <?= $this->alternate_background_color;?>;
              <?php endif; ?>
-             <?php if ($this->text_color) : ?>
-                     color: <?= $this->text_color;?>;
-             <?php endif; ?>
                      ">
-            <div class="container">
+            <?php if (!$this->dynamic_fontsize): ?>
+            <div class="container"><?php endif; ?>
 
-                <div class="<?php if (!$this->nocolumns) : ?>row<?php else: ?>text-center<?php endif; ?>  align-items-center justify-content-center">
+                <div class="<?php if (!$this->nocolumns) : ?>row<?php endif; ?>  align-items-center justify-content-center">
                     <?php if ($this->ce_headline || $this->ce_subline || $this->text) : ?>
                         <div class="col">
-
+                            <?php if ($this->ce_topline) : ?>
+                                <div class="teaser--topline ce--topline" style="<?php if ($this->text_color) : ?>
+                                        color: <?= $this->text_color;?>;
+                        <?php endif; ?>"><?php echo $this->ce_topline; ?></div>
+                            <?php endif; ?>
                             <?php if ($this->ce_headline) : ?>
                                 <div class="teaser--headline">
                             <span style="
@@ -51,7 +70,7 @@
                         <?php endif; ?>"><?php echo $this->ce_subline; ?></div>
                             <?php endif; ?>
                             <?php if ($this->text) : ?>
-                                <div class="ts--text  <?php if ($this->ce_headline || $this->ce_subline) : ?>mt-4<?php endif; ?>">
+                                <div class="ts--text <?php if ($this->dynamic_fontsize): ?>dynamic-fontsize<?php endif; ?> <?php if ($this->ce_headline || $this->ce_subline) : ?>mt-1<?php endif; ?>">
                                     <?php echo $this->text; ?>
                                 </div>
                             <?php endif; ?>
@@ -59,14 +78,14 @@
                     <?php endif; ?>
                     <?php if ($this->link_text) : ?>
                         <div class="col-12 col-md-auto">
-                            <div class="ts--buttons <?php if ($this->nocolumns) : ?>mt-2<?php else: ?>mt-2 mt-md-0 <?php endif; ?>">
+                            <div class="ts--buttons <?php if ($this->nocolumns) : ?>mt-3<?php else: ?>mt-3 mt-md-0 <?php endif; ?>">
                                 <a class="d-inline-block btn <?php if ($this->link_size) : ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"
                                    href="<?php echo $this->link_url; ?><?php if ($this->link_betreff) : ?>?subject=<?php echo $this->link_betreff; ?><?php endif; ?>"><?php echo $this->link_text; ?></a>
                             </div>
                         </div>
                     <?php endif; ?>
                 </div>
-            </div>
+                <?php if (!$this->dynamic_fontsize): ?></div><?php endif; ?>
         </div>
     </div>
 </div></div>

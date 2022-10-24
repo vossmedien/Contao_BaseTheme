@@ -1,9 +1,13 @@
-<div <?php echo $this->cssID; ?>  class="content--element <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner">
 
-        <?php if ($this->headline || $this->subline) : ?>
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="container">
-            <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <div class="ce--headline"
+                 data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <?php if ($this->topline) : ?>
+                    <span class="ce--topline"><?php echo $this->topline; ?></span>
+                <?php endif; ?>
                 <?php if ($this->headline) : ?>
                 <<?php echo($this->hl); ?>>
                 <?php echo($this->headline); ?>
@@ -20,12 +24,15 @@
         <div class="ce--fullwidthgallery">
             <div class="row gx-0">
                 <?php foreach ($this->gallery as $x => $e) : ?>
-                    <div class="<?= $e->column_width; ?>" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                    <div class="<?= $e->column_width; ?>"
+                         data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                         <div class="gallery-column">
 
                             <div class="gallery-column--inner">
 
-                                <div data-bg="<?= Image::get(FilesModel::findByUuid($e->image)->path, null, null, null); ?>" style="background-size: cover; background-repeat: no-repeat;" class="lazy column--image-holder"></div>
+                                <div data-bg="<?= Image::get(FilesModel::findByUuid($e->image)->path, null, null, null); ?>"
+                                     style="background-size: cover; background-repeat: no-repeat;"
+                                     class="lazy column--image-holder"></div>
 
                                 <?php if ($e->link): ?>
                                     <a href="<?= $e->link; ?>"></a>

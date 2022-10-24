@@ -7,9 +7,14 @@ if (!isset($this->size)) {
 
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
-        <?php if ($this->headline || $this->subline) : ?>
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+
+            <?php if ($this->topline) : ?>
+                <span class="ce--topline"><?php echo $this->topline; ?></span>
+            <?php endif; ?>
+
             <?php if ($this->headline) : ?>
             <<?php echo($this->hl); ?>>
             <?php echo($this->headline); ?>
@@ -132,6 +137,12 @@ if (!isset($this->size)) {
                     depth: 100, // Depth offset in px (slides translate in Z axis)
                     modifier: 1, // Effect multipler
                     slideShadows: true, // Enables slides shadows
+                },
+                <?php endif;?>
+
+                <?php if ($this->slide_effect == "fade") : ?>
+                fadeEffect: {
+                    crossFade: true
                 },
                 <?php endif;?>
 

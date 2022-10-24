@@ -2,10 +2,13 @@
         class="content--element <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>">
     <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>">
 
-        <?php if ($this->headline || $this->subline) : ?>
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <div class="container">
+                <?php if ($this->topline) : ?>
+                    <span class="ce--topline"><?php echo $this->topline; ?></span>
+                <?php endif; ?>
                 <?php if ($this->headline) : ?>
                 <<?php echo($this->hl); ?>>
                 <?php echo($this->headline); ?>
@@ -98,13 +101,13 @@
                                             <div class="mainimage--content-inner--wrapper">
                                                 <?php if ($slide->firstline_headline) : ?>
                                                     <h1 style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?>"
-                                                        class="first-line mb-0"><?php echo $slide->text_firstline; ?></h1>
+                                                        class="first-line mb-0 <?php if ($slide->dynamic_fontsize): ?>dynamic-fontsize<?php endif; ?>"><?php echo $slide->text_firstline; ?></h1>
                                                 <?php else : ?>
                                                     <span style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?>"
-                                                          class="first-line mb-0"><?php echo $slide->text_firstline; ?></span>
+                                                          class="first-line mb-0 <?php if ($slide->dynamic_fontsize): ?>dynamic-fontsize<?php endif; ?>"><?php echo $slide->text_firstline; ?></span>
                                                 <?php endif; ?>
                                                 <?php if ($slide->text_secondline) : ?>
-                                                    <span class="second-line"><?php echo $slide->text_secondline; ?></span>
+                                                    <span class="second-line <?php if ($slide->dynamic_fontsize): ?>dynamic-fontsize-sm<?php endif; ?>"><?php echo $slide->text_secondline; ?></span>
                                                 <?php endif; ?>
                                                 <?php if ($slide->text_infotext) : ?>
                                                     <div class="infotext--text">

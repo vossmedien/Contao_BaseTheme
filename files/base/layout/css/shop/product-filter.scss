@@ -202,8 +202,8 @@
             text-transform: uppercase;
             font-weight: 600;
             @include font-size(12px);
-            letter-spacing: 0.2 0.5em;
-            line-height: 1.5;
+            letter-spacing: 0.2em 0.5em;
+            line-height: var(--bs-body-line-height);
             position: relative;
             text-decoration: none;
 

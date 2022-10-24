@@ -10,8 +10,11 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-        'subline' => array(
-            'label' => array('Subline', ''),
+        'topline' => array(
+            'label' => array('Topline', 'Text oberhalb der Überschrift'),
+            'inputType' => 'text',
+        ), 'subline' => array(
+            'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
         ),
         'animation_type' => array(
@@ -831,6 +834,7 @@ return array(
                         'link_text' => array(
                             'label' => array('Link-Beschriftung', ''),
                             'inputType' => 'text',
+                            'eval' => array('allowHtml' => true),
                         ),
                         'link_betreff' => array(
                             'label' => array('Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
@@ -854,7 +858,7 @@ return array(
                                 'btn-secondary' => 'Sekundär - Farbe',
                                 'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
                                 'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
-                                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
                                 'btn-white' => 'Weißer Button mit schwarzer Schrift',
                             ),
                             'eval' => array('tl_class' => 'w50'),

@@ -1,8 +1,11 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container force-container">
-        <?php if ($this->headline || $this->subline) : ?>
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <?php if ($this->topline) : ?>
+                <span class="ce--topline"><?php echo $this->topline; ?></span>
+            <?php endif; ?>
             <?php if ($this->headline) : ?>
             <<?php echo($this->hl); ?>>
             <?php echo($this->headline); ?>
@@ -21,9 +24,9 @@
                  style="<?php if ($b->versatz && (strpos($b->versatz, '-') === false)) : ?>margin-bottom: <?php echo $b->versatz*1.5; ?>px;<?php endif; ?>">
                 <?php if ($b->image): ?>
                     <div class="col-12 col-lg-6">
-                        <img class="lazy box--image"
+                        <img class="box--image"
                              data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                             data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                             src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                     </div>
                 <?php endif; ?>
                 <?php if ($b->headline || $b->content || $b->button_url): ?>

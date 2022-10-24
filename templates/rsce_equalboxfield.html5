@@ -4,10 +4,13 @@ if (!isset($this->size)) {
 }
 ?>
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
-    <div class="ce--inner container">
-        <?php if ($this->headline || $this->subline) : ?>
+    <div class="ce--inner <?php if (!$this->fullwidth): ?>container<?php endif; ?>">
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <?php if ($this->topline) : ?>
+                <span class="ce--topline"><?php echo $this->topline; ?></span>
+            <?php endif; ?>
             <?php if ($this->headline) : ?>
             <<?php echo($this->hl); ?>>
             <?php echo($this->headline); ?>
@@ -19,17 +22,12 @@ if (!isset($this->size)) {
     </div>
     <?php endif; ?>
     <div class="ce--equalboxfield">
-        <div class="row">
+        <div class="row <?php if ($this->no_gutter): ?>g-0<?php endif; ?>">
             <?php foreach ($this->boxes as $box) : ?>
                 <div class="<?php if ($box->column_width) : ?><?php echo $box->column_width; ?><?php else : ?>col-12 col-sm-6 col-md-4 col-lg-3<?php endif; ?>">
                     <div class="box--element"
                          data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
-                        <?php if ($box->link_url): ?>
-                            <a <?php if ($box->new_tab): ?>target="_blank" class="box--link"
-                               <?php endif; ?>href="<?php echo $box->link_url; ?><?php if ($box->link_betreff) : ?>?subject=<?php echo $box->link_betreff; ?><?php endif; ?>">
-                            </a>
-                        <?php endif; ?>
 
                         <div class="row gx-0  <?php if ($box->reverse_columns) : ?>flex-row-reverse<?php endif; ?>">
                             <?php if ($box->image) : ?>
@@ -44,8 +42,20 @@ if (!isset($this->size)) {
                                 </div>
                             <?php endif; ?>
                             <div class="col">
-                                <div class="box--details <?php if ($box->alternate_background) : ?>with-bg<?php endif; ?> <?php if ($box->textalign) : ?><?php echo $box->textalign; ?><?php endif; ?>"
-                                     style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background) : ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
+                                <div class="box--details justify-content-center <?php if ($box->alternate_background) : ?>with-bg<?php endif; ?> <?php if ($box->textalign) : ?><?php echo $box->textalign; ?><?php endif; ?>"
+                                     style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?>
+
+
+                                     <?php if ($box->alternate_backgroundcolor) : ?>
+                                             background-color:<?php echo $box->alternate_backgroundcolor; ?>;
+                                         <?php else: ?>
+                                             <?php if ($box->alternate_background) : ?>background-color:<?php echo $box->alternate_background; ?>;<?php endif; ?>
+                                         <?php endif; ?>
+                                             ">
+
+                                    <?php if ($box->topline) : ?>
+                                        <span class="box--topline ce--topline"><?php echo $box->topline; ?></span>
+                                    <?php endif; ?>
 
                                     <?php if ($box->title) : ?>
                                         <div class="box--headline">
@@ -65,23 +75,39 @@ if (!isset($this->size)) {
                                     <?php endif; ?>
 
                                     <?php if ($box->icon || (!$box->hide_link && $box->link_url)) : ?>
-                                        <div class="box--footer">
+                                        <div class="box--footer <?php if ($box->is_button): ?>mt-0<?php endif; ?>">
                                             <div class="row align-items-end">
                                                 <?php if ($box->icon) : ?>
                                                     <div class="col-auto">
                                                         <img src="<?= Image::get(FilesModel::findByUuid($box->icon)->path, null, null, null); ?>">
                                                     </div>
                                                 <?php endif; ?>
-                                                <?php if (!$box->hide_link && $box->link_url) : ?>
-                                                    <div class="col text-end">
-                                                        <a <?php if ($box->new_tab): ?>target="_blank"
-                                                           <?php endif; ?>href="<?php echo $box->link_url; ?><?php if ($box->link_betreff) : ?>?subject=<?php echo $box->link_betreff; ?><?php endif; ?>">
-                                                            <i class="fas fa-arrow-right"></i>
+                                                <?php if ($box->link_url): ?>
+                                                    <div class="col <?php if (!$box->is_button): ?>text-end<?php endif; ?>">
+                                                        <a <?php if ($box->new_tab): ?>target="_blank"<?php endif; ?>
+                                                           class="<?php if ($box->is_button): ?>btn <?= $box->link_type; ?> <?= $box->link_size; ?> <?php endif; ?>"
+
+                                                           href="<?php echo $box->link_url; ?><?php if ($box->link_betreff) : ?>?subject=<?php echo $box->link_betreff; ?><?php endif; ?>">
+
+                                                            <?php if (!$box->hide_link): ?>
+                                                                <?php if ($box->link_text) : ?>
+                                                                    <?= $box->link_text; ?>
+                                                                <?php else: ?>
+                                                                    <i class="fas fa-arrow-right"></i>
+                                                                <?php endif; ?>
+                                                            <?php endif; ?>
                                                         </a>
                                                     </div>
                                                 <?php endif; ?>
                                             </div>
                                         </div>
+                                    <?php endif; ?>
+
+
+                                    <?php if ($box->link_url): ?>
+                                        <a <?php if ($box->new_tab): ?>target="_blank"<?php endif; ?> class="box--link"
+                                           href="<?php echo $box->link_url; ?><?php if ($box->link_betreff) : ?>?subject=<?php echo $box->link_betreff; ?><?php endif; ?>">
+                                        </a>
                                     <?php endif; ?>
 
                                 </div>

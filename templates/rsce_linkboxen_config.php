@@ -10,10 +10,54 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-        'subline' => array(
-            'label' => array('Subline', ''),
+        'topline' => array(
+            'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
         ),
+        'subline' => array(
+            'label' => array('Subline', 'Text unterhalb der Überschrift'),
+            'inputType' => 'text',
+        ),
+
+
+        'size' => array(
+            'label' => array('Bildbreite und Bildhöhe', ''),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'tl_class' => 'w50',
+                'includeBlankOption' => true,
+            ),
+        ),
+
+
+        'imagearea_height' => array(
+            'label' => array('Höhe des Bildbereichs', 'inkl. Maßeinheit, z. B. 400px'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => ' w50'),
+        ),
+
+
+        'is_slider' => array(
+            'label' => array('', 'Achtung: Einige Einstellungen werden dann obsolet'),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'Boxen werden in einem Slider dargestellt',
+            ),
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
+        'settings_not_slider' => array(
+            'label' => array('Einstellungen, die ignoriert werden, wenn es sich um einen Slider handelt.', ''),
+            'inputType' => 'group',
+            'dependsOn' => array(
+                'field' => 'is_slider',
+            ),
+        ),
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -138,29 +182,9 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
-
-        'size' => array(
-            'label' => array('Bildbreite und Bildhöhe', ''),
-            'inputType' => 'imageSize',
-            'options' => System::getImageSizes(),
-            'reference' => &$GLOBALS['TL_LANG']['MSC'],
-            'eval' => array(
-                'rgxp' => 'digit',
-                'tl_class' => 'w50',
-                'includeBlankOption' => true,
-            ),
-        ),
-
-        'imagearea_height' => array(
-            'label' => array('Höhe des Bildbereichs', 'inkl. Maßeinheit, z. B. 400px'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => ' w50'),
-        ),
-
-
         'row_align' => array(
             'label' => array(
-                'de' => array('Textausrichtung innerhalb der Kachel', ''),
+                'de' => array('Ausrichtung der Boxen', 'Wird ignoriert, wenn die Boxen sich in einem Slider befinden.'),
             ),
             'inputType' => 'select',
             'options' => array(
@@ -172,14 +196,94 @@ return array(
         ),
 
 
-
-         'same_height' => array(
-            'label' => array('Boxen haben gleiche Höhe', 'Funktioniert nur, wenn Spalten "oben" ausgerichtet sind.'),
+        'same_height' => array(
+            'label' => array('Boxen haben gleiche Höhe', 'Funktioniert nur, wenn Spalten "oben" ausgerichtet sind, wird ignoriert, wenn die Boxen sich in einem Slider befinden.'),
             'inputType' => 'checkbox',
             'options' => array(
                 '1' => 'Boxen haben gleiche Höhe',
             ),
             'eval' => array('tl_class' => 'clr'),
+        ),
+
+
+        'settings_slider' => array(
+            'label' => array('Slider-Einstellungen', ''),
+            'inputType' => 'group',
+            'dependsOn' => array(
+                'field' => 'is_slider',
+            ),
+        ),
+
+
+        'space_between' => array(
+            'label' => array('Abstand zwischen den Slides in PX', 'Standard: 30'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'slides_per_view' => array(
+            'label' => array('Wie viele Slides sind sichtbar', 'Beispielsweise 1.5 um rechts und links eine Vorschau des nächsten Slides anzuzeigen'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50', 'mandatory' => true),
+        ),
+
+
+        'slide_effect' => array(
+            'label' => array(
+                'de' => array('Slide-Effekt', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                'slide' => 'Slide (Standard)',
+                'coverflow' => 'Coverflow',
+                'fade' => 'Fade',
+
+            ),
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'transition_time' => array(
+            'label' => array('Animationszeit in ms', 'Standard: 1500'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'show_pagination' => array(
+            'label' => array('Paginierung anzeigen', 'mittig unter dem Slider, in Form von Punkten'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'show_arrows' => array(
+            'label' => array('Pfeile anzeigen', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'centered_slides' => array(
+            'label' => array('Slides mittig ausrichten', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'loop' => array(
+            'label' => array('Automatisch wieder von Anfang starten', '"loop"'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'autoplay' => array(
+            'label' => array('Autoplay aktivieren', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'autoplay_time' => array(
+            'label' => array('Autoplay-Zyklus', 'nach wie viel MS soll zum nächsten Slide gewechselt werden, Standard: 3000'),
+            'inputType' => 'text',
+            'dependsOn' => array(
+                'field' => 'autoplay',
+            ),
         ),
 
 
@@ -333,7 +437,7 @@ return array(
                 ),
                 'column_width' => array(
                     'label' => array(
-                        'de' => array('Spaltenbreite', ''),
+                        'de' => array('Spaltenbreite', 'Wenn die Boxen in einem Slider liegen, wird dieser Wert ignoriert.'),
                     ),
                     'inputType' => 'select',
                     'options' => array(
@@ -435,15 +539,22 @@ return array(
                 ),
 
 
-                'text' => array(
-                    'label' => array('Überschrift', ''),
+                'topline' => array(
+                    'label' => array('Topline', 'Text oberhalb der Überschrift'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
                 'subline' => array(
-                    'label' => array('Subline', ''),
+                    'label' => array('Subline', 'Text unterhalb der Überschrift'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'text' => array(
+                    'label' => array('Überschrift', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'clr'),
                 ),
 
                 'as_box' => array(
@@ -789,7 +900,7 @@ return array(
                         'btn-secondary' => 'Sekundär-Farbe',
                         'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
                         'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
-                        'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                        'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
                         'btn-white' => 'Weißer Button mit schwarzer Schrift',
                     ),
                     'eval' => array('tl_class' => 'w50'),
@@ -1127,6 +1238,7 @@ return array(
                         'link_text' => array(
                             'label' => array('Link-Beschriftung', ''),
                             'inputType' => 'text',
+                            'eval' => array('allowHtml' => true),
                         ),
                         'link_betreff' => array(
                             'label' => array('Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
@@ -1150,7 +1262,7 @@ return array(
                                 'btn-secondary' => 'Sekundär - Farbe',
                                 'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
                                 'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
-                                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
                                 'btn-white' => 'Weißer Button mit schwarzer Schrift',
                             ),
                             'eval' => array('tl_class' => 'w50'),

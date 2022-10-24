@@ -10,8 +10,11 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-        'subline' => array(
-            'label' => array('Subline', ''),
+        'topline' => array(
+            'label' => array('Topline', 'Text oberhalb der Überschrift'),
+            'inputType' => 'text',
+        ), 'subline' => array(
+            'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
         ),
         'animation_type' => array(
@@ -310,10 +313,13 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
                 ),
-                'subline' => array(
-                    'label' => array('Subline', ''),
+                'topline' => array(
+                    'label' => array('Topline', 'Text oberhalb der Überschrift'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'subline' => array(
+                    'label' => array('Subline', 'Text unterhalb der Überschrift'),
+                    'inputType' => 'text',
                 ),
                 'content' => array(
                     'label' => array('Text', ''),
@@ -325,7 +331,7 @@ return array(
                         'de' => array('Button-Beschriftung', ''),
                     ),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
                 'link_url' => array(
                     'label' => array('Verlinkung', ''),
@@ -343,7 +349,7 @@ return array(
                         'btn-secondary' => 'Sekundär - Farbe',
                         'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
                         'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
-                        'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                        'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
                         'btn-white' => 'Weißer Button mit schwarzer Schrift',
                     ),
                     'eval' => array('tl_class' => 'w50'),

@@ -10,8 +10,11 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-        'subline' => array(
-            'label' => array('Subline', ''),
+        'topline' => array(
+            'label' => array('Topline', 'Text oberhalb der Überschrift'),
+            'inputType' => 'text',
+        ), 'subline' => array(
+            'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
         ),
         'animation_type' => array(

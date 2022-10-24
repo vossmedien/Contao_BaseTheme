@@ -10,8 +10,11 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-        'subline' => array(
-            'label' => array('Subline', ''),
+        'topline' => array(
+            'label' => array('Topline', 'Text oberhalb der Überschrift'),
+            'inputType' => 'text',
+        ), 'subline' => array(
+            'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
         ),
         'animation_type' => array(
@@ -327,9 +330,8 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
                 'subline' => array(
-                    'label' => array('Subline', ''),
+                    'label' => array('Subline', 'Text unterhalb der Überschrift'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
                 'beschreibung' => array(
                     'label' => array('Kurzbeschreibung', ''),

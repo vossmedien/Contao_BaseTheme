@@ -1,14 +1,19 @@
-<div <?php echo $this->cssID; ?>  class="content--element <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container force-container">
-        <?php if ($this->headline || $this->subline) : ?>
-        <div class="ce--headline">
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
+        <div class="ce--headline"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?php if ($this->headline) : ?>
-            <<?php echo($this->hl); ?> data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <<?php echo($this->hl); ?>>
+            <?php if ($this->topline) : ?>
+                <span class="ce--topline"><?php echo $this->topline; ?></span>
+            <?php endif; ?>
             <?php echo($this->headline); ?>
         </<?php echo($this->hl); ?>>
     <?php endif; ?>
         <?php if ($this->subline) : ?>
-            <span class=" ce--subline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
+            <span class=" ce--subline"
+                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?php echo $this->subline; ?></span>
         <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -18,7 +23,8 @@
                 <div class="year--wrapper row">
                     <div class="col-12 col-md-6">
                         <div class="year--content">
-                            <div class="right-col--text" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                            <div class="right-col--text"
+                                 data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                 <span class="h2"><?php echo $row->year; ?></span>
                                 <div class="year--description">
                                     <?php echo $row->description; ?>

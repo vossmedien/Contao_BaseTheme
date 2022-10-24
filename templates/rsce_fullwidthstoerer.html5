@@ -1,9 +1,13 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner">
-        <?php if ($this->headline || $this->subline) : ?>
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+
             <div class="container">
+                <?php if ($this->topline) : ?>
+                    <span class="ce--topline"><?php echo $this->topline; ?></span>
+                <?php endif; ?>
                 <?php if ($this->headline) : ?>
                 <<?php echo($this->hl); ?>>
                 <?php echo($this->headline); ?>
@@ -32,9 +36,9 @@
                             <div class="row">
                                 <div class="col">
                                     <?php if ($this->ce_headline) : ?>
-                                    <div class="stoerer--headline">
+                                    <div class="stoerer--headline" data-aos="animate__fadeIn">
                                         <?php if ($this->ce_headline) : ?>
-                                        <<?php echo($this->headline_type); ?> class="mb-0" data-aos="animate__fadeInUp">
+                                        <<?php echo($this->headline_type); ?> class="mb-0" >
                                         <?php echo($this->ce_headline); ?>
                                     </<?php echo($this->headine_type); ?>>
                                 <?php endif; ?>
@@ -45,14 +49,14 @@
                                          data-aos="animate__fadeInUp"><?php echo $this->ce_subline; ?></div>
                                 <?php endif; ?>
                                 <?php if ($this->content) : ?>
-                                    <div class="stoerer--content mt-4">
+                                    <div class="stoerer--content mt-4" data-aos="animate__fadeIn">
                                         <?php echo $this->content; ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
                             <?php if ($this->button_url) : ?>
                                 <div class="col-auto text-end">
-                                    <div class="stoerer--button">
+                                    <div class="stoerer--button" data-aos="animate__fadeIn">
                                         <a class="btn <?= $this->button_type; ?> <?= $this->button_size; ?>"
                                            href="<?php echo $this->button_url; ?>"><?php echo $this->button_text; ?></a>
                                     </div>

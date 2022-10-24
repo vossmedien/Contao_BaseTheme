@@ -65,8 +65,11 @@ return array(
                 'h5' => 'H5',
             ),
         ),
-        'subline' => array(
-            'label' => array('Subline', ''),
+        'topline' => array(
+            'label' => array('Topline', 'Text oberhalb der Überschrift'),
+            'inputType' => 'text',
+        ), 'subline' => array(
+            'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
         ),
         'input_type' => array(

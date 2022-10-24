@@ -1,10 +1,13 @@
 <div <?php echo $this->cssID; ?>
         class="content--element <?php echo $this->class; ?> <?php if ($this->image) : ?>with-image<?php endif; ?>">
     <div class="ce--inner">
-        <?php if ($this->headline || $this->subline) : ?>
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="container ">
             <div class="ce--headline"
                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <?php if ($this->topline) : ?>
+                    <span class="ce--topline"><?php echo $this->topline; ?></span>
+                <?php endif; ?>
                 <?php if ($this->headline) : ?>
                 <<?php echo($this->hl); ?>>
                 <?php echo($this->headline); ?>
@@ -30,6 +33,12 @@
             <?php if ($this->ce_headline || $this->subline) : ?>
             <div class="ce--headline <?php if ($this->textalign) : ?><?php echo $this->textalign; ?><?php endif; ?>"
                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
+
+                <?php if ($this->topline) : ?>
+                    <span class="ce--topline"><?php echo $this->topline; ?></span>
+                <?php endif; ?>
+
+
                 <?php if ($this->ce_headline) : ?>
                 <?php if (!$this->onlystyle) : ?>
                 <<?php echo $this->headline_type; ?> class="mt-0">

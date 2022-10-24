@@ -129,6 +129,7 @@
         .mainimage--content-inner {
           display: inline-block;
           position: absolute;
+          width: 100%;
 
           &:not([class*="pos-"]) {
             transform: translate(0%, -50%);
@@ -152,11 +153,14 @@
             line-height: 1;
 
             &.first-line {
-              @include font-size(26px);
               font-weight: $font-weight-bold;
 
-              @include media-breakpoint-up(md) {
-                @include font-size(36px);
+
+              &:not([class*="dynamic-fontsize"]) {
+                @include font-size(26px);
+                @include media-breakpoint-up(md) {
+                  @include font-size(36px);
+                }
               }
             }
 
@@ -165,15 +169,23 @@
               margin-top: 8px;
               font-weight: $font-weight-semibold;
 
-              @include media-breakpoint-up(md) {
-                @include font-size(22px);
+              &:not([class*="dynamic-fontsize"]) {
+                @include font-size(18px);
+                @include media-breakpoint-up(md) {
+                  @include font-size(22px);
+                }
               }
+
+
             }
           }
 
           h1 {
-            @include font-size(36px);
             font-weight: $font-weight-bold;
+
+            &:not([class*="dynamic-fontsize"]) {
+              @include font-size(36px);
+            }
           }
 
           .infotext--text {
@@ -197,7 +209,7 @@
             max-width: 75% !important;
           }
 
-          span {
+          span:not([class*="dynamic-fontsize"]) {
             &:first-of-type {
               @include font-size(70px);
             }
@@ -207,8 +219,11 @@
             }
           }
 
-          h1 {
+          h1:not([class*="dynamic-fontsize"]) {
             @include font-size(70px);
+          }
+
+          h1 {
             margin-bottom: 0px;
           }
 

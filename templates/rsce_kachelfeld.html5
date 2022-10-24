@@ -7,9 +7,14 @@ if (!isset($this->size)) {
 <div <?php echo $this->cssID; ?>
         class="content--element <?php echo $this->class; ?> <?php if ($this->columns_evenly): ?>columns-evenly<?php endif; ?>">
     <div class="ce--inner container">
-        <?php if ($this->headline || $this->subline) : ?>
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+
+            <?php if ($this->topline) : ?>
+                <span class="ce--topline"><?php echo $this->topline; ?></span>
+            <?php endif; ?>
+
             <?php if ($this->headline) : ?>
             <<?php echo($this->hl); ?>><?php echo($this->headline); ?></<?php echo($this->hl); ?>>
     <?php endif; ?>
@@ -82,7 +87,8 @@ if (!isset($this->size)) {
                                     <img class="lazy <?php if (!$b->headline) : ?>pb-3<?php endif; ?>"
                                          data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                 <?php else: ?>
-                                    <div data-bg="<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>" style="background-position: center center; background-repeat: no-repeat; background-size: cover;"
+                                    <div data-bg="<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
+                                         style="background-position: center center; background-repeat: no-repeat; background-size: cover;"
                                          class="kb--image-holder lazy"></div>
                                 <?php endif; ?><?php endif; ?>
 

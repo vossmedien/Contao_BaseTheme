@@ -18,6 +18,10 @@ html body .btn {
     padding-bottom: rfs-value(11px);
   }
 
+  > i {
+    margin-right: .25rem;
+  }
+
   &.btn-sm {
     @include font-size(14px);
     padding-bottom: rfs-value(6px);
@@ -84,7 +88,7 @@ html body .btn {
   }
 
   &.btn-outline-black {
-    --bs-btn-hover-border-color: var(--bs-black);;
+    --bs-btn-hover-border-color: var(--bs-black);
     border-color: var(--bs-black);;
     color: var(--bs-black);;
     background-color: transparent;
@@ -92,6 +96,18 @@ html body .btn {
     &:hover {
       background-color: var(--bs-black);;
       color: var(--bs-white);
+    }
+  }
+
+  &.btn-outline-white {
+    --bs-btn-hover-border-color: var(--bs-white);
+    border-color: var(--bs-white);;
+    color: var(--bs-white);;
+    background-color: transparent;
+
+    &:hover {
+      background-color: var(--bs-white);;
+      color: var(--bs-primary);
     }
   }
 

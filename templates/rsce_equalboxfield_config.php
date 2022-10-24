@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Boxen-Grid, 2-Spaltig mit Icons, Bild, Text und Verlinkung', ''),
+    'label' => array('Custom | Boxen-Grid, 2-Spaltig (Bild+Text) mit Icons, Bild, Text und Verlinkung', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -10,8 +10,11 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-        'subline' => array(
-            'label' => array('Subline', ''),
+        'topline' => array(
+            'label' => array('Topline', 'Text oberhalb der Überschrift'),
+            'inputType' => 'text',
+        ), 'subline' => array(
+            'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
         ),
         'animation_type' => array(
@@ -137,6 +140,21 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
+
+
+        'fullwidth' => array(
+            'label' => array('Element nimmt volle Bildschirmbreite ein', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'no_gutter' => array(
+            'label' => array('Kein Spaltenabstand', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
         'boxes' => array(
             'label' => array('Boxen', ''),
             'elementLabel' => '%s. Box',
@@ -289,31 +307,26 @@ return array(
                 ),
 
 
-                'reverse_columns' => array(
-                    'label' => array('Spalten tauschen', ''),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr'),
-                ),
-
-
                 'alternate_background' => array(
                     'label' => array(
-                        'de' => array('Spaltenbreite', ''),
+                        'de' => array('Hintergrundfarbe (Auswahl)', ''),
                     ),
                     'inputType' => 'select',
                     'options' => array(
                         'var(--bs-primary)' => 'Hauptfarbe',
                         'var(--bs-secondary)' => 'Sekundärfarbe',
                         'var(--bs-blue)' => 'Blau',
-                        'var(--bs-blue-light)' => 'Hellblau',
-                        'var(--bs-blue-lighter)' => 'Helleres Blau',
                         'var(--bs-pink)' => 'Pink',
                         'var(--bs-brown)' => 'Braun',
-                        'var(--bs-brown-light)' => 'Hellbraun',
-                        'var(--bs-brown-dark)' => 'Dunkelbraun',
                         'var(--bs-yellow)' => 'Gelb',
                         'var(--bs-green)' => 'Grün',
                     ),
+                ),
+
+                'alternate_backgroundcolor' => array(
+                    'label' => array('Alternative Hintergrundfarbe', 'In HEX oder rgb(a) angeben, überschreibt Farbauswahl'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
                 'alternate_textcolor' => array(
@@ -328,6 +341,12 @@ return array(
                     'inputType' => 'group',
                 ),
 
+
+                'reverse_columns' => array(
+                    'label' => array('Spalten tauschen', 'Inhalts (links) und Bildspalte (rechts) tauschen'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
 
                 'size' => array(
                     'label' => array('Bildbreite und Bildhöhe', ''),
@@ -390,10 +409,13 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
-                'subline' => array(
-                    'label' => array('Subline', ''),
+                'topline' => array(
+                    'label' => array('Topline', 'Text oberhalb der Überschrift'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
+                ),
+                'subline' => array(
+                    'label' => array('Subline', 'Text unterhalb der Überschrift'),
+                    'inputType' => 'text',
                 ),
 
                 'text' => array(
@@ -419,6 +441,78 @@ return array(
                     'inputType' => 'group',
                 ),
 
+
+                'new_tab' => array(
+                    'label' => array('Link in neuen Tab öffnen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+                'hide_link' => array(
+                    'label' => array('Link-Pfeil bzw. Button verstecken', 'Box ist klickbar'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+                'is_button' => array(
+                    'label' => array(
+                        'de' => array('Link ist Button', 'rein optisch'),
+                    ),
+                    'inputType' => 'checkbox',
+                    'eval' => array('allowHtml' => true),
+                ),
+
+                'link_text' => array(
+                    'label' => array(
+                        'de' => array('Beschriftung', 'Button befindet sich rechts unter dem Text'),
+                    ),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
+                    'dependsOn' => array(
+                        'field' => 'is_button',
+                    ),
+                ),
+
+
+                'link_type' => array(
+                    'label' => array(
+                        'de' => array('Optik des Buttons', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'btn-primary' => 'Hauptfarbe',
+                        'btn-outline-primary' => 'Hauptfarbe (Outline)',
+                        'btn-secondary' => 'Sekundär-Farbe',
+                        'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
+                        'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                        'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
+                        'btn-white' => 'Weißer Button mit schwarzer Schrift',
+                    ),
+                    'eval' => array('tl_class' => 'w50'),
+
+                    'dependsOn' => array(
+                        'field' => 'is_button',
+                    ),
+                ),
+
+                'link_size' => array(
+                    'label' => array(
+                        'de' => array('Größe des Buttons', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        '' => 'Standard',
+                        'btn-sm' => 'Klein',
+                        'btn-lg' => 'Groß',
+                    ),
+                    'eval' => array('tl_class' => 'w50'),
+
+                    'dependsOn' => array(
+                        'field' => 'is_button',
+                    ),
+                ),
+
+
                 'link_url' => array(
                     'label' => array('Verlinkung', ''),
                     'inputType' => 'url',
@@ -431,17 +525,6 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
-                'new_tab' => array(
-                    'label' => array('Link in neuen Tab öffnen', ''),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr'),
-                ),
-
-                'hide_link' => array(
-                    'label' => array('Link-Pfeil verstecken', ''),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr'),
-                ),
             ),
         ),
     ),

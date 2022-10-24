@@ -10,8 +10,11 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-        'subline' => array(
-            'label' => array('Subline', ''),
+        'topline' => array(
+            'label' => array('Topline', 'Text oberhalb der Überschrift'),
+            'inputType' => 'text',
+        ), 'subline' => array(
+            'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
         ),
         'animation_type' => array(
@@ -397,8 +400,12 @@ return array(
                             'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                             'inputType' => 'checkbox',
                         ),
+                        'topline' => array(
+                            'label' => array('Topline', 'Text oberhalb der Überschrift'),
+                            'inputType' => 'text',
+                        ),
                         'subline' => array(
-                            'label' => array('Subline', ''),
+                            'label' => array('Subline', 'Text unterhalb der Überschrift'),
                             'inputType' => 'text',
                         ),
                         'content' => array(

@@ -1,8 +1,12 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner">
-        <?php if ($this->headline || $this->subline) : ?>
-        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
+        <div class="ce--headline"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <div class="container force-container">
+                <?php if ($this->topline) : ?>
+                    <span class="ce--topline"><?php echo $this->topline; ?></span>
+                <?php endif; ?>
                 <?php if ($this->headline) : ?>
                 <<?php echo($this->hl); ?>>
                 <?php echo($this->headline); ?>
@@ -14,16 +18,22 @@
         </div>
     </div>
     <?php endif; ?>
-    <div class="ce--bubble-list" <?php if ($this->backgroundcolor) : ?>style="background-color: <?php echo $this->backgroundcolor; ?>" <?php endif; ?>>
+    <div class="ce--bubble-list"
+         <?php if ($this->backgroundcolor) : ?>style="background-color: <?php echo $this->backgroundcolor; ?>" <?php endif; ?>>
         <div class="bl--inner container force-container">
             <div class="bl--list">
                 <?php foreach ($this->galery as $item) : ?>
-                    <div data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="bl--item <?php echo strtolower(str_replace(' ', '_', $item->text)); ?>">
+                    <div data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                         class="bl--item <?php echo strtolower(str_replace(' ', '_', $item->text)); ?>">
                         <a href="<?php echo $item->url; ?>"></a>
-                        <div class="bl-i--image" data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                            <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($item->img)->path, null, null, null); ?>">
+                        <div class="bl-i--image"
+                             data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                            <img class="lazy"
+                                 data-src="<?= Image::get(FilesModel::findByUuid($item->img)->path, null, null, null); ?>">
                         </div>
-                        <div class="bl-i--text" data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" <?php if ($this->linkcolor) : ?>style="color: <?php echo $this->linkcolor; ?>" <?php endif; ?>>
+                        <div class="bl-i--text"
+                             data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                             <?php if ($this->linkcolor) : ?>style="color: <?php echo $this->linkcolor; ?>" <?php endif; ?>>
                             <?php echo $item->text; ?>
                         </div>
                     </div>

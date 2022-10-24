@@ -1,8 +1,11 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner">
-        <?php if ($this->headline || $this->subline) : ?>
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline container"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <?php if ($this->topline) : ?>
+                <span class="ce--topline"><?php echo $this->topline; ?></span>
+            <?php endif; ?>
             <?php if ($this->headline) : ?>
             <<?php echo($this->hl); ?> >
             <?php echo($this->headline); ?>
@@ -54,6 +57,12 @@
                      <?php if ($b->versatz) : ?>style="position: relative; top: <?php echo $b->versatz; ?>px" <?php endif; ?>>
                     <?php if ($b->headline) : ?>
                     <div class="headline--wrapper ">
+
+                        <?php if ($b->topline) : ?>
+                            <span class="ce--topline"><?php echo $b->topline; ?></span>
+                        <?php endif; ?>
+
+
                         <?php if (!$b->onlystyle) : ?>
                         <<?php echo $b->headline_type; ?>><?php echo $b->headline; ?></<?php echo $b->headline_type; ?>>
                 <?php if ($b->subline) : ?>
