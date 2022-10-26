@@ -1,0 +1,200 @@
+<?php header('Access-Control-Allow-Origin: *'); ?>
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_contentslider.min.css|static';
+?>
+
+
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner ">
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
+        <div class="ce--headline"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <div class="container">
+                <?php if ($this->topline) : ?>
+                    <span class="ce--topline"><?php echo $this->topline; ?></span>
+                <?php endif; ?>
+                <?php if ($this->headline) : ?>
+                <<?php echo($this->hl); ?>>
+                <?php echo($this->headline); ?>
+            </<?php echo($this->hl); ?>>
+            <?php endif; ?>
+            <?php if ($this->subline) : ?>
+                <span class="ce--subline"><?php echo $this->subline; ?></span>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <div class="ce--contentslider"
+         data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+
+        <div class="container">
+
+
+            <?php if ($this->nav_position == 1): ?>
+                <div class="mt-3 mb-3 content-slider--nav d-none d-md-block content-slider--nav_<?= $this->id; ?>">
+                    <ul>
+                        <?php foreach ($this->elements as $i => $nav) : ?>
+                            <li <?php if ($i == 0): ?>class="active"<?php endif; ?>>
+                            <span data-slide="<?= $i; ?>">
+                            <?= $nav->slide_nav_text; ?>
+                            </span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
+
+            <div class="content-slider content-slider_<?= $this->id; ?> swiper custom">
+                <!-- Additional required wrapper -->
+                <div class="swiper-wrapper">
+                    <!-- Slides -->
+                    <?php foreach ($this->elements as $slide) : ?>
+
+                    <?php
+                    if (!isset($slide->size)) {
+                        $slide->{"size"} = "";
+                    }
+                    ?>
+
+
+                    <div class="swiper-slide">
+
+                        <div class="row align-items-center gx-md-4 <?php if ($slide->row_reverse) : ?>flex-row-reverse <?php endif; ?>">
+                            <div class="<?= $slide->column_width; ?>">
+                                <img class="swiper-lazy slide-image"
+                                     data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>">
+                            </div>
+                            <div class="col-12 col-md">
+                                <?php if ($slide->text) : ?>
+                                <div class="slide-caption">
+                                    <?php if (!$slide->onlystyle) : ?>
+                                    <<?php echo $slide->headline_type; ?>>
+                                    <?php echo $slide->text; ?>
+                                </<?php echo $slide->headline_type; ?>>
+                            <?php else : ?>
+                                <span class="<?php echo $slide->headline_type; ?>">
+                                            <?php echo $slide->text; ?>
+                                        </span>
+                            <?php endif; ?>
+                            </div>
+                            <?php endif; ?>
+
+
+                            <?php if ($slide->longtext) : ?>
+                                <div class="slide-description"><?php echo $slide->longtext; ?></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach ?>
+            </div>
+
+            <?php if ($this->nav_position == 2): ?>
+                <div class="mt-3 content-slider--nav d-none d-md-block content-slider--nav_<?= $this->id; ?>">
+                    <ul>
+                        <?php foreach ($this->elements as $i => $nav) : ?>
+                            <li>
+                            <span data-slide="<?= $i; ?>">
+                            <?= $nav->slide_nav_text; ?>
+                            </span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
+
+        </div>
+
+    </div>
+    <?php if (count($this->elements) > 1) : ?>
+        <?php if ($this->show_pagination): ?>
+            <div class="content-slider_<?= $this->id; ?> swiper-pagination"></div>
+        <?php endif; ?>
+        <?php if ($this->show_arrows): ?>
+            <div class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
+            <div class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
+        <?php endif; ?>
+    <?php endif; ?>
+</div>
+</div>
+</div>
+
+<script>
+    window.addEventListener('load', function () {
+        if ($('.swiper.content-slider_<?= $this->id;?>').length) {
+            const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
+                direction: 'horizontal',
+
+                loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
+
+                preloadImages: false,
+                lazy: {
+                    loadPrevNext: true,
+                },
+
+
+                centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
+
+
+                speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
+                effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
+                'slide'<?php endif;?>,
+
+                <?php if ($this->autoplay) : ?>
+                autoplay: {
+                    delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                },
+                <?php endif; ?>
+
+
+                <?php if ($this->slide_effect == "coverflow") : ?>
+                coverflowEffect: {
+                    rotate: 50, // Slide rotate in degrees
+                    stretch: 0, // Stretch space between slides (in px)
+                    depth: 100, // Depth offset in px (slides translate in Z axis)
+                    modifier: 1, // Effect multipler
+                    slideShadows: true, // Enables slides shadows
+                },
+                <?php endif;?>
+
+                <?php if ($this->slide_effect == "fade") : ?>
+                fadeEffect: {
+                    crossFade: true
+                },
+                <?php endif;?>
+
+                <?php if (count($this->elements) > 1 ) : ?>
+                navigation: {
+                    nextEl: '.content-slider_<?= $this->id;?>.swiper-button-next',
+                    prevEl: '.content-slider_<?= $this->id;?>.swiper-button-prev',
+                },
+
+                pagination: {
+                    el: '.content-slider_<?php echo $this->id; ?>.swiper-pagination',
+                    clickable: true,
+                },
+                <?php endif; ?>
+
+            });
+
+
+            $('.content-slider--nav_<?= $this->id; ?> span').click(swiper_<?php echo $this->id; ?>, function () {
+                swiper_<?php echo $this->id; ?>.slideTo($(this).data("slide") + 1);
+
+                $('.content-slider--nav_<?= $this->id; ?> li.active').removeClass("active");
+                $(this).parent("li").addClass("active");
+
+            })
+
+
+            swiper_<?php echo $this->id; ?>.on('slideChange', function () {
+                $('.content-slider--nav_<?= $this->id; ?> li.active').removeClass("active");
+                $('.content-slider--nav_<?= $this->id; ?> span[data-slide="' + (swiper_<?php echo $this->id; ?>.realIndex) + '"]').parent("li").addClass("active");
+            });
+
+        }
+    }, {passive: true})
+</script>

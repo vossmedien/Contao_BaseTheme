@@ -1,4 +1,8 @@
 <?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_kachelfeld.min.css|static';
+?>
+
+<?php
 if (!isset($this->size)) {
     $this->{"size"} = "";
 }

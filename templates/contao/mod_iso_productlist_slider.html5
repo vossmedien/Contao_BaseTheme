@@ -33,8 +33,8 @@
                 <?php endforeach; ?>
             </div>
         </div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
+        <div class="product-slider_<?= $this->id; ?> swiper-button-prev"></div>
+        <div class="product-slider_<?= $this->id; ?> swiper-button-next"></div>
     </div>
 
 <?php endif; ?>
@@ -45,8 +45,8 @@
 
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.product-slider_<?= $this->id;?>', {
                     navigation: {
-                        nextEl: '.swiper.product-slider_<?= $this->id;?> .swiper-button-next',
-                        prevEl: '.swiper.product-slider_<?= $this->id;?> .swiper-button-prev',
+                        nextEl: '.product-slider_<?= $this->id;?>.swiper-button-next',
+                        prevEl: '.product-slider_<?= $this->id;?>.swiper-button-prev',
                     },
 
                     direction: 'horizontal',

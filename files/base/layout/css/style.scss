@@ -2,10 +2,11 @@
 @import "variables-layout";
 @import "_theme/variables-layout";
 
-@import "../_fonts/fonts";
+@import "_theme/fonts";
 @import "../_vendor/vendor";
 
-@import "variables";
+@import "root-variables";
+@import "scss-variables";
 @import "_theme/variables";
 
 @import "scaffolding/helper-classes";
@@ -64,42 +65,6 @@ html {
     @import "elements/mmenu";
     @import "elements/offcanvas";
     @import "elements/search";
-
-    //Custom Elements
-    @import "elements/custom-elements/ce_rsce_2colscontent";
-    @import "elements/custom-elements/ce_rsce_actionmodal";
-    @import "elements/custom-elements/ce_rsce_advantages";
-    @import "elements/custom-elements/ce_rsce_boxenfeld";
-    @import "elements/custom-elements/ce_rsce_boxtitlesubtitle";
-    @import "elements/custom-elements/ce_rsce_bubblelist";
-    @import "elements/custom-elements/ce_rsce_coloredrows";
-    @import "elements/custom-elements/ce_rsce_equalboxesrows";
-    @import "elements/custom-elements/ce_rsce_extendedimagecolumns";
-    @import "elements/custom-elements/ce_rsce_fullwidthstoerer";
-    @import "elements/custom-elements/ce_rsce_headimagelogo";
-    @import "elements/custom-elements/ce_rsce_headline";
-    @import "elements/custom-elements/ce_rsce_imageandtext";
-    @import "elements/custom-elements/ce_rsce_kachelfeld";
-    @import "elements/custom-elements/ce_rsce_linkboxen";
-    @import "elements/custom-elements/ce_rsce_mitarbeiter";
-    @import "elements/custom-elements/ce_rsce_numberboxes";
-    @import "elements/custom-elements/ce_rsce_slider";
-    @import "elements/custom-elements/ce_rsce_specialimagetext";
-    @import "elements/custom-elements/ce_rsce_teaserstripe";
-    @import "elements/custom-elements/ce_rsce_timeline";
-    @import "elements/custom-elements/ce_rsce_twocolimagewall";
-    @import "elements/custom-elements/ce_rsce_videoslider";
-    @import "elements/custom-elements/ce_rsce_switchingcards";
-    @import "elements/custom-elements/ce_rsce_sitemap";
-    @import "elements/custom-elements/ce_rsce_colorpalettes";
-    @import "elements/custom-elements/ce_rsce_fullwidthgallery";
-    @import "elements/custom-elements/ce_rsce_onepagenavi";
-    @import "elements/custom-elements/ce_rsce_landingpageentry";
-    @import "elements/custom-elements/ce_rsce_stoerer";
-    @import "elements/custom-elements/ce_rsce_row1start";
-    @import "elements/custom-elements/ce_rsce_equalboxfield";
-    @import "elements/custom-elements/ce_rsce_row3sepstart";
-    @import "elements/custom-elements/ce_rsce_quotebox";
 
     @import "_theme/includes";
   }

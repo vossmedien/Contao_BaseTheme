@@ -1,112 +1,123 @@
-.ce_rsce_timeline {
-  .ce--timeline {
-    position: relative;
-    margin-top: rfs-fluid-value(4rem);
+@import "../../variables-layout";
 
-    @include media-breakpoint-up(md) {
-      &:before {
-        content: "";
-        width: 1px;
-        height: 100%;
-        left: 50%;
-        top: 0;
-        position: absolute;
-        background-color: var(--bs-gray-500);
-      }
-    }
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
-    .year--wrapper {
-      > div {
-        position: relative;
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
 
-        @include media-breakpoint-up(md) {
-          &:after {
-            content: "";
-            height: 1px;
-            width: 50px;
-            position: absolute;
-            top: 35px;
-            display: block;
-            background-color: var(--bs-gray-500);
-          }
+html body {
+  .ce_rsce_timeline {
+    .ce--timeline {
+      position: relative;
+      margin-top: rfs-fluid-value(4rem);
 
-          &:before {
-            content: "";
-            display: block;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: var(--bs-primary);
-            border: 3px solid var(--bs-white);
-            position: absolute;
-            top: 25px;
-            z-index: 3;
-          }
+      @include media-breakpoint-up(md) {
+        &:before {
+          content: "";
+          width: 1px;
+          height: 100%;
+          left: 50%;
+          top: 0;
+          position: absolute;
+          background-color: var(--bs-gray-500);
         }
       }
 
-      &:first-child {
-        .year--content {
-          //padding-top: 0px;
-        }
-      }
-
-      &:last-child {
-        .year--content {
-          padding-bottom: 0px;
-        }
-      }
-
-      &:nth-child(even) {
-        text-align: right;
-
+      .year--wrapper {
         > div {
-          &:after {
-            right: 0;
-          }
+          position: relative;
 
-          &:before {
-            right: -10px;
-          }
+          @include media-breakpoint-up(md) {
+            &:after {
+              content: "";
+              height: 1px;
+              width: 50px;
+              position: absolute;
+              top: 35px;
+              display: block;
+              background-color: var(--bs-gray-500);
+            }
 
-          .year--content {
-            margin: 0 0 0 auto;
-
-            @include media-breakpoint-up(md) {
-              padding-right: 50px;
+            &:before {
+              content: "";
+              display: block;
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              background-color: var(--bs-primary);
+              border: 3px solid var(--bs-white);
+              position: absolute;
+              top: 25px;
+              z-index: 3;
             }
           }
         }
-      }
 
-      &:nth-child(odd) {
-        flex-direction: row-reverse;
-
-        > div {
-          &:after {
-            left: 0;
-          }
-
-          &:before {
-            left: -10px;
-          }
-
+        &:first-child {
           .year--content {
-            @include media-breakpoint-up(md) {
-              padding-left: 50px;
+            //padding-top: 0px;
+          }
+        }
+
+        &:last-child {
+          .year--content {
+            padding-bottom: 0px;
+          }
+        }
+
+        &:nth-child(even) {
+          text-align: right;
+
+          > div {
+            &:after {
+              right: 0;
+            }
+
+            &:before {
+              right: -10px;
+            }
+
+            .year--content {
+              margin: 0 0 0 auto;
+
+              @include media-breakpoint-up(md) {
+                padding-right: 50px;
+              }
             }
           }
         }
-      }
 
-      .year--content {
-        position: relative;
-        z-index: 3;
-        padding-top: 20px;
-        padding-bottom: 20px;
+        &:nth-child(odd) {
+          flex-direction: row-reverse;
 
-        @include media-breakpoint-up(md) {
-          max-width: 300px;
+          > div {
+            &:after {
+              left: 0;
+            }
+
+            &:before {
+              left: -10px;
+            }
+
+            .year--content {
+              @include media-breakpoint-up(md) {
+                padding-left: 50px;
+              }
+            }
+          }
+        }
+
+        .year--content {
+          position: relative;
+          z-index: 3;
+          padding-top: 20px;
+          padding-bottom: 20px;
+
+          @include media-breakpoint-up(md) {
+            max-width: 300px;
+          }
         }
       }
     }

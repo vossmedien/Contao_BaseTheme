@@ -1,3 +1,8 @@
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_2colscontent.min.css|static';
+?>
+
+
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
@@ -103,7 +108,7 @@
                 <div class="col--image"
                      data-aos="<?php if ($column->animation_type != "") : ?><?php echo $column->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
                     <img class="lazy"
-                         data-src="<?= \Image::get(\FilesModel::findByUuid($column->image)->path, null, null, null); ?>">
+                         data-src="<?= Image::get(FilesModel::findByUuid($column->image)->path, null, null, null); ?>">
                 </div>
             <?php endif; ?>
             <?php if ($column->text) : ?>
@@ -124,8 +129,8 @@
     </div>
 </div>
 <?php endforeach ?>
-</div>
-</div>
+    </div>
+    </div>
 <?php endforeach ?>
 <?php endif; ?>
 </div>

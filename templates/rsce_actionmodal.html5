@@ -1,3 +1,8 @@
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_actionmodal.min.css|static';
+?>
+
+
 <div class="modal <?php echo $this->class; ?>" id="actionModal_<?php echo $this->id; ?>"
      tabindex="-1" aria-hidden="true">
     <div class="modal-dialog <?php echo $this->modal_size; ?> modal-dialog-centered"

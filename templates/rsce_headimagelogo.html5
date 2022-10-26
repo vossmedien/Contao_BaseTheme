@@ -1,3 +1,7 @@
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_headimagelogo.min.css|static';
+?>
+
 <div <?php echo $this->cssID; ?>
         class="content--element <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>">
     <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>">
@@ -73,18 +77,21 @@
                             <?php endif; ?>
 
                             <?php if ($ext == "mp4") : ?>
-                                <video
-                                    <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class=" d-none d-md-block" <?php endif; ?>
-                                    autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
+                                <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
+                                       <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class=" d-none d-md-block" <?php endif; ?>
+                                       autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
                                     <source type="video/mp4" src="{{file::<?= $slide->image ?>}}">
                                 </video>
                             <?php endif; ?>
                             <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>
-                                <video class="d-md-none" src="{{file::<?= $slide->mobile_image ?>}}" autoplay muted loop
+                                <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;"
+                                       <?php endif; ?>class="d-md-none" src="{{file::<?= $slide->mobile_image ?>}}"
+                                       autoplay muted loop
                                        playsinline>
                                     <source type="video/mp4" src="{{file::<?= $slide->mobile_image ?>}}">
                                 </video>
                             <?php endif; ?>
+
 
                             <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1) : ?>
                                 <div data-aos="<?php if ($slide->animation_type) : ?><?php echo $slide->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"

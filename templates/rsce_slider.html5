@@ -87,16 +87,17 @@ if (!isset($this->size)) {
 
                 <?php endif; ?>
             </div>
-            <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
-                <?php if ($this->show_pagination): ?>
-                    <div class="swiper-pagination"></div>
-                <?php endif; ?>
-                <?php if ($this->show_arrows): ?>
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-button-next"></div>
-                <?php endif; ?>
-            <?php endif; ?>
+
         </div>
+        <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
+            <?php if ($this->show_pagination): ?>
+                <div class="content-slider_<?= $this->id; ?> swiper-pagination"></div>
+            <?php endif; ?>
+            <?php if ($this->show_arrows): ?>
+                <div class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                <div class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
+            <?php endif; ?>
+        <?php endif; ?>
     </div>
 </div></div>
 <script>
@@ -148,12 +149,12 @@ if (!isset($this->size)) {
 
                 <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
                 navigation: {
-                    nextEl: '.swiper.content-slider_<?= $this->id;?> .swiper-button-next',
-                    prevEl: '.swiper.content-slider_<?= $this->id;?> .swiper-button-prev',
+                    nextEl: '.content-slider_<?= $this->id;?>.swiper-button-next',
+                    prevEl: '.content-slider_<?= $this->id;?>.swiper-button-prev',
                 },
 
                 pagination: {
-                    el: '.swiper.content-slider_<?php echo $this->id; ?> .swiper-pagination',
+                    el: '.content-slider_<?php echo $this->id; ?>.swiper-pagination',
                     clickable: true,
                 },
                 <?php endif; ?>

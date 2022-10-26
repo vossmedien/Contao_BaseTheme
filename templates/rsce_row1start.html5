@@ -1,3 +1,7 @@
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_row1start.min.css|static';
+?>
+
 <div <?php echo $this->cssID; ?> class="content--element row-wrapper <?php echo $this->class; ?>">
 
     <div class="container">

@@ -1,21 +1,32 @@
-.ce_rsce_slider {
-  .slider-subline {
-    display: block;
-    padding: rfs-value(15px 0px 0px 0px);
-  }
+@import "../../variables-layout";
+
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
+
+html body {
+  .ce_rsce_slider {
+    .slider-subline {
+      display: block;
+      padding: rfs-value(15px 0px 0px 0px);
+    }
 
 
-  .swiper {
+    .swiper {
 
-  }
+    }
 
 
-  .swiper.swiper-coverflow {
-    .swiper-slide {
-      &.swiper-slide-next, &.swiper-slide-prev {
+    .swiper.swiper-coverflow {
+      .swiper-slide {
+        &.swiper-slide-next, &.swiper-slide-prev {
 
+        }
       }
     }
-  }
 
+  }
 }

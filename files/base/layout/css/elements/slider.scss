@@ -4,8 +4,8 @@
   }
 
   .swiper-wrapper {
-    align-items: center;
-    text-align: center;
+    //align-items: center;
+    //text-align: center;
 
     .swiper-lazy {
       opacity: 0;
@@ -25,51 +25,90 @@
       }
     }
   }
+}
 
-  .swiper-button-prev,
-  .swiper-button-next {
-    margin-top: rfs-value(-40px);
-    width: rfs-value(35px);
-    height: rfs-value(35px);
-    line-height: rfs-value(25px);
-    text-align: center;
-    box-shadow: $box-shadow;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    opacity: 0.2;
-    background-color: var(--bs-white);
 
-    &:hover {
-      opacity: 1;
-    }
+.swiper-button-prev,
+.swiper-button-next {
+  margin-top: rfs-value(-40px);
+  width: rfs-value(35px);
+  height: rfs-value(35px);
+  line-height: rfs-value(25px);
+  text-align: center;
+  box-shadow: $box-shadow;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  opacity: 0.2;
+  background-color: var(--bs-white);
 
-    &:after {
-      font-size: rfs-value(20px);
-    }
+  &:hover {
+    opacity: 1;
   }
 
-  .swiper-button-prev {
-    padding-right: 3px;
+  &:after {
+    font-size: rfs-value(20px);
+  }
+}
+
+.swiper-button-prev {
+  padding-right: 3px;
+
+  @include media-breakpoint-up(sm) {
+    left: -6vw;
   }
 
-  .swiper-button-next {
-    padding-left: 3px;
+  @include media-breakpoint-up(md) {
+    left: -6vw;
   }
 
-  .swiper-pagination {
-    bottom: rfs-value(0px);
-    background-color: var(--bs-white);
-    padding: rfs-value(0px 5px 5px 5px);
-    border-radius: var(--bs-base-border-radius);
-    line-height: 1;
-    right: 50%;
-    transform: translate(50%, -15px);
-    left: auto;
-    width: auto;
+  @include media-breakpoint-up(lg) {
+    left: -3.5vw;
+  }
+  @include media-breakpoint-up(xl) {
+    left: -3.5vw;
+  }
 
-    .swiper-pagination-bullet {
-      &.swiper-pagination-bullet-active {
-      }
+  @include media-breakpoint-up(xxl) {
+    left: -2.5vw;
+  }
+}
+
+.swiper-button-next {
+  padding-left: 3px;
+
+  @include media-breakpoint-up(sm) {
+    right: 6vw;
+  }
+
+  @include media-breakpoint-up(md) {
+    right: -6vw;
+  }
+
+  @include media-breakpoint-up(lg) {
+    right: -3.5vw;
+  }
+  @include media-breakpoint-up(xl) {
+    right: -3.5vw;
+  }
+
+  @include media-breakpoint-up(xxl) {
+    right: -2.5vw;
+  }
+}
+
+
+.swiper-pagination {
+  bottom: rfs-value(0px);
+  padding: rfs-value(0px 5px 5px 5px);
+  border-radius: var(--bs-base-border-radius);
+  line-height: 1;
+  //right: 50%;
+  //transform: translate(50%, -15px);
+  //left: auto;
+  width: auto;
+
+  .swiper-pagination-bullet {
+    &.swiper-pagination-bullet-active {
     }
   }
 }

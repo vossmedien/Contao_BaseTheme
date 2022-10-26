@@ -1,54 +1,48 @@
-.ce_rsce_boxenfeld {
-  .boxes--outer {
-    &:not(:last-child) {
-      @include media-breakpoint-up(lg) {
-        padding-bottom: 3rem;
-      }
-    }
+@import "../../variables-layout";
 
-    > .row {
-      @include media-breakpoint-down(lg) {
-        margin-bottom: 0px !important;
-      }
-    }
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
-    &:nth-child(odd) {
-      .row {
-        .box--content {
-          @include media-breakpoint-up(lg) {
-            margin-right: 1.3rem;
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
+
+html body {
+  .ce_rsce_boxenfeld {
+    .boxes--outer {
+      &:not(:last-child) {
+        @include media-breakpoint-up(lg) {
+          padding-bottom: 3rem;
+        }
+      }
+
+      > .row {
+        @include media-breakpoint-down(lg) {
+          margin-bottom: 0px !important;
+        }
+      }
+
+      &:nth-child(odd) {
+        .row {
+          .box--content {
+            @include media-breakpoint-up(lg) {
+              margin-right: 1.3rem;
+            }
+          }
+
+          img {
+            @include media-breakpoint-up(lg) {
+              left: -10vw;
+            }
+
+            @include media-breakpoint-up(xxl) {
+              left: -3vw;
+            }
           }
         }
-
-        img {
-          @include media-breakpoint-up(lg) {
-            left: -10vw;
-          }
-
-          @include media-breakpoint-up(xxl) {
-            left: -3vw;
-          }
-        }
       }
-    }
 
-    .row.flex-row-reverse {
-      @include media-breakpoint-up(lg) {
-        flex-flow: row-reverse;
-
-        img {
-          right: 5vw;
-          left: auto;
-        }
-
-        .box--content {
-          padding: 3rem 5vw 3rem 3rem;
-        }
-      }
-    }
-
-    &:nth-child(even) {
-      .row {
+      .row.flex-row-reverse {
         @include media-breakpoint-up(lg) {
           flex-flow: row-reverse;
 
@@ -62,49 +56,66 @@
           }
         }
       }
-    }
-  }
 
-  .box--image {
-    position: relative;
-    border-radius: $border-radius $border-radius 0px 0px;
-    @include media-breakpoint-up(lg) {
-      max-width: calc(100% + 15vw);
-      border-radius: 25px;
+      &:nth-child(even) {
+        .row {
+          @include media-breakpoint-up(lg) {
+            flex-flow: row-reverse;
+
+            img {
+              right: 5vw;
+              left: auto;
+            }
+
+            .box--content {
+              padding: 3rem 5vw 3rem 3rem;
+            }
+          }
+        }
+      }
     }
 
-    img {
+    .box--image {
       position: relative;
       border-radius: $border-radius $border-radius 0px 0px;
       @include media-breakpoint-up(lg) {
         max-width: calc(100% + 15vw);
         border-radius: 25px;
       }
-    }
-  }
 
-  .box--content {
-    border: 7px solid var(--bs-primary);
-    padding: 3rem 3rem 3rem 5.5vw;
-    z-index: 10;
-    position: relative;
-    border-radius: $border-radius;
-    @include media-breakpoint-down(lg) {
-      top: 0 !important;
-      border-radius: 0px 0px $border-radius $border-radius;
+      img {
+        position: relative;
+        border-radius: $border-radius $border-radius 0px 0px;
+        @include media-breakpoint-up(lg) {
+          max-width: calc(100% + 15vw);
+          border-radius: 25px;
+        }
+      }
     }
 
-    @include media-breakpoint-up(xxl) {
-      padding: rfs-value(80px 80px 80px 5.5vw);
+    .box--content {
+      border: 7px solid var(--bs-primary);
+      padding: 3rem 3rem 3rem 5.5vw;
+      z-index: 10;
+      position: relative;
       border-radius: $border-radius;
-    }
+      @include media-breakpoint-down(lg) {
+        top: 0 !important;
+        border-radius: 0px 0px $border-radius $border-radius;
+      }
 
-    .box--headline:first-child > * {
-      margin-top: 0px;
-    }
+      @include media-breakpoint-up(xxl) {
+        padding: rfs-value(80px 80px 80px 5.5vw);
+        border-radius: $border-radius;
+      }
 
-    .box--button {
-      margin-top: 1.5rem;
+      .box--headline:first-child > * {
+        margin-top: 0px;
+      }
+
+      .box--button {
+        margin-top: 1.5rem;
+      }
     }
   }
 }

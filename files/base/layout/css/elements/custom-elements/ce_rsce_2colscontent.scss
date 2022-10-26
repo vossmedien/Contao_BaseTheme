@@ -1,50 +1,61 @@
-.ce_rsce_2colscontent {
+@import "../../variables-layout";
 
-  .row {
-    --bs-gutter-y: 2.5rem;
-  }
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
-  .row--wrapper {
-    &:not(:last-child) {
-      margin-bottom: rfs-value(40px);
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
+
+html body {
+  .ce_rsce_2colscontent {
+
+    .row {
+      --bs-gutter-y: 2.5rem;
     }
 
-    .ce--headline {
-      * {
-        text-align: left;
+    .row--wrapper {
+      &:not(:last-child) {
+        margin-bottom: rfs-value(40px);
+      }
 
-        &:after {
-          left: 0;
-          margin-left: 0px;
+      .ce--headline {
+        * {
+          text-align: left;
+
+          &:after {
+            left: 0;
+            margin-left: 0px;
+          }
         }
       }
-    }
 
-    .column--wrapper {
+      .column--wrapper {
 
-      .col--headline {
-        //margin-bottom: $headline-spacing;
-      }
+        .col--headline {
+          //margin-bottom: $headline-spacing;
+        }
 
-      .column--content {
-        flex-flow: column wrap;
+        .column--content {
+          flex-flow: column wrap;
 
-        &.flex-column-reverse {
+          &.flex-column-reverse {
+            .col--image {
+              margin-top: 1.25rem;
+              margin-bottom: 0rem;
+            }
+          }
+
           .col--image {
-            margin-top: 1.25rem;
-            margin-bottom: 0rem;
+            margin-bottom: 1.25rem;
           }
         }
 
-        .col--image {
-          margin-bottom: 1.25rem;
+        .col--buttons {
+          margin-top: 2rem;
         }
       }
 
-      .col--buttons {
-        margin-top: 2rem;
-      }
     }
-
   }
 }

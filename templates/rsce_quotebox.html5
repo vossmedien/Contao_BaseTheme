@@ -1,3 +1,7 @@
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_quotebox.min.css|static';
+?>
+
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
@@ -19,8 +23,17 @@
     </div>
     <?php endif; ?>
     <div class="ce--quote">
-        <div class="row gx-5">
+        <div class="row g-3">
             <?php foreach ($this->quote as $quote) : ?>
+
+
+                <?php
+                if (!isset($quote->size)) {
+                    $quote->{"size"} = "";
+                }
+                ?>
+
+
                 <div class="<?php echo $quote->column_width; ?>">
                     <div class="quote--element mb-3 mb-lg-5"
                          data-aos="<?php if ($quote->animation_type) : ?><?php echo $quote->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -38,7 +51,7 @@
                             <?php endif; ?>
                             </div>
                         <?php endif; ?>
-                        <div class="quote--detail <?php if ($quote->textalign) : ?><?php echo $quote->textalign; ?><?php endif; ?>">
+                        <div class="quote--detail ">
                             <?php if ($quote->beschreibung) : ?>
                                 <div class="quote--text">
                                     <?php echo $quote->beschreibung ?>

@@ -1,95 +1,106 @@
-.ce_rsce_bubblelist {
-  .ce--bubble-list {
-    .bl--list {
-      display: flex;
-      justify-content: center;
-      text-align: center;
-      flex-flow: row wrap;
+@import "../../variables-layout";
 
-      .bl--item {
-        //padding: 0 3vw;
-        margin: rfs-value(20px 0px 20px 0px);
-        position: relative;
-        box-sizing: border-box;
-        flex: 1 50%;
-        width: auto;
-        max-width: 50%;
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
+
+html body {
+  .ce_rsce_bubblelist {
+    .ce--bubble-list {
+      .bl--list {
+        display: flex;
+        justify-content: center;
+        text-align: center;
         flex-flow: row wrap;
 
-        @include media-breakpoint-up(md) {
-          max-width: 25%;
-          flex: 1 25%;
-        }
+        .bl--item {
+          //padding: 0 3vw;
+          margin: rfs-value(20px 0px 20px 0px);
+          position: relative;
+          box-sizing: border-box;
+          flex: 1 50%;
+          width: auto;
+          max-width: 50%;
+          flex-flow: row wrap;
 
-        @include media-breakpoint-up(lg) {
-          max-width: 100%;
-          flex: 1;
-        }
-
-        * {
-          transition: all 0.3s ease;
-        }
-
-        > a {
-          display: block;
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-        }
-
-        &:hover {
-          .bl-i--text {
-            color: var(--bs-secondary);
+          @include media-breakpoint-up(md) {
+            max-width: 25%;
+            flex: 1 25%;
           }
 
-          .bl-i--image {
-            svg {
-              > g > path,
-              > g > g:first-child > path, // komische SVGs
-              > g > g:first-child > g > *,
-              > g > g:first-child > g > * > path {
-                // komische SVGs
-                fill: var(--bs-primary);
+          @include media-breakpoint-up(lg) {
+            max-width: 100%;
+            flex: 1;
+          }
+
+          * {
+            transition: all 0.3s ease;
+          }
+
+          > a {
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+          }
+
+          &:hover {
+            .bl-i--text {
+              color: var(--bs-secondary);
+            }
+
+            .bl-i--image {
+              svg {
+                > g > path,
+                > g > g:first-child > path, // komische SVGs
+                > g > g:first-child > g > *,
+                > g > g:first-child > g > * > path {
+                  // komische SVGs
+                  fill: var(--bs-primary);
+                }
               }
             }
           }
-        }
 
-        .bl-i--image {
-          border: 3px solid var(--bs-primary);
-          border-radius: 50%;
-          height: rfs-value(150px);
-          width: rfs-value(150px);
-          line-height: rfs-value(150px);
-          margin: 0 auto;
+          .bl-i--image {
+            border: 3px solid var(--bs-primary);
+            border-radius: 50%;
+            height: rfs-value(150px);
+            width: rfs-value(150px);
+            line-height: rfs-value(150px);
+            margin: 0 auto;
 
-          @include media-breakpoint-up(md) {
-            height: rfs-fluid-value(150px);
-            width: rfs-fluid-value(150px);
-            line-height: rfs-fluid-value(150px);
+            @include media-breakpoint-up(md) {
+              height: rfs-fluid-value(150px);
+              width: rfs-fluid-value(150px);
+              line-height: rfs-fluid-value(150px);
+            }
+
+            @include media-breakpoint-up(xxl) {
+              height: rfs-value(200px);
+              width: rfs-value(200px);
+              line-height: rfs-value(200px);
+            }
+
+            img {
+              margin: 1rem;
+              max-height: 75%;
+              max-width: 75%;
+            }
           }
 
-          @include media-breakpoint-up(xxl) {
-            height: rfs-value(200px);
-            width: rfs-value(200px);
-            line-height: rfs-value(200px);
+          .bl-i--text {
+            text-transform: uppercase;
+            margin-top: rfs-value(10px);
+            font-size: rfs-value(20px);
+            color: var(--bs-primary);
+            line-height: 1.2;
           }
-
-          img {
-            margin: 1rem;
-            max-height: 75%;
-            max-width: 75%;
-          }
-        }
-
-        .bl-i--text {
-          text-transform: uppercase;
-          margin-top: rfs-value(10px);
-          font-size: rfs-value(20px);
-          color: var(--bs-primary);
-          line-height: 1.2;
         }
       }
     }

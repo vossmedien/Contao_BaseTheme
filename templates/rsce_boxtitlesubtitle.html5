@@ -1,3 +1,8 @@
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_boxtitlesubtitle.min.css|static';
+?>
+
+
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
@@ -37,22 +42,22 @@
                                         });
                                     });
                                 </script>
-                                <a href="<?= \Image::get(\FilesModel::findByUuid($b->images[0])->path, null, null, null); ?>"
+                                <a href="<?= Image::get(FilesModel::findByUuid($b->images[0])->path, null, null, null); ?>"
                                    class="main--image group_<?php echo $rand; ?> bts-cboxElement cboxElement">
                                     <img class="lazy"
-                                         data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                                         data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                                 </a>
                                 <div class="invisible">
                                     <?php foreach ($b->images as $i => $img) : ?>
                                         <?php if ($i > 0) : ?>
-                                            <a href="<?= \Image::get(\FilesModel::findByUuid($img)->path, null, null, null); ?>"
+                                            <a href="<?= Image::get(FilesModel::findByUuid($img)->path, null, null, null); ?>"
                                                class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"></a>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 </div>
                             <?php else : ?>
                             <img class="lazy"
-                                 data-src="<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                                 data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                             <?php endif; ?>
                         </div>
                         <div class="bts--content">

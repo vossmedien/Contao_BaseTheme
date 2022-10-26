@@ -297,17 +297,17 @@ return array(
                     ),
                 ),
 
-                'textalign' => array(
-                    'label' => array(
-                        'de' => array('Text-Ausrichtung', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'text-start' => 'Linksbündig',
-                        'text-center' => 'Zentriert',
-                        'text-end' => 'Rechtsbündig',
+                'size' => array(
+                    'label' => array('Bildbreite und Bildhöhe', ''),
+                    'inputType' => 'imageSize',
+                    'options' => System::getImageSizes(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'includeBlankOption' => true,
                     ),
                 ),
+                
 
                 'beschreibung' => array(
                     'label' => array('Zitat', ''),

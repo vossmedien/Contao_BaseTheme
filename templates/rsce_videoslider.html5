@@ -1,4 +1,10 @@
 <?php header('Access-Control-Allow-Origin: *'); ?>
+
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_videoslider.min.css|static';
+?>
+
+
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
@@ -21,9 +27,9 @@
     <?php endif; ?>
     <div class="ce--videoslider"
          data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-        <?php if (!$this->fullwidth) : ?>
-        <div class="container">
-            <?php endif; ?>
+
+        <div class="ce--inner <?php if (!$this->fullwidth) : ?>container <?php endif; ?>">
+
             <div class="video-slider video-slider_<?= $this->id; ?> swiper custom">
                 <!-- Additional required wrapper -->
                 <div class="swiper-wrapper ">
@@ -61,18 +67,21 @@
 
                         </div>
                     <?php endforeach ?>
+
                 </div>
-                <?php if (count($this->elements) > 1) : ?>
-                    <div class="swiper-pagination"></div>
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-button-next"></div>
-                <?php endif; ?>
+
             </div>
-            <?php if (!$this->fullwidth) : ?>
+            <?php if (count($this->elements) > 1) : ?>
+                <div class="video-slider_<?= $this->id; ?> swiper-pagination"></div>
+                <div class="video-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                <div class="video-slider_<?= $this->id; ?> swiper-button-next"></div>
+            <?php endif; ?>
+
         </div>
-    <?php endif; ?>
+
     </div>
-</div></div>
+</div>
+</div>
 
 <script>
     window.addEventListener('load', function () {
@@ -83,12 +92,12 @@
 
                 <?php if (count($this->elements) > 1) : ?>
                 navigation: {
-                    nextEl: '.swiper.video-slider_<?= $this->id;?> .swiper-button-next',
-                    prevEl: '.swiper.video-slider_<?= $this->id;?> .swiper-button-prev',
+                    nextEl: '.video-slider_<?= $this->id;?>.swiper-button-next',
+                    prevEl: '.video-slider_<?= $this->id;?>.swiper-button-prev',
                 },
 
                 pagination: {
-                    el: '.swiper.video-slider_<?php echo $this->id; ?> .swiper-pagination',
+                    el: '.video-slider_<?php echo $this->id; ?>.swiper-pagination',
                     clickable: true,
                 },
 

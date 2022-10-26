@@ -48,13 +48,13 @@
   --bs-body-color-rgb: 33, 37, 41;
   --bs-body-bg-rgb: 255, 255, 255;
 
-  --bs-font-sans-serif: "Open Sans", sans-serif;
-  --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
-  "Liberation Mono", "Courier New", monospace;
 
-  --bs-font-primary: var(--bs-font-sans-serif);
-  --bs-font-secondary: var(--bs-font-monospace);
+  --bs-font-primary: "Open Sans", sans-serif;
+  --bs-font-secondary: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-font-tertiary: "Montserrat", sans-serif;
+
+  --bs-font-sans-serif: var(--bs-font-primary);
+  --bs-font-monospace: var(--bs-font-secondary);
 
   --bs-gradient: linear-gradient(
                   180deg,
@@ -125,70 +125,3 @@
   --mm-color-background-emphasis: rgba(var(--bs-white-rgb), 0.4);
   --mm-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
-
-$white: var(--bs-white);
-$black: var(--bs-black);
-
-$primary: var(--bs-primary);
-$primary-light: var(--bs-primary);
-$primary-lighter: var(--bs-primary);
-$primary-dark: var(--bs-primary);
-$primary-darker: var(--bs-primary);
-
-$primary-rgb: var(--bs-primary-rgb);
-
-$secondary: var(--bs-secondary);
-$secondary-light: var(--bs-secondary);
-$secondary-lighter: var(--bs-secondary);
-$secondary-dark: var(--bs-secondary);
-$secondary-darker: var(--bs-secondary);
-
-$secondary-rgb: var(--bs-secondary-rgb);
-
-$font-weight-lighter: var(--bs-font-weight-200);
-$font-weight-light: var(--bs-font-weight-300);
-$font-weight-regular: var(--bs-font-weight-400);
-$font-weight-medium: var(--bs-font-weight-500);
-$font-weight-semibold: var(--bs-font-weight-600);
-$font-weight-bold: var(--bs-font-weight-700);
-$font-weight-black: var(--bs-font-weight-800);
-
-$border-radius: var(--bs-base-border-radius);
-
-// Header
-$header-navbar-bg: var(--bs-header-navbar-bg);
-
-// Footer
-
-$footer-top-bg: var(--bs-footer-top-bg);
-$footer-middle-bg: var(--bs-footer-middle-bg);
-$footer-bottom-bg: var(--bs-footer-bottom-bg);
-
-// Weitere Farben
-
-$text-color-inverse: var(--bs-body-color-inverse);
-$text-color: var(--bs-body-color);
-
-$body-bg: var(--bs-body-bg);
-$body-color: $text-color;
-$link-color: var(--bs-primary);
-
-
-$font-family-primary: var(--bs-font-primary);
-$font-family-secondary: var(--bs-font-secondary);
-$font-family-tertiary: var(--bs-font-tertiary);
-
-$font-family-base: $font-family-primary;
-
-$fa-font-display: swap;
-
-// Megamenü
-$megamenu-width: var(--bs-megamenu-width);
-$megamenu-background: var(--bs-megamenu-background);
-$megamenu-overlay-background: var(--bs-megamenu-overlay-background);
-$megamenu-lvl1-color: var(--bs-megamenu-lvl1-color);
-$megamenu-lvl2-color: var(--bs-megamenu-lvl2-color);
-$megamenu-lvl3-color: var(--bs-megamenu-lvl3-color);
-$megamenu-imageHeight: var(--bs-megamenu-imageHeight);
-
-

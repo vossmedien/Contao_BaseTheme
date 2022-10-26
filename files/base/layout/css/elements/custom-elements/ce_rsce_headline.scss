@@ -1,52 +1,67 @@
-.ce_rsce_headline {
-  margin-bottom: rfs-fluid-value(4rem);
-  margin-top: rfs-fluid-value(4rem);
+@import "../../mixins";
 
-  .ce--main-image {
-    .image--holder {
-      height: 50vh;
-      background-size: cover !important;
-      background-position: center center;
-      position: relative;
-      box-shadow: inset 0px 25px 40px rgba(0, 0, 0, 0.5);
+@import "../../variables-layout";
 
-      &:not(.hide-gradient) {
-        &:after {
-          content: "";
-          height: rfs-fluid-value(200px);
-          width: 100%;
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          z-index: 5;
-          background: linear-gradient(
-                          rgba(var(--bs-white-rgb), 0) 0%,
-                          #fff 100%
-          );
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scaffolding/helper-classes";
+
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
+
+html body {
+  .ce_rsce_headline {
+    margin-bottom: rfs-fluid-value(4rem);
+    margin-top: rfs-fluid-value(4rem);
+
+    .ce--main-image {
+      .image--holder {
+        height: 50vh;
+        background-size: cover !important;
+        background-position: center center;
+        position: relative;
+        box-shadow: inset 0px 25px 40px rgba(0, 0, 0, 0.5);
+
+        &:not(.hide-gradient) {
+          &:after {
+            content: "";
+            height: rfs-fluid-value(200px);
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 5;
+            background: linear-gradient(
+                            rgba(var(--bs-white-rgb), 0) 0%,
+                            #fff 100%
+            );
+          }
         }
+      }
+
+      & + .container {
+        margin-top: 1.5rem;
+      }
+
+      & + .box--holder {
+        @include content-box();
+        @extend .bg-gradient-white;
       }
     }
 
-    & + .container {
-      margin-top: 1.5rem;
-    }
+    .box--holder {
+      position: relative;
+      z-index: 5;
+      margin: 0 auto;
 
-    & + .box--holder {
-      @include content-box();
-      @extend .bg-gradient-white;
-    }
-  }
+      &.content--box {
+        margin-top: -4rem;
 
-  .box--holder {
-    position: relative;
-    z-index: 5;
-    margin: 0 auto;
-
-    &.content--box {
-      margin-top: -4rem;
-
-      @include media-breakpoint-up(lg) {
-        max-width: 75%;
+        @include media-breakpoint-up(lg) {
+          max-width: 75%;
+        }
       }
     }
   }

@@ -1,3 +1,7 @@
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_timeline.min.css|static';
+?>
+
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container force-container">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>

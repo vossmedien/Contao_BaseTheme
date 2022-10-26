@@ -1,3 +1,8 @@
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_coloredrows.min.css|static';
+?>
+
+
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
@@ -29,7 +34,7 @@
                         <div class="col-auto">
                             <div class="image--wrapper">
                                 <img class="lazy"
-                                     data-src="<?= \Image::get(\FilesModel::findByUuid($row->headline_image)->path, null, null, null); ?>">
+                                     data-src="<?= Image::get(FilesModel::findByUuid($row->headline_image)->path, null, null, null); ?>">
                             </div>
                         </div>
                     <?php endif; ?>
@@ -63,7 +68,7 @@
                             </div>
                             <div class="cr--image">
                                 <img class="lazy"
-                                     data-src="<?= \Image::get(\FilesModel::findByUuid($col->image)->path, null, null, null); ?>">
+                                     data-src="<?= Image::get(FilesModel::findByUuid($col->image)->path, null, null, null); ?>">
                             </div>
                             <div class="cr--content">
                                 <span class="count"><?php echo $col->text_1; ?></span>

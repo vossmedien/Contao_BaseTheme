@@ -1,3 +1,8 @@
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_equalboxesrows.min.css|static';
+?>
+
+
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
@@ -145,7 +150,7 @@
     </div>
 <?php endif; ?>
 </div>
-</div>
+    </div>
 <?php endforeach; ?>
 <?php endif; ?>
 </div></div>

@@ -2,7 +2,8 @@
 
     <div class="row gx-3">
         <div class="col-md-4">
-            <div class="event--image-wrapper" data-bs-toggle="modal" data-bs-target="#eventModal_<?= $this->id; ?>">
+            <div class="event--image-wrapper" <?php if ($this->details): ?>data-bs-toggle="modal"
+                 data-bs-target="#eventModal_<?= $this->id; ?>"<?php endif; ?>>
                 <?php if ($this->singleSRC): ?>
                     <img class="lazy" data-src="<?= $this->singleSRC; ?>">
                 <?php endif; ?>
@@ -11,15 +12,19 @@
         </div>
         <div class="col-md-8 mt-1 mt-md-0">
             <div class="event--content-wrapper h-100">
-                <h2 data-bs-toggle="modal" data-bs-target="#eventModal_<?= $this->id; ?>"
-                    title="<?= $this->title ?> (<?php if ($this->day): ?><?= $this->day ?>, <?php endif; ?><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?>)">
+                <h2 <?php if ($this->details): ?> data-bs-toggle="modal"
+                                                  data-bs-target="#eventModal_<?= $this->id; ?>
+
+<?php endif; ?>"
+                                                  title="<?= $this->title ?> (<?php if ($this->day): ?><?= $this->day ?>, <?php endif; ?><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?>)">
                     <?= $this->title ?>
                 </h2>
 
                 <div class="event--data-wrapper">
                     <?php if ($this->time): ?>
                         <strong class="time">
-                            <time datetime="<?= $this->datetime ?>"><?= $this->time ?></time> Uhr
+                            <time datetime="<?= $this->datetime ?>"><?= $this->time ?></time>
+                            Uhr
                             | </strong>
                     <?php endif; ?>
                     <?php if ($this->location): ?>

@@ -29,7 +29,14 @@
   #main {
     //overflow: hidden;
 
+
     .mod_article {
+
+      .ce--inner {
+        position: relative;
+      }
+
+
       > *:not(.ce_headline):not(.ce_html) {
         margin-bottom: $basic-gutter;
       }

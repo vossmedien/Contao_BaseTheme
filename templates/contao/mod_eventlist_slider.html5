@@ -1,0 +1,70 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<div data-aos="animate__fadeInUp">
+    <div class="swiper event-slider_<?= $this->id; ?>">
+        <div class="swiper-wrapper">
+            <?= $this->events ?>
+        </div>
+    </div>
+
+
+    <?php if ($this->numberOfItems > 1) : ?>
+        <div class="event-slider_<?= $this->id; ?> swiper-button-prev"></div>
+        <div class="event-slider_<?= $this->id; ?> swiper-button-next"></div>
+    <?php endif; ?>
+</div>
+
+<!--
+<?php //echo $this->pagination ?>
+-->
+
+<div class="{{link_url::69}}">
+    <a class="btn btn-outline-primary"><i class="fal fa-calendar-alt"></i> Zum Eventkalender</a>
+</div>
+
+<script>
+    window.addEventListener('load', function () {
+        if ($('.swiper.event-slider_<?= $this->id;?>').length) {
+
+            const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.event-slider_<?php echo $this->id; ?>', {
+                direction: 'horizontal',
+                loop: true,
+
+                preloadImages: false,
+                lazy: {
+                    loadPrevNext: true,
+                },
+
+                spaceBetween: 50,
+                speed: 1500,
+                effect: 'slide',
+
+                <?php if ($this->numberOfItems > 1) : ?>
+                navigation: {
+                    nextEl: '.event-slider_<?= $this->id;?>.swiper-button-next',
+                    prevEl: '.event-slider_<?= $this->id;?>.swiper-button-prev',
+                },
+                <?php endif; ?>
+
+                breakpoints: {
+                    320: {
+                        slidesPerView: 1,
+                    },
+                    480: {
+                        slidesPerView: 2,
+                    },
+                    768: {
+                        slidesPerView: 3,
+                    }
+                },
+
+                centeredSlides: false
+            });
+        }
+    }, {passive: true})
+</script>
+
+
+<?php $this->endblock(); ?>

@@ -834,6 +834,18 @@ return array(
                         'tl_class' => 'clr'
                     ),
                 ),
+
+                'size_left' => array(
+                    'label' => array('Bildbreite und Bildhöhe', ''),
+                    'inputType' => 'imageSize',
+                    'options' => System::getImageSizes(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'includeBlankOption' => true,
+                    ),
+                ),
+
                 'column_width' => array(
                     'label' => array(
                         'de' => array('Breite der linken Spalte', ''),
@@ -1160,6 +1172,18 @@ return array(
                         'value' => '1',
                     ),
                 ),
+
+                'size_right' => array(
+                    'label' => array('Bildbreite und Bildhöhe', ''),
+                    'inputType' => 'imageSize',
+                    'options' => System::getImageSizes(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'includeBlankOption' => true,
+                    ),
+                ),
+
 
                 'content_rightcol' => array(
                     'label' => array('Extra Textfeld für rechte Spalte', 'Liegt auf dem Bild'),

@@ -1,17 +1,25 @@
-.ce_rsce_teaserstripe {
-  .ce--teaser-stripe {
-    .ts--inner {
-      padding: rfs-value(30px) 0px;
+@import "../../variables-layout";
 
-      .ts--text {
-        &.dynamic-fontsize {
-          padding: 0 2rem;
-          text-transform: uppercase;
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
 
-          p {
-            font-size: calc(2.5vh + 2.5vw);
+html body {
+  .ce_rsce_teaserstripe {
+    .ce--teaser-stripe {
+      .ts--inner {
+        padding: rfs-value(30px) 0px;
+
+        .ts--text {
+          &.dynamic-fontsize-sm {
             line-height: var(--bs-body-line-height-sm);
+
+            * {
+              line-height: var(--bs-body-line-height-sm);
+            }
           }
         }
       }

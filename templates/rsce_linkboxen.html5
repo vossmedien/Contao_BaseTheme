@@ -1,4 +1,8 @@
 <?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_linkboxen.min.css|static';
+?>
+
+<?php
 if (!isset($this->size)) {
     $this->{"size"} = "";
 }
@@ -272,26 +276,20 @@ if (!isset($this->size)) {
                     <?php if ($this->is_slider): ?>
                 </div>
             <?php endif; ?>
-
-
-                <?php if ($this->is_slider): ?>
-
-
-                    <?php if (count($this->boxes) > 1) : ?>
-                        <?php if ($this->show_pagination): ?>
-                            <div class="swiper-pagination"></div>
-                        <?php endif; ?>
-                        <?php if ($this->show_arrows): ?>
-                            <div class="swiper-button-prev"></div>
-                            <div class="swiper-button-next"></div>
-                        <?php endif; ?>
-                    <?php endif; ?>
-
-
-                <?php endif; ?>
-
-
             </div>
+
+
+            <?php if ($this->is_slider): ?>
+                <?php if (count($this->boxes) > 1) : ?>
+                    <?php if ($this->show_pagination): ?>
+                        <div class="linkboxes-slider_<?= $this->id; ?> swiper-pagination"></div>
+                    <?php endif; ?>
+                    <?php if ($this->show_arrows): ?>
+                        <div class="linkboxes-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                        <div class="linkboxes-slider_<?= $this->id; ?> swiper-button-next"></div>
+                    <?php endif; ?>
+                <?php endif; ?>
+            <?php endif; ?>
         <?php endif; ?>
     </div></div>
 <?php if ($this->boxes) : ?><?php foreach ($this->boxes as $i => $box) : ?><?php if ($box->add_items == 'modal') : ?>
@@ -398,12 +396,12 @@ if (!isset($this->size)) {
 
                     <?php if (count($this->boxes) > 1) : ?>
                     navigation: {
-                        nextEl: '.swiper.linkboxes-slider_<?= $this->id;?> .swiper-button-next',
-                        prevEl: '.swiper.linkboxes-slider_<?= $this->id;?> .swiper-button-prev',
+                        nextEl: '.linkboxes-slider_<?= $this->id;?>.swiper-button-next',
+                        prevEl: '.linkboxes-slider_<?= $this->id;?>.swiper-button-prev',
                     },
 
                     pagination: {
-                        el: '.swiper.linkboxes-slider_<?php echo $this->id; ?> .swiper-pagination',
+                        el: '.linkboxes-slider_<?php echo $this->id; ?>.swiper-pagination',
                         clickable: true,
                     },
                     <?php endif; ?>

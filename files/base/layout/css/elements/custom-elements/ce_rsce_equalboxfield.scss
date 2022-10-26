@@ -1,97 +1,108 @@
-.ce_rsce_equalboxfield {
-  .ce--equalboxfield {
+@import "../../variables-layout";
 
-    > .row {
-      height: 100%;
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
 
-      > div {
-        //margin-bottom: var(--bs-gutter-x);
-      }
-    }
-
-    .box--element {
-      position: relative;
-      height: 100%;
-
-      a.box--link {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-
-      }
+html body {
+  .ce_rsce_equalboxfield {
+    .ce--equalboxfield {
 
       > .row {
         height: 100%;
-        transition: all .3s ease;
 
-        &:hover {
-          opacity: .9;
+
+        > div {
+          //margin-bottom: var(--bs-gutter-x);
         }
       }
 
-      .box--image {
-        width: 100%;
+      .box--element {
+        position: relative;
         height: 100%;
 
-        .box-image--holder {
+        a.box--link {
+          position: absolute;
+          left: 0;
+          top: 0;
           width: 100%;
           height: 100%;
-          min-height: rfs-value(200px);
+          z-index: 1;
+
         }
-      }
 
-      .box--details {
-        padding: 1.5rem;
-        display: flex;
-        flex-flow: column wrap;
-        height: 100%;
-        line-height: var(--bs-body-line-height);
+        > .row {
+          height: 100%;
+          transition: all .3s ease;
 
-        p, p * {
+          &:hover {
+            opacity: .9;
+          }
+        }
+
+        .box--image {
+          width: 100%;
+          height: 100%;
+
+          .box-image--holder {
+            width: 100%;
+            height: 100%;
+            min-height: rfs-value(200px);
+          }
+        }
+
+        .box--details {
+          padding: 1.5rem;
+          display: flex;
+          flex-flow: column wrap;
+          height: 100%;
           line-height: var(--bs-body-line-height);
-        }
+
+          p, p * {
+            line-height: var(--bs-body-line-height);
+          }
 
 
-        .box--headline {
-          font-family: var(--bs-font-tertiary);
-          @include font-size(22px);
-        }
+          .box--headline {
+            font-family: var(--bs-font-tertiary);
+            @include font-size(22px);
+          }
 
-        .box--subline {
-          margin-top: 0rem;
-          font-family: var(--bs-font-tertiary);
-        }
+          .box--subline {
+            margin-top: 0rem;
+            font-family: var(--bs-font-tertiary);
+          }
 
-        > * + .box--text {
-          margin-top: 1.5rem;
-        }
+          > * + .box--text {
+            margin-top: 1.5rem;
+          }
 
-        .box--footer {
-          margin-top: auto;
-          padding-top: 1.5rem;
+          .box--footer {
+            margin-top: auto;
+            padding-top: 1.5rem;
 
 
-          a {
-            position: relative;
-            z-index: 2;
+            a {
+              position: relative;
+              z-index: 2;
 
-            &:not(.btn) {
-              right: -1.5em;
-              bottom: -1.5rem;
-              width: rfs-value(50px);
-              height: rfs-value(50px);
-              line-height: rfs-value(55px);
-              text-align: center;
-              background-color: rgba(255, 255, 255, .8);
-              color: var(--bs-body-color);
-              display: inline-block;
+              &:not(.btn) {
+                right: -1.5em;
+                bottom: -1.5rem;
+                width: rfs-value(50px);
+                height: rfs-value(50px);
+                line-height: rfs-value(55px);
+                text-align: center;
+                background-color: rgba(255, 255, 255, .8);
+                color: var(--bs-body-color);
+                display: inline-block;
 
-              i {
-                @include font-size(24px);
+                i {
+                  @include font-size(24px);
+                }
               }
             }
           }

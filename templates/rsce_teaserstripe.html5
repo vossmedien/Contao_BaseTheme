@@ -1,3 +1,8 @@
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_teaserstripe.min.css|static';
+?>
+
+
 <div <?php echo $this->cssID; ?> class="lazy content--element <?php echo $this->class; ?>"
 
                                  data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
@@ -44,8 +49,8 @@
                      background-color: <?= $this->alternate_background_color;?>;
              <?php endif; ?>
                      ">
-            <?php if (!$this->dynamic_fontsize): ?>
-            <div class="container"><?php endif; ?>
+
+            <div class="container">
 
                 <div class="<?php if (!$this->nocolumns) : ?>row<?php endif; ?>  align-items-center justify-content-center">
                     <?php if ($this->ce_headline || $this->ce_subline || $this->text) : ?>
@@ -65,12 +70,12 @@
                                 </div>
                             <?php endif; ?>
                             <?php if ($this->ce_subline) : ?>
-                                <div class="teaser--subline mt-1 ce--subline" style="<?php if ($this->text_color) : ?>
+                                <div class="teaser--subline ce--subline" style="<?php if ($this->text_color) : ?>
                                         color: <?= $this->text_color;?>;
                         <?php endif; ?>"><?php echo $this->ce_subline; ?></div>
                             <?php endif; ?>
                             <?php if ($this->text) : ?>
-                                <div class="ts--text <?php if ($this->dynamic_fontsize): ?>dynamic-fontsize<?php endif; ?> <?php if ($this->ce_headline || $this->ce_subline) : ?>mt-1<?php endif; ?>">
+                                <div class="ts--text <?php if ($this->dynamic_fontsize): ?>dynamic-fontsize-sm<?php endif; ?> <?php if ($this->ce_headline || $this->ce_subline) : ?>mt-1<?php endif; ?>">
                                     <?php echo $this->text; ?>
                                 </div>
                             <?php endif; ?>
@@ -85,7 +90,7 @@
                         </div>
                     <?php endif; ?>
                 </div>
-                <?php if (!$this->dynamic_fontsize): ?></div><?php endif; ?>
+            </div>
         </div>
     </div>
 </div></div>

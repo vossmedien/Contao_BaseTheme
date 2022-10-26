@@ -1,66 +1,77 @@
-.ce_rsce_numberboxes {
-  .number-box--wrapper {
-    background-size: cover !important;
-    height: rfs-value(250px);
-    display: flex;
-    align-items: flex-end;
-    position: relative;
-    color: var(--bs-white);
-    background-position: center;
+@import "../../variables-layout";
 
-    @include media-breakpoint-up(md) {
-      height: rfs-fluid-value(250px);
-    }
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
-    @include media-breakpoint-up(xxl) {
-      height: rfs-value(300px);
-    }
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
 
-    .number-box--title {
-      position: absolute;
-      top: 50%;
-      right: 50%;
-      transform: translate(50%, -50%);
-      width: 100%;
-      text-align: center;
+html body {
+  .ce_rsce_numberboxes {
+    .number-box--wrapper {
+      background-size: cover !important;
+      height: rfs-value(250px);
+      display: flex;
+      align-items: flex-end;
+      position: relative;
+      color: var(--bs-white);
+      background-position: center;
 
-      > * {
-        text-transform: uppercase;
-        margin-bottom: 0px;
-        font-weight: $font-weight-bolder;
-        @include font-size(34px);
-        color: var(--bs-white);
-        line-height: 1;
+      @include media-breakpoint-up(md) {
+        height: rfs-fluid-value(250px);
       }
-    }
 
-    .number-box--content {
-      width: 100%;
-      line-height: 1;
+      @include media-breakpoint-up(xxl) {
+        height: rfs-value(300px);
+      }
 
-      .left--col {
-        .left-col--inner {
-          padding: 1rem 0.5rem 1rem 1rem;
-          white-space: nowrap;
+      .number-box--title {
+        position: absolute;
+        top: 50%;
+        right: 50%;
+        transform: translate(50%, -50%);
+        width: 100%;
+        text-align: center;
 
-          span {
-            display: inline-block;
-            font-weight: $font-weight-bolder;
-            @include font-size(30px);
-          }
+        > * {
+          text-transform: uppercase;
+          margin-bottom: 0px;
+          font-weight: $font-weight-bolder;
+          @include font-size(34px);
+          color: var(--bs-white);
+          line-height: 1;
         }
       }
 
-      .right--col {
-        border-left: 4px solid var(--bs-white);
+      .number-box--content {
+        width: 100%;
+        line-height: 1;
 
-        .right-col--inner {
-          padding: 1rem 0rem 1rem 0.5rem;
+        .left--col {
+          .left-col--inner {
+            padding: 1rem 0.5rem 1rem 1rem;
+            white-space: nowrap;
 
-          span {
-            display: block;
-            font-weight: $font-weight-bolder;
-            @include font-size(24px);
+            span {
+              display: inline-block;
+              font-weight: $font-weight-bolder;
+              @include font-size(30px);
+            }
+          }
+        }
+
+        .right--col {
+          border-left: 4px solid var(--bs-white);
+
+          .right-col--inner {
+            padding: 1rem 0rem 1rem 0.5rem;
+
+            span {
+              display: block;
+              font-weight: $font-weight-bolder;
+              @include font-size(24px);
+            }
           }
         }
       }

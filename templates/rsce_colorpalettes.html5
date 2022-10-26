@@ -1,14 +1,21 @@
+<?php
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_colorpalettes.min.css|static';
+?>
+
+
+
+<?php
+if (!isset($this->size)) {
+    $this->{"size"} = "";
+}
+?>
+
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
 
-        <?php if ($this->headline || $this->subline || $this->topline) : ?>
+        <?php if ($this->headline || $this->subline) : ?>
         <div class="ce--headline"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-
-            <?php if ($this->topline) : ?>
-                <span class="ce--topline"><?php echo $this->topline; ?></span>
-            <?php endif; ?>
-
             <?php if ($this->headline) : ?>
             <<?php echo($this->hl); ?>>
             <?php echo($this->headline); ?>
@@ -61,21 +68,20 @@
         <div class="colorpalettes-bottom">
             <div class="color-list--wrapper">
                 <?php foreach ($this->elements as $x => $e) : ?>
+
+
                     <div class="color-list-element--outer <?php if (!$this->show_tooltip): ?>wider<?php endif; ?>">
                         <div class="color-list--element" data-headline="<?= $e->alternate_headline; ?>"
                              data-desc="<?= $e->desc; ?>"
-                             data-img="<?= Image::get(FilesModel::findByUuid($e->img)->path, null, null, 6); ?>"
+                             data-img="<?= Image::get(FilesModel::findByUuid($e->img)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
                              data-title="<?= $e->title; ?>" <?php if ($this->show_tooltip): ?>title="<?= $e->title; ?>"
                              data-bs-toggle="tooltip"<?php endif; ?>>
                             <div class="color-list-element--image-holder"
                                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                <?php if ($this->show_tooltiptitle): ?>
-                                    <img class="lazy"
-                                         data-src="<?= Image::get(FilesModel::findByUuid($e->img)->path, null, null, 4); ?>">
-                                <?php else: ?>
-                                    <img class="lazy"
-                                         data-src="<?= Image::get(FilesModel::findByUuid($e->img)->path, null, null, 7); ?>">
-                                <?php endif; ?>
+
+
+                                <img class="lazy"
+                                     data-src="<?= Image::get(FilesModel::findByUuid($e->img)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
 
 
                                 <?php if (!$this->show_tooltip && $e->title): ?>

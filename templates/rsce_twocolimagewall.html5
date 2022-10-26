@@ -1,8 +1,7 @@
 <?php
-if (!isset($this->size)) {
-    $this->{"size"} = "";
-}
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_twocolimagewall.min.css|static';
 ?>
+
 
 <div <?php echo $this->cssID; ?>
         class="content--element <?php echo $this->class; ?> <?php if ($this->no_padding) : ?>no-spacing<?php endif; ?>">
@@ -24,9 +23,21 @@ if (!isset($this->size)) {
     </div>
     <?php endif; ?>
     <?php foreach ($this->row as $row) : ?>
+
+    <?php
+    if (!isset($row->size_left)) {
+        $row->{"size_left"} = "";
+    }
+
+    if (!isset($row->size_right)) {
+        $row->{"size_right"} = "";
+    }
+    ?>
+
+
     <div class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> ">
         <div class="ce--imagetextwall  <?php if ($row->boxed_headline) : ?>with-boxed-image<?php endif; ?>  <?php if ($row->alternate_image) : ?>with-code<?php endif; ?> <?php if ($row->alternate_background) : ?>with-custom-bgcolor<?php endif; ?> <?php if ($row->innerpadding && $row->alternate_background) : ?>with-border<?php endif; ?> <?php if ($row->not_as_bg) : ?>not-as-bg<?php endif; ?> <?php if ($row->image && $row->image_both) : ?>lazy<?php endif; ?>"
-             <?php if ($row->image && $row->image_both) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, null, null, null); ?>" <?php endif; ?>
+             <?php if ($row->image && $row->image_both) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>
              style="
              <?php if ($row->image && $row->image_both) : ?>
                      background-position: center center; background-repeat: no-repeat; background-size: cover;
@@ -87,7 +98,7 @@ if (!isset($this->size)) {
 
                     <?php if ($row->image_leftcol || $row->kachel_left_text): ?>
                         <div class="content-col--image"
-                             <?php if ($row->image_leftcol): ?>style="background: url(<?= Image::get(FilesModel::findByUuid($row->image_leftcol)->path, null, null, null); ?>) center center no-repeat; background-size: cover;" <?php endif; ?>></div>
+                             <?php if ($row->image_leftcol): ?>style="background: url(<?= Image::get(FilesModel::findByUuid($row->image_leftcol)->path, $row->size_left[0], $row->size_left[1], $row->size_left[2]); ?>) center center no-repeat; background-size: cover;" <?php endif; ?>></div>
                     <?php endif; ?>
 
                     <?php if ($row->kachel_left_text): ?>
@@ -185,11 +196,11 @@ if (!isset($this->size)) {
         col-12 col-lg-3
         <?php endif; ?>
 "
-                        <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, null, null, null); ?>" <?php endif; ?>>
+                        <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>>
                     <?php if ($row->not_as_bg) : ?>
                         <div class="image--wrapper">
                             <img class="lazy"
-                                 data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, null, null, null); ?>">
+                                 data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>">
                         </div>
                     <?php endif; ?>
 

@@ -1,0 +1,71 @@
+@import "../../variables-layout";
+
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
+
+
+html body {
+  .ce_rsce_contentslider {
+
+    .content-slider--nav {
+      ul {
+        list-style-type: none;
+        padding: 0px;
+        margin: 0px;
+        display: flex;
+        flex-flow: row nowrap;
+        @include font-size(24px);
+        position: relative;
+        gap: rfs-value(35px);
+
+        &:before {
+          content: '';
+          height: 1px;
+          width: 120%;
+          position: absolute;
+          left: -10%;
+          top: 0;
+          background-color: var(--bs-primary);
+        }
+
+
+        li {
+          transition: all .3s ease;
+
+          span {
+            display: block;
+            line-height: rfs-value(40px);
+            border-top: 3px solid transparent;
+            transition: all .3s ease;
+            cursor: pointer;
+          }
+
+          &.active {
+            padding-right: 2rem;
+
+            span {
+              font-weight: $font-weight-bold;
+              border-top-color: var(--bs-primary);
+            }
+          }
+
+          &:hover {
+            span {
+              border-top-color: var(--bs-primary);
+            }
+          }
+        }
+      }
+    }
+
+    .swiper {
+      .swiper-wrapper {
+        text-align: left;
+      }
+    }
+  }
+}

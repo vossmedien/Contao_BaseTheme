@@ -72,6 +72,10 @@
   .modal-dialog {
     max-width: 100%;
 
+    .modal-content {
+      border-radius: 0px;
+    }
+
     .modal-body {
       padding-bottom: 0px;
       padding-top: 0px;

@@ -16,11 +16,8 @@ return array(
             'inputType' => 'group',
         ),
 
-        'topline' => array(
-            'label' => array('Topline', 'Text oberhalb der Überschrift'),
-            'inputType' => 'text',
-        ), 'subline' => array(
-            'label' => array('Subline', 'Text unterhalb der Überschrift'),
+        'subline' => array(
+            'label' => array('Subline', ''),
             'inputType' => 'text',
         ),
 
@@ -148,15 +145,28 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
+        'size' => array(
+            'label' => array('Bildbreite und Bildhöhe', ''),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+            ),
+        ),
+
 
         'alternate_background_color' => array(
             'label' => array('Alternative Hintergrundfarbe für Inhalt', 'Standardmäßig transparent'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
         'alternate_text_color' => array(
             'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
         'activate_top' => array(
@@ -207,6 +217,8 @@ return array(
                         'extensions' => 'jpg,jpeg,png,svg',
                     ),
                 ),
+
+
                 'title' => array(
                     'label' => array('Titel', ''),
                     'inputType' => 'text',

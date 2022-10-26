@@ -1,65 +1,76 @@
-.ce_rsce_specialimagetext {
+@import "../../variables-layout";
 
-  .image--wrapper {
-    &.image-left {
-      margin-bottom: 1.5rem;
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
+
+html body {
+  .ce_rsce_specialimagetext {
+
+    .image--wrapper {
+      &.image-left {
+        margin-bottom: 1.5rem;
+
+        @include media-breakpoint-up(md) {
+          margin-bottom: 0rem;
+        }
+      }
+
+      &.image-bottom {
+        text-align: right;
+
+
+        img {
+          max-width: 80%;
+          position: relative;
+          @include media-breakpoint-up(md) {
+            margin-top: rfs-value(-25px);
+            right: rfs-value(-50px);
+          }
+
+          @include media-breakpoint-up(xl) {
+            margin-top: rfs-value(-50px);
+          }
+        }
+
+      }
+    }
+
+    .content--wrapper {
+      position: relative;
+      @include padding-bottom(25px);
 
       @include media-breakpoint-up(md) {
-        margin-bottom: 0rem;
-      }
-    }
-
-    &.image-bottom {
-      text-align: right;
-
-
-      img {
-        max-width: 80%;
-        position: relative;
-        @include media-breakpoint-up(md) {
-          margin-top: rfs-value(-25px);
-          right: rfs-value(-50px);
-        }
-
-        @include media-breakpoint-up(xl) {
-          margin-top: rfs-value(-50px);
+        @include padding-bottom(125px);
+        @include padding-left(100px);
+        &:before {
+          content: "";
+          width: rfs-value(60px);
+          height: 2px;
+          background-color: var(--bs-gray-700);
+          position: absolute;
+          left: 0;
+          top: rfs-value(5px);
         }
       }
 
-    }
-  }
-
-  .content--wrapper {
-    position: relative;
-    @include padding-bottom(25px);
-
-    @include media-breakpoint-up(md) {
-      @include padding-bottom(125px);
-      @include padding-left(100px);
-      &:before {
-        content: "";
-        width: rfs-value(60px);
-        height: 2px;
-        background-color: var(--bs-gray-700);
-        position: absolute;
-        left: 0;
-        top: rfs-value(5px);
+      @include media-breakpoint-up(lg) {
+        &:before {
+          top: rfs-value(7px);
+          width: rfs-value(85px);
+        }
       }
-    }
 
-    @include media-breakpoint-up(lg) {
-      &:before {
-        top: rfs-value(7px);
-        width: rfs-value(85px);
+      .headline--wrapper {
+
       }
-    }
 
-    .headline--wrapper {
+      .text--wrapper {
 
-    }
-
-    .text--wrapper {
-
+      }
     }
   }
 }

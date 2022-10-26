@@ -1,107 +1,118 @@
-.ce_rsce_imageandtext {
-  .ce--image-text {
-    &.as--rows {
-      > .row {
-        --bs-gutter-y: 2rem;
+@import "../../variables-layout";
+
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
+
+html body {
+  .ce_rsce_imageandtext {
+    .ce--image-text {
+      &.as--rows {
+        > .row {
+          --bs-gutter-y: 2rem;
 
 
-        > * {
-          .col--inner > .row {
-            align-items: center;
+          > * {
+            .col--inner > .row {
+              align-items: center;
 
-            > div {
-              .col--inner {
-                border-bottom: 2px solid var(--bs-body-color);
-                @include padding-bottom(40px);
+              > div {
+                .col--inner {
+                  border-bottom: 2px solid var(--bs-body-color);
+                  @include padding-bottom(40px);
+                }
               }
             }
           }
         }
-      }
 
-      .image--wrapper {
-        padding-right: 2.5rem;
-      }
-
-      .headline {
-        margin-bottom: 0.5rem;
-
-        @include media-breakpoint-down(sm) {
-          margin-top: 1rem;
-        }
-
-        h2,
-        .h2 {
-          font-weight: $font-weight-semibold;
-          color: var(--bs-black);;
-        }
-      }
-    }
-
-    &:not(.as--rows) {
-      > .row {
-        --bs-gutter-y: 2rem;
-
-        > div:not(:last-child) {
-          @include media-breakpoint-up(md) {
-            border-right: 2px solid var(--bs-body-color);
-          }
-        }
-      }
-
-
-      .col--inner {
-        @include media-breakpoint-up(xl) {
-          @include padding-left(40px);
-          @include padding-right(40px);
-        }
-      }
-
-      .headline {
-        text-align: center;
-      }
-
-      .image {
         .image--wrapper {
-          margin: 1.5rem 0rem;
+          padding-right: 2.5rem;
+        }
+
+        .headline {
+          margin-bottom: 0.5rem;
+
+          @include media-breakpoint-down(sm) {
+            margin-top: 1rem;
+          }
+
+          h2,
+          .h2 {
+            font-weight: $font-weight-semibold;
+            color: var(--bs-black);;
+          }
         }
       }
 
-      .text {
-        text-align: center;
+      &:not(.as--rows) {
+        > .row {
+          --bs-gutter-y: 2rem;
 
-        a {
-          font-style: italic;
-          font-weight: $font-weight-semibold;
-          text-decoration: none;
-          display: inline-block;
-          color: var(--bs-body-color);
-
-          &:hover {
-            color: var(--bs-primary);
+          > div:not(:last-child) {
+            @include media-breakpoint-up(md) {
+              border-right: 2px solid var(--bs-body-color);
+            }
           }
+        }
 
-          &:after {
-            content: ">";
+
+        .col--inner {
+          @include media-breakpoint-up(xl) {
+            @include padding-left(40px);
+            @include padding-right(40px);
+          }
+        }
+
+        .headline {
+          text-align: center;
+        }
+
+        .image {
+          .image--wrapper {
+            margin: 1.5rem 0rem;
+          }
+        }
+
+        .text {
+          text-align: center;
+
+          a {
+            font-style: italic;
+            font-weight: $font-weight-semibold;
+            text-decoration: none;
             display: inline-block;
-            margin-left: 3px;
+            color: var(--bs-body-color);
+
+            &:hover {
+              color: var(--bs-primary);
+            }
+
+            &:after {
+              content: ">";
+              display: inline-block;
+              margin-left: 3px;
+            }
           }
         }
       }
     }
-  }
 
-  .image {
-    text-align: center;
-  }
+    .image {
+      text-align: center;
+    }
 
-  .headline {
-    > * {
-      margin-bottom: 0px;
+    .headline {
+      > * {
+        margin-bottom: 0px;
 
-      &:after,
-      &:before {
-        display: none;
+        &:after,
+        &:before {
+          display: none;
+        }
       }
     }
   }

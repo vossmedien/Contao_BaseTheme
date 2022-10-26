@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Slider', ''),
+    'label' => array('Custom | Bilder-Slider', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -13,9 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -138,7 +140,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
 
         'size' => array(
