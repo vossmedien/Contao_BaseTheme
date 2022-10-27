@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Slider mit "Text"-Navigation und Bild + Text je Slide (zweispaltig)', ''),
+    'label' => array('Custom | "Text"-Navigation und optional Bild + Text je Slide (zweispaltig)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -145,12 +145,11 @@ return array(
         ),
 
 
-        'settings_1' => array(
-            'label' => array('Slider-Einstellungen', ''),
-            'inputType' => 'group',
-            'eval' => array('tl_class' => 'clr'),
+        'is_fullwidth' => array(
+            'label' => array('Element auf volle Breite', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
         ),
-
 
         'nav_position' => array(
             'label' => array(
@@ -158,8 +157,62 @@ return array(
             ),
             'inputType' => 'select',
             'options' => array(
-                '1' => 'Oberhalb des Sliders',
-                '2' => 'Unterhalb des Sliders',
+                '1' => 'Oberhalb',
+                '2' => 'Unterhalb',
+                '3' => 'Links',
+                '4' => 'Rechts',
+            ),
+        ),
+
+        'element_type' => array(
+            'label' => array('Darstellungstyp', ''),
+            'inputType' => 'radio',
+            'options' => array(
+                'is_slider' => 'Darstellungstyp 1: Slider',
+                'is_buttons' => 'Darstellungstyp 2: Verlinkungen',
+            ),
+        ),
+
+
+        'fixed_image' => array(
+            'label' => array('Fixes Bild', ''),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,svg',
+            ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => 'is_buttons',
+            ),
+        ),
+
+        'size_fixed' => array(
+            'label' => array('Bildbreite und Bildhöhe', ''),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+            ),
+
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => 'is_buttons',
+            ),
+        ),
+
+
+        'settings_slider' => array(
+            'label' => array('Slider-Einstellungen', ''),
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => 'is_slider',
             ),
         ),
 
@@ -171,8 +224,8 @@ return array(
             'inputType' => 'select',
             'options' => array(
                 'slide' => 'Slide (Standard)',
-                'coverflow' => 'Coverflow',
                 'fade' => 'Fade',
+                'coverflow' => 'Coverflow',
                 'flip' => 'Flip',
                 'cube' => 'Cube',
 
@@ -182,7 +235,7 @@ return array(
 
 
         'transition_time' => array(
-            'label' => array('Animationszeit in ms', 'Standard: 1500'),
+            'label' => array('Animationszeit in ms', 'Standard: 500'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
@@ -199,11 +252,6 @@ return array(
             'eval' => array('tl_class' => ' clr'),
         ),
 
-        'centered_slides' => array(
-            'label' => array('Slides mittig ausrichten', ''),
-            'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr'),
-        ),
 
         'loop' => array(
             'label' => array('Automatisch wieder von Anfang starten', '"loop"'),
@@ -234,40 +282,40 @@ return array(
             'maxItems' => 999,
             'fields' => array(
 
-
                 'slide_nav_text' => array(
-                    'label' => array('Text für Slider-Navigationspunkt', ''),
+                    'label' => array('Text für Navigation', ''),
                     'inputType' => 'text',
                 ),
 
 
-                'row_reverse' => array(
-                    'label' => array('Spalten umkehren', ''),
-                    'inputType' => 'checkbox',
+                'settings_2' => array(
+                    'label' => array('Bild (Nur relevant wenn "Darstellungstyp 1")', ''),
+                    'inputType' => 'group',
                     'eval' => array('tl_class' => 'clr'),
+
                 ),
 
-                'settings_2' => array(
-                    'label' => array('Linke Spalte', ''),
-                    'inputType' => 'group',
+                'row_reverse' => array(
+                    'label' => array('Spalten umkehren', 'Dadurch ist die Bildspalte rechts'),
+                    'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
 
 
                 'column_width' => array(
                     'label' => array(
-                        'de' => array('Breite der Bildspalte', ''),
+                        'de' => array('Breite der Bildspalte', 'Nur relevant wenn Navigationsposition oberhalb oder unterhalb'),
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'col-12 col-md-6' => '50%',
                         'col-12 col-md-6 col-lg-3' => '25%',
                         'col-12 col-md-6 col-lg-4' => '33%',
-                        'col-12 col-lg-8' => '66.66%',
-                        'col-12 col-lg-9' => '75%',
+                        'col-12 col-md-6' => '50%',
+                        'col-12 col-md-6 col-lg-8' => '66.66%',
+                        'col-12 col-md-6 col-lg-9' => '75%',
                         'col-12' => 'Volle Breite',
-                        'col-12 col-md-auto' => 'Automatische Breite (füllend)',
-                        'col-12 col-md' => 'Breite anhand des Inhalts',
+                        'col-12 col-md' => 'Automatische Breite (füllend)',
+                        'col-12 col-md-auto' => 'Breite anhand des Inhalts',
                     ),
                 ),
 
@@ -297,7 +345,7 @@ return array(
 
 
                 'settings_3' => array(
-                    'label' => array('Rechte Spalte', ''),
+                    'label' => array('Text (Nur relevant wenn "Darstellungstyp 1")', ''),
                     'inputType' => 'group',
                     'eval' => array('tl_class' => 'clr'),
                 ),
@@ -335,6 +383,25 @@ return array(
                     'label' => array('Beschreibung', ''),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+                ),
+
+
+                'settings_url' => array(
+                    'label' => array('Verlinkung (Nur relevant wenn "Darstellungstyp 2")', ''),
+                    'inputType' => 'group',
+                    'eval' => array('tl_class' => 'clr'),
+
+                ),
+
+                'link_url' => array(
+                    'label' => array('Verlinkung (Nur relevant wenn "Darstellungstyp 1")'),
+                    'inputType' => 'url',
+                ),
+
+                'link_newtab' => array(
+                    'label' => array('Link in neuen Tab öffnen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
             ),
         ),

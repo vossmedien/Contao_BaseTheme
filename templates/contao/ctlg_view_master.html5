@@ -60,6 +60,7 @@
 
 
 
+
 </script>
 
 
@@ -106,7 +107,7 @@
             <h2><?= $this->content_headline_1; ?></h2>
         </div>
 
-        <div class="row gx-4">
+        <div class="row gx-lg-4">
             <?php if ($this->content_image_2): ?>
                 <div class="col-lg-4" data-aos="animate__fadeInLeft">
                     <?= $this->content_image_2; ?>
@@ -156,7 +157,7 @@
 
 <div class="content--element testimonials--top">
     <div class="ce--inner container">
-        <div class="row gx-4 flex-lg-row-reverse">
+        <div class="row gx-lg-4 flex-lg-row-reverse">
             <div class="col-lg-4">
                 <div class="testimonial-person--box mb-3 mb-lg-0" data-aos="animate__fadeInRight">
                     <span class="h2"><?= $this->testimonial_name; ?></span>
@@ -169,7 +170,7 @@
                 <h2 data-aos="animate__fadeIn">
                     <?= $this->content_headline_2; ?>
                 </h2>
-                <div class="row gx-4" data-aos="animate__fadeInLeft">
+                <div class="row gx-lg-4" data-aos="animate__fadeInLeft">
                     <div class="col-lg-6">
                         <?= $this->description_3; ?>
                     </div>
@@ -222,7 +223,7 @@
             <h2 data-aos="animate__fadeIn">Ansprechpartner</h2>
 
             <div class="contact--person" data-aos="animate__fadeInUp">
-                <div class="row gx-4 align-items-center">
+                <div class="row gx-lg-4 align-items-center">
                     <?php foreach ($this->selected_contact_persons as $person) : ?>
 
                         <?php if ($person["image"]): ?>

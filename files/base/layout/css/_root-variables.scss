@@ -124,4 +124,11 @@
   --mm-color-background-highlight: rgba(0, 0, 0, 0.05);
   --mm-color-background-emphasis: rgba(var(--bs-white-rgb), 0.4);
   --mm-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+  //variables-layout beachten
+  --bs-container-width-sm: 540px;
+  --bs-container-width-md: 720px;
+  --bs-container-width-lg: 960px;
+  --bs-container-width-xl: 1140px;
+  --bs-container-width-xxl: 1600px;
 }

@@ -43,7 +43,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_a
                         <?php endif; ?>
 
                         <div class="image--content">
-                            <div class="row gy-0 gx-4 align-items-center">
+                            <div class="row gy-0 gx-lg-4 align-items-center">
                                 <?php if ($this->image_headline_left): ?>
                                     <div class="col-12 left--col <?php if ($this->image_headline_right || $this->image_text_right): ?>col-lg-5<?php endif; ?>">
                                         <div class="modal-image--big-headline" data-aos="animate__fadeInLeft">
@@ -71,7 +71,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_a
                 <div class="modal--lower-content">
 
 
-                    <div class="row gx-4">
+                    <div class="row gx-lg-4">
 
                         <?php if ($this->image_left): ?>
                             <div class="col-12 col-md-5">

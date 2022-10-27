@@ -139,7 +139,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_v
                         spaceBetween: <?php echo $this->gutter; ?>
                     },
                     <?php else : ?>
-                    768: {
+                    992: {
                         slidesPerView: <?php echo $this->columns; ?>,
                         spaceBetween: <?php echo $this->gutter; ?>
                     }

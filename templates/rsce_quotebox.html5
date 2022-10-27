@@ -23,7 +23,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_q
     </div>
     <?php endif; ?>
     <div class="ce--quote">
-        <div class="row g-3">
+        <div class="row g-lg-3">
             <?php foreach ($this->quote as $quote) : ?>
 
 
