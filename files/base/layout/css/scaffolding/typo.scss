@@ -207,8 +207,12 @@ html body {
   }
 
   table.table {
-    margin-bottom: 0px;
     margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0px;
+    }
 
     &.table-data {
       @include font-size(14px);
@@ -237,7 +241,29 @@ html body {
       border: 0px;
       width: 100% !important;
       height: auto !important;
-      margin-top: 2.5rem;
+      //margin-top: 2.5rem;
+
+      > thead {
+        > tr {
+          background-color: var(--bs-blue);
+
+          th {
+            color: var(--bs-body-color-inverse);
+          }
+        }
+      }
+
+      > tbody:first-child {
+        > tr {
+          &:first-child {
+            background-color: var(--bs-blue);
+
+            td {
+              color: var(--bs-body-color-inverse);
+            }
+          }
+        }
+      }
 
       > tbody {
         > tr {
@@ -249,13 +275,6 @@ html body {
             background-color: var(--bs-gray-400);
           }
 
-          &:first-child {
-            background-color: var(--bs-blue);
-
-            td {
-              color: var(--bs-body-color-inverse);
-            }
-          }
 
           td {
             padding: rfs-value(5px 10px);
