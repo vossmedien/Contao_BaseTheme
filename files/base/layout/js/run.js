@@ -406,20 +406,7 @@ Promise.all(promises)
         });
 
 
-        if ($(".reset-cookies").length) {
 
-            $(".reset-cookies").click(function (e) {
-                e.preventDefault();
-                window.localStorage.clear();
-                document.cookie.split(";").forEach(function (c) {
-                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-                });
-
-                if (confirm('Alle Cookies wurden gelöscht und Einstellungen zurückgesetzt, die Seite wird nun neu geladen.')) {
-                    window.location.reload();
-                }
-            });
-        }
     })
     .catch(function (script) {
         console.log(script + " failed to load");
