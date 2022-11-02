@@ -272,7 +272,7 @@ return array(
                     'eval' => array('chosen' => 'true')
                 ),
                 'reverse' => array(
-                    'label' => array('Manuell umkehren', 'Sonst ist jedes zweites Element automatisch auf der anderen Seite'),
+                    'label' => array('Manuell umkehren', 'Standard: Bild links, Text rechts'),
                     'inputType' => 'checkbox',
                 ),
                 'image' => array(

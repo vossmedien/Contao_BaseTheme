@@ -223,33 +223,15 @@ html body {
     .ce--inner {
       &.is-fullwidth {
         .half-container {
-          max-width: 100%;
-          padding-left: 1rem;
-          padding-right: 1rem;
-
           margin-right: 0px;
 
 
           @include media-breakpoint-up(sm) {
-            max-width: calc(var(--bs-container-width-sm));
-            padding: 0px;
             margin-right: auto;
           }
 
           @include media-breakpoint-up(md) {
-            max-width: calc(var(--bs-container-width-md) / 2);
             margin-right: 0px;
-          }
-
-          @include media-breakpoint-up(lg) {
-            max-width: calc(var(--bs-container-width-lg) / 2)
-          }
-          @include media-breakpoint-up(xl) {
-            max-width: calc(var(--bs-container-width-xl) / 2)
-          }
-
-          @include media-breakpoint-up(xxl) {
-            max-width: calc(var(--bs-container-width-xxl) / 2)
           }
 
 

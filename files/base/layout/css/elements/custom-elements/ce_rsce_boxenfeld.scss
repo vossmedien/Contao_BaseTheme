@@ -11,32 +11,29 @@ html body {
   .ce_rsce_boxenfeld {
     .boxes--outer {
       &:not(:last-child) {
-        @include media-breakpoint-up(lg) {
-          padding-bottom: 3rem;
-        }
+        margin-bottom: $basic-gutter;
       }
 
       > .row {
-        @include media-breakpoint-down(lg) {
-          margin-bottom: 0px !important;
+        .half-container {
+          margin-right: auto;
         }
-      }
 
-      &:nth-child(odd) {
-        .row {
-          .box--content {
-            @include media-breakpoint-up(lg) {
-              margin-right: 1.3rem;
-            }
+        .box--image {
+          @include media-breakpoint-up(lg) {
+            border-radius: 0 $border-radius $border-radius 0;
+          }
+        }
+
+        &.flex-row-reverse {
+          .half-container {
+            margin-left: auto;
+            margin-right: 0;
           }
 
-          img {
+          .box--image {
             @include media-breakpoint-up(lg) {
-              left: -10vw;
-            }
-
-            @include media-breakpoint-up(xxl) {
-              left: -3vw;
+              border-radius: $border-radius 0 0 $border-radius;
             }
           }
         }
@@ -45,57 +42,24 @@ html body {
       .row.flex-row-reverse {
         @include media-breakpoint-up(lg) {
           flex-flow: row-reverse;
-
-          img {
-            right: 5vw;
-            left: auto;
-          }
-
-          .box--content {
-            padding: 3rem 5vw 3rem 3rem;
-          }
         }
       }
 
-      &:nth-child(even) {
-        .row {
-          @include media-breakpoint-up(lg) {
-            flex-flow: row-reverse;
-
-            img {
-              right: 5vw;
-              left: auto;
-            }
-
-            .box--content {
-              padding: 3rem 5vw 3rem 3rem;
-            }
-          }
-        }
-      }
     }
 
-    .box--image {
-      position: relative;
+    img.box--image {
       border-radius: $border-radius $border-radius 0px 0px;
-      @include media-breakpoint-up(lg) {
-        max-width: calc(100% + 15vw);
-        border-radius: 25px;
-      }
+    }
 
-      img {
-        position: relative;
-        border-radius: $border-radius $border-radius 0px 0px;
-        @include media-breakpoint-up(lg) {
-          max-width: calc(100% + 15vw);
-          border-radius: 25px;
-        }
+    .half-container {
+      @include media-breakpoint-down(lg) {
+        max-width: 100%;
       }
     }
 
     .box--content {
       border: 7px solid var(--bs-primary);
-      padding: 3rem 3rem 3rem 5.5vw;
+      padding: 3rem;
       z-index: 10;
       position: relative;
       border-radius: $border-radius;
@@ -105,7 +69,6 @@ html body {
       }
 
       @include media-breakpoint-up(xxl) {
-        padding: rfs-value(80px 80px 80px 5.5vw);
         border-radius: $border-radius;
       }
 

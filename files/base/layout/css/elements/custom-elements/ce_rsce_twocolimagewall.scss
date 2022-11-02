@@ -222,7 +222,7 @@ html body {
           transition: background-color 0.3s ease-in-out;
 
           &.with-boxed-image {
-            margin-top: rfs-value(75px);
+            margin-top: calc($basic-gutter + 45px);
           }
 
           &.not-as-bg {
@@ -308,7 +308,7 @@ html body {
             }
           }
 
-          .row {
+          .row:not(.formbody) {
             //position: relative;
             margin: 0px;
 
