@@ -17,7 +17,7 @@ html body {
     }
 
     .container {
-      padding: rfs-value(0 10px);
+      padding: 0 1rem
     }
 
     .content--col {
@@ -548,7 +548,8 @@ html body {
                     }
                   }
                 }
-
+              }
+              @include media-breakpoint-up(lg) {
                 &.col-lg-9 {
                   &:hover .content-col--image {
                     height: 102.5%;

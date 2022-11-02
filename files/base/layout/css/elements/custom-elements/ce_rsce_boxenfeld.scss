@@ -9,7 +9,15 @@
 
 html body {
   .ce_rsce_boxenfeld {
+
+    @include media-breakpoint-down(lg) {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
     .boxes--outer {
+
+
       &:not(:last-child) {
         margin-bottom: $basic-gutter;
       }

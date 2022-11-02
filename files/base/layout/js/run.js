@@ -45,8 +45,7 @@ Promise.all(promises)
         }
 
 
-        /* END */
-
+        /* MEGAMENÜ */
         $(document).on("mouseenter", ".mod_navigation li > a", function () {
             $(".mod_navigation li.mm_container").removeClass("active");
 
@@ -64,111 +63,25 @@ Promise.all(promises)
                 }, 500);
             }
         );
+        /* MEGAMENÜ END */
 
-        /* Transform tables in Elements to Bootstrap Tables (styled) */
-        if ($("#main .ce_text table").length) {
-            $("#main table").each(function (index) {
-                $(this).wrap('<div class="table-responsive"></div>');
-                $(this)
-                    .addClass("table")
-                    .addClass("table-striped")
-                    .addClass("table-hover");
-            });
-        }
-        /* END */
 
-        /* Wrap Headlines from colored-rows in extra span */
-        if ($(".ce--coloredrows").length) {
-            $(
-                ".ce--coloredrows h1, .ce--coloredrows .h1, .ce--coloredrows h2, .ce--coloredrows .h2"
-            ).each(function (i, v) {
-                $(this).wrapInner("<span><span></span></span>");
-            });
-        }
-        /* END */
-
-        if ($(".ce_rsce_onepagenavi.with-smaller-containers").length) {
-            $("#main").addClass("with-onepage-nav");
-        }
-        if ($(".ce_rsce_onepagenavi").length) {
-            $(".onepage-nav--mobile-toggle").click(function () {
-                $(this).parent("div").toggleClass("visible");
-            });
-
-            $(window).scroll(function () {
-                var scroll = $(window).scrollTop();
-                if (scroll >= $(".ce--onepagenavi").data("offset")) {
-                    $(".ce--onepagenavi").removeClass("d-none");
-                } else {
-                    $(".ce--onepagenavi").addClass("d-none");
-                }
-            });
-        }
-        if ($(".ce_rsce_colorpalettes").length) {
-            $(".color-list--element").click(function () {
-                var storeDesc = $(this).data("desc");
-                var storeHeadline = $(this).data("headline");
-                var storeTitle = $(this).data("title");
-                var storeImg = $(this).data("img");
-                var parentDiv = $(this).closest(".ce_rsce_colorpalettes");
-                var basicHeadline = parentDiv
-                    .find(".colorpalettes-top")
-                    .data("basicheadline");
-                var basicDesc = parentDiv.find(".colorpalettes-top").data("basicdesc");
-
-                if (storeDesc) {
-                    parentDiv.find(".color-palette--desc").html(storeDesc);
-                } else {
-                    parentDiv.find(".color-palette--desc").html(basicDesc);
-                }
-
-                if (storeHeadline) {
-                    parentDiv.find(".color-palette--headline").html(storeHeadline);
-                } else {
-                    parentDiv.find(".color-palette--headline").html(basicHeadline);
-                }
-
-                if (storeTitle) {
-                    parentDiv.find(".selected-color-element--title").html(storeTitle);
-                } else {
-                }
-
-                if (storeImg) {
-                    parentDiv
-                        .find(".image-holder")
-                        .css("background-image", "url(" + storeImg + ")");
-                } else {
-                }
+        /* MMENU ADDONS */
+        if ($(".mod_mmenuHtml a.offCanvasBasketOpener").length) {
+            $(".mod_mmenuHtml a.offCanvasBasketOpener").click(function (e) {
+                setTimeout(function () {
+                    $('body').addClass("mm-wrapper_opened mm-wrapper_blocking")
+                }, 1000);
             });
         }
 
-        if ($(".ce_rsce_sitemap").length) {
-            $($(".mm_dropdown a")).each(function (index) {
-                var originalUrl = window.location.pathname;
-                if (originalUrl.length > 1) {
-                    originalUrl = window.location.pathname.substring(1);
-                }
-
-                if ($(this).attr("href") == originalUrl) {
-                    $(this).addClass("active");
-                }
+        if ($(".mmenu_close_button").length) {
+            $(".mmenu_close_button").click(function (e) {
+                e.preventDefault();
             });
         }
+        /* MMENU ADDONS END */
 
-        if ($(".ce_rsce_switchingcards").length) {
-            $(".flipping-card--wrapper").each(function (index) {
-                var front = $(this).find(".flipping-card--front");
-                var back = $(this).find(".flipping-card--back");
-                var frontHeight = front.height();
-                var backHeight = back.height();
-
-                if (backHeight > frontHeight) {
-                    front.css("height", backHeight);
-                } else {
-                    back.css("height", frontHeight);
-                }
-            });
-        }
 
         /* Animated Upcounting when Element is in Viewport */
         if ($(".count").length) {
@@ -298,7 +211,6 @@ Promise.all(promises)
         }
         /* END */
 
-
         /* Behavior of Header Type 6 */
         if ($(".header--content.type--6").length) {
 
@@ -327,56 +239,6 @@ Promise.all(promises)
                 $(this).closest("li").toggleClass("expanded");
             });
         }
-
-
-        if ($(".mod_mmenuHtml a.offCanvasBasketOpener").length) {
-            $(".mod_mmenuHtml a.offCanvasBasketOpener").click(function (e) {
-                setTimeout(function () {
-                    $('body').addClass("mm-wrapper_opened mm-wrapper_blocking")
-                }, 1000);
-            });
-        }
-
-        if ($(".mmenu_close_button").length) {
-            $(".mmenu_close_button").click(function (e) {
-                e.preventDefault();
-            });
-        }
-
-
-        /* Add Floating Placeholders to Inputs */
-        if ($(".ce_form").length) {
-            function addPlaceholders() {
-                $(".widget").each(function (
-                    index
-                ) {
-                    var placeholder = $(this).find("input, textarea").attr("placeholder");
-                    var id = $(this).find("input, textarea").attr("id");
-                    if (placeholder) {
-                        $(this)
-                            .find("input, textarea")
-                            .parent("div")
-                            .addClass("form-floating");
-                        $(this)
-                            .find("input, textarea")
-                            .parent("div")
-                            .append("<label for='" + id + "'>" + placeholder + "</label>");
-
-                        $(this).find("label:first-child").remove();
-                    }
-                });
-            }
-
-            $(".ce_form form").submit(function (e) {
-                setTimeout(function () {
-                    addPlaceholders();
-                }, 250);
-            });
-
-            addPlaceholders();
-        }
-        /* END */
-
 
     })
     .catch(function (script) {

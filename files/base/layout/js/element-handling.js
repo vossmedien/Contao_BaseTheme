@@ -109,4 +109,49 @@ $(function () {
     }
 
 
+    /* Transform tables in Elements to Bootstrap Tables (styled) */
+    if ($("#main .ce_text table").length) {
+        $("#main table").each(function (index) {
+            $(this).wrap('<div class="table-responsive"></div>');
+            $(this)
+                .addClass("table")
+                .addClass("table-striped")
+                .addClass("table-hover");
+        });
+    }
+    /* END */
+
+    /* Add Floating Placeholders to Inputs */
+    if ($(".ce_form").length) {
+        function addPlaceholders() {
+            $(".widget").each(function (
+                index
+            ) {
+                var placeholder = $(this).find("input, textarea").attr("placeholder");
+                var id = $(this).find("input, textarea").attr("id");
+                if (placeholder) {
+                    $(this)
+                        .find("input, textarea")
+                        .parent("div")
+                        .addClass("form-floating");
+                    $(this)
+                        .find("input, textarea")
+                        .parent("div")
+                        .append("<label for='" + id + "'>" + placeholder + "</label>");
+
+                    $(this).find("label:first-child").remove();
+                }
+            });
+        }
+
+        $(".ce_form form").submit(function (e) {
+            setTimeout(function () {
+                addPlaceholders();
+            }, 250);
+        });
+
+        addPlaceholders();
+    }
+    /* END */
+
 });

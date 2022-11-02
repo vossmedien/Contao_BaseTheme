@@ -4,9 +4,9 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_b
 
 
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
-    <div class="ce--inner container">
+    <div class="ce--inner ">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
-        <div class="ce--headline"
+        <div class="ce--headline container"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?php if ($this->topline) : ?>
                 <span class="ce--topline"><?php echo $this->topline; ?></span>

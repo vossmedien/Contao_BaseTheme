@@ -1,23 +1,31 @@
-<style>
-    html {
-        height: 100%;
-        width: 100%;
-    }
+<!DOCTYPE html>
+<html lang="de">
 
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0px;
-        padding: 0px;
-        min-height: 100%;
-        min-width: 100%;
-        background-color: #eee;
-        border: 5px solid red;
-    }
+<head>
+    <meta charset="UTF-8">
+    <title>iFrame-Warnung</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
 
-    * {
-        box-sizing: border-box
-    }
-</style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0px;
+            padding: 0px;
+            min-height: 100%;
+            min-width: 100%;
+            background-color: #eee;
+            border: 5px solid red;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+    </style>
+</head>
+<body>
 
 
 <div
@@ -32,7 +40,7 @@
         zurücksetzen.
     </div>
 </div>
-
+</body>
 
 <script>
 
@@ -47,3 +55,4 @@
         }
     }
 </script>
+</html>
