@@ -44,14 +44,6 @@ Promise.all(promises)
             }
         }
 
-        /* Smooth Scrolling and set correct Item active */
-        if (window.location.hash) {
-            var hash = window.location.hash;
-
-            if ($(hash).length) {
-                changeNavLinks();
-            }
-        }
 
         /* END */
 
@@ -384,27 +376,6 @@ Promise.all(promises)
             addPlaceholders();
         }
         /* END */
-
-
-
-        if ($(".scrollToTop, .BodyScrollToTop").length) {
-            $(".scrollToTop, .BodyScrollToTop").click(function () {
-                $("html,body").animate({scrollTop: $("#top").offset().top}, "500");
-                return false;
-            });
-            $(window).scroll(function () {
-                if ($(this).scrollTop() > 50) {
-                    $(".BodyScrollToTop").addClass("visible");
-                } else {
-                    $(".BodyScrollToTop").removeClass("visible");
-                }
-            });
-        }
-
-        $(document).on("scroll", function () {
-            changeAnchorLinks();
-        });
-
 
 
     })

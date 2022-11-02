@@ -117,8 +117,8 @@ if (!isset($this->size)) {
                 },
 
                 spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
-                centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
-                slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>1<?php endif;?>,
+                //centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
+                //slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>1<?php endif;?>,
 
                 speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
                 effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
@@ -158,13 +158,10 @@ if (!isset($this->size)) {
                     clickable: true,
                 },
                 <?php endif; ?>
+
+                slidesPerView: 1,
+
                 breakpoints: {
-                    320: {
-                        slidesPerView: 1,
-                    },
-                    480: {
-                        slidesPerView: 2,
-                    },
                     768: {
                         slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view / 2; ?><?php else:?>1<?php endif;?>,
                     },

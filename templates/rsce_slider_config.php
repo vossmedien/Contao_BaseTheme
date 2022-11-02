@@ -225,11 +225,13 @@ return array(
             'eval' => array('tl_class' => ' clr'),
         ),
 
+        /*
         'centered_slides' => array(
-            'label' => array('Slides mittig ausrichten', ''),
+            'label' => array('Slides passe', ''),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
         ),
+        */
 
         'loop' => array(
             'label' => array('Automatisch wieder von Anfang starten', '"loop"'),

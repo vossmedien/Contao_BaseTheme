@@ -25,71 +25,6 @@ function isOnScreen(elem) {
     );
 }
 
-function changeAnchorLinks() {
-    var scrollPos = $(document).scrollTop();
-
-    if ($('#mainNav a[href*="#"]').length) {
-        $('#mainNav a[href*="#"]:not(.invisible)').each(function () {
-            var currElement = $(this);
-            var currLink = $(this).attr("href");
-            var refElement = currLink.substring(currLink.indexOf("#"));
-
-            if ($(refElement).position()) {
-                if (
-                    $(refElement).position().top - 500 <= scrollPos &&
-                    $(refElement).position().top - 500 + $(refElement).height() >
-                    scrollPos
-                ) {
-                    $("#mainNav .level_2 .active").removeClass("active");
-                    currElement.addClass("active");
-                } else {
-                    currElement.removeClass("active");
-                }
-            }
-        });
-    }
-
-    if ($(".onepagenavi--wrapper a").length) {
-        $(".onepagenavi--wrapper a").each(function () {
-            var currElement = $(this);
-            var currLink = $(this).attr("href");
-            var refElement = currLink.substring(currLink.indexOf("#"));
-
-            if ($(refElement).position()) {
-                if (
-                    $(refElement).position().top - 500 <= scrollPos &&
-                    $(refElement).position().top - 500 + $(refElement).height() >
-                    scrollPos
-                ) {
-                    $(".onepagenavi--wrapper .active").removeClass("active");
-                    currElement.addClass("active");
-                } else {
-                    currElement.removeClass("active");
-                }
-            }
-        });
-    }
-}
-
-function changeNavLinks() {
-    $("#mobileNav li > *, #mainNav li > *, .onepagenavi--wrapper li > *").each(
-        function (index) {
-            var hash = window.location.hash;
-            if ($(this).attr("href") == hash) {
-                $("#mobileNav .active").removeClass("active");
-                $("#mobileNav .mm-listitem_selected").removeClass(
-                    "mm-listitem_selected"
-                );
-                $(this).addClass("active");
-                $(this).parent().addClass("mm-listitem_selected");
-            } else if ($(this).attr("href") == "#top") {
-                $("#mobileNav .level_1 > .first").addClass("listitem_selected");
-            }
-        }
-    );
-
-    changeAnchorLinks();
-}
 
 function loadScript(url) {
     return new Promise(function (resolve, reject) {
@@ -117,7 +52,8 @@ function scriptsActivator(
     scripts.push(
         //"/files/base/layout/_vendor/node_modules/ssr-window/ssr-window.umd.min.js",
         "/files/base/layout/js/cookie-handling.js",
-        "/files/base/layout/js/element-handling.js"
+        "/files/base/layout/js/element-handling.js",
+        "/files/base/layout/js/scrollToAnchor-handling.js"
     );
 
     if (lazyload) {
@@ -177,8 +113,6 @@ function init(optionalScripts) {
             promises.push(loadScript(url));
         });
     }
-
-    changeNavLinks();
 }
 
 //scriptsActivator();

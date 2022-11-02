@@ -79,7 +79,7 @@
   padding-left: 3px;
 
   @include media-breakpoint-up(sm) {
-    right: 6vw;
+    right: -6vw;
   }
 
   @include media-breakpoint-up(md) {
