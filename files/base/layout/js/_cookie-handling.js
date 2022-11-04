@@ -6,7 +6,7 @@ function setupFunctions() {
 
 function initFrames() {
     if (Cookies.get('cookie_iframes')) {
-        $('iframe[data-source]').each(function (index) {
+        $('iframe[data-source],embed[data-source]').each(function (index) {
             $(this).attr('src', $(this).data("source"));
         });
 
@@ -24,7 +24,7 @@ function initFrames() {
             }
         });
     } else {
-        $('iframe[data-source]').each(function (index) {
+        $('iframe[data-source],embed[data-source]').each(function (index) {
             $(this).attr('src', 'iframe.php');
         });
 
@@ -59,17 +59,24 @@ window.addEventListener('cookiebar_save', function (e) {
 setupFunctions()
 
 
-if ($(".reset-cookies").length) {
+const btn = document.querySelector(".reset-cookies");
+btn.addEventListener("click", function (e) {
+    e.preventDefault();
 
-    $(".reset-cookies").click(function (e) {
-        e.preventDefault();
-        window.localStorage.clear();
-        document.cookie.split(";").forEach(function (c) {
-            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-        });
 
+    if (confirm('Dadurch werden alle Cookies gelöscht und die Seite wird neu geladen, fortfahren?')) {
         if (confirm('Alle Cookies wurden gelöscht und Einstellungen zurückgesetzt, die Seite wird nun neu geladen.')) {
+            window.localStorage.clear();
+
+            Object.keys(Cookies.get()).forEach(function (cookieName) {
+                var neededAttributes = {};
+                Cookies.remove(cookieName, neededAttributes);
+            });
+
             window.location.reload();
         }
-    });
-}
+    } else {
+
+    }
+});
+

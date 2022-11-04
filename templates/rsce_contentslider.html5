@@ -1,6 +1,8 @@
 <?php header('Access-Control-Allow-Origin: *'); ?>
 <?php
-$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_contentslider.min.css|static';
+if (TL_MODE == 'FE') {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_contentslider.min.css|static';
+}
 ?>
 <?php
 if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
@@ -223,7 +225,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
     </div>
 
 
-<?php if ($this->element_type == 'is_slider'): ?>
+<?php if ($this->element_type == 'is_slider' && TL_MODE == 'FE'): ?>
     <script>
         window.addEventListener('load', function () {
             if ($('.swiper.content-slider_<?= $this->id;?>').length) {

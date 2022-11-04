@@ -1,5 +1,7 @@
 <?php
-$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_numberboxes.min.css|static';
+if (TL_MODE == 'FE') {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_numberboxes.min.css|static';
+}
 ?>
 
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">

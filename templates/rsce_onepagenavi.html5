@@ -1,6 +1,8 @@
 <?php
-$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_onepagenavi.min.css|static';
-$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_onepagenavi.js|static';
+if (TL_MODE == 'FE') {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_onepagenavi.min.css|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_onepagenavi.js|static';
+}
 ?>
 
 <div <?php echo $this->cssID; ?>

@@ -48,25 +48,19 @@ html body {
       display: inline-block;
       position: absolute;
       right: 50%;
-      transform: translate(50%, -15%);
+      transform: translate(50%, 50%);
       bottom: 0;
       text-align: center;
-      z-index: 10;
+      z-index: 5;
 
-      @include media-breakpoint-down(md) {
-        bottom: rfs-value(-70px);
-      }
 
       @include media-breakpoint-down(sm) {
-        width: 100%;
+        width: 80%;
       }
 
-      @include media-breakpoint-up(md) {
-        transform: translate(50%, 15%);
-      }
 
       img {
-        //max-width: rfs-value(300px);
+        max-width: calc(300px + 4rem);
         width: 100%;
         height: auto;
         padding: 2rem;
@@ -157,18 +151,18 @@ html body {
             display: inline-block;
             position: absolute;
             width: 100%;
+            padding: 10px 1rem 10px 0px;
+
+            @include media-breakpoint-down(sm) {
+              width: 100%;
+              padding-left: 1rem;
+              padding-right: 1rem;
+            }
 
             &:not([class*="pos-"]) {
               transform: translate(0%, -50%);
               top: 50%;
               left: 0;
-            }
-
-            padding: 10px 2rem 10px 0px;
-
-            @include media-breakpoint-down(sm) {
-              width: 85%;
-              padding-left: rfs-value(15px);
             }
 
             &[class*="-bottom"] {
@@ -274,8 +268,10 @@ html body {
             z-index: 10;
             min-width: 50vw;
 
-            //background-color: var(--bs-white);
-            //overflow: hidden;
+            @include media-breakpoint-up(md) {
+              max-width: 75%;
+            }
+
 
             &:before {
               content: "";
@@ -292,7 +288,7 @@ html body {
             }
 
             .mainimage--content-inner--wrapper {
-              padding: 10px 2rem 10px 0px;
+              //padding: 10px 2rem 10px 0px;
 
               @include media-breakpoint-up(sm) {
                 &:after {

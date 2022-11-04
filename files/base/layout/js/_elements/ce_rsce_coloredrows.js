@@ -1,4 +1,6 @@
-/* Wrap Headlines from colored-rows in extra span */
+document.addEventListener("DOMContentLoaded", function (event) {
+    /* Wrap Headlines from colored-rows in extra span */
+
 if ($(".ce--coloredrows").length) {
     $(
         ".ce--coloredrows h1, .ce--coloredrows .h1, .ce--coloredrows h2, .ce--coloredrows .h2"
@@ -6,4 +8,5 @@ if ($(".ce--coloredrows").length) {
         $(this).wrapInner("<span><span></span></span>");
     });
 }
+});
 /* END */

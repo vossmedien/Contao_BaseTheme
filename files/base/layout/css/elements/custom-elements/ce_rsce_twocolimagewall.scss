@@ -455,7 +455,7 @@ html body {
                   //background-color: $body-bg;
                 }
 
-                iframe {
+                iframe, embed {
                   width: 100%;
 
                   @include media-breakpoint-up(md) {

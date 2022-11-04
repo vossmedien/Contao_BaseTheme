@@ -3,6 +3,7 @@
 
 <head>
 
+
     <?php $this->block('head'); ?>
     <meta charset="<?= $this->charset ?>">
     <title><?= $this->title ?></title>

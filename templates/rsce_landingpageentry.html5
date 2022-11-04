@@ -1,5 +1,7 @@
 <?php
-$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_landingpageentry.min.css|static';
+if (TL_MODE == 'FE') {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_landingpageentry.min.css|static';
+}
 ?>
 
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
@@ -24,7 +26,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_l
             <div class="boxed--image">
                 <img class="lazy"
                      data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                     data-src="<?= \Image::get(\FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
+                     data-src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
             </div>
         <?php endif; ?>
 
@@ -82,7 +84,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_l
                              style="<?php if ($b->image_as_bg && $this->image_height) : ?>height: <?= $this->image_height;?>px<?php endif; ?>">
                             <a href="<?= $b->middle_link_url; ?>"></a>
 
-                            <div style=" background: url(<?= \Image::get(\FilesModel::findByUuid($b->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover;"
+                            <div style=" background: url(<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>) center center no-repeat; background-size: cover;"
                                  class="lp--image-holder"></div>
                         </div>
 

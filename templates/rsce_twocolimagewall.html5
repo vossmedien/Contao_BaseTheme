@@ -1,5 +1,7 @@
 <?php
-$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_twocolimagewall.min.css|static';
+if (TL_MODE == 'FE') {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_twocolimagewall.min.css|static';
+}
 ?>
 
 
@@ -206,7 +208,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_t
 
 
 
-                    <?php if ($row->alternate_image) : ?><?php echo str_replace("src", "data-source", html_entity_decode($row->alternate_image)); ?><?php endif; ?>
+                    <?php if ($row->alternate_image) : ?><?php echo str_replace("https:", "", str_replace("src", "data-source", html_entity_decode($row->alternate_image))); ?><?php endif; ?>
 
 
 

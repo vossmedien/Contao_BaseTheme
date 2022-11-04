@@ -5,6 +5,7 @@ Promise.all(promises)
         if (options_lazyload) {
             var lazyLoadInstance = new LazyLoad();
         }
+
         if (options_aos) {
             $('*:not([data-aos])[class*="animate__"]').each(function (index) {
                 var classes = $.grep(this.className.split(" "), function (v, i) {
@@ -33,6 +34,7 @@ Promise.all(promises)
                 anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
             });
         }
+
         if (options_popper) {
             if ($('[data-bs-toggle="tooltip"]').length) {
                 var tooltipTriggerList = [].slice.call(
@@ -46,11 +48,11 @@ Promise.all(promises)
 
 
         /* MEGAMENÜ */
-        $(document).on("mouseenter", ".mod_navigation li > a", function () {
-            $(".mod_navigation li.mm_container").removeClass("active");
+        $(document).on("mouseenter", ".mod_navigation li > *:first-child", function () {
+            $(".mod_navigation li.mm_container").removeClass("megamenu-active");
 
             if ($(this).parent().hasClass("mm_container")) {
-                $(this).parent().addClass("active");
+                $(this).parent().addClass("megamenu-active");
             }
         });
 
@@ -59,7 +61,7 @@ Promise.all(promises)
             ".mod_navigation li.mm_container .mm_dropdown > .inner",
             function () {
                 setTimeout(function () {
-                    $(".mod_navigation li.mm_container").removeClass("active");
+                    $(".mod_navigation li.mm_container").removeClass("megamenu-active");
                 }, 500);
             }
         );
@@ -81,6 +83,13 @@ Promise.all(promises)
             });
         }
         /* MMENU ADDONS END */
+
+
+        if ($(".accordion-nav").length) {
+            $(".accordion-nav").find("i").click(function (e) {
+                $(this).closest("li").toggleClass("expanded");
+            });
+        }
 
 
         /* Animated Upcounting when Element is in Viewport */
@@ -117,6 +126,7 @@ Promise.all(promises)
             });
         }
         /* END */
+
 
         /* Behavior of Header Type 1 (not fixed) */
         if ($(".header--content.type--1:not(.fixed)").length) {
@@ -207,7 +217,6 @@ Promise.all(promises)
             $(window).scroll(function () {
                 detectIfScrolled();
             });
-
         }
         /* END */
 
@@ -233,12 +242,6 @@ Promise.all(promises)
         }
         /* END */
 
-
-        if ($(".accordion-nav").length) {
-            $(".accordion-nav").find("i").click(function (e) {
-                $(this).closest("li").toggleClass("expanded");
-            });
-        }
 
     })
     .catch(function (script) {

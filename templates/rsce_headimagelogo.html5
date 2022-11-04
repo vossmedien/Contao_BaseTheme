@@ -1,5 +1,7 @@
 <?php
-$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_headimagelogo.min.css|static';
+if (TL_MODE == 'FE') {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_headimagelogo.min.css|static';
+}
 ?>
 
 <div <?php echo $this->cssID; ?>
@@ -152,62 +154,62 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_h
     </div>
 
     <?php if ($this->boxed_image) : ?>
-        <div class="boxed-logo d-none d-lg-block">
+        <div class="boxed-logo">
             <img data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                 class="lazy"
-                 data-src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
+                 src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
         </div>
     <?php endif; ?>
 </div>
 
-<script>
-    window.addEventListener('load', function () {
-        if ($('.swiper.mainslider_<?php echo $this->id; ?>').length) {
-            const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {
+<?php if (TL_MODE == 'FE'): ?>
+    <script>
+        window.addEventListener('load', function () {
+            if ($('.swiper.mainslider_<?php echo $this->id; ?>').length) {
+                const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {
 
-                loop: true,
+                    loop: true,
 
-                speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
-                effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
-                'slide'<?php endif;?>,
+                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
+                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
+                    'slide'<?php endif;?>,
 
-                <?php if ($this->autoplay) : ?>
-                autoplay: {
-                    delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
-                },
-                <?php endif; ?>
-
-                <?php if (count($this->slides) > 1) : ?>
-                navigation: {
-                    nextEl: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-button-next',
-                    prevEl: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-button-prev',
-                },
-                <?php if (!$this->boxed_image) : ?>
-                pagination: {
-                    el: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-pagination',
-                    clickable: true,
-                },
-                <?php endif; ?>
-                <?php endif; ?>
-
-
-                on: {
-                    realIndexChange: function () {
-                        $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage *[data-aos]').removeClass('aos-init').removeClass('aos-animate');
-                        $('.mainslider_<?php echo $this->id; ?> .swiper-slide:not(.swiper-slide-active) .ce--mainimage .mainimage--content').hide();
-
-                        setTimeout(function () {
-                            $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage .mainimage--content').show();
-                        }, 500);
+                    <?php if ($this->autoplay) : ?>
+                    autoplay: {
+                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
                     },
-                }
-            });
-        }
-    }, {passive: true})
-</script>
+                    <?php endif; ?>
 
+                    <?php if (count($this->slides) > 1) : ?>
+                    navigation: {
+                        nextEl: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-button-next',
+                        prevEl: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-button-prev',
+                    },
+                    <?php if (!$this->boxed_image) : ?>
+                    pagination: {
+                        el: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-pagination',
+                        clickable: true,
+                    },
+                    <?php endif; ?>
+                    <?php endif; ?>
+
+
+                    on: {
+                        realIndexChange: function () {
+                            $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage *[data-aos]').removeClass('aos-init').removeClass('aos-animate');
+                            $('.mainslider_<?php echo $this->id; ?> .swiper-slide:not(.swiper-slide-active) .ce--mainimage .mainimage--content').hide();
+
+                            setTimeout(function () {
+                                $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage .mainimage--content').show();
+                            }, 500);
+                        },
+                    }
+                });
+            }
+        }, {passive: true})
+    </script>
+<?php endif; ?>
 <?php if ($this->show_breadcrumb) : ?>
-    <div class="container mb-5">
+    <div class="container mt-3 mb-5">
         {{insert_module::48}}
     </div>
 <?php endif; ?>

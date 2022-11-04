@@ -47,7 +47,7 @@ html body {
 
       & + .box--holder {
         @include content-box();
-        @extend .bg-gradient-white;
+        @extend .bg-gradient;
       }
     }
 

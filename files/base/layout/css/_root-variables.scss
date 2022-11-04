@@ -56,11 +56,7 @@
   --bs-font-sans-serif: var(--bs-font-primary);
   --bs-font-monospace: var(--bs-font-secondary);
 
-  --bs-gradient: linear-gradient(
-                  180deg,
-                  rgba(var(--bs-white-rgb), 0.15),
-                  rgba(var(--bs-white-rgb), 0)
-  );
+  --bs-gradient: linear-gradient(180deg, rgba(var(--bs-white-rgb), 0.15), rgba(var(--bs-white-rgb), 0));
 
   --bs-font-weight-100: 100;
   --bs-font-weight-200: 200;
@@ -87,11 +83,12 @@
   --bs-headline-font-weight: $font-weight-bold;
   --bs-body-bg: #fff;
 
-  --bs-base-border-radius: 10px;
-  --bs-border-color: #959595;
+  --bs-base-border-radius: 5px;
+  --bs-border-radius-xl: 25px;
 
-  --bs-box-shadow: #{$box-shadow};
+  --bs-base-box-shadow: 0 0 12px rgba(39, 39, 39, 0.15);
 
+  --bs-border-color: var(--bs-gray-300);
   --bs-header-navbar-bg: rgba(255, 255, 255, 0.9);
 
   --bs-footer-top-bg: var(--bs-gray-600);

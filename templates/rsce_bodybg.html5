@@ -1,7 +1,9 @@
-<style>
-    body {
-        background: url(<?= \Image::get(\FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
-        background-attachment: fixed;
-        background-size: cover;
-    }
-</style>
+<?php if (TL_MODE == 'FE'): ?>
+    <style>
+        body {
+            background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+    </style>
+<?php endif; ?>

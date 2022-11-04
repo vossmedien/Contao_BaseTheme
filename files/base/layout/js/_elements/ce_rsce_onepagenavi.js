@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", function (event) {
 if ($(".ce_rsce_onepagenavi.with-smaller-containers").length) {
     $("#main").addClass("with-onepage-nav");
 }
@@ -15,3 +16,4 @@ if ($(".ce_rsce_onepagenavi").length) {
         }
     });
 }
+});

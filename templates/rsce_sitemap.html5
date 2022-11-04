@@ -1,6 +1,8 @@
 <?php
-$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_sitemap.min.css|static';
-$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_sitemap.js|static';
+if (TL_MODE == 'FE') {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_sitemap.min.css|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_sitemap.js|static';
+}
 ?>
 
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
@@ -15,8 +17,6 @@ $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_sitemap.js
                              data-aos="<?php if ($lvl1_element->animation_type) : ?><?php echo $lvl1_element->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                             <div class="sitemap-column">
                                 <div class="mm_level_1">
-
-
                                     <?php if ($lvl1_element->link_lvl1): ?>
                                     <a href="<?= $lvl1_element->link_lvl1; ?>">
                                         <?php else: ?>

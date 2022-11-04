@@ -116,7 +116,7 @@
           overflow: hidden;
           position: absolute;
           text-align: left;
-          z-index: 5;
+          z-index: 10;
 
           @include media-breakpoint-up(xl) {
             margin-left: -15px;

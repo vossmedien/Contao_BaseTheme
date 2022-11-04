@@ -1,5 +1,6 @@
 .mod_navigation li.mm_container:hover > a::after,
-.mod_navigation li.mm_container:hover > span::after {
+.mod_navigation li.mm_container:hover > span::after,
+.mod_navigation li.mm_container:hover > strong::after {
   display: none;
 }
 
@@ -13,14 +14,8 @@
   }
 }
 
-#header .header--content.type--3 {
-  #mainNav .mm_dropdown:before {
-    //margin-top: 91px;
-  }
-}
-
 .mod_navigation li.mm_container {
-  &.active a {
+  &.megamenu-active > *:first-child {
     & + .mm_dropdown {
       opacity: 1;
       width: 100%;

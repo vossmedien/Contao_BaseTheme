@@ -1,5 +1,7 @@
 <?php
-$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_linkboxen.min.css|static';
+if (TL_MODE == 'FE') {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_linkboxen.min.css|static';
+}
 ?>
 
 <?php
@@ -346,7 +348,7 @@ if (!isset($this->size)) {
 
 <?php endif; ?>
 
-<?php if ($this->is_slider): ?>
+<?php if ($this->is_slider && TL_MODE == 'FE'): ?>
     <script>
         window.addEventListener('load', function () {
             if ($('.swiper.linkboxes-slider_<?= $this->id;?>').length) {

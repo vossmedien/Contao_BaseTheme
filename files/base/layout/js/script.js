@@ -2,29 +2,6 @@ let promises = [];
 let scripts = [];
 let optionalScripts = [];
 
-function isOnScreen(elem) {
-    // if the element doesn't exist, abort
-    if (elem.length == 0) {
-        return;
-    }
-    var $window = jQuery(window);
-    var viewport_top = $window.scrollTop();
-    var viewport_height = $window.height();
-    var viewport_bottom = viewport_top + viewport_height;
-    var $elem = jQuery(elem);
-    var top = $elem.offset().top;
-    var height = $elem.height();
-    var bottom = top + height;
-
-    return (
-        (top >= viewport_top && top < viewport_bottom) ||
-        (bottom > viewport_top && bottom <= viewport_bottom) ||
-        (height > viewport_height &&
-            top <= viewport_top &&
-            bottom >= viewport_bottom)
-    );
-}
-
 
 function loadScript(url) {
     return new Promise(function (resolve, reject) {
@@ -41,6 +18,18 @@ function loadScript(url) {
     });
 }
 
+function init(optionalScripts) {
+    scripts.forEach(function (url) {
+        promises.push(loadScript(url));
+    });
+
+    if (optionalScripts) {
+        optionalScripts.forEach(function (url) {
+            promises.push(loadScript(url));
+        });
+    }
+}
+
 function scriptsActivator(
     lazyload = false,
     swiper = false,
@@ -50,10 +39,10 @@ function scriptsActivator(
 ) {
     scripts = [];
     scripts.push(
-        //"/files/base/layout/_vendor/node_modules/ssr-window/ssr-window.umd.min.js",
-        "/files/base/layout/js/cookie-handling.js",
-        "/files/base/layout/js/element-handling.js",
-        "/files/base/layout/js/scrollToAnchor-handling.js"
+        "/files/base/layout/js/_global-functions.js",
+        "/files/base/layout/js/_cookie-handling.js",
+        "/files/base/layout/js/_element-handling.js",
+        "/files/base/layout/js/_scrollToAnchor-handling.js"
     );
 
     if (lazyload) {
@@ -98,29 +87,21 @@ function scriptsActivator(
         );
         options_aos = true;
 
+
+
+
+
     } else {
         options_aos = false;
     }
 }
 
-function init(optionalScripts) {
-    scripts.forEach(function (url) {
-        promises.push(loadScript(url));
-    });
-
-    if (optionalScripts) {
-        optionalScripts.forEach(function (url) {
-            promises.push(loadScript(url));
-        });
-    }
-}
-
-//scriptsActivator();
 
 let themeScripts = [
     "/files/base/layout/js/_theme/theme.js",
     "/files/base/layout/js/run.js",
 ];
+
 let finalPromise = [];
 
 themeScripts.forEach(function (url) {

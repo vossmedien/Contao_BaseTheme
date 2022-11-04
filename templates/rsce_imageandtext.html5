@@ -1,5 +1,7 @@
 <?php
-$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_imageandtext.min.css|static';
+if (TL_MODE == 'FE') {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_imageandtext.min.css|static';
+}
 ?>
 
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
@@ -38,7 +40,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_i
                      class="col-12 image <?php if ($this->as_rows) : ?>col-md-4 col-lg-3<?php endif; ?>  <?php if (!$this->as_rows) : ?>order-2<?php endif; ?>">
                     <div class="image--wrapper">
                         <img class="lazy"
-                             data-src="<?= \Image::get(\FilesModel::findByUuid($row->image)->path, null, null, null); ?>">
+                             data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, null, null, null); ?>">
                     </div>
                 </div>
                 <?php if ($this->as_rows) : ?>

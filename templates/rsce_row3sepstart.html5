@@ -1,5 +1,7 @@
 <?php
+if (TL_MODE == 'FE') {
 $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_row3sepstart.min.css|static';
+}
 ?>
 
 <div class="<?php if($this->background_color):?>with-bg<?php endif;?> <?php echo $this->class; ?>">

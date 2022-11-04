@@ -46,7 +46,7 @@ html body {
 
       &.style-1 {
         @include content-box(0px);
-        @extend .bg-gradient-white;
+        @extend .bg-gradient;
 
 
         .box--upper {
@@ -105,7 +105,7 @@ html body {
             }
 
             &.is-map {
-              iframe {
+              iframe, embed {
                 min-height: rfs-value(450px);
                 border-radius: $border-radius;
               }
@@ -356,7 +356,7 @@ html body {
               padding-bottom: 0px;
             }
 
-            iframe {
+            iframe, embed {
               width: 100%;
             }
 
