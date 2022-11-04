@@ -153,7 +153,7 @@ return array(
 
         'nav_position' => array(
             'label' => array(
-                'de' => array('Position der Slider-Navigation', ''),
+                'de' => array('Position der Navigation', ''),
             ),
             'inputType' => 'select',
             'options' => array(

@@ -12,12 +12,12 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
 
     <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+
         <div class="ce--inner <?php if ($this->is_fullwidth): ?>is-fullwidth<?php endif; ?> <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>is-vertical<?php endif; ?>">
-            <?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>
-            <?php if ($this->headline || $this->subline || $this->topline) : ?>
-            <div class="ce--headline"
+            <?php if ($this->nav_position == 1 || $this->nav_position == 2 && ($this->headline || $this->subline || $this->topline)): ?>
+            <div class="ce--headline container mb-3"
                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                <div class="container">
+                <div class="">
                     <?php if ($this->topline) : ?>
                         <span class="ce--topline"><?php echo $this->topline; ?></span>
                     <?php endif; ?>
@@ -32,7 +32,8 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
             </div>
         </div>
         <?php endif; ?>
-        <?php endif; ?>
+
+
         <div class="ce--contentslider"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
@@ -40,7 +41,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
 
                 <?php if ($this->nav_position == 1): ?>
-                    <div class="mt-3 mb-3 horizontal content-slider--nav d-none d-md-block content-slider--nav_<?= $this->id; ?>">
+                    <div class="mt-3 mb-3 container horizontal content-slider--nav d-none d-md-block content-slider--nav_<?= $this->id; ?>">
                         <ul>
                             <?php foreach ($this->elements as $i => $nav) : ?>
                                 <li <?php if ($i == 0 && $this->element_type == 'is_slider'): ?>class="active"<?php endif; ?>>
@@ -61,16 +62,11 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                 <?php endif; ?>
 
 
-
-                <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>
-                <div class="row align-items-center <?php if ($this->nav_position == 4): ?>flex-row-reverse<?php endif; ?>">
-
-
+                <div class="<?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>row align-items-center<?php endif; ?> <?php if ($this->nav_position == 4): ?>flex-row-reverse<?php endif; ?>">
+                    <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>
                     <div class="col-12 col-md-6">
-
                         <div class="nav-column half-container">
-                            <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>
-                            <?php if ($this->headline || $this->subline || $this->topline) : ?>
+                            <?php if ($this->headline || $this->subline || $this->topline): ?>
                             <div class="ce--headline mb-3"
                                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                 <div class="">
@@ -88,16 +84,12 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                             </div>
                         </div>
                         <?php endif; ?>
-                        <?php endif; ?>
-
                         <div class="content-slider--nav vertical content-slider--nav_<?= $this->id; ?>">
                             <ul>
                                 <?php foreach ($this->elements as $i => $nav) : ?>
                                     <li <?php if ($i == 0 && $this->element_type == 'is_slider'): ?>class="active"<?php endif; ?>>
                                         <?php if ($this->element_type == 'is_slider'): ?>
-                                            <span data-slide="<?= $i; ?>">
-                            <?= $nav->slide_nav_text; ?>
-                            </span>
+                                            <span data-slide="<?= $i; ?>"><?= $nav->slide_nav_text; ?></span>
                                         <?php elseif ($this->element_type == 'is_buttons'): ?>
                                             <a href="<?= $nav->link_url; ?>"
                                                <?php if ($nav->link_newtab): ?>target="_blank"<?php endif; ?>>
@@ -110,116 +102,107 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                         </div>
                     </div>
                 </div>
+            <?php endif; ?>
 
-
-                <div class="col-12 col-md-6">
-                    <?php endif; ?>
-
+                <div class="<?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>col-12 col-md-6<?php endif; ?>">
                     <?php if ($this->element_type == 'is_slider'): ?>
-                        <div class="position-relative">
+                    <div class="position-relative">
+                        <div class="content-slider content-slider_<?= $this->id; ?> swiper custom <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>is-vertical<?php endif; ?>">
+                            <!-- Additional required wrapper -->
+                            <div class="swiper-wrapper">
+                                <!-- Slides -->
+                                <?php foreach ($this->elements as $slide) : ?>
+                                <?php
+                                if (!isset($slide->size) && $this->element_type == 'is_slider') {
+                                    $slide->{"size"} = "";
+                                }
+                                ?>
 
-                            <div class="content-slider content-slider_<?= $this->id; ?> swiper custom <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>is-vertical<?php endif; ?>">
-                                <!-- Additional required wrapper -->
-                                <div class="swiper-wrapper">
-                                    <!-- Slides -->
-                                    <?php foreach ($this->elements as $slide) : ?>
-                                    <?php
-                                    if (!isset($slide->size) && $this->element_type == 'is_slider') {
-                                        $slide->{"size"} = "";
-                                    }
-                                    ?>
-
-                                    <div class="swiper-slide">
-                                        <div class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?> row align-items-center gx-lg-4 <?php if ($slide->row_reverse) : ?>flex-row-reverse <?php endif; ?><?php endif; ?>">
+                                <div class="swiper-slide">
+                                    <div class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?> row align-items-center gx-lg-4 <?php if ($slide->row_reverse) : ?>flex-row-reverse <?php endif; ?><?php endif; ?>">
 
 
-                                            <?php if ($slide->image): ?>
-                                                <div class="<?php if (($this->nav_position == 3 || $this->nav_position == 4) && $slide->text): ?>mb-2<?php endif; ?><?php if ($this->nav_position == 1 || $this->nav_position == 2): ?><?= $slide->column_width; ?><?php endif; ?>">
-                                                    <img class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>swiper-lazy<?php endif; ?> slide-image"
-                                                         <?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>data-<?php endif; ?>src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>">
+                                        <?php if ($slide->image): ?>
+                                            <div class="<?php if (($this->nav_position == 3 || $this->nav_position == 4) && ($slide->longtext)): ?>mb-2<?php endif; ?>  <?php if (($this->nav_position == 1 || $this->nav_position == 2) && ($slide->longtext)): ?><?= $slide->column_width; ?><?php endif; ?>">
+                                                <img class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>swiper-lazy<?php endif; ?> slide-image"
+                                                     <?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>data-<?php endif; ?>src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>">
 
-                                                </div>
-                                            <?php endif; ?>
-                                            <div class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>col-12 col-md<?php else: ?>half-container<?php endif; ?>">
-                                                <?php if ($slide->text) : ?>
-                                                <div class="slide-caption">
-                                                    <?php if (!$slide->onlystyle) : ?>
-                                                    <<?php echo $slide->headline_type; ?>>
-                                                    <?php echo $slide->text; ?>
-                                                </<?php echo $slide->headline_type; ?>>
-                                            <?php else : ?>
-                                                <span class="<?php echo $slide->headline_type; ?>">
-                                            <?php echo $slide->text; ?>
-                                        </span>
-                                            <?php endif; ?>
                                             </div>
                                         <?php endif; ?>
 
-                                            <?php if ($slide->longtext) : ?>
-                                                <div class="slide-description"><?php echo $slide->longtext; ?></div>
-                                            <?php endif; ?>
+                                        <?php if ($slide->longtext || $slide->text) : ?>
+                                        <div class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>col-12 col-md<?php else: ?>half-container<?php endif; ?>">
+
+                                            <?php if ($slide->text) : ?>
+                                            <div class="slide-caption">
+                                                <?php if (!$slide->onlystyle) : ?>
+                                                <<?php echo $slide->headline_type; ?>>
+                                                <?php echo $slide->text; ?>
+                                            </<?php echo $slide->headline_type; ?>>
+                                        <?php else : ?>
+                                            <span class="<?php echo $slide->headline_type; ?>">
+                                                                        <?php echo $slide->text; ?>
+                                                                    </span>
+                                        <?php endif; ?>
                                         </div>
+                                    <?php endif; ?>
+
+                                        <?php if ($slide->longtext) : ?>
+                                            <div class="slide-description  <?php if (!$slide->image): ?>container<?php else: ?>half-container<?php endif; ?>"><?php echo $slide->longtext; ?></div>
+                                        <?php endif; ?>
                                     </div>
+                                    <?php endif; ?>
                                 </div>
-                                <?php endforeach ?>
+
                             </div>
-
-
+                            <?php endforeach ?>
                         </div>
-                        <?php if (count($this->elements) > 1) : ?>
-                            <?php if ($this->show_pagination): ?>
-                                <div class="content-slider_<?= $this->id; ?> swiper-pagination"></div>
-                            <?php endif; ?>
-                            <?php if ($this->show_arrows): ?>
+                    </div>
 
-                                <div class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
-                                <div class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
-
-                            <?php endif; ?>
+                    <?php if (count($this->elements) > 1) : ?>
+                        <?php if ($this->show_pagination): ?>
+                            <div class="content-slider_<?= $this->id; ?> swiper-pagination"></div>
+                        <?php endif; ?>
+                        <?php if ($this->show_arrows): ?>
+                            <div class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                            <div class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
                         <?php endif; ?>
                     <?php endif; ?>
-
-
-                    <?php if ($this->element_type == 'is_buttons' && $this->fixed_image): ?>
-                        <div class="half-container">
-                            <img class="lazy"
-                                 data-src="<?= Image::get(FilesModel::findByUuid($this->fixed_image)->path, $this->size_fixed[0], $this->size_fixed[1], $this->size_fixed[2]); ?>">
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>
                 </div>
+            <?php endif; ?>
+
+                <?php if ($this->element_type == 'is_buttons' && $this->fixed_image): ?>
+                    <div class="text-center <?php if (!$this->is_fullwidth && ($this->nav_position == 3 || $this->nav_position == 4)): ?>half-container<?php endif; ?>">
+                        <img class="lazy"
+                             data-src="<?= Image::get(FilesModel::findByUuid($this->fixed_image)->path, $this->size_fixed[0], $this->size_fixed[1], $this->size_fixed[2]); ?>">
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($this->nav_position == 2): ?>
+                    <div class="mt-3 container  horizontal content-slider--nav d-none d-md-block content-slider--nav_<?= $this->id; ?>">
+                        <ul>
+                            <?php foreach ($this->elements as $i => $nav) : ?>
+                                <li <?php if ($i == 0 && $this->element_type == 'is_slider'): ?>class="active"<?php endif; ?>>
+                                    <?php if ($this->element_type == 'is_slider'): ?>
+                                        <span data-slide="<?= $i; ?>">
+                                                <?= $nav->slide_nav_text; ?>
+                                                </span>
+                                    <?php elseif ($this->element_type == 'is_buttons'): ?>
+                                        <a href="<?= $nav->link_url; ?>"
+                                           <?php if ($nav->link_newtab): ?>target="_blank"<?php endif; ?>>
+                                            <?= $nav->slide_nav_text; ?>
+                                        </a>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
             </div>
-            <?php endif; ?>
-
-
-
-            <?php if ($this->nav_position == 2): ?>
-                <div class="mt-3 horizontal content-slider--nav d-none d-md-block content-slider--nav_<?= $this->id; ?>">
-                    <ul>
-                        <?php foreach ($this->elements as $i => $nav) : ?>
-                            <li <?php if ($i == 0 && $this->element_type == 'is_slider'): ?>class="active"<?php endif; ?>>
-                                <?php if ($this->element_type == 'is_slider'): ?>
-                                    <span data-slide="<?= $i; ?>">
-                            <?= $nav->slide_nav_text; ?>
-                            </span>
-                                <?php elseif ($this->element_type == 'is_buttons'): ?>
-                                    <a href="<?= $nav->link_url; ?>"
-                                       <?php if ($nav->link_newtab): ?>target="_blank"<?php endif; ?>>
-                                        <?= $nav->slide_nav_text; ?>
-                                    </a>
-                                <?php endif; ?>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
-
-
         </div>
 
-    </div>
 
+    </div>
     </div>
     </div>
     </div>
@@ -296,7 +279,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
 
                 $('.content-slider--nav_<?= $this->id; ?> span').click(swiper_<?php echo $this->id; ?>, function () {
-                    swiper_<?php echo $this->id; ?>.slideTo($(this).data("slide"));
+                    swiper_<?php echo $this->id; ?>.slideTo($(this).data("slide") <?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>+ 1<?php endif;?>);
 
                     $('.content-slider--nav_<?= $this->id; ?> li.active').removeClass("active");
                     $(this).parent("li").addClass("active");
