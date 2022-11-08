@@ -234,8 +234,10 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
                     <?php endif;?>
 
-
+                    <?php if ($this->mousehweel) : ?>
                     mousewheel: true,
+                    <?php endif;?>
+
                     speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>500<?php endif;?>,
 
 

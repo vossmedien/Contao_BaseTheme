@@ -252,6 +252,11 @@ return array(
             'eval' => array('tl_class' => ' clr'),
         ),
 
+        'mousewheel' => array(
+            'label' => array('Slider-Navigation per Mausrad aktivieren', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
 
         'loop' => array(
             'label' => array('Automatisch wieder von Anfang starten', '"loop"'),

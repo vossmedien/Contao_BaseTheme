@@ -4,6 +4,11 @@
   }
 }
 
+&.theme-6 {
+  @include media-breakpoint-down(lg) {
+    padding-top: rfs-value(82px);
+  }
+}
 
 .header--content {
   &.type--6 {
