@@ -406,16 +406,18 @@ return array(
                 'title' => array(
                     'label' => array('Überschrift', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => ''),
                 ),
 
                 'topline' => array(
                     'label' => array('Topline', 'Text oberhalb der Überschrift'),
                     'inputType' => 'text',
+                          'eval' => array('tl_class' => 'w50'),
                 ),
                 'subline' => array(
                     'label' => array('Subline', 'Text unterhalb der Überschrift'),
                     'inputType' => 'text',
+                                   'eval' => array('tl_class' => 'w50'),
                 ),
 
                 'text' => array(

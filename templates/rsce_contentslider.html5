@@ -15,7 +15,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
         <div class="ce--inner <?php if ($this->is_fullwidth): ?>is-fullwidth<?php endif; ?> <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>is-vertical<?php endif; ?>">
             <?php if ($this->nav_position == 1 || $this->nav_position == 2 && ($this->headline || $this->subline || $this->topline)): ?>
-            <div class="ce--headline container mb-3"
+            <div class="ce--headline  container"
                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                 <div class="">
                     <?php if ($this->topline) : ?>
@@ -62,12 +62,12 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                 <?php endif; ?>
 
 
-                <div class="<?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>row align-items-center<?php endif; ?> <?php if ($this->nav_position == 4): ?>flex-row-reverse<?php endif; ?>">
+                <div class="<?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>row<?php endif; ?> <?php if ($this->nav_position == 4): ?>flex-row-reverse<?php endif; ?>">
                     <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>
                     <div class="col-12 col-md-6">
-                        <div class="nav-column half-container">
+                        <div class="nav-column half-container pt-1 pb-1 pt-lg-5 pb-lg-5">
                             <?php if ($this->headline || $this->subline || $this->topline): ?>
-                            <div class="ce--headline mb-3"
+                            <div class="ce--headline"
                                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                 <div class="">
                                     <?php if ($this->topline) : ?>
@@ -172,9 +172,9 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
             <?php endif; ?>
 
                 <?php if ($this->element_type == 'is_buttons' && $this->fixed_image): ?>
-                    <div class="text-center <?php if (!$this->is_fullwidth && ($this->nav_position == 3 || $this->nav_position == 4)): ?>half-container<?php endif; ?>">
-                        <img class="lazy"
-                             data-src="<?= Image::get(FilesModel::findByUuid($this->fixed_image)->path, $this->size_fixed[0], $this->size_fixed[1], $this->size_fixed[2]); ?>">
+                    <div class="text-center fixed-image w-100 h-100 <?php if (!$this->is_fullwidth && ($this->nav_position == 3 || $this->nav_position == 4)): ?>half-container<?php endif; ?>">
+                        <div class="fixed-image--holder lazy w-100 h-100" data-bg="<?= Image::get(FilesModel::findByUuid($this->fixed_image)->path, $this->size_fixed[0], $this->size_fixed[1], $this->size_fixed[2]); ?>" style="background-position: center center; background-repeat: no-repeat;background-size: cover;">
+                        </div>
                     </div>
                 <?php endif; ?>
 

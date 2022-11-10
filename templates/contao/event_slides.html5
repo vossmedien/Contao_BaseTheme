@@ -10,19 +10,22 @@
         <?php endif; ?>
 
         <div class="event--content-wrapper">
-            <h2 <?php if ($this->details): ?> data-bs-toggle="modal"
+            <h3 <?php if ($this->details): ?> data-bs-toggle="modal"
                                               data-bs-target="#eventModal_<?= $this->id; ?><?php endif; ?>"
                                               title="<?= $this->title ?> (<?php if ($this->day): ?><?= $this->day ?>, <?php endif; ?><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?>)">
                 <?= $this->title ?>
-            </h2>
+            </h3>
 
             <div class="event--data-wrapper">
+                <?php if ($this->date): ?>
+                    <?= $this->date ?>,
+                <?php endif; ?>
                 <?php if ($this->time): ?>
                     <span class="time">
-                        <time datetime="<?= $this->datetime ?>"><?= $this->time ?></time> Uhr | </span>
+                        <time datetime="<?= $this->datetime ?>"><?= $this->time ?></time> Uhr </span>
                 <?php endif; ?>
                 <?php if ($this->location): ?>
-                    <span class="location"> <?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></span>
+                    <span class="location">| <?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></span>
                 <?php endif; ?>
             </div>
 
@@ -35,7 +38,7 @@
             <?php if ($this->details): ?>
                 <div class="event--button pt-1 text-md-end">
                     <a data-bs-toggle="modal" data-bs-target="#eventModal_<?= $this->id; ?>"
-                       class="btn btn-outline-black btn-sm">Weiterlesen</a>
+                       class="btn btn-outline-primary btn-sm">Weiterlesen</a>
                 </div>
             <?php endif; ?>
 
@@ -72,14 +75,16 @@
                             <div class="col-12  <?php if ($this->addImage): ?>col-md-6<?php endif; ?>">
                                 <span class="h2">   <?= $this->title ?></span>
 
-                                <?php if ($this->time): ?>
-                                    <strong class="time">
-                                        <time datetime="<?= $this->datetime ?>"><?= $this->time ?></time>
-                                        | </strong>
-                                <?php endif; ?>
-                                <?php if ($this->location): ?>
-                                    <strong class="location"> <?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></strong>
-                                <?php endif; ?>
+                                <?php if ($this->date): ?>
+                    <?= $this->date ?>,
+                <?php endif; ?>
+                <?php if ($this->time): ?>
+                    <span class="time">
+                        <time datetime="<?= $this->datetime ?>"><?= $this->time ?></time> Uhr </span>
+                <?php endif; ?>
+                <?php if ($this->location): ?>
+                    <span class="location">| <?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></span>
+                <?php endif; ?>
 
                                 <?= $this->details; ?>
                             </div>

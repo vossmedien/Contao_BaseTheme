@@ -16,6 +16,14 @@ if (TL_MODE == 'FE') {
                                  <?php if ($this->text_color) : ?>
                                          color: <?= $this->text_color;?>;
              <?php endif; ?>
+
+
+                            <?php if ($this->background_color) : ?>
+                     background-color: <?= $this->background_color;?>;
+             <?php endif; ?>
+             <?php if ($this->alternate_background_color) : ?>
+                     background-color: <?= $this->alternate_background_color;?>;
+             <?php endif; ?>
                                          "
 
 >
@@ -43,14 +51,7 @@ if (TL_MODE == 'FE') {
         <div class="ts--inner"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
 
-             style="
-             <?php if ($this->background_color) : ?>
-                     background-color: <?= $this->background_color;?>;
-             <?php endif; ?>
-             <?php if ($this->alternate_background_color) : ?>
-                     background-color: <?= $this->alternate_background_color;?>;
-             <?php endif; ?>
-                     ">
+             >
 
             <div class="container">
 

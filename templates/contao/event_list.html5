@@ -41,7 +41,7 @@
                 <?php if ($this->details): ?>
                     <div class="event--button pt-1 text-md-end">
                         <a data-bs-toggle="modal" data-bs-target="#eventModal_<?= $this->id; ?>"
-                           class="btn btn-outline-black btn-sm">Weiterlesen</a>
+                           class="btn btn-outline-primary btn-sm">Weiterlesen</a>
                     </div>
                 <?php endif; ?>
             </div>
