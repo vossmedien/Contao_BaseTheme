@@ -21,7 +21,7 @@
 -->
 
 <div class="{{link_url::69}}">
-    <a class="btn btn-outline-primary"><i class="fal fa-calendar-alt"></i> Zum Eventkalender</a>
+    <a class="btn btn-outline-primary"><i class="ico ico-kalender"></i> Zum Eventkalender</a>
 </div>
 
 <script>

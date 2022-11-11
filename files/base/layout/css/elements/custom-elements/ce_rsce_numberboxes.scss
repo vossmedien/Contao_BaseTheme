@@ -10,67 +10,94 @@
 html body {
   .ce_rsce_numberboxes {
     .number-box--wrapper {
-      background-size: cover !important;
-      height: rfs-value(250px);
-      display: flex;
-      align-items: flex-end;
-      position: relative;
-      color: var(--bs-white);
-      background-position: center;
+      line-height: var(--bs-body-line-height-xs);
 
-      @include media-breakpoint-up(md) {
-        height: rfs-fluid-value(250px);
+      &.with-image {
+        background-size: cover !important;
+        display: flex;
+        align-items: flex-end;
+        position: relative;
+        //color: var(--bs-white);
+        background-position: center;
+
+
+        min-height: rfs-value(250px);
+        @include media-breakpoint-up(md) {
+          min-height: rfs-fluid-value(250px);
+        }
+
+        @include media-breakpoint-up(xxl) {
+          min-height: rfs-value(300px);
+        }
+
+        .number-box--title {
+          position: absolute;
+          top: 50%;
+          right: 50%;
+          transform: translate(50%, -50%);
+          width: 100%;
+        }
       }
 
-      @include media-breakpoint-up(xxl) {
-        height: rfs-value(300px);
+      .row {
+        .left-col--inner {
+          padding: 1rem 0.5rem 1rem 1rem;
+        }
+
+        .right-col--inner {
+          padding: 1rem 0rem 1rem 0.5rem;
+        }
       }
 
       .number-box--title {
-        position: absolute;
-        top: 50%;
-        right: 50%;
-        transform: translate(50%, -50%);
-        width: 100%;
         text-align: center;
+        color: inherit;
 
         > * {
           text-transform: uppercase;
           margin-bottom: 0px;
-          font-weight: $font-weight-bolder;
-          @include font-size(34px);
-          color: var(--bs-white);
-          line-height: 1;
+          //font-weight: $font-weight-bolder;
+          //@include font-size(34px);
+          //color: var(--bs-white);
+          line-height: var(--bs-body-line-height-xs);
+          color: inherit;
+        }
+
+        & + .number-box--content {
+          margin-top: 1.25rem;
         }
       }
 
       .number-box--content {
         width: 100%;
-        line-height: 1;
+        text-align: center;
+        line-height: var(--bs-body-line-height-xs);
 
         .left--col {
           .left-col--inner {
-            padding: 1rem 0.5rem 1rem 1rem;
+
             white-space: nowrap;
+            font-weight: $font-weight-bolder;
+            @include font-size(30px);
 
             span {
               display: inline-block;
-              font-weight: $font-weight-bolder;
-              @include font-size(30px);
+              line-height: var(--bs-body-line-height-xs);
             }
           }
         }
 
         .right--col {
-          border-left: 4px solid var(--bs-white);
-
           .right-col--inner {
-            padding: 1rem 0rem 1rem 0.5rem;
+            font-weight: $font-weight-bolder;
+            @include font-size(24px);
 
-            span {
-              display: block;
-              font-weight: $font-weight-bolder;
-              @include font-size(24px);
+            &.with-left-col {
+              border-left: 4px solid var(--bs-white);
+            }
+
+            p {
+              line-height: var(--bs-body-line-height-xs);
             }
           }
         }

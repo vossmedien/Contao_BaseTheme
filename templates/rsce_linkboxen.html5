@@ -31,7 +31,7 @@ if (!isset($this->size)) {
             <div class="
 
         <?php if ($this->is_slider): ?>
-        swiper linkboxes-slider_<?= $this->id; ?>
+        swiper pb-0 linkboxes-slider_<?= $this->id; ?>
         <?php else: ?>
           row <?= $this->row_align; ?> justify-content-center <?php if ($this->same_height): ?>same-height<?php endif; ?>
             <?php endif; ?>
@@ -42,7 +42,7 @@ if (!isset($this->size)) {
                 <div class="swiper-wrapper">
                     <?php endif; ?>
                     <?php foreach ($this->boxes as $i => $box) : ?>
-                        <div class="
+                        <div style="width: auto;" class="
 
                         <?php if ($this->is_slider): ?>
                         swiper-slide
@@ -50,6 +50,7 @@ if (!isset($this->size)) {
                 <?php if ($box->column_width) : ?><?php echo $box->column_width; ?><?php else : ?>col-12 col-md-6 col-lg-4<?php endif; ?>
                        <?php endif; ?>
                   ">
+
                             <div id="linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>"
                                  class="link--box <?php if ($box->linkoverlay || $box->expand_longtext) : ?>with-link<?php endif; ?> <?php echo $box->box_style; ?> "
                                  <?php if (!$this->is_slider): ?>data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"<?php endif; ?>>
@@ -151,7 +152,6 @@ if (!isset($this->size)) {
                                                  <?php if ($this->is_slider): ?>
                                                          background-image:url(<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>);
                                                  <?php endif; ?>
-
                                                          background-size: cover; background-repeat: no-repeat; background-position: center center; <?php if ($this->imagearea_height): ?>height: <?= $this->imagearea_height; ?><?php endif; ?>"
                                                 <?php if (!$this->is_slider): ?>
                                                     data-bg="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
@@ -273,6 +273,7 @@ if (!isset($this->size)) {
                                     </div>
                                 <?php endif; ?>
                             </div>
+
                         </div>
                     <?php endforeach ?>
                     <?php if ($this->is_slider): ?>
@@ -367,7 +368,7 @@ if (!isset($this->size)) {
 
                     spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
                     centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
-                    slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>1<?php endif;?>,
+                    slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>'auto'<?php endif;?>,
 
                     speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
                     effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
@@ -407,6 +408,7 @@ if (!isset($this->size)) {
                         clickable: true,
                     },
                     <?php endif; ?>
+                    <?php if ($this->slides_per_view) : ?>
                     breakpoints: {
                         320: {
                             slidesPerView: 1,
@@ -415,12 +417,13 @@ if (!isset($this->size)) {
                             slidesPerView: 2,
                         },
                         768: {
-                            slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view / 2; ?><?php else:?>1<?php endif;?>,
+                            slidesPerView: <?= $this->slides_per_view / 2; ?>,
                         },
                         992: {
-                            slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>3<?php endif;?>,
+                            slidesPerView: <?= $this->slides_per_view; ?>,
                         }
                     }
+                    <?php endif;?>
                 });
             }
         }, {passive: true})

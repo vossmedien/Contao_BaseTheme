@@ -148,7 +148,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                                     <?php endif; ?>
 
                                         <?php if ($slide->longtext) : ?>
-                                            <div class="slide-description  <?php if (!$slide->image): ?>container<?php else: ?>half-container<?php endif; ?>"><?php echo $slide->longtext; ?></div>
+                                            <div class="slide-description  <?php if (!$slide->image): ?>container<?php elseif ($this->nav_position == 3 || $this->nav_position == 4): ?>half-container<?php endif; ?>"><?php echo $slide->longtext; ?></div>
                                         <?php endif; ?>
                                     </div>
                                     <?php endif; ?>

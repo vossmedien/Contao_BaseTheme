@@ -222,9 +222,9 @@ return array(
         ),
 
         'slides_per_view' => array(
-            'label' => array('Wie viele Slides sind sichtbar', 'Beispielsweise 1.5 um rechts und links eine Vorschau des nächsten Slides anzuzeigen'),
+            'label' => array('Wie viele Slides sind sichtbar', 'Beispielsweise 1.5 um rechts und links eine Vorschau des nächsten Slides anzuzeigen, Standard: auto'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50', 'mandatory' => true),
+            'eval' => array('tl_class' => 'w50'),
         ),
 
 

@@ -86,7 +86,7 @@ if (TL_MODE == 'FE') {
                             </div>
                         <?php endif; ?>
                         <?php if ($row->buttons) : ?>
-                            <div class="ce--buttons mt-2 text-md-end">
+                            <div class="ce--buttons mt-2">
                                 <?php foreach ($row->buttons as $b) : ?>
                                     <a <?php if ($b->new_tab): ?>target="_blank"<?php endif; ?>
                                        class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
@@ -185,7 +185,10 @@ if (TL_MODE == 'FE') {
 
                 <div
                         style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
-                        class="image-col--inner <?php if ($row->video) : ?>with-video<?php endif; ?> <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
+                        class=" <?php if ($row->video) : ?>with-video<?php endif; ?> <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
+
+          <?php if (!$row->not_as_bg) : ?>
+          image-col--inner
         <?php if ($row->column_width == "col-12 col-md-6 col-lg-5") : ?>
         col-12 col-md-6 col-lg-7
         <?php elseif ($row->column_width == "col-12 col-md-6 col-lg-4") : ?>
@@ -197,6 +200,7 @@ if (TL_MODE == 'FE') {
         <?php elseif ($row->column_width == "col-12 col-lg-9") : ?>
         col-12 col-lg-3
         <?php endif; ?>
+        <?php endif;?>
 "
                         <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>>
                     <?php if ($row->not_as_bg) : ?>

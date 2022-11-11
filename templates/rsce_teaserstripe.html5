@@ -27,7 +27,7 @@ if (TL_MODE == 'FE') {
                                          "
 
 >
-    <div class="ce--inner">
+    <div class="ce--inner <?php if ($this->background_color) : ?>with-bg<?php endif;?>">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">

@@ -17,6 +17,31 @@ return array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
         ),
+
+
+        'bg_image' => array(
+            'label' => array('Bild', ''),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,svg',
+            ),
+        ),
+
+        'size_bg' => array(
+            'label' => array('Bildbreite und Bildhöhe', ''),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+            ),
+        ),
+
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -301,6 +326,18 @@ return array(
                         'extensions' => 'jpg,jpeg,png,svg',
                     ),
                 ),
+
+                'size' => array(
+                    'label' => array('Bildbreite und Bildhöhe', ''),
+                    'inputType' => 'imageSize',
+                    'options' => System::getImageSizes(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'includeBlankOption' => true,
+                    ),
+                ),
+
                 'text_left_1' => array(
                     'label' => array('Zahl linke Spalte', ''),
                     'inputType' => 'text',
@@ -311,11 +348,13 @@ return array(
                 ),
                 'text_right_1' => array(
                     'label' => array('Text rechte Spalte (oben)', ''),
-                    'inputType' => 'text',
+                    'inputType' => 'textarea',
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
                 'text_right_2' => array(
                     'label' => array('Text rechte Spalte (unten)', ''),
-                    'inputType' => 'text',
+                    'inputType' => 'textarea',
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
             ),
         ),

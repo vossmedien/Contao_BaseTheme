@@ -1,10 +1,10 @@
 $fa-font-path: "/files/base/layout/_fonts/fontawesome/webfonts";
 
-$enable-cssgrid: true;
-$enable-rounded: true;
+$enable-cssgrid: true !default;
+$enable-rounded: true !default;
 
 //Abstände
-$spacer: 2rem;
+$spacer: 2rem !default;
 $spacers: (
         0: 0,
         1: 1rem,
@@ -12,11 +12,11 @@ $spacers: (
         3: 3rem,
         4: 4rem,
         5: 5rem,
-);
+) !default;
 
-$basic-gutter: $spacer * 2;
-$headline-spacing: $spacer * 1.5;
-$mini-spacing: $spacer/2;
+$basic-gutter: $spacer * 2 !default;
+$headline-spacing: $spacer * 1.5 !default;
+$mini-spacing: $spacer/2 !default;
 
 $grid-breakpoints: (
         xs: 0,
@@ -25,9 +25,9 @@ $grid-breakpoints: (
         lg: 992px,
         xl: 1200px,
         xxl: 1640px,
-);
+) !default;
 
-$grid-gutter-width: 30px;
+$grid-gutter-width: 30px !default;
 $gutters: (
         0: 0,
         1: $grid-gutter-width * 0.5,
@@ -35,25 +35,26 @@ $gutters: (
         3: $grid-gutter-width * 2,
         4: $grid-gutter-width * 3,
         5: $grid-gutter-width * 4,
-);
+) !default;
 
 
+//CSS Variablen beachten
 $container-max-widths: (
         sm: 540px,
         md: 720px,
         lg: 960px,
         xl: 1140px,
         xxl: 1600px,
-);
+) !default;
 
 // Spalten
 
-$left-col--width: 275px;
-$right-col--width: 250px;
+$left-col--width: 275px !default;
+$right-col--width: 250px !default;
 
 // Modales Fenster
 
-$modal-sm: 520px;
-$modal-md: 760px;
-$modal-lg: 940px;
-$modal-xl: 1140px;
+$modal-sm: 520px !default;
+$modal-md: 760px !default;
+$modal-lg: 940px !default;
+$modal-xl: 1140px !default;

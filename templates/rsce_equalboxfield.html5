@@ -48,6 +48,7 @@ if (!isset($this->size)) {
 
                                 </div>
                             <?php endif; ?>
+
                             <div class="col">
                                 <div class="box--details justify-content-center <?php if ($box->alternate_background) : ?>with-bg<?php endif; ?> <?php if ($box->textalign) : ?><?php echo $box->textalign; ?><?php endif; ?>"
                                      style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?>
@@ -59,6 +60,7 @@ if (!isset($this->size)) {
                                              <?php if ($box->alternate_background) : ?>background-color:<?php echo $box->alternate_background; ?>;<?php endif; ?>
                                          <?php endif; ?>
                                              ">
+
 
                                     <?php if ($box->topline) : ?>
                                         <span class="box--topline ce--topline"><?php echo $box->topline; ?></span>
@@ -83,14 +85,14 @@ if (!isset($this->size)) {
 
                                     <?php if ($box->icon || (!$box->hide_link && $box->link_url)) : ?>
                                         <div class="box--footer <?php if ($box->is_button): ?>mt-0<?php endif; ?>">
-                                            <div class="row align-items-end">
+                                            <div class="<?php if ($box->icon && $box->link_url) : ?>row align-items-end<?php endif;?>">
                                                 <?php if ($box->icon) : ?>
-                                                    <div class="col-auto">
+                                                    <div class="<?php if ($box->icon && $box->link_url) : ?>col-auto<?php endif;?>">
                                                         <img src="<?= Image::get(FilesModel::findByUuid($box->icon)->path, null, null, null); ?>">
                                                     </div>
                                                 <?php endif; ?>
                                                 <?php if ($box->link_url): ?>
-                                                    <div class="col <?php if (!$box->is_button): ?>text-end<?php endif; ?>">
+                                                    <div class="<?php if ($box->icon && $box->link_url) : ?>col<?php endif;?> <?php if (!$box->is_button): ?>text-end<?php endif; ?>">
                                                         <a <?php if ($box->new_tab): ?>target="_blank"<?php endif; ?>
                                                            class="<?php if ($box->is_button): ?>btn <?= $box->link_type; ?> <?= $box->link_size; ?> <?php endif; ?>"
 
@@ -109,6 +111,7 @@ if (!isset($this->size)) {
                                             </div>
                                         </div>
                                     <?php endif; ?>
+
 
 
                                     <?php if ($box->link_url): ?>

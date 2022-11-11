@@ -10,9 +10,10 @@
         <?php endif; ?>
 
         <div class="event--content-wrapper">
-            <h3 <?php if ($this->details): ?> data-bs-toggle="modal"
-                                              data-bs-target="#eventModal_<?= $this->id; ?><?php endif; ?>"
-                                              title="<?= $this->title ?> (<?php if ($this->day): ?><?= $this->day ?>, <?php endif; ?><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?>)">
+            <h3 <?php if ($this->details): ?>
+                    data-bs-toggle="modal"
+                    data-bs-target="#eventModal_<?= $this->id; ?>"<?php endif; ?>
+                    title="<?= $this->title ?> (<?php if ($this->day): ?><?= $this->day ?>, <?php endif; ?><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?>)">
                 <?= $this->title ?>
             </h3>
 
