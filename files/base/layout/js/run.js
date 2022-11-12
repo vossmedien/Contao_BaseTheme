@@ -242,7 +242,9 @@ Promise.all(promises)
         }
         /* END */
 
-
+    setTimeout(function () {
+        $(".widget").css('opacity',1);
+    }, 150);
     })
     .catch(function (script) {
         console.log(script + " failed to load");

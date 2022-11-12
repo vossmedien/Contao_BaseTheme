@@ -1,0 +1,15 @@
+<?php if ($this->name == 'toggle_favorites'): ?>
+    <button class="btn btn-sm btn-blank" type="submit" name="<?= $this->name ?>" >
+        <!--<?= $this->label ?>--><i class="ico ico-herz"></i>
+    </button>
+
+<?php elseif ($this->name == 'add_to_cart'): ?>
+    <button class="btn btn-sm btn-outline-primary  <?= $this->name ?> <?= $this->classes ?>" type="submit" name="<?= $this->name ?>">
+        <!--<?= $this->label ?>--><i class="ico ico-einkaufswagen"></i> In Warenkorb
+    </button>
+<?php else: ?>
+    <input type="submit" name="<?= $this->name ?>" class="submit <?= $this->name ?> <?= $this->classes ?>"
+           value="<?= $this->label ?>">
+<?php endif; ?>
+
+

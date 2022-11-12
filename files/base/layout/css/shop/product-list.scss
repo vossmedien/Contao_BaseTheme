@@ -2,15 +2,15 @@
   &#productRecommendations {
 
     > h3 {
-      color: var(--bs-gray-700);
+      color: var(--bs-body-color);
       margin-bottom: 1.5rem;
          margin-top: 3rem;
     }
 
     .product-slider--wrapper {
-      padding-left: 4rem;
-      padding-right: 4rem;
-      position: relative;
+      //padding-left: 4rem;
+      //padding-right: 4rem;
+      //position: relative;
 
       .swiper-button-prev {
       }

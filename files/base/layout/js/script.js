@@ -35,7 +35,8 @@ function scriptsActivator(
     swiper = false,
     popper = false,
     bootstrap = false,
-    aos = false
+    aos = false,
+    floatingLabels = false
 ) {
     scripts = [];
     scripts.push(
@@ -86,13 +87,16 @@ function scriptsActivator(
             "/files/base/layout/_vendor/node_modules/aos/dist/aos.js",
         );
         options_aos = true;
+    }
 
-
-
-
-
-    } else {
-        options_aos = false;
+    if (floatingLabels) {
+        scripts.push(
+            "/files/base/layout/js/_floating-labels.js",
+        );
+        options_floatingLabels = true;
+    }
+    else {
+        options_floatingLabels = false;
     }
 }
 

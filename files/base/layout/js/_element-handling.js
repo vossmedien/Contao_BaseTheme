@@ -103,6 +103,7 @@ $(function () {
         $(this).addClass("row");
     });
 
+    $('form .formbody > .fields > *').unwrap();
 
     if ($(".modal").length) {
         $(".modal").appendTo("body");
@@ -118,39 +119,6 @@ $(function () {
                 .addClass("table-striped")
                 .addClass("table-hover");
         });
-    }
-    /* END */
-
-    /* Add Floating Placeholders to Inputs */
-    if ($(".ce_form").length) {
-        function addPlaceholders() {
-            $(".widget").each(function (
-                index
-            ) {
-                var placeholder = $(this).find("input, textarea").attr("placeholder");
-                var id = $(this).find("input, textarea").attr("id");
-                if (placeholder) {
-                    $(this)
-                        .find("input, textarea")
-                        .parent("div")
-                        .addClass("form-floating");
-                    $(this)
-                        .find("input, textarea")
-                        .parent("div")
-                        .append("<label for='" + id + "'>" + placeholder + "</label>");
-
-                    $(this).find("label:first-child").remove();
-                }
-            });
-        }
-
-        $(".ce_form form").submit(function (e) {
-            setTimeout(function () {
-                addPlaceholders();
-            }, 250);
-        });
-
-        addPlaceholders();
     }
     /* END */
 

@@ -6,6 +6,7 @@
     <p class="alert alert-info <?php echo $this->type; ?> message"><?php echo $this->message; ?></p>
 <?php endif; ?>
 
+
 <?php if (!empty($this->products)) : ?>
     <div class="product-slider--wrapper">
         <div class="swiper product-slider product-slider_<?= $this->id; ?>">
@@ -52,28 +53,23 @@
                     direction: 'horizontal',
                     loop: true,
                     preloadImages: true,
-
+                    slidesPerView: 1,
                     breakpoints: {
-
-                        576: {
+                        600: {
                             slidesPerView: 2,
                             spaceBetween: 50,
                         },
 
                         992: {
-                            slidesPerView: 3,
+                            slidesPerView: <?= $this->iso_cols;?>,
                             spaceBetween: 50,
                         },
 
-                        1200: {
-                            slidesPerView: 4,
+                                1400: {
+                            slidesPerView: <?= $this->iso_cols;?>*1.25,
                             spaceBetween: 50,
                         },
 
-                        1400: {
-                            slidesPerView: 4,
-                            spaceBetween: 50,
-                        }
                     }
                 });
             }

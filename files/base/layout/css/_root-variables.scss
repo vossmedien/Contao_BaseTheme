@@ -78,12 +78,15 @@
   --bs-body-line-height-xs: 1;
 
   --bs-body-color: #212529;
+
+
   --bs-body-color-inverse: #fff;
   --bs-headline-color: var(--bs-body-color);
   --bs-headline-font-weight: $font-weight-bold;
   --bs-body-bg: #fff;
 
-  --bs-base-border-radius: 5px;
+  --bs-border-radius-sm: 5px;
+  --bs-border-radius: 10px;
   --bs-border-radius-xl: 25px;
 
   --bs-base-box-shadow: 0 0 12px rgba(39, 39, 39, 0.15);
@@ -104,6 +107,22 @@
   --bs-megamenu-lvl2-color: var(--bs-primary);
   --bs-megamenu-lvl3-color: var(--bs-body-color-inverse);
   --bs-megamenu-imageHeight: 125px;
+
+
+  //Inputs
+  --bs-input-border-radius: var(--bs-border-radius);
+  --bs-input-border: 1px solid var(--bs-border-color);
+  --bs-input-shadow: var(--bs-base-box-shadow);
+  --bs-input-padding-x: .75rem;
+  --bs-input-padding-y: 1rem;
+  --bs-input-color: var(--bs-body-color);
+  --bs-placeholder-color: var(--bs-body-color-rgb), 0.4;
+
+  //Shop
+
+  --bs-shop-bg: var(--bs-gray-200);
+  --bs-shop-filter-bg: var(--bs-gray-100);
+
 
   --mm-line-height: 20px;
   --mm-listitem-size: 44px;

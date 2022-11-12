@@ -1,0 +1,27 @@
+<!-- indexer::stop -->
+<nav class="expanded <?php echo $this->class; ?> block" <?php echo $this->cssID; ?><?php if ($this->style) : ?> style="<?php echo $this->style; ?>" <?php endif; ?>>
+    <?php if ($this->headline) : ?>
+    <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
+<?php endif; ?>
+
+
+<ul class="level_1" aria-label="submenu">
+    <?php foreach ($this->filters as $i => $item) : ?>
+        <li class="<?= $item['class'] ?>">
+            <div class="filter-item">
+                <span class="label" aria-haspopup="true"><?php echo $item['label']; ?></span>
+                <?php echo $item['subitems']; ?>
+            </div>
+        </li>
+    <?php endforeach; ?>
+</ul>
+
+
+<!--
+<?php if ($this->showClear || \Input::get('isorc') !== null) : ?>
+    <a class="clearall" href="<?php echo $this->linkClearAll; ?>"><?php echo $this->labelClearAll; ?></a>
+<?php endif; ?>
+-->
+
+</nav>
+<!-- indexer::continue -->

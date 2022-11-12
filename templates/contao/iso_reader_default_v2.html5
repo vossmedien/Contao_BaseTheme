@@ -1,0 +1,102 @@
+<form action="<?php echo $this->action; ?>" id="<?php echo $this->formId; ?>" name="iso<?php echo rand(); ?>" method="post" enctype="<?php echo $this->enctype; ?>">
+    <div class="iso--product-reader variant-v2 formbody" itemscope itemtype="http://schema.org/Product">
+        <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
+        <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+        <input type="hidden" name="AJAX_PRODUCT" value="<?php echo $this->product_id; ?>">
+        <input type="hidden" name="AJAX_MODULE" value="<?php echo $this->module_id; ?>">
+
+
+        <div class="row">
+            <div class="col-12 col-lg-6 image--col">
+                <div class="image-col--inner">
+                    <div class="product--main-image">
+                        <?php echo $this->getGallery('images')->generateMainImage(); ?>
+                    </div>
+                    <div class="product--thumbnails">
+                        <?php echo $this->getGallery('images')->generateGallery(); ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6 content--col">
+                <div class="content-col--inner">
+
+                    <div class="content--section content--section-1">
+                        <h1 itemprop="name"><?php echo $this->generateAttribute('name'); ?></h1>
+
+                        <?php /* @var \Isotope\Interfaces\IsotopePrice $price */
+                        if ($price = $this->product->getPrice()) : ?>
+                            <div class="offer" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                <meta itemprop="priceCurrency" content="<?= \Isotope\Isotope::getConfig()->currency ?>">
+                                <div class="price" itemprop="price" content="<?= \Isotope\Isotope::roundPrice($price->getAmount(1, $this->product->getOptions())) ?>">
+                                    <?php echo $this->generatePrice(); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+
+                        <div class="item--short-informations">
+                            <?php if ($this->baseprice) : ?>
+                                <span class="baseprice"><?php echo $this->generateAttribute('baseprice'); ?></span>
+                            <?php endif; ?>
+                            <?php if ($this->baseprice && $this->sku) : ?>
+                                <span>|</span>
+                            <?php endif; ?>
+                            <?php if ($this->sku) : ?>
+                                <span class="sku" itemprop="sku"><?php echo $this->generateAttribute('sku'); ?></span>
+                            <?php endif; ?>
+                        </div>
+
+
+                        <div class="tax-note">
+                            <a href="{{link_url::50}}">inkl. MwSt., zzgl. Versandkosten</a>
+                        </div>
+
+
+                        <?php if ($this->hasOptions) : ?>
+                            <div class="options">
+                                <?php foreach ($this->options as $arrOption) : echo $arrOption['html'];
+                                endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($this->actions) : ?>
+                            <div class="submit_container">
+
+                                <div class="d-flex w-100">
+                                    <?php if ($this->useQuantity) : ?>
+                                        <div class="quantity_container">
+                                            <input type="text" class="form-control text" id="quantity_requested_<?php echo $this->raw['id']; ?>" name="quantity_requested" placeholder="<?php echo $this->minimum_quantity; ?>" value="<?php if (specialchars(Input::post('quantity_requested'))) {
+                                                                                                                                                                                                                                            echo specialchars(Input::post('quantity_requested'));
+                                                                                                                                                                                                                                        } else {
+                                                                                                                                                                                                                                            echo "1";
+                                                                                                                                                                                                                                        } ?>" maxlength="10">
+                                            <label for="quantity_requested_<?php echo $this->raw['id']; ?>">Stück</label>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="actions_container">
+                                        <?php foreach ($this->actions as $action) echo $action->generate($this->product); ?>
+                                    </div>
+                                </div>
+
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <?php if ($this->description) : ?>
+                        <div class="content--section content--section-2">
+
+                            <span class="h3 text-center">Beschreibung</span>
+
+                            <div class="description" itemprop="description"><?php echo $this->generateAttribute('description'); ?></div>
+                        </div>
+                    <?php endif; ?>
+
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</form>

@@ -103,13 +103,16 @@
     padding: 0px;
   }
 
-  > .level_1 {
+  &:not(.expanded) {
     height: 0;
     opacity: 0;
     visibility: hidden;
-    background-color: var(--bs-gray-100);
-    border-radius: 0px $border-radius $border-radius $border-radius;
     transition: height 0.3s ease;
+  }
+
+  > .level_1 {
+    background-color: var(--bs-shop-filter-bg);
+    border-radius: 0px $border-radius $border-radius $border-radius;
     color: var(--bs-body-color);
     text-transform: uppercase;
     font-weight: $font-weight-medium;

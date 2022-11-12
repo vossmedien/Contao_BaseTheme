@@ -21,11 +21,13 @@
                     </h3>
 
 
-                    <!-- <?php if ($this->sku) : ?><div class="sku" itemprop="sku"><?= $this->generateAttribute('sku'); ?></div><?php endif; ?> -->
-
+                <?php if ($this->sku): ?>
+                    <!-- <div class="sku" itemprop="sku"><?= $this->generateAttribute('sku'); ?></div> -->
+                <?php endif;?>
 
                     <?php if ($this->teaser) : ?>
-                        <div class="teaser"><?= $this->highlightKeywords($this->generateAttribute('teaser')); ?></div><?php endif; ?>
+                        <div class="teaser"><?= $this->highlightKeywords($this->generateAttribute('teaser')); ?></div>
+                    <?php endif; ?>
 
                 </div>
 
@@ -45,7 +47,7 @@
                 <div class="details"><a class="btn btn-outline-primary" href="<?= $this->href; ?>" title="<?= $this->label_detail; ?>">mehr Info</a></div>
 
                 <?php if ($this->actions) : ?>
-                    <div class="submit_container">
+                    <div class="button_container">
                         <?php if ($this->hasOptions) : ?>
                             <div class="options">
                                 <?php foreach ($this->options as $arrOption) : echo $arrOption['html'];

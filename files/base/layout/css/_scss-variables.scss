@@ -25,7 +25,7 @@ $font-weight-semibold: var(--bs-font-weight-600);
 $font-weight-bold: var(--bs-font-weight-700);
 $font-weight-black: var(--bs-font-weight-800);
 
-$border-radius: var(--bs-base-border-radius);
+$border-radius: var(--bs-border-radius);
 $box-shadow: var(--bs-base-box-shadow);
 
 // Header
@@ -45,6 +45,9 @@ $text-color: var(--bs-body-color);
 $body-bg: var(--bs-body-bg);
 $body-color: $text-color;
 $link-color: var(--bs-primary);
+
+
+$input-placeholder-color: var(--bs-placeholder-color);
 
 
 $font-family-primary: var(--bs-font-primary);

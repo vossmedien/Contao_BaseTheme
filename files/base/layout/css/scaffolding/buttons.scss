@@ -139,6 +139,12 @@ html body .btn {
     }
   }
 
+  &.btn-blank{
+    background-color: transparent;
+    border: 0px;
+    padding: 0px;
+  }
+
   &.with-icon {
     text-align: left;
 
