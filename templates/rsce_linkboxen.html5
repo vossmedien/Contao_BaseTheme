@@ -42,7 +42,7 @@ if (!isset($this->size)) {
                 <div class="swiper-wrapper">
                     <?php endif; ?>
                     <?php foreach ($this->boxes as $i => $box) : ?>
-                        <div style="width: auto;" class="
+                        <div class="
 
                         <?php if ($this->is_slider): ?>
                         swiper-slide
@@ -368,7 +368,8 @@ if (!isset($this->size)) {
 
                     spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
                     centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
-                    slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>'auto'<?php endif;?>,
+                    slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>
+                    'auto'<?php endif;?>,
 
                     speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
                     effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>

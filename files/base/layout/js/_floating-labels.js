@@ -1,7 +1,7 @@
 /* Add Floating Placeholders to Inputs */
 
 function addPlaceholders() {
-    $(".widget").each(function (index) {
+    $(".widget:not(.widget-upload)").each(function (index) {
         var placeholder = $(this).find("input, textarea").attr("placeholder");
         var label = $(this).find("input, textarea").prev('label').text();
         var id = $(this).find("input, textarea").attr("id");
@@ -18,6 +18,9 @@ function addPlaceholders() {
                 .find("input, textarea")
                 .parent("div")
                 .append("<label for='" + id + "'>" + placeholder + "</label>");
+
+            $(this)
+                .find("input, textarea").attr('placeholder', '');
 
         } else if (label) {
             $(this).find("label").remove();
