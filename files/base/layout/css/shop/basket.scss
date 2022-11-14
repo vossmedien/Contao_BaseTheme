@@ -6,7 +6,7 @@
     font-weight: lighter;
     position: relative;
     @include font-size(16px);
-    margin-bottom: $basic-gutter;
+    margin-bottom: 2rem;
 
     @include media-breakpoint-up(lg) {
       @include font-size(22px);
@@ -17,7 +17,7 @@
       flex-wrap: wrap;
       align-items: flex-end;
       //margin: 0 -#{$gutter-default/2};
-      padding: $basic-gutter/2 0;
+      padding: calc(2rem / 2) 0;
       border-top: 1px $primary solid;
 
       &.row_first {
@@ -27,10 +27,10 @@
 
       > *:not([colspan="6"]) {
         flex: 1;
-        margin: 0 $basic-gutter/4;
+        margin: 0 calc(2rem / 4);
 
         @include media-breakpoint-up(lg) {
-          margin: 0 $basic-gutter/2;
+          margin: 0 calc(2rem / 2);
         }
       }
 
@@ -115,6 +115,9 @@
 
       .actions {
         text-align: right;
+        margin-left: 0px;
+        max-width: 40px;
+        width: 40px;
       }
 
       .remove {
@@ -122,6 +125,7 @@
         color: var(--bs-primary);
         text-align: right;
         text-decoration: none;
+
 
         &:before {
           @extend %fa-icon;
@@ -143,7 +147,7 @@
       //margin: 0 -#{$gutter-default/2};
 
       &.foot_0 {
-        padding-top: $basic-gutter/2;
+        padding-top: calc(2rem / 2);
         border-top: 2px $primary solid;
       }
 
@@ -155,10 +159,10 @@
 
       > * {
         flex: 1;
-        margin: 0 $basic-gutter/4;
+        margin: 0 calc(2rem / 4);
 
         @include media-breakpoint-up(lg) {
-          margin: 0 $basic-gutter/2;
+          margin: 0 calc(2rem / 2);
         }
       }
 
@@ -171,7 +175,13 @@
       }
 
       .col_last.remove {
+        max-width: 40px;
+        width: 40px;
         margin-left: 0rem;
+
+
+        /*
+
 
         @include media-breakpoint-up(lg) {
           margin-right: 0.75rem;
@@ -180,6 +190,8 @@
         @include media-breakpoint-up(xl) {
           margin-right: 1.5rem;
         }
+
+         */
 
         @include media-breakpoint-down(lg) {
           display: none;
@@ -192,7 +204,7 @@
         text-align: right;
 
         @include media-breakpoint-up(lg) {
-          margin-left: $basic-gutter * 1.5;
+          margin-left: calc(2rem * 1.5);
         }
       }
     }

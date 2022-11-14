@@ -1,4 +1,5 @@
-<form action="<?php echo $this->action; ?>" id="<?php echo $this->formId; ?>" name="iso<?php echo rand(); ?>" method="post" enctype="<?php echo $this->enctype; ?>">
+<form action="<?php echo $this->action; ?>" id="<?php echo $this->formId; ?>" name="iso<?php echo rand(); ?>"
+      method="post" enctype="<?php echo $this->enctype; ?>">
     <div class="iso--product-reader variant-v2 formbody" itemscope itemtype="http://schema.org/Product">
         <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
         <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
@@ -24,11 +25,56 @@
                     <div class="content--section content--section-1">
                         <h1 itemprop="name"><?php echo $this->generateAttribute('name'); ?></h1>
 
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <?php if ($this->teaser): ?>
+                                    <div class="teaser font-weight-bold"><?= $this->highlightKeywords($this->generateAttribute('teaser')); ?></div>
+                                <?php endif; ?>
+
+                                <?php if ($this->sku) : ?>
+                                    <div class="sku" itemprop="sku"><?php echo $this->generateAttribute('sku'); ?></div>
+                                <?php endif; ?>
+
+
+                                <div class="mt-3">
+                                    ##CHARAKTERSTIK##
+                                </div>
+
+
+                                <div class="mt-3">
+                                    ##Speiseempfehlung##
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="attributes">
+                                    <ul class="list-unstyled">
+                                        <li><strong>##Alkohol##</strong> <span>10,5 % vol</span></li>
+                                        <li><strong>##Restzucker##</strong> <span>29,0 g/l</span></li>
+                                        <li><strong>##Säure##</strong> <span>6,0 % g/l</span></li>
+                                        <li><strong>##Trinktemperatur##</strong> <span>8-10 °C</span></li>
+                                        <li><strong>##Geschmack##</strong> <span>lieblich</span></li>
+                                        <li><strong>##Anbauregion##</strong> <span>Baden/Ortenau</span></li>
+                                        <li><strong>##Ursprungsland##</strong> <span>Deutschland</span></li>
+                                        <li><strong>##Erzeuger##</strong>
+                                            <span>Affentaler Winzer eG, D-77815 Bühl</span></li>
+                                        <li><strong>##Allergene##</strong> <span>Enthält Sulfite</span></li>
+                                    </ul>
+                                </div>
+
+                                <div class="mt-4">
+                                    <a class="btn btn-outline-primary" href="/">{{icon_pl::far:fa-download}} ##EXPERTISE.PDF##</a>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <?php /* @var \Isotope\Interfaces\IsotopePrice $price */
                         if ($price = $this->product->getPrice()) : ?>
                             <div class="offer" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                                 <meta itemprop="priceCurrency" content="<?= \Isotope\Isotope::getConfig()->currency ?>">
-                                <div class="price" itemprop="price" content="<?= \Isotope\Isotope::roundPrice($price->getAmount(1, $this->product->getOptions())) ?>">
+                                <div class="price" itemprop="price"
+                                     content="<?= \Isotope\Isotope::roundPrice($price->getAmount(1, $this->product->getOptions())) ?>">
                                     <?php echo $this->generatePrice(); ?>
                                 </div>
                             </div>
@@ -62,15 +108,18 @@
 
                         <?php if ($this->actions) : ?>
                             <div class="submit_container">
-
                                 <div class="d-flex w-100">
                                     <?php if ($this->useQuantity) : ?>
                                         <div class="quantity_container">
-                                            <input type="text" class="form-control text" id="quantity_requested_<?php echo $this->raw['id']; ?>" name="quantity_requested" placeholder="<?php echo $this->minimum_quantity; ?>" value="<?php if (specialchars(Input::post('quantity_requested'))) {
-                                                                                                                                                                                                                                            echo specialchars(Input::post('quantity_requested'));
-                                                                                                                                                                                                                                        } else {
-                                                                                                                                                                                                                                            echo "1";
-                                                                                                                                                                                                                                        } ?>" maxlength="10">
+                                            <input type="text" class="form-control text"
+                                                   id="quantity_requested_<?php echo $this->raw['id']; ?>"
+                                                   name="quantity_requested"
+                                                   placeholder="<?php echo $this->minimum_quantity; ?>"
+                                                   value="<?php if (specialchars(Input::post('quantity_requested'))) {
+                                                       echo specialchars(Input::post('quantity_requested'));
+                                                   } else {
+                                                       echo "1";
+                                                   } ?>" maxlength="10">
                                             <label for="quantity_requested_<?php echo $this->raw['id']; ?>">Stück</label>
                                         </div>
                                     <?php endif; ?>
@@ -78,7 +127,6 @@
                                         <?php foreach ($this->actions as $action) echo $action->generate($this->product); ?>
                                     </div>
                                 </div>
-
                             </div>
                         <?php endif; ?>
                     </div>
@@ -88,7 +136,8 @@
 
                             <span class="h3 text-center">Beschreibung</span>
 
-                            <div class="description" itemprop="description"><?php echo $this->generateAttribute('description'); ?></div>
+                            <div class="description"
+                                 itemprop="description"><?php echo $this->generateAttribute('description'); ?></div>
                         </div>
                     <?php endif; ?>
 

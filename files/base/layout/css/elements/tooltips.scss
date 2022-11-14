@@ -1,0 +1,14 @@
+.tooltip {
+  --bs-tooltip-zindex: #{$zindex-tooltip};
+  --bs-tooltip-max-width: #{$tooltip-max-width};
+  --bs-tooltip-padding-x: #{$tooltip-padding-x};
+  --bs-tooltip-padding-y: #{$tooltip-padding-y};
+  --bs-tooltip-margin: #{$tooltip-margin};
+  @include rfs($tooltip-font-size, --bs-tooltip-font-size);
+  --bs-tooltip-color: #{$tooltip-color};
+  --bs-tooltip-bg: var(--bs-primary);
+  --bs-tooltip-border-radius: #{$tooltip-border-radius};
+  --bs-tooltip-opacity: #{$tooltip-opacity};
+  --bs-tooltip-arrow-width: #{$tooltip-arrow-width};
+  --bs-tooltip-arrow-height: #{$tooltip-arrow-height};
+}

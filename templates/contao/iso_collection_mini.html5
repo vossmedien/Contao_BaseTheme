@@ -57,23 +57,22 @@
 
 
 <div class="row gx-1 mt-3">
-    <?php if ($this->buttons['cart']) : ?>
-        <div class="col-6">
-
-            <div class="cart">
-                <a class="button btn btn-outline-primary with-icon"
-                   href="<?php echo $this->buttons['cart']['href']; ?>"><i
-                            class="fal fa-euro-sign"></i> <?php echo $this->buttons['cart']['label']; ?></a>
-            </div>
-
-        </div>
-    <?php endif; ?>
     <?php if ($this->buttons['checkout']) : ?>
         <div class="col-6">
             <div class="checkout">
-                <a class="button btn btn-outline-primary with-icon"
+                <a class="button btn btn-outline-primary"
                    href="<?php echo $this->buttons['checkout']['href']; ?>"><i
-                            class="fal fa-shopping-cart"></i> <?php echo $this->buttons['checkout']['label']; ?></a>
+                            class="ico ico-euro"></i> <?php echo $this->buttons['checkout']['label']; ?></a>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->buttons['cart']) : ?>
+        <div class="col-6">
+            <div class="cart">
+                <a class="button btn btn-outline-primary"
+                   href="<?php echo $this->buttons['cart']['href']; ?>"><i
+                            class="ico ico-einkaufswagen"></i> <?php echo $this->buttons['cart']['label']; ?></a>
             </div>
         </div>
     <?php endif; ?>

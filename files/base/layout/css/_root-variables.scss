@@ -1,4 +1,11 @@
+
 :root {
+  --bs-primary: var(--bs-red);
+  --bs-secondary: var(--bs-gray-900);
+
+  --bs-primary-rgb: 135, 22, 35;
+  --bs-secondary-rgb: 33, 37, 41;
+
   --bs-blue: #00274a;
   --bs-indigo: #6610f2;
   --bs-purple: #6f42c1;
@@ -25,28 +32,27 @@
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
 
-  --bs-primary: var(--bs-red);
-  --bs-secondary: var(--bs-gray-900);
+  --bs-success: #dbe8e2;
+  //--bs-success-rgb: 212, 237, 218;
 
-  --bs-success: #198754;
-  --bs-info: #0dcaf0;
-  --bs-warning: #ffc107;
-  --bs-danger: #dc3545;
-  --bs-light: #f8f9fa;
-  --bs-dark: #212529;
+  --bs-info: #d1ecf1;
+  //--bs-info-rgb: 209, 236, 241;
 
-  --bs-primary-rgb: 135, 22, 35;
-  --bs-secondary-rgb: 33, 37, 41;
-  --bs-success-rgb: 25, 135, 84;
-  --bs-info-rgb: 13, 202, 240;
-  --bs-warning-rgb: 255, 193, 7;
-  --bs-danger-rgb: 220, 53, 69;
-  --bs-light-rgb: 248, 249, 250;
-  --bs-dark-rgb: 33, 37, 41;
+  --bs-warning: #fff3cd;
+  //--bs-warning-rgb: 255, 243, 205;
+
+  --bs-danger: #f8d7da;
+  //--bs-danger-rgb: 248, 215, 218;
+
+  --bs-light: var(--bs-gray-200);
+  //--bs-light-rgb: 254, 254, 254;
+
+  --bs-dark: var(--bs-gray-900);
+  //--bs-dark-rgb: 214, 216, 217;
+
+
   --bs-white-rgb: 255, 255, 255;
   --bs-black-rgb: 0, 0, 0;
-  --bs-body-color-rgb: 33, 37, 41;
-  --bs-body-bg-rgb: 255, 255, 255;
 
 
   --bs-font-primary: "Open Sans", sans-serif;
@@ -78,12 +84,15 @@
   --bs-body-line-height-xs: 1;
 
   --bs-body-color: #212529;
+  --bs-body-color-rgb: 33, 37, 41;
 
+  --bs-body-bg: #fff;
+  --bs-body-bg-rgb: 255, 255, 255;
 
   --bs-body-color-inverse: #fff;
   --bs-headline-color: var(--bs-body-color);
   --bs-headline-font-weight: $font-weight-bold;
-  --bs-body-bg: #fff;
+
 
   --bs-border-radius-sm: 5px;
   --bs-border-radius: 10px;
@@ -119,11 +128,22 @@
   --bs-placeholder-color: var(--bs-body-color-rgb), 0.4;
 
   //Shop
-
   --bs-shop-bg: var(--bs-gray-200);
   --bs-shop-filter-bg: var(--bs-gray-100);
 
 
+  //Stöerer
+  --bs-fixed-stoerer--bg: var(--bs-white);
+  --bs-fixed-stoerer--color: var(--bs-primary);
+  --bs-fixed-stoerer--font-size: 1.75rem;
+  --bs-fixed-stoerer--padding: 5px;
+  --bs-fixed-stoerer--box-shadow: var(--bs-base-box-shadow);
+  --bs-fixed-stoerer--right: 0;
+  --bs-fixed-stoerer--top: 35vh;
+  --bs-fixed-stoerer--border-radius: 10px 0px 0px 10px;
+
+
+  //MMenu
   --mm-line-height: 20px;
   --mm-listitem-size: 44px;
   --mm-navbar-size: 44px;
@@ -133,10 +153,10 @@
   --mm-offset-left: 0;
   --mm-color-border: rgba(0, 0, 0, 0.1);
   --mm-color-button: rgba(0, 0, 0, 0.3);
-  --mm-color-text: rgba(0, 0, 0, 0.75);
+  --mm-color-text: var(--bs-body-color);
   --mm-color-text-dimmed: rgba(0, 0, 0, 0.3);
   --mm-color-text-highlighted: rgba(0, 0, 0, 0.05);
-  --mm-color-background: #f3f3f3;
+  --mm-color-background:var(--bs-body-bg);
   --mm-color-background-highlight: rgba(0, 0, 0, 0.05);
   --mm-color-background-emphasis: rgba(var(--bs-white-rgb), 0.4);
   --mm-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -147,4 +167,6 @@
   --bs-container-width-lg: 960px;
   --bs-container-width-xl: 1140px;
   --bs-container-width-xxl: 1600px;
+
+  //Buttons
 }

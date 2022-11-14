@@ -69,7 +69,8 @@
             <div class="summary foot_0 foot_first subtotal">
                 <?php $i = 0;
                 if (!$this->isNotification) : ?>
-                    <div class="col_<?php echo $i++; ?> col_first">&nbsp;</div><?php endif; ?>
+                    <div class="col_<?php echo $i++; ?> col_first">&nbsp;</div>
+                <?php endif; ?>
                 <div class="col_<?php echo $i++;
                                 $i++; ?><?php if ($this->isNotification) echo ' col_first'; ?> name" colspan="2"><?php echo $GLOBALS['TL_LANG']['MSC']['subTotalLabel']; ?></div>
                 <div class="col_<?php echo $i++; ?> price">&nbsp;</div>

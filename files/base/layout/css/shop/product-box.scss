@@ -81,7 +81,31 @@
   }
 
   &.variant-v2{
+    text-align: center;
+    font-size: .85rem;
 
+    a{
+      text-decoration: none;
+    }
+
+    h3{
+      margin-bottom: .5rem;
+      min-height: rfs-value(60px);
+    }
+
+    .price{
+      font-size: rfs-value(34px);
+      font-weight: $font-weight-bold;
+      margin: 1rem 0;
+    }
+
+    .baseprice{
+      margin-bottom: 5px;
+    }
+
+    .button_container{
+      margin-top: 1.25rem;
+    }
   }
 
   &.variant-slider {

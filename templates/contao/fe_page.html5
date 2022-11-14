@@ -36,6 +36,9 @@
       itemscope itemtype="http://schema.org/WebPage">
 <?php $this->block('body'); ?>
 <?php $this->sections('top'); ?>
+
+{{insert_module::47}}
+
 <div id="wrapper">
     <?php $this->block('header'); ?>
     <?php if ($this->header) : ?>

@@ -3,7 +3,7 @@
 <?php $this->block('content'); ?>
 
 <?php if ($this->message) : ?>
-    <p class="alert alert-info <?php echo $this->type; ?> message"><?php echo $this->message; ?></p>
+    <p class="alert <?php echo $this->type; ?> message"><?php echo $this->message; ?></p>
 <?php endif; ?>
 
 

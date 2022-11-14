@@ -1,34 +1,41 @@
 .fixed-stoerer--base {
-  background-color: $body-bg;
-  padding: rfs-value(5px);
-  box-shadow: $box-shadow;
+  background-color: var(--bs-fixed-stoerer--bg);
+  box-shadow: var(--bs-fixed-stoerer--box-shadow);
+  right: var(--bs-fixed-stoerer--right);
+  top: var(--bs-fixed-stoerer--top);
+  border-radius: var(--bs-fixed-stoerer--border-radius);
   position: fixed;
-  right: 0;
-  top: 40vh;
   z-index: 20;
 
   ul.list-inline {
     margin: 0px;
+    padding-top: 2.5px;
+    padding-bottom: 2.5px;
 
     > li.list-inline-item {
       display: block;
       margin-right: 0px;
-      margin-top: rfs-value(2px);
+      margin-top:  0px;
 
-      > a {
-        font-size: 1.75rem;
-        line-height: 1;
-        display: block;
-        text-align: center;
-        text-decoration: none;
-
-        &:hover {
-          color: var(--bs-body-color);
-        }
+      &:not(:last-child) > a {
+        padding-bottom: 0px;
       }
 
-      &:not(:last-child) {
-        margin-bottom: rfs-value(5px);
+
+      > a {
+        font-size: var(--bs-fixed-stoerer--font-size);
+        line-height: 1;
+        display: flex;
+        text-align: center;
+        text-decoration: none;
+        color: var(--bs-fixed-stoerer--color);
+        transition: all .3s ease;
+        padding: var(--bs-fixed-stoerer--padding);
+
+
+        &:hover {
+          opacity: .8;
+        }
       }
     }
   }

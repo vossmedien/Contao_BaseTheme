@@ -1,16 +1,6 @@
 .mod_iso_addressbook {
   width: auto !important;
-  @include media-breakpoint-up(lg) {
-    display: flex;
-    flex-flow: row wrap;
-    margin-left: -1rem !important;
-    margin-right: -1rem !important;
 
-    > * {
-      padding-right: 1rem;
-      padding-left: 1rem;
-    }
-  }
 
   .clear {
     display: none;
@@ -45,14 +35,30 @@
     }
   }
 
-  > div {
-    position: relative;
-
+  > div.container {
     @include media-breakpoint-up(lg) {
-      width: 50%;
-      margin-bottom: 2rem;
+      display: flex;
+      flex-flow: row wrap;
+      margin-left: -1rem !important;
+      margin-right: -1rem !important;
+
+      > * {
+        padding-right: 1rem;
+        padding-left: 1rem;
+      }
     }
+
+    > div {
+      position: relative;
+
+      @include media-breakpoint-up(lg) {
+        width: 50%;
+        margin-bottom: 2rem;
+      }
+    }
+
   }
+
 
   .vcard {
     background-color: var(--bs-gray-100);

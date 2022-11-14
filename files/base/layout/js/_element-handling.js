@@ -1,6 +1,6 @@
 $(function () {
 
-    $('p.back > a:not(.btn), .widget-submit > button').each(function (index) {
+    $('p.back > a:not(.btn), .widget-submit > button:not(.btn)').each(function (index) {
         $(this).addClass("btn btn-primary");
     });
 
@@ -53,34 +53,7 @@ $(function () {
         $(this).addClass("btn btn-outline-primary");
     });
 
-    $('p.empty').each(function (index) {
-        $(this).addClass("alert bg-info");
-    });
 
-    $('p.error').each(function (index) {
-        $(this).addClass("alert bg-danger");
-    });
-
-    $('.widget-radio span.note').each(function (index) {
-        $(this).addClass("alert bg-primary");
-    });
-
-
-    $('.message').each(function (index) {
-        $(this).addClass("alert");
-
-        if ($(this).hasClass("success")) {
-            $(this).addClass("bg-success");
-        }
-
-        if ($(this).hasClass("empty")) {
-            $(this).addClass("bg-primary");
-        }
-
-        if ($(this).hasClass("error")) {
-            $(this).addClass("bg-danger");
-        }
-    });
 
     $('#footerNav ul').each(function (index) {
         $(this).addClass("list-inline");
@@ -91,24 +64,65 @@ $(function () {
     });
 
 
+
     $('#main .mod_article > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_catalogUniversalView)').each(function (index) {
-        $(this).addClass("container");
+        $(this).wrapInner( "<div class='container'></div>");
     });
 
     $('#main > .inside > div[class^="mod_"]:not(.mod_article)').each(function (index) {
-        $(this).addClass("container");
+        $(this).wrapInner( "<div class='container'></div>");
     });
 
-    $('.formbody:not(.row)').each(function (index) {
+
+    $('form:not(#iso_mod_checkout_review) >  .formbody:not(.row)').each(function (index) {
         $(this).addClass("row");
     });
 
     $('form .formbody > .fields > *').unwrap();
+    $('form .formbody .address_new').addClass("row");
+
 
     if ($(".modal").length) {
         $(".modal").appendTo("body");
     }
 
+
+
+
+    /* ALERTS */
+     $('p.empty:not(.message)').each(function (index) {
+        $(this).addClass("alert alert-primary");
+    });
+
+    $('p.error:not(.message)').each(function (index) {
+        $(this).addClass("alert alert-danger");
+    });
+
+    $('.tl_confirm:not(.message)').each(function (index) {
+        $(this).addClass("alert alert-success");
+    });
+
+    $('.widget-radio span.note').each(function (index) {
+        $(this).addClass("alert alert-primary");
+    });
+
+
+    $('.message').each(function (index) {
+        $(this).addClass("alert");
+
+        if ($(this).hasClass("success")) {
+            $(this).addClass("alert-success");
+        }
+
+        if ($(this).hasClass("empty")) {
+            $(this).addClass("alert-primary");
+        }
+
+        if ($(this).hasClass("error")) {
+            $(this).addClass("alert-danger");
+        }
+    });
+    /* ALERTS ENDE */
 
     /* Transform tables in Elements to Bootstrap Tables (styled) */
     if ($("#main .ce_text table").length) {

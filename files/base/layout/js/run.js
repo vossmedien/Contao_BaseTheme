@@ -243,7 +243,7 @@ Promise.all(promises)
         /* END */
 
     setTimeout(function () {
-        $(".widget").css('opacity',1);
+        $("body").css('opacity',1);
     }, 150);
     })
     .catch(function (script) {

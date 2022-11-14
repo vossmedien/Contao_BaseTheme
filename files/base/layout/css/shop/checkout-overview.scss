@@ -18,17 +18,21 @@
 
 .orderinfo,
 .mod_iso_orderdetails {
-  @include media-breakpoint-up(md) {
-    display: flex;
-    flex-flow: row wrap;
-    margin-left: -1rem;
-    margin-right: -1rem;
 
-    > * {
-      padding-right: 1rem;
-      padding-left: 1rem;
+  > .container {
+    @include media-breakpoint-up(md) {
+      display: flex;
+      flex-flow: row wrap;
+      margin-left: -1rem;
+      margin-right: -1rem;
+
+      > * {
+        padding-right: 1rem;
+        padding-left: 1rem;
+      }
     }
   }
+
 
   .clear {
     display: none;

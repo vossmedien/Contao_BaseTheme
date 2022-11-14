@@ -32,8 +32,9 @@
                         <meta itemprop="priceCurrency" content="<?= \Isotope\Isotope::getConfig()->currency ?>">
                         <div class="price" itemprop="price"
                              content="<?= \Isotope\Isotope::roundPrice($price->getAmount(1, $this->product->getOptions())) ?>"><?= $this->generatePrice(); ?></div>
-                        <?php if ($this->baseprice): ?>
-                            <div class="baseprice"><?= $this->generateAttribute('baseprice'); ?></div>
+
+                        <?php if ( $this->generateAttribute('baseprice')): ?>
+                            <div class="baseprice">(<?= $this->generateAttribute('baseprice'); ?>)</div>
                         <?php endif; ?>
                         <span class="tax-note">
                     Preis inkl. MwSt., zzgl. Versandkosten

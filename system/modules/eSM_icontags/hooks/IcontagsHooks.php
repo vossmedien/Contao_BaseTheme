@@ -42,7 +42,7 @@ class IcontagsHooks extends \Controller
 					$strClasses .= ' '.$fragments[2];
 				}
 
-				return sprintf('<span class="%s%s"></span>',$strPrefix,$strClasses);
+				return sprintf('<i class="%s%s"></i>',$strPrefix,$strClasses);
 			}
 		} elseif ($elements[0] == 'icon_pl')
 		{
@@ -65,7 +65,7 @@ class IcontagsHooks extends \Controller
 					$strClasses .= ' '.$fragments[2];
 				}
 
-				return sprintf('<span class="%s%s"></span>',$fragments[0],$strClasses);
+				return sprintf('<i class="%s%s"></i>',$fragments[0],$strClasses);
 			}
 		}
 

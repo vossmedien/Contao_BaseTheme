@@ -27,7 +27,8 @@ html {
   font-size: var(--bs-body-font-size);
 
   body {
-    transition: padding-top 0.5s ease;
+    transition: padding-top 0.5s ease,opacity 0.25s ease;
+    opacity: 0;
 
     *[id] {
       scroll-behavior: smooth;
@@ -67,6 +68,8 @@ html {
     @import "elements/offcanvas";
     @import "elements/search";
     @import "elements/fixed-stoerer-base";
+    @import "elements/tooltips";
+    @import "elements/alerts";
     @import "_theme/includes";
   }
 }

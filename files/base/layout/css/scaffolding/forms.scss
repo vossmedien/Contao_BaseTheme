@@ -14,16 +14,17 @@
 
 form {
   min-width: 100%;
-
+  //opacity: 0;
 
   fieldset {
 
     legend {
+      margin-top: 1.5rem;
       @extend .h2;
-      margin-bottom: 20px !important;
+      margin-bottom: 0px !important;
     }
 
-    & + fieldset {
+    &:not(.row):not([class*="col-"]) + fieldset:not(.row):not([class*="col-"]) {
       margin-top: 1.5rem !important;
     }
   }
@@ -39,18 +40,17 @@ form {
 
 
   .widget {
-    opacity: 0;
     transition: opacity .15s ease-in-out;
 
     > label:first-child {
       padding: 2px 0.75rem 2px 0.75rem;
-      border-radius: $border-radius $border-radius 0px 0px;
+      border-radius: var(--bs-input-border-radius) var(--bs-input-border-radius) 0px 0px;
       background-color: var(--bs-primary);
       color: var(--bs-body-color-inverse);
       @include font-size(14px);
 
       & + * {
-        border-radius: 0px $border-radius $border-radius $border-radius;
+        border-radius: 0px var(--bs-input-border-radius) var(--bs-input-border-radius) var(--bs-input-border-radius);
       }
     }
 
@@ -122,13 +122,42 @@ form {
     }
 
     &.widget-select {
-      label + select {
-        border-radius: 0px $border-radius $border-radius $border-radius;
-      }
+      position: relative;
 
       select {
         padding: var(--bs-input-padding-y) var(--bs-input-padding-x);
       }
+
+      label + .select-wrapper {
+        &:after {
+          margin-top: 11px; //@INFO Label-height / 2
+        }
+
+        > select {
+          border-radius: 0px var(--bs-input-border-radius) var(--bs-input-border-radius) var(--bs-input-border-radius);
+        }
+      }
+
+      &:not(.multiselect) {
+        .select-wrapper {
+          &:after {
+            display: inline-block;
+            position: absolute;
+
+            @extend %fa-icon;
+            @extend .fas;
+            content: fa-content($fa-var-chevron-down);
+            color: rgba(var(--bs-placeholder-color));
+            padding-right: var(--bs-gutter-x);
+            padding-top: var(--bs-gutter-y);
+            font-size: 1.25rem;
+            top: 50%;
+            right: 15px;
+            transform: translate(0%, -50%);
+          }
+        }
+      }
+
     }
 
     &.widget-submit {
@@ -144,7 +173,7 @@ form {
     }
 
     p.error {
-      border-radius: 0px 0px $border-radius $border-radius;
+      border-radius: 0px 0px var(--bs-input-border-radius) var(--bs-input-border-radius);
       margin-bottom: 0px;
       @include padding(5px 0.75rem);
       @include font-size(14px);

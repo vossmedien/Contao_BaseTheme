@@ -4,7 +4,7 @@
     </button>
 
 <?php elseif ($this->name == 'add_to_cart'): ?>
-    <button class="btn btn-sm btn-outline-primary  <?= $this->name ?> <?= $this->classes ?>" type="submit" name="<?= $this->name ?>">
+    <button class="btn btn-outline-primary  <?= $this->name ?> <?= $this->classes ?>" type="submit" name="<?= $this->name ?>">
         <!--<?= $this->label ?>--><i class="ico ico-einkaufswagen"></i> In Warenkorb
     </button>
 <?php else: ?>
