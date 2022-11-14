@@ -185,6 +185,21 @@ form {
 
   // Floating Labels
   .form-floating {
+
+    ::placeholder {
+      color: transparent !important;
+      opacity: 1; /* Firefox */
+    }
+
+    :-ms-input-placeholder { /* Internet Explorer 10-11 */
+      color: transparent !important;
+    }
+
+    ::-ms-input-placeholder { /* Microsoft Edge */
+      color: transparent !important;
+    }
+
+
     label {
       z-index: 5;
       color: var(--bs-placeholder-color);

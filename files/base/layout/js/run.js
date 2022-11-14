@@ -242,12 +242,11 @@ Promise.all(promises)
         }
         /* END */
 
-    setTimeout(function () {
-        $("body").css('opacity',1);
-    }, 150);
+        setInterval(function () {
+             $("body").css('opacity', 1);
+        }, 150, true);
+
     })
     .catch(function (script) {
         console.log(script + " failed to load");
     });
-
-
