@@ -202,7 +202,7 @@ form {
 
     label {
       z-index: 5;
-      color: var(--bs-placeholder-color);
+      color: rgba(var(--bs-placeholder-color));
       padding-left: 1.25rem;
       line-height: 1;
       padding-top: 2.2rem;
