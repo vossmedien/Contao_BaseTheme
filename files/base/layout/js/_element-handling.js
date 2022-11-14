@@ -1,6 +1,6 @@
 $(function () {
 
-    $('p.back > a:not(.btn), .widget-submit > button:not(.btn)').each(function (index) {
+    $('p.back > a:not(.btn), .widget-submit > button').each(function (index) {
         $(this).addClass("btn btn-primary");
     });
 

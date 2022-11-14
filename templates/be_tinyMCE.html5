@@ -102,7 +102,7 @@ if ($GLOBALS['TL_CONFIG']['useRTE']) :
                 },
                 {
                     title: 'Sekundärer Button (Outline)',
-                    value: 'btn btn-secondary'
+                    value: 'btn btn-outline-secondary'
                 },
                 {
                     title: 'Weißer Button mit schwarzer Schrift',
