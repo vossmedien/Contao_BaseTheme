@@ -244,7 +244,7 @@ Promise.all(promises)
 
         setInterval(function () {
              $("body").css('opacity', 1);
-        }, 150, true);
+        }, 250, true);
 
     })
     .catch(function (script) {

@@ -48,6 +48,7 @@ html body {
     line-height: var(--bs-body-line-height-lg);
     //overflow: auto;
 
+    /*
     &.error {
       //@extend .bg-danger;
       //@extend .alert;
@@ -55,8 +56,9 @@ html body {
       font-size: 1rem;
       font-weight: $font-weight-normal;
       width: 100%;
-    }
 
+    }
+    */
     > a.alert {
       margin-top: 0px;
       margin-bottom: 0px;
