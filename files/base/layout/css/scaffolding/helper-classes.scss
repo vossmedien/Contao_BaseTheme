@@ -129,3 +129,10 @@
     max-width: calc(var(--bs-container-width-xxl) / 2)
   }
 }
+
+
+@for $n from 0 through 50 {
+    .fs-#{$n}px {
+        font-size: rfs-value(#{$n}px) !important;
+    }
+}

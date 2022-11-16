@@ -102,11 +102,11 @@ $(function () {
     /* ALERTS ENDE */
 
 
-    $('#main .mod_article > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_catalogUniversalView)').each(function (index) {
+    $('#main .mod_article > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_iso_productreader):not(.mod_catalogUniversalView):not(.mod_pageimage)').each(function (index) {
         $(this).wrapInner( "<div class='container'></div>");
     });
 
-    $('#main > .inside > div[class^="mod_"]:not(.mod_article)').each(function (index) {
+    $('#main > .inside > div[class^="mod_"]:not(.mod_article):not(.container):not(.mod_iso_productreader):not(.mod_pageimage)').each(function (index) {
         $(this).wrapInner( "<div class='container'></div>");
     });
 

@@ -1,4 +1,4 @@
-#wrapper #main .mod_article > .mod_iso_productreader {
+.mod_iso_productreader {
   margin-top: 0px;
   margin-bottom: 0px;
 
@@ -162,8 +162,14 @@
       }
     }
 
-    &.variant-v2{
+    &.variant-v2 {
+      .price {
+        margin: 3rem 0 1rem 0;
 
+        span {
+          display: inline-block;
+        }
+      }
     }
   }
 
@@ -171,4 +177,22 @@
     text-align: right;
     margin-top: 1rem;
   }
+}
+
+
+.mod_iso_productreader {
+  margin-bottom: 3rem;
+ &  + .mod_article {
+  display: flex;
+  flex-flow: column nowrap;
+  flex-direction: column-reverse;
+
+  & + .mod_pageimage{
+    display: none;
+
+    & + #productRecommendations{
+      margin-top: 3rem;
+    }
+  }
+}
 }

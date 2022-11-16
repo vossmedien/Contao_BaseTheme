@@ -94,9 +94,11 @@
     }
 
     .price{
-      font-size: rfs-value(34px);
-      font-weight: $font-weight-bold;
       margin: 1rem 0;
+
+      span{
+        display: inline-block;
+      }
     }
 
     .baseprice{
@@ -105,6 +107,10 @@
 
     .button_container{
       margin-top: 1.25rem;
+
+      button + button{
+        margin-left: 1rem;
+      }
     }
   }
 
