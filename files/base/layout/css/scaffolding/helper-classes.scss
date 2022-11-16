@@ -136,3 +136,9 @@
         font-size: rfs-value(#{$n}px) !important;
     }
 }
+
+
+.w-auto{
+  max-width: none !important;
+  min-width: 0 !important;
+}

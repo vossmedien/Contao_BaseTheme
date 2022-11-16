@@ -83,6 +83,10 @@
 
         a {
           text-decoration: none;
+
+          &:hover, &.active, &.trail{
+            text-decoration: underline;
+          }
         }
 
         > li > *:first-child {

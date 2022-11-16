@@ -1,51 +1,97 @@
-<?php if(!empty($this->actions)): ?>
-<form id="<?= $this->formId ?>" method="post">
-<div class="formbody">
-<input type="hidden" name="FORM_SUBMIT" value="<?= $this->formSubmit ?>">
-<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
-<?php endif; ?>
-
-<?php if ($this->collection->hasErrors()): ?>
-<p class="error"><?= implode('</p><p class="error">', $this->collection->getErrors()) ?></p>
-<?php endif; ?>
-
-<table>
-<tbody>
-<?php foreach($this->items as $item): $i=0; ?>
-    <tr class="<?= $item['rowClass'] ?>"><?php if(!$this->isNotification): ?>
-        <td class="col_<?= $i++ ?> col_first image"><?= $this->getGallery('images', $item['item'])->generateMainImage() ?></td><?php endif; ?>
-        <td class="col_<?= $i++ ?><?php if($this->isNotification) echo ' col_first'; ?> name">
-            <?php if($this->linkProducts && $item['href']): ?><a href="<?= $item['href'] ?>"><?= $item['name'] ?></a><?php else: ?><?= $item['name'] ?><?php endif; ?>
-            <?php if(!empty($item['attributes'])): ?>
-            <ul>
-                <?php foreach($item['attributes'] as $name => $value): ?>
-                <li><strong><?= $this->attributeLabel($name) ?>:</strong> <?= $this->attributeValue($name, $value, ['html'=>true, 'item'=>$item['item']]) ?></li>
-                <?php endforeach; ?>
-            </ul>
-            <?php endif; ?>
-        </td>
-        <?php if($this->isEditable): ?>
-        <td class="col_<?= $i++ ?> quantity">
-            <input name="quantity[<?= $item['id'] ?>]" type="text" class="text" value="" placeholder="1" maxlength="10">
-        </td>
+<?php if (!empty($this->actions)) : ?>
+<form action="<?php echo $this->action; ?>" id="<?php echo $this->formId; ?>" method="post">
+    <div class="formbody">
+        <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
+        <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
         <?php endif; ?>
-        <td class="col_<?= $i++ ?> col_last actions">
-            <a href="<?= $item['cart_href'] ?>" class="add_to_cart"><?= $GLOBALS['TL_LANG']['MSC']['buttonLabel']['add_to_cart'] ?></a>
-            <a href="<?= $item['remove_href'] ?>" class="remove" title="<?= $item['remove_title'] ?>"><?= $item['remove_link'] ?></a>
-        </td>
-    </tr><?php if($item['item']->hasErrors()): ?>
-    <tr class="<?= $item['rowClass'] ?>">
-        <td colspan="<?= $i ?>"><p class="error"><?= implode('</p><p class="error">', $item['item']->getErrors()) ?></p></td>
-    </tr>
-<?php endif; ?>
-<?php endforeach; ?>
-</tbody>
-</table>
 
-<?php if(!empty($this->actions)): ?>
-</div>
-<div class="submit_container">
-<?php foreach($this->actions as $action) echo $action->generate($this->collection).' '; ?>
-</div>
-</form>
+        <?php if ($this->collection->hasErrors()) : ?>
+            <p class="error"><?php echo implode('</p><p class="error">', $this->collection->getErrors()); ?></p>
+        <?php endif; ?>
+
+        <div class="collection">
+
+
+            <?php foreach ($this->items as $item) : $i = 0; ?>
+                <div class="<?php echo $item['rowClass']; ?>"><?php if (!$this->isNotification) : ?>
+                    <div
+                    class="ms-0 col_<?php echo $i++; ?> col_first image"><?php echo $this->getGallery('images', $item['item'])->generateMainImage(); ?></div><?php endif; ?>
+                <div class="col_<?php echo $i++; ?><?php if ($this->isNotification) echo ' col_first'; ?> name">
+                    <?php if ($this->linkProducts && $item['href']) : ?><a
+                        href="<?php echo $item['href']; ?>"><?php echo $item['name']; ?></a><?php else : ?><?php echo $item['name']; ?><?php endif; ?>
+                    <?php if (!empty($item['attributes']) || $item['sku']) : ?>
+                        <ul>
+                            <?php if ($item['sku']) : ?>
+                                <li class="attribute" itemprop="sku">
+                                <span class="label">Artikelnr.:</span> <?php echo $item['sku']; ?>
+                                </li><?php endif; ?>
+                            <?php foreach ($item['attributes'] as $name => $value) : ?>
+                                <li>
+                                    <strong>
+                                        <?= $this->attributeLabel($name) ?>:
+                                    </strong>
+                                    <?= $this->attributeValue($name, $value, ['html' => true, 'item' => $item['item']]) ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                </div>
+                <div class="col_<?php echo $i++; ?> quantity">
+                    <?php if ($this->isEditable) : ?>
+                        <input name="quantity[<?php echo $item['id']; ?>]" type="text" class="text form-control"
+                               value="<?php echo $item['quantity']; ?>" maxlength="10">
+                    <?php else : ?>
+                        <?php echo $item['quantity']; ?> x
+                    <?php endif; ?>
+                </div>
+                <div class="col_<?php echo $i++; ?> price">
+                    <?php echo $item['price']; ?>
+                </div>
+
+
+                <?php if ($this->total_tax_ids > 1) : ?>
+                    <div class="col_<?php echo $i++;
+                    if (!$this->isEditable) echo ' col_last'; ?> tax">
+                        <?php echo $item['tax_id']; ?>
+                    </div>
+                <?php endif;
+                if ($this->isEditable) : ?>
+
+
+
+
+                <div class="col_<?php echo $i++; ?> col_last actions w-auto me-0">
+
+                    <a href="<?= $item['cart_href'] ?>" data-bs-toggle="tooltip" title="In den Warenkorb legen" class="fs-24px add_to_cart"><i class="ico ico-einkaufswagen"></i></a>
+                    <a href="<?= $item['remove_href'] ?>" data-bs-toggle="tooltip" title="Aus Merkliste entfernen" class="remove fs-20px" title="<?= $item['remove_title'] ?>"><i class="far fa-trash-alt"></i></a>
+                    </div><?php endif; ?>
+
+                </div><?php if ($item['item']->hasErrors()) : ?>
+                    <div class="<?php echo $item['rowClass']; ?>">
+                        <div colspan="<?php echo $i; ?>">
+                            <p class="error"><?php echo implode('</p><p class="error">', $item['item']->getErrors()); ?></p>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+
+        </div>
+
+
+
+        <?php if (!empty($this->buttons)) : ?>
+    </div>
+    <div class=" text-end">
+        <?php //foreach($this->actions as $action) echo $action->generate($this->collection).' ';
+        ?>
+        <?php foreach ($this->buttons as $action) : ?>
+            <button type="<?php echo $action['type']; ?>"
+                    class="btn btn-outline-primary <?php echo $action['type']; ?> <?php echo $action['name']; ?>"
+                    name="<?php echo $action['name']; ?>"
+                    id="ctrl_<?php echo $action['name']; ?>_<?php echo $this->id; ?>" value="1"><i
+                        class="ico ico-einkaufswagen"></i><?php echo $action['label']; ?></button>
+        <?php endforeach; ?>
+    </div>
+    </form>
 <?php endif; ?>
+

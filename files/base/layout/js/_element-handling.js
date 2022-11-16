@@ -106,7 +106,7 @@ $(function () {
         $(this).wrapInner( "<div class='container'></div>");
     });
 
-    $('#main > .inside > div[class^="mod_"]:not(.mod_article):not(.container):not(.mod_iso_productreader):not(.mod_pageimage)').each(function (index) {
+    $('#main > .inside > div[class^="mod_"]:not(.mod_article):not(.mod_iso_productreader):not(.mod_pageimage):not(.container)').each(function (index) {
         $(this).wrapInner( "<div class='container'></div>");
     });
 
@@ -123,8 +123,6 @@ $(function () {
     if ($(".modal").length) {
         $(".modal").appendTo("body");
     }
-
-
 
 
 

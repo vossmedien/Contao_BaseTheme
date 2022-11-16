@@ -1,6 +1,6 @@
 // Cart
 #cart,
-.mod_iso_checkout .orderproducts,
+.mod_iso_checkout .orderproducts, .mod_iso_favorites,
 .mod_iso_orderdetails {
   .collection {
     font-weight: lighter;
@@ -105,9 +105,9 @@
 
         input {
           @include font-size(15px);
-          width: 40px;
           height: 35px;
           text-align: center;
+          width: 100%;
         }
 
         flex: 0 0 3em;
@@ -118,6 +118,16 @@
         margin-left: 0px;
         max-width: 40px;
         width: 40px;
+        margin-bottom: 3px;
+
+        a{
+          text-decoration: none;
+          display: inline-block;
+          vertical-align: middle;
+          & + *{
+            margin-left: .25rem;
+          }
+        }
       }
 
       .remove {
@@ -125,14 +135,6 @@
         color: var(--bs-primary);
         text-align: right;
         text-decoration: none;
-
-
-        &:before {
-          @extend %fa-icon;
-          @extend .fas;
-          content: fa-content($fa-var-trash-alt);
-          display: block;
-        }
       }
     }
 
