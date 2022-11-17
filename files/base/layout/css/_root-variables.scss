@@ -1,5 +1,7 @@
-
 :root {
+  --animate-duration: 1500ms;
+  --animate-delay: 0.75s;
+
   --bs-primary: var(--bs-red);
   --bs-secondary: var(--bs-gray-900);
 
@@ -156,7 +158,7 @@
   --mm-color-text: var(--bs-body-color);
   --mm-color-text-dimmed: rgba(0, 0, 0, 0.3);
   --mm-color-text-highlighted: rgba(0, 0, 0, 0.05);
-  --mm-color-background:var(--bs-body-bg);
+  --mm-color-background: var(--bs-body-bg);
   --mm-color-background-highlight: rgba(0, 0, 0, 0.05);
   --mm-color-background-emphasis: rgba(var(--bs-white-rgb), 0.4);
   --mm-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -168,5 +170,4 @@
   --bs-container-width-xl: 1140px;
   --bs-container-width-xxl: 1600px;
 
-  //Buttons
 }

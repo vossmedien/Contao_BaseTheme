@@ -1,0 +1,31 @@
+<ul class="dropdown-menu dropdown-menu-center <?= $this->level ?>">
+    <?php foreach ($this->items as $item) : ?>
+        <?php if ($item['count'] === 0) continue; ?>
+        <?php if ($item['isActive']) : ?>
+            <li class=" <?= $item['class'] ?>">
+                <strong
+                        class="<?= $item['class'] ?>" <?php if (!empty($item['subitems'])) : ?> aria-haspopup="true" <?php endif; ?>
+                        itemprop="name"><?= $item['link'] ?></strong>
+                <?= $item['subitems'] ?>
+            </li>
+        <?php else : ?>
+            <li<?php if ($item['class']) : ?> class=" <?= str_replace($item['class'], 'active','') ?>" <?php endif; ?>>
+                <div class="form-check py-10px">
+                    <input onChange="window.location='<?= $item['href'] ?: './' ?>'" type="checkbox" class="form-check-input"
+                           <?php if(str_contains($item['class'], 'active')):?>
+                            checked
+                            <?php endif;?>
+                           id="filterCheck_<?= strtolower(preg_replace('/\s*/', '', $item['title']));?>"
+                    >
+
+                    <label itemprop="name" class="form-check-label" for="filterCheck_<?= strtolower(preg_replace('/\s*/', '', $item['title']));?>">
+                        <?= $item['link'] ?>
+                    </label>
+                </div>
+
+                <?= $item['subitems'] ?>
+            </li>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</ul>
+

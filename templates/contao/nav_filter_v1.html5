@@ -1,4 +1,4 @@
-<div class="dropdown" aria-label="submenu">
+<div class="filter-variant--v1 dropdown" aria-label="submenu">
     <ul class="<?= $this->level ?>">
         <?php foreach ($this->items as $item) : ?>
             <?php if ($item['count'] === 0) continue; ?>
