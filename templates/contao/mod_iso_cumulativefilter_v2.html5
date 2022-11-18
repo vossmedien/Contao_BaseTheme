@@ -17,8 +17,8 @@
 <?php endforeach; ?>
 
 
-<?php if ($this->showClear || \Input::get('isorc') !== null) : ?>
-    <a class="clearall mt-1 d-block" href="<?php echo $this->linkClearAll; ?>"><?php echo $this->labelClearAll; ?></a>
+<?php if ($this->showClear || Input::get('isorc') !== null) : ?>
+    <a class="clearall d-block" href="<?php echo $this->linkClearAll; ?>"><?php echo $this->labelClearAll; ?></a>
 <?php endif; ?>
 </nav>
 <!-- indexer::continue -->

@@ -37,7 +37,7 @@ if (TL_MODE == 'FE') {
 
 
                 <div class="<?php echo $quote->column_width; ?>">
-                    <div class="quote--element mb-3 mb-lg-5"
+                    <div class="quote--element"
                          data-aos="<?php if ($quote->animation_type) : ?><?php echo $quote->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                         <?php if ($quote->bild) : ?>
                             <div class="quote--image">

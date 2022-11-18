@@ -345,7 +345,13 @@
   }
 
   &.variant-v2 {
+    display: flex;
+    flex-flow: row wrap;
+    gap: $mini-spacing;
 
+    .clearall {
+      width: 100%;
+    }
   }
 
 

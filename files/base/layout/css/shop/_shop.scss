@@ -20,7 +20,7 @@
   }
 }
 
-div[class^="mod_iso_"] {
+[class*="mod_iso_"] {
   .form-check {
     padding: 1rem;
     background-color: var(--bs-gray-100);
