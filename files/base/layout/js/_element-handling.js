@@ -54,7 +54,6 @@ $(function () {
     });
 
 
-
     $('#footerNav ul').each(function (index) {
         $(this).addClass("list-inline");
     });
@@ -64,10 +63,8 @@ $(function () {
     });
 
 
-
-
     /* ALERTS */
-     $('p.empty:not(.message)').each(function (index) {
+    $('p.empty:not(.message)').each(function (index) {
         $(this).addClass("alert alert-primary");
     });
 
@@ -103,11 +100,11 @@ $(function () {
 
 
     $('#main .mod_article > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_iso_productreader):not(.mod_catalogUniversalView):not(.mod_pageimage)').each(function (index) {
-        $(this).wrapInner( "<div class='container'></div>");
+        $(this).wrapInner("<div class='container'></div>");
     });
 
     $('#main > .inside > div[class^="mod_"]:not(.mod_article):not(.mod_iso_productreader):not(.mod_pageimage):not(.container)').each(function (index) {
-        $(this).wrapInner( "<div class='container'></div>");
+        $(this).wrapInner("<div class='container'></div>");
     });
 
 
@@ -120,10 +117,18 @@ $(function () {
     $('form .formbody  p.alert ').addClass("mt-0").wrap('<div class="col-12"></div>');
 
 
+    $('form .widget.form-control').each(function (index) {
+        $(this).removeClass("form-control");
+    });
+
+    $('form >  .formbody > fieldset').each(function (index) {
+        $(this).addClass("row");
+    });
+
+
     if ($(".modal").length) {
         $(".modal").appendTo("body");
     }
-
 
 
     /* Transform tables in Elements to Bootstrap Tables (styled) */

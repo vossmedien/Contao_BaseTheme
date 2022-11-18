@@ -19,8 +19,8 @@ function addPlaceholders() {
                 .parent("div")
                 .append("<label for='" + id + "'>" + placeholder + "</label>");
 
-            //$(this)
-                //.find("input, textarea").attr('placeholder', '');
+            $(this)
+                .find("input:not(.form-control), textarea:not(.form-control)").addClass('form-control', '');
 
         } else if (label) {
             $(this).find("label").remove();
@@ -50,10 +50,11 @@ $(".ce_form form").submit(function (e) {
 });
 
 
-$(function() {
-    addPlaceholders();
+$(function () {
+    setInterval(function () {
+        addPlaceholders();
+    }, 250, true);
 });
-
 
 
 /* END */

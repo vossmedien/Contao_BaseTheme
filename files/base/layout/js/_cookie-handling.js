@@ -60,37 +60,39 @@ setupFunctions()
 
 
 const btn = document.querySelector(".reset-cookies");
-btn.addEventListener("click", function (e) {
-    e.preventDefault();
+
+if (btn) {
+    btn.addEventListener("click", function (e) {
+        e.preventDefault();
 
 
-    if (confirm('Dadurch werden alle Cookies gelöscht und die Seite wird neu geladen, fortfahren?')) {
-        window.localStorage.clear();
+        if (confirm('Dadurch werden alle Cookies gelöscht und die Seite wird neu geladen, fortfahren?')) {
+            window.localStorage.clear();
 
 
-        var cookies = document.cookie.split("; ");
-        for (var c = 0; c < cookies.length; c++) {
-            var d = window.location.hostname.split(".");
-            while (d.length > 0) {
-                var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
-                var p = location.pathname.split('/');
-                document.cookie = cookieBase + '/';
-                while (p.length > 0) {
-                    document.cookie = cookieBase + p.join('/');
-                    p.pop();
+            var cookies = document.cookie.split("; ");
+            for (var c = 0; c < cookies.length; c++) {
+                var d = window.location.hostname.split(".");
+                while (d.length > 0) {
+                    var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+                    var p = location.pathname.split('/');
+                    document.cookie = cookieBase + '/';
+                    while (p.length > 0) {
+                        document.cookie = cookieBase + p.join('/');
+                        p.pop();
+                    }
+                    d.shift();
                 }
-                d.shift();
             }
+
+            Object.keys(Cookies.get()).forEach(function (cookieName) {
+                var neededAttributes = {};
+                Cookies.remove(cookieName, neededAttributes);
+            });
+
+            window.location.reload();
+        } else {
+
         }
-
-        Object.keys(Cookies.get()).forEach(function (cookieName) {
-            var neededAttributes = {};
-            Cookies.remove(cookieName, neededAttributes);
-        });
-
-        window.location.reload();
-    } else {
-
-    }
-});
-
+    });
+}
