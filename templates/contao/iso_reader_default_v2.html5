@@ -1,8 +1,11 @@
 <div class="container">
 
-    <form action="<?php echo $this->action; ?>" id="<?php echo $this->formId; ?>" name="iso<?php echo rand(); ?>"
+    <form action="<?php use Isotope\Interfaces\IsotopePrice;
+    use Isotope\Isotope;
+
+    echo $this->action; ?>" id="<?php echo $this->formId; ?>" name="iso<?php echo rand(); ?>"
           method="post" enctype="<?php echo $this->enctype; ?>">
-        <div class="iso--product-reader variant-v2 formbody" itemscope itemtype="http://schema.org/Product">
+        <div class="iso--product-reader variant-v2 formbody no-row" itemscope itemtype="http://schema.org/Product">
             <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
             <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
             <input type="hidden" name="AJAX_PRODUCT" value="<?php echo $this->product_id; ?>">
@@ -31,7 +34,7 @@
                             </div>
 
 
-                            <div class="row gy-0 gx-4">
+                            <div class="row gy-0 gx-3 gx-xxl-4">
                                 <div class="col-12 col-md-6">
                                     <?php if ($this->teaser): ?>
                                         <div class="teaser fw-bold"><?= $this->highlightKeywords($this->generateAttribute('teaser')); ?></div>
@@ -85,13 +88,13 @@
                             </div>
 
 
-                            <?php /* @var \Isotope\Interfaces\IsotopePrice $price */
+                            <?php /* @var IsotopePrice $price */
                             if ($price = $this->product->getPrice()) : ?>
                                 <div class="offer" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                                     <meta itemprop="priceCurrency"
-                                          content="<?= \Isotope\Isotope::getConfig()->currency ?>">
+                                          content="<?= Isotope::getConfig()->currency ?>">
                                     <div class="h1 price" itemprop="price"
-                                         content="<?= \Isotope\Isotope::roundPrice($price->getAmount(1, $this->product->getOptions())) ?>">
+                                         content="<?= Isotope::roundPrice($price->getAmount(1, $this->product->getOptions())) ?>">
                                         <?php echo $this->generatePrice(); ?>
                                     </div>
                                 </div>
@@ -121,8 +124,8 @@
                                 </div>
                             <?php endif; ?>
                             <?php if ($this->hasOptions) : ?>
-                                <div class="options">
-                                    <div class="form-body">
+                                <div class="options mt-3">
+                                    <div class="row">
                                         <?php foreach ($this->options as $arrOption) : echo $arrOption['html'];
                                         endforeach; ?>
                                     </div>
@@ -143,7 +146,8 @@
                                                        } else {
                                                            echo "1";
                                                        } ?>" maxlength="10">
-                                                <label for="quantity_requested_<?php echo $this->raw['id']; ?>">Stück</label>
+                                                <label class="text-center"
+                                                       for="quantity_requested_<?php echo $this->raw['id']; ?>">Stück</label>
                                             </div>
                                         <?php endif; ?>
                                         <div class="actions_container">

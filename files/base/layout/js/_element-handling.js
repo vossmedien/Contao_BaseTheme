@@ -108,7 +108,7 @@ $(function () {
     });
 
 
-    $('form:not(#iso_mod_checkout_review) >  .formbody:not(.row)').each(function (index) {
+    $('form:not(#iso_mod_checkout_review) > .formbody:not(.row):not(.no-row)').each(function (index) {
         $(this).addClass("row");
     });
 
