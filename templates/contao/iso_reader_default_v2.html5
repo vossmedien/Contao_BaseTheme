@@ -122,8 +122,10 @@
                             <?php endif; ?>
                             <?php if ($this->hasOptions) : ?>
                                 <div class="options">
-                                    <?php foreach ($this->options as $arrOption) : echo $arrOption['html'];
-                                    endforeach; ?>
+                                    <div class="form-body">
+                                        <?php foreach ($this->options as $arrOption) : echo $arrOption['html'];
+                                        endforeach; ?>
+                                    </div>
                                 </div>
                             <?php endif; ?>
 
@@ -169,7 +171,6 @@
         </div>
     </form>
 </div>
-
 
 
 <!--

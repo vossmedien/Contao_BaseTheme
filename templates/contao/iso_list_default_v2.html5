@@ -67,7 +67,9 @@ use Isotope\Isotope;
                     <div class="button_container">
                         <?php if ($this->hasOptions): ?>
                             <div class="options">
+                                          <div class="form-body">
                                 <?php foreach ($this->options as $arrOption): echo $arrOption['html']; endforeach; ?>
+                                          </div>
                             </div>
                         <?php endif; ?>
                         <?php if ($this->useQuantity): ?>

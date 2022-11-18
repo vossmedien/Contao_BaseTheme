@@ -55,8 +55,10 @@
 
                         <?php if ($this->hasOptions) : ?>
                             <div class="options">
+                                          <div class="form-body">
                                 <?php foreach ($this->options as $arrOption) : echo $arrOption['html'];
                                 endforeach; ?>
+                                          </div>
                             </div>
                         <?php endif; ?>
 
