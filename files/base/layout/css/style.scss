@@ -17,13 +17,12 @@
 @import "scaffolding/hacks";
 
 
-
 html {
   scroll-behavior: smooth;
   font-size: var(--bs-body-font-size);
 
   body {
-    transition: padding-top 0.5s ease,opacity 0.25s ease;
+    transition: padding-top 0.5s ease, opacity 0.25s ease;
     opacity: 0;
 
     *[id] {
@@ -40,6 +39,7 @@ html {
 
     &#tinymce {
       @include padding(7px 12px);
+      opacity: 1;
     }
 
     @import "areas/header";
