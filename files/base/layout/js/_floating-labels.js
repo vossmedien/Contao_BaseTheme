@@ -2,13 +2,18 @@
 
 function addPlaceholders() {
     $(".widget:not(.widget-upload):not(.widget-select):not(.widget-radio):not(.widget-checkbox)").each(function (index) {
-        var placeholder = $(this).find("input, textarea").attr("placeholder");
-        var label = $(this).find("input, textarea").prev('label').text();
-        var id = $(this).find("input, textarea").attr("id");
+
+        var placeholder = $(this).find("input,textarea").attr("placeholder");
+        var label = $(this).find('label').text();
+
+        var id = $(this).find("input,textarea").attr("id");
 
         label = label.replace('Pflichtfeld ', '');
 
+        $(this).find("input:not(.form-control), textarea:not(.form-control)").addClass('form-control', '');
+
         if (placeholder) {
+
             $(this).find("label").remove();
             $(this)
                 .find("input, textarea")
@@ -19,10 +24,9 @@ function addPlaceholders() {
                 .parent("div")
                 .append("<label for='" + id + "'>" + placeholder + "</label>");
 
-            $(this)
-                .find("input:not(.form-control), textarea:not(.form-control)").addClass('form-control', '');
 
         } else if (label) {
+
             $(this).find("label").remove();
 
             $(this)
@@ -38,6 +42,7 @@ function addPlaceholders() {
             $(this)
                 .find("input, textarea").attr('placeholder', label);
 
+
         }
     });
 }
@@ -51,7 +56,7 @@ $(".ce_form form").submit(function (e) {
 
 
 $(function () {
-    setInterval(function () {
+    setTimeout(function () {
         addPlaceholders();
     }, 250, true);
 });

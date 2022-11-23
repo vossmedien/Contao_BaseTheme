@@ -242,7 +242,7 @@ Promise.all(promises)
         }
         /* END */
 
-        setInterval(function () {
+        setTimeout(function () {
             $("body").css('opacity', 1);
         }, 250, true);
 
