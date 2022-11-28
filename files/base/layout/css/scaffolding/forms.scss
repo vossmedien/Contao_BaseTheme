@@ -105,11 +105,10 @@ form {
       }
     }
 
-    &.widget-textarea {
-      textarea {
-        min-height: 100px;
-      }
+    textarea.form-control {
+      min-height: 100px;
     }
+
 
     &.widget-checkbox,
     &.widget-radio {
