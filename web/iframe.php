@@ -55,20 +55,31 @@
 
 
         if (confirm('Dadurch werden alle Cookies gelöscht und die Seite wird neu geladen, fortfahren?')) {
-            if (confirm('Alle Cookies wurden gelöscht und Einstellungen zurückgesetzt, die Seite wird nun neu geladen.')) {
-                window.localStorage.clear();
 
-                Object.keys(Cookies.get()).forEach(function (cookieName) {
-                    var neededAttributes = {};
-                    Cookies.remove(cookieName, neededAttributes);
-                });
+            window.localStorage.clear();
 
-
-                window.top.location.reload();
-
-
+            var cookies = document.cookie.split("; ");
+            for (var c = 0; c < cookies.length; c++) {
+                var d = window.location.hostname.split(".");
+                while (d.length > 0) {
+                    var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+                    var p = location.pathname.split('/');
+                    document.cookie = cookieBase + '/';
+                    while (p.length > 0) {
+                        document.cookie = cookieBase + p.join('/');
+                        p.pop();
+                    }
+                    d.shift();
+                }
             }
-        } else {
+
+            Object.keys(Cookies.get()).forEach(function (cookieName) {
+                var neededAttributes = {};
+                Cookies.remove(cookieName, neededAttributes);
+            });
+
+            window.top.location.reload();
+
 
         }
 

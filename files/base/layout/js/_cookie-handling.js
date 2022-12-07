@@ -91,8 +91,6 @@ if (btn) {
             });
 
             window.location.reload();
-        } else {
-
         }
     });
 }
