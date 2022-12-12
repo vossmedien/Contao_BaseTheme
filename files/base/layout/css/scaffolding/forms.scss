@@ -3,21 +3,21 @@
   opacity: 1; /* Firefox */
 }
 
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
   color: rgba(var(--bs-placeholder-color)) !important;
 }
 
-::-ms-input-placeholder { /* Microsoft Edge */
+::-ms-input-placeholder {
+  /* Microsoft Edge */
   color: rgba(var(--bs-placeholder-color)) !important;
 }
-
 
 form {
   min-width: 100%;
   //opacity: 0;
 
   fieldset {
-
     legend {
       margin-top: 1.5rem;
       @extend .h2;
@@ -38,22 +38,22 @@ form {
     border-color: var(--bs-primary);
   }
 
-
   .widget {
-    transition: opacity .15s ease-in-out;
+    transition: opacity 0.15s ease-in-out;
 
     > label:first-child {
       padding: 2px 0.75rem 2px 0.75rem;
-      border-radius: var(--bs-input-border-radius) var(--bs-input-border-radius) 0px 0px;
+      border-radius: var(--bs-input-border-radius) var(--bs-input-border-radius)
+        0px 0px;
       background-color: var(--bs-primary);
       color: var(--bs-body-color-inverse);
       @include font-size(14px);
 
       & + * {
-        border-radius: 0px var(--bs-input-border-radius) var(--bs-input-border-radius) var(--bs-input-border-radius);
+        border-radius: 0px var(--bs-input-border-radius)
+          var(--bs-input-border-radius) var(--bs-input-border-radius);
       }
     }
-
 
     .form-label {
       margin-bottom: 0px;
@@ -85,7 +85,7 @@ form {
       @extend .form-control;
     }
 
-    .form-control[type=file] {
+    .form-control[type="file"] {
       padding-top: 0px;
       padding-bottom: 0px;
       line-height: rfs-value(50px);
@@ -108,7 +108,6 @@ form {
     textarea.form-control {
       min-height: 100px;
     }
-
 
     &.widget-checkbox,
     &.widget-radio {
@@ -133,7 +132,8 @@ form {
         }
 
         > select {
-          border-radius: 0px var(--bs-input-border-radius) var(--bs-input-border-radius) var(--bs-input-border-radius);
+          border-radius: 0px var(--bs-input-border-radius)
+            var(--bs-input-border-radius) var(--bs-input-border-radius);
         }
       }
 
@@ -156,7 +156,6 @@ form {
           }
         }
       }
-
     }
 
     &.widget-submit {
@@ -172,7 +171,8 @@ form {
     }
 
     p.error {
-      border-radius: 0px 0px var(--bs-input-border-radius) var(--bs-input-border-radius);
+      border-radius: 0px 0px var(--bs-input-border-radius)
+        var(--bs-input-border-radius);
       margin-bottom: 0px;
       @include padding(5px 0.75rem);
       @include font-size(14px);
@@ -181,23 +181,22 @@ form {
     }
   }
 
-
   // Floating Labels
   .form-floating {
-
     ::placeholder {
       color: transparent !important;
       opacity: 1; /* Firefox */
     }
 
-    :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    :-ms-input-placeholder {
+      /* Internet Explorer 10-11 */
       color: transparent !important;
     }
 
-    ::-ms-input-placeholder { /* Microsoft Edge */
+    ::-ms-input-placeholder {
+      /* Microsoft Edge */
       color: transparent !important;
     }
-
 
     label {
       z-index: 5;
@@ -224,7 +223,6 @@ form {
       line-height: rfs-value(44px);
     }
   }
-
 
   .input-group {
     &.form-floating {

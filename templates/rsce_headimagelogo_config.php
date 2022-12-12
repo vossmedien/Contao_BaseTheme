@@ -396,7 +396,7 @@ return array(
                     'reference' => &$GLOBALS['TL_LANG']['MSC'],
                     'eval' => array(
                         'rgxp' => 'digit',
-                        'tl_class' => 'clr w50',
+                        'tl_class' => 'clr',
                         'includeBlankOption' => true,
                     ),
                 ),
