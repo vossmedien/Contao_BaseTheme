@@ -81,6 +81,43 @@ if (window.location.hash) {
 }
 
 
+/* Smooth Scrolling and set correct Item active */
+
+
+var scrollToAnchor = function (e) {
+    e.preventDefault();
+    changeAnchorLinks();
+    var id = this.attributes.href.value;
+    var scrollTo = false;
+    window.location.hash = id;
+
+    if (id.length > 1) {
+        var scrollTo = document.querySelector(id);
+    }
+    if (scrollTo) {
+        var current_position = document.documentElement.scrollTop;
+        animate(
+            document.scrollingElement,
+            "scrollTop",
+            "",
+            current_position,
+            scrollTo.offsetTop - 100,
+            750,
+            true
+        );
+    }
+};
+
+window.onload = function () {
+    var anchorLinks = document.querySelectorAll(
+        '#mobileNav a[href^="#"]:not(.mm-btn)'
+    );
+    for (var i = 0; i < anchorLinks.length; i++) {
+        anchorLinks[i].addEventListener("click", scrollToAnchor);
+    }
+};
+
+
 changeAnchorLinks();
 
 $(document).on("scroll", function () {

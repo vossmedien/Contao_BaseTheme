@@ -91,7 +91,6 @@ Promise.all(promises)
             });
         }
 
-
         /* Animated Upcounting when Element is in Viewport */
         if ($(".count").length) {
             function startCounter() {
