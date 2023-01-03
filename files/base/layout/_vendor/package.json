@@ -8,6 +8,7 @@
     "animate.css": "*",
     "aos": "^3.0.0-beta.6",
     "bootstrap": "*",
+    "fullpage.js": "^4.0.15",
     "js-cookie": "*",
     "swiper": "*",
     "vanilla-lazyload": "*"
