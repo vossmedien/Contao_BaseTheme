@@ -15,12 +15,11 @@
     > li.list-inline-item {
       display: block;
       margin-right: 0px;
-      margin-top:  0px;
+      margin-top: 0px;
 
       &:not(:last-child) > a {
         padding-bottom: 0px;
       }
-
 
       > a {
         font-size: var(--bs-fixed-stoerer--font-size);
@@ -29,18 +28,16 @@
         text-align: center;
         text-decoration: none;
         color: var(--bs-fixed-stoerer--color);
-        transition: all .3s ease;
+        transition: all 0.3s ease;
         padding: var(--bs-fixed-stoerer--padding);
 
-
         &:hover {
-          opacity: .8;
+          opacity: 0.8;
         }
       }
     }
   }
 }
-
 
 .stoerer-button--list {
   .list--label {
