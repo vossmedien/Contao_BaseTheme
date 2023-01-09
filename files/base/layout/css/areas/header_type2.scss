@@ -41,27 +41,37 @@
 
         #mainNav ul.level_1 > li > a,
         #mainNav ul.level_1 > li > span {
-          padding: 0.75rem 0 0.5rem 0;
+          //padding: 0.75rem 0 0.5rem 0;
         }
       }
 
       #mainNav {
         text-align: left;
 
+        .btn{
+          white-space: nowrap;
+        }
+
         ul {
           > li {
             > a,
             > span,
             > strong {
-              color: var(--bs-body-color-inverse);
-              display: block;
-              border-bottom: 5px solid transparent;
 
-              &:hover,
-              &.active,
-              &.trail {
-                border-bottom-color: var(--bs-secondary);
+
+              &:not(.btn) {
+                color: var(--bs-body-color-inverse);
+                display: block;
+                border-bottom: 5px solid transparent;
+
+                &:hover,
+                &.active,
+                &.trail {
+                  border-bottom-color: var(--bs-secondary);
+                }
               }
+
+
             }
           }
 
@@ -71,6 +81,7 @@
             margin: 0px;
             display: flex;
             justify-content: center;
+            align-items: center;
 
             > li {
               display: inline-block;
@@ -78,32 +89,36 @@
 
               > a,
               > strong, > span {
-                display: inline-block;
-                @include font-size(14px);
-                padding: 1.5rem 0 1rem 0;
-                text-decoration: none;
-                white-space: nowrap;
 
-                @include media-breakpoint-up(md) {
+
+                &:not(.btn) {
+                  display: inline-block;
                   @include font-size(14px);
-                }
+                  padding: 1.5rem 0 1rem 0;
+                  text-decoration: none;
+                  white-space: nowrap;
 
-                @include media-breakpoint-up(lg) {
-                  @include font-size(15px);
-                }
+                  @include media-breakpoint-up(md) {
+                    @include font-size(14px);
+                  }
 
-                @include media-breakpoint-up(xl) {
-                  @include font-size(16px);
-                }
+                  @include media-breakpoint-up(lg) {
+                    @include font-size(15px);
+                  }
 
-                @include media-breakpoint-up(xxl) {
-                  @include font-size(18px);
-                }
+                  @include media-breakpoint-up(xl) {
+                    @include font-size(16px);
+                  }
 
-                &:hover,
-                &.active,
-                &.trail {
-                  border-bottom-color: var(--bs-secondary);
+                  @include media-breakpoint-up(xxl) {
+                    @include font-size(18px);
+                  }
+
+                  &:hover,
+                  &.active,
+                  &.trail {
+                    border-bottom-color: var(--bs-secondary);
+                  }
                 }
               }
 
@@ -133,8 +148,11 @@
               > a,
               > span,
               > strong {
-                padding: 0.75rem 0rem;
-                text-decoration: none;
+
+                &:not(.btn) {
+                  padding: 0.75rem 0rem;
+                  text-decoration: none;
+                }
 
                 &:hover,
                 &.active,
