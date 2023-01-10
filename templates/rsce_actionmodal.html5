@@ -85,7 +85,7 @@ if (TL_MODE == 'FE') {
 
                             <div class="col">
                                 <?php if ($this->headline): ?>
-                                    <div class="modal--headline" data-aos="animate__fadeInUp">
+                                    <div class="modal--headline" data-aos="animate__fadeIn">
                                         <span class="h2"><?php echo $this->headline; ?></span>
                                     </div>
                                 <?php endif; ?>
@@ -113,7 +113,7 @@ if (TL_MODE == 'FE') {
                                 <?php endif; ?>
 
                                 <?php if ($this->text): ?>
-                                    <div class="modal--text" data-aos="animate__fadeInUp">
+                                    <div class="modal--text" data-aos="animate__fadeIn">
                                         <?php echo $this->text; ?>
                                     </div>
                                 <?php endif; ?>
@@ -122,10 +122,10 @@ if (TL_MODE == 'FE') {
                     </div>
                 </div>
                 <?php if ($this->buttons[0]->link_text != "" || $this->show_footer_close) : ?>
-                    <div class="modal-footer ">
+                    <div class="modal-footer"  >
 
                         <?php if ($this->buttons[0]->link_text != "") : ?>
-                            <div class="ce--buttons mt-3">
+                            <div class="ce--buttons">
                                 <?php foreach ($this->buttons as $b) : ?>
                                     <a class="d-inline-block btn me-2 <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
                                        data-aos="animate__fadeInUp"
@@ -135,13 +135,13 @@ if (TL_MODE == 'FE') {
                         <?php endif; ?>
 
                         <?php if ($this->show_footer_close && !$this->sponsors): ?>
-                            <div class="text-end mt-3">
+                            <div class="text-end">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen
                                 </button>
                             </div>
                         <?php endif; ?>
                         <?php if ($this->sponsors): ?>
-                            <div class="text-end mt-3">
+                            <div class="text-end" data-aos="animate__fadeIn">
                                 <?php foreach ($this->sponsors as $s) : ?><?php if ($s->link): ?>
                                     <a href="<?php echo $s->link; ?>" target="_blank"><?php endif; ?>
                                     <img class="lazy d-inline-block ms-2"

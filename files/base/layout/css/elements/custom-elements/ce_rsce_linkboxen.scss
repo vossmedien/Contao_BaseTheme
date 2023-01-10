@@ -332,10 +332,11 @@ html body {
           min-height: rfs-value(42px);
 
           &.expandable {
+            cursor: pointer;
             overflow: hidden;
             text-overflow: ellipsis;
             transition: all 0.75s cubic-bezier(0, 1, 0, 1);
-            max-height: 42px;
+            max-height: 80px;
             z-index: 20;
             display: -webkit-box;
             -webkit-line-clamp: 2;

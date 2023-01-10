@@ -179,7 +179,7 @@ return array(
 
 
         'show_footer_close' => array(
-            'label' => array('Schließen Button zum Footer hinzufügen', ''),
+            'label' => array('Schließen Button zum Footer hinzufügen', 'Funktioniert nicht MIT Sponsoren-Logos!'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),

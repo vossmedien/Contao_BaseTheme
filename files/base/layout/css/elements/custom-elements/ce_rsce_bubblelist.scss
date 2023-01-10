@@ -15,6 +15,8 @@ html body {
         justify-content: center;
         text-align: center;
         flex-flow: row wrap;
+        gap: 2rem;
+        align-items: center;
 
         .bl--item {
           //padding: 0 3vw;
@@ -61,8 +63,13 @@ html body {
                 > g > g:first-child > g > *,
                 > g > g:first-child > g > * > path {
                   // komische SVGs
-                  fill: var(--bs-primary);
+                  fill: var(--bs-secondary);
                 }
+              }
+
+              i {
+                font-size: 75px;
+                    color: var(--bs-secondary);
               }
             }
           }
@@ -92,10 +99,24 @@ html body {
               max-height: 75%;
               max-width: 75%;
             }
+
+            i {
+              font-size: 65px;
+              line-height: rfs-value(150px);
+
+                 color: var(--bs-primary);
+              @include media-breakpoint-up(md) {
+                line-height: rfs-fluid-value(150px);
+              }
+
+              @include media-breakpoint-up(xxl) {
+                line-height: rfs-value(200px);
+              }
+            }
           }
 
           .bl-i--text {
-            text-transform: uppercase;
+            //text-transform: uppercase;
             margin-top: rfs-value(10px);
             font-size: rfs-value(20px);
             color: var(--bs-primary);

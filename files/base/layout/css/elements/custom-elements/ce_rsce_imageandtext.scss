@@ -11,18 +11,26 @@ html body {
   .ce_rsce_imageandtext {
     .ce--image-text {
       &.as--rows {
+
+
         > .row {
-          --bs-gutter-y: 2rem;
 
 
           > * {
+
+            &:not(:last-child) > .col--inner {
+              padding-bottom: 2rem;
+              margin-bottom: 1rem;
+              border-bottom: 2px solid var(--bs-primary);
+            }
+
             .col--inner > .row {
               align-items: center;
 
               > div {
                 .col--inner {
-                  border-bottom: 2px solid var(--bs-body-color);
-                  @include padding-bottom(40px);
+                  //border-bottom: 2px solid var(--bs-body-color);
+                  //@include padding-bottom(40px);
                 }
               }
             }
@@ -34,17 +42,12 @@ html body {
         }
 
         .headline {
-          margin-bottom: 0.5rem;
 
           @include media-breakpoint-down(sm) {
             margin-top: 1rem;
           }
 
-          h2,
-          .h2 {
-            font-weight: $font-weight-semibold;
-            color: var(--bs-black);;
-          }
+
         }
       }
 
@@ -52,9 +55,17 @@ html body {
         > .row {
           --bs-gutter-y: 2rem;
 
-          > div:not(:last-child) {
+          @include media-breakpoint-up(md) {
+            border-left:2px solid var(--bs-body-color);
+            border-top: 2px solid var(--bs-body-color);
+
+          }
+
+          > div {
             @include media-breakpoint-up(md) {
               border-right: 2px solid var(--bs-body-color);
+    border-bottom: 2px solid var(--bs-body-color);
+              padding-bottom: 2rem;
             }
           }
         }
@@ -107,8 +118,6 @@ html body {
 
     .headline {
       > * {
-        margin-bottom: 0px;
-
         &:after,
         &:before {
           display: none;

@@ -17,6 +17,15 @@ return array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
         ),
+
+
+        'content_text' => array(
+            'label' => array('Langtext', ''),
+            'inputType' => 'text',
+            'eval' => array('rte' => 'tinyMCE'),
+        ),
+
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),

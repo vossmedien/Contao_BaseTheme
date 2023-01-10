@@ -167,6 +167,12 @@ return array(
                         'extensions' => 'jpg,jpeg,png,svg',
                     ),
                 ),
+
+                 'icon' => array(
+                    'label' => array('Alternativ zum Bild Font-Awesome Klasse angeben', 'überschreibt das Bild, z. B. fa-facebook fab'),
+                    'inputType' => 'text',
+                ),
+
                 'text' => array(
                     'label' => array('Text', ''),
                     'inputType' => 'text',

@@ -33,7 +33,7 @@ if (!isset($this->size)) {
         <?php if ($this->is_slider): ?>
         swiper pb-0 linkboxes-slider_<?= $this->id; ?>
         <?php else: ?>
-          row <?= $this->row_align; ?> justify-content-center <?php if ($this->same_height): ?>same-height<?php endif; ?>
+          row gx-2 gy-2 <?= $this->row_align; ?> justify-content-center <?php if ($this->same_height): ?>same-height<?php endif; ?>
             <?php endif; ?>
 "
                  <?php if ($this->is_slider): ?>data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"<?php endif; ?>

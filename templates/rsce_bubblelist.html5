@@ -32,12 +32,24 @@ if (TL_MODE == 'FE') {
                 <?php foreach ($this->galery as $item) : ?>
                     <div data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                          class="bl--item <?php echo strtolower(str_replace(' ', '_', $item->text)); ?>">
-                        <a href="<?php echo $item->url; ?>"></a>
-                        <div class="bl-i--image"
-                             data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                            <img class="lazy"
-                                 data-src="<?= Image::get(FilesModel::findByUuid($item->img)->path, null, null, null); ?>">
-                        </div>
+
+
+                        <?php if ($item->url): ?>
+                            <a href="<?php echo $item->url; ?>"></a>
+                        <?php endif; ?>
+
+                        <?php if ($item->icon || $item->img): ?>
+                            <div class="bl-i--image"
+                                 data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+
+                                <?php if ($item->icon): ?>
+                                    <i class="<?= $item->icon; ?>"></i>
+                                <?php else: ?>
+                                    <img class="lazy"
+                                         data-src="<?= Image::get(FilesModel::findByUuid($item->img)->path, null, null, null); ?>">
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                         <div class="bl-i--text"
                              data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                              <?php if ($this->linkcolor) : ?>style="color: <?php echo $this->linkcolor; ?>" <?php endif; ?>>
