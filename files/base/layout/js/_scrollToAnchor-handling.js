@@ -8,7 +8,7 @@ function changeAnchorLinks() {
             var refElement = currLink.substring(currLink.indexOf("#"));
 
             if ($(refElement).position()) {
-                if (($(refElement).position().top - 500) <= scrollPos && ($(refElement).position().top - 500) + $(refElement).height() > scrollPos) {
+                if (($(refElement).position().top - 600) <= scrollPos && ($(refElement).position().top - 600) + $(refElement).height() > scrollPos) {
                     $("#mainNav .active").removeClass("active");
                     currElement.addClass("active");
                 } else {
@@ -25,7 +25,7 @@ function changeAnchorLinks() {
             var refElement = currLink.substring(currLink.indexOf("#"));
 
             if ($(refElement).position()) {
-                if (($(refElement).position().top - 500) <= scrollPos && ($(refElement).position().top - 500) + $(refElement).height() > scrollPos) {
+                if (($(refElement).position().top - 600) <= scrollPos && ($(refElement).position().top - 600) + $(refElement).height() > scrollPos) {
                     $(".onepagenavi--wrapper .active").removeClass("active");
                     currElement.addClass("active");
                 } else {
@@ -83,37 +83,44 @@ if (window.location.hash) {
 
 /* Smooth Scrolling and set correct Item active */
 
-
-var scrollToAnchor = function (e) {
+var anchorHandling = function (e) {
     e.preventDefault();
+
     changeAnchorLinks();
     var id = this.attributes.href.value;
     var scrollTo = false;
     window.location.hash = id;
 
-    if (id.length > 1) {
-        var scrollTo = document.querySelector(id);
+
+    if ($(id).hasClass("modal")) {
+        $(id).modal('show');
+    } else {
+        if (id.length > 1) {
+            var scrollTo = document.querySelector(id);
+        }
+        if (scrollTo) {
+            var current_position = document.documentElement.scrollTop;
+            animate(
+                document.scrollingElement,
+                "scrollTop",
+                "",
+                current_position,
+                scrollTo.offsetTop - 100,
+                750,
+                true
+            );
+        }
     }
-    if (scrollTo) {
-        var current_position = document.documentElement.scrollTop;
-        animate(
-            document.scrollingElement,
-            "scrollTop",
-            "",
-            current_position,
-            scrollTo.offsetTop - 100,
-            750,
-            true
-        );
-    }
+
+
 };
 
 window.onload = function () {
     var anchorLinks = document.querySelectorAll(
-        '#mobileNav a[href^="#"]:not(.mm-btn)'
+        'a[href^="#"]:not(.mm-btn)'
     );
     for (var i = 0; i < anchorLinks.length; i++) {
-        anchorLinks[i].addEventListener("click", scrollToAnchor);
+        anchorLinks[i].addEventListener("click", anchorHandling);
     }
 };
 

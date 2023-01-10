@@ -50,10 +50,10 @@ if (TL_MODE == 'FE') {
                 <<?php echo $this->headline_type; ?> class="mt-0">
                 <?php echo $this->ce_headline; ?>
             </<?php echo $this->headline_type; ?>>
-        <?php if ($this->subline) : ?>
+        <?php if ($this->ce_subline) : ?>
             <span class="ce--subline"
                   data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                        <?php echo $this->subline; ?>
+                                        <?php echo $this->ce_subline; ?>
                                     </span>
         <?php endif; ?>
         <?php else : ?>
@@ -61,10 +61,10 @@ if (TL_MODE == 'FE') {
                   data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
                                     <?php echo $this->ce_headline; ?>
                                 </span>
-            <?php if ($this->subline) : ?>
+            <?php if ($this->ce_subline) : ?>
                 <span class="ce--subline"
                       data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                        <?php echo $this->subline; ?>
+                                        <?php echo $this->ce_subline; ?>
                                     </span>
             <?php endif; ?>
         <?php endif; ?>

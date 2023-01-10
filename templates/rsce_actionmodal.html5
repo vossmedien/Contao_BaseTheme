@@ -5,7 +5,7 @@ if (TL_MODE == 'FE') {
 ?>
 
 
-    <div class="modal <?php echo $this->class; ?>" id="actionModal_<?php echo $this->id; ?>"
+    <div class="modal <?php echo $this->class; ?> actionModal_<?php echo $this->id; ?>" <?php echo $this->cssID; ?>
          tabindex="-1" aria-hidden="true">
         <div class="modal-dialog <?php echo $this->modal_size; ?> modal-dialog-centered"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -158,18 +158,23 @@ if (TL_MODE == 'FE') {
 <?php if (TL_MODE == 'FE'): ?>
     <script type="text/javascript">
         $(window).on('load', function () {
-            <?php if ($this->cookie_hide) : ?>
+
+            <?php if ($this->cookie_hide): ?>
             if (!Cookies.get('actionModal_<?php echo $this->id; ?>')) {
                 <?php endif; ?>
-                $('#actionModal_<?php echo $this->id; ?>').modal('show');
+
+                        <?php if (!$this->initial_hidden): ?>
+                $('.actionModal_<?php echo $this->id; ?>').modal('show');
+                     <?php endif; ?>
+
                 <?php if ($this->cookie_hide) : ?>
             }
             <?php endif; ?>
         });
 
         <?php if ($this->cookie_hide) : ?>
-        var myActionModal = document.getElementById('actionModal_<?php echo $this->id; ?>')
-        myActionModal.addEventListener('hidden.bs.modal', function (event) {
+        var myActionModal = document.getElementsByClassName('actionModal_<?php echo $this->id; ?>')
+        myActionModal[0].addEventListener('hidden.bs.modal', function (event) {
 
             if (Cookies.get('cookie_basefeatures')) {
                 Cookies.set('actionModal_<?php echo $this->id; ?>', 'true', {

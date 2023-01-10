@@ -163,6 +163,14 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
+
+
+        'initial_hidden' => array(
+            'label' => array('Nicht automatisch öffnen', 'bleibt bis zum manuellen "öffnen" versteckt'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
         'cookie_hide' => array(
             'label' => array('Verstecken nach gesetztem Cookie', 'Nachdem das Fenster geschlossen wurde, wird ein Cookie gesetzt und das modale Fenster wird nicht erneut angezeigt.'),
             'inputType' => 'checkbox',
