@@ -20,7 +20,7 @@ $GLOBALS['TL_CSS'][] = 'assets/colorbox/css/colorbox.min.css|static';
 
         if (Cookies.get('cookie_iframes')) {
 
-            $('.video-link').colorbox({
+            $('.video-link.is-youtube').colorbox({
                 iframe: true,
                 width: '95%',
                 height: '95%',
@@ -29,7 +29,7 @@ $GLOBALS['TL_CSS'][] = 'assets/colorbox/css/colorbox.min.css|static';
                 href: function () {
                     var videoId = new RegExp('[\\?&]v=([^&#]*)').exec(this.href);
                     if (videoId && videoId[1]) {
-                        return '//www.youtube-nocookie.com/embed/' + videoId[1] + '?rel=0&wmode=transparent&autoplay=1';
+                        return 'https://youtube.com/embed/' + videoId[1] + '?rel=0&wmode=transparent&autoplay=1';
                     }
                 }
             });

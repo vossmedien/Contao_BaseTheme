@@ -169,18 +169,65 @@ return array(
             'minItems' => 1,
             'maxItems' => 999,
             'fields' => array(
-                'video_id' => array(
-                    'label' => array('Youtube-Video ID', 'in der URL nach /watch?v='),
-                    'inputType' => 'text',
-                ),
 
                 'video_type' => array(
                     'label' => array('Video... ', ''),
                     'inputType' => 'radio',
                     'options' => array(
+                        'local_file' => 'Lokale Datei auswählen',
+                        'youtube' => 'Youtube-Video',
+                    ),
+                    'eval' => array(
+                        'mandatory' => true,
+                    ),
+                ),
+
+
+                'video_method' => array(
+                    'label' => array('Video... ', ''),
+                    'inputType' => 'radio',
+                    'options' => array(
                         'modal' => '...in modalem Fenster darstellen',
-                        'inline' => '...als Youtube-Iframe einbinden',
+                        'inline' => '...innerhalb der Box einbinden',
                         'new_tab' => '...in neuem Tab öffnen',
+                    ),
+                    'eval' => array(
+                        'mandatory' => true,
+                    ),
+                ),
+
+
+                'video_id' => array(
+                    'label' => array('Youtube-Video ID', 'in der URL nach /watch?v='),
+                    'inputType' => 'text',
+                    'tl_class' => 'clr',
+
+                    'eval' => array(
+                        'mandatory' => true,
+                    ),
+
+                    'dependsOn' => array(
+                        'field' => 'video_type',  // Name des Feldes das geprüft werden soll
+                        'value' => 'youtube',      // Der Wert der mit dem Feldwert übereinstimmen muss
+                    ),
+                ),
+
+
+                'video_path' => array(
+                    'label' => array('Video', 'Video-Format: MP4'),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'mp4',
+                        'tl_class' => 'clr',
+                        'mandatory' => true,
+                    ),
+
+                    'dependsOn' => array(
+                        'field' => 'video_type',  // Name des Feldes das geprüft werden soll
+                        'value' => 'local_file',      // Der Wert der mit dem Feldwert übereinstimmen muss
                     ),
                 ),
 
@@ -194,7 +241,7 @@ return array(
                         'extensions' => 'jpg,jpeg,png,svg',
                     ),
                     'dependsOn' => array(
-                        'field' => 'video_type',
+                        'field' => 'video_method',
                         'value' => ['modal', 'new_tab'],
                     ),
                 ),
@@ -203,9 +250,12 @@ return array(
                     'label' => array('Bezeichnung', ''),
                     'inputType' => 'text',
                 ),
+
                 'longtext' => array(
                     'label' => array('Beschreibung', ''),
                     'inputType' => 'text',
+                    'tl_class' => 'clr',
+                    'eval' => array('allowHtml' => true),
                 ),
             ),
         ),

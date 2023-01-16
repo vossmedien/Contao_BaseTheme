@@ -139,7 +139,11 @@ if (TL_MODE == 'FE') {
                                                     <div class="kachel--more-button">
                                                         <a class="btn btn-lg btn-outline-secondary"
                                                            href="<?= $row->kachel_left_url; ?>">
-                                                            Mehr Infos
+                                                             <?php if ($row->kachel_left_button_text): ?>
+                                                                <?= $row->kachel_left_button_text; ?>
+                                                            <?php else: ?>
+                                                                Mehr Infos
+                                                            <?php endif; ?>
                                                         </a>
                                                     </div>
                                                 <?php endif; ?>
@@ -270,7 +274,11 @@ if (TL_MODE == 'FE') {
                                                 <div class="kachel--more-button">
                                                     <a class="btn btn-lg btn-outline-secondary"
                                                        href="<?= $row->kachel_right_url; ?>">
-                                                        Mehr Infos
+                                                            <?php if ($row->kachel_right_button_text): ?>
+                                                            <?= $row->kachel_right_button_text; ?>
+                                                        <?php else: ?>
+                                                            Mehr Infos
+                                                        <?php endif; ?>
                                                     </a>
                                                 </div>
                                             <?php endif; ?>
