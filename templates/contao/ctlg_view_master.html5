@@ -1,3 +1,10 @@
+<?php
+if (TL_MODE == 'FE') {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_boxenfeld.min.css|static';
+}
+?>
+
+
 <!-- start
     *
     * The code below should not be used. You can replace it with your own code. Just follow the instruction:
@@ -45,62 +52,43 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </script>
 
 
-<div class="content--element ce_rsce_boxenfeld mt-4 <?= $this->cssClass ?>">
-    <div class="ce--inner container ">
+<div class="content--element mt-4 mb-4 pb-4 ce_rsce_boxenfeld <?= $this->cssClass ?>">
+    <div class="ce--boxenfeld ">
+        <div class="boxes--outer">
+            <div class="row g-0 g-lg-2 ">
 
-        <div class="ce--boxenfeld ">
-            <div class="boxes--outer">
-                <div class="row gy-0">
-
-                    <?php if ($this->content_image_1["src"]): ?>
-                        <div class="col-12 col-lg-6">
-                            <img class="box--image lazy" data-src="<?= $this->content_image_1["src"]; ?>">
-                        </div>
-                    <?php endif; ?>
+                <?php if ($this->content_image_1["src"]): ?>
                     <div class="col-12 col-lg-6">
-                        <div class="box--content"
-                             data-aos="animate__fadeInUp"
-                             style="position: relative; top: 75px">
-                            <div class="box--headline">
-                                <h1><?= $this->title; ?> <span><?= $this->subtitle; ?></span></h1>
-                            </div>
-                            <?php if ($this->description_1): ?>
-                                <div class="box--text">
-                                    <?= $this->description_1; ?>
-                                    <div class="box--button">
-                                        <a class="btn btn-primary btn-lg" href="#ansprechpartner">Bewirb dich jetzt!</a>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
+                        <img class="box--image lazy" data-src="<?= $this->content_image_1["src"]; ?>">
+                    </div>
+                <?php endif; ?>
+                <div class="col-12 col-lg-6">
+                    <div class="box--content half-container"
+                         data-aos="animate__fadeInUp"
+                         style="position: relative; top: 75px">
+                        <div class="box--headline">
+                            <h1><?= $this->title; ?> <span><?= $this->subtitle; ?></span></h1>
                         </div>
+                        <?php if ($this->description_1): ?>
+                            <div class="box--text">
+                                <?= $this->description_1; ?>
+                                <div class="box--button">
+                                    <a class="applyBtn btn btn-primary btn-lg" href="bewerbung">Bewirb dich jetzt!</a>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
 </div>
 
-<div class="content--element three-cols--content">
+<div class="content--element three-cols--content mt-4">
     <div class="ce--inner container">
 
         <div class="ce--headline" data-aos="animate__fadeIn">
@@ -159,8 +147,8 @@
     <div class="ce--inner container">
         <div class="row gx-lg-4 flex-lg-row-reverse">
             <div class="col-lg-4">
-                <div class="testimonial-person--box mb-3 mb-lg-0" data-aos="animate__fadeInRight">
-                    <span class="h2"><?= $this->testimonial_name; ?></span>
+                <div class="testimonial-person--box mb-3 mb-lg-0 text-white" data-aos="animate__fadeInRight">
+                    <span class="h2 text-white"><?= $this->testimonial_name; ?></span>
                     <div class="testimonial--personal-note">
                         <?= $this->testimonial_description; ?>
                     </div>
@@ -227,7 +215,7 @@
                     <?php foreach ($this->selected_contact_persons as $person) : ?>
 
                         <?php if ($person["image"]): ?>
-                            <div class="col-md-3 mb-3 mb-md-0 col-xxl-2">
+                            <div class="col-md-3  col-xxl-2">
                                 <?= $person["image"]; ?>
                             </div>
                         <?php endif; ?>
@@ -271,3 +259,24 @@
                            href="<?= $this->goBackLink ?>"><?= $this->goBackLabel; ?></a></p>
     <?php endif; ?>
 </div>
+
+
+<script>
+    $(function () {
+        var title = "<?= $this->title; ?>";
+        var link = $('.applyBtn').attr("href");
+        link += "title=" + encodeURIComponent(title);
+
+        var url = $('.applyBtn').attr("href");
+
+
+        if (url.indexOf('?') === -1) {
+            url += '?';
+        } else {
+            url += '&';
+        }
+        url += 'jobref=' + encodeURIComponent(title);
+
+        $('.applyBtn').attr("href", url)
+    });
+</script>

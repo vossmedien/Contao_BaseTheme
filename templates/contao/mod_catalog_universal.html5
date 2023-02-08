@@ -24,7 +24,7 @@
     <?php endforeach; ?>
 <?php else: ?>
     <div class="container">
-        <div class="row justify-content-center gx-lg-4">
+        <div class="row justify-content-center g-lg-2">
             <?= $this->output; ?>
         </div>
     </div>

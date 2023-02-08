@@ -151,7 +151,7 @@ html body {
             display: inline-block;
             position: absolute;
             width: 100%;
-            padding: 10px 1rem 10px 0px;
+            padding: 1rem 1rem 1.5rem 0px;
 
             @include media-breakpoint-down(sm) {
               width: 100%;
@@ -214,7 +214,7 @@ html body {
             }
 
             .button--wrapper {
-              > .btn:not(:last-child) {
+              > .btn {
                 margin-bottom: rfs-value(5px);
               }
             }
