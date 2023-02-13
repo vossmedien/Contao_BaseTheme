@@ -18,11 +18,13 @@ html body {
     width: auto;
   }
 
-  strong, b {
+  strong,
+  b {
     font-weight: $font-weight-bold;
   }
 
-  iframe, embed {
+  iframe,
+  embed {
     width: 100%;
   }
 
@@ -113,14 +115,12 @@ html body {
     line-height: var(--bs-body-line-height);
 
     &:not(:last-child) {
-      margin-bottom: .25rem;
+      margin-bottom: 0.25rem;
     }
   }
 
-
   h1,
   .h1 {
-
     margin-bottom: $headline-spacing;
     display: block;
 
@@ -133,7 +133,6 @@ html body {
 
   h2,
   .h2 {
-
     margin-bottom: $headline-spacing / 1.75;
     display: block;
 
@@ -289,7 +288,6 @@ html body {
             background-color: var(--bs-gray-400);
           }
 
-
           td {
             padding: rfs-value(5px 10px);
             width: auto !important;
@@ -329,7 +327,6 @@ html body {
   color: $secondary !important;
 }
 
-
 .dynamic-fontsize-lg {
   font-size: calc(4.5vh + 4.5vw);
   line-height: var(--bs-body-line-height-sm);
@@ -340,8 +337,13 @@ html body {
   line-height: var(--bs-body-line-height-sm);
 }
 
-
 .dynamic-fontsize-sm {
   font-size: calc(2.5vh + 2.5vw);
   line-height: var(--bs-body-line-height-sm);
+}
+
+@for $n from 0 through 100 {
+  .fs-#{$n}px {
+    font-size: rfs-value(#{$n}px) !important;
+  }
 }

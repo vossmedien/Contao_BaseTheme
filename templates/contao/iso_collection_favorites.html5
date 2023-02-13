@@ -2,7 +2,7 @@
 <form action="<?php echo $this->action; ?>" id="<?php echo $this->formId; ?>" method="post">
     <div class="formbody">
         <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
-        <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+        <input type="hidden" name="REQUEST_TOKEN" value="<?= $this->requestToken ?>">
         <?php endif; ?>
 
         <?php if ($this->collection->hasErrors()) : ?>
@@ -62,8 +62,10 @@
 
                 <div class="col_<?php echo $i++; ?> col_last actions w-auto me-0">
 
-                    <a href="<?= $item['cart_href'] ?>" data-bs-toggle="tooltip" title="In den Warenkorb legen" class="fs-24px add_to_cart"><i class="ico ico-einkaufswagen"></i></a>
-                    <a href="<?= $item['remove_href'] ?>" data-bs-toggle="tooltip" title="Aus Merkliste entfernen" class="remove fs-20px" title="<?= $item['remove_title'] ?>"><i class="far fa-trash-alt"></i></a>
+                    <a href="<?= $item['cart_href'] ?>" data-bs-toggle="tooltip" title="In den Warenkorb legen"
+                       class="fs-24px add_to_cart"><i class="ico ico-einkaufswagen"></i></a>
+                    <a href="<?= $item['remove_href'] ?>" data-bs-toggle="tooltip" title="Aus Merkliste entfernen"
+                       class="remove fs-20px" title="<?= $item['remove_title'] ?>"><i class="far fa-trash-alt"></i></a>
                     </div><?php endif; ?>
 
                 </div><?php if ($item['item']->hasErrors()) : ?>
@@ -76,7 +78,6 @@
             <?php endforeach; ?>
 
         </div>
-
 
 
         <?php if (!empty($this->buttons)) : ?>
@@ -92,6 +93,6 @@
                         class="ico ico-einkaufswagen"></i><?php echo $action['label']; ?></button>
         <?php endforeach; ?>
     </div>
-    </form>
+</form>
 <?php endif; ?>
 

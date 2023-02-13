@@ -30,6 +30,12 @@
       }
     }
   }
+
+  &:not(.grid){
+    > .block:not(:last-child){
+      margin-bottom: 1.5rem;
+    }
+  }
 }
 
 .mod_newslist {

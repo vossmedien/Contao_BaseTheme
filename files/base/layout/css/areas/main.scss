@@ -107,7 +107,7 @@
 
       & + .mod_article {
         &[class*="bg-"] {
-          margin-top: rfs-value($basic-gutter);
+          //margin-top: rfs-value($basic-gutter);
         }
 
         .content--element[class*="bg-"]:first-of-type {

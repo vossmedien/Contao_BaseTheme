@@ -8,8 +8,7 @@
             <div class="col col-sm-auto logo text-center">
                 <div class="banner">
                     <a href="/">
-                        <img class="hide-home" src="/files/base/layout/img/logo.png">
-                        <img class="show-home" src="/files/base/layout/img/logo_footer.png">
+                        <img class="hide-home" src="/files/base/layout/img/logo.svg">
                     </a>
                 </div>
             </div>

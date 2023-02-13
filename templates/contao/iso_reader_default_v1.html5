@@ -5,7 +5,7 @@ echo $this->action; ?>" id="<?php echo $this->formId; ?>" name="iso<?php echo ra
       method="post" enctype="<?php echo $this->enctype; ?>">
     <div class="iso--product-reader variant-v1 formbody no-row" itemscope itemtype="http://schema.org/Product">
         <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
-        <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+        <input type="hidden" name="REQUEST_TOKEN" value="<?= $this->requestToken ?>">
         <input type="hidden" name="AJAX_PRODUCT" value="<?php echo $this->product_id; ?>">
         <input type="hidden" name="AJAX_MODULE" value="<?php echo $this->module_id; ?>">
 

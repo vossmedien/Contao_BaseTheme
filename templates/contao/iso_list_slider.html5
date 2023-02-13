@@ -1,7 +1,8 @@
-<form class="iso--product-box variant-slider" action="<?= $this->action; ?>" id="<?= $this->formId; ?>" name="iso<?= rand(); ?>" method="post" enctype="<?= $this->enctype; ?>">
+<form class="iso--product-box variant-slider" action="<?= $this->action; ?>" id="<?= $this->formId; ?>"
+      name="iso<?= rand(); ?>" method="post" enctype="<?= $this->enctype; ?>">
     <div class="formbody" itemscope itemtype="http://schema.org/Product">
         <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formSubmit; ?>">
-        <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+        <input type="hidden" name="REQUEST_TOKEN" value="<?= $this->requestToken ?>">
         <input type="hidden" name="AJAX_PRODUCT" value="<?= $this->product_id; ?>">
         <input type="hidden" name="AJAX_MODULE" value="<?= $this->module_id; ?>">
 
@@ -9,7 +10,8 @@
         <?= $this->getGallery('images')->generateMainImage(); ?>
 
         <h3 itemprop="name">
-            <a href="<?= $this->href; ?>" title="<?= $this->label_detail; ?>"><?= $this->highlightKeywords($this->generateAttribute('name')); ?></a>
+            <a href="<?= $this->href; ?>"
+               title="<?= $this->label_detail; ?>"><?= $this->highlightKeywords($this->generateAttribute('name')); ?></a>
         </h3>
 
 

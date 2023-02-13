@@ -275,6 +275,36 @@ return array(
                     'label' => array('Manuell umkehren', 'Standard: Bild links, Text rechts'),
                     'inputType' => 'checkbox',
                 ),
+                'is_overlapping' => array(
+                    'label' => array('Inhaltsbox auf Bild legen', ''),
+                    'inputType' => 'checkbox',
+                ),
+
+                'has_shadow' => array(
+                    'label' => array('Inhaltsbox auf Bild legen', ''),
+                    'inputType' => 'checkbox',
+                ),
+
+                'alt_background' => array(
+                    'label' => array('Alternative Hintergrundfarbe', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'as_box',
+                        'value' => '1',
+                    ),
+                ),
+                'alt_textcolor' => array(
+                    'label' => array('Alternative Textfarbe', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'as_box',
+                        'value' => '1',
+                    ),
+                ),
+
+
                 'image' => array(
                     'label' => array('Boxen-Bild', ''),
                     'inputType' => 'fileTree',

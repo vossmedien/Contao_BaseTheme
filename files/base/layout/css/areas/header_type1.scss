@@ -192,6 +192,11 @@
 
                     &:last-child {
                       padding-bottom: 5px;
+
+                      > ul{
+                        left: auto;
+                        right: 0;
+                      }
                     }
 
                     &:not(:last-child) {

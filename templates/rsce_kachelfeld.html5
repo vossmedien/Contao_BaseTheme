@@ -30,7 +30,7 @@ if (!isset($this->size)) {
     </div>
     <?php endif; ?>
     <div class="ce--kachelfeld ">
-        <div class="row <?php if ($this->column_gap) : ?><?php echo $this->column_gap; ?><?php else : ?>gx-lg-4<?php endif; ?>">
+        <div class="row <?php if ($this->column_gap) : ?><?php echo $this->column_gap; ?><?php endif; ?>">
             <?php foreach ($this->kachel as $i => $b) : ?>
             <div class="<?php if ($b->column_width) : ?><?php echo $b->column_width; ?><?php else : ?>col-12 col-lg-4<?php endif; ?>">
                 <div id="kachelbox_<?= $this->id; ?>_<?= $i; ?>" class="kachelbox"

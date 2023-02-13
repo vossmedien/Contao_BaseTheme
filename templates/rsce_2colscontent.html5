@@ -47,7 +47,7 @@ if (TL_MODE == 'FE') {
     <?php endif; ?>
     </div>
 <?php endif; ?>
-    <div class="row gx-5 <?php if ($row->swapcolumns) : ?>flex-row-reverse<?php endif; ?>">
+    <div class="row g-5 <?php if ($row->swapcolumns) : ?>flex-row-reverse<?php endif; ?>">
         <?php foreach ($row->columns as $column) : ?>
         <?php if ($row->headline) : ?>
         <div class="col-12">

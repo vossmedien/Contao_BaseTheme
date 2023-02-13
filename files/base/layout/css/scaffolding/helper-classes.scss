@@ -102,12 +102,10 @@
   }
 }
 
-
 .half-container {
   max-width: 100%;
   padding-left: 1rem;
   padding-right: 1rem;
-
 
   @include media-breakpoint-up(sm) {
     max-width: calc(var(--bs-container-width-sm));
@@ -119,26 +117,18 @@
   }
 
   @include media-breakpoint-up(lg) {
-    max-width: calc(var(--bs-container-width-lg) / 2)
+    max-width: calc(var(--bs-container-width-lg) / 2);
   }
   @include media-breakpoint-up(xl) {
-    max-width: calc(var(--bs-container-width-xl) / 2)
+    max-width: calc(var(--bs-container-width-xl) / 2);
   }
 
   @include media-breakpoint-up(xxl) {
-    max-width: calc(var(--bs-container-width-xxl) / 2)
+    max-width: calc(var(--bs-container-width-xxl) / 2);
   }
 }
 
-
-@for $n from 0 through 50 {
-    .fs-#{$n}px {
-        font-size: rfs-value(#{$n}px) !important;
-    }
-}
-
-
-.w-auto{
+.w-auto {
   max-width: none !important;
   min-width: 0 !important;
 }
