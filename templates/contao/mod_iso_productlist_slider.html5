@@ -8,25 +8,10 @@
 
 
 <?php if (!empty($this->products)) : ?>
-    <div class="product-slider--wrapper">
+    <div class="product-slider--wrapper position-relative mt-3">
         <div class="swiper product-slider product-slider_<?= $this->id; ?>">
             <div class="swiper-wrapper">
                 <!-- Slides -->
-                <?php foreach ($this->products as $product) : ?>
-                    <div<?php echo $product['cssID']; ?> class="swiper-slide <?php echo $product['class']; ?>">
-                        <?php echo $product['html']; ?>
-                    </div>
-                <?php endforeach; ?>
-                <?php foreach ($this->products as $product) : ?>
-                    <div<?php echo $product['cssID']; ?> class="swiper-slide <?php echo $product['class']; ?>">
-                        <?php echo $product['html']; ?>
-                    </div>
-                <?php endforeach; ?>
-                <?php foreach ($this->products as $product) : ?>
-                    <div<?php echo $product['cssID']; ?> class="swiper-slide <?php echo $product['class']; ?>">
-                        <?php echo $product['html']; ?>
-                    </div>
-                <?php endforeach; ?>
                 <?php foreach ($this->products as $product) : ?>
                     <div<?php echo $product['cssID']; ?> class="swiper-slide <?php echo $product['class']; ?>">
                         <?php echo $product['html']; ?>
@@ -51,7 +36,7 @@
                     },
 
                     direction: 'horizontal',
-                    loop: true,
+                    loop: false,
                     preloadImages: true,
                     slidesPerView: 1,
                     breakpoints: {
@@ -65,8 +50,8 @@
                             spaceBetween: 50,
                         },
 
-                                1400: {
-                            slidesPerView: <?= $this->iso_cols;?>*1.25,
+                        1400: {
+                            slidesPerView: 4,
                             spaceBetween: 50,
                         },
 

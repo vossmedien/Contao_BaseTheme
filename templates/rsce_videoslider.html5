@@ -158,6 +158,7 @@
                         clickable: true,
                     },
 
+
                     loop: true,
                     <?php endif; ?>
 
