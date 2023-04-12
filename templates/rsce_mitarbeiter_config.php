@@ -140,6 +140,21 @@ return array(
             ),
             'eval' => array('chosen' => 'true')
         ),
+
+
+        'size' => array(
+            'label' => array('Bildbreite und Bildhöhe', ''),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'tl_class' => 'w50',
+                'includeBlankOption' => true,
+            ),
+        ),
+
+
         'mitarbeiter' => array(
             'label' => array('Mitarbeiter', ''),
             'elementLabel' => '%s. Mitarbeiter',
@@ -286,6 +301,7 @@ return array(
                         'col-12 col-md-auto' => 'Breite anhand des Inhalts',
                     ),
                 ),
+
                 'bild' => array(
                     'label' => array('Mitarbeiterbild', ''),
                     'inputType' => 'fileTree',

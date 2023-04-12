@@ -29,6 +29,12 @@ if (TL_MODE == 'FE') {
                     <div class="ma--element"
                          data-aos="<?php if ($ma->animation_type) : ?><?php echo $ma->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                         <?php if ($ma->bild) : ?>
+                            <?php
+                            if (!isset($this->size)) {
+                                $this->{"size"} = [null, null, 2];
+                            }
+                            ?>
+
                             <div class="ma--image">
                                 <?php if ($ma->link_url): ?>
                                 <a <?php if ($ma->new_tab): ?>target="_blank"<?php endif; ?>
@@ -41,11 +47,9 @@ if (TL_MODE == 'FE') {
                                         <?php if ($ma->badge): ?>
                                             <span class="badge bg-warning"><?= $ma->badge; ?></span>
                                         <?php endif; ?>
-                                        <img class="lazy"
-                                             data-src="<?= Image::get(FilesModel::findByUuid($ma->bild)->path, null, null, 2); ?>">
+
+                                        <img class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($ma->bild)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                     </a>
-
-
                             </div>
                         <?php endif; ?>
                         <div class="ma--details <?php if ($ma->alternate_background) : ?>with-bg<?php endif; ?> <?php if ($ma->textalign) : ?><?php echo $ma->textalign; ?><?php endif; ?>"
