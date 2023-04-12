@@ -63,7 +63,7 @@ if (TL_MODE == 'FE') {
                                 <?php if ($this->open_lightbox): ?>
                                 <a href="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, null, null, null); ?>"
                                    class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
-                                    <img class="swiper-lazy"
+                                    <img class="lazy"
                                          data-src="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                     <?php if ($this->open_lightbox): ?></a><?php endif; ?>
                             </div>
@@ -78,7 +78,7 @@ if (TL_MODE == 'FE') {
                                 <?php if ($this->open_lightbox): ?>
                                 <a href="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>"
                                    class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
-                                    <img class="swiper-lazy"
+                                    <img class="lazy"
                                          data-src="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                     <?php if ($this->open_lightbox): ?> </a><?php endif; ?>
                                 <?php if ($slide->slide_text) : ?>
