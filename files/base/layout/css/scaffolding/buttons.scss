@@ -164,16 +164,16 @@ html body .btn {
     &.with-arrow {
       text-decoration: none;
 
-      &:before {
+      &:after {
         @extend %fa-icon;
         @extend .fal;
         content: fa-content($fa-var-angle-double-right);
         display: inline-block;
-        margin-right: rfs-value(5px);
+        margin-left: rfs-value(5px);
         vertical-align: middle;
         white-space: nowrap;
         position: relative;
-        top: -2px;
+        //top: -2px;
         @include font-size(20px);
       }
     }

@@ -7,12 +7,17 @@
 @import "../../scss-variables";
 @import "../../_theme/variables-layout";
 
+@import "../../../_fonts/fontawesome/scss/fontawesome";
+@import "../../../_fonts/fontawesome/scss/solid";
+
+
 html body {
   .ce_rsce_switchingcards {
-    margin-bottom: $basic-gutter/2 !important;
+
+    //margin-bottom: $basic-gutter/2 !important;
 
     .row > div {
-      margin-bottom: $basic-gutter/2;
+      //margin-bottom: $basic-gutter/2;
 
       @include media-breakpoint-down(md) {
         width: 100%;
@@ -63,44 +68,92 @@ html body {
         .flipping-card--back {
           //position: absolute;
           width: 100%;
-          min-height: 100%;
+          height: 100%;
           -webkit-backface-visibility: hidden; /* Safari */
           backface-visibility: hidden;
           padding: 0.25rem 0rem .25rem 0rem;
           display: flex;
           flex-flow: column wrap;
           justify-content: space-around;
+        }
 
 
-          .fc--image {
-            text-align: center;
-            margin-bottom: 0.25rem;
+        .fc--image {
+          text-align: center;
+          margin-bottom: 0.25rem;
+          margin-top: 0.25rem;
+        }
+
+        .fc--headline {
+          font-size: 0.8rem;
+          font-weight: $font-weight-bold;
+          margin: 0.5rem 0;
+
+          & + .fc--content-headline {
+            margin-top: 0.5rem;
+          }
+        }
+
+        .fc--content-headline {
+          font-size: 1.25rem;
+          font-weight: $font-weight-bold;
+
+          & + .fc--content-text {
             margin-top: 0.25rem;
           }
+        }
 
-          .fc--headline {
-            font-size: 0.8rem;
-            font-weight: $font-weight-bold;
-            margin: 0.5rem 0;
+        .fc--content-text {
+          font-weight: $font-weight-bold;
+          font-size: 1rem;
+          p {
+            margin-bottom: 0px;
+          }
 
-            & + .fc--content-headline {
-              margin-top: 0.5rem;
+          ul {
+            list-style-type: none;
+            padding: 0px;
+            margin: 0px;
+            text-align: left;
+
+            > li {
+              position: relative;
+
+              &:not(:last-child) {
+                margin-bottom:2px;
+              }
+
+              color: var(--bs-body-color-inverse);
+              padding-left: 20px;
+              display: block;
+              font-size: 1rem;
+
+              a:not(.btn) {
+                text-decoration: none;
+                color: var(--bs-body-color-inverse);
+
+                &:hover {
+                  text-decoration: underline;
+                }
+              }
+
+              &:before {
+                @extend %fa-icon;
+                @extend .fas;
+                content: fa-content($fa-var-circle);
+                position: absolute;
+                padding-right: rfs-value(10px);
+                color: var(--bs-body-color-inverse);
+                left: 0;
+                top: 7px;
+                font-size: .5rem;
+              }
             }
           }
+        }
 
-          .fc--content-headline {
-            font-size: 1.25rem;
-            font-weight: $font-weight-bold;
-
-            & + .fc--content-text {
-              margin-top: 0.25rem;
-            }
-          }
-
-
-          .fc--content-button {
-            margin-top: 1rem;
-          }
+        .fc--content-button {
+          margin-top: 1rem;
         }
 
         .flipping-card--front {
@@ -108,7 +161,7 @@ html body {
           color: var(--bs-body-color-inverse);
 
           .front--inner {
-            padding: 0.5rem 1rem .5rem 1rem;
+            padding: 1rem 1.5rem;
 
             .fc--content-text {
               font-size: 95%;
@@ -128,7 +181,7 @@ html body {
             padding: 0.5rem 1rem .5rem 1rem;
 
             .fc--content-text {
-              font-size: 75%;
+              //font-size: 75%;
             }
           }
         }

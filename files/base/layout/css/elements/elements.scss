@@ -26,7 +26,7 @@
 .content--element {
   position: relative;
 
-  &.content--box {
+  &.content--box.content--box.content--box.content--box {
     z-index: 10;
     padding: 2rem;
   }
@@ -44,6 +44,7 @@
 
 .content--box {
   @include content-box();
+  @extend .container;
 }
 
 .ce_text {

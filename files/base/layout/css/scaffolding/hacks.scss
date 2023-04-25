@@ -125,3 +125,18 @@ main {
 *[data-bs-toggle] {
   cursor: pointer;
 }
+
+*:not(.row){
+  > *[class*="col-"]{
+    margin-left: auto;
+    margin-right: auto;
+
+    > .container{
+      width: auto;
+    }
+  }
+}
+
+
+
+

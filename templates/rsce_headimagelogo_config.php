@@ -169,6 +169,26 @@ return array(
             'label' => array('Inhalt darunter "hochziehen"', ''),
             'inputType' => 'checkbox',
         ),
+
+        /*
+        'pull_content_next' => array(
+            'label' => array('Erstes Element im nächsten Artikel verwenden', 'und nicht das komplette nächste Element'),
+            'inputType' => 'checkbox',
+            'dependsOn' => array(
+                'field' => 'pull_content',
+            ),
+        ),
+        */
+
+        'pull_amount' => array(
+            'label' => array('Um wie viel Pixel soll der nächste Bereich nach oben gezogen werden', 'Standard: 200'),
+            'inputType' => 'text',
+            'dependsOn' => array(
+                'field' => 'pull_content',
+            ),
+        ),
+
+
         'show_breadcrumb' => array(
             'label' => array('Breadcrumb darunter anzeigen', ''),
             'inputType' => 'checkbox',
@@ -568,14 +588,21 @@ return array(
                     ),
                 ),
 
-                'alternate_background_color' => array(
-                    'label' => array('Alternative Hintergrundfarbe für Inhalt', 'Standardmäßig transparent (Style 1) oder weiß (Style 2)'),
+
+                'text_color' => array(
+                    'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
-                'text_color' => array(
-                    'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
+                'headline_color' => array(
+                    'label' => array('Headline-Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'alternate_background_color' => array(
+                    'label' => array('Alternative Hintergrundfarbe für Inhalt', 'Standardmäßig transparent (Style 1) oder weiß (Style 2)'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),

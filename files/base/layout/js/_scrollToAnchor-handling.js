@@ -115,6 +115,7 @@ var anchorHandling = function (e) {
 
 };
 
+/*
 window.onload = function () {
     var anchorLinks = document.querySelectorAll(
         'a[href^="#"]:not(.mm-btn)'
@@ -124,9 +125,11 @@ window.onload = function () {
     }
 };
 
+ */
+
 
 changeAnchorLinks();
 
 $(document).on("scroll", function () {
-    changeAnchorLinks();
+    //changeAnchorLinks();
 });

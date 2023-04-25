@@ -66,7 +66,7 @@ html body {
       margin-bottom: 0px;
     }
 
-    &:last-child {
+    &:last-of-type {
       margin-bottom: 0px;
     }
 
@@ -88,9 +88,10 @@ html body {
   .h2,
   h1,
   .h1 {
-    line-height: 1.2;
+    line-height: 1; // line-height 1.2
     transition: color 0.3s ease;
     color: var(--bs-headline-color);
+    //color: inherit; //hmmm
     font-weight: var(--bs-headline-font-weight);
 
     > span {
@@ -167,45 +168,16 @@ html body {
     }
   }
 
-  main ul {
-    padding-left: 15px;
+  main {
+    ul {
+      padding-left: 15px;
 
-    &:last-child {
-      margin-bottom: 0px;
-    }
-
-    &.list-downloads {
-      list-style-type: none;
-      padding: 0px;
-      margin: 0px;
-
-      > li {
-        position: relative;
-
-        &:not(:last-child) {
-          margin-bottom: 8px;
-        }
-
-        a {
-          text-decoration: none;
-          color: var(--bs-body-color);
-          padding-left: 35px;
-          display: block;
-
-          &:before {
-            @extend %fa-icon;
-            @extend .fal;
-            content: fa-content($fa-var-download);
-            position: absolute;
-            padding-right: rfs-value(10px);
-            color: var(--bs-primary);
-            left: 0;
-            top: 7px;
-          }
-        }
+      &:last-child {
+        margin-bottom: 0px;
       }
     }
   }
+
 
   .table-responsive {
     margin-bottom: 1rem;
@@ -346,4 +318,77 @@ html body {
   .fs-#{$n}px {
     font-size: rfs-value(#{$n}px) !important;
   }
+}
+
+
+%list-downloads {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+
+  > li {
+    position: relative;
+
+    &:not(:last-child) {
+      margin-bottom: 8px;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--bs-body-color);
+      padding-left: 35px;
+      display: block;
+
+      &:before {
+        @extend %fa-icon;
+        @extend .fal;
+        content: fa-content($fa-var-download);
+        position: absolute;
+        padding-right: rfs-value(10px);
+        color: var(--bs-primary);
+        left: 0;
+        top: 7px;
+      }
+    }
+  }
+}
+
+%list-dots {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+
+  > li {
+    position: relative;
+
+    &:not(:last-child) {
+      margin-bottom: 8px;
+    }
+
+    a {
+      text-decoration: none;
+      padding-left: 35px;
+      display: block;
+
+      &:before {
+                @extend %fa-icon;
+                @extend .fas;
+                content: fa-content($fa-var-circle);
+                position: absolute;
+                padding-right: rfs-value(10px);
+                color: var(--bs-body-color-inverse);
+                left: 0;
+                top: 5px;
+                font-size: .75rem;
+              }
+    }
+  }
+}
+
+.list-dots{
+  @extend %list-dots;
+}
+
+.list-downloads{
+  @extend %list-downloads;
 }

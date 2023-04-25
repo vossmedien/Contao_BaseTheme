@@ -144,6 +144,102 @@ return array(
         ),
 
 
+
+            'min_height' => array(
+                    'label' => array('Mindesthöhe der Boxen', 'inkl. Maßeinheit, z. B. 300px, die Höhe muss mindestens so hoch sein, wie die höchste Vorder- oder Rückseite '),
+                    'inputType' => 'text',
+                ),
+
+
+        'is_slider' => array(
+            'label' => array('', 'Achtung: Einige Einstellungen werden dann obsolet'),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'Boxen werden in einem Slider dargestellt',
+            ),
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'settings_slider' => array(
+            'label' => array('Slider-Einstellungen', ''),
+            'inputType' => 'group',
+            'dependsOn' => array(
+                'field' => 'is_slider',
+            ),
+        ),
+
+
+        'space_between' => array(
+            'label' => array('Abstand zwischen den Slides in PX', 'Standard: 30'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'slides_per_view' => array(
+            'label' => array('Wie viele Slides sind sichtbar', 'Beispielsweise 1.5 um rechts und links eine Vorschau des nächsten Slides anzuzeigen, Standard: auto'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+
+        'slide_effect' => array(
+            'label' => array(
+                'de' => array('Slide-Effekt', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                'slide' => 'Slide (Standard)',
+                'coverflow' => 'Coverflow',
+                'fade' => 'Fade',
+
+            ),
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'transition_time' => array(
+            'label' => array('Animationszeit in ms', 'Standard: 1500'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'show_pagination' => array(
+            'label' => array('Paginierung anzeigen', 'mittig unter dem Slider, in Form von Punkten'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'show_arrows' => array(
+            'label' => array('Pfeile anzeigen', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'centered_slides' => array(
+            'label' => array('Slides mittig ausrichten', 'experimentell, slides beginnen nicht zentriert'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'loop' => array(
+            'label' => array('Automatisch wieder von Anfang starten', '"loop"'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'autoplay' => array(
+            'label' => array('Autoplay aktivieren', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'autoplay_time' => array(
+            'label' => array('Autoplay-Zyklus', 'nach wie viel MS soll zum nächsten Slide gewechselt werden, Standard: 3000'),
+            'inputType' => 'text',
+            'dependsOn' => array(
+                'field' => 'autoplay',
+            ),
+        ),
+
         'rows' => array(
             'label' => array('Cards', ''),
             'elementLabel' => '%s. Card',
@@ -280,7 +376,7 @@ return array(
 
                 'column_width' => array(
                     'label' => array(
-                        'de' => array('Inhalts-Spaltenbreite', ''),
+                        'de' => array('Inhalts-Spaltenbreite', 'obsolet wenn innerhalb eines Sliders!'),
                     ),
                     'inputType' => 'select',
                     'options' => array(
@@ -300,10 +396,6 @@ return array(
                 ),
 
 
-                'back_link' => array(
-                    'label' => array('Link für Klick auf Card', 'Fixierung der Rückseite nach Klick wird dadurch "überschrieben"'),
-                    'inputType' => 'url',
-                ),
 
 
                 'image_front' => array(
@@ -322,6 +414,9 @@ return array(
                     'label' => array('Bild vollflächig als Hintergrund auf Vorderseite', 'Text wird mittig auf halb-transparente Box gelegt'),
                     'inputType' => 'checkbox',
                 ),
+
+
+
 
                 'front_background' => array(
                     'label' => array('Alternative Hintergrundfarbe Vorderseite', 'In HEX oder rgb(a) angeben, ansonsten Hauptfarbe'),
@@ -352,11 +447,13 @@ return array(
                 'front_headline' => array(
                     'label' => array('Überschrift', ''),
                     'inputType' => 'text',
+                     'eval' => array('allowHtml' => true),
                 ),
 
                 'front_content_headline' => array(
                     'label' => array('Überschrift für Textpassage', ''),
                     'inputType' => 'text',
+                     'eval' => array('allowHtml' => true),
                 ),
 
                 'front_content_text' => array(
@@ -443,6 +540,14 @@ return array(
                     'label' => array('Verlinkung', 'z . B . mailto:info@gmx . de'),
                     'inputType' => 'url',
                 ),
+
+
+
+                 'button_as_card_link' => array(
+                    'label' => array('Karte leitet mit Klick auf Button-Link', 'Fixierung der Rückseite nach Klick wird dadurch "überschrieben"'),
+                    'inputType' => 'checkbox',
+                ),
+
 
                 'link_betreff' => array(
                     'label' => array('Betreffzeile für "mailto:" - Buttons', '(optional, falls Link eine neue Email öffnen soll)'),

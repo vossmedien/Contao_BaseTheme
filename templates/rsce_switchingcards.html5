@@ -8,6 +8,9 @@ if (TL_MODE == 'FE') {
 
     <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
         <div class="ce--inner container">
+
+            <div class="<?php echo $this->class; ?>">
+
             <?php if ($this->headline || $this->subline || $this->topline) : ?>
             <div class="ce--headline"
                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -26,20 +29,21 @@ if (TL_MODE == 'FE') {
         </div>
         <?php endif; ?>
         <?php if ($this->rows) : ?>
-            <div class="row justify-content-center">
+            <div class="<?php if ($this->is_slider): ?><?php if ($this->show_pagination): ?>with-pagination<?php endif;?> swiper switchingcards-slider_<?= $this->id;?><?php else:?>row justify-content-center<?php endif;?>">
+                <?php if ($this->is_slider): ?><div class="swiper-wrapper"><?php endif;?>
                 <?php foreach ($this->rows as $i => $row) : ?>
-                    <div class="<?php echo $row->column_width; ?>">
+                    <div class="<?php if ($this->is_slider): ?>swiper-slide h-auto<?php else:?><?php echo $row->column_width; ?><?php endif;?>">
                         <div class="flipping-card--wrapper"
                              data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
-                            <?php if ($row->back_link): ?>
-                                <a href="<?= $row->back_link; ?>"></a>
+                            <?php if ($row->button_as_card_link && $row->link_url): ?>
+                                <a href="<?= $row->link_url; ?>"></a>
                             <?php endif; ?>
 
                             <div class="flipping-card--inner">
 
-                                <div style="
-                                <?php if ($row->front_background): ?>background-color: <?php echo $row->front_background; ?>;<?php endif; ?> <?php if ($row->front_textcolor): ?>color: <?php echo $row->front_textcolor; ?><?php endif; ?>
+                                <div style="<?php if ($this->min_height): ?>min-height: <?php echo $this->min_height; ?>; <?php endif; ?>
+                                <?php if ($row->front_background): ?>background-color: <?php echo $row->front_background; ?>;<?php endif; ?> <?php if ($row->front_textcolor): ?>color: <?php echo $row->front_textcolor; ?>;<?php endif; ?>
                                 <?php if ($row->image_front && $row->front_as_bg): ?>background: url(<?= Image::get(FilesModel::findByUuid($row->image_front)->path, null, null, null); ?>) center center no-repeat; background-size: cover;<?php endif; ?>
                                         "
                                      class="flipping-card--front <?php echo $row->front_textalign; ?>">
@@ -111,10 +115,27 @@ if (TL_MODE == 'FE') {
                         </div>
                     </div>
                 <?php endforeach ?>
+
+
+                    <?php if ($this->is_slider): ?></div><?php endif;?>
             </div>
+
+             <?php if ($this->is_slider): ?>
+                <?php if (count($this->rows) > 1) : ?>
+                    <?php if ($this->show_pagination): ?>
+                        <div class="switchingcards-slider_<?= $this->id; ?> swiper-pagination"></div>
+                    <?php endif; ?>
+                    <?php if ($this->show_arrows): ?>
+                        <div class="switchingcards-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                        <div class="switchingcards-slider_<?= $this->id; ?> swiper-button-next"></div>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+            <?php endif; ?>
         <?php endif; ?>
     </div>
     </div>
+</div>
 
 <?php if (TL_MODE == 'FE'): ?>
     <script>
@@ -124,5 +145,91 @@ if (TL_MODE == 'FE') {
                 $(this).addClass("active");
             });
         }
+    </script>
+<?php endif; ?>
+
+
+<?php if ($this->is_slider && TL_MODE == 'FE'): ?>
+    <script>
+        window.addEventListener('load', function () {
+            if ($('.swiper.switchingcards-slider_<?= $this->id;?>').length) {
+
+                const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.switchingcards-slider_<?php echo $this->id; ?>', {
+                    direction: 'horizontal',
+
+
+                    loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
+
+
+                    preloadImages: false,
+                    lazy: {
+                        loadPrevNext: true,
+                    },
+
+                    spaceBetween: <?php if ($this->space_between || $this->space_between == 0) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
+                    centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
+                    slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>
+                    'auto'<?php endif;?>,
+
+                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
+                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
+                    'slide'<?php endif;?>,
+
+                    <?php if ($this->autoplay) : ?>
+                    autoplay: {
+                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                    },
+                    <?php endif; ?>
+
+
+                    <?php if ($this->slide_effect == "coverflow") : ?>
+                    coverflowEffect: {
+                        rotate: 50, // Slide rotate in degrees
+                        stretch: 0, // Stretch space between slides (in px)
+                        depth: 100, // Depth offset in px (slides translate in Z axis)
+                        modifier: 1, // Effect multipler
+                        slideShadows: true, // Enables slides shadows
+                    },
+                    <?php endif;?>
+
+                    <?php if ($this->slide_effect == "fade") : ?>
+                    fadeEffect: {
+                        crossFade: true
+                    },
+                    <?php endif;?>
+
+                    <?php if (count($this->rows) > 1) : ?>
+                    navigation: {
+                        nextEl: '.switchingcards-slider_<?= $this->id;?>.swiper-button-next',
+                        prevEl: '.switchingcards-slider_<?= $this->id;?>.swiper-button-prev',
+                    },
+
+                    pagination: {
+                        el: '.switchingcards-slider_<?php echo $this->id; ?>.swiper-pagination',
+                        clickable: true,
+                    },
+                    <?php endif; ?>
+
+                    <?php if ($this->slides_per_view) : ?>
+                    breakpoints: {
+                        320: {
+                            slidesPerView: 1,
+                        },
+                        480: {
+                            slidesPerView: 2,
+                        },
+                        768: {
+                            slidesPerView: <?= $this->slides_per_view / 2; ?>,
+                        },
+                        992: {
+                            slidesPerView: <?= $this->slides_per_view; ?>,
+                        }
+                    }
+                    <?php else:?>
+                    slidesPerView: 'auto',
+                    <?php endif;?>
+                });
+            }
+        }, {passive: true})
     </script>
 <?php endif; ?>

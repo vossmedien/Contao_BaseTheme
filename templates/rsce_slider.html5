@@ -20,7 +20,7 @@ if (TL_MODE == 'FE') {
                 <?php if ($this->headline) : ?>
                 <<?php echo($this->hl); ?>>
                 <?php echo($this->headline); ?>
-            </<?php echo($this->hl); ?>>
+            </<?php echo($this->hl); ?>>#
         <?php endif; ?>
             <?php if ($this->subline) : ?>
                 <span class=" ce--subline"><?php echo $this->subline; ?></span>
@@ -52,7 +52,7 @@ if (TL_MODE == 'FE') {
                 </script>
             <?php endif; ?>
 
-            <div class="swiper content-slider_<?= $this->id; ?>">
+            <div class="swiper <?php if ($this->show_pagination): ?>with-pagination<?php endif;?> content-slider_<?= $this->id; ?>">
                 <!-- Additional required wrapper -->
                 <div class="swiper-wrapper">
                     <!-- Slides -->
@@ -114,10 +114,8 @@ if (TL_MODE == 'FE') {
                     loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
 
 
-                    preloadImages: false,
-                    lazy: {
-                        loadPrevNext: true,
-                    },
+                    preloadImages: true,
+                    lazy: false,
 
                     spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
                     //centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
@@ -162,7 +160,10 @@ if (TL_MODE == 'FE') {
                     },
                     <?php endif; ?>
 
-                    slidesPerView: 1,
+
+                    <?php if ($this->slides_per_view) : ?>
+
+                    slidesPerView: 1.5,
 
                     breakpoints: {
                         768: {
@@ -172,6 +173,9 @@ if (TL_MODE == 'FE') {
                             slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>3<?php endif;?>,
                         }
                     }
+                    <?php else:?>
+                       slidesPerView: 'auto',
+                    <?php endif;?>
                 });
             }
         }, {passive: true})

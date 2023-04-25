@@ -261,7 +261,7 @@ return array(
         ),
 
         'centered_slides' => array(
-            'label' => array('Slides mittig ausrichten', ''),
+            'label' => array('Slides mittig ausrichten', 'experimentell, slides beginnen nicht zentriert'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
         ),
@@ -519,19 +519,38 @@ return array(
                     'eval' => array('tl_class' => 'clr'),
                 ),
 
-
-                'image_headline' => array(
-                    'label' => array('Text auf Bildbereich unten links', ''),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-
-
                 'image_headline_background' => array(
                     'label' => array('Hintergrundfarbe für Text', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
+
+                'text_color' => array(
+                    'label' => array('Farbe für Text', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'content_width' => array(
+                    'label' => array('Maximale Breite des Inhalts auf dem Bild', 'inkl. Maßeinheit angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+                'as_design_element' => array(
+                    'label' => array('', ''),
+                    'inputType' => 'checkbox',
+                    'options' => array(
+                        '1' => 'Als abgeschrägten Hintergrund einfügen',
+                    ),
+                ),
+
+                'image_headline' => array(
+                    'label' => array('Text auf Bildbereich unten links', ''),
+                    'inputType' => 'text',
+                    'eval' => array('rte' => 'tinyMCE'),
+                ),
+
 
                 'settings_3' => array(
                     'label' => array('Inhalte', ''),
@@ -576,6 +595,7 @@ return array(
                         'value' => '1',
                     ),
                 ),
+
                 'shadowbox_textcolor' => array(
                     'label' => array('Alternative Textfarbe', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',

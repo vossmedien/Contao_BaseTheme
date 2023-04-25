@@ -1,11 +1,11 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Headline, Text & Button mit Bild darüber', ''),
+    'label' => array('Custom | Headline, Text & Button mit Bild', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array( 'cssID'),
+    'standardFields' => array('headline', 'cssID'),
     'wrapper' => array(
         'type' => 'none',
     ),
@@ -151,6 +151,13 @@ return array(
         'asbox' => array(
             'label' => array('Inhalt in einer Box mit Schatten darstellen', ''),
             'inputType' => 'checkbox',
+        ),
+
+
+        'swap_image' => array(
+            'label' => array('Bild darunter anzeigen', 'Standardmäßig ist das Bild oberhalb des Inhalts'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
         ),
 
 

@@ -5,8 +5,8 @@ if (TL_MODE == 'FE') {
 ?>
 
 <div <?php echo $this->cssID; ?>
-        class="content--element <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>">
-    <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>">
+        class="content--element <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?> <?php if ($this->pull_content_next) : ?>pull-content-next<?php endif; ?>" >
+    <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>" style="--pull-content-amount: -<?php if ($this->pull_amount) : ?><?= $this->pull_amount;?><?php else:?>250px<?php endif;?>;">
 
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline"
@@ -80,7 +80,7 @@ if (TL_MODE == 'FE') {
 
                             <?php if ($ext == "mp4") : ?>
                                 <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
-                                       <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class=" d-none d-md-block" <?php endif; ?>
+                                       <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class="d-none d-md-block" <?php endif; ?>
                                        autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
                                     <source type="video/mp4" src="{{file::<?= $slide->image ?>}}">
                                 </video>
@@ -109,10 +109,10 @@ if (TL_MODE == 'FE') {
 
                                             <div class="mainimage--content-inner--wrapper">
                                                 <?php if ($slide->firstline_headline) : ?>
-                                                    <h1 style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?>"
+                                                    <h1 style="<?php if ($slide->headline_color) : ?>color: <?php echo $slide->headline_color; ?>;<?php endif; ?>"
                                                         class="first-line mb-0 <?php if ($slide->dynamic_fontsize): ?>dynamic-fontsize<?php endif; ?>"><?php echo $slide->text_firstline; ?></h1>
                                                 <?php else : ?>
-                                                    <span style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?>"
+                                                    <span style="<?php if ($slide->headline_color) : ?>color: <?php echo $slide->headline_color; ?>;<?php endif; ?>"
                                                           class="first-line mb-0 <?php if ($slide->dynamic_fontsize): ?>dynamic-fontsize<?php endif; ?>"><?php echo $slide->text_firstline; ?></span>
                                                 <?php endif; ?>
                                                 <?php if ($slide->text_secondline) : ?>

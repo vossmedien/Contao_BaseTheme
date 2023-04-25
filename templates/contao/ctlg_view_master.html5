@@ -4,7 +4,6 @@ if (TL_MODE == 'FE') {
 }
 ?>
 
-
 <!-- start
     *
     * The code below should not be used. You can replace it with your own code. Just follow the instruction:
@@ -17,7 +16,7 @@ if (TL_MODE == 'FE') {
     * Output array: implode ( ', ', $this->yourFieldname )
     * Output associative array: implode( ', ', array_map( function( $arrValue ) { return $arrValue['title'] }, $this->yourFieldname ) )
     *
--->
+
 
 <script type="application/ld+json">
     {
@@ -50,10 +49,8 @@ if (TL_MODE == 'FE') {
         }
     }
 
-
-
 </script>
-
+-->
 
 <div class="content--element mt-4 mb-4 pb-4 ce_rsce_boxenfeld <?= $this->cssClass ?>">
     <div class="ce--boxenfeld ">

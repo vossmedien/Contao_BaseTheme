@@ -24,14 +24,19 @@ html body {
       overflow: hidden;
     }
 
-    &.pull-content {
-      > .ce--inner {
-        margin-bottom: rfs-value(-200px);
+    &.pull-content:not(.pull-content-next) {
+      z-index: 0;
+
+      @include media-breakpoint-up(md) {
+        > .ce--inner {
+          margin-bottom: var(--pull-content-amount);
+        }
       }
 
+
       & + * {
-        z-index: 5;
-        position: relative;
+        //z-index: 5;
+        //position: relative;
       }
 
       .mainimage--content {
@@ -150,7 +155,7 @@ html body {
           .mainimage--content-inner {
             display: inline-block;
             position: absolute;
-            width: 100%;
+            //width: 100%;
             padding: 1rem 1rem 1.5rem 0px;
 
             @include media-breakpoint-down(sm) {
@@ -225,9 +230,9 @@ html body {
       &.style-1 {
         .mainimage--content {
           .mainimage--content-inner {
-            @include media-breakpoint-down(sm) {
-              width: 75% !important;
-              max-width: 75% !important;
+            @include media-breakpoint-down(md) {
+              width: 100% !important;
+              max-width: 100% !important;
             }
 
             span:not([class*="dynamic-fontsize"]) {

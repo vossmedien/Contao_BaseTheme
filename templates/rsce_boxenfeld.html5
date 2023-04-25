@@ -6,7 +6,7 @@ if (TL_MODE == 'FE') {
 
 
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
-    <div class="ce--inner ">
+    <div class="ce--inner  <?php if (!$this->without_container): ?>container<?php endif;?>">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline container"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -29,21 +29,38 @@ if (TL_MODE == 'FE') {
              <?php if ($b->versatz && (strpos($b->versatz, '-') !== false)) : ?>style="margin-top: <?php echo str_replace("-", "", $b->versatz); ?>px" <?php endif; ?>>
             <div class="row g-0 g-lg-2 align-items-center <?php if ($b->reverse) : ?>flex-row-reverse <?php endif; ?>"
                  style="<?php if ($b->versatz && (strpos($b->versatz, '-') === false)) : ?>margin-bottom: <?php echo $b->versatz*1.5; ?>px;<?php endif; ?>">
-                <?php if ($b->image): ?>
-                    <div class="col-12 col-lg-6">
+
+                    <div class="col-12 col-lg">
+                                <?php if ($b->image): ?>
                         <img class="box--image"
                              data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                              src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
+                            <?php endif; ?>
                     </div>
-                <?php endif; ?>
+
                 <?php if ($b->headline || $b->content || $b->button_url): ?>
-                    <div class="col-12 <?php if ($b->image): ?>col-lg-6<?php endif; ?>">
-                        <div class="box--content half-container"
+                    <div class="col-12 <?php if ($b->column_width) : ?><?= $b->column_width;?><?php else:?>col-lg-6<?php endif;?>">
+                        <div class="box--content <?php if ($b->has_shadow): ?>shadow<?php endif;?> <?php if (!$this->without_container): ?>half-container<?php endif;?>"
                              data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>"
-                             <?php if ($b->versatz) : ?>style="position: relative; top: <?php echo $b->versatz; ?>px" <?php endif; ?>>
+                             style="<?php if ($b->versatz) : ?>position: relative; top: <?php echo $b->versatz; ?>px;<?php endif; ?>
+                                 <?php if ($b->alt_background) : ?>
+                                 background-color: <?= $b->alt_background;?>;
+                                 <?php endif;?>
+
+                                 <?php if ($b->alt_textcolor) : ?>
+                                 color: <?= $b->alt_textcolor;?>;
+                                 <?php endif;?>
+
+                                 <?php if ($b->alt_bordercolor) : ?>
+                                 border-color: <?= $b->alt_bordercolor;?>;
+                                 <?php endif;?>
+
+                                 ">
                             <?php if ($b->headline) : ?>
                             <div class="box--headline">
-                                <<?php echo $b->headline_type; ?> >
+                                <<?php echo $b->headline_type; ?> class="mb-1" style="<?php if ($b->alt_headlinecolor) : ?>
+                                 color: <?= $b->alt_headlinecolor;?>;
+                                 <?php endif;?>">
                                 <?php echo $b->headline; ?>
                             </<?php echo $b->headline_type; ?>>
                         </div>

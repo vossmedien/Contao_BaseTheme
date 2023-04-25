@@ -1,9 +1,22 @@
 <?php if (TL_MODE == 'FE'): ?>
     <style>
+
+
+        <?php if($this->only_article):?>
+        #article-<?= $this->pid;?> {
+            background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        <?php else:?>
         body {
             background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
             background-attachment: fixed;
             background-size: cover;
         }
+        <?php endif;?>
+
+
     </style>
 <?php endif; ?>

@@ -18,6 +18,13 @@ return array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
         ),
+
+        'without_container' => array(
+            'label' => array('Ohne Container anzeigen', 'Elemente werden am Bildschirmrand ausgerichtet'),
+            'inputType' => 'checkbox',
+        ),
+
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -142,12 +149,18 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
         'box' => array(
-            'label' => array('Boxen', ''),
-            'elementLabel' => '%s. Box',
+            'label' => array('Zeilen', ''),
+            'elementLabel' => '%s. Zeile',
             'inputType' => 'list',
             'minItems' => 1,
             'maxItems' => 10,
             'fields' => array(
+
+                'settings_1' => array(
+                    'label' => array('Einstellungen', ''),
+                    'inputType' => 'group',
+                ),
+
                 'animation_type' => array(
                     'label' => array(
                         'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -271,37 +284,17 @@ return array(
                     ),
                     'eval' => array('chosen' => 'true')
                 ),
+
+
                 'reverse' => array(
-                    'label' => array('Manuell umkehren', 'Standard: Bild links, Text rechts'),
-                    'inputType' => 'checkbox',
-                ),
-                'is_overlapping' => array(
-                    'label' => array('Inhaltsbox auf Bild legen', ''),
+                    'label' => array('Spalten umkehren', 'Standard: Bild links, Text rechts'),
                     'inputType' => 'checkbox',
                 ),
 
-                'has_shadow' => array(
-                    'label' => array('Inhaltsbox auf Bild legen', ''),
-                    'inputType' => 'checkbox',
-                ),
 
-                'alt_background' => array(
-                    'label' => array('Alternative Hintergrundfarbe', 'In HEX oder rgb(a) angeben'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                    'dependsOn' => array(
-                        'field' => 'as_box',
-                        'value' => '1',
-                    ),
-                ),
-                'alt_textcolor' => array(
-                    'label' => array('Alternative Textfarbe', 'In HEX oder rgb(a) angeben'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                    'dependsOn' => array(
-                        'field' => 'as_box',
-                        'value' => '1',
-                    ),
+                'settings_2' => array(
+                    'label' => array('Bild', ''),
+                    'inputType' => 'group',
                 ),
 
 
@@ -309,25 +302,78 @@ return array(
                     'label' => array('Boxen-Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
+                        'tl_class' => 'clr',
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,svg',
                     ),
                 ),
+
+
+                'settings_3' => array(
+                    'label' => array('Inhalt', ''),
+                    'inputType' => 'group',
+                ),
+
+                'column_width' => array(
+                    'label' => array(
+                        'de' => array('Spaltenbreite für Inhalt', 'Bildspalte (falls vorhanden) füllt den Rest, Standard: 50%'),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'col-12 col-md-6 col-lg-4 col-xl-3' => '25%',
+                        'col-12 col-md-6 col-lg-4' => '33%',
+                        'col-12 col-md-6' => '50%',
+                        'col-12 col-md-6 col-lg-8' => '66.66%',
+                        'col-12 col-md-6 col-lg-9' => '75%',
+                        'col-12' => 'Volle Breite',
+                        'col-12 col-md' => 'Automatische Breite (füllend)',
+                        'col-12 col-md-auto' => 'Breite anhand des Inhalts',
+                    ),
+                ),
+
+
+
                 'versatz' => array(
                     'label' => array('Inhaltsbox Versatz in Pixel', 'Bei 50 wird z. B. die Box um 50 Pixel nach unten geschoben, bei -75 um 75 nach oben.'),
                     'inputType' => 'text',
                 ),
-                'headline' => array(
-                    'label' => array('Überschrift', ''),
-                    'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
+
+                'has_shadow' => array(
+                    'label' => array('Inhaltsbox hat Schatten', ''),
+                    'inputType' => 'checkbox',
                 ),
+
+                'alt_background' => array(
+                    'label' => array('Alternative Hintergrundfarbe', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'alt_textcolor' => array(
+                    'label' => array('Alternative Textfarbe', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'alt_headlinecolor' => array(
+                    'label' => array('Alternative Überschriftfarbe', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'alt_bordercolor' => array(
+                    'label' => array('Alternative Rahmenfarbe', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
                 'headline_type' => array(
                     'label' => array(
                         'de' => array('Typ der Überschrift', ''),
                     ),
+                    'eval' => array('tl_class' => 'w50'),
                     'inputType' => 'select',
                     'options' => array(
                         'h1' => 'H1',
@@ -336,20 +382,34 @@ return array(
                         'h4' => 'H4',
                         'h5' => 'H5',
                     ),
+
                 ),
+
+                'headline' => array(
+                    'label' => array('Überschrift', ''),
+                    'inputType' => 'text',
+                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
+                ),
+
                 'content' => array(
                     'label' => array('Text', ''),
                     'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE'),
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
-                'button_text' => array(
-                    'label' => array('Button-Beschriftung', ''),
-                    'inputType' => 'text',
-                ),
+
+
                 'button_url' => array(
                     'label' => array('Button-Link', ''),
                     'inputType' => 'url',
+                    'eval' => array('tl_class' => 'clr'),
                 ),
+
+                'button_text' => array(
+                    'label' => array('Button-Beschriftung', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
             ),
         ),
     ),
