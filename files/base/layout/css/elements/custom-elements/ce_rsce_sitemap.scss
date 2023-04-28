@@ -16,9 +16,10 @@ html body {
     .ce--sitemap {
 
 
-      .row > div:not(:last-child) {
+      .row > div:last-child {
         .sitemap-column {
           //border-bottom: 1px solid $body-bg;
+          border-right: 0px;
         }
       }
 

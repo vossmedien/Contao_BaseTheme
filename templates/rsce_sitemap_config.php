@@ -219,6 +219,30 @@ return array(
                                     'inputType' => 'url',
                                     'eval' => array('tl_class' => 'w50'),
                                 ),
+
+                                /*
+                                'lvl4' => array(
+                                    'label' => array('4. Ebene', ''),
+                                    'elementLabel' => '%s. URL 4. Ebene',
+                                    'inputType' => 'list',
+                                    'minItems' => 0,
+                                    'maxItems' => 999,
+                                    'fields' => array(
+                                        'text_lvl4' => array(
+                                            'label' => array('Bezeichnung', ''),
+                                            'inputType' => 'text',
+                                            'eval' => array('tl_class' => 'w50'),
+                                        ),
+                                        'link_lvl4' => array(
+                                            'label' => array('Link', ''),
+                                            'inputType' => 'url',
+                                            'eval' => array('tl_class' => 'w50'),
+                                        ),
+                                    ),
+                                ),
+                                 */
+
+
                             ),
                         ),
                     ),

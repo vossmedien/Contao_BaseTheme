@@ -308,6 +308,7 @@ return array(
                     'options' => array(
                         'style-1' => 'Typ 1: Abgerundete Ecken, Schatten, zentriert',
                         'style-2' => 'Typ 2: Farbiger Hintergrund, linksbündig, Pfeil auf rechter Seite',
+                        'style-3' => 'Typ 3: Text auf farbigen Streifen mittig auf Bild & Button nach Hover darunter einblenden',
                     ),
                 ),
 
@@ -512,6 +513,10 @@ return array(
                     ),
                 ),
 
+                'image_grayed' => array(
+                    'label' => array('Bild grauweiß anzeigen und bei Hover farbig', ''),
+                    'inputType' => 'checkbox',
+                ),
 
                 'not_as_bg' => array(
                     'label' => array('Bild nicht als Hintergrund sondern als skalierbares Bild einfügen', ''),
@@ -580,7 +585,7 @@ return array(
                     'label' => array('Überschrift und Subline in Box mit Schatten darstellen', ''),
                     'inputType' => 'checkbox',
                     'options' => array(
-                        '1' => 'Überschrift und Subline in Box mit Schatten darstellen',
+                        '1' => 'Überschrift und Subline in Box mit Schatten darstellen (bzw. in einem "Streifen" bei Typ 3)',
                     ),
                     'eval' => array('tl_class' => 'clr'),
                 ),

@@ -316,6 +316,15 @@ return array(
                     'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                     'inputType' => 'checkbox',
                 ),
+
+
+                'not_as_bg' => array(
+                    'label' => array('Bild nicht als Hintergrund sondern als skalierbares Bild einfügen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+
                 'image' => array(
                     'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
@@ -341,10 +350,19 @@ return array(
                 'text_left_1' => array(
                     'label' => array('Zahl linke Spalte', ''),
                     'inputType' => 'text',
+                              'eval' => array('tl_class' => 'w50'),
                 ),
+
+                  'text_left_add' => array(
+                    'label' => array('Ergänzung zur Zahl', 'z. B. "+"'),
+                    'inputType' => 'text',
+                                'eval' => array('tl_class' => 'w50'),
+                ),
+
                 'text_left_2' => array(
                     'label' => array('Mengenangabe', ''),
                     'inputType' => 'text',
+                              'eval' => array('tl_class' => 'clr'),
                 ),
                 'text_right_1' => array(
                     'label' => array('Text rechte Spalte (oben)', ''),

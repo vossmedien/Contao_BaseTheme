@@ -187,6 +187,56 @@ html body {
         }
       }
 
+      &.style-3 {
+
+        > a:hover   {
+          & + .box--upper {
+             .image--holder {
+               background-blend-mode: screen;
+             }
+
+            .button--wrapper {
+              opacity: 1;
+            }
+          }
+        }
+
+        .box--upper {
+          .image--holder {
+            background-blend-mode: saturation;
+            transition: all .3s ease;
+            background-color: linear-gradient(black, black) !important;
+          }
+
+          .button--wrapper {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding-bottom: 1rem;
+            opacity: 0;
+            transition: all .3s ease;
+          }
+        }
+
+        .box-lower--wrapper {
+          position: static;
+
+          .box--lower.as-box {
+            max-width: 100%;
+            top: 50%;
+            right: 50%;
+            transform: translate(50%, -50%);
+
+            padding: 1rem;
+            //color: var(--bs-body-color-inverse);
+            font-size: 1.25rem;
+            font-weight: var(--bs-font-weight-700);
+            text-transform: uppercase;
+          }
+        }
+      }
+
       &:hover {
         .box--upper .hover-text {
           opacity: 1;
@@ -246,7 +296,7 @@ html body {
             max-width: 100% !important;
           }
 
-          &[style]{
+          &[style] {
             //padding: 1rem;
           }
 
