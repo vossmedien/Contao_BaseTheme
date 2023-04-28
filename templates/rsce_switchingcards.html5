@@ -103,7 +103,7 @@ if (TL_MODE == 'FE') {
                                         <?php endif; ?>
 
                                         <?php if ($row->link_url): ?>
-                                            <div class="fc--content-button mt-4">
+                                            <div class="fc--content-button mt-2">
                                                 <a class="d-inline-block btn <?php if ($row->link_size) : ?><?php echo $row->link_size; ?><?php endif; ?> <?php echo $row->link_type; ?>"
                                                    href="<?php echo $row->link_url; ?><?php if ($row->link_betreff) : ?>?subject=<?php echo $row->link_betreff; ?><?php endif; ?>"><?php echo $row->link_text; ?>
                                                 </a>
