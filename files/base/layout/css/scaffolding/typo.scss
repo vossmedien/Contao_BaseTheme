@@ -321,6 +321,39 @@ html body {
 }
 
 
+%list-check {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+
+  > li {
+    position: relative;
+    padding-left: 35px;
+
+    &:not(:last-child) {
+      margin-bottom: 8px;
+    }
+
+    &:before {
+      @extend %fa-icon;
+      @extend .fal;
+      content: fa-content($fa-var-check);
+      position: absolute;
+      padding-right: rfs-value(10px);
+      color: var(--bs-primary);
+      left: 0;
+      top: 7px;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--bs-body-color);
+      display: block;
+    }
+  }
+}
+
+
 %list-downloads {
   list-style-type: none;
   padding: 0px;
@@ -328,27 +361,27 @@ html body {
 
   > li {
     position: relative;
+    padding-left: 35px;
 
     &:not(:last-child) {
       margin-bottom: 8px;
     }
 
+    &:before {
+      @extend %fa-icon;
+      @extend .fal;
+      content: fa-content($fa-var-download);
+      position: absolute;
+      padding-right: rfs-value(10px);
+      color: var(--bs-primary);
+      left: 0;
+      top: 7px;
+    }
+
     a {
       text-decoration: none;
       color: var(--bs-body-color);
-      padding-left: 35px;
       display: block;
-
-      &:before {
-        @extend %fa-icon;
-        @extend .fal;
-        content: fa-content($fa-var-download);
-        position: absolute;
-        padding-right: rfs-value(10px);
-        color: var(--bs-primary);
-        left: 0;
-        top: 7px;
-      }
     }
   }
 }
@@ -360,35 +393,39 @@ html body {
 
   > li {
     position: relative;
+    padding-left: 35px;
 
     &:not(:last-child) {
       margin-bottom: 8px;
     }
 
+    &:before {
+      @extend %fa-icon;
+      @extend .fas;
+      content: fa-content($fa-var-circle);
+      position: absolute;
+      padding-right: rfs-value(10px);
+      color: var(--bs-body-color-inverse);
+      left: 0;
+      top: 5px;
+      font-size: .75rem;
+    }
+
     a {
       text-decoration: none;
-      padding-left: 35px;
       display: block;
-
-      &:before {
-                @extend %fa-icon;
-                @extend .fas;
-                content: fa-content($fa-var-circle);
-                position: absolute;
-                padding-right: rfs-value(10px);
-                color: var(--bs-body-color-inverse);
-                left: 0;
-                top: 5px;
-                font-size: .75rem;
-              }
     }
   }
 }
 
-.list-dots{
+.list-dots {
   @extend %list-dots;
 }
 
-.list-downloads{
+.list-downloads {
   @extend %list-downloads;
+}
+
+.list-check {
+  @extend %list-check;
 }

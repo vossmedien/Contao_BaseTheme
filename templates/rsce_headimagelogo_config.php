@@ -391,7 +391,7 @@ return array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
+                        'extensions' => 'jpg,jpeg,png,mp4',
                         'tl_class' => 'w50'
                     ),
                 ),

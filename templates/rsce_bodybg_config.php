@@ -11,7 +11,7 @@ return array(
     ),
     'fields' => array(
 
-         'only_article' => array(
+        'only_article' => array(
             'label' => array('', ''),
             'inputType' => 'checkbox',
             'options' => array(
@@ -19,14 +19,15 @@ return array(
             )
         ),
 
+
         'image' => array(
-            'label' => array('Hintergrundbild', ''),
+            'label' => array('Bild / Video', 'Video-Format: MP4'),
             'inputType' => 'fileTree',
             'eval' => array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png',
+                'extensions' => 'jpg,jpeg,png,mp4',
             ),
         ),
     ),

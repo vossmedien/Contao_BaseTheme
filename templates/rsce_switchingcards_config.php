@@ -145,10 +145,10 @@ return array(
 
 
 
-            'min_height' => array(
-                    'label' => array('Mindesthöhe der Boxen', 'inkl. Maßeinheit, z. B. 300px, die Höhe muss mindestens so hoch sein, wie die höchste Vorder- oder Rückseite '),
-                    'inputType' => 'text',
-                ),
+        'min_height' => array(
+            'label' => array('Mindesthöhe der Boxen', 'inkl. Maßeinheit, z. B. 300px, die Höhe muss mindestens so hoch sein, wie die höchste Vorder- oder Rückseite '),
+            'inputType' => 'text',
+        ),
 
 
         'is_slider' => array(
@@ -396,8 +396,6 @@ return array(
                 ),
 
 
-
-
                 'image_front' => array(
                     'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
@@ -414,8 +412,6 @@ return array(
                     'label' => array('Bild vollflächig als Hintergrund auf Vorderseite', 'Text wird mittig auf halb-transparente Box gelegt'),
                     'inputType' => 'checkbox',
                 ),
-
-
 
 
                 'front_background' => array(
@@ -447,13 +443,13 @@ return array(
                 'front_headline' => array(
                     'label' => array('Überschrift', ''),
                     'inputType' => 'text',
-                     'eval' => array('allowHtml' => true),
+                    'eval' => array('allowHtml' => true),
                 ),
 
                 'front_content_headline' => array(
                     'label' => array('Überschrift für Textpassage', ''),
                     'inputType' => 'text',
-                     'eval' => array('allowHtml' => true),
+                    'eval' => array('allowHtml' => true),
                 ),
 
                 'front_content_text' => array(
@@ -542,8 +538,7 @@ return array(
                 ),
 
 
-
-                 'button_as_card_link' => array(
+                'button_as_card_link' => array(
                     'label' => array('Karte leitet mit Klick auf Button-Link', 'Fixierung der Rückseite nach Klick wird dadurch "überschrieben"'),
                     'inputType' => 'checkbox',
                 ),

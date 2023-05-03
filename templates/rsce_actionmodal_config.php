@@ -19,7 +19,7 @@ return array(
             'label' => array('Überschrift für Modal-Header', 'Wenn leer, wird der Header ausgeblendet'),
             'inputType' => 'text',
         ),
-        'modal_size' => array(
+            'modal_size' => array(
             'label' => array(
                 'de' => array('Größe des modalen Fensters', ''),
             ),
@@ -29,6 +29,7 @@ return array(
                 'modal-sm' => 'Klein',
                 'modal-lg' => 'Groß',
                 'modal-xl' => 'Sehr groß',
+                'modal-fullscreen' => 'Vollbild',
             ),
             'eval' => array('tl_class' => 'w50'),
         ),
@@ -163,6 +164,11 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
+        'only_mobile' => array(
+            'label' => array('Nur auf mobile anzeigen', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
 
 
         'initial_hidden' => array(
@@ -225,19 +231,19 @@ return array(
         ),
 
         'image' => array(
-            'label' => array('Bild', ''),
+            'label' => array('Bild/Video', ''),
             'inputType' => 'fileTree',
             'eval' => array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png',
+                'extensions' => 'jpg,jpeg,png,mp4',
                 'tl_class' => 'w50'
             ),
         ),
 
         'as_bg' => array(
-            'label' => array('Bild als Hintergrund', 'dadurch bekommt der Bereich eine feste Höhe und das Bild wird evtl. beschnitten'),
+            'label' => array('als Hintergrund', 'dadurch bekommt der Bereich eine feste Höhe und das Bild/Video wird evtl. beschnitten'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
@@ -248,6 +254,9 @@ return array(
             'dependsOn' => array(
                 'field' => 'as_bg',
             ),
+                 'eval' => array(
+                        'mandatory' => true,
+                    ),
         ),
 
 
@@ -279,7 +288,7 @@ return array(
 
 
         'image_left' => array(
-            'label' => array('Bild für linke Spalte', 'ca. 35% breit'),
+            'label' => array('Bild für unteren Bereich', 'ca. 35% breit'),
             'inputType' => 'fileTree',
             'eval' => array(
                 'multiple' => false,

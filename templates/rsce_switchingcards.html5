@@ -76,7 +76,7 @@ if (TL_MODE == 'FE') {
                                     </div>
                                 </div>
 
-                                <div style=" <?php if ($row->front_background): ?>border-color: <?php echo $row->front_background; ?>;<?php endif; ?>
+                                <div style="<?php if ($this->min_height): ?>min-height: <?php echo $this->min_height; ?>; <?php endif; ?> <?php if ($row->front_background): ?>border-color: <?php echo $row->front_background; ?>;<?php endif; ?>
                                 <?php if ($row->back_background): ?>background-color: <?php echo $row->back_background; ?>;<?php endif; ?>
                                 <?php if ($row->back_textcolor): ?>color: <?php echo $row->back_textcolor; ?><?php endif; ?>"
                                      class="flipping-card--back">
