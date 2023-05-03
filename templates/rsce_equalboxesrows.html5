@@ -164,7 +164,7 @@ if (TL_MODE == 'FE') {
 
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.background-slider_<?= $this->id;?>', {
                     direction: 'horizontal',
-
+                    loopedSlides: 1,
 
                     autoplay: {
                         delay: 3500,

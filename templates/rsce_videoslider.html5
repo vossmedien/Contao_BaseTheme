@@ -160,6 +160,7 @@
 
 
                     loop: true,
+                    loopedSlides: 1,
                     <?php endif; ?>
 
                     preloadImages: false,

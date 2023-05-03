@@ -168,7 +168,7 @@ if (TL_MODE == 'FE') {
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {
 
                     loop: true,
-
+                    loopedSlides: 1,
                     speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
                     effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
                     'slide'<?php endif;?>,

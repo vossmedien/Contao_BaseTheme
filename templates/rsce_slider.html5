@@ -112,7 +112,7 @@ if (TL_MODE == 'FE') {
 
 
                     loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
-
+                    loopedSlides: 1,
 
                     preloadImages: true,
                     lazy: false,

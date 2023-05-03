@@ -34,7 +34,7 @@
                         nextEl: '.product-slider_<?= $this->id;?>.swiper-button-next',
                         prevEl: '.product-slider_<?= $this->id;?>.swiper-button-prev',
                     },
-
+                    loopedSlides: 1,
                     direction: 'horizontal',
                     loop: false,
                     preloadImages: true,

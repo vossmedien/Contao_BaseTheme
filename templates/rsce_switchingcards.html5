@@ -159,7 +159,7 @@ if (TL_MODE == 'FE') {
 
 
                     loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
-
+                    loopedSlides: 1,
 
                     preloadImages: false,
                     lazy: {
@@ -180,7 +180,6 @@ if (TL_MODE == 'FE') {
                         delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
                     },
                     <?php endif; ?>
-
 
                     <?php if ($this->slide_effect == "coverflow") : ?>
                     coverflowEffect: {
