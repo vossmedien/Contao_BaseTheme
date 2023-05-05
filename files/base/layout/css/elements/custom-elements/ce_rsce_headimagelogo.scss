@@ -156,7 +156,7 @@ html body {
             display: inline-block;
             position: absolute;
             //width: 100%;
-            padding: 1rem 1rem 1.5rem 0px;
+            //padding: 1rem 1rem 1.5rem 0px;
 
             @include media-breakpoint-down(sm) {
               width: 100%;
@@ -292,7 +292,7 @@ html body {
               }
             }
 
-            .mainimage--content-inner--wrapper {
+            .mainimage--content-inner--holder {
               //padding: 10px 2rem 10px 0px;
 
               @include media-breakpoint-up(sm) {

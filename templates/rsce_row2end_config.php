@@ -6,9 +6,5 @@ return array(
     'contentCategory' => 'Spalten',
     'moduleCategory' => 'miscellaneous',
     'standardFields' => array('cssID'),
-    'wrapper' => array(
-        'type' => 'stop',
-    ),
-    'wrapperStart' => 'rsce_row1start',
     'fields' => array(),
 );

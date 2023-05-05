@@ -648,9 +648,32 @@ return array(
                     'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
                 'text_infotext' => array(
-                    'label' => array('Langtext unterhalb der Überschriften', ''),
+                    'label' => array('Langtext unterhalb der Überschriften', 'Nicht sichtbar auf Mobile!'),
                     'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+                    'eval' => array( 'tl_class' => 'clr'),
+                ),
+
+                'own_box' => array(
+                    'label' => array('Langtext in eigener Box unterhalb der Überschriften anzeigen', 'Nicht sichtbar auf Mobile!'),
+                    'inputType' => 'checkbox',
+                ),
+
+                'box_text_color' => array(
+                    'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'own_box',
+                    ),
+                ),
+
+                'box_background_color' => array(
+                    'label' => array('Alternative Hintergrundfarbe für Inhalt', 'Standardmäßig transparent (Style 1) oder weiß (Style 2)'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'own_box',
+                    ),
                 ),
 
 

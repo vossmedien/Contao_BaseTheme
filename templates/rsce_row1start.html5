@@ -28,16 +28,14 @@ if (TL_MODE == 'FE') {
     </div>
     <?php endif; ?>
 
-    <div class="row <?php if ($this->mid_element_content): ?>with-mid-content<?php endif; ?>
-<?= $this->styleManager->get('spaltenausrichtung', ['ausrichtung']); ?>
-<?= $this->styleManager->get('spaltenausrichtung', ['ausrichtung_horizontal']); ?>
-<?= $this->styleManager->get('spaltenausrichtung', ['umkehren']); ?>
+
+    <div class="row <?php echo $this->cssID; ?> <?php if ($this->mid_element_content): ?>with-mid-content<?php endif; ?>
+<?= $this->styleManager->get('spaltenausrichtung', ['ausrichtung']); ?> <?= $this->styleManager->get('spaltenausrichtung', ['ausrichtung_horizontal']); ?> <?= $this->styleManager->get('spaltenausrichtung', ['umkehren']); ?>
 
 <?php if ($this->styleManager->get('spaltenabstand', ['spaltenabstaende']) && (!$this->styleManager->get('spaltenabstand', ['spaltenabstaende_x']) && !$this->styleManager->get('spaltenabstand', ['spaltenabstaende_y']))): ?>
-<?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende']); ?>
+ <?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende']); ?>
 <?php else: ?>
-<?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende_x']); ?>
-<?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende_y']); ?>
+<?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende_x']); ?> <?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende_y']); ?>
 <?php endif; ?>
 "
          data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">

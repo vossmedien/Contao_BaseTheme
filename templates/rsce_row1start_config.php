@@ -6,11 +6,10 @@ return array(
     'contentCategory' => 'Spalten',
     'moduleCategory' => 'miscellaneous',
     'standardFields' => array('headline', 'cssID'),
-    'wrapper' => array(
-        'type' => 'start',
-    ),
-    'wrapperClose' => 'rsce_row2end',
+
     'fields' => array(
+
+
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
@@ -157,6 +156,8 @@ return array(
                 'field' => 'add_mid_element',
             ),
         ),
+
+
 
     ),
 );
