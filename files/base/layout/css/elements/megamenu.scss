@@ -5,6 +5,10 @@
   display: none;
 }
 
+.mod_navigation li.mm_container .mm_dropdown{
+  position: fixed;
+}
+
 #header .header--content.type--1 {
   #mainNav .mm_dropdown {
     margin-top: -8px;

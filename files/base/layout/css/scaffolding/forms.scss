@@ -32,6 +32,8 @@ form {
   > *:not(form):first-child:not(.formbody) {
     margin-bottom: 2rem;
   }
+}
+
 
   .form-check-input:checked {
     background-color: var(--bs-primary);
@@ -250,4 +252,3 @@ form {
       }
     }
   }
-}

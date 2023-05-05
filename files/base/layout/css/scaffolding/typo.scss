@@ -348,7 +348,7 @@ html body {
     a {
       text-decoration: none;
       color: var(--bs-body-color);
-      display: block;
+      display: inline-block;
     }
   }
 }
@@ -375,13 +375,18 @@ html body {
       padding-right: rfs-value(10px);
       color: var(--bs-primary);
       left: 0;
-      top: 7px;
+      top: 0px;
+      font-size: 1.25rem;
     }
 
     a {
       text-decoration: none;
-      color: var(--bs-body-color);
-      display: block;
+      color: var(--bs-primary);
+      display: inline-block;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }
@@ -413,7 +418,7 @@ html body {
 
     a {
       text-decoration: none;
-      display: block;
+      display: inline-block;
     }
   }
 }
@@ -428,4 +433,19 @@ html body {
 
 .list-check {
   @extend %list-check;
+}
+
+
+ul[class*="list-"][class*="text-"] {
+  > li {
+    color: inherit;
+
+    &:before {
+      color: inherit;
+
+      > a {
+        color: inherit !important;
+      }
+    }
+  }
 }

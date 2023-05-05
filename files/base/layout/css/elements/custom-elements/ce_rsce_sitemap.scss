@@ -16,17 +16,20 @@ html body {
     .ce--sitemap {
 
 
-      .row > div:last-child {
-        .sitemap-column {
-          //border-bottom: 1px solid $body-bg;
-          border-right: 0px;
+      .row {
+        flex-wrap: wrap !important;
+        > div:last-child {
+          .sitemap-column {
+            //border-bottom: 1px solid $body-bg;
+            border-right: 0px;
+          }
         }
       }
 
       .sitemap-column {
         border-bottom: 1px solid $body-bg;
         min-height: 100%;
-        padding-top: 1rem;
+        //padding-top: 1rem;
         //padding-bottom: 1.5rem;
         text-align: left;
         border-right: 1px solid $body-bg;
@@ -134,6 +137,13 @@ html body {
           }
         }
       }
+    }
+  }
+
+  .mm_container{
+    .ce--sitemap{
+      max-height: 85vh;
+      overflow: auto;
     }
   }
 }
