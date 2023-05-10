@@ -154,9 +154,52 @@ return array(
             ),
         ),
 
+        'style_type' => array(
+            'label' => array('Darstellungstyp ', ''),
+            'inputType' => 'select',
+            'options' => array(
+                'type-1' => 'Typ 1: Pfeile rechts und links, Bildbeschreibung unter dem Bild',
+                'type-2' => 'Typ 2: Überschrift und Pfeile links auf dem Bild mit Hintergrund hinterlegt.',
+            ),
+        ),
+
+
+        'text_on_slider' => array(
+            'label' => array('Text, der links auf dem Slider steht', 'auf Hintergrund'),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE'),
+
+            'dependsOn' => array(
+                'field' => 'style_type',
+                'value' => 'type-2',
+            ),
+        ),
+
+        'alternate_background_color' => array(
+            'label' => array('Alternative Hintergrundfarbe für Inhalt', 'Standardmäßig weiß'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'style_type',
+                'value' => 'type-2',
+            ),
+        ),
+
+        'alternate_text_color' => array(
+            'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'style_type',
+                'value' => 'type-2',
+            ),
+        ),
+
+
         'selecttype' => array(
             'label' => array('Bilder ', ''),
             'inputType' => 'radio',
+              'eval' => array('tl_class' => 'clr'),
             'options' => array(
                 'multiple' => 'Mehrere Bilder oder Ordner auswählen',
                 'single' => 'Bilder einzeln auswählen und optional Bildbeschreibung und Bildtitel hinzufügen',
@@ -257,15 +300,16 @@ return array(
             'label' => array('Slides', ''),
             'inputType' => 'group',
             'eval' => array('tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'selecttype',
+                'value' => 'multiple',
+            ),
         ),
 
 
         'multiSRC' => array(
             'inputType' => 'standardField',
-            'dependsOn' => array(
-                'field' => 'selecttype',
-                'value' => 'multiple',
-            ),
+
             'eval' => array(
                 'multiple' => true,
                 'fieldType' => 'checkbox',
@@ -276,6 +320,8 @@ return array(
                 'extensions' => 'jpg,jpeg,png,svg',
             ),
         ),
+
+
         'galery' => array(
             'label' => array('Slides', ''),
             'elementLabel' => '%s. Slide',

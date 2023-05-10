@@ -27,11 +27,11 @@ html body {
     &.pull-content:not(.pull-content-next) {
       z-index: 0;
 
-      @include media-breakpoint-up(md) {
+      //@include media-breakpoint-up(md) {
         > .ce--inner {
           margin-bottom: var(--pull-content-amount);
         }
-      }
+      //}
 
 
       & + * {
@@ -115,8 +115,6 @@ html body {
 
       .image--holder {
         position: relative;
-        background-size: cover !important;
-        background-position: center center;
         //overflow: hidden;
 
         @media (orientation: landscape) {

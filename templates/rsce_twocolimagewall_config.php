@@ -13,10 +13,13 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -138,13 +141,19 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
 
         'no_padding' => array(
             'label' => array('Abstand komplett entfernen', 'Das vorherige und nächste Element bzw. der Footer "hängen" dann direkt an diesem Element'),
             'inputType' => 'checkbox',
         ),
+
+        'not_fullwidth' => array(
+            'label' => array('Element nicht auf die komplette Breite ziehen', ''),
+            'inputType' => 'checkbox',
+        ),
+
 
         'row' => array(
             'label' => array('Zeilen', ''),
@@ -294,6 +303,11 @@ return array(
                     'inputType' => 'checkbox',
                 ),
                 'spacing_between' => array(
+                    'label' => array('Zwischenabstand zwischen den Spalten', 'Ansonsten liegen beide Spalten direkt aneinander'),
+                    'inputType' => 'checkbox',
+                ),
+
+                'min-height' => array(
                     'label' => array('Zwischenabstand zwischen den Spalten', 'Ansonsten liegen beide Spalten direkt aneinander'),
                     'inputType' => 'checkbox',
                 ),
@@ -852,9 +866,9 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'col-12 col-md-6 col-lg-4' => '33%',
-                        'col-12 col-md-6 col-lg-5' => 'ca. 40%',
-                        'col-12 col-md-6' => '50%',
+                        'col-12 col-lg-4' => '33%',
+                        'col-12 col-lg-5' => 'ca. 40%',
+                        'col-12 col-lg-6' => '50%',
                         'col-12 col-lg-8' => '66.66%',
                         'col-12 col-lg-9' => '75%'
                     ),

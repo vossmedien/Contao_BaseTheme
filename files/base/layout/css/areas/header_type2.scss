@@ -139,7 +139,7 @@
             max-height: 0px;
             overflow: hidden;
             position: absolute;
-            min-width: rfs-value(200px);
+            min-width: max-content;
 
             > li {
               display: block;

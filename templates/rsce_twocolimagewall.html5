@@ -1,6 +1,7 @@
 <?php
 if (TL_MODE == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_twocolimagewall.min.css|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_twocolimagewall.js|static';
 }
 ?>
 
@@ -37,17 +38,17 @@ if (TL_MODE == 'FE') {
     ?>
 
 
-    <div class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> ">
-        <div class="ce--imagetextwall  <?php if ($row->boxed_headline) : ?>with-boxed-image<?php endif; ?>  <?php if ($row->alternate_image) : ?>with-code<?php endif; ?> <?php if ($row->alternate_background) : ?>with-custom-bgcolor<?php endif; ?> <?php if ($row->innerpadding && $row->alternate_background) : ?>with-border<?php endif; ?> <?php if ($row->not_as_bg) : ?>not-as-bg<?php endif; ?> <?php if ($row->image && $row->image_both) : ?>lazy<?php endif; ?>"
+    <div class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> " >
+        <div class="ce--imagetextwall <?php if($this->not_fullwidth):?>container<?php endif;?>  <?php if ($row->boxed_headline) : ?>with-boxed-image<?php endif; ?>  <?php if ($row->alternate_image) : ?>with-code<?php endif; ?> <?php if ($row->alternate_background) : ?>with-custom-bgcolor<?php endif; ?> <?php if ($row->innerpadding && $row->alternate_background) : ?>with-border<?php endif; ?> <?php if ($row->not_as_bg) : ?>not-as-bg<?php endif; ?> <?php if ($row->image && $row->image_both) : ?>lazy<?php endif; ?>"
              <?php if ($row->image && $row->image_both) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>
-             style="
+             style="<?php if (!$row->not_as_bg): ?>min-height: <?php if (!$row->min_height): ?><?= $row->min_height;?><?php else:?>500px<?php endif;?>;<?php endif;?>
              <?php if ($row->image && $row->image_both) : ?>
                      background-position: center center; background-repeat: no-repeat; background-size: cover;
              <?php endif; ?>
-             <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?><?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>
+             <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?> <?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>
                      ">
-            <div class="container force-container">
-                <div class="row g-0 <?php if ($row->video) : ?>align-items-center<?php endif; ?> <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
+            <div style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>" class="content-holder  <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if(!$this->not_fullwidth):?>container force-container<?php endif;?>">
+                <div style="<?php if (!$row->not_as_bg): ?>min-height: <?php if (!$row->min_height): ?><?= $row->min_height;?><?php else:?>500px<?php endif;?><?php endif;?>" class="row g-0 align-items-center <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
                     <div class="content--col d-flex align-items-center <?php if ($row->spacing_between) : ?>spacing-between<?php endif; ?> <?php if ($row->alternate_background) : ?>with-bg<?php endif; ?> <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>"
                          style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
 
@@ -99,8 +100,7 @@ if (TL_MODE == 'FE') {
                     <?php endif; ?>
 
                     <?php if ($row->image_leftcol || $row->kachel_left_text): ?>
-                        <div class="content-col--image"
-                             <?php if ($row->image_leftcol): ?>style="background: url(<?= Image::get(FilesModel::findByUuid($row->image_leftcol)->path, $row->size_left[0], $row->size_left[1], $row->size_left[2]); ?>) center center no-repeat; background-size: cover;" <?php endif; ?>></div>
+                        <div class="content-col--image" <?php if ($row->image_leftcol): ?>style="min-height: 12.5rem; background: url(<?= Image::get(FilesModel::findByUuid($row->image_leftcol)->path, $row->size_left[0], $row->size_left[1], $row->size_left[2]); ?>) center center no-repeat; background-size: cover;" <?php endif; ?>></div>
                     <?php endif; ?>
 
                     <?php if ($row->kachel_left_text): ?>
@@ -206,7 +206,7 @@ if (TL_MODE == 'FE') {
         <?php endif; ?>
         <?php endif;?>
 "
-                        <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>>
+                        <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>style="min-height: <?php if (!$row->min_height): ?><?= $row->min_height;?><?php else:?>500px<?php endif;?>;" data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>>
                     <?php if ($row->not_as_bg) : ?>
                         <div class="image--wrapper">
                             <img class="lazy"

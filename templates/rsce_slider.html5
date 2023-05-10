@@ -35,7 +35,7 @@ if (TL_MODE == 'FE') {
         ?>
 
 
-        <div class="ce--content-slider <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
+        <div class="ce--content-slider  <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?php $rand = rand(1, 100); ?>
 
@@ -51,8 +51,13 @@ if (TL_MODE == 'FE') {
                     });
                 </script>
             <?php endif; ?>
+            <?php if ($this->text_on_slider): ?>
+                <div class="slider-caption" style="<?php if ($this->alternate_background_color): ?>background-color: <?= $this->alternate_background_color; ?>;<?php endif; ?> <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>">
+                    <?= $this->text_on_slider; ?>
+                </div>
+            <?php endif; ?>
 
-            <div class="swiper <?php if ($this->show_pagination): ?>with-pagination<?php endif;?> content-slider_<?= $this->id; ?>">
+            <div class="swiper <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> content-slider_<?= $this->id; ?>">
                 <!-- Additional required wrapper -->
                 <div class="swiper-wrapper">
                     <!-- Slides -->
@@ -163,8 +168,8 @@ if (TL_MODE == 'FE') {
 
                     <?php if ($this->slides_per_view) : ?>
 
+                    <?php if ($this->slides_per_view > 1) : ?>
                     slidesPerView: 1.5,
-
                     breakpoints: {
                         768: {
                             slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view / 2; ?><?php else:?>1<?php endif;?>,
@@ -172,9 +177,11 @@ if (TL_MODE == 'FE') {
                         992: {
                             slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>3<?php endif;?>,
                         }
-                    }
+                    } <?php else:?>
+                    slidesPerView: 1,
+                    <?php endif;?>
                     <?php else:?>
-                       slidesPerView: 'auto',
+                    slidesPerView: 'auto',
                     <?php endif;?>
                 });
             }

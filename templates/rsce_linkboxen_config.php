@@ -13,10 +13,12 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
         'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
 
@@ -41,150 +43,29 @@ return array(
 
 
         'is_slider' => array(
-            'label' => array('', 'Achtung: Einige Einstellungen werden dann obsolet'),
-            'inputType' => 'checkbox',
+            'label' => array('Boxen-Darstellung', ''),
+            'inputType' => 'select',
             'options' => array(
-                '1' => 'Boxen werden in einem Slider dargestellt',
+                '1' => 'Kein Slider',
+                '2' => 'Boxen werden in einem Slider dargestellt',
             ),
             'eval' => array('tl_class' => 'clr'),
         ),
 
 
         'settings_not_slider' => array(
-            'label' => array('Einstellungen, die ignoriert werden, wenn es sich um einen Slider handelt.', ''),
+            'label' => array('Einstellungen', ''),
             'inputType' => 'group',
             'dependsOn' => array(
                 'field' => 'is_slider',
+                'value' => '1',
             ),
         ),
 
-        'animation_type' => array(
-            'label' => array(
-                'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
-            ),
-            'inputType' => 'select',
-            'options' => array(
-                /* Fading entrances  */
-                'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
-                'no-animation' => 'Keine Animation',
-                'animate__fadeIn' => 'fadeIn',
-                'animate__fadeInDown' => 'fadeInDown',
-                'animate__fadeInDownBig' => 'fadeInDownBig',
-                'animate__fadeInLeft' => 'fadeInLeft',
-                'animate__fadeInLeftBig' => 'fadeInLeftBig',
-                'animate__fadeInRight' => 'fadeInRight',
-                'animate__fadeInRightBig' => 'fadeInRightBig',
-                'animate__fadeInUpBig' => 'fadeInUpBig',
-                'animate__fadeInTopLeft' => 'fadeInTopLeft',
-                'animate__fadeInTopRight' => 'fadeInTopRight',
-                'animate__fadeInBottomLeft' => 'fadeInBottomLeft',
-                'animate__fadeInBottomRight' => 'fadeInBottomRight',
-                /* Attention seekers  */
-                'animate__bounce' => 'bounce',
-                'animate__flash' => 'flash',
-                'animate__pulse' => 'pulse',
-                'animate__rubberBand' => 'rubberBand',
-                'animate__shakeX' => 'shakeX',
-                'animate__shakeY' => 'shakeY',
-                'animate__headShake' => 'headShake',
-                'animate__swing' => 'swing',
-                'animate__tada' => 'tada',
-                'animate__wobble' => 'wobble',
-                'animate__jello' => 'jello',
-                'animate__heartBeat' => 'heartBeat',
-                /* Back entrances */
-                'animate__backInDown' => 'backInDown',
-                'animate__backInLeft' => 'backInLeft',
-                'animate__backInRight' => 'backInRight',
-                'animate__backInUp' => 'backInUp',
-                /* Back exits */
-                'animate__backOutDown' => 'backOutDown',
-                'animate__backOutLeft' => 'backOutLeft',
-                'animate__backOutRight' => 'backOutRight',
-                'animate__backOutUp' => 'backOutUp',
-                /* Bouncing entrances  */
-                'animate__bounceIn' => 'bounceIn',
-                'animate__bounceInDown' => 'bounceInDown',
-                'animate__bounceInLeft' => 'bounceInLeft',
-                'animate__bounceInRight' => 'bounceInRight',
-                'animate__bounceInUp' => 'bounceInUp',
-                /* Bouncing exits  */
-                'animate__bounceOut' => 'bounceOut',
-                'animate__bounceOutDown' => 'bounceOutDown',
-                'animate__bounceOutLeft' => 'bounceOutLeft',
-                'animate__bounceOutRight' => 'bounceOutRight',
-                'animate__bounceOutUp' => 'bounceOutUp',
-                /* Fading exits */
-                'animate__fadeOut' => 'fadeOut',
-                'animate__fadeOutDown' => 'fadeOutDown',
-                'animate__fadeOutDownBig' => 'fadeOutDownBig',
-                'animate__fadeOutLeft' => 'fadeOutLeft',
-                'animate__fadeOutLeftBig' => 'fadeOutLeftBig',
-                'animate__fadeOutRight' => 'fadeOutRight',
-                'animate__fadeOutRightBig' => 'fadeOutRightBig',
-                'animate__fadeOutUp' => 'fadeOutUp',
-                'animate__fadeOutUpBig' => 'fadeOutUpBig',
-                'animate__fadeOutTopLeft' => 'fadeOutTopLeft',
-                'animate__fadeOutTopRight' => 'fadeOutTopRight',
-                'animate__fadeOutBottomRight' => 'fadeOutBottomRight',
-                'animate__fadeOutBottomLeft' => 'fadeOutBottomLeft',
-                /* Flippers */
-                'animate__flip' => 'flip',
-                'animate__flipInX' => 'flipInX',
-                'animate__flipInY' => 'flipInY',
-                'animate__flipOutX' => 'flipOutX',
-                'animate__flipOutY' => 'flipOutY',
-                /* Lightspeed */
-                'animate__lightSpeedInRight' => 'lightSpeedInRight',
-                'animate__lightSpeedInLeft' => 'lightSpeedInLeft',
-                'animate__lightSpeedOutRight' => 'lightSpeedOutRight',
-                'animate__lightSpeedOutLeft' => 'lightSpeedOutLeft',
-                /* Rotating entrances */
-                'animate__rotateIn' => 'rotateIn',
-                'animate__rotateInDownLeft' => 'rotateInDownLeft',
-                'animate__rotateInDownRight' => 'rotateInDownRight',
-                'animate__rotateInUpLeft' => 'rotateInUpLeft',
-                'animate__rotateInUpRight' => 'rotateInUpRight',
-                /* Rotating exits */
-                'animate__rotateOut' => 'rotateOut',
-                'animate__rotateOutDownLeft' => 'rotateOutDownLeft',
-                'animate__rotateOutDownRight' => 'rotateOutDownRight',
-                'animate__rotateOutUpLeft' => 'rotateOutUpLeft',
-                'animate__rotateOutUpRight' => 'rotateOutUpRight',
-                /* Specials */
-                'animate__hinge' => 'hinge',
-                'animate__jackInTheBox' => 'jackInTheBox',
-                'animate__rollIn' => 'rollIn',
-                'animate__rollOut' => 'rollOut',
-                /* Zooming entrances */
-                'animate__zoomIn' => 'zoomIn',
-                'animate__zoomInDown' => 'zoomInDown',
-                'animate__zoomInLeft' => 'zoomInLeft',
-                'animate__zoomInRight' => 'zoomInRight',
-                'animate__zoomInUp' => 'zoomInUp',
-                /* Zooming exits */
-                'animate__zoomOut' => 'zoomOut',
-                'animate__zoomOutDown' => 'zoomOutDown',
-                'animate__zoomOutLeft' => 'zoomOutLeft',
-                'animate__zoomOutRight' => 'zoomOutRight',
-                'animate__zoomOutUp' => 'zoomOutUp',
-                /* Sliding entrances */
-                'animate__slideInDown' => 'slideInDown',
-                'animate__slideInLeft' => 'slideInLeft',
-                'animate__slideInRight' => 'slideInRight',
-                'animate__slideInUp' => 'slideInUp',
-                /* Sliding exits */
-                'animate__slideOutDown' => 'slideOutDown',
-                'animate__slideOutLeft' => 'slideOutLeft',
-                'animate__slideOutRight' => 'slideOutRight',
-                'animate__slideOutUp' => 'slideOutUp',
-            ),
-            'eval' => array('chosen' => 'true')
-        ),
 
         'row_align' => array(
             'label' => array(
-                'de' => array('Ausrichtung der Boxen', 'Wird ignoriert, wenn die Boxen sich in einem Slider befinden.'),
+                'de' => array('Ausrichtung der Boxen', 'wird ignoriert bei gleich hohen Boxen'),
             ),
             'inputType' => 'select',
             'options' => array(
@@ -205,12 +86,27 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
+        'remove_gutter' => array(
+            'label' => array('Spaltenabstand entfernen', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'separator_color' => array(
+            'label' => array('Trennlinien-Farbe zwischen Boxen', 'In HEX oder rgb(a) angeben'),
+            'inputType' => 'text',
+            'dependsOn' => array(
+                'field' => 'remove_gutter',
+            ),
+        ),
+
 
         'settings_slider' => array(
             'label' => array('Slider-Einstellungen', ''),
             'inputType' => 'group',
             'dependsOn' => array(
                 'field' => 'is_slider',
+                 'value' => '2',
             ),
         ),
 
@@ -464,13 +360,29 @@ return array(
                 ),
 
                 'hide_arrow' => array(
-                    'label' => array('', '"Link-Pfeil" neben Headline ausblenden'),
-                    'inputType' => 'checkbox',
+                    'label' => array('"Link-Pfeil"', ''),
+                    'inputType' => 'select',
+                    'eval' => array('tl_class' => 'w50'),
                     'options' => array(
-                        '1' => '"Link-Pfeil" neben Headline ausblenden',
+                        '1' => 'Pfeil einblenden',
+                        '2' => '"Link-Pfeil" neben Headline ausblenden',
                     ),
                     'dependsOn' => array(
-                        'field' => 'linkoverlay',
+                        'field' => 'box_style',
+                        'value' => 'style-2',
+                    ),
+                ),
+
+                'arrow_position' => array(
+                    'label' => array('Pfeil-Icon Position', ''),
+                    'inputType' => 'select',
+                    'eval' => array('tl_class' => 'w50'),
+                    'options' => array(
+                        'left' => 'Links neben der Headline',
+                        'right' => 'Rechts neben der Headline',
+                    ),
+                    'dependsOn' => array(
+                        'field' => 'hide_arrow',
                         'value' => '1',
                     ),
                 ),
@@ -478,12 +390,13 @@ return array(
                 'alternate_background_hover' => array(
                     'label' => array('Hoverfarbe für Hintergrund', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50 clr'),
                     'dependsOn' => array(
                         'field' => 'linkoverlay',
                         'value' => '1',
                     ),
                 ),
+
                 'alternate_textcolor_hover' => array(
                     'label' => array('Hoverfarbe für Text', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
@@ -576,9 +489,9 @@ return array(
 
 
                 'text' => array(
-                    'label' => array('Überschrift', ''),
+                    'label' => array('Überschrift', 'HTML ist erlaubt!'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'clr'),
+                    'eval' => array('tl_class' => 'clr', 'allowHtml' => true),
                 ),
 
                 'as_box' => array(
@@ -613,9 +526,10 @@ return array(
 
 
                 'is_map' => array(
-                    'label' => array('Text oder iFrame einbinden ', ''),
+                    'label' => array('Inhalt einbinden ', ''),
                     'inputType' => 'select',
                     'options' => array(
+                        'nix' => 'Nichts',
                         'text' => 'Text einbinden',
                         'code' => 'Ein iFrame, z. B. eine Google-Map einbinden',
                     ),
@@ -650,6 +564,10 @@ return array(
                         '1' => 'Text nach Hover im Bildbereich anzeigen',
                     ),
                     'eval' => array('tl_class' => 'clr'),
+                    'dependsOn' => array(
+                        'field' => 'is_map',
+                        'value' => 'text',
+                    ),
                 ),
 
                 'alternate_hoverbackground' => array(
@@ -693,6 +611,10 @@ return array(
                         '1' => 'Ausklappbare Box inkl. zweitem Bild und einstellbarer Option für begrenzbaren Langtext hinzufügen',
                     ),
                     'eval' => array('tl_class' => 'clr'),
+                    'dependsOn' => array(
+                        'field' => 'is_map',
+                        'value' => 'text',
+                    ),
                 ),
 
 

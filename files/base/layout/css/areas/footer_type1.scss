@@ -15,7 +15,7 @@
       }
 
       .text--wrapper {
-        * {
+        *:not(p) {
           margin-bottom: 0px;
         }
 

@@ -10,7 +10,7 @@ if (!isset($this->size)) {
 }
 ?>
 
-    <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?> <?php if($this->separator_color):?>with-border<?php endif;?>" <?php if($this->separator_color):?>style="--linkboxes-separator-color: <?= $this->separator_color; ?>"<?php endif;?>>
         <div class="ce--inner container">
 
             <div class="<?php echo $this->class; ?>">
@@ -33,21 +33,21 @@ if (!isset($this->size)) {
             <?php if ($this->boxes) : ?>
                 <div class="
 
-        <?php if ($this->is_slider): ?><?php if ($this->show_pagination): ?>with-pagination <?php endif; ?>
+        <?php if ($this->is_slider == 2): ?><?php if ($this->show_pagination): ?>with-pagination <?php endif; ?>
         swiper pb-0 linkboxes-slider_<?= $this->id; ?>
         <?php else: ?>
-          row gx-2 gy-2 <?= $this->row_align; ?> justify-content-center <?php if ($this->same_height): ?>same-height<?php endif; ?>
+          row <?php if($this->remove_gutter):?>g-0<?php else:?>gx-2 gy-2<?php endif;?> <?= $this->row_align; ?> justify-content-center <?php if ($this->same_height): ?>same-height<?php endif; ?>
             <?php endif; ?>
 "
-                     <?php if ($this->is_slider): ?>data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"<?php endif; ?>
+
                 >
-                    <?php if ($this->is_slider): ?>
+                    <?php if ($this->is_slider == 2): ?>
                     <div class="swiper-wrapper">
                         <?php endif; ?>
                         <?php foreach ($this->boxes as $i => $box) : ?>
-                            <div class="
+                            <div <?php if ($this->is_slider == 1): ?>data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"<?php endif; ?> class="
 
-                        <?php if ($this->is_slider): ?>
+                        <?php if ($this->is_slider == 2): ?>
                         swiper-slide
                      <?php else: ?>
                 <?php if ($box->column_width) : ?><?php echo $box->column_width; ?><?php else : ?>col-12 col-md-6 col-lg-4<?php endif; ?>
@@ -55,8 +55,7 @@ if (!isset($this->size)) {
                   ">
 
                                 <div id="linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>"
-                                     class="link--box <?php if ($box->linkoverlay || $box->expand_longtext) : ?>with-link<?php endif; ?> <?php echo $box->box_style; ?> "
-                                     <?php if (!$this->is_slider): ?>data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"<?php endif; ?>>
+                                     class="link--box <?php if ($box->linkoverlay || $box->expand_longtext) : ?>with-link<?php endif; ?> <?php echo $box->box_style; ?> ">
 
                                     <?php if (($box->linkoverlay && ($box->alternate_background_hover || $box->alternate_textcolor_hover)) || $box->alternate_hoverbackground || $box->alternate_hovertext) : ?>
                                         <style>
@@ -89,6 +88,7 @@ if (!isset($this->size)) {
                                             ?>
 
 
+                                            #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:after,
                                             #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper,
                                             #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:not(.as-box) > .headline--wrapper > .box--headline,
                                             #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:not(.as-box) > .headline--wrapper > .box--subline {
@@ -150,7 +150,7 @@ if (!isset($this->size)) {
                                         ?>
                                         <div class="box--upper">
                                             <?php if ($ext != "mp4" && !$box->not_as_bg) : ?>
-                                                <div class="image--holder <?php if (!$this->is_slider && !$box->box_style == "style-3"): ?>lazy<?php endif; ?> <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>"
+                                                <div class="image--holder <?php if ($this->is_slider == 1 && !$box->box_style == "style-3"): ?>lazy<?php endif; ?> <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>"
                                                      style="
                                                      <?php if ($this->is_slider && !$box->box_style == "style-3"): ?>
                                                          background-image:url(<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>);
@@ -159,8 +159,8 @@ if (!isset($this->size)) {
                                                          background: <?php if ($box->image_grayed): ?>linear-gradient(black, black),<?php endif;?> url(<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>);
                                                      <?php endif; ?>
 
-                                                         background-size: cover; background-repeat: no-repeat; background-position: center center; <?php if ($this->imagearea_height): ?>height: <?= $this->imagearea_height; ?><?php endif; ?>"
-                                                    <?php if (!$this->is_slider && !$box->box_style == "style-3"): ?>
+                                                         background-size: cover; background-repeat: no-repeat; background-position: center center ; <?php if ($this->imagearea_height): ?>height: <?= $this->imagearea_height; ?><?php endif; ?>"
+                                                    <?php if ($this->is_slider == 1 && !$box->box_style == "style-3"): ?>
                                                         <?php if (!$box->box_style == "style-3"): ?>data-bg<?php else: ?>src<?php endif; ?>="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
                                                     <?php endif; ?>
                                                 ></div>
@@ -168,7 +168,7 @@ if (!isset($this->size)) {
                                             <?php if ($ext != "mp4" && $box->not_as_bg) : ?>
                                                 <div style="height: auto; text-align: center;"
                                                      class="image--holder <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
-                                                    <img class="<?php if ($this->is_slider): ?>swiper-<?php endif; ?>lazy"
+                                                    <img class="<?php if ($this->is_slider == 2): ?>swiper-<?php endif; ?>lazy"
                                                          data-src="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                                 </div>
                                             <?php endif; ?>
@@ -227,10 +227,10 @@ if (!isset($this->size)) {
                                         <div class="box-lower--wrapper <?php echo $box->textalign; ?>"
                                              style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background) : ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
                                             <?php if ($box->text || $box->subline) : ?>
-                                                <div class="box--lower
+                                                <div class="box--lower <?php if ($box->is_map == "nix") : ?>p-1 p-md-2<?php endif;?>
 
                                         <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>
-                                        <?php if ($box->as_box) : ?>as-box<?php endif; ?> <?php if ($box->linkoverlay && !$box->hide_arrow) : ?>with-url<?php endif; ?>"
+                                        <?php if ($box->as_box) : ?>as-box<?php endif; ?> <?php if ($box->linkoverlay && $box->hide_arrow == 1) : ?>with-url<?php endif; ?> <?php if($box->arrow_position):?>arrow-<?= $box->arrow_position;?><?php endif;?>"
                                                      style="
                                                      <?php if ($box->shadowbox_background && $box->as_box) : ?>background-color:<?php echo $box->shadowbox_background; ?><?php endif; ?>
                                                          ">
@@ -255,11 +255,11 @@ if (!isset($this->size)) {
                                                     </div>
                                                 </div>
                                             <?php endif; ?>
-                                            <?php if (($box->add_items && !$box->box_style == "style-3") || $box->longtext) : ?>
+                                            <?php if ($box->is_map != "nix" && (($box->add_items && !$box->box_style == "style-3") || $box->longtext)) : ?>
                                                 <div class="box-lower--expand <?php if ($box->is_map == "code") : ?>is-map p-0<?php endif; ?> <?php if ($box->expand_longtext && $box->expand_longtext != "show_all") : ?>expandable<?php endif; ?> <?php if ($box->expand_longtext == "hide_preview") : ?>hide-preview<?php endif; ?>">
                                                     <?php if ($box->expand_image) : ?>
                                                         <div class="box--expand-image text-center">
-                                                            <img class="<?php if ($this->is_slider): ?>swiper-<?php endif; ?>lazy"
+                                                            <img class="<?php if ($this->is_slider == 2): ?>swiper-<?php endif; ?>lazy"
                                                                  data-src="<?= Image::get(FilesModel::findByUuid($box->expand_image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                                         </div>
                                                     <?php endif; ?>
@@ -308,13 +308,13 @@ if (!isset($this->size)) {
 
                             </div>
                         <?php endforeach ?>
-                        <?php if ($this->is_slider): ?>
+                        <?php if ($this->is_slider == 2): ?>
                     </div>
                 <?php endif; ?>
                 </div>
 
 
-                <?php if ($this->is_slider): ?>
+                <?php if ($this->is_slider == 2): ?>
                     <?php if (count($this->boxes) > 1) : ?>
                         <?php if ($this->show_pagination): ?>
                             <div class="linkboxes-slider_<?= $this->id; ?> swiper-pagination"></div>

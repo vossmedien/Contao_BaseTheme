@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Kopfbild (oder Slider) mit Text', ''),
+    'label' => array('Custom | Kopfbild (oder Slider) mit Text (headimagelogo)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -142,11 +142,10 @@ return array(
         ),
 
 
-        'settings_1' => array(
-            'label' => array('Einstellungen', ''),
+        'settings_size' => array(
+            'label' => array('Größe', ''),
             'inputType' => 'group',
         ),
-
 
         'image_height' => array(
             'label' => array('Höhe des Bereichs in %', 'Standard sind "100", also 100% Viewport-Height'),
@@ -160,6 +159,24 @@ return array(
             'eval' => array('tl_class' => 'w50'),
         ),
 
+        'image_maxwidth' => array(
+            'label' => array('Maximale Breite des Bildes', 'Einheit (px, rem, vh usw.) bitte angeben'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
+        'settings_1' => array(
+            'label' => array('Einstellungen', ''),
+            'inputType' => 'group',
+        ),
+
+        'show_breadcrumb' => array(
+            'label' => array('Breadcrumb darunter anzeigen', ''),
+            'inputType' => 'checkbox',
+        ),
+
+
         'diagonal_cut' => array(
             'label' => array('Mit diagonalem Abschluss', ''),
             'inputType' => 'checkbox',
@@ -169,6 +186,17 @@ return array(
             'label' => array('Inhalt darunter "hochziehen"', ''),
             'inputType' => 'checkbox',
         ),
+
+        'pull_amount' => array(
+            'label' => array('Um wie viel Pixel soll der nächste Bereich nach oben gezogen werden', 'Standard: 200'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'pull_content',
+            ),
+        ),
+
+
 
         /*
         'pull_content_next' => array(
@@ -180,18 +208,9 @@ return array(
         ),
         */
 
-        'pull_amount' => array(
-            'label' => array('Um wie viel Pixel soll der nächste Bereich nach oben gezogen werden', 'Standard: 200'),
-            'inputType' => 'text',
-            'dependsOn' => array(
-                'field' => 'pull_content',
-            ),
-        ),
-
-
-        'show_breadcrumb' => array(
-            'label' => array('Breadcrumb darunter anzeigen', ''),
-            'inputType' => 'checkbox',
+    'settings_slider' => array(
+            'label' => array('Slider', ''),
+            'inputType' => 'group',
         ),
 
         'slide_effect' => array(
@@ -650,7 +669,7 @@ return array(
                 'text_infotext' => array(
                     'label' => array('Langtext unterhalb der Überschriften', 'Nicht sichtbar auf Mobile!'),
                     'inputType' => 'textarea',
-                    'eval' => array( 'tl_class' => 'clr'),
+                    'eval' => array('tl_class' => 'clr'),
                 ),
 
                 'own_box' => array(

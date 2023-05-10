@@ -1,6 +1,6 @@
 
 .mm-menu {
-  opacity: 0;
+  //opacity: 0;
   z-index: 21 !important;
 
   &.mm-menu_theme-white {
@@ -72,7 +72,7 @@
 
           &:after {
             content: "";
-            width: calc(100% + 80px);
+            width: 100%;
             height: 100px;
             background: var(--mm-color-background) url("/files/base/layout/img/logo.svg") center center no-repeat;
             background-size: contain;

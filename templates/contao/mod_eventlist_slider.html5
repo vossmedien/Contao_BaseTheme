@@ -31,7 +31,7 @@
             const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.event-slider_<?php echo $this->id; ?>', {
                 direction: 'horizontal',
                 loop: true,
-                loopedSlides: 1,
+
                 preloadImages: false,
                 lazy: {
                     loadPrevNext: true,

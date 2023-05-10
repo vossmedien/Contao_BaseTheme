@@ -8,6 +8,7 @@
 @import "../../scaffolding/helper-classes";
 @import "../../../_fonts/fontawesome/scss/fontawesome";
 @import "../../../_fonts/fontawesome/scss/regular";
+@import "../../../_fonts/fontawesome/scss/light";
 
 @import "../../scss-variables";
 @import "../../_theme/variables-layout";
@@ -15,6 +16,28 @@
 html body {
   .ce_rsce_linkboxen {
     //margin-bottom: -1.5rem;
+
+
+    &.with-border {
+
+      .ce_rsce_linkboxen > .row > div {
+        &:not(:last-child) {
+          border-bottom: 1px solid var(--linkboxes-separator-color);
+          //border-left: 1px solid var(--linkboxes-separator-color);
+
+          @include media-breakpoint-up(md) {
+
+
+          }
+
+          @include media-breakpoint-up(lg) {
+            border-bottom: 0px;
+            //border-left: 0px;
+            border-right: 1px solid var(--linkboxes-separator-color);
+          }
+        }
+      }
+    }
 
     .row.same-height {
       .link--box {
@@ -65,7 +88,7 @@ html body {
           border-radius: 0px 0px $border-radius $border-radius;
 
           .box--lower {
-            padding: rfs-value(15px 25px);
+            padding: rfs-value(1rem 25px);
             display: inline-flex;
             flex-flow: row nowrap;
             //align-items: center;
@@ -101,7 +124,7 @@ html body {
 
           .box-lower--expand {
             &:not(.is-map) {
-              padding: rfs-value(15px 25px 15px 25px);
+              padding: rfs-value(1rem 25px 1rem 25px);
             }
 
             &.is-map {
@@ -128,7 +151,7 @@ html body {
       &.style-2 {
         .box--lower {
           position: relative;
-          @include padding(15px 25px 0px 25px);
+          @include padding(1rem 25px 0px 25px);
           line-height: var(--bs-body-line-height);
           //transition: all .3s ease;
 
@@ -159,27 +182,46 @@ html body {
           }
 
           &.with-url {
-            padding-right: 3rem;
+
 
             &:after {
               @extend %fa-icon;
               @extend .fal;
               content: fa-content($fa-var-long-arrow-right);
               position: absolute;
-              right: rfs-value(20px);
+
               top: 50%;
               transform: translate(50%, -50%);
+              transition: all .3s ease;
               @include font-size(25px);
               //transition: all .3s ease;
               z-index: 21;
             }
+
+            &.arrow-left {
+              padding-left: 6rem !important;
+
+              &:after {
+                left: 2rem;
+              }
+            }
+
+            &.arrow-right {
+              padding-right: 3rem !important;
+
+              &:after {
+                right: 2rem;
+              }
+            }
+
+
           }
         }
 
         .box-lower--expand {
           @include font-size(16px);
           line-height: var(--bs-body-line-height);
-          @include padding(15px 0px 20px 0px);
+          @include padding(1rem 0px 20px 0px);
 
           .box--expand-image {
             margin-bottom: 1rem;
@@ -189,11 +231,11 @@ html body {
 
       &.style-3 {
 
-        > a:hover   {
+        > a:hover {
           & + .box--upper {
-             .image--holder {
-               background-blend-mode: screen;
-             }
+            .image--holder {
+              background-blend-mode: screen;
+            }
 
             .button--wrapper {
               opacity: 1;
@@ -346,6 +388,7 @@ html body {
           //flex: 1;
           display: flex;
           flex-flow: row nowrap;
+          margin: auto 0;
 
           //justify-content: center;
           span.box--headline {
@@ -357,7 +400,7 @@ html body {
             color: inherit;
             margin-bottom: 0px;
             margin-top: 2px;
-            @include font-size(15px);
+            @include font-size(1rem);
           }
 
           &.as-box {
@@ -446,7 +489,7 @@ html body {
               transition: all 1s ease-in-out;
               display: -webkit-box;
               -webkit-line-clamp: 99;
-              //padding-bottom: rfs-value(15px);
+              //padding-bottom: rfs-value(1rem);
             }
           }
         }
