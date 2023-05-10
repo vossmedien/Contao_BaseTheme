@@ -32,7 +32,7 @@ if (TL_MODE == 'FE') {
 
                     <div class="col-12 col-lg">
                                 <?php if ($b->image): ?>
-                        <img class="box--image"
+                        <img loading="lazy"  fetchpriority="low" class="box--image"
                              data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                              src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                             <?php endif; ?>

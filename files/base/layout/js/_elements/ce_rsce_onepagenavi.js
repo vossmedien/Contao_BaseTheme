@@ -16,4 +16,4 @@ if ($(".ce_rsce_onepagenavi").length) {
         }
     });
 }
-});
+}, {passive: true});

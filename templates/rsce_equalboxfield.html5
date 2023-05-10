@@ -88,7 +88,7 @@ if (!isset($this->size)) {
                                             <div class="<?php if ($box->icon && $box->link_url) : ?>row align-items-end<?php endif;?>">
                                                 <?php if ($box->icon) : ?>
                                                     <div class="<?php if ($box->icon && $box->link_url) : ?>col-auto<?php endif;?>">
-                                                        <img src="<?= Image::get(FilesModel::findByUuid($box->icon)->path, null, null, null); ?>">
+                                                        <img loading="lazy"  fetchpriority="low" src="<?= Image::get(FilesModel::findByUuid($box->icon)->path, null, null, null); ?>">
                                                     </div>
                                                 <?php endif; ?>
                                                 <?php if ($box->link_url): ?>

@@ -83,7 +83,7 @@ if (!isset($this->size)) {
                                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
 
-                                <img class="lazy"
+                                <img loading="lazy"  fetchpriority="low" class="lazy"
                                      data-src="<?= Image::get(FilesModel::findByUuid($e->img)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
 
 

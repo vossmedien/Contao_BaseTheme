@@ -44,7 +44,7 @@ if (TL_MODE == 'FE') {
 
 </div>
 
-<script>
+<script type="text/javascript" async>
     var myFullpage = new fullpage('#fullpage', {
         // Navigation
         menu: '#myMenu',

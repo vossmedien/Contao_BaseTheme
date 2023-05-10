@@ -105,8 +105,8 @@ $this->extend('block_unsearchable'); ?>
 <?php if ($this->hasAutocomplete) :
     $GLOBALS['TL_CSS'][] = Debug::uncompressedFile('system/modules/isotope/assets/plugins/awesomplete/awesomplete.min.css');
     ?>
-    <script src="<?php echo Debug::uncompressedFile('system/modules/isotope/assets/plugins/awesomplete/awesomplete.min.js'); ?>"></script>
-    <script>
+    <script async src="<?php echo Debug::uncompressedFile('system/modules/isotope/assets/plugins/awesomplete/awesomplete.min.js'); ?>"></script>
+    <script type="text/javascript" async>
         Isotope.initAwesomplete(<?= $this->id ?>, document.getElementById('ctrl_keywords_<?php echo $this->id; ?>'));
     </script>
 <?php endif; ?>

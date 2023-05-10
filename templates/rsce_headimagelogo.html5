@@ -203,14 +203,14 @@ if (TL_MODE == 'FE') {
 
     <?php if ($this->boxed_image) : ?>
         <div class="boxed-logo">
-            <img data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+            <img loading="lazy"  fetchpriority="high" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                  src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
         </div>
     <?php endif; ?>
 </div>
 
 <?php if (TL_MODE == 'FE'): ?>
-    <script>
+    <script type="text/javascript" async>
         window.addEventListener('load', function () {
             if ($('.swiper.mainslider_<?php echo $this->id; ?>').length) {
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {

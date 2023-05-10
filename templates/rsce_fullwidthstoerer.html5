@@ -32,7 +32,7 @@ if (TL_MODE == 'FE') {
                 <div class="row align-items-center">
                     <?php if ($this->image) : ?>
                         <div class="d-none col-6 d-md-block">
-                            <img data-aos="fadeInRight" class="lazy"
+                            <img loading="lazy"  fetchpriority="low" data-aos="fadeInRight" class="lazy"
                                  data-src="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>">
                         </div>
                     <?php endif; ?>

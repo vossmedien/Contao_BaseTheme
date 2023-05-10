@@ -124,7 +124,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
                                         <?php if ($slide->image): ?>
                                             <div class="<?php if (($this->nav_position == 3 || $this->nav_position == 4) && ($slide->longtext)): ?>mb-2<?php endif; ?>  <?php if (($this->nav_position == 1 || $this->nav_position == 2) && ($slide->longtext)): ?><?= $slide->column_width; ?><?php endif; ?>">
-                                                <img class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>swiper-lazy<?php endif; ?> slide-image"
+                                                <img loading="lazy"  fetchpriority="low" class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>swiper-lazy<?php endif; ?> slide-image"
                                                      <?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>data-<?php endif; ?>src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>">
 
                                             </div>
@@ -209,7 +209,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
 
 <?php if ($this->element_type == 'is_slider' && TL_MODE == 'FE'): ?>
-    <script>
+    <script type="text/javascript" async>
         window.addEventListener('load', function () {
             if ($('.swiper.content-slider_<?= $this->id;?>').length) {
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {

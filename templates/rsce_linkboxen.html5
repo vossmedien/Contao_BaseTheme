@@ -168,7 +168,7 @@ if (!isset($this->size)) {
                                             <?php if ($ext != "mp4" && $box->not_as_bg) : ?>
                                                 <div style="height: auto; text-align: center;"
                                                      class="image--holder <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
-                                                    <img class="<?php if ($this->is_slider == 2): ?>swiper-<?php endif; ?>lazy"
+                                                    <img loading="lazy"  fetchpriority="low" class="<?php if ($this->is_slider == 2): ?>swiper-<?php endif; ?>lazy"
                                                          data-src="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                                 </div>
                                             <?php endif; ?>
@@ -259,7 +259,7 @@ if (!isset($this->size)) {
                                                 <div class="box-lower--expand <?php if ($box->is_map == "code") : ?>is-map p-0<?php endif; ?> <?php if ($box->expand_longtext && $box->expand_longtext != "show_all") : ?>expandable<?php endif; ?> <?php if ($box->expand_longtext == "hide_preview") : ?>hide-preview<?php endif; ?>">
                                                     <?php if ($box->expand_image) : ?>
                                                         <div class="box--expand-image text-center">
-                                                            <img class="<?php if ($this->is_slider == 2): ?>swiper-<?php endif; ?>lazy"
+                                                            <img loading="lazy"  fetchpriority="low" class="<?php if ($this->is_slider == 2): ?>swiper-<?php endif; ?>lazy"
                                                                  data-src="<?= Image::get(FilesModel::findByUuid($box->expand_image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                                         </div>
                                                     <?php endif; ?>
@@ -351,11 +351,11 @@ if (!isset($this->size)) {
 
                                     <div class="image--wrapper">
 
-                                        <img class="lazy"
+                                        <img loading="lazy"  fetchpriority="low" class="lazy"
                                              data-src="<?= Image::get(FilesModel::findByUuid($box->modal_image)->path, null, null, null); ?>">
 
                                         <?php if ($box->modal_logo) : ?>
-                                            <img class="lazy logo"
+                                            <img loading="lazy"  fetchpriority="low" class="lazy logo"
                                                  data-src="<?= Image::get(FilesModel::findByUuid($box->modal_logo)->path, null, null, null); ?>">
 
                                         <?php endif; ?>
@@ -383,7 +383,7 @@ if (!isset($this->size)) {
 <?php endif; ?>
 
 <?php if ($this->is_slider && TL_MODE == 'FE'): ?>
-    <script>
+    <script type="text/javascript" async>
         window.addEventListener('load', function () {
             if ($('.swiper.linkboxes-slider_<?= $this->id;?>').length) {
 

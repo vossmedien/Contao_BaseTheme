@@ -3,7 +3,7 @@
 $GoogleAnalyticsId = 'UA-XXXXX-X';
 // DO NOT EDIT ANYTHING BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING!
 if ('UA-XXXXX-X' != $GoogleAnalyticsId && !BE_USER_LOGGED_IN && !$this->hasAuthenticatedBackendUser()) : ?>
-	<script>
+	<script type="text/javascript" async>
 		function initGoogleAnalytics() {
 			(function(i, s, o, g, r, a, m) {
 				i['GoogleAnalyticsObject'] = r;

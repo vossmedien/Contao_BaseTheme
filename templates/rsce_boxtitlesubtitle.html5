@@ -34,7 +34,7 @@ if (TL_MODE == 'FE') {
                         <div class="bts--image"
                              data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                             <?php if ($b->images) : $rand = rand(1, 100); ?>
-                                <script>
+                                <script type="text/javascript" async>
                                     $(function () {
                                         $(".group_<?php echo $rand; ?>").colorbox({
                                             rel: "group_<?php echo $rand; ?>",
@@ -46,7 +46,7 @@ if (TL_MODE == 'FE') {
                                 </script>
                                 <a href="<?= Image::get(FilesModel::findByUuid($b->images[0])->path, null, null, null); ?>"
                                    class="main--image group_<?php echo $rand; ?> bts-cboxElement cboxElement">
-                                    <img class="lazy"
+                                    <img loading="lazy"  fetchpriority="low" class="lazy"
                                          data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                                 </a>
                                 <div class="invisible">
@@ -58,7 +58,7 @@ if (TL_MODE == 'FE') {
                                     <?php endforeach; ?>
                                 </div>
                             <?php else : ?>
-                            <img class="lazy"
+                            <img loading="lazy"  fetchpriority="low" class="lazy"
                                  data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                             <?php endif; ?>
                         </div>

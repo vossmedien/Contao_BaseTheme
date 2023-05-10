@@ -25,7 +25,7 @@
 
 <?php endif; ?>
 
-    <script>
+    <script type="text/javascript" async>
         window.addEventListener('load', function () {
             if ($('.swiper.product-slider_<?= $this->id;?>').length) {
 

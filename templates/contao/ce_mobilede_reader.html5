@@ -35,7 +35,7 @@ $GLOBALS['TL_KEYWORDS']=join(',', $matches[0]);
             <div class="slider-wrapper">
               <?php if($this->ad['images'] && isset($this->ad['images']['XXL'])): ?>
               <?php foreach($this->ad['images']['XXL'] as $key => $img): ?>
-                <div class="slide"><img src="<?= $img ?>"/></div>
+                <div class="slide"><img loading="lazy"  fetchpriority="low" src="<?= $img ?>"/></div>
               <?php endforeach; ?>
               <?php endif; ?>
             </div>
@@ -163,7 +163,7 @@ $GLOBALS['TL_KEYWORDS']=join(',', $matches[0]);
           <?php if($this->ad['seller']['logo-image']): ?>
           <?php $i = 0; foreach($this->ad['seller']['logo-image'] as $logoImage): ?>
           <?php if($i == 0): ?>
-          <p><img src="<?= $logoImage['url'] ?>" alt="Verkäufer Logo"></p>
+          <p><img loading="lazy"  fetchpriority="low" src="<?= $logoImage['url'] ?>" alt="Verkäufer Logo"></p>
           <?php endif; ?>
           <?php $i++; endforeach; ?>
           <p><strong><?= $this->ad['seller']['company-name']['value'] ?></strong><br>

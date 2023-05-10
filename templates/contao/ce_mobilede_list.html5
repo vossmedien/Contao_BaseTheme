@@ -176,7 +176,7 @@
 </div>
 <?php endif; ?>
 
-<script>
+<script type="text/javascript" async>
   <?php if($this->listShuffle): ?>
     var mdListShuffle = <?= $this->listShuffle ?>;
   <?php endif; ?>

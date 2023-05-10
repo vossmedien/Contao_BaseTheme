@@ -24,7 +24,7 @@
             endif; ?>
         </div>
     </form>
-    <script>
+    <script type="text/javascript" async>
         (function () {
             var form = document.querySelector('input[name="FORM_SUBMIT"][value="<?= $this->formSubmit; ?>"]').form;
             if (!form) {

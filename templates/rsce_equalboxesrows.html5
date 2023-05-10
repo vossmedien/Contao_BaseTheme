@@ -158,7 +158,7 @@ if (TL_MODE == 'FE') {
     </div></div>
 
 <?php if (TL_MODE == 'FE'): ?>
-    <script>
+    <script type="text/javascript" async>
         window.addEventListener('load', function () {
             if ($('.swiper.background-slider_<?= $this->id;?>').length) {
 

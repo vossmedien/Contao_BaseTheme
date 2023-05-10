@@ -8,7 +8,7 @@
             <div class="col col-sm-auto logo text-center">
                 <div class="banner">
                     <a href="/">
-                        <img class="hide-home" src="/files/base/layout/img/logo.svg">
+                        <img loading="lazy"  fetchpriority="low" class="hide-home" src="/files/base/layout/img/logo.svg">
                     </a>
                 </div>
             </div>

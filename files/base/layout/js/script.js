@@ -109,5 +109,6 @@ let themeScripts = [
 let finalPromise = [];
 
 themeScripts.forEach(function (url) {
+    finalPromise.async = true;
     finalPromise.push(loadScript(url));
 });

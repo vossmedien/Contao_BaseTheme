@@ -62,7 +62,7 @@ if (TL_MODE == 'FE') {
 
                 <?php if ($this->content_image_1["src"]): ?>
                     <div class="col-12 col-lg-6">
-                        <img class="box--image lazy" data-src="<?= $this->content_image_1["src"]; ?>">
+                        <img loading="lazy"  fetchpriority="low" class="box--image lazy" data-src="<?= $this->content_image_1["src"]; ?>">
                     </div>
                 <?php endif; ?>
                 <div class="col-12 col-lg-6">
@@ -181,7 +181,7 @@ if (TL_MODE == 'FE') {
                 <div class="row gy-0 flex-row-reverse">
                     <?php if ($this->content_image_3["src"]): ?>
                         <div class="col-12 col-lg-6">
-                            <img class="lazy box--image" data-src="<?= $this->content_image_3["src"]; ?>">
+                            <img loading="lazy"  fetchpriority="low" class="lazy box--image" data-src="<?= $this->content_image_3["src"]; ?>">
                         </div>
                     <?php endif; ?>
                     <div class="col-12 col-lg-6">
@@ -261,7 +261,7 @@ if (TL_MODE == 'FE') {
 </div>
 
 
-<script>
+<script type="text/javascript" async>
     $(function () {
         var title = "<?= $this->title; ?>";
         var link = $('.applyBtn').attr("href");

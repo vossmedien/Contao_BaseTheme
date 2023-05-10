@@ -62,13 +62,13 @@
                                             <?php endif; ?>
                                         >
 
-                                            <img class="swiper-lazy"
+                                            <img loading="lazy"  fetchpriority="low" class="swiper-lazy"
                                                  data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
                                         </a>
                                     <?php elseif ($slide->video_type == "local_file"): ?>
                                         <span data-bs-toggle="modal"
                                               data-bs-target="#video-slider_<?= $this->id; ?>_<?= $i; ?>">
-                                            <img class="swiper-lazy"
+                                            <img loading="lazy"  fetchpriority="low" class="swiper-lazy"
                                                  data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
                                         </span>
                                     <?php endif; ?>
@@ -126,7 +126,7 @@
 
 
 <?php if (TL_MODE == 'FE'): ?>
-    <script>
+    <script type="text/javascript" async>
         window.addEventListener('load', function () {
 
 

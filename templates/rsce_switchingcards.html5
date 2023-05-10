@@ -53,7 +53,7 @@ if (TL_MODE == 'FE') {
                                     >
                                         <?php if ($row->image_front && !$row->front_as_bg): ?>
                                             <div class="fc--image">
-                                                <img src="<?= Image::get(FilesModel::findByUuid($row->image_front)->path, null, null, null); ?>">
+                                                <img loading="lazy"  fetchpriority="low" src="<?= Image::get(FilesModel::findByUuid($row->image_front)->path, null, null, null); ?>">
                                             </div>
                                         <?php endif; ?>
                                         <?php if ($row->front_headline): ?>
@@ -83,7 +83,7 @@ if (TL_MODE == 'FE') {
                                     <div class="back--inner">
                                         <?php if ($row->image_back): ?>
                                             <div class="fc--image">
-                                                <img src="<?= Image::get(FilesModel::findByUuid($row->image_back)->path, null, null, null); ?>">
+                                                <img loading="lazy"  fetchpriority="low" src="<?= Image::get(FilesModel::findByUuid($row->image_back)->path, null, null, null); ?>">
                                             </div>
                                         <?php endif; ?>
                                         <?php if ($row->back_headline): ?>
@@ -138,7 +138,7 @@ if (TL_MODE == 'FE') {
 </div>
 
 <?php if (TL_MODE == 'FE'): ?>
-    <script>
+    <script type="text/javascript" async>
         if ($('.flipping-card--wrapper').length) {
             $('body').on('click', '.flipping-card--wrapper', function (e) {
                 $('.flipping-card--wrapper.active').removeClass("active");
@@ -150,7 +150,7 @@ if (TL_MODE == 'FE') {
 
 
 <?php if ($this->is_slider && TL_MODE == 'FE'): ?>
-    <script>
+    <script type="text/javascript" async>
         window.addEventListener('load', function () {
             if ($('.swiper.switchingcards-slider_<?= $this->id;?>').length) {
 

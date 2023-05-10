@@ -209,7 +209,7 @@ if (TL_MODE == 'FE') {
                         <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>style="min-height: <?php if (!$row->min_height): ?><?= $row->min_height;?><?php else:?>500px<?php endif;?>;" data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>>
                     <?php if ($row->not_as_bg) : ?>
                         <div class="image--wrapper">
-                            <img class="lazy"
+                            <img loading="lazy"  fetchpriority="low" class="lazy"
                                  data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>">
                         </div>
                     <?php endif; ?>

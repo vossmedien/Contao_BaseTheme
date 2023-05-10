@@ -47,7 +47,7 @@ if (TL_MODE == 'FE') {
                                     <?php if ($item->icon): ?>
                                         <i class="<?= $item->icon; ?>"></i>
                                     <?php else: ?>
-                                        <img class="lazy"
+                                        <img loading="lazy"  fetchpriority="low" class="lazy"
                                              data-src="<?= Image::get(FilesModel::findByUuid($item->img)->path, null, null, null); ?>">
                                     <?php endif; ?>
                                 </div>

@@ -4,7 +4,7 @@
         <div class="col-md-4">
             <div class="news--image-wrapper">
                 <?php if ($this->singleSRC): ?>
-                    <a href="<?= $this->href; ?>"> <img class="lazy" data-src="<?= $this->singleSRC; ?>"></a>
+                    <a href="<?= $this->href; ?>"> <img loading="lazy"  fetchpriority="low" class="lazy" data-src="<?= $this->singleSRC; ?>"></a>
                 <?php endif; ?>
                 <span class="date">
                     <time datetime="<?= $this->datetime ?>"><?= date('d. F Y', strtotime($this->datetime)); ?></time></span>

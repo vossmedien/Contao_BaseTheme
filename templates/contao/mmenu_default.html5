@@ -13,7 +13,7 @@ if ($this->options['drag']['menu']['open'] ?? false) {
 }
 
 ?>
-<script>
+<script type="text/javascript" async>
     document.addEventListener(
         "DOMContentLoaded", function () {
             const menu = document.querySelector('#<?= $this->elementId ?>');
@@ -40,7 +40,7 @@ if ($this->options['drag']['menu']['open'] ?? false) {
                 new Mmenu('#<?= $this->elementId ?>', <?= json_encode($this->options) ?>, <?= json_encode($this->configuration) ?>);
             }
 
-        }
+        }, {passive: true}
     );
 </script>
 

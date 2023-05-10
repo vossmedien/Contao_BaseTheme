@@ -24,7 +24,7 @@
     <a class="btn btn-outline-primary"><i class="ico ico-kalender"></i> Zum Eventkalender</a>
 </div>
 
-<script>
+<script type="text/javascript" async>
     window.addEventListener('load', function () {
         if ($('.swiper.event-slider_<?= $this->id;?>').length) {
 

@@ -29,7 +29,7 @@
             box-sizing: border-box
         }
     </style>
-    <script src="/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js"></script>
+    <script type="text/javascript" async src="/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js"></script>
 
 
 </head>
@@ -49,7 +49,7 @@
 </div>
 </body>
 
-<script>
+<script type="text/javascript" async>
 
     function reset() {
 

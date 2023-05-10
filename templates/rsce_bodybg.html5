@@ -8,7 +8,7 @@
 
 
     <?php if ($ext == "mp4") : ?>
-        <script>
+        <script type="text/javascript" async>
             document.addEventListener("DOMContentLoaded", function () {
                 var elements = document.querySelectorAll(".bgvideo");
                 for (var i = 0; i < elements.length; i++) {
@@ -20,7 +20,7 @@
                         console.error("Element not found at index " + i);
                     }
                 }
-            });
+            }, {passive: true});
 
         </script>
 

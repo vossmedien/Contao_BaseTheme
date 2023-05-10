@@ -8,5 +8,5 @@ if ($(".ce--coloredrows").length) {
         $(this).wrapInner("<span><span></span></span>");
     });
 }
-});
+}, {passive: true});
 /* END */
