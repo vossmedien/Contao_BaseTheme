@@ -7,7 +7,7 @@ if (TL_MODE == 'FE') {
 
 
 <div <?php echo $this->cssID; ?>
-        class="content--element <?php echo $this->class; ?> <?php if ($this->no_padding) : ?>no-spacing<?php endif; ?>">
+    class="content--element <?php echo $this->class; ?> <?php if ($this->no_padding) : ?>no-spacing<?php endif; ?>">
     <div class="ce--inner ">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline"
@@ -38,17 +38,17 @@ if (TL_MODE == 'FE') {
     ?>
 
 
-    <div class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> " >
-        <div class="ce--imagetextwall <?php if($this->not_fullwidth):?>container<?php endif;?>  <?php if ($row->boxed_headline) : ?>with-boxed-image<?php endif; ?>  <?php if ($row->alternate_image) : ?>with-code<?php endif; ?> <?php if ($row->alternate_background) : ?>with-custom-bgcolor<?php endif; ?> <?php if ($row->innerpadding && $row->alternate_background) : ?>with-border<?php endif; ?> <?php if ($row->not_as_bg) : ?>not-as-bg<?php endif; ?> <?php if ($row->image && $row->image_both) : ?>lazy<?php endif; ?>"
+    <div class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> ">
+        <div class="ce--imagetextwall <?php if ($this->not_fullwidth): ?>container<?php endif; ?>  <?php if ($row->boxed_headline) : ?>with-boxed-image<?php endif; ?>  <?php if ($row->alternate_image) : ?>with-code<?php endif; ?> <?php if ($row->alternate_background) : ?>with-custom-bgcolor<?php endif; ?> <?php if ($row->innerpadding && $row->alternate_background) : ?>with-border<?php endif; ?> <?php if ($row->not_as_bg) : ?>not-as-bg<?php endif; ?> <?php if ($row->image && $row->image_both) : ?>lazy<?php endif; ?>"
              <?php if ($row->image && $row->image_both) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>
-             style="<?php if (!$row->not_as_bg): ?>min-height: <?php if (!$row->min_height): ?><?= $row->min_height;?><?php else:?>500px<?php endif;?>;<?php endif;?>
+             style="<?php if (!$row->not_as_bg): ?>min-height: <?php if (!$row->min_height): ?><?= $row->min_height;?><?php else:?>500px<?php endif; ?>;<?php endif; ?>
              <?php if ($row->image && $row->image_both) : ?>
-                     background-position: center center; background-repeat: no-repeat; background-size: cover;
+                 background-position: center center; background-repeat: no-repeat; background-size: cover;
              <?php endif; ?>
              <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?> <?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>
-                     ">
-            <div style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>" class="content-holder  <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if(!$this->not_fullwidth):?>container force-container<?php endif;?>">
-                <div style="<?php if (!$row->not_as_bg): ?>min-height: <?php if (!$row->min_height): ?><?= $row->min_height;?><?php else:?>500px<?php endif;?><?php endif;?>" class="row g-0 align-items-center <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
+                 ">
+            <div style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>" class="content-holder  <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if (!$this->not_fullwidth): ?>container force-container<?php endif; ?>">
+                <div style="<?php if (!$row->not_as_bg): ?>min-height: <?php if (!$row->min_height): ?><?= $row->min_height;?><?php else:?>500px<?php endif; ?><?php endif; ?>" class="row g-0 align-items-center <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
                     <div class="content--col d-flex align-items-center <?php if ($row->spacing_between) : ?>spacing-between<?php endif; ?> <?php if ($row->alternate_background) : ?>with-bg<?php endif; ?> <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>"
                          style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
 
@@ -110,13 +110,13 @@ if (TL_MODE == 'FE') {
                                      data-aos="<?php if ($row->animation_type_left_kachel) : ?><?php echo $row->animation_type_left_kachel; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                                      style="
                                      <?php if ($row->kachel_left_background_color): ?>
-                                             background-color: <?= $row->kachel_left_background_color;?>;
+                                         background-color: <?= $row->kachel_left_background_color;?>;
                             <?php endif; ?>
 
                                      <?php if ($row->kachel_left_text_color): ?>
-                                             color: <?= $row->kachel_left_text_color;?>;
+                                         color: <?= $row->kachel_left_text_color;?>;
                             <?php endif; ?>
-                                             ">
+                                         ">
 
                                     <?php if ($row->kachel_left_url): ?>
                                         <a href="<?= $row->kachel_left_url; ?>"></a>
@@ -139,7 +139,7 @@ if (TL_MODE == 'FE') {
                                                     <div class="kachel--more-button">
                                                         <a class="btn btn-lg btn-outline-secondary"
                                                            href="<?= $row->kachel_left_url; ?>">
-                                                             <?php if ($row->kachel_left_button_text): ?>
+                                                            <?php if ($row->kachel_left_button_text): ?>
                                                                 <?= $row->kachel_left_button_text; ?>
                                                             <?php else: ?>
                                                                 Mehr Infos
@@ -188,8 +188,8 @@ if (TL_MODE == 'FE') {
             <?php endif; ?>
 
                 <div
-                        style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
-                        class=" <?php if ($row->video) : ?>with-video<?php endif; ?> <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
+                    style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
+                    class=" <?php if ($row->video) : ?>with-video<?php endif; ?> <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
 
           <?php if (!$row->not_as_bg) : ?>
           image-col--inner
@@ -204,12 +204,12 @@ if (TL_MODE == 'FE') {
         <?php elseif ($row->column_width == "col-12 col-lg-9") : ?>
         col-12 col-lg-3
         <?php endif; ?>
-        <?php endif;?>
+        <?php endif; ?>
 "
-                        <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>style="min-height: <?php if (!$row->min_height): ?><?= $row->min_height;?><?php else:?>500px<?php endif;?>;" data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>>
+                    <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>style="min-height: <?php if (!$row->min_height): ?><?= $row->min_height; ?><?php else: ?>500px<?php endif; ?>;" data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>>
                     <?php if ($row->not_as_bg) : ?>
                         <div class="image--wrapper">
-                            <img loading="lazy"  fetchpriority="low" class="lazy"
+                            <img loading="lazy" fetchpriority="low" class="lazy"
                                  data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>">
                         </div>
                     <?php endif; ?>
@@ -245,13 +245,13 @@ if (TL_MODE == 'FE') {
                                  data-aos="<?php if ($row->animation_type_right_kachel) : ?><?php echo $row->animation_type_right_kachel; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                                  style="
                                  <?php if ($row->kachel_right_background_color): ?>
-                                         background-color: <?= $row->kachel_right_background_color;?>;
+                                     background-color: <?= $row->kachel_right_background_color;?>;
                             <?php endif; ?>
 
                                  <?php if ($row->kachel_right_text_color): ?>
-                                         color: <?= $row->kachel_right_text_color;?>;
+                                     color: <?= $row->kachel_right_text_color;?>;
                             <?php endif; ?>
-                                         ">
+                                     ">
 
                                 <?php if ($row->kachel_right_url): ?>
                                     <a href="<?= $row->kachel_right_url; ?>"></a>
@@ -274,7 +274,7 @@ if (TL_MODE == 'FE') {
                                                 <div class="kachel--more-button">
                                                     <a class="btn btn-lg btn-outline-secondary"
                                                        href="<?= $row->kachel_right_url; ?>">
-                                                            <?php if ($row->kachel_right_button_text): ?>
+                                                        <?php if ($row->kachel_right_button_text): ?>
                                                             <?= $row->kachel_right_button_text; ?>
                                                         <?php else: ?>
                                                             Mehr Infos
