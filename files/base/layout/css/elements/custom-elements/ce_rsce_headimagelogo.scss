@@ -8,7 +8,6 @@
 @import "../../_theme/variables-layout";
 
 html body {
-
   //Adjust the Centering of Text if Header is fixed
 
   &.theme-4 {
@@ -28,11 +27,11 @@ html body {
       z-index: 0;
 
       //@include media-breakpoint-up(md) {
-        > .ce--inner {
-          margin-bottom: var(--pull-content-amount);
-        }
-      //}
+      > .ce--inner {
+        margin-bottom: var(--pull-content-amount);
+      }
 
+      //}
 
       & + * {
         //z-index: 5;
@@ -58,11 +57,9 @@ html body {
       text-align: center;
       z-index: 5;
 
-
       @include media-breakpoint-down(sm) {
         width: 80%;
       }
-
 
       img {
         max-width: calc(300px + 4rem);
@@ -93,12 +90,10 @@ html body {
         }
       }
 
-
       .swiper-button-prev {
         @include media-breakpoint-up(sm) {
           left: 2.5vw;
         }
-
       }
 
       .swiper-button-next {
@@ -106,7 +101,6 @@ html body {
           right: 2.5vw;
         }
       }
-
     }
 
     .ce--mainimage {
@@ -153,6 +147,7 @@ html body {
           .mainimage--content-inner {
             display: inline-block;
             position: absolute;
+
             //width: 100%;
             //padding: 1rem 1rem 1.5rem 0px;
 
@@ -179,7 +174,6 @@ html body {
               &.first-line {
                 font-weight: $font-weight-bold;
 
-
                 &:not([class*="dynamic-fontsize"]) {
                   @include font-size(26px);
                   @include media-breakpoint-up(md) {
@@ -199,8 +193,6 @@ html body {
                     @include font-size(22px);
                   }
                 }
-
-
               }
             }
 
@@ -270,11 +262,11 @@ html body {
             position: absolute;
             z-index: 10;
             min-width: 50vw;
+            padding: 2rem 0;
 
             @include media-breakpoint-up(md) {
               max-width: 75%;
             }
-
 
             &:before {
               content: "";
