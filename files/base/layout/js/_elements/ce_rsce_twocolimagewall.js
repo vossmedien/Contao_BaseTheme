@@ -1,7 +1,6 @@
 document.addEventListener(
   "DOMContentLoaded",
   function (event) {
-    console.log("tst");
     function setImageWidth() {
       if (window.innerWidth >= 767) {
         var containers = document.querySelectorAll(

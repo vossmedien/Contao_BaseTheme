@@ -64,7 +64,7 @@ if (TL_MODE == 'FE') {
                                         $color = str_replace(");", ")",$color);
                                     ?>
 
-                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner--wrapper:not(.extra):before,
+                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner:before,
                                     html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner--wrapper:not(.extra) .mainimage--content-inner--holder:after {
                                         background-color: <?= $color; ?> !important;
                                     }
@@ -80,7 +80,7 @@ if (TL_MODE == 'FE') {
 
                             <?php if ($slide->box_background_color): ?>
                                 <style>
-                                    <?php
+                                    <?php 
                                         $color = $slide->box_background_color;
                                         $color = str_replace("&#41", ")",$color);
                                         $color = str_replace("&#40", "(",$color);
