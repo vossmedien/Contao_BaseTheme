@@ -157,18 +157,20 @@
                     &:hover {
                       > ul.level_2 {
                         max-height: rfs-value(400px);
+                        visibility: visible;
+                        opacity: 1;
                       }
                     }
                   }
                 }
 
                 &.level_2 {
-                  transition: all 0.5s ease;
+                  transition: opacity 0.25s ease;
                   @include background-opacity($white, 1);
                   list-style-type: none;
                   margin: 0px 0 0 -15px;
                   max-height: 0px;
-                  overflow: hidden;
+                  //overflow: hidden;
                   position: absolute;
                   //min-width: rfs-value(200px);
                   text-align: left;
@@ -177,20 +179,22 @@
                   background-color: $body-bg;
                   z-index: 10;
                   left: 0;
+                  visibility: hidden;
+                  opacity: 0;
+                  padding: 5px 0;
+                  //overflow-y: hidden;
 
                   > li {
                     display: block;
                     padding: 0 1rem;
                     transition: all 0.3s ease;
+                    position: relative;
 
-                    &:first-child {
-                      padding-top: 5px;
-                    }
 
                     &:last-child {
-                      padding-bottom: 5px;
 
-                      > ul{
+
+                      > ul {
                         left: auto;
                         right: 0;
                       }
@@ -206,7 +210,77 @@
                       background-color: var(--bs-gray-100);
 
                       > a,
-                      > span {
+                      > span, > strong {
+                        color: var(--bs-primary);
+                      }
+                    }
+
+                    > a,
+                    > span,
+                    > strong {
+                      padding: 0.25rem 0rem;
+                      text-decoration: none;
+                      color: var(--bs-body-color);
+                      font-weight: $font-weight-normal;
+                      display: block;
+                      @include font-size(15px);
+                    }
+
+
+                    &:hover {
+                      > ul.level_3 {
+                        max-width: rfs-value(400px);
+                        visibility: visible;
+                        opacity: 1;
+                      }
+                    }
+                  }
+                }
+
+                &.level_3 {
+                  transition: max-width 0.25s ease;
+                  @include background-opacity($white, 1);
+                  list-style-type: none;
+                  margin: 0px;
+                  padding: 5px 0;
+                  overflow: hidden;
+                  position: absolute;
+                  //min-width: rfs-value(200px);
+                  text-align: left;
+                  border-radius: 0 $border-radius $border-radius 0;
+                  box-shadow: $box-shadow;
+                  background-color: $body-bg;
+                  z-index: 11;
+                  left: 100%;
+                  max-width: 0px;
+                  top: -5px;
+
+                  > li {
+                    display: block;
+                    padding: 0 1rem;
+                    transition: all 0.3s ease;
+                    position: relative;
+
+                    &:last-child {
+
+
+                      > ul {
+                        left: auto;
+                        right: 0;
+                      }
+                    }
+
+                    &:not(:last-child) {
+                      border-bottom: 1px solid var(--bs-gray-100);
+                    }
+
+                    &:hover,
+                    &.active,
+                    &.trail {
+                      background-color: var(--bs-gray-100);
+
+                      > a,
+                      > span, > strong {
                         color: var(--bs-primary);
                       }
                     }

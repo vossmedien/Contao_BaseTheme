@@ -66,8 +66,11 @@
       .content--col {
         .content-col--inner {
           padding-top: 2rem;
-          padding-left: rfs-value(25px);
-          padding-right: rfs-value(25px);
+
+          @include media-breakpoint-up(lg) {
+            padding-left: rfs-value(25px);
+            padding-right: rfs-value(25px);
+          }
 
           @include media-breakpoint-up(xl) {
             padding-top: 0rem;

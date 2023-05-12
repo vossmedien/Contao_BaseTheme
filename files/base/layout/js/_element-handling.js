@@ -2,7 +2,7 @@ $(function () {
 
     var headerContent = document.querySelector('.header--content.fixed');
     var firstArticle = document.querySelector('.mod_article:first-of-type');
-    var firstElement = firstArticle.firstElementChild;
+    //var firstElement = firstArticle.firstElementChild;
 
     //if (!firstElement.classList.contains('ce_rsce_headimagelogo') && headerContent) {
         var paddingTop = window.getComputedStyle(headerContent).height;

@@ -669,7 +669,7 @@ return array(
                 'text_infotext' => array(
                     'label' => array('Langtext unterhalb der Überschriften', 'Nicht sichtbar auf Mobile!'),
                     'inputType' => 'textarea',
-                    'eval' => array('tl_class' => 'clr'),
+                    'eval' => array('tl_class' => 'clr','rte' => 'tinyMCE'),
                 ),
 
                 'own_box' => array(

@@ -19,7 +19,7 @@ return array(
             'label' => array('Überschrift für Modal-Header', 'Wenn leer, wird der Header ausgeblendet'),
             'inputType' => 'text',
         ),
-            'modal_size' => array(
+        'modal_size' => array(
             'label' => array(
                 'de' => array('Größe des modalen Fensters', ''),
             ),
@@ -254,9 +254,9 @@ return array(
             'dependsOn' => array(
                 'field' => 'as_bg',
             ),
-                 'eval' => array(
-                        'mandatory' => true,
-                    ),
+            'eval' => array(
+                'mandatory' => true,
+            ),
         ),
 
 

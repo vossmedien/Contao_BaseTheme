@@ -144,7 +144,6 @@ return array(
         ),
 
 
-
         'min_height' => array(
             'label' => array('Mindesthöhe der Boxen', 'inkl. Maßeinheit, z. B. 300px, die Höhe muss mindestens so hoch sein, wie die höchste Vorder- oder Rückseite '),
             'inputType' => 'text',
@@ -389,6 +388,16 @@ return array(
                     ),
                 ),
 
+                'disable_flip' => array(
+                    'label' => array('Flip bzw. Rückseite deaktivieren', ''),
+                    'inputType' => 'radio',
+                    'options' => array(
+                        'is_flipping' => 'Mit Flip (Standard)',
+                        'is_disabled' => 'Ohne Rückseite',
+                    ),
+                    'default' => 'is_flipping'
+                ),
+
 
                 'settings_1' => array(
                     'label' => array('Vorderseite', ''),
@@ -443,13 +452,13 @@ return array(
                 'front_headline' => array(
                     'label' => array('Überschrift', ''),
                     'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
+                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
                 ),
 
                 'front_content_headline' => array(
                     'label' => array('Überschrift für Textpassage', ''),
                     'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
+                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
                 ),
 
                 'front_content_text' => array(
@@ -461,6 +470,10 @@ return array(
                 'settings_2' => array(
                     'label' => array('Rückseite', ''),
                     'inputType' => 'group',
+                    'dependsOn' => array(
+                        'field' => 'disable_flip',
+                        'value' => 'is_flipping'
+                    ),
                 ),
 
 
