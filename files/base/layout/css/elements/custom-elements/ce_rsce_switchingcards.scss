@@ -40,7 +40,8 @@ html body {
         height: 100%;
       }
 
-      &:hover,
+      &:not(.flipping-disabled){
+         &:hover,
       &.active {
         .flipping-card--inner {
 
@@ -57,6 +58,9 @@ html body {
           }
         }
       }
+      }
+
+
 
       img {
         max-height: rfs-value(60px);

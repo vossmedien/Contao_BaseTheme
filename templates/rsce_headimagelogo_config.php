@@ -150,7 +150,7 @@ return array(
         'image_height' => array(
             'label' => array('Höhe des Bereichs in %', 'Standard sind "100", also 100% Viewport-Height'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
+
         ),
 
         'image_maxheight' => array(
@@ -162,7 +162,14 @@ return array(
         'image_maxwidth' => array(
             'label' => array('Maximale Breite des Bildes', 'Einheit (px, rem, vh usw.) bitte angeben'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+
+        'image_minheight' => array(
+            'label' => array('Minimale Höhe des Bereichs', 'Einheit (px, rem, vh usw.) bitte angeben'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
 

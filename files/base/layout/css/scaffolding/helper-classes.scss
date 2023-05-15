@@ -132,3 +132,9 @@
   max-width: none !important;
   min-width: 0 !important;
 }
+
+a.disabled-link {
+  cursor: auto;
+  text-decoration: none;
+  pointer-events: none;
+}

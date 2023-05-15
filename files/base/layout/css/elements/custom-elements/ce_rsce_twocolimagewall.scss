@@ -87,6 +87,12 @@ html body {
       height: 100%;
       max-width: none;
       top: 0;
+      left: 0;
+      right: 0;
+
+      @include media-breakpoint-down(sm) {
+        min-height: 0px;
+      }
 
       @include media-breakpoint-up(md) {
         position: absolute;
