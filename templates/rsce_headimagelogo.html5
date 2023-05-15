@@ -1,6 +1,7 @@
 <?php
 if (TL_MODE == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_headimagelogo.min.css|static';
+     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_headimagelogo.js|static';
 }
 ?>
 
@@ -144,7 +145,7 @@ if (TL_MODE == 'FE') {
                                                         <span class="second-line <?php if ($slide->dynamic_fontsize): ?>dynamic-fontsize-sm<?php endif; ?>"><?php echo $slide->text_secondline; ?></span>
                                                     <?php endif; ?>
                                                     <?php if ($slide->text_infotext && !$slide->own_box) : ?>
-                                                        <div class="infotext--text  d-none d-md-block">
+                                                        <div class="infotext--text">
                                                             <?php echo $slide->text_infotext; ?>
                                                         </div>
 

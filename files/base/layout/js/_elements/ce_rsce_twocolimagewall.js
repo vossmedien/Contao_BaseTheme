@@ -54,7 +54,6 @@ document.addEventListener(
                         kachelDiv.style.width = parentDivWidth  + "px";
                     }
 
-
                 });
             }
         }
