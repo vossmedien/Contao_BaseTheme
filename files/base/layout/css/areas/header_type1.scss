@@ -165,7 +165,7 @@
                 }
 
                 &.level_2 {
-                  transition: opacity 0.25s ease;
+                  transition: all 0.25s ease;
                   @include background-opacity($white, 1);
                   list-style-type: none;
                   margin: 0px 0 0 -15px;

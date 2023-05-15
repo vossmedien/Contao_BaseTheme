@@ -39,19 +39,19 @@ document.addEventListener(
 
                     if (imageColImage) {
                         imageColImage.style.width =
-                            distance + containerWidth * (imageWidth / 100) - 16 + "px";
+                            distance + containerWidth * (imageWidth / 100)  + "px";
                     }
 
                     if (contentColImage) {
                         contentColImage.style.width =
-                            distance + containerWidth * (contentWidth / 100) - 16 + "px";
+                            distance + containerWidth * (contentWidth / 100) + "px";
                     }
 
                     if (kachelDiv) {
                         var parentDiv = kachelDiv.parentElement;
                         var widthDiv = parentDiv.querySelector('[class*="col"]')
                         var parentDivWidth = widthDiv.offsetWidth;
-                        kachelDiv.style.width = parentDivWidth - 16 + "px";
+                        kachelDiv.style.width = parentDivWidth  + "px";
                     }
 
 
