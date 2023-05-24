@@ -870,7 +870,8 @@ return array(
                         'col-12 col-lg-5' => 'ca. 40%',
                         'col-12 col-lg-6' => '50%',
                         'col-12 col-lg-8' => '66.66%',
-                        'col-12 col-lg-9' => '75%'
+                        'col-12 col-lg-9' => '75%',
+                        'col-12 full-width' => '100% (keine Rechte Spalte!)'
                     ),
                 ),
 

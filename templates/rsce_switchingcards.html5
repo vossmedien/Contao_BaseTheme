@@ -34,7 +34,7 @@ if (TL_MODE == 'FE') {
                 <div class="swiper-wrapper"><?php endif; ?>
                     <?php foreach ($this->rows as $i => $row) : ?>
                         <div class="<?php if ($this->is_slider): ?>swiper-slide h-auto<?php else: ?><?php echo $row->column_width; ?><?php endif; ?>">
-                            <div class="flipping-card--wrapper <?php if ($row->disable_flip != "is_flipping"): ?>flipping-disabled<?php endif;?>"
+                            <div class="flipping-card--wrapper <?php if ($row->disable_flip == "is_disabled"): ?>flipping-disabled<?php endif;?>"
                                  data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
                                 <?php if ($row->button_as_card_link && $row->link_url): ?>
