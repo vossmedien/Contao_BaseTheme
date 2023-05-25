@@ -191,10 +191,10 @@ $GLOBALS['TL_KEYWORDS']=join(',', $matches[0]);
         </div>
         <?php endif; ?>
 
-        <div class="md-detail-box additional-form">
+        <!--<div class="md-detail-box additional-form">
           <h2><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['headline-contact-form'] ?></h2>
           {{insert_form::6}}
-        </div>
+        </div>-->
       </div>
     </div>
     <div class="md-detail-footer">

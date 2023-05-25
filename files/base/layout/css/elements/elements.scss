@@ -1,5 +1,5 @@
 
-[class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery):not(.badge) {
+[class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery):not(.badge):not(.content--box) {
   padding: $basic-gutter 0px;
 
   @include media-breakpoint-down(md) {
@@ -43,8 +43,9 @@
 }
 
 .content--box {
-  @include content-box();
+
   @extend .container;
+  @include content-box();
 }
 
 .ce_text {
@@ -160,6 +161,7 @@
     background-color: var(--bs-white);
   }
 }
+
 
 .video_container {
   position: relative;

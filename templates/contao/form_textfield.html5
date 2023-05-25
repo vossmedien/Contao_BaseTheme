@@ -13,7 +13,7 @@
 <?php $this->endblock(); ?>
 
 <?php $this->block('field'); ?>
-<input type="<?= $this->type ?>" name="<?= $this->name ?>" id="ctrl_<?= $this->id ?>" class="form-control text<?php if ($this->hideInput) : ?> password<?php endif; ?><?php if ($this->class) : ?> <?= $this->class ?><?php endif; ?>" value="<?= Contao\StringUtil::specialchars($this->value) ?>" <?= $this->getAttributes() ?>>
+<input type="<?= $this->type ?>" name="<?= $this->name ?>" id="ctrl_<?= $this->id ?>" class="form-control text<?php if ($this->hideInput) : ?> password<?php endif; ?>" value="<?= Contao\StringUtil::specialchars($this->value) ?>" <?= $this->getAttributes() ?>>
 <?php if ($this->hasErrors()) : ?>
   <p class="error"><?= $this->getErrorAsString() ?></p>
 <?php endif; ?>

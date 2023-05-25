@@ -185,6 +185,10 @@ html body .btn {
     padding: 0px;
   }
 
+  &.btn-block{
+    width: 100%;
+    display: block;
+  }
 
   /*
   &.with-icon {

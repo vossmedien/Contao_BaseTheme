@@ -17,7 +17,8 @@ form {
   min-width: 100%;
   //opacity: 0;
 
-  fieldset {
+  /*
+    fieldset {
     legend {
       margin-top: 1.5rem;
       @extend .h2;
@@ -28,6 +29,8 @@ form {
       margin-top: 1.5rem !important;
     }
   }
+   */
+
 
   > *:not(form):first-child:not(.formbody) {
     margin-bottom: 2rem;
@@ -209,6 +212,10 @@ form {
       padding-bottom: 0px;
       //line-height: 1.2;
       //margin-left: calc(var(--bs-gutter-x) / 2);
+
+      &:after{
+        display: none !important;
+      }
     }
 
     input[type="text"],
