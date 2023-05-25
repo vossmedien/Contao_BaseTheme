@@ -2,7 +2,7 @@ document.addEventListener(
     "DOMContentLoaded",
     function (event) {
         function setImageWidth() {
-            if (window.innerWidth >= 767) {
+            if (window.innerWidth >= 992) {
                 var containers = document.querySelectorAll(
                     ".ce--imagetextwall:not(.container) .force-container"
                 );
@@ -39,7 +39,7 @@ document.addEventListener(
 
                     if (imageColImage) {
                         imageColImage.style.width =
-                            distance + containerWidth * (imageWidth / 100)  + "px";
+                            distance + containerWidth * (imageWidth / 100) + "px";
                     }
 
                     if (contentColImage) {
@@ -49,9 +49,13 @@ document.addEventListener(
 
                     if (kachelDiv) {
                         var parentDiv = kachelDiv.parentElement;
-                        var widthDiv = parentDiv.querySelector('[class*="col"]')
-                        var parentDivWidth = widthDiv.offsetWidth;
-                        kachelDiv.style.width = parentDivWidth  + "px";
+                        var widthDiv = parentDiv.querySelector('[class*="col"]');
+
+
+                        setTimeout(function () {
+                               var parentDivWidth = widthDiv.offsetWidth;
+                            kachelDiv.style.width = parentDivWidth + "px";
+                        }, 0); // Ändere die Verzögerungszeit (in Millisekunden) nach Bedarf
                     }
 
                 });
@@ -60,9 +64,11 @@ document.addEventListener(
 
         setImageWidth();
 
-        window.onresize = function () {
-            setImageWidth();
-        };
-    },
-    {passive: true}
-);
+        var resizeTimer;
+        window.addEventListener("resize", function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                setImageWidth();
+            }, 0); // Ändere die Verzögerungszeit (in Millisekunden) nach Bedarf
+        });
+    }, {passive: true});

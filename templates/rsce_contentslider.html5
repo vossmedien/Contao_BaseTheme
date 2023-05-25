@@ -230,7 +230,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                     lazy: {
                         loadPrevNext: true,
                     },
-                    loopedSlides: 1,
+                    //loopedSlides: 1,
 
                     <?php endif;?>
 

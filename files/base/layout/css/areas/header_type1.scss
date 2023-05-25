@@ -17,13 +17,16 @@
 
     &.keep-logo {
       .hc--bottom {
-        &.is--scrolling {
+        /*
+           &.is--scrolling {
           .hc-bottom--left-col {
             img {
               opacity: 1;
             }
           }
         }
+         */
+
       }
     }
 
@@ -67,7 +70,8 @@
     .hc--bottom {
       padding: 15px 0;
 
-      &.is--scrolling {
+      /*
+            &.is--scrolling {
         position: fixed;
         transform: translateZ(0);
         z-index: 99;
@@ -88,6 +92,8 @@
         &.hc-bottom--right-col {
         }
       }
+       */
+
 
       .hc-bottom--inside {
         .row {
