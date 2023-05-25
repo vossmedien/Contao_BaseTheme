@@ -43,9 +43,8 @@
 }
 
 .content--box {
-
-  @extend .container;
   @include content-box();
+  //@extend .container;
 }
 
 .ce_text {

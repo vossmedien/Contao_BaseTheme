@@ -1,5 +1,3 @@
-
-
 @mixin aspect-ratio($width, $height, $float: false) {
   position: relative;
   @if $float {
@@ -50,6 +48,12 @@
 
   .ce_text {
     margin-top: 0px;
+  }
+
+  &.row {
+    > div[class*="col-"]:first-of-type {
+      margin-top: 0px;
+    }
   }
 }
 

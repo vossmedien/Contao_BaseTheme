@@ -78,7 +78,7 @@ html body {
   @for $n from 0 through 50 {
     .row {
       &.g-#{$n}px {
-        --bs-gutter-y: 0px;
+        //--bs-gutter-y: 0px;
         margin: calc(-#{$n}px / 2);
 
 
@@ -89,7 +89,7 @@ html body {
       }
 
       &.gx-#{$n}px {
-        --bs-gutter-y: 0px;
+        //--bs-gutter-y: 0px;
         margin-left: calc(-#{$n}px / 2);
         margin-right: calc(-#{$n}px / 2);
 
@@ -101,7 +101,7 @@ html body {
       }
 
       &.gy-#{$n}px {
-        --bs-gutter-y: 0px;
+        //--bs-gutter-y: 0px;
         margin-top: calc(-#{$n}px / 2);
         margin-bottom: calc(-#{$n}px / 2);
 
@@ -114,7 +114,8 @@ html body {
     }
   }
 
-  .row {
+  /*
+    .row {
     //margin-top: calc(-1 * var(--bs-gutter-y) / 2);
     //margin-bottom: calc(-1 * calc(var(--bs-gutter-y) / 2));
 
@@ -131,16 +132,29 @@ html body {
       //padding-bottom: calc(var(--bs-gutter-y) / 2);
     }
   }
+   */
+
 }
 
+/*
 .row {
   &:not([class*="gy-"]):not([class*="g-"]):not([class*="gx-"]) {
     --bs-gutter-y: calc(#{$grid-gutter-width} / 2);
     --bs-gutter-x: calc(#{$grid-gutter-width} / 2);
   }
 }
+ */
 
 
-.mod_article[class*="bg-"] + .mod_article:not([class*="bg-"]){
+.row {
+  //margin-top: 0px;
+  &:not([class*="gy-"]):not([class*="g-"]) {
+    --bs-gutter-y: var(--bs-gutter-x);
+  }
+}
+
+
+
+.mod_article[class*="bg-"] + .mod_article:not([class*="bg-"]) {
   padding-top: $basic-gutter;
 }

@@ -2,17 +2,25 @@ $fa-font-path: "/files/base/layout/_fonts/fontawesome/webfonts";
 
 $enable-cssgrid: true !default;
 $enable-rounded: true !default;
-
-//Abstände
 $spacer: 2rem !default;
+
+
 $spacers: (
         0: 0,
-        1: 1rem,
-        2: 2rem,
-        3: 3rem,
-        4: 4rem,
-        5: 5rem,
+        1: .5rem,
+        2: 1rem,
+        3: 1.5rem,
+        4: 2rem,
+        5: 2.5rem,
+        6: 3rem,
+        7: 3.5rem,
+        8: 4rem,
+        9: 4.5rem,
+        10: 5rem,
 ) !default;
+
+//Abstände
+
 
 $basic-gutter: $spacer * 2 !default;
 $headline-spacing: $spacer * 1.5 !default;
@@ -28,6 +36,8 @@ $grid-breakpoints: (
 ) !default;
 
 $grid-gutter-width: 30px !default;
+
+
 $gutters: (
         0: 0,
         1: $grid-gutter-width * 0.5,
@@ -36,6 +46,7 @@ $gutters: (
         4: $grid-gutter-width * 3,
         5: $grid-gutter-width * 4,
 ) !default;
+
 
 
 //CSS Variablen beachten

@@ -20,7 +20,7 @@
                     </div>
                 <?php endif; ?>
 
-                <?php if ($this->hasText): ?>
+                <?php if ($this->href): ?>
                     <div class="news--button text-md-end">
                         <a href="<?= $this->href; ?>" class="btn btn-outline-primary btn-sm">Weiterlesen</a>
                     </div>

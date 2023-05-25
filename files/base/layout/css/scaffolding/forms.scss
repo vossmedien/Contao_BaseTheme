@@ -35,6 +35,11 @@ form {
   > *:not(form):first-child:not(.formbody) {
     margin-bottom: 2rem;
   }
+
+  select,input,textarea{
+    position: relative;
+    z-index: 5;
+  }
 }
 
 
@@ -259,3 +264,16 @@ form {
       }
     }
   }
+
+fieldset legend {
+  display: flex;
+  align-items: center;
+}
+
+fieldset legend::after {
+  content: "";
+  flex-grow: 1;
+  height: 1px;
+  background-color: #000; /* Farbe der Trennlinie anpassen */
+  margin-left: 10px; /* Abstand zwischen Text und Linie anpassen */
+}

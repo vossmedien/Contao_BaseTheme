@@ -141,6 +141,30 @@ $(function () {
     });
 
 
+    var formBodies = document.querySelectorAll('form > .formbody');
+
+    formBodies.forEach(function (formBody) {
+        var elements = formBody.querySelectorAll(':scope > *:not([class^="col-"])');
+
+        elements.forEach(function (element) {
+            element.classList.add('col-12');
+        });
+    });
+
+
+    var formFieldsetBodies = document.querySelectorAll('form > .formbody fieldset');
+
+    formFieldsetBodies.forEach(function (FormFieldset) {
+        var elements = FormFieldset.querySelectorAll(':scope > *:not([class^="col-"])');
+
+        elements.forEach(function (element) {
+            element.classList.add('col-12');
+        });
+    });
+
+
+
+
     if ($(".modal").length) {
         $(".modal").appendTo("body");
     }

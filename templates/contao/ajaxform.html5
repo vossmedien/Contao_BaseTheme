@@ -8,8 +8,8 @@
     <form novalidate
           action="<?php echo $this->action; ?>" <?php if ($this->formId) : ?> id="<?php echo $this->formId; ?>" <?php endif; ?>
           method="<?php echo $this->method; ?>"
-          enctype="<?php echo $this->enctype; ?>" <?php echo $this->attributes; ?><?php echo $this->novalidate; ?>>
-        <div class="formbody row">
+          enctype="<?php echo $this->enctype; ?>" <?php echo $this->novalidate; ?>>
+        <div class="formbody row <?php if (preg_match('/"([^"]+)"/', $this->attributes, $m)) {print $m[1];} ?>">
             <?php if ($this->method != 'get') : ?>
                 <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
                 <input type="hidden" name="REQUEST_TOKEN" value="<?= $this->requestToken ?>">
