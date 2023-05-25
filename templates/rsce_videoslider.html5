@@ -39,20 +39,24 @@
                             <div class="swiper-slide">
 
                                 <?php if ($slide->video_method == "inline"): ?>
-                                    <div class="video_container">
 
-                                        <?php if ($slide->video_type == "youtube"): ?>
+
+                                    <?php if ($slide->video_type == "youtube"): ?>
+                                        <div class="iframe_container">
                                             <iframe data-source="https://www.youtube-nocookie.com/embed/<?php echo $slide->video_id; ?>"
                                                     title="<?php echo $slide->text; ?>" frameborder="0"
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                     allowfullscreen></iframe>
-                                        <?php elseif ($slide->video_type == "local_file"): ?>
+                                        </div>
+                                    <?php elseif ($slide->video_type == "local_file"): ?>
+                                        <div class="video_container">
                                             <video autoplay muted loop playsinline>
                                                 <source type="video/mp4" src="{{file::<?= $slide->video_path ?>}}">
                                             </video>
-                                        <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
 
-                                    </div>
+
                                 <?php else: ?>
 
                                     <?php if ($slide->video_type == "youtube"): ?>
@@ -62,13 +66,13 @@
                                             <?php endif; ?>
                                         >
 
-                                            <img loading="lazy"  fetchpriority="low" class="swiper-lazy"
+                                            <img loading="lazy" fetchpriority="low" class="swiper-lazy"
                                                  data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
                                         </a>
                                     <?php elseif ($slide->video_type == "local_file"): ?>
                                         <span data-bs-toggle="modal"
                                               data-bs-target="#video-slider_<?= $this->id; ?>_<?= $i; ?>">
-                                            <img loading="lazy"  fetchpriority="low" class="swiper-lazy"
+                                            <img loading="lazy" fetchpriority="low" class="swiper-lazy"
                                                  data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
                                         </span>
                                     <?php endif; ?>
@@ -160,7 +164,7 @@
 
 
                     loop: true,
-                    loopedSlides: 1,
+                    //loopedSlides: 1,
                     <?php endif; ?>
 
                     preloadImages: false,

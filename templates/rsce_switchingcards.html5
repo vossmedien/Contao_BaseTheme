@@ -160,7 +160,8 @@ if (TL_MODE == 'FE') {
 
 
                     loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
-                    loopedSlides: 1,
+                    //loopedSlides: 1,
+
 
                     preloadImages: false,
                     lazy: {
@@ -226,7 +227,7 @@ if (TL_MODE == 'FE') {
                         }
                     }
                     <?php else:?>
-                    slidesPerView: 'auto',
+                    //slidesPerView: 'auto',
                     <?php endif;?>
                 });
             }

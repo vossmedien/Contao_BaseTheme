@@ -22,6 +22,7 @@ html body {
         bottom: 0;
         right: 0;
         width: inherit;
+        //transition: all 0.25s ease;
 
         .column-kachel--inner.with-hover-content {
           margin: 0 0 0 auto;
@@ -31,6 +32,7 @@ html body {
 
     .image--col {
       .kachel-column-width--indicator {
+        //transition: all 0.25s ease;
         .column-kachel--inner.with-hover-content {
           margin: 0 auto 0 0;
         }
@@ -99,7 +101,7 @@ html body {
       }
 
       .column-kachel--wrapper {
-        transition: all 0.5s ease;
+        //transition: all 0.25s ease;
 
         @include media-breakpoint-up(md) {
           width: rfs-value(200px);
@@ -118,7 +120,7 @@ html body {
           display: flex;
           flex-flow: column wrap;
           padding: 1.5rem;
-          transition: all 0.5s ease;
+          //transition: all 0.25s ease;
           overflow: hidden;
 
           @include media-breakpoint-up(md) {
@@ -140,7 +142,7 @@ html body {
               max-width: rfs-value(600px);
             }
 
-            transition: all 0.5s ease;
+            //transition: all 0.25s ease;
 
             > span {
               display: block;
@@ -152,7 +154,7 @@ html body {
             }
 
             .kachel-hover--content {
-              transition: all 0.5s ease;
+              //transition: all 0.25s ease;
               @include media-breakpoint-up(md) {
                 opacity: 0;
                 height: 0px;
@@ -211,7 +213,7 @@ html body {
 
         .ce--imagetextwall {
           position: relative;
-          transition: background-color 0.3s ease-in-out;
+          //transition: background-color 0.3s ease-in-out;
 
           &.with-boxed-image {
             margin-top: calc(#{$basic-gutter} + 45px);
@@ -250,7 +252,7 @@ html body {
 
           .content--col {
             background-color: $body-bg;
-            transition: background-color 0.3s ease-in-out;
+            //transition: background-color 0.3s ease-in-out;
 
             @include media-breakpoint-down(md) {
               position: relative;
@@ -268,7 +270,7 @@ html body {
               max-width: none;
               left: 0;
               top: 0;
-              transition: all 0.3s ease-in-out;
+              //transition: all 0.3s ease-in-out;
 
               @include media-breakpoint-up(md) {
                 position: absolute;
@@ -368,7 +370,7 @@ html body {
               }
 
               .image-col--inner {
-                transition: all 0.3s ease-in-out;
+                //transition: all 0.3s ease-in-out;
                 @include media-breakpoint-up(md) {
                   height: 100%;
                   position: absolute;

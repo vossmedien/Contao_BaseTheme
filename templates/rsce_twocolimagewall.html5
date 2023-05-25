@@ -159,7 +159,7 @@ if (TL_MODE == 'FE') {
                 </div>
                 <?php if (($row->image && !$row->image_both) || $row->alternate_image || $row->content_rightcol || $row->video) : ?>
                 <div class="image--col col-12 col-md  <?php if ($row->video) : ?>with-video col-md-6<?php endif; ?>"
-                     data-aos="animate__fadeIn">
+                     >
 
                     <?php if ($row->boxed_headline) : ?>
                     <div class="boxed-headline">

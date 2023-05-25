@@ -161,11 +161,13 @@
   }
 }
 
-.video_container {
+
+
+.iframe_container {
   position: relative;
   padding-bottom: 56.25%;
 
-  iframe, embed, video {
+  iframe {
     position: absolute;
     top: 0;
     left: 0;
@@ -173,4 +175,6 @@
     height: 100%;
   }
 }
+
+
 

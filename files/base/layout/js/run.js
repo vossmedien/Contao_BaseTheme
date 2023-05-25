@@ -4,6 +4,7 @@ Promise.all(promises)
   .then(function () {
     if (options_lazyload) {
       var lazyLoadInstance = new LazyLoad();
+
     }
 
     if (options_aos) {
