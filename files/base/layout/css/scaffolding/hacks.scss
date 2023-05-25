@@ -82,7 +82,7 @@ main {
 }
 
 .container {
-  .container:not(.ce_headline):not(.container.container) {
+  .container:not(.ce_headline):not(.container.container):not(.content--box) {
     max-width: none;
     padding: 0px;
   }

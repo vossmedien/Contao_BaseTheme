@@ -40,12 +40,12 @@
   background-color: $body-bg;
 
   @if $override-padding == "" {
-    padding: rfs-value($basic-gutter/2);
+    padding: rfs-value($basic-gutter/2) !important;
     @include media-breakpoint-up(md) {
-      padding: rfs-value($basic-gutter);
+      padding: rfs-value($basic-gutter) !important;
     }
   } @else {
-    padding: $override-padding;
+    padding: $override-padding !important;
   }
 
   .ce_text {

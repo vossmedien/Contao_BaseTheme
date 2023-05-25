@@ -5,8 +5,8 @@ $(function () {
     //var firstElement = firstArticle.firstElementChild;
 
     //if (!firstElement.classList.contains('ce_rsce_headimagelogo') && headerContent) {
-        var paddingTop = window.getComputedStyle(headerContent).height;
-        document.body.style.paddingTop = paddingTop;
+    var paddingTop = window.getComputedStyle(headerContent).height;
+    document.body.style.paddingTop = paddingTop;
     //}
 
 
@@ -131,8 +131,13 @@ $(function () {
         $(this).removeClass("form-control");
     });
 
+    var labels = document.querySelectorAll('form label');
+    labels.forEach(function (label) {
+        label.className = '';
+    });
+
     $('form >  .formbody > fieldset').each(function (index) {
-        $(this).addClass("row");
+        $(this).addClass("row").wrap('<div class="col-12"></div>');
     });
 
 

@@ -26,7 +26,7 @@
 <?php endif; ?>
 
     <select name="<?= $this->name ?>" id="ctrl_<?= $this->id ?>"
-            class="<?= $this->class ?>"<?= $this->getAttributes() ?>>
+            class=""<?= $this->getAttributes() ?>>
         <?php foreach ($this->getOptions() as $option): ?>
             <?php if ('group_start' == $option['type']): ?>
                 <optgroup label="<?= $option['label'] ?>">

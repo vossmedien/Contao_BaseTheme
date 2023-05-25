@@ -81,7 +81,7 @@ if (TL_MODE == 'FE') {
 
                             <?php if ($slide->box_background_color): ?>
                                 <style>
-                                    <?php 
+                                    <?php
                                         $color = $slide->box_background_color;
                                         $color = str_replace("&#41", ")",$color);
                                         $color = str_replace("&#40", "(",$color);
