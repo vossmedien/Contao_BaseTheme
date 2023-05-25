@@ -2,7 +2,7 @@ document.addEventListener(
     "DOMContentLoaded",
     function (event) {
         function setImageWidth() {
-            if (window.innerWidth >= 767) {
+            if (window.innerWidth >= 992) {
                 var containers = document.querySelectorAll(
                     ".ce--imagetextwall:not(.container) .force-container"
                 );
