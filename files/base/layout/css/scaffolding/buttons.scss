@@ -39,12 +39,12 @@ html body .btn {
 
   &.btn-lg {
     font-size: calc(var(--bs-btn-font-size) * 1.25);
-    padding: calc(var(--bs-btn-padding-y) * 1.25) calc(var(--bs-btn-padding-y) * 1.25);
+    padding: calc(var(--bs-btn-padding-y) * 2) calc(var(--bs-btn-padding-y) * 1.25);
   }
 
   &.btn-xl {
     font-size: calc(var(--bs-btn-font-size) * 1.5);
-    padding: calc(var(--bs-btn-padding-y) * 1.5) calc(var(--bs-btn-padding-y) * 1.5);
+    padding: calc(var(--bs-btn-padding-y) * 2.5) calc(var(--bs-btn-padding-y) * 1.5);
   }
 
 

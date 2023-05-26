@@ -5,19 +5,6 @@ if (TL_MODE == 'FE') {
 ?>
 
 
-<!-- start
-    *
-    * The code below should not be used. You can replace it with your own code. Just follow the instruction:
-    *
-    * All catalog values are located in the "$this" Variable. Access individual values ​​with the arrow operator.
-    * For Example:
-    * Output simple string: $this->yourFieldname
-    * Format numbers: number_format( $this->yourFieldname, 2, ',', '.' ) €
-    * Output joins: $this->tablenameYourFieldname
-    * Output array: implode ( ', ', $this->yourFieldname )
-    * Output associative array: implode( ', ', array_map( function( $arrValue ) { return $arrValue['title'] }, $this->yourFieldname ) )
-    *
--->
 
 <script type="application/ld+json">
     {

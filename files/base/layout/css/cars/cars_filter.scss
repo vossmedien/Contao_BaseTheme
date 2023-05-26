@@ -1,0 +1,33 @@
+.md-filters {
+  background-color: transparent;
+  padding: 0rem;
+  color: var(--bs-body-color);
+
+  .md-filters-body {
+    border: 0px;
+    margin: 0px;
+  }
+
+  .select--container{
+    label{
+      display: block;
+      float: none;
+      width: auto;
+      font-weight: initial;
+    }
+
+    select{
+      width: 100%;
+      @extend .form-select
+    }
+  }
+
+  input[type="checkbox"]{
+    @extend .form-check-input;
+  }
+
+  button{
+    background-color: var(--bs-btn-bg);
+    color: var(--bs-btn-color);
+  }
+}

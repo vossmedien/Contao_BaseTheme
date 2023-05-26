@@ -1,74 +1,89 @@
-<?php if($this->desc == ''): return ''; endif; ?>
-<a href="<?= $this->link ?>" class="item md-ad-box <?= $this->filterClasses ?><?php if($this->onlyFilter): ?> hidden<?php endif; ?>" data-price="<?= $this->plainPrice ?>" data-power="<?= $this->plainPower ?>" data-mileage="<?= str_replace(",","",$this->mileage) ?>" data-acc="<?= $this->account ?>">
-  <?php if(!$this->onlyFilter): ?>
-  <div class="image">
-    <picture>
-        <img loading="lazy"  fetchpriority="low" fetchpriority="low"  src="<?= $this->imageSrc_L ?>" srcset="<?= $this->imageSrc_L ?> 1x, <?= $this->imageSrc_XL ?> 1.5x, <?= $this->imageSrc_XXL ?> 2x"  alt="<?= $this->desc ?>">
-    </picture>
-  </div>
-  <div class="price">
-    <span>
-      <?= $this->price ?>
-      <?php if($this->pseudoPrice): ?><span class="pseudo-price"><?= $this->pseudoPrice ?></span><?php endif; ?>
-    </span>
-  </div>
-  <div class="detail">
-    <!-- Header -->
-    <header class="clearfix">
+<?php if ($this->desc == ''): return ''; endif; ?>
 
-      <h5 class="title">
-        <?= $this->desc ?>
-      </h5>
-      <ul class="custom-list">
-        <?php if($this->power): ?>
-        <li>
-          <i class="icon-gauge"></i><?= $this->power ?>
-        </li>
-        <?php endif; ?>
-        <?php if($this->fuelType): ?>
-        <li>
-          <?= $this->fuelType ?>
-        </li>
-        <?php endif; ?>
-        <?php if($this->transmission): ?>
-        <li class="last">
-          <?= $this->transmission ?>
-        </li>
-        <?php endif; ?>
-      </ul>
-    </header>
-    <!-- Fuel and type -->
-    <p>
-      <?php if(is_array($this->fuelConsumption) && count($this->fuelConsumption) > 0): ?>
-        <?php foreach($this->fuelConsumption as $fuelItem): ?>
-        <?= $fuelItem['label'] ?>: <?= $fuelItem['value'] ?><br>
-        <?php endforeach; ?>
-      <?php endif; ?>
-      <?php if($this->usageType): ?><?= $this->bodyType ?>, <?= $this->usageType ?><?php endif; ?>
-    </p>
-    <!-- Features List -->
-    <div class="features-area">
-      <ul class="features-list clearfix">
-        <li>
-          <i class="icon-calendar-times-o"></i>
-          <span><?= $this->firstRegistration ?></span>
-        </li>
-        <li>
-          <i class="icon-road"></i>
-          <span><?= $this->mileage ?><?php #= number_format($this->mileage, 2, "," ,".") ?> km</span>
-        </li>
-      </ul>
-    </div>
+<div  class="item md-ad-box <?= $this->filterClasses ?><?php if ($this->onlyFilter): ?> hidden<?php endif; ?>" data-price="<?= $this->plainPrice ?>" data-power="<?= $this->plainPower ?>" data-mileage="<?= str_replace(",", "", $this->mileage) ?>" data-acc="<?= $this->account ?>">
 
-    <div class="md-ad-box-overlap-wrapper">
-      <h2><?= $this->desc ?></h2>
+    <?php if (!$this->onlyFilter): ?>
+        <div data-aos="animate__fadeInUp" class="row-wrapper">
+            <div class="row gy-1 gx-md-3 gy-1">
+                <div class="col-12 col-md-5 order-md-2">
+                    <div class="text-center">
+                       <a class="overlay-link" href="<?= $this->link ?>"> <picture>
+                            <img loading="lazy" fetchpriority="low" fetchpriority="low" src="<?= $this->imageSrc_L ?>" srcset="<?= $this->imageSrc_L ?> 1x, <?= $this->imageSrc_XL ?> 1.5x, <?= $this->imageSrc_XXL ?> 2x" alt="<?= $this->desc ?>">
+                        </picture>   </a>
+                    </div>
+                </div>
+                <div class="col-12 col-md-7 order-md-1 mt-md-0 align-self-center">
 
-      <div class="md-ad-box-overlap-btns-area">
-        <div class="overlap-btn"><i class="icon-picture"></i></div>
-      </div>
-    </div>
-  </div>
 
-  <?php endif; ?>
-</a>
+                    <?php if ($this->usageType): ?>
+                        <span class="fs-12px text-uppercase fw-bold ce--topline"><?php if ($this->bodyType != "Car"): ?><?= $this->bodyType ?>,<?php endif; ?> <?= $this->usageType ?></span><?php endif; ?>
+
+                    <h2 class="h5">
+                        <?= $this->desc ?>
+                    </h2>
+
+                    <div class="car-details">
+                        <ul class="list-inline with-separator mb-1">
+                            <?php if ($this->power): ?>
+                                <li class="list-inline-item">
+                                    <i class="icon-gauge"></i><?= $this->power ?>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($this->fuelType): ?>
+                                <li class="list-inline-item">
+                                    <?= $this->fuelType ?>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($this->transmission): ?>
+                                <li class="list-inline-item last">
+                                    <?= $this->transmission ?>
+                                </li>
+                            <?php endif; ?>
+                        </ul>
+
+                        <!-- Features List -->
+                        <div class="features-area my-1">
+                            <ul class="features-list with-separator list-inline">
+                                <li class="list-inline-item">
+                                    <i class="icon-calendar-times-o"></i>
+                                    <span><?= $this->firstRegistration ?></span>
+                                </li>
+                                <li class="list-inline-item">
+                                    <i class="icon-road"></i>
+                                    <span><?= $this->mileage ?><?php #= number_format($this->mileage, 2, "," ,".") ?> km</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Fuel and type -->
+                        <div class="my-1">
+                            <?php if (is_array($this->fuelConsumption) && count($this->fuelConsumption) > 0): ?>
+                                <div class="d-inline-block" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" data-bs-title="Verbrauchsinformationen" data-bs-html="true" data-bs-content='<?php if (is_array($this->fuelConsumption) && count($this->fuelConsumption) > 0): ?><?php foreach ($this->fuelConsumption as $fuelItem): ?><?= $fuelItem['label'] ?>: <?= $fuelItem['value'] ?><br><?php endforeach; ?><?php endif; ?>'>
+                                    <?php foreach ($this->fuelConsumption as $fuelItem): ?>
+                                        <i class="fas fa-info-circle"></i>  <?= $fuelItem['label'] ?>: <?= $fuelItem['value'] ?>
+                                        <?php break; endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="car-price my-1">
+                            <span class="fw-bold"><?= $this->price ?></span>
+                            <?php if ($this->pseudoPrice != "0,00 EUR"): ?>
+                                <span class="pseudo-price"><?= $this->pseudoPrice ?></span>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="more-link mt-1">
+                            <a class="fw-bold" href="<?= $this->link ?>">> Mehr Informationen</a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+
+
 <!-- mobilede ad box end-->

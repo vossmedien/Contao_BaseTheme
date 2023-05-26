@@ -1,0 +1,60 @@
+.ce_mobileDeList {
+  .md-ads {
+    height: auto !important;
+    .item.md-ad-box {
+      display: block;
+      position: relative !important;
+      width: 100%;
+      min-height: 0px;
+      float: none;
+      margin: 0px;
+      box-shadow: none;
+      overflow: visible;
+      transition: .3s ease;
+      left: auto !important;
+      top: auto !important;
+
+
+      .row-wrapper {
+
+        &:before {
+          content: '';
+          height: 100%;
+          position: absolute;
+          width: 10px;
+          background-color: var(--bs-primary);
+          left: -64px;
+        }
+      }
+
+      &:hover {
+        transform: scale(1.01);
+      }
+
+      &:not(:last-child) {
+        margin-bottom:4rem;
+         @include media-breakpoint-up(md) {
+          margin-bottom: 2.5rem;
+         }
+      }
+
+
+      h2 {
+        &:before {
+          display: none;
+        }
+      }
+
+
+
+      .car-details {
+        font-size: rfs-value(14px);
+        font-weight: $font-weight-light;
+
+        .more-link a {
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
