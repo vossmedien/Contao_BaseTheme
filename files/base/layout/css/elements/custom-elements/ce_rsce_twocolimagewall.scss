@@ -461,6 +461,8 @@ html body {
         }
 
         .ce--imagetextwall.container {
+          padding-left: 0px;
+          padding-right: 0px;
           div.row:not(.formbody) {
             .content--col[style*="background-color"] .content-col--inner {
               @include media-breakpoint-up(lg) {

@@ -26,10 +26,12 @@ html body {
     &.pull-content:not(.pull-content-next) {
       z-index: 0;
 
+        > .ce--inner {
+          margin-bottom: var(--pull-content-amount); //togglebar machen für mobile?
+        }
+
       @include media-breakpoint-up(md) {
-      > .ce--inner {
-        margin-bottom: var(--pull-content-amount);
-      }
+
       }
 
       & + * {

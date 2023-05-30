@@ -44,3 +44,28 @@ function animate(elem, style, unit, from, to, time, prop) {
         elem.style[style] = from + unit;
     }
 }
+
+
+function getURLParameter(name) {
+  name = name.replace(/[\[\]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  var results = regex.exec(window.location.href);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+// Alle Parameter aus der URL extrahieren
+var urlParams = new URLSearchParams(window.location.search);
+
+// Alle Parameter-Namen aus der URL erhalten
+var parameterNames = urlParams.keys();
+
+// Iteriere über alle Parameter-Namen und fülle die entsprechenden Eingabefelder
+for (var parameterName of parameterNames) {
+  var fieldValue = getURLParameter(parameterName);
+  var inputField = document.querySelector('input[name="' + parameterName + '"]');
+  if (inputField) {
+    inputField.value = fieldValue;
+  }
+}

@@ -2,221 +2,321 @@
 global $objPage;
 // Meta Angaben
 $objPage->title = $this->ad['name'];
-$description = strip_tags(str_replace('</p>',' ',$this->ad['htmlDescription']));
+$description = strip_tags(str_replace('</p>', ' ', $this->ad['htmlDescription']));
 $objPage->description = \Contao\StringUtil::substrHtml($description, 320);
-$text = $objPage->title.' '.$objPage->description;
+$text = $objPage->title . ' ' . $objPage->description;
 preg_match_all("/[a-z0-9\-]{4,}/i", $text, $matches);
-$GLOBALS['TL_KEYWORDS']=join(',', $matches[0]);
+$GLOBALS['TL_KEYWORDS'] = join(',', $matches[0]);
 ?>
 
-<!--[if IE 7]>
-<link rel="stylesheet" href=/vendor/fontello/css/fontello-ie7.css"><![endif]-->
-<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?>
-  style="<?php echo $this->style; ?>"<?php endif; ?>>
+    <!--[if IE 7]>
+    <link rel="stylesheet" href=/vendor/fontello/css/fontello-ie7.css"><![endif]-->
+    <div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?>
+        style="<?php echo $this->style; ?>"<?php endif; ?>>
 
-  <?php if ($this->headline): ?>
-    <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
-  <?php endif; ?>
+        <?php if ($this->headline): ?>
+        <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
+<?php endif; ?>
 
-  <div class="md-detail">
-    <a href="javascript:history.back();" class="back top"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['back'] ?></a>
-    <div class="md-detail-header">
-      <i class="icon-cab"></i>
-      <h1><?= $this->ad['name'] ?></h1>
-      <span class="price">
-        <?= \System::getFormattedNumber($this->ad['consumer_price_amount'], 2).' '.$this->ad['price_currency']; ?>
-        <?php if($this->ad['pseudo_price'] != '' && $this->ad['pseudo_price'] != 0): ?><span class="pseudo-price"><?= \System::getFormattedNumber($this->ad['pseudo_price'], 2).' '.$this->ad['price_currency']; ?></span><?php endif; ?>
-      </span>
-    </div>
-    <div class="md-detail-content">
-      <div class="md-detail-left">
-        <div class="ce_sliderStart block">
-          <div class="content-slider" data-config="4000,300,0,1">
-            <div class="slider-wrapper">
-              <?php if($this->ad['images'] && isset($this->ad['images']['XXL'])): ?>
-              <?php foreach($this->ad['images']['XXL'] as $key => $img): ?>
-                <div class="slide"><img loading="lazy"  fetchpriority="low" src="<?= $img ?>"/></div>
-              <?php endforeach; ?>
-              <?php endif; ?>
-            </div>
-          </div>
-          <nav class="slider-control">
-            <a href="#" class="slider-prev"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['prev'] ?></a>
-            <span class="slider-menu"></span>
-            <a href="#" class="slider-next"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['next'] ?></a>
-          </nav>
+    <div class="">
+
+        <div class="mb-3 text-center">
+            <a href="javascript:history.back();" class="d-inline-block text-uppercase">Zurück zur Übersicht</a>
         </div>
-        <div class="md-detail-description">
-          <h2><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['headline-description'] ?></h2>
-          <?php if (isset($this->ad['vehicle_free_text'])): ?>
-            <?= $this->ad['vehicle_free_text'] ?>
-          <?php else: ?>
-            <?= $this->ad['htmlDescription'] ?>
-          <?php endif; ?>
-        </div>
-        <h2><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['headline-specifics'] ?></h2>
-        <div class="md-detail-box additional-attributes">
-          <ul class="detail-list">
-            <?php if($this->ad['fuelConsumption']): ?>
-              <?php foreach($this->ad['fuelConsumption'] as $key=>$feature): ?>
-                <?php if($feature['value'] != ''): ?>
-                  <li class="feature-<?= $key ?>"><span class="label"><?= $feature['label'] ?></span><span class="value"><?= $feature['value'] ?></span>
-                </li>
+
+        <div class="design-element"></div>
+
+        <div class="md-detail-content">
+            <div class="">
+                <div class="ce--content-slider slider-type-2 is-slider mb-7 mb-md-4">
+                    <div class="car-detail-slider swiper">
+                        <div class="swiper-wrapper">
+                            <?php if ($this->ad['images'] && isset($this->ad['images']['XXL'])): ?>
+                                <?php foreach ($this->ad['images']['XXL'] as $key => $img): ?>
+                                    <div class="swiper-slide">
+                                        <img class="lazy" data-src="<?= $img ?>"/>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <div class="car-detail-slider swiper-button-prev"></div>
+                    <div class="car-detail-slider swiper-button-next"></div>
+                </div>
+
+
+                <?php if ($this->usageType): ?>
+
                 <?php endif; ?>
-              <?php endforeach; ?>
-            <?php endif; ?>
 
-            <?php if (isset($this->ad['fuelConsumptionSE'])): ?>
-            <li class="feature-fuel"><span class="label"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['consumption'] ?></span><span class="value">
-              <?php if($this->ad['fuelConsumptionSE']['combined']): ?>≈ <?= $this->ad['fuelConsumptionSE']['combined'] ?> l/100 km (kombiniert) <?php endif; ?>
-              <?php if($this->ad['fuelConsumptionSE']['outer']): ?>≈ <?= $this->ad['fuelConsumptionSE']['outer'] ?> l/100 km (außerorts) <?php endif; ?>
-              <?php if($this->ad['fuelConsumptionSE']['inner']): ?>≈ <?= $this->ad['fuelConsumptionSE']['inner'] ?> l/100 km (innerorts) <?php endif; ?>
-              </span></li>
-            <?php endif; ?>
+                <?php if ($this->ad['bodyType']): ?>
+                    <span class="fs-12px text-uppercase fw-bold ce--topline"><?php if ($this->ad['bodyType'] != "Car"): ?><?= $this->ad['bodyType'] ?><?php endif; ?></span>
+                <?php endif; ?>
+                <h1 class="h2"><?= $this->ad['name'] ?></h1>
 
-            <?php if(isset($this->ad['specifics'])): ?>
-            <?php foreach($this->ad['specifics'] as $key=>$feature): ?>
-            <li class="specifics-<?= $feature['key'] ?>">
-                <span class="label"><?= $feature['label'] ?></span><span class="value"><?= $feature['value'] ?></span>
-            </li>
-            <?php endforeach; ?>
-            <?php endif; ?>
-          </ul>
-        </div>
 
-        <?php $class = $this->ad['emission_fuel_consumption_energy_efficiency_class']; ?>
-        <?php if($class != ''): ?>
-          <div class="energy-class-label">
-            <div class="left-col">
-              <div class="label">CO-2-Effizienz</div>
-              <div class="description">*Auf der Grundlage der gemessenen CO-2 Emissionen unter Berücksichtigung der Masse des Fahrzeugs ermittelt.</div>
+                <div class="row gx-md-3 align-items-center">
+                    <div class="col-12 col-md-7">
+                        <div class="">
+
+                            <div class="md-detail-box p-0 bg-transparent mb-3 additional-attributes">
+
+                                <ul class="list-inline with-separator mb-0">
+                                    <?php if ($this->ad['vehicle_make']): ?>
+                                        <li class="list-inline-item attr-vehicle_make">
+                                            <span class="value"><?= $this->ad['vehicle_make'] ?></span>
+                                        </li>
+                                    <?php endif; ?>
+
+                                    <?php if ($this->ad['specifics_condition']): ?>
+                                        <li class="list-inline-item attr-condition">
+                                            <span class="value"><?= $GLOBALS['TL_LANG']['tl_vehicle']['specifics_condition']['options'][$this->ad['specifics_condition']] ?></span>
+                                        </li>
+                                    <?php endif; ?>
+
+
+                                </ul>
+                                <ul class="list-inline with-separator">
+
+                                    <?php if ($this->ad['specifics_usage_type']): ?>
+                                        <li class="list-inline-item attr-usage_type">
+                                            <span class="value"><?= $GLOBALS['TL_LANG']['tl_vehicle']['specifics_usage_type']['options'][$this->ad['specifics_usage_type']] ?></span>
+                                        </li>
+                                    <?php endif; ?>
+
+                                    <?php if ($this->ad['specifics_exterior_color']): ?>
+                                        <li class="list-inline-item attr-exterior_color">
+                                            <span class="value"><?= $GLOBALS['TL_LANG']['tl_vehicle']['specifics_exterior_color']['options'][$this->ad['specifics_exterior_color']] ?></span>
+                                        </li>
+                                    <?php endif; ?>
+                                    <?php if ($this->ad['specifics_first_registration']): ?>
+                                        <li class="list-inline-item attr-first_registration">
+                                            <span class="value">EZ <?= $this->ad['specifics_first_registration'] ?></span>
+                                        </li>
+                                    <?php endif; ?>
+                                    <?php if ($this->ad['specifics_mileage']): ?>
+                                        <li class="list-inline-item attr-mileage">
+                                            <span class="value"><?= \System::getFormattedNumber($this->ad['specifics_mileage'], 0) ?></span>
+                                        </li>
+                                    <?php endif; ?>
+                                    <?php if ($this->ad['specifics_fuel']): ?>
+                                        <li class="list-inline-item attr-fuel">
+                                            <span class="value"><?= $GLOBALS['TL_LANG']['tl_vehicle']['specifics_fuel']['options'][$this->ad['specifics_fuel']] ?></span>
+                                        </li>
+                                    <?php endif; ?>
+                                    <?php if ($this->ad['specifics_power']): ?>
+                                        <li class="list-inline-item attr-power">
+                                            <span class="value"><?= $this->ad['specifics_power'] ?></span>
+                                        </li>
+                                    <?php endif; ?>
+                                </ul>
+                            </div>
+                        </div>
+
+
+                        <div class="price text-dark">
+                            <strong class="d-block fs-24px fw-bold "><?= \System::getFormattedNumber($this->ad['consumer_price_amount'], 2) . ' ' . $this->ad['price_currency']; ?></strong>
+                            <?php if ($this->ad['pseudo_price'] != '' && $this->ad['pseudo_price'] != 0): ?>
+                                <span class="pseudo-price"><?= \System::getFormattedNumber($this->ad['pseudo_price'], 2) . ' ' . $this->ad['price_currency']; ?></span><?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <a class="btn btn-block btn-primary mb-1" href="/finanzierung?Referenzcode=<?= $this->ad['name'] ?>&Finanzierungssumme=<?= \System::getFormattedNumber($this->ad['consumer_price_amount'], 2) . ' ' . $this->ad['price_currency']; ?>">
+                            <span class="d-block">Finanzierung</span>
+                            <span class="d-block">anfragen</span>
+                        </a>
+                        <a href="/ankauf/inzahlungsnahme?Referenzcode=<?= $this->ad['name'] ?>" class="btn btn-block btn-primary"><span class="d-block d-md-inline-block">Inzahlungnahme</span> <span class="d-block d-md-inline-block">anfragen</span></a>
+                    </div>
+                </div>
+
+
+                <?php if (isset($this->ad['htmlDescription'])): ?>
+                    <hr>
+                    <div class="md-detail-description">
+                        <h2 class="h5">Fahrzeugbeschreibung</h2>
+                        <?= $this->ad['htmlDescription'] ?>
+                    </div>
+                <?php elseif($this->ad['vehicle_free_text']): ?>
+                    <hr>
+                    <div class="md-detail-description">
+                        <h2 class="h5">Fahrzeugbeschreibung</h2>
+                        <?= $this->ad['vehicle_free_text'] ?>
+                    </div>
+                <?php endif; ?>
+
+
+                <hr>
+
+                <div class="row gx-md-5">
+                    <div class="col-12 col-md-8">
+                        <h2 class="h5">Weitere technische Daten</h2>
+                        <div class="md-detail-box p-0 bg-transparent mb-3 additional-attributes">
+                            <div class="detail-list">
+
+                                <?php if (isset($this->ad['fuelConsumptionSE'])): ?>
+                                    <div class="feature-fuel mt-0 row mb-3 mb-md-1">
+                                        <span class="col-12 col-md-7 label fw-bold"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['consumption'] ?></span>
+                                        <span class="col-12 col-md-5 mt-0 value">
+              <?php if ($this->ad['fuelConsumptionSE']['combined']): ?>≈ <?= $this->ad['fuelConsumptionSE']['combined'] ?> l/100 km (kombiniert) <?php endif; ?>
+                                            <?php if ($this->ad['fuelConsumptionSE']['outer']): ?>≈ <?= $this->ad['fuelConsumptionSE']['outer'] ?> l/100 km (außerorts) <?php endif; ?>
+                                            <?php if ($this->ad['fuelConsumptionSE']['inner']): ?>≈ <?= $this->ad['fuelConsumptionSE']['inner'] ?> l/100 km (innerorts) <?php endif; ?>
+              </span>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (isset($this->ad['specifics'])): ?>
+                                    <?php foreach ($this->ad['specifics'] as $key => $feature): ?>
+                                    <?php if($feature['value']):?>
+                                        <div class="row mt-0 mb-3 mb-md-1 specifics-<?= $feature['key'] ?>">
+                                            <span class="col-12 mt-0 col-md-7 label fw-bold"><?= $feature['label'] ?></span>
+                                            <span class="col-12 col-md-5  mt-0 value"><?= $feature['value'] ?></span>
+                                        </div>
+                                    <?php endif;?>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <?php $class = $this->ad['emission_fuel_consumption_energy_efficiency_class']; ?>
+                        <?php if ($class != ''): ?>
+                            <hr>
+                            <div class="energy-class-label">
+                                <div class="left-col">
+                                    <div class="label">CO-2-Effizienz</div>
+                                    <div class="description">*Auf der Grundlage der gemessenen CO-2 Emissionen unter
+                                        Berücksichtigung der Masse des Fahrzeugs ermittelt.
+                                    </div>
+                                </div>
+                                <div class="right-col">
+                                    <div class="energy-class class-a-plus<?php if ($class == 'A+'): ?> active<?php endif; ?>">
+                                        <span>A+</span>
+                                    </div>
+                                    <div class="energy-class class-a<?php if ($class == 'A'): ?> active<?php endif; ?>">
+                                        <span>A</span>
+                                    </div>
+                                    <div class="energy-class class-b<?php if ($class == 'B'): ?> active<?php endif; ?>">
+                                        <span>B</span>
+                                    </div>
+                                    <div class="energy-class class-c<?php if ($class == 'C'): ?> active<?php endif; ?>">
+                                        <span>C</span>
+                                    </div>
+                                    <div class="energy-class class-d<?php if ($class == 'D'): ?> active<?php endif; ?>">
+                                        <span>D</span>
+                                    </div>
+                                    <div class="energy-class class-e<?php if ($class == 'E'): ?> active<?php endif; ?>">
+                                        <span>E</span>
+                                    </div>
+                                    <div class="energy-class class-f<?php if ($class == 'F'): ?> active<?php endif; ?>">
+                                        <span>F</span>
+                                    </div>
+                                    <div class="energy-class class-g<?php if ($class == 'G'): ?> active<?php endif; ?>">
+                                        <span>G</span>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+
+                        <?php if ($this->ad['fuelConsumption']): ?>
+                            <div class="mt-3">
+                                <?php foreach ($this->ad['fuelConsumption'] as $key => $feature): ?>
+                                    <?php if ($feature['value'] != ''): ?>
+                                        <div class=" row flex-nowrap gy-0 feature-<?= $key ?>">
+                                            <span class="col-12 col-md-10 label fw-bold"><?= $feature['label'] ?></span>
+                                            <span class="col-12 col-md-2 value"><?= $feature['value'] ?></span>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <?php if ($this->ad['features']): ?>
+                            <h2 class="h5">Ausstattung</h2>
+                            <div class="md-detail-box p-0 bg-transparent mb-3 additional-attributes features">
+                                <ul class="detail-list list-check">
+                                    <?php foreach ($this->ad['features'] as $key => $feature): ?>
+                                        <li>
+                                            <span class="value"><?= $feature['value'] ?></span>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
-            <div class="right-col">
-              <div class="energy-class class-a-plus<?php if($class == 'A+'): ?> active<?php endif; ?>"><span>A+</span></div>
-              <div class="energy-class class-a<?php if($class == 'A'): ?> active<?php endif; ?>"><span>A</span></div>
-              <div class="energy-class class-b<?php if($class == 'B'): ?> active<?php endif; ?>"><span>B</span></div>
-              <div class="energy-class class-c<?php if($class == 'C'): ?> active<?php endif; ?>"><span>C</span></div>
-              <div class="energy-class class-d<?php if($class == 'D'): ?> active<?php endif; ?>"><span>D</span></div>
-              <div class="energy-class class-e<?php if($class == 'E'): ?> active<?php endif; ?>"><span>E</span></div>
-              <div class="energy-class class-f<?php if($class == 'F'): ?> active<?php endif; ?>"><span>F</span></div>
-              <div class="energy-class class-g<?php if($class == 'G'): ?> active<?php endif; ?>"><span>G</span></div>
+
+        </div>
+
+        <?php if ($this->prevAd || $this->nextAd): ?>
+            <div class="md-detail-footer">
+                <?php if ($this->prevAd): ?>
+                    <span class="prevAd"><a href="<?php echo $this->prevAd['href']; ?>">&laquo; <?php echo $this->
+                            prevAd['title']; ?></a></span>
+                <?php endif; ?>
+                <?php if ($this->nextAd): ?>
+                    <span class="nextAd"><a href="<?php echo $this->nextAd['href']; ?>"><?php echo $this->
+                            nextAd['title']; ?> &raquo;</a></span>
+                <?php endif; ?>
             </div>
-          </div>
         <?php endif; ?>
-
-        <h2><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['headline-features'] ?></h2>
-        <div class="md-detail-box additional-attributes features">
-          <ul class="detail-list">
-            <?php if($this->ad['features']): ?>
-            <?php foreach($this->ad['features'] as $key=>$feature): ?>
-            <li><span class="value"><i class="icon-ok" title="Feature"></i> <?= $feature['value'] ?></span></li>
-            <?php endforeach; ?>
-            <?php endif; ?>
-          </ul>
-        </div>
-      </div>
-      <div class="md-detail-right">
-        <div class="md-detail-box additional-attributes">
-          <h2><i class="icon-cab"></i> <?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['headline-technical-specifics'] ?></h2>
-          <ul class="detail-list">
-            <?php if($this->ad['vehicle_make']): ?>
-            <li class="attr-vehicle_make"><span class="label"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['make'] ?></span><span class="value"><?= $this->ad['vehicle_make'] ?></span></li>
-            <?php endif; ?>
-            <?php if($this->ad['specifics_exterior_color']): ?>
-            <li class="attr-exterior_color"><span class="label"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['exterior-color'] ?></span><span class="value"><?= $GLOBALS['TL_LANG']['tl_vehicle']['specifics_exterior_color']['options'][$this->ad['specifics_exterior_color']] ?></span>
-            </li>
-            <?php endif; ?>
-            <?php if($this->ad['specifics_first_registration']): ?>
-            <li class="attr-first_registration"><span class="label"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['first-registration'] ?></span><span class="value"><?= $this->
-              ad['specifics_first_registration'] ?></span></li>
-            <?php endif; ?>
-            <?php if($this->ad['specifics_mileage']): ?>
-            <li class="attr-mileage"><span class="label"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['mileage'] ?></span><span class="value"><?= \System::getFormattedNumber($this->ad['specifics_mileage'],0) ?></span>
-            </li>
-            <?php endif; ?>
-            <?php if($this->ad['specifics_fuel']): ?>
-            <li class="attr-fuel"><span class="label"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['fuel-type'] ?></span><span class="value"><?= $GLOBALS['TL_LANG']['tl_vehicle']['specifics_fuel']['options'][$this->ad['specifics_fuel']] ?></span>
-            </li>
-            <?php endif; ?>
-            <?php if($this->ad['specifics_power']): ?>
-            <li class="attr-power"><span class="label"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['power'] ?></span><span class="value"><?= $this->ad['specifics_power'] ?></span></li>
-            <?php endif; ?>
-            <?php if($this->ad['specifics_condition']): ?>
-            <li class="attr-condition"><span class="label"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['condition-type'] ?></span><span class="value"><?= $GLOBALS['TL_LANG']['tl_vehicle']['specifics_condition']['options'][$this->
-              ad['specifics_condition']] ?></span></li>
-            <?php endif; ?>
-            <?php if($this->ad['specifics_usage_type']): ?>
-            <li class="attr-usage_type"><span class="label"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['usage-type'] ?></span><span class="value"><?= $GLOBALS['TL_LANG']['tl_vehicle']['specifics_usage_type']['options'][$this->ad['specifics_usage_type']] ?></span></li>
-            <?php endif; ?>
-            <?php if($this->ad['bodyType']): ?>
-            <li class="attr-bodyType"><span class="label"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['body-type'] ?></span><span class="value"><?= $this->ad['bodyType'] ?></span></li>
-            <?php endif; ?>
-          </ul>
-        </div>
-
-        <?php if (isset($this->ad['seller'])): ?>
-        <div class="md-detail-box additional-contact">
-          <h2><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['headline-seller'] ?></h2>
-          <?php if($this->ad['seller']['company-name']['value'] != ""): ?>
-          <p><strong><?= $this->ad['seller']['company-name']['value'] ?></strong></p>
-          <?php endif; ?>
-          <?php if($this->ad['seller']['logo-image']): ?>
-          <?php $i = 0; foreach($this->ad['seller']['logo-image'] as $logoImage): ?>
-          <?php if($i == 0): ?>
-          <p><img loading="lazy"  fetchpriority="low" src="<?= $logoImage['url'] ?>" alt="Verkäufer Logo"></p>
-          <?php endif; ?>
-          <?php $i++; endforeach; ?>
-          <p><strong><?= $this->ad['seller']['company-name']['value'] ?></strong><br>
-            <?php endif; ?>
-            <?= $this->ad['seller']['address']['street']['value'] ?><br>
-            <?= $this->ad['seller']['address']['zipcode']['value'] ?> <?= $this->ad['seller']['address']['city']['value']
-            ?></p>
-          <p>
-            <?php if($this->ad['seller']['phone']['value'] != ""): ?>
-            <i class="icon-phone" title="Telefon"></i><?= $this->ad['seller']['phone']['value'] ?><br>
-            <?php endif; ?>
-            <?php if($this->ad['seller']['email']['value'] != ""): ?>
-            <i class="icon-mail" title="E-Mail"></i> <a href="<?= $this->ad['seller']['email']['value'] ?>"><?= $this->
-            ad['seller']['email']['value'] ?></a><br>
-            <?php endif; ?>
-            <?php if($this->ad['seller']['homepage']['value'] != ""): ?>
-            <i class="icon-globe" title="Web"></i> <a href="<?= $this->ad['seller']['homepage']['value'] ?>"
-                                                      target="_blank"><?= $this->ad['seller']['homepage']['value'] ?></a>
-            <?php endif; ?>
-
-            <?php if($this->ad['seller']['mobile-seller-since']['value'] != ""): ?>
-          <p><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['seller-since'] ?> <?= date($GLOBALS['TL_CONFIG']['dateFormat'] ,strtotime($this->ad['seller']['mobile-seller-since']['value'])) ?></p>
-          <?php endif; ?>
-          </p>
-        </div>
-        <?php endif; ?>
-
-        <!--<div class="md-detail-box additional-form">
-          <h2><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['headline-contact-form'] ?></h2>
-          {{insert_form::6}}
-        </div>-->
-      </div>
     </div>
-    <div class="md-detail-footer">
-      <?php if($this->prevAd): ?>
-      <span class="prevAd"><a href="<?php echo $this->prevAd['href']; ?>">&laquo; <?php echo $this->
-        prevAd['title']; ?></a></span>
-      <?php endif; ?>
-      <?php if($this->nextAd): ?>
-      <span class="nextAd"><a href="<?php echo $this->nextAd['href']; ?>"><?php echo $this->
-        nextAd['title']; ?> &raquo;</a></span>
-      <?php endif; ?>
-    </div>
-    <a href="javascript:history.back();" class="back bottom"><?= $GLOBALS['TL_LANG']['pdirMobileDe']['field_keys']['back'] ?></a>
-  </div>
-</div>
 
-<?php if($this->debug): ?>
-<div>
-  <h2>DEBUG:</h2>
-  Modulversion: <?= $this->version ?><br>
-  HändlerID: <?= $this->customer ?><br><br>
-  RawData<br>
-  <pre><?php print_r($this->ad); ?></pre>
-</div>
+    <div class="mt-3 text-center w-100">
+        <a href="javascript:history.back();" class="d-inline-block text-uppercase">Zurück zur Übersicht</a>
+    </div>
+
+<?php if ($this->debug): ?>
+    <div>
+        <h2>DEBUG:</h2>
+        Modulversion: <?= $this->version ?><br>
+        HändlerID: <?= $this->customer ?><br><br>
+        RawData<br>
+        <pre><?php print_r($this->ad); ?></pre>
+    </div>
+<?php endif; ?>
+
+
+<?php if (TL_MODE == 'FE'): ?>
+    <script type="text/javascript" async>
+        window.addEventListener('load', function () {
+
+
+            if ($('.swiper.car-detail-slider').length) {
+
+                const swiper_car = new Swiper('.swiper.car-detail-slider', {
+                    direction: 'horizontal',
+
+
+                    navigation: {
+                        nextEl: '.car-detail-slider.swiper-button-next',
+                        prevEl: '.car-detail-slider.swiper-button-prev',
+                    },
+
+                    pagination: {
+                        el: '.car-detail-slider.swiper-pagination',
+                        clickable: true,
+                    },
+
+
+                    loop: true,
+                    //loopedSlides: 1,
+
+
+                    preloadImages: false,
+                    lazy: {
+                        loadPrevNext: true,
+                    },
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                    checkInView: true,
+
+                });
+            }
+        }, {passive: true})
+    </script>
 <?php endif; ?>

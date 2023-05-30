@@ -39,7 +39,7 @@ document.addEventListener(
 
                     if (imageColImage) {
                         imageColImage.style.width =
-                            distance + containerWidth * (imageWidth / 100) + "px";
+                            distance + containerWidth * (imageWidth / 100) - 15 + "px";
                     }
 
                     if (contentColImage) {
