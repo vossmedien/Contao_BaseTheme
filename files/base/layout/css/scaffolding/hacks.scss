@@ -111,10 +111,8 @@ main {
   }
 
   .container {
-    @include media-breakpoint-down(sm) {
-      padding-left: 0px;
+       padding-left: 0px;
       padding-right: 0px;
-    }
   }
 }
 
