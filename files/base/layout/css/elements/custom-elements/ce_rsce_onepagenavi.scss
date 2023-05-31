@@ -14,7 +14,7 @@ html body {
   .ce_rsce_onepagenavi {
     .ce--onepagenavi {
       position: fixed;
-      top: rfs-value(105px);
+      top: rfs-value(250px);
       z-index: 10;
       transition: all 0.3s ease;
       width: rfs-value(225px);
@@ -151,10 +151,10 @@ html body {
   @include media-breakpoint-up(lg) {
     #main.with-onepage-nav {
       .mod_article
-      .content--element:not(.ce_rsce_onepagenavi)
-      .container:not(.force-container),
+        .content--element:not(.ce_rsce_onepagenavi)
+        .container:not(.force-container),
       .mod_article
-      > :not(.content--element):not(.container):not(.force-container) {
+        > :not(.content--element):not(.container):not(.force-container) {
         padding-right: rfs-value(300px);
       }
     }

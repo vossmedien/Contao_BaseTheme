@@ -2,8 +2,8 @@
 // Add the colorbox style sheet
 $GLOBALS['TL_CSS'][] = 'assets/colorbox/css/colorbox.min.css|static';
 ?>
-<script async src="<?= $this->asset('js/colorbox.min.js', 'contao-components/colorbox') ?>"></script>
-<script async type="text/javascript">
+<script src="<?= $this->asset('js/colorbox.min.js', 'contao-components/colorbox') ?>"></script>
+<script type="text/javascript">
     jQuery(function ($) {
         $('a[data-lightbox]:not(.video-link)').map(function () {
             $(this).colorbox({

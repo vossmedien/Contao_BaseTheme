@@ -52,19 +52,22 @@
   --bs-dark: var(--bs-gray-900);
   //--bs-dark-rgb: 214, 216, 217;
 
-
   --bs-white-rgb: 255, 255, 255;
   --bs-black-rgb: 0, 0, 0;
 
-
   --bs-font-primary: "Open Sans", sans-serif;
-  --bs-font-secondary: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --bs-font-secondary: SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   --bs-font-tertiary: "Montserrat", sans-serif;
 
   --bs-font-sans-serif: var(--bs-font-primary);
   --bs-font-monospace: var(--bs-font-secondary);
 
-  --bs-gradient: linear-gradient(180deg, rgba(var(--bs-white-rgb), 0.15), rgba(var(--bs-white-rgb), 0));
+  --bs-gradient: linear-gradient(
+    180deg,
+    rgba(var(--bs-white-rgb), 0.15),
+    rgba(var(--bs-white-rgb), 0)
+  );
 
   --bs-font-weight-100: 100;
   --bs-font-weight-200: 200;
@@ -95,7 +98,6 @@
   --bs-headline-color: var(--bs-body-color);
   --bs-headline-font-weight: #{$font-weight-bold};
 
-
   --bs-border-radius-sm: 5px;
   --bs-border-radius: 10px;
   --bs-border-radius-xl: 25px;
@@ -108,7 +110,6 @@
   --bs-header-border-color: var(--bs-border-color);
   --bs-header-link-color: var(--bs-body-color);
   --bs-header-font-weight: var(--bs-body-font-weight);
-
 
   --bs-footer-top-bg: var(--bs-gray-600);
   --bs-footer-middle-bg: var(--bs-primary);
@@ -124,20 +125,19 @@
   --bs-megamenu-lvl3-color: var(--bs-body-color-inverse);
   --bs-megamenu-imageHeight: 125px;
 
-
   //Inputs
   --bs-input-border-radius: var(--bs-border-radius);
   --bs-input-border: 1px solid var(--bs-border-color);
   --bs-input-shadow: var(--bs-base-box-shadow);
-  --bs-input-padding-x: .75rem;
+  --bs-input-padding-x: 0.75rem;
   --bs-input-padding-y: 1rem;
   --bs-input-color: var(--bs-body-color);
   --bs-placeholder-color: var(--bs-body-color-rgb), 0.4;
+  --bs-input-height: 58px;
 
   //Shop
   --bs-shop-bg: var(--bs-gray-200);
   --bs-shop-filter-bg: var(--bs-gray-100);
-
 
   //Stöerer
   --bs-fixed-stoerer--bg: var(--bs-white);
@@ -148,7 +148,6 @@
   --bs-fixed-stoerer--right: 0;
   --bs-fixed-stoerer--top: 35vh;
   --bs-fixed-stoerer--border-radius: 10px 0px 0px 10px;
-
 
   //MMenu
   --mm-line-height: 20px;
@@ -176,8 +175,4 @@
   --bs-container-width-xxl: 1600px;
 
   --bs-mobile-max-width: 767px;
-
-
-
 }
-
