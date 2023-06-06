@@ -372,9 +372,16 @@ html body {
               @include media-breakpoint-down(lg) {
                 margin-top: 1.5rem;
                 position: relative;
+                width: 100% !important;
 
                 > div:not(.boxed-headline) {
                   min-height: rfs-value(200px);
+                }
+              }
+
+              .kachel-column-width--indicator {
+                @include media-breakpoint-down(lg) {
+                  width: 100% !important;
                 }
               }
 
@@ -389,6 +396,9 @@ html body {
               }
 
               .image-col--inner {
+                  @include media-breakpoint-down(lg) {
+                  width: 100% !important;
+                }
                 //transition: all 0.3s ease-in-out;
                 @include media-breakpoint-up(lg) {
                   height: 100%;

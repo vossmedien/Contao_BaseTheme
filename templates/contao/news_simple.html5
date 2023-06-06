@@ -1,18 +1,30 @@
 <div class="layout_simple arc_<?= $this->archive->id ?> block<?= $this->class ?>" data-aos="animate__fadeInUp">
 
-    <div class="row gx-3">
-        <div class="col-md-4">
-            <div class="news--image-wrapper">
+    <div class="row gx-3 gy-1 align-items-center">
+        <div class="col-md-3">
+            <div class="news--image-wrapper ">
+
                 <?php if ($this->singleSRC): ?>
-                    <a href="<?= $this->href; ?>"> <img loading="lazy"  fetchpriority="low" class="lazy" data-src="<?= $this->singleSRC; ?>"></a>
+                <div class="d-flex justify-content-center ">
+                    <?php if ($this->hasText): ?><a href="<?= $this->href; ?>"><?php endif; ?>
+                    <img loading="lazy" fetchpriority="low" class="lazy" data-src="<?= $this->singleSRC; ?>"> <?php if ($this->hasText): ?></a><?php endif; ?>
+                    </div>
                 <?php endif; ?>
                 <span class="date">
                     <time datetime="<?= $this->datetime ?>"><?= date('d. F Y', strtotime($this->datetime)); ?></time></span>
             </div>
         </div>
-        <div class="col-md-8 mt-1 mt-md-0">
+        <div class="col-md mt-1 mt-md-0">
             <div class="news--content-wrapper h-100">
-                <h2><?= $this->linkHeadline ?></h2>
+                <h2><?= $this->headline ?></h2>
+
+                <?php if ($this->subheadline): ?>
+                    <div class="ce_text block pb-1">
+                        <strong><?= $this->subheadline ?></strong>
+                    </div>
+                <?php endif; ?>
+
+
 
                 <?php if ($this->teaser): ?>
                     <div class="ce_text mt-1 block pb-1">
@@ -20,7 +32,20 @@
                     </div>
                 <?php endif; ?>
 
-                <?php if ($this->href): ?>
+                <?php if ($this->enclosure): ?>
+                    <ul class="list-downloads">
+                        <?php foreach ($this->enclosure as $enclosure): ?>
+                            <li class="download-element ext-<?= $enclosure['extension'] ?>">
+                                <a target="_blank" href="<?= $enclosure['href'] ?>" title="<?= $enclosure['title'] ?>"><?= $enclosure['link'] ?>
+
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+
+
+                <?php if ($this->hasText): ?>
                     <div class="news--button text-md-end">
                         <a href="<?= $this->href; ?>" class="btn btn-outline-primary btn-sm">Weiterlesen</a>
                     </div>

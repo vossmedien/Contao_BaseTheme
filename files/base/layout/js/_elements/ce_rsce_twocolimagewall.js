@@ -54,7 +54,7 @@ document.addEventListener(
 
                         setTimeout(function () {
                                var parentDivWidth = widthDiv.offsetWidth;
-                            kachelDiv.style.width = parentDivWidth + "px";
+                            kachelDiv.style.width = parentDivWidth  + "px";
                         }, 0); // Ändere die Verzögerungszeit (in Millisekunden) nach Bedarf
                     }
 
