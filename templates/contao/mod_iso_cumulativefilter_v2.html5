@@ -7,7 +7,7 @@
 
 <?php foreach ($this->filters as $i => $item) : ?>
     <div class="filter-item">
-        <button class="btn btn-outline-primary dropdown-toggle border-0 <?php if (str_contains($item['class'], 'trail')): ?>active<?php endif; ?>"
+        <button class="btn btn-outline-primary dropdown-toggle <?php if (str_contains($item['class'], 'trail')): ?>active<?php endif; ?>"
                 type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
             <i style="vertical-align: bottom;" class="ico ico-uhr"></i> <?php echo $item['label']; ?>

@@ -136,12 +136,12 @@ $(function () {
         label.className = '';
     });
 
-    $('form >  .formbody > fieldset').each(function (index) {
+    $('form >  .formbody:not(.no-row) > fieldset').each(function (index) {
         $(this).addClass("row").wrap('<div class="col-12"></div>');
     });
 
 
-    var formBodies = document.querySelectorAll('form > .formbody');
+    var formBodies = document.querySelectorAll('form > .formbody:not(.no-row)');
 
     formBodies.forEach(function (formBody) {
         var elements = formBody.querySelectorAll(':scope > *:not([class^="col-"])');

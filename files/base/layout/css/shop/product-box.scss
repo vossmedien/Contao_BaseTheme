@@ -114,6 +114,31 @@
     }
   }
 
+  &.variant-v3 {
+    @include media-breakpoint-up(md) {
+      height: 100%;
+
+      form {
+        height: 100%;
+
+        .formbody {
+          height: 100%;
+          display: flex;
+          flex-flow: column wrap;
+
+          .image_container {
+            flex: 1;
+            display: flex;
+            flex-flow: column wrap;
+            justify-content: center;
+            align-items: center;
+          }
+
+        }
+      }
+    }
+  }
+
   &.variant-slider {
     h3 {
       text-align: center;
