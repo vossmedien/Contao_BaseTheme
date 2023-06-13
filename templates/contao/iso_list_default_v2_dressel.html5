@@ -4,7 +4,7 @@ use Isotope\Interfaces\IsotopePrice;
 use Isotope\Isotope;
 
 ?>
-<div class="iso--product-box variant-v2" data-aos="animate__fadeInUp">
+<div class="iso--product-box variant-v3 variant-v2" data-aos="animate__fadeInUp">
 
     <form id="<?= $this->formId; ?>" name="iso<?= rand(); ?>" method="post" enctype="<?= $this->enctype; ?>">
         <div class="formbody no-row" itemscope itemtype="http://schema.org/Product">
