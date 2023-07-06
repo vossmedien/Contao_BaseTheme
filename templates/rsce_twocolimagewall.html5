@@ -47,7 +47,7 @@ if (TL_MODE == 'FE') {
              <?php endif; ?>
              <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?> <?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>
                  ">
-            <div style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>" class="content-holder  <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if (!$this->not_fullwidth): ?>container force-container<?php endif; ?>">
+            <div style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>" class="content-holder  <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if (!$this->not_fullwidth): ?>container force-container p-0<?php endif; ?>">
                 <div style="<?php if (!$row->not_as_bg): ?> <?php if ($row->min_height): ?>min-height: <?= $row->min_height;?>;<?php else:?>min-height: 500px;<?php endif; ?><?php endif; ?>" class="row g-0 align-items-center <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
                     <div class="content--col d-flex align-items-center <?php if ($row->spacing_between) : ?>spacing-between<?php endif; ?> <?php if ($row->alternate_background) : ?>with-bg<?php endif; ?> <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>"
                          style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">

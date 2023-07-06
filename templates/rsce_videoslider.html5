@@ -58,7 +58,6 @@
 
 
                                 <?php else: ?>
-
                                     <?php if ($slide->video_type == "youtube"): ?>
                                         <a <?php if ($slide->video_method == "new_tab"): ?> target="_blank" <?php else : ?>class="video-link cboxElement is-youtube" <?php endif; ?>
                                             <?php if ($slide->video_type == "youtube"): ?>
@@ -66,13 +65,13 @@
                                             <?php endif; ?>
                                         >
 
-                                            <img loading="lazy" fetchpriority="low" class="swiper-lazy"
+                                            <img loading="lazy" fetchpriority="low" class="lazy"
                                                  data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
                                         </a>
                                     <?php elseif ($slide->video_type == "local_file"): ?>
                                         <span data-bs-toggle="modal"
                                               data-bs-target="#video-slider_<?= $this->id; ?>_<?= $i; ?>">
-                                            <img loading="lazy" fetchpriority="low" class="swiper-lazy"
+                                            <img loading="lazy" fetchpriority="low" class="lazy"
                                                  data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
                                         </span>
                                     <?php endif; ?>
@@ -157,23 +156,27 @@
                         prevEl: '.video-slider_<?= $this->id;?>.swiper-button-prev',
                     },
 
-                    pagination: {
+                    /*
+                          pagination: {
                         el: '.video-slider_<?php echo $this->id; ?>.swiper-pagination',
                         clickable: true,
                     },
+                     */
+
 
 
                     loop: true,
-                    //loopedSlides: 1,
+                    //loopedSlides: 3,
+
                     <?php endif; ?>
 
                     preloadImages: false,
                     lazy: {
                         loadPrevNext: true,
                     },
-                    slidesPerView: 1,
+                    //slidesPerView: 1,
                     spaceBetween: 10,
-                    checkInView: true,
+                    //checkInView: true,
                     // Responsive breakpoints
                     breakpoints: {
                         320: {

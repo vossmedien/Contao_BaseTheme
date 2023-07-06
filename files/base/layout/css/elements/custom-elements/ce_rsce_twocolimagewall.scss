@@ -25,7 +25,7 @@ html body {
       .kachel-column-width--indicator {
         left: 0;
         bottom: 0;
-        right: 0;
+        //right: 0;
         width: inherit;
 
         @include media-breakpoint-down(lg) {
@@ -47,6 +47,7 @@ html body {
       }
 
       .kachel-column-width--indicator {
+        right: 0;
 
         @include media-breakpoint-down(lg) {
           min-height: 0px !important;
@@ -108,8 +109,8 @@ html body {
       height: 100%;
       max-width: none;
       top: 0;
-      left: 0;
-      right: 0;
+      //left: 0;
+      // right: 0;
 
       @include media-breakpoint-down(sm) {
         min-height: 0px;
@@ -120,7 +121,7 @@ html body {
       }
 
       .column-kachel--wrapper {
-        //transition: all 0.25s ease;
+        transition: all 0.5s ease;
 
         @include media-breakpoint-up(lg) {
           width: rfs-value(200px);
@@ -139,7 +140,7 @@ html body {
           display: flex;
           flex-flow: column wrap;
           padding: 1.5rem;
-          //transition: all 0.25s ease;
+          transition: all 0.5s ease;
           overflow: hidden;
 
           @include media-breakpoint-up(lg) {
@@ -161,7 +162,7 @@ html body {
               max-width: rfs-value(600px);
             }
 
-            //transition: all 0.25s ease;
+            transition: all 0.5s ease;
 
             > span {
               display: block;
@@ -173,7 +174,7 @@ html body {
             }
 
             .kachel-hover--content {
-              //transition: all 0.25s ease;
+              transition: all 0.5s ease;
               @include media-breakpoint-up(lg) {
                 opacity: 0;
                 height: 0px;
@@ -396,7 +397,7 @@ html body {
               }
 
               .image-col--inner {
-                  @include media-breakpoint-down(lg) {
+                @include media-breakpoint-down(lg) {
                   width: 100% !important;
                 }
                 //transition: all 0.3s ease-in-out;
@@ -473,6 +474,7 @@ html body {
         .ce--imagetextwall.container {
           padding-left: 0px;
           padding-right: 0px;
+
           div.row:not(.formbody) {
             .content--col[style*="background-color"] .content-col--inner {
               @include media-breakpoint-up(lg) {
@@ -481,6 +483,29 @@ html body {
             }
           }
         }
+
+
+        /*
+        @TODO hover-effekt funktioniert nicht beim Bild... Z-index Problem, Hintergrundbild müsste in einen Pseudo-Selektor kommen
+        .content--col .content-col--image,
+        .image--col .image-col--inner {
+          transition: transform .5s ease-in-out;
+        }
+
+        .content--col, .image--col {
+          z-index: 1;
+
+          &:hover {
+            z-index: 0;
+          }
+        }
+
+        .content--col:hover .content-col--image,
+        .image--col:hover .image-col--inner {
+          transform: scale(1.05);
+        }
+
+         */
       }
     }
   }

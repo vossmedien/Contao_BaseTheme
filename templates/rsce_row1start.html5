@@ -4,6 +4,8 @@ if (TL_MODE == 'FE') {
 }
 ?>
 
+<?php
+if (TL_MODE == 'FE'):?>
 <div <?php echo $this->cssID; ?> class="content--element row-wrapper <?php echo $this->class; ?>" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
     <div class="container">
@@ -46,3 +48,4 @@ if (TL_MODE == 'FE') {
             </div>
         <?php endif; ?>
 
+<?php endif;?>

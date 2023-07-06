@@ -138,6 +138,20 @@
                       margin-left: 1rem;
                     }
 
+                    &:hover,
+                    &.active,
+                    &.trail {
+
+                      > a,
+                      > span,
+                      > strong {
+                        text-decoration: none;
+                        font-weight: $font-weight-bold;
+                        color: var(--bs-primary);
+                        display: inline-block;
+                      }
+                    }
+
                     > a,
                     > span,
                     > strong {
@@ -149,15 +163,6 @@
                       position: relative;
                       padding-top: rfs-value(10px);
                       padding-bottom: rfs-value(10px);
-
-                      &:hover,
-                      &.active,
-                      &.trail {
-                        text-decoration: none;
-                        font-weight: $font-weight-bold;
-                        color: var(--bs-primary);
-                        display: inline-block;
-                      }
                     }
 
                     &:hover {

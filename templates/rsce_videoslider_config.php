@@ -170,6 +170,20 @@ return array(
             'maxItems' => 999,
             'fields' => array(
 
+
+                       'video_method' => array(
+                    'label' => array('Video... ', ''),
+                    'inputType' => 'radio',
+                    'options' => array(
+                        'modal' => '...in modalem Fenster darstellen',
+                        'inline' => '...innerhalb der Box einbinden',
+                        'new_tab' => '...in neuem Tab öffnen',
+                    ),
+                    'eval' => array(
+                        'mandatory' => true,
+                    ),
+                ),
+
                 'video_type' => array(
                     'label' => array('Video... ', ''),
                     'inputType' => 'radio',
@@ -183,18 +197,7 @@ return array(
                 ),
 
 
-                'video_method' => array(
-                    'label' => array('Video... ', ''),
-                    'inputType' => 'radio',
-                    'options' => array(
-                        'modal' => '...in modalem Fenster darstellen',
-                        'inline' => '...innerhalb der Box einbinden',
-                        'new_tab' => '...in neuem Tab öffnen',
-                    ),
-                    'eval' => array(
-                        'mandatory' => true,
-                    ),
-                ),
+
 
 
                 'video_id' => array(
