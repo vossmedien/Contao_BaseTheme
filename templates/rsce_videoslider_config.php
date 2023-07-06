@@ -13,11 +13,20 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
         'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
+
+        'fullwidth' => array(
+            'label' => array('Boxen auf die volle Breite des Viewports anzeigen', 'Funktioniert nicht innerhalb von Elementen'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -139,12 +148,22 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
-        'fullwidth' => array(
-            'label' => array('Boxen auf die volle Breite des Viewports anzeigen', 'Funktioniert nicht innerhalb von Elementen'),
-            'inputType' => 'checkbox',
+
+
+        'size' => array(
+            'label' => array('Bildbreite und Bildhöhe', 'Für gleichgroße Slides'),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'tl_class' => 'clr',
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+            ),
         ),
+
         'columns' => array(
             'label' => array(
                 'de' => array('Anzahl der Spalten im Slider', ''),
@@ -155,13 +174,77 @@ return array(
                 '2' => '2 Spaltig',
                 '3' => '3 Spaltig',
                 '4' => '4 Spaltig',
-                '6' => '6 Spaltig',
+                '6'
+                => '6 Spaltig',
             ),
+            'eval' => array('tl_class' => 'w50'),
         ),
+
+
         'gutter' => array(
             'label' => array('Abstand zwischen den Slides', ''),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
+
+             'slide_effect' => array(
+            'label' => array(
+                'de' => array('Slide-Effekt', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                'slide' => 'Slide (Standard)',
+                'coverflow' => 'Coverflow',
+                'fade' => 'Fade',
+                'flip' => 'Flip',
+                'cube' => 'Cube',
+
+            ),
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+
+        'show_pagination' => array(
+            'label' => array('Paginierung anzeigen', 'mittig unter dem Slider, in Form von Punkten'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'show_arrows' => array(
+            'label' => array('Pfeile anzeigen', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        /*
+        'centered_slides' => array(
+            'label' => array('Slides passe', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+        */
+
+        'loop' => array(
+            'label' => array('Automatisch wieder von Anfang starten', '"loop" funktioniert derzeit nur, wenn mindestens doppelt so viele Elemente pro "Seite" sichtbar sind (Anzahl der Spalten 3 = Mindestanzahl = 6)'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'autoplay' => array(
+            'label' => array('Autoplay aktivieren', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'autoplay_time' => array(
+            'label' => array('Autoplay-Zyklus', 'nach wie viel MS soll zum nächsten Slide gewechselt werden, Standard: 3000'),
+            'inputType' => 'text',
+            'dependsOn' => array(
+                'field' => 'autoplay',
+            ),
+        ),
+
+
         'elements' => array(
             'label' => array('Elemente', ''),
             'elementLabel' => '%s. Element',
@@ -171,7 +254,7 @@ return array(
             'fields' => array(
 
 
-                       'video_method' => array(
+                'video_method' => array(
                     'label' => array('Video... ', ''),
                     'inputType' => 'radio',
                     'options' => array(
@@ -195,9 +278,6 @@ return array(
                         'mandatory' => true,
                     ),
                 ),
-
-
-
 
 
                 'video_id' => array(

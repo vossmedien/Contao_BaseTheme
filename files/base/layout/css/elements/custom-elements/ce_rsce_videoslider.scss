@@ -11,10 +11,21 @@ html body {
 
   .ce_rsce_videoslider {
 
+    
+    .swiper-pagination{
+      position: relative;
+      margin-top: .5rem;
+    }
+    
+    
     .swiper {
       .swiper-slide {
         a {
           text-decoration: none;
+        }
+
+        .iframe_container{
+
         }
 
         .slide-caption {

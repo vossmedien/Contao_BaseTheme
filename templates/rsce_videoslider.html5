@@ -3,7 +3,13 @@
 <?php if (TL_MODE == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_videoslider.min.css|static';
 }
+
+
+if (!isset($this->size)) {
+    $this->{"size"} = "";
+}
 ?>
+    ?>
 
 
     <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
@@ -44,13 +50,15 @@
                                     <?php if ($slide->video_type == "youtube"): ?>
                                         <div class="iframe_container">
                                             <iframe data-source="https://www.youtube-nocookie.com/embed/<?php echo $slide->video_id; ?>"
+                                                    style="<?php if ($this->size[0] > 0): ?>width: <?= $this->size[0]?>px;<?php endif; ?> <?php if ($this->size[1] > 0): ?>height: <?= $this->size[1];?>px<?php endif; ?>"
                                                     title="<?php echo $slide->text; ?>" frameborder="0"
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                     allowfullscreen></iframe>
                                         </div>
                                     <?php elseif ($slide->video_type == "local_file"): ?>
                                         <div class="video_container">
-                                            <video autoplay muted loop playsinline>
+                                            <video autoplay muted loop playsinline
+                                                   style="height: <?= $this->size[0]; ?>">
                                                 <source type="video/mp4" src="{{file::<?= $slide->video_path ?>}}">
                                             </video>
                                         </div>
@@ -66,13 +74,13 @@
                                         >
 
                                             <img loading="lazy" fetchpriority="low" class="lazy"
-                                                 data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
+                                                 data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                         </a>
                                     <?php elseif ($slide->video_type == "local_file"): ?>
                                         <span data-bs-toggle="modal"
                                               data-bs-target="#video-slider_<?= $this->id; ?>_<?= $i; ?>">
                                             <img loading="lazy" fetchpriority="low" class="lazy"
-                                                 data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, null, null, null); ?>">
+                                                 data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                         </span>
                                     <?php endif; ?>
                                 <?php endif; ?>
@@ -98,8 +106,14 @@
 
                 </div>
                 <?php if (count($this->elements) > 1) : ?>
-                    <div class="video-slider_<?= $this->id; ?> swiper-button-prev"></div>
-                    <div class="video-slider_<?= $this->id; ?> swiper-button-next"></div>
+
+                    <?php if ($this->show_pagination): ?>
+                        <div class="video-slider_<?= $this->id; ?> swiper-pagination"></div>
+                    <?php endif; ?>
+                    <?php if ($this->show_arrows): ?>
+                        <div class="video-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                        <div class="video-slider_<?= $this->id; ?> swiper-button-next"></div>
+                    <?php endif; ?>
                 <?php endif; ?>
 
             </div>
@@ -151,29 +165,39 @@
                     direction: 'horizontal',
 
                     <?php if (count($this->elements) > 1) : ?>
+                    <?php if ($this->show_arrows): ?>
                     navigation: {
                         nextEl: '.video-slider_<?= $this->id;?>.swiper-button-next',
                         prevEl: '.video-slider_<?= $this->id;?>.swiper-button-prev',
                     },
-
-                    /*
-                          pagination: {
+                    <?php endif; ?>
+                    <?php if ($this->show_pagination): ?>
+                    pagination: {
                         el: '.video-slider_<?php echo $this->id; ?>.swiper-pagination',
                         clickable: true,
                     },
-                     */
+                    <?php endif; ?>
 
 
 
-                    loop: true,
+                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
+                    'slide'<?php endif;?>,
+                    loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
+
+                    <?php if ($this->autoplay) : ?>
+                    autoplay: {
+                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                    },
+                    <?php endif; ?>
+
                     //loopedSlides: 3,
 
                     <?php endif; ?>
 
-                    preloadImages: false,
-                    lazy: {
-                        loadPrevNext: true,
-                    },
+                    //preloadImages: false,
+                    //lazy: {
+                    //loadPrevNext: true,
+                    //},
                     //slidesPerView: 1,
                     spaceBetween: 10,
                     //checkInView: true,
