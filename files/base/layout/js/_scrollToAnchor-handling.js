@@ -126,14 +126,14 @@ var anchorHandling = function (e) {
 
 
 window.onload = function () {
-    var anchorLinks = document.querySelectorAll('a[href^="#"]:not(.mm-btn)');
+    var anchorLinks = document.querySelectorAll('a[href^="#"]:not(.mm-btn):not(.carousel-control)');
     for (var i = 0; i < anchorLinks.length; i++) {
         anchorLinks[i].addEventListener("click", anchorHandling);
     }
 };
 
 window.onload = function () {
-    const anchorLinks = document.querySelectorAll('a[href^="#"]:not(.mm-btn)');
+    const anchorLinks = document.querySelectorAll('a[href^="#"]:not(.mm-btn):not(.carousel-control)');
 
     anchorLinks.forEach(anchor => {
         anchor.addEventListener('click', function (event) {

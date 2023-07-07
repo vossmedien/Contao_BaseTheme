@@ -233,10 +233,22 @@ html body {
 
         .ce--imagetextwall {
           position: relative;
+
           //transition: background-color 0.3s ease-in-out;
 
+          &.with-bg {
+            background-color: $body-bg;
+          }
+
+          > .content-holder {
+            &:not(.force-container) {
+              background-color: $body-bg;
+            }
+          }
+
           &.with-boxed-image {
-            margin-top: calc(#{$basic-gutter} + 45px);
+            //margin-top: calc(#{$basic-gutter} + 45px);
+            margin-top: 40px;
           }
 
           &.not-as-bg {
@@ -271,7 +283,7 @@ html body {
           }
 
           .content--col {
-            background-color: $body-bg;
+
             //transition: background-color 0.3s ease-in-out;
 
             @include media-breakpoint-down(lg) {
@@ -338,7 +350,7 @@ html body {
             &.reverse-cols {
               .boxed-headline {
                 @include media-breakpoint-up(lg) {
-                  right: 25%;
+                  left: 50%;
                 }
               }
 
@@ -472,13 +484,13 @@ html body {
         }
 
         .ce--imagetextwall.container {
-          padding-left: 0px;
-          padding-right: 0px;
+          //padding-left: 0px;
+          //padding-right: 0px;
 
           div.row:not(.formbody) {
             .content--col[style*="background-color"] .content-col--inner {
               @include media-breakpoint-up(lg) {
-                padding: 2.5rem;
+                //padding: 2.5rem;
               }
             }
           }

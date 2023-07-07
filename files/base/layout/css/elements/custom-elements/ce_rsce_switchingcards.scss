@@ -7,8 +7,8 @@
 @import "../../scss-variables";
 @import "../../_theme/variables-layout";
 
-@import "../../../_fonts/fontawesome/scss/fontawesome";
-@import "../../../_fonts/fontawesome/scss/solid";
+@import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/fontawesome";
+@import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/solid";
 
 
 html body {

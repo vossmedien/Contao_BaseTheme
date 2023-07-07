@@ -39,21 +39,21 @@ if (TL_MODE == 'FE') {
 
 
     <div class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> ">
-        <div class="ce--imagetextwall <?php if ($this->not_fullwidth): ?>container<?php endif; ?>  <?php if ($row->boxed_headline) : ?>with-boxed-image<?php endif; ?>  <?php if ($row->alternate_image) : ?>with-code<?php endif; ?> <?php if ($row->alternate_background) : ?>with-custom-bgcolor<?php endif; ?> <?php if ($row->innerpadding && $row->alternate_background) : ?>with-border<?php endif; ?> <?php if ($row->not_as_bg) : ?>not-as-bg<?php endif; ?> <?php if ($row->image && $row->image_both) : ?>lazy<?php endif; ?>"
+        <div class="ce--imagetextwall <?php if ($this->not_fullwidth): ?>container<?else:?>with-bg<?php endif; ?>  <?php if ($row->boxed_headline) : ?>with-boxed-image<?php endif; ?>  <?php if ($row->alternate_image) : ?>with-code<?php endif; ?> <?php if ($row->alternate_background) : ?>with-custom-bgcolor<?php endif; ?> <?php if ($row->innerpadding && $row->alternate_background) : ?>with-border<?php endif; ?> <?php if ($row->not_as_bg) : ?>not-as-bg<?php endif; ?> <?php if ($row->image && $row->image_both) : ?>lazy<?php endif; ?>"
              <?php if ($row->image && $row->image_both) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>
              style="<?php if (!$row->not_as_bg): ?>min-height: <?php if (!$row->min_height): ?><?= $row->min_height;?><?php else:?>500px<?php endif; ?>;<?php endif; ?>
              <?php if ($row->image && $row->image_both) : ?>
                  background-position: center center; background-repeat: no-repeat; background-size: cover;
              <?php endif; ?>
-             <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?> <?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>
+             <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?> <?php if ($row->alternate_background && !$this->not_fullwidth) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>
                  ">
-            <div style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>" class="content-holder  <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if (!$this->not_fullwidth): ?>container force-container p-0<?php endif; ?>">
+            <div style="<?php if ($row->alternate_background && $this->not_fullwidth) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>" class="content-holder  <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if (!$this->not_fullwidth): ?>container force-container<?php endif; ?>">
                 <div style="<?php if (!$row->not_as_bg): ?> <?php if ($row->min_height): ?>min-height: <?= $row->min_height;?>;<?php else:?>min-height: 500px;<?php endif; ?><?php endif; ?>" class="row g-0 align-items-center <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
                     <div class="content--col d-flex align-items-center <?php if ($row->spacing_between) : ?>spacing-between<?php endif; ?> <?php if ($row->alternate_background) : ?>with-bg<?php endif; ?> <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>"
-                         style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
+                         style="">
 
                         <?php if ($row->ce_headline || $row->content || $row->buttons[0]->link_text != ""): ?>
-                        <div class="content-col--inner <?php echo $row->textalign; ?>">
+                        <div class="<?php if ($row->boxed_headline) : ?>mt-md-3<?php endif;?> content-col--inner <?php echo $row->textalign; ?>">
                             <?php if ($row->ce_headline) : ?>
                             <div class="content-col--headline-wrapper"
                                  data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -81,7 +81,7 @@ if (TL_MODE == 'FE') {
                         </div>
                     <?php endif; ?>
                         <?php if ($row->content) : ?>
-                            <div class="content-col--text"
+                            <div class="content-col--text <?php if ($this->not_fullwidth): ?>p-3 mt-md-4<?php endif; ?>"
                                  data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                 <?php echo $row->content; ?>
                             </div>

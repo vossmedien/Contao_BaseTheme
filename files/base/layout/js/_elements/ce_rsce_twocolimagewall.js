@@ -4,7 +4,7 @@ document.addEventListener(
         function setImageWidth() {
             if (window.innerWidth >= 992) {
                 var containers = document.querySelectorAll(
-                    ".ce--imagetextwall:not(.container) .force-container"
+                    ".ce--imagetextwall > .content-holder"
                 );
 
                 containers.forEach(function (container) {
@@ -16,7 +16,13 @@ document.addEventListener(
 
                     var screenWidth = window.innerWidth;
                     var containerWidth = container.offsetWidth;
-                    var distance = (screenWidth - containerWidth) / 2;
+
+                    if (container.classList.contains("force-container")) {
+                        var distance = (screenWidth - containerWidth) / 2 - 15; //die 15 sind der container-padding, workaround?
+                    } else {
+                        var distance = 0;
+                    }
+
 
                     var contentWidth = window.getComputedStyle(contentCol).width;
                     var imageWidth = window.getComputedStyle(imageCol).width;

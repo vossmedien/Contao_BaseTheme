@@ -5,10 +5,19 @@ Promise.all(promises)
 
         const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
         const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
-
+        var navWrapperHeight = 0;
 
         if (options_lazyload) {
-            var lazyLoadInstance = new LazyLoad();
+
+            var lazyLoadInstance = new LazyLoad({
+                callback_loaded: function (element) {
+                    // Prüfen, ob das geladene Bild im <header> liegt
+                    if (element.closest('header')) {
+                        // Neue Zuweisung der Variable
+                        navWrapperHeight = $(".hc--bottom").outerHeight();
+                    }
+                }
+            });
         }
 
         if (options_aos) {
@@ -145,7 +154,7 @@ Promise.all(promises)
         /* Behavior of Header Type 1 (not fixed) */
         if ($(".header--content.type--1:not(.fixed)").length) {
             navWrapper = $(".hc--bottom");
-            navWrapperHeight = $(".hc--bottom").outerHeight();
+
             navContainer = $(".hc-bottom--right-col");
             navOffset = navContainer.offset().top - 30;
             imageHeight = $(".ce--mainimage > .image--holder").data("height");
@@ -153,6 +162,7 @@ Promise.all(promises)
             if (!imageHeight) {
                 imageHeight = 100;
             }
+
 
             $(".ce--mainimage .image--holder:not(.with-maxheight)").css({
                 "max-height":
@@ -162,10 +172,7 @@ Promise.all(promises)
             function detectIfScrolled() {
                 if ($(this).scrollTop() > navOffset) {
                     navWrapper.addClass("is--scrolling");
-                    $(".header--content .hc--top").css(
-                        "margin-bottom",
-                        navWrapperHeight + "px"
-                    );
+                    $(".header--content .hc--top").css("margin-bottom", navWrapperHeight + "px");
                 } else {
                     navWrapper.removeClass("is--scrolling");
                     $(".header--content .hc--top").css("margin-bottom", "0px");
@@ -283,7 +290,7 @@ Promise.all(promises)
 
         setTimeout(
             function () {
-                $("body").css("opacity", 1);
+                $("#container").css("opacity", 1);
             },
             250,
             true

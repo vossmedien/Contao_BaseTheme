@@ -104,7 +104,7 @@
       .stoerer-button--list {
         .list--label {
           display: inline-block;
-          color: var(--bs-body-color-inverse);
+          color: var(--bs-footer-color);
           @include font-size(14px);
 
           span {
@@ -119,7 +119,7 @@
 
           li {
             a {
-              color: var(--bs-body-color-inverse);
+              color: var(--bs-footer-color);
             }
           }
         }

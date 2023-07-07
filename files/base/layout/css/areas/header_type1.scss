@@ -70,8 +70,8 @@
     .hc--bottom {
       padding: 15px 0;
 
-      /*
-            &.is--scrolling {
+
+      &.is--scrolling {
         position: fixed;
         transform: translateZ(0);
         z-index: 99;
@@ -92,12 +92,12 @@
         &.hc-bottom--right-col {
         }
       }
-       */
 
 
       .hc-bottom--inside {
         .row {
           flex-wrap: nowrap;
+          --bs-gutter-y: 0;
 
           .hc-bottom--left-col {
             img {
@@ -193,6 +193,7 @@
                   visibility: hidden;
                   opacity: 0;
                   padding: 5px 0;
+                  min-width: 100%;
                   //overflow-y: hidden;
 
                   > li {

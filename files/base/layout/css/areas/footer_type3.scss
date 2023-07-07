@@ -1,7 +1,7 @@
 .footer--content {
   &.type--3 {
     background-color: $footer-top-bg;
-    color: var(--bs-body-color-inverse);
+    color: var(--bs-footer-color);
     @include padding(50px 0px);
     @include font-size(22px);
     line-height: 1.5;
@@ -14,7 +14,7 @@
     }
 
     a, h3 {
-      color: var(--bs-body-color-inverse);
+      color: var(--bs-footer-color);
       text-decoration: none;
     }
 

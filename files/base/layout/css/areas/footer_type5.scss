@@ -1,7 +1,7 @@
 .footer--content {
   &.type--5 {
     background-color: $footer-top-bg;
-    color: var(--bs-body-color-inverse);
+    color: var(--bs-footer-color);
     @include padding(50px 0px 50px 0px);
     font-weight: $font-weight-lighter;
     font-size: rfs-value(16px);
@@ -21,7 +21,7 @@
     }
 
     a:not(.btn) {
-      color: var(--bs-body-color-inverse);
+      color: var(--bs-footer-color);
       text-decoration: none;
 
       &:hover {
@@ -31,7 +31,7 @@
 
     h3 {
       font-size: 1rem;
-      color: var(--bs-body-color-inverse);
+      color: var(--bs-footer-color);
       font-weight: $font-weight-bold;
     }
 

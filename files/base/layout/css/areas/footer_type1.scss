@@ -1,12 +1,12 @@
 .footer--content {
   &.type--1 {
-    $footer-color: var(--bs-body-color-inverse);
+    $footer-color: var(--bs-footer-color);
     font-family: $font-family-base;
     border-top: 5px solid var(--bs-primary);
 
     .fc--top {
       padding: rfs-fluid-value(5rem 0);
-      color: var(--bs-body-color-inverse);
+      color: var(--bs-footer-color);
 
       .row > div:not(:first-child) {
         @include media-breakpoint-down(lg) {
@@ -54,10 +54,12 @@
             border-radius: 50%;
             text-align: center;
             border: 2px solid var(--bs-primary);
-            transition: background-color 0.3s ease;
+            background-color: var(--bs-primary);
+            transition: all 0.3s ease;
 
             &:hover {
-              background-color: var(--bs-primary);
+              background-color: var(--bs-body-color-inverse);
+              color: var(--bs-primary);
             }
           }
         }
@@ -105,9 +107,6 @@
         }
       }
 
-      .stoerer-button--list ul {
-        margin-left: 0px;
-      }
     }
   }
 }

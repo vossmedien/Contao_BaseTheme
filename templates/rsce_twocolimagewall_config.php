@@ -888,11 +888,13 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
+                /*
                 'innerpadding' => array(
                     'label' => array('Innenabstand (oben/unten) innerhalb der Zeile', 'Funktioniert nur bei alternativer Hintergrundfarbe'),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
+                */
 
 
                 'headline_type' => array(

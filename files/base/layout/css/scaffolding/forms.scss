@@ -48,26 +48,25 @@ form {
   border-color: var(--bs-primary);
 }
 
+.form-label {
+  margin-bottom: .25rem;
+}
+
 .widget {
   transition: opacity 0.15s ease-in-out;
 
   > label:first-child {
     padding: 2px 0.75rem 2px 0.75rem;
-    border-radius: var(--bs-input-border-radius) var(--bs-input-border-radius)
-      0px 0px;
+    border-radius: var(--bs-input-border-radius) var(--bs-input-border-radius) 0px 0px;
     background-color: var(--bs-primary);
     color: var(--bs-body-color-inverse);
     @include font-size(14px);
 
     & + * {
-      border-radius: 0px var(--bs-input-border-radius)
-        var(--bs-input-border-radius) var(--bs-input-border-radius);
+      border-radius: 0px var(--bs-input-border-radius) var(--bs-input-border-radius) var(--bs-input-border-radius);
     }
   }
 
-  .form-label {
-    margin-bottom: 0px;
-  }
 
   .form-control {
     padding: var(--bs-input-padding-y) var(--bs-input-padding-x);
@@ -142,8 +141,7 @@ form {
       }
 
       > select {
-        border-radius: 0px var(--bs-input-border-radius)
-          var(--bs-input-border-radius) var(--bs-input-border-radius);
+        border-radius: 0px var(--bs-input-border-radius) var(--bs-input-border-radius) var(--bs-input-border-radius);
       }
     }
 
@@ -181,8 +179,7 @@ form {
   }
 
   p.error {
-    border-radius: 0px 0px var(--bs-input-border-radius)
-      var(--bs-input-border-radius);
+    border-radius: 0px 0px var(--bs-input-border-radius) var(--bs-input-border-radius);
     margin-bottom: 0px;
     @include padding(5px 0.75rem);
     @include font-size(14px);
@@ -249,6 +246,8 @@ form {
   }
 
   .input-group-append {
+    margin-left: 0px !important;
+
     > .btn {
       height: 100%;
       min-width: rfs-value(50px);
@@ -258,6 +257,8 @@ form {
   }
 
   .input-group-prepend {
+    margin-right: 0px !important;
+
     > .btn {
       height: 100%;
       min-width: rfs-value(50px);

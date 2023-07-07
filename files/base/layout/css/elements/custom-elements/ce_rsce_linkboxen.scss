@@ -6,9 +6,9 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 @import "../../scaffolding/helper-classes";
-@import "../../../_fonts/fontawesome/scss/fontawesome";
-@import "../../../_fonts/fontawesome/scss/regular";
-@import "../../../_fonts/fontawesome/scss/light";
+@import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/fontawesome";
+@import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/regular";
+@import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/light";
 
 @import "../../scss-variables";
 @import "../../_theme/variables-layout";

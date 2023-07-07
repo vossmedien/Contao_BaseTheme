@@ -1,13 +1,16 @@
+
+
+
 $(function () {
 
     var headerContent = document.querySelector('.header--content.fixed');
     var firstArticle = document.querySelector('.mod_article:first-of-type');
     //var firstElement = firstArticle.firstElementChild;
 
-    //if (!firstElement.classList.contains('ce_rsce_headimagelogo') && headerContent) {
-    var paddingTop = window.getComputedStyle(headerContent).height;
-    document.body.style.paddingTop = paddingTop;
-    //}
+    if (headerContent) {
+        var paddingTop = window.getComputedStyle(headerContent).height;
+        document.body.style.paddingTop = paddingTop;
+    }
 
 
     $('p.back > a:not(.btn), .widget-submit > button').each(function (index) {
@@ -73,7 +76,7 @@ $(function () {
     });
 
 
-    /* ALERTS */
+    //Alerts
     $('p.empty:not(.message)').each(function (index) {
         $(this).addClass("alert alert-primary");
     });
@@ -106,7 +109,6 @@ $(function () {
             $(this).addClass("alert-danger");
         }
     });
-    /* ALERTS ENDE */
 
 
     $('#main .mod_article > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_iso_productreader):not(.mod_catalogUniversalView):not(.mod_pageimage):not(style)').each(function (index) {
@@ -131,7 +133,7 @@ $(function () {
         $(this).removeClass("form-control");
     });
 
-    var labels = document.querySelectorAll('form label');
+    var labels = document.querySelectorAll('form label:not(.form-label)');
     labels.forEach(function (label) {
         label.className = '';
     });
@@ -163,14 +165,11 @@ $(function () {
     });
 
 
-
-
     if ($(".modal").length) {
         $(".modal").appendTo("body");
     }
 
 
-    /* Transform tables in Elements to Bootstrap Tables (styled) */
     if ($("#main .ce_text table").length) {
         $("#main table").each(function (index) {
             $(this).wrap('<div class="table-responsive"></div>');
@@ -180,6 +179,6 @@ $(function () {
                 .addClass("table-hover");
         });
     }
-    /* END */
+
 
 });
