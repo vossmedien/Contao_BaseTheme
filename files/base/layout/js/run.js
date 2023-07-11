@@ -170,6 +170,12 @@ Promise.all(promises)
             });
 
             function detectIfScrolled() {
+
+                if(navWrapperHeight <  $(".hc--bottom").outerHeight()){
+                    navWrapperHeight =  $(".hc--bottom").outerHeight();
+                }
+
+
                 if ($(this).scrollTop() > navOffset) {
                     navWrapper.addClass("is--scrolling");
                     $(".header--content .hc--top").css("margin-bottom", navWrapperHeight + "px");
@@ -290,7 +296,7 @@ Promise.all(promises)
 
         setTimeout(
             function () {
-                $("#container").css("opacity", 1);
+                $("html, body").css("opacity", 1);
             },
             250,
             true

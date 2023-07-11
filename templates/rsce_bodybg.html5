@@ -115,11 +115,10 @@ if (TL_MODE == 'FE') {
                     spaceBetween: 0,
 
                     speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
-                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'
-                    <?php else:?>'slide'<?php endif;?>,
+                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>'slide'<?php endif;?>,
 
                     autoplay: {
-                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>7500<?php endif;?>,
                     },
 
                     <?php if ($this->slide_effect == "coverflow") : ?>
@@ -137,6 +136,9 @@ if (TL_MODE == 'FE') {
                         crossFade: true
                     },
                     <?php endif;?>
+
+
+
 
 
                     slidesPerView: 1,

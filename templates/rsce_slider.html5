@@ -52,7 +52,8 @@ if (TL_MODE == 'FE') {
                 </script>
             <?php endif; ?>
             <?php if ($this->text_on_slider): ?>
-                <div class="slider-caption" style="<?php if ($this->alternate_background_color): ?>background-color: <?= $this->alternate_background_color; ?>;<?php endif; ?> <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>">
+                <div class="slider-caption"
+                     style="<?php if ($this->alternate_background_color): ?>background-color: <?= $this->alternate_background_color; ?>;<?php endif; ?> <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>">
                     <?= $this->text_on_slider; ?>
                 </div>
             <?php endif; ?>
