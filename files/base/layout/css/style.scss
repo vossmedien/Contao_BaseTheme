@@ -19,11 +19,11 @@
 html {
   scroll-behavior: smooth;
   font-size: var(--bs-body-font-size);
-  transition: opacity 0.25s ease;
-  opacity: 0;
+  transition: opacity 0.75s ease;
+  //opacity: 0;
 
   body {
-    transition: padding-top 0.5s ease, opacity 0.25s ease;
+    transition: padding-top 0.5s ease, opacity 0.75s ease;
     opacity: 0;
 
     *[id] {

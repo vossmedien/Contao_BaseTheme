@@ -35,7 +35,7 @@
 
           &:before {
             @extend %fa-icon;
-            @extend .fal;
+            @extend .far;
             content: fa-content($fa-var-download);
             padding-right: rfs-value(5px);
             color: var(--bs-primary);

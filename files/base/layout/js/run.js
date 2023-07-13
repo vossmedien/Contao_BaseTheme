@@ -296,9 +296,9 @@ Promise.all(promises)
 
         setTimeout(
             function () {
-                $("html, body").css("opacity", 1);
+                $("body").css("opacity", 1);
             },
-            250,
+            750,
             true
         );
     })

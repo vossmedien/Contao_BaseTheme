@@ -1,8 +1,10 @@
 .swiper {
   transition: all .3s ease;
+  padding-bottom: 5px;
 
   &:not(.mainslider).with-pagination {
     padding-bottom: rfs-value(40px);
+    margin-bottom: rfs-value(-40px);
   }
 
   > .swiper-button-prev {

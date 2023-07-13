@@ -41,7 +41,7 @@
     &:after {
       //@include transition(all 0.25s);
       @extend %fa-icon;
-      @extend .fal;
+      @extend .far;
       content: fa-content($fa-var-times);
       //@include transform(translate(0, -50%));
     }
@@ -54,7 +54,7 @@
   .filter-toggle-control {
     &:after {
       @extend %fa-icon;
-      @extend .fas;
+      @extend .far;
       content: fa-content($fa-var-angle-down);
     }
   }
@@ -133,7 +133,7 @@
                 display: inline-block;
 
                 @extend %fa-icon;
-                @extend .fas;
+                @extend .far;
                 content: fa-content($fa-var-angle-down);
                 margin-left: 10px;
               }

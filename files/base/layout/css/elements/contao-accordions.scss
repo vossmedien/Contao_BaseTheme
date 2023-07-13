@@ -21,7 +21,7 @@
       &:after {
 
         @extend %fa-icon;
-        @extend .fas;
+        @extend .far;
         content: fa-content($fa-var-chevron-up);
         @include font-size(20px);
       }

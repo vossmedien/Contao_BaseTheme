@@ -1,0 +1,127 @@
+html body {
+  @for $n from 0 through 50 {
+    // Padding
+    .p-#{$n}px {
+      padding: #{$n}px !important;
+    }
+
+    .ps-#{$n}px {
+      padding-left: #{$n}px !important;
+    }
+
+    .pe-#{$n}px {
+      padding-right: #{$n}px !important;
+    }
+
+    .pt-#{$n}px {
+      padding-top: #{$n}px !important;
+    }
+
+    .pb-#{$n}px {
+      padding-bottom: #{$n}px !important;
+    }
+
+    .px-#{$n}px {
+      padding-left: #{$n}px !important;
+      padding-right: #{$n}px !important;
+    }
+
+    .py-#{$n}px {
+      padding-top: #{$n}px !important;
+      padding-bottom: #{$n}px !important;
+    }
+
+    // Margin
+    .m-#{$n}px {
+      margin: #{$n}px !important;
+    }
+
+    .ms-#{$n}px {
+      margin-left: #{$n}px !important;
+    }
+
+    .me-#{$n}px {
+      margin-right: #{$n}px !important;
+    }
+
+    .mt-#{$n}px {
+      margin-top: #{$n}px !important;
+    }
+
+    .mb-#{$n}px {
+      margin-bottom: #{$n}px !important;
+    }
+
+    .mx-#{$n}px {
+      margin-left: #{$n}px !important;
+      margin-right: #{$n}px !important;
+    }
+
+    .my-#{$n}px {
+      margin-top: #{$n}px !important;
+      margin-bottom: #{$n}px !important;
+    }
+  }
+
+
+  /* Gap rules for grid layout */
+
+  @for $n from 0 through 50 {
+    .gap-#{$n}px {
+      gap: #{$n}px;
+    }
+  }
+
+
+  /* Gap rules for flex-rows */
+
+  @for $n from 0 through 50 {
+    .row {
+      &.g-#{$n}px {
+        //--bs-gutter-y: 0px;
+        margin: calc(-#{$n}px / 2);
+
+
+        > * {
+          padding: calc(#{$n}px / 2);
+        }
+
+      }
+
+      &.gx-#{$n}px {
+        //--bs-gutter-y: 0px;
+        margin-left: calc(-#{$n}px / 2);
+        margin-right: calc(-#{$n}px / 2);
+
+        > * {
+          padding-left: calc(#{$n}px / 2);
+          padding-right: calc(#{$n}px / 2);
+        }
+
+      }
+
+      &.gy-#{$n}px {
+        //--bs-gutter-y: 0px;
+        margin-top: calc(-#{$n}px / 2);
+        margin-bottom: calc(-#{$n}px / 2);
+
+        > * {
+          padding-top: calc(#{$n}px / 2);
+          padding-bottom: calc(#{$n}px / 2);
+        }
+
+      }
+    }
+  }
+
+
+
+}
+
+
+
+@for $n from 0 through 100 {
+  .fs-#{$n}px {
+    font-size: rfs-value(#{$n}px) !important;
+  }
+}

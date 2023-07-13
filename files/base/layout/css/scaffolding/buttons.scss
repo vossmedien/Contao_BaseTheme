@@ -166,7 +166,7 @@ html body .btn {
 
       &:after {
         @extend %fa-icon;
-        @extend .fal;
+        @extend .far;
         content: fa-content($fa-var-angle-double-right);
         display: inline-block;
         margin-left: rfs-value(5px);

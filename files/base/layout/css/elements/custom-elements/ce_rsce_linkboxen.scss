@@ -8,7 +8,7 @@
 @import "../../scaffolding/helper-classes";
 @import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/fontawesome";
 @import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/regular";
-@import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/light";
+
 
 @import "../../scss-variables";
 @import "../../_theme/variables-layout";
@@ -17,6 +17,10 @@ html body {
   .ce_rsce_linkboxen {
     //margin-bottom: -1.5rem;
 
+    .swiper.hasBoxedHeadline {
+      padding-top: 150px;
+      margin-top: -75px;
+    }
 
     &.with-border {
 
@@ -186,7 +190,7 @@ html body {
 
             &:after {
               @extend %fa-icon;
-              @extend .fal;
+              @extend .far;
               content: fa-content($fa-var-long-arrow-right);
               position: absolute;
 

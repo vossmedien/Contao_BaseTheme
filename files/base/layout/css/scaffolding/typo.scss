@@ -318,11 +318,7 @@ html body {
   line-height: var(--bs-body-line-height-sm);
 }
 
-@for $n from 0 through 100 {
-  .fs-#{$n}px {
-    font-size: rfs-value(#{$n}px) !important;
-  }
-}
+
 
 .list-inline{
   &.with-separator{
@@ -354,7 +350,7 @@ html body {
 
     &:before {
       @extend %fa-icon;
-      @extend .fal;
+      @extend .far;
       content: fa-content($fa-var-check);
       position: absolute;
       padding-right: rfs-value(10px);
@@ -387,7 +383,7 @@ html body {
 
     &:before {
       @extend %fa-icon;
-      @extend .fal;
+      @extend .far;
       content: fa-content($fa-var-download);
       position: absolute;
       padding-right: rfs-value(10px);
@@ -424,7 +420,7 @@ html body {
 
     &:before {
       @extend %fa-icon;
-      @extend .fas;
+      @extend .far;
       content: fa-content($fa-var-circle);
       position: absolute;
       padding-right: rfs-value(10px);

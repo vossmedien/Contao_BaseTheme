@@ -152,7 +152,7 @@ form {
           position: absolute;
 
           @extend %fa-icon;
-          @extend .fas;
+          @extend .far;
           content: fa-content($fa-var-chevron-down);
           color: rgba(var(--bs-placeholder-color));
           padding-right: var(--bs-gutter-x);
