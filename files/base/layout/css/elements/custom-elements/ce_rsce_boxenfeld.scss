@@ -9,15 +9,12 @@
 
 html body {
   .ce_rsce_boxenfeld {
-
     @include media-breakpoint-down(lg) {
       padding-left: 1rem;
       padding-right: 1rem;
     }
 
     .boxes--outer {
-
-
       &:not(:last-child) {
         margin-bottom: $basic-gutter;
       }
@@ -29,7 +26,8 @@ html body {
 
         .box--image {
           @include media-breakpoint-up(lg) {
-            border-radius: 0 var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0;
+            border-radius: 0 var(--bs-border-radius-xl)
+              var(--bs-border-radius-xl) 0;
           }
         }
 
@@ -41,7 +39,8 @@ html body {
 
           .box--image {
             @include media-breakpoint-up(lg) {
-              border-radius: var(--bs-border-radius-xl) 0 0 var(--bs-border-radius-xl);
+              border-radius: var(--bs-border-radius-xl) 0 0
+                var(--bs-border-radius-xl);
             }
           }
         }
@@ -52,11 +51,11 @@ html body {
           flex-flow: row-reverse;
         }
       }
-
     }
 
     img.box--image {
-      border-radius: var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px 0px;
+      border-radius: var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px
+        0px;
     }
 
     .half-container {
@@ -74,7 +73,8 @@ html body {
 
       @include media-breakpoint-down(lg) {
         top: 0 !important;
-        border-radius: 0px 0px var(--bs-border-radius-xl) var(--bs-border-radius-xl);
+        border-radius: 0px 0px var(--bs-border-radius-xl)
+          var(--bs-border-radius-xl);
       }
 
       @include media-breakpoint-up(xxl) {
@@ -98,9 +98,12 @@ html body {
 
     .ce--inner.container {
       .box--content {
-        border-radius: 0px 0px var(--bs-border-radius-xl) var(--bs-border-radius-xl);
+        border-radius: 0px 0px var(--bs-border-radius-xl)
+          var(--bs-border-radius-xl);
+        @include media-breakpoint-up(lg) {
+          border-radius: var(--bs-border-radius-xl);
+        }
       }
     }
-
   }
 }

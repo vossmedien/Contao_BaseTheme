@@ -17,7 +17,6 @@ html body {
     }
 
     .content--col {
-
       @include media-breakpoint-down(lg) {
         order: 2;
       }
@@ -41,7 +40,6 @@ html body {
     }
 
     .image--col {
-
       @include media-breakpoint-down(lg) {
         order: 1;
       }
@@ -237,7 +235,7 @@ html body {
           //transition: background-color 0.3s ease-in-out;
 
           &.with-bg {
-            background-color: $body-bg;
+            //background-color: $body-bg;
           }
 
           > .content-holder {
@@ -283,7 +281,6 @@ html body {
           }
 
           .content--col {
-
             //transition: background-color 0.3s ease-in-out;
 
             @include media-breakpoint-down(lg) {
@@ -495,7 +492,6 @@ html body {
             }
           }
         }
-
 
         /*
         @TODO hover-effekt funktioniert nicht beim Bild... Z-index Problem, Hintergrundbild müsste in einen Pseudo-Selektor kommen

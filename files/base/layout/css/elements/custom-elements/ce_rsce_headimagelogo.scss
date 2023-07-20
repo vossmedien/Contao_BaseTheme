@@ -26,12 +26,13 @@ html body {
     &.pull-content:not(.pull-content-next) {
       z-index: 0;
 
-        > .ce--inner {
-          margin-bottom: var(--pull-content-amount); //togglebar machen für mobile?
-        }
+      > .ce--inner {
+        margin-bottom: var(
+          --pull-content-amount
+        ); //togglebar machen für mobile?
+      }
 
       @include media-breakpoint-up(md) {
-
       }
 
       & + * {
@@ -128,7 +129,7 @@ html body {
           z-index: -1000;
           overflow: hidden;
           max-width: none;
-          object-fit: fill;
+          //object-fit: fill;
           transform: translate(-50%, -50%);
           position: absolute;
           top: 50%;
