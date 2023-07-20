@@ -234,6 +234,26 @@ if (!isset($this->size)) {
                             spaceBetween: <?php echo $this->gutter; ?>
                         }
                         <?php endif; ?>
+                    },
+
+
+
+                });
+
+                var swiper = swiper_<?php echo $this->id; ?>;
+                document.querySelector('.swiper-button-prev').addEventListener('mousedown', function (e) {
+                    if (this.classList.contains('swiper-button-disabled')) {
+                        setTimeout(function () {
+                            swiper.slideTo(swiper.slides.length - 1);
+                        }, 150);
+                    }
+                });
+
+                document.querySelector('.swiper-button-next').addEventListener('mousedown', function (e) {
+                    if (this.classList.contains('swiper-button-disabled')) {
+                        setTimeout(function () {
+                            swiper.slideTo(0);
+                        }, 150);
                     }
                 });
             }

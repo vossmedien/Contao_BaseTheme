@@ -112,16 +112,16 @@ if (TL_MODE == 'FE') {
     <script type="text/javascript" async>
         window.addEventListener('load', function () {
             if ($('.swiper.content-slider_<?= $this->id;?>').length) {
-
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
+
                     direction: 'horizontal',
 
 
-                    loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
+
                     //loopedSlides: 1,
 
-                    preloadImages: true,
-                    lazy: false,
+                    preloadImages: false,
+                    lazy: true,
 
                     spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
                     //centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
@@ -184,6 +184,26 @@ if (TL_MODE == 'FE') {
                     <?php else:?>
                     slidesPerView: 'auto',
                     <?php endif;?>
+
+                });
+
+
+
+                var swiper = swiper_<?php echo $this->id; ?>;
+                document.querySelector('.swiper-button-prev').addEventListener('mousedown', function (e) {
+                    if (this.classList.contains('swiper-button-disabled')) {
+                        setTimeout(function () {
+                            swiper.slideTo(swiper.slides.length - 1);
+                        }, 150);
+                    }
+                });
+
+                document.querySelector('.swiper-button-next').addEventListener('mousedown', function (e) {
+                    if (this.classList.contains('swiper-button-disabled')) {
+                        setTimeout(function () {
+                            swiper.slideTo(0);
+                        }, 150);
+                    }
                 });
             }
         }, {passive: true})

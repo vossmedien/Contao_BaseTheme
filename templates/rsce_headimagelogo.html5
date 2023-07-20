@@ -1,12 +1,12 @@
 <?php
 if (TL_MODE == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_headimagelogo.min.css|static';
-     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_headimagelogo.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_headimagelogo.js|static';
 }
 ?>
 
 <div <?php echo $this->cssID; ?>
-    class="content--element <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?> <?php if ($this->pull_content_next) : ?>pull-content-next<?php endif; ?>">
+        class="content--element <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?> <?php if ($this->pull_content_next) : ?>pull-content-next<?php endif; ?>">
     <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>" style="--pull-content-amount: -<?php if ($this->pull_amount) : ?><?= $this->pull_amount; ?>px<?php else: ?>250px<?php endif; ?>;">
 
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
@@ -52,7 +52,7 @@ if (TL_MODE == 'FE') {
                 <div class="swiper-slide">
                     <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline) : ?>no-text<?php endif; ?> ">
                         <div class="image--holder <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>"
-                             style="background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat; <?php if ($this->image_minheight) : ?>min-height: <?= $this->image_minheight;?>;<?php else:?>250px;<?php endif;?> <?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; <?php endif; ?> <?php if ($this->image_maxwidth) : ?>background-size: <?= $this->image_maxwidth; ?> auto;<?php else: ?>background-size: cover;<?php endif; ?>">
+                             style="background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat; <?php if ($this->image_minheight) : ?>min-height: <?= $this->image_minheight;?>;<?php else:?>250px;<?php endif; ?> <?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; <?php endif; ?> <?php if ($this->image_maxwidth) : ?>background-size: <?= $this->image_maxwidth; ?> auto;<?php else: ?>background-size: cover;<?php endif; ?>">
 
                             <?php if ($slide->alternate_background_color): ?>
                                 <style>
@@ -204,7 +204,7 @@ if (TL_MODE == 'FE') {
 
     <?php if ($this->boxed_image) : ?>
         <div class="boxed-logo">
-            <img loading="lazy"  fetchpriority="high" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+            <img loading="lazy" fetchpriority="high" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                  src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
         </div>
     <?php endif; ?>
@@ -251,6 +251,25 @@ if (TL_MODE == 'FE') {
                                 $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage .mainimage--content').show();
                             }, 500);
                         },
+                    },
+
+                });
+
+
+                var swiper = swiper_<?php echo $this->id; ?>;
+                document.querySelector('.swiper-button-prev').addEventListener('mousedown', function (e) {
+                    if (this.classList.contains('swiper-button-disabled')) {
+                        setTimeout(function () {
+                            swiper.slideTo(swiper.slides.length - 1);
+                        }, 150);
+                    }
+                });
+
+                document.querySelector('.swiper-button-next').addEventListener('mousedown', function (e) {
+                    if (this.classList.contains('swiper-button-disabled')) {
+                        setTimeout(function () {
+                            swiper.slideTo(0);
+                        }, 150);
                     }
                 });
             }

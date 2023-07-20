@@ -294,6 +294,24 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                     $('.content-slider--nav_<?= $this->id; ?> span[data-slide="' + (swiper_<?php echo $this->id; ?>.realIndex) + '"]').parent("li").addClass("active");
                 });
 
+
+                var swiper = swiper_<?php echo $this->id; ?>;
+                document.querySelector('.swiper-button-prev').addEventListener('mousedown', function (e) {
+                    if (this.classList.contains('swiper-button-disabled')) {
+                        setTimeout(function () {
+                            swiper.slideTo(swiper.slides.length - 1);
+                        }, 150);
+                    }
+                });
+
+                document.querySelector('.swiper-button-next').addEventListener('mousedown', function (e) {
+                    if (this.classList.contains('swiper-button-disabled')) {
+                        setTimeout(function () {
+                            swiper.slideTo(0);
+                        }, 150);
+                    }
+                });
+
             }
         }, {passive: true})
     </script>
