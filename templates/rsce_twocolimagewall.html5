@@ -187,7 +187,7 @@ if (TL_MODE == 'FE') {
                 </div>
             <?php endif; ?>
 
-                <div
+                <div  data-aos="<?php if ($row->animation_type_image_col) : ?><?php echo $row->animation_type_image_col; ?><?php else : ?>animate__fadeIn<?php endif; ?>"
                     style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
                     class=" <?php if ($row->video) : ?>with-video<?php endif; ?> <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
 
