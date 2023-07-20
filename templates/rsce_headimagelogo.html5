@@ -194,11 +194,13 @@ if (TL_MODE == 'FE') {
                 </div>
             <?php endforeach ?>
         </div>
-        <?php if (count($this->slides) > 1) : ?><?php if (!$this->boxed_image) : ?>
-            <div class="swiper-pagination"></div>
-        <?php endif; ?>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
+        <?php if (count($this->slides) > 1) : ?>
+
+            <?php if (!$this->boxed_image) : ?>
+                <div class="swiper-pagination"></div>
+            <?php endif; ?>
+            <div class="swiper-button-prev mainslider_<?php echo $this->id; ?>"></div>
+            <div class="swiper-button-next mainslider_<?php echo $this->id; ?>"></div>
         <?php endif; ?>
     </div>
 
@@ -230,8 +232,8 @@ if (TL_MODE == 'FE') {
 
                     <?php if (count($this->slides) > 1) : ?>
                     navigation: {
-                        nextEl: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-button-next',
-                        prevEl: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-button-prev',
+                        nextEl: '.swiper-button-next.mainslider_<?php echo $this->id; ?>',
+                        prevEl: '.swiper-button-prev.mainslider_<?php echo $this->id; ?>',
                     },
                     <?php if (!$this->boxed_image) : ?>
                     pagination: {
@@ -255,9 +257,9 @@ if (TL_MODE == 'FE') {
 
                 });
 
-
+                <?php if (count($this->slides) > 1) : ?>
                 var swiper = swiper_<?php echo $this->id; ?>;
-                document.querySelector('.swiper-button-prev').addEventListener('mousedown', function (e) {
+                document.querySelector('.swiper-button-prev.mainslider_<?php echo $this->id; ?>').addEventListener('mousedown', function (e) {
                     if (this.classList.contains('swiper-button-disabled')) {
                         setTimeout(function () {
                             swiper.slideTo(swiper.slides.length - 1);
@@ -265,13 +267,14 @@ if (TL_MODE == 'FE') {
                     }
                 });
 
-                document.querySelector('.swiper-button-next').addEventListener('mousedown', function (e) {
+                document.querySelector('.swiper-button-next.mainslider_<?php echo $this->id; ?>').addEventListener('mousedown', function (e) {
                     if (this.classList.contains('swiper-button-disabled')) {
                         setTimeout(function () {
                             swiper.slideTo(0);
                         }, 150);
                     }
                 });
+                <?php endif; ?>
             }
         }, {passive: true})
     </script>

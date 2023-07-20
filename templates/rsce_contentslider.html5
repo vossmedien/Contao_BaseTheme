@@ -124,7 +124,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
                                         <?php if ($slide->image): ?>
                                             <div class="<?php if (($this->nav_position == 3 || $this->nav_position == 4) && ($slide->longtext)): ?>mb-2<?php endif; ?>  <?php if (($this->nav_position == 1 || $this->nav_position == 2) && ($slide->longtext)): ?><?= $slide->column_width; ?><?php endif; ?>">
-                                                <img loading="lazy"  fetchpriority="low" class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>swiper-lazy<?php endif; ?> slide-image"
+                                                <img loading="lazy" fetchpriority="low" class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>swiper-lazy<?php endif; ?> slide-image"
                                                      <?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>data-<?php endif; ?>src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>">
 
                                             </div>
@@ -294,23 +294,27 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                     $('.content-slider--nav_<?= $this->id; ?> span[data-slide="' + (swiper_<?php echo $this->id; ?>.realIndex) + '"]').parent("li").addClass("active");
                 });
 
+                <?php if (count($this->elements) > 1 && $this->show_arrows) : ?>
 
                 var swiper = swiper_<?php echo $this->id; ?>;
-                document.querySelector('.swiper-button-prev').addEventListener('mousedown', function (e) {
+                document.querySelector('.swiper-button-prev.content-slider_<?= $this->id; ?>').addEventListener('mousedown', function (e) {
                     if (this.classList.contains('swiper-button-disabled')) {
+                        console.log("testx");
                         setTimeout(function () {
                             swiper.slideTo(swiper.slides.length - 1);
                         }, 150);
                     }
                 });
 
-                document.querySelector('.swiper-button-next').addEventListener('mousedown', function (e) {
+                document.querySelector('.swiper-button-next.content-slider_<?= $this->id; ?>').addEventListener('mousedown', function (e) {
                     if (this.classList.contains('swiper-button-disabled')) {
                         setTimeout(function () {
                             swiper.slideTo(0);
                         }, 150);
                     }
                 });
+
+                <?php endif; ?>
 
             }
         }, {passive: true})

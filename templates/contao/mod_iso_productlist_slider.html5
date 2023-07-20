@@ -19,8 +19,10 @@
                 <?php endforeach; ?>
             </div>
         </div>
-        <div class="product-slider_<?= $this->id; ?> swiper-button-prev"></div>
-        <div class="product-slider_<?= $this->id; ?> swiper-button-next"></div>
+        <?php if ($this->numberOfItems > 1) : ?>
+            <div class="product-slider_<?= $this->id; ?> swiper-button-prev"></div>
+            <div class="product-slider_<?= $this->id; ?> swiper-button-next"></div>
+        <?php endif; ?>
     </div>
 
 <?php endif; ?>
@@ -58,8 +60,9 @@
                     },
                 });
 
+                <?php if ($this->numberOfItems > 1) : ?>
                 var swiper = swiper_<?php echo $this->id; ?>;
-                document.querySelector('.swiper-button-prev').addEventListener('mousedown', function (e) {
+                document.querySelector('product-slider_<?= $this->id; ?>.swiper-button-prev').addEventListener('mousedown', function (e) {
                     if (this.classList.contains('swiper-button-disabled')) {
                         setTimeout(function () {
                             swiper.slideTo(swiper.slides.length - 1);
@@ -67,13 +70,14 @@
                     }
                 });
 
-                document.querySelector('.swiper-button-next').addEventListener('mousedown', function (e) {
+                document.querySelector('product-slider_<?= $this->id; ?>.swiper-button-next').addEventListener('mousedown', function (e) {
                     if (this.classList.contains('swiper-button-disabled')) {
                         setTimeout(function () {
                             swiper.slideTo(0);
                         }, 150);
                     }
                 });
+                <?php endif; ?>
             }
         }, {passive: true})
     </script>

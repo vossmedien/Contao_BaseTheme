@@ -27,7 +27,7 @@ html body {
       .scrollToTop {
         width: rfs-value(60px);
         height: rfs-value(60px);
-        line-height: rfs-value(55px);
+        line-height: rfs-value(60px);
         text-align: center;
         background-color: rgba(var(--bs-white-rgb), 0.7);
         color: var(--bs-primary);
@@ -35,11 +35,12 @@ html body {
         display: block;
         margin: 1.5rem auto 0 auto;
         transition: all 0.3s ease;
-        @include font-size(80px);
+
         cursor: pointer;
 
         i {
-          line-height: rfs-value(56px);
+          line-height: rfs-value(60px);
+          font-size: 3.5rem;
         }
 
         &:hover {
@@ -149,14 +150,14 @@ html body {
   }
 
   @include media-breakpoint-up(lg) {
-    #main.with-onepage-nav {
+    #main.with-onepage-nav
       .mod_article
-        .content--element:not(.ce_rsce_onepagenavi)
-        .container:not(.force-container),
+      .content--element:not(.ce_rsce_onepagenavi)
+      .container:not(.force-container),
+    #main.with-onepage-nav
       .mod_article
-        > :not(.content--element):not(.container):not(.force-container) {
-        padding-right: rfs-value(300px);
-      }
+      > :not(.content--element):not(.container):not(.force-container) {
+      padding-right: rfs-value(300px);
     }
   }
 }

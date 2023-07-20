@@ -34,7 +34,7 @@ if (TL_MODE == 'FE') {
                 <div class="swiper-wrapper"><?php endif; ?>
                     <?php foreach ($this->rows as $i => $row) : ?>
                         <div class="<?php if ($this->is_slider): ?>swiper-slide h-auto<?php else: ?><?php echo $row->column_width; ?><?php endif; ?>">
-                            <div class="flipping-card--wrapper <?php if ($row->disable_flip == "is_disabled"): ?>flipping-disabled<?php endif;?>"
+                            <div class="flipping-card--wrapper <?php if ($row->disable_flip == "is_disabled"): ?>flipping-disabled<?php endif; ?>"
                                  data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
                                 <?php if ($row->button_as_card_link && $row->link_url): ?>
@@ -46,7 +46,7 @@ if (TL_MODE == 'FE') {
                                     <div style="<?php if ($this->min_height): ?>min-height: <?php echo $this->min_height; ?>; <?php endif; ?>
                                     <?php if ($row->front_background): ?>background-color: <?php echo $row->front_background; ?>;<?php endif; ?> <?php if ($row->front_textcolor): ?>color: <?php echo $row->front_textcolor; ?>;<?php endif; ?>
                                     <?php if ($row->image_front && $row->front_as_bg): ?>background: url(<?= Image::get(FilesModel::findByUuid($row->image_front)->path, null, null, null); ?>) center center no-repeat; background-size: cover;<?php endif; ?>
-                                        " class="flipping-card--front <?php echo $row->front_textalign; ?>">
+                                            " class="flipping-card--front <?php echo $row->front_textalign; ?>">
                                         <div class="front--inner"
                                              style="<?php if ($row->front_background): ?>background-color: <?php echo $row->front_background; ?>;<?php endif; ?> <?php if ($row->front_textcolor): ?>color: <?php echo $row->front_textcolor; ?><?php endif; ?>"
 
@@ -232,10 +232,9 @@ if (TL_MODE == 'FE') {
 
                 });
 
-
-
+                <?php if ($this->show_arrows && count($this->rows) > 1): ?>
                 var swiper = swiper_<?php echo $this->id; ?>;
-                document.querySelector('.swiper-button-prev').addEventListener('mousedown', function (e) {
+                document.querySelector('.swiper-button-prev.switchingcards-slider_<?= $this->id; ?>').addEventListener('mousedown', function (e) {
                     if (this.classList.contains('swiper-button-disabled')) {
                         setTimeout(function () {
                             swiper.slideTo(swiper.slides.length - 1);
@@ -243,13 +242,14 @@ if (TL_MODE == 'FE') {
                     }
                 });
 
-                document.querySelector('.swiper-button-next').addEventListener('mousedown', function (e) {
+                document.querySelector('.swiper-button-next.switchingcards-slider_<?= $this->id; ?>').addEventListener('mousedown', function (e) {
                     if (this.classList.contains('swiper-button-disabled')) {
                         setTimeout(function () {
                             swiper.slideTo(0);
                         }, 150);
                     }
                 });
+                <?php endif;?>
             }
         }, {passive: true})
     </script>

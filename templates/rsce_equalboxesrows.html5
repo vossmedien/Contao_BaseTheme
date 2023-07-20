@@ -176,7 +176,8 @@ if (TL_MODE == 'FE') {
                 });
 
 
-                var swiper = swiper_<?php echo $this->id; ?>;
+                /*
+                 var swiper = swiper_<?php echo $this->id; ?>;
                 document.querySelector('.swiper-button-prev').addEventListener('mousedown', function (e) {
                     if (this.classList.contains('swiper-button-disabled')) {
                         setTimeout(function () {
@@ -192,6 +193,8 @@ if (TL_MODE == 'FE') {
                         }, 150);
                     }
                 });
+                 */
+
             }
         }, {passive: true})
     </script>
