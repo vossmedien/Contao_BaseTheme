@@ -31,7 +31,7 @@ if (TL_MODE == 'FE') {
         <?php if ($this->rows) : ?>
             <div class="<?php if ($this->is_slider): ?><?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> swiper switchingcards-slider_<?= $this->id; ?><?php else: ?>row justify-content-center<?php endif; ?>">
                 <?php if ($this->is_slider): ?>
-                <div class="swiper-wrapper"><?php endif; ?>
+                <div class="swiper-wrapper <?php if ($this->centered_slides) : ?>align-items-center<?php endif;?>"><?php endif; ?>
                     <?php foreach ($this->rows as $i => $row) : ?>
                         <div class="<?php if ($this->is_slider): ?>swiper-slide h-auto<?php else: ?><?php echo $row->column_width; ?><?php endif; ?>">
                             <div class="flipping-card--wrapper <?php if ($row->disable_flip == "is_disabled"): ?>flipping-disabled<?php endif; ?>"
@@ -159,7 +159,7 @@ if (TL_MODE == 'FE') {
                     direction: 'horizontal',
 
 
-                    loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
+                    //loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
                     //loopedSlides: 1,
 
 
@@ -169,7 +169,7 @@ if (TL_MODE == 'FE') {
                     },
 
                     spaceBetween: <?php if ($this->space_between || $this->space_between == 0) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
-                    centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
+                    //centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
                     slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>
                     'auto'<?php endif;?>,
 

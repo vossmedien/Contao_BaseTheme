@@ -54,7 +54,7 @@ if (!isset($this->size)) {
 
             >
                 <?php if ($this->is_slider == 2): ?>
-                <div class="swiper-wrapper">
+                <div class="swiper-wrapper <?php if ($this->centered_slides) : ?>align-items-center<?php endif;?>">
                     <?php endif; ?>
                     <?php foreach ($this->boxes as $i => $box) : ?>
                         <div <?php if ($this->is_slider == 1): ?>data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"<?php endif; ?> class="
@@ -412,7 +412,6 @@ if (!isset($this->size)) {
                     },
 
                     spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
-                    centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
                     slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>
                     'auto'<?php endif;?>,
 

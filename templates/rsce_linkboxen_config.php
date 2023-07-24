@@ -157,7 +157,7 @@ return array(
         ),
 
         'centered_slides' => array(
-            'label' => array('Slides mittig ausrichten', 'experimentell, slides beginnen nicht zentriert'),
+            'label' => array('Slides mittig ausrichten', ''),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
         ),
