@@ -41,10 +41,10 @@ p.error,
 
 .lazy {
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.25s ease-in-out;
 
 
-  &.entered, &[loading='eager'], &[data-ll-status="loaded"] {
+  &.loaded,&.entered, &[loading='eager'] {
     opacity: 1;
   }
 }

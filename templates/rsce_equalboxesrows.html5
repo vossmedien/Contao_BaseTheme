@@ -35,7 +35,7 @@ if (TL_MODE == 'FE') {
                             <?php if ($row->main_url) : ?>
                                 <a href="<?php echo $row->main_url; ?>"></a>
                             <?php endif; ?>
-                            <div class="box--inner lazy"
+                            <div class="box--inner <?php if (count($row->main_image) == 1) : ?>lazy<?php endif;?>"
                                  <?php if (count($row->main_image) == 1) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->main_image[0])->path, null, null, null); ?>"
                                  style="background-position: center center; background-repeat: no-repeat; center center no-repeat; background-size: cover;" <?php endif; ?>>
                                 <?php if (count($row->main_image) > 1) : ?>
@@ -93,7 +93,7 @@ if (TL_MODE == 'FE') {
                         <?php if ($box->url) : ?>
                             <a href="<?php echo $box->url; ?>"></a>
                         <?php endif; ?>
-                        <div class="box--inner lazy"
+                        <div class="box--inner <?php if (count($box->image) == 1) : ?>lazy<?php endif; ?>"
                              <?php if (count($box->image) == 1) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($box->image[0])->path, null, null, null); ?>"
                              style="background-position: center center; background-repeat: no-repeat; background-size: cover;" <?php endif; ?>>
                             <?php if (count($box->image) > 1) : ?>
@@ -102,8 +102,9 @@ if (TL_MODE == 'FE') {
                                     <div class="swiper-wrapper">
                                         <?php foreach ($box->image as $slide) : ?>
                                             <div class="swiper-slide">
-                                                <div class=""
-                                                     style="background-image: url(<?= Image::get(FilesModel::findByUuid($slide)->path, null, null, null); ?>); background-position: center center; background-repeat: no-repeat; width: 100%; height: 100%; background-size: cover;"></div>
+                                                <div class="lazy"
+                                                     data-bg="<?= Image::get(FilesModel::findByUuid($slide)->path, null, null, null); ?>"
+                                                     style="background-position: center center; background-repeat: no-repeat; width: 100%; height: 100%; background-size: cover;"></div>
                                             </div>
                                         <?php endforeach ?>
                                     </div>
