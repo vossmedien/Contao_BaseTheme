@@ -8,7 +8,7 @@
 
         <div class="offcanvas-header">
             <a class="overlayNavClose mmenu_close_button" href="#">
-                <i class="fal fa-chevron-circle-left"></i>
+                <i class="fa-sharp fa-light fa-circle-chevron-left"></i>
                 <span>Weiter einkaufen</span>
             </a>
         </div>

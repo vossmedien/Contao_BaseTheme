@@ -46,7 +46,7 @@ if (TL_MODE == 'FE') {
 
                                 <?php if ($e->desc): ?>
                                     <div class="hover-content--info-icon">
-                                        <i class="fas fa-info"></i>
+                                        <i class="fa-sharp fa-light fa-info"></i>
                                     </div>
 
                                     <div class="gallery-column--hover-content" style="

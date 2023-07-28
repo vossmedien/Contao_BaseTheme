@@ -33,7 +33,7 @@ if (TL_MODE == 'FE') {
         <div class="ce--stoerer"
              style="<?php if ($this->text_rotation): ?>transform: rotate(<?= $this->text_rotation;?>deg);<?php endif; ?>">
             <?php if ($this->img): ?>
-                <img loading="lazy"  fetchpriority="low" src="<?= Image::get(FilesModel::findByUuid($this->img)->path, null, null, null); ?>">
+                <img loading="lazy"   src="<?= Image::get(FilesModel::findByUuid($this->img)->path, null, null, null); ?>">
             <?php endif; ?>
             <?php if ($this->content): ?>
                 <div class="stoerer--content"

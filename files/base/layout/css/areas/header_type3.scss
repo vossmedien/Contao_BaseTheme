@@ -1,4 +1,4 @@
-&.theme-3 {
+body.theme-3 {
   &:not(.start) {
     #main {
       padding-top: rfs-value(60px);
@@ -140,7 +140,7 @@
 
             &:before {
               @extend %fa-icon;
-              @extend .far;
+              @extend #{$icon-type};
               content: fa-content($fa-var-chevron-right);
               position: absolute;
               left: 0;

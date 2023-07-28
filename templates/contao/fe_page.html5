@@ -33,9 +33,6 @@
      <script defer src="/files/base/layout/_vendor/node_modules/@fortawesome/fontawesome-pro/js/thin.min.js"></script>
 
 -->
-    <script defer type="text/javascript" src="/files/base/layout/_vendor/node_modules/@fortawesome/fontawesome-pro/js/duotone.min.js"></script>
-
-    <script defer type="text/javascript" src="/files/base/layout/_vendor/node_modules/@fortawesome/fontawesome-pro/js/fontawesome.min.js"></script>
 
     <script type="text/javascript" src="/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js"></script>
 
@@ -60,7 +57,7 @@
 
 {{insert_module::47}}
 
-<div class="BodyScrollToTop"><i class="fal fa-arrow-up"></i></div>
+<div class="BodyScrollToTop"><i class="fa-sharp fa-light fa-arrow-up"></i></div>
 
 
 <div id="wrapper">

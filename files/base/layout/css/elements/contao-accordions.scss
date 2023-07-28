@@ -19,9 +19,8 @@
       transition: all .3s ease;
 
       &:after {
-
         @extend %fa-icon;
-        @extend .far;
+        @extend #{$icon-type};
         content: fa-content($fa-var-chevron-up);
         @include font-size(20px);
       }

@@ -14,7 +14,7 @@
         <?php if (!$this->isEditable && !$this->collection->isLocked()) : ?>
             <div class="boxed">
                 <a href="/shop/warenkorb" class="edit">
-                    Warenkorb bearbeiten <i class="fas fa-pencil"></i>
+                    Warenkorb bearbeiten <i class="fa-sharp fa-light fa-pencil"></i>
                 </a>
             </div>
         <?php endif; ?>
@@ -60,7 +60,7 @@
             <div class="col_<?php echo $i++; ?> col_last actions">
                 <?php /* if ($item['edit_href']): ?><a href="<?php echo $item['edit_href']; ?>" class="edit" title="<?php echo $item['edit_title']; ?>"><?php echo $item['edit_link']; ?></a><?php endif; */ ?>
                 <a href="<?php echo $item['remove_href']; ?>" class="remove" data-bs-toggle="tooltip"
-                   title="<?php echo $item['remove_title']; ?>"><i class="far fa-trash-alt"></i></a>
+                   title="<?php echo $item['remove_title']; ?>"><i class="fa-sharp fa-light fa-trash-alt"></i></a>
                 </div><?php endif; ?>
             </div><?php if ($item['item']->hasErrors()) : ?>
                 <div class="<?php echo $item['rowClass']; ?>">

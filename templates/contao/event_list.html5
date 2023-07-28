@@ -5,7 +5,7 @@
             <div class="event--image-wrapper" <?php if ($this->details): ?>data-bs-toggle="modal"
                  data-bs-target="#eventModal_<?= $this->id; ?>"<?php endif; ?>>
                 <?php if ($this->singleSRC): ?>
-                    <img loading="lazy"  fetchpriority="low" class="lazy" data-src="<?= $this->singleSRC; ?>">
+                    <img loading="lazy"   class="lazy" data-src="<?= $this->singleSRC; ?>">
                 <?php endif; ?>
                 <span class="date"><?= date('d. F Y', strtotime($this->datetime)); ?></span>
             </div>
@@ -61,7 +61,7 @@
                 <div class="modal-body">
                     <div class="container container">
                         <button type="button" class="btn--close" data-bs-dismiss="modal" aria-label="Schließen">
-                            <i class="fal fa-times"></i>
+                            <i class="fa-sharp fa-light fa-xmark"></i>
                         </button>
 
                         <div class="row gx-3">

@@ -7,7 +7,7 @@
                 <?php if ($this->singleSRC): ?>
                 <div class="d-flex justify-content-center ">
                     <?php if ($this->hasText): ?><a href="<?= $this->href; ?>"><?php endif; ?>
-                    <img loading="lazy" fetchpriority="low" class="lazy" data-src="<?= $this->singleSRC; ?>"> <?php if ($this->hasText): ?></a><?php endif; ?>
+                    <img loading="lazy"  class="lazy" data-src="<?= $this->singleSRC; ?>"> <?php if ($this->hasText): ?></a><?php endif; ?>
                     </div>
                 <?php endif; ?>
                 <span class="date">

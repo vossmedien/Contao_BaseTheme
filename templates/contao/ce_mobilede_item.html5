@@ -61,7 +61,7 @@
                             <?php if (is_array($this->fuelConsumption) && count($this->fuelConsumption) > 0): ?>
                                 <div class="d-inline-block" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" data-bs-title="Verbrauchsinformationen" data-bs-html="true" data-bs-content='<?php if (is_array($this->fuelConsumption) && count($this->fuelConsumption) > 0): ?><?php foreach ($this->fuelConsumption as $fuelItem): ?><?= $fuelItem['label'] ?>: <?= $fuelItem['value'] ?><br><?php endforeach; ?><?php endif; ?>'>
                                     <?php foreach ($this->fuelConsumption as $fuelItem): ?>
-                                        <i class="fas fa-info-circle"></i>  <?= $fuelItem['label'] ?>: <?= $fuelItem['value'] ?>
+                                        <i class="fa-sharp fa-light fa-circle-info"></i>  <?= $fuelItem['label'] ?>: <?= $fuelItem['value'] ?>
                                         <?php break; endforeach; ?>
                                 </div>
                             <?php endif; ?>

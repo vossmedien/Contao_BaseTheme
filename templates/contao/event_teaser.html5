@@ -32,7 +32,7 @@
                 <div class="modal-body">
                     <div class="container container">
                         <button type="button" class="btn--close" data-bs-dismiss="modal" aria-label="Schließen">
-                            <i class="fal fa-times"></i>
+                            <i class="fa-sharp fa-light fa-xmark"></i>
                         </button>
 
                         <div class="row gx-3">

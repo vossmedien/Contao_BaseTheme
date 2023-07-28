@@ -2,6 +2,10 @@
 @import "variables-layout";
 @import "_theme/variables-layout";
 
+
+
+@import "icon-package";
+
 @import "_theme/fonts";
 @import "../_vendor/vendor";
 
@@ -26,7 +30,7 @@ html {
     transition: padding-top 0.5s ease, opacity 0.75s ease;
     opacity: 0;
 
-    l *[id] {
+    *[id] {
       scroll-behavior: smooth;
       scroll-margin-top: 175px;
     }
@@ -72,8 +76,8 @@ html {
     @import "elements/tooltips";
     @import "elements/popover";
     @import "elements/alerts";
-    @import "_theme/includes";
   }
+  @import "_theme/includes";
 }
 
 @import "_theme/styles";

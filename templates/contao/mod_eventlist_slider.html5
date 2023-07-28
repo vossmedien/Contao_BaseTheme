@@ -33,9 +33,7 @@
                 loop: true,
 
                 preloadImages: false,
-                lazy: {
-                    loadPrevNext: true,
-                },
+                lazy: true,
 
                 spaceBetween: 50,
                 speed: 1500,

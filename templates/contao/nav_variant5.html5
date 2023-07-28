@@ -8,7 +8,7 @@
             <div class="col col-sm-auto logo text-center">
                 <div class="banner">
                     <a href="/">
-                        <img loading="lazy"  fetchpriority="low" class="hide-home" src="/files/base/layout/img/logo.svg">
+                        <img loading="lazy"   class="hide-home" src="/files/base/layout/img/logo.svg">
                     </a>
                 </div>
             </div>
@@ -31,7 +31,7 @@
         <?php if (strpos($item['class'], 'last') !== false && $this->level == "level_1"): ?>
 
             <div class="nav-link">
-                <a class="offCanvasBasketOpener" href="#offCanvasBasket"><i class="fal fa-shopping-cart"></i></a>
+                <a class="offCanvasBasketOpener" href="#offCanvasBasket"><i class="fa-sharp fa-light fa-cart-shopping"></i></a>
             </div>
             </div>
         <?php endif; ?>

@@ -12,7 +12,7 @@
                        value="<?= $this->keyword ?>">
                 <div class="input-group-append">
                     <button type="submit" id="ctrl_submit_<?= $this->uniqueId ?>"
-                            class="btn btn-primary submit"><i class="far fa-search"></i></button>
+                            class="btn btn-primary submit"><i class="fa-sharp fa-light fa-search"></i></button>
                 </div>
             </div>
         </div>

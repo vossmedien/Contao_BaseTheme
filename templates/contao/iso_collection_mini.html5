@@ -36,7 +36,7 @@
                                 <?php if ($this->isEditable) : ?>
                                     <a class="ms-2" href="<?php echo $item['remove_href']; ?>" data-bs-toggle="tooltip"
                                        title="<?php echo $item['remove_title']; ?>">
-                                        <i class="fas fa-trash-alt"></i>
+                                        <i class="fa-sharp fa-light fa-trash-can"></i>
                                     </a>
                                 <?php endif; ?>
                             </div>

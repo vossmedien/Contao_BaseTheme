@@ -43,14 +43,21 @@ form {
   }
 }
 
-.form-check-input:checked {
+
+.form-check-input{
+  margin-top: 2px;
+  &:checked {
   background-color: var(--bs-primary);
   border-color: var(--bs-primary);
 }
+}
+
+
 
 .form-label {
   margin-bottom: .25rem;
 }
+
 
 .widget {
   transition: opacity 0.15s ease-in-out;
@@ -60,6 +67,7 @@ form {
     border-radius: var(--bs-input-border-radius) var(--bs-input-border-radius) 0px 0px;
     background-color: var(--bs-primary);
     color: var(--bs-body-color-inverse);
+    margin-bottom: 0px;
     @include font-size(14px);
 
     & + * {
@@ -152,7 +160,7 @@ form {
           position: absolute;
 
           @extend %fa-icon;
-          @extend .far;
+          @extend #{$icon-type};
           content: fa-content($fa-var-chevron-down);
           color: rgba(var(--bs-placeholder-color));
           padding-right: var(--bs-gutter-x);

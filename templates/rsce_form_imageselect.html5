@@ -56,7 +56,7 @@ if (TL_MODE == 'FE') {
             </div>
             <?php endif; ?>
             <div class="item--image">
-                <img loading="lazy"  fetchpriority="low" src="<?= Image::get(FilesModel::findByUuid($input->image)->path, null, null, null); ?>">
+                <img loading="lazy"   src="<?= Image::get(FilesModel::findByUuid($input->image)->path, null, null, null); ?>">
             </div>
             <?php if ($input->text_bottom) : ?>
             <div class="item--text-bottom">

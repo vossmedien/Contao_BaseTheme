@@ -26,7 +26,7 @@ if (TL_MODE == 'FE') {
 
                                             <?php if ($lvl1_element->image_lvl1): ?>
                                                 <span class="sitemap--image-container" style="">
-                                                    <img loading="lazy"  fetchpriority="low" class="lazy"
+                                                    <img loading="lazy"   class="lazy"
                                                          data-src="<?= Image::get(FilesModel::findByUuid($lvl1_element->image_lvl1)->path, null, null, null); ?>">
                                                 </span>
                                             <?php endif; ?>

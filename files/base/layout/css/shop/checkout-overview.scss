@@ -71,7 +71,7 @@
 
     &:after {
       @extend %fa-icon;
-      @extend .far;
+@extend #{$icon-type};
       content: fa-content($fa-var-pen);
       font-size: 1rem;
       color: var(--bs-primary);

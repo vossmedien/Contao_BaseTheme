@@ -7,8 +7,7 @@
 @import "../../scss-variables";
 @import "../../_theme/variables-layout";
 
-@import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/fontawesome";
-@import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/regular";
+@import "../../../css/icon-package";
 
 
 html body {
@@ -159,7 +158,7 @@ html body {
 
               &:before {
                 @extend %fa-icon;
-                @extend .far;
+                @extend #{$icon-type};
                 content: fa-content($fa-var-circle);
                 position: absolute;
                 padding-right: rfs-value(10px);

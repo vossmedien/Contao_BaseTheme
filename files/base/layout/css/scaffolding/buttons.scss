@@ -166,8 +166,8 @@ html body .btn {
 
       &:after {
         @extend %fa-icon;
-        @extend .far;
-        content: fa-content($fa-var-angle-double-right);
+        @extend #{$icon-type};
+        content: fa-content($fa-var-angles-right);
         display: inline-block;
         margin-left: rfs-value(5px);
         vertical-align: middle;

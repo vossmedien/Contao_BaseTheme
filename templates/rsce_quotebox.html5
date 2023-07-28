@@ -46,7 +46,7 @@ if (TL_MODE == 'FE') {
                                    href="<?php echo $quote->link_url; ?>">
                                     <?php endif; ?>
 
-                                    <img loading="lazy"  fetchpriority="low" class="lazy"
+                                    <img loading="lazy"   class="lazy"
                                          data-src="<?= Image::get(FilesModel::findByUuid($quote->bild)->path, null, null, null); ?>">
                                     <?php if ($quote->link_url): ?>
                                 </a>

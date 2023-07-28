@@ -90,7 +90,7 @@ if (!isset($this->size)) {
                                 <?php if ($b->icon) : ?>
                                     <i class="<?php echo $b->icon; ?>"></i>
                                 <?php elseif ($b->image) : ?><?php if (!$b->image_as_bg) : ?>
-                                    <img loading="lazy"  fetchpriority="low" class="lazy <?php if (!$b->headline) : ?>pb-3<?php endif; ?>"
+                                    <img loading="lazy"   class="lazy <?php if (!$b->headline) : ?>pb-3<?php endif; ?>"
                                          data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                 <?php else: ?>
                                     <div data-bg="<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"

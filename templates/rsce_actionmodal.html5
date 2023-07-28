@@ -26,7 +26,7 @@ if (TL_MODE == 'FE') {
                     <div class="modal--image mb-2 <?php if ($this->remove_image_padding): ?>without-padding<?php endif; ?>">
                         <?php if (!$this->modal_headline): ?>
                             <button type="button" class="btn--close" data-bs-dismiss="modal" aria-label="Schließen">
-                                <i class="fal fa-times"></i>
+                                <i class="fa-sharp fa-light fa-xmark"></i>
                             </button>
                         <?php endif; ?>
 
@@ -54,7 +54,7 @@ if (TL_MODE == 'FE') {
                                      data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
                                      style="background-position: center center; background-repeat: no-repeat; background-size: cover; <?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>"></div>
                             <?php else: ?>
-                                <img loading="lazy"  fetchpriority="low" style="<?php if ($this->fixed_height): ?>height: <?php echo $this->fixed_height; ?><?php endif; ?>"
+                                <img loading="lazy"   style="<?php if ($this->fixed_height): ?>height: <?php echo $this->fixed_height; ?><?php endif; ?>"
                                      class="lazy"
                                      data-src="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>">
                             <?php endif; ?>
@@ -94,7 +94,7 @@ if (TL_MODE == 'FE') {
 
                         <?php if ($this->image_left): ?>
                             <div class="col-12 col-md-5">
-                                <img loading="lazy"  fetchpriority="low" class="lazy" data-aos="animate__fadeIn"
+                                <img loading="lazy"   class="lazy" data-aos="animate__fadeIn"
                                      data-src="<?= Image::get(FilesModel::findByUuid($this->image_left)->path, null, null, null); ?>
                                 ">
                             </div>
@@ -112,7 +112,7 @@ if (TL_MODE == 'FE') {
                                     <?php if ($this->progress_image): ?>
                                         <div class="progressbar--images">
                                             <?php for ($i = 0; $i <= $this->progress_amount; $i++) : ?>
-                                                <img loading="lazy"  fetchpriority="low" class="lazy"
+                                                <img loading="lazy"   class="lazy"
                                                      data-src="<?= Image::get(FilesModel::findByUuid($this->progress_image)->path, null, null, null); ?>">
                                             <?php endfor; ?>
                                         </div>
@@ -161,7 +161,7 @@ if (TL_MODE == 'FE') {
                         <div class="text-end" data-aos="animate__fadeIn">
                             <?php foreach ($this->sponsors as $s) : ?><?php if ($s->link): ?>
                                 <a href="<?php echo $s->link; ?>" target="_blank"><?php endif; ?>
-                                <img loading="lazy"  fetchpriority="low" class="lazy d-inline-block ms-2"
+                                <img loading="lazy"   class="lazy d-inline-block ms-2"
                                      data-src="<?= Image::get(FilesModel::findByUuid($s->image)->path, null, null, null); ?>">
                                 <?php if ($s->link): ?></a><?php endif; ?><?php endforeach ?>
                         </div>

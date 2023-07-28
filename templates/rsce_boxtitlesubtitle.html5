@@ -46,7 +46,7 @@ if (TL_MODE == 'FE') {
                                 </script>
                                 <a href="<?= Image::get(FilesModel::findByUuid($b->images[0])->path, null, null, null); ?>"
                                    class="main--image group_<?php echo $rand; ?> bts-cboxElement cboxElement">
-                                    <img loading="lazy" fetchpriority="low" class="lazy"
+                                    <img loading="lazy"  class="lazy"
                                          data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                                 </a>
                                 <div class="invisible">
@@ -58,7 +58,7 @@ if (TL_MODE == 'FE') {
                                     <?php endforeach; ?>
                                 </div>
                             <?php else : ?>npm
-                            <img loading="lazy" fetchpriority="low" class="lazy"
+                            <img loading="lazy"  class="lazy"
                                  data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
                             <?php endif; ?>
                         </div>

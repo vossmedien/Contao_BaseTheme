@@ -6,8 +6,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 @import "../../scaffolding/helper-classes";
-@import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/fontawesome";
-@import "../../../_vendor/node_modules/@fortawesome/fontawesome-pro/scss/regular";
+@import "../../../css/icon-package";
 
 
 @import "../../scss-variables";
@@ -101,8 +100,8 @@ html body {
             &.with-url {
               &:before {
                 @extend %fa-icon;
-                @extend .far;
-                content: fa-content($fa-var-angle-double-right);
+                @extend #{$icon-type};
+                content: fa-content($fa-var-angles-right);
                 vertical-align: baseline;
                 @include font-size(28px);
                 padding-right: 1rem;
@@ -190,8 +189,8 @@ html body {
 
             &:after {
               @extend %fa-icon;
-              @extend .far;
-              content: fa-content($fa-var-long-arrow-right);
+              @extend #{$icon-type};
+              content: fa-content($fa-var-arrow-right-long);
               position: absolute;
 
               top: 50%;

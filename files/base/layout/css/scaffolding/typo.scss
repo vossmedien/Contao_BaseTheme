@@ -350,7 +350,7 @@ html body {
 
     &:before {
       @extend %fa-icon;
-      @extend .far;
+      @extend #{$icon-type};
       content: fa-content($fa-var-check);
       position: absolute;
       padding-right: rfs-value(10px);
@@ -383,7 +383,7 @@ html body {
 
     &:before {
       @extend %fa-icon;
-      @extend .far;
+      @extend #{$icon-type};
       content: fa-content($fa-var-download);
       position: absolute;
       padding-right: rfs-value(10px);
@@ -420,7 +420,7 @@ html body {
 
     &:before {
       @extend %fa-icon;
-      @extend .far;
+@extend #{$icon-type};
       content: fa-content($fa-var-circle);
       position: absolute;
       padding-right: rfs-value(10px);

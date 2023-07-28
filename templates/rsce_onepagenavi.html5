@@ -20,7 +20,7 @@ if (TL_MODE == 'FE') {
                             <?php if ($this->background_color): ?>background-color: <?= $this->background_color; ?>;<?php endif; ?>
                             <?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>
                                     ">
-                                <i class="far fa-chevron-double-left"></i>
+                                <i class="fa-sharp fa-light fa-chevron-double-left"></i>
                             </span>
                         </div>
                     <?php endif; ?>
@@ -51,7 +51,7 @@ if (TL_MODE == 'FE') {
                     </div>
                     <?php if ($this->add_totopbutton): ?>
                         <span class="scrollToTop">
-                            <i class="fal fa-angle-up"></i>
+                            <i class="fa-sharp fa-light fa-angle-up"></i>
                         </span>
                     <?php endif; ?>
                 </div>

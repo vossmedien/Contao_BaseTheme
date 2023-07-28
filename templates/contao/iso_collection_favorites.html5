@@ -64,8 +64,8 @@
 
                     <a href="<?= $item['cart_href'] ?>" data-bs-toggle="tooltip" title="In den Warenkorb legen"
                        class="fs-24px add_to_cart"><i class="ico ico-einkaufswagen"></i></a>
-                    <a href="<?= $item['remove_href'] ?>" data-bs-toggle="tooltip" title="Aus Merkliste entfernen"
-                       class="remove fs-20px" title="<?= $item['remove_title'] ?>"><i class="far fa-trash-alt"></i></a>
+                    <a href="<?= $item['remove_href'] ?>" data-bs-toggle="tooltip"
+                       class="remove fs-20px" title="<?= $item['remove_title'] ?>"><i class="fa-sharp fa-light fa-trash-can"></i></a>
                     </div><?php endif; ?>
 
                 </div><?php if ($item['item']->hasErrors()) : ?>

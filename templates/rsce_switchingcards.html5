@@ -53,7 +53,8 @@ if (TL_MODE == 'FE') {
                                         >
                                             <?php if ($row->image_front && !$row->front_as_bg): ?>
                                                 <div class="fc--image">
-                                                    <img loading="lazy" fetchpriority="low" src="<?= Image::get(FilesModel::findByUuid($row->image_front)->path, null, null, null); ?>">
+                                                    <img <?php if($this->is_slider):?>loading="lazy"<?php else:?>class="lazy" data-<?php endif;?>src="<?= Image::get(FilesModel::findByUuid($row->image_front)->path, null, null, null); ?>">
+                                               <?php if($this->is_slider):?><div class="swiper-lazy-preloader"></div><?php endif;?>
                                                 </div>
                                             <?php endif; ?>
                                             <?php if ($row->front_headline): ?>
@@ -83,7 +84,8 @@ if (TL_MODE == 'FE') {
                                             <div class="back--inner">
                                                 <?php if ($row->image_back): ?>
                                                     <div class="fc--image">
-                                                        <img loading="lazy" fetchpriority="low" src="<?= Image::get(FilesModel::findByUuid($row->image_back)->path, null, null, null); ?>">
+                                                        <img <?php if($this->is_slider):?>loading="lazy"<?php else:?>class="lazy" data-<?php endif;?>src="<?= Image::get(FilesModel::findByUuid($row->image_back)->path, null, null, null); ?>">
+                                                    <?php if($this->is_slider):?><div class="swiper-lazy-preloader"></div><?php endif;?>
                                                     </div>
                                                 <?php endif; ?>
                                                 <?php if ($row->back_headline): ?>

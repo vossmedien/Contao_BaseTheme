@@ -9,7 +9,7 @@ if (!isset($this->size)) {
     $this->{"size"} = "";
 }
 ?>
-    ?>
+
 
 
     <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
@@ -59,7 +59,7 @@ if (!isset($this->size)) {
                                         <div class="video_container">
                                             <video autoplay muted loop playsinline
                                                    style="height: <?= $this->size[0]; ?>">
-                                                <source type="video/mp4" src="{{file::<?= $slide->video_path ?>}}">
+                                                <source type="vidloading="lazy"eo/mp4" src="{{file::<?= $slide->video_path ?>}}">
                                             </video>
                                         </div>
                                     <?php endif; ?>
@@ -73,14 +73,12 @@ if (!isset($this->size)) {
                                             <?php endif; ?>
                                         >
 
-                                            <img loading="lazy" fetchpriority="low" class="lazy"
-                                                 data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+                                            <img loading="lazy" src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                         </a>
                                     <?php elseif ($slide->video_type == "local_file"): ?>
                                         <span data-bs-toggle="modal"
                                               data-bs-target="#video-slider_<?= $this->id; ?>_<?= $i; ?>">
-                                            <img loading="lazy" fetchpriority="low" class="lazy"
-                                                 data-src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+                                            <img loading="lazy" src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                         </span>
                                     <?php endif; ?>
                                 <?php endif; ?>
@@ -163,7 +161,7 @@ if (!isset($this->size)) {
 
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.video-slider_<?php echo $this->id; ?>', {
                     direction: 'horizontal',
-
+                    lazy: true,
                     <?php if (count($this->elements) > 1) : ?>
                     <?php if ($this->show_arrows): ?>
                     navigation: {

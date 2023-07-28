@@ -5,7 +5,8 @@
             <div class="event--image-wrapper" <?php if ($this->details): ?>data-bs-toggle="modal"
                  data-bs-target="#eventModal_<?= $this->id; ?>"<?php endif; ?>>
 
-                <img loading="lazy"  fetchpriority="low" class="swiper-lazy" data-src="<?= $this->singleSRC; ?>">
+                <img loading="lazy" data-src="<?= $this->singleSRC; ?>">
+                 <div class="swiper-lazy-preloader"></div>
             </div>
         <?php endif; ?>
 
@@ -60,7 +61,7 @@
                 <div class="modal-body">
                     <div class="container container">
                         <button type="button" class="btn--close" data-bs-dismiss="modal" aria-label="Schließen">
-                            <i class="fal fa-times"></i>
+                            <i class="fa-sharp fa-light fa-xmark"></i>
                         </button>
 
                         <div class="row gx-3">

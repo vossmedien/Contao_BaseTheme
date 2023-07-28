@@ -36,7 +36,7 @@ if (TL_MODE == 'FE') {
                     <?php if ($row->headline_image) : ?>
                         <div class="col-auto">
                             <div class="image--wrapper">
-                                <img loading="lazy"  fetchpriority="low" class="lazy"
+                                <img loading="lazy"   class="lazy"
                                      data-src="<?= Image::get(FilesModel::findByUuid($row->headline_image)->path, null, null, null); ?>">
                             </div>
                         </div>
@@ -70,7 +70,7 @@ if (TL_MODE == 'FE') {
                                 <?php echo $col->headline; ?>
                             </div>
                             <div class="cr--image">
-                                <img loading="lazy"  fetchpriority="low" class="lazy"
+                                <img loading="lazy"   class="lazy"
                                      data-src="<?= Image::get(FilesModel::findByUuid($col->image)->path, null, null, null); ?>">
                             </div>
                             <div class="cr--content">

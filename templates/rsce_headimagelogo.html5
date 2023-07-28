@@ -206,8 +206,8 @@ if (TL_MODE == 'FE') {
 
     <?php if ($this->boxed_image) : ?>
         <div class="boxed-logo">
-            <img loading="lazy" fetchpriority="high" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                 src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
+            <img class="lazy" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                 data-src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
         </div>
     <?php endif; ?>
 </div>

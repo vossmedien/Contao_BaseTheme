@@ -162,26 +162,21 @@ if (!isset($this->size)) {
                                     ?>
                                     <div class="box--upper">
                                         <?php if ($ext != "mp4" && !$box->not_as_bg) : ?>
-                                            <div class="image--holder <?php if ($this->is_slider == 1 && !$box->box_style == "style-3"): ?>lazy<?php endif; ?> <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>"
-                                                 style="
-                                                 <?php if ($this->is_slider && !$box->box_style == "style-3"): ?>
-                                                         background-image:url(<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>);
-                                                 <?php endif; ?>
-                                                 <?php if ($box->box_style == "style-3"): ?>
-                                                         background: <?php if ($box->image_grayed): ?>linear-gradient(black, black),<?php endif;?> url(<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>);
-                                                 <?php endif; ?>
+                                            <div class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>"
 
-                                                         background-size: cover; background-repeat: no-repeat; background-position: center center ; <?php if ($this->imagearea_height): ?>height: <?= $this->imagearea_height; ?><?php endif; ?>"
-                                                <?php if ($this->is_slider == 1 && !$box->box_style == "style-3"): ?>
-                                                    <?php if (!$box->box_style == "style-3"): ?>data-bg<?php else: ?>src<?php endif; ?>="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
-                                                <?php endif; ?>
-                                            ></div>
+                                                 data-bg="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
+                                                 style="
+                                               background-size: cover; background-repeat: no-repeat; background-position: center center ; <?php if ($this->imagearea_height): ?>height: <?= $this->imagearea_height; ?>; <?php endif; ?>
+                                                 <?php if ($box->box_style == "style-3"): ?>
+                                                         background-color: <?php if ($box->image_grayed): ?>linear-gradient(black, black),<?php endif;?>;
+                                                 <?php endif; ?>
+                                            "></div>
                                         <?php endif; ?>
                                         <?php if ($ext != "mp4" && $box->not_as_bg) : ?>
                                             <div style="height: auto; text-align: center;"
                                                  class="image--holder <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
-                                                <img loading="lazy" fetchpriority="low" class="<?php if ($this->is_slider == 2): ?>swiper-<?php endif; ?>lazy"
-                                                     data-src="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+                                                <img loading="lazy" <?php if($this->is_slider == 2):?><?php else:?>  class="lazy" data-<?php endif;?>src="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+                                            <?php if($this->is_slider == 2):?> <div class="swiper-lazy-preloader"></div><?php endif; ?>
                                             </div>
                                         <?php endif; ?>
                                         <?php if ($ext == "mp4") : ?>
@@ -271,8 +266,11 @@ if (!isset($this->size)) {
                                             <div class="box-lower--expand <?php if ($box->is_map == "code") : ?>is-map p-0<?php endif; ?> <?php if ($box->expand_longtext && $box->expand_longtext != "show_all") : ?>expandable<?php endif; ?> <?php if ($box->expand_longtext == "hide_preview") : ?>hide-preview<?php endif; ?>">
                                                 <?php if ($box->expand_image) : ?>
                                                     <div class="box--expand-image text-center">
-                                                        <img loading="lazy" fetchpriority="low" class="<?php if ($this->is_slider == 2): ?>swiper-<?php endif; ?>lazy"
-                                                             data-src="<?= Image::get(FilesModel::findByUuid($box->expand_image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+
+                                                     <img loading="lazy" <?php if($this->is_slider == 2):?><?php else:?>  class="lazy" data-<?php endif;?>src="<?= Image::get(FilesModel::findByUuid($box->expand_image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+                                            <?php if($this->is_slider == 2):?> <div class="swiper-lazy-preloader"></div><?php endif; ?>
+
+
                                                     </div>
                                                 <?php endif; ?>
                                                 <?php if ($box->longtext) : ?>
@@ -317,7 +315,7 @@ if (!isset($this->size)) {
                                     </div>
                                 <?php endif; ?>
                             </div>
-
+                       <?php if ($this->is_slider == 2): ?> <div class="swiper-lazy-preloader"></div><?php endif; ?>
                         </div>
                     <?php endforeach ?>
                     <?php if ($this->is_slider == 2): ?>
@@ -354,7 +352,7 @@ if (!isset($this->size)) {
 
                     <div class="container container">
                         <button type="button" class="btn--close" data-bs-dismiss="modal" aria-label="Schließen">
-                            <i class="fal fa-times"></i>
+                            <i class="fa-sharp fa-light fa-xmark"></i>
                         </button>
 
                         <div class="row gx-3 align-items-center <?php if ($box->modal_row_reverse): ?>flex-row-reverse<?php endif; ?>">
@@ -363,11 +361,11 @@ if (!isset($this->size)) {
 
                                     <div class="image--wrapper">
 
-                                        <img loading="lazy" fetchpriority="low" class="lazy"
+                                        <img  class="lazy"
                                              data-src="<?= Image::get(FilesModel::findByUuid($box->modal_image)->path, null, null, null); ?>">
 
                                         <?php if ($box->modal_logo) : ?>
-                                            <img loading="lazy" fetchpriority="low" class="lazy logo"
+                                            <img  class="lazy logo"
                                                  data-src="<?= Image::get(FilesModel::findByUuid($box->modal_logo)->path, null, null, null); ?>">
 
                                         <?php endif; ?>
@@ -407,9 +405,7 @@ if (!isset($this->size)) {
                     //loopedSlides: 1,
 
                     preloadImages: false,
-                    lazy: {
-                        loadPrevNext: true,
-                    },
+                    lazy: true,
 
                     spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
                     slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>

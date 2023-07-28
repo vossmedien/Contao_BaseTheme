@@ -124,9 +124,9 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
                                         <?php if ($slide->image): ?>
                                             <div class="<?php if (($this->nav_position == 3 || $this->nav_position == 4) && ($slide->longtext)): ?>mb-2<?php endif; ?>  <?php if (($this->nav_position == 1 || $this->nav_position == 2) && ($slide->longtext)): ?><?= $slide->column_width; ?><?php endif; ?>">
-                                                <img loading="lazy" fetchpriority="low" class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>swiper-lazy<?php endif; ?> slide-image"
+                                                <img loading="lazy" class="slide-image"
                                                      <?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>data-<?php endif; ?>src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>">
-
+                                                 <div class="swiper-lazy-preloader"></div>
                                             </div>
                                         <?php endif; ?>
 
@@ -214,7 +214,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
             if ($('.swiper.content-slider_<?= $this->id;?>').length) {
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
 
-
+                    lazy: true,
                     <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>
                     direction: 'horizontal',
                     preloadImages: true,
@@ -226,10 +226,8 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                     <?php elseif ($this->nav_position == 1 || $this->nav_position == 2):?>
 
                     direction: 'horizontal',
-                    loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
-                    lazy: {
-                        loadPrevNext: true,
-                    },
+                    //loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
+
                     //loopedSlides: 1,
 
                     <?php endif;?>

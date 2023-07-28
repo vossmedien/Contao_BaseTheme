@@ -90,7 +90,7 @@ if (TL_MODE == 'FE') {
                     <?php foreach ($dataSorted as $data) : ?>
 
                         <?php if ($image = $this->getImageObject($data, $this->size)) : ?>
-                            <div style="background: url(<?= Image::get(FilesModel::findByUuid($image->uuid)->path, $this->size[0], $this->size[1], $this->size[2]); ?>) center center no-repeat; background-size: cover;" class="swiper-slide"></div>
+                            <div data-bg="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, $this->size[0], $this->size[1], $this->size[2]); ?>" style="background-position center center; background-repeat: no-repeat; background-size: cover;" class="lazy swiper-slide"></div>
                         <?php endif; ?>
 
                     <?php endforeach ?>

@@ -117,7 +117,7 @@ html body {
 
               &:before {
                 @extend %fa-icon;
-                @extend .far;
+                @extend #{$icon-type};
                 content: fa-content($fa-var-chevron-right);
                 color: transparent;
                 display: table-cell;

@@ -10,8 +10,8 @@
             <?php $this->insert('image', $preview->getLegacyTemplateData()) ?>
           <?php endforeach ?>
         <?php endif ?>
-        <a href="<?= $file['href'] ?>" title="<?= $file['title'] ?>" type="<?= $file['mime'] ?>">
-            <span><?= substr($file['link'], 0 , (strrpos($file['link'], "."))); ?> <span class="size">(<?= $file['filesize'] ?>)</span></span>
+        <a class="d-block mt-2" href="<?= $file['href'] ?>" title="<?= $file['title'] ?>" type="<?= $file['mime'] ?>">
+            <span class=""><?= substr($file['link'], 0 , (strrpos($file['link'], "."))); ?> <span class="size">(<?= $file['filesize'] ?>)</span></span>
         </a>
       </li>
     <?php endforeach; ?>

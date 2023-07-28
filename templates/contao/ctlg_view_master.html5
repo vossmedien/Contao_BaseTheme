@@ -49,7 +49,7 @@ if (TL_MODE == 'FE') {
 
                 <?php if ($this->content_image_1["src"]): ?>
                     <div class="col-12 col-lg-6">
-                        <img loading="lazy"  fetchpriority="low" class="box--image lazy" data-src="<?= $this->content_image_1["src"]; ?>">
+                        <img loading="lazy"   class="box--image lazy" data-src="<?= $this->content_image_1["src"]; ?>">
                     </div>
                 <?php endif; ?>
                 <div class="col-12 col-lg-6">
@@ -168,7 +168,7 @@ if (TL_MODE == 'FE') {
                 <div class="row gy-0 flex-row-reverse">
                     <?php if ($this->content_image_3["src"]): ?>
                         <div class="col-12 col-lg-6">
-                            <img loading="lazy"  fetchpriority="low" class="lazy box--image" data-src="<?= $this->content_image_3["src"]; ?>">
+                            <img loading="lazy"   class="lazy box--image" data-src="<?= $this->content_image_3["src"]; ?>">
                         </div>
                     <?php endif; ?>
                     <div class="col-12 col-lg-6">
@@ -223,13 +223,13 @@ if (TL_MODE == 'FE') {
                             <?php if ($person["phone"]): ?>
                                 <div class="contact-person--phone">
                                     <a href="tel:<?= $person["phone"]; ?>"><i
-                                                class="fas fa-phone-alt"></i> <?= $person["phone"]; ?></a>
+                                                class="fa-sharp fa-light fa-phone"></i> <?= $person["phone"]; ?></a>
                                 </div>
                             <?php endif; ?>
                             <?php if ($person["email"]): ?>
                                 <div class="contact-person--email">
                                     <a href="mailto:<?= $person["email"]; ?>"><i
-                                                class="fas fa-envelope"></i> <?= $person["email"]; ?></a>
+                                                class="fa-sharp fa-light fa-envelope"></i> <?= $person["email"]; ?></a>
                                 </div>
                             <?php endif; ?>
                         </div>

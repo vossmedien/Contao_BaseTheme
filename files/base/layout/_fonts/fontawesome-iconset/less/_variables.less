@@ -1,0 +1,179 @@
+// variables
+// --------------------------
+
+@fa-css-prefix          : fa;
+@fa-style               : 900;
+@fa-style-family        : "";
+@fa-style-family-sharp  : "Font Awesome 6 Sharp";
+
+@fa-display             : inline-block;
+
+@fa-fw-width            : (20em / 16);
+@fa-inverse             : #fff;
+
+@fa-border-color        : #eee;
+@fa-border-padding      : .2em .25em .15em;
+@fa-border-radius       : .1em;
+@fa-border-style        : solid;
+@fa-border-width        : .08em;
+
+@fa-size-scale-2xs      : 10;
+@fa-size-scale-xs       : 12;
+@fa-size-scale-sm       : 14;
+@fa-size-scale-base     : 16;
+@fa-size-scale-lg       : 20;
+@fa-size-scale-xl       : 24;
+@fa-size-scale-2xl      : 32;
+
+.fa-sizes() {
+  2xs                   : @fa-size-scale-2xs;
+  xs                    : @fa-size-scale-xs;
+  sm                    : @fa-size-scale-sm;
+  lg                    : @fa-size-scale-lg;
+  xl                    : @fa-size-scale-xl;
+  2xl                   : @fa-size-scale-2xl;
+}
+
+@fa-li-width            : 2em;
+@fa-li-margin           : (@fa-li-width * 5/4);
+
+@fa-pull-margin         : .3em;
+
+@fa-primary-opacity     : 1;
+@fa-secondary-opacity   : .4;
+
+@fa-stack-vertical-align: middle;
+@fa-stack-width         : (@fa-fw-width * 2);
+@fa-stack-z-index       : auto;
+
+@fa-font-display        : block;
+@fa-font-path           : "../webfonts";
+
+@fa-var-angle-down: "\f107";
+@fa-var-angle-right: "\f105";
+@fa-var-angle-up: "\f106";
+@fa-var-angles-right: "\f101";
+@fa-var-angle-double-right: "\f101";
+@fa-var-arrow-right: "\f061";
+@fa-var-arrow-right-arrow-left: "\f0ec";
+@fa-var-exchange: "\f0ec";
+@fa-var-arrow-right-long: "\f178";
+@fa-var-long-arrow-right: "\f178";
+@fa-var-arrow-up: "\f062";
+@fa-var-cart-shopping: "\f07a";
+@fa-var-shopping-cart: "\f07a";
+@fa-var-check: "\f00c";
+@fa-var-chevron-down: "\f078";
+@fa-var-chevron-right: "\f054";
+@fa-var-chevron-up: "\f077";
+@fa-var-circle: "\f111";
+@fa-var-circle-chevron-left: "\f137";
+@fa-var-chevron-circle-left: "\f137";
+@fa-var-circle-info: "\f05a";
+@fa-var-info-circle: "\f05a";
+@fa-var-copyright: "\f1f9";
+@fa-var-download: "\f019";
+@fa-var-envelope: "\f0e0";
+@fa-var-envelope-open: "\f2b6";
+@fa-var-facebook: "\f09a";
+@fa-var-info: "\f129";
+@fa-var-instagram: "\f16d";
+@fa-var-linkedin: "\f08c";
+@fa-var-magnifying-glass: "\f002";
+@fa-var-search: "\f002";
+@fa-var-pen: "\f304";
+@fa-var-pencil: "\f303";
+@fa-var-pencil-alt: "\f303";
+@fa-var-phone: "\f095";
+@fa-var-phone-volume: "\f2a0";
+@fa-var-volume-control-phone: "\f2a0";
+@fa-var-plus: "\2b";
+@fa-var-add: "\2b";
+@fa-var-quote-left: "\f10d";
+@fa-var-quote-left-alt: "\f10d";
+@fa-var-quote-right: "\f10e";
+@fa-var-quote-right-alt: "\f10e";
+@fa-var-trash: "\f1f8";
+@fa-var-trash-can: "\f2ed";
+@fa-var-trash-alt: "\f2ed";
+@fa-var-twitter: "\f099";
+@fa-var-xing: "\f168";
+@fa-var-xmark: "\f00d";
+@fa-var-close: "\f00d";
+@fa-var-multiply: "\f00d";
+@fa-var-remove: "\f00d";
+@fa-var-times: "\f00d";
+
+@fa-var-facebook: "\f09a";
+@fa-var-instagram: "\f16d";
+@fa-var-linkedin: "\f08c";
+@fa-var-twitter: "\f099";
+@fa-var-xing: "\f168";
+
+.fa-icons() {
+  angle-down: @fa-var-angle-down;
+  angle-right: @fa-var-angle-right;
+  angle-up: @fa-var-angle-up;
+  angles-right: @fa-var-angles-right;
+  angle-double-right: @fa-var-angle-double-right;
+  arrow-right: @fa-var-arrow-right;
+  arrow-right-arrow-left: @fa-var-arrow-right-arrow-left;
+  exchange: @fa-var-exchange;
+  arrow-right-long: @fa-var-arrow-right-long;
+  long-arrow-right: @fa-var-long-arrow-right;
+  arrow-up: @fa-var-arrow-up;
+  cart-shopping: @fa-var-cart-shopping;
+  shopping-cart: @fa-var-shopping-cart;
+  check: @fa-var-check;
+  chevron-down: @fa-var-chevron-down;
+  chevron-right: @fa-var-chevron-right;
+  chevron-up: @fa-var-chevron-up;
+  circle: @fa-var-circle;
+  circle-chevron-left: @fa-var-circle-chevron-left;
+  chevron-circle-left: @fa-var-chevron-circle-left;
+  circle-info: @fa-var-circle-info;
+  info-circle: @fa-var-info-circle;
+  copyright: @fa-var-copyright;
+  download: @fa-var-download;
+  envelope: @fa-var-envelope;
+  envelope-open: @fa-var-envelope-open;
+  facebook: @fa-var-facebook;
+  info: @fa-var-info;
+  instagram: @fa-var-instagram;
+  linkedin: @fa-var-linkedin;
+  magnifying-glass: @fa-var-magnifying-glass;
+  search: @fa-var-search;
+  pen: @fa-var-pen;
+  pencil: @fa-var-pencil;
+  pencil-alt: @fa-var-pencil-alt;
+  phone: @fa-var-phone;
+  phone-volume: @fa-var-phone-volume;
+  volume-control-phone: @fa-var-volume-control-phone;
+  plus: @fa-var-plus;
+  add: @fa-var-add;
+  quote-left: @fa-var-quote-left;
+  quote-left-alt: @fa-var-quote-left-alt;
+  quote-right: @fa-var-quote-right;
+  quote-right-alt: @fa-var-quote-right-alt;
+  trash: @fa-var-trash;
+  trash-can: @fa-var-trash-can;
+  trash-alt: @fa-var-trash-alt;
+  twitter: @fa-var-twitter;
+  xing: @fa-var-xing;
+  xmark: @fa-var-xmark;
+  close: @fa-var-close;
+  multiply: @fa-var-multiply;
+  remove: @fa-var-remove;
+  times: @fa-var-times;
+}
+
+.fa-brand-icons() {
+  facebook: @fa-var-facebook;
+  instagram: @fa-var-instagram;
+  linkedin: @fa-var-linkedin;
+  twitter: @fa-var-twitter;
+  xing: @fa-var-xing;
+}
+
+.fa-custom-icons() {
+}

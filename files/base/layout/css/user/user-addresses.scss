@@ -27,7 +27,7 @@
 
       &:after {
         @extend %fa-icon;
-        @extend .far;
+        @extend #{$icon-type};
         content: fa-content($fa-var-plus);
         margin-left: rfs-value(8px);
         vertical-align: middle;
@@ -88,7 +88,7 @@
       &.edit {
         &:after {
           @extend %fa-icon;
-          @extend .far;
+          @extend #{$icon-type};
           content: fa-content($fa-var-pen);
         }
       }
@@ -96,7 +96,7 @@
       &.delete {
         &:after {
           @extend %fa-icon;
-          @extend .far;
+          @extend #{$icon-type};
           content: fa-content($fa-var-trash);
         }
       }
