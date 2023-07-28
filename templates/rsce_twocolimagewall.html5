@@ -52,6 +52,33 @@ if (TL_MODE == 'FE') {
                     <div class="content--col d-flex align-items-center <?php if ($row->spacing_between) : ?>spacing-between<?php endif; ?> <?php if ($row->alternate_background) : ?>with-bg<?php endif; ?> <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>"
                          style="">
 
+                         <?php if ($row->boxed_headline && !$row->content_rightcol && !$row->image && !$row->alternate_image && !$row->video) : ?>
+                    <div class="boxed-headline" style="transform: translate(0%, -50%);">
+                        <div class="headline--wrapper"
+                             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                            <?php if (!$row->boxed_headline_onlystyle) : ?>
+                            <<?php echo $row->boxed_headline_type; ?>>
+                            <?php echo $row->boxed_headline; ?>
+                        </<?php echo $row->boxed_headline_type; ?>>
+                        <?php if ($row->boxed_subheadline) : ?>
+                            <span class="ce--subline">
+                                <?php echo $row->boxed_subheadline; ?>
+                            </span>
+                        <?php endif; ?>
+                        <?php else : ?>
+                            <span class="<?php echo $row->boxed_headline_type; ?>"><?php echo $row->boxed_headline; ?></span>
+                            <?php if ($row->boxed_subheadline) : ?>
+                                <span class="ce--subline">
+                                    <?php echo $row->boxed_subheadline; ?>
+                                </span>
+                            <?php endif; ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+
                         <?php if ($row->ce_headline || $row->content || $row->buttons[0]->link_text != ""): ?>
                         <div class="<?php if ($row->boxed_headline) : ?>mt-md-3<?php endif;?> content-col--inner <?php echo $row->textalign; ?>">
                             <?php if ($row->ce_headline) : ?>
@@ -209,7 +236,7 @@ if (TL_MODE == 'FE') {
                     <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>style="<?php if ($row->min_height): ?>min-height: <?= $row->min_height; ?>;<?php else: ?>min-height: 500px;<?php endif; ?>;" data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>>
                     <?php if ($row->not_as_bg) : ?>
                         <div class="image--wrapper">
-                            <img loading="lazy"  class="lazy"
+                            <img loading="lazy" fetchpriority="low" class="lazy"
                                  data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>">
                         </div>
                     <?php endif; ?>
