@@ -2,8 +2,6 @@
 @import "variables-layout";
 @import "_theme/variables-layout";
 
-
-
 @import "icon-package";
 
 @import "_theme/fonts";
@@ -77,6 +75,7 @@ html {
     @import "elements/popover";
     @import "elements/alerts";
   }
+
   @import "_theme/includes";
 }
 

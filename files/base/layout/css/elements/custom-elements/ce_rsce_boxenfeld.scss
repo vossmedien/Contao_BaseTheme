@@ -14,6 +14,17 @@ html body {
       padding-right: 1rem;
     }
 
+    img.box--image {
+      border-radius: var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px
+        0px;
+    }
+
+    .container {
+      img.box--image {
+        border-radius: var(--bs-border-radius-xl) !important;
+      }
+    }
+
     .boxes--outer {
       &:not(:last-child) {
         margin-bottom: $basic-gutter;
@@ -53,11 +64,6 @@ html body {
       }
     }
 
-    img.box--image {
-      border-radius: var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px
-        0px;
-    }
-
     .half-container {
       @include media-breakpoint-down(lg) {
         max-width: 100%;
@@ -69,7 +75,7 @@ html body {
       padding: 3rem;
       z-index: 9;
       position: relative;
-      border-radius: var(--bs-border-radius-xl) 0 0 var(--bs-border-radius-xl);
+      border-radius: var(--bs-border-radius-xl);
 
       @include media-breakpoint-down(lg) {
         top: 0 !important;
@@ -92,7 +98,7 @@ html body {
 
     .ce--inner:not(.container) .row.flex-row-reverse {
       .box--content {
-        border-radius: 0 var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0;
+        border-radius: var(--bs-border-radius-xl);
       }
     }
 

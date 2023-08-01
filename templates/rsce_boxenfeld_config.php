@@ -322,17 +322,16 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'col-12 col-md-6 col-lg-4 col-xl-3' => '25%',
-                        'col-12 col-md-6 col-lg-4' => '33%',
-                        'col-12 col-md-6' => '50%',
-                        'col-12 col-md-6 col-lg-8' => '66.66%',
-                        'col-12 col-md-6 col-lg-9' => '75%',
+                        'col-12 col-lg-4 col-xl-3' => '25%',
+                        'col-12 col-lg-4' => '33%',
+                        'col-12 col-lg-6' => '50%',
+                        'col-12 col-lg-8' => '66.66%',
+                        'col-12 col-lg-9' => '75%',
                         'col-12' => 'Volle Breite',
-                        'col-12 col-md' => 'Automatische Breite (füllend)',
-                        'col-12 col-md-auto' => 'Breite anhand des Inhalts',
+                        'col-12 col-lg' => 'Automatische Breite (füllend)',
+                        'col-12 col-lg-auto' => 'Breite anhand des Inhalts',
                     ),
                 ),
-
 
 
                 'versatz' => array(
