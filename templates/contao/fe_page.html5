@@ -55,7 +55,7 @@
 <?php $this->block('body'); ?>
 <?php $this->sections('top'); ?>
 
-{{insert_module::47}}
+
 
 <div class="BodyScrollToTop"><i class="fa-sharp fa-light fa-arrow-up"></i></div>
 

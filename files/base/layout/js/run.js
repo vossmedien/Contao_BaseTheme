@@ -171,8 +171,8 @@ Promise.all(promises)
 
             function detectIfScrolled() {
 
-                if(navWrapperHeight <  $(".hc--bottom").outerHeight()){
-                    navWrapperHeight =  $(".hc--bottom").outerHeight();
+                if (navWrapperHeight < $(".hc--bottom").outerHeight()) {
+                    navWrapperHeight = $(".hc--bottom").outerHeight();
                 }
 
 
@@ -267,32 +267,58 @@ Promise.all(promises)
         }
         /* END */
 
-        $(".matrix td input").each(function (a, b) {
-            $(b)
-                .parent()
-                .click(function (a) {
-                    "radio" == $(b).attr("type")
-                        ? $(b)
-                            .parent()
-                            .parent()
-                            .find("input[type=radio]")
-                            .each(function (a, c) {
-                                $(c)[0] != $(b)[0]
-                                    ? $(c).prop("checked", !1)
-                                    : $(c).prop("checked", !0);
-                            })
-                        : "checkbox" == $(b).attr("type") &&
-                        $(b)
-                            .parent()
-                            .parent()
-                            .find("input[type=checkbox]")
-                            .each(function (c, d) {
-                                $(d)[0] == $(b)[0] &&
-                                "TD" == a.target.nodeName &&
-                                $(d).prop("checked", !$(d).prop("checked"));
-                            });
-                });
-        });
+
+        /* Behavior of Header Type 6 */
+        if ($(".header--content.type--7").length) {
+            function detectIfScrolled() {
+                var scroll = $(window).scrollTop();
+                var os = $("#header").offset().top;
+                var ht = $("#header").height();
+                if (scroll > os + ht) {
+                    $("body").addClass("is--scrolling");
+                } else {
+                    $("body").removeClass("is--scrolling");
+                }
+            }
+
+            detectIfScrolled();
+
+            $(window).scroll(function () {
+                detectIfScrolled();
+            });
+        }
+        /* END */
+
+
+        if ($(".matrix").length) {
+            $(".matrix td input").each(function (a, b) {
+                $(b)
+                    .parent()
+                    .click(function (a) {
+                        "radio" == $(b).attr("type")
+                            ? $(b)
+                                .parent()
+                                .parent()
+                                .find("input[type=radio]")
+                                .each(function (a, c) {
+                                    $(c)[0] != $(b)[0]
+                                        ? $(c).prop("checked", !1)
+                                        : $(c).prop("checked", !0);
+                                })
+                            : "checkbox" == $(b).attr("type") &&
+                            $(b)
+                                .parent()
+                                .parent()
+                                .find("input[type=checkbox]")
+                                .each(function (c, d) {
+                                    $(d)[0] == $(b)[0] &&
+                                    "TD" == a.target.nodeName &&
+                                    $(d).prop("checked", !$(d).prop("checked"));
+                                });
+                    });
+            });
+        }
+
 
         setTimeout(
             function () {

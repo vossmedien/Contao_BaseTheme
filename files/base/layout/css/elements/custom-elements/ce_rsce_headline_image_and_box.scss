@@ -12,7 +12,7 @@
 @import "../../_theme/variables-layout";
 
 html body {
-  .ce_rsce_headline {
+  .ce_rsce_headline_image_and_box {
     margin-bottom: rfs-fluid-value(4rem);
     margin-top: rfs-fluid-value(4rem);
 
@@ -57,7 +57,7 @@ html body {
       margin: 0 auto;
 
       &.content--box {
-        margin-top: -4rem;
+        margin-top: -15%;
 
         @include media-breakpoint-up(lg) {
           max-width: 75%;

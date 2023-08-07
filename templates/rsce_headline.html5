@@ -1,92 +1,38 @@
 <?php
 if (TL_MODE == 'FE') {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_headline.min.css|static';
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_headline_image_and_box.min.css|static';
 }
 ?>
 
 <div <?php echo $this->cssID; ?>
-        class="content--element <?php echo $this->class; ?> <?php if ($this->image) : ?>with-image<?php endif; ?>">
+     class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner">
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
-        <div class="container ">
-            <div class="ce--headline"
-                 data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                <?php if ($this->topline) : ?>
-                    <span class="ce--topline"><?php echo $this->topline; ?></span>
-                <?php endif; ?>
+            <div class="headline--wrapper ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeIn<?php endif; ?>">
                 <?php if ($this->headline) : ?>
-                <<?php echo($this->hl); ?>>
-                <?php echo($this->headline); ?>
-            </<?php echo($this->hl); ?>>
-            <?php endif; ?>
-            <?php if ($this->subline) : ?>
-                <span class="ce--subline"><?php echo $this->subline; ?></span>
-            <?php endif; ?>
-        </div>
-    </div>
-    <?php endif; ?>
-    <?php if ($this->image) : ?>
-        <div class="ce--main-image <?php if ($this->not_fullwidth): ?>container<?php endif; ?>">
-            <div data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                 class="image--holder lazy <?php if ($this->hide_gradient): ?>hide-gradient<?php endif; ?><?php if ($this->hide_gradient && !$this->asbox): ?> mb-2<?php endif; ?>"
-                 style="<?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?><?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; min-height: 250px;<?php endif; ?>background-size: cover; background-repeat: no-repeat; background-position: center center;"
-                 data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"></div>
-        </div>
-    <?php endif; ?>
-    <div class="container <?php if ($this->textalign) : ?><?php echo $this->textalign; ?><?php endif; ?>">
-        <div data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-             class="box--holder <?php if ($this->asbox) : ?>content--box<?php endif; ?>">
-            <?php if ($this->ce_headline || $this->subline) : ?>
-            <div class="ce--headline <?php if ($this->textalign) : ?><?php echo $this->textalign; ?><?php endif; ?>"
-                 data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
-
-                <?php if ($this->topline) : ?>
-                    <span class="ce--topline"><?php echo $this->topline; ?></span>
+                    <?php if (!$this->onlystyle) : ?>
+                        <<?php echo $this->headline_type; ?>>
+                        <?php if ($this->topline) : ?>
+                            <span class="ce--topline" data-aos="animate__fadeInDown"><?php echo $this->topline; ?></span>
+                        <?php endif; ?>
+                        <span class="ce--headline-content" data-aos="animate__fadeIn"><?php echo $this->headline; ?></span>
+                        </<?php echo $this->headline_type; ?>>
+                    <?php if ($this->subline) : ?>
+                        <span class="ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
+                    <?php endif; ?>
+                <?php else : ?>
+                    <span class="<?php echo $this->headline_type; ?>">
+                        <?php if ($this->topline) : ?>
+                            <span data-aos="animate__fadeInDown" class="ce--topline"><?php echo $this->topline; ?></span>
+                        <?php endif; ?>
+                        <span data-aos="animate__fadeIn" class="ce--headline-content"><?php echo $this->headline; ?></span>
+                    </span>
+                    <?php if ($this->subline) : ?>
+                        <span class="ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
+                    <?php endif; ?>
                 <?php endif; ?>
-
-
-                <?php if ($this->ce_headline) : ?>
-                <?php if (!$this->onlystyle) : ?>
-                <<?php echo $this->headline_type; ?> class="mt-0">
-                <?php echo $this->ce_headline; ?>
-            </<?php echo $this->headline_type; ?>>
-        <?php if ($this->ce_subline) : ?>
-            <span class="ce--subline"
-                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                        <?php echo $this->ce_subline; ?>
-                                    </span>
-        <?php endif; ?>
-        <?php else : ?>
-            <span class="<?php echo $this->headline_type; ?>"
-                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
-                                    <?php echo $this->ce_headline; ?>
-                                </span>
-            <?php if ($this->ce_subline) : ?>
-                <span class="ce--subline"
-                      data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                        <?php echo $this->ce_subline; ?>
-                                    </span>
-            <?php endif; ?>
-        <?php endif; ?>
-        <?php endif; ?>
-        </div>
-        <?php if ($this->text) : ?>
-            <span class="ce--text"
-                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                            <?php echo $this->text; ?>
-                        </span>
-        <?php endif; ?>
-        <?php endif; ?>
-        <?php if ($this->buttons[0]->link_text != "") : ?>
-            <div class="ce--buttons mt-3">
-                <?php foreach ($this->buttons as $b) : ?>
-                    <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
-                       data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                       href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
-                <?php endforeach ?>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
     </div>
-</div>
-</div>
 </div>

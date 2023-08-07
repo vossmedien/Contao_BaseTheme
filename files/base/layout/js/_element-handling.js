@@ -111,13 +111,16 @@ $(function () {
     });
 
 
-    $('#main .mod_article > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_iso_productreader):not(.mod_catalogUniversalView):not(.mod_pageimage):not(style)').each(function (index) {
+    /*
+      $('#main .mod_article > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_iso_productreader):not(.mod_catalogUniversalView):not(.mod_pageimage):not(style)').each(function (index) {
         $(this).wrapInner("<div class='container'></div>");
     });
 
     $('#main > .inside > div[class^="mod_"]:not(.mod_article):not(.mod_iso_productreader):not(.mod_pageimage):not(.container):not(style)').each(function (index) {
         $(this).wrapInner("<div class='container'></div>");
     });
+
+     */
 
 
     $('form:not(#iso_mod_checkout_review) > .formbody:not(.row):not(.no-row)').each(function (index) {

@@ -9,13 +9,16 @@ if (TL_MODE == 'FE') {
 }
 ?>
 
-<?php if ($this->element_type == 2) : ?>
+
+
+
+
+<?php if ($this->element_type == 2 || $this->element_type == 3) : ?>
 
     <?php
     $filename = FilesModel::findByUuid($this->image)->path;
     $ext = pathinfo($filename, PATHINFO_EXTENSION);
     ?>
-
 
     <?php if ($ext == "mp4") : ?>
         <script type="text/javascript" async>
@@ -54,15 +57,115 @@ if (TL_MODE == 'FE') {
         </video>
     <?php else: ?>
 
+
+        <?php
+        $backgroundStyle = html_entity_decode($this->css);
+        ?>
+
+
         <style>
             <?php if($this->only_article):?>
+
+
+            <?php if($this->activate):?>
+
+            <?php
+       if($this->winkel){
+            $degrees = $this->winkel;
+       } else{
+            $degrees = 5;
+       }
+      $radians = deg2rad($degrees);
+      $tanValue = tan($radians);
+      $result = $tanValue / 2;
+      ?>
+
+            #article-<?= $this->pid;?> {
+                --angle: <?php if($this->winkel):?><?= $this->winkel;?>deg<?php else:?>-5deg<?php endif;?>;
+                --magic-number: <?php echo $result;?>;
+                --clip-padding: calc(var(--full-width) * var(--magic-number));
+                --skew-padding: calc(var(--width) * var(--magic-number));
+
+                margin-top: -1px;
+                position: relative;
+
+            <?php if(strpos($this->winkel, '-') !== false || !$this->winkel):?>
+                padding: calc(var(--skew-padding)*2) 0 var(--skew-padding) 0;
+            <?php else:?>
+                 padding: var(--skew-padding) 0 calc(var(--skew-padding)*2) 0;
+            <?php endif;?>
+            }
+
+
+            #article-<?= $this->pid;?> > .article-content {
+                position: relative;
+                /*padding-top: var(--bs-basic-spacing);*/
+            }
+
+            <?php if(!$this->deactivate_bottom):?>
+            #article-<?= $this->pid;?>:before {
+            <?php if($this->css):?> background: <?php echo $backgroundStyle;?>;
+            <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
+            <?php endif;?>
+            }
+
+            <?php endif;?>
+
+
+            <?php if($this->is_between):?>
+            #article-<?= $this->pid;?> {
+                --angle: 0;
+                padding:calc(var(--skew-padding)*1.5) 0;
+            }
+
+            #article-<?= $this->pid;?>:before {
+                height: 150%;
+                z-index: -1;
+                top: -25%;
+                transform: none;
+            }
+
+            <?php endif;?>
+
+
+            <?php if($this->deactivate_bottom):?>
+            #article-<?= $this->pid;?> {
+                position: relative;
+                margin-top: calc((var(--clip-padding) * -1) - 2px);
+
+            <?php if($this->css):?> background: <?= $this->css;?>;
+            <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
+            <?php endif;?>
+
+                padding: calc(var(--clip-padding)*2.5) 0 var(--clip-padding) 0;
+                clip-path: polygon(
+                        0% calc(var(--clip-padding) * 2),
+                        100% 0%,
+                        100% 100%,
+                        0% 100%);
+                -webkit-clip-path: polygon(
+                        0% calc(var(--clip-padding) * 2),
+                        100% 0%,
+                        100% 100%,
+                        0% 100%);
+            }
+
+            <?php endif;?>
+
+
+            <?php else:?>
+
             #article-<?= $this->pid;?> {
                 background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
                 background-attachment: fixed;
                 background-size: cover;
             }
 
+            <?php endif;?>
+
+
             <?php else:?>
+
             body {
                 background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
                 background-attachment: fixed;
@@ -73,13 +176,13 @@ if (TL_MODE == 'FE') {
         </style>
 
     <?php endif; ?>
-<?php else: ?>
+
+<?php elseif ($this->element_type == 1): ?>
     <?php
     $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
     $rand = rand(1, 100);
     ?>
-
-
+    is_between
     <div class="body-slider">
         <div class="swiper body-slider_<?= $this->id; ?>">
             <!-- Additional required wrapper -->
@@ -99,7 +202,6 @@ if (TL_MODE == 'FE') {
 
         </div>
     </div>
-
     <script type="text/javascript" async>
         window.addEventListener('load', function () {
             if ($('.swiper.body-slider_<?= $this->id;?>').length) {
@@ -115,7 +217,8 @@ if (TL_MODE == 'FE') {
                     spaceBetween: 0,
 
                     speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
-                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>'slide'<?php endif;?>,
+                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'
+                    <?php else:?>'slide'<?php endif;?>,
 
                     autoplay: {
                         delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>7500<?php endif;?>,
@@ -146,7 +249,6 @@ if (TL_MODE == 'FE') {
             }
         }, {passive: true})
     </script>
-
 
 <?php endif; ?>
 

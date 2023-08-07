@@ -1,30 +1,31 @@
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container">
-        <?php if ($this->headline || $this->subline || $this->topline) : ?>
-        <div class="ce--headline"
-             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
+
+        <?php if ($this->headline || $this->subline || $this->topline) : ?>
+        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <?php if ($this->headline) : ?>
+            <<?php echo($this->hl); ?>>
             <?php if ($this->topline) : ?>
                 <span class="ce--topline"><?php echo $this->topline; ?></span>
             <?php endif; ?>
-
-            <?php if ($this->headline) : ?>
-            <<?php echo($this->hl); ?>>
-            <?php echo($this->headline); ?>
+            <span class="ce--headline-content"><?php echo($this->headline); ?></span>
         </<?php echo($this->hl); ?>>
-    <?php endif; ?>
         <?php if ($this->subline) : ?>
-            <span class="ce--subline"><?php echo $this->subline; ?></span>
-        <?php endif; ?>
+                <span class="ce--subline"><?php echo $this->subline; ?></span>
+            <?php endif; ?>
+    <?php endif; ?>
     </div>
     <?php endif; ?>
+
+
     <div class="ce--buttonsonly">
 
-            <?php foreach ($this->buttons as $b) : ?>
-                <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
-                   data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                   href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
-            <?php endforeach ?>
+        <?php foreach ($this->buttons as $b) : ?>
+            <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
+               data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+               href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
+        <?php endforeach ?>
 
     </div>
 </div>

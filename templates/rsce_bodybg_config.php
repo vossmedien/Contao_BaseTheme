@@ -5,7 +5,7 @@ return array(
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('headline', 'cssID'),
+    'standardFields' => array('cssID'),
     'wrapper' => array(
         'type' => 'none',
     ),
@@ -17,6 +17,16 @@ return array(
             'options' => array(
                 '1' => 'Slider',
                 '2' => 'Einzelnes Bild / Video',
+                '3' => 'Eigenes CSS (z. B. für Gradient / Verlauf)',
+            ),
+        ),
+
+
+               'only_article' => array(
+            'label' => array('', ''),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'Hintergrund für den Abschnitt und nicht für den kompletten Body',
             ),
         ),
 
@@ -76,7 +86,6 @@ return array(
         ),
 
 
-
         'settings_single' => array(
             'label' => array('Einstellungen', ''),
             'inputType' => 'group',
@@ -86,14 +95,6 @@ return array(
             ),
         ),
 
-        'only_article' => array(
-            'label' => array('', ''),
-            'inputType' => 'checkbox',
-            'options' => array(
-                '1' => 'Bild als Hintergrund für den Abschnitt und nicht für den kompletten Body',
-            ),
-
-        ),
 
         'image' => array(
             'label' => array('Bild / Video', ""),
@@ -105,5 +106,62 @@ return array(
                 'extensions' => 'jpg,jpeg,png,mp4',
             ),
         ),
+
+        'settings_code' => array(
+            'label' => array('Einstellungen', ''),
+            'inputType' => 'group',
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '3',
+            ),
+        ),
+
+        'css' => array(
+            'label' => array('Eigener Code', 'wird als inline-style innerhalb von "background: #WERT#" eingebunden. Falls ausgefüllt, wird dieser Wert auch für die Abschrägungen genutzt.'),
+            'inputType' => 'text',
+            'eval' => array('allowHtml' => true),
+        ),
+
+        'settings_diagonal' => array(
+            'label' => array('Abschrägung', ''),
+            'inputType' => 'group',
+        ),
+
+        'activate' => array(
+            'label' => array('', ''),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'Abschrägung aktivieren',
+            ),
+        ),
+
+        'winkel' => array(
+            'label' => array('Abschrägungswinkel', 'Standard: -5, nutze beispielsweise 5 um den Winkel umzukehren'),
+            'inputType' => 'text',
+            'dependsOn' => array(
+                'field' => 'activate',
+            ),
+        ),
+
+        'is_between' => array(
+            'label' => array('', ''),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'Element befindet sich zwischen zwei anderen Artikeln mit gegensätzlichen Abschrägungen',
+            ),
+        ),
+
+        'deactivate_bottom' => array(
+            'label' => array('', ''),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'Abschrägung unten deaktivieren',
+            ),
+            'dependsOn' => array(
+                'field' => 'activate',
+            ),
+        ),
+
+
     ),
 );

@@ -12,7 +12,11 @@ html body {
     outline: 0px;
   }
 
-  figure{
+  #main {
+    font-size: var(--bs-body-main-font-size);
+  }
+
+  figure {
     margin: 0;
   }
 
@@ -47,7 +51,7 @@ html body {
   }
 
   span:not([data-bs-toggle="dropdown"]) {
-    line-height: var(--bs-body-line-height);
+    //line-height: var(--bs-body-line-height);
   }
 
   p {
@@ -80,6 +84,16 @@ html body {
     }
   }
 
+  .ce--headline{
+    @extend .container;
+  }
+
+  .content--element:last-child{
+    .ce--subline{
+      margin-bottom: 0px !important;
+    }
+  }
+
   h6,
   .h6,
   h5,
@@ -92,47 +106,56 @@ html body {
   .h2,
   h1,
   .h1 {
-    line-height: 1; // line-height 1.2
+    line-height: var(--bs-body-line-height-sm);
     transition: color 0.3s ease;
     color: var(--bs-headline-color);
     //color: inherit; //hmmm
     font-weight: var(--bs-headline-font-weight);
+    padding-top: 0px;
 
     > span {
       display: block;
     }
   }
 
+
+  .ce--topline {
+    font-weight: $font-weight-black;
+    color: var(--bs-primary);
+    //@include font-size(22px);
+    display: block;
+    line-height: var(--bs-body-line-height-sm);
+
+    & + *{
+       font-weight: $font-weight-medium;
+    }
+  }
+
   .ce--subline {
     font-weight: $font-weight-bold;
     color: var(--bs-primary);
-    @include font-size(22px);
+    //@include font-size(22px);
     display: block;
-    margin-bottom: $headline-spacing;
-    line-height: var(--bs-body-line-height);
+    line-height: var(--bs-body-line-height-sm);
+    margin-top: 1rem;
   }
 
-  .ce--topline {
-    font-weight: $font-weight-light;
-    color: var(--bs-primary);
-    @include font-size(22px);
-    display: block;
-    line-height: var(--bs-body-line-height);
-
-    &:not(:last-child) {
-      margin-bottom: 0.25rem;
-    }
-  }
 
   h1,
   .h1 {
     margin-bottom: $headline-spacing;
     display: block;
+    @include font-size($h1-font-size);
 
     & + .ce--subline {
-      margin-top: -$headline-spacing / 1.25;
+      margin-top: -$headline-spacing / 2;
       margin-bottom: $headline-spacing;
+      font-size: calc(#{$h1-font-size} / 2);
+    }
+
+    > .ce--topline {
       @include font-size(1.5rem);
+      @include font-size($h1-font-size);
     }
   }
 
@@ -140,11 +163,17 @@ html body {
   .h2 {
     margin-bottom: $headline-spacing / 1.75;
     display: block;
+    @include font-size($h2-font-size);
+
 
     & + .ce--subline {
-      margin-top: -$headline-spacing/2;
-      margin-bottom: $headline-spacing / 1.75;
-      @include font-size(1.5rem);
+      margin-top: -$headline-spacing / 1.75;
+      margin-bottom: $headline-spacing;
+      @include font-size(calc($h2-font-size / 2));
+    }
+
+    > .ce--topline {
+      @include font-size($h2-font-size);
     }
   }
 
@@ -155,21 +184,43 @@ html body {
     font-size: 1.5rem;
     color: var(--bs-primary);
     display: block;
+    @include font-size($h3-font-size);
+
 
     & + .ce--subline {
       margin-top: -$headline-spacing / 3;
-      margin-bottom: $headline-spacing / 3;
+      margin-bottom: $headline-spacing;
+      @include font-size(calc($h3-font-size / 2));
+    }
+
+    > .ce--topline {
+      @include font-size($h3-font-size);
     }
   }
 
   h4,
   .h4 {
     margin-bottom: $headline-spacing;
+    @include font-size($h4-font-size);
+
 
     & + .ce--subline {
-      margin-top: -$headline-spacing/1.25;
+      @include font-size(calc($h4-font-size / 2));
+      margin-top: -$headline-spacing / 1.25;
       margin-bottom: $headline-spacing;
     }
+
+    > .ce--topline {
+      @include font-size($h4-font-size);
+    }
+  }
+
+  h5, .h5 {
+    @include font-size($h5-font-size);
+  }
+
+  h6, .h6 {
+    @include font-size($h6-font-size);
   }
 
   main {
@@ -319,13 +370,12 @@ html body {
 }
 
 
-
-.list-inline{
-  &.with-separator{
-    > li{
-      &:not(:last-child){
-        &:after{
-          content:'|';
+.list-inline {
+  &.with-separator {
+    > li {
+      &:not(:last-child) {
+        &:after {
+          content: '|';
           display: inline-block;
           margin: 0 -5px 0 4px;
         }
@@ -420,7 +470,7 @@ html body {
 
     &:before {
       @extend %fa-icon;
-@extend #{$icon-type};
+      @extend #{$icon-type};
       content: fa-content($fa-var-circle);
       position: absolute;
       padding-right: rfs-value(10px);

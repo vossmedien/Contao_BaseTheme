@@ -1,8 +1,7 @@
 html body .btn {
   --bs-btn-border-radius: #{$border-radius};
-  --bs-btn-font-size: var(--bs-body-font-size);
-  --bs-btn-padding-x: .75rem;
-  --bs-btn-padding-y: .5rem;
+  --bs-btn-font-size: var(--bs-body-main-font-size);
+  //--bs-btn-padding: .5rem .75rem;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-active-bg: var(--bs-btn-hover-bg);
   --bs-btn-active-border-color: var(--bs-btn-hover-border-color);
@@ -15,7 +14,7 @@ html body .btn {
   line-height: 1;
   transition: all .25s ease;
   cursor: pointer;
-
+  padding: var(--bs-btn-padding);
 
   &:hover,
   &:focus,
@@ -27,24 +26,26 @@ html body .btn {
     margin-right: .25rem;
   }
 
+
+
   &.btn-xs {
     font-size: calc(var(--bs-btn-font-size) * .5);
-    padding: calc(var(--bs-btn-padding-y) * .5) calc(var(--bs-btn-padding-y) * .5);
+    padding: calc(var(--bs-btn-padding) * .5) ;
   }
 
   &.btn-sm {
     font-size: calc(var(--bs-btn-font-size) * .75);
-    padding: calc(var(--bs-btn-padding-y) * .75) calc(var(--bs-btn-padding-y) * .75);
+    padding: calc(var(--bs-btn-padding) * .75);
   }
 
   &.btn-lg {
     font-size: calc(var(--bs-btn-font-size) * 1.25);
-    padding: calc(var(--bs-btn-padding-y) * 2) calc(var(--bs-btn-padding-y) * 1.25);
+    padding: calc(var(--bs-btn-padding) * 2);
   }
 
   &.btn-xl {
     font-size: calc(var(--bs-btn-font-size) * 1.5);
-    padding: calc(var(--bs-btn-padding-y) * 2.5) calc(var(--bs-btn-padding-y) * 1.5);
+    padding: calc(var(--bs-btn-padding) * 2.5);
   }
 
 
@@ -173,7 +174,7 @@ html body .btn {
         vertical-align: middle;
         white-space: nowrap;
         position: relative;
-        //top: -2px;
+        top: -2px;
         @include font-size(20px);
       }
     }

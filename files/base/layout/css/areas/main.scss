@@ -35,7 +35,11 @@
         position: relative;
       }
 
-      > *:not(.ce_headline):not(.ce_html) {
+      .article-content{
+        z-index: 2;
+      }
+
+      .article-content > *:not(.ce_headline):not(.ce_html):not(:last-child) {
         margin-bottom: $basic-gutter;
       }
 
@@ -43,8 +47,6 @@
         *[class*="bg-"]:last-of-type {
           margin-bottom: 0;
         }
-
-
       }
 
       &:first-child {
@@ -70,7 +72,7 @@
           }
         }
 
-        > div > * {
+        > .article-content > div > * {
           &:not(:last-child):not(.ce_headline) {
             margin: rfs-value($basic-gutter auto);
 

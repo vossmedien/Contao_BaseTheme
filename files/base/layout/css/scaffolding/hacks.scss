@@ -103,6 +103,7 @@ main {
 
 .container {
   //--bs-gutter-x: 0;
+  //overflow: auto;
 }
 
 .container {
@@ -112,8 +113,9 @@ main {
   }
 
   .container {
-       padding-left: 0px;
-      padding-right: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    overflow: hidden;
   }
 }
 
@@ -125,12 +127,12 @@ main {
   cursor: pointer;
 }
 
-*:not(.row){
-  > *[class*="col-"]:not(.make-fullwidth){
+*:not(.row) {
+  > *[class*="col-"]:not(.make-fullwidth) {
     margin-left: auto;
     margin-right: auto;
 
-    > .container{
+    > .container {
       width: auto;
     }
   }
