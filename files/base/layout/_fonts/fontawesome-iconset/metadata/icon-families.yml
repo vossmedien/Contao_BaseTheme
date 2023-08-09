@@ -2576,6 +2576,38 @@ angles-up:
       - upload
   unicode: f102
   voted: false
+angles-up-down:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Angles Up Down
+  search:
+    terms:
+      - ' down'
+      - ' elevator'
+      - ' order'
+      - ' up'
+      - filter
+  unicode: e60d
+  voted: false
 angrycreative:
   changes:
     - 5.0.0
@@ -3245,6 +3277,38 @@ arrow-down-big-small:
       - order
       - rectangle
   unicode: f88c
+  voted: false
+arrow-down-from-arc:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Arrow Down From Arc
+  search:
+    terms:
+      - ' enter'
+      - ' save'
+      - ' share'
+      - ' transfer'
+      - download
+  unicode: e614
   voted: false
 arrow-down-from-dotted-line:
   changes:
@@ -4016,6 +4080,38 @@ arrow-left:
       - previous
   unicode: f060
   voted: false
+arrow-left-from-arc:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Arrow Left From Arc
+  search:
+    terms:
+      - ' give'
+      - ' leave'
+      - ' send'
+      - ' transfer'
+      - exit
+  unicode: e615
+  voted: false
 arrow-left-from-line:
   aliases:
     names:
@@ -4133,6 +4229,39 @@ arrow-left-long-to-line:
       - delete
       - left
   unicode: e3d4
+  voted: false
+arrow-left-to-arc:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Arrow Left To Arc
+  search:
+    terms:
+      - ' give'
+      - ' into'
+      - ' login'
+      - ' send'
+      - ' sign in'
+      - enter
+  unicode: e616
   voted: false
 arrow-left-to-line:
   aliases:
@@ -5586,6 +5715,7 @@ arrow-up-left-from-circle:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -5771,6 +5901,7 @@ arrow-up-right-from-square:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -5927,6 +6058,37 @@ arrow-up-square-triangle:
       - square
       - triangle
   unicode: f88b
+  voted: false
+arrow-up-to-arc:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Arrow Up To Arc
+  search:
+    terms:
+      - ' share'
+      - ' transfer'
+      - ' upload'
+      - import
+  unicode: e617
   voted: false
 arrow-up-to-dotted-line:
   changes:
@@ -13585,6 +13747,7 @@ book-open-reader:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -22753,6 +22916,7 @@ card-spade:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -22788,6 +22952,7 @@ cards:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -22823,6 +22988,7 @@ cards-blank:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -26263,6 +26429,7 @@ chess-bishop-piece:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -35556,6 +35723,7 @@ cloudscale:
 cloudsmith:
   changes:
     - 5.0.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -38988,6 +39156,7 @@ copy:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -40758,6 +40927,7 @@ cupcake:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -41129,6 +41299,21 @@ database:
       - memory
       - storage
   unicode: f1c0
+  voted: false
+debian:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Debian
+  search:
+    terms: []
+  unicode: e60b
   voted: false
 deer:
   aliases:
@@ -42350,6 +42535,7 @@ diamond-exclamation:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -42382,6 +42568,7 @@ diamond-half:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -42561,6 +42748,7 @@ dice-d10:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -45436,6 +45624,7 @@ drumstick:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -47039,6 +47228,7 @@ engine:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -47079,6 +47269,7 @@ engine-warning:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -58614,6 +58805,7 @@ flying-disc:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -60355,6 +60547,7 @@ futbol:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -60550,6 +60743,7 @@ game-board:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -62077,6 +62271,7 @@ gif:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -62822,6 +63017,43 @@ globe:
       - travel
       - world
   unicode: f0ac
+  voted: false
+globe-pointer:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Globe Pointer
+  search:
+    terms:
+      - ' World Wide Web'
+      - ' find'
+      - ' globe'
+      - ' search'
+      - ' www'
+      - cyberspace
+      - internet
+      - link
+      - net
+      - website
+  unicode: e60e
   voted: false
 globe-snow:
   aliases:
@@ -65377,6 +65609,7 @@ hand-back-point-left:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -65744,6 +65977,7 @@ hand-holding-box:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -65787,6 +66021,7 @@ hand-holding-dollar:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -65835,6 +66070,7 @@ hand-holding-droplet:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -65873,6 +66109,7 @@ hand-holding-hand:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -65915,6 +66152,7 @@ hand-holding-heart:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -65957,6 +66195,7 @@ hand-holding-magic:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -66004,6 +66243,7 @@ hand-holding-medical:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -66045,6 +66285,7 @@ hand-holding-seedling:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -66079,6 +66320,7 @@ hand-holding-skull:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -66370,6 +66612,7 @@ hand-point-left:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -66410,6 +66653,7 @@ hand-point-ribbon:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -66448,6 +66692,7 @@ hand-point-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -66629,6 +66874,7 @@ hand-sparkles:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -66677,6 +66923,7 @@ hand-spock:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -66934,6 +67181,7 @@ hands-bubbles:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -67048,6 +67296,7 @@ hands-holding-child:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -67086,6 +67335,7 @@ hands-holding-circle:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -67173,6 +67423,7 @@ hands-holding-dollar:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -67220,6 +67471,7 @@ hands-holding-heart:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -67305,6 +67557,7 @@ handshake:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -67445,6 +67698,7 @@ handshake-simple-slash:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -67486,6 +67740,7 @@ handshake-slash:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -68226,6 +68481,49 @@ head-side-cough-slash:
       - respiratory
       - sick
   unicode: e062
+  voted: false
+head-side-gear:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Head Side Gear
+  search:
+    terms:
+      - ' ai'
+      - ' android'
+      - ' augmented'
+      - ' cybernetics'
+      - ' face'
+      - ' gear'
+      - ' learning'
+      - ' machine'
+      - ' profile'
+      - ' robot'
+      - ' settings'
+      - ' thinking'
+      - ' thought'
+      - ' user'
+      - artificial intelligence
+      - bald
+  unicode: e611
   voted: false
 head-side-goggles:
   aliases:
@@ -70168,6 +70466,7 @@ hockey-stick-puck:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -70212,6 +70511,7 @@ hockey-sticks:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -70928,6 +71228,7 @@ hotel:
 hotjar:
   changes:
     - 5.0.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -76017,6 +76318,7 @@ kidneys:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -78766,6 +79068,40 @@ lightbulb-slash:
       - light
       - 'off'
   unicode: f673
+  voted: false
+lighthouse:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Lighthouse
+  search:
+    terms:
+      - ' alert'
+      - ' breakwater'
+      - ' cove'
+      - ' ship'
+      - ' tower'
+      - ' warning'
+      - beacon
+  unicode: e612
   voted: false
 lights-holiday:
   aliases:
@@ -82714,6 +83050,7 @@ mask-snorkel:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -92273,6 +92610,7 @@ paste:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -95104,6 +95442,41 @@ person-dress-burst:
       - violence
   unicode: e544
   voted: false
+person-dress-fairy:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Person Dress Fairy
+  search:
+    terms:
+      - ' magic'
+      - ' wings'
+      - elf
+      - faerie
+      - faery
+      - fairy
+      - fantasy
+      - sprite
+  unicode: e607
+  voted: false
 person-dress-simple:
   changes:
     - 6.0.0-beta1
@@ -95175,6 +95548,41 @@ person-drowning:
       - emergency
       - swim
   unicode: e545
+  voted: false
+person-fairy:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Person Fairy
+  search:
+    terms:
+      - '  magic'
+      - '  wings'
+      - ' elf'
+      - ' faerie'
+      - ' faery'
+      - ' fairy'
+      - ' sprite'
+      - fantasy
+  unicode: e608
   voted: false
 person-falling:
   changes:
@@ -98442,6 +98850,7 @@ plane:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -98927,6 +99336,7 @@ plane-up:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -100108,6 +100518,7 @@ poop:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -101033,6 +101444,7 @@ puzzle-piece:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -101078,6 +101490,7 @@ puzzle-piece-simple:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -101591,6 +102004,40 @@ rabbit-running:
       - wabbit
   unicode: f709
   voted: true
+raccoon:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Raccoon
+  search:
+    terms:
+      - ' mask'
+      - ' paw'
+      - ' raccoon'
+      - ' tail'
+      - ' trash'
+      - mammal
+      - panda
+  unicode: e613
+  voted: false
 racquet:
   aliases:
     unicodes:
@@ -108363,6 +108810,7 @@ share-from-square:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -109337,6 +109785,7 @@ shirt:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -109376,6 +109825,7 @@ shirt-long-sleeve:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -109570,6 +110020,19 @@ shoe-prints:
       - walk
   unicode: f54b
   voted: true
+shoelace:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: brands
+  label: Shoelace
+  search:
+    terms: []
+  unicode: e60c
+  voted: false
 shop:
   aliases:
     names:
@@ -113913,6 +114376,7 @@ sportsball:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -118236,6 +118700,22 @@ square-this-way-up:
       - storage
   unicode: f49f
   voted: false
+square-threads:
+  changes:
+    - 6.4.1
+    - 6.4.2
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Square Threads
+  search:
+    terms: []
+  unicode: e619
+  voted: false
 square-tumblr:
   aliases:
     names:
@@ -118264,6 +118744,7 @@ square-twitter:
     - 1.0.0
     - 5.0.0
     - 6.1.2
+    - 6.4.2
   familyStylesByLicense:
     free:
       - family: classic
@@ -118271,7 +118752,7 @@ square-twitter:
     pro:
       - family: classic
         style: brands
-  label: Twitter Square
+  label: Square Twitter
   search:
     terms:
       - social network
@@ -118663,6 +119144,24 @@ square-x:
     terms:
       - letter
   unicode: e286
+  voted: false
+square-x-twitter:
+  changes:
+    - 6.4.2
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Square X Twitter
+  search:
+    terms:
+      - ' elon'
+      - ' x'
+      - twitter
+  unicode: e61a
   voted: false
 square-xing:
   aliases:
@@ -120959,6 +121458,77 @@ subscript:
       - type
   unicode: f12c
   voted: false
+subtitles:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Subtitles
+  search:
+    terms:
+      - ' caption'
+      - ' description'
+      - ' film'
+      - ' language'
+      - ' movie'
+      - ' text'
+      - ' translation'
+      - closed captions
+  unicode: e60f
+  voted: false
+subtitles-slash:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Subtitles Slash
+  search:
+    terms:
+      - '  caption'
+      - '  film'
+      - '  language'
+      - '  movie'
+      - '  text'
+      - '  translation'
+      - ' closed captions'
+      - ' description'
+      - 'off'
+  unicode: e610
+  voted: false
 suitcase:
   aliases:
     unicodes:
@@ -121666,6 +122236,72 @@ sushi-roll:
       - seaweed
       - tuna
   unicode: e48b
+  voted: false
+swap:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Swap
+  search:
+    terms:
+      - ' arrows'
+      - ' merge'
+      - ' route'
+      - change
+      - move
+      - transfer
+  unicode: e609
+  voted: false
+swap-arrows:
+  changes:
+    - 6.4.1
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+      - family: sharp
+        style: regular
+      - family: sharp
+        style: light
+  label: Swap Arrows
+  search:
+    terms:
+      - '  arrows'
+      - '  merge'
+      - '  route'
+      - ' change'
+      - ' transfer'
+      - move
+  unicode: e60a
   voted: false
 swatchbook:
   aliases:
@@ -123997,6 +124633,7 @@ temperature-list:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free: []
     pro:
@@ -125008,6 +125645,22 @@ thought-bubble:
       - thought balloon
   unicode: e32e
   voted: false
+threads:
+  changes:
+    - 6.4.1
+    - 6.4.2
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Threads
+  search:
+    terms: []
+  unicode: e618
+  voted: false
 thumbs-down:
   aliases:
     unicodes:
@@ -125308,6 +125961,7 @@ ticket-simple:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -132285,6 +132939,7 @@ up-right-from-square:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -140023,6 +140678,7 @@ wine-glass-empty:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   familyStylesByLicense:
     free:
       - family: classic
@@ -140568,6 +141224,24 @@ x-ray:
       - radiology
       - skeleton
   unicode: f497
+  voted: false
+x-twitter:
+  changes:
+    - 6.4.2
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: X Twitter
+  search:
+    terms:
+      - '  elon'
+      - ' twitter'
+      - ' x'
+  unicode: e61b
   voted: false
 xbox:
   changes:

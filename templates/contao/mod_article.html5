@@ -23,7 +23,7 @@
 <?php else: ?>
 
     <div class="<?= $this->class ?> block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
-        <div class="article-content container">
+        <div class="article-content ">
             <?php if ($this->printable): ?>
                 <?php $this->block('syndication'); ?>
                 <!-- indexer::stop -->

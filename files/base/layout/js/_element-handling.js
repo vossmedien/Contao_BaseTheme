@@ -1,6 +1,3 @@
-
-
-
 $(function () {
 
     var headerContent = document.querySelector('.header--content.fixed');
@@ -183,5 +180,22 @@ $(function () {
         });
     }
 
+
+    // Alle Elemente mit den Klassen .widget und .widget-submit auswählen
+    var widgets = document.querySelectorAll('.widget.widget-submit');
+
+// Durch jedes Element iterieren
+    widgets.forEach(function (widget) {
+        // Die Klassen dieses Elements in ein Array konvertieren
+        var classes = widget.className.split(' ');
+
+        // Durch die Klassen iterieren
+        classes.forEach(function (cls) {
+            // Wenn die Klasse mit "btn" beginnt, entferne sie
+            if (cls.startsWith('btn')) {
+                widget.classList.remove(cls);
+            }
+        });
+    });
 
 });

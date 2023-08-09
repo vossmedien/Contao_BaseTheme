@@ -1,5 +1,5 @@
 /*!
- * Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com
+ * Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License)
  * Copyright 2023 Fonticons, Inc.
  */
@@ -1777,7 +1777,7 @@
     mark: noop$1,
     measure: noop$1
   };
-  var preamble = "FA \"6.4.0\"";
+  var preamble = "FA \"6.4.2\"";
 
   var begin = function begin(name) {
     p.mark("".concat(preamble, " ").concat(name, " begins"));
@@ -2649,7 +2649,7 @@
               watchable: true
             }));
 
-            var element = DOCUMENT.createElement('svg');
+            var element = DOCUMENT.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
             if (position === '::before') {
               node.insertBefore(element, node.firstChild);

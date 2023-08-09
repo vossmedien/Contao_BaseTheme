@@ -126,14 +126,14 @@ var anchorHandling = function (e) {
 
 
 window.onload = function () {
-    var anchorLinks = document.querySelectorAll('a[href^="#"]:not(.mm-btn):not(.carousel-control)');
+    var anchorLinks = document.querySelectorAll('a[href^="#"]:not(.mm-btn):not(.carousel-control):not(.navActivator)');
     for (var i = 0; i < anchorLinks.length; i++) {
         anchorLinks[i].addEventListener("click", anchorHandling);
     }
 };
 
 window.onload = function () {
-    const anchorLinks = document.querySelectorAll('a[href^="#"]:not(.mm-btn):not(.carousel-control)');
+    const anchorLinks = document.querySelectorAll('a[href^="#"]:not(.mm-btn):not(.carousel-control):not(.navActivator)');
 
     anchorLinks.forEach(anchor => {
         anchor.addEventListener('click', function (event) {

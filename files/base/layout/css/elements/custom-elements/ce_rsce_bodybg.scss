@@ -34,28 +34,6 @@
   //--clip-padding: calc(var(--full-width) * var(--magic-number));
 }
 
-.mod_article {
-
-
-  &:before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    transform: skewy(var(--angle));
-    transform-origin: 50% 0;
-    outline: 1px solid transparent;
-    backface-visibility: hidden;
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    z-index: 1;
-  }
-}
-
 
 /* --------------------
 Clip Path Update

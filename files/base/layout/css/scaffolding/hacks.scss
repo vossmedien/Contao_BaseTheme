@@ -115,7 +115,10 @@ main {
   .container {
     padding-left: 0px;
     padding-right: 0px;
-    overflow: hidden;
+
+    &:not(.ce--inner){
+      //overflow: hidden;
+    }
   }
 }
 

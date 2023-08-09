@@ -161,6 +161,30 @@
   }
 }
 
+
+.openContactForm {
+  position: fixed;
+  bottom: 25px;
+  right: 35px;
+  cursor: pointer;
+  z-index: 5;
+  font-size: 5rem;
+  line-height: 0;
+
+  &:hover {
+    i {
+      transition: all .15s ease-in-out;
+      --fa-primary-color: var(--bs-secondary) !important;
+      --fa-secondary-color: var(--bs-primary) !important;
+
+      &:before, &:after {
+        transition: all .15s ease-in-out;
+      }
+    }
+  }
+}
+
+
 .video_container {
   position: relative;
   padding-bottom: 56.25%;

@@ -1696,6 +1696,25 @@ angles-up:
     - duotone
   unicode: f102
   voted: false
+angles-up-down:
+  changes:
+    - 6.4.1
+  label: Angles Up Down
+  search:
+    terms:
+      - ' down'
+      - ' elevator'
+      - ' order'
+      - ' up'
+      - filter
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e60d
+  voted: false
 angrycreative:
   changes:
     - 5.0.0
@@ -2147,6 +2166,25 @@ arrow-down-big-small:
     - thin
     - duotone
   unicode: f88c
+  voted: false
+arrow-down-from-arc:
+  changes:
+    - 6.4.1
+  label: Arrow Down From Arc
+  search:
+    terms:
+      - ' enter'
+      - ' save'
+      - ' share'
+      - ' transfer'
+      - download
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e614
   voted: false
 arrow-down-from-dotted-line:
   changes:
@@ -2644,6 +2682,25 @@ arrow-left:
     - duotone
   unicode: f060
   voted: false
+arrow-left-from-arc:
+  changes:
+    - 6.4.1
+  label: Arrow Left From Arc
+  search:
+    terms:
+      - ' give'
+      - ' leave'
+      - ' send'
+      - ' transfer'
+      - exit
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e615
+  voted: false
 arrow-left-from-line:
   aliases:
     names:
@@ -2720,6 +2777,26 @@ arrow-left-long-to-line:
     - thin
     - duotone
   unicode: e3d4
+  voted: false
+arrow-left-to-arc:
+  changes:
+    - 6.4.1
+  label: Arrow Left To Arc
+  search:
+    terms:
+      - ' give'
+      - ' into'
+      - ' login'
+      - ' send'
+      - ' sign in'
+      - enter
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e616
   voted: false
 arrow-left-to-line:
   aliases:
@@ -3665,6 +3742,7 @@ arrow-up-left-from-circle:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Arrow Up Left From Circle
   search:
     terms:
@@ -3781,6 +3859,7 @@ arrow-up-right-from-square:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Arrow Up Right From Square
   search:
     terms:
@@ -3881,6 +3960,24 @@ arrow-up-square-triangle:
     - thin
     - duotone
   unicode: f88b
+  voted: false
+arrow-up-to-arc:
+  changes:
+    - 6.4.1
+  label: Arrow Up To Arc
+  search:
+    terms:
+      - ' share'
+      - ' transfer'
+      - ' upload'
+      - import
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e617
   voted: false
 arrow-up-to-dotted-line:
   changes:
@@ -8979,6 +9076,7 @@ book-open-reader:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Book Open Reader
   search:
     terms:
@@ -15150,6 +15248,7 @@ card-spade:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Card Spade
   search:
     terms:
@@ -15172,6 +15271,7 @@ cards:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Cards
   search:
     terms:
@@ -15194,6 +15294,7 @@ cards-blank:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Cards Blank
   search:
     terms:
@@ -17490,6 +17591,7 @@ chess-bishop-piece:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Chess Bishop Piece
   search:
     terms:
@@ -23602,6 +23704,7 @@ cloudscale:
 cloudsmith:
   changes:
     - 5.0.0
+    - 6.4.1
   label: Cloudsmith
   search:
     terms: []
@@ -25920,6 +26023,7 @@ copy:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Copy
   search:
     terms:
@@ -27115,6 +27219,7 @@ cupcake:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Cupcake
   search:
     terms:
@@ -27366,6 +27471,16 @@ database:
     - thin
     - duotone
   unicode: f1c0
+  voted: false
+debian:
+  changes:
+    - 6.4.1
+  label: Debian
+  search:
+    terms: []
+  styles:
+    - brands
+  unicode: e60b
   voted: false
 deer:
   aliases:
@@ -28170,6 +28285,7 @@ diamond-exclamation:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Diamond Exclamation
   search:
     terms:
@@ -28189,6 +28305,7 @@ diamond-half:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Diamond Half
   search:
     terms:
@@ -28307,6 +28424,7 @@ dice-d10:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Dice D10
   search:
     terms:
@@ -30236,6 +30354,7 @@ drumstick:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Drumstick
   search:
     terms:
@@ -31350,6 +31469,7 @@ engine:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Engine
   search:
     terms:
@@ -31377,6 +31497,7 @@ engine-warning:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Engine Warning
   search:
     terms:
@@ -39084,6 +39205,7 @@ flying-disc:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Flying Disc
   search:
     terms:
@@ -40247,6 +40369,7 @@ futbol:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Futbol
   search:
     terms:
@@ -40374,6 +40497,7 @@ game-board:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Game Board
   search:
     terms:
@@ -41418,6 +41542,7 @@ gif:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Gif
   search:
     terms:
@@ -41924,6 +42049,30 @@ globe:
     - thin
     - duotone
   unicode: f0ac
+  voted: false
+globe-pointer:
+  changes:
+    - 6.4.1
+  label: Globe Pointer
+  search:
+    terms:
+      - ' World Wide Web'
+      - ' find'
+      - ' globe'
+      - ' search'
+      - ' www'
+      - cyberspace
+      - internet
+      - link
+      - net
+      - website
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e60e
   voted: false
 globe-snow:
   aliases:
@@ -43603,6 +43752,7 @@ hand-back-point-left:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Back Point Left
   search:
     terms:
@@ -43847,6 +43997,7 @@ hand-holding-box:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Holding Box
   search:
     terms:
@@ -43877,6 +44028,7 @@ hand-holding-dollar:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Holding Dollar
   search:
     terms:
@@ -43910,6 +44062,7 @@ hand-holding-droplet:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Holding Droplet
   search:
     terms:
@@ -43933,6 +44086,7 @@ hand-holding-hand:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Holding Hand
   search:
     terms:
@@ -43960,6 +44114,7 @@ hand-holding-heart:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Holding Heart
   search:
     terms:
@@ -43987,6 +44142,7 @@ hand-holding-magic:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Holding Magic
   search:
     terms:
@@ -44021,6 +44177,7 @@ hand-holding-medical:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Holding Medical
   search:
     terms:
@@ -44047,6 +44204,7 @@ hand-holding-seedling:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Holding Seedling
   search:
     terms:
@@ -44068,6 +44226,7 @@ hand-holding-skull:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Holding Skull
   search:
     terms:
@@ -44254,6 +44413,7 @@ hand-point-left:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Point Left
   search:
     terms:
@@ -44277,6 +44437,7 @@ hand-point-ribbon:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Point Ribbon
   search:
     terms:
@@ -44302,6 +44463,7 @@ hand-point-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Point Right
   search:
     terms:
@@ -44415,6 +44577,7 @@ hand-sparkles:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Sparkles
   search:
     terms:
@@ -44448,6 +44611,7 @@ hand-spock:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hand Spock
   search:
     terms:
@@ -44615,6 +44779,7 @@ hands-bubbles:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hands Bubbles
   search:
     terms:
@@ -44684,6 +44849,7 @@ hands-holding-child:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hands Holding Child
   search:
     terms:
@@ -44707,6 +44873,7 @@ hands-holding-circle:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hands Holding Circle
   search:
     terms:
@@ -44766,6 +44933,7 @@ hands-holding-dollar:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hands Holding Dollar
   search:
     terms:
@@ -44800,6 +44968,7 @@ hands-holding-heart:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hands Holding Heart
   search:
     terms:
@@ -44857,6 +45026,7 @@ handshake:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Handshake
   search:
     terms:
@@ -44950,6 +45120,7 @@ handshake-simple-slash:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Handshake Simple Slash
   search:
     terms:
@@ -44976,6 +45147,7 @@ handshake-slash:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Handshake Slash
   search:
     terms:
@@ -45470,6 +45642,36 @@ head-side-cough-slash:
     - thin
     - duotone
   unicode: e062
+  voted: false
+head-side-gear:
+  changes:
+    - 6.4.1
+  label: Head Side Gear
+  search:
+    terms:
+      - ' ai'
+      - ' android'
+      - ' augmented'
+      - ' cybernetics'
+      - ' face'
+      - ' gear'
+      - ' learning'
+      - ' machine'
+      - ' profile'
+      - ' robot'
+      - ' settings'
+      - ' thinking'
+      - ' thought'
+      - ' user'
+      - artificial intelligence
+      - bald
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e611
   voted: false
 head-side-goggles:
   aliases:
@@ -46762,6 +46964,7 @@ hockey-stick-puck:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hockey Stick Puck
   search:
     terms:
@@ -46793,6 +46996,7 @@ hockey-sticks:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Hockey Sticks
   search:
     terms:
@@ -47273,6 +47477,7 @@ hotel:
 hotjar:
   changes:
     - 5.0.0
+    - 6.4.1
   label: Hotjar
   search:
     terms: []
@@ -50641,6 +50846,7 @@ kidneys:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Kidneys
   search:
     terms:
@@ -52453,6 +52659,27 @@ lightbulb-slash:
     - thin
     - duotone
   unicode: f673
+  voted: false
+lighthouse:
+  changes:
+    - 6.4.1
+  label: Lighthouse
+  search:
+    terms:
+      - ' alert'
+      - ' breakwater'
+      - ' cove'
+      - ' ship'
+      - ' tower'
+      - ' warning'
+      - beacon
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e612
   voted: false
 lights-holiday:
   aliases:
@@ -55152,6 +55379,7 @@ mask-snorkel:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Mask Snorkel
   search:
     terms:
@@ -61536,6 +61764,7 @@ paste:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Paste
   search:
     terms:
@@ -63342,6 +63571,28 @@ person-dress-burst:
     - duotone
   unicode: e544
   voted: false
+person-dress-fairy:
+  changes:
+    - 6.4.1
+  label: Person Dress Fairy
+  search:
+    terms:
+      - ' magic'
+      - ' wings'
+      - elf
+      - faerie
+      - faery
+      - fairy
+      - fantasy
+      - sprite
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e607
+  voted: false
 person-dress-simple:
   changes:
     - 6.0.0-beta1
@@ -63385,6 +63636,28 @@ person-drowning:
     - thin
     - duotone
   unicode: e545
+  voted: false
+person-fairy:
+  changes:
+    - 6.4.1
+  label: Person Fairy
+  search:
+    terms:
+      - '  magic'
+      - '  wings'
+      - ' elf'
+      - ' faerie'
+      - ' faery'
+      - ' fairy'
+      - ' sprite'
+      - fantasy
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e608
   voted: false
 person-falling:
   changes:
@@ -65509,6 +65782,7 @@ plane:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Plane
   search:
     terms:
@@ -65835,6 +66109,7 @@ plane-up:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Plane Up
   search:
     terms:
@@ -66615,6 +66890,7 @@ poop:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Poop
   search:
     terms:
@@ -67241,6 +67517,7 @@ puzzle-piece:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Puzzle Piece
   search:
     terms:
@@ -67271,6 +67548,7 @@ puzzle-piece-simple:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Puzzle Piece Simple
   search:
     terms:
@@ -67617,6 +67895,27 @@ rabbit-running:
     - duotone
   unicode: f709
   voted: true
+raccoon:
+  changes:
+    - 6.4.1
+  label: Raccoon
+  search:
+    terms:
+      - ' mask'
+      - ' paw'
+      - ' raccoon'
+      - ' tail'
+      - ' trash'
+      - mammal
+      - panda
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e613
+  voted: false
 racquet:
   aliases:
     unicodes:
@@ -72162,6 +72461,7 @@ share-from-square:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Share From Square
   search:
     terms:
@@ -72813,6 +73113,7 @@ shirt:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Shirt
   search:
     terms:
@@ -72837,6 +73138,7 @@ shirt-long-sleeve:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Shirt Long Sleeve
   search:
     terms:
@@ -72959,6 +73261,16 @@ shoe-prints:
     - duotone
   unicode: f54b
   voted: true
+shoelace:
+  changes:
+    - 6.4.1
+  label: Shoelace
+  search:
+    terms: []
+  styles:
+    - brands
+  unicode: e60c
+  voted: false
 shop:
   aliases:
     names:
@@ -75906,6 +76218,7 @@ sportsball:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Sportsball
   search:
     terms:
@@ -78735,6 +79048,17 @@ square-this-way-up:
     - duotone
   unicode: f49f
   voted: false
+square-threads:
+  changes:
+    - 6.4.1
+    - 6.4.2
+  label: Square Threads
+  search:
+    terms: []
+  styles:
+    - brands
+  unicode: e619
+  voted: false
 square-tumblr:
   aliases:
     names:
@@ -78758,7 +79082,8 @@ square-twitter:
     - 1.0.0
     - 5.0.0
     - 6.1.2
-  label: Twitter Square
+    - 6.4.2
+  label: Square Twitter
   search:
     terms:
       - social network
@@ -79016,6 +79341,19 @@ square-x:
     - thin
     - duotone
   unicode: e286
+  voted: false
+square-x-twitter:
+  changes:
+    - 6.4.2
+  label: Square X Twitter
+  search:
+    terms:
+      - ' elon'
+      - ' x'
+      - twitter
+  styles:
+    - brands
+  unicode: e61a
   voted: false
 square-xing:
   aliases:
@@ -80566,6 +80904,51 @@ subscript:
     - duotone
   unicode: f12c
   voted: false
+subtitles:
+  changes:
+    - 6.4.1
+  label: Subtitles
+  search:
+    terms:
+      - ' caption'
+      - ' description'
+      - ' film'
+      - ' language'
+      - ' movie'
+      - ' text'
+      - ' translation'
+      - closed captions
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e60f
+  voted: false
+subtitles-slash:
+  changes:
+    - 6.4.1
+  label: Subtitles Slash
+  search:
+    terms:
+      - '  caption'
+      - '  film'
+      - '  language'
+      - '  movie'
+      - '  text'
+      - '  translation'
+      - ' closed captions'
+      - ' description'
+      - 'off'
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e610
+  voted: false
 suitcase:
   aliases:
     unicodes:
@@ -81049,6 +81432,46 @@ sushi-roll:
     - thin
     - duotone
   unicode: e48b
+  voted: false
+swap:
+  changes:
+    - 6.4.1
+  label: Swap
+  search:
+    terms:
+      - ' arrows'
+      - ' merge'
+      - ' route'
+      - change
+      - move
+      - transfer
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e609
+  voted: false
+swap-arrows:
+  changes:
+    - 6.4.1
+  label: Swap Arrows
+  search:
+    terms:
+      - '  arrows'
+      - '  merge'
+      - '  route'
+      - ' change'
+      - ' transfer'
+      - move
+  styles:
+    - solid
+    - regular
+    - light
+    - thin
+    - duotone
+  unicode: e60a
   voted: false
 swatchbook:
   aliases:
@@ -82613,6 +83036,7 @@ temperature-list:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Temperature List
   search:
     terms:
@@ -83270,6 +83694,17 @@ thought-bubble:
     - duotone
   unicode: e32e
   voted: false
+threads:
+  changes:
+    - 6.4.1
+    - 6.4.2
+  label: Threads
+  search:
+    terms: []
+  styles:
+    - brands
+  unicode: e618
+  voted: false
 thumbs-down:
   aliases:
     unicodes:
@@ -83480,6 +83915,7 @@ ticket-simple:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Ticket Simple
   search:
     terms:
@@ -88156,6 +88592,7 @@ up-right-from-square:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Up Right From Square
   search:
     terms:
@@ -93283,6 +93720,7 @@ wine-glass-empty:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.4.1
   label: Wine Glass Empty
   search:
     terms:
@@ -93644,6 +94082,19 @@ x-ray:
     - thin
     - duotone
   unicode: f497
+  voted: false
+x-twitter:
+  changes:
+    - 6.4.2
+  label: X Twitter
+  search:
+    terms:
+      - '  elon'
+      - ' twitter'
+      - ' x'
+  styles:
+    - brands
+  unicode: e61b
   voted: false
 xbox:
   changes:

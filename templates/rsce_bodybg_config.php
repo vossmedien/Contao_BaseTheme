@@ -22,7 +22,7 @@ return array(
         ),
 
 
-               'only_article' => array(
+        'only_article' => array(
             'label' => array('', ''),
             'inputType' => 'checkbox',
             'options' => array(
@@ -103,7 +103,15 @@ return array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,mp4',
+                'extensions' => 'jpg,jpeg,png,mp4,svg',
+            ),
+        ),
+
+        'fit_image' => array(
+            'label' => array('', ''),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'Bild auf Breite und Höhe des Bereichs strecken',
             ),
         ),
 

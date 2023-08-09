@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg preserveAspectRatio="none"  id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 800">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#Unbenannter_Verlauf_5);
+      }
+
+      .cls-1, .cls-2 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: #2881bd;
+      }
+    </style>
+    <linearGradient id="Unbenannter_Verlauf_5" data-name="Unbenannter Verlauf 5" x1="-50.02" y1="86.64" x2="648.69" y2="490.05" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#004878"/>
+      <stop offset="1" stop-color="#182f4e"/>
+    </linearGradient>
+  </defs>
+  <polygon class="cls-1" points="573.82 0 0 0 0 562.35 573.82 619.73 573.82 0"/>
+  <polygon class="cls-2" points="1920 704.32 0 512.32 0 800 1920 800 1920 704.32"/>
+</svg>

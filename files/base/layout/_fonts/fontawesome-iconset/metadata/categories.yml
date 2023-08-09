@@ -219,6 +219,7 @@ animals:
     - pig
     - rabbit
     - rabbit-running
+    - raccoon
     - ram
     - sheep
     - shield-cat
@@ -246,12 +247,14 @@ arrows:
     - angles-left
     - angles-right
     - angles-up
+    - angles-up-down
     - arrow-down
     - arrow-down-1-9
     - arrow-down-9-1
     - arrow-down-a-z
     - arrow-down-arrow-up
     - arrow-down-big-small
+    - arrow-down-from-arc
     - arrow-down-from-dotted-line
     - arrow-down-from-line
     - arrow-down-left
@@ -272,9 +275,11 @@ arrows:
     - arrow-down-wide-short
     - arrow-down-z-a
     - arrow-left
+    - arrow-left-from-arc
     - arrow-left-from-line
     - arrow-left-long
     - arrow-left-long-to-line
+    - arrow-left-to-arc
     - arrow-left-to-line
     - arrow-pointer
     - arrow-progress
@@ -317,6 +322,7 @@ arrows:
     - arrow-up-short-wide
     - arrow-up-small-big
     - arrow-up-square-triangle
+    - arrow-up-to-arc
     - arrow-up-to-dotted-line
     - arrow-up-to-line
     - arrow-up-triangle-square
@@ -457,6 +463,8 @@ arrows:
     - square-up
     - square-up-left
     - square-up-right
+    - swap
+    - swap-arrows
     - turn-down
     - turn-down-left
     - turn-down-right
@@ -479,6 +487,7 @@ arrows:
 astronomy:
   icons:
     - alien
+    - binoculars
     - cat-space
     - comet
     - eclipse
@@ -651,6 +660,7 @@ buildings:
     - landmark
     - landmark-dome
     - landmark-flag
+    - lighthouse
     - monument
     - mosque
     - mountain-city
@@ -1178,6 +1188,7 @@ coding:
     - gear-complex
     - gear-complex-code
     - gears
+    - head-side-gear
     - key-skeleton-left-right
     - keyboard
     - laptop-binary
@@ -1336,6 +1347,8 @@ communication:
     - square-phone-hangup
     - square-quote
     - square-rss
+    - subtitles
+    - subtitles-slash
     - symbols
     - thought-bubble
     - tower-cell
@@ -1363,6 +1376,7 @@ connectivity:
     - cloud-xmark
     - ethernet
     - globe
+    - globe-pointer
     - house-signal
     - link-horizontal
     - link-horizontal-slash
@@ -2225,6 +2239,8 @@ film-video:
     - star-sharp
     - star-sharp-half
     - star-sharp-half-stroke
+    - subtitles
+    - subtitles-slash
     - ticket
     - tower-broadcast
     - tower-cell
@@ -2515,6 +2531,8 @@ gaming:
     - mushroom
     - nesting-dolls
     - paw-claws
+    - person-dress-fairy
+    - person-fairy
     - person-pinball
     - pickaxe
     - pinata
@@ -3390,6 +3408,7 @@ maps:
     - lemon
     - life-ring
     - lightbulb
+    - lighthouse
     - location-arrow
     - location-check
     - location-crosshairs
@@ -3460,6 +3479,8 @@ maps:
     - street-view
     - suitcase
     - suitcase-medical
+    - swap
+    - swap-arrows
     - tag
     - tags
     - taxi
@@ -3512,6 +3533,7 @@ maritime:
     - fish-cooked
     - fish-fins
     - fishing-rod
+    - lighthouse
     - lobster
     - narwhal
     - otter
@@ -3555,6 +3577,7 @@ marketing:
     - envelopes-bulk
     - filter-circle-dollar
     - gift-card
+    - globe-pointer
     - group-arrows-rotate
     - hundred-points
     - lightbulb
@@ -3690,6 +3713,8 @@ media-playback:
     - sliders
     - sliders-up
     - stop
+    - subtitles
+    - subtitles-slash
     - up-right-and-down-left-from-center
     - volume
     - volume-high
@@ -4447,6 +4472,7 @@ science-fiction:
     - galactic-republic
     - galactic-senate
     - hand-spock
+    - head-side-gear
     - jedi
     - jedi-order
     - old-republic
@@ -5417,6 +5443,7 @@ users-people:
     - head-side-brain
     - head-side-cough
     - head-side-cough-slash
+    - head-side-gear
     - head-side-goggles
     - head-side-headphones
     - head-side-heart
@@ -5473,8 +5500,10 @@ users-people:
     - person-dots-from-line
     - person-dress
     - person-dress-burst
+    - person-dress-fairy
     - person-dress-simple
     - person-drowning
+    - person-fairy
     - person-falling
     - person-falling-burst
     - person-from-portal

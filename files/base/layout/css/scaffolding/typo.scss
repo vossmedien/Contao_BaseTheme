@@ -106,7 +106,7 @@ html body {
   .h2,
   h1,
   .h1 {
-    line-height: var(--bs-body-line-height-sm);
+    line-height: var(--bs-body-line-height-xs);
     transition: color 0.3s ease;
     color: var(--bs-headline-color);
     //color: inherit; //hmmm
@@ -124,7 +124,7 @@ html body {
     color: var(--bs-primary);
     //@include font-size(22px);
     display: block;
-    line-height: var(--bs-body-line-height-sm);
+    line-height: var(--bs-body-line-height-xs);
 
     & + *{
        font-weight: $font-weight-medium;
@@ -136,7 +136,7 @@ html body {
     color: var(--bs-primary);
     //@include font-size(22px);
     display: block;
-    line-height: var(--bs-body-line-height-sm);
+    line-height: var(--bs-body-line-height-xs);
     margin-top: 1rem;
   }
 
@@ -356,17 +356,17 @@ html body {
 
 .dynamic-fontsize-lg {
   font-size: calc(4.5vh + 4.5vw);
-  line-height: var(--bs-body-line-height-sm);
+  line-height: var(--bs-body-line-height-xs);
 }
 
 .dynamic-fontsize {
   font-size: calc(3.5vh + 3.5vw);
-  line-height: var(--bs-body-line-height-sm);
+  line-height: var(--bs-body-line-height-xs);
 }
 
 .dynamic-fontsize-sm {
   font-size: calc(2.5vh + 2.5vw);
-  line-height: var(--bs-body-line-height-sm);
+  line-height: var(--bs-body-line-height-xs);
 }
 
 

@@ -41,7 +41,7 @@ Promise.all(promises)
                 //throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
 
                 // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-                //offset: 0, // offset (in px) from the original trigger point
+                offset: 200, // offset (in px) from the original trigger point
 
                 once: true, // whether animation should happen only once - while scrolling down
                 mirror: false, // whether elements should animate out while scrolling past them
@@ -268,16 +268,17 @@ Promise.all(promises)
         /* END */
 
 
-        /* Behavior of Header Type 6 */
+        /* Behavior of Header Type 7 */
         if ($(".header--content.type--7").length) {
             function detectIfScrolled() {
                 var scroll = $(window).scrollTop();
                 var os = $("#header").offset().top;
                 var ht = $("#header").height();
+
                 if (scroll > os + ht) {
-                    $("body").addClass("is--scrolling");
+                    $("#header").addClass("is--scrolling");
                 } else {
-                    $("body").removeClass("is--scrolling");
+                    $("#header").removeClass("is--scrolling");
                 }
             }
 
@@ -286,6 +287,20 @@ Promise.all(promises)
             $(window).scroll(function () {
                 detectIfScrolled();
             });
+
+
+            var desktopNavActivator = document.querySelector('.desktopNavActivator');
+            var expandableNav = document.querySelector('.expandable-nav');
+            var closeButton = document.querySelector('.expandable-nav--close');
+
+            desktopNavActivator.addEventListener('click', function () {
+                expandableNav.classList.add('is-open');
+            });
+
+            closeButton.addEventListener('click', function () {
+                expandableNav.classList.remove('is-open');
+            });
+
         }
         /* END */
 

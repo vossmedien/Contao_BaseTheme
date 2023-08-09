@@ -56,9 +56,11 @@
 <?php $this->sections('top'); ?>
 
 
+<div class="BodyScrollToTop" data-aos="animate__fadeInUp"><i class="fa-sharp fa-light fa-arrow-up"></i></div>
 
-<div class="BodyScrollToTop"><i class="fa-sharp fa-light fa-arrow-up"></i></div>
-
+<div class="openContactForm">
+    <i data-bs-toggle="modal" data-bs-target="#contactForm"  class="fa-duotone fa-comment-pen" style=" --fa-secondary-opacity: 1; --fa-primary-color: var(--bs-body-color-inverse); --fa-secondary-color: var(--bs-secondary);"></i>
+</div>
 
 <div id="wrapper">
     <?php $this->block('header'); ?>
@@ -131,9 +133,24 @@
 <?php $this->endblock(); ?>
 
 
+<!-- Modal -->
+<div class="modal fade" id="contactForm" tabindex="-1" aria-labelledby="contactFormLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header py-1">
+                <span class="h2 modal-title mt-1 mb-0" id="contactFormLabel">Modal title</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{insert_node::2}}
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>
 
 </body>
-
 </html>

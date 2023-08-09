@@ -1,0 +1,30 @@
+@import "../../variables-layout";
+
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
+
+.ce_rsce_elementslider_sections {
+
+
+  .ce--section-slider {
+    //padding-top: rfs-value(100px);
+
+    @include media-breakpoint-up(md) {
+      padding-top: rfs-value(150px);
+    }
+
+    @include media-breakpoint-up(lg) {
+      padding-top: rfs-value(250px);
+      padding-bottom: rfs-value(50px);
+    }
+  }
+
+  .scroll-to-bottom {
+    text-align: center;
+    @include font-size(60px);
+  }
+}

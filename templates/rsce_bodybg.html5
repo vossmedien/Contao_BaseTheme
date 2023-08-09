@@ -89,10 +89,8 @@ if (TL_MODE == 'FE') {
                 margin-top: -1px;
                 position: relative;
 
-            <?php if(strpos($this->winkel, '-') !== false || !$this->winkel):?>
-                padding: calc(var(--skew-padding)*2) 0 var(--skew-padding) 0;
-            <?php else:?>
-                 padding: var(--skew-padding) 0 calc(var(--skew-padding)*2) 0;
+            <?php if(strpos($this->winkel, '-') !== false || !$this->winkel):?> padding: calc(var(--skew-padding) * 2) 0 var(--skew-padding) 0;
+            <?php else:?> padding: var(--skew-padding) 0 calc(var(--skew-padding) * 2) 0;
             <?php endif;?>
             }
 
@@ -100,6 +98,24 @@ if (TL_MODE == 'FE') {
             #article-<?= $this->pid;?> > .article-content {
                 position: relative;
                 /*padding-top: var(--bs-basic-spacing);*/
+            }
+
+            #article-<?= $this->pid;?>:before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                transform: skewy(var(--angle));
+                transform-origin: 50% 0;
+                outline: 1px solid transparent;
+                backface-visibility: hidden;
+                background-attachment: fixed;
+                background-size: cover;
+                background-position: center center;
+                background-repeat: no-repeat;
+                z-index: 1;
             }
 
             <?php if(!$this->deactivate_bottom):?>
@@ -115,7 +131,7 @@ if (TL_MODE == 'FE') {
             <?php if($this->is_between):?>
             #article-<?= $this->pid;?> {
                 --angle: 0;
-                padding:calc(var(--skew-padding)*1.5) 0;
+                padding: calc(var(--skew-padding) * 1.5) 0;
             }
 
             #article-<?= $this->pid;?>:before {
@@ -135,9 +151,7 @@ if (TL_MODE == 'FE') {
 
             <?php if($this->css):?> background: <?= $this->css;?>;
             <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
-            <?php endif;?>
-
-                padding: calc(var(--clip-padding)*2.5) 0 var(--clip-padding) 0;
+            <?php endif;?> padding: calc(var(--clip-padding) * 2.5) 0 var(--clip-padding) 0;
                 clip-path: polygon(
                         0% calc(var(--clip-padding) * 2),
                         100% 0%,
@@ -157,8 +171,14 @@ if (TL_MODE == 'FE') {
 
             #article-<?= $this->pid;?> {
                 background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
+
+
+            <?php if($this->fit_image):?>
+                background-size: 100% 100%;
+            <?php else:?>
                 background-attachment: fixed;
                 background-size: cover;
+            <?php endif;?>
             }
 
             <?php endif;?>
