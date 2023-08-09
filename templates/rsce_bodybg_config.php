@@ -107,6 +107,17 @@ return array(
             ),
         ),
 
+        'image_mobile' => array(
+            'label' => array('Alternative für Mobile', ""),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,svg',
+            ),
+        ),
+
         'fit_image' => array(
             'label' => array('', ''),
             'inputType' => 'checkbox',

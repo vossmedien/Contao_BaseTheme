@@ -169,7 +169,10 @@ if (TL_MODE == 'FE') {
 
             <?php else:?>
 
+
+
             #article-<?= $this->pid;?> {
+
                 background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
 
 
@@ -180,6 +183,14 @@ if (TL_MODE == 'FE') {
                 background-size: cover;
             <?php endif;?>
             }
+
+          <?php if($this->image_mobile):?>
+            @media(max-width: 767px){
+                 #article-<?= $this->pid;?> {
+                     background: url(<?= Image::get(FilesModel::findByUuid($this->image_mobile)->path, null, null, null); ?>) center center no-repeat;
+                 }
+            }
+            <?php endif;?>
 
             <?php endif;?>
 

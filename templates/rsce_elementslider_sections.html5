@@ -24,7 +24,7 @@ if (TL_MODE == 'FE') {
             }
             ?>
 
-            <div class="ce--section-slider  <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
+            <div class="ce--section-slider ps-lg-10 <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                 <?php $rand = rand(1, 100); ?>
 
@@ -41,8 +41,8 @@ if (TL_MODE == 'FE') {
                     </script>
                 <?php endif; ?>
 
-                <div class="row flex-md-row-reverse align-items-end">
-                    <div class="col-12 col-md-8 pb-md-10">
+                <div class="row gx-lg-4 flex-md-row-reverse align-items-end">
+                    <div class="col-12 col-md-7 pb-md-10">
 
                         <?php if ($this->headline || $this->subline || $this->topline) : ?>
                         <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -63,7 +63,7 @@ if (TL_MODE == 'FE') {
 
                 </div>
 
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-5">
                     <div class="position-relative">
                         <div class="swiper <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> section-slider_<?= $this->id; ?>">
                             <!-- Additional required wrapper -->
