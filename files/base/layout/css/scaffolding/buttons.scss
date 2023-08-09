@@ -10,11 +10,11 @@ html body .btn {
   --bs-btn-disabled-bg: var(--bs-btn-bg);
   --bs-btn-disabled-border-color: var(--bs-btn-border-color);
 
-
   line-height: 1;
-  transition: all .25s ease;
+  transition: all 0.25s ease;
   cursor: pointer;
-  padding: var(--bs-btn-padding);
+  padding: var(--bs-btn-padding-top) var(--bs-btn-padding-right)
+    var(--bs-btn-padding-bottom) var(--bs-btn-padding-left);
 
   &:hover,
   &:focus,
@@ -23,31 +23,40 @@ html body .btn {
   }
 
   > i {
-    margin-right: .25rem;
+    margin-right: 0.25rem;
   }
 
-
-
   &.btn-xs {
-    font-size: calc(var(--bs-btn-font-size) * .5);
-    padding: calc(var(--bs-btn-padding) * .5) ;
+    font-size: calc(var(--bs-btn-font-size) * 0.5);
+    padding: calc(var(--bs-btn-padding-top) * 0.5)
+      calc(var(--bs-btn-padding-right) * 0.5)
+      calc(var(--bs-btn-padding-bottom) * 0.5)
+      calc(var(--bs-btn-padding-left) * 0.5);
   }
 
   &.btn-sm {
-    font-size: calc(var(--bs-btn-font-size) * .75);
-    padding: calc(var(--bs-btn-padding) * .75);
+    font-size: calc(var(--bs-btn-font-size) * 0.75);
+    padding: calc(var(--bs-btn-padding-top) * 0.75)
+      calc(var(--bs-btn-padding-right) * 0.75)
+      calc(var(--bs-btn-padding-bottom) * 0.75)
+      calc(var(--bs-btn-padding-left) * 0.75);
   }
 
   &.btn-lg {
     font-size: calc(var(--bs-btn-font-size) * 1.25);
-    padding: calc(var(--bs-btn-padding) * 2);
+    padding: calc(var(--bs-btn-padding-top) * 2)
+      calc(var(--bs-btn-padding-right) * 2)
+      calc(var(--bs-btn-padding-bottom) * 2)
+      calc(var(--bs-btn-padding-left) * 2);
   }
 
   &.btn-xl {
     font-size: calc(var(--bs-btn-font-size) * 1.5);
-    padding: calc(var(--bs-btn-padding) * 2.5);
+    padding: calc(var(--bs-btn-padding-top) * 2.5)
+      calc(var(--bs-btn-padding-right) * 2.5)
+      calc(var(--bs-btn-padding-bottom) * 2.5)
+      calc(var(--bs-btn-padding-left) * 2.5);
   }
-
 
   &.btn-primary {
     --bs-btn-hover-border-color: var(--bs-primary);
@@ -124,8 +133,8 @@ html body .btn {
 
   &.btn-outline-black {
     --bs-btn-hover-border-color: var(--bs-black);
-    --bs-btn-border-color: var(--bs-black);;
-    --bs-btn-color: var(--bs-black);;
+    --bs-btn-border-color: var(--bs-black);
+    --bs-btn-color: var(--bs-black);
     --bs-btn-bg: transparent;
     --bs-btn-hover-bg: var(--bs-black);
     --bs-btn-hover-color: var(--bs-white);
@@ -139,8 +148,8 @@ html body .btn {
 
   &.btn-outline-white {
     --bs-btn-hover-border-color: var(--bs-white);
-    --bs-btn-border-color: var(--bs-white);;
-    --bs-btn-color: var(--bs-white);;
+    --bs-btn-border-color: var(--bs-white);
+    --bs-btn-color: var(--bs-white);
     --bs-btn-bg: transparent;
     --bs-btn-hover-bg: var(--bs-white);
     --bs-btn-hover-color: var(--bs-primary);
@@ -186,7 +195,7 @@ html body .btn {
     padding: 0px;
   }
 
-  &.btn-block{
+  &.btn-block {
     width: 100%;
     display: block;
   }
@@ -209,10 +218,13 @@ html body .btn {
    */
 }
 
-
 //FIX/HACK
 html body {
-  .btn-check:checked + .btn, :not(.btn-check) + .btn:active, .btn:first-child:active, .btn.active, .btn.show {
+  .btn-check:checked + .btn,
+  :not(.btn-check) + .btn:active,
+  .btn:first-child:active,
+  .btn.active,
+  .btn.show {
     color: var(--bs-btn-active-color);
     background-color: var(--bs-btn-active-bg);
     border-color: var(--bs-btn-active-border-color);
