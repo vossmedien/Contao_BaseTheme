@@ -80,7 +80,7 @@ if (TL_MODE == 'FE') {
       $result = $tanValue / 2;
       ?>
 
-            #article-<?= $this->pid;?> {
+            [data-articleid="article-<?= $this->pid;?>"] {
                 --angle: <?php if($this->winkel):?><?= $this->winkel;?>deg<?php else:?>-5deg<?php endif;?>;
                 --magic-number: <?php echo $result;?>;
                 --clip-padding: calc(var(--full-width) * var(--magic-number));
@@ -95,12 +95,12 @@ if (TL_MODE == 'FE') {
             }
 
 
-            #article-<?= $this->pid;?> > .article-content {
+            [data-articleid="article-<?= $this->pid;?>"] > .article-content {
                 position: relative;
                 /*padding-top: var(--bs-basic-spacing);*/
             }
 
-            #article-<?= $this->pid;?>:before {
+            [data-articleid="article-<?= $this->pid;?>"]:before {
                 content: "";
                 position: absolute;
                 left: 0;
@@ -119,7 +119,7 @@ if (TL_MODE == 'FE') {
             }
 
             <?php if(!$this->deactivate_bottom):?>
-            #article-<?= $this->pid;?>:before {
+            [data-articleid="article-<?= $this->pid;?>"]:before {
             <?php if($this->css):?> background: <?php echo $backgroundStyle;?>;
             <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
             <?php endif;?>
@@ -129,12 +129,12 @@ if (TL_MODE == 'FE') {
 
 
             <?php if($this->is_between):?>
-            #article-<?= $this->pid;?> {
+            [data-articleid="article-<?= $this->pid;?>"] {
                 --angle: 0;
                 padding: calc(var(--skew-padding) * 1.5) 0;
             }
 
-            #article-<?= $this->pid;?>:before {
+            [data-articleid="article-<?= $this->pid;?>"]:before {
                 height: 150%;
                 z-index: -1;
                 top: -25%;
@@ -145,7 +145,7 @@ if (TL_MODE == 'FE') {
 
 
             <?php if($this->deactivate_bottom):?>
-            #article-<?= $this->pid;?> {
+            [data-articleid="article-<?= $this->pid;?>"] {
                 position: relative;
                 margin-top: calc((var(--clip-padding) * -1) - 2px);
 
@@ -170,26 +170,24 @@ if (TL_MODE == 'FE') {
             <?php else:?>
 
 
-
-            #article-<?= $this->pid;?> {
+            [data-articleid="article-<?= $this->pid;?>"] {
 
                 background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
 
 
-            <?php if($this->fit_image):?>
-                background-size: 100% 100%;
-            <?php else:?>
-                background-attachment: fixed;
+            <?php if($this->fit_image):?> background-size: 100% 100%;
+            <?php else:?> background-attachment: fixed;
                 background-size: cover;
             <?php endif;?>
             }
 
-          <?php if($this->image_mobile):?>
-            @media(max-width: 767px){
-                 #article-<?= $this->pid;?> {
-                     background: url(<?= Image::get(FilesModel::findByUuid($this->image_mobile)->path, null, null, null); ?>) center center no-repeat;
-                 }
+            <?php if($this->image_mobile):?>
+            @media (max-width: 767px) {
+                [data-articleid="article-<?= $this->pid;?>"] {
+                    background: url(<?= Image::get(FilesModel::findByUuid($this->image_mobile)->path, null, null, null); ?>) center center no-repeat;
+                }
             }
+
             <?php endif;?>
 
             <?php endif;?>

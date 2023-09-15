@@ -6,12 +6,15 @@ if (TL_MODE == 'FE') {
 ?>
 
 <div <?php echo $this->cssID; ?>
-        class="<?php if ($this->smaller_containers): ?>with-smaller-containers<?php endif; ?> content--element m-0 <?php echo $this->class; ?> <?php if ($this->hide_mobile): ?>d-none d-md-block<?php endif; ?>">
-    <div class="ce--inner container">
+        class="<?php if ($this->smaller_containers): ?>with-smaller-containers<?php endif; ?> content--element <?php echo $this->class; ?> <?php if ($this->hide_mobile): ?>d-none d-md-block<?php endif; ?>">
+    <div class="ce--inner <?php if ($this->nav_style == "style-1"): ?>container<?php endif;?>">
         <?php if ($this->urls): ?>
-            <div style="float: right;">
-                <div class="ce--onepagenavi d-none"
-                     data-offset="<?php if ($this->offset): ?><?= $this->offset; ?><?php else: ?>300<?php endif; ?>"
+
+            <div <?php if ($this->nav_style == "style-1"): ?>style="float: right;"<?php endif; ?>>
+                <div id="onePageNav" class="<?= $this->nav_style; ?> ce--onepagenavi <?php if ($this->nav_style == "style-1"): ?>d-none<?php endif; ?>"
+                    <?php if ($this->nav_style == "style-1"): ?>
+                        data-offset="<?php if ($this->offset): ?><?= $this->offset; ?><?php else: ?>300<?php endif; ?>"
+                    <?php endif; ?>
                      data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
                     <?php if (!$this->hide_mobile): ?>
@@ -20,43 +23,46 @@ if (TL_MODE == 'FE') {
                             <?php if ($this->background_color): ?>background-color: <?= $this->background_color; ?>;<?php endif; ?>
                             <?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>
                                     ">
-                                <i class="fa-sharp fa-light fa-chevron-double-left"></i>
+                                <i class="fa-sharp fa-light fa-angle-double-right"></i>
                             </span>
                         </div>
                     <?php endif; ?>
 
                     <div class="onepagenavi--wrapper"
-
                          style="
                          <?php if ($this->background_color): ?>background-color: <?= $this->background_color; ?>;<?php endif; ?>
                          <?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>
                                  "
-
                     >
+                        <div class="container" style=" padding-right: calc(var(--bs-gutter-x) * .5);
+        padding-left: calc(var(--bs-gutter-x) * .5);">
+
                         <span class="onepagenavi--headline"
                               style="<?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>">
                             <?= $this->headline; ?>
                         </span>
 
-                        <ul>
-                            <?php foreach ($this->urls as $x => $e) : ?>
-                                <li>
-                                    <a style="<?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>"
-                                       href="<?= $e->link; ?>">
-                                        <span><?= $e->text; ?></span>
-                                    </a>
-                                </li>
-                            <?php endforeach ?>
-                        </ul>
+                            <ul class="nav-link-<?= $this->nav_style; ?>">
+                                <?php foreach ($this->urls as $x => $e) : ?>
+                                    <li>
+                                        <a class="" style="<?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>"
+                                           href="<?= $e->link; ?>">
+                                            <span><?= $e->text; ?></span>
+                                        </a>
+                                    </li>
+                                <?php endforeach ?>
+                            </ul>
+                        </div>
                     </div>
+
                     <?php if ($this->add_totopbutton): ?>
-                        <span class="scrollToTop">
+                        <span class="scrollToTop <?php if ($this->nav_style == "style-2"): ?>d-md-none<?php endif;?>">
                             <i class="fa-sharp fa-light fa-angle-up"></i>
                         </span>
                     <?php endif; ?>
                 </div>
-
             </div>
+
         <?php endif; ?>
 
     </div>

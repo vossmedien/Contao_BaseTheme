@@ -134,11 +134,17 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
-        'offset' => array(
-            'label' => array('Wie viel PX soll gescrollt werden,  bis die Navigation sichtbar wird', 'Standard: 300'),
-            'inputType' => 'text',
-        ),
 
+        'nav_style' => array(
+            'label' => array(
+                'de' => array('Text-Darstellungstyp', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                'style-1' => 'Style 1: Navigation erscheint vertikal nach dem scrollen und ist fixiert',
+                'style-2' => 'Style 2: Navigation befindet sich horizontal innerhalb eines Artikels und scrollt nach Berührung mit',
+            )
+        ),
 
         'background_color' => array(
             'label' => array('Hintergrundfarbe', 'Standard: Hauptfarbe'),
@@ -152,18 +158,35 @@ return array(
             'eval' => array('tl_class' => 'w50'),
         ),
 
+
+        'offset' => array(
+            'label' => array('Wie viel PX soll gescrollt werden,  bis die Navigation sichtbar wird', 'Standard: 300'),
+            'inputType' => 'text',
+            'dependsOn' => array(
+                'field' => 'nav_style',
+                'value' => 'style-1',
+            ),
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
         'smaller_containers' => array(
             'label' => array('"Container" auf der Seite schmäler machen, damit OnepageNavi den Content nicht überlagert', 'Greift nicht bei Elementen die auf die volle Breite gehen'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'nav_style',
+                'value' => 'style-1',
+            ),
         ),
 
 
         'add_totopbutton' => array(
-            'label' => array('"Nach oben"-Button hinzufügen', ''),
+            'label' => array('"Nach oben"-Button hinzufügen', 'Bei Style-2 wird der Button nur Mobile ein- bzw. ausgeblendet'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
+
 
         'hide_mobile' => array(
             'label' => array('Auf dem Handy ausblenden', ''),

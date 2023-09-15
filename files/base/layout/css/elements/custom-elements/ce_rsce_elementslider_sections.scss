@@ -13,6 +13,10 @@
   .ce--section-slider {
     //padding-top: rfs-value(100px);
 
+    @include media-breakpoint-down(md) {
+      padding-top: 2rem;
+    }
+
     @include media-breakpoint-up(md) {
       padding-top: rfs-value(150px);
     }

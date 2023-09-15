@@ -4,9 +4,11 @@
 
   --bs-primary: var(--bs-red);
   --bs-secondary: var(--bs-gray-900);
+  --bs-tertiary: var(--bs-secondary);
 
   --bs-primary-rgb: 135, 22, 35;
   --bs-secondary-rgb: 33, 37, 41;
+  --bs-tertiary-rgb: var(--bs-secondary-rgb);
 
   --bs-blue: #00274a;
   --bs-indigo: #6610f2;
@@ -57,16 +59,16 @@
 
   --bs-font-primary: "Open Sans", sans-serif;
   --bs-font-secondary: SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  "Liberation Mono", "Courier New", monospace;
   --bs-font-tertiary: "Montserrat", sans-serif;
 
   --bs-font-sans-serif: var(--bs-font-primary);
   --bs-font-monospace: var(--bs-font-secondary);
 
   --bs-gradient: linear-gradient(
-    180deg,
-    rgba(var(--bs-white-rgb), 0.15),
-    rgba(var(--bs-white-rgb), 0)
+                  180deg,
+                  rgba(var(--bs-white-rgb), 0.15),
+                  rgba(var(--bs-white-rgb), 0)
   );
 
   --bs-basic-spacing: #{$basic-gutter};

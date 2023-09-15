@@ -1,6 +1,10 @@
 function changeAnchorLinks() {
     const scrollPos = window.pageYOffset;
 
+    // Höhe von .header--content ermitteln, falls es die CSS-Eigenschaft position: fixed besitzt
+    const header = document.querySelector('.header--content');
+    const headerHeight = (header && getComputedStyle(header).position === 'fixed') ? header.offsetHeight : 0;
+
     document.querySelectorAll('#mainNav a[href*="#"]:not(.invisible), .onepagenavi--wrapper a').forEach(currElement => {
         const currLink = currElement.getAttribute("href");
         const refElement = document.querySelector(currLink.substring(currLink.indexOf("#")));
@@ -9,41 +13,36 @@ function changeAnchorLinks() {
             const refElementPos = refElement.getBoundingClientRect().top + scrollPos;
             const refElementHeight = refElement.offsetHeight;
 
-            if (refElementPos - 600 <= scrollPos && refElementPos - 600 + refElementHeight > scrollPos) {
-                const activeElem = currElement.parentElement.querySelector(".active");
+            if (refElementPos - headerHeight <= scrollPos && refElementPos - headerHeight + refElementHeight > scrollPos) {
+                // Entferne active-Klasse von anderen Elementen
+                const activeElem = document.querySelector(".active");
                 if (activeElem) {
                     activeElem.classList.remove("active");
                     const parentActiveElem = activeElem.closest('li');
                     if (parentActiveElem) parentActiveElem.classList.remove("active");
                 }
 
-                currElement.classList.add("active");
-                const parentElem = currElement.closest('li');
-                if (parentElem) {
-                    parentElem.classList.add("active");
+                // Setze active-Klasse auf aktuelles Element
+                if (!currElement.classList.contains("active")) {
+                    currElement.classList.add("active");
+                }
 
-                    // Add trail class to parent li in level_1
-                    const level_1_Parent = parentElem.closest('.level_1 > li');
-                    if (level_1_Parent) {
-                        level_1_Parent.classList.add('trail');
-                    }
+                const parentElem = currElement.closest('li');
+                if (parentElem && !parentElem.classList.contains("active")) {
+                    parentElem.classList.add("active");
                 }
             } else {
                 currElement.classList.remove("active");
                 const parentElem = currElement.closest('li');
                 if (parentElem) {
                     parentElem.classList.remove("active");
-
-                    // Remove trail class from parent li in level_1
-                    const level_1_Parent = parentElem.closest('.level_1 > li');
-                    if (level_1_Parent) {
-                        level_1_Parent.classList.remove('trail');
-                    }
                 }
             }
         }
     });
 }
+
+
 
 function changeNavLinksAfterLoad() {
     const hash = window.location.hash;
