@@ -19,7 +19,7 @@ if (TL_MODE == 'FE') {
                 <div id="accordion_<?= $this->id; ?>" class="accordion-collapse collapse <?php if ($this->styleManager->get('accordion', ['akkordeon-geoffnet-anzeigen'])): ?>show<?php endif; ?>">
 
                     <div class="accordion-body">
-                        <div class="row <?php if ($this->showPreview): ?>g-3<?php else: ?>g-0<?php endif; ?>">
+                        <div class="row <?php if ($this->showPreview): ?>gx-3 gy-1<?php else: ?>g-0<?php endif; ?>">
                             <?php foreach ($this->files as $file): ?>
                                 <div class="<?php if ($file['previews']): ?>col-6 col-md-3<?php else: ?>col-12<?php endif; ?>">
 

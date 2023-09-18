@@ -73,7 +73,7 @@ if (TL_MODE == 'FE') {
 
 
                                 <div class="row">
-                                    <div class="col-12 col-md-3">
+                                    <div class="col-12 col-md-6 col-lg-3">
                                         <?php if ($location->company_name): ?>
                                             <strong><?= $location->company_name ?></strong>
                                         <?php endif; ?>
@@ -84,9 +84,9 @@ if (TL_MODE == 'FE') {
                                             <span><?= $location->position ?></span>
                                         <?php endif; ?>
                                     </div>
-                                    <div class="col-12 col-md-3">
+                                    <div class="col-12  col-md-6 col-lg-3">
                                         <?php if ($location->address): ?>
-                                            <span><?= $location->address ?></span>
+                                            <span>{{icon_sharp::fa-solid:fa-location-dot}} <?= $location->address ?></span>
                                         <?php endif; ?>
                                         <?php if ($location->city): ?>
                                             <span class="d-inline-block"><?= $location->city ?>,</span>
@@ -98,12 +98,12 @@ if (TL_MODE == 'FE') {
                                             <span class="d-inline-block"><?= $location->zipcode ?></span>
                                         <?php endif; ?>
                                     </div>
-                                    <div class="col-12 col-md-3">
+                                    <div class="col-12  col-md-6 col-lg-3">
                                         <?php if ($location->phone_number): ?>
-                                            <span><?= $location->phone_number ?></span>
+                                            <span>{{icon_sharp::fa-solid:fa-circle-phone}} <?= $location->phone_number ?></span>
                                         <?php endif; ?>
                                         <?php if ($location->email): ?>
-                                            <span>{{email::<?= $location->email ?>}}</span>
+                                            <span>{{icon_sharp::fa-solid:fa-envelope}} {{email::<?= $location->email ?>}}</span>
                                         <?php endif; ?>
                                         <?php if ($location->website): ?>
                                             <a href="<?= $location->website ?>" target="_blank"><?= $location->website ?></a>

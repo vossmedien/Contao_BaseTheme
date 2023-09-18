@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function (event) {
     var ceOnePageNavSmaller = document.querySelector(".ce_rsce_onepagenavi.with-smaller-containers");
     var ceOnePageNav = document.querySelector(".ce_rsce_onepagenavi");
     var mainElement = document.getElementById("main");
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
 
     if (ceOnePageNav) {
-        mobileToggle.addEventListener("click", function() {
+        mobileToggle.addEventListener("click", function () {
             this.parentElement.classList.toggle("visible");
         });
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             offset = styleOneElement.getAttribute("data-offset");
         }
 
-        window.addEventListener("scroll", function() {
+        window.addEventListener("scroll", function () {
             var scroll = window.pageYOffset;
 
             if (styleOneElement && scroll >= parseInt(offset, 10)) {
@@ -28,14 +28,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
             } else if (styleOneElement) {
                 styleOneElement.classList.add("d-none");
             }
-        }, { passive: true });
+        }, {passive: true});
 
         var divElement = document.getElementById('onePageNav');
         var headerElement = document.querySelector('.header--content');
         var onepagenaviElement = document.querySelector('.ce_rsce_onepagenavi');
         var initialDivOffset = onepagenaviElement.offsetTop;
 
-        window.addEventListener('scroll', function() {
+
+        window.addEventListener('scroll', function () {
             var headerHeight = headerElement.offsetHeight;
             var fixPosition = initialDivOffset - headerHeight;
 
@@ -49,14 +50,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 }
 
                 if (styleTwoElement) {
-                    onepagenaviElement.style.height = divElement.offsetHeight + 'px';
+                    if (window.innerWidth > 768) {
+                        onepagenaviElement.style.height = divElement.offsetHeight + 'px';
+                    }
                 }
             } else if (window.pageYOffset < fixPosition) {
                 divElement.classList.remove('is-scrolling');
                 if (styleTwoElement) {
-                    onepagenaviElement.style.height = 'auto';
+                    if (window.innerWidth > 768) {
+                        onepagenaviElement.style.height = 'auto';
+                    }
                 }
             }
-        }, { passive: true });
+        }, {passive: true});
+
+
     }
-}, { passive: true });
+}, {passive: true});

@@ -41,7 +41,7 @@ if (TL_MODE == 'FE') {
                     </script>
                 <?php endif; ?>
 
-                <div class="row gx-lg-4 flex-md-row-reverse align-items-end">
+                <div class="<?= $this->row_align;?> row gx-lg-4 <?php if(!$this->reverse_columns):?>flex-md-row-reverse<?php endif;?>">
                     <div class="col-12 col-md-7 pb-md-10">
 
                         <?php if ($this->headline || $this->subline || $this->topline) : ?>

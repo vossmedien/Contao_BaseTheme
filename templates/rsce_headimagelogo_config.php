@@ -840,7 +840,7 @@ return array(
                             'inputType' => 'text',
                         ),
                         'link_url' => array(
-                            'label' => array('Verlinkung', 'z . B . mailto:info@gmx . de'),
+                            'label' => array('Verlinkung', 'z . B . mailto:info@domain.de'),
                             'inputType' => 'url',
                         ),
                         'link_betreff' => array(

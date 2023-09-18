@@ -20,7 +20,12 @@
 
   &.with-previews{
     i{
+      transition: all .3s ease-in-out;
       @include font-size(32px);
+      color: var(--bs-primary);
+      &:hover{
+        color: var(--bs-accordion-active-color);
+      }
     }
   }
 }

@@ -548,7 +548,7 @@ return array(
                     'eval' => array('allowHtml' => true),
                 ),
                 'link_url' => array(
-                    'label' => array('Verlinkung', 'z . B . mailto:info@gmx . de'),
+                    'label' => array('Verlinkung', 'z . B . mailto:info@domain.de'),
                     'inputType' => 'url',
                 ),
 

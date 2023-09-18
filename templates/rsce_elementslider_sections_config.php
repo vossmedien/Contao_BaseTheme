@@ -144,8 +144,24 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
+        'reverse_columns' => array(
+            'label' => array('Spalten tauschen', 'Inhalts (rechts) und Bildspalte (links) tauschen'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
 
-
+        'row_align' => array(
+            'label' => array(
+                'de' => array('Ausrichtung der Spalten', 'wird ignoriert bei gleich hohen Boxen'),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                '' => 'Oben (Standard)',
+                'align-items-center' => 'Mittig',
+                'align-items-end' => 'Unten',
+            ),
+            'eval' => array('tl_class' => 'w50'),
+        ),
 
 
         'show_bottombtn' => array(

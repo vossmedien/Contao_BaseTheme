@@ -151,11 +151,10 @@ html body {
     & + .ce--subline {
       margin-top: -$headline-spacing / 2;
       margin-bottom: $headline-spacing;
-      font-size: calc(#{$h1-font-size} / 2);
+      @include font-size($h1-subline-font-size);
     }
 
     > .ce--topline {
-      @include font-size(1.5rem);
       @include font-size($h1-font-size);
     }
   }
@@ -168,9 +167,9 @@ html body {
 
 
     & + .ce--subline {
-      margin-top: -$headline-spacing / 1.75;
+      margin-top: -$headline-spacing / 3;
       margin-bottom: $headline-spacing;
-      @include font-size(calc($h2-font-size / 2));
+      @include font-size($h2-subline-font-size);
     }
 
     > .ce--topline {
@@ -185,7 +184,7 @@ html body {
     font-size: 1.5rem;
     color: var(--bs-primary);
     display: block;
-    @include font-size($h3-font-size);
+    @include font-size($h3-subline-font-size);
 
 
     & + .ce--subline {
@@ -212,7 +211,7 @@ html body {
     }
 
     > .ce--topline {
-      @include font-size($h4-font-size);
+      @include font-size($h4-subline-font-size);
     }
   }
 

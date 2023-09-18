@@ -1863,6 +1863,46 @@
     "unicode": "f00c",
     "voted": false
   },
+  "angle-left": {
+    "aliases": {
+      "unicodes": {
+        "composite": [
+          "2039"
+        ],
+        "secondary": [
+          "10f104"
+        ]
+      }
+    },
+    "changes": [
+      "3.0.0",
+      "5.0.0",
+      "5.11.0",
+      "6.0.0-beta1",
+      "6.2.0",
+      "6.3.0",
+      "6.4.0"
+    ],
+    "free": [],
+    "label": "Angle Left",
+    "ligatures": [],
+    "search": {
+      "terms": [
+        "Single Left-Pointing Angle Quotation Mark",
+        "arrow",
+        "back",
+        "caret",
+        "less",
+        "previous"
+      ]
+    },
+    "styles": [
+      "light"
+    ],
+    "svg": {},
+    "unicode": "f104",
+    "voted": false
+  },
   "rectangle-xmark": {
     "aliases": {
       "names": [

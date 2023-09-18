@@ -520,6 +520,7 @@ readers do not read off random characters that represent icons */
 .fa-add::before { content: "\2b"; }
 .fa-angle-double-right::before { content: "\f101"; }
 .fa-angle-down::before { content: "\f107"; }
+.fa-angle-left::before { content: "\f104"; }
 .fa-angle-right::before { content: "\f105"; }
 .fa-angle-up::before { content: "\f106"; }
 .fa-angles-right::before { content: "\f101"; }

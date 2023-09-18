@@ -2803,6 +2803,67 @@
     "unicode": "f00c",
     "voted": false
   },
+  "angle-left": {
+    "aliases": {
+      "unicodes": {
+        "composite": [
+          "2039"
+        ],
+        "secondary": [
+          "10f104"
+        ]
+      }
+    },
+    "changes": [
+      "3.0.0",
+      "5.0.0",
+      "5.11.0",
+      "6.0.0-beta1",
+      "6.2.0",
+      "6.3.0",
+      "6.4.0"
+    ],
+    "familyStylesByLicense": {
+      "free": [],
+      "pro": [
+        {
+          "family": "sharp",
+          "style": "light"
+        }
+      ]
+    },
+    "label": "Angle Left",
+    "ligatures": [],
+    "search": {
+      "terms": [
+        "Single Left-Pointing Angle Quotation Mark",
+        "arrow",
+        "back",
+        "caret",
+        "less",
+        "previous"
+      ]
+    },
+    "svgs": {
+      "sharp": {
+        "light": {
+          "height": 512,
+          "lastModified": 1684766328,
+          "path": "M41.4 256l11.3-11.3 160-160L224 73.4 246.6 96l-11.3 11.3L86.6 256 235.3 404.7 246.6 416 224 438.6l-11.3-11.3-160-160L41.4 256z",
+          "raw": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 320 512\"><path d=\"M41.4 256l11.3-11.3 160-160L224 73.4 246.6 96l-11.3 11.3L86.6 256 235.3 404.7 246.6 416 224 438.6l-11.3-11.3-160-160L41.4 256z\"/></svg>",
+          "viewBox": [
+            0,
+            0,
+            320,
+            512
+          ],
+          "width": 320
+        }
+      }
+    },
+    "unicode": "f104",
+    "voted": false
+  },
   "rectangle-xmark": {
     "aliases": {
       "names": [

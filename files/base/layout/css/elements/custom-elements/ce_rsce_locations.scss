@@ -1,16 +1,36 @@
+@import "../../mixins";
+
+@import "../../variables-layout";
+
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
+
 .location-item {
-    display: none;
+  display: none;
 
-    &.is-active {
+  &.is-active {
     display: block;
-}
+  }
 
-    span, strong{
-        display: block;
+  i {
+    color: var(--bs-primary);
+    @include media-breakpoint-up(lg) {
+      position: absolute;
+      margin-left: -30px;
+      margin-top: 2px;
     }
+  }
 
-    a{
-        text-decoration: none;
-    }
+  span, strong {
+    display: block;
+  }
+
+  a {
+    text-decoration: none;
+  }
 }
 

@@ -8,7 +8,7 @@ if (TL_MODE == 'FE') {
     <div class="ce--inner container">
 
       <?php if ($this->headline || $this->subline || $this->topline) : ?>
-        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+        <div class="headline--wrapper ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?php if ($this->headline) : ?>
             <<?php echo($this->hl); ?>>
             <?php if ($this->topline) : ?>
@@ -17,7 +17,7 @@ if (TL_MODE == 'FE') {
             <span class="ce--headline-content"><?php echo($this->headline); ?></span>
         </<?php echo($this->hl); ?>>
         <?php if ($this->subline) : ?>
-                <span class="ce--subline"><?php echo $this->subline; ?></span>
+                <span class="ce--subline mb-4"><?php echo $this->subline; ?></span>
             <?php endif; ?>
     <?php endif; ?>
     </div>
@@ -27,32 +27,32 @@ if (TL_MODE == 'FE') {
 
 
          <?php if($this->content_text):?>
-        <div class="content_text mb-3">
+        <div class="content_text mb-md-8 mb-4" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?= $this->content_text;?>
         </div>
         <?php endif;?>
 
         <div class="row">
             <?php foreach ($this->rows as $row) : ?>
-                <?php if (!$this->as_rows) : ?><div class="col-md-4" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <?php if (!$this->as_rows) : ?><div class="mt-0 pt-4 px-0 <?= $row->column_width;?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                     <div class="col--inner">
-                    <div class="row"><?php endif; ?>
+                    <div class="<?= $this->row_align;?> row  <?php if ($row->reverse_columns) : ?>flex-row-reverse<?php endif; ?>"><?php endif; ?>
                 <?php if ($this->as_rows) : ?>
                 <div class="col-12"
                      data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                 <div class="col--inner">
-                <div class="row"><?php endif; ?>
+                <div class="<?= $this->row_align;?> gx-50px row "><?php endif; ?>
 
             <?php if($row->image):?>
-                <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="col-12 image <?php if ($this->as_rows) : ?>col-md-4 col-lg-3<?php endif; ?>  <?php if (!$this->as_rows) : ?>order-2<?php endif; ?>">
+                <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" <?php if ($row->reverse_columns) : ?>order-2<?php endif; ?> col-12 image   <?php if (!$this->as_rows) : ?>mt-0 order-2<?php else:?><?= $row->column_width;?><?php endif; ?>">
                     <div class="image--wrapper">
                         <img loading="lazy"   class="lazy"
-                             data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, null, null, null); ?>">
+                             data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size[0], $row->size[1], $row->size[2]); ?>">
                     </div>
                 </div>
             <?php endif;?>
                 <?php if ($this->as_rows) : ?>
-                <div class="col-md-8 col-lg-9">
+                <div class="col-md  <?php if ($row->reverse_columns) : ?>order-1<?php endif; ?>">
                 <div class="col--inner"><?php endif; ?>
             <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                  class="headline col-12  <?php if (!$this->as_rows) : ?>order-1<?php endif; ?>">
@@ -69,13 +69,49 @@ if (TL_MODE == 'FE') {
                 <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                      class="text col-12  <?php if (!$this->as_rows) : ?>order-3<?php endif; ?>">
                     <?php echo $row->text; ?>
+
+
+ <?php if (!$row->reverse_columns || $row->column_width != "col-12") : ?>
+                         <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" mt-2">
+                 <?php if ($row->buttons[0]->link_text != "") : ?>
+                            <div class="ce--buttons ">
+                                <?php foreach ($row->buttons as $button) : ?>
+                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
+                                       class="d-inline-block mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                       data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
+                                <?php endforeach ?>
+                            </div>
+                        <?php endif; ?>
+            </div>
+                        <?php endif;?>
+
+
                 </div>
+
+
                 <?php if (!$this->as_rows) : ?>
                 </div>
                 </div><?php endif; ?>
                 <?php if ($this->as_rows) : ?>
                 </div>
+
                 </div>
+                <?php if ($row->reverse_columns && $row->column_width == "col-12") : ?>
+                         <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="order-3 col-12 mt-2">
+                 <?php if ($row->buttons[0]->link_text != "") : ?>
+                            <div class="ce--buttons ">
+                                <?php foreach ($row->buttons as $button) : ?>
+                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
+                                       class="d-inline-block mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                       data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
+                                <?php endforeach ?>
+                            </div>
+                        <?php endif; ?>
+            </div>
+                        <?php endif;?>
+
                 </div>
                 </div><?php endif; ?>
                 </div>

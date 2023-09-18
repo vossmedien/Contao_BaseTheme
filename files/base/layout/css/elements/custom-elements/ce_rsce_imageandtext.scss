@@ -12,10 +12,7 @@ html body {
     .ce--image-text {
       &.as--rows {
 
-
         > .row {
-
-
           > * {
 
             &:not(:last-child) > .col--inner {
@@ -25,14 +22,6 @@ html body {
             }
 
             .col--inner > .row {
-              align-items: center;
-
-              > div {
-                .col--inner {
-                  //border-bottom: 2px solid var(--bs-body-color);
-                  //@include padding-bottom(40px);
-                }
-              }
             }
           }
         }
@@ -56,7 +45,7 @@ html body {
           --bs-gutter-y: 2rem;
 
           @include media-breakpoint-up(md) {
-            border-left:2px solid var(--bs-body-color);
+            border-left: 2px solid var(--bs-body-color);
             border-top: 2px solid var(--bs-body-color);
 
           }
@@ -64,7 +53,7 @@ html body {
           > div {
             @include media-breakpoint-up(md) {
               border-right: 2px solid var(--bs-body-color);
-    border-bottom: 2px solid var(--bs-body-color);
+              border-bottom: 2px solid var(--bs-body-color);
               padding-bottom: 2rem;
             }
           }
@@ -84,14 +73,15 @@ html body {
 
         .image {
           .image--wrapper {
-            margin: 1.5rem 0rem;
+            //margin: 1.5rem 0rem;
           }
         }
 
         .text {
           text-align: center;
 
-          a {
+          /*
+                 a {
             font-style: italic;
             font-weight: $font-weight-semibold;
             text-decoration: none;
@@ -108,6 +98,8 @@ html body {
               margin-left: 3px;
             }
           }
+           */
+
         }
       }
     }

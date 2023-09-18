@@ -1,41 +1,190 @@
 ---
-trash-can:
+rectangle-xmark:
   aliases:
     names:
-      - trash-alt
+      - rectangle-times
+      - times-rectangle
+      - window-close
     unicodes:
       composite:
-        - f014
+        - f2d4
       secondary:
-        - 10f2ed
+        - 10f410
   changes:
+    - 4.7.0
     - 5.0.0
-    - 5.7.0
-    - 5.10.2
     - 6.0.0-beta1
     - 6.0.0
     - 6.2.0
     - 6.3.0
     - 6.4.0
-  label: Trash Can
+  label: Rectangle Xmark
   search:
     terms:
-      - delete
-      - garbage
-      - hide
-      - remove
-      - trash-o
+      - browser
+      - cancel
+      - computer
+      - development
   styles:
-    - light
-  unicode: f2ed
+    - solid
+  unicode: f410
   voted: false
-info:
+angle-left:
   aliases:
     unicodes:
+      composite:
+        - '2039'
       secondary:
-        - 10f129
+        - 10f104
+  changes:
+    - 3.0.0
+    - 5.0.0
+    - 5.11.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Angle Left
+  search:
+    terms:
+      - Single Left-Pointing Angle Quotation Mark
+      - arrow
+      - back
+      - caret
+      - less
+      - previous
+  styles:
+    - light
+  unicode: f104
+  voted: false
+check:
+  aliases:
+    unicodes:
+      composite:
+        - '2713'
+        - '2714'
+      secondary:
+        - 10f00c
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.0.0
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Check
+  search:
+    terms:
+      - Check Mark
+      - accept
+      - agree
+      - check
+      - check mark
+      - checkmark
+      - confirm
+      - correct
+      - done
+      - mark
+      - notice
+      - notification
+      - notify
+      - ok
+      - select
+      - success
+      - tick
+      - todo
+      - 'yes'
+      - ✓
+  styles:
+    - light
+  unicode: f00c
+  voted: false
+circle-chevron-left:
+  aliases:
+    names:
+      - chevron-circle-left
+    unicodes:
+      secondary:
+        - 10f137
   changes:
     - 3.1.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Circle Chevron Left
+  search:
+    terms:
+      - arrow
+      - back
+      - previous
+  styles:
+    - light
+  unicode: f137
+  voted: false
+chevron-right:
+  aliases:
+    unicodes:
+      composite:
+        - 232a
+      secondary:
+        - 10f054
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Chevron Right
+  search:
+    terms:
+      - Right-Pointing Angle Bracket
+      - arrow
+      - bracket
+      - forward
+      - next
+  styles:
+    - light
+  unicode: f054
+  voted: false
+angle-up:
+  aliases:
+    unicodes:
+      composite:
+        - '2303'
+      secondary:
+        - 10f106
+  changes:
+    - 3.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Angle Up
+  search:
+    terms:
+      - Up Arrowhead
+      - arrow
+      - caret
+      - collapse
+      - upload
+  styles:
+    - light
+  unicode: f106
+  voted: false
+copyright:
+  aliases:
+    unicodes:
+      composite:
+        - a9
+      secondary:
+        - 10f1f9
+  changes:
+    - 4.2.0
     - 5.0.0
     - 5.10.1
     - 5.10.2
@@ -43,7 +192,519 @@ info:
     - 6.2.0
     - 6.3.0
     - 6.4.0
-  label: Info
+  label: Copyright
+  search:
+    terms:
+      - brand
+      - c
+      - copyright
+      - mark
+      - register
+      - trademark
+  styles:
+    - light
+  unicode: f1f9
+  voted: false
+quote-left:
+  aliases:
+    names:
+      - quote-left-alt
+    unicodes:
+      composite:
+        - 201c
+      secondary:
+        - 10f10d
+  changes:
+    - 3.0.0
+    - 5.0.0
+    - 5.0.9
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Quote Left
+  search:
+    terms:
+      - Left Double Quotation Mark
+      - mention
+      - note
+      - phrase
+      - text
+      - type
+  styles:
+    - light
+  unicode: f10d
+  voted: false
+xmark:
+  aliases:
+    names:
+      - close
+      - multiply
+      - remove
+      - times
+    unicodes:
+      composite:
+        - 1f5d9
+        - '2715'
+        - '2716'
+        - 274c
+        - d7
+      secondary:
+        - 10f00d
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 5.0.13
+    - 5.11.0
+    - 5.11.1
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Xmark
+  search:
+    terms:
+      - Cancellation X
+      - Multiplication Sign
+      - Multiplication X
+      - cancel
+      - close
+      - cross
+      - cross mark
+      - error
+      - exit
+      - incorrect
+      - mark
+      - multiplication
+      - multiply
+      - notice
+      - notification
+      - notify
+      - problem
+      - sign
+      - wrong
+      - x
+      - ×
+  styles:
+    - light
+  unicode: f00d
+  voted: false
+plus:
+  aliases:
+    names:
+      - add
+    unicodes:
+      composite:
+        - '2795'
+        - f067
+      primary:
+        - f067
+      secondary:
+        - 102b
+        - 10f067
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 5.0.13
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Plus
+  search:
+    terms:
+      - 0
+      - Plus Sign
+      - add
+      - create
+      - expand
+      - math
+      - new
+      - plus
+      - positive
+      - shape
+      - sign
+  styles:
+    - light
+    - solid
+  unicode: 2b
+  voted: false
+arrow-up:
+  aliases:
+    unicodes:
+      composite:
+        - '2191'
+      secondary:
+        - 10f062
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.0.0-beta2
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Arrow Up
+  search:
+    terms:
+      - Upwards Arrow
+      - forward
+      - upload
+  styles:
+    - light
+  unicode: f062
+  voted: false
+chevron-down:
+  aliases:
+    unicodes:
+      secondary:
+        - 10f078
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Chevron Down
+  search:
+    terms:
+      - arrow
+      - download
+      - expand
+  styles:
+    - light
+    - solid
+  unicode: f078
+  voted: false
+magnifying-glass:
+  aliases:
+    names:
+      - search
+    unicodes:
+      composite:
+        - 1f50d
+      secondary:
+        - 10f002
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Magnifying Glass
+  search:
+    terms:
+      - bigger
+      - enlarge
+      - find
+      - glass
+      - magnify
+      - magnifying
+      - magnifying glass tilted left
+      - preview
+      - search
+      - tool
+      - zoom
+  styles:
+    - light
+  unicode: f002
+  voted: false
+location-dot:
+  aliases:
+    names:
+      - map-marker-alt
+    unicodes:
+      secondary:
+        - 10f3c5
+  changes:
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.0.0-beta3
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Location Dot
+  search:
+    terms:
+      - address
+      - coordinates
+      - destination
+      - gps
+      - localize
+      - location
+      - map
+      - navigation
+      - paper
+      - pin
+      - place
+      - point of interest
+      - position
+      - route
+      - travel
+  styles:
+    - solid
+  unicode: f3c5
+  voted: false
+arrow-right-long:
+  aliases:
+    names:
+      - long-arrow-right
+    unicodes:
+      secondary:
+        - 10f178
+  changes:
+    - 3.2.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Arrow Right Long
+  search:
+    terms:
+      - forward
+      - long-arrow-right
+      - next
+  styles:
+    - light
+  unicode: f178
+  voted: false
+angle-down:
+  aliases:
+    unicodes:
+      composite:
+        - '2304'
+      secondary:
+        - 10f107
+  changes:
+    - 3.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Angle Down
+  search:
+    terms:
+      - Down Arrowhead
+      - arrow
+      - caret
+      - download
+      - expand
+  styles:
+    - light
+  unicode: f107
+  voted: false
+circle-down:
+  aliases:
+    names:
+      - arrow-alt-circle-down
+    unicodes:
+      composite:
+        - f01a
+      secondary:
+        - 10f358
+  changes:
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Circle Down
+  search:
+    terms:
+      - arrow-circle-o-down
+      - download
+  styles:
+    - solid
+  unicode: f358
+  voted: false
+arrow-right-arrow-left:
+  aliases:
+    names:
+      - exchange
+    unicodes:
+      composite:
+        - 21c4
+      secondary:
+        - 10f0ec
+  changes:
+    - 3.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.2.1
+    - 6.3.0
+    - 6.4.0
+  label: Arrow Right Arrow Left
+  search:
+    terms:
+      - Rightwards Arrow Over Leftwards Arrow
+      - arrow
+      - arrows
+      - reciprocate
+      - return
+      - swap
+      - transfer
+  styles:
+    - light
+  unicode: f0ec
+  voted: false
+facebook:
+  aliases:
+    unicodes:
+      composite:
+        - f230
+  changes:
+    - 2.0.0
+    - 5.0.0
+    - 5.8.2
+  label: Facebook
+  search:
+    terms:
+      - facebook-official
+      - social network
+  styles:
+    - brands
+  unicode: f09a
+  voted: false
+instagram:
+  changes:
+    - 4.6.0
+    - 5.0.0
+  label: Instagram
+  search:
+    terms: []
+  styles:
+    - brands
+  unicode: f16d
+  voted: false
+download:
+  aliases:
+    unicodes:
+      secondary:
+        - 10f019
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Download
+  search:
+    terms:
+      - export
+      - hard drive
+      - save
+      - transfer
+  styles:
+    - light
+    - solid
+  unicode: f019
+  voted: false
+linkedin:
+  changes:
+    - 1.0.0
+    - 5.0.0
+  label: LinkedIn
+  search:
+    terms:
+      - linkedin-square
+  styles:
+    - brands
+  unicode: f08c
+  voted: false
+cart-shopping:
+  aliases:
+    names:
+      - shopping-cart
+    unicodes:
+      composite:
+        - 1f6d2
+      secondary:
+        - 10f07a
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.0.0-beta3
+    - 6.2.0
+    - 6.2.1
+    - 6.3.0
+    - 6.4.0
+  label: Cart Shopping
+  search:
+    terms:
+      - buy
+      - cart
+      - checkout
+      - grocery
+      - payment
+      - purchase
+      - shopping
+      - shopping cart
+      - trolley
+  styles:
+    - light
+  unicode: f07a
+  voted: false
+minus:
+  aliases:
+    names:
+      - subtract
+    unicodes:
+      composite:
+        - '2013'
+        - '2212'
+        - '2796'
+      secondary:
+        - 10f068
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Minus
+  search:
+    terms:
+      - En Dash
+      - Minus Sign
+      - collapse
+      - delete
+      - hide
+      - math
+      - minify
+      - minus
+      - negative
+      - remove
+      - sign
+      - trash
+      - −
+  styles:
+    - light
+    - solid
+  unicode: f068
+  voted: false
+circle-info:
+  aliases:
+    names:
+      - info-circle
+    unicodes:
+      secondary:
+        - 10f05a
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Circle Info
   search:
     terms:
       - details
@@ -53,249 +714,35 @@ info:
       - support
   styles:
     - light
-  unicode: f129
+  unicode: f05a
   voted: false
-pencil:
+envelope:
   aliases:
-    names:
-      - pencil-alt
     unicodes:
       composite:
-        - 270f
-        - f040
-      primary:
-        - f040
+        - 1f582
+        - '2709'
+        - f003
       secondary:
-        - 10f040
-        - 10f303
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.0.0
-    - 6.2.0
-    - 6.2.1
-    - 6.3.0
-    - 6.4.0
-  label: Pencil
-  search:
-    terms:
-      - Lower Left Pencil
-      - design
-      - draw
-      - edit
-      - lead
-      - pencil
-      - update
-      - write
-  styles:
-    - light
-  unicode: f303
-  voted: false
-bars:
-  aliases:
-    names:
-      - navicon
-    unicodes:
-      secondary:
-        - 10f0c9
+        - 10f0e0
   changes:
     - 2.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.0.0-beta3
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Bars
-  search:
-    terms:
-      - checklist
-      - drag
-      - hamburger
-      - list
-      - menu
-      - nav
-      - navigation
-      - ol
-      - reorder
-      - settings
-      - todo
-      - ul
-  styles:
-    - light
-    - solid
-  unicode: f0c9
-  voted: false
-chevron-up:
-  aliases:
-    unicodes:
-      secondary:
-        - 10f077
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Chevron Up
-  search:
-    terms:
-      - arrow
-      - collapse
-      - upload
-  styles:
-    - light
-  unicode: f077
-  voted: false
-angle-right:
-  aliases:
-    unicodes:
-      composite:
-        - 203a
-      secondary:
-        - 10f105
-  changes:
-    - 3.0.0
-    - 5.0.0
-    - 5.11.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Angle Right
-  search:
-    terms:
-      - Single Right-Pointing Angle Quotation Mark
-      - arrow
-      - care
-      - forward
-      - more
-      - next
-  styles:
-    - light
-  unicode: f105
-  voted: false
-angles-right:
-  aliases:
-    names:
-      - angle-double-right
-    unicodes:
-      composite:
-        - bb
-      secondary:
-        - 10f101
-  changes:
-    - 3.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Angles Right
-  search:
-    terms:
-      - Right-Pointing Double Angle Quotation Mark
-      - arrows
-      - caret
-      - forward
-      - more
-      - next
-      - quote
-      - raquo
-  styles:
-    - light
-  unicode: f101
-  voted: false
-circle-play:
-  aliases:
-    names:
-      - play-circle
-    unicodes:
-      composite:
-        - f01d
-      secondary:
-        - 10f144
-  changes:
-    - 3.1.0
-    - 5.0.0
-    - 5.10.2
-    - 6.0.0-beta1
-    - 6.0.0
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Circle Play
-  search:
-    terms:
-      - audio
-      - music
-      - playing
-      - sound
-      - start
-      - video
-  styles:
-    - solid
-  unicode: f144
-  voted: false
-comment-pen:
-  aliases:
-    names:
-      - comment-edit
-    unicodes:
-      secondary:
-        - 10f4ae
-  changes:
-    - 5.0.9
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Comment Pen
-  search:
-    terms:
-      - bubble
-      - chat
-      - commenting
-      - conversation
-      - edit
-      - feedback
-      - message
-      - note
-      - notification
-      - pen
-      - pencil
-      - sms
-      - speech
-      - texting
-      - update
-      - write
-  styles:
-    - duotone
-  unicode: f4ae
-  voted: false
-envelope-open:
-  aliases:
-    unicodes:
-      composite:
-        - f2b7
-      secondary:
-        - 10f2b6
-  changes:
-    - 4.7.0
     - 5.0.0
     - 5.10.1
     - 5.10.2
     - 6.0.0-beta1
+    - 6.1.0
     - 6.2.0
+    - 6.2.1
     - 6.3.0
     - 6.4.0
-  label: Envelope Open
+  label: Envelope
   search:
     terms:
+      - Back of Envelope
       - e-mail
       - email
+      - envelope
       - letter
       - mail
       - message
@@ -303,63 +750,158 @@ envelope-open:
       - support
   styles:
     - light
-  unicode: f2b6
+    - solid
+  unicode: f0e0
   voted: false
-circle-phone:
+phone-volume:
   aliases:
     names:
-      - phone-circle
+      - volume-control-phone
+    unicodes:
+      secondary:
+        - 10f2a0
   changes:
+    - 4.6.0
+    - 5.0.0
+    - 5.0.3
+    - 5.7.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.2.1
+    - 6.3.0
+    - 6.4.0
+  label: Phone Volume
+  search:
+    terms:
+      - call
+      - earphone
+      - number
+      - sound
+      - support
+      - telephone
+      - voice
+      - volume-control-phone
+  styles:
+    - light
+  unicode: f2a0
+  voted: false
+quote-right:
+  aliases:
+    names:
+      - quote-right-alt
+    unicodes:
+      composite:
+        - 201d
+      secondary:
+        - 10f10e
+  changes:
+    - 3.0.0
+    - 5.0.0
+    - 5.0.9
     - 6.0.0-beta1
     - 6.2.0
     - 6.3.0
     - 6.4.0
-  label: Circle Phone
+  label: Quote Right
   search:
     terms:
-      - answer
-      - call
-      - handset
-      - telephone
+      - Right Double Quotation Mark
+      - mention
+      - note
+      - phrase
+      - text
+      - type
   styles:
-    - solid
-  unicode: e11b
+    - light
+  unicode: f10e
   voted: false
-arrow-right:
+trash:
+  aliases:
+    unicodes:
+      secondary:
+        - 10f1f8
+  changes:
+    - 4.2.0
+    - 5.0.0
+    - 5.7.0
+    - 5.10.2
+    - 6.0.0-beta1
+    - 6.0.0
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Trash
+  search:
+    terms:
+      - delete
+      - garbage
+      - hide
+      - remove
+  styles:
+    - light
+  unicode: f1f8
+  voted: false
+phone:
   aliases:
     unicodes:
       composite:
-        - '2192'
+        - 1f4de
+        - 1f57b
       secondary:
-        - 10f061
+        - 10f095
   changes:
-    - 1.0.0
+    - 2.0.0
     - 5.0.0
+    - 5.10.1
+    - 5.10.2
     - 6.0.0-beta1
-    - 6.0.0-beta2
     - 6.2.0
     - 6.3.0
     - 6.4.0
-  label: Arrow Right
+  label: Phone
   search:
     terms:
-      - Rightwards Arrow
-      - forward
-      - next
+      - Left Hand Telephone Receiver
+      - call
+      - earphone
+      - number
+      - phone
+      - receiver
+      - support
+      - telephone
+      - telephone receiver
+      - voice
   styles:
     - light
-  unicode: f061
+  unicode: f095
   voted: false
-xing:
+pen:
+  aliases:
+    unicodes:
+      composite:
+        - 1f58a
+      secondary:
+        - 10f304
   changes:
-    - 3.2.0
     - 5.0.0
-  label: Xing
+    - 5.1.0
+    - 6.0.0-beta1
+    - 6.0.0
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Pen
   search:
-    terms: []
+    terms:
+      - ballpoint
+      - design
+      - edit
+      - pen
+      - update
+      - write
   styles:
-    - brands
-  unicode: f168
+    - light
+  unicode: f304
   voted: false
 circle:
   aliases:
@@ -426,44 +968,71 @@ circle:
     - light
   unicode: f111
   voted: false
-pen:
+xing:
+  changes:
+    - 3.2.0
+    - 5.0.0
+  label: Xing
+  search:
+    terms: []
+  styles:
+    - brands
+  unicode: f168
+  voted: false
+arrow-right:
   aliases:
     unicodes:
       composite:
-        - 1f58a
+        - '2192'
       secondary:
-        - 10f304
+        - 10f061
   changes:
+    - 1.0.0
     - 5.0.0
-    - 5.1.0
     - 6.0.0-beta1
-    - 6.0.0
+    - 6.0.0-beta2
     - 6.2.0
     - 6.3.0
     - 6.4.0
-  label: Pen
+  label: Arrow Right
   search:
     terms:
-      - ballpoint
-      - design
-      - edit
-      - pen
-      - update
-      - write
+      - Rightwards Arrow
+      - forward
+      - next
   styles:
     - light
-  unicode: f304
+  unicode: f061
   voted: false
-phone:
+circle-phone:
+  aliases:
+    names:
+      - phone-circle
+  changes:
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Circle Phone
+  search:
+    terms:
+      - answer
+      - call
+      - handset
+      - telephone
+  styles:
+    - solid
+  unicode: e11b
+  voted: false
+envelope-open:
   aliases:
     unicodes:
       composite:
-        - 1f4de
-        - 1f57b
+        - f2b7
       secondary:
-        - 10f095
+        - 10f2b6
   changes:
-    - 2.0.0
+    - 4.7.0
     - 5.0.0
     - 5.10.1
     - 5.10.2
@@ -471,138 +1040,11 @@ phone:
     - 6.2.0
     - 6.3.0
     - 6.4.0
-  label: Phone
+  label: Envelope Open
   search:
     terms:
-      - Left Hand Telephone Receiver
-      - call
-      - earphone
-      - number
-      - phone
-      - receiver
-      - support
-      - telephone
-      - telephone receiver
-      - voice
-  styles:
-    - light
-  unicode: f095
-  voted: false
-trash:
-  aliases:
-    unicodes:
-      secondary:
-        - 10f1f8
-  changes:
-    - 4.2.0
-    - 5.0.0
-    - 5.7.0
-    - 5.10.2
-    - 6.0.0-beta1
-    - 6.0.0
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Trash
-  search:
-    terms:
-      - delete
-      - garbage
-      - hide
-      - remove
-  styles:
-    - light
-  unicode: f1f8
-  voted: false
-quote-right:
-  aliases:
-    names:
-      - quote-right-alt
-    unicodes:
-      composite:
-        - 201d
-      secondary:
-        - 10f10e
-  changes:
-    - 3.0.0
-    - 5.0.0
-    - 5.0.9
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Quote Right
-  search:
-    terms:
-      - Right Double Quotation Mark
-      - mention
-      - note
-      - phrase
-      - text
-      - type
-  styles:
-    - light
-  unicode: f10e
-  voted: false
-phone-volume:
-  aliases:
-    names:
-      - volume-control-phone
-    unicodes:
-      secondary:
-        - 10f2a0
-  changes:
-    - 4.6.0
-    - 5.0.0
-    - 5.0.3
-    - 5.7.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.2.1
-    - 6.3.0
-    - 6.4.0
-  label: Phone Volume
-  search:
-    terms:
-      - call
-      - earphone
-      - number
-      - sound
-      - support
-      - telephone
-      - voice
-      - volume-control-phone
-  styles:
-    - light
-  unicode: f2a0
-  voted: false
-envelope:
-  aliases:
-    unicodes:
-      composite:
-        - 1f582
-        - '2709'
-        - f003
-      secondary:
-        - 10f0e0
-  changes:
-    - 2.0.0
-    - 5.0.0
-    - 5.10.1
-    - 5.10.2
-    - 6.0.0-beta1
-    - 6.1.0
-    - 6.2.0
-    - 6.2.1
-    - 6.3.0
-    - 6.4.0
-  label: Envelope
-  search:
-    terms:
-      - Back of Envelope
       - e-mail
       - email
-      - envelope
       - letter
       - mail
       - message
@@ -610,16 +1052,139 @@ envelope:
       - support
   styles:
     - light
-    - solid
-  unicode: f0e0
+  unicode: f2b6
   voted: false
-circle-info:
+comment-pen:
   aliases:
     names:
-      - info-circle
+      - comment-edit
     unicodes:
       secondary:
-        - 10f05a
+        - 10f4ae
+  changes:
+    - 5.0.9
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Comment Pen
+  search:
+    terms:
+      - bubble
+      - chat
+      - commenting
+      - conversation
+      - edit
+      - feedback
+      - message
+      - note
+      - notification
+      - pen
+      - pencil
+      - sms
+      - speech
+      - texting
+      - update
+      - write
+  styles:
+    - duotone
+  unicode: f4ae
+  voted: false
+circle-play:
+  aliases:
+    names:
+      - play-circle
+    unicodes:
+      composite:
+        - f01d
+      secondary:
+        - 10f144
+  changes:
+    - 3.1.0
+    - 5.0.0
+    - 5.10.2
+    - 6.0.0-beta1
+    - 6.0.0
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Circle Play
+  search:
+    terms:
+      - audio
+      - music
+      - playing
+      - sound
+      - start
+      - video
+  styles:
+    - solid
+  unicode: f144
+  voted: false
+angles-right:
+  aliases:
+    names:
+      - angle-double-right
+    unicodes:
+      composite:
+        - bb
+      secondary:
+        - 10f101
+  changes:
+    - 3.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Angles Right
+  search:
+    terms:
+      - Right-Pointing Double Angle Quotation Mark
+      - arrows
+      - caret
+      - forward
+      - more
+      - next
+      - quote
+      - raquo
+  styles:
+    - light
+  unicode: f101
+  voted: false
+angle-right:
+  aliases:
+    unicodes:
+      composite:
+        - 203a
+      secondary:
+        - 10f105
+  changes:
+    - 3.0.0
+    - 5.0.0
+    - 5.11.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Angle Right
+  search:
+    terms:
+      - Single Right-Pointing Angle Quotation Mark
+      - arrow
+      - care
+      - forward
+      - more
+      - next
+  styles:
+    - light
+  unicode: f105
+  voted: false
+chevron-up:
+  aliases:
+    unicodes:
+      secondary:
+        - 10f077
   changes:
     - 1.0.0
     - 5.0.0
@@ -627,7 +1192,103 @@ circle-info:
     - 6.2.0
     - 6.3.0
     - 6.4.0
-  label: Circle Info
+  label: Chevron Up
+  search:
+    terms:
+      - arrow
+      - collapse
+      - upload
+  styles:
+    - light
+  unicode: f077
+  voted: false
+bars:
+  aliases:
+    names:
+      - navicon
+    unicodes:
+      secondary:
+        - 10f0c9
+  changes:
+    - 2.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.0.0-beta3
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Bars
+  search:
+    terms:
+      - checklist
+      - drag
+      - hamburger
+      - list
+      - menu
+      - nav
+      - navigation
+      - ol
+      - reorder
+      - settings
+      - todo
+      - ul
+  styles:
+    - light
+    - solid
+  unicode: f0c9
+  voted: false
+pencil:
+  aliases:
+    names:
+      - pencil-alt
+    unicodes:
+      composite:
+        - 270f
+        - f040
+      primary:
+        - f040
+      secondary:
+        - 10f040
+        - 10f303
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.0.0
+    - 6.2.0
+    - 6.2.1
+    - 6.3.0
+    - 6.4.0
+  label: Pencil
+  search:
+    terms:
+      - Lower Left Pencil
+      - design
+      - draw
+      - edit
+      - lead
+      - pencil
+      - update
+      - write
+  styles:
+    - light
+  unicode: f303
+  voted: false
+info:
+  aliases:
+    unicodes:
+      secondary:
+        - 10f129
+  changes:
+    - 3.1.0
+    - 5.0.0
+    - 5.10.1
+    - 5.10.2
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+  label: Info
   search:
     terms:
       - details
@@ -637,668 +1298,35 @@ circle-info:
       - support
   styles:
     - light
-  unicode: f05a
+  unicode: f129
   voted: false
-minus:
+trash-can:
   aliases:
     names:
-      - subtract
+      - trash-alt
     unicodes:
       composite:
-        - '2013'
-        - '2212'
-        - '2796'
+        - f014
       secondary:
-        - 10f068
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Minus
-  search:
-    terms:
-      - En Dash
-      - Minus Sign
-      - collapse
-      - delete
-      - hide
-      - math
-      - minify
-      - minus
-      - negative
-      - remove
-      - sign
-      - trash
-      - −
-  styles:
-    - light
-    - solid
-  unicode: f068
-  voted: false
-cart-shopping:
-  aliases:
-    names:
-      - shopping-cart
-    unicodes:
-      composite:
-        - 1f6d2
-      secondary:
-        - 10f07a
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.0.0-beta3
-    - 6.2.0
-    - 6.2.1
-    - 6.3.0
-    - 6.4.0
-  label: Cart Shopping
-  search:
-    terms:
-      - buy
-      - cart
-      - checkout
-      - grocery
-      - payment
-      - purchase
-      - shopping
-      - shopping cart
-      - trolley
-  styles:
-    - light
-  unicode: f07a
-  voted: false
-linkedin:
-  changes:
-    - 1.0.0
-    - 5.0.0
-  label: LinkedIn
-  search:
-    terms:
-      - linkedin-square
-  styles:
-    - brands
-  unicode: f08c
-  voted: false
-download:
-  aliases:
-    unicodes:
-      secondary:
-        - 10f019
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Download
-  search:
-    terms:
-      - export
-      - hard drive
-      - save
-      - transfer
-  styles:
-    - light
-    - solid
-  unicode: f019
-  voted: false
-instagram:
-  changes:
-    - 4.6.0
-    - 5.0.0
-  label: Instagram
-  search:
-    terms: []
-  styles:
-    - brands
-  unicode: f16d
-  voted: false
-facebook:
-  aliases:
-    unicodes:
-      composite:
-        - f230
-  changes:
-    - 2.0.0
-    - 5.0.0
-    - 5.8.2
-  label: Facebook
-  search:
-    terms:
-      - facebook-official
-      - social network
-  styles:
-    - brands
-  unicode: f09a
-  voted: false
-arrow-right-arrow-left:
-  aliases:
-    names:
-      - exchange
-    unicodes:
-      composite:
-        - 21c4
-      secondary:
-        - 10f0ec
-  changes:
-    - 3.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.2.1
-    - 6.3.0
-    - 6.4.0
-  label: Arrow Right Arrow Left
-  search:
-    terms:
-      - Rightwards Arrow Over Leftwards Arrow
-      - arrow
-      - arrows
-      - reciprocate
-      - return
-      - swap
-      - transfer
-  styles:
-    - light
-  unicode: f0ec
-  voted: false
-circle-down:
-  aliases:
-    names:
-      - arrow-alt-circle-down
-    unicodes:
-      composite:
-        - f01a
-      secondary:
-        - 10f358
+        - 10f2ed
   changes:
     - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Circle Down
-  search:
-    terms:
-      - arrow-circle-o-down
-      - download
-  styles:
-    - solid
-  unicode: f358
-  voted: false
-angle-down:
-  aliases:
-    unicodes:
-      composite:
-        - '2304'
-      secondary:
-        - 10f107
-  changes:
-    - 3.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Angle Down
-  search:
-    terms:
-      - Down Arrowhead
-      - arrow
-      - caret
-      - download
-      - expand
-  styles:
-    - light
-  unicode: f107
-  voted: false
-arrow-right-long:
-  aliases:
-    names:
-      - long-arrow-right
-    unicodes:
-      secondary:
-        - 10f178
-  changes:
-    - 3.2.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Arrow Right Long
-  search:
-    terms:
-      - forward
-      - long-arrow-right
-      - next
-  styles:
-    - light
-  unicode: f178
-  voted: false
-location-dot:
-  aliases:
-    names:
-      - map-marker-alt
-    unicodes:
-      secondary:
-        - 10f3c5
-  changes:
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.0.0-beta3
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Location Dot
-  search:
-    terms:
-      - address
-      - coordinates
-      - destination
-      - gps
-      - localize
-      - location
-      - map
-      - navigation
-      - paper
-      - pin
-      - place
-      - point of interest
-      - position
-      - route
-      - travel
-  styles:
-    - solid
-  unicode: f3c5
-  voted: false
-magnifying-glass:
-  aliases:
-    names:
-      - search
-    unicodes:
-      composite:
-        - 1f50d
-      secondary:
-        - 10f002
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Magnifying Glass
-  search:
-    terms:
-      - bigger
-      - enlarge
-      - find
-      - glass
-      - magnify
-      - magnifying
-      - magnifying glass tilted left
-      - preview
-      - search
-      - tool
-      - zoom
-  styles:
-    - light
-  unicode: f002
-  voted: false
-chevron-down:
-  aliases:
-    unicodes:
-      secondary:
-        - 10f078
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Chevron Down
-  search:
-    terms:
-      - arrow
-      - download
-      - expand
-  styles:
-    - light
-    - solid
-  unicode: f078
-  voted: false
-arrow-up:
-  aliases:
-    unicodes:
-      composite:
-        - '2191'
-      secondary:
-        - 10f062
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.0.0-beta2
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Arrow Up
-  search:
-    terms:
-      - Upwards Arrow
-      - forward
-      - upload
-  styles:
-    - light
-  unicode: f062
-  voted: false
-plus:
-  aliases:
-    names:
-      - add
-    unicodes:
-      composite:
-        - '2795'
-        - f067
-      primary:
-        - f067
-      secondary:
-        - 102b
-        - 10f067
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 5.0.13
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Plus
-  search:
-    terms:
-      - 0
-      - Plus Sign
-      - add
-      - create
-      - expand
-      - math
-      - new
-      - plus
-      - positive
-      - shape
-      - sign
-  styles:
-    - light
-    - solid
-  unicode: 2b
-  voted: false
-xmark:
-  aliases:
-    names:
-      - close
-      - multiply
-      - remove
-      - times
-    unicodes:
-      composite:
-        - 1f5d9
-        - '2715'
-        - '2716'
-        - 274c
-        - d7
-      secondary:
-        - 10f00d
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 5.0.13
-    - 5.11.0
-    - 5.11.1
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Xmark
-  search:
-    terms:
-      - Cancellation X
-      - Multiplication Sign
-      - Multiplication X
-      - cancel
-      - close
-      - cross
-      - cross mark
-      - error
-      - exit
-      - incorrect
-      - mark
-      - multiplication
-      - multiply
-      - notice
-      - notification
-      - notify
-      - problem
-      - sign
-      - wrong
-      - x
-      - ×
-  styles:
-    - light
-  unicode: f00d
-  voted: false
-quote-left:
-  aliases:
-    names:
-      - quote-left-alt
-    unicodes:
-      composite:
-        - 201c
-      secondary:
-        - 10f10d
-  changes:
-    - 3.0.0
-    - 5.0.0
-    - 5.0.9
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Quote Left
-  search:
-    terms:
-      - Left Double Quotation Mark
-      - mention
-      - note
-      - phrase
-      - text
-      - type
-  styles:
-    - light
-  unicode: f10d
-  voted: false
-copyright:
-  aliases:
-    unicodes:
-      composite:
-        - a9
-      secondary:
-        - 10f1f9
-  changes:
-    - 4.2.0
-    - 5.0.0
-    - 5.10.1
+    - 5.7.0
     - 5.10.2
     - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Copyright
-  search:
-    terms:
-      - brand
-      - c
-      - copyright
-      - mark
-      - register
-      - trademark
-  styles:
-    - light
-  unicode: f1f9
-  voted: false
-angle-up:
-  aliases:
-    unicodes:
-      composite:
-        - '2303'
-      secondary:
-        - 10f106
-  changes:
-    - 3.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Angle Up
-  search:
-    terms:
-      - Up Arrowhead
-      - arrow
-      - caret
-      - collapse
-      - upload
-  styles:
-    - light
-  unicode: f106
-  voted: false
-chevron-right:
-  aliases:
-    unicodes:
-      composite:
-        - 232a
-      secondary:
-        - 10f054
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Chevron Right
-  search:
-    terms:
-      - Right-Pointing Angle Bracket
-      - arrow
-      - bracket
-      - forward
-      - next
-  styles:
-    - light
-  unicode: f054
-  voted: false
-circle-chevron-left:
-  aliases:
-    names:
-      - chevron-circle-left
-    unicodes:
-      secondary:
-        - 10f137
-  changes:
-    - 3.1.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Circle Chevron Left
-  search:
-    terms:
-      - arrow
-      - back
-      - previous
-  styles:
-    - light
-  unicode: f137
-  voted: false
-check:
-  aliases:
-    unicodes:
-      composite:
-        - '2713'
-        - '2714'
-      secondary:
-        - 10f00c
-  changes:
-    - 1.0.0
-    - 5.0.0
-    - 6.0.0-beta1
     - 6.0.0
     - 6.2.0
     - 6.3.0
     - 6.4.0
-  label: Check
+  label: Trash Can
   search:
     terms:
-      - Check Mark
-      - accept
-      - agree
-      - check
-      - check mark
-      - checkmark
-      - confirm
-      - correct
-      - done
-      - mark
-      - notice
-      - notification
-      - notify
-      - ok
-      - select
-      - success
-      - tick
-      - todo
-      - 'yes'
-      - ✓
+      - delete
+      - garbage
+      - hide
+      - remove
+      - trash-o
   styles:
     - light
-  unicode: f00c
-  voted: false
-rectangle-xmark:
-  aliases:
-    names:
-      - rectangle-times
-      - times-rectangle
-      - window-close
-    unicodes:
-      composite:
-        - f2d4
-      secondary:
-        - 10f410
-  changes:
-    - 4.7.0
-    - 5.0.0
-    - 6.0.0-beta1
-    - 6.0.0
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-  label: Rectangle Xmark
-  search:
-    terms:
-      - browser
-      - cancel
-      - computer
-      - development
-  styles:
-    - solid
-  unicode: f410
+  unicode: f2ed
   voted: false
