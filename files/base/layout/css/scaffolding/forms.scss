@@ -44,20 +44,27 @@ form {
 }
 
 
-.form-check-input{
+.form-check-input {
   margin-top: 2px;
-  &:checked {
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
-}
-}
 
+  &:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+  }
+}
 
 
 .form-label {
   margin-bottom: .25rem;
 }
 
+
+.form-select,.form-control{
+  font-size: var(--bs-body-main-font-size);
+  &:focus, &:active{
+    box-shadow: 0 0 0 0.25rem var(--bs-primary-rgb);
+  }
+}
 
 .widget {
   transition: opacity 0.15s ease-in-out;

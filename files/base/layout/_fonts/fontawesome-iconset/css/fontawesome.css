@@ -539,6 +539,8 @@ readers do not read off random characters that represent icons */
 .fa-circle-chevron-left::before { content: "\f137"; }
 .fa-circle-down::before { content: "\f358"; }
 .fa-circle-info::before { content: "\f05a"; }
+.fa-circle-phone::before { content: "\e11b"; }
+.fa-circle-play::before { content: "\f144"; }
 .fa-close::before { content: "\f00d"; }
 .fa-comment-edit::before { content: "\f4ae"; }
 .fa-comment-pen::before { content: "\f4ae"; }
@@ -549,28 +551,38 @@ readers do not read off random characters that represent icons */
 .fa-exchange::before { content: "\f0ec"; }
 .fa-info::before { content: "\f129"; }
 .fa-info-circle::before { content: "\f05a"; }
+.fa-location-dot::before { content: "\f3c5"; }
 .fa-long-arrow-right::before { content: "\f178"; }
 .fa-magnifying-glass::before { content: "\f002"; }
+.fa-map-marker-alt::before { content: "\f3c5"; }
+.fa-minus::before { content: "\f068"; }
 .fa-multiply::before { content: "\f00d"; }
 .fa-navicon::before { content: "\f0c9"; }
 .fa-pen::before { content: "\f304"; }
 .fa-pencil::before { content: "\f303"; }
 .fa-pencil-alt::before { content: "\f303"; }
 .fa-phone::before { content: "\f095"; }
+.fa-phone-circle::before { content: "\e11b"; }
 .fa-phone-volume::before { content: "\f2a0"; }
+.fa-play-circle::before { content: "\f144"; }
 .fa-plus::before { content: "\2b"; }
 .fa-quote-left::before { content: "\f10d"; }
 .fa-quote-left-alt::before { content: "\f10d"; }
 .fa-quote-right::before { content: "\f10e"; }
 .fa-quote-right-alt::before { content: "\f10e"; }
+.fa-rectangle-times::before { content: "\f410"; }
+.fa-rectangle-xmark::before { content: "\f410"; }
 .fa-remove::before { content: "\f00d"; }
 .fa-search::before { content: "\f002"; }
 .fa-shopping-cart::before { content: "\f07a"; }
+.fa-subtract::before { content: "\f068"; }
 .fa-times::before { content: "\f00d"; }
+.fa-times-rectangle::before { content: "\f410"; }
 .fa-trash::before { content: "\f1f8"; }
 .fa-trash-alt::before { content: "\f2ed"; }
 .fa-trash-can::before { content: "\f2ed"; }
 .fa-volume-control-phone::before { content: "\f2a0"; }
+.fa-window-close::before { content: "\f410"; }
 .fa-xmark::before { content: "\f00d"; }
 
 .sr-only,

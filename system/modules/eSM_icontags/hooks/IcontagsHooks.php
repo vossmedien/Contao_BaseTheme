@@ -16,59 +16,49 @@ namespace eSM_icontags;
 
 class IcontagsHooks extends \Controller
 {
-	public function eSMReplaceInsertTags($strTag)
-	{
-		$elements = explode('::', $strTag);
+    public function eSMReplaceInsertTags($strTag)
+    {
+        $elements = explode('::', $strTag);
 
-		if ($elements[0] == 'icon')
-		{
-			if ($elements[1])
-			{
-				$fragments = explode(':', $elements[1]);
-			}
-			if ($fragments[0] && $fragments[1])
-			{
-				$chunks = explode(' ',$fragments[1]);
+        if ($elements[0] == 'icon') {
+            if ($elements[1]) {
+                $fragments = explode(':', $elements[1]);
+            }
+            if ($fragments[0] && $fragments[1]) {
+                $chunks = explode(' ', $fragments[1]);
 
-				$strPrefix = $fragments[0];
-				$strClasses = '';
-				foreach ($chunks as $chunk)
-				{
-					$strClasses .= ' '.$strPrefix.'-'.$chunk;
-				}
+                $strClasses = '';
+                foreach ($chunks as $chunk) {
+                    $strClasses .= ' ' . $chunk;
+                }
 
-				if ($fragments[2])
-				{
-					$strClasses .= ' '.$fragments[2];
-				}
+                if ($fragments[2]) {
+                    $strClasses .= ' ' . $fragments[2];
+                }
 
-				return sprintf('<i class="%s%s"></i>',$strPrefix,$strClasses);
-			}
-		} elseif ($elements[0] == 'icon_pl')
-		{
-			if ($elements[1])
-			{
-				$fragments = explode(':', $elements[1]);
-			}
-			if ($fragments[0] && $fragments[1])
-			{
-				$chunks = explode(' ',$fragments[1]);
+                return sprintf('<i class="%s%s"></i>', $fragments[0], $strClasses);
+            }
 
-				$strClasses = '';
-				foreach ($chunks as $chunk)
-				{
-					$strClasses .= ' '.$chunk;
-				}
+        } elseif ($elements[0] == 'icon_sharp') {
+            if ($elements[1]) {
+                $fragments = explode(':', $elements[1]);
+            }
+            if ($fragments[0] && $fragments[1]) {
+                $chunks = explode(' ', $fragments[1]);
 
-				if ($fragments[2])
-				{
-					$strClasses .= ' '.$fragments[2];
-				}
+                $strClasses = '';
+                foreach ($chunks as $chunk) {
+                    $strClasses .= ' ' . $chunk;
+                }
 
-				return sprintf('<i class="%s%s"></i>',$fragments[0],$strClasses);
-			}
-		}
+                if ($fragments[2]) {
+                    $strClasses .= ' ' . $fragments[2];
+                }
 
-		return false;
-	}
+                return sprintf('<i class="fa-sharp %s%s"></i>', $fragments[0], $strClasses);
+            }
+        }
+
+        return false;
+    }
 }

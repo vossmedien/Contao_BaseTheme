@@ -2,6 +2,10 @@
   @extend .bg-gradient;
 }
 
+.bg-gray{
+  background-color: var(--bs-gray);
+}
+
 .pos-centered {
   transform: translate(-50%, -50%);
   left: 50%;

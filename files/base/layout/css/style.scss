@@ -2,6 +2,9 @@
 @import "variables-layout";
 @import "_theme/variables-layout";
 
+@import "../_fonts/fontawesome-iconset/scss/fontawesome";
+
+
 @import "icon-package";
 
 @import "_theme/fonts";
@@ -61,7 +64,7 @@ html {
     @import "elements/slider";
     @import "elements/news";
     @import "elements/events";
-    @import "elements/contao-accordions";
+    @import "elements/accordions";
     @import "elements/ce_downloads";
     @import "elements/ce_image";
     @import "elements/ce_gallery";

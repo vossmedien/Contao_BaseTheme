@@ -103,8 +103,11 @@
 
   --bs-body-bg: #fff;
   --bs-body-bg-rgb: 255, 255, 255;
-
   --bs-body-color-inverse: #fff;
+
+  --bs-link-color: var(--bs-body-color);
+  --bs-link-hover-color: var(--bs-primary);
+
   --bs-headline-color: var(--bs-body-color);
   --bs-headline-font-weight: #{$font-weight-bold};
 
@@ -186,6 +189,9 @@
   --bs-container-width-xxl: 1600px;
 
   --bs-mobile-max-width: 767px;
+
+
+
 
   //Swiper
 

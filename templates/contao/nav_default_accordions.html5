@@ -9,8 +9,8 @@
                     </a>
                     <?php if ($this->level == "level_1" && $item['subitems']): ?>
                         <div class="nav-toggler">
-                            <i class="is-open fas fa-chevron-circle-up"></i>
-                            <i class="is-closed fal fa-chevron-circle-down"></i>
+                            <i class="is-open fa-solid fa-sharp fa-chevron-circle-up"></i>
+                            <i class="is-closed fa-solid fa-sharp fa-chevron-circle-down"></i>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -25,8 +25,8 @@
                     </a>
                     <?php if ($this->level == "level_1" && $item['subitems']): ?>
                         <div class="nav-toggler">
-                            <i class="is-open fas fa-chevron-circle-up"></i>
-                            <i class="is-closed fal fa-chevron-circle-down"></i>
+                            <i class="is-open fa-solid fa-sharp fa-chevron-circle-up"></i>
+                            <i class="is-closed fa-light fa-sharp fa-chevron-circle-down"></i>
                         </div>
                     <?php endif; ?>
                 </div>

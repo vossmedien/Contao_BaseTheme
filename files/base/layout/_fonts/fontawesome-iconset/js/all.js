@@ -329,721 +329,11 @@
     "facebook": [512,512,["62000"],"f09a","M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"],
     "instagram": [448,512,[],"f16d","M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"],
     "linkedin": [448,512,[],"f08c","M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"],
-    "twitter": [512,512,[],"f099","M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"],
     "xing": [384,512,[],"f168","M162.7 210c-1.8 3.3-25.2 44.4-70.1 123.5-4.9 8.3-10.8 12.5-17.7 12.5H9.8c-7.7 0-12.1-7.5-8.5-14.4l69-121.3c.2 0 .2-.1 0-.3l-43.9-75.6c-4.3-7.8.3-14.1 8.5-14.1H100c7.3 0 13.3 4.1 18 12.2l44.7 77.5zM382.6 46.1l-144 253v.3L330.2 466c3.9 7.1.2 14.1-8.5 14.1h-65.2c-7.6 0-13.6-4-18-12.2l-92.4-168.5c3.3-5.8 51.5-90.8 144.8-255.2 4.6-8.1 10.4-12.2 17.5-12.2h65.7c8 0 12.3 6.7 8.5 14.1z"]
 
   };
   var prefixes$1 = [null    ,'fab',
     ,'fa-brands'
-
-  ];
-  bunker(function () {
-    var _iterator = _createForOfIteratorHelper(prefixes$1),
-        _step;
-
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var prefix = _step.value;
-        if (!prefix) continue;
-        defineIcons(prefix, icons);
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
-    }
-  });
-
-}());
-
-(function () {
-  'use strict';
-
-  function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-
-    if (Object.getOwnPropertySymbols) {
-      var symbols = Object.getOwnPropertySymbols(object);
-      enumerableOnly && (symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      })), keys.push.apply(keys, symbols);
-    }
-
-    return keys;
-  }
-
-  function _objectSpread2(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = null != arguments[i] ? arguments[i] : {};
-      i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-
-    return target;
-  }
-
-  function _defineProperty(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-
-    return obj;
-  }
-
-  function _toConsumableArray(arr) {
-    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-  }
-
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-  }
-
-  function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-  }
-
-  function _unsupportedIterableToArray(o, minLen) {
-    if (!o) return;
-    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-    var n = Object.prototype.toString.call(o).slice(8, -1);
-    if (n === "Object" && o.constructor) n = o.constructor.name;
-    if (n === "Map" || n === "Set") return Array.from(o);
-    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-  }
-
-  function _arrayLikeToArray(arr, len) {
-    if (len == null || len > arr.length) len = arr.length;
-
-    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-
-    return arr2;
-  }
-
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-
-  function _createForOfIteratorHelper(o, allowArrayLike) {
-    var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-
-    if (!it) {
-      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-        if (it) o = it;
-        var i = 0;
-
-        var F = function () {};
-
-        return {
-          s: F,
-          n: function () {
-            if (i >= o.length) return {
-              done: true
-            };
-            return {
-              done: false,
-              value: o[i++]
-            };
-          },
-          e: function (e) {
-            throw e;
-          },
-          f: F
-        };
-      }
-
-      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-    }
-
-    var normalCompletion = true,
-        didErr = false,
-        err;
-    return {
-      s: function () {
-        it = it.call(o);
-      },
-      n: function () {
-        var step = it.next();
-        normalCompletion = step.done;
-        return step;
-      },
-      e: function (e) {
-        didErr = true;
-        err = e;
-      },
-      f: function () {
-        try {
-          if (!normalCompletion && it.return != null) it.return();
-        } finally {
-          if (didErr) throw err;
-        }
-      }
-    };
-  }
-
-  var _WINDOW = {};
-  var _DOCUMENT = {};
-
-  try {
-    if (typeof window !== 'undefined') _WINDOW = window;
-    if (typeof document !== 'undefined') _DOCUMENT = document;
-  } catch (e) {}
-
-  var _ref = _WINDOW.navigator || {},
-      _ref$userAgent = _ref.userAgent,
-      userAgent = _ref$userAgent === void 0 ? '' : _ref$userAgent;
-  var WINDOW = _WINDOW;
-  var DOCUMENT = _DOCUMENT;
-  var IS_BROWSER = !!WINDOW.document;
-  var IS_DOM = !!DOCUMENT.documentElement && !!DOCUMENT.head && typeof DOCUMENT.addEventListener === 'function' && typeof DOCUMENT.createElement === 'function';
-  var IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
-
-  var _familyProxy, _familyProxy2, _familyProxy3, _familyProxy4, _familyProxy5;
-
-  var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
-  var PRODUCTION = function () {
-    try {
-      return "production" === 'production';
-    } catch (e) {
-      return false;
-    }
-  }();
-  var FAMILY_CLASSIC = 'classic';
-  var FAMILY_SHARP = 'sharp';
-  var FAMILIES = [FAMILY_CLASSIC, FAMILY_SHARP];
-
-  function familyProxy(obj) {
-    // Defaults to the classic family if family is not available
-    return new Proxy(obj, {
-      get: function get(target, prop) {
-        return prop in target ? target[prop] : target[FAMILY_CLASSIC];
-      }
-    });
-  }
-  var PREFIX_TO_STYLE = familyProxy((_familyProxy = {}, _defineProperty(_familyProxy, FAMILY_CLASSIC, {
-    'fa': 'solid',
-    'fas': 'solid',
-    'fa-solid': 'solid',
-    'far': 'regular',
-    'fa-regular': 'regular',
-    'fal': 'light',
-    'fa-light': 'light',
-    'fat': 'thin',
-    'fa-thin': 'thin',
-    'fad': 'duotone',
-    'fa-duotone': 'duotone',
-    'fab': 'brands',
-    'fa-brands': 'brands',
-    'fak': 'kit',
-    'fa-kit': 'kit'
-  }), _defineProperty(_familyProxy, FAMILY_SHARP, {
-    'fa': 'solid',
-    'fass': 'solid',
-    'fa-solid': 'solid',
-    'fasr': 'regular',
-    'fa-regular': 'regular',
-    'fasl': 'light',
-    'fa-light': 'light'
-  }), _familyProxy));
-  var STYLE_TO_PREFIX = familyProxy((_familyProxy2 = {}, _defineProperty(_familyProxy2, FAMILY_CLASSIC, {
-    'solid': 'fas',
-    'regular': 'far',
-    'light': 'fal',
-    'thin': 'fat',
-    'duotone': 'fad',
-    'brands': 'fab',
-    'kit': 'fak'
-  }), _defineProperty(_familyProxy2, FAMILY_SHARP, {
-    'solid': 'fass',
-    'regular': 'fasr',
-    'light': 'fasl'
-  }), _familyProxy2));
-  var PREFIX_TO_LONG_STYLE = familyProxy((_familyProxy3 = {}, _defineProperty(_familyProxy3, FAMILY_CLASSIC, {
-    'fab': 'fa-brands',
-    'fad': 'fa-duotone',
-    'fak': 'fa-kit',
-    'fal': 'fa-light',
-    'far': 'fa-regular',
-    'fas': 'fa-solid',
-    'fat': 'fa-thin'
-  }), _defineProperty(_familyProxy3, FAMILY_SHARP, {
-    'fass': 'fa-solid',
-    'fasr': 'fa-regular',
-    'fasl': 'fa-light'
-  }), _familyProxy3));
-  var LONG_STYLE_TO_PREFIX = familyProxy((_familyProxy4 = {}, _defineProperty(_familyProxy4, FAMILY_CLASSIC, {
-    'fa-brands': 'fab',
-    'fa-duotone': 'fad',
-    'fa-kit': 'fak',
-    'fa-light': 'fal',
-    'fa-regular': 'far',
-    'fa-solid': 'fas',
-    'fa-thin': 'fat'
-  }), _defineProperty(_familyProxy4, FAMILY_SHARP, {
-    'fa-solid': 'fass',
-    'fa-regular': 'fasr',
-    'fa-light': 'fasl'
-  }), _familyProxy4));
-  var FONT_WEIGHT_TO_PREFIX = familyProxy((_familyProxy5 = {}, _defineProperty(_familyProxy5, FAMILY_CLASSIC, {
-    '900': 'fas',
-    '400': 'far',
-    'normal': 'far',
-    '300': 'fal',
-    '100': 'fat'
-  }), _defineProperty(_familyProxy5, FAMILY_SHARP, {
-    '900': 'fass',
-    '400': 'fasr',
-    '300': 'fasl'
-  }), _familyProxy5));
-  var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
-  var DUOTONE_CLASSES = {
-    GROUP: 'duotone-group',
-    SWAP_OPACITY: 'swap-opacity',
-    PRIMARY: 'primary',
-    SECONDARY: 'secondary'
-  };
-  var prefixes = new Set();
-  Object.keys(STYLE_TO_PREFIX[FAMILY_CLASSIC]).map(prefixes.add.bind(prefixes));
-  Object.keys(STYLE_TO_PREFIX[FAMILY_SHARP]).map(prefixes.add.bind(prefixes));
-  var RESERVED_CLASSES = [].concat(FAMILIES, _toConsumableArray(prefixes), ['2xs', 'xs', 'sm', 'lg', 'xl', '2xl', 'beat', 'border', 'fade', 'beat-fade', 'bounce', 'flip-both', 'flip-horizontal', 'flip-vertical', 'flip', 'fw', 'inverse', 'layers-counter', 'layers-text', 'layers', 'li', 'pull-left', 'pull-right', 'pulse', 'rotate-180', 'rotate-270', 'rotate-90', 'rotate-by', 'shake', 'spin-pulse', 'spin-reverse', 'spin', 'stack-1x', 'stack-2x', 'stack', 'ul', DUOTONE_CLASSES.GROUP, DUOTONE_CLASSES.SWAP_OPACITY, DUOTONE_CLASSES.PRIMARY, DUOTONE_CLASSES.SECONDARY]).concat(oneToTen.map(function (n) {
-    return "".concat(n, "x");
-  })).concat(oneToTwenty.map(function (n) {
-    return "w-".concat(n);
-  }));
-
-  function bunker(fn) {
-    try {
-      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-
-      fn.apply(void 0, args);
-    } catch (e) {
-      if (!PRODUCTION) {
-        throw e;
-      }
-    }
-  }
-
-  var w = WINDOW || {};
-  if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
-  if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
-  if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
-  if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
-  var namespace = w[NAMESPACE_IDENTIFIER];
-
-  function normalizeIcons(icons) {
-    return Object.keys(icons).reduce(function (acc, iconName) {
-      var icon = icons[iconName];
-      var expanded = !!icon.icon;
-
-      if (expanded) {
-        acc[icon.iconName] = icon.icon;
-      } else {
-        acc[iconName] = icon;
-      }
-
-      return acc;
-    }, {});
-  }
-
-  function defineIcons(prefix, icons) {
-    var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    var _params$skipHooks = params.skipHooks,
-        skipHooks = _params$skipHooks === void 0 ? false : _params$skipHooks;
-    var normalized = normalizeIcons(icons);
-
-    if (typeof namespace.hooks.addPack === 'function' && !skipHooks) {
-      namespace.hooks.addPack(prefix, normalizeIcons(icons));
-    } else {
-      namespace.styles[prefix] = _objectSpread2(_objectSpread2({}, namespace.styles[prefix] || {}), normalized);
-    }
-    /**
-     * Font Awesome 4 used the prefix of `fa` for all icons. With the introduction
-     * of new styles we needed to differentiate between them. Prefix `fa` is now an alias
-     * for `fas` so we'll ease the upgrade process for our users by automatically defining
-     * this as well.
-     */
-
-
-    if (prefix === 'fas') {
-      defineIcons('fa', icons);
-    }
-  }
-
-  var icons = {
-    
-    "copyright": [512,512,["169"],"f1f9","M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM199.4 312.6c-31.2-31.2-31.2-81.9 0-113.1s81.9-31.2 113.1 0c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9c-50-50-131-50-181 0s-50 131 0 181s131 50 181 0c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0c-31.2 31.2-81.9 31.2-113.1 0z"],
-    "envelope-open": [512,512,["62135"],"f2b6","M255.4 48.2c.2-.1 .4-.2 .6-.2s.4 .1 .6 .2L460.6 194c2.1 1.5 3.4 3.9 3.4 6.5v13.6L291.5 355.7c-20.7 17-50.4 17-71.1 0L48 214.1V200.5c0-2.6 1.2-5 3.4-6.5L255.4 48.2zM48 276.2L190 392.8c38.4 31.5 93.7 31.5 132 0L464 276.2V456c0 4.4-3.6 8-8 8H56c-4.4 0-8-3.6-8-8V276.2zM256 0c-10.2 0-20.2 3.2-28.5 9.1L23.5 154.9C8.7 165.4 0 182.4 0 200.5V456c0 30.9 25.1 56 56 56H456c30.9 0 56-25.1 56-56V200.5c0-18.1-8.7-35.1-23.4-45.6L284.5 9.1C276.2 3.2 266.2 0 256 0z"],
-    "phone-volume": [512,512,["volume-control-phone"],"f2a0","M280 0C408.1 0 512 103.9 512 232c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-101.6-82.4-184-184-184c-13.3 0-24-10.7-24-24s10.7-24 24-24zm8 192a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm-32-72c0-13.3 10.7-24 24-24c75.1 0 136 60.9 136 136c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-48.6-39.4-88-88-88c-13.3 0-24-10.7-24-24zm73 166.7c11.3-13.8 30.3-18.5 46.7-11.4l112 48c17.6 7.5 27.4 26.5 23.4 45.1l-24 112c-4 18.4-20.3 31.6-39.1 31.6l0 0c-6.1 0-12.2-.1-18.2-.4l-.1 0 0 0c-10-.4-19.8-1.1-29.6-2.2C175.2 485.6 0 295.2 0 64v0C0 45.1 13.2 28.8 31.6 24.9l112-24c18.7-4 37.6 5.8 45.1 23.4l48 112c7 16.4 2.4 35.4-11.4 46.7l-40.6 33.2c26.7 46 65.1 84.4 111.1 111.1L329 286.7zm133.8 78.1l-100.4-43L333 357.6c-14.9 18.2-40.8 22.9-61.2 11.1c-53.3-30.9-97.7-75.3-128.6-128.6c-11.8-20.4-7.1-46.3 11.1-61.2l35.9-29.4-43-100.4L48.1 70.5C51.5 286.2 225.8 460.5 441.5 464l21.3-99.2z"]
-
-  };
-  var prefixes$1 = [null    ,'far',
-    ,'fa-regular'
-
-  ];
-  bunker(function () {
-    var _iterator = _createForOfIteratorHelper(prefixes$1),
-        _step;
-
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var prefix = _step.value;
-        if (!prefix) continue;
-        defineIcons(prefix, icons);
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
-    }
-  });
-
-}());
-
-(function () {
-  'use strict';
-
-  function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-
-    if (Object.getOwnPropertySymbols) {
-      var symbols = Object.getOwnPropertySymbols(object);
-      enumerableOnly && (symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      })), keys.push.apply(keys, symbols);
-    }
-
-    return keys;
-  }
-
-  function _objectSpread2(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = null != arguments[i] ? arguments[i] : {};
-      i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-
-    return target;
-  }
-
-  function _defineProperty(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-
-    return obj;
-  }
-
-  function _toConsumableArray(arr) {
-    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-  }
-
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-  }
-
-  function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-  }
-
-  function _unsupportedIterableToArray(o, minLen) {
-    if (!o) return;
-    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-    var n = Object.prototype.toString.call(o).slice(8, -1);
-    if (n === "Object" && o.constructor) n = o.constructor.name;
-    if (n === "Map" || n === "Set") return Array.from(o);
-    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-  }
-
-  function _arrayLikeToArray(arr, len) {
-    if (len == null || len > arr.length) len = arr.length;
-
-    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-
-    return arr2;
-  }
-
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-
-  function _createForOfIteratorHelper(o, allowArrayLike) {
-    var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-
-    if (!it) {
-      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-        if (it) o = it;
-        var i = 0;
-
-        var F = function () {};
-
-        return {
-          s: F,
-          n: function () {
-            if (i >= o.length) return {
-              done: true
-            };
-            return {
-              done: false,
-              value: o[i++]
-            };
-          },
-          e: function (e) {
-            throw e;
-          },
-          f: F
-        };
-      }
-
-      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-    }
-
-    var normalCompletion = true,
-        didErr = false,
-        err;
-    return {
-      s: function () {
-        it = it.call(o);
-      },
-      n: function () {
-        var step = it.next();
-        normalCompletion = step.done;
-        return step;
-      },
-      e: function (e) {
-        didErr = true;
-        err = e;
-      },
-      f: function () {
-        try {
-          if (!normalCompletion && it.return != null) it.return();
-        } finally {
-          if (didErr) throw err;
-        }
-      }
-    };
-  }
-
-  var _WINDOW = {};
-  var _DOCUMENT = {};
-
-  try {
-    if (typeof window !== 'undefined') _WINDOW = window;
-    if (typeof document !== 'undefined') _DOCUMENT = document;
-  } catch (e) {}
-
-  var _ref = _WINDOW.navigator || {},
-      _ref$userAgent = _ref.userAgent,
-      userAgent = _ref$userAgent === void 0 ? '' : _ref$userAgent;
-  var WINDOW = _WINDOW;
-  var DOCUMENT = _DOCUMENT;
-  var IS_BROWSER = !!WINDOW.document;
-  var IS_DOM = !!DOCUMENT.documentElement && !!DOCUMENT.head && typeof DOCUMENT.addEventListener === 'function' && typeof DOCUMENT.createElement === 'function';
-  var IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
-
-  var _familyProxy, _familyProxy2, _familyProxy3, _familyProxy4, _familyProxy5;
-
-  var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
-  var PRODUCTION = function () {
-    try {
-      return "production" === 'production';
-    } catch (e) {
-      return false;
-    }
-  }();
-  var FAMILY_CLASSIC = 'classic';
-  var FAMILY_SHARP = 'sharp';
-  var FAMILIES = [FAMILY_CLASSIC, FAMILY_SHARP];
-
-  function familyProxy(obj) {
-    // Defaults to the classic family if family is not available
-    return new Proxy(obj, {
-      get: function get(target, prop) {
-        return prop in target ? target[prop] : target[FAMILY_CLASSIC];
-      }
-    });
-  }
-  var PREFIX_TO_STYLE = familyProxy((_familyProxy = {}, _defineProperty(_familyProxy, FAMILY_CLASSIC, {
-    'fa': 'solid',
-    'fas': 'solid',
-    'fa-solid': 'solid',
-    'far': 'regular',
-    'fa-regular': 'regular',
-    'fal': 'light',
-    'fa-light': 'light',
-    'fat': 'thin',
-    'fa-thin': 'thin',
-    'fad': 'duotone',
-    'fa-duotone': 'duotone',
-    'fab': 'brands',
-    'fa-brands': 'brands',
-    'fak': 'kit',
-    'fa-kit': 'kit'
-  }), _defineProperty(_familyProxy, FAMILY_SHARP, {
-    'fa': 'solid',
-    'fass': 'solid',
-    'fa-solid': 'solid',
-    'fasr': 'regular',
-    'fa-regular': 'regular',
-    'fasl': 'light',
-    'fa-light': 'light'
-  }), _familyProxy));
-  var STYLE_TO_PREFIX = familyProxy((_familyProxy2 = {}, _defineProperty(_familyProxy2, FAMILY_CLASSIC, {
-    'solid': 'fas',
-    'regular': 'far',
-    'light': 'fal',
-    'thin': 'fat',
-    'duotone': 'fad',
-    'brands': 'fab',
-    'kit': 'fak'
-  }), _defineProperty(_familyProxy2, FAMILY_SHARP, {
-    'solid': 'fass',
-    'regular': 'fasr',
-    'light': 'fasl'
-  }), _familyProxy2));
-  var PREFIX_TO_LONG_STYLE = familyProxy((_familyProxy3 = {}, _defineProperty(_familyProxy3, FAMILY_CLASSIC, {
-    'fab': 'fa-brands',
-    'fad': 'fa-duotone',
-    'fak': 'fa-kit',
-    'fal': 'fa-light',
-    'far': 'fa-regular',
-    'fas': 'fa-solid',
-    'fat': 'fa-thin'
-  }), _defineProperty(_familyProxy3, FAMILY_SHARP, {
-    'fass': 'fa-solid',
-    'fasr': 'fa-regular',
-    'fasl': 'fa-light'
-  }), _familyProxy3));
-  var LONG_STYLE_TO_PREFIX = familyProxy((_familyProxy4 = {}, _defineProperty(_familyProxy4, FAMILY_CLASSIC, {
-    'fa-brands': 'fab',
-    'fa-duotone': 'fad',
-    'fa-kit': 'fak',
-    'fa-light': 'fal',
-    'fa-regular': 'far',
-    'fa-solid': 'fas',
-    'fa-thin': 'fat'
-  }), _defineProperty(_familyProxy4, FAMILY_SHARP, {
-    'fa-solid': 'fass',
-    'fa-regular': 'fasr',
-    'fa-light': 'fasl'
-  }), _familyProxy4));
-  var FONT_WEIGHT_TO_PREFIX = familyProxy((_familyProxy5 = {}, _defineProperty(_familyProxy5, FAMILY_CLASSIC, {
-    '900': 'fas',
-    '400': 'far',
-    'normal': 'far',
-    '300': 'fal',
-    '100': 'fat'
-  }), _defineProperty(_familyProxy5, FAMILY_SHARP, {
-    '900': 'fass',
-    '400': 'fasr',
-    '300': 'fasl'
-  }), _familyProxy5));
-  var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
-  var DUOTONE_CLASSES = {
-    GROUP: 'duotone-group',
-    SWAP_OPACITY: 'swap-opacity',
-    PRIMARY: 'primary',
-    SECONDARY: 'secondary'
-  };
-  var prefixes = new Set();
-  Object.keys(STYLE_TO_PREFIX[FAMILY_CLASSIC]).map(prefixes.add.bind(prefixes));
-  Object.keys(STYLE_TO_PREFIX[FAMILY_SHARP]).map(prefixes.add.bind(prefixes));
-  var RESERVED_CLASSES = [].concat(FAMILIES, _toConsumableArray(prefixes), ['2xs', 'xs', 'sm', 'lg', 'xl', '2xl', 'beat', 'border', 'fade', 'beat-fade', 'bounce', 'flip-both', 'flip-horizontal', 'flip-vertical', 'flip', 'fw', 'inverse', 'layers-counter', 'layers-text', 'layers', 'li', 'pull-left', 'pull-right', 'pulse', 'rotate-180', 'rotate-270', 'rotate-90', 'rotate-by', 'shake', 'spin-pulse', 'spin-reverse', 'spin', 'stack-1x', 'stack-2x', 'stack', 'ul', DUOTONE_CLASSES.GROUP, DUOTONE_CLASSES.SWAP_OPACITY, DUOTONE_CLASSES.PRIMARY, DUOTONE_CLASSES.SECONDARY]).concat(oneToTen.map(function (n) {
-    return "".concat(n, "x");
-  })).concat(oneToTwenty.map(function (n) {
-    return "w-".concat(n);
-  }));
-
-  function bunker(fn) {
-    try {
-      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-
-      fn.apply(void 0, args);
-    } catch (e) {
-      if (!PRODUCTION) {
-        throw e;
-      }
-    }
-  }
-
-  var w = WINDOW || {};
-  if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
-  if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
-  if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
-  if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
-  var namespace = w[NAMESPACE_IDENTIFIER];
-
-  function normalizeIcons(icons) {
-    return Object.keys(icons).reduce(function (acc, iconName) {
-      var icon = icons[iconName];
-      var expanded = !!icon.icon;
-
-      if (expanded) {
-        acc[icon.iconName] = icon.icon;
-      } else {
-        acc[iconName] = icon;
-      }
-
-      return acc;
-    }, {});
-  }
-
-  function defineIcons(prefix, icons) {
-    var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    var _params$skipHooks = params.skipHooks,
-        skipHooks = _params$skipHooks === void 0 ? false : _params$skipHooks;
-    var normalized = normalizeIcons(icons);
-
-    if (typeof namespace.hooks.addPack === 'function' && !skipHooks) {
-      namespace.hooks.addPack(prefix, normalizeIcons(icons));
-    } else {
-      namespace.styles[prefix] = _objectSpread2(_objectSpread2({}, namespace.styles[prefix] || {}), normalized);
-    }
-    /**
-     * Font Awesome 4 used the prefix of `fa` for all icons. With the introduction
-     * of new styles we needed to differentiate between them. Prefix `fa` is now an alias
-     * for `fas` so we'll ease the upgrade process for our users by automatically defining
-     * this as well.
-     */
-
-
-    if (prefix === 'fas') {
-      defineIcons('fa', icons);
-    }
-  }
-
-  var icons = {
-    
-    "bars": [448,512,["navicon"],"f0c9","M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"],
-    "circle-down": [512,512,["61466","arrow-alt-circle-down"],"f358","M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6L269.8 394.5c-3.8 3.5-8.7 5.5-13.8 5.5s-10.1-2-13.8-5.5L135.1 294.6c-4.5-4.2-7.1-10.1-7.1-16.3c0-12.3 10-22.3 22.3-22.3l57.7 0 0-96c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 96 57.7 0c12.3 0 22.3 10 22.3 22.3c0 6.2-2.6 12.1-7.1 16.3z"]
-
-  };
-  var prefixes$1 = [null    ,'fas',
-    ,'fa-solid'
 
   ];
   bunker(function () {
@@ -1753,6 +1043,7 @@
     "arrow-right-arrow-left": [448,512,["8644","exchange"],"f0ec","M12.7 395.3L1.4 384l11.3-11.3 96-96L120 265.4 142.6 288l-11.3 11.3L62.6 368 432 368l16 0 0 32-16 0L62.6 400l68.7 68.7L142.6 480 120 502.6l-11.3-11.3-96-96zm422.6-256l-96 96L328 246.6 305.4 224l11.3-11.3L385.4 144 16 144 0 144l0-32 16 0 369.4 0L316.7 43.3 305.4 32 328 9.4l11.3 11.3 96 96L446.6 128l-11.3 11.3z"],
     "arrow-right-long": [512,512,["long-arrow-right"],"f178","M500.7 267.3L512 256l-11.3-11.3-144-144L345.4 89.4 322.7 112l11.3 11.3L450.7 240 16 240 0 240l0 32 16 0 434.7 0L334.1 388.7 322.7 400l22.6 22.6 11.3-11.3 144-144z"],
     "arrow-up": [384,512,["8593"],"f062","M203.3 44.7L192 33.4 180.7 44.7l-168 168L1.4 224 24 246.6l11.3-11.3L176 94.6V464v16h32V464 94.6L348.7 235.3 360 246.6 382.6 224l-11.3-11.3-168-168z"],
+    "bars": [448,512,["navicon"],"f0c9","M0 64H448V96H0V64zM0 224H448v32H0V224zM448 384v32H0V384H448z"],
     "cart-shopping": [576,512,["128722","shopping-cart"],"f07a","M16 0H0V32H16 67.2l77.2 339.5 2.8 12.5H160 496h16V352H496 172.8l-14.5-64H496L566 64l10-32H542.5 100L95.6 12.5 92.8 0H80 16zm91.3 64H532.5l-60 192H151L107.3 64zM184 432a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm0 80a56 56 0 1 0 0-112 56 56 0 1 0 0 112zm248-56a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zm80 0a56 56 0 1 0 -112 0 56 56 0 1 0 112 0z"],
     "check": [448,512,["10004","10003"],"f00c","M448.1 118.2L437 129.7 173.6 404l-11.5 12-11.5-12L11.1 258.8 0 247.2l23.1-22.2 11.1 11.5L162.1 369.8 414 107.5 425 96l23.1 22.2z"],
     "chevron-down": [512,512,[],"f078","M256 406.6l11.3-11.3 192-192L470.6 192 448 169.4l-11.3 11.3L256 361.4 75.3 180.7 64 169.4 41.4 192l11.3 11.3 192 192L256 406.6z"],
@@ -1761,13 +1052,17 @@
     "circle": [512,512,["61915","61708","11044","9899","9898","9679","128996","128995","128994","128993","128992","128309","128308"],"f111","M256 32a224 224 0 1 1 0 448 224 224 0 1 1 0-448zm0 480A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"],
     "circle-chevron-left": [512,512,["chevron-circle-left"],"f137","M32 256a224 224 0 1 1 448 0A224 224 0 1 1 32 256zm480 0A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM164.7 244.7L153.4 256l11.3 11.3 112 112L288 390.6 310.6 368l-11.3-11.3L198.6 256 299.3 155.3 310.6 144 288 121.4l-11.3 11.3-112 112z"],
     "circle-info": [512,512,["info-circle"],"f05a","M256 32a224 224 0 1 1 0 448 224 224 0 1 1 0-448zm0 480A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM192 352v32h16 96 16V352H304 272V240 224H256 216 200v32h16 24v96H208 192zm88-168V136H232v48h48z"],
+    "copyright": [512,512,["169"],"f1f9","M256 32a224 224 0 1 1 0 448 224 224 0 1 1 0-448zm0 480A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM160 256c0-53 43-96 96-96c31.4 0 59.3 15.1 76.8 38.5l25.6-19.2C335.1 148.2 297.9 128 256 128c-70.7 0-128 57.3-128 128s57.3 128 128 128c41.9 0 79.1-20.2 102.4-51.3l-25.6-19.2C315.3 336.9 287.4 352 256 352c-53 0-96-43-96-96z"],
     "download": [512,512,[],"f019","M272 16V0H240V16 329.4L139.3 228.7 128 217.4 105.4 240l11.3 11.3 128 128L256 390.6l11.3-11.3 128-128L406.6 240 384 217.4l-11.3 11.3L272 329.4V16zM140.1 320H32 0v32V480v32H32 480h32V480 352 320H480 371.9l-32 32H480V480H32V352H172.1l-32-32zM432 416a24 24 0 1 0 -48 0 24 24 0 1 0 48 0z"],
     "envelope": [512,512,["61443","9993","128386"],"f0e0","M32 159.2l224 154 224-154V96H32v63.2zM480 198L256 352 32 198V416H480V198zM0 416V176 96 64H32 480h32V96v80V416v32H480 32 0V416z"],
+    "envelope-open": [512,512,["62135"],"f2b6","M32 223.2l224 154 224-154V208L256 40 32 208v15.2zM480 262L256 416 32 262V480H480V262zM0 192L256 0 512 192v48V480v32H480 32 0V480 240 192z"],
     "info": [192,512,[],"f129","M128 32V96H64V32h64zM16 160H32 96h16v16V448h64 16v32H176 16 0V448H16 80V192H32 16V160z"],
     "magnifying-glass": [512,512,["128269","search"],"f002","M384 208A176 176 0 1 0 32 208a176 176 0 1 0 352 0zM343.3 366C307 397.2 259.7 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 51.7-18.8 99-50 135.3L510.5 487.9l-22.6 22.6L343.3 366z"],
+    "minus": [448,512,["10134","8722","8211","subtract"],"f068","M432 272H416L32 272H16l0-32 16 0 384 0 16 0v32z"],
     "pen": [512,512,["128394"],"f304","M0 512l6.8-34L32 352 361.4 22.6 384 0l22.6 22.6 82.7 82.7L512 128l-22.6 22.6L160 480 34 505.2 0 512zm144.2-61.5L398.1 196.7l-82.7-82.7L61.5 367.8 40.8 471.2l103.4-20.7zM420.7 174.1L466.7 128 384 45.3 337.9 91.3l82.7 82.7z"],
     "pencil": [512,512,["61504","9999","pencil-alt"],"f303","M0 512l6.8-34L32 352 361.4 22.6 384 0l22.6 22.6 82.7 82.7L512 128l-22.6 22.6L160 480 34 505.2 0 512zM176 400v18.7L398.1 196.7l-82.7-82.7L93.3 336H112h16v16 32h32 16v16zm-32 48V416H112 96V400 368H64c-.9 0-1.7-.1-2.5-.2L40.8 471.2l103.4-20.7c-.1-.8-.2-1.7-.2-2.5zM420.7 174.1L466.7 128 384 45.3 337.9 91.3l82.7 82.7zm-89.4 28.7l-128 128L192 342.1l-22.6-22.6 11.3-11.3 128-128L320 168.8l22.6 22.6-11.3 11.3z"],
     "phone": [512,512,["128379","128222"],"f095","M301.7 367.6l-21.3-12.3c-51.4-29.6-94.1-72.4-123.7-123.7l-12.3-21.3 17.3-17.3 40.7-40.7L156 36.2 32 58.7 32 64c0 229.7 186.3 416 416 416h5.3l22.5-124L359.7 309.5 319 350.2l-17.3 17.4zM352 272l160 64L480 512H448C200.6 512 0 311.4 0 64L0 32 176 0l64 160-55.6 55.6c26.8 46.5 65.5 85.2 112 112L352 272z"],
+    "phone-volume": [512,512,["volume-control-phone"],"f2a0","M280.4 355.3l21.3 12.3L319 350.2l40.7-40.7L475.8 356 453.3 480H448C218.2 480 32 293.7 32 64l0-5.3L156 36.2l46.5 116.1-40.7 40.7-17.3 17.3 12.3 21.3c29.6 51.4 72.4 94.1 123.7 123.7zM512 336L352 272l-55.6 55.6c-46.5-26.8-85.2-65.5-112-112L240 160 176 0 0 32 0 64C0 311.4 200.6 512 448 512h32l32-176zM256 32c123.7 0 224 100.3 224 224h32C512 114.6 397.4 0 256 0V32zm32 224a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm96 0h32c0-88.4-71.6-160-160-160v32c70.7 0 128 57.3 128 128z"],
     "plus": [448,512,["61543","10133","add"],"2b","M240 64V48H208V64 240H32 16v32H32 208V448v16h32V448 272H416h16V240H416 240V64z"],
     "quote-left": [448,512,["8220","quote-left-alt"],"f10d","M0 208C0 146.1 50.1 96 112 96h32 16v32H144 112c-44.2 0-80 35.8-80 80v16H160h32v32V384v32H160 32 0V384 320 256 224 208zm32 48v64 64H160V256H32zm384 0H288v64 64H416V256zM256 320V256 224 208c0-61.9 50.1-112 112-112h32 16v32H400 368c-44.2 0-80 35.8-80 80v16H416h32v32V384v32H416 288 256V384 320z"],
     "quote-right": [448,512,["8221","quote-right-alt"],"f10e","M448 304c0 61.9-50.1 112-112 112H304 288V384h16 32c44.2 0 80-35.8 80-80V288H288 256V256 128 96h32H416h32v32 64 64 32 16zm-32-48V192 128H288V256H416zM32 256H160V192 128H32V256zm160-64v64 32 16c0 61.9-50.1 112-112 112H48 32V384H48 80c44.2 0 80-35.8 80-80V288H32 0V256 128 96H32 160h32v32 64z"],
@@ -1778,6 +1073,369 @@
   };
   var prefixes$1 = [null    ,'fasl',
     ,'fa-light'
+
+  ];
+  bunker(function () {
+    var _iterator = _createForOfIteratorHelper(prefixes$1),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var prefix = _step.value;
+        if (!prefix) continue;
+        defineIcons(prefix, icons);
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  });
+
+}());
+
+(function () {
+  'use strict';
+
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      enumerableOnly && (symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      })), keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = null != arguments[i] ? arguments[i] : {};
+      i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+
+    return target;
+  }
+
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  }
+
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+  }
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+  }
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+  }
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  function _createForOfIteratorHelper(o, allowArrayLike) {
+    var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+
+    if (!it) {
+      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+        if (it) o = it;
+        var i = 0;
+
+        var F = function () {};
+
+        return {
+          s: F,
+          n: function () {
+            if (i >= o.length) return {
+              done: true
+            };
+            return {
+              done: false,
+              value: o[i++]
+            };
+          },
+          e: function (e) {
+            throw e;
+          },
+          f: F
+        };
+      }
+
+      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+
+    var normalCompletion = true,
+        didErr = false,
+        err;
+    return {
+      s: function () {
+        it = it.call(o);
+      },
+      n: function () {
+        var step = it.next();
+        normalCompletion = step.done;
+        return step;
+      },
+      e: function (e) {
+        didErr = true;
+        err = e;
+      },
+      f: function () {
+        try {
+          if (!normalCompletion && it.return != null) it.return();
+        } finally {
+          if (didErr) throw err;
+        }
+      }
+    };
+  }
+
+  var _WINDOW = {};
+  var _DOCUMENT = {};
+
+  try {
+    if (typeof window !== 'undefined') _WINDOW = window;
+    if (typeof document !== 'undefined') _DOCUMENT = document;
+  } catch (e) {}
+
+  var _ref = _WINDOW.navigator || {},
+      _ref$userAgent = _ref.userAgent,
+      userAgent = _ref$userAgent === void 0 ? '' : _ref$userAgent;
+  var WINDOW = _WINDOW;
+  var DOCUMENT = _DOCUMENT;
+  var IS_BROWSER = !!WINDOW.document;
+  var IS_DOM = !!DOCUMENT.documentElement && !!DOCUMENT.head && typeof DOCUMENT.addEventListener === 'function' && typeof DOCUMENT.createElement === 'function';
+  var IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
+
+  var _familyProxy, _familyProxy2, _familyProxy3, _familyProxy4, _familyProxy5;
+
+  var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
+  var PRODUCTION = function () {
+    try {
+      return "production" === 'production';
+    } catch (e) {
+      return false;
+    }
+  }();
+  var FAMILY_CLASSIC = 'classic';
+  var FAMILY_SHARP = 'sharp';
+  var FAMILIES = [FAMILY_CLASSIC, FAMILY_SHARP];
+
+  function familyProxy(obj) {
+    // Defaults to the classic family if family is not available
+    return new Proxy(obj, {
+      get: function get(target, prop) {
+        return prop in target ? target[prop] : target[FAMILY_CLASSIC];
+      }
+    });
+  }
+  var PREFIX_TO_STYLE = familyProxy((_familyProxy = {}, _defineProperty(_familyProxy, FAMILY_CLASSIC, {
+    'fa': 'solid',
+    'fas': 'solid',
+    'fa-solid': 'solid',
+    'far': 'regular',
+    'fa-regular': 'regular',
+    'fal': 'light',
+    'fa-light': 'light',
+    'fat': 'thin',
+    'fa-thin': 'thin',
+    'fad': 'duotone',
+    'fa-duotone': 'duotone',
+    'fab': 'brands',
+    'fa-brands': 'brands',
+    'fak': 'kit',
+    'fa-kit': 'kit'
+  }), _defineProperty(_familyProxy, FAMILY_SHARP, {
+    'fa': 'solid',
+    'fass': 'solid',
+    'fa-solid': 'solid',
+    'fasr': 'regular',
+    'fa-regular': 'regular',
+    'fasl': 'light',
+    'fa-light': 'light'
+  }), _familyProxy));
+  var STYLE_TO_PREFIX = familyProxy((_familyProxy2 = {}, _defineProperty(_familyProxy2, FAMILY_CLASSIC, {
+    'solid': 'fas',
+    'regular': 'far',
+    'light': 'fal',
+    'thin': 'fat',
+    'duotone': 'fad',
+    'brands': 'fab',
+    'kit': 'fak'
+  }), _defineProperty(_familyProxy2, FAMILY_SHARP, {
+    'solid': 'fass',
+    'regular': 'fasr',
+    'light': 'fasl'
+  }), _familyProxy2));
+  var PREFIX_TO_LONG_STYLE = familyProxy((_familyProxy3 = {}, _defineProperty(_familyProxy3, FAMILY_CLASSIC, {
+    'fab': 'fa-brands',
+    'fad': 'fa-duotone',
+    'fak': 'fa-kit',
+    'fal': 'fa-light',
+    'far': 'fa-regular',
+    'fas': 'fa-solid',
+    'fat': 'fa-thin'
+  }), _defineProperty(_familyProxy3, FAMILY_SHARP, {
+    'fass': 'fa-solid',
+    'fasr': 'fa-regular',
+    'fasl': 'fa-light'
+  }), _familyProxy3));
+  var LONG_STYLE_TO_PREFIX = familyProxy((_familyProxy4 = {}, _defineProperty(_familyProxy4, FAMILY_CLASSIC, {
+    'fa-brands': 'fab',
+    'fa-duotone': 'fad',
+    'fa-kit': 'fak',
+    'fa-light': 'fal',
+    'fa-regular': 'far',
+    'fa-solid': 'fas',
+    'fa-thin': 'fat'
+  }), _defineProperty(_familyProxy4, FAMILY_SHARP, {
+    'fa-solid': 'fass',
+    'fa-regular': 'fasr',
+    'fa-light': 'fasl'
+  }), _familyProxy4));
+  var FONT_WEIGHT_TO_PREFIX = familyProxy((_familyProxy5 = {}, _defineProperty(_familyProxy5, FAMILY_CLASSIC, {
+    '900': 'fas',
+    '400': 'far',
+    'normal': 'far',
+    '300': 'fal',
+    '100': 'fat'
+  }), _defineProperty(_familyProxy5, FAMILY_SHARP, {
+    '900': 'fass',
+    '400': 'fasr',
+    '300': 'fasl'
+  }), _familyProxy5));
+  var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+  var DUOTONE_CLASSES = {
+    GROUP: 'duotone-group',
+    SWAP_OPACITY: 'swap-opacity',
+    PRIMARY: 'primary',
+    SECONDARY: 'secondary'
+  };
+  var prefixes = new Set();
+  Object.keys(STYLE_TO_PREFIX[FAMILY_CLASSIC]).map(prefixes.add.bind(prefixes));
+  Object.keys(STYLE_TO_PREFIX[FAMILY_SHARP]).map(prefixes.add.bind(prefixes));
+  var RESERVED_CLASSES = [].concat(FAMILIES, _toConsumableArray(prefixes), ['2xs', 'xs', 'sm', 'lg', 'xl', '2xl', 'beat', 'border', 'fade', 'beat-fade', 'bounce', 'flip-both', 'flip-horizontal', 'flip-vertical', 'flip', 'fw', 'inverse', 'layers-counter', 'layers-text', 'layers', 'li', 'pull-left', 'pull-right', 'pulse', 'rotate-180', 'rotate-270', 'rotate-90', 'rotate-by', 'shake', 'spin-pulse', 'spin-reverse', 'spin', 'stack-1x', 'stack-2x', 'stack', 'ul', DUOTONE_CLASSES.GROUP, DUOTONE_CLASSES.SWAP_OPACITY, DUOTONE_CLASSES.PRIMARY, DUOTONE_CLASSES.SECONDARY]).concat(oneToTen.map(function (n) {
+    return "".concat(n, "x");
+  })).concat(oneToTwenty.map(function (n) {
+    return "w-".concat(n);
+  }));
+
+  function bunker(fn) {
+    try {
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      fn.apply(void 0, args);
+    } catch (e) {
+      if (!PRODUCTION) {
+        throw e;
+      }
+    }
+  }
+
+  var w = WINDOW || {};
+  if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
+  if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
+  if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
+  if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
+  var namespace = w[NAMESPACE_IDENTIFIER];
+
+  function normalizeIcons(icons) {
+    return Object.keys(icons).reduce(function (acc, iconName) {
+      var icon = icons[iconName];
+      var expanded = !!icon.icon;
+
+      if (expanded) {
+        acc[icon.iconName] = icon.icon;
+      } else {
+        acc[iconName] = icon;
+      }
+
+      return acc;
+    }, {});
+  }
+
+  function defineIcons(prefix, icons) {
+    var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var _params$skipHooks = params.skipHooks,
+        skipHooks = _params$skipHooks === void 0 ? false : _params$skipHooks;
+    var normalized = normalizeIcons(icons);
+
+    if (typeof namespace.hooks.addPack === 'function' && !skipHooks) {
+      namespace.hooks.addPack(prefix, normalizeIcons(icons));
+    } else {
+      namespace.styles[prefix] = _objectSpread2(_objectSpread2({}, namespace.styles[prefix] || {}), normalized);
+    }
+    /**
+     * Font Awesome 4 used the prefix of `fa` for all icons. With the introduction
+     * of new styles we needed to differentiate between them. Prefix `fa` is now an alias
+     * for `fas` so we'll ease the upgrade process for our users by automatically defining
+     * this as well.
+     */
+
+
+    if (prefix === 'fas') {
+      defineIcons('fa', icons);
+    }
+  }
+
+  var icons = {
+    
+    "bars": [448,512,["navicon"],"f0c9","M0 64H448v64H0V64zM0 224H448v64H0V224zM448 384v64H0V384H448z"],
+    "chevron-down": [512,512,[],"f078","M256 429.3l22.6-22.6 192-192L493.3 192 448 146.7l-22.6 22.6L256 338.7 86.6 169.4 64 146.7 18.7 192l22.6 22.6 192 192L256 429.3z"],
+    "circle-down": [512,512,["61466","arrow-alt-circle-down"],"f358","M256 512A256 256 0 1 1 256 0a256 256 0 1 1 0 512zM384 256H304V128H208V256H128v32L256 416 384 288V256z"],
+    "circle-phone": [512,512,["phone-circle"],"e11b","M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM200 128l40 72-41.9 33.5c18.1 34.2 46.2 62.3 80.4 80.4L312 272l72 40-16 72H352c-123.7 0-224-100.3-224-224l0-16 72-16z"],
+    "circle-play": [512,512,["61469","play-circle"],"f144","M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM384 256L176 384V128L384 256z"],
+    "download": [512,512,[],"f019","M288 32V0H224V32 274.7l-73.4-73.4L128 178.7 82.7 224l22.6 22.6 128 128L256 397.3l22.6-22.6 128-128L429.3 224 384 178.7l-22.6 22.6L288 274.7V32zM0 512H512V352H346.5l-45.3 45.3L256 442.5l-45.3-45.3L165.5 352H0V512zM432 408a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"],
+    "envelope": [512,512,["61443","9993","128386"],"f0e0","M0 64H512v80L256 320 0 144V64zM0 448V182.8L237.9 346.4 256 358.8l18.1-12.5L512 182.8V448H0z"],
+    "location-dot": [384,512,["map-marker-alt"],"f3c5","M192 512s192-208 192-320C384 86 298 0 192 0S0 86 0 192C0 304 192 512 192 512zm0-384a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"],
+    "minus": [448,512,["10134","8722","8211","subtract"],"f068","M432 288H400L48 288H16l0-64 32 0 352 0 32 0v64z"],
+    "plus": [448,512,["61543","10133","add"],"2b","M256 80V48H192V80 224H48 16v64H48 192V432v32h64V432 288H400h32V224H400 256V80z"],
+    "rectangle-xmark": [512,512,["62164","rectangle-times","times-rectangle","window-close"],"f410","M512 32H0V480H512V32zM353.9 192l-17 17-47 47 47 47 17 17L320 353.9l-17-17-47-47-47 47-17 17L158.1 320l17-17 47-47-47-47-17-17L192 158.1l17 17 47 47 47-47 17-17L353.9 192z"]
+
+  };
+  var prefixes$1 = [null    ,'fass',
+    ,'fa-solid'
 
   ];
   bunker(function () {

@@ -43,10 +43,10 @@ html body {
 
   a {
     transition: color 0.3s ease;
-    color: var(--bs-primary);
+    color: var(--bs-link-color);
 
     &:hover {
-      color: var(--bs-secondary);
+      color: var(--bs-link-hover-color);
     }
   }
 
@@ -84,12 +84,12 @@ html body {
     }
   }
 
-  .ce--headline{
+  .ce--headline {
     @extend .container;
   }
 
-  .content--element:last-child{
-    .ce--subline{
+  .content--element:last-child {
+    .ce--subline {
       margin-bottom: 0px !important;
     }
   }
@@ -106,6 +106,7 @@ html body {
   .h2,
   h1,
   .h1 {
+    display: block;
     line-height: var(--bs-body-line-height-xs);
     transition: color 0.3s ease;
     color: var(--bs-headline-color);
@@ -126,8 +127,8 @@ html body {
     display: block;
     line-height: var(--bs-body-line-height-xs);
 
-    & + *{
-       font-weight: $font-weight-medium;
+    & + * {
+      font-weight: $font-weight-medium;
     }
   }
 
@@ -200,7 +201,7 @@ html body {
 
   h4,
   .h4 {
-    margin-bottom: $headline-spacing;
+    margin-bottom: $headline-spacing / 3;
     @include font-size($h4-font-size);
 
 
@@ -217,10 +218,12 @@ html body {
 
   h5, .h5 {
     @include font-size($h5-font-size);
+    margin-bottom: $headline-spacing / 3;
   }
 
   h6, .h6 {
     @include font-size($h6-font-size);
+    margin-bottom: $headline-spacing / 3;
   }
 
   main {

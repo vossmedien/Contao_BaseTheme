@@ -1,0 +1,16 @@
+.location-item {
+    display: none;
+
+    &.is-active {
+    display: block;
+}
+
+    span, strong{
+        display: block;
+    }
+
+    a{
+        text-decoration: none;
+    }
+}
+

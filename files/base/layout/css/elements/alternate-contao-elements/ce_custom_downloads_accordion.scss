@@ -1,0 +1,26 @@
+@import "../../variables-layout";
+
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+@import "../../_theme/variables-layout";
+
+.ce_custom_downloads_accordion{
+
+  &.list-only{
+    .download-element{
+      a{
+        text-decoration: none;
+        gap: 15px;
+      }
+    }
+  }
+
+  &.with-previews{
+    i{
+      @include font-size(32px);
+    }
+  }
+}

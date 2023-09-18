@@ -126,7 +126,8 @@ if (TL_MODE == 'FE') {
                         href="javascript:void(0);"
                     <?php endif; ?>
                             class="scrollToElement">
-                        <i class="fa-solid fa-circle-down"></i></a>
+                        <i class="fa-sharp fa-solid fa-circle-down"></i>
+                    </a>
                 </div>
             <?php endif; ?>
 
