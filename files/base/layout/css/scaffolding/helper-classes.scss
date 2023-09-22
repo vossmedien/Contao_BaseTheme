@@ -2,7 +2,7 @@
   @extend .bg-gradient;
 }
 
-.bg-gray{
+.bg-gray {
   background-color: var(--bs-gray);
 }
 
@@ -141,4 +141,14 @@ a.disabled-link {
   cursor: auto;
   text-decoration: none;
   pointer-events: none;
+}
+
+
+[class*="pull-"] {
+  position: relative;
+  z-index: 3;
+
+  @include media-breakpoint-down(md) {
+    margin: 0 !important;
+  }
 }

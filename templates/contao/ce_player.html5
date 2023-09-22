@@ -1,0 +1,28 @@
+<?php $this->block('content'); ?>
+
+<div class="content--element ce_player">
+    <div class="container">
+        <div <?= $this->cssID ?> class="<?= $this->class; ?>">
+
+            <figure class="<?= $this->containerClass ?>">
+                <?php if ($this->isVideo): ?>
+                    <video<?= $this->size ?><?php if ($this->poster): ?> poster="<?= $this->poster ?>"<?php endif; ?><?php if ($this->preload): ?> preload="<?= $this->preload ?>"<?php endif; ?> <?= implode(' ', $this->attributes) ?>>
+                        <?php foreach ($this->files as $file): ?>
+                            <source type="<?= $file->mime ?>" src="<?= $file->path . $this->range ?>">
+                        <?php endforeach; ?>
+                    </video>
+                <?php else: ?>
+                    <audio<?php if ($this->preload): ?> preload="<?= $this->preload ?>"<?php endif; ?> <?= implode(' ', $this->attributes) ?>>
+                        <?php foreach ($this->files as $file): ?>
+                            <source type="<?= $file->mime ?>" src="<?= $file->path ?>">
+                        <?php endforeach; ?>
+                    </audio>
+                <?php endif; ?>
+                <?php if ($this->caption): ?>
+                    <figcaption class="caption"><?= $this->caption ?></figcaption>
+                <?php endif; ?>
+            </figure>
+        </div>
+    </div>
+</div>
+<?php $this->endblock(); ?>

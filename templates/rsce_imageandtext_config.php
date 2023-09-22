@@ -20,7 +20,6 @@ return array(
             'eval' => array('tl_class' => 'w50'),
         ),
 
-
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -305,7 +304,6 @@ return array(
                     'eval' => array('tl_class' => 'clr'),
                 ),
 
-
                 'settings_1' => array(
                     'label' => array('Inhalt', ''),
                     'inputType' => 'group',
@@ -315,7 +313,6 @@ return array(
                         'value' => 'multiple',
                     ),
                 ),
-
 
                 'headline_type' => array(
                     'label' => array(
@@ -331,11 +328,13 @@ return array(
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
+
                 'headline' => array(
                     'label' => array('Überschrift', 'für linke Spalte'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
+
                 'onlystyle' => array(
                     'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                     'inputType' => 'checkbox',
@@ -347,6 +346,13 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('rte' => 'tinyMCE'),
                 ),
+
+                'table' => array(
+                    'label' => array('Strukturierte Daten', ''),
+                    'inputType' => 'tableWizard',
+                    'eval' => array('style' => 'width:142px;height:66px'),
+                ),
+
 
                 'column_width' => array(
                     'label' => array(
@@ -362,9 +368,7 @@ return array(
                         'col-12 col-lg-9' => '75%',
                         'col-12' => 'Volle Breite',
                         'col-12 col-lg' => 'Automatische Breite (füllend)',
-
                     ),
-
                 ),
 
 
