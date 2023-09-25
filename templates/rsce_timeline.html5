@@ -32,7 +32,7 @@ if (TL_MODE == 'FE') {
 
                     <div class="col-md-6 col-12">
                         <div class="step--info">
-                            <div class="left-col--inner">
+                            <div class="left-col--inner" data-aos="animate__fadeIn">
 
                                 <div class="row align-items-center gx-0">
                                     <?php if ($row->step): ?>
