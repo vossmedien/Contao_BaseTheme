@@ -127,9 +127,7 @@ html body {
     display: block;
     line-height: var(--bs-body-line-height-xs);
 
-    & + * {
-      font-weight: $font-weight-medium;
-    }
+
   }
 
   .ce--subline {
@@ -205,8 +203,8 @@ html body {
 
 
     & + .ce--subline {
-      @include font-size(calc($h4-font-size / 2));
-      margin-top: -$headline-spacing / 1.25;
+      @include font-size(calc(#{$h4-font-size} / 1.75));
+      margin-top: -$headline-spacing / 2.5;
       margin-bottom: $headline-spacing;
     }
 
@@ -227,7 +225,7 @@ html body {
 
   main {
     ul {
-      padding-left: 15px;
+      padding-left: 20px;
 
       &:last-child {
         margin-bottom: 0px;

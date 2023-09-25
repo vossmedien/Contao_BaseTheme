@@ -8,7 +8,7 @@ if (TL_MODE == 'FE') {
     <div class="ce--inner container">
 
         <?php if ($this->headline || $this->subline || $this->topline): ?>
-        <div class="headline--wrapper ce--headline" data-aos="<?= $animationType ?>">
+        <div class="headline--wrapper ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?php if ($this->headline): ?>
             <<?= $this->hl; ?>>
             <?= $this->topline ? '<span class="ce--topline">' . $this->topline . '</span>' : ''; ?>
@@ -33,7 +33,7 @@ if (TL_MODE == 'FE') {
 
         <div class="row">
             <?php foreach ($this->rows as $row) : ?>
-                <?php if (!$this->as_rows) : ?><div class="mt-0 pt-4 px-0 <?= $row->column_width; ?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <?php if (!$this->as_rows) : ?><div class="mt-0  <?= $row->column_width; ?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                     <div class="col--inner">
                     <div class="<?= $this->row_align; ?> row  <?php if ($row->reverse_columns) : ?>flex-row-reverse<?php endif; ?>"><?php endif; ?>
                 <?php if ($this->as_rows) : ?>
@@ -66,13 +66,13 @@ if (TL_MODE == 'FE') {
             <?php endif; ?>
                 </div>
                 <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                     class="text col-12  <?php if (!$this->as_rows) : ?>order-3<?php endif; ?>">
+                     class="text col-12  <?php if (!$this->as_rows) : ?>order-3 mt-3<?php endif; ?>">
 
                     <?php if ($row->text) : ?>
                         <?php echo $row->text; ?>
                     <?php endif; ?>
 
-                    <?php if ($row->table) : ?>
+                    <?php if (count($row->table) > 1) : ?>
                         <div class="structured-data mt-3">
                             <?php foreach ($row->table as $tableRow) : ?>
                                 <div class="structured-data--row border border-primary mb-1">

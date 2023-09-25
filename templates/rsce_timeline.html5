@@ -7,6 +7,7 @@ if (TL_MODE == 'FE') {
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner container force-container">
 
+
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <?php if ($this->headline) : ?>
@@ -16,25 +17,72 @@ if (TL_MODE == 'FE') {
             <?php endif; ?>
             <span class="ce--headline-content"><?php echo($this->headline); ?></span>
         </<?php echo($this->hl); ?>>
-        <?php if ($this->subline) : ?>
-                <span class="ce--subline"><?php echo $this->subline; ?></span>
-            <?php endif; ?>
+    <?php if ($this->subline) : ?>
+        <span class="ce--subline"><?php echo $this->subline; ?></span>
+    <?php endif; ?>
     <?php endif; ?>
     </div>
     <?php endif; ?>
 
+
     <?php if ($this->rows) : ?>
         <div class="ce--timeline">
             <?php foreach ($this->rows as $i => $row) : ?>
-                <div class="year--wrapper row">
-                    <div class="col-12 col-md-6">
-                        <div class="year--content">
-                            <div class="right-col--text"
-                                 data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                <span class="h2"><?php echo $row->year; ?></span>
-                                <div class="year--description">
-                                    <?php echo $row->description; ?>
+                <div class="step--wrapper row">
+
+                    <div class="col-md-6 col-12">
+                        <div class="step--info">
+                            <div class="left-col--inner">
+
+                                <div class="row align-items-center gx-0">
+                                    <?php if ($row->step): ?>
+                                        <div class="col-auto">
+                                            <span class="h4 mb-0 step--title"><?php echo $row->step; ?></span>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if ($row->icon): ?>
+                                        <div class="col-auto">
+                                            <span style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" class="step--icon"><img src="<?= Image::get(FilesModel::findByUuid($row->icon)->path, null, null, null); ?>"></span>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-12 col-md-6">
+                        <div class="step--content">
+                            <div class="right-col--inner" style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                <?php if ($row->image): ?>
+                                    <div class="step--image mb-4">
+                                        <img src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size[0], $row->size[1], $row->size[2]); ?>">
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($row->headline): ?>
+                                    <div class="step--headline">
+                                        <h3 style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?>"><?= $row->headline; ?></h3>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($row->description): ?>
+                                    <div class="step--description mt-2">
+                                        <?= $row->description; ?>
+                                    </div>
+                                <?php endif; ?>
+
+
+                                <?php if ($row->buttons[0]->link_text != "") : ?>
+                                    <div class="step--buttons">
+                                        <div class="buttons mt-3 <?= $row->button_textalign; ?>">
+                                            <?php foreach ($row->buttons as $button) : ?>
+                                                <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
+                                                   class="mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                                   href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
+                                            <?php endforeach ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -42,4 +90,5 @@ if (TL_MODE == 'FE') {
             <?php endforeach ?>
         </div>
     <?php endif; ?>
-</div></div>
+</div>
+</div>

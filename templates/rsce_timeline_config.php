@@ -13,9 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -138,15 +140,39 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
+
+
+        'linecolor' => array(
+            'label' => array('Linienfarbe', 'Standard: Sekundärfarbe'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50')
+        ),
+
+        'dotcolor' => array(
+            'label' => array('Punktfarbe', 'Standard: Hauptfarbe'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50')
+        ),
+
+
         'rows' => array(
-            'label' => array('Reihen', ''),
-            'elementLabel' => '%s. Reihe',
+            'label' => array('Ereignisse', ''),
+            'elementLabel' => '%s. Ereignis',
             'inputType' => 'list',
-            'minItems' => 0,
+            'minItems' => 1,
             'maxItems' => 999,
             'fields' => array(
+
+                'settings_1' => array(
+                    'label' => array('Einstellungen', ''),
+                    'inputType' => 'group',
+                    'dependsOn' => array(
+                        'field' => 'is_slider',
+                    ),
+                ),
+
                 'animation_type' => array(
                     'label' => array(
                         'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -270,14 +296,178 @@ return array(
                     ),
                     'eval' => array('chosen' => 'true')
                 ),
-                'year' => array(
-                    'label' => array('Jahr', ''),
+
+                'backgroundcolor' => array(
+                    'label' => array('Hintergrundfarbe', 'Standard: hellgrau'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50')
+                ),
+
+                  'textcolor' => array(
+                    'label' => array('Schriftfarbe', 'Standard: Body-Textfarbe'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50')
+                ),
+
+
+                'settings_2' => array(
+                    'label' => array('Listendarstellung', ''),
+                    'inputType' => 'group',
+                    'dependsOn' => array(
+                        'field' => 'is_slider',
+                    ),
+                ),
+
+
+                'step' => array(
+                    'label' => array('Ereignistitel', 'z. B. 1999 o. ä.'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'clr')
+                ),
+
+                'icon' => array(
+                    'label' => array('Icon', 'innerhalb einer Bubble neben dem Ereignistitel'),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'jpg,jpeg,png,svg',
+                    )
+                ),
+
+
+                'settings_3' => array(
+                    'label' => array('Inhalt', ''),
+                    'inputType' => 'group',
+                    'dependsOn' => array(
+                        'field' => 'is_slider',
+                    ),
+                ),
+
+
+                'image' => array(
+                    'label' => array('Bild', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'jpg,jpeg,png,svg',
+                    )
+                ),
+
+
+                'size' => array(
+                    'label' => array('Bildbreite und Bildhöhe', ''),
+                    'inputType' => 'imageSize',
+                    'options' => System::getImageSizes(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'includeBlankOption' => true,
+                    ),
+                ),
+
+
+                'headline' => array(
+                    'label' => array('Überschrift', 'ist immer eine H3, oberhalb des Textes bzw. unterhalb des Bildes'),
                     'inputType' => 'text',
                 ),
+
                 'description' => array(
-                    'label' => array('Was ist passiert', ''),
+                    'label' => array('Beschreibung', ''),
                     'inputType' => 'textarea',
                     'eval' => array('rte' => 'tinyMCE'),
+                ),
+
+
+                'add_buttons' => array(
+                    'label' => array('Buttons hinzufügen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                    'options' => array(
+                        '1' => 'Buttons hinzufügen',
+                    ),
+                ),
+
+
+                'button_textalign' => array(
+                    'label' => array(
+                        'de' => array('Button - Ausrichtung', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'text - start' => 'Linksbündig',
+                        'text - center' => 'Zentriert',
+                        'text - end' => 'Rechtsbündig',
+                    ),
+
+                    'dependsOn' => array(
+                        'field' => 'add_buttons',
+                        'value' => '1',
+                    ),
+                ),
+
+
+                'buttons' => array(
+                    'label' => array('Button', ''),
+                    'elementLabel' => '%s. Button',
+                    'inputType' => 'list',
+                    'minItems' => 0,
+                    'maxItems' => 10,
+
+                    'dependsOn' => array(
+                        'field' => 'add_buttons',
+                        'value' => '1',
+                    ),
+
+                    'fields' => array(
+
+                        'link_text' => array(
+                            'label' => array(
+                                'de' => array('Button-Beschriftung', 'Button befindet sich rechts unter dem Text'),
+                            ),
+                            'inputType' => 'text',
+                            'eval' => array('allowHtml' => true),
+                        ),
+                        'link_url' => array(
+                            'label' => array('Verlinkung', 'z . B . mailto:info@domain.de'),
+                            'inputType' => 'url',
+                        ),
+                        'link_betreff' => array(
+                            'label' => array('Betreffzeile für "mailto:" - Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
+                            'inputType' => 'text',
+                        ),
+                        'link_type' => array(
+                            'label' => array(
+                                'de' => array('Optik des Buttons', ''),
+                            ),
+                            'inputType' => 'select',
+                            'options' => array(
+                                'btn-primary' => 'Hauptfarbe',
+                                'btn-outline-primary' => 'Hauptfarbe(Outline)',
+                                'btn-secondary' => 'Sekundär - Farbe',
+                                'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
+                                'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
+                                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
+                                'btn-white' => 'Weißer Button mit schwarzer Schrift',
+                            ),
+                            'eval' => array('tl_class' => 'w50'),
+                        ),
+                        'link_size' => array(
+                            'label' => array(
+                                'de' => array('Größe des Buttons', ''),
+                            ),
+                            'inputType' => 'select',
+                            'options' => array(
+                                '' => 'Standard',
+                                'btn-sm' => 'Klein',
+                                'btn-lg' => 'Groß',
+                            ),
+                            'eval' => array('tl_class' => 'w50'),
+                        ),
+                    ),
                 ),
             ),
         ),

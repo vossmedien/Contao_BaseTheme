@@ -1,15 +1,11 @@
 $(function () {
     var headerContent = document.querySelector(".header--content.fixed");
-    var firstArticle = document.querySelector(".mod_article:first-of-type");
-    //var firstElement = firstArticle.firstElementChild;
 
     if (headerContent) {
         var paddingTop = window.getComputedStyle(headerContent).height;
         document.body.style.paddingTop = paddingTop;
     }
 
-
-// Funktion, um die Verschiebung für einzelne Elemente durchzuführen
     function adjustMargin(elements, direction, isNegative) {
         elements.forEach(element => {
             let size = (direction === 'top' || direction === 'bottom') ? element.offsetHeight : element.offsetWidth;
@@ -23,201 +19,182 @@ $(function () {
         });
     }
 
-// Für ".pull-top"
     adjustMargin(document.querySelectorAll('.pull-top'), 'top', true);
-
-// Für ".pull-bottom"
     adjustMargin(document.querySelectorAll('.pull-bottom'), 'bottom', false);
-
-// Für ".pull-start"
     adjustMargin(document.querySelectorAll('.pull-start'), 'left', true);
-
-// Für ".pull-end"
     adjustMargin(document.querySelectorAll('.pull-end'), 'right', false);
 
+    var modalElement = document.querySelector(".modal");
+    if (modalElement) {
+        modalElement.parentNode.removeChild(modalElement);
+        document.body.appendChild(modalElement);
+    }
 
-    $("p.back > a:not(.btn), .widget-submit > button").each(function (index) {
-        $(this).addClass("btn btn-primary");
+
+    document.querySelectorAll("p.back > a:not(.btn), .widget-submit > button").forEach(el => {
+        el.classList.add("btn", "btn-primary");
     });
 
-    $(".submit_container > input.button").each(function (index) {
-        $(this).addClass("btn btn-lg");
-
-        if ($(this).hasClass("next")) {
-            $(this).addClass("btn-primary");
+    document.querySelectorAll(".submit_container > input.button").forEach(el => {
+        el.classList.add("btn", "btn-lg");
+        if (el.classList.contains("next")) {
+            el.classList.add("btn-primary");
         }
-
-        if ($(this).hasClass("previous")) {
-            $(this).addClass("btn-outline-primary");
+        if (el.classList.contains("previous")) {
+            el.classList.add("btn-outline-primary");
         }
-
-        if ($(this).hasClass("confirm")) {
-            $(this).addClass("btn-success");
-        }
-    });
-
-    $(".submit_container button:not(.btn)").each(function (index) {
-        $(this).addClass("btn");
-
-        if (
-            $(this).hasClass("button_update") ||
-            $(this).hasClass("button_checkout")
-        ) {
-            $(this).addClass("btn-outline-primary");
+        if (el.classList.contains("confirm")) {
+            el.classList.add("btn-success");
         }
     });
 
-    $(".actions_container .submit").each(function (index) {
-        $(this).addClass("btn btn-primary");
-    });
-
-    $(".filter-toggle-control").each(function (index) {
-        $(this).addClass("btn btn-primary");
-    });
-
-    $(".mod_iso_orderhistory td.link > a").each(function (index) {
-        $(this).addClass("btn btn-sm");
-    });
-
-    $(".mod_iso_orderhistory td.link > a:first-child").each(function (index) {
-        $(this).addClass("btn-primary");
-    });
-
-    $(".mod_iso_orderhistory td.link > a:last-child").each(function (index) {
-        $(this).addClass("btn-secondary");
-    });
-
-    $(".mod_iso_addressbook a.add").each(function (index) {
-        $(this).addClass("btn btn-outline-primary");
-    });
-
-    $("#footerNav ul").each(function (index) {
-        $(this).addClass("list-inline");
-    });
-
-    $("#footerNav ul > li ").each(function (index) {
-        $(this).addClass("list-inline-item");
-    });
-
-    //Alerts
-    $("p.empty:not(.message)").each(function (index) {
-        $(this).addClass("alert alert-primary");
-    });
-
-    $("p.error:not(.message)").each(function (index) {
-        $(this).addClass("alert alert-danger");
-    });
-
-    $(".tl_confirm:not(.message)").each(function (index) {
-        $(this).addClass("alert alert-success");
-    });
-
-    $(".widget-radio span.note").each(function (index) {
-        $(this).addClass("alert alert-primary");
-    });
-
-    $(".message").each(function (index) {
-        $(this).addClass("alert");
-
-        if ($(this).hasClass("success")) {
-            $(this).addClass("alert-success");
-        }
-
-        if ($(this).hasClass("empty")) {
-            $(this).addClass("alert-primary");
-        }
-
-        if ($(this).hasClass("error")) {
-            $(this).addClass("alert-danger");
+    document.querySelectorAll(".submit_container button:not(.btn)").forEach(el => {
+        el.classList.add("btn");
+        if (el.classList.contains("button_update") || el.classList.contains("button_checkout")) {
+            el.classList.add("btn-outline-primary");
         }
     });
 
-    $(
-        "#main .mod_article > .article-content > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_iso_productreader):not(.mod_catalogUniversalView):not(.mod_pageimage):not(style)"
-    ).each(function (index) {
-        $(this).wrapInner("<div class='container'></div>");
+    document.querySelectorAll(".actions_container .submit").forEach(el => {
+        el.classList.add("btn", "btn-primary");
     });
 
-    $(
-        '#main > .inside > div[class^="mod_"]:not(.mod_article):not(.mod_iso_productreader):not(.mod_pageimage):not(.container):not(style)'
-    ).each(function (index) {
-        $(this).wrapInner("<div class='container'></div>");
+    document.querySelectorAll(".filter-toggle-control").forEach(el => {
+        el.classList.add("btn", "btn-primary");
     });
 
-    $(
-        "form:not(#iso_mod_checkout_review) > .formbody:not(.row):not(.no-row)"
-    ).each(function (index) {
-        $(this).addClass("row");
+    document.querySelectorAll(".mod_iso_orderhistory td.link > a").forEach(el => {
+        el.classList.add("btn", "btn-sm");
     });
 
-    $("form .formbody > .fields > *").unwrap();
-    $("form .formbody .address_new").addClass("row");
-    $("form .formbody  p.alert ")
-        .addClass("mt-0")
-        .wrap('<div class="col-12"></div>');
+    let firstLink = document.querySelector(".mod_iso_orderhistory td.link > a:first-child");
+    if (firstLink) {
+        firstLink.classList.add("btn-primary");
+    }
 
-    $("form .widget.form-control").each(function (index) {
-        $(this).removeClass("form-control");
+    let lastLink = document.querySelector(".mod_iso_orderhistory td.link > a:last-child");
+    if (lastLink) {
+        lastLink.classList.add("btn-secondary");
+    }
+
+    document.querySelectorAll(".mod_iso_addressbook a.add").forEach(el => {
+        el.classList.add("btn", "btn-outline-primary");
     });
 
-    var labels = document.querySelectorAll("form label:not(.form-label)");
-    labels.forEach(function (label) {
+    document.querySelectorAll("#footerNav ul").forEach(el => {
+        el.classList.add("list-inline");
+    });
+
+    document.querySelectorAll("#footerNav ul > li").forEach(el => {
+        el.classList.add("list-inline-item");
+    });
+
+    document.querySelectorAll("p.empty:not(.message)").forEach(el => {
+        el.classList.add("alert", "alert-primary");
+    });
+
+    document.querySelectorAll("p.error:not(.message)").forEach(el => {
+        el.classList.add("alert", "alert-danger");
+    });
+
+    document.querySelectorAll(".tl_confirm:not(.message)").forEach(el => {
+        el.classList.add("alert", "alert-success");
+    });
+
+    document.querySelectorAll(".widget-radio span.note").forEach(el => {
+        el.classList.add("alert", "alert-primary");
+    });
+
+    document.querySelectorAll(".message").forEach(el => {
+        el.classList.add("alert");
+        if (el.classList.contains("success")) {
+            el.classList.add("alert-success");
+        }
+        if (el.classList.contains("empty")) {
+            el.classList.add("alert-primary");
+        }
+        if (el.classList.contains("error")) {
+            el.classList.add("alert-danger");
+        }
+    });
+
+    // Hier bleibt wrapInner, da es keine einfache native Alternative gibt
+    $("#main .mod_article > .article-content > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_iso_productreader):not(.mod_catalogUniversalView):not(.mod_pageimage):not(style)").wrapInner("<div class='container'></div>");
+    $('#main > .inside > div[class^="mod_"]:not(.mod_article):not(.mod_iso_productreader):not(.mod_pageimage):not(.container):not(style)').wrapInner("<div class='container'></div>");
+
+    document.querySelectorAll("form:not(#iso_mod_checkout_review) > .formbody:not(.row):not(.no-row)").forEach(el => {
+        el.classList.add("row");
+    });
+
+    document.querySelectorAll("form .formbody > .fields > *").forEach(el => {
+        el.parentNode.removeChild(el);
+    });
+
+    document.querySelectorAll("form .formbody .address_new").forEach(el => {
+        el.classList.add("row");
+    });
+
+    document.querySelectorAll("form .formbody  p.alert").forEach(el => {
+        el.classList.add("mt-0");
+        let wrapper = document.createElement('div');
+        wrapper.className = 'col-12';
+        el.parentNode.insertBefore(wrapper, el);
+        wrapper.appendChild(el);
+    });
+
+    document.querySelectorAll("form .widget.form-control").forEach(el => {
+        el.classList.remove("form-control");
+    });
+
+    document.querySelectorAll("form label:not(.form-label)").forEach(label => {
         label.className = "";
     });
 
-    $("form >  .formbody:not(.no-row) > fieldset").each(function (index) {
-        $(this).addClass("row").wrap('<div class="col-12"></div>');
+    document.querySelectorAll("form >  .formbody:not(.no-row) > fieldset").forEach(el => {
+        el.classList.add("row");
+        let wrapper = document.createElement('div');
+        wrapper.className = 'col-12';
+        el.parentNode.insertBefore(wrapper, el);
+        wrapper.appendChild(el);
     });
 
-    var formBodies = document.querySelectorAll("form > .formbody:not(.no-row)");
-
+    let formBodies = document.querySelectorAll("form > .formbody:not(.no-row)");
     formBodies.forEach(function (formBody) {
-        var elements = formBody.querySelectorAll(':scope > *:not([class^="col-"])');
-
+        let elements = formBody.querySelectorAll(':scope > *:not([class^="col-"])');
         elements.forEach(function (element) {
             element.classList.add("col-12");
         });
     });
 
-    var formFieldsetBodies = document.querySelectorAll(
-        "form > .formbody fieldset"
-    );
-
+    let formFieldsetBodies = document.querySelectorAll("form > .formbody fieldset");
     formFieldsetBodies.forEach(function (FormFieldset) {
-        var elements = FormFieldset.querySelectorAll(
-            ':scope > *:not([class^="col-"])'
-        );
-
+        let elements = FormFieldset.querySelectorAll(':scope > *:not([class^="col-"])');
         elements.forEach(function (element) {
             element.classList.add("col-12");
         });
     });
 
-    if ($(".modal").length) {
-        $(".modal").appendTo("body");
-    }
 
-    if ($("#main .ce_text table").length) {
-        $("#main table").each(function (index) {
-            $(this).wrap('<div class="table-responsive"></div>');
-            $(this)
-                .addClass("table")
-                .addClass("table-striped")
-                .addClass("table-hover");
+    if (document.querySelector("#main .ce_text table")) {
+        document.querySelectorAll("#main table").forEach(el => {
+            let wrapper = document.createElement('div');
+            wrapper.className = 'table-responsive';
+            el.parentNode.insertBefore(wrapper, el);
+            wrapper.appendChild(el);
+            el.classList.add("table", "table-striped", "table-hover");
         });
     }
 
-    // Alle Elemente mit den Klassen .widget und .widget-submit auswählen
-    var widgets = document.querySelectorAll(".widget.widget-submit");
+    let elementsWithPullTop = document.querySelectorAll('.content--element:has(.pull-top)');
+    elementsWithPullTop.forEach(element => {
+        let previousSibling = element.previousElementSibling;
+        if (previousSibling && previousSibling.classList.contains('content--element')) {
+            previousSibling.style.marginBottom = '0';
+        }
+    });
 
-    // Durch jedes Element iterieren
-    widgets.forEach(function (widget) {
-        // Die Klassen dieses Elements in ein Array konvertieren
-        var classes = widget.className.split(" ");
-
-        // Durch die Klassen iterieren
-        classes.forEach(function (cls) {
-            // Wenn die Klasse mit "btn" beginnt, entferne sie
+    document.querySelectorAll(".widget.widget-submit").forEach(widget => {
+        Array.from(widget.classList).forEach(cls => {
             if (cls.startsWith("btn")) {
                 widget.classList.remove(cls);
             }

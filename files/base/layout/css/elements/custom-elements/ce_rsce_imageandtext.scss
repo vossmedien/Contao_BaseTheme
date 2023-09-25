@@ -40,14 +40,15 @@ html body {
         }
       }
 
-      &:not(.as--rows) {
-        > .row {
+      /*
+         &:not(.as--rows) {
+        /*
+         > .row {
           --bs-gutter-y: 2rem;
 
           @include media-breakpoint-up(md) {
             border-left: 2px solid var(--bs-body-color);
             border-top: 2px solid var(--bs-body-color);
-
           }
 
           > div {
@@ -58,6 +59,8 @@ html body {
             }
           }
         }
+
+
 
 
         .col--inner {
@@ -80,7 +83,7 @@ html body {
         .text {
           text-align: center;
 
-          /*
+
                  a {
             font-style: italic;
             font-weight: $font-weight-semibold;
@@ -98,10 +101,12 @@ html body {
               margin-left: 3px;
             }
           }
-           */
+
 
         }
       }
+       */
+
     }
 
     .image {
