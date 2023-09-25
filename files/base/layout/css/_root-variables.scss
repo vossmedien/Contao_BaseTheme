@@ -59,16 +59,16 @@
 
   --bs-font-primary: "Open Sans", sans-serif;
   --bs-font-secondary: SFMono-Regular, Menlo, Monaco, Consolas,
-  "Liberation Mono", "Courier New", monospace;
+    "Liberation Mono", "Courier New", monospace;
   --bs-font-tertiary: "Montserrat", sans-serif;
 
   --bs-font-sans-serif: var(--bs-font-primary);
   --bs-font-monospace: var(--bs-font-secondary);
 
   --bs-gradient: linear-gradient(
-                  180deg,
-                  rgba(var(--bs-white-rgb), 0.15),
-                  rgba(var(--bs-white-rgb), 0)
+    180deg,
+    rgba(var(--bs-white-rgb), 0.15),
+    rgba(var(--bs-white-rgb), 0)
   );
 
   --bs-basic-spacing: #{$basic-gutter};
@@ -189,9 +189,6 @@
   --bs-container-width-xxl: 1600px;
 
   --bs-mobile-max-width: 767px;
-
-
-
 
   //Swiper
 

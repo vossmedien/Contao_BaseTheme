@@ -37,7 +37,6 @@
   z-index: 5;
   background-color: $body-bg;
 
-
   &:not([class*="p-"]):not([class*="px-"]):not([class*="py-"]) {
     @if $override-padding == "" {
       padding: rfs-value($basic-gutter/2) !important;
@@ -47,11 +46,10 @@
     } @else {
       padding: $override-padding !important;
     }
-
   }
 
   .ce_text {
-    margin-top: 0px;
+    //margin-top: 0px;
   }
 
   &.row {
@@ -60,7 +58,6 @@
     }
   }
 }
-
 
 @keyframes fadein {
   0% {
@@ -73,7 +70,6 @@
     opacity: 1;
   }
 }
-
 
 @mixin element-color($color) {
   background-image: url('data:image/svg+xml;utf8,<svg ...><g stroke="#{$color}" ... /></g></svg>');

@@ -72,7 +72,7 @@ if (TL_MODE == 'FE') {
                         <?php echo $row->text; ?>
                     <?php endif; ?>
 
-                    <?php if (count($row->table) > 1) : ?>
+                    <?php if ($row->table && count($row->table) > 1) : ?>
                         <div class="structured-data mt-3">
                             <?php foreach ($row->table as $tableRow) : ?>
                                 <div class="structured-data--row border border-primary mb-1">
@@ -99,7 +99,7 @@ if (TL_MODE == 'FE') {
                                             foreach ($otherCells as $index => $otherCell) :
                                                 $isLastCell = ($index == $totalOtherCells - 1);
                                                 ?>
-                                                <div class="structured-data--cell col-xl <?php if(count($otherCells) > 1):?>col-6<?php endif;?>">
+                                                <div class="structured-data--cell col-xl <?php if (count($otherCells) > 1): ?>col-6<?php endif; ?>">
                                                     <div class="p-1 border-top w-100 <?= $isLastCell ? 'border-end-0' : 'border-end'; ?>">
                                                         <?= $otherCell; ?>
                                                     </div>

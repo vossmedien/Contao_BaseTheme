@@ -125,8 +125,8 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                                         <?php if ($slide->image): ?>
                                             <div class="<?php if (($this->nav_position == 3 || $this->nav_position == 4) && ($slide->longtext)): ?>mb-2<?php endif; ?>  <?php if (($this->nav_position == 1 || $this->nav_position == 2) && ($slide->longtext)): ?><?= $slide->column_width; ?><?php endif; ?>">
                                                 <img loading="lazy" class="slide-image"
-                                                     <?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>data-<?php endif; ?>src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>">
-                                                 <div class="swiper-lazy-preloader"></div>
+                                                     src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>">
+                                                <div class="swiper-lazy-preloader"></div>
                                             </div>
                                         <?php endif; ?>
 
@@ -219,7 +219,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                     direction: 'horizontal',
                     preloadImages: true,
                     //freemode: true,
-                    autoHeight: true,
+                    //autoHeight: true,
 
 
 
@@ -279,13 +279,12 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
 
                 $('.content-slider--nav_<?= $this->id; ?> span').click(swiper_<?php echo $this->id; ?>, function () {
-                    swiper_<?php echo $this->id; ?>.slideTo($(this).data("slide") <?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>+ 1<?php endif;?>);
+                    swiper_<?php echo $this->id; ?>.slideTo($(this).data("slide"));
 
                     $('.content-slider--nav_<?= $this->id; ?> li.active').removeClass("active");
                     $(this).parent("li").addClass("active");
 
                 })
-
 
                 swiper_<?php echo $this->id; ?>.on('slideChange', function () {
                     $('.content-slider--nav_<?= $this->id; ?> li.active').removeClass("active");
@@ -297,7 +296,6 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                 var swiper = swiper_<?php echo $this->id; ?>;
                 document.querySelector('.swiper-button-prev.content-slider_<?= $this->id; ?>').addEventListener('mousedown', function (e) {
                     if (this.classList.contains('swiper-button-disabled')) {
-                        console.log("testx");
                         setTimeout(function () {
                             swiper.slideTo(swiper.slides.length - 1);
                         }, 150);

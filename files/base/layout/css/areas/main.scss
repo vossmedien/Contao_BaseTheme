@@ -29,17 +29,16 @@
   #main {
     //overflow: hidden;
 
-
     .mod_article {
       .ce--inner {
         position: relative;
       }
 
-      .article-content{
+      .article-content {
         z-index: 2;
       }
 
-      .article-content > *:not(.ce_headline):not(.ce_html):not(:last-child) {
+      .article-content > *:not(.ce_headline):not(.ce_html) {
         margin-bottom: $basic-gutter;
       }
 

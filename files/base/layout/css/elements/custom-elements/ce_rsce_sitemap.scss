@@ -14,10 +14,9 @@ html body {
     margin-top: -1px;
 
     .ce--sitemap {
-
-
       .row {
         flex-wrap: wrap !important;
+
         > div:last-child {
           .sitemap-column {
             //border-bottom: 1px solid $body-bg;
@@ -75,7 +74,7 @@ html body {
                 flex-flow: column wrap;
                 justify-content: flex-end;
                 min-height: rfs-value(54px);
-                padding-bottom: .5rem;
+                padding-bottom: 0.5rem;
               }
 
               &.sitemap--image-container {
@@ -104,7 +103,6 @@ html body {
           > div {
             padding-left: 1.25rem;
             padding-right: 1.25rem;
-
 
             &:not(:first-child) {
               padding-top: 1.25rem;
@@ -140,8 +138,8 @@ html body {
     }
   }
 
-  .mm_container{
-    .ce--sitemap{
+  .mm_container {
+    .ce--sitemap {
       max-height: 85vh;
       overflow: auto;
     }
