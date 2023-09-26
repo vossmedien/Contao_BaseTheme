@@ -256,7 +256,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                         slideShadows: true, // Enables slides shadows
                     },
                     <?php endif;?>
-
+ 
                     <?php if ($this->slide_effect == "fade") : ?>
                     fadeEffect: {
                         crossFade: true

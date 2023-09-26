@@ -5,7 +5,7 @@ if (TL_MODE == 'FE') {
 ?>
 
 
-<div <?php echo $this->cssID; ?> class="lazy content--element <?php echo $this->class; ?>"
+<div <?php echo $this->cssID; ?> class="<?php if ($this->image): ?>lazy<?php endif; ?> content--element <?php echo $this->class; ?>"
 
                                  data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
 
@@ -18,16 +18,16 @@ if (TL_MODE == 'FE') {
              <?php endif; ?>
 
 
-                            <?php if ($this->background_color) : ?>
-                     background-color: <?= $this->background_color;?>;
+                                 <?php if ($this->background_color) : ?>
+                                         background-color: <?= $this->background_color;?>;
              <?php endif; ?>
-             <?php if ($this->alternate_background_color) : ?>
-                     background-color: <?= $this->alternate_background_color;?>;
+                                 <?php if ($this->alternate_background_color) : ?>
+                                         background-color: <?= $this->alternate_background_color;?>;
              <?php endif; ?>
                                          "
 
 >
-    <div class="ce--inner <?php if ($this->background_color) : ?>with-bg<?php endif;?>">
+    <div class="ce--inner <?php if ($this->background_color) : ?>with-bg<?php endif; ?>">
 
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -38,9 +38,9 @@ if (TL_MODE == 'FE') {
             <?php endif; ?>
             <span class="ce--headline-content"><?php echo($this->headline); ?></span>
         </<?php echo($this->hl); ?>>
-        <?php if ($this->subline) : ?>
-                <span class="ce--subline"><?php echo $this->subline; ?></span>
-            <?php endif; ?>
+    <?php if ($this->subline) : ?>
+        <span class="ce--subline"><?php echo $this->subline; ?></span>
+    <?php endif; ?>
     <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -50,7 +50,7 @@ if (TL_MODE == 'FE') {
         <div class="ts--inner"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
 
-             >
+        >
 
             <div class="container">
 
