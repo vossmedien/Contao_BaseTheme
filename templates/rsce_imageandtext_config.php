@@ -314,9 +314,22 @@ return array(
                     ),
                 ),
 
+                  'textalign' => array(
+                    'label' => array(
+                        'de' => array('Text-Ausrichtung', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'text-start' => 'Linksbündig',
+                        'text-center' => 'Zentriert',
+                        'text-end' => 'Rechtsbündig',
+                    ),
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
                 'headline_type' => array(
                     'label' => array(
-                        'de' => array('Typ der Überschrift', 'für linke Spalte'),
+                        'de' => array('Typ der Überschrift', ''),
                     ),
                     'inputType' => 'select',
                     'options' => array(
@@ -330,9 +343,9 @@ return array(
                 ),
 
                 'headline' => array(
-                    'label' => array('Überschrift', 'für linke Spalte'),
+                    'label' => array('Überschrift', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50','allowHtml' => true),
                 ),
 
                 'onlystyle' => array(
@@ -356,7 +369,7 @@ return array(
 
                 'column_width' => array(
                     'label' => array(
-                        'de' => array('Breite für Bildspalte', 'Breite der Bildspalte (falls vorhanden), Standard: 50%'),
+                        'de' => array('Breite', 'Standard: 50%'),
                     ),
                     'inputType' => 'select',
                     'options' => array(
@@ -376,7 +389,7 @@ return array(
                     'label' => array('Buttons', ''),
                     'elementLabel' => '%s. Button',
                     'inputType' => 'list',
-                    'minItems' => 1,
+                    'minItems' => 0,
                     'maxItems' => 20,
 
 

@@ -16,13 +16,73 @@ $(function () {
             } else {
                 element.style.marginLeft = marginValue;
             }
+
+            // Vom ausgehenden Element das nächste vorhandene .article-content div (im parent nach oben) finden
+            let articleContentAbove = element.closest('.mod_article').querySelector('.article-content');
+            if (articleContentAbove) {
+                articleContentAbove.style.marginTop = `calc(-1 * (var(--skew-padding) * 5))`;
+            }
+
+            // Vom ausgehenden Element zum aktuellen parent .mod_article
+            let currentArticle = element.closest('.mod_article');
+            if (currentArticle) {
+                // Das vorherige .mod_article Geschwisterelement finden
+                let previousArticle = currentArticle.previousElementSibling;
+                while (previousArticle && !previousArticle.classList.contains('mod_article')) {
+                    previousArticle = previousArticle.previousElementSibling;
+                }
+
+                if (previousArticle) {
+                    // Zum Testen: Fügen Sie dem vorherigen .mod_article eine rote Hintergrundfarbe hinzu
+                    // Dem darin enthaltenen .article-content das padding-bottom hinzufügen
+                    let articleContentPrevious = previousArticle.querySelector('.article-content');
+                    if (articleContentPrevious) {
+                        articleContentPrevious.style.paddingBottom = `calc(var(--skew-padding) * 2.25)`;
+                    }
+                }
+            }
         });
     }
+
 
     adjustMargin(document.querySelectorAll('.pull-top'), 'top', true);
     adjustMargin(document.querySelectorAll('.pull-bottom'), 'bottom', false);
     adjustMargin(document.querySelectorAll('.pull-start'), 'left', true);
     adjustMargin(document.querySelectorAll('.pull-end'), 'right', false);
+
+
+    let resizeTimeout;
+
+    function optimizedAdjustMargin() {
+        // Wenn es bereits einen Timeout gibt, löschen Sie ihn
+        if (resizeTimeout) {
+            clearTimeout(resizeTimeout);
+        }
+
+        // Setzen Sie einen neuen Timeout
+        resizeTimeout = setTimeout(() => {
+            // Verwenden Sie requestAnimationFrame für eine bessere Performance
+            window.requestAnimationFrame(() => {
+                adjustMargin(document.querySelectorAll('.pull-top'), 'top', true);
+                adjustMargin(document.querySelectorAll('.pull-bottom'), 'bottom', false);
+                adjustMargin(document.querySelectorAll('.pull-start'), 'left', true);
+                adjustMargin(document.querySelectorAll('.pull-end'), 'right', false);
+            });
+        }, 100);  // 100ms Verzögerung
+    }
+
+// Fügen Sie den Event-Listener hinzu
+    window.addEventListener('resize', optimizedAdjustMargin);
+
+
+    let elementsWithPullTop = document.querySelectorAll('.content--element:has(.pull-top)');
+    elementsWithPullTop.forEach(element => {
+        let previousSibling = element.previousElementSibling;
+        if (previousSibling && previousSibling.classList.contains('content--element')) {
+            previousSibling.style.marginBottom = '0';
+        }
+    });
+
 
     var modalElement = document.querySelector(".modal");
     if (modalElement) {
@@ -185,13 +245,6 @@ $(function () {
         });
     }
 
-    let elementsWithPullTop = document.querySelectorAll('.content--element:has(.pull-top)');
-    elementsWithPullTop.forEach(element => {
-        let previousSibling = element.previousElementSibling;
-        if (previousSibling && previousSibling.classList.contains('content--element')) {
-            previousSibling.style.marginBottom = '0';
-        }
-    });
 
     document.querySelectorAll(".widget.widget-submit").forEach(widget => {
         Array.from(widget.classList).forEach(cls => {

@@ -24,7 +24,7 @@ if (TL_MODE == 'FE') {
             }
             ?>
 
-            <div class="ce--section-slider ps-lg-10 <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
+            <div class="ce--section-slider <?php if(!$this->reverse_columns):?>ps-lg-10<?php endif;?> <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                 <?php $rand = rand(1, 100); ?>
 
@@ -42,12 +42,12 @@ if (TL_MODE == 'FE') {
                 <?php endif; ?>
 
                 <div class="<?= $this->row_align;?> row gx-lg-4 <?php if(!$this->reverse_columns):?>flex-md-row-reverse<?php endif;?>">
-                    <div class="col-12 col-md-7 pb-md-10">
+                    <div class="col-12 col-md-7 <?php if(!$this->reverse_columns):?>pb-md-10<?php endif;?>">
 
                         <?php if ($this->headline || $this->subline || $this->topline) : ?>
                         <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                             <?php if ($this->headline) : ?>
-                            <<?php echo($this->hl); ?>>
+                            <<?php echo($this->hl); ?> <?php if (!$this->subline) : ?>class="mb-md-0"<?php endif;?>>
                             <?php if ($this->topline) : ?>
                                 <span class="ce--topline"><?php echo $this->topline; ?></span>
                             <?php endif; ?>
@@ -78,7 +78,7 @@ if (TL_MODE == 'FE') {
                                                class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
                                                 <img loading="lazy" src="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
                                                 <?php if ($this->open_lightbox): ?></a><?php endif; ?>
-                                            <div class="swiper-lazy-preloader"></div>
+                                            <?php if(count($dataSorted) > 1):?><div class="swiper-lazy-preloader"></div><?php endif;?>
                                         </div>
                                     <?php endif; ?>
 
@@ -140,10 +140,18 @@ if (TL_MODE == 'FE') {
         window.addEventListener('load', function () {
 
             <?php if(!$this->custom_anchor):?>
-            document.querySelector('.scrollToElement').addEventListener('click', function () {
-                var element = document.querySelector('.mod_article:first-child + .mod_article');
-                element.scrollIntoView({behavior: 'smooth'});
-            });
+            let scrollToElementButton = document.querySelector('.scrollToElement');
+
+if (scrollToElementButton) {
+    scrollToElementButton.addEventListener('click', function () {
+        var element = document.querySelector('.mod_article:first-child + .mod_article');
+        if (element) {
+            element.scrollIntoView({behavior: 'smooth'});
+        }
+    });
+}
+
+
             <?php endif; ?>
 
             if ($('.swiper.section-slider_<?= $this->id;?>').length) {

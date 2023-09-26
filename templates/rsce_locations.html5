@@ -86,7 +86,7 @@ if (TL_MODE == 'FE') {
                                     </div>
                                     <div class="col-12  col-md-6 col-lg-3">
                                         <?php if ($location->address): ?>
-                                            <span>{{icon_sharp::fa-solid:fa-location-dot}} <?= $location->address ?></span>
+                                            <span><span style="position: relative; right: -5px;">{{icon_sharp::fa-solid:fa-location-dot}}</span><?= $location->address ?></span>
                                         <?php endif; ?>
                                         <?php if ($location->city): ?>
                                             <span class="d-inline-block"><?= $location->city ?>,</span>

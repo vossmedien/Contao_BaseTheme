@@ -1,5 +1,5 @@
 
-<?php if( $this->styleManager->get('articlestyles', ['elementStylings']) == "box-inside-container"):?><div class="container mb-8 py-9" style="overflow-y: auto;"><?php endif;?>
+<?php if( $this->styleManager->get('articlestyles', ['elementStylings']) == "box-inside-container"):?><div class="container mb-0 py-9" style="overflow-y: auto;"><?php endif;?>
 
 <div class="<?= $this->styleManager->get('articlestyles', ['elementStylings']); ?> <?php if( $this->styleManager->get('articlestyles', ['elementStylings']) == "box-inside-container"):?>content--box<?php endif;?> <?= $this->class ?> block  <?= $this->styleManager->get('columnsettings', ['spaltenausrichtung']); ?>"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
     <?php $this->block('headline'); ?>

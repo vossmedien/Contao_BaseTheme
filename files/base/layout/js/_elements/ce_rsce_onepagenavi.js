@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function (event) {
+window.addEventListener("load", function (event) {
     var ceOnePageNavSmaller = document.querySelector(".ce_rsce_onepagenavi.with-smaller-containers");
     var ceOnePageNav = document.querySelector(".ce_rsce_onepagenavi");
     var mainElement = document.getElementById("main");

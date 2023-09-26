@@ -28,13 +28,13 @@ if (TL_MODE == 'FE') {
     <?php if ($this->rows) : ?>
         <div class="ce--timeline">
             <?php foreach ($this->rows as $i => $row) : ?>
-                <div class="step--wrapper row">
+                <div class="step--wrapper row gy-md-0">
 
                     <div class="col-md-6 col-12">
-                        <div class="step--info">
+                        <div class="step--info mb-2 mb-md-0">
                             <div class="left-col--inner" data-aos="animate__fadeIn">
 
-                                <div class="row align-items-center gx-0">
+                                <div class="row align-items-center">
                                     <?php if ($row->step): ?>
                                         <div class="col-auto">
                                             <span class="h4 mb-0 step--title"><?php echo $row->step; ?></span>

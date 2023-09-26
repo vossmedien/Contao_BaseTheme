@@ -30,6 +30,7 @@
     //overflow: hidden;
 
     .mod_article {
+
       .ce--inner {
         position: relative;
       }
@@ -40,6 +41,13 @@
 
       .article-content > *:not(.ce_headline):not(.ce_html) {
         margin-bottom: $basic-gutter;
+      }
+
+      & + .mod_article {
+        .content--element:last-child{
+          margin-bottom: 0px;
+        }
+        //margin-bottom: $basic-gutter;
       }
 
       &:last-child {

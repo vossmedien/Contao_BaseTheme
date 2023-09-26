@@ -59,7 +59,8 @@
 .accordion {
   // Akkordeon
 
-  --bs-accordion-active-bg: transparent;
+  --bs-accordion-bg: transparent;
+  --bs-accordion-active-bg: var(--bs-accordion-bg);
   --bs-accordion-btn-padding-x: 0;
   --bs-accordion-btn-padding-y: 5px;
   --bs-accordion-border-width: 0px;

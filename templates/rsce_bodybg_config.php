@@ -182,5 +182,17 @@ return array(
         ),
 
 
+        'deactivate_top' => array(
+            'label' => array('', ''),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'Abschrägung oben deaktivieren',
+            ),
+            'dependsOn' => array(
+                'field' => 'activate',
+            ),
+        ),
+
+
     ),
 );
