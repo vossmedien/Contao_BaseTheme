@@ -20,7 +20,7 @@ $(function () {
             // Vom ausgehenden Element das nächste vorhandene .article-content div (im parent nach oben) finden
             let articleContentAbove = element.closest('.mod_article').querySelector('.article-content');
             if (articleContentAbove) {
-                articleContentAbove.style.marginTop = `calc(-1 * (var(--skew-padding) * 5))`;
+                articleContentAbove.style.marginTop = `calc(-1 * (var(--skew-padding) * 3.75))`;
             }
 
             // Vom ausgehenden Element zum aktuellen parent .mod_article
@@ -37,7 +37,7 @@ $(function () {
                     // Dem darin enthaltenen .article-content das padding-bottom hinzufügen
                     let articleContentPrevious = previousArticle.querySelector('.article-content');
                     if (articleContentPrevious) {
-                        articleContentPrevious.style.paddingBottom = `calc(var(--skew-padding) * 2.25)`;
+                        articleContentPrevious.style.paddingBottom = `calc(var(--skew-padding))`;
                     }
                 }
             }

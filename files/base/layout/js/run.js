@@ -41,7 +41,7 @@ Promise.all(promises)
                 //throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
 
                 // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-                offset: 200, // offset (in px) from the original trigger point
+                offset: 0, // offset (in px) from the original trigger point
 
                 once: true, // whether animation should happen only once - while scrolling down
                 mirror: false, // whether elements should animate out while scrolling past them
