@@ -2,61 +2,6 @@
   --animate-duration: 1500ms;
   --animate-delay: 0s;
 
-  --bs-primary: var(--bs-red);
-  --bs-secondary: var(--bs-gray-900);
-  --bs-tertiary: var(--bs-secondary);
-
-  --bs-primary-rgb: 135, 22, 35;
-  --bs-secondary-rgb: 33, 37, 41;
-  --bs-tertiary-rgb: var(--bs-secondary-rgb);
-
-  --bs-blue: #00274a;
-  --bs-indigo: #6610f2;
-  --bs-purple: #6f42c1;
-  --bs-pink: #d63384;
-  --bs-red: #871623;
-  --bs-orange: #fd7e14;
-  --bs-yellow: #ffc107;
-  --bs-green: #198754;
-  --bs-teal: #20c997;
-  --bs-cyan: #0dcaf0;
-
-  --bs-white: #fff;
-  --bs-black: #000;
-
-  --bs-gray: #6c757d;
-  --bs-gray-dark: #343a40;
-  --bs-gray-100: #f8f9fa;
-  --bs-gray-200: #e9ecef;
-  --bs-gray-300: #dee2e6;
-  --bs-gray-400: #ced4da;
-  --bs-gray-500: #adb5bd;
-  --bs-gray-600: #888888;
-  --bs-gray-700: #495057;
-  --bs-gray-800: #343a40;
-  --bs-gray-900: #212529;
-
-  --bs-success: #dbe8e2;
-  //--bs-success-rgb: 212, 237, 218;
-
-  --bs-info: #d1ecf1;
-  //--bs-info-rgb: 209, 236, 241;
-
-  --bs-warning: #fff3cd;
-  //--bs-warning-rgb: 255, 243, 205;
-
-  --bs-danger: #f8d7da;
-  //--bs-danger-rgb: 248, 215, 218;
-
-  --bs-light: var(--bs-gray-200);
-  //--bs-light-rgb: 254, 254, 254;
-
-  --bs-dark: var(--bs-gray-900);
-  //--bs-dark-rgb: 214, 216, 217;
-
-  --bs-white-rgb: 255, 255, 255;
-  --bs-black-rgb: 0, 0, 0;
-
   --bs-font-primary: "Open Sans", sans-serif;
   --bs-font-secondary: SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
@@ -83,11 +28,6 @@
   --bs-font-weight-800: 800;
   --bs-font-weight-900: 900;
 
-  --bs-btn-padding-top: 0.75rem;
-  --bs-btn-padding-bottom: 0.85rem;
-  --bs-btn-padding-left: 1rem;
-  --bs-btn-padding-right: 1rem;
-
   --bs-body-font-family: var(--bs-font-primary);
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: var(--bs-font-weight-300);
@@ -101,7 +41,7 @@
   --bs-body-color: #212529;
   --bs-body-color-rgb: 33, 37, 41;
 
-  --bs-body-bg: #fff;
+  --bs-body-bg: #{$body-bg};
   --bs-body-bg-rgb: 255, 255, 255;
   --bs-body-color-inverse: #fff;
 

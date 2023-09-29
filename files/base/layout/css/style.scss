@@ -7,11 +7,12 @@
 @import "icon-package";
 
 @import "_theme/fonts";
+
+@import "scss-variables";
+@import "_theme/variables";
 @import "../_vendor/vendor";
 
 @import "root-variables";
-@import "scss-variables";
-@import "_theme/variables";
 
 @import "scaffolding/helper-classes";
 @import "scaffolding/typo";

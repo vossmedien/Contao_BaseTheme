@@ -3,7 +3,7 @@
 }
 
 .bg-gray {
-  background-color: var(--bs-gray);
+  background-color: var(--bs-gray-500);
 }
 
 .pos-centered {
@@ -142,7 +142,6 @@ a.disabled-link {
   text-decoration: none;
   pointer-events: none;
 }
-
 
 [class*="pull-"] {
   position: relative;

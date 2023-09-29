@@ -119,15 +119,12 @@ html body {
     }
   }
 
-
   .ce--topline {
     font-weight: $font-weight-black;
     color: var(--bs-primary);
     //@include font-size(22px);
     display: block;
     line-height: var(--bs-body-line-height-xs);
-
-
   }
 
   .ce--subline {
@@ -138,7 +135,6 @@ html body {
     line-height: var(--bs-body-line-height-xs);
     margin-top: 1rem;
   }
-
 
   h1,
   .h1 {
@@ -163,7 +159,6 @@ html body {
     display: block;
     @include font-size($h2-font-size);
 
-
     & + .ce--subline {
       margin-top: -$headline-spacing / 3;
       margin-bottom: $headline-spacing;
@@ -184,7 +179,6 @@ html body {
     display: block;
     @include font-size($h3-subline-font-size);
 
-
     & + .ce--subline {
       margin-top: -$headline-spacing / 3;
       margin-bottom: $headline-spacing;
@@ -201,7 +195,6 @@ html body {
     margin-bottom: $headline-spacing / 3;
     @include font-size($h4-font-size);
 
-
     & + .ce--subline {
       @include font-size(calc(#{$h4-font-size} / 1.75));
       margin-top: -$headline-spacing / 2.5;
@@ -213,12 +206,14 @@ html body {
     }
   }
 
-  h5, .h5 {
+  h5,
+  .h5 {
     @include font-size($h5-font-size);
     margin-bottom: $headline-spacing / 3;
   }
 
-  h6, .h6 {
+  h6,
+  .h6 {
     @include font-size($h6-font-size);
     margin-bottom: $headline-spacing / 3;
   }
@@ -232,7 +227,6 @@ html body {
       }
     }
   }
-
 
   .table-responsive {
     margin-bottom: 1rem;
@@ -267,7 +261,7 @@ html body {
           &:first-child {
             color: var(--bs-primary);
             padding-left: 0px;
-            font-family: $font-family-tertiary;
+            font-family: var(--bs-font-tertiary);
           }
 
           &:last-child {
@@ -369,13 +363,12 @@ html body {
   line-height: var(--bs-body-line-height-xs);
 }
 
-
 .list-inline {
   &.with-separator {
     > li {
       &:not(:last-child) {
         &:after {
-          content: '|';
+          content: "|";
           display: inline-block;
           margin: 0 -5px 0 4px;
         }
@@ -383,7 +376,6 @@ html body {
     }
   }
 }
-
 
 %list-check {
   list-style-type: none;
@@ -416,7 +408,6 @@ html body {
     }
   }
 }
-
 
 %list-downloads {
   list-style-type: none;
@@ -477,7 +468,7 @@ html body {
       color: var(--bs-body-color-inverse);
       left: 0;
       top: 5px;
-      font-size: .75rem;
+      font-size: 0.75rem;
     }
 
     a {
@@ -498,7 +489,6 @@ html body {
 .list-check {
   @extend %list-check;
 }
-
 
 ul[class*="list-"][class*="text-"] {
   > li {
