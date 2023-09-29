@@ -18,9 +18,9 @@ if (TL_MODE == 'FE') {
             <?php endif; ?>
             <span class="ce--headline-content"><?php echo($this->headline); ?></span>
         </<?php echo($this->hl); ?>>
-        <?php if ($this->subline) : ?>
-                <span class="ce--subline"><?php echo $this->subline; ?></span>
-            <?php endif; ?>
+    <?php if ($this->subline) : ?>
+        <span class="ce--subline"><?php echo $this->subline; ?></span>
+    <?php endif; ?>
     <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -49,7 +49,7 @@ if (TL_MODE == 'FE') {
                 <div class="swiper-slide">
                     <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline) : ?>no-text<?php endif; ?> ">
                         <div class="image--holder <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>"
-                             style="background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat; <?php if ($this->image_minheight) : ?>min-height: <?= $this->image_minheight;?>;<?php else:?>250px;<?php endif; ?> <?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; <?php endif; ?> <?php if ($this->image_maxwidth) : ?>background-size: <?= $this->image_maxwidth; ?> auto;<?php else: ?>background-size: cover;<?php endif; ?>">
+                             style="<?php if ($this->image_minheight) : ?>min-height: <?= $this->image_minheight;?>;<?php else:?>250px;<?php endif; ?> <?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; <?php endif; ?> <?php if ($this->image_maxwidth) : ?>background-size: <?= $this->image_maxwidth; ?> auto;<?php else: ?>background-size: cover;<?php endif; ?>">
 
                             <?php if ($slide->alternate_background_color): ?>
                                 <style>
@@ -99,6 +99,24 @@ if (TL_MODE == 'FE') {
                                     }
                                 </style>
                             <?php endif; ?>
+
+                            <style>
+                                <?php if($ext != "mp4"):?>
+                                html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?> .image--holder {
+                                    background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat;
+                                }
+
+                                }
+                                <?php endif;?>
+                                <?php if($this->mobile_image && $ext_mobile != "mp4"):?>
+                                @media (max-width: 767px) {
+                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?> .image--holder {
+                                        background: url(<?= Image::get(FilesModel::findByUuid($slide->mobile_image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat;
+                                    }
+                                }
+
+                                <?php endif;?>
+                            </style>
 
                             <?php if ($ext == "mp4") : ?>
                                 <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
