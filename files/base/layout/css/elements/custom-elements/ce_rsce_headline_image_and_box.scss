@@ -1,6 +1,6 @@
 @import "../../mixins";
 
-@import "../../variables-layout";
+
 
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
@@ -9,7 +9,7 @@
 @import "../../scaffolding/helper-classes";
 
 @import "../../scss-variables";
-@import "../../_theme/variables-layout";
+
 
 html body {
   .ce_rsce_headline_image_and_box {

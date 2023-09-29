@@ -1,11 +1,11 @@
-@import "../../variables-layout";
+
 
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
 @import "../../scss-variables";
-@import "../../_theme/variables-layout";
+
 
 html body {
   .ce_rsce_timeline {
@@ -157,7 +157,7 @@ html body {
             display: inline-block;
             text-align: center;
             border-radius: 50%;
-            background-color: var(--bs-gray-500);
+            background-color: var(--bs-gray);
 
             > img {
               max-width: 50px;
@@ -173,7 +173,7 @@ html body {
 
           .right-col--inner {
             padding: 2rem;
-            background-color: var(--bs-gray-500);
+            background-color: var(--bs-gray);
 
             @include media-breakpoint-up(lg) {
               max-width: 80%;

@@ -1,10 +1,12 @@
 $white: #fff;
+$gray: var(--bs-gray-300);
+
 $gray-100: #f8f9fa;
 $gray-200: #e9ecef;
 $gray-300: #dee2e6;
 $gray-400: #ced4da;
 $gray-500: #adb5bd;
-$gray-600: #6c757d;
+$gray-600: #888888;
 $gray-700: #495057;
 $gray-800: #343a40;
 $gray-900: #212529;
@@ -73,3 +75,87 @@ $megamenu-lvl1-color: var(--bs-megamenu-lvl1-color);
 $megamenu-lvl2-color: var(--bs-megamenu-lvl2-color);
 $megamenu-lvl3-color: var(--bs-megamenu-lvl3-color);
 $megamenu-imageHeight: var(--bs-megamenu-imageHeight);
+
+
+
+$fa-font-path: "/files/base/layout/_fonts/fontawesome-iconset/webfonts";
+
+$enable-cssgrid: true;
+$enable-rounded: true;
+$spacer: 2.25rem;
+$icon-type: ".fasl";
+
+$spacers: (
+        0: 0,
+        1: .5rem,
+        2: 1rem,
+        3: 1.5rem,
+        4: 2rem,
+        5: 2.5rem,
+        6: 3rem,
+        7: 3.5rem,
+        8: 4rem,
+        9: 4.5rem,
+        10: 5rem,
+);
+
+//Abstände
+
+
+$basic-gutter: $spacer * 2;
+$headline-spacing: $spacer * 1.5;
+$mini-spacing: $spacer/2;
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1640px,
+);
+
+$grid-gutter-width: 30px;
+
+
+$gutters: (
+        0: 0,
+        1: $grid-gutter-width * 0.5,
+        2: $grid-gutter-width,
+        3: $grid-gutter-width * 2,
+        4: $grid-gutter-width * 3,
+        5: $grid-gutter-width * 4,
+);
+
+
+
+//CSS Variablen beachten
+$container-max-widths: (
+        sm: 540px,
+        md: 720px,
+        lg: 960px,
+        xl: 1140px,
+        xxl: 1600px,
+);
+
+// Spalten
+
+$left-col--width: 275px;
+$right-col--width: 250px;
+
+// Modales Fenster
+
+$modal-sm: 520px;
+$modal-md: 760px;
+$modal-lg: 940px;
+$modal-xl: 1140px;
+
+$btn-line-height: 1;
+$h1-font-size: 72px;
+$h1-subline-font-size: 36px;
+$h2-font-size: 40px;
+$h2-subline-font-size: 20px;
+$h3-font-size: 40px;
+$h3-subline-font-size: 20px;
+$h4-font-size: 24px;
+$h4-subline-font-size: 18px;

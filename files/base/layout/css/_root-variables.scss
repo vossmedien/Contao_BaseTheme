@@ -10,11 +10,16 @@
   --bs-font-sans-serif: var(--bs-font-primary);
   --bs-font-monospace: var(--bs-font-secondary);
 
+
+  --bs-gray: #{$gray};
+
   --bs-gradient: linear-gradient(
     180deg,
     rgba(var(--bs-white-rgb), 0.15),
     rgba(var(--bs-white-rgb), 0)
   );
+
+
 
   --bs-basic-spacing: #{$basic-gutter};
 
