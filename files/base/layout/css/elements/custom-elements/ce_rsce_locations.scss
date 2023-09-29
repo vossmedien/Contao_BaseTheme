@@ -16,14 +16,24 @@
     display: block;
   }
 
-  i {
-    color: var(--bs-primary);
-    @include media-breakpoint-up(lg) {
-      position: absolute;
-      margin-left: -30px;
-      margin-top: 2px;
+  .loc-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+
+    gap: .5rem;
+
+    .loc-icon {
+      display: inline-block;
+      min-width: 25px;
+      text-align: center;
+
+
+      i {
+        color: var(--bs-primary);
+      }
     }
   }
+
 
   span, strong {
     display: block;

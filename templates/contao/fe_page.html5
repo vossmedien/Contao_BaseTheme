@@ -138,7 +138,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header py-1">
-                <span class="h2 modal-title mt-1 mb-0" id="contactFormLabel">Modal title</span>
+                <span class="h2 modal-title mt-1 mb-0" id="contactFormLabel">Kontakt aufnehmen</span>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

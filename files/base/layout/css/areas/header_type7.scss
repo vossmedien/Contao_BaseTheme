@@ -163,7 +163,7 @@ body {
             margin: 0px;
 
             li {
-              a {
+              a, strong {
                 text-decoration: none;
                 color: var(--bs-primary);
                 text-transform: uppercase;
@@ -174,7 +174,7 @@ body {
               }
 
               &:hover, &.active, &.trail {
-                > a {
+                > a, > strong {
                   color: var(--bs-secondary);
                 }
               }

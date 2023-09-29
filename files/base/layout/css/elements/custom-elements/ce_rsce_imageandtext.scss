@@ -27,7 +27,9 @@ html body {
         }
 
         .image--wrapper {
-          padding-right: 2.5rem;
+          @include media-breakpoint-up(lg) {
+            padding-right: 2.5rem;
+          }
         }
 
         .headline {

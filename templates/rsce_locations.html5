@@ -84,26 +84,31 @@ if (TL_MODE == 'FE') {
                                             <span><?= $location->position ?></span>
                                         <?php endif; ?>
                                     </div>
-                                    <div class="col-12  col-md-6 col-lg-3">
+                                    <div class="col-12 col-md-6 col-lg-3 mt-2 mt-md-0">
+                                        <div class="loc-wrapper">
+                                            <span class="loc-icon">{{icon_sharp::fa-solid:fa-location-dot}}</span>
+                                            <span>
                                         <?php if ($location->address): ?>
-                                            <span><span style="position: relative; right: -5px;">{{icon_sharp::fa-solid:fa-location-dot}}</span><?= $location->address ?></span>
+                                            <span class="d-inline-block"><?= $location->address ?></span>
                                         <?php endif; ?>
-                                        <?php if ($location->city): ?>
-                                            <span class="d-inline-block"><?= $location->city ?>,</span>
-                                        <?php endif; ?>
-                                        <?php if ($location->abbreviation): ?>
-                                            <span class="d-inline-block"><?= $location->abbreviation ?></span>
-                                        <?php endif; ?>
-                                        <?php if ($location->zipcode): ?>
-                                            <span class="d-inline-block"><?= $location->zipcode ?></span>
-                                        <?php endif; ?>
+                                                <?php if ($location->city): ?>
+                                                    <span class="d-inline-block"><?= $location->city ?>,</span>
+                                                <?php endif; ?>
+                                                <?php if ($location->abbreviation): ?>
+                                                    <span class="d-inline-block"><?= $location->abbreviation ?></span>
+                                                <?php endif; ?>
+                                                <?php if ($location->zipcode): ?>
+                                                    <span class="d-inline-block"><?= $location->zipcode ?></span>
+                                                <?php endif; ?>
+                                                   </span>
+                                        </div>
                                     </div>
                                     <div class="col-12  col-md-6 col-lg-3">
                                         <?php if ($location->phone_number): ?>
-                                            <span>{{icon_sharp::fa-solid:fa-circle-phone}} <?= $location->phone_number ?></span>
+                                            <span class="loc-wrapper"><span class="loc-icon">{{icon_sharp::fa-solid:fa-circle-phone}}</span> <?= $location->phone_number ?></span>
                                         <?php endif; ?>
                                         <?php if ($location->email): ?>
-                                            <span>{{icon_sharp::fa-solid:fa-envelope}} {{email::<?= $location->email ?>}}</span>
+                                            <span class="loc-wrapper"><span class="loc-icon">{{icon_sharp::fa-solid:fa-envelope}}</span> {{email::<?= $location->email ?>}}</span>
                                         <?php endif; ?>
                                         <?php if ($location->website): ?>
                                             <a href="<?= $location->website ?>" target="_blank"><?= $location->website ?></a>
