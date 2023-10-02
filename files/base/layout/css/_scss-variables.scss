@@ -12,28 +12,20 @@ $gray-800: #343a40;
 $gray-900: #212529;
 $black: #000;
 
-$primary: #871623;
-$secondary: #00274a;
-$tertiary: #6610f2;
-$success: #dbe8e2;
-$info: #d1ecf1;
-$warning: #fff3cd;
-$danger: #f8d7da;
-$light: $gray-100;
-$dark: $gray-900;
-// scss-docs-end theme-color-variables
-
 // scss-docs-start theme-colors-map
 $theme-colors: (
-  "primary": $primary,
-  "secondary": $secondary,
-  "tertiary": $tertiary,
-  "success": $success,
-  "info": $info,
-  "warning": $warning,
-  "danger": $danger,
-  "light": $light,
-  "dark": $dark,
+        "red": #871623,
+        "blue": #00274a,
+        "purple": #6610f2,
+        "primary": #871623,
+        "secondary": #00274a,
+        "tertiary": #6610f2,
+        "success": #dbe8e2,
+        "info": #d1ecf1,
+        "warning": #fff3cd,
+        "danger": #f8d7da,
+        "light": $gray-100,
+        "dark": $gray-900,
 );
 
 $font-weight-lighter: var(--bs-font-weight-200);
@@ -75,7 +67,6 @@ $megamenu-lvl1-color: var(--bs-megamenu-lvl1-color);
 $megamenu-lvl2-color: var(--bs-megamenu-lvl2-color);
 $megamenu-lvl3-color: var(--bs-megamenu-lvl3-color);
 $megamenu-imageHeight: var(--bs-megamenu-imageHeight);
-
 
 
 $fa-font-path: "/files/base/layout/_fonts/fontawesome-iconset/webfonts";
@@ -126,7 +117,6 @@ $gutters: (
         4: $grid-gutter-width * 3,
         5: $grid-gutter-width * 4,
 );
-
 
 
 //CSS Variablen beachten
