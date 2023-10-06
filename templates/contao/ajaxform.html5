@@ -9,7 +9,9 @@
           action="<?php echo $this->action; ?>" <?php if ($this->formId) : ?> id="<?php echo $this->formId; ?>" <?php endif; ?>
           method="<?php echo $this->method; ?>"
           enctype="<?php echo $this->enctype; ?>" <?php echo $this->novalidate; ?>>
-        <div class="formbody row <?php if (preg_match('/"([^"]+)"/', $this->attributes, $m)) {print $m[1];} ?>">
+        <div class="formbody row <?php if (preg_match('/"([^"]+)"/', $this->attributes, $m)) {
+            print $m[1];
+        } ?>">
             <?php if ($this->method != 'get') : ?>
                 <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
                 <input type="hidden" name="REQUEST_TOKEN" value="<?= $this->requestToken ?>">
@@ -20,7 +22,7 @@
         </div>
     </form>
     <script type="text/javascript" async>
-        (function () {
+        document.addEventListener('DOMContentLoaded', function () {
             var form = document.querySelector('input[name="FORM_SUBMIT"][value="<?= $this->formSubmit; ?>"]').form;
             if (!form) {
                 return;
@@ -71,6 +73,20 @@
                     $(this).addClass("row");
                 });
 
+                document
+                    .querySelectorAll("p.back > a:not(.btn), .widget-submit > button")
+                    .forEach((el) => {
+                        el.classList.add("btn", "btn-primary");
+                    });
+
+                document.querySelectorAll(".widget.widget-submit").forEach((widget) => {
+                    Array.from(widget.classList).forEach((cls) => {
+                        if (cls.startsWith("btn")) {
+                            widget.classList.remove(cls);
+                        }
+                    });
+                });
+
                 $('html, body').animate({
                     scrollTop: $(".ce_form").offset().top - 125
                 }, 1000);
@@ -78,6 +94,7 @@
 
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
+                console.log("test");
                 var formData = new FormData(form);
                 if (triggeredButton) {
                     formData.append(triggeredButton.name, triggeredButton.value);
@@ -92,9 +109,9 @@
                         updateContent(form, this.responseText, location);
                     });
                 });
-            }, {passive: true});
+            });
             addButtonEvents(form);
-        })();
+        });
     </script>
     </div>
     <!-- indexer::continue -->

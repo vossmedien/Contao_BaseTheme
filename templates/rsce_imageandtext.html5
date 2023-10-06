@@ -33,7 +33,7 @@ if (TL_MODE == 'FE') {
 
         <div class="row">
             <?php foreach ($this->rows as $row) : ?>
-                <?php if (!$this->as_rows) : ?><div class="<?= $row->textalign; ?> mt-4 mt-md-0  <?= $row->column_width; ?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <?php if (!$this->as_rows) : ?><div class="<?= $row->textalign; ?> mt-4 mt-lg-0  <?= $row->column_width; ?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                     <div class="col--inner">
                     <div class="<?= $this->row_align; ?> row  <?php if ($row->reverse_columns) : ?>flex-row-reverse<?php endif; ?>"><?php endif; ?>
                 <?php if ($this->as_rows) : ?>
@@ -43,7 +43,7 @@ if (TL_MODE == 'FE') {
                 <div class="<?= $this->row_align; ?> gx-50px row "><?php endif; ?>
 
                 <?php if ($row->image): ?>
-                    <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" <?php if ($row->reverse_columns) : ?>order-2<?php endif; ?> col-12 image   <?php if (!$this->as_rows) : ?>mt-2 mt-md-0 mb-md-3 order-2<?php else: ?><?= $row->column_width; ?><?php endif; ?>">
+                    <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" <?php if ($row->reverse_columns) : ?>order-2 mt-2 mt-md-0<?php endif; ?> col-12 image   <?php if (!$this->as_rows) : ?>mt-2 mt-md-0 mb-md-3 order-2<?php else: ?><?= $row->column_width; ?><?php endif; ?>">
                         <div class="image--wrapper mb-2 mb-lg-0">
                             <img loading="lazy" class="lazy"
                                  data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size[0], $row->size[1], $row->size[2]); ?>">
@@ -68,7 +68,7 @@ if (TL_MODE == 'FE') {
                 </div>
             <?php endif; ?>
                 <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                     class="text col-12   <?php if (!$this->as_rows) : ?>order-3 <?php endif; ?>">
+                     class="text col-12   <?php if (!$this->as_rows) : ?>order-3 <?php else:?>mt-2 mt-lg-0<?php endif; ?>">
 
                     <?php if ($row->text) : ?>
                         <?php echo $row->text; ?>

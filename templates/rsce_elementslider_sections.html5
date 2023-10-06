@@ -42,7 +42,7 @@ if (TL_MODE == 'FE') {
                 <?php endif; ?>
 
                 <div class="<?= $this->row_align; ?> row gx-xxl-0 gx-lg-3 <?php if (!$this->reverse_columns): ?>flex-md-row-reverse<?php endif; ?>">
-                    <div class="col-12 col-md-7 <?php if (!$this->reverse_columns): ?>pb-md-10<?php endif; ?>">
+                    <div class="col-12 col-md-6 col-xl-7 <?php if (!$this->reverse_columns): ?>pb-md-10<?php endif; ?>">
 
                         <?php if ($this->headline || $this->subline || $this->topline) : ?>
                         <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -63,7 +63,7 @@ if (TL_MODE == 'FE') {
 
                 </div>
 
-                <div class="col-12 col-md-5">
+                <div class="col-12 col-md-6 col-xl-5">
                     <div class="position-relative">
                         <div class="swiper <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> section-slider_<?= $this->id; ?>">
                             <!-- Additional required wrapper -->
