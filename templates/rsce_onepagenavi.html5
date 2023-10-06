@@ -37,10 +37,9 @@ if (TL_MODE == 'FE') {
                         <div class="container" style=" padding-right: calc(var(--bs-gutter-x) * .5);
         padding-left: calc(var(--bs-gutter-x) * .5);">
 
-                        <span class="onepagenavi--headline"
-                              style="<?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>">
-                            <?= $this->headline; ?>
-                        </span>
+                            <?php if ($this->headline): ?>
+                                <span class="onepagenavi--headline" style="<?php if ($this->text_color): ?>color: <?= $this->text_color; ?>;<?php endif; ?>"><?= $this->headline; ?></span>
+                            <?php endif; ?>
 
                             <ul class="nav-link-<?= $this->nav_style; ?>">
                                 <?php foreach ($this->urls as $x => $e) : ?>
