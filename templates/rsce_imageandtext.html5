@@ -55,7 +55,7 @@ if (TL_MODE == 'FE') {
                 <div class="col--inner"><?php endif; ?>
                 <?php if ($row->headline) : ?>
                 <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                     class="mb-md-3 headline col-12  <?php if (!$this->as_rows) : ?>order-1<?php endif; ?>">
+                     class="mb-2 headline col-12  <?php if (!$this->as_rows) : ?>order-1<?php endif; ?>">
                     <?php if (!$row->onlystyle) : ?>
                     <<?php echo $row->headline_type; ?> class="mb-0">
                     <?php echo $row->headline; ?>
