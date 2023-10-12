@@ -109,7 +109,7 @@
       *[class*="bg-dark"] {
         color: var(--bs-body-color-inverse);
 
-        * {
+        *:not([class*="swiper-"]) {
           color: inherit;
         }
       }

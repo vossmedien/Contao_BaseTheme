@@ -18,16 +18,22 @@
     }
 
     @include media-breakpoint-up(md) {
-      padding-top: rfs-value(200px);
+      //padding-top: rfs-value(200px);
     }
 
     @include media-breakpoint-up(lg) {
-      padding-bottom: rfs-value(25px);
+      //padding-bottom: rfs-value(25px);
     }
   }
 
   .scroll-to-bottom {
     text-align: center;
     @include font-size(60px);
+
+        @include media-breakpoint-up(md) {
+             position: absolute;
+    width: 100%;
+    bottom: 0rem;
+        }
   }
 }

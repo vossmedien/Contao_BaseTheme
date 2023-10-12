@@ -46,7 +46,7 @@ if (TL_MODE == 'FE') {
              <?php if ($row->image && $row->image_both) : ?>
                  background-position: center center; background-repeat: no-repeat; background-size: cover;
              <?php endif; ?>
-             <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?> <?php if ($row->alternate_background && !$this->not_fullwidth) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>
+             <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?> <?php if ($row->alternate_background && !$this->not_fullwidth) : ?>background: <?php echo $row->alternate_background; ?><?php endif; ?>
                  ">
             <div style="<?php if ($row->alternate_background && $this->not_fullwidth) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>" class="content-holder  <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if (!$this->not_fullwidth): ?>container force-container<?php endif; ?>">
                 <div style="<?php if (!$row->not_as_bg): ?> <?php if ($row->min_height): ?>min-height: <?= $row->min_height;?>;<?php else:?>min-height: 500px;<?php endif; ?><?php endif; ?>" class="row g-0 align-items-center <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
@@ -58,7 +58,7 @@ if (TL_MODE == 'FE') {
                         <div class="headline--wrapper"
                              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                             <?php if (!$row->boxed_headline_onlystyle) : ?>
-                            <<?php echo $row->boxed_headline_type; ?>>
+                            <<?php echo $row->boxed_headline_type; ?> >
                             <?php echo $row->boxed_headline; ?>
                         </<?php echo $row->boxed_headline_type; ?>>
                         <?php if ($row->boxed_subheadline) : ?>
@@ -86,7 +86,7 @@ if (TL_MODE == 'FE') {
                             <div class="content-col--headline-wrapper"
                                  data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                 <?php if (!$row->onlystyle) : ?>
-                                <<?php echo $row->headline_type; ?> class="content-col--headline">
+                                <<?php echo $row->headline_type; ?> class="content-col--headline" style="<?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?>">
                                 <?php echo $row->ce_headline; ?>
                             </<?php echo $row->headline_type; ?>>
                         <?php if ($row->ce_subline) : ?>
@@ -186,7 +186,7 @@ if (TL_MODE == 'FE') {
 
                 </div>
                 <?php if (($row->image && !$row->image_both) || $row->alternate_image || $row->content_rightcol || $row->video) : ?>
-                <div class="image--col col-12 col-md  <?php if ($row->video) : ?>with-video col-md-6<?php endif; ?>"
+                <div class="image--col col-12 col-lg  <?php if ($row->video) : ?>with-video col-lg-6<?php endif; ?>"
                      >
 
                     <?php if ($row->boxed_headline) : ?>
@@ -221,16 +221,16 @@ if (TL_MODE == 'FE') {
 
           <?php if (!$row->not_as_bg) : ?>
           image-col--inner
-        <?php if ($row->column_width == "col-12 col-md-6 col-lg-5") : ?>
-        col-12 col-md-6 col-lg-7
-        <?php elseif ($row->column_width == "col-12 col-md-6 col-lg-4") : ?>
-        col-12 col-md-6 col-lg-8
-        <?php elseif ($row->column_width == "col-12 col-md-6") : ?>
-        col-12 col-md-6
-        <?php elseif ($row->column_width == "col-12 col-lg-8") : ?>
-        col-12 col-lg-4
-        <?php elseif ($row->column_width == "col-12 col-lg-9") : ?>
-        col-12 col-lg-3
+        <?php if ($row->column_width == "col-12 col-lg-6 col-xxl-5") : ?>
+        col-12 col-lg-6 col-xxl-7
+        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-4") : ?>
+        col-12 col-lg-6 col-xxl-8
+        <?php elseif ($row->column_width == "col-12 col-lg-6") : ?>
+        col-12 col-lg-6
+        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-8") : ?>
+        col-12 col-xxl-4 col-lg-6
+        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-9") : ?>
+        col-12 col-xxl-3 col-lg-6
         <?php endif; ?>
         <?php endif; ?>
 "

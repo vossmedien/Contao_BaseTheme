@@ -308,7 +308,7 @@ return array(
                 ),
 
                 'min-height' => array(
-                    'label' => array('Zwischenabstand zwischen den Spalten', 'Ansonsten liegen beide Spalten direkt aneinander'),
+                    'label' => array('Mindesthöhe', ''),
                     'inputType' => 'checkbox',
                 ),
 
@@ -866,11 +866,11 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'col-12 col-lg-4' => '33%',
-                        'col-12 col-lg-5' => 'ca. 40%',
+                        'col-12 col-lg-6 col-xxl-4' => '33%',
+                        'col-12 col-lg-6 col-xxl-5' => 'ca. 40%',
                         'col-12 col-lg-6' => '50%',
-                        'col-12 col-lg-8' => '66.66%',
-                        'col-12 col-lg-9' => '75%',
+                        'col-12 col-lg-6 col-xxl-8' => '66.66%',
+                        'col-12 col-lg-6 col-xxl-9' => '75%',
                         'col-12 full-width' => '100% (keine Rechte Spalte!)'
                     ),
                 ),

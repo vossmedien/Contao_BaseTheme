@@ -74,7 +74,7 @@
             content: "";
             width: 100%;
             height: 100px;
-            background: var(--mm-color-background) url("/files/base/layout/img/logo.svg") center center no-repeat;
+            background: var(--mm-color-background) var(--mm-logo) center center no-repeat;
             background-size: contain;
             margin: 50px -40px;
           }
