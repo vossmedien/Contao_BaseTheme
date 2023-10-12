@@ -29,7 +29,9 @@ if (TL_MODE == 'FE') {
         <?php
         if ($this->selecttype == "multiple") {
             $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
-        }
+        }else{
+                $dataSorted  = [];
+            }
         ?>
 
 
