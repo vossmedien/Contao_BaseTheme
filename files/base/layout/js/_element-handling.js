@@ -1,4 +1,4 @@
-$(function () {
+document.addEventListener("DOMContentLoaded", function () {
   var headerContent = document.querySelector(".header--content.fixed");
 
   if (headerContent) {
@@ -296,4 +296,6 @@ $(function () {
       }
     });
   });
+
+  initAnimations();
 });
