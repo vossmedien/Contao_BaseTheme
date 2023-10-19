@@ -105,7 +105,7 @@
     <?php $this->sections('after'); ?>
     <?php $this->block('footer'); ?>
     <?php if ($this->footer) : ?>
-        <footer id="footer">
+        <footer data-aos="animate__fadeIn" id="footer">
             <div class="inside">
                 <?= $this->footer ?>
             </div>
