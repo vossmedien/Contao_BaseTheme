@@ -314,7 +314,7 @@ return array(
                     ),
                 ),
 
-                  'textalign' => array(
+                'textalign' => array(
                     'label' => array(
                         'de' => array('Text-Ausrichtung', ''),
                     ),
@@ -345,7 +345,7 @@ return array(
                 'headline' => array(
                     'label' => array('Überschrift', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50','allowHtml' => true),
+                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
 
                 'onlystyle' => array(
@@ -360,10 +360,24 @@ return array(
                     'eval' => array('rte' => 'tinyMCE'),
                 ),
 
+
+                'alt_tablehead_bg' => array(
+                    'label' => array('Alternative Hintergrundfarbe für Tabellenkopf', 'Standard: Dunkelblau'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'alt_tablehead_color' => array(
+                    'label' => array('Alternative Schriftfarbe für Tabellenkopf', 'Standard: Weiß'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
                 'table' => array(
                     'label' => array('Strukturierte Daten', ''),
                     'inputType' => 'tableWizard',
-                    'eval' => array('style' => 'width:142px;height:66px'),
+                    'eval' => array('style' => 'width:142px;height:66px','tl_class' => 'clr'),
                 ),
 
 

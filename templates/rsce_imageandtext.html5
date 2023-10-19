@@ -75,16 +75,17 @@ if (TL_MODE == 'FE') {
                     <?php endif; ?>
 
                     <?php if ($row->table && count($row->table) > 1) : ?>
-                        <div class="structured-data <?php if ($row->text) : ?>mt-3  <?php endif; ?>">
+                        <div style="--bs-gutter-y: .25rem; --bs-gutter-x: .25rem;" class="row structured-data <?php if ($row->text) : ?>mt-3  <?php endif; ?>">
                             <?php foreach ($row->table as $tableRow) : ?>
-                                <div class="structured-data--row border border-primary mb-1">
+                            <div class="col-12  col-md-6">
+                                <div class="structured-data--row border border-primary">
                                     <?php
                                     $firstCell = true;
                                     $otherCells = [];
                                     ?>
                                     <?php foreach ($tableRow as $tableCell) : ?>
                                         <?php if ($firstCell) : ?>
-                                            <div class="structured-data--header text-white bg-primary p-1 fw-bold text-uppercase">
+                                            <div class="structured-data--header p-1 fw-bold text-uppercase  <?php if(!$row->alt_tablehead_bg):?>bg-primary<?php endif;?>   <?php if(!$row->alt_tablehead_color):?>text-white<?php endif;?>" style="<?php if($row->alt_tablehead_bg):?>background-color: <?= $row->alt_tablehead_bg;?>;<?php endif;?> <?php if($row->alt_tablehead_color):?>color: <?= $row->alt_tablehead_color;?>;<?php endif;?>">
                                                 <?= $tableCell; ?>
                                             </div>
                                         <?php else : ?>
@@ -94,7 +95,7 @@ if (TL_MODE == 'FE') {
                                     <?php endforeach; ?>
 
 
-                                    <div class="structured-data--data-wrapper bg-white p-0">
+                                    <div class="structured-data--data-wrapper bg-white text-body p-0">
                                         <div class="row g-0">
                                             <?php
                                             $totalOtherCells = count($otherCells);
@@ -110,7 +111,7 @@ if (TL_MODE == 'FE') {
                                         </div>
                                     </div>
 
-
+                                </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
