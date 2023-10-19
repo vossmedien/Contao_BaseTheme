@@ -10,9 +10,6 @@ if (TL_MODE == 'FE') {
 ?>
 
 
-
-
-
 <?php if ($this->element_type == 2 || $this->element_type == 3) : ?>
 
     <?php
@@ -63,7 +60,7 @@ if (TL_MODE == 'FE') {
         ?>
 
 
-        <style>
+        <style class="<?php if ($this->deactivate_top): ?>deactivate-top<?php endif; ?> <?php if ($this->deactivate_bottom): ?>deactivate-bottom<?php endif; ?> <?php if ($this->is_between): ?>is-between<?php endif; ?>">
             <?php if($this->only_article):?>
 
 
@@ -84,30 +81,18 @@ if (TL_MODE == 'FE') {
                 --angle: <?php if($this->winkel):?><?= $this->winkel;?>deg<?php else:?>-5deg<?php endif;?>;
                 --magic-number: <?php echo abs($result);?>;
                 --clip-padding: calc(var(--full-width) * var(--magic-number));
-                --skew-padding: calc(var(--width) * var(--magic-number) + 2vh);
-
-                margin-top: -1px !important;
+                --skew-padding: calc(var(--width) * var(--magic-number));
+                margin-top: -1px;
                 position: relative;
 
-            <?php if(strpos($this->winkel, '-') !== false || !$this->winkel):?> padding: calc(var(--skew-padding) * 2) 0 var(--skew-padding) 0;
-            <?php else:?> padding: calc(var(--skew-padding) * 1.5) 0 calc(var(--skew-padding) * 2) 0;
-            <?php endif;?>
+                padding: calc(var(--skew-padding)) 0 calc((var(--skew-padding)));
             }
 
-            <?php if(!$this->is_between):?>
-            [data-articleid="article-<?= $this->pid;?>"] + .mod_article {
-                --magic-number: <?php echo abs($result);?>;
-                --clip-padding: calc(var(--full-width) * var(--magic-number));
-                --skew-padding: calc(var(--width) * var(--magic-number) + 2vh);
 
-                padding: calc(var(--skew-padding) * 1.25) 0 calc(var(--skew-padding) * 1.25 ) 0;
-            }
-
-            <?php endif;?>
 
             [data-articleid="article-<?= $this->pid;?>"] > .article-content {
                 position: relative;
-                /*padding-top: var(--bs-basic-spacing);*/
+                padding-top: var(--bs-basic-spacing);
             }
 
             [data-articleid="article-<?= $this->pid;?>"]:before {
@@ -126,8 +111,9 @@ if (TL_MODE == 'FE') {
                 background-position: center center;
                 background-repeat: no-repeat;
                 z-index: 1;
-
             }
+
+
 
             <?php if(!$this->deactivate_bottom && !$this->deactivate_top):?>
             [data-articleid="article-<?= $this->pid;?>"]:before {
@@ -135,14 +121,88 @@ if (TL_MODE == 'FE') {
             <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
             <?php endif;?>
             }
+            <?php endif;?>
+
+
+
+
+            <?php if($this->deactivate_bottom):?>
+            [data-articleid="article-<?= $this->pid;?>"] {
+                position: relative;
+
+  <?php if($this->skew_fix):?>
+                   clip-path: polygon(
+                        0% calc(var(--clip-padding)),
+                        100% 0%,
+                        100% 100%,
+                        0% 100%);
+                -webkit-clip-path: polygon(
+                        0% calc(var(--clip-padding)),
+                        100% 0%,
+                        100% 100%,
+                        0% 100%);
+       padding: calc((var(--clip-padding)*2) - var(--bs-basic-spacing)) 0 calc(var(--clip-padding) - var(--bs-basic-spacing)) 0;
+                <?php else:?>
+                       padding: calc(var(--bs-basic-spacing)*1.25) 0 calc(var(--clip-padding) - var(--bs-basic-spacing)) 0;
+            <?php endif;?>
+
+            <?php if($this->css):?> background: <?= $this->css;?>;
+            <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
+            <?php endif;?>
+
+                margin-top: calc(-1 * (var(--clip-padding)) - 2px);
+            }
+
+
 
             <?php endif;?>
 
 
-            <?php if($this->is_between):?>
+            <?php if($this->deactivate_top):?>
             [data-articleid="article-<?= $this->pid;?>"] {
-                --angle: 0;
-                padding: calc(var(--skew-padding) * 1) 0; /* 1.5 */
+                position: relative;
+                /*margin-top: calc(-1 * (var(--clip-padding)) - 2px);*/
+                padding: calc(var(--clip-padding) - var(--bs-basic-spacing)) 0 calc(var(--clip-padding) * .75) 0;
+                clip-path: polygon(
+                        0% 0%,
+                        100% 0%,
+                        100% calc(100% - var(--clip-padding)),
+                        0% 100%);
+                -webkit-clip-path: polygon(
+                        0% 0%,
+                        100% 0%,
+                        100% calc(100% - var(--clip-padding)),
+                        0% 100%);
+
+            <?php if($this->css):?> background: <?= $this->css;?>;
+            <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
+            <?php endif;?>
+            }
+
+            <?php endif;?>
+
+
+
+
+
+            <?php if(!$this->is_between):?>
+            [data-articleid="article-<?= $this->pid;?>"] + .mod_article {
+                --magic-number: <?php echo abs($result);?>;
+                --clip-padding: calc(var(--full-width) * var(--magic-number));
+                --skew-padding: calc(var(--width) * var(--magic-number));
+
+                  <?php if($this->padding_fix):?>
+                padding-top: calc(var(--clip-padding)*2);
+                <?php endif;?>
+            }
+
+
+
+            <?php else:?>
+
+            [data-articleid="article-<?= $this->pid;?>"] {
+
+                /*margin-top: calc(-1 * (var(--clip-padding)) - 2px); */
             }
 
             [data-articleid="article-<?= $this->pid;?>"]:before {
@@ -151,55 +211,17 @@ if (TL_MODE == 'FE') {
                 z-index: -1;
                 transform: none;
             }
-
             <?php endif;?>
 
 
-            <?php if($this->deactivate_bottom):?>
-            [data-articleid="article-<?= $this->pid;?>"] {
-                position: relative;
-                margin-top: calc((var(--clip-padding) * -1) - 2px);
-
-            <?php if($this->css):?> background: <?= $this->css;?>;
-            <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
-            <?php endif;?> padding: calc(var(--clip-padding) * 2.5) 0 var(--clip-padding) 0;
-                clip-path: polygon(
-                        0% calc(var(--clip-padding) * 2),
-                        100% 0%,
-                        100% 100%,
-                        0% 100%);
-                -webkit-clip-path: polygon(
-                        0% calc(var(--clip-padding) * 2),
-                        100% 0%,
-                        100% 100%,
-                        0% 100%);
-            }
-
-            <?php endif;?>
 
 
-            <?php if($this->deactivate_top):?>
-            [data-articleid="article-<?= $this->pid;?>"] {
-                position: relative;
-                margin-top: calc((var(--clip-padding) * -1) - 2px);
 
-            <?php if($this->css):?> background: <?= $this->css;?>;
-            <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
-            <?php endif;?> padding: calc(var(--clip-padding)) 0 calc(var(--clip-padding) * 2) 0;
-               clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    100% calc(100% - var(--clip-padding) * 2),
-    0% 100%);
--webkit-clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    100% calc(100% - var(--clip-padding) * 2),
-    0% 100%);
 
-            }
 
-            <?php endif;?>
+
+
+
 
 
             <?php else:?>

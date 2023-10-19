@@ -13,7 +13,7 @@ function changeAnchorLinks() {
             const refElementPos = refElement.getBoundingClientRect().top + scrollPos;
             const refElementHeight = refElement.offsetHeight;
 
-            if (refElementPos - headerHeight <= scrollPos && refElementPos - headerHeight + refElementHeight > scrollPos) {
+            if (refElementPos - headerHeight <= scrollPos && refElementPos - headerHeight + refElementHeight > scrollPos + 50) {
                 // Entferne active-Klasse von anderen Elementen
                 const activeElem = document.querySelector(".active");
                 if (activeElem) {

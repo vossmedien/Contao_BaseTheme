@@ -1,10 +1,7 @@
 :root {
-  //--animate-duration: 1500ms;
-  //--animate-delay: 0s;
-
   --bs-font-primary: "Open Sans", sans-serif;
   --bs-font-secondary: SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  "Liberation Mono", "Courier New", monospace;
   --bs-font-tertiary: "Montserrat", sans-serif;
 
   --bs-font-sans-serif: var(--bs-font-primary);
@@ -13,9 +10,9 @@
   --bs-gray: #{$gray};
 
   --bs-gradient: linear-gradient(
-    180deg,
-    rgba(var(--bs-white-rgb), 0.15),
-    rgba(var(--bs-white-rgb), 0)
+                  180deg,
+                  rgba(var(--bs-white-rgb), 0.15),
+                  rgba(var(--bs-white-rgb), 0)
   );
 
   --bs-basic-spacing: #{$basic-gutter};
@@ -139,6 +136,8 @@
   --bs-mobile-max-width: 767px;
 
   // Animate on Scroll
-  --aos-repeat: 1;
-  --aos-duration: 0.75s;
+  --animate-duration: 850ms;
+  --animate-delay: 0ms;
+  --animate-repeat: 0;
+  --animate-sequence: 1;
 }

@@ -40,6 +40,16 @@ p.error,
 [data-aos] {
   z-index: 1;
 }
+
+
+main {
+  [class*="animate__"]:not(.no-animation):not(.animate__animated) {
+    opacity: 0;
+  }
+}
+ */
+
+
 header,
 footer {
   *[data-aos] {
@@ -49,25 +59,19 @@ footer {
   }
 }
 
-main {
-  [class*="animate__"]:not(.no-animation):not(.animate__animated) {
-    opacity: 0;
-  }
-}
- */
 
-[data-aos] {
+ [data-aos] {
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--aos-duration) ease-in-out,
-    visibility var(--aos-duration) ease-in-out;
+  transition: opacity var(--animate-duration) ease-in-out,
+    visibility var(--animate-duration) ease-in-out;
 }
 
-.animate__animated {
+ .animate__animated {
   opacity: 1;
   visibility: visible;
   animation-duration: var(
-    --aos-duration
+    --animate-duration
   ); /* oder jede andere gewünschte Dauer */
   animation-timing-function: ease-in-out; /* oder eine andere gewünschte Timing-Funktion */
 }
@@ -82,23 +86,6 @@ main {
   }
 }
 
-.make-fullwidth {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-}
-
-%make-fullwidth {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-}
 
 .container {
   .container:not(.ce_headline):not(.container.container):not(.content--box) {

@@ -37,28 +37,38 @@
 
       .article-content {
         z-index: 2;
+        //position: relative;
+        padding: $basic-gutter 0 0 0;
+
+        > div, > section{
+          padding-bottom: $basic-gutter;
+        }
+      }
+
+      &:last-child > .article-content > .content--element:last-of-type{
+        margin-bottom: 0px;
       }
 
       .article-content > *:not(.ce_headline):not(.ce_html) {
-        margin-bottom: $basic-gutter;
+        //margin-bottom: $basic-gutter;
       }
 
       & + .mod_article {
         .content--element:last-child{
-          margin-bottom: 0px;
+          //margin-bottom: 0px;
         }
         //margin-bottom: $basic-gutter;
       }
 
       &:last-child {
         *[class*="bg-"]:last-of-type {
-          margin-bottom: 0;
+          //margin-bottom: 0;
         }
       }
 
       &:first-child {
         *[class*="bg-"]:first-of-type {
-          margin-top: 0px;
+          //margin-top: 0px;
         }
       }
 

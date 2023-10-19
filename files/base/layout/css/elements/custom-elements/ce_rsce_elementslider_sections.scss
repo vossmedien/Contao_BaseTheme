@@ -1,5 +1,3 @@
-
-
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
@@ -11,18 +9,18 @@
 
 
   .ce--section-slider {
-    //padding-top: rfs-value(100px);
+    padding-top: rfs-value(100px);
 
     @include media-breakpoint-down(md) {
       padding-top: 2rem;
     }
 
     @include media-breakpoint-up(md) {
-      //padding-top: rfs-value(200px);
+      padding-top: rfs-value(150px);
     }
 
     @include media-breakpoint-up(lg) {
-      //padding-bottom: rfs-value(25px);
+      padding-bottom: calc(var(--bs-basic-spacing)  * 1.5);
     }
   }
 
@@ -30,10 +28,11 @@
     text-align: center;
     @include font-size(60px);
 
-        @include media-breakpoint-up(md) {
-             position: absolute;
-    width: 100%;
-    bottom: 0rem;
-        }
+
+    @include media-breakpoint-up(md) {
+      position: absolute;
+      width: 100%;
+      bottom: 2rem;
+    }
   }
 }

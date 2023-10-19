@@ -162,13 +162,31 @@ return array(
             ),
         ),
 
+
         'is_between' => array(
             'label' => array('', ''),
             'inputType' => 'checkbox',
             'options' => array(
-                '1' => 'Element befindet sich zwischen zwei anderen Artikeln mit gegensätzlichen Abschrägungen',
+                '1' => 'Hintergrund auffüllen, falls Zwischenräume vorhanden',
             ),
         ),
+
+        'skew_fix' => array(
+            'label' => array('', ''),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'FIX für Abschrägung (Evtl. auch bei Abstandsproblemen testen)',
+            ),
+        ),
+
+          'padding_fix' => array(
+            'label' => array('', ''),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'FIX für Abstandsprobleme (zu klein / zu groß)',
+            ),
+        ),
+
 
         'deactivate_bottom' => array(
             'label' => array('', ''),
