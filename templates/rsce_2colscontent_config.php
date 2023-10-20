@@ -492,7 +492,7 @@ return array(
                                 'multiple' => false,
                                 'fieldType' => 'radio',
                                 'filesOnly' => true,
-                                'extensions' => 'jpg,jpeg,png,svg',
+                                'extensions' => 'jpg,jpeg,png,svg,webp',
                             ),
                         ),
                         'image_position' => array(

@@ -277,7 +277,7 @@ return array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
+                        'extensions' => 'jpg,jpeg,png,svg,webp',
                     ),
                 ),
                 'images' => array(
@@ -287,7 +287,7 @@ return array(
                         'multiple' => true,
                         'fieldType' => 'checkbox',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
+                        'extensions' => 'jpg,jpeg,png,svg,webp',
                     ),
                 ),
                 'title' => array(

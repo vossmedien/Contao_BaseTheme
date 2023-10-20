@@ -49,7 +49,7 @@ return array(
                 'files' => true,
                 'mandatory' => false,
                 'isGallery' => true,
-                'extensions' => 'jpg,jpeg,png,svg',
+                'extensions' => 'jpg,jpeg,png,svg,webp',
             ),
         ),
 
@@ -114,7 +114,7 @@ return array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg',
+                'extensions' => 'jpg,jpeg,png,svg,webp',
             ),
         ),
 

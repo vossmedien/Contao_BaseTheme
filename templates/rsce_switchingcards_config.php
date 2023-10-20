@@ -414,7 +414,7 @@ return array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
+                        'extensions' => 'jpg,jpeg,png,svg,webp',
                         'tl_class' => 'clr'
                     ),
                 ),
@@ -486,7 +486,7 @@ return array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
+                        'extensions' => 'jpg,jpeg,png,svg,webp',
                         'tl_class' => 'clr'
                     ),
                 ),

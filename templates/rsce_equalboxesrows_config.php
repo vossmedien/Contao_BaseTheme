@@ -281,7 +281,7 @@ return array(
                         'multiple' => true,
                         'fieldType' => 'checkbox',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
+                        'extensions' => 'jpg,jpeg,png,svg,webp',
                     ),
                 ),
                 'main_url' => array(
@@ -371,7 +371,7 @@ return array(
                                 'multiple' => true,
                                 'fieldType' => 'checkbox',
                                 'filesOnly' => true,
-                                'extensions' => 'jpg,jpeg,png,svg',
+                                'extensions' => 'jpg,jpeg,png,svg,webp',
                             ),
                         ),
                         'url' => array(

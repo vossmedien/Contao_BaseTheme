@@ -154,7 +154,7 @@ return array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg',
+                        'extensions' => 'jpg,jpeg,png,svg,webp',
                     ),
                 ),
                 'headline_type' => array(
@@ -340,7 +340,7 @@ return array(
                                 'multiple' => false,
                                 'fieldType' => 'radio',
                                 'filesOnly' => true,
-                                'extensions' => 'jpg,jpeg,png,svg',
+                                'extensions' => 'jpg,jpeg,png,svg,webp',
                             ),
                         ),
                         'text_1' => array(
