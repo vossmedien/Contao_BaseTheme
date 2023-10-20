@@ -5,7 +5,7 @@ function changeAnchorLinks() {
     const header = document.querySelector('.header--content');
     const headerHeight = (header && getComputedStyle(header).position === 'fixed') ? header.offsetHeight : 0;
 
-    document.querySelectorAll('#mainNav a[href*="#"]:not(.invisible), .onepagenavi--wrapper a').forEach(currElement => {
+    document.querySelectorAll('#mainNav  a[href*="#"]:not(.invisible), .onepagenavi--wrapper a').forEach(currElement => {
         const currLink = currElement.getAttribute("href");
         const refElement = document.querySelector(currLink.substring(currLink.indexOf("#")));
 
@@ -13,30 +13,40 @@ function changeAnchorLinks() {
             const refElementPos = refElement.getBoundingClientRect().top + scrollPos;
             const refElementHeight = refElement.offsetHeight;
 
-            if (refElementPos - headerHeight <= scrollPos && refElementPos - headerHeight + refElementHeight > scrollPos + 50) {
+            if (refElementPos - headerHeight <= scrollPos && refElementPos - headerHeight + refElementHeight > (scrollPos + 100)) {
                 // Entferne active-Klasse von anderen Elementen
-                const activeElem = document.querySelector(".active");
+                const activeElem = document.querySelector("#mainNav .level_2 .active");
                 if (activeElem) {
                     activeElem.classList.remove("active");
+                    /*
                     const parentActiveElem = activeElem.closest('li');
                     if (parentActiveElem) parentActiveElem.classList.remove("active");
+
+                     */
                 }
 
                 // Setze active-Klasse auf aktuelles Element
                 if (!currElement.classList.contains("active")) {
                     currElement.classList.add("active");
                 }
-
+/*
                 const parentElem = currElement.closest('li');
                 if (parentElem && !parentElem.classList.contains("active")) {
                     parentElem.classList.add("active");
                 }
+
+ */
             } else {
                 currElement.classList.remove("active");
+
+
+                /*
                 const parentElem = currElement.closest('li');
                 if (parentElem) {
                     parentElem.classList.remove("active");
                 }
+                 */
+
             }
         }
     });
@@ -47,7 +57,7 @@ function changeAnchorLinks() {
 function changeNavLinksAfterLoad() {
     const hash = window.location.hash;
 
-    document.querySelectorAll("#mobileNav li > *, #mainNav li > *, .onepagenavi--wrapper li > *").forEach(currElement => {
+    document.querySelectorAll("#mobileNav li > *, #mainNav  li > *, .onepagenavi--wrapper li > *").forEach(currElement => {
         if (currElement.getAttribute("href") === hash) {
             const activeElem = document.querySelector("#mobileNav .active, #mainNav .active");
             const selectedElem = document.querySelector("#mobileNav .mm-listitem_selected");
@@ -56,8 +66,10 @@ function changeNavLinksAfterLoad() {
             if (selectedElem) selectedElem.classList.remove("mm-listitem_selected");
 
             currElement.classList.add("active");
-            const parentElem = currElement.closest('li');
+          /*  const parentElem = currElement.closest('li');
             if (parentElem) parentElem.classList.add("mm-listitem_selected");
+
+           */
         } else if (currElement.getAttribute("href") === "#top") {
             const firstElem = document.querySelector("#mobileNav .level_1 > .first");
             if (firstElem) firstElem.classList.add("mm-listitem_selected");

@@ -189,7 +189,31 @@ if (TL_MODE == 'FE') {
                 <div class="image--col col-12 col-lg  <?php if ($row->video) : ?>with-video col-lg-6<?php endif; ?>"
                      >
 
+
+
+                <div  data-aos="<?php if ($row->animation_type_image_col) : ?><?php echo $row->animation_type_image_col; ?><?php else : ?>animate__fadeIn<?php endif; ?>"
+                    style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
+                    class=" <?php if ($row->video) : ?>with-video<?php endif; ?> <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
+
+          <?php if (!$row->not_as_bg) : ?>
+          image-col--inner
+        <?php if ($row->column_width == "col-12 col-lg-6 col-xxl-5") : ?>
+        col-12 col-lg-6 col-xxl-7
+        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-4") : ?>
+        col-12 col-lg-6 col-xxl-8
+        <?php elseif ($row->column_width == "col-12 col-lg-6") : ?>
+        col-12 col-lg-6
+        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-8") : ?>
+        col-12 col-xxl-4 col-lg-6
+        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-9") : ?>
+        col-12 col-xxl-3 col-lg-6
+        <?php endif; ?>
+        <?php endif; ?>
+"
+                    <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>style="<?php if ($row->min_height): ?>min-height: <?= $row->min_height; ?>;<?php else: ?>min-height: 500px;<?php endif; ?>;" data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>>
+
                     <?php if ($row->boxed_headline) : ?>
+                    <div class="boxed-headline--wrapper">
                     <div class="boxed-headline">
                         <div class="headline--wrapper"
                              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -213,28 +237,9 @@ if (TL_MODE == 'FE') {
                         <?php endif; ?>
                     </div>
                 </div>
+                    </div>
             <?php endif; ?>
 
-                <div  data-aos="<?php if ($row->animation_type_image_col) : ?><?php echo $row->animation_type_image_col; ?><?php else : ?>animate__fadeIn<?php endif; ?>"
-                    style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
-                    class=" <?php if ($row->video) : ?>with-video<?php endif; ?> <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
-
-          <?php if (!$row->not_as_bg) : ?>
-          image-col--inner
-        <?php if ($row->column_width == "col-12 col-lg-6 col-xxl-5") : ?>
-        col-12 col-lg-6 col-xxl-7
-        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-4") : ?>
-        col-12 col-lg-6 col-xxl-8
-        <?php elseif ($row->column_width == "col-12 col-lg-6") : ?>
-        col-12 col-lg-6
-        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-8") : ?>
-        col-12 col-xxl-4 col-lg-6
-        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-9") : ?>
-        col-12 col-xxl-3 col-lg-6
-        <?php endif; ?>
-        <?php endif; ?>
-"
-                    <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>style="<?php if ($row->min_height): ?>min-height: <?= $row->min_height; ?>;<?php else: ?>min-height: 500px;<?php endif; ?>;" data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>>
                     <?php if ($row->not_as_bg) : ?>
                         <div class="image--wrapper">
                             <img loading="lazy" fetchpriority="low" class="lazy"

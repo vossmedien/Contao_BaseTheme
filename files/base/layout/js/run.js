@@ -57,7 +57,7 @@ AOS.init({
     offset: -50, // offset (in px) from the original trigger point
     //delay: 5000,
     //duration: 5000,
-    once: false, // whether animation should happen only once - while scrolling down
+    once: true, // whether animation should happen only once - while scrolling down
     mirror: true, // whether elements should animate out while scrolling past them
     anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
 });

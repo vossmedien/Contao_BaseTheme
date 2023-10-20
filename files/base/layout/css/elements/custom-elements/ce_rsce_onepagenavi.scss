@@ -10,7 +10,7 @@
 html body {
   .ce_rsce_onepagenavi {
     .ce--onepagenavi {
-      z-index: 8;
+      z-index: 50;
 
 
       &.style-1 {
@@ -124,6 +124,14 @@ html body {
 
           &.nav-link-style-1 {
 
+            > li{
+              > a{
+                &.active,
+                &:hover {
+
+                }
+              }
+            }
           }
 
           &.nav-link-style-2 {
@@ -175,12 +183,13 @@ html body {
               text-decoration: none;
               color: var(--bs-body-color-inverse);
 
-              &.active,
+
+              //&.active,
               &:hover {
-                color: var(--bs-tertiary) !important;
+                color: var(--bs-body-color) !important;
 
                 &:before {
-                  color: var(--bs-tertiary) !important;
+                  color: var(--bs-body-color) !important;
                 }
               }
 
