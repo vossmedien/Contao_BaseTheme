@@ -445,12 +445,15 @@ html body {
 
                 iframe,
                 embed {
+                  display: block;
+                  top: 0;
                   width: 100%;
 
+
                   @include media-breakpoint-up(lg) {
-                    display: block;
                     margin: 0 0 0 auto;
                     height: 100%;
+                     position: absolute;
                   }
                 }
               }

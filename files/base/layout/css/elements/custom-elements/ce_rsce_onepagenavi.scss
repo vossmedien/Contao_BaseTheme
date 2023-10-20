@@ -15,6 +15,7 @@ html body {
 
       &.style-1 {
         transition: all 0.3s ease;
+        top: 100px;
         position: fixed;
         width: rfs-value(225px);
         margin-left: rfs-value(-235px);

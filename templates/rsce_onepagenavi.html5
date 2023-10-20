@@ -6,7 +6,7 @@ if (TL_MODE == 'FE') {
 ?>
 
 <div <?php echo $this->cssID; ?>
-        class="<?php if ($this->smaller_containers): ?>with-smaller-containers<?php endif; ?> content--element <?php echo $this->class; ?> <?php if ($this->hide_mobile): ?>d-none d-md-block<?php endif; ?>">
+        class="<?php if ($this->nav_style == "style-1"): ?>p-0<?php endif;?> <?php if ($this->smaller_containers): ?>with-smaller-containers<?php endif; ?> content--element <?php echo $this->class; ?> <?php if ($this->hide_mobile): ?>d-none d-md-block<?php endif; ?>">
     <div class="ce--inner <?php if ($this->nav_style == "style-1"): ?>container<?php endif; ?>">
         <?php if ($this->urls): ?>
 
