@@ -53,8 +53,8 @@ function initAnimations() {
 
     const options = {
         root: null,
-        rootMargin: "100px 0px 100px 0px",
-        threshold: 0,
+        rootMargin: "0px 0px 0px 0px",
+        threshold: 0.1,
     };
 
     const observer = new IntersectionObserver(handleIntersect, options);

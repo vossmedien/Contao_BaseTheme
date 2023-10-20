@@ -30,7 +30,7 @@ $('*:not([data-aos])[class*="animate__"]').each(function (index) {
     $(this).attr("data-aos", classes);
 });
 
-initAnimations();
+//initAnimations();
 /*
 var scrollTimeout = null;
 $(window).scroll(function () {
@@ -39,7 +39,7 @@ $(window).scroll(function () {
         window.addEventListener("load", AOS.refresh());
     }, 500);
 });
-
+ */
 
 
 AOS.init({
@@ -54,14 +54,14 @@ AOS.init({
     //throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
 
     // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-    offset: -225, // offset (in px) from the original trigger point
+    offset: -50, // offset (in px) from the original trigger point
     //delay: 5000,
     //duration: 5000,
     once: false, // whether animation should happen only once - while scrolling down
     mirror: true, // whether elements should animate out while scrolling past them
     anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
 });
- */
+
 
 const initializePopovers = () => {
     const popoverTriggerList = [

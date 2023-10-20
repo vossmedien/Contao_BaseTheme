@@ -3,8 +3,8 @@ const defaultScripts = [
     "/files/base/layout/js/_global-functions.js",
     "/files/base/layout/js/_cookie-handling.js",
     "/files/base/layout/js/_scrollToAnchor-handling.js",
-    //"/files/base/layout/_vendor/node_modules/aos/dist/aos.js",
-    "/files/base/layout/js/_animate-on-scroll.js",
+    "/files/base/layout/_vendor/node_modules/aos/dist/aos.js",
+    //"/files/base/layout/js/_animate-on-scroll.js",
     "/files/base/layout/js/_element-handling.js",
 ];
 

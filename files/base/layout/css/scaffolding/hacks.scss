@@ -4,9 +4,7 @@
 
 
 
-/*
-
-AOS.js
+/* AOS.j s*/
 [data-aos]:not([data-aos="no-animation"]) {
   visibility: hidden;
 
@@ -15,13 +13,10 @@ AOS.js
   }
 }
 
-[data-aos] {
-  z-index: 1;
-}
-*/
 
 
-/* CUSTOM AOS */
+
+/* CUSTOM AOS
 [data-aos]:not([data-aos="no-animation"]) {
   opacity: 0;
 
@@ -30,6 +25,9 @@ AOS.js
     transition: opacity var(--animate-duration) var(--animate-delay);
   }
 }
+
+ */
+
 
 [data-aos] {
   z-index: 1;
