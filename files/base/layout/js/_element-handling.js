@@ -1,5 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
-    var headerContent = document.querySelector(".header--content.fixed");
+ var headerContent = document.querySelector(".header--content.fixed");
 
     if (headerContent) {
         var paddingTop = window.getComputedStyle(headerContent).height;
@@ -246,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.querySelectorAll("form .widget.form-control").forEach((el) => {
-        el.classList.remove("form-control");
+        el.classList.remove("form-control");r
     });
 
     document.querySelectorAll("form label:not(.form-label)").forEach((label) => {
@@ -300,6 +299,3 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
-
-    initAnimations();
-});

@@ -16,13 +16,11 @@ function prepareAOSAttributes() {
         }
     });
 }
-
 function initAnimations() {
     prepareAOSAttributes();
 
     const animatedElements = Array.from(document.querySelectorAll("[data-aos]"));
 
-    // Get the CSS variables
     const rootStyle = getComputedStyle(document.documentElement);
     const repeatAnimation = rootStyle.getPropertyValue('--animate-repeat').trim() === '1';
     const sequenceAnimation = rootStyle.getPropertyValue('--animate-sequence').trim() === '1';
@@ -39,26 +37,24 @@ function initAnimations() {
                         const animationName = el.getAttribute("data-aos");
                         el.classList.add("animate__animated", animationName);
                         el.dataset.animated = "true";
-                    }, delayAccumulator);
+                    }, sequenceAnimation ? delayAccumulator : 0);
 
                     if (sequenceAnimation) {
                         delayAccumulator += 100;
                     }
                 }
-            } else {
-                if (repeatAnimation) {
-                    const animationName = el.getAttribute("data-aos");
-                    el.classList.remove("animate__animated", animationName);
-                    delete el.dataset.animated;
-                }
+            } else if (repeatAnimation) {
+                const animationName = el.getAttribute("data-aos");
+                el.classList.remove("animate__animated", animationName);
+                delete el.dataset.animated;
             }
         });
     };
 
     const options = {
         root: null,
-        rootMargin: "-50px",
-        threshold: 0.1,
+        rootMargin: "100px 0px 100px 0px",
+        threshold: 0,
     };
 
     const observer = new IntersectionObserver(handleIntersect, options);

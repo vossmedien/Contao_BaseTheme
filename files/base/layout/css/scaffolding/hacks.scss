@@ -1,34 +1,12 @@
-//JS / CSS Anpassung @extend
-
-/*
-p.back > a, .widget-submit > button,
-.submit_container > input.button,
-.submit_container button,
-.submit_container .submit,
-.actions_container .submit,
-.filter-toggle-control,
-.mod_iso_orderhistory td.link > a,
-.mod_iso_addressbook a.add,
-p.empty,
-#footerNav ul,
-#footerNav ul > li,
-.tl_confirm,
-.message,
-#main .mod_article > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_catalogUniversalView), #main > .inside > div[class^="mod_"]:not(.mod_article),
-p.error,
-.widget-radio span.note,
-.formbody:not(.row) {
-  opacity: 0;
-  animation: .3s ease 0s normal forwards 1 fadein;
-}
- */
-
 .invisible {
   display: none;
 }
 
+
+
 /*
 
+AOS.js
 [data-aos]:not([data-aos="no-animation"]) {
   visibility: hidden;
 
@@ -40,14 +18,22 @@ p.error,
 [data-aos] {
   z-index: 1;
 }
+*/
 
 
-main {
-  [class*="animate__"]:not(.no-animation):not(.animate__animated) {
-    opacity: 0;
+/* CUSTOM AOS */
+[data-aos]:not([data-aos="no-animation"]) {
+  opacity: 0;
+
+  &.animate__animated {
+    opacity: 1;
+    transition: opacity var(--animate-duration) var(--animate-delay);
   }
 }
- */
+
+[data-aos] {
+  z-index: 1;
+}
 
 
 header,
@@ -56,25 +42,11 @@ footer {
     transition: none !important;
     animation: none !important;
     visibility: visible !important;
+    opacity: 1 !important;
   }
 }
 
 
- [data-aos] {
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity var(--animate-duration) ease-in-out,
-    visibility var(--animate-duration) ease-in-out;
-}
-
- .animate__animated {
-  opacity: 1;
-  visibility: visible;
-  animation-duration: var(
-    --animate-duration
-  ); /* oder jede andere gewünschte Dauer */
-  animation-timing-function: ease-in-out; /* oder eine andere gewünschte Timing-Funktion */
-}
 
 .lazy {
   opacity: 0;
