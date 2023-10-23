@@ -29,7 +29,7 @@ function adjustMargin(elements, direction, isNegative) {
             .closest(".mod_article")
             .querySelector(".article-content");
         if (articleContentAbove) {
-            articleContentAbove.style.paddingTop = `var(--bs-basic-spacing)`;
+            articleContentAbove.style.paddingTop = `calc(var(--bs-basic-spacing)*2)`;
         }
 
         // Vom ausgehenden Element zum aktuellen parent .mod_article

@@ -63,7 +63,13 @@ if (TL_MODE == 'FE') {
         <style class="<?php if ($this->deactivate_top): ?>deactivate-top<?php endif; ?> <?php if ($this->deactivate_bottom): ?>deactivate-bottom<?php endif; ?> <?php if ($this->is_between): ?>is-between<?php endif; ?>">
             <?php if($this->only_article):?>
 
+          <?php if($this->is_between):?>
+            [data-articleid="article-<?= $this->pid;?>"] > .article-content {
+                padding-bottom: var(--bs-basic-spacing) !important;
+                margin-bottom: calc(-1 * var(--bs-basic-spacing));
+            }
 
+            <?php endif;?>
             <?php if($this->activate):?>
 
             <?php
@@ -85,7 +91,7 @@ if (TL_MODE == 'FE') {
                 margin-top: -1px;
                 position: relative;
 
-                padding: calc(var(--skew-padding)) 0 calc((var(--skew-padding)));
+                padding: calc(var(--skew-padding)  - var(--bs-basic-spacing)/2) 0 calc((var(--skew-padding) - var(--bs-basic-spacing)/2));
             }
 
 
@@ -111,6 +117,7 @@ if (TL_MODE == 'FE') {
                 background-repeat: no-repeat;
                 z-index: 1;
             }
+
 
 
             <?php if(!$this->deactivate_bottom && !$this->deactivate_top):?>
@@ -172,6 +179,7 @@ if (TL_MODE == 'FE') {
             <?php endif;?>
 
 
+
             <?php if(!$this->is_between):?>
             [data-articleid="article-<?= $this->pid;?>"] + .mod_article {
                 --magic-number: <?php echo abs($result);?>;
@@ -181,7 +189,6 @@ if (TL_MODE == 'FE') {
             <?php if($this->padding_fix):?> padding-top: calc(var(--clip-padding) * 2);
             <?php endif;?>
             }
-
 
             <?php else:?>
 
@@ -203,7 +210,7 @@ if (TL_MODE == 'FE') {
             <?php else:?>
 
 
-            [data-articleid="article-<?= $this->pid;?>"] {
+            html body #wrapper main#main .inside > [data-articleid="article-<?= $this->pid;?>"] > .article-content {
 
 
             <?php if($this->image):?> background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
@@ -216,7 +223,7 @@ if (TL_MODE == 'FE') {
 
             <?php if($this->image_mobile):?>
             @media (max-width: 767px) {
-                [data-articleid="article-<?= $this->pid;?>"] {
+                html body #wrapper main#main .inside > [data-articleid="article-<?= $this->pid;?>"] >.article-content{
                     background: url(<?= Image::get(FilesModel::findByUuid($this->image_mobile)->path, null, null, null); ?>) center center no-repeat;
                 }
             }
@@ -246,7 +253,7 @@ if (TL_MODE == 'FE') {
     $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
     $rand = rand(1, 100);
     ?>
-    is_between
+
     <div class="body-slider">
         <div class="swiper body-slider_<?= $this->id; ?>">
             <!-- Additional required wrapper -->
