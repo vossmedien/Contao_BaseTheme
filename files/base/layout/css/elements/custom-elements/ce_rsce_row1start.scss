@@ -1,11 +1,8 @@
-
-
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
 @import "../../scss-variables";
-
 
 html body {
   .ce_rsce_row1start {
@@ -50,6 +47,7 @@ html body {
         display: flex;
         flex-flow: column wrap;
         justify-content: center;
+        color: var(--bs-body-color);
 
         @include media-breakpoint-up(lg) {
           background-color: $body-bg;

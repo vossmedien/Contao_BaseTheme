@@ -1,15 +1,12 @@
 @import "../../mixins";
 
-
-
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
-@import "../../scaffolding/helper-classes";
+//@import "../../scaffolding/helper-classes";
 
 @import "../../scss-variables";
-
 
 html body {
   .ce_rsce_headline_image_and_box {
@@ -34,8 +31,8 @@ html body {
             left: 0;
             z-index: 5;
             background: linear-gradient(
-                            rgba(var(--bs-white-rgb), 0) 0%,
-                            #fff 100%
+              rgba(var(--bs-white-rgb), 0) 0%,
+              #fff 100%
             );
           }
         }
@@ -47,7 +44,7 @@ html body {
 
       & + .box--holder {
         @include content-box();
-        @extend .bg-gradient;
+        background: var(--bs-gradient);
       }
     }
 

@@ -22,8 +22,8 @@
 
 <?php else: ?>
 
-    <div data-articleid="article-<?= $this->id;?>" class="<?= $this->class ?> block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
-        <div class="article-content ">
+    <div data-articleid="article-<?= $this->id; ?>" class="mod_article block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+        <div class="article-content <?= str_replace("mod_article", "", $this->class); ?>">
             <?php if ($this->printable): ?>
                 <?php $this->block('syndication'); ?>
                 <!-- indexer::stop -->

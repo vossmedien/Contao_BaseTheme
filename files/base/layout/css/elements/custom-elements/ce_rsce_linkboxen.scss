@@ -1,16 +1,12 @@
 @import "../../mixins";
 
-
-
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
-@import "../../scaffolding/helper-classes";
+//@import "../../scaffolding/helper-classes";
 @import "../../../_fonts/fontawesome-iconset/scss/fontawesome";
 
-
 @import "../../scss-variables";
-
 
 html body {
   .ce_rsce_linkboxen {
@@ -22,15 +18,12 @@ html body {
     }
 
     &.with-border {
-
       .ce_rsce_linkboxen > .row > div {
         &:not(:last-child) {
           border-bottom: 1px solid var(--linkboxes-separator-color);
           //border-left: 1px solid var(--linkboxes-separator-color);
 
           @include media-breakpoint-up(md) {
-
-
           }
 
           @include media-breakpoint-up(lg) {
@@ -72,8 +65,7 @@ html body {
 
       &.style-1 {
         @include content-box(0px);
-        @extend .bg-gradient;
-
+        background: var(--bs-gradient);
 
         .box--upper {
           .image--holder {
@@ -131,7 +123,8 @@ html body {
             }
 
             &.is-map {
-              iframe, embed {
+              iframe,
+              embed {
                 min-height: rfs-value(450px);
                 border-radius: $border-radius;
               }
@@ -185,8 +178,6 @@ html body {
           }
 
           &.with-url {
-
-
             &:after {
               @extend %fa-icon;
               @extend #{$icon-type};
@@ -195,7 +186,7 @@ html body {
 
               top: 50%;
               transform: translate(50%, -50%);
-              transition: all .3s ease;
+              transition: all 0.3s ease;
               @include font-size(25px);
               //transition: all .3s ease;
               z-index: 21;
@@ -216,8 +207,6 @@ html body {
                 right: 2rem;
               }
             }
-
-
           }
         }
 
@@ -233,7 +222,6 @@ html body {
       }
 
       &.style-3 {
-
         > a:hover {
           & + .box--upper {
             .image--holder {
@@ -249,7 +237,7 @@ html body {
         .box--upper {
           .image--holder {
             background-blend-mode: saturation;
-            transition: all .3s ease;
+            transition: all 0.3s ease;
             background-color: linear-gradient(black, black) !important;
           }
 
@@ -260,7 +248,7 @@ html body {
             text-align: center;
             padding-bottom: 1rem;
             opacity: 0;
-            transition: all .3s ease;
+            transition: all 0.3s ease;
           }
         }
 
@@ -315,7 +303,6 @@ html body {
           }
         }
 
-
         .design-element {
           position: absolute;
           height: 80%;
@@ -323,7 +310,7 @@ html body {
           bottom: 0;
           left: -75%;
           transform: skew(65deg);
-          opacity: .7;
+          opacity: 0.7;
           display: block;
 
           @include media-breakpoint-up(xxl) {
@@ -335,7 +322,7 @@ html body {
           position: absolute;
           bottom: 0;
           left: 0;
-          padding: .5rem .75rem;
+          padding: 0.5rem 0.75rem;
 
           @include media-breakpoint-down(sm) {
             max-width: 100% !important;
@@ -346,7 +333,7 @@ html body {
           }
 
           @include media-breakpoint-up(xxl) {
-            padding: .75rem 1rem;
+            padding: 0.75rem 1rem;
           }
 
           div {
@@ -461,7 +448,8 @@ html body {
               padding-bottom: 0px;
             }
 
-            iframe, embed {
+            iframe,
+            embed {
               width: 100%;
             }
 

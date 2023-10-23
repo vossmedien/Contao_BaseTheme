@@ -89,7 +89,6 @@ if (TL_MODE == 'FE') {
             }
 
 
-
             [data-articleid="article-<?= $this->pid;?>"] > .article-content {
                 position: relative;
                 padding-top: var(--bs-basic-spacing);
@@ -114,45 +113,36 @@ if (TL_MODE == 'FE') {
             }
 
 
-
             <?php if(!$this->deactivate_bottom && !$this->deactivate_top):?>
             [data-articleid="article-<?= $this->pid;?>"]:before {
             <?php if($this->css):?> background: <?php echo $backgroundStyle;?>;
             <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
             <?php endif;?>
             }
+
             <?php endif;?>
-
-
 
 
             <?php if($this->deactivate_bottom):?>
             [data-articleid="article-<?= $this->pid;?>"] {
                 position: relative;
 
-  <?php if($this->skew_fix):?>
-                   clip-path: polygon(
-                        0% calc(var(--clip-padding)),
-                        100% 0%,
-                        100% 100%,
-                        0% 100%);
+            <?php if($this->skew_fix):?> clip-path: polygon(
+                    0% calc(var(--clip-padding)),
+                    100% 0%,
+                    100% 100%,
+                    0% 100%);
                 -webkit-clip-path: polygon(
                         0% calc(var(--clip-padding)),
                         100% 0%,
                         100% 100%,
                         0% 100%);
-       padding: calc((var(--clip-padding)*2) - var(--bs-basic-spacing)) 0 calc(var(--clip-padding) - var(--bs-basic-spacing)) 0;
-                <?php else:?>
-                       padding: calc(var(--bs-basic-spacing)*1.25) 0 calc(var(--clip-padding) - var(--bs-basic-spacing)) 0;
-            <?php endif;?>
-
-            <?php if($this->css):?> background: <?= $this->css;?>;
+                padding: calc((var(--clip-padding) * 2) - var(--bs-basic-spacing)) 0 calc(var(--clip-padding) - var(--bs-basic-spacing)) 0;
+            <?php else:?> padding: calc(var(--bs-basic-spacing) * 1.25) 0 calc(var(--clip-padding) - var(--bs-basic-spacing)) 0;
+            <?php endif;?><?php if($this->css):?> background: <?= $this->css;?>;
             <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
-            <?php endif;?>
-
-                margin-top: calc(-1 * (var(--clip-padding)) - 2px);
+            <?php endif;?> margin-top: calc(-1 * (var(--clip-padding)) - 2px);
             }
-
 
 
             <?php endif;?>
@@ -182,20 +172,15 @@ if (TL_MODE == 'FE') {
             <?php endif;?>
 
 
-
-
-
             <?php if(!$this->is_between):?>
             [data-articleid="article-<?= $this->pid;?>"] + .mod_article {
                 --magic-number: <?php echo abs($result);?>;
                 --clip-padding: calc(var(--full-width) * var(--magic-number));
                 --skew-padding: calc(var(--width) * var(--magic-number));
 
-                  <?php if($this->padding_fix):?>
-                padding-top: calc(var(--clip-padding)*2);
-                <?php endif;?>
+            <?php if($this->padding_fix):?> padding-top: calc(var(--clip-padding) * 2);
+            <?php endif;?>
             }
-
 
 
             <?php else:?>
@@ -211,17 +196,8 @@ if (TL_MODE == 'FE') {
                 z-index: -1;
                 transform: none;
             }
+
             <?php endif;?>
-
-
-
-
-
-
-
-
-
-
 
 
             <?php else:?>

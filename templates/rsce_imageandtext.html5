@@ -40,7 +40,7 @@ if (TL_MODE == 'FE') {
                 <div class="col-12 <?= $row->textalign; ?> "
                      data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                 <div class="col--inner">
-                <div class="<?= $this->row_align; ?> gx-50px row "><?php endif; ?>
+                <div class="<?= $this->row_align; ?> g-3 row "><?php endif; ?>
 
                 <?php if ($row->image): ?>
                     <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" <?php if ($row->reverse_columns) : ?>order-2 mt-2 mt-md-0<?php endif; ?> col-12 image   <?php if (!$this->as_rows) : ?>mt-2 mt-md-0 mb-md-3 order-2<?php else: ?><?= $row->column_width; ?><?php endif; ?>">
@@ -68,7 +68,7 @@ if (TL_MODE == 'FE') {
                 </div>
             <?php endif; ?>
                 <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                     class="text col-12   <?php if (!$this->as_rows) : ?>order-3 <?php else:?>mt-2 mt-lg-0<?php endif; ?>">
+                     class="text col-12   <?php if (!$this->as_rows) : ?>order-3 <?php else: ?>mt-2 mt-lg-0<?php endif; ?>">
 
                     <?php if ($row->text) : ?>
                         <?php echo $row->text; ?>
@@ -77,41 +77,41 @@ if (TL_MODE == 'FE') {
                     <?php if ($row->table && count($row->table) > 1) : ?>
                         <div style="--bs-gutter-y: .25rem; --bs-gutter-x: .25rem;" class="row structured-data <?php if ($row->text) : ?>mt-3  <?php endif; ?>">
                             <?php foreach ($row->table as $tableRow) : ?>
-                            <div class="col-12  col-md-6">
-                                <div class="structured-data--row border border-primary">
-                                    <?php
-                                    $firstCell = true;
-                                    $otherCells = [];
-                                    ?>
-                                    <?php foreach ($tableRow as $tableCell) : ?>
-                                        <?php if ($firstCell) : ?>
-                                            <div class="structured-data--header p-1 fw-bold text-uppercase  <?php if(!$row->alt_tablehead_bg):?>bg-primary<?php endif;?>   <?php if(!$row->alt_tablehead_color):?>text-white<?php endif;?>" style="<?php if($row->alt_tablehead_bg):?>background-color: <?= $row->alt_tablehead_bg;?>;<?php endif;?> <?php if($row->alt_tablehead_color):?>color: <?= $row->alt_tablehead_color;?>;<?php endif;?>">
-                                                <?= $tableCell; ?>
-                                            </div>
-                                        <?php else : ?>
-                                            <?php $otherCells[] = $tableCell; ?>
-                                        <?php endif; ?>
-                                        <?php $firstCell = false; ?>
-                                    <?php endforeach; ?>
-
-
-                                    <div class="structured-data--data-wrapper bg-white text-body p-0">
-                                        <div class="row g-0">
-                                            <?php
-                                            $totalOtherCells = count($otherCells);
-                                            foreach ($otherCells as $index => $otherCell) :
-                                                $isLastCell = ($index == $totalOtherCells - 1);
-                                                ?>
-                                                <div class="structured-data--cell col-xl <?php if (count($otherCells) > 1): ?>col-6<?php endif; ?>">
-                                                    <div class="p-1 border-top w-100 <?= $isLastCell ? 'border-end-0' : 'border-end'; ?>">
-                                                        <?= $otherCell; ?>
-                                                    </div>
+                                <div class="col-12  col-md-6">
+                                    <div class="structured-data--row border border-primary">
+                                        <?php
+                                        $firstCell = true;
+                                        $otherCells = [];
+                                        ?>
+                                        <?php foreach ($tableRow as $tableCell) : ?>
+                                            <?php if ($firstCell) : ?>
+                                                <div class="structured-data--header p-1 fw-bold text-uppercase  <?php if (!$row->alt_tablehead_bg): ?>bg-primary<?php endif; ?>   <?php if (!$row->alt_tablehead_color): ?>text-white<?php endif; ?>" style="<?php if ($row->alt_tablehead_bg): ?>background-color: <?= $row->alt_tablehead_bg; ?>;<?php endif; ?> <?php if ($row->alt_tablehead_color): ?>color: <?= $row->alt_tablehead_color; ?>;<?php endif; ?>">
+                                                    <?= $tableCell; ?>
                                                 </div>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    </div>
+                                            <?php else : ?>
+                                                <?php $otherCells[] = $tableCell; ?>
+                                            <?php endif; ?>
+                                            <?php $firstCell = false; ?>
+                                        <?php endforeach; ?>
 
-                                </div>
+
+                                        <div class="structured-data--data-wrapper bg-white text-body p-0">
+                                            <div class="row g-0">
+                                                <?php
+                                                $totalOtherCells = count($otherCells);
+                                                foreach ($otherCells as $index => $otherCell) :
+                                                    $isLastCell = ($index == $totalOtherCells - 1);
+                                                    ?>
+                                                    <div class="structured-data--cell col-xl <?php if (count($otherCells) > 1): ?>col-6<?php endif; ?>">
+                                                        <div class="p-1 border-top w-100 <?= $isLastCell ? 'border-end-0' : 'border-end'; ?>">
+                                                            <?= $otherCell; ?>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
