@@ -27,6 +27,7 @@ html body {
       }
 
       &.style-2 {
+        z-index: 8;
         @include media-breakpoint-down(md) {
           transition: all 0.3s ease;
           position: fixed;
