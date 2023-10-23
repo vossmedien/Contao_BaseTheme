@@ -40,7 +40,7 @@ if (TL_MODE == 'FE') {
                 <div class="col-12 <?= $row->textalign; ?> "
                      data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                 <div class="col--inner">
-                <div class="<?= $this->row_align; ?> g-3 row "><?php endif; ?>
+                <div class="<?= $this->row_align; ?> g-1 g-md-3 row "><?php endif; ?>
 
                 <?php if ($row->image): ?>
                     <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" <?php if ($row->reverse_columns) : ?>order-2 mt-2 mt-md-0<?php endif; ?> col-12 image   <?php if (!$this->as_rows) : ?>mt-2 mt-md-0 mb-md-3 order-2<?php else: ?><?= $row->column_width; ?><?php endif; ?>">
