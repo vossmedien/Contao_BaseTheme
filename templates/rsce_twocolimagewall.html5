@@ -7,7 +7,7 @@ if (TL_MODE == 'FE') {
 
 
 <div <?php echo $this->cssID; ?>
-    class="pb-0 content--element <?php echo $this->class; ?> <?php if ($this->no_padding) : ?>no-spacing<?php endif; ?>">
+        class="pb-0 content--element <?php echo $this->class; ?> <?php if ($this->no_padding) : ?>no-spacing<?php endif; ?>">
     <div class="ce--inner ">
 
         <?php if ($this->headline || $this->subline || $this->topline) : ?>
@@ -19,9 +19,9 @@ if (TL_MODE == 'FE') {
             <?php endif; ?>
             <span class="ce--headline-content"><?php echo($this->headline); ?></span>
         </<?php echo($this->hl); ?>>
-        <?php if ($this->subline) : ?>
-                <span class="ce--subline"><?php echo $this->subline; ?></span>
-            <?php endif; ?>
+    <?php if ($this->subline) : ?>
+        <span class="ce--subline"><?php echo $this->subline; ?></span>
+    <?php endif; ?>
     <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -40,160 +40,208 @@ if (TL_MODE == 'FE') {
 
 
     <div class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> ">
-        <div class="ce--imagetextwall <?php if ($this->not_fullwidth): ?>container<?else:?>with-bg<?php endif; ?>  <?php if ($row->boxed_headline) : ?>with-boxed-image<?php endif; ?>  <?php if ($row->alternate_image) : ?>with-code<?php endif; ?> <?php if ($row->alternate_background) : ?>with-custom-bgcolor<?php endif; ?> <?php if ($row->innerpadding && $row->alternate_background) : ?>with-border<?php endif; ?> <?php if ($row->not_as_bg) : ?>not-as-bg<?php endif; ?> <?php if ($row->image && $row->image_both) : ?>lazy<?php endif; ?>"
-             <?php if ($row->image && $row->image_both) : ?>data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>
-             style="<?php if (!$row->not_as_bg): ?>min-height: <?php if (!$row->min_height): ?><?= $row->min_height;?><?php else:?>500px<?php endif; ?>;<?php endif; ?>
-             <?php if ($row->image && $row->image_both) : ?>
-                 background-position: center center; background-repeat: no-repeat; background-size: cover;
-             <?php endif; ?>
-             <?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?> <?php if ($row->alternate_background && !$this->not_fullwidth) : ?>background: <?php echo $row->alternate_background; ?><?php endif; ?>
-                 ">
+        <?php
+        $classes = ['ce--imagetextwall'];
+
+        if ($this->not_fullwidth) {
+            $classes[] = 'container';
+        } else {
+            $classes[] = 'with-bg';
+        }
+
+        if ($row->boxed_headline) {
+            $classes[] = 'with-boxed-image';
+        }
+
+        if ($row->alternate_image) {
+            $classes[] = 'with-code';
+        }
+
+        if ($row->alternate_background) {
+            $classes[] = 'with-custom-bgcolor';
+        }
+
+        if ($row->innerpadding && $row->alternate_background) {
+            $classes[] = 'with-border';
+        }
+
+        if ($row->not_as_bg) {
+            $classes[] = 'not-as-bg';
+        }
+
+        $styles = [];
+
+        if (!$row->not_as_bg) {
+            $styles[] = $row->min_height ? 'min-height: ' . $row->min_height . 'px;' : 'min-height: 500px;';
+        }
+
+        if ($row->image && $row->image_both) {
+            $file = FilesModel::findByUuid($row->image);
+            if ($file) {
+                $imagePath = Image::get($file->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]);
+                $styles[] = 'background-image: url(' . $imagePath . '); background-position: center center; background-repeat: no-repeat; background-size: cover;';
+            }
+        }
+
+        if ($row->alternate_textcolor) {
+            $styles[] = 'color: ' . $row->alternate_textcolor . ';';
+        }
+
+        if ($row->alternate_background && !$this->not_fullwidth) {
+            $styles[] = 'background-color: ' . $row->alternate_background . ';';
+        }
+        ?>
+
+        <div class="<?= implode(' ', $classes); ?>"
+             style="<?= implode(' ', $styles); ?>">
+
             <div style="<?php if ($row->alternate_background && $this->not_fullwidth) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>" class="content-holder  <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if (!$this->not_fullwidth): ?>container force-container<?php endif; ?>">
                 <div style="<?php if (!$row->not_as_bg): ?> <?php if ($row->min_height): ?>min-height: <?= $row->min_height;?>;<?php else:?>min-height: 500px;<?php endif; ?><?php endif; ?>" class="row g-0 align-items-center <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
                     <div class="content--col d-flex align-items-center <?php if ($row->spacing_between) : ?>spacing-between<?php endif; ?> <?php if ($row->alternate_background) : ?>with-bg<?php endif; ?> <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>"
                          style="">
 
-                         <?php if ($row->boxed_headline && !$row->content_rightcol && !$row->image && !$row->alternate_image && !$row->video) : ?>
-                    <div class="boxed-headline" style="transform: translate(0%, -50%);">
-                        <div class="headline--wrapper"
-                             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                            <?php if (!$row->boxed_headline_onlystyle) : ?>
-                            <<?php echo $row->boxed_headline_type; ?> >
-                            <?php echo $row->boxed_headline; ?>
-                        </<?php echo $row->boxed_headline_type; ?>>
-                        <?php if ($row->boxed_subheadline) : ?>
-                            <span class="ce--subline">
-                                <?php echo $row->boxed_subheadline; ?>
-                            </span>
-                        <?php endif; ?>
-                        <?php else : ?>
-                            <span class="<?php echo $row->boxed_headline_type; ?>"><?php echo $row->boxed_headline; ?></span>
+                        <?php if ($row->boxed_headline && !$row->content_rightcol && !$row->image && !$row->alternate_image && !$row->video) : ?>
+                        <div class="boxed-headline" style="transform: translate(0%, -50%);">
+                            <div class="headline--wrapper"
+                                 data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                <?php if (!$row->boxed_headline_onlystyle) : ?>
+                                <<?php echo $row->boxed_headline_type; ?> >
+                                <?php echo $row->boxed_headline; ?>
+                            </<?php echo $row->boxed_headline_type; ?>>
                             <?php if ($row->boxed_subheadline) : ?>
                                 <span class="ce--subline">
+                                <?php echo $row->boxed_subheadline; ?>
+                            </span>
+                            <?php endif; ?>
+                            <?php else : ?>
+                                <span class="<?php echo $row->boxed_headline_type; ?>"><?php echo $row->boxed_headline; ?></span>
+                                <?php if ($row->boxed_subheadline) : ?>
+                                    <span class="ce--subline">
                                     <?php echo $row->boxed_subheadline; ?>
                                 </span>
+                                <?php endif; ?>
+                                </span>
                             <?php endif; ?>
-                            </span>
-                        <?php endif; ?>
+                        </div>
                     </div>
-                </div>
-            <?php endif; ?>
+                    <?php endif; ?>
 
 
-                        <?php if ($row->ce_headline || $row->content || $row->buttons[0]->link_text != ""): ?>
-                        <div class="<?php if ($row->boxed_headline) : ?>mt-md-3<?php endif;?> content-col--inner <?php echo $row->textalign; ?>">
-                            <?php if ($row->ce_headline) : ?>
-                            <div class="content-col--headline-wrapper"
-                                 data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                <?php if (!$row->onlystyle) : ?>
-                                <<?php echo $row->headline_type; ?> class="content-col--headline" style="<?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?>">
+                    <?php if ($row->ce_headline || $row->content || $row->buttons[0]->link_text != ""): ?>
+                    <div class="<?php if ($row->boxed_headline) : ?>mt-md-3<?php endif; ?> content-col--inner <?php echo $row->textalign; ?>">
+                        <?php if ($row->ce_headline) : ?>
+                        <div class="content-col--headline-wrapper"
+                             data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                            <?php if (!$row->onlystyle) : ?>
+                            <<?php echo $row->headline_type; ?> class="content-col--headline"
+                            style="<?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?>
+                            ">
+                            <?php echo $row->ce_headline; ?>
+                        </<?php echo $row->headline_type; ?>>
+                    <?php if ($row->ce_subline) : ?>
+                        <span class="ce--subline content-col--subline"
+                              data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                <?php echo $row->ce_subline; ?>
+                            </span>
+                    <?php endif; ?>
+                    <?php else : ?>
+                        <span class="<?php echo $row->headline_type; ?> content-col--headline"
+                              data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                 <?php echo $row->ce_headline; ?>
-                            </<?php echo $row->headline_type; ?>>
+                            </span>
                         <?php if ($row->ce_subline) : ?>
                             <span class="ce--subline content-col--subline"
                                   data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                <?php echo $row->ce_subline; ?>
-                            </span>
-                        <?php endif; ?>
-                        <?php else : ?>
-                            <span class="<?php echo $row->headline_type; ?> content-col--headline"
-                                  data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                <?php echo $row->ce_headline; ?>
-                            </span>
-                            <?php if ($row->ce_subline) : ?>
-                                <span class="ce--subline content-col--subline"
-                                      data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                     <?php echo $row->ce_subline; ?>
                                 </span>
-                            <?php endif; ?><?php endif; ?>
+                        <?php endif; ?><?php endif; ?>
+                    </div>
+                <?php endif; ?>
+                    <?php if ($row->content) : ?>
+                        <div class="content-col--text <?php if ($this->not_fullwidth): ?>p-3 mt-md-4<?php endif; ?>"
+                             data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                            <?php echo $row->content; ?>
                         </div>
                     <?php endif; ?>
-                        <?php if ($row->content) : ?>
-                            <div class="content-col--text <?php if ($this->not_fullwidth): ?>p-3 mt-md-4<?php endif; ?>"
-                                 data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                <?php echo $row->content; ?>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($row->buttons) : ?>
-                            <div class="ce--buttons mt-2">
-                                <?php foreach ($row->buttons as $b) : ?>
-                                    <a <?php if ($b->new_tab): ?>target="_blank"<?php endif; ?>
-                                       class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
-                                       data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                       href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
-                                <?php endforeach ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
+                    <?php if ($row->buttons) : ?>
+                        <div class="ce--buttons mt-2">
+                            <?php foreach ($row->buttons as $b) : ?>
+                                <a <?php if ($b->new_tab): ?>target="_blank"<?php endif; ?>
+                                   class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
+                                   data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                   href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
+                            <?php endforeach ?>
+                        </div>
                     <?php endif; ?>
+                </div>
+                <?php endif; ?>
 
-                    <?php if ($row->image_leftcol || $row->kachel_left_text): ?>
-                        <div class="content-col--image" <?php if ($row->image_leftcol): ?>style="min-height: 12.5rem; background: url(<?= Image::get(FilesModel::findByUuid($row->image_leftcol)->path, $row->size_left[0], $row->size_left[1], $row->size_left[2]); ?>) center center no-repeat; background-size: cover;" <?php endif; ?>></div>
-                    <?php endif; ?>
+                <?php if ($row->image_leftcol || $row->kachel_left_text): ?>
+                    <div class="content-col--image" <?php if ($row->image_leftcol): ?>style="min-height: 12.5rem; background: url(<?= Image::get(FilesModel::findByUuid($row->image_leftcol)->path, $row->size_left[0], $row->size_left[1], $row->size_left[2]); ?>) center center no-repeat; background-size: cover;" <?php endif; ?>></div>
+                <?php endif; ?>
 
-                    <?php if ($row->kachel_left_text): ?>
-                        <div class="kachel-column-width--indicator <?php if ($row->expand_left_kachel): ?>expandable<?php endif; ?>">
-                            <div class="column-kachel--wrapper  <?php if ($row->kachel_left_url): ?> with-url<?php endif; ?> <?php echo $row->kachel_left_position; ?>">
-                                <div class="column--kachel <?php echo $row->kachel_left_text_position; ?>"
-                                     data-aos="<?php if ($row->animation_type_left_kachel) : ?><?php echo $row->animation_type_left_kachel; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                     style="
-                                     <?php if ($row->kachel_left_background_color): ?>
+                <?php if ($row->kachel_left_text): ?>
+                    <div class="kachel-column-width--indicator <?php if ($row->expand_left_kachel): ?>expandable<?php endif; ?>">
+                        <div class="column-kachel--wrapper  <?php if ($row->kachel_left_url): ?> with-url<?php endif; ?> <?php echo $row->kachel_left_position; ?>">
+                            <div class="column--kachel <?php echo $row->kachel_left_text_position; ?>"
+                                 data-aos="<?php if ($row->animation_type_left_kachel) : ?><?php echo $row->animation_type_left_kachel; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                 style="
+                                 <?php if ($row->kachel_left_background_color): ?>
                                          background-color: <?= $row->kachel_left_background_color;?>;
                             <?php endif; ?>
 
-                                     <?php if ($row->kachel_left_text_color): ?>
+                                 <?php if ($row->kachel_left_text_color): ?>
                                          color: <?= $row->kachel_left_text_color;?>;
                             <?php endif; ?>
                                          ">
 
-                                    <?php if ($row->kachel_left_url): ?>
-                                        <a href="<?= $row->kachel_left_url; ?>"></a>
-                                    <?php endif; ?>
+                                <?php if ($row->kachel_left_url): ?>
+                                    <a href="<?= $row->kachel_left_url; ?>"></a>
+                                <?php endif; ?>
 
-                                    <div class="column-kachel--inner <?php if ($row->kachel_left_hover_text || $row->kachel_left_url): ?>with-hover-content<?php endif; ?>">
+                                <div class="column-kachel--inner <?php if ($row->kachel_left_hover_text || $row->kachel_left_url): ?>with-hover-content<?php endif; ?>">
                                         <span>
                                             <?php echo $row->kachel_left_text; ?>
                                         </span>
 
-                                        <?php if ($row->kachel_left_hover_text || $row->kachel_left_url): ?>
-                                            <div class="kachel-hover--content">
-                                                <?php if ($row->kachel_left_hover_text): ?>
-                                                    <div class="kachel--long-text">
-                                                        <?php echo $row->kachel_left_hover_text; ?>
-                                                    </div>
-                                                <?php endif; ?>
+                                    <?php if ($row->kachel_left_hover_text || $row->kachel_left_url): ?>
+                                        <div class="kachel-hover--content">
+                                            <?php if ($row->kachel_left_hover_text): ?>
+                                                <div class="kachel--long-text">
+                                                    <?php echo $row->kachel_left_hover_text; ?>
+                                                </div>
+                                            <?php endif; ?>
 
-                                                <?php if ($row->kachel_left_url): ?>
-                                                    <div class="kachel--more-button">
-                                                        <a class="btn btn-lg btn-outline-secondary"
-                                                           href="<?= $row->kachel_left_url; ?>">
-                                                            <?php if ($row->kachel_left_button_text): ?>
-                                                                <?= $row->kachel_left_button_text; ?>
-                                                            <?php else: ?>
-                                                                Mehr Infos
-                                                            <?php endif; ?>
-                                                        </a>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                        <?php endif; ?>
+                                            <?php if ($row->kachel_left_url): ?>
+                                                <div class="kachel--more-button">
+                                                    <a class="btn btn-lg btn-outline-secondary"
+                                                       href="<?= $row->kachel_left_url; ?>">
+                                                        <?php if ($row->kachel_left_button_text): ?>
+                                                            <?= $row->kachel_left_button_text; ?>
+                                                        <?php else: ?>
+                                                            Mehr Infos
+                                                        <?php endif; ?>
+                                                    </a>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
 
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                    <?php endif; ?>
+                    </div>
+                <?php endif; ?>
 
-                </div>
-                <?php if (($row->image && !$row->image_both) || $row->alternate_image || $row->content_rightcol || $row->video) : ?>
-                <div class="image--col col-12 col-lg  <?php if ($row->video) : ?>with-video col-lg-6<?php endif; ?>"
-                     >
+            </div>
+            <?php if (($row->image && !$row->image_both) || $row->alternate_image || $row->content_rightcol || $row->video) : ?>
+            <div class="image--col col-12 col-lg  <?php if ($row->video) : ?>with-video col-lg-6<?php endif; ?>"
+            >
 
 
-
-                <div  data-aos="<?php if ($row->animation_type_image_col) : ?><?php echo $row->animation_type_image_col; ?><?php else : ?>animate__fadeIn<?php endif; ?>"
-                    style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?> background-position: center center; background-repeat: no-repeat; background-size: cover;"
-                    class=" <?php if ($row->video) : ?>with-video<?php endif; ?> <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
+                <div data-aos="<?php if ($row->animation_type_image_col) : ?><?php echo $row->animation_type_image_col; ?><?php else : ?>animate__fadeIn<?php endif; ?>"
+                     style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?>"
+                     class=" <?php if ($row->video) : ?>with-video<?php endif; ?> <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
 
           <?php if (!$row->not_as_bg) : ?>
           image-col--inner
@@ -210,124 +258,127 @@ if (TL_MODE == 'FE') {
         <?php endif; ?>
         <?php endif; ?>
 "
-                    <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>style="<?php if ($row->min_height): ?>min-height: <?= $row->min_height; ?>;<?php else: ?>min-height: 500px;<?php endif; ?>;" data-bg="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>" <?php endif; ?>>
-
+                     <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>style="<?php if ($row->min_height): ?>min-height: <?= $row->min_height; ?>;<?php else: ?>min-height: 500px;<?php endif; ?>;" data-bg="" <?php endif; ?>>
+                    <?php if (!$row->not_as_bg) : ?>
+                        <div class="zoom-container">
+                            <img loading="lazy" class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>">
+                        </div>
+                    <?php endif; ?>
                     <?php if ($row->boxed_headline) : ?>
                     <div class="boxed-headline--wrapper">
-                    <div class="boxed-headline">
-                        <div class="headline--wrapper"
-                             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                            <?php if (!$row->boxed_headline_onlystyle) : ?>
-                            <<?php echo $row->boxed_headline_type; ?>>
-                            <?php echo $row->boxed_headline; ?>
-                        </<?php echo $row->boxed_headline_type; ?>>
-                        <?php if ($row->boxed_subheadline) : ?>
-                            <span class="ce--subline">
-                                <?php echo $row->boxed_subheadline; ?>
-                            </span>
-                        <?php endif; ?>
-                        <?php else : ?>
-                            <span class="<?php echo $row->boxed_headline_type; ?>"><?php echo $row->boxed_headline; ?></span>
+                        <div class="boxed-headline">
+                            <div class="headline--wrapper"
+                                 data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                <?php if (!$row->boxed_headline_onlystyle) : ?>
+                                <<?php echo $row->boxed_headline_type; ?>>
+                                <?php echo $row->boxed_headline; ?>
+                            </<?php echo $row->boxed_headline_type; ?>>
                             <?php if ($row->boxed_subheadline) : ?>
                                 <span class="ce--subline">
+                                <?php echo $row->boxed_subheadline; ?>
+                            </span>
+                            <?php endif; ?>
+                            <?php else : ?>
+                                <span class="<?php echo $row->boxed_headline_type; ?>"><?php echo $row->boxed_headline; ?></span>
+                                <?php if ($row->boxed_subheadline) : ?>
+                                    <span class="ce--subline">
                                     <?php echo $row->boxed_subheadline; ?>
                                 </span>
+                                <?php endif; ?>
+                                </span>
                             <?php endif; ?>
-                            </span>
-                        <?php endif; ?>
+                        </div>
                     </div>
                 </div>
-                    </div>
-            <?php endif; ?>
+                <?php endif; ?>
 
-                    <?php if ($row->not_as_bg) : ?>
-                        <div class="image--wrapper">
-                            <img loading="lazy" fetchpriority="low" class="lazy"
-                                 data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>">
-                        </div>
-                    <?php endif; ?>
-
-
-
-
-                    <?php if ($row->alternate_image) : ?><?php echo str_replace("https:", "", str_replace("src", "data-source", html_entity_decode($row->alternate_image))); ?><?php endif; ?>
-
-
-
-                    <?php if ($row->video) : ?>
-                        <div class="video--wrapper">
-                            <video controls data-src="{{file::<?= $row->video ?>}}">
-                                <source type="video/mp4" src="{{file::<?= $row->video ?>}}">
-                            </video>
-                        </div>
-                    <?php endif; ?>
-
-
-                </div>
-                <?php if ($row->content_rightcol) : ?>
-                    <div class="image-col--extra-text"
-                         data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                        <?php echo $row->content_rightcol; ?>
+                <?php if ($row->not_as_bg) : ?>
+                    <div class="image--wrapper">
+                        <img loading="lazy" class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]); ?>">
                     </div>
                 <?php endif; ?>
 
 
-                <?php if ($row->kachel_right_text): ?>
-                    <div class="kachel-column-width--indicator <?php if ($row->expand_right_kachel): ?>expandable<?php endif; ?>">
-                        <div class="column-kachel--wrapper <?php echo $row->kachel_right_position; ?>  <?php if ($row->kachel_right_url): ?> with-url<?php endif; ?>">
-                            <div class="column--kachel  <?php echo $row->kachel_right_text_position; ?>"
-                                 data-aos="<?php if ($row->animation_type_right_kachel) : ?><?php echo $row->animation_type_right_kachel; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                 style="
-                                 <?php if ($row->kachel_right_background_color): ?>
+
+
+                <?php if ($row->alternate_image) : ?><?php echo str_replace("https:", "", str_replace("src", "data-source", html_entity_decode($row->alternate_image))); ?><?php endif; ?>
+
+
+
+                <?php if ($row->video) : ?>
+                    <div class="video--wrapper">
+                        <video controls data-src="{{file::<?= $row->video ?>}}">
+                            <source type="video/mp4" src="{{file::<?= $row->video ?>}}">
+                        </video>
+                    </div>
+                <?php endif; ?>
+
+
+            </div>
+            <?php if ($row->content_rightcol) : ?>
+                <div class="image-col--extra-text"
+                     data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                    <?php echo $row->content_rightcol; ?>
+                </div>
+            <?php endif; ?>
+
+
+            <?php if ($row->kachel_right_text): ?>
+                <div class="kachel-column-width--indicator <?php if ($row->expand_right_kachel): ?>expandable<?php endif; ?>">
+                    <div class="column-kachel--wrapper <?php echo $row->kachel_right_position; ?>  <?php if ($row->kachel_right_url): ?> with-url<?php endif; ?>">
+                        <div class="column--kachel  <?php echo $row->kachel_right_text_position; ?>"
+                             data-aos="<?php if ($row->animation_type_right_kachel) : ?><?php echo $row->animation_type_right_kachel; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                             style="
+                             <?php if ($row->kachel_right_background_color): ?>
                                      background-color: <?= $row->kachel_right_background_color;?>;
                             <?php endif; ?>
 
-                                 <?php if ($row->kachel_right_text_color): ?>
+                             <?php if ($row->kachel_right_text_color): ?>
                                      color: <?= $row->kachel_right_text_color;?>;
                             <?php endif; ?>
                                      ">
 
-                                <?php if ($row->kachel_right_url): ?>
-                                    <a href="<?= $row->kachel_right_url; ?>"></a>
-                                <?php endif; ?>
+                            <?php if ($row->kachel_right_url): ?>
+                                <a href="<?= $row->kachel_right_url; ?>"></a>
+                            <?php endif; ?>
 
-                                <div class="column-kachel--inner <?php if ($row->kachel_right_hover_text || $row->kachel_right_url): ?>with-hover-content<?php endif; ?>">
+                            <div class="column-kachel--inner <?php if ($row->kachel_right_hover_text || $row->kachel_right_url): ?>with-hover-content<?php endif; ?>">
                                     <span>
                                         <?php echo $row->kachel_right_text; ?>
                                     </span>
 
-                                    <?php if ($row->kachel_right_hover_text || $row->kachel_right_url): ?>
-                                        <div class="kachel-hover--content">
-                                            <?php if ($row->kachel_right_hover_text): ?>
-                                                <div class="kachel--long-text">
-                                                    <?php echo $row->kachel_right_hover_text; ?>
-                                                </div>
-                                            <?php endif; ?>
+                                <?php if ($row->kachel_right_hover_text || $row->kachel_right_url): ?>
+                                    <div class="kachel-hover--content">
+                                        <?php if ($row->kachel_right_hover_text): ?>
+                                            <div class="kachel--long-text">
+                                                <?php echo $row->kachel_right_hover_text; ?>
+                                            </div>
+                                        <?php endif; ?>
 
-                                            <?php if ($row->kachel_right_url): ?>
-                                                <div class="kachel--more-button">
-                                                    <a class="btn btn-lg btn-outline-secondary"
-                                                       href="<?= $row->kachel_right_url; ?>">
-                                                        <?php if ($row->kachel_right_button_text): ?>
-                                                            <?= $row->kachel_right_button_text; ?>
-                                                        <?php else: ?>
-                                                            Mehr Infos
-                                                        <?php endif; ?>
-                                                    </a>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                                        <?php if ($row->kachel_right_url): ?>
+                                            <div class="kachel--more-button">
+                                                <a class="btn btn-lg btn-outline-secondary"
+                                                   href="<?= $row->kachel_right_url; ?>">
+                                                    <?php if ($row->kachel_right_button_text): ?>
+                                                        <?= $row->kachel_right_button_text; ?>
+                                                    <?php else: ?>
+                                                        Mehr Infos
+                                                    <?php endif; ?>
+                                                </a>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
-                <?php endif; ?>
-
-            </div>
+                </div>
             <?php endif; ?>
+
         </div>
+    <?php endif; ?>
     </div>
-</div></div>
+</div>
+    </div></div>
 <?php endforeach; ?>
 </div></div>

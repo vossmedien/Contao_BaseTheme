@@ -25,7 +25,12 @@ document.addEventListener(
 
 
                     var contentWidth = window.getComputedStyle(contentCol).width;
-                    var imageWidth = window.getComputedStyle(imageCol).width;
+
+
+                    if (imageCol) {
+                        var imageWidth = window.getComputedStyle(imageCol).width;
+                    }
+
 
                     var contentPercentage = (parseFloat(contentWidth) / containerWidth) * 100;
                     var imagePercentage = (parseFloat(imageWidth) / containerWidth) * 100;
