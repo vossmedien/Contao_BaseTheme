@@ -327,6 +327,9 @@ return array(
                     'eval' => array('tl_class' => 'clr'),
                 ),
 
+
+
+
                 'headline_type' => array(
                     'label' => array(
                         'de' => array('Typ der Überschrift', ''),
@@ -348,11 +351,19 @@ return array(
                     'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
 
-                'onlystyle' => array(
-                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
+         'above_columns' => array(
+                    'label' => array('Überschrift oberhalb der Bild und Textspalte anzeigen', ''),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
+
+                'onlystyle' => array(
+                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => ''),
+                ),
+
+
 
                 'text' => array(
                     'label' => array('Langtext', ''),
@@ -377,7 +388,7 @@ return array(
                 'table' => array(
                     'label' => array('Strukturierte Daten', ''),
                     'inputType' => 'tableWizard',
-                    'eval' => array('style' => 'width:142px;height:66px','tl_class' => 'clr'),
+                    'eval' => array('style' => 'width:142px;height:66px', 'tl_class' => 'clr'),
                 ),
 
 

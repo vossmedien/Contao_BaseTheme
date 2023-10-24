@@ -63,7 +63,7 @@ if (TL_MODE == 'FE') {
         <style class="<?php if ($this->deactivate_top): ?>deactivate-top<?php endif; ?> <?php if ($this->deactivate_bottom): ?>deactivate-bottom<?php endif; ?> <?php if ($this->is_between): ?>is-between<?php endif; ?>">
             <?php if($this->only_article):?>
 
-          <?php if($this->is_between):?>
+            <?php if($this->is_between):?>
             [data-articleid="article-<?= $this->pid;?>"] > .article-content {
                 padding-bottom: var(--bs-basic-spacing) !important;
                 margin-bottom: calc(-1 * var(--bs-basic-spacing));
@@ -91,7 +91,7 @@ if (TL_MODE == 'FE') {
                 margin-top: -1px;
                 position: relative;
 
-                padding: calc(var(--skew-padding)  - var(--bs-basic-spacing)/2) 0 calc((var(--skew-padding) - var(--bs-basic-spacing)/2));
+                padding: calc(var(--skew-padding) - var(--bs-basic-spacing) / 2) 0 calc((var(--skew-padding) - var(--bs-basic-spacing) / 2));
             }
 
 
@@ -117,7 +117,6 @@ if (TL_MODE == 'FE') {
                 background-repeat: no-repeat;
                 z-index: 1;
             }
-
 
 
             <?php if(!$this->deactivate_bottom && !$this->deactivate_top):?>
@@ -179,7 +178,6 @@ if (TL_MODE == 'FE') {
             <?php endif;?>
 
 
-
             <?php if(!$this->is_between):?>
             [data-articleid="article-<?= $this->pid;?>"] + .mod_article {
                 --magic-number: <?php echo abs($result);?>;
@@ -218,12 +216,15 @@ if (TL_MODE == 'FE') {
             <?php endif;?><?php if($this->fit_image):?> background-size: 100% 100%;
             <?php else:?> background-attachment: fixed;
                 background-size: cover;
+                  <?php if($this->is_between):?> margin-top: calc(-1 * var(--bs-basic-spacing));
+                padding-top: calc(var(--bs-basic-spacing) * 2);
+            <?php endif;?>
             <?php endif;?>
             }
 
             <?php if($this->image_mobile):?>
             @media (max-width: 767px) {
-                html body #wrapper main#main .inside > [data-articleid="article-<?= $this->pid;?>"] >.article-content{
+                html body #wrapper main#main .inside > [data-articleid="article-<?= $this->pid;?>"] > .article-content {
                     background: url(<?= Image::get(FilesModel::findByUuid($this->image_mobile)->path, null, null, null); ?>) center center no-repeat;
                 }
             }
@@ -238,8 +239,11 @@ if (TL_MODE == 'FE') {
 
             body {
             <?php if($this->image):?> background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
-                background-attachment: fixed;
+
+           background-attachment: fixed;
                 background-size: cover;
+
+
             <?php else:?> background: <?php echo $backgroundStyle;?><?php endif;?>
             }
 
