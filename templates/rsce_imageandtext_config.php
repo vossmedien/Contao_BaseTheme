@@ -328,8 +328,6 @@ return array(
                 ),
 
 
-
-
                 'headline_type' => array(
                     'label' => array(
                         'de' => array('Typ der Überschrift', ''),
@@ -351,7 +349,7 @@ return array(
                     'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
 
-         'above_columns' => array(
+                'above_columns' => array(
                     'label' => array('Überschrift oberhalb der Bild und Textspalte anzeigen', ''),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
@@ -362,7 +360,6 @@ return array(
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => ''),
                 ),
-
 
 
                 'text' => array(
@@ -389,24 +386,6 @@ return array(
                     'label' => array('Strukturierte Daten', ''),
                     'inputType' => 'tableWizard',
                     'eval' => array('style' => 'width:142px;height:66px', 'tl_class' => 'clr'),
-                ),
-
-
-                'column_width' => array(
-                    'label' => array(
-                        'de' => array('Breite', 'Standard: 50%'),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'col-12 col-md-auto' => 'Breite anhand des Inhalts & mobile untereinander',
-                        'col-12 col-lg-4 col-xl-3' => '25%',
-                        'col-12 col-lg-4' => '33%',
-                        'col-12 col-lg-6' => '50%',
-                        'col-12 col-lg-8' => '66.66%',
-                        'col-12 col-lg-9' => '75%',
-                        'col-12' => 'Volle Breite',
-                        'col-12 col-lg' => 'Automatische Breite (füllend)',
-                    ),
                 ),
 
 
@@ -608,6 +587,22 @@ return array(
                     ),
                 ),
 
+                'column_width' => array(
+                    'label' => array(
+                        'de' => array('Spaltenbreite', 'Standard: 50%'),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'col-12 col-lg-auto' => 'Breite anhand des Spalteninhalts',
+                        'col-12 col-lg-4 col-xl-3' => '25%',
+                        'col-12 col-lg-4' => '33%',
+                        'col-12 col-lg-6' => '50%',
+                        'col-12 col-lg-8' => '66.66%',
+                        'col-12 col-lg-9' => '75%',
+                        'col-12' => 'Volle Breite',
+                        'col-12 col-lg' => 'Automatische Breite (füllend)',
+                    ),
+                ),
 
                 'image' => array(
                     'label' => array('Bild', ''),
