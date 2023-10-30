@@ -109,3 +109,7 @@ footer {
     }
   }
 }
+
+.row > [class*="col-"] > .container > [class*="col-"]{
+  width: 100%;
+}

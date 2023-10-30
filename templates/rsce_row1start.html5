@@ -33,6 +33,7 @@ if (TL_MODE == 'FE'):?>
 <?php if ($this->styleManager->get('spaltenabstand', ['spaltenabstaende']) && (!$this->styleManager->get('spaltenabstand', ['spaltenabstaende_x']) && !$this->styleManager->get('spaltenabstand', ['spaltenabstaende_y']))): ?>
  <?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende']); ?> <?php else: ?> <?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende_x']); ?> <?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende_y']); ?>
 <?php endif; ?>
+
 "
      data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
