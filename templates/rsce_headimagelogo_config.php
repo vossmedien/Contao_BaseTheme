@@ -13,9 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
+              'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
+              'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -138,7 +140,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true','tl_class' => 'clr')
         ),
 
 
@@ -204,7 +206,6 @@ return array(
         ),
 
 
-
         /*
         'pull_content_next' => array(
             'label' => array('Erstes Element im nächsten Artikel verwenden', 'und nicht das komplette nächste Element'),
@@ -215,7 +216,7 @@ return array(
         ),
         */
 
-    'settings_slider' => array(
+        'settings_slider' => array(
             'label' => array('Slider', ''),
             'inputType' => 'group',
         ),
@@ -417,19 +418,19 @@ return array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,mp4',
+                        'extensions' => 'jpg,jpeg,png,mp4,webp',
                         'tl_class' => 'w50'
                     ),
                 ),
 
                 'mobile_image' => array(
-                    'label' => array('Video für mobile-Ansicht', 'Nur in Verbindung mit einem Video in der Desktop-Ansicht, Video-Format: MP4'),
+                    'label' => array('Bild / Video für mobile-Ansicht', 'Nur in Verbindung mit einem Video in der Desktop-Ansicht, Video-Format: MP4'),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'mp4',
+                        'extensions' => 'jpg,jpeg,png,mp4,webp',
                         'tl_class' => 'w50',
                         'mandatory' => false,
                     ),
@@ -676,12 +677,16 @@ return array(
                 'text_infotext' => array(
                     'label' => array('Langtext unterhalb der Überschriften', 'Nicht sichtbar auf Mobile!'),
                     'inputType' => 'textarea',
-                    'eval' => array('tl_class' => 'clr','rte' => 'tinyMCE'),
+                    'eval' => array('tl_class' => 'clr', 'rte' => 'tinyMCE'),
                 ),
 
                 'own_box' => array(
                     'label' => array('Langtext in eigener Box unterhalb der Überschriften anzeigen', 'Nicht sichtbar auf Mobile!'),
                     'inputType' => 'checkbox',
+                    'dependsOn' => array(
+                        'field' => 'text_style',
+                        'value' => 'style-1',
+                    ),
                 ),
 
                 'box_text_color' => array(

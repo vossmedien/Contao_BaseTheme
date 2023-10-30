@@ -23,7 +23,6 @@
     </TaskOptions>
     <enabled-global>
       <option value="SCSS style.min.css" />
-      <option value="SCSS" />
     </enabled-global>
   </component>
 </project>

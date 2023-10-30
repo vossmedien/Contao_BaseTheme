@@ -1,11 +1,8 @@
-
-
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
 @import "../../scss-variables";
-
 
 html body {
   //Adjust the Centering of Text if Header is fixed
@@ -60,7 +57,7 @@ html body {
       z-index: 5;
 
       @include media-breakpoint-down(sm) {
-        width: 80%;
+        //width: 80%;
       }
 
       img {
@@ -82,7 +79,7 @@ html body {
           left: 0;
           border-right: 100vw solid $body-bg;
           border-top: 10vw solid transparent;
-          z-index: 9;
+          z-index: 5;
         }
       }
 
@@ -122,19 +119,27 @@ html body {
         }
 
         video {
-          min-width: 100vw;
-          min-height: 100vh;
+          object-fit: cover;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          left: 0;
+          top: 0;
+          /*
+             min-width: 100vw;
+          min-height: 100vh; 
           width: auto;
           height: auto;
           z-index: -1000;
           overflow: hidden;
           max-width: none;
-          //object-fit: fill;
+     
           transform: translate(-50%, -50%);
-          position: absolute;
-          top: 50%;
+    
+          top: 50%;  
           left: 50%;
           max-height: none;
+           */
         }
 
         .mainimage--content {
@@ -149,8 +154,7 @@ html body {
           .mainimage--content-inner {
             display: inline-block;
             position: absolute;
-
-            //width: 100%;
+            width: 100%;
             //padding: 1rem 1rem 1.5rem 0px;
 
             @include media-breakpoint-down(sm) {
@@ -185,7 +189,6 @@ html body {
               }
 
               &.second-line {
-                @include font-size(18px);
                 margin-top: 8px;
                 font-weight: $font-weight-semibold;
 
@@ -211,7 +214,7 @@ html body {
             }
 
             .button--wrapper {
-              > .btn {
+              > .btn:not(:last-child) {
                 margin-bottom: rfs-value(5px);
               }
             }
@@ -254,20 +257,15 @@ html body {
 
       &.style-2 {
         .mainimage--content {
-          .container {
-            @include media-breakpoint-down(sm) {
-              padding: 0px;
-            }
-          }
-
           .mainimage--content-inner {
             position: absolute;
             z-index: 10;
             min-width: 50vw;
-            padding: 2rem 0;
+            padding: 2rem calc(var(--bs-gutter-x) * 0.5);
 
             @include media-breakpoint-up(md) {
               max-width: 75%;
+              //padding: 2rem 0;
             }
 
             &:before {

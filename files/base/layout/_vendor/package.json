@@ -4,15 +4,15 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@fortawesome/fontawesome-pro": "^6.4.0",
+    "@fortawesome/fontawesome-pro": "*",
     "@popperjs/core": "*",
     "animate.css": "*",
     "aos": "^3.0.0-beta.6",
-    "bootstrap": "^5.3.0-alpha3",
-    "bootstrap-icons": "^1.10.3",
+    "bootstrap": "*",
+    "bootstrap-icons": "*",
     "fullpage.js": "^4.0.15",
     "js-cookie": "*",
-    "swiper": "^10.0.0",
+    "swiper": "*",
     "vanilla-lazyload": "*"
   },
   "scripts": {

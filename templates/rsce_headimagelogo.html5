@@ -5,6 +5,17 @@ if (TL_MODE == 'FE') {
 }
 ?>
 
+
+<!-- @TODO
+- Abschrägung rework
+- Überschrifttyp festlegen anstelle von Checkbox für H1
+- Animation für Langtext-Box
+- Lösung für Langtextbox auf mobile anstelle einfachem ausblenden
+- "Höhe des Bereichs" mit CLAMP() refactorn
+- Sub-Topline nebeneinander
+-->
+
+
 <div <?php echo $this->cssID; ?>
         class="content--element <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?> <?php if ($this->pull_content_next) : ?>pull-content-next<?php endif; ?>">
     <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>" style="--pull-content-amount: -<?php if ($this->pull_amount) : ?><?= $this->pull_amount; ?>px<?php else: ?>250px<?php endif; ?>;">
@@ -87,10 +98,111 @@ if (TL_MODE == 'FE') {
                                         $color = str_replace(");", ")",$color);
                                     ?>
 
-                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner--wrapper.extra:before,
-                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner--wrapper .mainimage--content-inner--holder.extra:after {
-                                        background-color: <?= $color; ?> !important;
-                                    }
+                                    /*
+                                         html body .ce_rsce_headimagelogo .mainslider_
+
+
+
+
+
+
+
+
+
+                                    <?php echo $this->id;?>
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                      .slide_
+
+
+
+
+
+
+
+
+
+                                    <?php echo $key;?>
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                                                        .style-2 .mainimage--content .mainimage--content-inner--wrapper.extra:before,
+                                                                                                                                                                                                                                                                                                                                                                                                            html body .ce_rsce_headimagelogo .mainslider_
+
+
+
+
+
+
+
+
+
+                                    <?php echo $this->id;?>
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                      .slide_
+
+
+
+
+
+
+
+
+
+                                    <?php echo $key;?>
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                                                        .style-2 .mainimage--content .mainimage--content-inner--wrapper .mainimage--content-inner--holder.extra:after {
+                                                                                                                                                                                                                                                                                                                                                                                                                background-color:
+
+
+
+
+
+
+
+
+
+                                    <?= $color; ?>
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                                                         !important;
+                                                                                                                                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                             */
+
 
                                     html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-1 .mainimage--content .mainimage--content-inner--wrapper.extra {
                                         background-color: <?= $color; ?> !important;
@@ -125,11 +237,12 @@ if (TL_MODE == 'FE') {
                                     <source type="video/mp4" src="{{file::<?= $slide->image ?>}}">
                                 </video>
                             <?php endif; ?>
+
                             <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>
-                                <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;"
-                                       <?php endif; ?>class="d-md-none" src="{{file::<?= $slide->mobile_image ?>}}"
-                                       autoplay muted loop
-                                       playsinline>
+                                <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
+                                       class="d-md-none" src="{{file::<?= $slide->mobile_image ?>}}"
+                                       autoplay muted loop playsinline
+                                       >
                                     <source type="video/mp4" src="{{file::<?= $slide->mobile_image ?>}}">
                                 </video>
                             <?php endif; ?>
@@ -141,7 +254,7 @@ if (TL_MODE == 'FE') {
                                      <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
 
 
-                                    <div class="container">
+                                    <div class="<?php if ($slide->text_style == "style-2"): ?>container<?php else: ?><?php endif; ?>">
 
 
                                         <div class="mainimage--content-inner <?php echo $slide->textbox_position; ?> <?php echo $slide->text_align; ?>"

@@ -76,6 +76,10 @@
       color: $footer-color;
       @include font-size(14px);
 
+      .row{
+        gap: calc(var(--bs-gutter-x) * .5) 0;
+      }
+
       #footerNav {
         ul {
           list-style-type: none;
