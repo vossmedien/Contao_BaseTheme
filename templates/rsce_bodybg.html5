@@ -237,7 +237,7 @@ if (TL_MODE == 'FE') {
             <?php endif;?><?php if($this->fit_image):?> background-size: 100% 100%;
             <?php else:?> background-attachment: fixed;
                 background-size: cover;
-            <?php if($this->is_between):?> margin-top: calc(-1 * var(--bs-basic-spacing));
+            <?php if($this->is_between):?> margin-top: calc(-1 * var(--bs-basic-spacing) );
                 padding-top: calc(var(--bs-basic-spacing) * 2);
             <?php endif;?><?php endif;?>
             }

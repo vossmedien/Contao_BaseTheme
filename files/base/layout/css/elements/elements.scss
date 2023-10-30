@@ -19,8 +19,10 @@
 }
 
 
-.mod_article .ce_headline + div {
-  margin-top: 0px;
+.mod_article .ce_headline {
+  & + div {
+    margin-top: 0px;
+  }
 }
 
 .content--element {
