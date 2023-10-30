@@ -36,6 +36,7 @@ if (TL_MODE == 'FE') {
 
         <style>
             .bgvideo.make-fullwidth {
+                margin-top: calc(-1 * var(--bs-basic-spacing));
                 z-index: -1;
                 object-fit: cover;
                 height: 100%;
@@ -52,6 +53,22 @@ if (TL_MODE == 'FE') {
                data-src="{{file::<?= $this->image ?>}}">
             <source type="video/mp4" src="{{file::<?= $this->image ?>}}">
         </video>
+
+
+        <style>
+            [data-articleid="article-<?= $this->pid;?>"] {
+                margin-top: calc(-1 * var(--bs-basic-spacing));
+            }
+
+            [data-articleid="article-<?= $this->pid;?>"] .container.pb-10 {
+                padding-bottom: calc(var(--bs-basic-spacing) * 2) !important;
+               padding-top: calc(var(--bs-basic-spacing)*1.5);
+            }
+
+            [data-articleid="article-<?= $this->pid;?>"] + .mod_article {
+
+            }
+        </style>
     <?php else: ?>
 
 
@@ -100,6 +117,8 @@ if (TL_MODE == 'FE') {
                 padding-top: var(--bs-basic-spacing);
             }
 
+            <?php if ($ext != "mp4") : ?>
+
             [data-articleid="article-<?= $this->pid;?>"]:before {
                 content: "";
                 position: absolute;
@@ -117,6 +136,8 @@ if (TL_MODE == 'FE') {
                 background-repeat: no-repeat;
                 z-index: 1;
             }
+
+            <?php endif;?>
 
 
             <?php if(!$this->deactivate_bottom && !$this->deactivate_top):?>
@@ -216,10 +237,9 @@ if (TL_MODE == 'FE') {
             <?php endif;?><?php if($this->fit_image):?> background-size: 100% 100%;
             <?php else:?> background-attachment: fixed;
                 background-size: cover;
-                  <?php if($this->is_between):?> margin-top: calc(-1 * var(--bs-basic-spacing));
+            <?php if($this->is_between):?> margin-top: calc(-1 * var(--bs-basic-spacing));
                 padding-top: calc(var(--bs-basic-spacing) * 2);
-            <?php endif;?>
-            <?php endif;?>
+            <?php endif;?><?php endif;?>
             }
 
             <?php if($this->image_mobile):?>
@@ -240,7 +260,7 @@ if (TL_MODE == 'FE') {
             body {
             <?php if($this->image):?> background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
 
-           background-attachment: fixed;
+                background-attachment: fixed;
                 background-size: cover;
 
 

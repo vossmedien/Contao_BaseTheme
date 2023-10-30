@@ -179,13 +179,14 @@ return array(
             ),
         ),
 
-          'padding_fix' => array(
+        'padding_fix' => array(
             'label' => array('', ''),
             'inputType' => 'checkbox',
             'options' => array(
                 '1' => 'FIX für Abstandsprobleme (zu klein / zu groß)',
             ),
         ),
+
 
 
         'deactivate_bottom' => array(
