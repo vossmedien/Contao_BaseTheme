@@ -28,11 +28,18 @@
 
  */
 
+/*
+[data-aos],
+[class*="ce_"]:not([data-aos]) {
 
-[data-aos] {
-  z-index: 1;
+  &:not(.ce_rsce_onepagenavi){
+    z-index: 1;
   position: relative;
+  }
 }
+
+ */
+
 
 
 header,

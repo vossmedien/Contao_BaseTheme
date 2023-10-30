@@ -57,12 +57,16 @@ if (TL_MODE == 'FE') {
 
         <style>
             [data-articleid="article-<?= $this->pid;?>"] {
-                margin-top: calc(-1 * var(--bs-basic-spacing));
+                margin-top: calc(-1 * var(--clip-padding) * 1.25);
             }
 
-            [data-articleid="article-<?= $this->pid;?>"] .container.pb-10 {
-                padding-bottom: calc(var(--bs-basic-spacing) * 2) !important;
-               padding-top: calc(var(--bs-basic-spacing)*1.5);
+                [data-articleid="article-<?= $this->pid;?>"]:not(:last-child) .article-content {
+                      padding-bottom: var(--clip-padding) !important;
+                }
+
+            [data-articleid="article-<?= $this->pid;?>"] .container.pb-md-10 {
+                padding-top: calc(var(--clip-padding)  * 1.25);
+                padding-bottom: calc(var(--bs-basic-spacing)) !important;
             }
 
             [data-articleid="article-<?= $this->pid;?>"] + .mod_article {
@@ -134,7 +138,7 @@ if (TL_MODE == 'FE') {
                 background-size: cover;
                 background-position: center center;
                 background-repeat: no-repeat;
-                z-index: 1;
+                z-index: 0;
             }
 
             <?php endif;?>
@@ -237,7 +241,7 @@ if (TL_MODE == 'FE') {
             <?php endif;?><?php if($this->fit_image):?> background-size: 100% 100%;
             <?php else:?> background-attachment: fixed;
                 background-size: cover;
-            <?php if($this->is_between):?> margin-top: calc(-1 * var(--bs-basic-spacing) );
+            <?php if($this->is_between):?> margin-top: calc(-1 * var(--bs-basic-spacing));
                 padding-top: calc(var(--bs-basic-spacing) * 2);
             <?php endif;?><?php endif;?>
             }
