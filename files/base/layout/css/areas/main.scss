@@ -35,6 +35,13 @@
         position: relative;
       }
 
+      .content--element{
+        &[class*="col"]{
+          padding-left: calc(var(--bs-gutter-x) * .5);
+          padding-right: calc(var(--bs-gutter-x) * .5);
+        }
+      }
+
       .article-content {
         //z-index: 2;
         //position: relative;
