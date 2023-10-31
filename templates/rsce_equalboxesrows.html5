@@ -5,8 +5,8 @@ if (TL_MODE == 'FE') {
 ?>
 
 
-    <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
-        <div class="ce--inner container">
+<div <?php echo $this->cssID; ?> class="content--element  <?php if(!str_contains($this->class, "col")):?>container<?php else:?><?php echo $this->class; ?><?php endif;?>">
+    <div class="ce--inner <?php if(!str_contains($this->class, "col")):?><?php echo $this->class; ?><?php endif;?> ">
 
            <?php if ($this->headline || $this->subline || $this->topline) : ?>
         <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">

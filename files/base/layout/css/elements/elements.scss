@@ -1,11 +1,15 @@
 
 [class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery):not(.badge) {
-  padding: $basic-gutter 0px;
+  padding-top: $basic-gutter;
+  padding-bottom: $basic-gutter;
 
-  @include media-breakpoint-down(md) {
+  /*
+    @include media-breakpoint-down(md) {
     padding-left: 0rem;
     padding-right: 0rem;
   }
+   */
+
 
   > *:last-child {
     margin-bottom: 0px !important;

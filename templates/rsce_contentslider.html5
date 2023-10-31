@@ -9,11 +9,12 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
     $this->{"fixed_image"} = "";
 }
 ?>
+  <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?> <?php if( $this->styleManager->get('articlestyles', ['elementStylings']) == "box-inside-container"):?>container<?php endif;?>">
+    <div class="ce--inner <?php if(!str_contains($this->class, "col")):?><?php echo $this->class; ?><?php endif;?> ">
 
 
-    <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
 
-        <div class="ce--inner <?php if ($this->is_fullwidth): ?>is-fullwidth<?php endif; ?> <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>is-vertical<?php endif; ?>">
+        <div class="ce--inner <?php if(!str_contains($this->class, "col")):?><?php echo $this->class; ?><?php endif;?> <?php if ($this->is_fullwidth): ?>is-fullwidth<?php endif; ?> <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>is-vertical<?php endif; ?>">
             <?php if ($this->nav_position == 1 || $this->nav_position == 2 && ($this->headline || $this->subline || $this->topline)): ?>
             <div class="ce--headline  container"
                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">

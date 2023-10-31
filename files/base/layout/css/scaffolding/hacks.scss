@@ -66,9 +66,10 @@ footer {
 
 
 .container {
-  .container:not(.ce_headline):not(.container.container):not(.content--box) {
+  .container {
     max-width: none;
     padding: 0px;
+    width: auto;
   }
 }
 

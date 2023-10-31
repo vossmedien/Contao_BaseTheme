@@ -69,9 +69,6 @@ if (TL_MODE == 'FE') {
                 padding-bottom: calc(var(--bs-basic-spacing)) !important;
             }
 
-            [data-articleid="article-<?= $this->pid;?>"] + .mod_article {
-
-            }
         </style>
     <?php else: ?>
 
@@ -83,6 +80,13 @@ if (TL_MODE == 'FE') {
 
         <style class="<?php if ($this->deactivate_top): ?>deactivate-top<?php endif; ?> <?php if ($this->deactivate_bottom): ?>deactivate-bottom<?php endif; ?> <?php if ($this->is_between): ?>is-between<?php endif; ?>">
             <?php if($this->only_article):?>
+
+                 [data-articleid="article-<?= $this->pid;?>"] .content--element.container{
+
+            }
+
+
+
 
             <?php if($this->is_between):?>
             [data-articleid="article-<?= $this->pid;?>"] > .article-content {
@@ -114,6 +118,7 @@ if (TL_MODE == 'FE') {
 
                 padding: calc(var(--skew-padding) - var(--bs-basic-spacing) / 2) 0 calc((var(--skew-padding) - var(--bs-basic-spacing) / 2));
             }
+
 
 
             [data-articleid="article-<?= $this->pid;?>"] > .article-content {

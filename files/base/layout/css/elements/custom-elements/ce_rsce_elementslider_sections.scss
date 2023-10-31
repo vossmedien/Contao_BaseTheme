@@ -19,9 +19,7 @@
       padding-top: rfs-value(150px);
     }
 
-    @include media-breakpoint-up(lg) {
-      padding-bottom: calc(var(--bs-basic-spacing)  * 1.5);
-    }
+
   }
 
   .scroll-to-bottom {

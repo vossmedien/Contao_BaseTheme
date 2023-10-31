@@ -142,10 +142,6 @@ const main = async () => {
     initializeTooltips();
     initializeMegaMenu();
     initializeNavToggle();
-
-    setTimeout(() => {
-        document.body.style.opacity = "1";
-    }, 0);
 };
 
 // Ausführen der Hauptfunktion nachdem alle Promises aufgelöst wurden
