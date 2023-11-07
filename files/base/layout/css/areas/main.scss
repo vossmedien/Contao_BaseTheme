@@ -1,8 +1,7 @@
 #wrapper {
+  overflow-x: hidden;
   display: flex;
-  min-height: 100vh;
   flex-flow: column nowrap;
-  overflow: hidden;
 
   #container {
     @include media-breakpoint-up(md) {
@@ -29,41 +28,64 @@
   #main {
     //overflow: hidden;
 
+    .inside {
+      --main-gap: #{clamp($basic-gutter * 0.75, 5vw, $basic-gutter * 1.5)};
+      overflow: hidden;
+
+      display: flex;
+      flex-flow: column wrap;
+      gap: var(--main-gap);
+    }
+
     .mod_article {
+      transition: background-position 0s ease-in-out;
+
+      &:last-child:first-child > div:last-child:first-child {
+        padding-top: var(--main-gap);
+      }
+
+      &:last-child > div:last-child {
+        padding-bottom: var(--main-gap);
+      }
 
       .ce--inner {
         position: relative;
       }
 
-      .content--element{
-        &[class*="col"]{
-          padding-left: calc(var(--bs-gutter-x) * .5);
-          padding-right: calc(var(--bs-gutter-x) * .5);
+      .content--element {
+        &[class*="col"] {
+          padding-left: calc(var(--bs-gutter-x) * 0.5);
+          padding-right: calc(var(--bs-gutter-x) * 0.5);
         }
       }
 
       .article-content {
+        display: flex;
+        flex-flow: column wrap;
+        gap: $basic-gutter 0;
         //z-index: 2;
         //position: relative;
-        padding: $basic-gutter 0 0 0;
+        //padding: $basic-gutter 0 0 0;
 
-        > div:not(.ce_headline), > section{
-          padding-bottom: $basic-gutter;
+        > div:not(.ce_headline),
+        > section {
+          //padding-bottom: $basic-gutter;
         }
       }
 
-      &:last-child > .article-content > .content--element:last-of-type{
-        margin-bottom: 0px;
+      &:last-child > .article-content > .content--element:last-of-type {
+        //margin-bottom: 0px;
       }
 
-      .article-content > *:not(.ce_headline):not(.ce_html) {
-        //margin-bottom: $basic-gutter;
+      .article-content > *:last-child {
+        margin-bottom: 0;
       }
 
       & + .mod_article {
-        .content--element:last-child{
+        .content--element:last-child {
           //margin-bottom: 0px;
         }
+
         //margin-bottom: $basic-gutter;
       }
 

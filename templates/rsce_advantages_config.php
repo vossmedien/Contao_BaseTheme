@@ -298,7 +298,13 @@ return array(
                         'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
                         'h4' => 'H4',
                         'h5' => 'H5',
+'h6' => 'H6',
                     ),
+                ),
+                          'ce_topline' => array(
+                    'label' => array('Topline', ''),
+                    'inputType' => 'text',
+                    'eval' => array('allowHtml' => true),
                 ),
                 'ce_headline' => array(
                     'label' => array('Überschrift', ''),

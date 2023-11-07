@@ -56,9 +56,6 @@ html body {
       }
     }
 
-    .ce--headline + .ce--kachelfeld {
-      //margin-top: 1.5rem;
-    }
 
     .kachelbox {
       @include media-breakpoint-up(md) {

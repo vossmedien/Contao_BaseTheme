@@ -5,122 +5,123 @@ if (TL_MODE == 'FE') {
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element  <?php if(!str_contains($this->class, "col")):?>container<?php else:?><?php echo $this->class; ?><?php endif;?>">
-    <div class="ce--inner <?php if(!str_contains($this->class, "col")):?><?php echo $this->class; ?><?php endif;?> ">
+<div <?php echo $this->cssID; ?> class="content--element  <?php if (!str_contains($this->class, "col")): ?>container<?php else: ?><?php echo $this->class; ?><?php endif; ?>">
+    <div class="ce--inner <?php if (!str_contains($this->class, "col")): ?><?php echo $this->class; ?><?php endif; ?> ">
 
-        <?php if ($this->headline || $this->subline || $this->topline) : ?>
-        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-            <?php if ($this->headline) : ?>
-            <<?php echo($this->hl); ?>>
-            <?php if ($this->topline) : ?>
-                <span class="ce--topline"><?php echo $this->topline; ?></span>
-            <?php endif; ?>
-            <span class="ce--headline-content"><?php echo($this->headline); ?></span>
-        </<?php echo($this->hl); ?>>
-    <?php if ($this->subline) : ?>
-        <span class="ce--subline"><?php echo $this->subline; ?></span>
-    <?php endif; ?>
-    <?php endif; ?>
-    </div>
-    <?php endif; ?>
+        <?php if ($this->headline || $this->subline || $this->topline): ?>
+            <div class="ce--headline hl-<?php echo "{$this->hl}"; ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeInUp'; ?>">
+                <?php if ($this->topline): ?>
+                    <span class="ce--topline"><?= $this->topline; ?></span>
+                <?php endif; ?>
 
+                <?php if ($this->headline): ?>
+                    <?php echo "<{$this->hl}>"; ?>
+                    <span class="ce--headline-content"><?= $this->headline; ?></span>
+                    <?php echo "</{$this->hl}>"; ?>
+                <?php endif; ?>
 
-    <div class="ce--locations">
-        <div class="locations--inner">
-            <div class="container">
-                <?php if ($this->locations): ?>
-                    <!-- Select Box für Locations -->
-                    <?php
-                    $uniqueLocations = [];
+                <?php if ($this->subline): ?>
+                    <span class="ce--subline"><?= $this->subline; ?></span>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
-                    foreach ($this->locations as $location) {
-                        $uniqueLocations[$location->location_name] = true;
-                    }
-                    ?>
-
-                    <div class="mb-4" data-aos="animate__fadeIn">
-                        <select class="form-select d-inline-block w-auto" name="locations" id="locations-select">
-                            <option disabled selected value=""><?= $this->select_label ?></option>
-                            <?php foreach (array_keys($uniqueLocations) as $uniqueLocationName): ?>
-                                <option value="<?= $uniqueLocationName ?>" <?= ($this->standard_location == $uniqueLocationName) ? 'selected' : '' ?>>
-                                    <?= $uniqueLocationName ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <!-- List of all locations -->
-                    <div class="location-list">
-
-
+        <div class="ce--locations">
+            <div class="locations--inner">
+                <div class="container">
+                    <?php if ($this->locations): ?>
+                        <!-- Select Box für Locations -->
                         <?php
-                        $displayedLocations = []; // Array um bereits angezeigte Standorte zu speichern
-                        foreach ($this->locations as $location): ?>
+                        $uniqueLocations = [];
+
+                        foreach ($this->locations as $location) {
+                            $uniqueLocations[$location->location_name] = true;
+                        }
+                        ?>
+
+                        <div class="mb-4" data-aos="animate__fadeIn">
+                            <select class="form-select d-inline-block w-auto" name="locations" id="locations-select">
+                                <option disabled selected value=""><?= $this->select_label ?></option>
+                                <?php foreach (array_keys($uniqueLocations) as $uniqueLocationName): ?>
+                                    <option value="<?= $uniqueLocationName ?>" <?= ($this->standard_location == $uniqueLocationName) ? 'selected' : '' ?>>
+                                        <?= $uniqueLocationName ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- List of all locations -->
+                        <div class="location-list">
+
 
                             <?php
-                            $cssClass = 'location-' . preg_replace('/[^a-z0-9]+/i', '_', $location->location_name);
-                            ?>
-                            <div data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeIn<?php endif; ?>" class="mb-1 p-4 bg-gray location-item <?= ($this->standard_location == $location->location_name) ? 'is-active' : '' ?>" data-location="<?= $location->location_name ?>">
+                            $displayedLocations = []; // Array um bereits angezeigte Standorte zu speichern
+                            foreach ($this->locations as $location): ?>
 
-                                <!-- Nur ausgeben, wenn der Standort noch nicht angezeigt wurde -->
-                                <?php if (!in_array($location->location_name, $displayedLocations)): ?>
-                                    <span class="h4"><?= $location->location_name ?></span>
-                                    <?php
-                                    $displayedLocations[] = $location->location_name; // Den Standort dem Array hinzufügen
-                                endif;
+                                <?php
+                                $cssClass = 'location-' . preg_replace('/[^a-z0-9]+/i', '_', $location->location_name);
                                 ?>
+                                <div data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeIn<?php endif; ?>" class="mb-1 p-4 bg-gray location-item <?= ($this->standard_location == $location->location_name) ? 'is-active' : '' ?>" data-location="<?= $location->location_name ?>">
+
+                                    <!-- Nur ausgeben, wenn der Standort noch nicht angezeigt wurde -->
+                                    <?php if (!in_array($location->location_name, $displayedLocations)): ?>
+                                        <span class="h4"><?= $location->location_name ?></span>
+                                        <?php
+                                        $displayedLocations[] = $location->location_name; // Den Standort dem Array hinzufügen
+                                    endif;
+                                    ?>
 
 
-                                <div class="row">
-                                    <div class="col-12 col-md-6 col-lg-3">
-                                        <?php if ($location->company_name): ?>
-                                            <strong><?= $location->company_name ?></strong>
-                                        <?php endif; ?>
-                                        <?php if ($location->contact_person): ?>
-                                            <span><?= $location->contact_person ?></span>
-                                        <?php endif; ?>
-                                        <?php if ($location->position): ?>
-                                            <span><?= $location->position ?></span>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-3 mt-2 mt-md-0">
-                                        <div class="loc-wrapper">
-                                            <span class="loc-icon">{{icon_sharp::fa-solid:fa-location-dot}}</span>
-                                            <span>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6 col-lg-3">
+                                            <?php if ($location->company_name): ?>
+                                                <strong><?= $location->company_name ?></strong>
+                                            <?php endif; ?>
+                                            <?php if ($location->contact_person): ?>
+                                                <span><?= $location->contact_person ?></span>
+                                            <?php endif; ?>
+                                            <?php if ($location->position): ?>
+                                                <span><?= $location->position ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-3 mt-2 mt-md-0">
+                                            <div class="loc-wrapper">
+                                                <span class="loc-icon">{{icon_sharp::fa-solid:fa-location-dot}}</span>
+                                                <span>
                                         <?php if ($location->address): ?>
                                             <span class="d-inline-block"><?= $location->address ?></span>
                                         <?php endif; ?>
-                                                <?php if ($location->city): ?>
-                                                    <span class="d-inline-block"><?= $location->city ?>,</span>
-                                                <?php endif; ?>
-                                                <?php if ($location->abbreviation): ?>
-                                                    <span class="d-inline-block"><?= $location->abbreviation ?></span>
-                                                <?php endif; ?>
-                                                <?php if ($location->zipcode): ?>
-                                                    <span class="d-inline-block"><?= $location->zipcode ?></span>
-                                                <?php endif; ?>
+                                                    <?php if ($location->city): ?>
+                                                        <span class="d-inline-block"><?= $location->city ?>,</span>
+                                                    <?php endif; ?>
+                                                    <?php if ($location->abbreviation): ?>
+                                                        <span class="d-inline-block"><?= $location->abbreviation ?></span>
+                                                    <?php endif; ?>
+                                                    <?php if ($location->zipcode): ?>
+                                                        <span class="d-inline-block"><?= $location->zipcode ?></span>
+                                                    <?php endif; ?>
                                                    </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12  col-md-6 col-lg-3">
+                                            <?php if ($location->phone_number): ?>
+                                                <span class="loc-wrapper"><span class="loc-icon">{{icon_sharp::fa-solid:fa-circle-phone}}</span> <?= $location->phone_number ?></span>
+                                            <?php endif; ?>
+                                            <?php if ($location->email): ?>
+                                                <span class="loc-wrapper"><span class="loc-icon">{{icon_sharp::fa-solid:fa-envelope}}</span> {{email::<?= $location->email ?>}}</span>
+                                            <?php endif; ?>
+                                            <?php if ($location->website): ?>
+                                                <a href="<?= $location->website ?>" target="_blank"><?= $location->website ?></a>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
-                                    <div class="col-12  col-md-6 col-lg-3">
-                                        <?php if ($location->phone_number): ?>
-                                            <span class="loc-wrapper"><span class="loc-icon">{{icon_sharp::fa-solid:fa-circle-phone}}</span> <?= $location->phone_number ?></span>
-                                        <?php endif; ?>
-                                        <?php if ($location->email): ?>
-                                            <span class="loc-wrapper"><span class="loc-icon">{{icon_sharp::fa-solid:fa-envelope}}</span> {{email::<?= $location->email ?>}}</span>
-                                        <?php endif; ?>
-                                        <?php if ($location->website): ?>
-                                            <a href="<?= $location->website ?>" target="_blank"><?= $location->website ?></a>
-                                        <?php endif; ?>
-                                    </div>
                                 </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
 
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>

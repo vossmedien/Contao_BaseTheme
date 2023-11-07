@@ -29,70 +29,73 @@ if (TL_MODE == 'FE') {
 >
     <div class="ce--inner <?php if ($this->background_color) : ?>with-bg<?php endif; ?>">
 
-        <?php if ($this->headline || $this->subline || $this->topline) : ?>
-        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-            <?php if ($this->headline) : ?>
-            <<?php echo($this->hl); ?>>
-            <?php if ($this->topline) : ?>
-                <span class="ce--topline"><?php echo $this->topline; ?></span>
-            <?php endif; ?>
-            <span class="ce--headline-content"><?php echo($this->headline); ?></span>
-        </<?php echo($this->hl); ?>>
-    <?php if ($this->subline) : ?>
-        <span class="ce--subline"><?php echo $this->subline; ?></span>
-    <?php endif; ?>
-    <?php endif; ?>
-    </div>
-    <?php endif; ?>
+        <?php if ($this->headline || $this->subline || $this->topline): ?>
+            <div class="ce--headline hl-<?php echo "{$this->hl}"; ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeInUp'; ?>">
+                <?php if ($this->topline): ?>
+                    <span class="ce--topline"><?= $this->topline; ?></span>
+                <?php endif; ?>
 
-    <div class="ce--teaser-stripe"
-    >
-        <div class="ts--inner"
-             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                <?php if ($this->headline): ?>
+                    <?php echo "<{$this->hl}>"; ?>
+                    <span class="ce--headline-content"><?= $this->headline; ?></span>
+                    <?php echo "</{$this->hl}>"; ?>
+                <?php endif; ?>
 
+                <?php if ($this->subline): ?>
+                    <span class="ce--subline"><?= $this->subline; ?></span>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="ce--teaser-stripe"
         >
+            <div class="ts--inner"
+                 data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
 
-            <div class="container">
+            >
 
-                <div class="<?php if (!$this->nocolumns) : ?>row<?php endif; ?>  align-items-center justify-content-center">
-                    <?php if ($this->ce_headline || $this->ce_subline || $this->text) : ?>
-                        <div class="col">
-                            <?php if ($this->ce_topline) : ?>
-                                <div class="teaser--topline ce--topline" style="<?php if ($this->text_color) : ?>
-                                        color: <?= $this->text_color;?>;
+                <div class="container">
+
+                    <div class="<?php if (!$this->nocolumns) : ?>row<?php endif; ?>  align-items-center justify-content-center">
+                        <?php if ($this->ce_headline || $this->ce_subline || $this->text) : ?>
+                            <div class="col">
+                                <?php if ($this->ce_topline) : ?>
+                                    <div class="teaser--topline ce--topline" style="<?php if ($this->text_color) : ?>
+                                            color: <?= $this->text_color;?>;
                         <?php endif; ?>"><?php echo $this->ce_topline; ?></div>
-                            <?php endif; ?>
-                            <?php if ($this->ce_headline) : ?>
-                                <div class="teaser--headline">
+                                <?php endif; ?>
+                                <?php if ($this->ce_headline) : ?>
+                                    <div class="teaser--headline">
                             <span style="
                             <?php if ($this->text_color) : ?>
                                     color: <?= $this->text_color;?>;
                         <?php endif; ?>" class="mb-0 <?php echo($this->headline_type); ?>"
                             ><?php echo($this->ce_headline); ?></span>
-                                </div>
-                            <?php endif; ?>
-                            <?php if ($this->ce_subline) : ?>
-                                <div class="teaser--subline ce--subline" style="<?php if ($this->text_color) : ?>
-                                        color: <?= $this->text_color;?>;
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($this->ce_subline) : ?>
+                                    <div class="teaser--subline ce--subline" style="<?php if ($this->text_color) : ?>
+                                            color: <?= $this->text_color;?>;
                         <?php endif; ?>"><?php echo $this->ce_subline; ?></div>
-                            <?php endif; ?>
-                            <?php if ($this->text) : ?>
-                                <div class="ts--text <?php if ($this->dynamic_fontsize): ?>dynamic-fontsize-sm<?php endif; ?> <?php if ($this->ce_headline || $this->ce_subline) : ?>mt-1<?php endif; ?>">
-                                    <?php echo $this->text; ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-                    <?php if ($this->link_text) : ?>
-                        <div class="col-12 col-md-auto">
-                            <div class="ts--buttons <?php if ($this->nocolumns) : ?>mt-3<?php else: ?>mt-3 mt-md-0 <?php endif; ?>">
-                                <a class="d-inline-block btn <?php if ($this->link_size) : ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"
-                                   href="<?php echo $this->link_url; ?><?php if ($this->link_betreff) : ?>?subject=<?php echo $this->link_betreff; ?><?php endif; ?>"><?php echo $this->link_text; ?></a>
+                                <?php endif; ?>
+                                <?php if ($this->text) : ?>
+                                    <div class="ts--text <?php if ($this->dynamic_fontsize): ?>dynamic-fontsize-sm<?php endif; ?> <?php if ($this->ce_headline || $this->ce_subline) : ?>mt-1<?php endif; ?>">
+                                        <?php echo $this->text; ?>
+                                    </div>
+                                <?php endif; ?>
                             </div>
-                        </div>
-                    <?php endif; ?>
+                        <?php endif; ?>
+                        <?php if ($this->link_text) : ?>
+                            <div class="col-12 col-md-auto">
+                                <div class="ts--buttons <?php if ($this->nocolumns) : ?>mt-3<?php else: ?>mt-3 mt-md-0 <?php endif; ?>">
+                                    <a class="d-inline-block btn <?php if ($this->link_size) : ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"
+                                       href="<?php echo $this->link_url; ?><?php if ($this->link_betreff) : ?>?subject=<?php echo $this->link_betreff; ?><?php endif; ?>"><?php echo $this->link_text; ?></a>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div></div>
+</div>

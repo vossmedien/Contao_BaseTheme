@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Hintergrund für Website / Abschnitt', ''),
+    'label' => array('Custom | Hintergrund für Website / Artikel (bodybg)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -27,6 +27,19 @@ return array(
             'inputType' => 'checkbox',
             'options' => array(
                 '1' => 'Hintergrund für den Abschnitt und nicht für den kompletten Body',
+            ),
+        ),
+
+
+        'is_between' => array(
+            'label' => array('', ''),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'Abstand zum Artikel davor entfernen, so dass Abschrägungen ggf. zusammengeführt werden und Artikel aneinander liegen',
+            ),
+            'dependsOn' => array(
+                'field' => 'only_article',
+                'value' => '1',
             ),
         ),
 
@@ -76,6 +89,7 @@ return array(
             'dependsOn' => array(
                 'field' => 'autoplay',
             ),
+            'eval' => array('tl_class' => 'w50'),
         ),
 
 
@@ -144,73 +158,50 @@ return array(
         'settings_diagonal' => array(
             'label' => array('Abschrägung', ''),
             'inputType' => 'group',
+            'dependsOn' => array(
+                'field' => 'only_article',
+                'value' => '1',
+            ),
         ),
 
         'activate' => array(
             'label' => array('', ''),
             'inputType' => 'checkbox',
             'options' => array(
-                '1' => 'Abschrägung aktivieren',
+                '1' => 'Abschrägung aktiviere. Wichtig: deaktiviert parallax-Effekt',
             ),
         ),
 
         'winkel' => array(
-            'label' => array('Abschrägungswinkel', 'Standard: -5, nutze beispielsweise 5 um den Winkel umzukehren'),
+            'label' => array('Abschrägungswinkel', 'Geben Sie einen Wert zwischen -5 und 5 ein. Standard: 2.5 bzw. Inhalt von var(--base-skew)'),
             'inputType' => 'text',
-            'dependsOn' => array(
-                'field' => 'activate',
+            'eval' => array(
+                'rgxp' => 'digit', // Erlaubt Zahlen einschließlich negativer Werte
+                'maxlength' => 2, // Erlaubt bis zu 3 Zeichen (z.B. "-5" oder "5")
+                'tl_class' => 'w50'
             ),
+            'sql' => "varchar(2) NOT NULL default ''"
         ),
 
 
-        'is_between' => array(
-            'label' => array('', ''),
-            'inputType' => 'checkbox',
-            'options' => array(
-                '1' => 'Hintergrund auffüllen, falls Zwischenräume vorhanden',
+        /*
+            'skew_fix' => array(
+                'label' => array('', ''),
+                'inputType' => 'checkbox',
+                'options' => array(
+                    '1' => 'FIX für Abschrägung (Evtl. auch bei Abstandsproblemen testen)',
+                ),
             ),
-        ),
 
-        'skew_fix' => array(
-            'label' => array('', ''),
-            'inputType' => 'checkbox',
-            'options' => array(
-                '1' => 'FIX für Abschrägung (Evtl. auch bei Abstandsproblemen testen)',
+            'padding_fix' => array(
+                'label' => array('', ''),
+                'inputType' => 'checkbox',
+                'options' => array(
+                    '1' => 'FIX für Abstandsprobleme (zu klein / zu groß)',
+                ),
             ),
-        ),
 
-        'padding_fix' => array(
-            'label' => array('', ''),
-            'inputType' => 'checkbox',
-            'options' => array(
-                '1' => 'FIX für Abstandsprobleme (zu klein / zu groß)',
-            ),
-        ),
-
-
-
-        'deactivate_bottom' => array(
-            'label' => array('', ''),
-            'inputType' => 'checkbox',
-            'options' => array(
-                '1' => 'Abschrägung unten deaktivieren',
-            ),
-            'dependsOn' => array(
-                'field' => 'activate',
-            ),
-        ),
-
-
-        'deactivate_top' => array(
-            'label' => array('', ''),
-            'inputType' => 'checkbox',
-            'options' => array(
-                '1' => 'Abschrägung oben deaktivieren',
-            ),
-            'dependsOn' => array(
-                'field' => 'activate',
-            ),
-        ),
+             */
 
 
     ),

@@ -168,8 +168,15 @@ return array(
                         'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
                         'h4' => 'H4',
                         'h5' => 'H5',
+'h6' => 'H6',
                     ),
                 ),
+
+                'topline' => array(
+                    'label' => array('Topline', 'für linke Spalte'),
+                    'inputType' => 'text',
+                ),
+
                 'headline' => array(
                     'label' => array('Überschrift', 'für linke Spalte'),
                     'inputType' => 'text',
@@ -179,6 +186,12 @@ return array(
                     'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                     'inputType' => 'checkbox',
                 ),
+
+                'subline' => array(
+                    'label' => array('Subline', 'für linke Spalte'),
+                    'inputType' => 'text',
+                ),
+
                 'headline_color' => array(
                     'label' => array(
                         'de' => array('Farbe der Headline und Border', ''),

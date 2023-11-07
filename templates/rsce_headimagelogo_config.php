@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
-              'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
-              'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -140,7 +140,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true','tl_class' => 'clr')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
 
 
@@ -659,21 +659,43 @@ return array(
                     'eval' => array('tl_class' => 'clr'),
                 ),
 
-                'firstline_headline' => array(
-                    'label' => array('Erste Zeile ist eine Hauptüberschrift (H1)', ''),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr'),
+
+                'headline_type' => array(
+                    'label' => array(
+                        'de' => array('Typ der Überschrift', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'h1' => 'H1 (Haupt-Headline für SEO, darf nur 1x vorkommen)',
+                        'h2' => 'H2 (Sollte H1 thematisch untergeordnet sein)',
+                        'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
+                        'h4' => 'H4',
+                        'h5' => 'H5',
+'h6' => 'H6',
+                    ),
+                ),
+
+                'text_topline' => array(
+                    'label' => array('Topline', ''),
+                    'inputType' => 'text',
+                    'eval' => array( 'allowHtml' => true),
                 ),
                 'text_firstline' => array(
-                    'label' => array('Erste Zeile', ''),
+                    'label' => array('Überschrift', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
+                    'eval' => array('allowHtml' => true),
                 ),
                 'text_secondline' => array(
-                    'label' => array('Zweite Zeile', ''),
+                    'label' => array('Subline', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
+                    'eval' => array( 'allowHtml' => true),
                 ),
+
+                'onlystyle' => array(
+                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
+                    'inputType' => 'checkbox',
+                ),
+
                 'text_infotext' => array(
                     'label' => array('Langtext unterhalb der Überschriften', 'Nicht sichtbar auf Mobile!'),
                     'inputType' => 'textarea',
@@ -689,14 +711,6 @@ return array(
                     ),
                 ),
 
-                'box_text_color' => array(
-                    'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                    'dependsOn' => array(
-                        'field' => 'own_box',
-                    ),
-                ),
 
                 'box_background_color' => array(
                     'label' => array('Alternative Hintergrundfarbe für Inhalt', 'Standardmäßig transparent (Style 1) oder weiß (Style 2)'),

@@ -134,19 +134,28 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                                         <?php if ($slide->longtext || $slide->text) : ?>
                                         <div class="<?php if ($this->nav_position == 1 || $this->nav_position == 2): ?>col-12 col-md<?php else: ?>half-container<?php endif; ?>">
 
-                                            <?php if ($slide->text) : ?>
-                                            <div class="slide-caption">
-                                                <?php if (!$slide->onlystyle) : ?>
-                                                <<?php echo $slide->headline_type; ?>>
-                                                <?php echo $slide->text; ?>
-                                            </<?php echo $slide->headline_type; ?>>
-                                        <?php else : ?>
-                                            <span class="<?php echo $slide->headline_type; ?>">
-                                                                        <?php echo $slide->text; ?>
-                                                                    </span>
-                                        <?php endif; ?>
-                                        </div>
-                                    <?php endif; ?>
+                                           <?php if ($slide->text) : ?>
+    <div class="ce--headline mb-0 hl-<?= $slide->headline_type ?>">
+        <?php if (isset($slide->topline)) : ?>
+            <span class="ce--topline"><?= $slide->topline ?></span>
+        <?php endif; ?>
+
+        <?php if (!$slide->onlystyle) : ?>
+            <<?= $slide->headline_type ?> class="hl-content <?= $slide->headline_image ? 'mb-0' : ''; ?>">
+                <?= $slide->text ?>
+            </<?= $slide->headline_type ?>>
+        <?php else : ?>
+            <span class="hl-content <?= $slide->headline_type ?>">
+                <?= $slide->text ?>
+            </span>
+        <?php endif; ?>
+
+        <?php if (isset($slide->subline)) : ?>
+            <span class="ce--subline"><?= $slide->subline ?></span>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
 
                                         <?php if ($slide->longtext) : ?>
                                             <div class="slide-description  <?php if (!$slide->image): ?>container<?php elseif ($this->nav_position == 3 || $this->nav_position == 4): ?>half-container<?php endif; ?>"><?php echo $slide->longtext; ?></div>

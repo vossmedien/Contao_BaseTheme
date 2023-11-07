@@ -110,6 +110,10 @@ html body {
         position: relative;
         //overflow: hidden;
 
+          @include media-breakpoint-down(md) {
+            min-height: 500px !important;
+          }
+
         @media (orientation: landscape) {
           //height: rfs-value(450px);
         }
@@ -173,13 +177,13 @@ html body {
               bottom: rfs-value(75px);
             }
 
-            span {
+            /*
+              span {
               display: block;
               line-height: 1;
 
               &.first-line {
                 font-weight: $font-weight-bold;
-
                 &:not([class*="dynamic-fontsize"]) {
                   @include font-size(26px);
                   @include media-breakpoint-up(md) {
@@ -187,7 +191,6 @@ html body {
                   }
                 }
               }
-
               &.second-line {
                 margin-top: 8px;
                 font-weight: $font-weight-semibold;
@@ -201,13 +204,17 @@ html body {
               }
             }
 
-            h1 {
+                 h1 {
               font-weight: $font-weight-bold;
 
               &:not([class*="dynamic-fontsize"]) {
                 @include font-size(36px);
               }
             }
+             */
+
+
+
 
             .infotext--text {
               margin-top: 1.25rem;
@@ -230,7 +237,8 @@ html body {
               max-width: 100% !important;
             }
 
-            span:not([class*="dynamic-fontsize"]) {
+            /*
+                span:not([class*="dynamic-fontsize"]) {
               &:first-of-type {
                 @include font-size(70px);
               }
@@ -247,6 +255,8 @@ html body {
             h1 {
               margin-bottom: 0px;
             }
+
+             */
 
             .button--wrapper {
               margin-top: 1.75rem;

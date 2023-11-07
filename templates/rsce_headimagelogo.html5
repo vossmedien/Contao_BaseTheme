@@ -20,398 +20,330 @@ if (TL_MODE == 'FE') {
         class="content--element <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?> <?php if ($this->pull_content_next) : ?>pull-content-next<?php endif; ?>">
     <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>" style="--pull-content-amount: -<?php if ($this->pull_amount) : ?><?= $this->pull_amount; ?>px<?php else: ?>250px<?php endif; ?>;">
 
-        <?php if ($this->headline || $this->subline || $this->topline) : ?>
-        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-            <?php if ($this->headline) : ?>
-            <<?php echo($this->hl); ?>>
-            <?php if ($this->topline) : ?>
-                <span class="ce--topline"><?php echo $this->topline; ?></span>
-            <?php endif; ?>
-            <span class="ce--headline-content"><?php echo($this->headline); ?></span>
-        </<?php echo($this->hl); ?>>
-    <?php if ($this->subline) : ?>
-        <span class="ce--subline"><?php echo $this->subline; ?></span>
-    <?php endif; ?>
-    <?php endif; ?>
-    </div>
-    <?php endif; ?>
+        <?php if ($this->headline || $this->subline || $this->topline): ?>
+            <div class="ce--headline hl-<?php echo "{$this->hl}"; ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeInUp'; ?>">
+                <?php if ($this->topline): ?>
+                    <span class="ce--topline"><?= $this->topline; ?></span>
+                <?php endif; ?>
 
-    <div class="<?php if (count($this->slides) > 1) : ?>swiper<?php endif; ?> mainslider mainslider_<?php echo $this->id; ?> <?php if ($this->image_height) : ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut) : ?>with-diagonalCut<?php endif; ?>">
-        <!-- Additional required wrapper -->
-        <div class="swiper-wrapper">
-            <!-- Slides -->
+                <?php if ($this->headline): ?>
+                    <?php echo "<{$this->hl}>"; ?>
+                    <span class="ce--headline-content"><?= $this->headline; ?></span>
+                    <?php echo "</{$this->hl}>"; ?>
+                <?php endif; ?>
 
-            <?php foreach ($this->slides as $key => $slide) : ?>
+                <?php if ($this->subline): ?>
+                    <span class="ce--subline"><?= $this->subline; ?></span>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
-                <?php
-                if (!property_exists($slide, "size")) {
-                    $slide->{"size"} = "";
-                }
-                ?>
+        <div class="<?php if (count($this->slides) > 1) : ?>swiper<?php endif; ?> mainslider mainslider_<?php echo $this->id; ?> <?php if ($this->image_height) : ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut) : ?>with-diagonalCut<?php endif; ?>">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+
+                <?php foreach ($this->slides as $key => $slide) : ?>
+
+                    <?php
+                    if (!property_exists($slide, "size")) {
+                        $slide->{"size"} = "";
+                    }
+                    ?>
 
 
-                <?php
-                $filename = FilesModel::findByUuid($slide->image)->path;
-                $ext = pathinfo($filename, PATHINFO_EXTENSION);
-                $filename_mobile = FilesModel::findByUuid($slide->mobile_image)->path;
-                $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
-                ?>
+                    <?php
+                    $filename = FilesModel::findByUuid($slide->image)->path;
+                    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                    $filename_mobile = FilesModel::findByUuid($slide->mobile_image)->path;
+                    $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
+                    ?>
 
-                <div class="swiper-slide">
-                    <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline) : ?>no-text<?php endif; ?> ">
-                        <div class="image--holder <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>"
-                             style="<?php if ($this->image_minheight) : ?>min-height: <?= $this->image_minheight;?>;<?php else:?>250px;<?php endif; ?> <?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; <?php endif; ?> <?php if ($this->image_maxwidth) : ?>background-size: <?= $this->image_maxwidth; ?> auto;<?php else: ?>background-size: cover;<?php endif; ?>">
+                    <div class="swiper-slide">
+                        <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline && !$slide->text_topline) : ?>no-text<?php endif; ?> ">
+                            <div class="image--holder <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>"
+                                 style="<?php if ($this->image_minheight) : ?>min-height: <?= $this->image_minheight;?>;<?php else:?>250px;<?php endif; ?> <?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; <?php endif; ?> <?php if ($this->image_maxwidth) : ?>background-size: <?= $this->image_maxwidth; ?> auto;<?php else: ?>background-size: cover;<?php endif; ?>">
 
-                            <?php if ($slide->alternate_background_color): ?>
+                                <?php if ($slide->alternate_background_color): ?>
+                                    <style>
+                                        <?php
+                                            $color = $slide->alternate_background_color;
+                                            $color = str_replace("&#41", ")",$color);
+                                            $color = str_replace("&#40", "(",$color);
+                                            $color = str_replace("(;", "(",$color);
+                                            $color = str_replace("&#35;", "#",$color);
+                                            $color = str_replace(");", ")",$color);
+                                        ?>
+
+                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner:before,
+                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner--wrapper:not(.extra) .mainimage--content-inner--holder:after {
+                                            background-color: <?= $color; ?> !important;
+                                        }
+
+                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-1 .mainimage--content .mainimage--content-inner--wrapper:not(.extra) {
+                                            background-color: <?= $color; ?> !important;
+                                            padding: 20px;
+                                            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+                                        }
+
+                                    </style>
+                                <?php endif; ?>
+
+                                <?php if (!empty($slide->box_background_color)): ?>
+                                    <style>
+                                        <?php
+                                            // Eine anonyme Funktion zur Bereinigung der Farbwerte, um Namenskonflikte zu vermeiden
+                                            $cleanColor = function($color) {
+                                                $search = array("&#41;", "&#40;", "(;", "&#35;", ");");
+                                                $replace = array(")", "(", "(", "#", ")");
+                                                return str_replace($search, $replace, $color);
+                                            };
+
+                                            $color = $cleanColor($slide->box_background_color);
+                                        ?>
+
+                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .slide_<?php echo $key; ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper.extra:before,
+                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .slide_<?php echo $key; ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper .mainimage--content-inner--holder.extra:after {
+                                            background-color: <?= $color; ?> !important;
+                                        }
+
+                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .slide_<?php echo $key; ?>.style-1 .mainimage--content .mainimage--content-inner--wrapper.extra {
+                                            background-color: <?= $color; ?> !important;
+                                            padding: 20px;
+                                            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+                                        }
+                                    </style>
+                                <?php endif; ?>
+
+
                                 <style>
-                                    <?php
-                                        $color = $slide->alternate_background_color;
-                                        $color = str_replace("&#41", ")",$color);
-                                        $color = str_replace("&#40", "(",$color);
-                                        $color = str_replace("(;", "(",$color);
-                                        $color = str_replace("&#35;", "#",$color);
-                                        $color = str_replace(");", ")",$color);
-                                    ?>
-
-                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner:before,
-                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner--wrapper:not(.extra) .mainimage--content-inner--holder:after {
-                                        background-color: <?= $color; ?> !important;
-                                    }
-
-                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-1 .mainimage--content .mainimage--content-inner--wrapper:not(.extra) {
-                                        background-color: <?= $color; ?> !important;
-                                        padding: 20px;
-                                        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
-                                    }
-
-                                </style>
-                            <?php endif; ?>
-
-                            <?php if ($slide->box_background_color): ?>
-                                <style>
-                                    <?php
-                                        $color = $slide->box_background_color;
-                                        $color = str_replace("&#41", ")",$color);
-                                        $color = str_replace("&#40", "(",$color);
-                                        $color = str_replace("(;", "(",$color);
-                                        $color = str_replace("&#35;", "#",$color);
-                                        $color = str_replace(");", ")",$color);
-                                    ?>
-
-                                    /*
-                                         html body .ce_rsce_headimagelogo .mainslider_
-
-
-
-
-
-
-
-
-
-                                    <?php echo $this->id;?>
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                                                                                                                                      .slide_
-
-
-
-
-
-
-
-
-
-                                    <?php echo $key;?>
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                                                                                                                                                                        .style-2 .mainimage--content .mainimage--content-inner--wrapper.extra:before,
-                                                                                                                                                                                                                                                                                                                                                                                                            html body .ce_rsce_headimagelogo .mainslider_
-
-
-
-
-
-
-
-
-
-                                    <?php echo $this->id;?>
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                                                                                                                                      .slide_
-
-
-
-
-
-
-
-
-
-                                    <?php echo $key;?>
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                                                                                                                                                                        .style-2 .mainimage--content .mainimage--content-inner--wrapper .mainimage--content-inner--holder.extra:after {
-                                                                                                                                                                                                                                                                                                                                                                                                                background-color:
-
-
-
-
-
-
-
-
-
-                                    <?= $color; ?>
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                                                                                                                                                                         !important;
-                                                                                                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                                                                                                             */
-
-
-                                    html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-1 .mainimage--content .mainimage--content-inner--wrapper.extra {
-                                        background-color: <?= $color; ?> !important;
-                                        padding: 20px;
-                                        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
-                                    }
-                                </style>
-                            <?php endif; ?>
-
-                            <style>
-                                <?php if($ext != "mp4"):?>
-                                html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?> .image--holder {
-                                    background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat;
-                                }
-
-                                }
-                                <?php endif;?>
-                                <?php if($this->mobile_image && $ext_mobile != "mp4"):?>
-                                @media (max-width: 767px) {
+                                    <?php if($ext != "mp4"):?>
                                     html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?> .image--holder {
-                                        background: url(<?= Image::get(FilesModel::findByUuid($slide->mobile_image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat;
+                                        background: url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat;
                                     }
-                                }
 
-                                <?php endif;?>
-                            </style>
+                                    }
+                                    <?php endif;?>
+                                    <?php if($this->mobile_image && $ext_mobile != "mp4"):?>
+                                    @media (max-width: 767px) {
+                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?> .image--holder {
+                                            background: url(<?= Image::get(FilesModel::findByUuid($slide->mobile_image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat;
+                                        }
+                                    }
 
-                            <?php if ($ext == "mp4") : ?>
-                                <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
-                                       <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class="d-none d-md-block" <?php endif; ?>
-                                       autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
-                                    <source type="video/mp4" src="{{file::<?= $slide->image ?>}}">
-                                </video>
-                            <?php endif; ?>
+                                    <?php endif;?>
+                                </style>
 
-                            <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>
-                                <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
-                                       class="d-md-none" src="{{file::<?= $slide->mobile_image ?>}}"
-                                       autoplay muted loop playsinline
-                                       >
-                                    <source type="video/mp4" src="{{file::<?= $slide->mobile_image ?>}}">
-                                </video>
-                            <?php endif; ?>
+                                <?php if ($ext == "mp4") : ?>
+                                    <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
+                                           <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class="d-none d-md-block" <?php endif; ?>
+                                           autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
+                                        <source type="video/mp4" src="{{file::<?= $slide->image ?>}}">
+                                    </video>
+                                <?php endif; ?>
 
-
-                            <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1) : ?>
-                                <div data-aos="<?php if ($slide->animation_type) : ?><?php echo $slide->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                     class="mainimage--content"
-                                     <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
+                                <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>
+                                    <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
+                                           class="d-md-none" src="{{file::<?= $slide->mobile_image ?>}}"
+                                           autoplay muted loop playsinline
+                                    >
+                                        <source type="video/mp4" src="{{file::<?= $slide->mobile_image ?>}}">
+                                    </video>
+                                <?php endif; ?>
 
 
-                                    <div class="<?php if ($slide->text_style == "style-2"): ?>container<?php else: ?><?php endif; ?>">
+                                <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1) : ?>
+                                    <div data-aos="<?php if ($slide->animation_type) : ?><?php echo $slide->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                         class="mainimage--content"
+                                         <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
 
 
-                                        <div class="mainimage--content-inner <?php echo $slide->textbox_position; ?> <?php echo $slide->text_align; ?>"
-                                             style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?> <?php if ($slide->maxWidth) : ?>max-width: <?php echo $slide->maxWidth; ?>;<?php endif; ?>">
+                                        <div class="<?php if ($slide->text_style == "style-2"): ?>container<?php else: ?><?php endif; ?>">
 
-                                            <div class="mainimage--content-inner--wrapper">
-                                                <div class="mainimage--content-inner--holder">
-                                                    <?php if ($slide->firstline_headline) : ?>
-                                                        <h1 style="<?php if ($slide->headline_color) : ?>color: <?php echo $slide->headline_color; ?>;<?php endif; ?>"
-                                                            class="first-line mb-0 <?php if ($slide->dynamic_fontsize): ?>dynamic-fontsize<?php endif; ?>"><?php echo $slide->text_firstline; ?></h1>
-                                                    <?php else : ?>
-                                                        <span style="<?php if ($slide->headline_color) : ?>color: <?php echo $slide->headline_color; ?>;<?php endif; ?>"
-                                                              class="first-line mb-0 <?php if ($slide->dynamic_fontsize): ?>dynamic-fontsize<?php endif; ?>"><?php echo $slide->text_firstline; ?></span>
-                                                    <?php endif; ?>
-                                                    <?php if ($slide->text_secondline) : ?>
-                                                        <span class="second-line <?php if ($slide->dynamic_fontsize): ?>dynamic-fontsize-sm<?php endif; ?>"><?php echo $slide->text_secondline; ?></span>
-                                                    <?php endif; ?>
-                                                    <?php if ($slide->text_infotext && !$slide->own_box) : ?>
-                                                        <div class="infotext--text">
-                                                            <?php echo $slide->text_infotext; ?>
-                                                        </div>
 
-                                                        <?php if (count($slide->buttons) >= 1) : ?>
-                                                            <div class="button--wrapper">
-                                                                <?php foreach ($slide->buttons as $button) : ?>
-                                                                    <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                                                       class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
-                                                                <?php endforeach ?>
+                                            <div class="mainimage--content-inner <?php echo $slide->textbox_position; ?> <?php echo $slide->text_align; ?>"
+                                                 style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?> <?php if ($slide->maxWidth) : ?>max-width: <?php echo $slide->maxWidth; ?>;<?php endif; ?>">
+
+                                                <div class="mainimage--content-inner--wrapper">
+                                                    <div class="mainimage--content-inner--holder">
+
+
+                                                        <?php if ($slide->firstline_headline || $slide->text_secondline || $slide->text_topline): ?>
+                                                            <div class="ce--headline mb-0 hl-<?= $slide->headline_type ?>">
+                                                                <?php if ($slide->text_topline): ?>
+                                                                    <span class="ce--topline <?= $slide->dynamic_fontsize ? 'dynamic-fontsize' : ''; ?>">
+                                                                        <?= $slide->text_topline ?>
+                                                                    </span>
+                                                                <?php endif; ?>
+
+                                                                <?php if ($slide->text_firstline): ?>
+                                                                    <?php
+                                                                        $headlineStyle = $slide->headline_color ? 'style="color: ' . str_replace(['&#40;', '&#41;', '&#35;'], ['(', ')', '#'], $slide->headline_color) . ';"' : '';
+                                                                        $headlineClass = "ce--headline-content " . ($slide->dynamic_fontsize ? 'dynamic-fontsize-lg ' : '') . $slide->headline_type
+                                                                    ?>
+                                                                    <?php if ($slide->onlystyle): ?>
+                                                                        <span class="<?= $headlineClass; ?>" <?= $headlineStyle; ?>>
+                                                                            <?= $slide->text_firstline ?>
+                                                                        </span>
+                                                                    <?php else: ?>
+                                                                        <<?= $slide->headline_type; ?> class="<?= $headlineClass; ?>" <?= $headlineStyle; ?>>
+                                                                            <?= $slide->text_firstline ?>
+                                                                        </<?= $slide->headline_type; ?>>
+                                                                    <?php endif; ?>
+                                                                <?php endif; ?>
+
+                                                                <?php if ($slide->text_secondline): ?>
+                                                                    <span class="ce--subline <?= $slide->dynamic_fontsize ? 'dynamic-fontsize-sm' : ''; ?>">
+                                                                        <?= $slide->text_secondline ?>
+                                                                    </span>
+                                                                <?php endif; ?>
                                                             </div>
                                                         <?php endif; ?>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
 
 
-                                            <?php if ($slide->text_infotext && $slide->own_box) : ?>
-                                                <div class="mainimage--content-inner--wrapper extra mt-4 d-none d-md-block" style="<?php if ($slide->box_text_color) : ?>color: <?php echo $slide->box_text_color; ?>;<?php endif; ?>">
-                                                    <div class="mainimage--content-inner--holder extra ">
-                                                        <div class="infotext--text mt-0">
-                                                            <?php echo $slide->text_infotext; ?>
-                                                        </div>
 
-                                                        <?php if (count($slide->buttons) >= 1) : ?>
-                                                            <div class="button--wrapper">
-                                                                <?php foreach ($slide->buttons as $button) : ?>
-                                                                    <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                                                       class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
-                                                                <?php endforeach ?>
+
+
+                                                        <?php if ($slide->text_infotext && !$slide->own_box) : ?>
+                                                            <div class="infotext--text">
+                                                                <?php echo $slide->text_infotext; ?>
                                                             </div>
+
+                                                            <?php if (count($slide->buttons) >= 1) : ?>
+                                                                <div class="button--wrapper">
+                                                                    <?php foreach ($slide->buttons as $button) : ?>
+                                                                        <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                                                           class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                                                           href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
+                                                                    <?php endforeach ?>
+                                                                </div>
+                                                            <?php endif; ?>
                                                         <?php endif; ?>
                                                     </div>
                                                 </div>
-                                            <?php endif; ?>
+
+
+                                                <?php if ($slide->text_infotext && $slide->own_box) : ?>
+                                                    <div class="mainimage--content-inner--wrapper extra mt-3" >
+                                                        <div class="mainimage--content-inner--holder extra ">
+                                                            <div class="infotext--text mt-0">
+                                                                <?php echo $slide->text_infotext; ?>
+                                                            </div>
+
+                                                            <?php if (count($slide->buttons) >= 1) : ?>
+                                                                <div class="button--wrapper">
+                                                                    <?php foreach ($slide->buttons as $button) : ?>
+                                                                        <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                                                           class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                                                           href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
+                                                                    <?php endforeach ?>
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                <?php endif; ?>
+
+                                            </div>
 
                                         </div>
 
                                     </div>
-
-                                </div>
-                            <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <?php endforeach ?>
-        </div>
-        <?php if (count($this->slides) > 1) : ?>
+                <?php endforeach ?>
+            </div>
+            <?php if (count($this->slides) > 1) : ?>
 
-            <?php if (!$this->boxed_image) : ?>
-                <div class="swiper-pagination"></div>
+                <?php if (!$this->boxed_image) : ?>
+                    <div class="swiper-pagination"></div>
+                <?php endif; ?>
+                <div class="swiper-button-prev mainslider_<?php echo $this->id; ?>"></div>
+                <div class="swiper-button-next mainslider_<?php echo $this->id; ?>"></div>
             <?php endif; ?>
-            <div class="swiper-button-prev mainslider_<?php echo $this->id; ?>"></div>
-            <div class="swiper-button-next mainslider_<?php echo $this->id; ?>"></div>
+        </div>
+
+        <?php if ($this->boxed_image) : ?>
+            <div class="boxed-logo">
+                <img class="lazy" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                     data-src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
+            </div>
         <?php endif; ?>
     </div>
 
-    <?php if ($this->boxed_image) : ?>
-        <div class="boxed-logo">
-            <img class="lazy" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                 data-src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
-        </div>
-    <?php endif; ?>
-</div>
+    <?php if (TL_MODE == 'FE'): ?>
+        <script type="text/javascript" async>
+            window.addEventListener('load', function () {
+                if ($('.swiper.mainslider_<?php echo $this->id; ?>').length) {
+                    const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {
 
-<?php if (TL_MODE == 'FE'): ?>
-    <script type="text/javascript" async>
-        window.addEventListener('load', function () {
-            if ($('.swiper.mainslider_<?php echo $this->id; ?>').length) {
-                const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {
+                        loop: true,
+                        //loopedSlides: 1,
+                        speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
+                        effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
+                        'slide'<?php endif;?>,
 
-                    loop: true,
-                    //loopedSlides: 1,
-                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
-                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
-                    'slide'<?php endif;?>,
+                        <?php if ($this->autoplay) : ?>
+                        autoplay: {
+                            delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                        },
+                        <?php endif; ?>
 
-                    <?php if ($this->autoplay) : ?>
-                    autoplay: {
-                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
-                    },
-                    <?php endif; ?>
+                        <?php if (count($this->slides) > 1) : ?>
+                        navigation: {
+                            nextEl: '.swiper-button-next.mainslider_<?php echo $this->id; ?>',
+                            prevEl: '.swiper-button-prev.mainslider_<?php echo $this->id; ?>',
+                        },
+                        <?php if (!$this->boxed_image) : ?>
+                        pagination: {
+                            el: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-pagination',
+                            clickable: true,
+                        },
+                        <?php endif; ?>
+                        <?php endif; ?>
+
+
+                        on: {
+                            realIndexChange: function () {
+                                $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage *[data-aos]').removeClass('aos-init').removeClass('aos-animate');
+                                $('.mainslider_<?php echo $this->id; ?> .swiper-slide:not(.swiper-slide-active) .ce--mainimage .mainimage--content').hide();
+
+                                setTimeout(function () {
+                                    $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage .mainimage--content').show();
+                                }, 500);
+                            },
+                        },
+
+                    });
 
                     <?php if (count($this->slides) > 1) : ?>
-                    navigation: {
-                        nextEl: '.swiper-button-next.mainslider_<?php echo $this->id; ?>',
-                        prevEl: '.swiper-button-prev.mainslider_<?php echo $this->id; ?>',
-                    },
-                    <?php if (!$this->boxed_image) : ?>
-                    pagination: {
-                        el: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-pagination',
-                        clickable: true,
-                    },
-                    <?php endif; ?>
-                    <?php endif; ?>
-
-
-                    on: {
-                        realIndexChange: function () {
-                            $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage *[data-aos]').removeClass('aos-init').removeClass('aos-animate');
-                            $('.mainslider_<?php echo $this->id; ?> .swiper-slide:not(.swiper-slide-active) .ce--mainimage .mainimage--content').hide();
-
+                    var swiper = swiper_<?php echo $this->id; ?>;
+                    document.querySelector('.swiper-button-prev.mainslider_<?php echo $this->id; ?>').addEventListener('mousedown', function (e) {
+                        if (this.classList.contains('swiper-button-disabled')) {
                             setTimeout(function () {
-                                $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage .mainimage--content').show();
-                            }, 500);
-                        },
-                    },
+                                swiper.slideTo(swiper.slides.length - 1);
+                            }, 150);
+                        }
+                    });
 
-                });
-
-                <?php if (count($this->slides) > 1) : ?>
-                var swiper = swiper_<?php echo $this->id; ?>;
-                document.querySelector('.swiper-button-prev.mainslider_<?php echo $this->id; ?>').addEventListener('mousedown', function (e) {
-                    if (this.classList.contains('swiper-button-disabled')) {
-                        setTimeout(function () {
-                            swiper.slideTo(swiper.slides.length - 1);
-                        }, 150);
-                    }
-                });
-
-                document.querySelector('.swiper-button-next.mainslider_<?php echo $this->id; ?>').addEventListener('mousedown', function (e) {
-                    if (this.classList.contains('swiper-button-disabled')) {
-                        setTimeout(function () {
-                            swiper.slideTo(0);
-                        }, 150);
-                    }
-                });
-                <?php endif; ?>
-            }
-        }, {passive: true})
-    </script>
-<?php endif; ?>
-<?php if ($this->show_breadcrumb) : ?>
-    <div class="container mt-3 mb-5">
-        {{insert_module::48}}
-    </div>
-<?php endif; ?>
+                    document.querySelector('.swiper-button-next.mainslider_<?php echo $this->id; ?>').addEventListener('mousedown', function (e) {
+                        if (this.classList.contains('swiper-button-disabled')) {
+                            setTimeout(function () {
+                                swiper.slideTo(0);
+                            }, 150);
+                        }
+                    });
+                    <?php endif; ?>
+                }
+            }, {passive: true})
+        </script>
+    <?php endif; ?>
+    <?php if ($this->show_breadcrumb) : ?>
+        <div class="container mt-3 mb-5">
+            {{insert_module::48}}
+        </div>
+    <?php endif; ?>
 
 </div>
 

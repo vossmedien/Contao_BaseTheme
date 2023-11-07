@@ -288,6 +288,11 @@ return array(
                     'label' => array('Link', ''),
                     'inputType' => 'url',
                 ),
+
+                     'main_topline' => array(
+                    'label' => array('Topline', ''),
+                    'inputType' => 'text',
+                ),
                 'main_headline_type' => array(
                     'label' => array(
                         'de' => array('Typ der Überschrift', ''),
@@ -299,8 +304,11 @@ return array(
                         'h3' => 'H3',
                         'h4' => 'H4',
                         'h5' => 'H5',
+'h6' => 'H6',
                     ),
                 ),
+
+
                 'main_headline' => array(
                     'label' => array('Überschrift', ''),
                     'inputType' => 'text',

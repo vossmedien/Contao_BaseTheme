@@ -214,7 +214,7 @@ document.querySelectorAll(".message").forEach((el) => {
 
 // Hier bleibt wrapInner, da es keine einfache native Alternative gibt
 $(
-    "#main .mod_article > .article-content > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_iso_productreader):not(.mod_catalogUniversalView):not(.mod_pageimage):not(style)"
+    "#main .mod_article > .article-content > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_iso_productreader):not(.mod_catalogUniversalView):not(.mod_pageimage):not(style):not(.body-slider)"
 ).wrapInner("<div class='container'></div>");
 $(
     '#main > .inside > div[class^="mod_"]:not(.mod_article):not(.mod_iso_productreader):not(.mod_pageimage):not(.container):not(style)'
@@ -300,3 +300,6 @@ document.querySelectorAll(".widget.widget-submit").forEach((widget) => {
         }
     });
 });
+
+
+

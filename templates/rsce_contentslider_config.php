@@ -358,15 +358,9 @@ return array(
                     'eval' => array('tl_class' => 'clr'),
                 ),
 
-                'onlystyle' => array(
-                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
-                    'inputType' => 'checkbox',
 
-                ),
-
-
-                'text' => array(
-                    'label' => array('Überschrift', ''),
+                'topline' => array(
+                    'label' => array('Topline', ''),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -382,7 +376,27 @@ return array(
                         'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
                         'h4' => 'H4',
                         'h5' => 'H5',
+'h6' => 'H6',
                     ),
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'text' => array(
+                    'label' => array('Überschrift', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'onlystyle' => array(
+                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
+                    'inputType' => 'checkbox',
+
+                ),
+
+                'subline' => array(
+                    'label' => array('Subline', ''),
+                    'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
 

@@ -185,15 +185,11 @@ html body {
           padding: 1.5rem 2rem;
           text-align: center;
           display: inline-block;
-
-          > * {
-            margin: 0px;
-          }
         }
       }
 
       .headline--wrapper {
-        margin-bottom: 2rem;
+        margin-bottom: 2rem !important;
       }
     }
 

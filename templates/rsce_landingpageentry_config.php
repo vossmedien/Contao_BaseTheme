@@ -523,6 +523,7 @@ return array(
                         'h3' => 'H3',
                         'h4' => 'H4',
                         'h5' => 'H5',
+'h6' => 'H6',
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),

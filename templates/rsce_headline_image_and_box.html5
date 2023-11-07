@@ -8,21 +8,23 @@ if (TL_MODE == 'FE') {
         class="content--element <?php echo $this->class; ?> <?php if ($this->image) : ?>with-image<?php endif; ?>">
     <div class="ce--inner">
 
-        <?php if ($this->headline || $this->subline || $this->topline) : ?>
-        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-            <?php if ($this->headline) : ?>
-            <<?php echo($this->hl); ?>>
-            <?php if ($this->topline) : ?>
-                <span class="ce--topline"><?php echo $this->topline; ?></span>
-            <?php endif; ?>
-            <span class="ce--headline-content"><?php echo($this->headline); ?></span>
-        </<?php echo($this->hl); ?>>
-        <?php if ($this->subline) : ?>
-                <span class="ce--subline"><?php echo $this->subline; ?></span>
-            <?php endif; ?>
-    <?php endif; ?>
-    </div>
-    <?php endif; ?>
+        <?php if ($this->headline || $this->subline || $this->topline): ?>
+            <div class="ce--headline hl-<?php echo "{$this->hl}"; ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeInUp'; ?>">
+                <?php if ($this->topline): ?>
+                    <span class="ce--topline"><?= $this->topline; ?></span>
+                <?php endif; ?>
+
+                <?php if ($this->headline): ?>
+                    <?php echo "<{$this->hl}>"; ?>
+                    <span class="ce--headline-content"><?= $this->headline; ?></span>
+                    <?php echo "</{$this->hl}>"; ?>
+                <?php endif; ?>
+
+                <?php if ($this->subline): ?>
+                    <span class="ce--subline"><?= $this->subline; ?></span>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
 
     <?php if ($this->image) : ?>

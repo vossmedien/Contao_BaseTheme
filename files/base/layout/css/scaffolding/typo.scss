@@ -6,14 +6,15 @@ html body {
   -webkit-hyphens: auto;
   hyphens: auto;
   color: var(--bs-body-color);
+  font-size: clamp(
+    calc(var(--bs-body-font-size) * 0.85),
+    1vw,
+    calc(var(--bs-body-font-size) * 1.15)
+  );
 
   *:focus,
   *:active {
     outline: 0px;
-  }
-
-  #main {
-    font-size: var(--bs-body-main-font-size);
   }
 
   figure {
@@ -82,141 +83,6 @@ html body {
     & + .h2 {
       margin-top: 2rem;
     }
-  }
-
-  .ce--headline {
-    @extend .container;
-  }
-
-  .content--element:last-child {
-    .ce--subline {
-      //margin-bottom: 0px !important;
-    }
-  }
-
-  h6,
-  .h6,
-  h5,
-  .h5,
-  h4,
-  .h4,
-  h3,
-  .h3,
-  h2,
-  .h2,
-  h1,
-  .h1 {
-    display: block;
-    line-height: var(--bs-body-line-height-xs);
-    transition: color 0.3s ease;
-    color: var(--bs-headline-color);
-    //color: inherit; //hmmm
-    font-weight: var(--bs-headline-font-weight);
-    padding-top: 0px;
-
-    > span {
-      display: block;
-    }
-  }
-
-  .ce--topline {
-    font-weight: $font-weight-black;
-    color: var(--bs-primary);
-    //@include font-size(22px);
-    display: block;
-    line-height: var(--bs-body-line-height-xs);
-    margin-bottom: 0.5rem;
-  }
-
-  .ce--subline {
-    font-weight: $font-weight-bold;
-    color: var(--bs-primary);
-    //@include font-size(22px);
-    display: block;
-    line-height: var(--bs-body-line-height-xs);
-    margin-top: 1rem;
-  }
-
-  h1,
-  .h1 {
-    margin-bottom: $headline-spacing;
-    display: block;
-    @include font-size($h1-font-size);
-
-    & + .ce--subline {
-      margin-top: -$headline-spacing / 1.75;
-      margin-bottom: $headline-spacing;
-      @include font-size($h1-subline-font-size);
-    }
-
-    > .ce--topline {
-      @include font-size($h1-font-size);
-    }
-  }
-
-  h2,
-  .h2 {
-    margin-bottom: $headline-spacing / 1.75;
-    display: block;
-    @include font-size($h2-font-size);
-
-    & + .ce--subline {
-      margin-top: -$headline-spacing / 3;
-      margin-bottom: $headline-spacing;
-      @include font-size($h2-subline-font-size);
-    }
-
-    > .ce--topline {
-      @include font-size($h2-font-size);
-    }
-  }
-
-  h3,
-  .h3 {
-    font-weight: var(--bs-font-weight-500);
-    margin-bottom: $headline-spacing / 2.5;
-    font-size: 1.5rem;
-    color: var(--bs-primary);
-    display: block;
-    @include font-size($h3-subline-font-size);
-
-    & + .ce--subline {
-      margin-top: -$headline-spacing / 3;
-      margin-bottom: $headline-spacing;
-      @include font-size(calc($h3-font-size / 2));
-    }
-
-    > .ce--topline {
-      @include font-size($h3-font-size);
-    }
-  }
-
-  h4,
-  .h4 {
-    margin-bottom: $headline-spacing / 3;
-    @include font-size($h4-font-size);
-
-    & + .ce--subline {
-      @include font-size(calc(#{$h4-font-size} / 1.75));
-      margin-top: -$headline-spacing / 2.5;
-      margin-bottom: $headline-spacing;
-    }
-
-    > .ce--topline {
-      @include font-size($h4-subline-font-size);
-    }
-  }
-
-  h5,
-  .h5 {
-    @include font-size($h5-font-size);
-    margin-bottom: $headline-spacing / 3;
-  }
-
-  h6,
-  .h6 {
-    @include font-size($h6-font-size);
-    margin-bottom: $headline-spacing / 3;
   }
 
   main {

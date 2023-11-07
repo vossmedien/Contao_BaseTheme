@@ -97,19 +97,6 @@ html body {
             background-color: rgba(0, 0, 0, 0.4);
             z-index: 10;
 
-            .box--headline {
-              > * {
-                display: block;
-
-                &:not(.ce--subline) {
-                  color: var(--bs-body-color-inverse);
-                }
-              }
-            }
-
-            .box--subline.ce--subline {
-              margin-bottom: 0px;
-            }
 
             .box--text {
               transition: max-height 0.75s ease-in-out, opacity 0.35s ease;

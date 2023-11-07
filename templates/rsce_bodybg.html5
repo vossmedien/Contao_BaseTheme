@@ -1,13 +1,38 @@
 <?php
 if (TL_MODE == 'FE') {
-
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_bodybg.min.css|static';
-
-    if (!isset($this->size)) {
-        $this->{"size"} = "";
-    }
+    $this->size = $this->size ?? "";
 }
 ?>
+
+
+<?php if ($this->only_article ): ?>
+    <?php if ($this->is_between): ?>
+        <style>
+            [data-articleid="article-<?php echo $this->pid; ?>"] {
+                margin-top: calc(-1 * (var(--main-gap)) - 2px);
+            }
+        </style>
+    <?php endif; ?>
+<?php endif; ?>
+
+    <style>
+        [data-articleid="article-<?php echo $this->pid; ?>"] {
+            --angle: <?php echo $this->winkel ? $this->winkel.'deg' : 'var(--base-skew)'; ?>;
+            position: relative;
+            outline: 1px solid transparent;
+            transform-origin: top left;
+        <?php if ($this->activate): ?> padding: var(--with-body-bg-spacing) 0 var(--with-body-bg-spacing) 0;
+        <?php endif; ?>
+        }
+
+        <?php if (!$this->activate): ?>
+        [data-articleid="article-<?php echo $this->pid; ?>"] {
+            padding: calc(var(--with-body-bg-spacing)) 0;
+        }
+
+        <?php endif; ?>
+    </style>
 
 
 <?php if ($this->element_type == 2 || $this->element_type == 3) : ?>
@@ -17,271 +42,170 @@ if (TL_MODE == 'FE') {
     $ext = pathinfo($filename, PATHINFO_EXTENSION);
     ?>
 
-    <?php if ($ext == "mp4") : ?>
-        <script type="text/javascript" async>
-            document.addEventListener("DOMContentLoaded", function () {
-                var elements = document.querySelectorAll(".bgvideo");
-                for (var i = 0; i < elements.length; i++) {
-                    var element = elements[i];
-                    if (element) {
-                        var parentDiv = element.parentElement;
-                        parentDiv.classList.add("position-relative");
-                    } else {
-                        console.error("Element not found at index " + i);
-                    }
+
+    <!-- Datei ist KEIN Video -->
+    <?php if ($ext != "mp4") : ?>
+        <?php
+        $backgroundStyle = html_entity_decode($this->css);
+        ?>
+
+        <style class="with-bg <?php echo $this->is_between ? 'is-between' : ''; ?> <?php echo $this->image ? 'with-image' : ''; ?>">
+            <?php
+            $articleSelector = "[data-articleid=\"article-$this->pid\"]";
+            $backgroundImage = $this->image ? Image::get(FilesModel::findByUuid($this->image)->path, null, null, null) : '';
+            $backgroundImageMobile = $this->image_mobile ? Image::get(FilesModel::findByUuid($this->image_mobile)->path, null, null, null) : '';
+            $backgroundStyle = $this->css ? $backgroundStyle : "url($backgroundImage)";
+            $angle = $this->winkel ?
+    (strpos($this->winkel, '-') !== false ?
+        str_replace("-", "", $this->winkel) . "deg" :
+        "-{$this->winkel}deg") :
+    'calc(-1 * var(--base-skew))';
+
+            ?>
+
+            <?php if ($this->only_article): ?>
+                <?php echo $articleSelector; ?> {
+                    background: <?php echo $backgroundStyle; ?>;
+                         backface-visibility: hidden;
+                        background-attachment: fixed;
+                        background-size: cover;
+                        background-position: center center;
+                        background-repeat: no-repeat;
+                    <?php if ($this->activate): ?>
+                        transform: skewy(var(--angle));
+                        transform-origin: 50% 0;
+                    <?php endif; ?>
                 }
-            }, {passive: true});
 
-        </script>
+                <?php if ($this->activate): ?>
+                    <?php echo $articleSelector; ?> .article-content {
+                        position: relative;
+                        z-index: 1;
+                        transform: skewy(<?php echo $angle; ?>);
+                    }
+                <?php endif; ?>
+            <?php else: ?>
+                html body #wrapper main#main .inside > <?php echo $articleSelector; ?> > .article-content {
+                    padding: calc(var(--main-gap)) 0;
+                    background: <?php echo $backgroundStyle; ?>;
+                    <?php if ($this->fit_image): ?>
+                        background-size: 100% 100%;
+                    <?php else: ?>
+                        background-size: cover;
+                        background-attachment: fixed;
+                    <?php endif; ?>
+                }
 
+                <?php if ($backgroundImageMobile): ?>
+                    @media (max-width: 767px) {
+                        html body #wrapper main#main .inside > <?php echo $articleSelector; ?> > .article-content {
+                            background: url(<?php echo $backgroundImageMobile; ?>) center center no-repeat;
+                        }
+                    }
+                <?php endif; ?>
+            <?php endif; ?>
+
+            <?php if (!$this->only_article && $this->image): ?>
+                body {
+                    background: url(<?php echo $backgroundImage; ?>) center center no-repeat;
+                    background-attachment: fixed;
+                    background-size: cover;
+                }
+            <?php endif; ?>
+        </style>
+    <?php endif; ?>
+
+    <!-- Datei IST Video -->
+    <?php if ($ext == "mp4") : ?>
         <style>
-            .bgvideo.make-fullwidth {
-                margin-top: calc(-1 * var(--bs-basic-spacing));
+            [data-articleid="article-<?php echo $this->pid; ?>"] {
+            <?php if (!$this->activate): ?> padding: calc(var(--main-gap) * 3) 0;
+            <?php endif; ?>
+            }
+
+            [data-articleid="article-<?php echo $this->pid; ?>"] video {
+                transform-origin: 50% 0;
+                will-change: transform;
+                backface-visibility: hidden;
+                z-index: -1;
+                filter: blur(0px);
+                object-fit: cover;
+                  outline: 1px solid transparent;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+            <?php if ($this->activate): ?> transform: skewy(var(--angle));
+            <?php endif; ?><?php if ($this->only_article): ?> left: 0;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                position: absolute;
+            <?php else: ?> margin-top: calc(-1 * var(--main-gap));
+                height: 100%;
+                position: fixed;
+                width: 100vw;
+                top: 0;
+                bottom: 0;
+            <?php endif; ?>
+            }
+        </style>
+
+        <video class="bgvideo lazy" autoplay muted loop playsinline data-src="{{file::<?php echo $this->image; ?>}}">
+            <source type="video/mp4" src="{{file::<?php echo $this->image; ?>}}">
+        </video>
+    <?php endif; ?>
+<?php endif; ?>
+    <!-- Slider -->
+<?php if ($this->element_type == 1): ?>
+
+    <?php if ($this->only_article): ?>
+        <style>
+            [data-articleid="article-<?= $this->pid;?>"] .body-slider {
+                transform-origin: 50% 0;
+                backface-visibility: hidden;
                 z-index: -1;
                 object-fit: cover;
+
+            <?php if($this->activate):?> transform: skewy(var(--angle));
+            <?php endif;?><?php if($this->only_article):?> left: 0;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                position: absolute;
+            <?php else:?> margin-top: calc(-1 * var(--main-gap));
                 height: 100%;
-            <?php if($this->only_article):?> position: absolute;
-            <?php else:?> position: fixed;
+                position: fixed;
                 width: 100vw;
                 top: 0;
                 bottom: 0;
             <?php endif;?>
             }
-        </style>
 
-        <video class="bgvideo make-fullwidth lazy" autoplay muted loop playsinline
-               data-src="{{file::<?= $this->image ?>}}">
-            <source type="video/mp4" src="{{file::<?= $this->image ?>}}">
-        </video>
-
-
-        <style>
-            [data-articleid="article-<?= $this->pid;?>"] {
-                margin-top: calc(-1 * var(--clip-padding) * 1.25);
-            }
-
-                [data-articleid="article-<?= $this->pid;?>"]:not(:last-child) .article-content {
-                      padding-bottom: var(--clip-padding) !important;
-                }
-
-            [data-articleid="article-<?= $this->pid;?>"] .container.pb-md-10 {
-                padding-top: calc(var(--clip-padding)  * 1.25);
-                padding-bottom: calc(var(--bs-basic-spacing)) !important;
+            [data-articleid="article-<?= $this->pid;?>"] .body-slider .swiper {
+                height: 100%;
             }
 
         </style>
-    <?php else: ?>
-
-
-        <?php
-        $backgroundStyle = html_entity_decode($this->css);
-        ?>
-
-
-        <style class="<?php if ($this->deactivate_top): ?>deactivate-top<?php endif; ?> <?php if ($this->deactivate_bottom): ?>deactivate-bottom<?php endif; ?> <?php if ($this->is_between): ?>is-between<?php endif; ?>">
-            <?php if($this->only_article):?>
-
-                 [data-articleid="article-<?= $this->pid;?>"] .content--element.container{
-
-            }
-
-
-
-
-            <?php if($this->is_between):?>
-            [data-articleid="article-<?= $this->pid;?>"] > .article-content {
-                padding-bottom: var(--bs-basic-spacing) !important;
-                margin-bottom: calc(-1 * var(--bs-basic-spacing));
-            }
-
-            <?php endif;?>
-            <?php if($this->activate):?>
-
-            <?php
-       if($this->winkel){
-            $degrees = $this->winkel;
-       } else{
-            $degrees = 5;
-       }
-      $radians = deg2rad($degrees);
-      $tanValue = tan($radians);
-      $result = $tanValue / 2;
-      ?>
-
-            [data-articleid="article-<?= $this->pid;?>"] {
-                --angle: <?php if($this->winkel):?><?= $this->winkel;?>deg<?php else:?>-5deg<?php endif;?>;
-                --magic-number: <?php echo abs($result);?>;
-                --clip-padding: calc(var(--full-width) * var(--magic-number));
-                --skew-padding: calc(var(--width) * var(--magic-number));
-                margin-top: -1px;
-                position: relative;
-
-                padding: calc(var(--skew-padding) - var(--bs-basic-spacing) / 2) 0 calc((var(--skew-padding) - var(--bs-basic-spacing) / 2));
-            }
-
-
-
-            [data-articleid="article-<?= $this->pid;?>"] > .article-content {
-                position: relative;
-                padding-top: var(--bs-basic-spacing);
-            }
-
-            <?php if ($ext != "mp4") : ?>
-
-            [data-articleid="article-<?= $this->pid;?>"]:before {
-                content: "";
-                position: absolute;
-                left: 0;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                transform: skewy(var(--angle));
-                transform-origin: 50% 0;
-                outline: 1px solid transparent;
-                backface-visibility: hidden;
-                background-attachment: fixed;
-                background-size: cover;
-                background-position: center center;
-                background-repeat: no-repeat;
-                z-index: 0;
-            }
-
-            <?php endif;?>
-
-
-            <?php if(!$this->deactivate_bottom && !$this->deactivate_top):?>
-            [data-articleid="article-<?= $this->pid;?>"]:before {
-            <?php if($this->css):?> background: <?php echo $backgroundStyle;?>;
-            <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
-            <?php endif;?>
-            }
-
-            <?php endif;?>
-
-
-            <?php if($this->deactivate_bottom):?>
-            [data-articleid="article-<?= $this->pid;?>"] {
-                position: relative;
-
-            <?php if($this->skew_fix):?> clip-path: polygon(
-                    0% calc(var(--clip-padding)),
-                    100% 0%,
-                    100% 100%,
-                    0% 100%);
-                -webkit-clip-path: polygon(
-                        0% calc(var(--clip-padding)),
-                        100% 0%,
-                        100% 100%,
-                        0% 100%);
-                padding: calc((var(--clip-padding) * 2) - var(--bs-basic-spacing)) 0 calc(var(--clip-padding) - var(--bs-basic-spacing)) 0;
-            <?php else:?> padding: calc(var(--bs-basic-spacing) * 1.25) 0 calc(var(--clip-padding) - var(--bs-basic-spacing)) 0;
-            <?php endif;?><?php if($this->css):?> background: <?= $this->css;?>;
-            <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
-            <?php endif;?> margin-top: calc(-1 * (var(--clip-padding)) - 2px);
-            }
-
-
-            <?php endif;?>
-
-
-            <?php if($this->deactivate_top):?>
-            [data-articleid="article-<?= $this->pid;?>"] {
-                position: relative;
-                /*margin-top: calc(-1 * (var(--clip-padding)) - 2px);*/
-                padding: calc(var(--clip-padding) - var(--bs-basic-spacing)) 0 calc(var(--clip-padding) * .75) 0;
-                clip-path: polygon(
-                        0% 0%,
-                        100% 0%,
-                        100% calc(100% - var(--clip-padding)),
-                        0% 100%);
-                -webkit-clip-path: polygon(
-                        0% 0%,
-                        100% 0%,
-                        100% calc(100% - var(--clip-padding)),
-                        0% 100%);
-
-            <?php if($this->css):?> background: <?= $this->css;?>;
-            <?php else:?> background-image: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>);
-            <?php endif;?>
-            }
-
-            <?php endif;?>
-
-
-            <?php if(!$this->is_between):?>
-            [data-articleid="article-<?= $this->pid;?>"] + .mod_article {
-                --magic-number: <?php echo abs($result);?>;
-                --clip-padding: calc(var(--full-width) * var(--magic-number));
-                --skew-padding: calc(var(--width) * var(--magic-number));
-
-            <?php if($this->padding_fix):?> padding-top: calc(var(--clip-padding) * 2);
-            <?php endif;?>
-            }
-
-            <?php else:?>
-
-            [data-articleid="article-<?= $this->pid;?>"] {
-
-                /*margin-top: calc(-1 * (var(--clip-padding)) - 2px); */
-            }
-
-            [data-articleid="article-<?= $this->pid;?>"]:before {
-                top: -25%;
-                height: 165%;
-                z-index: -1;
-                transform: none;
-            }
-
-            <?php endif;?>
-
-
-            <?php else:?>
-
-
-            html body #wrapper main#main .inside > [data-articleid="article-<?= $this->pid;?>"] > .article-content {
-
-
-            <?php if($this->image):?> background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
-            <?php else:?> background: <?php echo $backgroundStyle;?>;
-            <?php endif;?><?php if($this->fit_image):?> background-size: 100% 100%;
-            <?php else:?> background-attachment: fixed;
-                background-size: cover;
-            <?php if($this->is_between):?> margin-top: calc(-1 * var(--bs-basic-spacing));
-                padding-top: calc(var(--bs-basic-spacing) * 2);
-            <?php endif;?><?php endif;?>
-            }
-
-            <?php if($this->image_mobile):?>
-            @media (max-width: 767px) {
-                html body #wrapper main#main .inside > [data-articleid="article-<?= $this->pid;?>"] > .article-content {
-                    background: url(<?= Image::get(FilesModel::findByUuid($this->image_mobile)->path, null, null, null); ?>) center center no-repeat;
-                }
-            }
-
-            <?php endif;?>
-
-            <?php endif;?>
-
-
-            <?php else:?>
-
-
-            body {
-            <?php if($this->image):?> background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
-
-                background-attachment: fixed;
-                background-size: cover;
-
-
-            <?php else:?> background: <?php echo $backgroundStyle;?><?php endif;?>
-            }
-
-            <?php endif;?>
-        </style>
-
     <?php endif; ?>
 
-<?php elseif ($this->element_type == 1): ?>
+
+    <?php if (!$this->only_article): ?>
+        <style>
+            .body-slider {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                z-index: -1;
+
+                .swiper {
+                    width: 100vw;
+                    height: 100vh;
+                }
+            }
+        </style>
+    <?php endif; ?>
+
+
     <?php
     $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
     $rand = rand(1, 100);
@@ -297,7 +221,7 @@ if (TL_MODE == 'FE') {
                     <?php foreach ($dataSorted as $data) : ?>
 
                         <?php if ($image = $this->getImageObject($data, $this->size)) : ?>
-                            <div data-bg="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, $this->size[0], $this->size[1], $this->size[2]); ?>" style="background-position center center; background-repeat: no-repeat; background-size: cover;" class="lazy swiper-slide"></div>
+                            <div style=" background-position center center; background-repeat: no-repeat; background-size: cover; background-image:url(<?= Image::get(FilesModel::findByUuid($image->uuid)->path, $this->size[0], $this->size[1], $this->size[2]); ?>);" class="swiper-slide"></div>
                         <?php endif; ?>
 
                     <?php endforeach ?>
@@ -307,14 +231,15 @@ if (TL_MODE == 'FE') {
         </div>
     </div>
     <script type="text/javascript" async>
+
+
         window.addEventListener('load', function () {
+
             if ($('.swiper.body-slider_<?= $this->id;?>').length) {
 
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.body-slider_<?php echo $this->id; ?>', {
                     direction: 'horizontal',
-
                     loop: true,
-
                     preloadImages: true,
                     lazy: false,
 
@@ -345,9 +270,6 @@ if (TL_MODE == 'FE') {
                     <?php endif;?>
 
 
-
-
-
                     slidesPerView: 1,
                 });
             }
@@ -355,4 +277,3 @@ if (TL_MODE == 'FE') {
     </script>
 
 <?php endif; ?>
-

@@ -72,7 +72,8 @@ html body {
           }
 
 
-          .box--headline {
+          /*
+              .box--headline {
             font-family: var(--bs-font-tertiary);
             @include font-size(22px);
           }
@@ -81,10 +82,14 @@ html body {
             margin-top: 0rem;
             font-family: var(--bs-font-tertiary);
           }
-
-          > * + .box--text {
+            > * + .box--text {
             margin-top: 1.5rem;
           }
+
+
+           */
+
+
 
           .box--footer {
             margin-top: auto;

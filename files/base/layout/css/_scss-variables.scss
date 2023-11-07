@@ -14,27 +14,20 @@ $black: #000;
 
 // scss-docs-start theme-colors-map
 $theme-colors: (
-        "red": #871623,
-        "blue": #00274a,
-        "purple": #6610f2,
-        "primary": #871623,
-        "secondary": #00274a,
-        "tertiary": #6610f2,
-        "success": #dbe8e2,
-        "info": #d1ecf1,
-        "warning": #fff3cd,
-        "danger": #f8d7da,
-        "light": $gray-100,
-        "dark": $gray-900,
+  "red": #871623,
+  "blue": #00274a,
+  "purple": #6610f2,
+  "primary": #871623,
+  "secondary": #00274a,
+  "tertiary": #6610f2,
+  "success": #dbe8e2,
+  "info": #d1ecf1,
+  "warning": #fff3cd,
+  "danger": #f8d7da,
+  "light": $gray-100,
+  "dark": $gray-900,
 );
 
-$font-weight-lighter: var(--bs-font-weight-200);
-$font-weight-light: var(--bs-font-weight-300);
-$font-weight-regular: var(--bs-font-weight-400);
-$font-weight-medium: var(--bs-font-weight-500);
-$font-weight-semibold: var(--bs-font-weight-600);
-$font-weight-bold: var(--bs-font-weight-700);
-$font-weight-black: var(--bs-font-weight-800);
 
 $border-radius: var(--bs-border-radius);
 $box-shadow: var(--bs-base-box-shadow);
@@ -55,7 +48,7 @@ $body-bg: #ffffff;
 $input-focus-border-color: var(--bs-primary-rgb);
 $input-placeholder-color: var(--bs-placeholder-color);
 
-$font-family-base: var(--bs-font-primary);
+
 
 $fa-font-display: swap;
 
@@ -68,7 +61,6 @@ $megamenu-lvl2-color: var(--bs-megamenu-lvl2-color);
 $megamenu-lvl3-color: var(--bs-megamenu-lvl3-color);
 $megamenu-imageHeight: var(--bs-megamenu-imageHeight);
 
-
 $fa-font-path: "/files/base/layout/_fonts/fontawesome-iconset/webfonts";
 
 $enable-cssgrid: true;
@@ -77,55 +69,51 @@ $spacer: 2.5rem;
 $icon-type: ".fasl";
 
 $spacers: (
-        0: 0,
-        1: .5rem,
-        2: 1rem,
-        3: 1.5rem,
-        4: 2rem,
-        5: 2.5rem,
-        6: 3rem,
-        7: 3.5rem,
-        8: 4rem,
-        9: 4.5rem,
-        10: 5rem,
+  0: 0,
+  1: 0.5rem,
+  2: 1rem,
+  3: 1.5rem,
+  4: 2rem,
+  5: 2.5rem,
+  6: 3rem,
+  7: 3.5rem,
+  8: 4rem,
+  9: 4.5rem,
+  10: 5rem,
 );
 
 //Abstände
 
-
 $basic-gutter: $spacer * 2;
-$headline-spacing: $spacer * 1.5;
 $mini-spacing: $spacer/2;
 
 $grid-breakpoints: (
-        xs: 0,
-        sm: 576px,
-        md: 768px,
-        lg: 992px,
-        xl: 1200px,
-        xxl: 1640px,
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1640px,
 );
 
 $grid-gutter-width: 30px;
 
-
 $gutters: (
-        0: 0,
-        1: $grid-gutter-width * 0.5,
-        2: $grid-gutter-width,
-        3: $grid-gutter-width * 2,
-        4: $grid-gutter-width * 3,
-        5: $grid-gutter-width * 4,
+  0: 0,
+  1: $grid-gutter-width * 0.5,
+  2: $grid-gutter-width,
+  3: $grid-gutter-width * 2,
+  4: $grid-gutter-width * 3,
+  5: $grid-gutter-width * 4,
 );
-
 
 //CSS Variablen beachten
 $container-max-widths: (
-        sm: 100%,
-        md: 100%,
-        lg: 100%,
-        xl: 1140px,
-        xxl: 1600px,
+  sm: 100%,
+  md: 100%,
+  lg: 100%,
+  xl: 1140px,
+  xxl: 1600px,
 );
 
 // Spalten
@@ -141,6 +129,8 @@ $modal-lg: 940px;
 $modal-xl: 1140px;
 
 $btn-line-height: 1;
+
+/*
 $h1-font-size: 72px;
 $h1-subline-font-size: 36px;
 $h2-font-size: 40px;
@@ -149,3 +139,46 @@ $h3-font-size: 40px;
 $h3-subline-font-size: 20px;
 $h4-font-size: 24px;
 $h4-subline-font-size: 18px;
+ */
+
+
+
+$font-family-base: var(--bs-font-primary);
+$font-weight-lighter: var(--bs-font-weight-200);
+$font-weight-light: var(--bs-font-weight-300);
+$font-weight-regular: var(--bs-font-weight-400);
+$font-weight-medium: var(--bs-font-weight-500);
+$font-weight-semibold: var(--bs-font-weight-600);
+$font-weight-bold: var(--bs-font-weight-700);
+$font-weight-black: var(--bs-font-weight-800);
+
+$font-size-base:              1rem; // Assumes the browser default, typically `16px`
+$font-size-sm:                $font-size-base * .875;
+$font-size-lg:                $font-size-base * 1.25;
+
+$h1-font-size: $font-size-base * 2.5;
+$h2-font-size: $font-size-base * 2;
+$h3-font-size: $font-size-base * 1.75;
+$h4-font-size: $font-size-base * 1.5;
+$h5-font-size: $font-size-base * 1.25;
+$h6-font-size: $font-size-base;
+// scss-docs-end font-variables
+
+// scss-docs-start font-sizes
+$font-sizes: (
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size,
+);
+// scss-docs-end font-sizes
+
+// scss-docs-start headings-variables
+$headings-margin-bottom: $spacer * 0.5;
+$headings-font-family: null;
+$headings-font-style: null;
+$headings-font-weight: 500;
+$headings-line-height: 1.2;
+$headings-color: var(--bs-headline-color);

@@ -1,3 +1,6 @@
+
+
+/*
 document.addEventListener(
     "DOMContentLoaded",
     function (event) {
@@ -19,3 +22,5 @@ document.addEventListener(
     },
     {passive: true}
 );
+
+ */

@@ -8,21 +8,23 @@ if (TL_MODE == 'FE') {
 <div <?php echo $this->cssID; ?> class="content--element  <?php if(!str_contains($this->class, "col")):?>container<?php else:?><?php echo $this->class; ?><?php endif;?>">
     <div class="ce--inner <?php if(!str_contains($this->class, "col")):?><?php echo $this->class; ?><?php endif;?> ">
 
-           <?php if ($this->headline || $this->subline || $this->topline) : ?>
-        <div class="ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-            <?php if ($this->headline) : ?>
-            <<?php echo($this->hl); ?>>
-            <?php if ($this->topline) : ?>
-                <span class="ce--topline"><?php echo $this->topline; ?></span>
-            <?php endif; ?>
-            <span class="ce--headline-content"><?php echo($this->headline); ?></span>
-        </<?php echo($this->hl); ?>>
-        <?php if ($this->subline) : ?>
-                <span class="ce--subline"><?php echo $this->subline; ?></span>
-            <?php endif; ?>
-    <?php endif; ?>
-    </div>
-    <?php endif; ?>
+           <?php if ($this->headline || $this->subline || $this->topline): ?>
+            <div class="ce--headline hl-<?php echo "{$this->hl}"; ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeInUp'; ?>">
+                <?php if ($this->topline): ?>
+                    <span class="ce--topline"><?= $this->topline; ?></span>
+                <?php endif; ?>
+
+                <?php if ($this->headline): ?>
+                    <?php echo "<{$this->hl}>"; ?>
+                    <span class="ce--headline-content"><?= $this->headline; ?></span>
+                    <?php echo "</{$this->hl}>"; ?>
+                <?php endif; ?>
+
+                <?php if ($this->subline): ?>
+                    <span class="ce--subline"><?= $this->subline; ?></span>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
         <?php if ($this->row) : ?>
 
@@ -53,28 +55,30 @@ if (TL_MODE == 'FE') {
                                     </div>
                                 <?php endif; ?>
                                 <div class="box--content">
-                                    <div class="box--headline">
-                                        <?php if ($row->main_headline) : ?>
-                                        <?php if (!$row->main_onlystyle) : ?>
-                                        <<?php echo $row->main_headline_type; ?>>
-                                        <?php echo $row->main_headline; ?>
-                                    </<?php echo $row->main_headline_type; ?>>
-                                    <?php if ($row->main_subline) : ?>
-                                        <span class="ce--subline box--subline">
-                                    <?php echo $row->main_subline; ?>
-                                </span>
+                                    <div class="ce--headline mb-0 hl-<?= $row->main_headline_type ?>">
+                                    <?php if ($row->main_topline) : ?>
+                                        <span class="ce--topline"><?= $row->main_topline ?></span>
                                     <?php endif; ?>
-                                    <?php else : ?>
-                                        <span class="<?php echo $row->main_headline_type; ?>">
-                                    <?php echo $row->main_headline; ?>
-                                </span>
+
+                                    <?php if ($row->main_headline) : ?>
+                                        <?php if (!$row->main_onlystyle) : ?>
+                                            <<?= $row->main_headline_type ?> class="box--headline <?= $row->main_headline_type ?>">
+                                                <?= $row->main_headline ?>
+                                            </<?= $row->main_headline_type ?>>
+                                        <?php else : ?>
+                                            <span class="box--headline <?= $row->main_headline_type ?>">
+                                                <?= $row->main_headline ?>
+                                            </span>
+                                        <?php endif; ?>
+
                                         <?php if ($row->main_subline) : ?>
                                             <span class="ce--subline box--subline">
-                                        <?php echo $row->main_subline; ?>
-                                    </span>
-                                        <?php endif; ?><?php endif; ?>
+                                                <?= $row->main_subline ?>
+                                            </span>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                 </div>
+
                                 <?php if ($row->main_content) : ?>
                                     <div class="box--text">
                                         <?php echo $row->main_content; ?>
@@ -112,33 +116,35 @@ if (TL_MODE == 'FE') {
                                 </div>
                             <?php endif; ?>
                             <div class="box--content">
+
                                 <?php if ($box->headline) : ?>
-                                <div class="box--headline">
+    <div class="ce--headline mb-0 hl-<?= $box->headline_type ?>">
 
-                                    <?php if ($box->topline) : ?>
-                                        <span class="ce--topline box--topline"><?php echo $box->topline; ?></span>
-                                    <?php endif; ?>
+        <?php if ($box->topline) : ?>
+            <span class="ce--topline"><?= $box->topline ?></span>
+        <?php endif; ?>
 
-                                    <?php if (!$box->onlystyle) : ?>
-                                    <<?php echo $box->headline_type; ?>>
-                                    <?php echo $box->headline; ?>
-                                </<?php echo $box->headline_type; ?>>
-                            <?php if ($box->subline) : ?>
-                                <span class="ce--subline box--subline">
-                            <?php echo $box->subline; ?>
-                        </span>
-                            <?php endif; ?>
-                            <?php else : ?>
-                                <span class="<?php echo $box->headline_type; ?>">
-                            <?php echo $box->headline; ?>
-                        </span>
-                                <?php if ($box->subline) : ?>
-                                    <span class="ce--subline box--subline">
-                                <?php echo $box->subline; ?>
-                            </span>
-                                <?php endif; ?><?php endif; ?>
-                            </div>
-                        <?php endif; ?>
+        <?php if (!$box->onlystyle) : ?>
+            <<?= $box->headline_type ?> class="box--headline <?= $box->headline_type ?>">
+                <?= $box->headline ?>
+            </<?= $box->headline_type ?>>
+        <?php else : ?>
+            <span class="<?= $box->headline_type ?>">
+                <?= $box->headline ?>
+            </span>
+        <?php endif; ?>
+
+        <?php if ($box->subline) : ?>
+            <span class="ce--subline box--subline">
+                <?= $box->subline ?>
+            </span>
+        <?php endif; ?>
+
+    </div>
+<?php endif; ?>
+
+
+
                             <?php if ($box->content) : ?>
                                 <div class="box--text">
                                     <?php echo $box->content; ?>

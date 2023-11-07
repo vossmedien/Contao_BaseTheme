@@ -19,13 +19,7 @@ html body {
       .ts--inner {
 
         .ts--text {
-          &.dynamic-fontsize-sm {
-            line-height: var(--bs-body-line-height-sm);
 
-            * {
-              line-height: var(--bs-body-line-height-sm);
-            }
-          }
         }
       }
     }

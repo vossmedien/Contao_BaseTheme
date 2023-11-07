@@ -4,35 +4,35 @@ if (TL_MODE == 'FE') {
 }
 ?>
 
-<div <?php echo $this->cssID; ?>
-     class="content--element <?php echo $this->class; ?>">
+<div id="<?= $this->cssID[0]; ?>" class=" content--element <?= $this->class; ?>">
     <div class="ce--inner">
-        <?php if ($this->headline || $this->subline || $this->topline) : ?>
-            <div class="headline--wrapper ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeIn<?php endif; ?>">
-                <?php if ($this->headline) : ?>
-                    <?php if (!$this->onlystyle) : ?>
-                        <<?php echo $this->headline_type; ?>>
-                        <?php if ($this->topline) : ?>
-                            <span class="ce--topline" data-aos="animate__fadeInDown"><?php echo $this->topline; ?></span>
-                        <?php endif; ?>
-                        <span class="ce--headline-content" data-aos="animate__fadeIn"><?php echo $this->headline; ?></span>
-                        </<?php echo $this->headline_type; ?>>
-                    <?php if ($this->subline) : ?>
-                        <span class="ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
-                    <?php endif; ?>
-                <?php else : ?>
-                    <span class="<?php echo $this->headline_type; ?>">
-                        <?php if ($this->topline) : ?>
-                            <span data-aos="animate__fadeInDown" class="ce--topline"><?php echo $this->topline; ?></span>
-                        <?php endif; ?>
-                        <span data-aos="animate__fadeIn" class="ce--headline-content"><?php echo $this->headline; ?></span>
-                    </span>
-                    <?php if ($this->subline) : ?>
-                        <span class="ce--subline" data-aos="animate__fadeInUp"><?php echo $this->subline; ?></span>
-                    <?php endif; ?>
-                <?php endif; ?>
-                <?php endif; ?>
-            </div>
+
+
+
+<?php if ($this->headline || $this->subline || $this->topline): ?>
+    <div class="mb-0 headline--wrapper ce--headline hl-<?= $this->headline_type ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeIn' ?>">
+        <?php if ($this->topline): ?>
+            <span class="ce--topline"><?= $this->topline; ?></span>
         <?php endif; ?>
+
+        <?php if (!$this->onlystyle): ?>
+            <<?= $this->headline_type ?> class="mb-0">
+                <?= $this->headline; ?>
+            </<?= $this->headline_type ?>>
+        <?php else: ?>
+            <span class="<?= $this->headline_type ?>">
+                <?= $this->headline; ?>
+            </span>
+        <?php endif; ?>
+
+        <?php if ($this->subline): ?>
+            <span class="ce--subline"><?= $this->subline ?></span>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
+
+
+
     </div>
 </div>

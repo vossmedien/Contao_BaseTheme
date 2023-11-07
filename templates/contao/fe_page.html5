@@ -18,8 +18,6 @@
     <?php endif; ?>
 
 
-    <script type="text/javascript" src="/files/base/layout/js/_element-handling.js"></script>
-    <script defer type="text/javascript" src="/files/base/layout/js/_animate-on-scroll.js"></script>
     <script type="text/javascript" src="/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js"></script>
 
 
