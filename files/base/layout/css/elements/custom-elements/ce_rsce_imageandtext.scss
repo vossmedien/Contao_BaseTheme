@@ -16,8 +16,8 @@ html body {
           > * {
 
             &:not(:last-child) > .col--inner {
-              padding-bottom: 2rem;
-              margin-bottom: 1rem;
+              padding-bottom: calc(var(--main-gap)/2);
+              margin-bottom: calc(var(--main-gap)/2);
               border-bottom: 2px solid var(--bs-primary);
             }
 

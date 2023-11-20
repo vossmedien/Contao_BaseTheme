@@ -275,13 +275,13 @@ return array(
             'eval' => array('tl_class' => ' clr'),
         ),
 
-
+ */
         'loop' => array(
             'label' => array('Automatisch wieder von Anfang starten', '"loop"'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
         ),
- */
+
         'autoplay' => array(
             'label' => array('Autoplay aktivieren', ''),
             'inputType' => 'checkbox',

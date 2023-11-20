@@ -122,3 +122,13 @@ footer {
 .row > [class*="col-"] > .container > [class*="col-"]{
   width: 100%;
 }
+
+
+
+.remove-bottom-gutter{
+    margin-bottom: calc(-1 * var(--main-gap));
+}
+
+.remove-top-gutter{
+  margin-top: calc(-1 * var(--main-gap));
+}

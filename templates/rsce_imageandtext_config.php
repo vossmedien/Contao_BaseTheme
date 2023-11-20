@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Bild + Text&Button', ''),
+    'label' => array('Custom | Bild + Text&Button (imageandtext)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -166,6 +166,16 @@ return array(
             'label' => array('Als Zeilen darstellen', 'Ansonsten wird der Inhalt über drei Spalten angezeigt'),
             'inputType' => 'checkbox',
         ),
+
+        'above_columns' => array(
+            'label' => array('Überschrift der "Zeilen" oberhalb der Bild und Textspalte anzeigen', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'as_rows',
+            ),
+        ),
+
 
         'rows' => array(
             'label' => array('Zeilen', ''),
@@ -339,7 +349,7 @@ return array(
                         'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
                         'h4' => 'H4',
                         'h5' => 'H5',
-'h6' => 'H6',
+                        'h6' => 'H6',
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -349,24 +359,30 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
-
-                'above_columns' => array(
-                    'label' => array('Überschrift oberhalb der Bild und Textspalte anzeigen', ''),
+                'onlystyle' => array(
+                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
 
-                'onlystyle' => array(
-                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => ''),
+
+                'subline' => array(
+                    'label' => array('Topline', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'topline' => array(
+                    'label' => array('Subline', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
 
                 'text' => array(
                     'label' => array('Langtext', ''),
                     'inputType' => 'text',
-                    'eval' => array('rte' => 'tinyMCE'),
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
 
 
@@ -590,7 +606,7 @@ return array(
 
                 'column_width' => array(
                     'label' => array(
-                        'de' => array('Spaltenbreite', 'Standard: 50%'),
+                        'de' => array('Spaltenbreite', ''),
                     ),
                     'inputType' => 'select',
                     'options' => array(

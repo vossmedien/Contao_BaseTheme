@@ -236,7 +236,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                     <?php elseif ($this->nav_position == 1 || $this->nav_position == 2):?>
 
                     direction: 'horizontal',
-                    //loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
+                    loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
 
                     //loopedSlides: 1,
 
@@ -301,26 +301,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                     $('.content-slider--nav_<?= $this->id; ?> span[data-slide="' + (swiper_<?php echo $this->id; ?>.realIndex) + '"]').parent("li").addClass("active");
                 });
 
-                <?php if (count($this->elements) > 1 && $this->show_arrows) : ?>
 
-                var swiper = swiper_<?php echo $this->id; ?>;
-                document.querySelector('.swiper-button-prev.content-slider_<?= $this->id; ?>').addEventListener('mousedown', function (e) {
-                    if (this.classList.contains('swiper-button-disabled')) {
-                        setTimeout(function () {
-                            swiper.slideTo(swiper.slides.length - 1);
-                        }, 150);
-                    }
-                });
-
-                document.querySelector('.swiper-button-next.content-slider_<?= $this->id; ?>').addEventListener('mousedown', function (e) {
-                    if (this.classList.contains('swiper-button-disabled')) {
-                        setTimeout(function () {
-                            swiper.slideTo(0);
-                        }, 150);
-                    }
-                });
-
-                <?php endif; ?>
 
             }
         }, {passive: true})

@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Mehrspaltige Textboxen', ''),
+    'label' => array('Custom | Mehrspaltige Textboxen (advantages)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -13,10 +13,12 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
         'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -298,10 +300,10 @@ return array(
                         'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
                         'h4' => 'H4',
                         'h5' => 'H5',
-'h6' => 'H6',
+                        'h6' => 'H6',
                     ),
                 ),
-                          'ce_topline' => array(
+                'ce_topline' => array(
                     'label' => array('Topline', ''),
                     'inputType' => 'text',
                     'eval' => array('allowHtml' => true),

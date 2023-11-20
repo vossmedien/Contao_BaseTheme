@@ -8,23 +8,16 @@ if (TL_MODE == 'FE') {
 <div <?php echo $this->cssID; ?>
         class="<?= $this->class; ?> form--image-select widget widget-<?php echo($this->input_type); ?>  form-group">
 
-    <?php if ($this->headline || $this->subline || $this->topline): ?>
-            <div class="ce--headline hl-<?php echo "{$this->hl}"; ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeInUp'; ?>">
-                <?php if ($this->topline): ?>
-                    <span class="ce--topline"><?= $this->topline; ?></span>
-                <?php endif; ?>
-
-                <?php if ($this->headline): ?>
-                    <?php echo "<{$this->hl}>"; ?>
-                    <span class="ce--headline-content"><?= $this->headline; ?></span>
-                    <?php echo "</{$this->hl}>"; ?>
-                <?php endif; ?>
-
-                <?php if ($this->subline): ?>
-                    <span class="ce--subline"><?= $this->subline; ?></span>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
+            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
 
 <?php if ($this->text_right) : ?>
 <div class="row align-items-center">

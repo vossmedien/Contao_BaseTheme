@@ -4,93 +4,88 @@ if (TL_MODE == 'FE') {
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element  <?php if(!str_contains($this->class, "col")):?>container<?php else:?><?php echo $this->class; ?><?php endif;?>">
-    <div class="ce--inner <?php if(!str_contains($this->class, "col")):?><?php echo $this->class; ?><?php endif;?> ">
+<div <?php echo $this->cssID; ?> class="content--element  <?php if (!str_contains($this->class, "col")): ?>container<?php else: ?><?php echo $this->class; ?><?php endif; ?>">
+    <div class="ce--inner <?php if (!str_contains($this->class, "col")): ?><?php echo $this->class; ?><?php endif; ?> ">
 
 
-       <?php if ($this->headline || $this->subline || $this->topline): ?>
-            <div class="ce--headline hl-<?php echo "{$this->hl}"; ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeInUp'; ?>">
-                <?php if ($this->topline): ?>
-                    <span class="ce--topline"><?= $this->topline; ?></span>
-                <?php endif; ?>
-
-                <?php if ($this->headline): ?>
-                    <?php echo "<{$this->hl}>"; ?>
-                    <span class="ce--headline-content"><?= $this->headline; ?></span>
-                    <?php echo "</{$this->hl}>"; ?>
-                <?php endif; ?>
-
-                <?php if ($this->subline): ?>
-                    <span class="ce--subline"><?= $this->subline; ?></span>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
+                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
 
 
-    <?php if ($this->rows) : ?>
-        <div class="ce--timeline">
-            <?php foreach ($this->rows as $i => $row) : ?>
-                <div class="step--wrapper row gy-md-0">
+        <?php if ($this->rows) : ?>
+            <div class="ce--timeline">
+                <?php foreach ($this->rows as $i => $row) : ?>
+                    <div class="step--wrapper row gy-md-0">
 
-                    <div class="col-md-6 col-12">
-                        <div class="step--info mb-2 mb-md-0">
-                            <div class="left-col--inner" data-aos="animate__fadeIn">
+                        <div class="col-md-6 col-12">
+                            <div class="step--info mb-2 mb-md-0">
+                                <div class="left-col--inner" data-aos="animate__fadeIn">
 
-                                <div class="row align-items-center">
-                                    <?php if ($row->step): ?>
-                                        <div class="col-auto">
-                                            <span class="h4 mb-0 step--title"><?php echo $row->step; ?></span>
+                                    <div class="row align-items-center">
+                                        <?php if ($row->step): ?>
+                                            <div class="col-auto">
+                                                <span class="h4 mb-0 step--title"><?php echo $row->step; ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                        <?php if ($row->icon): ?>
+                                            <div class="col-auto">
+                                            <span style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" class="step--icon">
+                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->icon, $row->description, $row->headline, $row->size_right, null,false); ?>
+                                            </span>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+                            <div class="step--content">
+                                <div class="right-col--inner" style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                    <?php if ($row->image): ?>
+                                        <div class="step--image mb-4">
+                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, $row->description, $row->headline, $row->size_right, null,false); ?>
                                         </div>
                                     <?php endif; ?>
-                                    <?php if ($row->icon): ?>
-                                        <div class="col-auto">
-                                            <span style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" class="step--icon"><img src="<?= Image::get(FilesModel::findByUuid($row->icon)->path, null, null, null); ?>"></span>
+                                    <?php if ($row->headline): ?>
+                                        <div class="step--headline">
+                                            <h3 style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?>"><?= $row->headline; ?></h3>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($row->description): ?>
+                                        <div class="step--description <?php if ($row->headline): ?>mt-2<?php endif; ?>">
+                                            <?= $row->description; ?>
+                                        </div>
+                                    <?php endif; ?>
+
+
+                                    <?php if ($row->buttons[0]->link_text != "") : ?>
+                                        <div class="step--buttons">
+                                            <div class="buttons mt-3 <?= $row->button_textalign; ?>">
+                                                <?php foreach ($row->buttons as $button) : ?>
+                                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
+                                                       class="mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
+                                                <?php endforeach ?>
+                                            </div>
                                         </div>
                                     <?php endif; ?>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
-                    <div class="col-12 col-md-6">
-                        <div class="step--content">
-                            <div class="right-col--inner" style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                <?php if ($row->image): ?>
-                                    <div class="step--image mb-4">
-                                        <img src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size[0], $row->size[1], $row->size[2]); ?>">
-                                    </div>
-                                <?php endif; ?>
-                                <?php if ($row->headline): ?>
-                                    <div class="step--headline">
-                                        <h3 style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?>"><?= $row->headline; ?></h3>
-                                    </div>
-                                <?php endif; ?>
-
-                                <?php if ($row->description): ?>
-                                    <div class="step--description <?php if ($row->headline): ?>mt-2<?php endif; ?>">
-                                        <?= $row->description; ?>
-                                    </div>
-                                <?php endif; ?>
-
-
-                                <?php if ($row->buttons[0]->link_text != "") : ?>
-                                    <div class="step--buttons">
-                                        <div class="buttons mt-3 <?= $row->button_textalign; ?>">
-                                            <?php foreach ($row->buttons as $button) : ?>
-                                                <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                                   class="mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                                   href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
-                                            <?php endforeach ?>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach ?>
-        </div>
-    <?php endif; ?>
-</div>
+                <?php endforeach ?>
+            </div>
+        <?php endif; ?>
+    </div>
 </div>

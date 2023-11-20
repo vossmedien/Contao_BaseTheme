@@ -22,7 +22,7 @@ return array(
         ),
 
         'fullwidth' => array(
-            'label' => array('Boxen auf die volle Breite des Viewports anzeigen', 'Funktioniert nicht innerhalb von Elementen'),
+            'label' => array('Boxen auf die volle Breite des Viewports anzeigen', ''),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
@@ -153,7 +153,7 @@ return array(
 
 
         'size' => array(
-            'label' => array('Bildbreite und Bildhöhe', 'Für gleichgroße Slides'),
+            'label' => array('Breite & Höhe', 'Für gleichgroße Slides'),
             'inputType' => 'imageSize',
             'options' => System::getImageSizes(),
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
@@ -164,30 +164,7 @@ return array(
             ),
         ),
 
-        'columns' => array(
-            'label' => array(
-                'de' => array('Anzahl der Spalten im Slider', ''),
-            ),
-            'inputType' => 'select',
-            'options' => array(
-                '1' => '1 Spaltig',
-                '2' => '2 Spaltig',
-                '3' => '3 Spaltig',
-                '4' => '4 Spaltig',
-                '6'
-                => '6 Spaltig',
-            ),
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-
-        'gutter' => array(
-            'label' => array('Abstand zwischen den Slides', ''),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-             'slide_effect' => array(
+        'slide_effect' => array(
             'label' => array(
                 'de' => array('Slide-Effekt', ''),
             ),
@@ -195,12 +172,35 @@ return array(
             'options' => array(
                 'slide' => 'Slide (Standard)',
                 'coverflow' => 'Coverflow',
-                'fade' => 'Fade',
+                //'fade' => 'Fade',
                 'flip' => 'Flip',
-                'cube' => 'Cube',
+                //'cube' => 'Cube',
 
             ),
+
+        ),
+
+        'columns' => array(
+            'label' => array(
+                'de' => array('Anzahl der sichtbaren Elemente', 'Standard: 1'),
+            ),
+            'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'slide_effect',
+                'value' => array("slide", "coverflow")
+            )
+        ),
+
+
+        'gutter' => array(
+            'label' => array('Abstand zwischen den Slides', 'Standard: 20px'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => ' w50'),
+            'dependsOn' => array(
+                'field' => 'slide_effect',
+                'value' => array("slide", "coverflow")
+            )
         ),
 
 
@@ -213,7 +213,7 @@ return array(
         'show_arrows' => array(
             'label' => array('Pfeile anzeigen', ''),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr'),
+
         ),
 
         /*
@@ -222,18 +222,17 @@ return array(
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
         ),
-
+ */
 
         'loop' => array(
-            'label' => array('Automatisch wieder von Anfang starten', '"loop" funktioniert derzeit nur, wenn mindestens doppelt so viele Elemente pro "Seite" sichtbar sind (Anzahl der Spalten 3 = Mindestanzahl = 6)'),
+            'label' => array('Automatisch wieder von Anfang starten', '"loop"'),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr'),
+
         ),
- */
+
         'autoplay' => array(
             'label' => array('Autoplay aktivieren', ''),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr'),
         ),
 
         'autoplay_time' => array(
@@ -267,12 +266,141 @@ return array(
                     ),
                 ),
 
+                'animation_type' => array(
+                    'label' => array(
+                        'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        /* Fading entrances  */
+                        'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
+                        'no-animation' => 'Keine Animation',
+                        'animate__fadeIn' => 'fadeIn',
+                        'animate__fadeInDown' => 'fadeInDown',
+                        'animate__fadeInDownBig' => 'fadeInDownBig',
+                        'animate__fadeInLeft' => 'fadeInLeft',
+                        'animate__fadeInLeftBig' => 'fadeInLeftBig',
+                        'animate__fadeInRight' => 'fadeInRight',
+                        'animate__fadeInRightBig' => 'fadeInRightBig',
+                        'animate__fadeInUpBig' => 'fadeInUpBig',
+                        'animate__fadeInTopLeft' => 'fadeInTopLeft',
+                        'animate__fadeInTopRight' => 'fadeInTopRight',
+                        'animate__fadeInBottomLeft' => 'fadeInBottomLeft',
+                        'animate__fadeInBottomRight' => 'fadeInBottomRight',
+                        /* Attention seekers  */
+                        'animate__bounce' => 'bounce',
+                        'animate__flash' => 'flash',
+                        'animate__pulse' => 'pulse',
+                        'animate__rubberBand' => 'rubberBand',
+                        'animate__shakeX' => 'shakeX',
+                        'animate__shakeY' => 'shakeY',
+                        'animate__headShake' => 'headShake',
+                        'animate__swing' => 'swing',
+                        'animate__tada' => 'tada',
+                        'animate__wobble' => 'wobble',
+                        'animate__jello' => 'jello',
+                        'animate__heartBeat' => 'heartBeat',
+                        /* Back entrances */
+                        'animate__backInDown' => 'backInDown',
+                        'animate__backInLeft' => 'backInLeft',
+                        'animate__backInRight' => 'backInRight',
+                        'animate__backInUp' => 'backInUp',
+                        /* Back exits */
+                        'animate__backOutDown' => 'backOutDown',
+                        'animate__backOutLeft' => 'backOutLeft',
+                        'animate__backOutRight' => 'backOutRight',
+                        'animate__backOutUp' => 'backOutUp',
+                        /* Bouncing entrances  */
+                        'animate__bounceIn' => 'bounceIn',
+                        'animate__bounceInDown' => 'bounceInDown',
+                        'animate__bounceInLeft' => 'bounceInLeft',
+                        'animate__bounceInRight' => 'bounceInRight',
+                        'animate__bounceInUp' => 'bounceInUp',
+                        /* Bouncing exits  */
+                        'animate__bounceOut' => 'bounceOut',
+                        'animate__bounceOutDown' => 'bounceOutDown',
+                        'animate__bounceOutLeft' => 'bounceOutLeft',
+                        'animate__bounceOutRight' => 'bounceOutRight',
+                        'animate__bounceOutUp' => 'bounceOutUp',
+                        /* Fading exits */
+                        'animate__fadeOut' => 'fadeOut',
+                        'animate__fadeOutDown' => 'fadeOutDown',
+                        'animate__fadeOutDownBig' => 'fadeOutDownBig',
+                        'animate__fadeOutLeft' => 'fadeOutLeft',
+                        'animate__fadeOutLeftBig' => 'fadeOutLeftBig',
+                        'animate__fadeOutRight' => 'fadeOutRight',
+                        'animate__fadeOutRightBig' => 'fadeOutRightBig',
+                        'animate__fadeOutUp' => 'fadeOutUp',
+                        'animate__fadeOutUpBig' => 'fadeOutUpBig',
+                        'animate__fadeOutTopLeft' => 'fadeOutTopLeft',
+                        'animate__fadeOutTopRight' => 'fadeOutTopRight',
+                        'animate__fadeOutBottomRight' => 'fadeOutBottomRight',
+                        'animate__fadeOutBottomLeft' => 'fadeOutBottomLeft',
+                        /* Flippers */
+                        'animate__flip' => 'flip',
+                        'animate__flipInX' => 'flipInX',
+                        'animate__flipInY' => 'flipInY',
+                        'animate__flipOutX' => 'flipOutX',
+                        'animate__flipOutY' => 'flipOutY',
+                        /* Lightspeed */
+                        'animate__lightSpeedInRight' => 'lightSpeedInRight',
+                        'animate__lightSpeedInLeft' => 'lightSpeedInLeft',
+                        'animate__lightSpeedOutRight' => 'lightSpeedOutRight',
+                        'animate__lightSpeedOutLeft' => 'lightSpeedOutLeft',
+                        /* Rotating entrances */
+                        'animate__rotateIn' => 'rotateIn',
+                        'animate__rotateInDownLeft' => 'rotateInDownLeft',
+                        'animate__rotateInDownRight' => 'rotateInDownRight',
+                        'animate__rotateInUpLeft' => 'rotateInUpLeft',
+                        'animate__rotateInUpRight' => 'rotateInUpRight',
+                        /* Rotating exits */
+                        'animate__rotateOut' => 'rotateOut',
+                        'animate__rotateOutDownLeft' => 'rotateOutDownLeft',
+                        'animate__rotateOutDownRight' => 'rotateOutDownRight',
+                        'animate__rotateOutUpLeft' => 'rotateOutUpLeft',
+                        'animate__rotateOutUpRight' => 'rotateOutUpRight',
+                        /* Specials */
+                        'animate__hinge' => 'hinge',
+                        'animate__jackInTheBox' => 'jackInTheBox',
+                        'animate__rollIn' => 'rollIn',
+                        'animate__rollOut' => 'rollOut',
+                        /* Zooming entrances */
+                        'animate__zoomIn' => 'zoomIn',
+                        'animate__zoomInDown' => 'zoomInDown',
+                        'animate__zoomInLeft' => 'zoomInLeft',
+                        'animate__zoomInRight' => 'zoomInRight',
+                        'animate__zoomInUp' => 'zoomInUp',
+                        /* Zooming exits */
+                        'animate__zoomOut' => 'zoomOut',
+                        'animate__zoomOutDown' => 'zoomOutDown',
+                        'animate__zoomOutLeft' => 'zoomOutLeft',
+                        'animate__zoomOutRight' => 'zoomOutRight',
+                        'animate__zoomOutUp' => 'zoomOutUp',
+                        /* Sliding entrances */
+                        'animate__slideInDown' => 'slideInDown',
+                        'animate__slideInLeft' => 'slideInLeft',
+                        'animate__slideInRight' => 'slideInRight',
+                        'animate__slideInUp' => 'slideInUp',
+                        /* Sliding exits */
+                        'animate__slideOutDown' => 'slideOutDown',
+                        'animate__slideOutLeft' => 'slideOutLeft',
+                        'animate__slideOutRight' => 'slideOutRight',
+                        'animate__slideOutUp' => 'slideOutUp',
+                    ),
+                    'eval' => array('chosen' => 'true', 'tl_class' => 'clr'),
+                    'dependsOn' => array(
+                        'field' => 'video_method',
+                        'value' => 'modal'
+                    )
+                ),
+
+
                 'video_type' => array(
-                    'label' => array('Video... ', ''),
+                    'label' => array('Video ist... ', ''),
                     'inputType' => 'radio',
                     'options' => array(
-                        'local_file' => 'Lokale Datei auswählen',
-                        'youtube' => 'Youtube-Video',
+                        'local_file' => '...Lokale Datei',
+                        'youtube' => '...Youtube-Video',
                     ),
                     'eval' => array(
                         'mandatory' => true,
@@ -330,7 +458,7 @@ return array(
                 ),
 
                 'text' => array(
-                    'label' => array('Bezeichnung', ''),
+                    'label' => array('Videotitel', ''),
                     'inputType' => 'text',
                 ),
 
@@ -338,7 +466,7 @@ return array(
                     'label' => array('Beschreibung', ''),
                     'inputType' => 'text',
                     'tl_class' => 'clr',
-                    'eval' => array('allowHtml' => true),
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
             ),
         ),

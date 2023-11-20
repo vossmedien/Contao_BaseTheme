@@ -13,9 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -136,11 +138,12 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
+
         ),
         'rows' => array(
-            'label' => array('Reihen', ''),
-            'elementLabel' => '%s. Reihe',
+            'label' => array('Zeilen', ''),
+            'elementLabel' => '%s. Zeile',
             'inputType' => 'list',
             'minItems' => 0,
             'maxItems' => 20,
@@ -275,6 +278,14 @@ return array(
                     'label' => array('Spaltenreihenfolge umkehren', ''),
                     'inputType' => 'checkbox',
                 ),
+
+
+                'ce_headline' => array(
+                    'label' => array('Überschrift', 'für linke Spalte'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
                 'headline_type' => array(
                     'label' => array(
                         'de' => array('Typ der Überschrift', 'für linke Spalte'),
@@ -288,27 +299,41 @@ return array(
                         'h5' => 'H5',
                         'h6' => 'H6',
                     ),
-                ),
-                'ce_topline' => array(
-                    'label' => array('Topline', ''),
-                    'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
-                'ce_headline' => array(
-                    'label' => array('Überschrift', 'für linke Spalte'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-                'ce_subline' => array(
-                    'label' => array('Subline', ''),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
+
                 'onlystyle' => array(
                     'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
+
+                'ce_topline' => array(
+                    'label' => array('Topline', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'ce_subline' => array(
+                    'label' => array('Subline', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'row_align' => array(
+                    'label' => array(
+                        'de' => array('Ausrichtung der Spalten', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        '' => 'Oben (Standard)',
+                        'align-items-center' => 'Mittig',
+                        'align-items-end' => 'Unten',
+                    ),
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
                 'columns' => array(
                     'label' => array('Spalten', ''),
                     'elementLabel' => '%s. Spalte',
@@ -438,6 +463,13 @@ return array(
                             ),
                             'eval' => array('chosen' => 'true')
                         ),
+
+                        'asbox' => array(
+                            'label' => array('Spalte in einer Box darstellen', ''),
+                            'inputType' => 'checkbox',
+                        ),
+
+
                         'column_width' => array(
                             'label' => array(
                                 'de' => array('Spaltenbreite', ''),
@@ -453,11 +485,36 @@ return array(
                                 'col-12 col-md' => 'Automatische Breite (füllend)',
                                 'col-12 col-md-auto' => 'Breite anhand des Inhalts',
                             ),
+                            'eval' => array('tl_class' => 'w50'),
                         ),
-                        'asbox' => array(
-                            'label' => array('Spalte in einer Box darstellen', ''),
+
+
+                        'textalign' => array(
+                            'label' => array(
+                                'de' => array('Text-Ausrichtung', ''),
+                            ),
+                            'inputType' => 'select',
+                            'options' => array(
+                                'text-start' => 'Linksbündig',
+                                'text-center' => 'Zentriert',
+                                'text-end' => 'Rechtsbündig',
+                            ),
+                            'eval' => array('tl_class' => 'w50'),
+                        ),
+
+
+                        'onlystyle' => array(
+                            'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                             'inputType' => 'checkbox',
+                            'eval' => array('tl_class' => 'clr'),
                         ),
+
+                        'headline' => array(
+                            'label' => array('Überschrift', 'für linke Spalte'),
+                            'inputType' => 'text',
+                            'eval' => array('tl_class' => 'w50'),
+                        ),
+
                         'headline_type' => array(
                             'label' => array(
                                 'de' => array('Typ der Überschrift', 'für linke Spalte'),
@@ -471,27 +528,41 @@ return array(
                                 'h5' => 'H5',
                                 'h6' => 'H6',
                             ),
+                            'eval' => array('tl_class' => 'w50'),
                         ),
-                        'headline' => array(
-                            'label' => array('Überschrift', 'für linke Spalte'),
+
+
+                        'topline' => array(
+                            'label' => array('Topline', ''),
                             'inputType' => 'text',
                             'eval' => array('tl_class' => 'w50'),
                         ),
+
                         'subline' => array(
                             'label' => array('Subline', ''),
                             'inputType' => 'text',
                             'eval' => array('tl_class' => 'w50'),
                         ),
-                        'onlystyle' => array(
-                            'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
-                            'inputType' => 'checkbox',
-                            'eval' => array('tl_class' => 'clr'),
-                        ),
+
                         'text' => array(
                             'label' => array('Text', ''),
                             'inputType' => 'textarea',
-                            'eval' => array('rte' => 'tinyMCE'),
+                            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                         ),
+
+
+                        'size' => array(
+                            'label' => array('Bildbreite und Bildhöhe', ''),
+                            'inputType' => 'imageSize',
+                            'options' => System::getImageSizes(),
+                            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                            'eval' => array(
+                                'rgxp' => 'digit',
+                                'includeBlankOption' => true,
+                            ),
+                        ),
+
+
                         'image' => array(
                             'label' => array('Bild', ''),
                             'inputType' => 'fileTree',
@@ -502,6 +573,8 @@ return array(
                                 'extensions' => 'jpg,jpeg,png,svg,webp',
                             ),
                         ),
+
+
                         'image_position' => array(
                             'label' => array(
                                 'de' => array('Bildposition', ''),
@@ -510,18 +583,66 @@ return array(
                             'options' => array(
                                 'image_above' => 'Oberhalb von Text',
                                 'image_below' => 'Unterhalb von Text',
+                                'image_start' => 'Links von Text',
+                                'image_end' => 'Rechts von Text',
+                            ),
+
+                        ),
+
+
+                        'image_width' => array(
+                            'label' => array(
+                                'de' => array('Breite der Bildspalte', ''),
+                            ),
+                            'inputType' => 'select',
+                            'options' => array(
+                                'col-12 col-md-6 col-lg-3' => '25%',
+                                'col-12 col-md-6 col-lg-4' => '33%',
+                                'col-12 col-md-6' => '50%',
+                                'col-12 col-md-6 col-lg-8' => '66.66%',
+                                'col-12 col-md-6 col-lg-9' => '75%',
+                                'col-12' => 'Volle Breite',
+                                'col-12 col-md' => 'Automatische Breite (füllend)',
+                                'col-12 col-md-auto' => 'Breite anhand des Inhalts',
+                            ),
+                            'dependsOn' => array(
+                                'field' => 'image_position',
+                                'value' => array('image_start', 'image_end'),
+                            ),
+                            'eval' => array('tl_class' => 'w50'),
+
+                        ),
+
+
+                        'column_align' => array(
+                            'label' => array(
+                                'de' => array('Ausrichtung Bild zum Text', ''),
+                            ),
+                            'inputType' => 'select',
+                            'options' => array(
+                                '' => 'Oben (Standard)',
+                                'align-items-center' => 'Mittig',
+                                'align-items-end' => 'Unten',
+                            ),
+                            'eval' => array('tl_class' => 'w50'),
+                            'dependsOn' => array(
+                                'field' => 'image_position',
+                                'value' => array('image_start', 'image_end'),
                             ),
                         ),
+
+
                         'link_text' => array(
                             'label' => array(
                                 'de' => array('Button-Beschriftung', 'Button befindet sich rechts unter dem Text'),
                             ),
                             'inputType' => 'text',
-                            'eval' => array('allowHtml' => true),
+                            'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
                         ),
                         'link_url' => array(
                             'label' => array('Verlinkung', ''),
                             'inputType' => 'url',
+                            'eval' => array('tl_class' => 'w50'),
                         ),
                         'link_type' => array(
                             'label' => array(

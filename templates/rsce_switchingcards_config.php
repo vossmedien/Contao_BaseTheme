@@ -13,9 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
+ 'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
+ 'eval' => array('tl_class' => 'w50'),
         ),
 
 
@@ -219,13 +221,12 @@ return array(
             'eval' => array('tl_class' => ' clr'),
         ),
 
-        /*
+
         'loop' => array(
             'label' => array('Automatisch wieder von Anfang starten', '"loop"'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
         ),
-        */
 
         'autoplay' => array(
             'label' => array('Autoplay aktivieren', ''),

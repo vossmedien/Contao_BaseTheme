@@ -88,6 +88,9 @@
   --bs-footer-color: var(--bs-body-color-inverse);
 
   --swiper-theme-color: var(--bs-primary);
+  --swiper-pagination-bullet-height: 14px;
+  --swiper-pagination-bullet-width: var(--swiper-pagination-bullet-height);
+  --swiper-navigation-size: 35px;
 
   --bs-megamenu-width: 1100px;
   --bs-megamenu-background: rgba(0, 0, 0, 0.85);

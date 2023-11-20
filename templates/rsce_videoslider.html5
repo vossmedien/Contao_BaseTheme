@@ -11,137 +11,149 @@ if (!isset($this->size)) {
 ?>
 
 
-
-<div <?php echo $this->cssID; ?> class="content--element  <?php if(!str_contains($this->class, "col")):?>container<?php else:?><?php echo $this->class; ?><?php endif;?>">
-    <div class="ce--inner <?php if(!str_contains($this->class, "col")):?><?php echo $this->class; ?><?php endif;?> ">
-
-            <?php if ($this->headline || $this->subline || $this->topline): ?>
-            <div class="ce--headline hl-<?php echo "{$this->hl}"; ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeInUp'; ?>">
-                <?php if ($this->topline): ?>
-                    <span class="ce--topline"><?= $this->topline; ?></span>
-                <?php endif; ?>
-
-                <?php if ($this->headline): ?>
-                    <?php echo "<{$this->hl}>"; ?>
-                    <span class="ce--headline-content"><?= $this->headline; ?></span>
-                    <?php echo "</{$this->hl}>"; ?>
-                <?php endif; ?>
-
-                <?php if ($this->subline): ?>
-                    <span class="ce--subline"><?= $this->subline; ?></span>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
-
-        <div class="ce--videoslider"
-             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-
-            <div class="ce--inner <?php if (!$this->fullwidth) : ?>container <?php endif; ?>">
-
-                <div class="video-slider video-slider_<?= $this->id; ?> swiper custom">
-                    <!-- Additional required wrapper -->
-                    <div class="swiper-wrapper ">
-                        <!-- Slides -->
-                        <?php foreach ($this->elements as $i => $slide) : ?>
-                            <div class="swiper-slide">
-
-                                <?php if ($slide->video_method == "inline"): ?>
+    <div <?php echo $this->cssID; ?> class="content--element  <?php if (!str_contains($this->class, "col")): ?>container<?php else: ?><?php echo $this->class; ?><?php endif; ?>">
+        <div class="ce--inner <?php if (!str_contains($this->class, "col")): ?><?php echo $this->class; ?><?php endif; ?> ">
 
 
-                                    <?php if ($slide->video_type == "youtube"): ?>
-                                        <div class="iframe_container">
-                                            <iframe data-source="https://www.youtube-nocookie.com/embed/<?php echo $slide->video_id; ?>"
-                                                    style="<?php if ($this->size[0] > 0): ?>width: <?= $this->size[0]?>px;<?php endif; ?> <?php if ($this->size[1] > 0): ?>height: <?= $this->size[1];?>px<?php endif; ?>"
-                                                    title="<?php echo $slide->text; ?>" frameborder="0"
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                    allowfullscreen></iframe>
-                                        </div>
-                                    <?php elseif ($slide->video_type == "local_file"): ?>
-                                        <div class="video_container">
-                                            <video autoplay muted loop playsinline
-                                                   style="height: <?= $this->size[0]; ?>">
-                                                <source type="vidloading="lazy"eo/mp4" src="{{file::<?= $slide->video_path ?>}}">
-                                            </video>
+            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                $this->topline,
+                $this->headline,
+                $this->subline,
+                $this->hl,
+                $this->animation_type,
+                null,
+                false,
+                null
+            ); ?>
+
+
+            <div class="ce--videoslider"
+                 data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+
+                <div class="ce--inner <?php if ($this->fullwidth) : ?>make-fullwidth px-2<?php endif; ?>">
+
+                    <div class="video-slider video-slider_<?= $this->id; ?> swiper custom <?php if ($this->show_pagination && count($this->elements) > 1): ?>with-pagination<?php endif; ?>">
+                        <!-- Additional required wrapper -->
+                        <div class="swiper-wrapper align-items-center">
+                            <!-- Slides -->
+                            <?php foreach ($this->elements as $i => $slide) : ?>
+                                <div class="swiper-slide ">
+
+                                    <?php if ($slide->video_method == "modal"): ?>
+                                        <div class="modal video-modal" id="video-slider_<?= $this->id; ?>_<?= $i; ?>" tabindex="-1">
+                                            <div class="modal-dialog modal-xl modal-dialog-centered" data-aos="<?= $slide->animation_type; ?>">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-body">
+                                                        <button type="button" class="btn--close" data-bs-dismiss="modal" aria-label="Close">
+                                                            <i class="fa-sharp fa-light fa-xmark"></i></button>
+
+                                                        <div class="video_container">
+                                                            <?php if ($slide->video_type == "youtube"): ?>
+                                                                <iframe data-source="https://www.youtube-nocookie.com/embed/<?php echo $slide->video_id; ?>"
+                                                                        title="<?php echo $slide->text; ?>" frameborder="0"
+                                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                        allowfullscreen></iframe>
+
+                                                            <?php elseif ($slide->video_type == "local_file"): ?>
+                                                                <video playsinline controls>
+                                                                    <source src="{{file::<?= $slide->video_path ?>}}" type="video/mp4">
+                                                                </video>
+                                                            <?php endif; ?>
+                                                        </div>
+
+                                                        <?php if ($slide->text || $slide->longtext) : ?>
+                                                            <div class="video-modal--content mt-1">
+                                                                <?php if ($slide->text) : ?>
+                                                                    <div class="slide-caption">
+                                                                        <strong><?php echo $slide->text; ?></strong>
+                                                                    </div>
+                                                                <?php endif; ?>
+
+                                                                <?php if ($slide->longtext) : ?>
+                                                                    <div class="slide-description"><?php echo $slide->longtext; ?></div>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     <?php endif; ?>
 
+                                    <div class="text-center">
+                                        <?php if ($slide->video_method == "inline"): ?>
+                                            <div class="video_container">
+                                                <?php if ($slide->video_type == "youtube"): ?>
+                                                    <iframe data-source="https://www.youtube-nocookie.com/embed/<?php echo $slide->video_id; ?>"
+                                                            title="<?php echo $slide->text; ?>" frameborder="0"
+                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                            allowfullscreen></iframe>
 
-                                <?php else: ?>
-                                    <?php if ($slide->video_type == "youtube"): ?>
-                                        <a <?php if ($slide->video_method == "new_tab"): ?> target="_blank" <?php else : ?>class="video-link cboxElement is-youtube" <?php endif; ?>
-                                            <?php if ($slide->video_type == "youtube"): ?>
-                                                href='//www.youtube-nocookie.com/watch?v=<?php echo $slide->video_id; ?>'
+                                                <?php elseif ($slide->video_type == "local_file"): ?>
+                                                    <video playsinline controls>
+                                                        <source src="{{file::<?= $slide->video_path ?>}}" type="video/mp4">
+                                                    </video>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php else: ?>
+
+                                            <?php if ($slide->video_method == "new_tab"): ?>
+                                                <a target="_blank" href="<?php if ($slide->video_type == "youtube"): ?>//www.youtube.com/watch?v=<?php echo $slide->video_id; ?><?php else: ?>{{file::<?= $slide->video_path ?>}}<?php endif; ?>">
+                                                    <img loading="lazy" src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+                                                </a>
+                                            <?php else: ?>
+                                                <span data-bs-toggle="modal" data-bs-target="#video-slider_<?= $this->id; ?>_<?= $i; ?>">
+                                            <img loading="lazy" src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+                                       </span>
                                             <?php endif; ?>
-                                        >
+                                        <?php endif; ?>
+                                    </div>
 
-                                            <img loading="lazy" src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
-                                        </a>
-                                    <?php elseif ($slide->video_type == "local_file"): ?>
-                                        <span data-bs-toggle="modal"
-                                              data-bs-target="#video-slider_<?= $this->id; ?>_<?= $i; ?>">
-                                            <img loading="lazy" src="<?= Image::get(FilesModel::findByUuid($slide->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
-                                        </span>
-                                    <?php endif; ?>
-                                <?php endif; ?>
+                                    <div>
+                                        <?php if ($slide->text) : ?>
+                                            <div class="slide-caption"><?php echo $slide->text; ?></div>
+                                        <?php endif; ?>
 
 
+                                        <?php if ($slide->longtext) : ?>
+                                            <div class="slide-description"><?php echo $slide->longtext; ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
 
+                            <?php endforeach ?>
 
-
-
-                                <?php if ($slide->text) : ?>
-                                    <span class="slide-caption"><?php echo $slide->text; ?></span>
-                                <?php endif; ?>
-
-
-                                <?php if ($slide->longtext) : ?>
-                                    <span class="slide-description"><?php echo $slide->longtext; ?></span>
-                                <?php endif; ?>
-
-                            </div>
-                        <?php endforeach ?>
+                        </div>
 
                     </div>
 
-                </div>
-                <?php if (count($this->elements) > 1) : ?>
+                        <?php if (count($this->elements) > 1) : ?>
 
-                    <?php if ($this->show_pagination): ?>
-                        <div class="video-slider_<?= $this->id; ?> swiper-pagination"></div>
-                    <?php endif; ?>
-                    <?php if ($this->show_arrows): ?>
-                        <div class="video-slider_<?= $this->id; ?> swiper-button-prev"></div>
-                        <div class="video-slider_<?= $this->id; ?> swiper-button-next"></div>
-                    <?php endif; ?>
-                <?php endif; ?>
+                            <?php if ($this->show_pagination): ?>
+                                <div class="video-slider_<?= $this->id; ?> swiper-pagination"></div>
+                            <?php endif; ?>
+                            <?php if ($this->show_arrows): ?>
+                                <div class="video-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                                <div class="video-slider_<?= $this->id; ?> swiper-button-next"></div>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                </div>
 
             </div>
-
         </div>
-    </div>
 
 
     </div>
-
-<?php foreach ($this->elements as $i => $slide) : ?>
-    <div class="modal video-modal" id="video-slider_<?= $this->id; ?>_<?= $i; ?>" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <video controls playsinline>
-                        <source src='{{file::<?= $slide->video_path ?>}}' type='video/mp4'>
-                    </video>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php endforeach ?>
-
 
 <?php if (TL_MODE == 'FE'): ?>
+
+
+    <?php
+    $gutterValue = isset($this->gutter) && $this->gutter !== '' ? $this->gutter : "20";
+    $columnsValue = isset($this->columns) && $this->columns !== '' ? $this->columns : "1";
+    ?>
+
     <script type="text/javascript" async>
         window.addEventListener('load', function () {
 
@@ -163,6 +175,7 @@ if (!isset($this->size)) {
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.video-slider_<?php echo $this->id; ?>', {
                     direction: 'horizontal',
                     lazy: true,
+
                     <?php if (count($this->elements) > 1) : ?>
                     <?php if ($this->show_arrows): ?>
                     navigation: {
@@ -176,85 +189,56 @@ if (!isset($this->size)) {
                         clickable: true,
                     },
                     <?php endif; ?>
+                    <?php endif; ?>
 
-
-
-                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
-                    'slide'<?php endif;?>,
+                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'
+                    <?php else:?>'slide'<?php endif;?>,
                     loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
-
                     <?php if ($this->autoplay) : ?>
                     autoplay: {
                         delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
                     },
                     <?php endif; ?>
 
-                    //loopedSlides: 3,
 
-                    <?php endif; ?>
-
-                    //preloadImages: false,
-                    //lazy: {
-                    //loadPrevNext: true,
-                    //},
-                    //slidesPerView: 1,
-                    spaceBetween: 10,
-                    //checkInView: true,
-                    // Responsive breakpoints
+                    spaceBetween: <?php echo $gutterValue; ?>,
                     breakpoints: {
                         320: {
                             slidesPerView: 1,
-                            spaceBetween: <?php echo $this->gutter; ?>
+                            spaceBetween: <?php echo $gutterValue; ?>
                         },
                         480: {
                             slidesPerView: 2,
-                            spaceBetween: <?php echo $this->gutter; ?>
+                            spaceBetween: <?php echo $gutterValue; ?>
                         },
-                        <?php if ($this->columns == 6) : ?>
+                        <?php if ($columnsValue == 6) : ?>
                         768: {
                             slidesPerView: 3,
-                            spaceBetween: <?php echo $this->gutter; ?>
+                            spaceBetween: <?php echo $gutterValue; ?>
                         },
                         992: {
                             slidesPerView: 4,
-                            spaceBetween: <?php echo $this->gutter; ?>
+                            spaceBetween: <?php echo $gutterValue; ?>
                         },
                         1200: {
                             slidesPerView: 5,
-                            spaceBetween: <?php echo $this->gutter; ?>
+                            spaceBetween: <?php echo $gutterValue; ?>
                         },
                         1400: {
                             slidesPerView: 6,
-                            spaceBetween: <?php echo $this->gutter; ?>
+                            spaceBetween: <?php echo $gutterValue; ?>
                         },
                         <?php else : ?>
                         992: {
-                            slidesPerView: <?php echo $this->columns; ?>,
-                            spaceBetween: <?php echo $this->gutter; ?>
+                            slidesPerView: <?php echo $columnsValue; ?>,
+                            spaceBetween: <?php echo $gutterValue; ?>
                         }
                         <?php endif; ?>
                     },
 
 
                 });
-                <?php if ($this->show_arrows && count($this->elements) > 1): ?>
-                var swiper = swiper_<?php echo $this->id; ?>;
-                document.querySelector('.swiper-button-prev.video-slider_<?= $this->id; ?>').addEventListener('mousedown', function (e) {
-                    if (this.classList.contains('swiper-button-disabled')) {
-                        setTimeout(function () {
-                            swiper.slideTo(swiper.slides.length - 1);
-                        }, 150);
-                    }
-                });
 
-                document.querySelector('.swiper-button-next.video-slider_<?= $this->id; ?>').addEventListener('mousedown', function (e) {
-                    if (this.classList.contains('swiper-button-disabled')) {
-                        setTimeout(function () {
-                            swiper.slideTo(0);
-                        }, 150);
-                    }
-                });
-                <?php endif; ?>
             }
         }, {passive: true})
     </script>

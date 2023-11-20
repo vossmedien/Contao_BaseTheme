@@ -1,11 +1,8 @@
-
-
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
 @import "../../scss-variables";
-
 
 html body {
   .ce_rsce_boxenfeld {
@@ -15,11 +12,10 @@ html body {
     }
 
     img.box--image {
-      border-radius: var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px
-        0px;
+      border-radius: var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px 0px;
     }
 
-    .container {
+    &.container {
       img.box--image {
         border-radius: var(--bs-border-radius-xl) !important;
       }
@@ -27,7 +23,7 @@ html body {
 
     .boxes--outer {
       &:not(:last-child) {
-        margin-bottom: $basic-gutter;
+        margin-bottom: var(--main-gap);
       }
 
       > .row {
@@ -85,10 +81,6 @@ html body {
 
       @include media-breakpoint-up(xxl) {
         //border-radius: var(--bs-border-radius-xl);
-      }
-
-      .box--headline:first-child > * {
-        margin-top: 0px;
       }
 
       .box--button {

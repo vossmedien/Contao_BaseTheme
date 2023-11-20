@@ -33,8 +33,9 @@
       overflow: hidden;
 
       display: flex;
-      flex-flow: column wrap;
+      flex-flow: column nowrap;
       gap: var(--main-gap);
+
     }
 
     .mod_article {
@@ -61,8 +62,8 @@
 
       .article-content {
         display: flex;
-        flex-flow: column wrap;
-        gap: $basic-gutter 0;
+        flex-flow: column nowrap;
+        gap: var(--main-gap) 0;
         //z-index: 2;
         //position: relative;
         //padding: $basic-gutter 0 0 0;
@@ -101,9 +102,11 @@
         }
       }
 
-      &[class*="bg-"] {
+      /*
+         &[class*="bg-"] {
         overflow: hidden;
 
+        //TODO !
         .ce_rsce_headimagelogo {
           &:first-child {
             margin-top: -$basic-gutter !important;
@@ -144,6 +147,8 @@
           }
         }
       }
+       */
+
 
       *[class*="bg-dark"] {
         color: var(--bs-body-color-inverse);
@@ -153,7 +158,8 @@
         }
       }
 
-      & + .mod_article {
+      /*
+            & + .mod_article {
         &[class*="bg-"] {
           //margin-top: rfs-value($basic-gutter);
         }
@@ -162,6 +168,8 @@
           margin-top: 0px;
         }
       }
+       */
+
     }
   }
 }

@@ -23,10 +23,12 @@ html {
   font-size: var(--bs-body-font-size);
 
   body {
-    opacity: 0;
-    transition: padding-top 0.5s ease, opacity 0.75s ease;
-    animation: fadeinBody .5s forwards;
-    animation-delay: 1s;
+    #wrapper {
+      opacity: 0;
+      transition: padding-top 0.5s ease, opacity 0.25s ease;
+      animation: fadeinBody 0.25s forwards;
+      animation-delay: .75s;
+    }
 
     *[id] {
       scroll-behavior: smooth;

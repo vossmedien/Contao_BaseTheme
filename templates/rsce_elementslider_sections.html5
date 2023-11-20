@@ -232,24 +232,7 @@ if (TL_MODE == 'FE') {
 
                 });
 
-                <?php if ((count($this->galery) > 1 || count($dataSorted) > 1) && $this->show_arrows) : ?>
-                var swiper = swiper_<?php echo $this->id; ?>;
-                document.querySelector('.swiper-button-prev.section-slider_<?php echo $this->id; ?>').addEventListener('mousedown', function (e) {
-                    if (this.classList.contains('swiper-button-disabled')) {
-                        setTimeout(function () {
-                            swiper.slideTo(swiper.slides.length - 1);
-                        }, 150);
-                    }
-                });
 
-                document.querySelector('.swiper-button-next.section-slider_<?php echo $this->id; ?>').addEventListener('mousedown', function (e) {
-                    if (this.classList.contains('swiper-button-disabled')) {
-                        setTimeout(function () {
-                            swiper.slideTo(0);
-                        }, 150);
-                    }
-                });
-                <?php endif;?>
             }
         }, {passive: true})
     </script>

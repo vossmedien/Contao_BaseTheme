@@ -53,7 +53,7 @@ AOS.init({
   //throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
 
   // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-  offset: -50, // offset (in px) from the original trigger point
+  offset: 50, // offset (in px) from the original trigger point
   //delay: 5000,
   //duration: 5000,
   once: true, // whether animation should happen only once - while scrolling down

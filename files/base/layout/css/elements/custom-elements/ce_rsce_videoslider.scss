@@ -12,26 +12,15 @@ html body {
   .ce_rsce_videoslider {
 
     
-    .swiper-pagination{
-      position: relative;
-      margin-top: .5rem;
-    }
-    
-    
     .swiper {
       .swiper-slide {
         a {
           text-decoration: none;
         }
 
-        .iframe_container{
-
-        }
-
         .slide-caption {
           display: block;
           padding-top: rfs-value(5px);
-          text-align: center;
           font-weight: $font-weight-semibold;
           @include font-size(15px);
           text-decoration: none;
@@ -42,10 +31,6 @@ html body {
           @include font-size(14px);
         }
       }
-
-
     }
-
-
   }
 }

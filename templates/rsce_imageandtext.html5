@@ -5,194 +5,194 @@ if (TL_MODE == 'FE') {
 ?>
 
 
-
-<div <?php echo $this->cssID; ?> class="content--element  <?php if(!str_contains($this->class, "col")):?>container<?php else:?><?php echo $this->class; ?><?php endif;?>">
-    <div class="ce--inner <?php if(!str_contains($this->class, "col")):?><?php echo $this->class; ?><?php endif;?> ">
-
-        <?php if ($this->headline || $this->subline || $this->topline): ?>
-        <div class="headline--wrapper ce--headline" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-            <?php if ($this->headline): ?>
-            <<?= $this->hl; ?>>
-            <?= $this->topline ? '<span class="ce--topline">' . $this->topline . '</span>' : ''; ?>
-            <span class="ce--headline-content"><?= $this->headline; ?></span>
-        </<?= $this->hl; ?>>
-    <?php endif; ?>
-
-        <?php if ($this->subline): ?>
-            <span class="ce--subline mb-4"><?= $this->subline; ?></span>
-        <?php endif; ?>
-    </div>
-    <?php endif; ?>
-
-    <div class="ce--image-text  <?php if ($this->as_rows) : ?>as--rows<?php endif; ?>">
+<div <?php echo $this->cssID; ?> class="content--element  <?php if (!str_contains($this->class, "col")): ?>container<?php else: ?><?php echo $this->class; ?><?php endif; ?>">
+    <div class="ce--inner <?php if (!str_contains($this->class, "col")): ?><?php echo $this->class; ?><?php endif; ?> ">
 
 
-        <?php if ($this->content_text): ?>
-            <div class="content_text mb-md-8 mb-4" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                <?= $this->content_text; ?>
-            </div>
-        <?php endif; ?>
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
 
-        <div class="row">
-            <?php foreach ($this->rows as $row) : ?>
+        <div class="ce--image-text  <?php if ($this->as_rows) : ?>as--rows<?php endif; ?>">
 
 
-
-                     <?php if ($row->headline && $row->above_columns) : ?>
-                <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                     class="mb-4 headline ">
-                    <?php if (!$row->onlystyle) : ?>
-                    <<?php echo $row->headline_type; ?> class="mb-0">
-                    <?php echo $row->headline; ?>
-                </<?php echo $row->headline_type; ?>>
-            <?php else : ?>
-                <span class="mb-0 <?php echo $row->headline_type; ?>"><?php echo $row->headline; ?></span>
+            <?php if ($this->content_text): ?>
+                <div class="content_text mb-md-8 mb-4" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                    <?= $this->content_text; ?>
+                </div>
             <?php endif; ?>
-        </div>
-        <?php endif; ?>
+
+            <div class="row">
+                <?php foreach ($this->rows as $row) : ?>
+
+
+
+                <?php if ($row->headline && $this->above_columns) : ?>
+                    <div class="col-12 ">
+                        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                            $row->topline,
+                            $row->headline,
+                            $row->subline,
+                            $row->headline_type,
+                            null,
+                            null,
+                            false,
+                            null
+                        ); ?>
+                    </div>
+                <?php endif; ?>
 
 
                 <?php if (!$this->as_rows) : ?>
 
 
-
-
-                    <div class="<?= $row->textalign; ?> mt-4 mt-lg-0  <?= $row->column_width; ?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <div class="<?= $row->textalign; ?> mt-4 mt-lg-0  <?= $row->column_width; ?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                     <div class="col--inner">
 
 
-                    <div class="<?= $this->row_align; ?> row  <?php if ($row->reverse_columns) : ?>flex-row-reverse<?php endif; ?>"><?php endif; ?>
+                        <div class="<?= $this->row_align; ?> row  <?php if ($row->reverse_columns) : ?>flex-row-reverse<?php endif; ?>"><?php endif; ?>
 
-                <?php if ($this->as_rows) : ?>
-                <div class="col-12 <?= $row->textalign; ?> "
-                     data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                <div class="col--inner">
-                <div class="<?= $this->row_align; ?> g-2 row "><?php endif; ?>
+                            <?php if ($this->as_rows) : ?>
+                            <div class="col-12 <?= $row->textalign; ?> "
+                                 data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                <div class="col--inner">
+                                    <div class="<?= $this->row_align; ?> g-2 row "><?php endif; ?>
 
-                <?php if ($row->image): ?>
-                    <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" <?php if ($row->reverse_columns) : ?>order-2 <?php endif; ?> col-12 image   <?php if (!$this->as_rows) : ?>mt-2 mt-md-0 mb-md-3 order-2<?php else: ?> text-lg-start <?= $row->column_width; ?><?php endif; ?>">
-                        <div class="image--wrapper">
-                            <img loading="lazy" class="lazy"
-                                 data-src="<?= Image::get(FilesModel::findByUuid($row->image)->path, $row->size[0], $row->size[1], $row->size[2]); ?>">
-                        </div>
-                    </div>
-                <?php endif; ?>
-                <?php if ($this->as_rows) : ?>
-                <div class="col-md  <?php if ($row->reverse_columns) : ?>order-1<?php endif; ?>">
-                <div class="col--inner"><?php endif; ?>
-                <?php if ($row->headline  && !$row->above_columns) : ?>
-                <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                     class="mb-2 headline col-12  <?php if (!$this->as_rows) : ?>order-1<?php endif; ?>">
-                    <?php if (!$row->onlystyle) : ?>
-                    <<?php echo $row->headline_type; ?> class="mb-0">
-                    <?php echo $row->headline; ?>
-                </<?php echo $row->headline_type; ?>>
-            <?php else : ?>
-                <span class="mb-0 <?php echo $row->headline_type; ?>">
-                                                                <?php echo $row->headline; ?>
-                                                            </span>
-            <?php endif; ?>
-                </div>
-            <?php endif; ?>
-                <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                     class="text col-12 mt-2 mt-lg-0 <?php if (!$this->as_rows) : ?>order-3 <?php endif; ?>">
-
-                    <?php if ($row->text) : ?>
-                        <?php echo $row->text; ?>
-                    <?php endif; ?>
-
-                    <?php if ($row->table && count($row->table) > 1) : ?>
-                        <div style="--bs-gutter-y: .25rem; --bs-gutter-x: .25rem;" class="row structured-data <?php if ($row->text) : ?>mt-3  <?php endif; ?>">
-                            <?php foreach ($row->table as $tableRow) : ?>
-                                <div class="col-12  col-md-6">
-                                    <div class="structured-data--row border border-primary">
-                                        <?php
-                                        $firstCell = true;
-                                        $otherCells = [];
-                                        ?>
-                                        <?php foreach ($tableRow as $tableCell) : ?>
-                                            <?php if ($firstCell) : ?>
-                                                <div class="structured-data--header p-1 fw-bold text-uppercase  <?php if (!$row->alt_tablehead_bg): ?>bg-primary<?php endif; ?>   <?php if (!$row->alt_tablehead_color): ?>text-white<?php endif; ?>" style="<?php if ($row->alt_tablehead_bg): ?>background-color: <?= $row->alt_tablehead_bg; ?>;<?php endif; ?> <?php if ($row->alt_tablehead_color): ?>color: <?= $row->alt_tablehead_color; ?>;<?php endif; ?>">
-                                                    <?= $tableCell; ?>
+                                        <?php if ($row->image): ?>
+                                            <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" <?php if ($row->reverse_columns) : ?>order-2 <?php endif; ?> col-12 image   <?php if (!$this->as_rows) : ?>mt-2 mt-md-0 mb-md-3 order-2<?php else: ?> text-lg-start <?= $row->column_width; ?><?php endif; ?>">
+                                                <div class="image--wrapper">
+                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, null, $row->headline, $row->size, null,false); ?>
                                                 </div>
-                                            <?php else : ?>
-                                                <?php $otherCells[] = $tableCell; ?>
-                                            <?php endif; ?>
-                                            <?php $firstCell = false; ?>
-                                        <?php endforeach; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                        <?php if ($this->as_rows) : ?>
+                                        <div class="col-md  <?php if ($row->reverse_columns) : ?>order-1<?php endif; ?>">
+                                            <div class="col--inner"><?php endif; ?>
+                                                <?php if ($row->headline && !$this->above_columns) : ?>
+                                                    <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                                         class="headline col-12  <?php if (!$this->as_rows) : ?>order-1<?php endif; ?>">
 
 
-                                        <div class="structured-data--data-wrapper bg-white text-body p-0">
-                                            <div class="row g-0">
-                                                <?php
-                                                $totalOtherCells = count($otherCells);
-                                                foreach ($otherCells as $index => $otherCell) :
-                                                    $isLastCell = ($index == $totalOtherCells - 1);
-                                                    ?>
-                                                    <div class="structured-data--cell col-xl <?php if (count($otherCells) > 1): ?>col-6<?php endif; ?>">
-                                                        <div class="p-1 border-top w-100 <?= $isLastCell ? 'border-end-0' : 'border-end'; ?>">
-                                                            <?= $otherCell; ?>
-                                                        </div>
+                                                        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                            $row->topline,
+                                                            $row->headline,
+                                                            $row->subline,
+                                                            $row->headline_type,
+                                                            null,
+                                                            null,
+                                                            false,
+                                                            null
+                                                        ); ?>
+
+
                                                     </div>
-                                                <?php endforeach; ?>
+                                                <?php endif; ?>
+                                                <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                                     class="text col-12 mt-2 mt-lg-0 <?php if (!$this->as_rows) : ?>order-3 <?php endif; ?>">
+
+                                                    <?php if ($row->text) : ?>
+                                                        <?php echo $row->text; ?>
+                                                    <?php endif; ?>
+
+                                                    <?php if ($row->table && count($row->table) > 1) : ?>
+                                                        <div style="--bs-gutter-y: .25rem; --bs-gutter-x: .25rem;" class="row structured-data <?php if ($row->text) : ?>mt-3  <?php endif; ?>">
+                                                            <?php foreach ($row->table as $tableRow) : ?>
+                                                                <div class="col-12  col-md-6">
+                                                                    <div class="structured-data--row border" style="<?php if ($row->alt_tablehead_bg): ?>border-color: <?= $row->alt_tablehead_bg; ?>;<?php endif; ?>">
+                                                                        <?php
+                                                                        $firstCell = true;
+                                                                        $otherCells = [];
+                                                                        ?>
+                                                                        <?php foreach ($tableRow as $tableCell) : ?>
+                                                                            <?php if ($firstCell) : ?>
+                                                                                <div class="structured-data--header p-1 fw-bold text-uppercase <?php if (!$row->alt_tablehead_bg): ?>bg-primary<?php endif; ?> <?php if (!$row->alt_tablehead_color): ?>text-white<?php endif; ?>" style="<?php if ($row->alt_tablehead_bg): ?>background-color: <?= $row->alt_tablehead_bg; ?>;<?php endif; ?> <?php if ($row->alt_tablehead_color): ?>color: <?= $row->alt_tablehead_color; ?>;<?php endif; ?>">
+                                                                                    <?= $tableCell; ?>
+                                                                                </div>
+                                                                            <?php else : ?>
+                                                                                <?php $otherCells[] = $tableCell; ?>
+                                                                            <?php endif; ?>
+                                                                            <?php $firstCell = false; ?>
+                                                                        <?php endforeach; ?>
+
+
+                                                                        <div class="structured-data--data-wrapper bg-white text-body p-0">
+                                                                            <div class="row g-0">
+                                                                                <?php
+                                                                                $totalOtherCells = count($otherCells);
+                                                                                foreach ($otherCells as $index => $otherCell) :
+                                                                                    $isLastCell = ($index == $totalOtherCells - 1);
+                                                                                    ?>
+                                                                                    <div class="structured-data--cell col-xl <?php if (count($otherCells) > 1): ?>col-6<?php endif; ?>">
+                                                                                        <div class="p-1 border-top w-100 <?= $isLastCell ? 'border-end-0' : 'border-end'; ?>">
+                                                                                            <?= $otherCell; ?>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                <?php endforeach; ?>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            <?php endforeach; ?>
+                                                        </div>
+                                                    <?php endif; ?>
+
+
+                                                    <?php if (!$row->reverse_columns || $row->column_width != "col-12") : ?>
+                                                        <?php if ($row->buttons[0]->link_text != "") : ?>
+                                                            <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" mt-2">
+                                                                <div class="ce--buttons ">
+                                                                    <?php foreach ($row->buttons as $button) : ?>
+                                                                        <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
+                                                                           class="d-inline-block mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                                                           data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                                                           href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
+                                                                    <?php endforeach ?>
+                                                                </div>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                </div>
+
+
+                                                <?php if (!$this->as_rows) : ?>
                                             </div>
                                         </div>
 
+                                    <?php endif; ?>
+
+
+                                        <?php if ($this->as_rows) : ?>
                                     </div>
+
                                 </div>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
+                                <?php if ($row->reverse_columns && $row->column_width == "col-12") : ?>
+                                    <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="order-3 col-12 mt-2">
+                                        <?php if ($row->buttons[0]->link_text != "") : ?>
+                                            <div class="ce--buttons ">
+                                                <?php foreach ($row->buttons as $button) : ?>
+                                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
+                                                       class="d-inline-block mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                                       data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
+                                                <?php endforeach ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
 
-
-                    <?php if (!$row->reverse_columns || $row->column_width != "col-12") : ?>
-                        <?php if ($row->buttons[0]->link_text != "") : ?>
-                            <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" mt-2">
-                                <div class="ce--buttons ">
-                                    <?php foreach ($row->buttons as $button) : ?>
-                                        <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                           class="d-inline-block mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                           data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                           href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
-                                    <?php endforeach ?>
-                                </div>
                             </div>
-                        <?php endif; ?>
-                    <?php endif; ?>
-                </div>
-
-
-                <?php if (!$this->as_rows) : ?>
-                </div>
-                </div>
-
-            <?php endif; ?>
-
-
-                <?php if ($this->as_rows) : ?>
-                </div>
-
-                </div>
-                <?php if ($row->reverse_columns && $row->column_width == "col-12") : ?>
-                    <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="order-3 col-12 mt-2">
-                        <?php if ($row->buttons[0]->link_text != "") : ?>
-                            <div class="ce--buttons ">
-                                <?php foreach ($row->buttons as $button) : ?>
-                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                       class="d-inline-block mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                       data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
-                                <?php endforeach ?>
-                            </div>
-                        <?php endif; ?>
+                        </div><?php endif; ?>
                     </div>
-                <?php endif; ?>
-
+                    <?php endforeach; ?>
                 </div>
-                </div><?php endif; ?>
-                </div>
-            <?php endforeach; ?>
+            </div>
         </div>
     </div>
-</div>
-</div>

@@ -5,85 +5,92 @@ if (TL_MODE == 'FE') {
 ?>
 
 
-<div <?php echo $this->cssID; ?> class="content--element  <?php if(!str_contains($this->class, "col")):?>container<?php else:?><?php echo $this->class; ?><?php endif;?>">
-    <div class="ce--inner <?php if(!str_contains($this->class, "col")):?><?php echo $this->class; ?><?php endif;?> ">
+<div <?php echo $this->cssID; ?> class="content--element  <?php if (str_contains($this->class, "col")): ?><?php echo $this->class; ?><?php endif; ?>">
+    <div class="ce--inner <?php if (!str_contains($this->class, "col")): ?><?php if (!$this->without_container): ?>container<?php endif; ?> <?php echo $this->class; ?><?php endif; ?> ">
 
-       <?php if ($this->headline || $this->subline || $this->topline): ?>
-            <div class="ce--headline hl-<?php echo "{$this->hl}"; ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeInUp'; ?>">
-                <?php if ($this->topline): ?>
-                    <span class="ce--topline"><?= $this->topline; ?></span>
-                <?php endif; ?>
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
 
-                <?php if ($this->headline): ?>
-                    <?php echo "<{$this->hl}>"; ?>
-                    <span class="ce--headline-content"><?= $this->headline; ?></span>
-                    <?php echo "</{$this->hl}>"; ?>
-                <?php endif; ?>
+        <div class="ce--boxenfeld ">
+            <?php foreach ($this->box as $b) : ?>
+                <div class="boxes--outer"
+                     <?php if ($b->versatz && (strpos($b->versatz, '-') !== false)) : ?>style="padding-top: <?php echo str_replace("-", "", $b->versatz); ?>px" <?php endif; ?>>
+                    <div class="row gx-0 gx-lg-3 <?php if (!$b->versatz): ?>align-items-center<?php endif; ?> <?php if ($b->reverse) : ?>flex-row-reverse <?php endif; ?>"
+                         >
 
-                <?php if ($this->subline): ?>
-                    <span class="ce--subline"><?= $this->subline; ?></span>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
+                        <div class="col-12 col-lg" data-aos="<?= $b->animation_type_image; ?>">
+                            <?php if ($b->image): ?>
 
-    <div class="ce--boxenfeld ">
-        <?php foreach ($this->box as $b) : ?>
-        <div class="boxes--outer"
-             <?php if ($b->versatz && (strpos($b->versatz, '-') !== false)) : ?>style="margin-top: <?php echo str_replace("-", "", $b->versatz); ?>px" <?php endif; ?>>
-            <div class="row g-0 g-lg-2 align-items-center <?php if ($b->reverse) : ?>flex-row-reverse <?php endif; ?>"
-                 style="<?php if ($b->versatz && (strpos($b->versatz, '-') === false)) : ?>margin-bottom: <?php echo $b->versatz*1.5; ?>px;<?php endif; ?>">
+                                <?php if (!isset($b->size)) {
+                                    $b->{"size"} = "";
+                                } ?>
 
-                <div class="col-12 col-lg">
-                    <?php if ($b->image): ?>
-                        <img loading="lazy" class="box--image"
-                             data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                             src="<?= Image::get(FilesModel::findByUuid($b->image)->path, null, null, null); ?>">
-                    <?php endif; ?>
-                </div>
-
-                <?php if ($b->headline || $b->content || $b->button_url): ?>
-                    <div class="col-12 <?php if ($b->column_width) : ?><?= $b->column_width; ?><?php else: ?>col-lg-6<?php endif; ?>">
-                        <div class="box--content <?php if ($b->has_shadow): ?>shadow<?php endif; ?> <?php if ($this->without_container): ?>half-container<?php endif; ?>"
-                             data-aos="<?php if ($b->animation_type != "") : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>"
-                             style="<?php if ($b->versatz) : ?>position: relative; top: <?php echo $b->versatz; ?>px;<?php endif; ?>
-                             <?php if ($b->alt_background) : ?>
-                                     background-color: <?= $b->alt_background;?>;
-                                 <?php endif; ?>
-
-                             <?php if ($b->alt_textcolor) : ?>
-                                     color: <?= $b->alt_textcolor;?>;
-                                 <?php endif; ?>
-
-                             <?php if ($b->alt_bordercolor) : ?>
-                                     border-color: <?= $b->alt_bordercolor;?>;
-                                 <?php endif; ?>
-
-                                     ">
-                            <?php if ($b->headline) : ?>
-                            <div class="box--headline">
-                                <<?php echo $b->headline_type; ?> class="mb-1"
-                                style="<?php if ($b->alt_headlinecolor) : ?>
-                                    color: <?= $b->alt_headlinecolor; ?>;
-                                <?php endif; ?>">
-                                <?php echo $b->headline; ?>
-                            </<?php echo $b->headline_type; ?>>
+                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($b->image, null, $b->headline, $b->size, "box--image", false); ?>
+                            <?php endif; ?>
                         </div>
-                        <?php endif; ?>
-                        <?php if ($b->content) : ?>
-                            <div class="box--text">
-                                <?php echo $b->content; ?>
+
+                        <?php if ($b->headline || $b->content || $b->button_url): ?>
+                        <div class="col-12 <?php if ($b->column_width) : ?><?= $b->column_width; ?><?php else: ?>col-lg-6<?php endif; ?>">
+                            <div class="box--content <?php if ($b->has_shadow): ?>shadow-lg<?php endif; ?> <?php if ($this->without_container): ?>half-container<?php endif; ?>"
+                                 data-aos="<?= $b->animation_type_content; ?>"
+                                 style="<?php if ($b->versatz) : ?>position: relative; top: <?php echo $b->versatz; ?>px;<?php endif; ?>
+                                 <?php if ($b->alt_background) : ?>
+                                         background-color: <?= $b->alt_background;?>;
+                                 <?php endif; ?>
+
+                                 <?php if ($b->alt_textcolor) : ?>
+                                         color: <?= $b->alt_textcolor;?>;
+                                 <?php endif; ?>
+
+                                 <?php if ($b->alt_bordercolor) : ?>
+                                         border-color: <?= $b->alt_bordercolor;?>;
+                                 <?php endif; ?>
+
+                                         ">
+
+
+                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                    $b->topline,
+                                    $b->headline,
+                                    $b->subline,
+                                    $b->headline_type,
+                                    null,
+                                    $b->alt_headlinecolor,
+                                    $b->only_style,
+                                    "px-0"
+                                ); ?>
+
+
+                                <?php if ($b->content) : ?>
+                                    <div class="box--text">
+                                        <?php echo $b->content; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($b->buttons[0]->link_text != "") : ?>
+                                    <div class="ce--buttons mt-3">
+                                        <?php foreach ($b->buttons as $btn) : ?>
+                                            <a class="d-inline-block btn <?php if ($btn->link_size) : ?><?php echo $btn->link_size; ?><?php endif; ?> <?php echo $btn->link_type; ?>"
+                                               data-aos="<?php if ($btn->animation_type) : ?><?php echo $btn->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                               href="<?php echo $btn->link_url; ?><?php if ($btn->link_betreff) : ?>?subject=<?php echo $btn->link_betreff; ?><?php endif; ?>"><?php echo $btn->link_text; ?> </a>
+                                        <?php endforeach ?>
+                                    </div>
+                                <?php endif; ?>
+
                             </div>
-                        <?php endif; ?>
-                        <?php if ($b->button_url) : ?>
-                            <div class="box--button">
-                                <a class="btn btn-primary"
-                                   href="<?php echo $b->button_url; ?>"><?php echo $b->button_text; ?></a>
-                            </div>
-                        <?php endif; ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                <?php endif; ?>
-            </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
-<?php endforeach; ?>
-</div></div></div>
+</div>

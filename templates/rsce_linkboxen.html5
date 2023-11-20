@@ -15,27 +15,21 @@ if (!isset($this->size)) {
 
         <div class="<?php echo $this->class; ?>">
 
-            <?php if ($this->headline || $this->subline || $this->topline): ?>
-            <div class="ce--headline hl-<?php echo "{$this->hl}"; ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeInUp'; ?>">
-                <?php if ($this->topline): ?>
-                    <span class="ce--topline"><?= $this->topline; ?></span>
-                <?php endif; ?>
-
-                <?php if ($this->headline): ?>
-                    <?php echo "<{$this->hl}>"; ?>
-                    <span class="ce--headline-content"><?= $this->headline; ?></span>
-                    <?php echo "</{$this->hl}>"; ?>
-                <?php endif; ?>
-
-                <?php if ($this->subline): ?>
-                    <span class="ce--subline"><?= $this->subline; ?></span>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
+            
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
 
 
 
-        <?php if ($this->boxes) : ?>
+            <?php if ($this->boxes) : ?>
             <div class="
 
 <?php
@@ -53,16 +47,16 @@ if (!isset($this->size)) {
         <?php if ($this->is_slider == 2): ?><?php if ($this->show_pagination): ?>with-pagination <?php endif; ?>
         swiper  <?php if ($hasAsBox) : ?>hasBoxedHeadline <?php endif; ?>linkboxes-slider_<?= $this->id; ?>
         <?php else: ?>
-          row <?php if ($this->remove_gutter): ?>g-0<?php else: ?>gx-2 gy-2<?php endif; ?> <?= $this->row_align; ?> justify-content-center <?php if ($this->same_height): ?>same-height<?php endif; ?>
+          row <?php if ($this->remove_gutter): ?>g-0<?php else: ?>g-2<?php endif; ?> <?= $this->row_align; ?> justify-content-center <?php if ($this->same_height): ?>same-height<?php endif; ?>
             <?php endif; ?>
 "
 
             >
                 <?php if ($this->is_slider == 2): ?>
-                <div class="swiper-wrapper <?php if ($this->centered_slides) : ?>align-items-center<?php endif;?>">
+                <div class="swiper-wrapper <?php if ($this->centered_slides) : ?>align-items-center<?php endif; ?>">
                     <?php endif; ?>
                     <?php foreach ($this->boxes as $i => $box) : ?>
-                        <div <?php if ($this->is_slider == 1): ?>data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"<?php endif; ?> class="
+                    <div <?php if ($this->is_slider == 1): ?>data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"<?php endif; ?> class="
 
                         <?php if ($this->is_slider == 2): ?>
                         swiper-slide
@@ -71,275 +65,285 @@ if (!isset($this->size)) {
                        <?php endif; ?>
                   ">
 
-                            <div id="linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>"
-                                 class="link--box <?php if ($box->linkoverlay || $box->expand_longtext) : ?>with-link<?php endif; ?> <?php echo $box->box_style; ?> ">
+                        <div id="linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>"
+                             class="link--box <?php if ($box->linkoverlay || $box->expand_longtext) : ?>with-link<?php endif; ?> <?php echo $box->box_style; ?> <?php if ($box->image_grayed): ?>image-grayed-out<?php endif; ?>">
 
-                                <?php if (($box->linkoverlay && ($box->alternate_background_hover || $box->alternate_textcolor_hover)) || $box->alternate_hoverbackground || $box->alternate_hovertext) : ?>
-                                    <style>
-                                        <?php if ($box->alternate_background_hover) : ?>
+                            <?php if (($box->linkoverlay && ($box->alternate_background_hover || $box->alternate_textcolor_hover)) || $box->alternate_hoverbackground || $box->alternate_hovertext) : ?>
+                                <style>
+                                    <?php if ($box->alternate_background_hover) : ?>
 
-                                        <?php
-                                           $backgroundColor = $box->alternate_background_hover;
-                                           $backgroundColor = str_replace("&#41", ")",$backgroundColor);
-                                           $backgroundColor = str_replace("&#40", "(",$backgroundColor);
-                                           $backgroundColor = str_replace("(;", "(",$backgroundColor);
-                                           $backgroundColor = str_replace("&#35;", "#",$backgroundColor);
-                                           $backgroundColor = str_replace(");", ")",$backgroundColor);
-                                       ?>
-
-
-                                        #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper {
-                                            background-color: <?= $backgroundColor?> !important;
-                                        }
-
-                                        <?php endif;?>
-
-                                        <?php if ($box->alternate_textcolor_hover) : ?>
-                                        <?php
-                                            $textColor = $box->alternate_textcolor_hover;
-                                            $textColor = str_replace("&#41", ")",$textColor);
-                                            $textColor = str_replace("&#40", "(",$textColor);
-                                            $textColor = str_replace("(;", "(",$textColor);
-                                            $textColor = str_replace("&#35;", "#",$textColor);
-                                             $textColor = str_replace(");", ")",$textColor);
-                                        ?>
+                                    <?php
+                                       $backgroundColor = $box->alternate_background_hover;
+                                       $backgroundColor = str_replace("&#41", ")",$backgroundColor);
+                                       $backgroundColor = str_replace("&#40", "(",$backgroundColor);
+                                       $backgroundColor = str_replace("(;", "(",$backgroundColor);
+                                       $backgroundColor = str_replace("&#35;", "#",$backgroundColor);
+                                       $backgroundColor = str_replace(");", ")",$backgroundColor);
+                                   ?>
 
 
-                                        #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:after,
-                                        #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper,
-                                        #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:not(.as-box) > .headline--wrapper > .box--headline,
-                                        #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:not(.as-box) > .headline--wrapper > .box--subline {
-                                            color: <?= $textColor;?> !important;
-                                        }
+                                    #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper {
+                                        background-color: <?= $backgroundColor?> !important;
+                                    }
 
-                                        <?php endif;?>
+                                    <?php endif;?>
 
-
-                                        <?php if ($box->alternate_hoverbackground) : ?>
-
-                                        <?php
-                                           $backgroundColor = $box->alternate_hoverbackground;
-                                           $backgroundColor = str_replace("&#41", ")",$backgroundColor);
-                                           $backgroundColor = str_replace("&#40", "(",$backgroundColor);
-                                           $backgroundColor = str_replace("(;", "(",$backgroundColor);
-                                           $backgroundColor = str_replace("&#35;", "#",$backgroundColor);
-                                            $backgroundColor = str_replace(");", ")",$backgroundColor);
-                                       ?>
-
-
-                                        #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box--upper .hover-text {
-                                            background-color: <?= $backgroundColor?> !important;
-                                        }
-
-                                        <?php endif;?>
-
-                                        <?php if ($box->alternate_hovertext) : ?>
-                                        <?php
-                                            $textColor = $box->alternate_hovertext;
-                                            $textColor = str_replace("&#41", ")",$textColor);
-                                            $textColor = str_replace("&#40", "(",$textColor);
-                                            $textColor = str_replace("(;", "(",$textColor);
-                                            $textColor = str_replace("&#35;", "#",$textColor);
-                                             $textColor = str_replace(");", ")",$textColor);
-                                        ?>
-
-
-                                        #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box--upper .hover-text {
-                                            color: <?= $textColor;?> !important;
-                                        }
-
-                                        <?php endif;?>
-
-                                    </style>
-                                <?php endif; ?>
-
-
-                                <?php if ($box->linkoverlay && ($box->buttons[0]->link_url)) : ?>
-                                    <a <?php if ($box->buttons[0]->new_tab): ?>target="_blank"<?php endif; ?>
-                                       href="<?php echo $box->buttons[0]->link_url; ?>"></a>
-                                <?php elseif ($box->linkoverlay && ($box->modal_longtext || $box->modal_image)) : ?>
-                                    <span data-bs-toggle="modal"
-                                          data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"></span>
-                                <?php endif; ?>
-                                <?php if ($box->image) : ?><?php
-                                    $filename = FilesModel::findByUuid($box->image)->path;
-                                    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                                    <?php if ($box->alternate_textcolor_hover) : ?>
+                                    <?php
+                                        $textColor = $box->alternate_textcolor_hover;
+                                        $textColor = str_replace("&#41", ")",$textColor);
+                                        $textColor = str_replace("&#40", "(",$textColor);
+                                        $textColor = str_replace("(;", "(",$textColor);
+                                        $textColor = str_replace("&#35;", "#",$textColor);
+                                         $textColor = str_replace(");", ")",$textColor);
                                     ?>
-                                    <div class="box--upper">
-                                        <?php if ($ext != "mp4" && !$box->not_as_bg) : ?>
-                                            <div class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>"
 
-                                                 data-bg="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
-                                                 style="
-                                               background-size: cover; background-repeat: no-repeat; background-position: center center ; <?php if ($this->imagearea_height): ?>height: <?= $this->imagearea_height; ?>; <?php endif; ?>
-                                                 <?php if ($box->box_style == "style-3"): ?>
-                                                         background-color: <?php if ($box->image_grayed): ?>linear-gradient(black, black),<?php endif;?>;
-                                                 <?php endif; ?>
-                                            "></div>
-                                        <?php endif; ?>
-                                        <?php if ($ext != "mp4" && $box->not_as_bg) : ?>
-                                            <div style="height: auto; text-align: center;"
-                                                 class="image--holder <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
-                                                <img loading="lazy" <?php if($this->is_slider == 2):?><?php else:?>  class="lazy" data-<?php endif;?>src="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
-                                            <?php if($this->is_slider == 2):?> <div class="swiper-lazy-preloader"></div><?php endif; ?>
+
+                                    #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:after,
+                                    #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper,
+                                    #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:not(.as-box) > .headline--wrapper > .box--headline,
+                                    #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:not(.as-box) > .headline--wrapper > .box--subline {
+                                        color: <?= $textColor;?> !important;
+                                    }
+
+                                    <?php endif;?>
+
+
+                                    <?php if ($box->alternate_hoverbackground) : ?>
+
+                                    <?php
+                                       $backgroundColor = $box->alternate_hoverbackground;
+                                       $backgroundColor = str_replace("&#41", ")",$backgroundColor);
+                                       $backgroundColor = str_replace("&#40", "(",$backgroundColor);
+                                       $backgroundColor = str_replace("(;", "(",$backgroundColor);
+                                       $backgroundColor = str_replace("&#35;", "#",$backgroundColor);
+                                        $backgroundColor = str_replace(");", ")",$backgroundColor);
+                                   ?>
+
+
+                                    #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box--upper .hover-text {
+                                        background-color: <?= $backgroundColor?> !important;
+                                    }
+
+                                    <?php endif;?>
+
+                                    <?php if ($box->alternate_hovertext) : ?>
+                                    <?php
+                                        $textColor = $box->alternate_hovertext;
+                                        $textColor = str_replace("&#41", ")",$textColor);
+                                        $textColor = str_replace("&#40", "(",$textColor);
+                                        $textColor = str_replace("(;", "(",$textColor);
+                                        $textColor = str_replace("&#35;", "#",$textColor);
+                                         $textColor = str_replace(");", ")",$textColor);
+                                    ?>
+
+
+                                    #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box--upper .hover-text {
+                                        color: <?= $textColor;?> !important;
+                                    }
+
+                                    <?php endif;?>
+
+                                </style>
+                            <?php endif; ?>
+
+
+                            <?php if ($box->linkoverlay && ($box->buttons[0]->link_url)) : ?>
+                                <a <?php if ($box->buttons[0]->new_tab): ?>target="_blank"<?php endif; ?>
+                                   href="<?php echo $box->buttons[0]->link_url; ?>"></a>
+                            <?php elseif ($box->linkoverlay && ($box->modal_longtext || $box->modal_image)) : ?>
+                                <span data-bs-toggle="modal"
+                                      data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"></span>
+                            <?php endif; ?>
+                            <?php if ($box->image) : ?><?php
+                                $filename = FilesModel::findByUuid($box->image)->path;
+                                $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                                ?>
+                                <div class="box--upper">
+                                    <?php if ($ext != "mp4" && !$box->not_as_bg) : ?>
+                                        <div class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>"
+
+                                             data-bg="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
+                                             style="
+                                                     background-size: cover; background-repeat: no-repeat; background-position: center center ; <?php if ($this->imagearea_height): ?>height: <?= $this->imagearea_height; ?>; <?php endif; ?>
+                                             <?php if ($box->box_style == "style-3"): ?>
+                                                     background-color: <?php if ($box->image_grayed): ?>linear-gradient(black, black),<?php endif; ?>;
+                                             <?php endif; ?>
+                                                     "></div>
+                                    <?php endif; ?>
+                                    <?php if ($ext != "mp4" && $box->not_as_bg) : ?>
+                                        <div style="height: auto; text-align: center;"
+                                             class="image--holder <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
+                                            <img loading="lazy" <?php if ($this->is_slider == 2): ?><?php else: ?> class="lazy" data-<?php endif; ?>src="<?= Image::get(FilesModel::findByUuid($box->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+                                            <?php if ($this->is_slider == 2): ?>
+                                                <div class="swiper-lazy-preloader"></div><?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if ($ext == "mp4") : ?>
+                                        <div class="image--holder is--video <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
+                                            <video autoplay muted controls playsinline>
+                                                <source type="video/mp4" src="{{file::<?= $box->image ?>}}">
+                                            </video>
+                                        </div>
+                                    <?php endif; ?>
+
+
+                                    <?php if ($box->image_headline_background && $box->as_design_element): ?>
+                                        <span style="background-color: <?= $box->image_headline_background; ?>" class="design-element"></span>
+                                    <?php endif; ?>
+
+                                    <?php if ($box->image_headline): ?>
+                                        <div class="box-upper--image-text" style=" <?php if ($box->content_width && !$box->as_design_element): ?>max-width:<?= $box->content_width; ?>; <?php endif; ?><?php if ($box->image_headline_background && !$box->as_design_element): ?>background-color: <?= $box->image_headline_background; ?>; padding: 1.5rem;<?php endif; ?>">
+                                            <div style="<?php if ($box->text_color): ?>color: <?= $box->text_color; ?>; <?php endif; ?>"><?= $box->image_headline; ?></div>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($box->box_style == "style-3"): ?>
+                                        <?php if ($box->add_items == "buttons") : ?>
+                                            <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
+                                                <?php foreach ($box->buttons as $button) : ?>
+                                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
+                                                       data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                                       class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
+                                                <?php endforeach ?>
                                             </div>
                                         <?php endif; ?>
-                                        <?php if ($ext == "mp4") : ?>
-                                            <div class="image--holder is--video <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
-                                                <video autoplay muted controls playsinline>
-                                                    <source type="video/mp4" src="{{file::<?= $box->image ?>}}">
-                                                </video>
-                                            </div>
-                                        <?php endif; ?>
 
-
-                                        <?php if ($box->image_headline_background && $box->as_design_element): ?>
-                                            <span style="background-color: <?= $box->image_headline_background; ?>" class="design-element"></span>
-                                        <?php endif; ?>
-
-                                        <?php if ($box->image_headline): ?>
-                                            <div class="box-upper--image-text" style=" <?php if ($box->content_width && !$box->as_design_element): ?>max-width:<?= $box->content_width; ?>; <?php endif; ?><?php if ($box->image_headline_background && !$box->as_design_element): ?>background-color: <?= $box->image_headline_background; ?>; padding: 1.5rem;<?php endif; ?>">
-                                                <div style="<?php if ($box->text_color): ?>color: <?= $box->text_color; ?>; <?php endif; ?>"><?= $box->image_headline; ?></div>
-                                            </div>
-                                        <?php endif; ?>
-
-                                        <?php if ($box->box_style == "style-3" && $box->add_items): ?>
-                                            <?php if ($box->add_items == "buttons") : ?>
-                                                <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
-                                                    <?php foreach ($box->buttons as $button) : ?>
-                                                        <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                                           data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                                           class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                                           href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
-                                                    <?php endforeach ?>
-                                                </div>
-                                            <?php endif; ?>
-
-                                            <?php if ($box->add_items == "modal") : ?>
-                                                <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
+                                        <?php if ($box->add_items == "modal") : ?>
+                                            <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
                                                 <span class="d-inline-block btn     <?php if ($box->modal_button_size) : ?><?php echo $box->modal_button_size; ?><?php endif; ?> <?php echo $box->modal_button_type; ?>"
                                                       data-aos="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                                                       data-bs-toggle="modal"
                                                       data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"><?php echo $box->modal_button_text; ?></span>
-                                                </div>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
-
-
-                                        <?php if ($box->imagetext) : ?>
-                                            <div class="hover-text">
-                                                <div class="hover-text--inner">
-                                                    <?= $box->imagetext; ?>
-                                                </div>
                                             </div>
                                         <?php endif; ?>
-                                    </div>
-                                <?php endif; ?>
-                                <?php if ($box->longtext || $box->text || $box->expand_image || $box->expand_image || $box->modal_longtext || $box->modal_image) : ?>
-                                    <div class="box-lower--wrapper <?php echo $box->textalign; ?>"
-                                         style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background) : ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
-                                        <?php if ($box->text || $box->subline) : ?>
-                                            <div class="box--lower <?php if ($box->is_map == "nix") : ?>p-1 p-md-2<?php endif; ?>
+                                    <?php endif; ?>
 
+
+                                    <?php if ($box->imagetext) : ?>
+                                        <div class="hover-text">
+                                            <div class="hover-text--inner">
+                                                <?= $box->imagetext; ?>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($box->longtext || $box->text || $box->expand_image || $box->expand_image || $box->modal_longtext || $box->modal_image) : ?>
+                            <div class="box-lower--wrapper <?php echo $box->textalign; ?>"
+                                 style="<?php if ($box->alternate_textcolor) : ?>color:<?php echo $box->alternate_textcolor; ?>;<?php endif; ?><?php if ($box->alternate_background) : ?>background-color:<?php echo $box->alternate_background; ?><?php endif; ?>">
+                                <?php if ($box->text || $box->subline) : ?>
+                                <div class="box--lower <?php if ($box->is_map == "nix") : ?>p-1 p-md-2<?php endif; ?>
                                         <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>
                                         <?php if ($box->as_box) : ?>as-box<?php endif; ?> <?php if ($box->linkoverlay && $box->hide_arrow == 1) : ?>with-url<?php endif; ?> <?php if ($box->arrow_position): ?>arrow-<?= $box->arrow_position; ?><?php endif; ?>"
-                                                 style="
-                                                 <?php if ($box->shadowbox_background && $box->as_box) : ?>background-color:<?php echo $box->shadowbox_background; ?><?php endif; ?>
-                                                         ">
-                                                <div class="headline--wrapper w-100">
+                                     style="
+                                     <?php if ($box->shadowbox_background && $box->as_box) : ?>background-color:<?php echo $box->shadowbox_background; ?><?php endif; ?>
+                                             ">
 
-                                                    <?php if ($box->topline) : ?>
-                                                        <span class="ce--topline"><?php echo $box->topline; ?></span>
-                                                    <?php endif; ?>
 
-                                                    <?php if ($box->text) : ?>
-                                                        <span class="box--headline"
-                                                              style="<?php if ($box->shadowbox_textcolor) : ?>color:<?php echo $box->shadowbox_textcolor; ?>;<?php endif; ?>">
-                                                    <?php echo $box->text; ?>
-                                                </span>
-                                                    <?php endif; ?>
-                                                    <?php if ($box->subline) : ?>
-                                                        <span class="ce--subline box--subline"
-                                                              style="<?php if ($box->shadowbox_textcolor) : ?>color:<?php echo $box->shadowbox_textcolor; ?>;<?php endif; ?>">
-                                                    <?php echo $box->subline; ?>
-                                                </span>
-                                                    <?php endif; ?>
-                                                </div>
+                                    <div class="ce--headline w-100  mb-0 hl-<?php echo "{$box->headline_type}"; ?>">
+                                        <?php if ($box->topline): ?>
+                                            <span class="ce--topline box--topline"><?= $box->topline; ?></span>
+                                        <?php endif; ?>
+
+                                        <?php if (!$box->onlystyle) : ?>
+                                        <<?= $box->headline_type ?> class="<?= $box->headline_type ?>">
+                                        <?= $box->text ?>
+                                    </<?= $box->headline_type ?>>
+                                    <?php else : ?>
+                                        <span class="<?= $box->headline_type ?>">
+                                            <?= $box->text ?>
+                                        </span>
+                                    <?php endif; ?>
+
+
+                                    <?php if ($box->subline): ?>
+                                        <span class="ce--subline box--subline"><?= $box->subline; ?></span>
+                                    <?php endif; ?>
+                                </div>
+
+
+                            </div>
+                        <?php endif; ?>
+                            <?php if ($box->is_map != "nix" && (($box->add_items && $box->box_style != "style-3") || $box->longtext)) : ?>
+                                <div class="box-lower--expand <?php if ($box->is_map == "code") : ?>is-map<?php endif; ?> <?php if ($box->expand_longtext && $box->expand_longtext != "show_all") : ?>expandable<?php endif; ?> <?php if ($box->expand_longtext == "hide_preview") : ?>hide-preview<?php endif; ?>">
+                                    <?php if ($box->expand_image) : ?>
+                                        <div class="box--expand-image text-center">
+
+                                            <img loading="lazy" <?php if ($this->is_slider == 2): ?><?php else: ?> class="lazy" data-<?php endif; ?>src="<?= Image::get(FilesModel::findByUuid($box->expand_image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if ($box->longtext) : ?>
+                                        <div class="box--longtext <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
+                                            <?php echo $box->longtext; ?>
+                                        </div>
+                                    <?php endif; ?>
+
+
+                                    <?php if ($box->code) : ?>
+                                        <div class="code-wrapper">
+                                            <?php echo $box->code; ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($box->link_text) : ?>
+                                        <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
+                                            <a class="d-inline-block btn <?php if ($box->link_size) : ?><?php echo $box->link_size; ?><?php endif; ?> <?php echo $box->link_type; ?>"
+                                               href="<?php echo $box->link; ?><?php if ($box->link_betreff) : ?>?subject=<?php echo $box->link_betreff; ?><?php endif; ?>"><?php echo $box->link_text; ?>
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
+
+
+                                    <?php if ($box->box_style != "style-3"): ?>
+
+                                        <?php if ($box->add_items == "buttons" && !$box->linkoverlay) : ?>
+                                            <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
+                                                <?php foreach ($box->buttons as $button) : ?>
+                                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
+                                                       data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                                       class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
+                                                <?php endforeach ?>
                                             </div>
                                         <?php endif; ?>
-                                        <?php if ($box->is_map != "nix" && (($box->add_items && !$box->box_style == "style-3") || $box->longtext)) : ?>
-                                            <div class="box-lower--expand <?php if ($box->is_map == "code") : ?>is-map p-0<?php endif; ?> <?php if ($box->expand_longtext && $box->expand_longtext != "show_all") : ?>expandable<?php endif; ?> <?php if ($box->expand_longtext == "hide_preview") : ?>hide-preview<?php endif; ?>">
-                                                <?php if ($box->expand_image) : ?>
-                                                    <div class="box--expand-image text-center">
 
-                                                     <img loading="lazy" <?php if($this->is_slider == 2):?><?php else:?>  class="lazy" data-<?php endif;?>src="<?= Image::get(FilesModel::findByUuid($box->expand_image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
-                                            <?php if($this->is_slider == 2):?> <div class="swiper-lazy-preloader"></div><?php endif; ?>
-
-
-                                                    </div>
-                                                <?php endif; ?>
-                                                <?php if ($box->longtext) : ?>
-                                                    <div class="box--longtext <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
-                                                        <?php echo $box->longtext; ?>
-                                                    </div>
-                                                <?php endif; ?>
-
-                                                <?php if ($box->link_text) : ?>
-                                                    <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
-                                                        <a class="d-inline-block btn <?php if ($box->link_size) : ?><?php echo $box->link_size; ?><?php endif; ?> <?php echo $box->link_type; ?>"
-                                                           href="<?php echo $box->link; ?><?php if ($box->link_betreff) : ?>?subject=<?php echo $box->link_betreff; ?><?php endif; ?>"><?php echo $box->link_text; ?>
-                                                        </a>
-                                                    </div>
-                                                <?php endif; ?>
-
-
-
-                                                <?php if (!$box->box_style == "style-3"): ?>
-                                                    <?php if ($box->add_items == "buttons" && !$box->linkoverlay) : ?>
-                                                        <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
-                                                            <?php foreach ($box->buttons as $button) : ?>
-                                                                <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                                                   data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                                                   class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                                                   href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
-                                                            <?php endforeach ?>
-                                                        </div>
-                                                    <?php endif; ?>
-
-                                                    <?php if ($box->add_items == "modal" && !$box->linkoverlay) : ?>
-                                                        <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
+                                        <?php if ($box->add_items == "modal" && !$box->linkoverlay) : ?>
+                                            <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
                                                 <span class="d-inline-block btn     <?php if ($box->modal_button_size) : ?><?php echo $box->modal_button_size; ?><?php endif; ?> <?php echo $box->modal_button_type; ?>"
                                                       data-aos="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                                                       data-bs-toggle="modal"
                                                       data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"><?php echo $box->modal_button_text; ?></span>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                <?php endif; ?>
                                             </div>
                                         <?php endif; ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                       <?php if ($this->is_slider == 2): ?> <div class="swiper-lazy-preloader"></div><?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                    <?php endforeach ?>
-                    <?php if ($this->is_slider == 2): ?>
+                        <?php endif; ?>
+                    </div>
+
                 </div>
-            <?php endif; ?>
+            <?php endforeach ?>
+                <?php if ($this->is_slider == 2): ?>
             </div>
+        <?php endif; ?>
+        </div>
 
 
-            <?php if ($this->is_slider == 2): ?>
-                <?php if (count($this->boxes) > 1) : ?>
-                    <?php if ($this->show_pagination): ?>
-                        <div class="linkboxes-slider_<?= $this->id; ?> swiper-pagination"></div>
-                    <?php endif; ?>
-                    <?php if ($this->show_arrows): ?>
-                        <div class="linkboxes-slider_<?= $this->id; ?> swiper-button-prev"></div>
-                        <div class="linkboxes-slider_<?= $this->id; ?> swiper-button-next"></div>
-                    <?php endif; ?>
+        <?php if ($this->is_slider == 2): ?>
+            <?php if (count($this->boxes) > 1) : ?>
+                <?php if ($this->show_pagination): ?>
+                    <div class="linkboxes-slider_<?= $this->id; ?> swiper-pagination"></div>
+                <?php endif; ?>
+                <?php if ($this->show_arrows): ?>
+                    <div class="linkboxes-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                    <div class="linkboxes-slider_<?= $this->id; ?> swiper-button-next"></div>
                 <?php endif; ?>
             <?php endif; ?>
+        <?php endif; ?>
         <?php endif; ?>
     </div>
 </div></div>
@@ -366,11 +370,11 @@ if (!isset($this->size)) {
 
                                     <div class="image--wrapper">
 
-                                        <img  class="lazy"
+                                        <img class="lazy"
                                              data-src="<?= Image::get(FilesModel::findByUuid($box->modal_image)->path, null, null, null); ?>">
 
                                         <?php if ($box->modal_logo) : ?>
-                                            <img  class="lazy logo"
+                                            <img class="lazy logo"
                                                  data-src="<?= Image::get(FilesModel::findByUuid($box->modal_logo)->path, null, null, null); ?>">
 
                                         <?php endif; ?>
@@ -474,25 +478,6 @@ if (!isset($this->size)) {
 
                 });
 
-                <?php if (($this->is_slider == 2 && count($this->boxes) > 1) && $this->show_arrows): ?>
-
-                var swiper = swiper_<?php echo $this->id; ?>;
-                document.querySelector('.swiper-button-prev.linkboxes-slider_<?= $this->id; ?>').addEventListener('mousedown', function (e) {
-                    if (this.classList.contains('swiper-button-disabled')) {
-                        setTimeout(function () {
-                            swiper.slideTo(swiper.slides.length - 1);
-                        }, 150);
-                    }
-                });
-
-                document.querySelector('.swiper-button-next.linkboxes-slider_<?= $this->id; ?>').addEventListener('mousedown', function (e) {
-                    if (this.classList.contains('swiper-button-disabled')) {
-                        setTimeout(function () {
-                            swiper.slideTo(0);
-                        }, 150);
-                    }
-                });
-                <?php endif;?>
             }
         }, {passive: true})
     </script>

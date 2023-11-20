@@ -106,7 +106,7 @@ return array(
             'inputType' => 'group',
             'dependsOn' => array(
                 'field' => 'is_slider',
-                 'value' => '2',
+                'value' => '2',
             ),
         ),
 
@@ -162,13 +162,13 @@ return array(
             'eval' => array('tl_class' => ' clr'),
         ),
 
-        /*
+
         'loop' => array(
             'label' => array('Automatisch wieder von Anfang starten', '"loop"'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
         ),
-        */
+
 
         'autoplay' => array(
             'label' => array('Autoplay aktivieren', ''),
@@ -362,7 +362,7 @@ return array(
                 ),
 
                 'hide_arrow' => array(
-                    'label' => array('"Link-Pfeil"', ''),
+                    'label' => array('"Link-Pfeil"', 'Nur relevant wenn Buttons ausgeblendet sind (Checkbox oberhalb)'),
                     'inputType' => 'select',
                     'eval' => array('tl_class' => 'w50'),
                     'options' => array(
@@ -384,8 +384,8 @@ return array(
                         'right' => 'Rechts neben der Headline',
                     ),
                     'dependsOn' => array(
-                        'field' => 'hide_arrow',
-                        'value' => '1',
+                        'field' => 'box_style',
+                        'value' => 'style-2',
                     ),
                 ),
 
@@ -411,7 +411,7 @@ return array(
 
 
                 'settings_image' => array(
-                    'label' => array('Bild / Video', ''),
+                    'label' => array('Bild / Video (Bildbereich, oben)', ''),
                     'inputType' => 'group',
                     'eval' => array('tl_class' => 'clr'),
                 ),
@@ -473,28 +473,49 @@ return array(
 
 
                 'settings_3' => array(
-                    'label' => array('Inhalte', ''),
+                    'label' => array('Inhalte (Inhaltsbereich, unten)', ''),
                     'inputType' => 'group',
                 ),
 
 
-                'topline' => array(
-                    'label' => array('Topline', 'Text oberhalb der Überschrift'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                'headline_type' => array(
+                    'label' => array(
+                        'de' => array('Typ der Überschrift', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'h1' => 'H1',
+                        'h2' => 'H2',
+                        'h3' => 'H3',
+                        'h4' => 'H4',
+                        'h5' => 'H5',
+                        'h6' => 'H6',
+                    ),
+                    'eval' => array('tl_class' => 'clr'),
                 ),
-                'subline' => array(
-                    'label' => array('Subline', 'Text unterhalb der Überschrift'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                'onlystyle' => array(
+                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
+                    'inputType' => 'checkbox',
                 ),
-
 
                 'text' => array(
                     'label' => array('Überschrift', 'HTML ist erlaubt!'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'clr', 'allowHtml' => true),
                 ),
+
+                'topline' => array(
+                    'label' => array('Topline', 'Text oberhalb der Überschrift'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'subline' => array(
+                    'label' => array('Subline', 'Text unterhalb der Überschrift'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
 
                 'as_box' => array(
                     'label' => array('Überschrift und Subline in Box mit Schatten darstellen', ''),
@@ -536,6 +557,10 @@ return array(
                         'code' => 'Ein iFrame, z. B. eine Google-Map einbinden',
                     ),
                     'eval' => array('tl_class' => 'clr'),
+                     'dependsOn' => array(
+                        'field' => 'box_style',
+                        'value' => array('style-1', 'style-2'),
+                    ),
                 ),
 
                 'longtext' => array(
@@ -552,6 +577,7 @@ return array(
                 'code' => array(
                     'label' => array('Code', 'z. B. Googlemap-Frame'),
                     'inputType' => 'textarea',
+                          'eval' => array( 'allowHtml' => true),
                     'dependsOn' => array(
                         'field' => 'is_map',
                         'value' => 'code',
@@ -566,10 +592,6 @@ return array(
                         '1' => 'Text nach Hover im Bildbereich anzeigen',
                     ),
                     'eval' => array('tl_class' => 'clr'),
-                    'dependsOn' => array(
-                        'field' => 'is_map',
-                        'value' => 'text',
-                    ),
                 ),
 
                 'alternate_hoverbackground' => array(
@@ -658,6 +680,10 @@ return array(
                 'settings_text' => array(
                     'label' => array('Text-Formatierungen', ''),
                     'inputType' => 'group',
+                          'dependsOn' => array(
+                        'field' => 'box_style',
+                        'value' => array('style-1', 'style-2'),
+                    ),
                 ),
 
                 'textalign' => array(
