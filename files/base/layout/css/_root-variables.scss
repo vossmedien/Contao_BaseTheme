@@ -27,6 +27,17 @@
   --bs-font-weight-800: 800;
   --bs-font-weight-900: 900;
 
+
+  --bs-h1-font-weight: var(--bs-font-weight-400);
+  --bs-h2-font-weight: var(--bs-font-weight-500);
+  --bs-h3-font-weight: var(--bs-font-weight-500);
+  --bs-h4-font-weight: var(--bs-font-weight-500);
+  --bs-h5-font-weight: var(--bs-font-weight-500);
+  --bs-h6-font-weight: var(--bs-font-weight-500);
+
+  --bs-topline-font-weight: var(--bs-font-weight-500);
+  --bs-subline-font-weight: var(--bs-font-weight-500);
+
   --bs-btn-padding-top: 0.75rem;
   --bs-btn-padding-bottom: 0.85rem;
   --bs-btn-padding-left: 1rem;

@@ -239,8 +239,6 @@ if (TL_MODE == 'FE') {
 
 
             html body #wrapper main#main .inside > [data-articleid="article-<?= $this->pid;?>"] > .article-content {
-
-
             <?php if($this->image):?> background: url(<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>) center center no-repeat;
             <?php else:?> background: <?php echo $backgroundStyle;?>;
             <?php endif;?><?php if($this->fit_image):?> background-size: 100% 100%;

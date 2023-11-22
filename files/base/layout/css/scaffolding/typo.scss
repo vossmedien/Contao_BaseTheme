@@ -120,7 +120,7 @@ html body {
   }
 
   .ce--topline {
-    font-weight: $font-weight-black;
+    font-weight: var(--bs-topline-font-weight);
     color: var(--bs-primary);
     //@include font-size(22px);
     display: block;
@@ -129,7 +129,7 @@ html body {
   }
 
   .ce--subline {
-    font-weight: $font-weight-bold;
+    font-weight: var(--bs-subline-font-weight);
     color: var(--bs-primary);
     //@include font-size(22px);
     display: block;
@@ -141,6 +141,7 @@ html body {
   .h1 {
     margin-bottom: $headline-spacing;
     display: block;
+    font-weight: var(--bs-h1-font-weight);
     @include font-size($h1-font-size);
 
     & + .ce--subline {
@@ -158,6 +159,7 @@ html body {
   .h2 {
     margin-bottom: $headline-spacing / 1.75;
     display: block;
+    font-weight: var(--bs-h2-font-weight);
     @include font-size($h2-font-size);
 
     & + .ce--subline {
@@ -173,7 +175,7 @@ html body {
 
   h3,
   .h3 {
-    font-weight: var(--bs-font-weight-500);
+    font-weight: var(--bs-h3-font-weight);
     margin-bottom: $headline-spacing / 2.5;
     font-size: 1.5rem;
     color: var(--bs-primary);
@@ -195,6 +197,7 @@ html body {
   .h4 {
     margin-bottom: $headline-spacing / 3;
     @include font-size($h4-font-size);
+    font-weight: var(--bs-h4-font-weight);
 
     & + .ce--subline {
       @include font-size(calc(#{$h4-font-size} / 1.75));
@@ -211,12 +214,14 @@ html body {
   .h5 {
     @include font-size($h5-font-size);
     margin-bottom: $headline-spacing / 3;
+    font-weight: var(--bs-h5-font-weight);
   }
 
   h6,
   .h6 {
     @include font-size($h6-font-size);
     margin-bottom: $headline-spacing / 3;
+    font-weight: var(--bs-h6-font-weight);
   }
 
   main {

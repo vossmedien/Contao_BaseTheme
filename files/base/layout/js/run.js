@@ -336,3 +336,4 @@ if (type7Header) {
 window.addEventListener("scroll", () => {
     scrollFunctions.forEach((func) => func());
 });
+scrollFunctions.forEach((func) => func());

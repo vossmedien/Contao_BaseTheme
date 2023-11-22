@@ -18,8 +18,6 @@
     <?php endif; ?>
 
 
-    <script type="text/javascript" src="/files/base/layout/js/_element-handling.js"></script>
-    <script defer type="text/javascript" src="/files/base/layout/js/_animate-on-scroll.js"></script>
     <script type="text/javascript" src="/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js"></script>
 
 
@@ -41,11 +39,11 @@
 <?php $this->block('body'); ?>
 <?php $this->sections('top'); ?>
 
-
+<!--
 <div class="BodyScrollToTop" data-aos="animate__fadeInUp"><i class="fa-sharp fa-light fa-arrow-up"></i></div>
-
+-->
 <div class="openContactForm">
-    <i data-bs-toggle="modal" data-bs-target="#contactForm" class="fa-duotone fa-comment-pen" style=" --fa-secondary-opacity: 1; --fa-primary-color: var(--bs-body-color-inverse); --fa-secondary-color: var(--bs-secondary);"></i>
+    <i data-bs-toggle="modal" data-bs-target="#contactForm"  class="fa-regular fa-square-envelope"></i>
 </div>
 
 <div id="wrapper">
@@ -124,7 +122,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header py-2">
-                <span class="h2 modal-title mt-1 mb-0" id="contactFormLabel">Kontakt aufnehmen</span>
+                <span class="h2 modal-title mt-1 mb-0" id="contactFormLabel">General Inquiry</span>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

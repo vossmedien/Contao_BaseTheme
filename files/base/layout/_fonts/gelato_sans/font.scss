@@ -1,0 +1,237 @@
+/*
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-ThinItalic.eot');
+    src: local('Gelato Sans Thin Italic'), local('GelatoSans-ThinItalic'),
+        ('../_fonts/gelato_sans/font/GelatoSans-ThinItalic.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-ThinItalic.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-ThinItalic.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-Black.eot');
+    src: local('Gelato Sans Black'), local('GelatoSans-Black'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Black.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Black.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Black.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gelato Sans Ultra';
+    src: ('../_fonts/gelato_sans/font/GelatoSans-UltraLight.eot');
+    src: local('Gelato Sans Ultra Light'), local('GelatoSans-UltraLight'),
+        ('../_fonts/gelato_sans/font/GelatoSans-UltraLight.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-UltraLight.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-UltraLight.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-UltraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-HeavyItalic.eot');
+    src: local('Gelato Sans Heavy Italic'), local('GelatoSans-HeavyItalic'),
+        ('../_fonts/gelato_sans/font/GelatoSans-HeavyItalic.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-HeavyItalic.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-HeavyItalic.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-HeavyItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-Italic.eot');
+    src: local('Gelato Sans Italic'), local('GelatoSans-Italic'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Italic.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Italic.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Italic.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-Thin.eot');
+    src: local('Gelato Sans Thin'), local('GelatoSans-Thin'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Thin.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Thin.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Thin.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-BlackItalic.eot');
+    src: local('Gelato Sans Black Italic'), local('GelatoSans-BlackItalic'),
+        ('../_fonts/gelato_sans/font/GelatoSans-BlackItalic.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-BlackItalic.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-BlackItalic.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-LightItalic.eot');
+    src: local('Gelato Sans Light Italic'), local('GelatoSans-LightItalic'),
+        ('../_fonts/gelato_sans/font/GelatoSans-LightItalic.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-LightItalic.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-LightItalic.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Gelato Sans Semi';
+    src: ('../_fonts/gelato_sans/font/GelatoSans-SemiBoldItalic.eot');
+    src: local('Gelato Sans Semi Bold Italic'), local('GelatoSans-SemiBoldItalic'),
+        ('../_fonts/gelato_sans/font/GelatoSans-SemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-SemiBoldItalic.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-SemiBoldItalic.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-Medium.eot');
+    src: local('Gelato Sans Medium'), local('GelatoSans-Medium'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Medium.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Medium.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Medium.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-Heavy.eot');
+    src: local('Gelato Sans Heavy'), local('GelatoSans-Heavy'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Heavy.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Heavy.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Heavy.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Heavy.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-Bold.eot');
+    src: local('Gelato Sans Bold'), local('GelatoSans-Bold'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Bold.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Bold.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Bold.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-BoldItalic.eot');
+    src: local('Gelato Sans Bold Italic'), local('GelatoSans-BoldItalic'),
+        ('../_fonts/gelato_sans/font/GelatoSans-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-BoldItalic.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-BoldItalic.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-MediumItalic.eot');
+    src: local('Gelato Sans Medium Italic'), local('GelatoSans-MediumItalic'),
+        ('../_fonts/gelato_sans/font/GelatoSans-MediumItalic.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-MediumItalic.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-MediumItalic.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+
+
+@font-face {
+    font-family: 'Gelato Sans Ultra';
+    src: ('../_fonts/gelato_sans/font/GelatoSans-UltraLightItalic.eot');
+    src: local('Gelato Sans Ultra Light Italic'), local('GelatoSans-UltraLightItalic'),
+        ('../_fonts/gelato_sans/font/GelatoSans-UltraLightItalic.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-UltraLightItalic.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-UltraLightItalic.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-UltraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+}
+*/
+
+
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-Light.eot');
+    src: local('Gelato Sans Light'), local('GelatoSans-Light'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Light.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Light.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Light.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Gelato Sans';
+    font-display: swap;
+    src: ('../_fonts/gelato_sans/font/GelatoSans-Regular.eot');
+    src: local('Gelato Sans'), local('GelatoSans-Regular'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Regular.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Regular.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Regular.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gelato Sans Semi';
+    src: ('../_fonts/gelato_sans/font/GelatoSans-SemiBold.eot');
+    src: local('Gelato Sans Semi Bold'), local('GelatoSans-SemiBold'),
+        ('../_fonts/gelato_sans/font/GelatoSans-SemiBold.eot?#iefix') format('embedded-opentype'),
+        ('../_fonts/gelato_sans/font/GelatoSans-SemiBold.woff2') format('woff2'),
+        ('../_fonts/gelato_sans/font/GelatoSans-SemiBold.woff') format('woff'),
+        ('../_fonts/gelato_sans/font/GelatoSans-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
