@@ -1,5 +1,5 @@
 :root {
-    --width: 100vw;
+  --width: 100vw;
   --full-width: 100vw;
 
   --bs-font-primary: "Open Sans", sans-serif;
@@ -12,7 +12,6 @@
 
   --bs-gray: #{$gray};
 
-
   /*
 
 
@@ -24,7 +23,11 @@
 
   --bs-gradient: linear-gradient(to top, #004878, #002c50);
 
-  --bs-basic-spacing: clamp(calc(#{$basic-gutter} / 2), 5vw, calc(#{$basic-gutter} * 1.25));
+  --bs-basic-spacing: clamp(
+    calc(#{$basic-gutter} / 2),
+    5vw,
+    calc(#{$basic-gutter} * 1.25)
+  );
 
   --bs-font-weight-100: 100;
   --bs-font-weight-200: 200;
@@ -65,9 +68,16 @@
   --bs-topline-color: var(--bs-primary);
   --bs-subline-color: var(--bs-primary);
 
-  --bs-headline-font-weight: #{$font-weight-bold};
-  --bs-topline-font-weight: #{$font-weight-black};
-  --bs-subline-font-weight: #{$font-weight-bold};
+  --bs-h1-font-weight: var(--bs-font-weight-600);
+  --bs-h2-font-weight: var(--bs-font-weight-600);
+  --bs-h3-font-weight: var(--bs-font-weight-600);
+  --bs-h4-font-weight: var(--bs-font-weight-600);
+  --bs-h5-font-weight: var(--bs-font-weight-600);
+  --bs-h6-font-weight: var(--bs-font-weight-600);
+
+  --bs-headline-font-weight: var(--bs-font-weight-700);
+  --bs-topline-font-weight: var(--bs-font-weight-800);
+  --bs-subline-font-weight: var(--bs-font-weight-700);
 
   --bs-border-radius-sm: calc(var(--bs-border-radius) / 2);
   --bs-border-radius: 10px;

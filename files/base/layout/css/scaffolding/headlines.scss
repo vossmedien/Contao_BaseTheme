@@ -83,7 +83,6 @@ h1,
   padding: 0px;
   transition: color 0.3s ease-in-out;
   color: var(--bs-headline-color);
-  font-weight: var(--bs-headline-font-weight);
 
   font-size: clamp(
     var(--hl-font-size-min),
@@ -131,14 +130,35 @@ h1,
 
 h1,
 .h2 {
+  font-weight: var(--bs-h1-font-weight);
   --hl-font-size-max-multi: 1.5;
 }
 
 h2,
 .h2 {
+  font-weight: var(--bs-h2-font-weight);
   --hl-font-size-max-multi: 1.25;
 }
 
+h3,
+.h3{
+    font-weight: var(--bs-h3-font-weight);
+}
+
+h4,
+.h4{
+    font-weight: var(--bs-h4-font-weight);
+}
+
+h5,
+.h5{
+    font-weight: var(--bs-h5-font-weight);
+}
+
+h6,
+.h6{
+    font-weight: var(--bs-h6-font-weight);
+}
 
 .ce--topline,
 .ce--subline {
@@ -153,7 +173,6 @@ h2,
   padding: 0px;
   transition: color 0.3s ease-in-out;
   color: var(--bs-headline-color);
-  font-weight: var(--bs-headline-font-weight);
 }
 
 .ce--topline {
