@@ -1,3 +1,5 @@
+const scrollFunctions = [];
+
 // Polyfill für die matches Methode
 if (!Element.prototype.matches) {
   Element.prototype.matches =
@@ -102,36 +104,58 @@ const initializeTooltips = () => {
 /* MEGAMENÜ */
 const initializeMegaMenu = () => {
   // Handle mouseenter event
-  document.addEventListener("mouseenter", (event) => {
-    let target = event.target;
-    // Check if target is an Element and has matches function
-    if (target instanceof Element && target.matches('.mod_navigation li > *:first-child')) {
-      document.querySelectorAll('.mod_navigation li.mm_container').forEach(elem => {
-        elem.classList.remove('megamenu-active');
-      });
+  document.addEventListener(
+    "mouseenter",
+    (event) => {
+      let target = event.target;
+      // Check if target is an Element and has matches function
+      if (
+        target instanceof Element &&
+        target.matches(".mod_navigation li > *:first-child")
+      ) {
+        document
+          .querySelectorAll(".mod_navigation li.mm_container")
+          .forEach((elem) => {
+            elem.classList.remove("megamenu-active");
+          });
 
-      let parentLi = target.closest('li.mm_container');
-      if (parentLi) {
-        parentLi.classList.add('megamenu-active');
+        let parentLi = target.closest("li.mm_container");
+        if (parentLi) {
+          parentLi.classList.add("megamenu-active");
+        }
       }
-    }
-  }, true); // Enable event capturing
+    },
+    true
+  ); // Enable event capturing
 
   // Handle mouseleave event
-  document.addEventListener("mouseleave", (event) => {
-    let target = event.target;
-    // Check if target is an Element and has matches function
-    if (target instanceof Element && target.matches('.mod_navigation li.mm_container .mm_dropdown > .inner')) {
-      setTimeout(() => {
-        // Ensure the target is still part of the DOM
-        if (document.contains(target) && target.matches('.mod_navigation li.mm_container .mm_dropdown > .inner')) {
-          target.closest('li.mm_container').classList.remove('megamenu-active');
-        }
-      }, 500);
-    }
-  }, true); // Enable event capturing
+  document.addEventListener(
+    "mouseleave",
+    (event) => {
+      let target = event.target;
+      // Check if target is an Element and has matches function
+      if (
+        target instanceof Element &&
+        target.matches(".mod_navigation li.mm_container .mm_dropdown > .inner")
+      ) {
+        setTimeout(() => {
+          // Ensure the target is still part of the DOM
+          if (
+            document.contains(target) &&
+            target.matches(
+              ".mod_navigation li.mm_container .mm_dropdown > .inner"
+            )
+          ) {
+            target
+              .closest("li.mm_container")
+              .classList.remove("megamenu-active");
+          }
+        }, 500);
+      }
+    },
+    true
+  ); // Enable event capturing
 };
-
 
 /* MEGAMENÜ END */
 
@@ -225,36 +249,47 @@ accordionIcons.forEach((icon) => {
   });
 });
 
-const counters = document.querySelectorAll(".count");
-counters.forEach((counter) => {
-  function startCounter(element) {
-    if (isOnScreen(element) && !element.classList.contains("doneCounting")) {
-      const size = element.textContent.includes(".")
-        ? element.textContent.split(".")[1].length
-        : 0;
-      let startValue = 0;
-      const endValue = parseFloat(element.textContent);
+function isElementInViewport(el) {
+  const rect = el.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
+function startCounter() {
+  document.querySelectorAll(".count").forEach(function (el) {
+    if (isElementInViewport(el) && !el.classList.contains("doneCounting")) {
+      const fullText = el.textContent;
+      const matches = fullText.match(/(\d+)([^\d]*)/); // Matcht die erste Zahl und den nachfolgenden Text
+      if (!matches) return;
+
+      const number = parseFloat(matches[1]);
+      const text = matches[2];
+      let current = 0;
       const duration = 2000;
-      const stepTime = Math.abs(Math.floor(duration / (endValue - startValue)));
+      const stepTime = 20; // Millisekunden pro Schritt
 
-      let currentVal = startValue;
-      const increment = endValue > startValue ? 1 : -1;
-
-      const timer = setInterval(() => {
-        currentVal += increment;
-        counter.textContent = parseFloat(currentVal).toFixed(size);
-        if (currentVal == endValue) {
-          counter.classList.add("doneCounting");
-          clearInterval(timer);
+      function step() {
+        current += stepTime * (number / duration);
+        if (current < number) {
+          el.textContent = current.toFixed(0) + text;
+          requestAnimationFrame(step);
+        } else {
+          el.textContent = number + text;
+          el.classList.add("doneCounting");
         }
-      }, stepTime);
+      }
+
+      requestAnimationFrame(step);
     }
-  }
+  });
+}
 
-  startCounter(counter);
-});
-
-const scrollFunctions = [];
+scrollFunctions.push(startCounter);
 
 const type1NonFixedHeader = document.querySelector(
   ".header--content.type--1:not(.fixed)"

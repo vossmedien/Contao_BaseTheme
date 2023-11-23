@@ -15,17 +15,17 @@ if (!isset($this->size)) {
 
         <div class="<?php echo $this->class; ?>">
 
-            
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-            $this->topline,
-            $this->headline,
-            $this->subline,
-            $this->hl,
-            $this->animation_type,
-            null,
-            false,
-            null
-        ); ?>
+
+            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                $this->topline,
+                $this->headline,
+                $this->subline,
+                $this->hl,
+                $this->animation_type,
+                null,
+                false,
+                null
+            ); ?>
 
 
 
