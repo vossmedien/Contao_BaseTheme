@@ -1,0 +1,88 @@
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+
+.ce_rsce_statistics {
+  .hl-decorated {
+    padding: .5rem;
+    background-color: var(--bs-dark);
+    text-transform: uppercase;
+    color: var(--bs-body-color-inverse);
+    display: block;
+    font-weight: $font-weight-bold;
+    font-size: 2.5rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  h3 {
+    text-transform: none;
+    font-weight: 700;
+  }
+
+  .column-bezeichnung{
+
+  }
+
+  .statistik--image {
+    position: relative;
+
+    .image-headline {
+      position: absolute;
+      bottom: .5rem;
+      left: .5rem;
+
+      *:not(span) {
+        color: var(--bs-body-color-inverse);
+      }
+    }
+  }
+
+  .statistik--item {
+    &:not(:first-child) {
+      margin-top: 1.75rem;
+    }
+
+    span.statistik--wert {
+      display: block;
+      font-weight: $font-weight-bold;
+      font-size: clamp(2rem, 3vw, 4rem);
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    span.statistik--label {
+      display: block;
+      line-height: 1;
+      white-space: nowrap;
+      margin-top: .25rem;
+      font-weight: $font-weight-bold;
+      font-size: 1.25rem;
+    }
+  }
+
+  .statistik--anhaenge {
+    margin-top: 3rem;
+    a {
+      &:hover{
+        color: var(--bs-primary);
+      }
+      display: block;
+      text-decoration: none;
+      color: var(--bs-body-color);
+      font-weight: $font-weight-bold;
+
+      &:not(:last-child) {
+        margin-bottom: 1rem;
+      }
+
+      svg {
+        margin-right: 1.25rem;
+        vertical-align: middle;
+        height: auto;
+      }
+    }
+  }
+}

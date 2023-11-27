@@ -248,48 +248,57 @@ accordionIcons.forEach((icon) => {
     this.closest("li").classList.toggle("expanded");
   });
 });
-
-function isElementInViewport(el) {
-  const rect = el.getBoundingClientRect();
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  );
-}
-
-function startCounter() {
-  document.querySelectorAll(".count").forEach(function (el) {
-    if (isElementInViewport(el) && !el.classList.contains("doneCounting")) {
-      const fullText = el.textContent;
-      const matches = fullText.match(/(\d+)([^\d]*)/); // Matcht die erste Zahl und den nachfolgenden Text
-      if (!matches) return;
-
-      const number = parseFloat(matches[1]);
-      const text = matches[2];
-      let current = 0;
-      const duration = 2000;
-      const stepTime = 20; // Millisekunden pro Schritt
-
-      function step() {
-        current += stepTime * (number / duration);
-        if (current < number) {
-          el.textContent = current.toFixed(0) + text;
-          requestAnimationFrame(step);
-        } else {
-          el.textContent = number + text;
-          el.classList.add("doneCounting");
-        }
-      }
-
-      requestAnimationFrame(step);
+function startCounter(element) {
+    if (element.classList.contains('doneCounting')) {
+        return;
     }
-  });
+    element.classList.add('doneCounting');
+
+    const fullText = element.textContent;
+    const matches = fullText.match(/(\d+([.,]\d+)?)([^\d]*)/);
+    if (!matches) return;
+
+    const originalNumber = matches[1].replace(',', '.');
+    const decimalPlaces = (originalNumber.split('.')[1] || []).length;
+    const targetNumber = parseFloat(originalNumber);
+    const text = matches[3];
+    const duration = 2000;
+    let startTime = null;
+
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = timestamp - startTime;
+        const progressPercentage = Math.min(progress / duration, 1);
+
+        const current = progressPercentage * targetNumber;
+        element.textContent = current.toFixed(decimalPlaces) + text;
+
+        if (progress < duration) {
+            requestAnimationFrame(step);
+        } else {
+            element.textContent = targetNumber.toFixed(decimalPlaces) + text;
+        }
+    }
+
+    requestAnimationFrame(step);
 }
 
-scrollFunctions.push(startCounter);
+const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            startCounter(entry.target);
+            observer.unobserve(entry.target);
+        }
+    });
+}, {
+    rootMargin: '0px',
+    threshold: 0.1
+});
+
+document.querySelectorAll('.count').forEach(el => {
+    observer.observe(el);
+});
+
 
 const type1NonFixedHeader = document.querySelector(
   ".header--content.type--1:not(.fixed)"
