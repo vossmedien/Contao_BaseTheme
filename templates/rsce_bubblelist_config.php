@@ -173,7 +173,7 @@ return array(
             'minItems' => 1,
             'maxItems' => 99,
             'fields' => array(
-     'img' => array(
+                'img' => array(
                     'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
@@ -216,8 +216,9 @@ return array(
 
                 'text' => array(
                     'label' => array('Text', ''),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                 'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE'),
+
                 ),
                 'url' => array(
                     'label' => array('URL', ''),

@@ -367,6 +367,13 @@ return array(
                 'boxed_headline' => array(
                     'label' => array('Überschrift auf Spaltenmitte liegend', 'In weißer Box mit schatten'),
                     'inputType' => 'text',
+                    'eval' => array('allowHtml' => true, 'tl_class' => ''),
+                ),
+
+
+                'boxed_topheadline' => array(
+                    'label' => array('Topline', ''),
+                    'inputType' => 'text',
                     'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
                 ),
                 'boxed_subheadline' => array(
@@ -564,7 +571,6 @@ return array(
                 ),
 
 
-
                 'expand_left_kachel' => array(
                     'label' => array('Kachel bei Hover vergrößern und Text anzeigen', ''),
                     'inputType' => 'checkbox',
@@ -586,7 +592,6 @@ return array(
                 ),
 
 
-           
                 'kachel_left_button_text' => array(
                     'label' => array('Button-Beschriftung', 'Button ist optional'),
                     'inputType' => 'text',
@@ -826,7 +831,6 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('allowHtml' => true, 'tl_class' => 'clr', 'tl_class' => 'w50'),
                 ),
-
 
 
                 'expand_right_kachel' => array(

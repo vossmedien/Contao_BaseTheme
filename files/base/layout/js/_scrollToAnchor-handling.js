@@ -29,13 +29,13 @@ function changeAnchorLinks() {
                 if (!currElement.classList.contains("active")) {
                     currElement.classList.add("active");
                 }
-/*
-                const parentElem = currElement.closest('li');
-                if (parentElem && !parentElem.classList.contains("active")) {
-                    parentElem.classList.add("active");
-                }
+                /*
+                                const parentElem = currElement.closest('li');
+                                if (parentElem && !parentElem.classList.contains("active")) {
+                                    parentElem.classList.add("active");
+                                }
 
- */
+                 */
             } else {
                 currElement.classList.remove("active");
 
@@ -53,7 +53,6 @@ function changeAnchorLinks() {
 }
 
 
-
 function changeNavLinksAfterLoad() {
     const hash = window.location.hash;
 
@@ -66,10 +65,10 @@ function changeNavLinksAfterLoad() {
             if (selectedElem) selectedElem.classList.remove("mm-listitem_selected");
 
             currElement.classList.add("active");
-          /*  const parentElem = currElement.closest('li');
-            if (parentElem) parentElem.classList.add("mm-listitem_selected");
+            /*  const parentElem = currElement.closest('li');
+              if (parentElem) parentElem.classList.add("mm-listitem_selected");
 
-           */
+             */
         } else if (currElement.getAttribute("href") === "#top") {
             const firstElem = document.querySelector("#mobileNav .level_1 > .first");
             if (firstElem) firstElem.classList.add("mm-listitem_selected");
@@ -123,13 +122,13 @@ var anchorHandling = function (e) {
         if (scrollTo) {
             var current_position = document.documentElement.scrollTop;
             animate(
-              document.scrollingElement,
-              "scrollTop",
-              "",
-              current_position,
-              scrollTo.offsetTop - 100,
-              750,
-              true
+                document.scrollingElement,
+                "scrollTop",
+                "",
+                current_position,
+                scrollTo.offsetTop - 100,
+                750,
+                true
             );
         }
     }
@@ -189,3 +188,20 @@ window.onscroll = function () {
         if (bodyScrollTop) bodyScrollTop.classList.remove("visible");
     }
 };
+
+
+var menus = document.querySelectorAll('.mod_mmenu');
+
+menus.forEach(function (menu) {
+    // Für jedes Menü, wählen Sie die entsprechenden Links aus
+    var links = menu.querySelectorAll('a[href*="#"]');
+
+    links.forEach(function (link) {
+        link.addEventListener('click', function () {
+            // Abrufen der mmenu-API-Instanz für das aktuelle Menü
+            var myMenuApi = menu.mmApi;
+            // Schließen des Menüs
+            myMenuApi.close();
+        });
+    });
+});

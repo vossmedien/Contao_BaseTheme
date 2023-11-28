@@ -32,7 +32,7 @@ if (TL_MODE == 'FE') {
         <div data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
              class="box--holder <?php if ($this->asbox) : ?>content--box<?php endif; ?>">
             <?php if ($this->ce_headline || $this->ce_topline || $this->ce_subline) : ?>
-            <div class="ce--headline <?php if ($this->textalign) : ?><?php echo $this->textalign; ?><?php endif; ?>"
+            <div class="ce--headline hl-<?php echo $this->headline_type; ?> <?php if ($this->textalign) : ?><?php echo $this->textalign; ?><?php endif; ?>"
                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInDown<?php endif; ?>">
 
 

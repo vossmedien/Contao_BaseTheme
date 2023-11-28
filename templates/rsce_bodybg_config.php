@@ -110,6 +110,15 @@ return array(
         ),
 
 
+        'darken_image' => array(
+            'label' => array('', ''),
+            'inputType' => 'checkbox',
+            'options' => array(
+                '1' => 'Hintergrundbild zusätzlich abdunkeln',
+            ),
+        ),
+
+
         'image' => array(
             'label' => array('Bild / Video', ""),
             'inputType' => 'fileTree',

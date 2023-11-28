@@ -115,3 +115,26 @@
   }
 }
 
+[class*="text-"] {
+
+  &.text-white {
+    --bs-accordion-color: var(--bs-white);
+  }
+
+  .accordion {
+    --bs-accordion-color: inherit;
+    --bs-headline-color: var(--bs-accordion-color);
+
+    .accordion-header .accordion-button {
+      color: var(--bs-accordion-color);
+      &:after{
+        background-color: var(--bs-accordion-color);
+      }
+    }
+
+    .accordion-body{
+      border-bottom-color: var(--bs-accordion-color);
+    }
+
+  }
+}

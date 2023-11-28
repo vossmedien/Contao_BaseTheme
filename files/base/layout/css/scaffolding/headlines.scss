@@ -190,3 +190,11 @@ h6,
   font-weight: var(--bs-subline-font-weight);
   color: var(--bs-subline-color);
 }
+
+
+[class*="text-white"] {
+  .ce--headline{
+     --bs-headline-color: var(--bs-white);
+  }
+
+}

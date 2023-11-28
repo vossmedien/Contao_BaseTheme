@@ -411,6 +411,7 @@ return array(
                 ),
 
 
+
                 'image' => array(
                     'label' => array('Bild / Video', 'Video-Format: MP4'),
                     'inputType' => 'fileTree',
@@ -422,6 +423,7 @@ return array(
                         'tl_class' => 'w50'
                     ),
                 ),
+
 
                 'mobile_image' => array(
                     'label' => array('Bild / Video für mobile-Ansicht', 'Nur in Verbindung mit einem Video in der Desktop-Ansicht, Video-Format: MP4'),
@@ -435,6 +437,18 @@ return array(
                         'mandatory' => false,
                     ),
                 ),
+
+                   'darken_image' => array(
+                    'label' => array('', ''),
+                    'inputType' => 'checkbox',
+                    'options' => array(
+                        '1' => 'Hintergrundbild zusätzlich abdunkeln',
+                    ),
+                             'eval' => array(
+                        'tl_class' => 'clr',
+                    ),
+                ),
+
 
                 'size' => array(
                     'label' => array('Bildbreite und Bildhöhe', ''),
@@ -671,14 +685,14 @@ return array(
                         'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
                         'h4' => 'H4',
                         'h5' => 'H5',
-'h6' => 'H6',
+                        'h6' => 'H6',
                     ),
                 ),
 
                 'text_topline' => array(
                     'label' => array('Topline', ''),
                     'inputType' => 'text',
-                    'eval' => array( 'allowHtml' => true),
+                    'eval' => array('allowHtml' => true),
                 ),
                 'text_firstline' => array(
                     'label' => array('Überschrift', ''),
@@ -688,7 +702,7 @@ return array(
                 'text_secondline' => array(
                     'label' => array('Subline', ''),
                     'inputType' => 'text',
-                    'eval' => array( 'allowHtml' => true),
+                    'eval' => array('allowHtml' => true),
                 ),
 
                 'onlystyle' => array(

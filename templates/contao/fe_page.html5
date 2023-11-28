@@ -42,9 +42,7 @@
 
 <div class="BodyScrollToTop"><i class="fa-sharp fa-light fa-arrow-up"></i></div>
 
-<div class="openContactForm">
-    <i data-bs-toggle="modal" data-bs-target="#contactForm" class="fa-duotone fa-comment-pen" style=" --fa-secondary-opacity: 1; --fa-primary-color: var(--bs-body-color-inverse); --fa-secondary-color: var(--bs-secondary);"></i>
-</div>
+
 
 <div id="wrapper">
     <?php $this->block('header'); ?>
@@ -115,9 +113,11 @@
 
 
 <?php $this->endblock(); ?>
+<!--
+<div class="openContactForm">
+    <i data-bs-toggle="modal" data-bs-target="#contactForm" class="fa-duotone fa-comment-pen" style=" --fa-secondary-opacity: 1; --fa-primary-color: var(--bs-body-color-inverse); --fa-secondary-color: var(--bs-secondary);"></i>
+</div>
 
-
-<!-- Modal -->
 <div class="modal fade" id="contactForm" tabindex="-1" aria-labelledby="contactFormLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -131,7 +131,7 @@
         </div>
     </div>
 </div>
-
+-->
 
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>

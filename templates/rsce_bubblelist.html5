@@ -33,7 +33,7 @@ if (TL_MODE == 'FE') {
                                         "
 
                                 data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                             class="bl--item <?php echo strtolower(str_replace(' ', '_', $item->text)); ?>">
+                             class="bl--item ">
 
 
                             <?php if ($item->url): ?>
@@ -45,9 +45,7 @@ if (TL_MODE == 'FE') {
                                     <?php if (!$item->icon): ?>
                                         data-bg="<?= Image::get(FilesModel::findByUuid($item->img)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
                                     <?php endif; ?>
-
-
-                                     data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                                     >
 
                                     <?php if ($item->icon): ?>
                                         <i class="<?= $item->icon; ?>"></i>
@@ -55,7 +53,6 @@ if (TL_MODE == 'FE') {
                                 </div>
                             <?php endif; ?>
                             <div class="bl-i--text"
-                                 data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                                  <?php if ($this->linkcolor) : ?>style="color: <?php echo $this->linkcolor; ?>" <?php endif; ?>>
                                 <?php echo $item->text; ?>
                             </div>
