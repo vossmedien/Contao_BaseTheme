@@ -214,7 +214,7 @@ if (TL_MODE == 'FE') {
                                     </div>
 
 
-                                    <?php if ($slide->text_infotext && $slide->own_box || count($slide->buttons) >= 1) : ?>
+                                    <?php if (($slide->text_infotext || count($slide->buttons) >= 1) && $slide->own_box) : ?>
                                         <div class="mainimage--content-inner--wrapper extra mt-3">
                                             <div class="mainimage--content-inner--holder extra ">
                                                 <?php if ($slide->text_infotext): ?>

@@ -28,7 +28,7 @@ html {
       opacity: 0;
       transition: padding-top 0.5s ease, opacity 0.25s ease;
       animation: fadeinBody 0.25s forwards;
-      animation-delay: .75s;
+      animation-delay: 0.75s;
     }
 
     *[id] {
@@ -68,6 +68,7 @@ html {
     @import "elements/ce_downloads";
     @import "elements/ce_image";
     @import "elements/ce_gallery";
+    @import "elements/ce_text";
     @import "elements/megamenu";
     @import "elements/breadcrumb";
     @import "elements/mmenu";

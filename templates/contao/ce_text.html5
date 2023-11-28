@@ -1,15 +1,19 @@
 <?php $this->extend('block_searchable'); ?>
 <?php $this->block('content'); ?>
-<div class="text--wrapper <?php if ($this->addImage) : ?>with-image image-<?php echo $this->floating; ?><?php endif; ?> ">
-  <?php if ($this->addImage) : ?>
-    <div class="image">
-      <?php $this->insert('image', $this->arrData); ?>
+    <div style="--bs-gutter-x: 15px;--bs-gutter-y: 15px;" class="text--wrapper <?php if ($this->addImage) : ?>with-image image-<?php echo $this->floating; ?><?php endif; ?> ">
+        <?php if ($this->addImage) : ?>
+
+
+            <?php $size = unserialize($this->size); ?>
+
+            <div class="image" style="--image-container-height: <?= $size[1]; ?>px; height: <?= $size[1]; ?>px;">
+                <?php $this->insert('image', $this->arrData); ?>
+            </div>
+        <?php endif; ?>
+        <?php if ($this->text) : ?>
+            <div class="text">
+                <?= $this->text ?>
+            </div>
+        <?php endif; ?>
     </div>
-  <?php endif; ?>
-  <?php if ($this->text) : ?>
-    <div class="text">
-      <?= $this->text ?>
-    </div>
-  <?php endif; ?>
-</div>
 <?php $this->endblock(); ?>

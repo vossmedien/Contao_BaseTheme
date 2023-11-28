@@ -1,0 +1,38 @@
+.ce_text {
+
+
+  .text--wrapper {
+
+    &.image-below {
+      flex-flow: column-reverse wrap;
+    }
+
+    &.image-above {
+      flex-flow: column wrap;
+    }
+
+    &.image-above, &.image-below {
+
+      min-height: 0px;
+
+      .image_container {
+        position: relative;
+        height: var(--image-container-height);
+
+        img {
+          position: absolute;
+          object-fit: cover;
+          object-position: center center;
+          height: 100%;
+          width: 100%;
+          left: 0;
+          top: 0;
+        }
+      }
+    }
+
+
+  }
+
+
+}
