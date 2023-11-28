@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Box mit Titel und Subtitle sowie Galerie je Box', ''),
+    'label' => array('Custom | Box mit Titel und Subtitle sowie Galerie je Box (boxtitlesubtitle)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -140,8 +140,22 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
+
+
+        'size' => array(
+            'label' => array('Bildbreite und Bildhöhe für Bilder', ''),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+            ),
+        ),
+
+
         'box' => array(
             'label' => array('Boxen', ''),
             'elementLabel' => '%s. Box',
@@ -272,6 +286,26 @@ return array(
                     ),
                     'eval' => array('chosen' => 'true')
                 ),
+
+
+                'column_width' => array(
+                    'label' => array(
+                        'de' => array('Breite', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'col-12 col-md-6 col-lg-3' => '25%',
+                        'col-12 col-md-6 col-lg-4' => '33%',
+                        'col-12 col-md-6' => '50%',
+                        'col-12 col-md-6 col-lg-8' => '66.66%',
+                        'col-12 col-md-6 col-lg-9' => '75%',
+                        'col-12' => 'Volle Breite',
+                        'col-12 col-md' => 'Automatische Breite (füllend)',
+                        'col-12 col-md-auto' => 'Breite anhand des Inhalts',
+                    ),
+                ),
+
+
                 'image' => array(
                     'label' => array('Bild', 'oberhalb der Box'),
                     'inputType' => 'fileTree',
@@ -300,9 +334,25 @@ return array(
                     'label' => array('Subtitle', ''),
                     'inputType' => 'text',
                 ),
-                'url' => array(
-                    'label' => array('Link', 'nur möglich, wenn keine Galerie-Bilder ausgewählt sind, Link wird dann ignoriert'),
+
+
+                'link_url' => array(
+                    'label' => array('Verlinkung', ''),
                     'inputType' => 'url',
+                    'eval' => array('tl_class' => 'w50'),
+
+                ),
+
+                'link_betreff' => array(
+                    'label' => array('Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'new_tab' => array(
+                    'label' => array('Link in neuen Tab öffnen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
                 ),
             ),
         ),

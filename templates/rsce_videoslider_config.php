@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Slider mit Video, optional in modaler Box', ''),
+    'label' => array('Custom | Slider mit Video, optional in modaler Box (videoslider)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',

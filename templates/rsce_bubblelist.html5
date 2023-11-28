@@ -5,10 +5,10 @@ if (TL_MODE == 'FE') {
 ?>
 
 
-<div <?php echo $this->cssID; ?> class="content--element  <?php if(!str_contains($this->class, "col")):?>container<?php else:?><?php echo $this->class; ?><?php endif;?>">
-    <div class="ce--inner <?php if(!str_contains($this->class, "col")):?><?php echo $this->class; ?><?php endif;?> ">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner  ">
 
-                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -24,7 +24,15 @@ if (TL_MODE == 'FE') {
             <div class="bl--inner container force-container">
                 <div class="bl--list">
                     <?php foreach ($this->galery as $item) : ?>
-                        <div data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                        <div
+                                style="
+                                        --vsm-bubblecolor: <?php if($item->color):?><?= $item->color;?><?php else:?>var(--bs-primary)<?php endif;?>;
+                                        --vsm-bubblecolor-hover: <?php if($item->hover_color):?><?= $item->hover_color;?><?php else:?>var(--bs-secondary)<?php endif;?>;
+                                        --vsm-bubble-size: <?php if($item->size):?><?= $item->size;?><?php else:?>150px<?php endif;?>;
+
+                                        "
+
+                                data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                              class="bl--item <?php echo strtolower(str_replace(' ', '_', $item->text)); ?>">
 
 
@@ -33,14 +41,16 @@ if (TL_MODE == 'FE') {
                             <?php endif; ?>
 
                             <?php if ($item->icon || $item->img): ?>
-                                <div class="bl-i--image"
+                                <div class="bl-i--image   <?php if (!$item->icon): ?>lazy<?php endif; ?>"
+                                    <?php if (!$item->icon): ?>
+                                        data-bg="<?= Image::get(FilesModel::findByUuid($item->img)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
+                                    <?php endif; ?>
+
+
                                      data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
                                     <?php if ($item->icon): ?>
                                         <i class="<?= $item->icon; ?>"></i>
-                                    <?php else: ?>
-                                        <img loading="lazy"   class="lazy"
-                                             data-src="<?= Image::get(FilesModel::findByUuid($item->img)->path, null, null, null); ?>">
                                     <?php endif; ?>
                                 </div>
                             <?php endif; ?>

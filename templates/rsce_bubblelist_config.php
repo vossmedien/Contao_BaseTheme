@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Runde Boxen mit Icon / Bild sowie Verlinkung', ''),
+    'label' => array('Custom | Runde Boxen mit Icon / Bild sowie Verlinkung (bubblelist)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -140,7 +140,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
         'backgroundcolor' => array(
             'label' => array('Hintergrundfarbe', 'Im Hexformat, z. B. #000 für schwarz (Standard: weiß)'),
@@ -152,6 +152,20 @@ return array(
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
+
+
+        'size' => array(
+            'label' => array('Bildbreite und Bildhöhe', ''),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => 'clr'
+            ),
+        ),
+
         'galery' => array(
             'label' => array('Boxen', ''),
             'elementLabel' => '%s. Box',
@@ -159,7 +173,7 @@ return array(
             'minItems' => 1,
             'maxItems' => 99,
             'fields' => array(
-                'img' => array(
+     'img' => array(
                     'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
@@ -167,13 +181,38 @@ return array(
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'tl_class' => 'w50'
                     ),
                 ),
 
-                 'icon' => array(
+
+                'size' => array(
+                    'label' => array('Größe der Bubble inkl. Maßeinheit', 'ist immer quadratisch, daher reicht ein Wert.'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'color' => array(
+                    'label' => array('Alternative Farbe für Element', 'Standard: Hauptfarbe'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'hover_color' => array(
+                    'label' => array('Alternative Hover-Farbe für Element', 'Standard: Sekundärfarbe'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'icon' => array(
                     'label' => array('Alternativ zum Bild Font-Awesome Klasse angeben', 'überschreibt das Bild, z. B. fa-facebook fab'),
                     'inputType' => 'text',
+                    'eval' => array('tl_class' => 'clr'),
                 ),
+
 
                 'text' => array(
                     'label' => array('Text', ''),

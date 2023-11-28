@@ -140,7 +140,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true','tl_class' => 'clr')
         ),
         'box' => array(
             'label' => array('Boxen', ''),

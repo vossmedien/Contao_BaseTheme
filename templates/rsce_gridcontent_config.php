@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Zeilen mit mehrspaltigen Inhalte', ''),
+    'label' => array('Custom | Zeilen mit mehrspaltigen Inhalte (gridcontent)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
