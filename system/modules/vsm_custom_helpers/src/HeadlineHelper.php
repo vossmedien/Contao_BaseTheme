@@ -24,7 +24,7 @@ class HeadlineHelper
 
         if ($headline) {
 
-            $headlineHTML = "<div {$headlineClassAttribute} data-aos=\"{$animationType}\">";
+            $headlineHTML = "<div {$headlineClassAttribute} data-aos=\"{$animationType}\"><div class='container'>";
 
             if ($topline) {
                 $headlineHTML .= "<span class=\"ce--topline\">";
@@ -48,7 +48,7 @@ class HeadlineHelper
                 $headlineHTML .= "</span>";
             }
 
-            $headlineHTML .= "</div>";
+            $headlineHTML .= "</div></div>";
         }
         return $headlineHTML;
     }

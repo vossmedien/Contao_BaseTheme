@@ -14,7 +14,9 @@
   font-display: block;
   src: url("../webfonts/fa-brands-400.woff2") format("woff2"), url("../webfonts/fa-brands-400.ttf") format("truetype"); }
 
+.fa-discord::before { content: "\f392"; }
 .fa-facebook::before { content: "\f09a"; }
 .fa-instagram::before { content: "\f16d"; }
 .fa-linkedin::before { content: "\f08c"; }
 .fa-xing::before { content: "\f168"; }
+.fa-youtube::before { content: "\f167"; }

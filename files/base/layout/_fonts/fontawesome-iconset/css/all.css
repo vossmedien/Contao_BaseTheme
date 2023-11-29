@@ -15,6 +15,7 @@
 .fasl,
 .fat,
 .fa-thin,
+.fast,
 .fad,
 .fa-duotone,
 .fass,
@@ -52,6 +53,7 @@
 .fass,
 .fasr,
 .fasl,
+.fast,
 .fa-sharp {
   font-family: 'Font Awesome 6 Sharp'; }
 
@@ -626,13 +628,15 @@ readers do not read off random characters that represent icons */
   font-display: block;
   src: url("../webfonts/fa-brands-400.woff2") format("woff2"), url("../webfonts/fa-brands-400.ttf") format("truetype"); }
 
+.fa-discord::before { content: "\f392"; }
 .fa-facebook::before { content: "\f09a"; }
 .fa-instagram::before { content: "\f16d"; }
 .fa-linkedin::before { content: "\f08c"; }
 .fa-xing::before { content: "\f168"; }
+.fa-youtube::before { content: "\f167"; }
 
 /*!
- * Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com
+ * Font Awesome Pro 6.5.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License)
  * Copyright 2023 Fonticons, Inc.
  */
@@ -652,7 +656,7 @@ readers do not read off random characters that represent icons */
   font-weight: 300; }
 
 /*!
- * Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com
+ * Font Awesome Pro 6.5.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License)
  * Copyright 2023 Fonticons, Inc.
  */
@@ -672,7 +676,7 @@ readers do not read off random characters that represent icons */
   font-weight: 400; }
 
 /*!
- * Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com
+ * Font Awesome Pro 6.5.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License)
  * Copyright 2023 Fonticons, Inc.
  */
@@ -692,7 +696,7 @@ readers do not read off random characters that represent icons */
   font-weight: 900; }
 
 /*!
- * Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com
+ * Font Awesome Pro 6.5.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License)
  * Copyright 2023 Fonticons, Inc.
  */
@@ -764,7 +768,7 @@ readers do not read off random characters that represent icons */
 
 
 /*!
- * Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com
+ * Font Awesome Pro 6.5.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License)
  * Copyright 2023 Fonticons, Inc.
  */
@@ -784,7 +788,7 @@ readers do not read off random characters that represent icons */
   font-weight: 300; }
 
 /*!
- * Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com
+ * Font Awesome Pro 6.5.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License)
  * Copyright 2023 Fonticons, Inc.
  */
@@ -804,7 +808,7 @@ readers do not read off random characters that represent icons */
   font-weight: 400; }
 
 /*!
- * Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com
+ * Font Awesome Pro 6.5.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License)
  * Copyright 2023 Fonticons, Inc.
  */

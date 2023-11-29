@@ -124,9 +124,9 @@ footer {
 }
 
 .remove-bottom-gutter{
-    margin-bottom: calc(-1 * var(--main-gap));
+    margin-bottom: calc(-1 * var(--main-gap)) !important;
 }
 
 .remove-top-gutter{
-  margin-top: calc(-1 * var(--main-gap));
+  margin-top: calc(-1 * var(--main-gap)) !important;
 }

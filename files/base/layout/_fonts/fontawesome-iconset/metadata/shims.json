@@ -55,9 +55,19 @@
     "circle"
   ],
   [
+    "youtube",
+    "fab",
+    null
+  ],
+  [
     "xing",
     "fab",
     null
+  ],
+  [
+    "youtube-play",
+    "fab",
+    "youtube"
   ],
   [
     "instagram",
@@ -150,9 +160,19 @@
     "circle"
   ],
   [
+    61799,
+    "fab",
+    "youtube"
+  ],
+  [
     61800,
     "fab",
     "xing"
+  ],
+  [
+    61802,
+    "fab",
+    "youtube"
   ],
   [
     61805,

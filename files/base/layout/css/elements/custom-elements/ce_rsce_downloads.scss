@@ -1,0 +1,15 @@
+.ce_rsce_downloads {
+  .download-list {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 1rem;
+
+    a {
+      max-width: calc(50% - 1rem);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+    }
+  }
+}

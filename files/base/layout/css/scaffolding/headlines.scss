@@ -1,5 +1,9 @@
+.container .ce--headline >  .container{
+  margin: 0;
+}
+
+
 .ce--headline {
-  @extend .container;
   --hl-font-size-multi: 1;
   --hl-font-size-base: calc(
     var(--bs-body-font-size) * var(--hl-font-size-multi)
@@ -7,12 +11,16 @@
   --hl-font-size-min: calc(var(--hl-font-size-base) * 0.75);
   --hl-font-size-max: calc(var(--hl-font-size-base) * 1.5);
   --hl-font-size-scale: 3vw;
-  --hl-margin: var(--hl-font-size-base);
+  --hl-margin: calc(var(--hl-font-size-base) * 1.5);
+  --hl-gap: calc(var(--hl-font-size-base) * 0.5) 0;
   line-height: 1;
   display: flex;
   flex-flow: column wrap;
-  gap: calc(var(--hl-margin) * 0.5) 0;
-  margin-bottom: var(--hl-font-size-base);
+  gap: var(--hl-gap);
+  margin-bottom: var(--hl-margin);
+
+
+
 
   * {
     margin-bottom: 0px;

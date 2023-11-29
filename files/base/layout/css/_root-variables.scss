@@ -4,7 +4,7 @@
 
   --bs-font-primary: "Open Sans", sans-serif;
   --bs-font-secondary: SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  "Liberation Mono", "Courier New", monospace;
   --bs-font-tertiary: "Montserrat", sans-serif;
 
   --bs-font-sans-serif: var(--bs-font-primary);
@@ -24,9 +24,9 @@
   --bs-gradient: linear-gradient(to top, #004878, #002c50);
 
   --bs-basic-spacing: clamp(
-    calc(#{$basic-gutter} / 2),
-    5vw,
-    calc(#{$basic-gutter} * 1.25)
+          calc(#{$basic-gutter} / 2),
+          5vw,
+          calc(#{$basic-gutter} * 1.25)
   );
 
   --bs-font-weight-100: 100;
@@ -90,7 +90,12 @@
   --bs-header-navbar-bg: rgba(255, 255, 255, 0.9);
   --bs-header-border-color: var(--bs-border-color);
   --bs-header-link-color: var(--bs-body-color);
-  --bs-header-font-weight: var(--bs-body-font-weight);
+  --bs-header-link-hover-color: var(--bs-primary);
+  --bs-header-font-weight: #{$font-weight-bold};
+  --bs-header-navbar-subnav-bg: var(--bs-secondary);
+  --bs-header-navbar-subnav-link-color: var(--bs-body-color);
+  --bs-header-navbar-subnav-hover-link-color: var(--bs-primary);
+  --bs-header-navbar-subnav-font-weight: var(--bs-body-font-weight);
 
   --bs-footer-top-bg: var(--bs-gray-600);
   --bs-footer-middle-bg: var(--bs-primary);

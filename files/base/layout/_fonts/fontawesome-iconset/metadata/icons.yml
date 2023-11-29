@@ -18,6 +18,7 @@ rectangle-xmark:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Rectangle Xmark
   search:
     terms:
@@ -25,6 +26,7 @@ rectangle-xmark:
       - cancel
       - computer
       - development
+      - uncheck
   styles:
     - solid
   unicode: f410
@@ -44,6 +46,7 @@ angle-left:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Angle Left
   search:
     terms:
@@ -73,6 +76,7 @@ check:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Check
   search:
     terms:
@@ -84,7 +88,9 @@ check:
       - checkmark
       - confirm
       - correct
+      - coupon
       - done
+      - enable
       - mark
       - notice
       - notification
@@ -94,6 +100,9 @@ check:
       - success
       - tick
       - todo
+      - 'true'
+      - validate
+      - working
       - 'yes'
       - ✓
   styles:
@@ -114,6 +123,7 @@ circle-chevron-left:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Circle Chevron Left
   search:
     terms:
@@ -123,6 +133,25 @@ circle-chevron-left:
   styles:
     - light
   unicode: f137
+  voted: false
+youtube:
+  aliases:
+    unicodes:
+      composite:
+        - f16a
+  changes:
+    - 3.2.0
+    - 5.0.0
+  label: YouTube
+  search:
+    terms:
+      - film
+      - video
+      - youtube-play
+      - youtube-square
+  styles:
+    - brands
+  unicode: f167
   voted: false
 chevron-right:
   aliases:
@@ -138,6 +167,7 @@ chevron-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Chevron Right
   search:
     terms:
@@ -164,6 +194,7 @@ angle-up:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Angle Up
   search:
     terms:
@@ -171,6 +202,7 @@ angle-up:
       - arrow
       - caret
       - collapse
+      - upgrade
       - upload
   styles:
     - light
@@ -192,6 +224,7 @@ copyright:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Copyright
   search:
     terms:
@@ -222,6 +255,7 @@ quote-left:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Quote Left
   search:
     terms:
@@ -261,6 +295,7 @@ xmark:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Xmark
   search:
     terms:
@@ -282,6 +317,7 @@ xmark:
       - notify
       - problem
       - sign
+      - uncheck
       - wrong
       - x
       - ×
@@ -310,6 +346,7 @@ plus:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Plus
   search:
     terms:
@@ -318,7 +355,9 @@ plus:
       - add
       - create
       - expand
+      - follow
       - math
+      - modify
       - new
       - plus
       - positive
@@ -344,11 +383,13 @@ arrow-up:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Arrow Up
   search:
     terms:
       - Upwards Arrow
       - forward
+      - upgrade
       - upload
   styles:
     - light
@@ -366,12 +407,14 @@ chevron-down:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Chevron Down
   search:
     terms:
       - arrow
       - download
       - expand
+      - insert
   styles:
     - light
     - solid
@@ -393,13 +436,17 @@ magnifying-glass:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Magnifying Glass
   search:
     terms:
       - bigger
       - enlarge
+      - equipment
       - find
       - glass
+      - inspection
+      - magnifier
       - magnify
       - magnifying
       - magnifying glass tilted left
@@ -425,6 +472,7 @@ location-dot:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Location Dot
   search:
     terms:
@@ -461,6 +509,7 @@ arrow-right-long:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Arrow Right Long
   search:
     terms:
@@ -485,6 +534,7 @@ angle-down:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Angle Down
   search:
     terms:
@@ -493,6 +543,7 @@ angle-down:
       - caret
       - download
       - expand
+      - insert
   styles:
     - light
   unicode: f107
@@ -512,6 +563,7 @@ circle-down:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Circle Down
   search:
     terms:
@@ -538,6 +590,7 @@ arrow-right-arrow-left:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Arrow Right Arrow Left
   search:
     terms:
@@ -561,10 +614,13 @@ facebook:
     - 2.0.0
     - 5.0.0
     - 5.8.2
+    - 6.5.0
   label: Facebook
   search:
     terms:
+      - fabook
       - facebook-official
+      - fb
       - social network
   styles:
     - brands
@@ -593,11 +649,13 @@ download:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Download
   search:
     terms:
       - export
       - hard drive
+      - insert
       - save
       - transfer
   styles:
@@ -613,6 +671,7 @@ linkedin:
   search:
     terms:
       - linkedin-square
+      - linkin
   styles:
     - brands
   unicode: f08c
@@ -635,6 +694,7 @@ cart-shopping:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Cart Shopping
   search:
     terms:
@@ -669,6 +729,7 @@ minus:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Minus
   search:
     terms:
@@ -704,6 +765,7 @@ circle-info:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Circle Info
   search:
     terms:
@@ -736,6 +798,7 @@ envelope:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Envelope
   search:
     terms:
@@ -746,7 +809,9 @@ envelope:
       - letter
       - mail
       - message
+      - newsletter
       - notification
+      - offer
       - support
   styles:
     - light
@@ -770,6 +835,7 @@ phone-volume:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Phone Volume
   search:
     terms:
@@ -778,6 +844,7 @@ phone-volume:
       - number
       - sound
       - support
+      - talking
       - telephone
       - voice
       - volume-control-phone
@@ -802,6 +869,7 @@ quote-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Quote Right
   search:
     terms:
@@ -830,6 +898,7 @@ trash:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Trash
   search:
     terms:
@@ -858,6 +927,7 @@ phone:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Phone
   search:
     terms:
@@ -868,6 +938,7 @@ phone:
       - phone
       - receiver
       - support
+      - talking
       - telephone
       - telephone receiver
       - voice
@@ -890,12 +961,14 @@ pen:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Pen
   search:
     terms:
       - ballpoint
       - design
       - edit
+      - modify
       - pen
       - update
       - write
@@ -932,6 +1005,7 @@ circle:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Circle
   search:
     terms:
@@ -994,6 +1068,7 @@ arrow-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Arrow Right
   search:
     terms:
@@ -1013,6 +1088,7 @@ circle-phone:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Circle Phone
   search:
     terms:
@@ -1040,6 +1116,7 @@ envelope-open:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Envelope Open
   search:
     terms:
@@ -1048,7 +1125,9 @@ envelope-open:
       - letter
       - mail
       - message
+      - newsletter
       - notification
+      - offer
       - support
   styles:
     - light
@@ -1067,9 +1146,11 @@ comment-pen:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Comment Pen
   search:
     terms:
+      - answer
       - bubble
       - chat
       - commenting
@@ -1077,6 +1158,7 @@ comment-pen:
       - edit
       - feedback
       - message
+      - modify
       - note
       - notification
       - pen
@@ -1108,6 +1190,7 @@ circle-play:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Circle Play
   search:
     terms:
@@ -1137,6 +1220,7 @@ angles-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Angles Right
   search:
     terms:
@@ -1151,6 +1235,18 @@ angles-right:
   styles:
     - light
   unicode: f101
+  voted: false
+discord:
+  changes:
+    - 5.0.0
+    - 5.15.4
+    - 6.0.0-beta1
+  label: Discord
+  search:
+    terms: []
+  styles:
+    - brands
+  unicode: f392
   voted: false
 angle-right:
   aliases:
@@ -1167,6 +1263,7 @@ angle-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Angle Right
   search:
     terms:
@@ -1192,11 +1289,13 @@ chevron-up:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Chevron Up
   search:
     terms:
       - arrow
       - collapse
+      - upgrade
       - upload
   styles:
     - light
@@ -1217,6 +1316,7 @@ bars:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Bars
   search:
     terms:
@@ -1259,6 +1359,7 @@ pencil:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Pencil
   search:
     terms:
@@ -1267,6 +1368,8 @@ pencil:
       - draw
       - edit
       - lead
+      - maintenance
+      - modify
       - pencil
       - update
       - write
@@ -1288,6 +1391,7 @@ info:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Info
   search:
     terms:
@@ -1318,6 +1422,7 @@ trash-can:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   label: Trash Can
   search:
     terms:

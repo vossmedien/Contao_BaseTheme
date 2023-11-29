@@ -18,6 +18,7 @@ rectangle-xmark:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -30,6 +31,7 @@ rectangle-xmark:
       - cancel
       - computer
       - development
+      - uncheck
   unicode: f410
   voted: false
 angle-left:
@@ -47,6 +49,7 @@ angle-left:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -79,6 +82,7 @@ check:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -95,7 +99,9 @@ check:
       - checkmark
       - confirm
       - correct
+      - coupon
       - done
+      - enable
       - mark
       - notice
       - notification
@@ -105,6 +111,9 @@ check:
       - success
       - tick
       - todo
+      - 'true'
+      - validate
+      - working
       - 'yes'
       - ✓
   unicode: f00c
@@ -123,6 +132,7 @@ circle-chevron-left:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -135,6 +145,30 @@ circle-chevron-left:
       - back
       - previous
   unicode: f137
+  voted: false
+youtube:
+  aliases:
+    unicodes:
+      composite:
+        - f16a
+  changes:
+    - 3.2.0
+    - 5.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: YouTube
+  search:
+    terms:
+      - film
+      - video
+      - youtube-play
+      - youtube-square
+  unicode: f167
   voted: false
 chevron-right:
   aliases:
@@ -150,6 +184,7 @@ chevron-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -179,6 +214,7 @@ angle-up:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -191,6 +227,7 @@ angle-up:
       - arrow
       - caret
       - collapse
+      - upgrade
       - upload
   unicode: f106
   voted: false
@@ -210,6 +247,7 @@ copyright:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -243,6 +281,7 @@ quote-left:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -285,6 +324,7 @@ xmark:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -311,6 +351,7 @@ xmark:
       - notify
       - problem
       - sign
+      - uncheck
       - wrong
       - x
       - ×
@@ -337,6 +378,7 @@ plus:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -352,7 +394,9 @@ plus:
       - add
       - create
       - expand
+      - follow
       - math
+      - modify
       - new
       - plus
       - positive
@@ -375,6 +419,7 @@ arrow-up:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -385,6 +430,7 @@ arrow-up:
     terms:
       - Upwards Arrow
       - forward
+      - upgrade
       - upload
   unicode: f062
   voted: false
@@ -400,6 +446,7 @@ chevron-down:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -413,6 +460,7 @@ chevron-down:
       - arrow
       - download
       - expand
+      - insert
   unicode: f078
   voted: false
 magnifying-glass:
@@ -431,6 +479,7 @@ magnifying-glass:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -441,8 +490,11 @@ magnifying-glass:
     terms:
       - bigger
       - enlarge
+      - equipment
       - find
       - glass
+      - inspection
+      - magnifier
       - magnify
       - magnifying
       - magnifying glass tilted left
@@ -466,6 +518,7 @@ location-dot:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -505,6 +558,7 @@ arrow-right-long:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -532,6 +586,7 @@ angle-down:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -545,6 +600,7 @@ angle-down:
       - caret
       - download
       - expand
+      - insert
   unicode: f107
   voted: false
 circle-down:
@@ -562,6 +618,7 @@ circle-down:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -591,6 +648,7 @@ arrow-right-arrow-left:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -617,6 +675,7 @@ facebook:
     - 2.0.0
     - 5.0.0
     - 5.8.2
+    - 6.5.0
   familyStylesByLicense:
     free:
       - family: classic
@@ -627,7 +686,9 @@ facebook:
   label: Facebook
   search:
     terms:
+      - fabook
       - facebook-official
+      - fb
       - social network
   unicode: f09a
   voted: false
@@ -659,6 +720,7 @@ download:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -671,6 +733,7 @@ download:
     terms:
       - export
       - hard drive
+      - insert
       - save
       - transfer
   unicode: f019
@@ -690,6 +753,7 @@ linkedin:
   search:
     terms:
       - linkedin-square
+      - linkin
   unicode: f08c
   voted: false
 cart-shopping:
@@ -710,6 +774,7 @@ cart-shopping:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -747,6 +812,7 @@ minus:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -786,6 +852,7 @@ circle-info:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -821,6 +888,7 @@ envelope:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -838,7 +906,9 @@ envelope:
       - letter
       - mail
       - message
+      - newsletter
       - notification
+      - offer
       - support
   unicode: f0e0
   voted: false
@@ -859,6 +929,7 @@ phone-volume:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -872,6 +943,7 @@ phone-volume:
       - number
       - sound
       - support
+      - talking
       - telephone
       - voice
       - volume-control-phone
@@ -894,6 +966,7 @@ quote-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -925,6 +998,7 @@ trash:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -956,6 +1030,7 @@ phone:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -971,6 +1046,7 @@ phone:
       - phone
       - receiver
       - support
+      - talking
       - telephone
       - telephone receiver
       - voice
@@ -991,6 +1067,7 @@ pen:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1002,6 +1079,7 @@ pen:
       - ballpoint
       - design
       - edit
+      - modify
       - pen
       - update
       - write
@@ -1036,6 +1114,7 @@ circle:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1106,6 +1185,7 @@ arrow-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1128,6 +1208,7 @@ circle-phone:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1158,6 +1239,7 @@ envelope-open:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1171,7 +1253,9 @@ envelope-open:
       - letter
       - mail
       - message
+      - newsletter
       - notification
+      - offer
       - support
   unicode: f2b6
   voted: false
@@ -1188,6 +1272,7 @@ comment-pen:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1196,6 +1281,7 @@ comment-pen:
   label: Comment Pen
   search:
     terms:
+      - answer
       - bubble
       - chat
       - commenting
@@ -1203,6 +1289,7 @@ comment-pen:
       - edit
       - feedback
       - message
+      - modify
       - note
       - notification
       - pen
@@ -1232,6 +1319,7 @@ circle-play:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1264,6 +1352,7 @@ angles-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1282,6 +1371,23 @@ angles-right:
       - raquo
   unicode: f101
   voted: false
+discord:
+  changes:
+    - 5.0.0
+    - 5.15.4
+    - 6.0.0-beta1
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Discord
+  search:
+    terms: []
+  unicode: f392
+  voted: false
 angle-right:
   aliases:
     unicodes:
@@ -1297,6 +1403,7 @@ angle-right:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1325,6 +1432,7 @@ chevron-up:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1335,6 +1443,7 @@ chevron-up:
     terms:
       - arrow
       - collapse
+      - upgrade
       - upload
   unicode: f077
   voted: false
@@ -1353,6 +1462,7 @@ bars:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1399,6 +1509,7 @@ pencil:
     - 6.2.1
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1412,6 +1523,8 @@ pencil:
       - draw
       - edit
       - lead
+      - maintenance
+      - modify
       - pencil
       - update
       - write
@@ -1431,6 +1544,7 @@ info:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:
@@ -1464,6 +1578,7 @@ trash-can:
     - 6.2.0
     - 6.3.0
     - 6.4.0
+    - 6.5.0
   familyStylesByLicense:
     free: []
     pro:

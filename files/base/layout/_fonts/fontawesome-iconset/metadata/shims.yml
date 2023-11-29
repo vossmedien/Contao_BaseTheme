@@ -41,3 +41,6 @@ volume-control-phone:
 window-close-o:
   name: rectangle-xmark
   prefix: far
+youtube-play:
+  name: youtube
+  prefix: fab

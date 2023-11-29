@@ -11,22 +11,21 @@ if (!isset($this->size)) {
 ?>
 
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?> <?php if ($this->separator_color): ?>with-border<?php endif; ?>" <?php if ($this->separator_color): ?>style="--linkboxes-separator-color: <?= $this->separator_color; ?>"<?php endif; ?>>
+
+    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        $this->topline,
+        $this->headline,
+        $this->subline,
+        $this->hl,
+        $this->animation_type,
+        null,
+        false,
+        null
+    ); ?>
+
     <div class="ce--inner container">
 
         <div class="<?php echo $this->class; ?>">
-
-
-            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                $this->topline,
-                $this->headline,
-                $this->subline,
-                $this->hl,
-                $this->animation_type,
-                null,
-                false,
-                null
-            ); ?>
-
 
 
             <?php if ($this->boxes) : ?>
@@ -101,8 +100,8 @@ if (!isset($this->size)) {
 
                                     #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:after,
                                     #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper,
-                                    #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:not(.as-box) > .headline--wrapper > .box--headline,
-                                    #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:not(.as-box) > .headline--wrapper > .box--subline {
+                                    #linkBox_<?php echo $this->id; ?>_<?php echo $i; ?>:hover .box-lower--wrapper .box--lower:not(.as-box) > .ce--headline {
+                                        --bs-headline-color: <?= $textColor;?>;
                                         color: <?= $textColor;?> !important;
                                     }
 

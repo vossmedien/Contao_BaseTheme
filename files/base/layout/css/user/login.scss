@@ -1,5 +1,8 @@
 .mod_login {
-  @include content-box(1rem);
+
+  form {
+    @include content-box(1rem);
+  }
 
   small {
     display: block;

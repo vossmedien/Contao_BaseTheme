@@ -76,6 +76,7 @@ editing:
 film-video:
   icons:
     - circle
+    - youtube
   label: Film + Video
 humanitarian:
   icons:

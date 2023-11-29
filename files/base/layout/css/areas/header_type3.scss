@@ -44,6 +44,13 @@ body.theme-3 {
             margin-left: 1.75rem;
           }
 
+          &:last-child {
+            ul.level_2 {
+              transform: none;
+              right: 0;
+            }
+          }
+
           > a,
           > span,
           > strong {
@@ -75,11 +82,11 @@ body.theme-3 {
             &.active,
             &:hover,
             &.trail {
-              color: var(--bs-primary);
+              color: var(--bs-header-link-hover-color);
 
               &:after {
                 width: 100%;
-                background-color: var(--bs-primary);
+                background-color: var(--bs-header-link-hover-color);
               }
             }
           }
@@ -96,7 +103,7 @@ body.theme-3 {
 
       ul.level_2 {
         transition: all 0.3s ease-in-out;
-        background-color: var(--bs-header-navbar-bg);
+        background-color: var(--bs-header-navbar-subnav-bg);
         list-style-type: none;
         margin: 0;
         //max-height: 0px;
@@ -118,8 +125,8 @@ body.theme-3 {
 
           > * {
             text-decoration: none;
-            color: var(--bs-header-link-color);
-            font-weight: var(--bs-header-font-weight);
+            color: var(--bs-header-navbar-subnav-link-color);
+            font-weight: var(--bs-header-navbar-subnav-font-weight);
             display: block;
             position: relative;
             padding-left: 1.25rem;
@@ -131,7 +138,7 @@ body.theme-3 {
             &.active,
             &.trail,
             &:focus {
-              color: var(--bs-primary);
+              color: var(--bs-header-navbar-subnav-hover-link-color);
             }
 
             &:not(.last) {

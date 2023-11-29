@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -140,7 +140,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true','tl_class' => 'clr')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
         'buttons' => array(
             'label' => array('Button', ''),
@@ -297,6 +297,8 @@ return array(
                         'btn-outline-primary' => 'Hauptfarbe(Outline)',
                         'btn-secondary' => 'Sekundär - Farbe',
                         'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
+                        'btn-tertiary' => 'Tertiär - Farbe',
+                        'btn-outline-tertiary' => 'Tertiär - Farbe(Outline)',
                         'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
                         'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
                         'btn-white' => 'Weißer Button mit schwarzer Schrift',

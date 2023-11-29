@@ -1,0 +1,138 @@
+<?php
+if (TL_MODE == 'FE') {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_downloads.min.css|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_downloads.js|static';
+}
+?>
+
+
+
+<?php
+if (TL_MODE == 'FE') {
+    if (!isset($this->size)) {
+        $this->{"size"} = "";
+    }
+}
+?>
+
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner container ">
+
+
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
+
+
+        <div class="ce--downloads">
+
+
+            <div class="row">
+                <?php if ($this->image): ?>
+                    <div class="col-12 col-lg-6 text-center">
+                        <?= \VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                            $this->image,
+                            null,
+                            $this->headline,
+                            $this->size,
+                            null,
+                            false
+                        ); ?>
+                    </div>
+                <?php endif; ?>
+
+                <div class="col-12 col-lg<?php if ($this->image): ?>-6<?php endif; ?>">
+                    <div class="download-list">
+                        <?php
+                        if (!function_exists('getFilesFromFolder')) {
+                            function getFilesFromFolder($folderUuid)
+                            {
+                                $files = array();
+                                $folderPath = \FilesModel::findByUuid($folderUuid)->path;
+
+                                foreach (scandir(TL_ROOT . '/' . $folderPath) as $file) {
+                                    if ($file !== '.' && $file !== '..') {
+                                        $files[] = $folderPath . '/' . $file;
+                                    }
+                                }
+
+                                return $files;
+                            }
+                        }
+                        // Helper-Funktion, um einen Download-Link mit Icon zu erstellen
+
+                        if (!function_exists('renderDownloadLink')) {
+                            function renderDownloadLink($filePath)
+                            {
+                                $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                                $fileName = basename($filePath);
+
+                                // Pfad zum Icon der Dateiendung
+                                $iconPath = 'icons/' . $fileExtension . '.svg'; // Pfad zu Ihren Icons
+                                ?>
+                                <a href="<?php echo $filePath; ?>" target="_blank" class="btn btn-outline-primary btn-lg">
+                                    <?php if (file_exists(TL_ROOT . '/' . $iconPath)) : ?>
+                                        <img src="<?php echo $iconPath; ?>" alt="<?php echo $fileExtension; ?> icon"/>
+                                    <?php else: ?>
+                                        {{icon_sharp::fa-light:fa-download}}
+                                    <?php endif; ?>
+                                    <?php echo htmlspecialchars($fileName); ?>
+                                </a>
+                                <?php
+                            }
+                        }
+
+                        // Ihre bestehende Logik
+                        if ($this->element_type == 1) {
+                            $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
+                        }
+
+                        // Überprüfen und Ausgeben der Dateien
+                        if ($dataSorted && $this->element_type == 1) :
+                            foreach ($dataSorted as $itemUuid) :
+                                $objFile = \FilesModel::findByUuid($itemUuid);
+                                if ($objFile === null) continue;
+
+                                if ($objFile->type == 'folder') :
+                                    // Es ist ein Ordner, hole die Dateien
+                                    $filesInFolder = getFilesFromFolder($objFile->uuid);
+                                    foreach ($filesInFolder as $filePath) :
+                                        renderDownloadLink($filePath);
+                                    endforeach;
+                                else :
+                                    // Es ist eine Datei
+                                    renderDownloadLink($objFile->path);
+                                endif;
+                            endforeach;
+                        else :
+                            // Ihre Logik für Downloads
+                            foreach ($this->downloads as $download) :
+                                $objFile = \FilesModel::findByUuid($download);
+                                if ($objFile === null) continue;
+                                renderDownloadLink($objFile->path);
+                            endforeach;
+                        endif;
+                        ?>
+                    </div>
+
+                    <?php if ($this->add_buttons): ?>
+                        <div class="ce--buttons mt-5">
+                            <?php foreach ($this->buttons as $btn) : ?>
+                                <a class="d-inline-block btn <?php if ($btn->link_size) : ?><?php echo $btn->link_size; ?><?php endif; ?> <?php echo $btn->link_type; ?>"
+                                   data-aos="<?php if ($btn->animation_type) : ?><?php echo $btn->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                   href="<?php echo $btn->link_url; ?><?php if ($btn->link_betreff) : ?>?subject=<?php echo $btn->link_betreff; ?><?php endif; ?>"><?php echo $btn->link_text; ?> </a>
+                            <?php endforeach ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

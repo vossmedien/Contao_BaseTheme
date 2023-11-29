@@ -3,7 +3,7 @@
 
 $fa-css-prefix          : fa !default;
 $fa-style               : 900 !default;
-$fa-style-family        : "" !default;
+$fa-style-family        : "Font Awesome Pro 6" !default;
 
 $fa-display             : inline-block !default;
 
@@ -85,10 +85,7 @@ $fa-var-copyright: \f1f9;
 $fa-var-download: \f019;
 $fa-var-envelope: \f0e0;
 $fa-var-envelope-open: \f2b6;
-$fa-var-facebook: \f09a;
 $fa-var-info: \f129;
-$fa-var-instagram: \f16d;
-$fa-var-linkedin: \f08c;
 $fa-var-location-dot: \f3c5;
 $fa-var-map-marker-alt: \f3c5;
 $fa-var-magnifying-glass: \f002;
@@ -114,17 +111,18 @@ $fa-var-window-close: \f410;
 $fa-var-trash: \f1f8;
 $fa-var-trash-can: \f2ed;
 $fa-var-trash-alt: \f2ed;
-$fa-var-xing: \f168;
 $fa-var-xmark: \f00d;
 $fa-var-close: \f00d;
 $fa-var-multiply: \f00d;
 $fa-var-remove: \f00d;
 $fa-var-times: \f00d;
 
+$fa-var-discord: \f392;
 $fa-var-facebook: \f09a;
 $fa-var-instagram: \f16d;
 $fa-var-linkedin: \f08c;
 $fa-var-xing: \f168;
+$fa-var-youtube: \f167;
 
 $fa-icons: (
   "angle-down": $fa-var-angle-down,
@@ -164,10 +162,7 @@ $fa-icons: (
   "download": $fa-var-download,
   "envelope": $fa-var-envelope,
   "envelope-open": $fa-var-envelope-open,
-  "facebook": $fa-var-facebook,
   "info": $fa-var-info,
-  "instagram": $fa-var-instagram,
-  "linkedin": $fa-var-linkedin,
   "location-dot": $fa-var-location-dot,
   "map-marker-alt": $fa-var-map-marker-alt,
   "magnifying-glass": $fa-var-magnifying-glass,
@@ -193,7 +188,6 @@ $fa-icons: (
   "trash": $fa-var-trash,
   "trash-can": $fa-var-trash-can,
   "trash-alt": $fa-var-trash-alt,
-  "xing": $fa-var-xing,
   "xmark": $fa-var-xmark,
   "close": $fa-var-close,
   "multiply": $fa-var-multiply,
@@ -202,10 +196,12 @@ $fa-icons: (
 );
 
 $fa-brand-icons: (
+  "discord": $fa-var-discord,
   "facebook": $fa-var-facebook,
   "instagram": $fa-var-instagram,
   "linkedin": $fa-var-linkedin,
   "xing": $fa-var-xing,
+  "youtube": $fa-var-youtube,
 );
 
 $fa-custom-icons: (
