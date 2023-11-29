@@ -4,12 +4,10 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@fortawesome/fontawesome-pro": "*",
     "@popperjs/core": "*",
     "animate.css": "*",
     "aos": "^3.0.0-beta.6",
     "bootstrap": "*",
-    "bootstrap-icons": "*",
     "fullpage.js": "^4.0.15",
     "js-cookie": "*",
     "swiper": "*",
