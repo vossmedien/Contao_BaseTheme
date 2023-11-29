@@ -50,7 +50,7 @@ if (TL_MODE == 'FE') {
                     </div>
 
                     <!-- List of all locations -->
-                    <div class="location-list">
+                    <div class="location-list text-start">
 
 
                         <?php
