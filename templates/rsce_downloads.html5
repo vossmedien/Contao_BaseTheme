@@ -36,7 +36,7 @@ if (TL_MODE == 'FE') {
 
             <div class="row">
                 <?php if ($this->image): ?>
-                    <div class="col-12 col-lg-6 text-center" data-aos="<?= $this->animation_type; ?>">
+                    <div class="col-12 <?= $this->column_width;?> text-center" data-aos="<?= $this->animation_type; ?>">
                         <?= \VSM_HelperFunctions\ImageHelper::generateImageHTML(
                             $this->image,
                             null,
@@ -48,7 +48,7 @@ if (TL_MODE == 'FE') {
                     </div>
                 <?php endif; ?>
 
-                <div class="col-12 col-lg<?php if ($this->image): ?>-6<?php endif; ?>" data-aos="<?= $this->animation_type; ?>">
+                <div class="col-12 col-lg" data-aos="<?= $this->animation_type; ?>">
                     <div class="download-list">
                         <?php
                         if (!function_exists('getFilesFromFolder')) {
