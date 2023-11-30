@@ -1,5 +1,5 @@
 
-<div class="ce--headline <?= $this->class ?>">
+<div class="ce--headline hl-<?= $this->hl ?> <?= $this->class ?>">
 
 <<?= $this->hl ?> <?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
   <?= $this->headline ?>

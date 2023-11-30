@@ -21,6 +21,7 @@ arrows:
     - circle-chevron-left
     - circle-down
     - download
+    - square-arrow-up-right
   label: Arrows
 business:
   icons:

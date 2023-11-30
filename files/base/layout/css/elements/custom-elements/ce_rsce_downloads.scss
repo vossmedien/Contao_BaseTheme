@@ -2,14 +2,20 @@
   .download-list {
     display: flex;
     flex-flow: row wrap;
-    gap: 1rem;
+    gap: .75rem;
 
     a {
-      max-width: calc(50% - 1rem);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       display: inline-block;
+      text-align: left;
+      line-height: 34px;
+
+      img, i {
+        width: 30px;
+        margin-right: .25rem;
+      }
     }
   }
 }

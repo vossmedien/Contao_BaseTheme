@@ -18,9 +18,9 @@ body.theme-3 {
     #headerLogo {
       img {
         height: auto;
-        width: auto;
         max-width: rfs-value(250px);
         max-height: rfs-value(65px);
+        width: 100%;
 
         @include media-breakpoint-down(lg) {
           max-height: rfs-value(40px);

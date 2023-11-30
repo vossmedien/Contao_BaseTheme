@@ -29,7 +29,7 @@ if (TL_MODE == 'FE') {
 >
     <div class="ce--inner <?php if ($this->background_color) : ?>with-bg<?php endif; ?>">
 
-                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -44,33 +44,25 @@ if (TL_MODE == 'FE') {
         >
             <div class="ts--inner"
                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-
             >
 
-                <div class="container">
+                <div class="container" <?php if ($this->text_color): ?>style="--bs-headline-color: <?= $this->text_color; ?>"<?php endif; ?>>
+
+                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                        $this->ce_topline,
+                        $this->ce_headline,
+                        $this->ce_subline,
+                        $this->headline_type,
+                        $this->animation_type,
+                        null,
+                        false,
+                        "mb-0"
+                    ); ?>
 
                     <div class="<?php if (!$this->nocolumns) : ?>row<?php endif; ?>  align-items-center justify-content-center">
                         <?php if ($this->ce_headline || $this->ce_subline || $this->text) : ?>
                             <div class="col">
-                                <?php if ($this->ce_topline) : ?>
-                                    <div class="teaser--topline ce--topline" style="<?php if ($this->text_color) : ?>
-                                            color: <?= $this->text_color;?>;
-                        <?php endif; ?>"><?php echo $this->ce_topline; ?></div>
-                                <?php endif; ?>
-                                <?php if ($this->ce_headline) : ?>
-                                    <div class="teaser--headline">
-                            <span style="
-                            <?php if ($this->text_color) : ?>
-                                    color: <?= $this->text_color;?>;
-                        <?php endif; ?>" class="mb-0 <?php echo($this->headline_type); ?>"
-                            ><?php echo($this->ce_headline); ?></span>
-                                    </div>
-                                <?php endif; ?>
-                                <?php if ($this->ce_subline) : ?>
-                                    <div class="teaser--subline ce--subline" style="<?php if ($this->text_color) : ?>
-                                            color: <?= $this->text_color;?>;
-                        <?php endif; ?>"><?php echo $this->ce_subline; ?></div>
-                                <?php endif; ?>
+
                                 <?php if ($this->text) : ?>
                                     <div class="ts--text <?php if ($this->dynamic_fontsize): ?>dynamic-fontsize-sm<?php endif; ?> <?php if ($this->ce_headline || $this->ce_subline) : ?>mt-1<?php endif; ?>">
                                         <?php echo $this->text; ?>
@@ -80,8 +72,8 @@ if (TL_MODE == 'FE') {
                         <?php endif; ?>
                         <?php if ($this->link_text) : ?>
                             <div class="col-12 col-md-auto">
-                                <div class="ts--buttons <?php if ($this->nocolumns) : ?>mt-3<?php else: ?>mt-3 mt-md-0 <?php endif; ?>">
-                                    <a class="d-inline-block btn <?php if ($this->link_size) : ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"
+                                <div data-aos="<?= $this->button_animation_type; ?>" class="ts--buttons <?php if ($this->nocolumns) : ?>mt-3<?php else: ?>mt-3 mt-md-0 <?php endif; ?>">
+                                    <a <?php if ($this->new_tab) : ?>target="_blank" <?php endif; ?> class="d-inline-block btn <?php if ($this->link_size) : ?><?php echo $this->link_size; ?><?php endif; ?> <?php echo $this->link_type; ?>"
                                        href="<?php echo $this->link_url; ?><?php if ($this->link_betreff) : ?>?subject=<?php echo $this->link_betreff; ?><?php endif; ?>"><?php echo $this->link_text; ?></a>
                                 </div>
                             </div>

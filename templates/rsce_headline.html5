@@ -5,31 +5,19 @@ if (TL_MODE == 'FE') {
 ?>
 
 <div id="<?= $this->cssID[0]; ?>" class=" content--element <?= $this->class; ?>">
-    <div class="ce--inner">
+    <div class="ce--inner container">
 
 
-
-<?php if ($this->headline || $this->subline || $this->topline): ?>
-    <div class="mb-0 headline--wrapper ce--headline hl-<?= $this->headline_type ?>" data-aos="<?= $this->animation_type ?: 'animate__fadeIn' ?>">
-        <?php if ($this->topline): ?>
-            <span class="ce--topline"><?= $this->topline; ?></span>
-        <?php endif; ?>
-
-        <?php if (!$this->onlystyle): ?>
-            <<?= $this->headline_type ?> class="mb-0">
-                <?= $this->headline; ?>
-            </<?= $this->headline_type ?>>
-        <?php else: ?>
-            <span class="<?= $this->headline_type ?>">
-                <?= $this->headline; ?>
-            </span>
-        <?php endif; ?>
-
-        <?php if ($this->subline): ?>
-            <span class="ce--subline"><?= $this->subline ?></span>
-        <?php endif; ?>
-    </div>
-<?php endif; ?>
+   <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                        $this->topline,
+                        $this->headline,
+                        $this->subline,
+                        $this->headline_type,
+                        $this->animation_type,
+                        null,
+                        false,
+                        null
+                    ); ?>
 
 
 

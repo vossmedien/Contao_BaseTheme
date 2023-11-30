@@ -7,7 +7,7 @@ html body {
   hyphens: auto;
   color: var(--bs-body-color);
   font-size: clamp(
-    calc(var(--bs-body-font-size) * 0.85),
+    var(--bs-body-font-size),
     1vw,
     calc(var(--bs-body-font-size) * 1.15)
   );

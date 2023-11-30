@@ -22,7 +22,7 @@ class HeadlineHelper
 
         $headlineHTML = "";
 
-        if ($headline) {
+        if ($headline || $topline || $subline) {
 
             $headlineHTML = "<div {$headlineClassAttribute} data-aos=\"{$animationType}\"><div class='container'>";
 
@@ -32,11 +32,11 @@ class HeadlineHelper
                 $headlineHTML .= "</span>";
             }
 
-            if (!$onlyStyle) {
+            if (!$onlyStyle && $headline != "") {
                 $headlineHTML .= "<{$headlineType} style=\"{$textColorStyle}\">";
                 $headlineHTML .= htmlspecialchars($headline, ENT_QUOTES, 'UTF-8');
                 $headlineHTML .= "</{$headlineType}>";
-            } else {
+            } elseif ($headline != "") {
                 $headlineHTML .= "<span class=\"{$headlineType}\" style=\"{$textColorStyle}\">";
                 $headlineHTML .= htmlspecialchars($headline, ENT_QUOTES, 'UTF-8');
                 $headlineHTML .= "</span>";

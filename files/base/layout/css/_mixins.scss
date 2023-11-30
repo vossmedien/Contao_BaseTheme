@@ -32,7 +32,7 @@
 
 @mixin content-box($override-padding: "") {
   border-radius: $border-radius;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--bs-base-box-shadow);
   position: relative;
   z-index: 5;
   background-color: $body-bg;

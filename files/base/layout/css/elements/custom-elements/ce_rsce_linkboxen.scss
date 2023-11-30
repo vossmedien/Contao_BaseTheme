@@ -349,7 +349,7 @@ html body {
           &.as-box {
             background-color: $body-bg;
             color: var(--bs-body-color);
-            box-shadow: $box-shadow;
+            box-shadow: var(--bs-base-box-shadow);
             padding: 1.5rem 2rem;
             position: absolute;
             top: 0%;
@@ -443,7 +443,7 @@ html body {
 
       &.with-link {
         &:hover {
-          box-shadow: $box-shadow;
+          box-shadow: var(--bs-base-box-shadow);
 
           .box-lower--expand {
             &.expandable {

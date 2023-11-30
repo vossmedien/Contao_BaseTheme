@@ -318,7 +318,6 @@ return array(
                 'new_tab' => array(
                     'label' => array('Link in neuen Tab öffnen', ''),
                     'inputType' => 'checkbox',
-
                 ),
 
                 'link_text' => array(
@@ -368,7 +367,7 @@ return array(
 
                 'link_url' => array(
                     'label' => array('Verlinkung', ''),
-                    'inputType' => 'url',
+                    'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
             ),

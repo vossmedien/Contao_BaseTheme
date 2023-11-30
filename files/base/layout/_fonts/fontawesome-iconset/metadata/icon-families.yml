@@ -1259,6 +1259,38 @@ envelope-open:
       - support
   unicode: f2b6
   voted: false
+square-arrow-up-right:
+  aliases:
+    names:
+      - external-link-square
+    unicodes:
+      secondary:
+        - 10f14c
+  changes:
+    - 3.1.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+    - 6.5.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+  label: Square Arrow Up Right
+  search:
+    terms:
+      - diagonal
+      - new
+      - open
+      - send
+      - share
+  unicode: f14c
+  voted: false
 comment-pen:
   aliases:
     names:

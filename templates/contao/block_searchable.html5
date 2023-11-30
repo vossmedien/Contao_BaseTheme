@@ -4,8 +4,13 @@
 <div class="<?= $this->styleManager->get('articlestyles', ['elementStylings']); ?> <?php if( $this->styleManager->get('articlestyles', ['elementStylings']) == "box-inside-container"):?>content--box<?php endif;?> <?= $this->class ?> block  <?= $this->styleManager->get('columnsettings', ['spaltenausrichtung']); ?>"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
     <?php $this->block('headline'); ?>
     <?php if ($this->headline): ?>
+    <div class="ce--headline hl-<?= $this->hl ?>">
     <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
+</div>
 <?php endif; ?>
+
+
+
 <?php $this->endblock(); ?>
 
 <?php $this->block('content'); ?>

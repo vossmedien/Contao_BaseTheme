@@ -25,7 +25,7 @@ if (!isset($this->size)) {
 
     <div class="ce--inner container">
 
-        <div class="<?php echo $this->class; ?>">
+
 
 
             <?php if ($this->boxes) : ?>
@@ -344,7 +344,7 @@ if (!isset($this->size)) {
             <?php endif; ?>
         <?php endif; ?>
         <?php endif; ?>
-    </div>
+
 </div></div>
 <?php if ($this->boxes) : ?><?php foreach ($this->boxes as $i => $box) : ?><?php if ($box->add_items == 'modal') : ?>
     <div class="linkboxModal modal details-modal <?php echo $box->modal_size; ?>  modal-dialog-centered"

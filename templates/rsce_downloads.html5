@@ -74,8 +74,9 @@ if (TL_MODE == 'FE') {
                                 $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
                                 $fileName = basename($filePath);
 
-                                // Pfad zum Icon der Dateiendung
-                                $iconPath = 'icons/' . $fileExtension . '.svg'; // Pfad zu Ihren Icons
+                                // Pfad zum Icon der Dateiendung, angepasst an Ihr Verzeichnis
+                                $iconPath = 'files/base/layout/img/filetype-icons/' . $fileExtension . '.svg';
+
                                 ?>
                                 <a href="<?php echo $filePath; ?>" target="_blank" class="btn btn-outline-primary btn-lg">
                                     <?php if (file_exists(TL_ROOT . '/' . $iconPath)) : ?>
@@ -126,6 +127,7 @@ if (TL_MODE == 'FE') {
                         <div class="ce--buttons mt-5">
                             <?php foreach ($this->buttons as $btn) : ?>
                                 <a class="d-inline-block btn <?php if ($btn->link_size) : ?><?php echo $btn->link_size; ?><?php endif; ?> <?php echo $btn->link_type; ?>"
+                                   <?php if ($btn->new_tab) : ?>target="_blank" <?php endif; ?>
                                    data-aos="<?php if ($btn->animation_type) : ?><?php echo $btn->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
                                    href="<?php echo $btn->link_url; ?><?php if ($btn->link_betreff) : ?>?subject=<?php echo $btn->link_betreff; ?><?php endif; ?>"><?php echo $btn->link_text; ?> </a>
                             <?php endforeach ?>

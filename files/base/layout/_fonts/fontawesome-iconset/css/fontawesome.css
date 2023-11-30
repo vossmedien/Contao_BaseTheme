@@ -552,6 +552,7 @@ readers do not read off random characters that represent icons */
 .fa-envelope::before { content: "\f0e0"; }
 .fa-envelope-open::before { content: "\f2b6"; }
 .fa-exchange::before { content: "\f0ec"; }
+.fa-external-link-square::before { content: "\f14c"; }
 .fa-info::before { content: "\f129"; }
 .fa-info-circle::before { content: "\f05a"; }
 .fa-location-dot::before { content: "\f3c5"; }
@@ -578,6 +579,7 @@ readers do not read off random characters that represent icons */
 .fa-remove::before { content: "\f00d"; }
 .fa-search::before { content: "\f002"; }
 .fa-shopping-cart::before { content: "\f07a"; }
+.fa-square-arrow-up-right::before { content: "\f14c"; }
 .fa-subtract::before { content: "\f068"; }
 .fa-times::before { content: "\f00d"; }
 .fa-times-rectangle::before { content: "\f410"; }
