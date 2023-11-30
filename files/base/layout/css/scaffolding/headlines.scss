@@ -1,4 +1,4 @@
-.container .ce--headline >  .container{
+.container .ce--headline > .container {
   margin: 0;
 }
 
@@ -6,7 +6,7 @@
 .ce--headline {
   --hl-font-size-multi: 1;
   --hl-font-size-base: calc(
-    var(--bs-body-font-size) * var(--hl-font-size-multi)
+          var(--bs-body-font-size) * var(--hl-font-size-multi)
   );
   --hl-font-size-min: calc(var(--hl-font-size-base) * 0.75);
   --hl-font-size-max: calc(var(--hl-font-size-base) * 1.5);
@@ -20,10 +20,9 @@
   margin-bottom: var(--hl-margin);
 
 
-
-
   * {
     margin-bottom: 0px;
+    @extend .container;
   }
 
   &.hl-h1 {
@@ -50,16 +49,13 @@
     --hl-font-size-multi: 1;
   }
 
-
-    .ce--topline {
+  .ce--topline {
     --topline-font-size-multi: calc(var(--hl-font-size-multi) * 1.25);
   }
 
   .ce--subline {
     --subline-font-size-multi: calc(var(--hl-font-size-multi) * 0.75);
   }
-
-
 }
 
 h6,
@@ -75,7 +71,7 @@ h2,
 h1,
 .h1 {
   --hl-font-size-base: calc(
-    var(--bs-body-font-size) * var(--hl-font-size-multi)
+          var(--bs-body-font-size) * var(--hl-font-size-multi)
   );
 
 
@@ -83,19 +79,19 @@ h1,
 
   --hl-font-size-min: var(--hl-font-size-base);
   --hl-font-size-max: calc(
-    var(--hl-font-size-base) * var(--hl-font-size-max-multi)
+          var(--hl-font-size-base) * var(--hl-font-size-max-multi)
   );
   --hl-font-size-scale: 3vw;
 
   display: block;
-  padding: 0px;
+  //padding: 0px;
   transition: color 0.3s ease-in-out;
   color: var(--bs-headline-color);
 
   font-size: clamp(
-    var(--hl-font-size-min),
-    var(--hl-font-size-scale),
-    var(--hl-font-size-max)
+          var(--hl-font-size-min),
+          var(--hl-font-size-scale),
+          var(--hl-font-size-max)
   );
 
   > span {
@@ -149,23 +145,23 @@ h2,
 }
 
 h3,
-.h3{
-    font-weight: var(--bs-h3-font-weight);
+.h3 {
+  font-weight: var(--bs-h3-font-weight);
 }
 
 h4,
-.h4{
-    font-weight: var(--bs-h4-font-weight);
+.h4 {
+  font-weight: var(--bs-h4-font-weight);
 }
 
 h5,
-.h5{
-    font-weight: var(--bs-h5-font-weight);
+.h5 {
+  font-weight: var(--bs-h5-font-weight);
 }
 
 h6,
-.h6{
-    font-weight: var(--bs-h6-font-weight);
+.h6 {
+  font-weight: var(--bs-h6-font-weight);
 }
 
 .ce--topline,
@@ -173,19 +169,19 @@ h6,
   --hl-font-size-min: calc(var(--hl-font-size-base) * 0.75);
   --hl-font-size-max: calc(var(--hl-font-size-base) * 1.25);
   font-size: clamp(
-    var(--hl-font-size-min),
-    var(--hl-font-size-scale),
-    var(--hl-font-size-max)
+          var(--hl-font-size-min),
+          var(--hl-font-size-scale),
+          var(--hl-font-size-max)
   );
   display: block;
-  padding: 0px;
+  //padding: 0px;
   transition: color 0.3s ease-in-out;
   color: var(--bs-headline-color);
 }
 
 .ce--topline {
   --hl-font-size-base: calc(
-    var(--bs-body-font-size) * var(--topline-font-size-multi)
+          var(--bs-body-font-size) * var(--topline-font-size-multi)
   );
   font-weight: var(--bs-topline-font-weight);
   color: var(--bs-topline-color);
@@ -193,7 +189,7 @@ h6,
 
 .ce--subline {
   --hl-font-size-base: calc(
-    var(--bs-body-font-size) * var(--subline-font-size-multi)
+          var(--bs-body-font-size) * var(--subline-font-size-multi)
   );
   font-weight: var(--bs-subline-font-weight);
   color: var(--bs-subline-color);
@@ -201,8 +197,8 @@ h6,
 
 
 [class*="text-white"] {
-  .ce--headline{
-     --bs-headline-color: var(--bs-white);
+  .ce--headline {
+    --bs-headline-color: var(--bs-white);
   }
 
 }
