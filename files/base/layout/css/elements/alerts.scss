@@ -5,12 +5,12 @@
   --bs-alert-margin-top: 1rem;
   --bs-alert-margin-bottom: 1rem;
   --bs-alert-color: inherit;
-  --bs-alert-border-color: transparent;
+  //--bs-alert-border-color: transparent;
   --bs-alert-border: 1px solid var(--bs-alert-border-color);
   --bs-alert-border-radius: 0.375rem;
 
   margin-top: var(--bs-alert-margin-top);
-  margin-bottom:  var(--bs-alert-margin-bottom);
+  margin-bottom: var(--bs-alert-margin-bottom);
 
 
   &.alert-primary {
@@ -56,15 +56,17 @@
 
 
 .message {
-  &.success {
+  @extend .alert;
 
+  &.confirm {
+    @extend .alert-success;
   }
 
   &.empty {
-    //color: var(--bs-body-color-inverse);
+    @extend .alert-warning;
   }
 
   &.error {
-    //color: var(--bs-body-color-inverse);
+    @extend .alert-danger;
   }
 }

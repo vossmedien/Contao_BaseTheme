@@ -199,18 +199,6 @@ document.querySelectorAll(".widget-radio span.note").forEach((el) => {
     el.classList.add("alert", "alert-primary");
 });
 
-document.querySelectorAll(".message").forEach((el) => {
-    el.classList.add("alert");
-    if (el.classList.contains("success")) {
-        el.classList.add("alert-success");
-    }
-    if (el.classList.contains("empty")) {
-        el.classList.add("alert-primary");
-    }
-    if (el.classList.contains("error")) {
-        el.classList.add("alert-danger");
-    }
-});
 
 // Hier bleibt wrapInner, da es keine einfache native Alternative gibt
 $(
@@ -220,6 +208,9 @@ $(
     '#main > .inside > div[class^="mod_"]:not(.mod_article):not(.mod_iso_productreader):not(.mod_pageimage):not(.container):not(style)'
 ).wrapInner("<div class='container'></div>");
 
+
+
+
 document
     .querySelectorAll(
         "form:not(#iso_mod_checkout_review) > .formbody:not(.row):not(.no-row)"
@@ -228,9 +219,17 @@ document
         el.classList.add("row");
     });
 
-document.querySelectorAll("form .formbody > .fields > *").forEach((el) => {
-    el.parentNode.removeChild(el);
+document.querySelectorAll("form .formbody > .fields").forEach((fieldsContainer) => {
+    // Erstelle ein Array aus den Kind-Elementen des .fields-Containers
+    const elements = Array.from(fieldsContainer.children);
+
+    // Füge jedes Element eine Ebene höher im DOM hinzu
+    elements.forEach(el => fieldsContainer.parentNode.insertBefore(el, fieldsContainer));
+
+    // Entferne den nun leeren .fields-Container
+    fieldsContainer.parentNode.removeChild(fieldsContainer);
 });
+
 
 document.querySelectorAll("form .formbody .address_new").forEach((el) => {
     el.classList.add("row");
@@ -246,7 +245,6 @@ document.querySelectorAll("form .formbody  p.alert").forEach((el) => {
 
 document.querySelectorAll("form .widget.form-control").forEach((el) => {
     el.classList.remove("form-control");
-    r
 });
 
 document.querySelectorAll("form label:not(.form-label)").forEach((label) => {

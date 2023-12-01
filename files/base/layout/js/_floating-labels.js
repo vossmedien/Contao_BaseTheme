@@ -1,7 +1,7 @@
 /* Add Floating Placeholders to Inputs */
 
 function addPlaceholders() {
-    $(".widget:not(.widget-upload):not(.widget-select):not(.widget-radio):not(.widget-checkbox)").each(function (index) {
+    $(".widget:not(.widget-upload):not(.widget-select):not(.widget-radio):not(.widget-checkbox):not(.widget-captcha)").each(function (index) {
 
         var placeholder = $(this).find("input,textarea").attr("placeholder");
         var label = $(this).find('label').text();

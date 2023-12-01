@@ -49,10 +49,21 @@
             <?php endif; ?>
         <?php endif; ?>
         <div class="widget widget-submit">
-            <button type="submit" class="submit"><?= $this->slabel ?></button>
+
+            <div class="row">
+                <div class="col-12 col-md-6 text-start">
+                    <small><a href="{{link_url::44}}">Passwort vergessen</a></small>
+                </div>
+                <div class="col-12 col-md-6">
+                            <button type="submit" class="btn btn-primary"><?= $this->slabel ?></button>
             <?php if ($this->twoFactorEnabled) : ?>
                 <a href="<?= $this->route('contao_frontend_logout') ?>"><?= $this->cancel ?> ›</a>
             <?php endif; ?>
+                </div>
+            </div>
+
+
+
         </div>
     </div>
 </form>
