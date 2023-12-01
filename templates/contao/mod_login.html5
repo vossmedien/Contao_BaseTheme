@@ -51,6 +51,7 @@
         <div class="widget widget-submit">
 
             <div class="row">
+
                 <div class="col-12 col-md-6 text-start">
                     <small><a href="{{link_url::44}}">Passwort vergessen</a></small>
                 </div>
