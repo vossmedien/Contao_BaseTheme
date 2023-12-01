@@ -33,15 +33,10 @@ html {
 
     *[id] {
       scroll-behavior: smooth;
-      scroll-margin-top: 175px;
+      scroll-margin-top: var(--bs-scrolloffset);
     }
 
-    &.is--scrolling {
-      *[id] {
-        scroll-behavior: smooth;
-        scroll-margin-top: 100px;
-      }
-    }
+
 
     .mod_article > .content--element:not(.content--box) {
       //@extend %make-fullwidth;

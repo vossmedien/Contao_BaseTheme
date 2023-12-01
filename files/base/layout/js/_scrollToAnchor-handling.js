@@ -1,52 +1,27 @@
 function changeAnchorLinks() {
     const scrollPos = window.pageYOffset;
 
-    // Höhe von .header--content ermitteln, falls es die CSS-Eigenschaft position: fixed besitzt
-    const header = document.querySelector('.header--content');
-    const headerHeight = (header && getComputedStyle(header).position === 'fixed') ? header.offsetHeight : 0;
-
     document.querySelectorAll('#mainNav  a[href*="#"]:not(.invisible), .onepagenavi--wrapper a').forEach(currElement => {
         const currLink = currElement.getAttribute("href");
         const refElement = document.querySelector(currLink.substring(currLink.indexOf("#")));
 
         if (refElement) {
-            const refElementPos = refElement.getBoundingClientRect().top + scrollPos;
+            const refElementPos = refElement.getBoundingClientRect().top + scrollPos - 130; // --bs-scrolloffset + 5
             const refElementHeight = refElement.offsetHeight;
 
-            if (refElementPos - headerHeight <= scrollPos && refElementPos - headerHeight + refElementHeight > (scrollPos + 100)) {
+            if (refElementPos <= scrollPos && refElementPos + refElementHeight > scrollPos) {
                 // Entferne active-Klasse von anderen Elementen
                 const activeElem = document.querySelector("#mainNav .level_2 .active");
                 if (activeElem) {
                     activeElem.classList.remove("active");
-                    /*
-                    const parentActiveElem = activeElem.closest('li');
-                    if (parentActiveElem) parentActiveElem.classList.remove("active");
-
-                     */
                 }
 
                 // Setze active-Klasse auf aktuelles Element
                 if (!currElement.classList.contains("active")) {
                     currElement.classList.add("active");
                 }
-                /*
-                                const parentElem = currElement.closest('li');
-                                if (parentElem && !parentElem.classList.contains("active")) {
-                                    parentElem.classList.add("active");
-                                }
-
-                 */
             } else {
                 currElement.classList.remove("active");
-
-
-                /*
-                const parentElem = currElement.closest('li');
-                if (parentElem) {
-                    parentElem.classList.remove("active");
-                }
-                 */
-
             }
         }
     });
@@ -101,81 +76,6 @@ if (window.location.hash) {
         changeNavLinksAfterLoad();
     }
 }
-
-/* Smooth Scrolling and set correct Item active */
-
-var anchorHandling = function (e) {
-    e.preventDefault();
-
-    changeAnchorLinks();
-    var id = this.attributes.href.value;
-    var scrollTo = false;
-    window.location.hash = id;
-
-    if ($(id).hasClass("modal")) {
-        var myModal = new bootstrap.Modal(document.getElementById(id.substring(1)), {});
-        myModal.show();
-    } else {
-        if (id.length > 1) {
-            var scrollTo = document.querySelector(id);
-        }
-        if (scrollTo) {
-            var current_position = document.documentElement.scrollTop;
-            animate(
-                document.scrollingElement,
-                "scrollTop",
-                "",
-                current_position,
-                scrollTo.offsetTop - 100,
-                750,
-                true
-            );
-        }
-    }
-};
-
-
-window.onload = function () {
-    var anchorLinks = document.querySelectorAll('a[href^="#"]:not(.mm-btn):not(.carousel-control):not(.navActivator)');
-    for (var i = 0; i < anchorLinks.length; i++) {
-        anchorLinks[i].addEventListener("click", anchorHandling);
-    }
-};
-
-window.onload = function () {
-    const anchorLinks = document.querySelectorAll('a[href^="#"]:not(.mm-btn):not(.carousel-control):not(.navActivator)');
-
-    anchorLinks.forEach(anchor => {
-        anchor.addEventListener('click', function (event) {
-            event.preventDefault();
-
-            changeAnchorLinks();
-
-            const id = this.getAttribute('href');
-            window.location.hash = id;
-
-            const modal = document.querySelector(id);
-
-            if (modal && modal.classList.contains('modal')) {
-                // Replace this line with your modal display function
-                console.log('Modal Show Function Needed');
-            } else {
-                if (id.length > 1) {
-                    const scrollTo = document.querySelector(id);
-
-                    if (scrollTo) {
-                        const current_position = document.documentElement.scrollTop;
-                        window.scrollTo({
-                            top: scrollTo.getBoundingClientRect().top - 100 + current_position,
-                            behavior: 'smooth'
-                        });
-                    }
-                }
-            }
-        });
-    });
-};
-
 
 changeAnchorLinks();
 window.onscroll = function () {
