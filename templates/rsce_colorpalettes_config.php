@@ -16,6 +16,11 @@ return array(
             'inputType' => 'group',
         ),
 
+        'topline' => array(
+            'label' => array('Topline', ''),
+            'inputType' => 'text',
+        ),
+
         'subline' => array(
             'label' => array('Subline', ''),
             'inputType' => 'text',

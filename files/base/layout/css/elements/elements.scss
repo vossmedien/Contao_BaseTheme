@@ -36,7 +36,7 @@
 
   &.border-top {
     padding-top: var(--main-gap);
-    margin-top:var(--main-gap);
+    margin-top: var(--main-gap);
   }
 
   &.border-bottom {
@@ -84,13 +84,22 @@
   min-height: 100%;
 
   &.with-image {
-    @extend .row;
+    --bs-gutter-x: 30px;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1 * var(--bs-gutter-y));
+    margin-right: calc(-0.5 * var(--bs-gutter-x));
+    margin-left: calc(-0.5 * var(--bs-gutter-x));
 
     &.image-right {
       flex-flow: row-reverse;
 
       .image {
-        @extend .col-lg-6;
+        @include media-breakpoint-up(lg) {
+          flex: 0 0 auto;
+          width: 50%;
+        }
 
         @include media-breakpoint-down(md) {
           margin-top: 1rem;
@@ -98,7 +107,10 @@
       }
 
       .text {
-        @extend .col-lg-6;
+        @include media-breakpoint-up(lg) {
+          flex: 0 0 auto;
+          width: 50%;
+        }
 
         @include media-breakpoint-up(md) {
           @include padding-right(35px);
@@ -108,7 +120,10 @@
 
     &.image-left {
       .image {
-        @extend .col-lg-6;
+        @include media-breakpoint-up(lg) {
+          flex: 0 0 auto;
+          width: 50%;
+        }
 
         @include media-breakpoint-down(md) {
           margin-top: 1rem;
@@ -116,7 +131,10 @@
       }
 
       .text {
-        @extend .col-lg-6;
+        @include media-breakpoint-up(lg) {
+          flex: 0 0 auto;
+          width: 50%;
+        }
 
         @include media-breakpoint-up(md) {
           @include padding-left(35px);

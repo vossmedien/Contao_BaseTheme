@@ -16,12 +16,10 @@ if (!isset($this->size)) {
 
 <!-- @TODO
 
-Topline hinzufügen
 Cursor: Pointer fixen
 Reset-Button um Standard-Text anzuzeigen?
 Schriftfarbe der Headline
 Typ usw. von Headline
-
 
 -->
 

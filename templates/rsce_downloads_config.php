@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Downloads', ''),
+    'label' => array('Custom | Downloads (downloads)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
