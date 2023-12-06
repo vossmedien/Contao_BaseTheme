@@ -24,7 +24,7 @@ if (TL_MODE == 'FE') {
             }
             ?>
 
-            <div class="ce--section-slider <?php if (!$this->reverse_columns): ?>ps-lg-10<?php endif; ?> <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
+            <div class="ce--section-slider  <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
                  data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                 <?php $rand = rand(1, 100); ?>
 
@@ -41,31 +41,22 @@ if (TL_MODE == 'FE') {
                     </script>
                 <?php endif; ?>
 
-                <div class="pb-2 <?= $this->row_align; ?> row g-2 gx-xxl-0 gx-lg-3 <?php if (!$this->reverse_columns): ?>flex-md-row-reverse<?php endif; ?>">
+                <div class="pb-2 <?= $this->row_align; ?> row g-2  gx-lg-<?php if ($this->show_arrows): ?>5<?php else:?>3<?php endif;?> <?php if (!$this->reverse_columns): ?>flex-md-row-reverse<?php endif; ?>">
                     <div class="col-12 col-md-6 col-xl-7 ">
 
-                        <?php if ($this->headline || $this->subline || $this->topline): ?>
-                            <div class="ce--headline" data-aos="<?= $this->animation_type ?: 'animate__fadeInUp'; ?>">
-                                <?php if ($this->topline): ?>
-                                    <span class="ce--topline"><?= $this->topline; ?></span>
-                                <?php endif; ?>
-
-                                <?php if ($this->headline): ?>
-                                    <?php echo "<{$this->hl}>"; ?>
-                                    <span class="ce--headline-content"><?= $this->headline; ?></span>
-                                    <?php echo "</{$this->hl}>"; ?>
-                                <?php endif; ?>
-
-                                <?php if ($this->subline): ?>
-                                    <span class="ce--subline"><?= $this->subline; ?></span>
-                                <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
-
-
+                        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                            $this->topline,
+                            $this->headline,
+                            $this->subline,
+                            $this->hl,
+                            $this->animation_type,
+                            null,
+                            false,
+                            null
+                        ); ?>
                     </div>
 
-                    <div class="col-12 col-md-6 col-xl-5 <?php if (!$this->reverse_columns): ?>pt-md-10<?php endif; ?>">
+                    <div class="col-12 col-md-6 col-xl-5">
                         <div class="position-relative">
                             <div class="swiper <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> section-slider_<?= $this->id; ?>">
                                 <!-- Additional required wrapper -->
@@ -122,7 +113,7 @@ if (TL_MODE == 'FE') {
 
 
                 <?php if ($this->show_bottombtn): ?>
-                    <div class="scroll-to-bottom mt-5">
+                    <div class="scroll-to-bottom" data-aos="animate__fadeInUp">
                         <a <?php if ($this->custom_anchor): ?>
                             href="<?= $this->custom_anchor; ?>"
                         <?php else: ?>
@@ -161,7 +152,7 @@ if (TL_MODE == 'FE') {
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.section-slider_<?php echo $this->id; ?>', {
 
                     direction: 'horizontal',
-
+                    loop: true,
 
                     //loopedSlides: 1,
 
