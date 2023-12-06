@@ -80,9 +80,6 @@ AddOutputFilterByType DEFLATE application/x-font-ttf application/x-font-opentype
     </FilesMatch>
 </IfModule>
 
-
-ExpiresActive On
-
 <IfModule mod_expires.c>
     ## Enable expiration control
     ExpiresActive On
@@ -146,8 +143,9 @@ ExpiresActive On
     RewriteEngine On
 
     # ensure www.
-    RewriteCond %{HTTP_HOST} !^www\. [NC]
-    RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    # RewriteCond %{HTTP_HOST} !^www\. [NC]
+    # RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
     # ensure https
     RewriteCond %{HTTP:X-Forwarded-Proto} !https
     RewriteCond %{HTTPS} off
