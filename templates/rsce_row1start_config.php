@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Spalten Start-Element', ''),
+    'label' => array('Spalten/Slider Start-Element', ''),
     'types' => array('content'),
     'contentCategory' => 'Spalten',
     'moduleCategory' => 'miscellaneous',
@@ -9,16 +9,17 @@ return array(
 
     'fields' => array(
 
-
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
-        ), 'subline' => array(
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -140,9 +141,36 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true','tl_class' => 'clr')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
 
+
+        'is_fullwidth' => array(
+            'label' => array('Element auf volle Breite', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+
+        'element_type' => array(
+            'label' => array('Darstellungstyp', ''),
+            'inputType' => 'radio',
+            'options' => array(
+                'is_row' => 'Spalten',
+                'is_slider' => 'Slider',
+            ),
+        ),
+
+
+        'settings_row' => array(
+            'label' => array('Slider-Einstellungen', ''),
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => 'is_row',
+            ),
+        ),
 
         'add_mid_element' => array(
             'label' => array('Mittiges Element hinzufügen, liegt über beiden Spalten', 'Funktioniert nur bei 50/50 Spalten und fügt einen mittigen Balken in Body-Background Farbe sowie größere Spaltenabstände hinzu'),
@@ -159,7 +187,80 @@ return array(
             ),
         ),
 
+        'settings_slider' => array(
+            'label' => array('Slider-Einstellungen', ''),
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => 'is_slider',
+            ),
+        ),
 
+        'slide_effect' => array(
+            'label' => array(
+                'de' => array('Slide-Effekt', ''),
+            ),
+            'inputType' => 'select',
+            'options' => array(
+                'slide' => 'Slide (Standard)',
+                'fade' => 'Fade',
+                'coverflow' => 'Coverflow',
+                'flip' => 'Flip',
+                'cube' => 'Cube',
+            ),
+        ),
+
+        'space_between' => array(
+            'label' => array('Abstand zwischen den Slides in PX', 'Standard: 30'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'slides_per_view' => array(
+            'label' => array('Wie viele Slides sind sichtbar', 'Beispielsweise 1.5 um rechts und links eine Vorschau des nächsten Slides anzuzeigen, Standard: auto'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+
+        'show_pagination' => array(
+            'label' => array('Paginierung anzeigen', 'mittig unter dem Slider, in Form von Punkten'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'show_arrows' => array(
+            'label' => array('Navigationspfeile anzeigen', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'loop' => array(
+            'label' => array('Automatisch wieder von Anfang starten', '"loop"'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'autoplay' => array(
+            'label' => array('Autoplay aktivieren', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'autoplay_time' => array(
+            'label' => array('Autoplay-Zyklus', 'nach wie viel MS soll zum nächsten Slide gewechselt werden, Standard: 3000'),
+            'inputType' => 'text',
+            'dependsOn' => array(
+                'field' => 'autoplay',
+            ),
+        ),
+
+
+        'transition_time' => array(
+            'label' => array('Animationszeit in ms', 'Standard: 500'),
+            'inputType' => 'text',
+        ),
 
     ),
 );

@@ -1,9 +1,3 @@
-doctrine:
-  dbal:
-    connections:
-      default:
-        options:
-          1002: "SET SESSION sql_mode=(SELECT CONCAT(@@sql_mode, ',TRADITIONAL'))"
 contao:
   #legacy_routing: false
   url_suffix: ''

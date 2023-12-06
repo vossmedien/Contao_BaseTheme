@@ -3,4 +3,5 @@ if (TL_MODE == 'FE'):?>
 </div>
 </div>
 </div>
+</div>
 <?php endif;?>

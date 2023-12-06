@@ -11,7 +11,6 @@ body {
 
   &.index {
     #header {
-
       @include media-breakpoint-up(md) {
         &.is--scrolling {
           .show-on-scroll {
@@ -23,21 +22,19 @@ body {
           }
 
           .header--content.type--7 {
-            background-color: rgba(255, 255, 255, .9);
+            background-color: rgba(255, 255, 255, 0.9);
             box-shadow: var(--bs-base-box-shadow);
           }
         }
       }
-
     }
   }
 }
 
-
 #header {
-
-  .show-on-scroll, .hide-on-scroll {
-    transition: opacity .2s ease-in-out;
+  .show-on-scroll,
+  .hide-on-scroll {
+    transition: opacity 0.2s ease-in-out;
   }
 
   .show-on-scroll {
@@ -46,20 +43,6 @@ body {
     top: 2.5rem;
   }
 
-  .navActivator {
-    display: inline-block;
-    width: rfs-value(40px);
-    line-height: 41px;
-    height: 35px;
-    text-align: center;
-    font-size: 1.5rem;
-    padding: 0px;
-    cursor: pointer;
-    position: relative;
-    z-index: 5;
-  }
-
-
   .header--content.type--7 {
     --y-padding: 2.5rem;
     position: fixed;
@@ -67,8 +50,20 @@ body {
     top: 0;
     width: 100%;
     z-index: 9;
-    transition: all .2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 
+    .navActivator {
+      display: inline-block;
+      min-width: rfs-value(40px);
+      line-height: 41px;
+      height: 35px;
+      text-align: center;
+      font-size: 1.5rem;
+      padding: 0px;
+      cursor: pointer;
+      position: relative;
+      z-index: 5;
+    }
 
     @include media-breakpoint-down(md) {
       background: var(--bs-gradient);
@@ -77,7 +72,6 @@ body {
         color: var(--bs-body-color-inverse);
       }
     }
-
 
     .hc--inside {
       padding-top: var(--y-padding);
@@ -96,14 +90,14 @@ body {
       left: 0;
       width: 100%;
       background-color: var(--bs-body-color-inverse);
-      transition: all .3s ease-in-out;
+      transition: all 0.3s ease-in-out;
       opacity: 0;
       padding-top: var(--y-padding);
       z-index: -1;
       visibility: hidden;
 
       &:after {
-        content: '';
+        content: "";
         position: absolute;
         z-index: -1;
         background-image: url("/files/base/layout/img/navi-bg.svg");
@@ -134,7 +128,7 @@ body {
       }
 
       .expandable-nav--close {
-        transition: all .15s ease-in-out;
+        transition: all 0.15s ease-in-out;
         display: inline-block;
         color: var(--bs-light);
         width: rfs-value(40px);
@@ -150,7 +144,6 @@ body {
         }
       }
 
-
       .expandable-nav--middle {
         padding-top: 7.5vh;
 
@@ -163,18 +156,22 @@ body {
             margin: 0px;
 
             li {
-              a, strong {
+              a,
+              strong {
                 text-decoration: none;
                 color: var(--bs-primary);
                 text-transform: uppercase;
-                transition: all .15s ease-in-out;
+                transition: all 0.15s ease-in-out;
                 @include font-size(30px);
                 font-weight: $font-weight-bold;
                 line-height: 1.33;
               }
 
-              &:hover, &.active, &.trail {
-                > a, > strong {
+              &:hover,
+              &.active,
+              &.trail {
+                > a,
+                > strong {
                   color: var(--bs-secondary);
                 }
               }
@@ -200,5 +197,3 @@ body {
     }
   }
 }
-
-
