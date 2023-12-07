@@ -54,7 +54,7 @@
       }
 
       .content--element {
-        &[class*="col"] {
+        &[class*="col"]:not(.ce_rsce_coloredrows) {
           padding-left: calc(var(--bs-gutter-x) * 0.5);
           padding-right: calc(var(--bs-gutter-x) * 0.5);
         }

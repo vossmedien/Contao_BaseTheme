@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Zeilen mit Spalten', ''),
+    'label' => array('Custom | Zeilen mit Spalten (coloredrows)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -140,7 +140,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true','tl_class' => 'clr')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
         'rows' => array(
             'label' => array('Boxen', ''),
@@ -159,6 +159,19 @@ return array(
                         'extensions' => 'jpg,jpeg,png,svg,webp',
                     ),
                 ),
+                'size' => array(
+                    'label' => array('Bildbreite und Bildhöhe', ''),
+                    'inputType' => 'imageSize',
+                    'options' => System::getImageSizes(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'tl_class' => 'w50',
+                        'includeBlankOption' => true,
+                    ),
+                ),
+
+
                 'headline_type' => array(
                     'label' => array(
                         'de' => array('Typ der Überschrift', 'für linke Spalte'),
@@ -170,18 +183,26 @@ return array(
                         'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
                         'h4' => 'H4',
                         'h5' => 'H5',
-'h6' => 'H6',
+                        'h6' => 'H6',
                     ),
                 ),
 
                 'topline' => array(
                     'label' => array('Topline', 'für linke Spalte'),
                     'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'subline' => array(
+                    'label' => array('Subline', 'für linke Spalte'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
                 'headline' => array(
                     'label' => array('Überschrift', 'für linke Spalte'),
                     'inputType' => 'text',
+                    'eval' => array('tl_class' => 'clr'),
                 ),
 
                 'onlystyle' => array(
@@ -189,10 +210,6 @@ return array(
                     'inputType' => 'checkbox',
                 ),
 
-                'subline' => array(
-                    'label' => array('Subline', 'für linke Spalte'),
-                    'inputType' => 'text',
-                ),
 
                 'headline_color' => array(
                     'label' => array(
@@ -210,6 +227,7 @@ return array(
                         'mixed' => 'Blau/Lila',
                     ),
                 ),
+
                 'colored_row' => array(
                     'label' => array('Zeile blau hinterlegen', ''),
                     'inputType' => 'checkbox',
@@ -358,9 +376,23 @@ return array(
                                 'extensions' => 'jpg,jpeg,png,svg,webp',
                             ),
                         ),
+
+                        'size' => array(
+                            'label' => array('Bildbreite und Bildhöhe', ''),
+                            'inputType' => 'imageSize',
+                            'options' => System::getImageSizes(),
+                            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                            'eval' => array(
+                                'rgxp' => 'digit',
+                                'tl_class' => 'w50',
+                                'includeBlankOption' => true,
+                            ),
+                        ),
+
                         'text_1' => array(
                             'label' => array('1. Zeile', ''),
                             'inputType' => 'text',
+                              'eval' => array('tl_class' => 'clr'),
                         ),
                         'text_2' => array(
                             'label' => array('2. Zeile', ''),
