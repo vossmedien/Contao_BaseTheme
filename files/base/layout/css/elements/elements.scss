@@ -9,7 +9,7 @@
   }
    */
 
-  > *:last-child {
+  > *:last-child:not(hr) {
     margin-bottom: 0px !important;
   }
 

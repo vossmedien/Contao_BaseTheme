@@ -2,7 +2,7 @@
     <div class="ce--inner container ">
 
 
-                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -14,14 +14,14 @@
         ); ?>
 
 
-    <div class="ce--buttonsonly">
+        <div class="ce--buttonsonly">
 
-        <?php foreach ($this->buttons as $b) : ?>
-            <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
-               data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-               href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
-        <?php endforeach ?>
+            <?php foreach ($this->buttons as $b) : ?>
+                <a class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
+                   data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                   href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
+            <?php endforeach ?>
 
+        </div>
     </div>
-</div>
 </div>

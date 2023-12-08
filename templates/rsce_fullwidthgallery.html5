@@ -4,10 +4,10 @@ if (TL_MODE == 'FE') {
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element <?= $this->class;?>">
+<div <?php echo $this->cssID; ?> class="content--element <?= $this->class; ?>">
     <div class="ce--inner">
 
-                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -18,47 +18,58 @@ if (TL_MODE == 'FE') {
             null
         ); ?>
 
-    <?php if ($this->gallery): ?>
-        <div class="ce--fullwidthgallery">
-            <div class="row gx-0">
-                <?php foreach ($this->gallery as $x => $e) : ?>
-                    <div class="<?= $e->column_width; ?>"
-                         data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                        <div class="gallery-column">
+        <?php if ($this->gallery): ?>
+            <div class="ce--fullwidthgallery" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <div class="row gx-0">
+                    <?php foreach ($this->gallery as $x => $e) : ?>
+                        <div class="<?= $e->column_width; ?>"
+                             data-aos="<?php if ($e->animation_type) : ?><?php echo $e->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                            <div class="gallery-column">
 
-                            <div class="gallery-column--inner">
+                                <div class="gallery-column--inner">
 
-                                <div data-bg="<?= Image::get(FilesModel::findByUuid($e->image)->path, null, null, null); ?>"
-                                     style="background-size: cover; background-repeat: no-repeat;"
-                                     class="lazy column--image-holder"></div>
+                                    <div data-bg="<?= Image::get(FilesModel::findByUuid($e->image)->path, $e->size[0], $e->size[1], $e->size[2]); ?>"
+                                         style="background-size: cover; background-repeat: no-repeat;"
+                                         class="lazy column--image-holder"></div>
 
-                                <?php if ($e->link): ?>
-                                    <a href="<?= $e->link; ?>"></a>
-                                <?php endif; ?>
+                                    <?php if ($e->link): ?>
+                                        <a href="<?= $e->link; ?>"></a>
+                                    <?php endif; ?>
 
-                                <?php if ($e->desc): ?>
-                                    <div class="hover-content--info-icon">
-                                        <i class="fa-sharp fa-light fa-info"></i>
-                                    </div>
 
-                                    <div class="gallery-column--hover-content" style="
-                                    <?php if ($e->background_color): ?>background-color: <?= $e->background_color; ?>;<?php endif; ?>
-                                    <?php if ($e->text_color): ?>color: <?= $e->text_color; ?>;<?php endif; ?>
-                                            "
-
-                                    >
-
-                                        <div class="hover-content--inner">
-                                            <?= $e->desc; ?>
+                                    <?php if ($e->desc || $e->headline): ?>
+                                        <div class="hover-content--info-icon">
+                                            <i class="fa-sharp fa-light fa-info"></i>
                                         </div>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
 
+                                        <div class="gallery-column--hover-content" style="
+                                        <?php if ($e->background_color): ?>background-color: <?= $e->background_color; ?>;<?php endif; ?>
+                                        <?php if ($e->text_color): ?>color: <?= $e->text_color; ?>;<?php endif; ?>">
+
+                                            <div class="hover-content--inner">
+                                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                    $e->topline,
+                                                    $e->headline,
+                                                    $e->subline,
+                                                    $e->headline_type,
+                                                    null,
+                                                    $e->text_color,
+                                                    $e->onlystyle,
+                                                    null
+                                                ); ?>
+
+                                                <?php if ($e->desc): ?>
+                                                    <?= $e->desc; ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                <?php endforeach ?>
+                    <?php endforeach ?>
+                </div>
             </div>
-        </div>
-    <?php endif; ?>
-</div></div>
+        <?php endif; ?>
+    </div>
+</div>

@@ -93,8 +93,14 @@ html body {
           @include font-size(22px);
 
           .hover-content--inner {
-            max-width: 300px;
             margin: auto;
+          }
+
+          .ce--headline{
+            > *{
+              max-width: 100%;
+              padding: 0px;
+            }
           }
         }
       }

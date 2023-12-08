@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | "Text"-Navigation und optional Bild + Text je Slide (zweispaltig)', ''),
+    'label' => array('Custom | Text-Slider mit Bild + Text je Slide (contentslider)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -259,12 +259,11 @@ return array(
         ),
 
 
-            'loop' => array(
+        'loop' => array(
             'label' => array('Automatisch wieder von Anfang starten', '"loop"'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
         ),
-
 
 
         'autoplay' => array(
@@ -365,6 +364,20 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
+                'subline' => array(
+                    'label' => array('Subline', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'text' => array(
+                    'label' => array('Überschrift', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
                 'headline_type' => array(
                     'label' => array(
                         'de' => array('Typ der Überschrift', ''),
@@ -376,7 +389,7 @@ return array(
                         'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
                         'h4' => 'H4',
                         'h5' => 'H5',
-'h6' => 'H6',
+                        'h6' => 'H6',
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -391,13 +404,8 @@ return array(
                 'onlystyle' => array(
                     'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                     'inputType' => 'checkbox',
+                     'eval' => array('tl_class' => 'clr'),
 
-                ),
-
-                'subline' => array(
-                    'label' => array('Subline', ''),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
                 ),
 
 
@@ -416,7 +424,7 @@ return array(
                 ),
 
                 'link_url' => array(
-                    'label' => array('Verlinkung (Nur relevant wenn "Darstellungstyp 1")'),
+                    'label' => array('Verlinkung'),
                     'inputType' => 'url',
                 ),
 

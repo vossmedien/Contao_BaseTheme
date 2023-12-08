@@ -532,7 +532,6 @@ return array(
                     'label' => array(
                         'de' => array('Typ der Überschrift', ''),
                     ),
-                    'eval' => array('tl_class' => 'w50'),
                     'inputType' => 'select',
                     'options' => array(
                         'h1' => 'H1',

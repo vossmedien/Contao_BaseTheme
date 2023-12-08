@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Gestrecktes Bild mit Headline, Text und Button (2-Spaltig)', ''),
+    'label' => array('Custom | Gestrecktes Bild/Video mit Headline, Text und Button (extendedimagecolumns)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -140,7 +140,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true','tl_class' => 'clr')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
         'box' => array(
             'label' => array('Boxen', ''),
@@ -272,16 +272,75 @@ return array(
                     ),
                     'eval' => array('chosen' => 'true')
                 ),
+
+
+                'element_type' => array(
+                    'label' => array('Was wird eingebunden?', ''),
+                    'inputType' => 'radio',
+                    'options' => array(
+                        '1' => 'Bild',
+                        '2' => 'Video',
+                    ),
+                ),
+
+
                 'image' => array(
-                    'label' => array('Bild / Video (mp4)', ''),
+                    'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,mp4',
+                        'extensions' => 'jpg,jpeg,png,svg',
+                    ),
+                    'dependsOn' => array(
+                        'field' => 'element_type',
+                        'value' => '1',
                     ),
                 ),
+
+                'size' => array(
+                    'label' => array('Bildbreite und Bildhöhe', ''),
+                    'inputType' => 'imageSize',
+                    'options' => System::getImageSizes(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'tl_class' => 'w50',
+                        'includeBlankOption' => true,
+                    ),
+                    'dependsOn' => array(
+                        'field' => 'element_type',
+                        'value' => '1',
+                    ),
+                ),
+
+
+                'video' => array(
+                    'label' => array('Video', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'mp4',
+                    ),
+                    'dependsOn' => array(
+                        'field' => 'element_type',
+                        'value' => '2',
+                    ),
+                ),
+
+                'as_bg' => array(
+                    'label' => array('Video als Hintergrund & autoplay einbinden', 'Standard mit Play-Button und nicht beschnitten'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                    'dependsOn' => array(
+                        'field' => 'element_type',
+                        'value' => '2',
+                    ),
+                ),
+
 
                 'alternate_background' => array(
                     'label' => array('Alternative Hintergrundfarbe für Bild/Video-Hintergrund', 'In HEX oder rgb(a) angeben'),
@@ -292,10 +351,26 @@ return array(
                     'label' => array('Headline als Box mit Schatten darstellen', ''),
                     'inputType' => 'checkbox',
                 ),
-                'onlystyle' => array(
-                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
-                    'inputType' => 'checkbox',
+
+
+                'topline' => array(
+                    'label' => array('Topline', 'Text oberhalb der Überschrift'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
+                'subline' => array(
+                    'label' => array('Subline', 'Text unterhalb der Überschrift'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'headline' => array(
+                    'label' => array('Überschrift', ''),
+                    'inputType' => 'text',
+                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
+                ),
+
                 'headline_type' => array(
                     'label' => array(
                         'de' => array('Typ der Überschrift', ''),
@@ -307,27 +382,23 @@ return array(
                         'h3' => 'H3',
                         'h4' => 'H4',
                         'h5' => 'H5',
-'h6' => 'H6',
+                        'h6' => 'H6',
                     ),
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'onlystyle' => array(
+                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
+                    'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
-                'headline' => array(
-                    'label' => array('Überschrift', ''),
-                    'inputType' => 'text',
-                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
-                ),
-                'topline' => array(
-                    'label' => array('Topline', 'Text oberhalb der Überschrift'),
-                    'inputType' => 'text',
-                ),
-                'subline' => array(
-                    'label' => array('Subline', 'Text unterhalb der Überschrift'),
-                    'inputType' => 'text',
-                ),
+
+
                 'content' => array(
                     'label' => array('Text', ''),
                     'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+                    'eval' => array('rte' => 'tinyMCE'),
                 ),
                 'link_text' => array(
                     'label' => array(

@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Boxen-Grid, 2-Spaltig (Bild+Text) mit Icons, Bild, Text und Verlinkung', ''),
+    'label' => array('Custom | Boxen-Grid, 2-Spaltig mit Icons, Bild, Text und Verlinkung (equalboxfield)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -140,7 +140,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true','tl_class' => 'clr')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
 
 
@@ -379,11 +379,12 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'col-12 col-md-6 col-lg-3' => '25%',
-                        'col-12 col-md-6 col-lg-4' => '33%',
-                        'col-12 col-md-6' => '50%',
+                       'col-12 col-lg-4 col-xl-3' => '25%',
+                        'col-12 col-lg-4' => '33%',
+                        'col-12 col-lg-6' => '50%',
                         'col-12 col-lg-8' => '66.66%',
                         'col-12 col-lg-9' => '75%',
+                        'col-12' => 'Volle Breite',
                     ),
                 ),
 
@@ -405,22 +406,47 @@ return array(
                 ),
 
 
-                'title' => array(
-                    'label' => array('Überschrift', ''),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => ''),
-                ),
-
                 'topline' => array(
                     'label' => array('Topline', 'Text oberhalb der Überschrift'),
                     'inputType' => 'text',
-                          'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'subline' => array(
                     'label' => array('Subline', 'Text unterhalb der Überschrift'),
                     'inputType' => 'text',
-                                   'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
+
+
+                'title' => array(
+                    'label' => array('Überschrift', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'headline_type' => array(
+                    'label' => array(
+                        'de' => array('Typ der Überschrift', ''),
+                    ),
+                    'inputType' => 'select',
+                    'options' => array(
+                        'h1' => 'H1',
+                        'h2' => 'H2',
+                        'h3' => 'H3',
+                        'h4' => 'H4',
+                        'h5' => 'H5',
+                        'h6' => 'H6',
+                    ),
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'onlystyle' => array(
+                    'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
 
                 'text' => array(
                     'label' => array('Teaser-Text', ''),

@@ -73,9 +73,7 @@ html body {
     }
 
     .vertical {
-      @include media-breakpoint-up(md) {
-        margin-left: calc(0px - (0.75rem + 30px));
-      }
+
 
       &.content-slider--nav {
         position: relative;
@@ -237,43 +235,17 @@ html body {
     .ce--inner {
       &.is-fullwidth {
         .half-container {
-          margin-right: auto;
-          margin-left: auto;
 
-          @include media-breakpoint-up(md) {
-            &:not(.nav-column) {
-              margin-right: auto;
-              margin-left: auto;
-            }
-
-            &.nav-column {
-              margin-left: auto;
-              margin-right: 0px;
-            }
-          }
         }
       }
 
       .row.flex-row-reverse {
         .half-container {
-          @include media-breakpoint-up(md) {
-            &:not(.nav-column) {
-              margin-right: auto;
-              margin-left: auto;
-            }
 
-            &.nav-column {
-              margin-left: auto;
-              margin-right: 0px;
-            }
-          }
 
           &.nav-column {
             .content-slider--nav {
-              margin-left: 0px;
-              @include media-breakpoint-up(md) {
-                margin-right: calc(0px - (0.75rem + 22px));
-              }
+
             }
           }
         }
