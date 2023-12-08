@@ -83,17 +83,20 @@ setTimeout(function () {
 }, 500); // 500ms Verzögerung vor der Initialisierung von AOS
 
 const addStylesToArticlesWithBg = () => {
-  // Wählen Sie alle .mod_article Elemente aus
+  // Wählen Sie das letzte .mod_article Element aus
   var articleLast = document.querySelector(".mod_article:last-child");
+  // Wählen Sie das erste .mod_article Element aus
   var articleFirst = document.querySelector(".mod_article:first-child");
 
-  if (articleLast.querySelector("style.with-bg")) {
+  // Prüfen Sie, ob das letzte .mod_article Element existiert und ein style.with-bg Kind hat
+  if (articleLast && articleLast.querySelector("style.with-bg")) {
     articleLast.style.padding =
       "var(--with-body-bg-spacing) 0 calc(var(--with-body-bg-spacing) * 2) 0";
     articleLast.style.marginBottom = "calc(-1 * var(--with-body-bg-spacing))";
   }
 
-  if (articleFirst.querySelector("style.with-bg")) {
+  // Prüfen Sie, ob das erste .mod_article Element existiert und ein style.with-bg Kind hat
+  if (articleFirst && articleFirst.querySelector("style.with-bg")) {
     articleFirst.style.padding =
       "calc(var(--with-body-bg-spacing) * 2) 0 var(--with-body-bg-spacing) 0";
     articleFirst.style.marginTop = "calc(-1 * var(--with-body-bg-spacing))";
@@ -214,8 +217,11 @@ Promise.all(promises)
     console.error(`${script} failed to load`);
   });
 
+
+
+
 const lazyLoadInstance = new LazyLoad({
-  callback_loaded: function (element) {
+  callback_loaded:   onImageLoaded, function (element) {
     if (element.closest("header")) {
       const navWrapper = document.querySelector(".hc--bottom");
       if (navWrapper) {
@@ -223,6 +229,7 @@ const lazyLoadInstance = new LazyLoad({
       }
     }
   },
+
 });
 
 const matrixCells = document.querySelectorAll(".matrix td");

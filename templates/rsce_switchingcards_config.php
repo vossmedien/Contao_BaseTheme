@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Drehende Cards nach Klick', ''),
+    'label' => array('Custom | Drehende Cards nach Klick (switchingcards)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
 
 
@@ -142,7 +142,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
 
 
@@ -211,12 +211,6 @@ return array(
 
         'show_arrows' => array(
             'label' => array('Pfeile anzeigen', ''),
-            'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr'),
-        ),
-
-        'centered_slides' => array(
-            'label' => array('Slides mittig ausrichten', ''),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
         ),
@@ -378,7 +372,7 @@ return array(
 
                 'column_width' => array(
                     'label' => array(
-                        'de' => array('Inhalts-Spaltenbreite', 'obsolet wenn innerhalb eines Sliders!'),
+                        'de' => array('Spaltenbreite', 'obsolet wenn innerhalb eines Sliders!'),
                     ),
                     'inputType' => 'select',
                     'options' => array(
@@ -417,6 +411,18 @@ return array(
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,svg,webp',
                         'tl_class' => 'clr'
+                    ),
+                ),
+
+                'size_front' => array(
+                    'label' => array('Bildbreite und Bildhöhe', ''),
+                    'inputType' => 'imageSize',
+                    'options' => System::getImageSizes(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'tl_class' => 'w50',
+                        'includeBlankOption' => true,
                     ),
                 ),
 
@@ -489,6 +495,18 @@ return array(
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,svg,webp',
                         'tl_class' => 'clr'
+                    ),
+                ),
+
+                'size_back' => array(
+                    'label' => array('Bildbreite und Bildhöhe', ''),
+                    'inputType' => 'imageSize',
+                    'options' => System::getImageSizes(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'tl_class' => 'w50',
+                        'includeBlankOption' => true,
                     ),
                 ),
 
