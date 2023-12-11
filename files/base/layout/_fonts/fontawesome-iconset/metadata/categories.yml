@@ -23,16 +23,29 @@ arrows:
     - download
     - square-arrow-up-right
   label: Arrows
+astronomy:
+  icons:
+    - globe
+  label: Astronomy
+buildings:
+  icons:
+    - house
+  label: Buildings
 business:
   icons:
     - copyright
     - envelope
     - envelope-open
+    - globe
     - pen
     - pencil
     - phone
     - phone-volume
   label: Business
+charity:
+  icons:
+    - globe
+  label: Charity
 coding:
   icons:
     - bars
@@ -49,6 +62,10 @@ communication:
     - quote-left
     - quote-right
   label: Communication
+connectivity:
+  icons:
+    - globe
+  label: Connectivity
 construction:
   icons:
     - pencil
@@ -88,6 +105,8 @@ maps:
   icons:
     - cart-shopping
     - circle-info
+    - globe
+    - house
     - info
     - location-dot
     - magnifying-glass

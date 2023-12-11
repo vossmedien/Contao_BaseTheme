@@ -261,6 +261,68 @@
     "unicode": "f105",
     "voted": false
   },
+  "globe": {
+    "aliases": {
+      "unicodes": {
+        "composite": [
+          "1f310"
+        ],
+        "secondary": [
+          "10f0ac"
+        ]
+      }
+    },
+    "changes": [
+      "2.0.0",
+      "5.0.0",
+      "5.0.9",
+      "5.11.0",
+      "5.11.1",
+      "6.0.0-beta1",
+      "6.0.0-beta3",
+      "6.2.0",
+      "6.3.0",
+      "6.4.0",
+      "6.5.0"
+    ],
+    "free": [
+      "solid"
+    ],
+    "label": "Globe",
+    "ligatures": [],
+    "search": {
+      "terms": [
+        "all",
+        "coordinates",
+        "country",
+        "earth",
+        "global",
+        "globe",
+        "globe with meridians",
+        "gps",
+        "internet",
+        "language",
+        "localize",
+        "location",
+        "map",
+        "meridians",
+        "network",
+        "online",
+        "place",
+        "planet",
+        "translate",
+        "travel",
+        "world",
+        "www"
+      ]
+    },
+    "styles": [
+      "solid"
+    ],
+    "svg": {},
+    "unicode": "f0ac",
+    "voted": false
+  },
   "discord": {
     "changes": [
       "5.0.0",
@@ -1290,6 +1352,65 @@
       }
     },
     "unicode": "f09a",
+    "voted": false
+  },
+  "house": {
+    "aliases": {
+      "names": [
+        "home",
+        "home-alt",
+        "home-lg-alt"
+      ],
+      "unicodes": {
+        "composite": [
+          "1f3e0",
+          "f80a",
+          "f80c"
+        ],
+        "primary": [
+          "f80a",
+          "f80c"
+        ],
+        "secondary": [
+          "10f015",
+          "10f80a",
+          "10f80c"
+        ]
+      }
+    },
+    "changes": [
+      "1.0.0",
+      "5.0.0",
+      "5.7.0",
+      "6.0.0-beta1",
+      "6.0.0-beta2",
+      "6.0.0-beta3",
+      "6.1.0",
+      "6.2.0",
+      "6.3.0",
+      "6.4.0",
+      "6.5.0"
+    ],
+    "free": [
+      "solid"
+    ],
+    "label": "House",
+    "ligatures": [],
+    "search": {
+      "terms": [
+        "abode",
+        "building",
+        "home",
+        "house",
+        "main",
+        "residence"
+      ]
+    },
+    "styles": [
+      "solid"
+    ],
+    "svg": {},
+    "unicode": "f015",
     "voted": false
   },
   "arrow-right-arrow-left": {

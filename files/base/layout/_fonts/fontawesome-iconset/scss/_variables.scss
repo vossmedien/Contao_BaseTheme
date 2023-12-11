@@ -3,7 +3,7 @@
 
 $fa-css-prefix          : fa !default;
 $fa-style               : 900 !default;
-$fa-style-family        : "Font Awesome Pro 6" !default;
+$fa-style-family        : "Font Awesome 6 Pro" !default;
 
 $fa-display             : inline-block !default;
 
@@ -85,6 +85,11 @@ $fa-var-copyright: \f1f9;
 $fa-var-download: \f019;
 $fa-var-envelope: \f0e0;
 $fa-var-envelope-open: \f2b6;
+$fa-var-globe: \f0ac;
+$fa-var-house: \f015;
+$fa-var-home: \f015;
+$fa-var-home-alt: \f015;
+$fa-var-home-lg-alt: \f015;
 $fa-var-info: \f129;
 $fa-var-location-dot: \f3c5;
 $fa-var-map-marker-alt: \f3c5;
@@ -164,6 +169,11 @@ $fa-icons: (
   "download": $fa-var-download,
   "envelope": $fa-var-envelope,
   "envelope-open": $fa-var-envelope-open,
+  "globe": $fa-var-globe,
+  "house": $fa-var-house,
+  "home": $fa-var-home,
+  "home-alt": $fa-var-home-alt,
+  "home-lg-alt": $fa-var-home-lg-alt,
   "info": $fa-var-info,
   "location-dot": $fa-var-location-dot,
   "map-marker-alt": $fa-var-map-marker-alt,

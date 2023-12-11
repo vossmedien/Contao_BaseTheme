@@ -605,6 +605,49 @@ arrow-right-arrow-left:
     - light
   unicode: f0ec
   voted: false
+house:
+  aliases:
+    names:
+      - home
+      - home-alt
+      - home-lg-alt
+    unicodes:
+      composite:
+        - 1f3e0
+        - f80a
+        - f80c
+      primary:
+        - f80a
+        - f80c
+      secondary:
+        - 10f015
+        - 10f80a
+        - 10f80c
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 5.7.0
+    - 6.0.0-beta1
+    - 6.0.0-beta2
+    - 6.0.0-beta3
+    - 6.1.0
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+    - 6.5.0
+  label: House
+  search:
+    terms:
+      - abode
+      - building
+      - home
+      - house
+      - main
+      - residence
+  styles:
+    - solid
+  unicode: f015
+  voted: false
 facebook:
   aliases:
     unicodes:
@@ -1274,6 +1317,54 @@ discord:
   styles:
     - brands
   unicode: f392
+  voted: false
+globe:
+  aliases:
+    unicodes:
+      composite:
+        - 1f310
+      secondary:
+        - 10f0ac
+  changes:
+    - 2.0.0
+    - 5.0.0
+    - 5.0.9
+    - 5.11.0
+    - 5.11.1
+    - 6.0.0-beta1
+    - 6.0.0-beta3
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+    - 6.5.0
+  label: Globe
+  search:
+    terms:
+      - all
+      - coordinates
+      - country
+      - earth
+      - global
+      - globe
+      - globe with meridians
+      - gps
+      - internet
+      - language
+      - localize
+      - location
+      - map
+      - meridians
+      - network
+      - online
+      - place
+      - planet
+      - translate
+      - travel
+      - world
+      - www
+  styles:
+    - solid
+  unicode: f0ac
   voted: false
 angle-right:
   aliases:

@@ -12,6 +12,8 @@ copyright:
 facebook-official:
   name: facebook
   prefix: fab
+home:
+  name: house
 linkedin-square:
   name: linkedin
   prefix: fab

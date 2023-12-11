@@ -12,3 +12,8 @@ rocket-chat:
     - quote-right
   label: Rocket.Chat
   url: https://rocket.chat
+the-us-sunnah-foundation:
+  icons:
+    - globe
+  label: The us-Sunnah Foundation
+  url: https://www.ussunnah.org
