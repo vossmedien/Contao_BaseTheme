@@ -14,7 +14,7 @@ if (!isset($this->size)) {
         class="content--element <?php echo $this->class; ?> <?php if ($this->columns_evenly): ?>columns-evenly<?php endif; ?>">
     <div class="ce--inner container">
 
-                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -25,145 +25,137 @@ if (!isset($this->size)) {
             null
         ); ?>
 
-    <div class="ce--kachelfeld ">
-        <div class="row <?php if ($this->column_gap) : ?><?php echo $this->column_gap; ?><?php endif; ?>">
-            <?php foreach ($this->kachel as $i => $b) : ?>
-            <div class="<?php if ($b->column_width) : ?><?php echo $b->column_width; ?><?php else : ?>col-12 col-lg-4<?php endif; ?>">
-                <div id="kachelbox_<?= $this->id; ?>_<?= $i; ?>" class="kachelbox"
-                     data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+        <div class="ce--kachelfeld ">
+            <div class="row <?php if ($this->column_gap) : ?><?php echo $this->column_gap; ?><?php endif; ?>">
+                <?php foreach ($this->kachel as $i => $b) : ?>
+                <div class="<?php if ($b->column_width) : ?><?php echo $b->column_width; ?><?php else : ?>col-12 col-lg-4<?php endif; ?>">
+                    <div id="kachelbox_<?= $this->id; ?>_<?= $i; ?>" class="kachelbox"
+                         data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
 
-                     style="<?php if ($b->column_background_color): ?>
-                             background-color: <?= $b->column_background_color;?>;
+                         style="<?php if ($b->column_background_color): ?>
+                                 background-color: <?= $b->column_background_color;?>;
                         <?php endif; ?>
 
-                     <?php if ($b->column_text_color): ?>
-                             color: <?= $b->column_text_color;?>;
+                         <?php if ($b->column_text_color): ?>
+                                 color: <?= $b->column_text_color;?>;
                         <?php endif; ?>"
 
-                >
-                    <?php if ($b->link_url) : ?>
-                        <a class="kachel--url" href="<?php echo $b->link_url; ?>"></a>
-                    <?php endif; ?>
+                    >
+                        <?php if ($b->link_url) : ?>
+                            <a class="kachel--url" href="<?php echo $b->link_url; ?>"></a>
+                        <?php endif; ?>
 
-                    <style>
-                        <?php if($b->column_background_hover_color):?>
-                        <?php
-                             $backgroundColor = $b->column_background_hover_color;
-                             $backgroundColor = str_replace("&#41", ")",$backgroundColor);
-                             $backgroundColor = str_replace("&#40", "(",$backgroundColor);
-                             $backgroundColor = str_replace("(;", "(",$backgroundColor);
-                             $backgroundColor = str_replace("&#35;", "#",$backgroundColor);
-                             $backgroundColor = str_replace(");", ")",$backgroundColor);
-                         ?>
+                        <style>
+                            <?php if($b->column_background_hover_color):?>
+                            <?php
+                                 $backgroundColor = $b->column_background_hover_color;
+                                 $backgroundColor = str_replace("&#41", ")",$backgroundColor);
+                                 $backgroundColor = str_replace("&#40", "(",$backgroundColor);
+                                 $backgroundColor = str_replace("(;", "(",$backgroundColor);
+                                 $backgroundColor = str_replace("&#35;", "#",$backgroundColor);
+                                 $backgroundColor = str_replace(");", ")",$backgroundColor);
+                             ?>
 
-                        #kachelbox_<?=$this->id;?>_<?= $i;?>:hover {
-                            background-color: <?= $backgroundColor;?> !important;
-                        }
+                            #kachelbox_<?=$this->id;?>_<?= $i;?>:hover {
+                                background-color: <?= $backgroundColor;?> !important;
+                            }
 
-                        <?php endif;?>
+                            <?php endif;?>
 
-                        <?php if($b->column_text_hover_color):?>
-                        <?php
-                            $textColor = $b->column_text_hover_color;
-                            $textColor = str_replace("&#41", ")",$textColor);
-                            $textColor = str_replace("&#40", "(",$textColor);
-                            $textColor = str_replace("(;", "(",$textColor);
-                            $textColor = str_replace("&#35;", "#",$textColor);
-                                $textColor = str_replace(");", ")",$textColor);
-                        ?>
-                        #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .kb--content .box--headline .h5,
-                        #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .kb--image i, #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .box--text p a {
-                            color: <?= $textColor;?> !important;
-                        }
+                            <?php if($b->column_text_hover_color):?>
+                            <?php
+                                $textColor = $b->column_text_hover_color;
+                                $textColor = str_replace("&#41", ")",$textColor);
+                                $textColor = str_replace("&#40", "(",$textColor);
+                                $textColor = str_replace("(;", "(",$textColor);
+                                $textColor = str_replace("&#35;", "#",$textColor);
+                                    $textColor = str_replace(");", ")",$textColor);
+                            ?>
+                            #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .kb--content .box--headline .h5,
+                            #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .kb--image i, #kachelbox_<?=$this->id;?>_<?= $i;?>:hover .box--text p a {
+                                color: <?= $textColor;?> !important;
+                            }
 
-                        <?php endif;?>
-                    </style>
+                            <?php endif;?>
+                        </style>
 
-                    <div class="kachelbox--inner <?php if (!$b->headline && !$b->text && !$b->buttons[0]->link_text): ?>pb-0<?php endif; ?>">
-                        <?php if ($b->image || $b->icon) : ?>
-                            <div class="kb--image <?php if ($b->image_as_bg) : ?>as-bg<?php endif; ?>"
-                                 style="<?php if ($b->image_as_bg && $b->image_height) : ?>height: <?= $b->image_height;?>px<?php endif; ?>">
-                                <?php if ($b->icon) : ?>
-                                    <i class="<?php echo $b->icon; ?>"></i>
-                                <?php elseif ($b->image) : ?><?php if (!$b->image_as_bg) : ?>
-                                    <img loading="lazy"   class="lazy <?php if (!$b->headline) : ?>pb-3<?php endif; ?>"
-                                         data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
-                                <?php else: ?>
-                                    <div data-bg="<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
-                                         style="background-position: center center; background-repeat: no-repeat; background-size: cover;"
-                                         class="kb--image-holder lazy"></div>
-                                <?php endif; ?><?php endif; ?>
+                        <div class="kachelbox--inner <?php if (!$b->headline && !$b->text && !$b->buttons[0]->link_text): ?>pb-0<?php endif; ?>">
+                            <?php if ($b->image || $b->icon) : ?>
+                                <div class="kb--image <?php if ($b->image_as_bg) : ?>as-bg<?php endif; ?>"
+                                     style="<?php if ($b->image_as_bg && $b->image_height) : ?>height: <?= $b->image_height;?>px<?php endif; ?>">
+                                    <?php if ($b->icon) : ?>
+                                        <i class="<?php echo $b->icon; ?>"></i>
+                                    <?php elseif ($b->image) : ?><?php if (!$b->image_as_bg) : ?>
+                                        <img loading="lazy" class="lazy <?php if (!$b->headline) : ?>pb-3<?php endif; ?>"
+                                             data-src="<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
+                                    <?php else: ?>
+                                        <div data-bg="<?= Image::get(FilesModel::findByUuid($b->image)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
+                                             style="background-position: center center; background-repeat: no-repeat; background-size: cover;"
+                                             class="kb--image-holder lazy"></div>
+                                    <?php endif; ?><?php endif; ?>
 
-                                <?php if ($b->kachel_top_text): ?>
-                                    <div class="column-kachel--wrapper <?php if ($b->kachel_hovereffect): ?> with-effect<?php endif; ?>  <?php if ($b->kachel_top_url): ?> with-url<?php endif; ?> <?php echo $b->kachel_top_position; ?>">
+                                    <?php if ($b->kachel_top_text): ?>
+                                        <div class="column-kachel--wrapper <?php if ($b->kachel_hovereffect): ?> with-effect<?php endif; ?>  <?php if ($b->kachel_top_url): ?> with-url<?php endif; ?> <?php echo $b->kachel_top_position; ?>">
 
-                                        <?php if ($b->kachel_top_url): ?>
-                                            <a href="<?= $b->kachel_top_url; ?>"
-                                               <?php if ($b->kachel_new_tab): ?>target="_blank"<?php endif; ?>></a>
-                                        <?php endif; ?>
+                                            <?php if ($b->kachel_top_url): ?>
+                                                <a href="<?= $b->kachel_top_url; ?>"
+                                                   <?php if ($b->kachel_new_tab): ?>target="_blank"<?php endif; ?>></a>
+                                            <?php endif; ?>
 
-                                        <div class="column--kachel <?php echo $b->kachel_top_text_position; ?>"
-                                             data-aos="<?php if ($b->animation_type_left_kachel) : ?><?php echo $b->animation_type_left_kachel; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                             style="
-                                             <?php if ($b->kachel_top_background_color): ?>
-                                                     background-color: <?= $b->kachel_top_background_color;?>;
+                                            <div class="column--kachel <?php echo $b->kachel_top_text_position; ?>"
+                                                 data-aos="<?php if ($b->animation_type_left_kachel) : ?><?php echo $b->animation_type_left_kachel; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                                                 style="
+                                                 <?php if ($b->kachel_top_background_color): ?>
+                                                         background-color: <?= $b->kachel_top_background_color;?>;
                             <?php endif; ?>
 
-                                             <?php if ($b->kachel_top_text_color): ?>
-                                                     color: <?= $b->kachel_top_text_color;?>;
+                                                 <?php if ($b->kachel_top_text_color): ?>
+                                                         color: <?= $b->kachel_top_text_color;?>;
                             <?php endif; ?>
-                                                     ">
+                                                         ">
 
-                                            <div class="column-kachel--inner">
+                                                <div class="column-kachel--inner">
                                                 <span>
                                                     <?php echo $b->kachel_top_text; ?>
                                                 </span>
 
-                                                <?php if ($b->kachel_hover_text): ?>
-                                                    <div class="column-kachel--hover-text">
-                                                        <?= $b->kachel_hover_text; ?>
-                                                    </div>
-                                                <?php endif; ?>
+                                                    <?php if ($b->kachel_hover_text): ?>
+                                                        <div class="column-kachel--hover-text">
+                                                            <?= $b->kachel_hover_text; ?>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+
+
+                            <?php if ($b->headline || $b->text || $b->buttons[0]->link_text != ""): ?>
+
+                            <div class="kb--content  <?php if (!$b->headline) : ?>mt-0<?php endif; ?> <?= $b->textalign; ?>">
+                                <?php if ($b->headline) : ?>
+                                <div class="box--headline">
+                                    <<?php echo $b->headline_type; ?> class="h5">
+                                    <?php echo $b->headline; ?>
+                                </<?php echo $b->headline_type; ?>>
                             </div>
                         <?php endif; ?>
+                            <?php if ($b->text) : ?>
+                                <div class="box--text">
+                                    <?php echo $b->text; ?>
+                                </div>
+                            <?php endif; ?>
 
+                            <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($b->buttons); ?>
 
-                        <?php if ($b->headline || $b->text || $b->buttons[0]->link_text != ""): ?>
-
-                        <div class="kb--content  <?php if (!$b->headline) : ?>mt-0<?php endif; ?> <?= $b->textalign; ?>">
-                            <?php if ($b->headline) : ?>
-                            <div class="box--headline">
-                                <<?php echo $b->headline_type; ?> class="h5">
-                                <?php echo $b->headline; ?>
-                            </<?php echo $b->headline_type; ?>>
                         </div>
                     <?php endif; ?>
-                        <?php if ($b->text) : ?>
-                            <div class="box--text">
-                                <?php echo $b->text; ?>
-                            </div>
-                        <?php endif; ?>
-
-
-                        <?php if ($b->buttons[0]->link_text != "") : ?>
-                            <div class="box--button">
-                                <?php foreach ($b->buttons as $button) : ?>
-                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                       class="d-block mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                       data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
-                                <?php endforeach ?>
-                            </div>
-                        <?php endif; ?>
                     </div>
-                <?php endif; ?>
                 </div>
             </div>
+            <?php endforeach; ?>
         </div>
-        <?php endforeach; ?>
     </div>
-</div></div></div>
+</div></div>

@@ -68,7 +68,7 @@ if (TL_MODE == 'FE') {
                                         <?php if ($row->image): ?>
                                             <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" <?php if ($row->reverse_columns) : ?>order-2 <?php endif; ?> col-12 image   <?php if (!$this->as_rows) : ?>mt-2 mt-md-0 mb-md-3 order-2<?php else: ?> text-lg-start <?= $row->column_width; ?><?php endif; ?>">
                                                 <div class="image--wrapper">
-                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, null, $row->headline, $row->size, null,false); ?>
+                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, null, $row->headline, $row->size, null, false); ?>
                                                 </div>
                                             </div>
                                         <?php endif; ?>
@@ -146,18 +146,7 @@ if (TL_MODE == 'FE') {
 
 
                                                     <?php if (!$row->reverse_columns || $row->column_width != "col-12") : ?>
-                                                        <?php if ($row->buttons[0]->link_text != "") : ?>
-                                                            <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" mt-2">
-                                                                <div class="ce--buttons ">
-                                                                    <?php foreach ($row->buttons as $button) : ?>
-                                                                        <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                                                           class="d-inline-block mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                                                           data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                                                           href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
-                                                                    <?php endforeach ?>
-                                                                </div>
-                                                            </div>
-                                                        <?php endif; ?>
+                                                        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($row->buttons); ?>
                                                     <?php endif; ?>
                                                 </div>
 
@@ -174,18 +163,7 @@ if (TL_MODE == 'FE') {
 
                                 </div>
                                 <?php if ($row->reverse_columns && $row->column_width == "col-12") : ?>
-                                    <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="order-3 col-12 mt-2">
-                                        <?php if ($row->buttons[0]->link_text != "") : ?>
-                                            <div class="ce--buttons ">
-                                                <?php foreach ($row->buttons as $button) : ?>
-                                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                                       class="d-inline-block mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                                       data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
-                                                <?php endforeach ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
+                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($row->buttons); ?>
                                 <?php endif; ?>
 
                             </div>

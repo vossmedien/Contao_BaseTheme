@@ -452,7 +452,7 @@ return array(
 
                 ),
 
-                    'has_shadow' => array(
+                'has_shadow' => array(
                     'label' => array('Inhaltsbox hat Schatten', ''),
                     'inputType' => 'checkbox',
 
@@ -474,16 +474,15 @@ return array(
                         'col-12 col-lg' => 'Automatische Breite (füllend)',
                         'col-12 col-lg-auto' => 'Breite anhand des Inhalts',
                     ),
-                     'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
 
                 'versatz' => array(
                     'label' => array('Inhaltsbox Versatz in Pixel', 'Bei 50 wird z. B. die Box um 50 Pixel nach unten geschoben, bei -75 um 75 nach oben.'),
                     'inputType' => 'text',
-                     'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
-
 
 
                 'alt_background' => array(
@@ -509,7 +508,7 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
-                    'settings_content' => array(
+                'settings_content' => array(
                     'label' => array('Inhalt', ''),
                     'inputType' => 'group',
                 ),
@@ -695,7 +694,7 @@ return array(
                             'eval' => array('chosen' => 'true')
                         ),
 
-                              'new_tab' => array(
+                        'new_tab' => array(
                             'label' => array('Link in neuen Tab öffnen', ''),
                             'inputType' => 'checkbox',
 
@@ -749,7 +748,6 @@ return array(
                             'inputType' => 'url',
                             'eval' => array('tl_class' => 'w50'),
                         ),
-
 
 
                     ),

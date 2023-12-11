@@ -68,18 +68,7 @@ if (TL_MODE == 'FE') {
                                         </div>
                                     <?php endif; ?>
 
-
-                                    <?php if ($row->buttons[0]->link_text != "") : ?>
-                                        <div class="step--buttons">
-                                            <div class="buttons mt-3 <?= $row->button_textalign; ?>">
-                                                <?php foreach ($row->buttons as $button) : ?>
-                                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                                       class="mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
-                                                <?php endforeach ?>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
+                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($row->buttons); ?>
                                 </div>
                             </div>
                         </div>

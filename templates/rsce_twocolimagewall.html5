@@ -158,16 +158,7 @@ if (TL_MODE == 'FE') {
                                 <?php echo $row->content; ?>
                             </div>
                         <?php endif; ?>
-                        <?php if ($row->buttons) : ?>
-                            <div class="ce--buttons mt-2">
-                                <?php foreach ($row->buttons as $b) : ?>
-                                    <a <?php if ($b->new_tab): ?>target="_blank"<?php endif; ?>
-                                       class="d-inline-block btn <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
-                                       data-aos="<?php if ($b->animation_type) : ?><?php echo $b->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                       href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
-                                <?php endforeach ?>
-                            </div>
-                        <?php endif; ?>
+                        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($row->buttons); ?>
                     </div>
                     <?php endif; ?>
 

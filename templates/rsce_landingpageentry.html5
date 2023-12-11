@@ -127,16 +127,9 @@ if (TL_MODE == 'FE') {
                                 </div>
                             <?php endif; ?>
 
-                            <?php if ($b->buttons[0]->link_text != "") : ?>
-                                <div class="buttons mt-5 <?= $b->button_textalign; ?>">
-                                    <?php foreach ($b->buttons as $button) : ?>
-                                        <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                           class="mt-2 btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                           data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                           href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?> </a>
-                                    <?php endforeach ?>
-                                </div>
-                            <?php endif; ?>
+
+
+                             <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($b->buttons); ?>
                         </div>
                     </div>
                 </div>

@@ -76,15 +76,9 @@ if (TL_MODE == 'FE') {
                                     </div>
                                 <?php endif; ?>
 
-                                <?php if ($b->buttons[0]->link_text != "") : ?>
-                                    <div class="ce--buttons mt-3">
-                                        <?php foreach ($b->buttons as $btn) : ?>
-                                            <a class="d-inline-block btn <?php if ($btn->link_size) : ?><?php echo $btn->link_size; ?><?php endif; ?> <?php echo $btn->link_type; ?>"
-                                               data-aos="<?php if ($btn->animation_type) : ?><?php echo $btn->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                               href="<?php echo $btn->link_url; ?><?php if ($btn->link_betreff) : ?>?subject=<?php echo $btn->link_betreff; ?><?php endif; ?>"><?php echo $btn->link_text; ?> </a>
-                                        <?php endforeach ?>
-                                    </div>
-                                <?php endif; ?>
+
+                                 <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($b->buttons); ?>
+
 
                             </div>
                             <?php endif; ?>

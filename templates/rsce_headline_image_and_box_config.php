@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
 
 
@@ -156,12 +156,15 @@ return array(
         ),
 
 
-        'swap_image' => array(
+        /*
+               'swap_image' => array(
             'label' => array('Bild darunter anzeigen', 'Standardmäßig ist das Bild oberhalb des Inhalts'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
 
+
+         */
 
         'hide_gradient' => array(
             'label' => array('Verlauf verstecken', ''),
@@ -223,6 +226,23 @@ return array(
             ),
         ),
 
+        'ce_topline' => array(
+            'label' => array('Topline', 'Text oberhalb der Überschrift'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'ce_subline' => array(
+            'label' => array('Subline', 'Text unterhalb der Überschrift'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'ce_headline' => array(
+            'label' => array('Überschrift', ''),
+            'inputType' => 'text',
+            'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
+        ),
+
         'headline_type' => array(
             'label' => array(
                 'de' => array('Typ der Überschrift', ''),
@@ -235,24 +255,15 @@ return array(
                 'h4' => 'H4',
                 'h5' => 'H5',
             ),
+            'eval' => array('tl_class' => 'w50'),
         ),
-        'ce_headline' => array(
-            'label' => array('Überschrift', ''),
-            'inputType' => 'text',
-              'eval' => array('allowHtml' => true),
-        ),
+
         'onlystyle' => array(
             'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
             'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
         ),
-        'ce_topline' => array(
-            'label' => array('Topline', 'Text oberhalb der Überschrift'),
-            'inputType' => 'text',
-        ),
-        'ce_subline' => array(
-            'label' => array('Subline', 'Text unterhalb der Überschrift'),
-            'inputType' => 'text',
-        ),
+
         'text' => array(
             'label' => array('Text', ''),
             'inputType' => 'textarea',

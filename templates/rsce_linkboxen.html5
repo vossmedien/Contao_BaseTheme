@@ -200,12 +200,7 @@ if (!isset($this->size)) {
                                     <?php if ($box->box_style == "style-3"): ?>
                                         <?php if ($box->add_items == "buttons") : ?>
                                             <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
-                                                <?php foreach ($box->buttons as $button) : ?>
-                                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                                       data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                                       class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
-                                                <?php endforeach ?>
+                                                <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($box->buttons); ?>
                                             </div>
                                         <?php endif; ?>
 
@@ -300,12 +295,7 @@ if (!isset($this->size)) {
 
                                         <?php if ($box->add_items == "buttons" && !$box->linkoverlay) : ?>
                                             <div class="button--wrapper <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
-                                                <?php foreach ($box->buttons as $button) : ?>
-                                                    <a <?php if ($button->new_tab): ?>target="_blank"<?php endif; ?>
-                                                       data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                                       class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
-                                                <?php endforeach ?>
+                                             <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($box->buttons); ?>
                                             </div>
                                         <?php endif; ?>
 
