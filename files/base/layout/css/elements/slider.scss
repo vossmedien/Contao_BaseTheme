@@ -92,7 +92,7 @@
     width: 100%;
     z-index: 10;
 
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(lg) {
       position: absolute;
       left: -80px;
       width: auto;
@@ -113,6 +113,7 @@
     color: var(--bs-primary);
     bottom: -40px;
     top: auto;
+    border-radius: 0px;
     left: 50%;
     right: auto;
     transform: translate(-90%, 0%);

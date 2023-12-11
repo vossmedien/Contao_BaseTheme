@@ -7,102 +7,106 @@ if (TL_MODE == 'FE') {
 ?>
 
 
-<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
-    <div class="ce--inner container ">
+<div <?php echo $this->cssID; ?> class="content--element  <?php if (!str_contains($this->class, "col")): ?>container<?php else: ?><?php echo $this->class; ?><?php endif; ?>">
+    <div class="ce--inner <?php if (!str_contains($this->class, "col")): ?><?php echo $this->class; ?><?php endif; ?> ">
 
-                 <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-            $this->topline,
-            $this->headline,
-            $this->subline,
-            $this->hl,
-            $this->animation_type,
-            null,
-            false,
-            null
-        ); ?>
 
-        <?php
-        if ($this->selecttype == "multiple") {
-            $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
-        }else{
-                $dataSorted  = [];
+            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                $this->topline,
+                $this->headline,
+                $this->subline,
+                $this->hl,
+                $this->animation_type,
+                null,
+                false,
+                null
+            ); ?>
+
+            <?php
+            if ($this->selecttype == "multiple") {
+                $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
+            } else {
+                $dataSorted = [];
             }
-        ?>
+            ?>
 
 
-        <div class="ce--content-slider  <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
-             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-            <?php $rand = rand(1, 100); ?>
+            <div class="ce--content-slider  <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
+                 data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+                <?php $rand = rand(1, 100); ?>
 
-            <?php if ($this->open_lightbox): ?>
-                <script type="text/javascript" async>
-                    $(function () {
-                        $(".group_<?php echo $rand; ?>").colorbox({
-                            rel: "group_<?php echo $rand; ?>",
-                            current: "Bild {current} von {total}",
-                            maxWidth: '95%',
-                            maxHeight: '95%'
+                <?php if ($this->open_lightbox): ?>
+                    <script type="text/javascript" async>
+                        $(function () {
+                            $(".group_<?php echo $rand; ?>").colorbox({
+                                rel: "group_<?php echo $rand; ?>",
+                                current: "Bild {current} von {total}",
+                                maxWidth: '95%',
+                                maxHeight: '95%'
+                            });
                         });
-                    });
-                </script>
-            <?php endif; ?>
-            <?php if ($this->text_on_slider): ?>
-                <div class="slider-caption"
-                     style="<?php if ($this->alternate_background_color): ?>background-color: <?= $this->alternate_background_color; ?>;<?php endif; ?> <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>">
-                    <?= $this->text_on_slider; ?>
-                </div>
-            <?php endif; ?>
+                    </script>
+                <?php endif; ?>
+                <?php if ($this->text_on_slider): ?>
+                    <div class="slider-caption"
+                         style="<?php if ($this->alternate_background_color): ?>background-color: <?= $this->alternate_background_color; ?>;<?php endif; ?> <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>">
+                        <?= $this->text_on_slider; ?>
+                    </div>
+                <?php endif; ?>
 
-            <div class="swiper <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> content-slider_<?= $this->id; ?>">
-                <!-- Additional required wrapper -->
-                <div class="swiper-wrapper">
-                    <!-- Slides -->
-                    <?php if ($dataSorted) : ?>
+                <div class="swiper <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> content-slider_<?= $this->id; ?>">
+                    <!-- Additional required wrapper -->
+                    <div class="swiper-wrapper align-items-center">
+                        <!-- Slides -->
+                        <?php if ($dataSorted) : ?>
 
-                        <?php foreach ($dataSorted as $data) : ?><?php if ($image = $this->getImageObject($data, $this->size)) : ?>
-                            <div class="swiper-slide">
-                                <?php if ($this->open_lightbox): ?>
-                                <a href="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, null, null, null); ?>"
-                                   class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
-                                    <img loading="lazy" src="<?= Image::get(FilesModel::findByUuid($image->uuid)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
-                                    <?php if ($this->open_lightbox): ?></a><?php endif; ?>
-                                 <div class="swiper-lazy-preloader"></div>
-                            </div>
+                            <?php foreach ($dataSorted as $data) : ?>
+
+
+                                <div class="swiper-slide text-center">
+                                    <?php if ($this->open_lightbox): ?>
+                                    <a href="<?= Image::get(FilesModel::findByUuid($data)->path, null, null, null); ?>" class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
+
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, null, $this->headline, $this->size, null, true); ?>
+
+                                        <?php if ($this->open_lightbox): ?></a><?php endif; ?>
+                                </div>
+
+
+                            <?php endforeach ?>
+
+                        <?php else : ?>
+
+                            <?php foreach ($this->galery as $slide) : ?>
+                                <div class="swiper-slide text-center">
+                                    <?php if ($this->open_lightbox): ?>
+                                    <a href="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>"
+                                       class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
+
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->slide, null, $this->headline, $this->size, null, true); ?>
+                                        <?php if ($this->open_lightbox): ?> </a><?php endif; ?>
+                                    <?php if ($slide->slide_text) : ?>
+                                        <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach ?>
+
                         <?php endif; ?>
+                    </div>
 
-                        <?php endforeach ?>
-
-                    <?php else : ?>
-
-                        <?php foreach ($this->galery as $slide) : ?>
-                            <div class="swiper-slide">
-                                <?php if ($this->open_lightbox): ?>
-                                <a href="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>"
-                                   class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
-                                    <img loading="lazy" src="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
-                                    <?php if ($this->open_lightbox): ?> </a><?php endif; ?>
-                                <?php if ($slide->slide_text) : ?>
-                                    <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
-                                <?php endif; ?>
-                                <div class="swiper-lazy-preloader"></div>
-                            </div>
-                        <?php endforeach ?>
-
-                    <?php endif; ?>
                 </div>
-
+                <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
+                    <?php if ($this->show_pagination): ?>
+                        <div class="content-slider_<?= $this->id; ?> swiper-pagination"></div>
+                    <?php endif; ?>
+                    <?php if ($this->show_arrows): ?>
+                        <div class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                        <div class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
-            <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
-                <?php if ($this->show_pagination): ?>
-                    <div class="content-slider_<?= $this->id; ?> swiper-pagination"></div>
-                <?php endif; ?>
-                <?php if ($this->show_arrows): ?>
-                    <div class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
-                    <div class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
-                <?php endif; ?>
-            <?php endif; ?>
         </div>
-    </div></div>
+    </div>
 <?php if (TL_MODE == 'FE'): ?>
     <script type="text/javascript" async>
         window.addEventListener('load', function () {
@@ -130,7 +134,7 @@ if (TL_MODE == 'FE') {
                         delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
                     },
                     <?php endif; ?>
-
+                    autoHeight: true,
 
                     <?php if ($this->slide_effect == "coverflow") : ?>
                     coverflowEffect: {
