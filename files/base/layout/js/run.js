@@ -33,12 +33,14 @@ $('*:not([data-aos])[class*="animate__"]').each(function (index) {
 });
 
 // Sammle alle [data-aos] Elemente
-var aosElements = document.querySelectorAll("[data-aos]");
-
+var aosElements = document.querySelectorAll('[data-aos]');
+var filteredElements = Array.from(aosElements).filter(function(element) {
+    return !element.style.animationDelay;
+});
 // Eine Map, um Elemente basierend auf ihren übergeordneten Elementen zu gruppieren
 var parentGroups = new Map();
 
-aosElements.forEach(function (elem) {
+filteredElements.forEach(function (elem) {
   // Finde das nächstgelegene übergeordnete Element
   var parent = elem.parentElement;
 

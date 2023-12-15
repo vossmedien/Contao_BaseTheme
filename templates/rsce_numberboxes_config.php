@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Boxen mit Zahlen', ''),
+    'label' => array('Custom | Boxen mit Zahlen (numberboxes)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -13,34 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
-        ),
-
-
-        'bg_image' => array(
-            'label' => array('Bild', ''),
-            'inputType' => 'fileTree',
-            'eval' => array(
-                'multiple' => false,
-                'fieldType' => 'radio',
-                'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg,webp',
-            ),
-        ),
-
-        'size_bg' => array(
-            'label' => array('Bildbreite und Bildhöhe', ''),
-            'inputType' => 'imageSize',
-            'options' => System::getImageSizes(),
-            'reference' => &$GLOBALS['TL_LANG']['MSC'],
-            'eval' => array(
-                'rgxp' => 'digit',
-                'includeBlankOption' => true,
-            ),
+            'eval' => array('tl_class' => 'w50'),
         ),
 
 
@@ -165,8 +142,45 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
+
+        'background_color' => array(
+            'label' => array('Alternative Hintergrundfarbe für Inhalt', 'Standardmäßig transparent'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'text_color' => array(
+            'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'bg_image' => array(
+            'label' => array('Bild', ''),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,svg,webp',
+                'tl_class' => 'clr'
+            ),
+        ),
+
+        'size_bg' => array(
+            'label' => array('Bildbreite und Bildhöhe', ''),
+            'inputType' => 'imageSize',
+            'options' => System::getImageSizes(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+            ),
+        ),
+
+
         'boxes' => array(
             'label' => array('Boxen', ''),
             'elementLabel' => '%s. Box',
@@ -297,6 +311,25 @@ return array(
                     ),
                     'eval' => array('chosen' => 'true')
                 ),
+
+                'topline' => array(
+                    'label' => array('Topline', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'subline' => array(
+                    'label' => array('Subline', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'headline' => array(
+                    'label' => array('Überschrift', 'für linke Spalte'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
                 'headline_type' => array(
                     'label' => array(
                         'de' => array('Typ der Überschrift', 'für linke Spalte'),
@@ -308,16 +341,28 @@ return array(
                         'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
                         'h4' => 'H4',
                         'h5' => 'H5',
-'h6' => 'H6',
+                        'h6' => 'H6',
                     ),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
-                'headline' => array(
-                    'label' => array('Überschrift', 'für linke Spalte'),
-                    'inputType' => 'text',
-                ),
+
                 'onlystyle' => array(
                     'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                     'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+
+                'background_color' => array(
+                    'label' => array('Alternative Hintergrundfarbe für Inhalt', 'Standardmäßig transparent'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+                'text_color' => array(
+                    'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
 
@@ -353,19 +398,19 @@ return array(
                 'text_left_1' => array(
                     'label' => array('Zahl linke Spalte', ''),
                     'inputType' => 'text',
-                              'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
-                  'text_left_add' => array(
+                'text_left_add' => array(
                     'label' => array('Ergänzung zur Zahl', 'z. B. "+"'),
                     'inputType' => 'text',
-                                'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
                 'text_left_2' => array(
                     'label' => array('Mengenangabe', ''),
                     'inputType' => 'text',
-                              'eval' => array('tl_class' => 'clr'),
+                    'eval' => array('tl_class' => 'clr'),
                 ),
                 'text_right_1' => array(
                     'label' => array('Text rechte Spalte (oben)', ''),

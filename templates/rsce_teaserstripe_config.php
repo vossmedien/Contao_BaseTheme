@@ -1,7 +1,7 @@
 <?php
 // rsce_boxes_config.php
 return array(
-    'label' => array('Custom | Streifen mit Text auf volle Breite', ''),
+    'label' => array('Custom | Full-Width Störer (fullwidthstoerer v2)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',

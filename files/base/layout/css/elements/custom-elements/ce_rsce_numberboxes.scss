@@ -1,18 +1,25 @@
-
-
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
 @import "../../scss-variables";
 
-
 html body {
   .ce_rsce_numberboxes {
     .number-box--wrapper {
       line-height: var(--bs-body-line-height-xs);
 
-      &.with-image {
+      &.with-headline {
+        min-height: rfs-value(250px);
+        @include media-breakpoint-up(md) {
+          min-height: rfs-fluid-value(300px);
+        }
+
+        @include media-breakpoint-up(xxl) {
+          min-height: rfs-value(350px);
+        }
+      }
+
         background-size: cover !important;
         display: flex;
         align-items: flex-end;
@@ -21,20 +28,6 @@ html body {
         background-position: center;
         flex-flow: row wrap;
 
-
-        &.with-headline{
-            min-height: rfs-value(250px);
-        @include media-breakpoint-up(md) {
-          min-height: rfs-fluid-value(250px);
-        }
-
-        @include media-breakpoint-up(xxl) {
-          min-height: rfs-value(300px);
-        }
-        }
-
-
-
         .number-box--title {
           position: absolute;
           top: 50%;
@@ -42,15 +35,13 @@ html body {
           transform: translate(50%, -50%);
           width: 100%;
         }
-      }
-
       .row {
         .left-col--inner {
-          padding: 1rem 0.5rem 1rem 1rem;
+          padding: .5rem;
         }
 
         .right-col--inner {
-          padding: 1rem 0rem 1rem 0.5rem;
+          padding: .5rem;
         }
       }
 
@@ -77,10 +68,10 @@ html body {
         width: 100%;
         text-align: center;
         line-height: var(--bs-body-line-height-xs);
+        padding-bottom: .75rem;
 
         .left--col {
           .left-col--inner {
-
             white-space: nowrap;
             font-weight: $font-weight-bolder;
             @include font-size(30px);
@@ -95,7 +86,6 @@ html body {
         .right--col {
           .right-col--inner {
             font-weight: $font-weight-bolder;
-            @include font-size(24px);
 
             &.with-left-col {
               border-left: 4px solid var(--bs-white);
@@ -103,6 +93,9 @@ html body {
 
             p {
               line-height: var(--bs-body-line-height-xs);
+              &:not(:last-child){
+                margin-bottom: .5rem;
+              }
             }
           }
         }

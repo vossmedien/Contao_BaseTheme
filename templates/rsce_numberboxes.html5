@@ -11,92 +11,97 @@ if (!isset($this->size_bg)) {
 
 
 <div <?php echo $this->cssID; ?>
-    class="content--element <?php echo $this->class; ?> <?php if ($this->bg_image): ?>lazy<?php endif; ?>"
-    <?php if ($this->bg_image): ?>data-bg="<?= Image::get(FilesModel::findByUuid($this->bg_image)->path, $this->size_bg[0], $this->size_bg[1], $this->size_bg[2]); ?>" style="background-position: center center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;"<?php endif; ?>
+        style=" background-position: center center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;"
+        class="content--element <?php echo $this->class; ?> <?php if ($this->bg_image): ?>lazy <?php endif; ?> <?php if ($this->bg_image || $this->background_color): ?>py-5<?php endif;?>"
+        <?php if ($this->bg_image): ?>data-bg="<?= Image::get(FilesModel::findByUuid($this->bg_image)->path, $this->size_bg[0], $this->size_bg[1], $this->size_bg[2]); ?>" <?php endif; ?>
 >
+
+
+    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        $this->topline,
+        $this->headline,
+        $this->subline,
+        $this->hl,
+        $this->animation_type,
+        null,
+        false,
+        null
+    ); ?>
+
     <div class="ce--inner container">
 
-               <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-            $this->topline,
-            $this->headline,
-            $this->subline,
-            $this->hl,
-            $this->animation_type,
-            null,
-            false,
-            null
-        ); ?>
 
-    <div class="ce--number-boxes mt-3">
-        <div class="row g-3 gy-md-5 align-items-center">
-            <?php foreach ($this->boxes as $box) : ?>
-            <div class="col-12 col-md-6 col-lg-3">
+        <div class="ce--number-boxes mt-3" style="">
+            <div class="row g-3 gy-md-5 align-items-center">
+                <?php foreach ($this->boxes as $box) : ?>
+                    <div class="col-12 col-md-6 col-lg-3">
 
-                <?php
-                if (!isset($box->size)) {
-                    $box->{"size"} = "";
-                }
-                ?>
+                        <?php
+                        if (!isset($box->size)) {
+                            $box->{"size"} = "";
+                        }
+                        ?>
 
-                <div class="number-box--wrapper lazy <?php if ($box->image): ?>with-image<?php endif; ?> <?php if ($box->headline) : ?>with-headline<?php endif; ?>"
-                     data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                    <?php if ($box->image && !$box->not_as_bg): ?>
-                        data-bg="<?= Image::get(FilesModel::findByUuid($box->image)->path, $box->size[0], $box->size[1], $box->size[2]); ?>"
-                    <?php endif; ?>
-                >
+                        <div style="color: <?= $box->text_color;?>; background-color: <?= $box->background_color;?>;" class="number-box--wrapper lazy <?php if ($box->image): ?>with-image<?php endif; ?> <?php if ($box->headline) : ?>with-headline<?php endif; ?>"
+                             data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                            <?php if ($box->image && !$box->not_as_bg): ?>
+                                data-bg="<?= Image::get(FilesModel::findByUuid($box->image)->path, $box->size[0], $box->size[1], $box->size[2]); ?>"
+                            <?php endif; ?>
+                        >
 
 
+                            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                $box->topline,
+                                $box->headline,
+                                $box->subline,
+                                $box->headline_type,
+                                null,
+                                $box->text_color,
+                                $box->onlystyle,
+                                "number-box--title"
+                            ); ?>
 
-                    <?php if ($box->headline) : ?>
-                    <div class="number-box--title">
-                        <?php if (!$box->onlystyle) : ?>
-                        <<?php echo $box->headline_type; ?>>
-                        <?php echo $box->headline; ?>
-                    </<?php echo $box->headline_type; ?>>
-                <?php else : ?>
-                    <span class="<?php echo $box->headline_type; ?>"><?php echo $box->headline; ?></span>
-                <?php endif; ?>
-                </div>
-            <?php endif; ?>
-                <div class="number-box--content">
 
-                     <?php if ($box->image && $box->not_as_bg): ?>
-                        <div class="number-box--image mb-3 w-100">
-                            <img loading="lazy"   class="lazy" data-src="<?= Image::get(FilesModel::findByUuid($box->image)->path, $box->size[0], $box->size[1], $box->size[2]); ?>">
+                            <div class="number-box--content">
+
+                                <?php if ($box->image && $box->not_as_bg): ?>
+                                    <div class="number-box--image mb-3 w-100">
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($box->image, null, $box->headline, $box->size, null, false); ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <div class=" <?php if (($box->text_left_1 || $box->text_left_2) && ($box->text_right_1 || $box->text_right_2)): ?>row align-items-center<?php endif; ?>">
+                                    <?php if ($box->text_left_1 || $box->text_left_2): ?>
+                                        <div class="<?php if ($box->text_right_1 != "" || $box->text_right_2 != ""): ?>col-6<?php endif; ?> left--col">
+                                            <div class="left-col--inner">
+                                                <?php if ($box->text_left_1 != ""): ?>
+                                                    <span class="count"><?php echo $box->text_left_1; ?></span><?php if ($box->text_left_add): ?>
+                                                        <strong class="d-inline-block"><?= $box->text_left_add; ?></strong><?php endif; ?>
+                                                <?php endif; ?>
+                                                <?php if ($box->text_left_2 != ""): ?>
+                                                    <span><?php echo $box->text_left_2; ?></span>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if ($box->text_right_1 || $box->text_right_2): ?>
+                                        <div class="<?php if ($box->text_left_1 != "" || $box->text_left_2 != ""): ?>col-6<?php endif; ?> right--col">
+                                            <div class="right-col--inner <?php if ($box->text_left_1 != "" || $box->text_left_2 != ""): ?>with-left-col<?php endif; ?>">
+                                                <?php if ($box->text_right_1 != ""): ?>
+                                                    <?php echo $box->text_right_1; ?>
+                                                <?php endif; ?>
+                                                <?php if ($box->text_right_2 != ""): ?>
+                                                    <?php echo $box->text_right_2; ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
-                    <?php endif; ?>
-
-                    <div class=" <?php if (($box->text_left_1 || $box->text_left_2) && ($box->text_right_1 || $box->text_right_2)): ?>row align-items-center<?php endif; ?>">
-                        <?php if ($box->text_left_1 || $box->text_left_2): ?>
-                            <div class="<?php if ($box->text_right_1 != "" || $box->text_right_2 != ""): ?>col-6<?php endif; ?> left--col">
-                                <div class="left-col--inner">
-                                    <?php if ($box->text_left_1 != ""): ?>
-                                        <span class="count"><?php echo $box->text_left_1; ?></span><?php if ($box->text_left_add): ?><strong class="d-inline-block"><?= $box->text_left_add;?></strong><?php endif; ?>
-                                    <?php endif; ?>
-                                    <?php if ($box->text_left_2 != ""): ?>
-                                        <span><?php echo $box->text_left_2; ?></span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($box->text_right_1 || $box->text_right_2): ?>
-                            <div class="<?php if ($box->text_left_1 != "" || $box->text_left_2 != ""): ?>col-6<?php endif; ?> right--col">
-                                <div class="right-col--inner <?php if ($box->text_left_1 != "" || $box->text_left_2 != ""): ?>with-left-col<?php endif; ?>">
-                                    <?php if ($box->text_right_1 != ""): ?>
-                                        <?php echo $box->text_right_1; ?>
-                                    <?php endif; ?>
-                                    <?php if ($box->text_right_2 != ""): ?>
-                                        <?php echo $box->text_right_2; ?>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
                     </div>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
-        <?php endforeach; ?>
     </div>
-</div>
-</div>
 </div>

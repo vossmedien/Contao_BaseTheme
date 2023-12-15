@@ -6,9 +6,7 @@ if (TL_MODE == 'FE') {
 
 
 <div <?php echo $this->cssID; ?> class="<?php if ($this->image): ?>lazy<?php endif; ?> content--element <?php echo $this->class; ?>"
-
                                  data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
-
                                  style="
 
                                          background-position: center center; background-repeat:no-repeat; background-size: cover;

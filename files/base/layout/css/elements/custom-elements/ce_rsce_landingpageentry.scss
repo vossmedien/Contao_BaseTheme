@@ -1,12 +1,9 @@
-
-
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 @import "../../../_fonts/fontawesome-iconset/scss/fontawesome";
-
+@import "../../mixins";
 @import "../../scss-variables";
-
 
 html body {
   .ce_rsce_landingpageentry {
@@ -25,7 +22,6 @@ html body {
         top: 600px;
       }
 
-
       img {
         padding: 1rem;
         background-color: white;
@@ -33,13 +29,11 @@ html body {
     }
 
     .row > div:first-child {
-
       @include media-breakpoint-up(md) {
         border-right: 2px solid white;
       }
 
       .content--inner {
-
         @include media-breakpoint-up(md) {
           margin: 0 3rem 0 auto;
         }
@@ -59,14 +53,12 @@ html body {
         min-height: 100%;
       }
 
-
       .lp--top {
         position: relative;
 
         @include media-breakpoint-up(md) {
           border-bottom: 2px solid white;
         }
-
 
         > a {
           position: absolute;
@@ -86,14 +78,14 @@ html body {
         }
 
         &:after {
-          content: '';
+          content: "";
           position: absolute;
           opacity: 0;
           left: 0;
           top: 0;
           width: 100%;
           height: 100%;
-          transition: all .3s ease;
+          transition: all 0.3s ease;
         }
 
         &:hover {
@@ -107,9 +99,10 @@ html body {
         .middle--content {
           display: flex;
           flex-flow: row wrap;
-          padding: 3rem 3rem 3rem 5rem;
+          padding: 3rem;
           align-content: flex-end;
           min-height: rfs-value(150px);
+
 
           @include media-breakpoint-up(md) {
             min-height: rfs-value(300px);
@@ -118,9 +111,7 @@ html body {
           a {
             text-decoration: none;
             @include font-size(55px);
-            font-weight: 200;
             text-transform: uppercase;
-
 
             &:after {
               @extend %fa-icon;
@@ -135,7 +126,6 @@ html body {
         }
       }
 
-
       .lp--bottom {
         padding: 1.5rem 0;
         flex: 1;
@@ -146,19 +136,12 @@ html body {
         }
 
         .content--inner {
-          padding-left: 1rem;
-          padding-right: 1rem;
           height: 100%;
           display: flex;
           flex-flow: column wrap;
           flex: 1;
-          @include media-breakpoint-up(md) {
-            max-width: calc(480px + 4rem);
-            margin-left: 3rem;
-            padding-left: 2rem;
-            padding-right: 2rem;
-          }
-
+          padding: 3rem;
+          @extend %half-container;
 
           h3 {
             font-weight: $font-weight-medium;
@@ -168,7 +151,6 @@ html body {
           .text {
             flex: 1;
           }
-
         }
 
         .btn {

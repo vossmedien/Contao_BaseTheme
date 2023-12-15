@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Landingpage-Entry', ''),
+    'label' => array('Custom | Landingpage-Entry (landingpage)', ''),
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -140,7 +140,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true','tl_class' => 'clr')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
 
 
@@ -525,7 +525,7 @@ return array(
                         'h3' => 'H3',
                         'h4' => 'H4',
                         'h5' => 'H5',
-'h6' => 'H6',
+                        'h6' => 'H6',
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),

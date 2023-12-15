@@ -697,7 +697,6 @@ return array(
                         'new_tab' => array(
                             'label' => array('Link in neuen Tab öffnen', ''),
                             'inputType' => 'checkbox',
-
                         ),
 
                         'link_text' => array(

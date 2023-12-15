@@ -2,48 +2,127 @@
 if (TL_MODE == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_stoerer.min.css|static';
 }
+
+// Dynamische Stile für jedes Störer-Element
+$styles = "<style>";
+
+$counterStyles = 0;
+$counterElements = 0;
+
+// Bestimmt die zusätzlichen Klassen basierend auf den Positionierungsvariablen
+$additionalClasses = '';
+$additionalClasses .= (!empty($this->alternate_top_position) ? ' is-top' : '');
+$additionalClasses .= (!empty($this->alternate_bottom_position) ? ' is-bottom' : '');
+$additionalClasses .= (!empty($this->alternate_right_position) ? ' is-right' : '');
+$additionalClasses .= (!empty($this->alternate_left_position) ? ' is-left' : '');
+
+// Bestimmt die Rotationsstile für das äußere Element
+$rotationStyle = '';
+if (isset($this->text_rotation)) {
+    $rotationStyle = "transform: rotate({$this->text_rotation}deg); ";
+}
+
+foreach ($this->stoerer as $stoerer) {
+    $uniqueId = 'stoerer-' . $this->id . '-' . $counterStyles;
+
+    // Text- und Hintergrundfarben für jedes Element
+    if (isset($stoerer->text_color)) {
+        $textColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->text_color);
+        $styles .= "#$uniqueId  { color: $textColor; }";
+    }
+    if (isset($stoerer->bg_color)) {
+        $bgColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->bg_color);
+        $styles .= "#$uniqueId { background-color: $bgColor; }";
+    }
+
+    // Hover-Stile für jedes Element
+    if (isset($stoerer->text_hover_color)) {
+        $hoverTextColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->text_hover_color);
+        $styles .= "#$uniqueId:hover { color: $hoverTextColor !important; }";
+    }
+    if (isset($stoerer->bg_hover_color)) {
+        $hoverBgColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->bg_hover_color);
+        $styles .= "#$uniqueId:hover { background-color: $hoverBgColor !important;}";
+    }
+
+    $counterStyles++;
+}
+
+$styles .= "</style>";
+
+// Fügt die definierten Stile in einem <style>-Tag hinzu
+echo $styles;
 ?>
 
-<div
-    <?php echo $this->cssID; ?>class="content--element <?php echo $this->class; ?> <?php if ($this->alternate_right_position): ?>right-pos<?php elseif ($this->alternate_left_position): ?>left-pos<?php endif; ?>"
-    style="
-    <?php if ($this->alternate_top_position): ?>
-            top: <?= $this->alternate_top_position;?>;
- <?php endif; ?>
 
-    <?php if ($this->alternate_bottom_position): ?>
-            top: auto;
-            bottom: <?= $this->alternate_bottom_position;?>;
- <?php endif; ?>
+<div <?php echo $this->cssID; ?> class="<?php if($this->is_fixed):?>position-fixed<?php endif;?> content--element <?php echo $this->class . $additionalClasses; ?>"
+                                 style="<?php
+                                 echo(!empty($this->alternate_top_position) ? 'top: ' . $this->alternate_top_position . '; ' : '');
+                                 echo(!empty($this->alternate_bottom_position) ? 'bottom: ' . $this->alternate_bottom_position . '; ' : '');
+                                 echo(!empty($this->alternate_right_position) ? 'right: ' . $this->alternate_right_position . '; ' : '');
+                                 echo(!empty($this->alternate_left_position) ? 'left: ' . $this->alternate_left_position . '; ' : '');
+                                 echo $rotationStyle;
+                                 ?>">
+    <?php foreach ($this->stoerer as $stoerer): ?>
+        <?php
+        $uniqueId = 'stoerer-' . $this->id . '-' . $counterElements;
+        $isExpandableClass = isset($stoerer->expand) && $stoerer->expand ? 'is-expandable' : '';
+        $animationClass = isset($stoerer->animation_type) ? $stoerer->animation_type : '';
 
-    <?php if ($this->alternate_right_position): ?>
-            right:  <?= $this->alternate_right_position;?>;
- <?php endif; ?>
+        // Positionierungs- und Rotationsstile für jedes Element
+        $elementStyles = '';
+        if (isset($stoerer->text_rotation)) {
+            $elementStyles .= "transform: rotate({$stoerer->text_rotation}deg); ";
+        }
+        ?>
 
-    <?php if ($this->alternate_left_position): ?>
-            right:  auto;
-            left:   <?= $this->alternate_left_position;?>;
- <?php endif; ?>
+        <div id="<?php echo $uniqueId; ?>" class="ce--stoerer <?php echo $isExpandableClass; ?> <?php echo $animationClass; ?>" style="<?php echo $elementStyles; ?>">
 
-    <?php if ($this->is_fixed): ?>
-            position: fixed;
-    <?php endif; ?>
-            ">
-    <div class="ce--inner">
-        <div class="ce--stoerer"
-             style="<?php if ($this->text_rotation): ?>transform: rotate(<?= $this->text_rotation;?>deg);<?php endif; ?>">
-            <?php if ($this->img): ?>
-                <img loading="lazy"   src="<?= Image::get(FilesModel::findByUuid($this->img)->path, null, null, null); ?>">
+            <?php if ($stoerer->link_url): ?>
+                <a href="<?= $stoerer->link_url; ?>" <?php if ($stoerer->new_tab): ?>target="_blank"<?php endif; ?>></a>
             <?php endif; ?>
-            <?php if ($this->content): ?>
-                <div class="stoerer--content"
-                    <?php if ($this->alternate_text_color): ?>
-                        style="color: <?= $this->alternate_text_color; ?>"
-                    <?php endif; ?>
-                >
-                    <?= $this->content; ?>
+
+
+            <?php if (isset($stoerer->img) && $stoerer->img): ?>
+                <?php
+                $imageObject = FilesModel::findByUuid($stoerer->img);
+                if ($imageObject !== null && strtolower(pathinfo($imageObject->path, PATHINFO_EXTENSION)) === 'svg') {
+                    // SVG direkt laden
+                    $svgContent = file_get_contents(TL_ROOT . '/' . $imageObject->path);
+
+                    // Stil für Breite und Höhe erstellen
+                    $style = '';
+                    if (!empty($this->size[0])) {
+                        $style .= 'width:' . $this->size[0] . 'px; ';
+                    }
+                    if (!empty($this->size[1])) {
+                        $style .= 'height:' . $this->size[1] . 'px; ';
+                    }
+
+                    // Farben korrigieren und SVG ausgeben
+                    $fillColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->text_color);
+                    $svgContent = preg_replace('/<svg(.*?)>/', "<svg$1 style=\"$style fill: $fillColor;\"", $svgContent, 1);
+
+                    echo $svgContent;
+
+                    // CSS für Hover-Farbe
+                    $uniqueId = 'stoerer-' . $this->id . '-' . $counterElements;
+                    $hoverColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->text_hover_color);
+                    echo "<style>#$uniqueId:hover svg { fill: $hoverColor !important; }</style>";
+                } else {
+                    // Helper-Funktion für andere Bildtypen verwenden
+                    echo VSM_HelperFunctions\ImageHelper::generateImageHTML($stoerer->img, $stoerer->content, null, $this->size, null, false);
+                }
+                ?>
+            <?php endif; ?>
+
+
+
+            <?php if (isset($stoerer->content) && $stoerer->content): ?>
+                <div class="stoerer--content">
+                    <?= $stoerer->content; ?>
                 </div>
             <?php endif; ?>
         </div>
-    </div>
+        <?php $counterElements++; endforeach; ?>
 </div>
