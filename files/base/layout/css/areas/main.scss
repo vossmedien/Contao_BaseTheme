@@ -1,5 +1,5 @@
 #wrapper {
-  overflow-x: hidden;
+  //overflow-x: hidden;
   display: flex;
   flex-flow: column nowrap;
 
@@ -30,7 +30,7 @@
 
     .inside {
       --main-gap: #{clamp($basic-gutter * 0.75, 5vw, $basic-gutter * 1.5)};
-      overflow: hidden;
+      //overflow: hidden;
 
       display: flex;
       flex-flow: column nowrap;
