@@ -15,21 +15,6 @@
 
 form {
   min-width: 100%;
-  //opacity: 0;
-
-  /*
-    fieldset {
-    legend {
-      margin-top: 1.5rem;
-      @extend .h2;
-      margin-bottom: 0px !important;
-    }
-
-    &:not(.row):not([class*="col-"]) + fieldset:not(.row):not([class*="col-"]) {
-      margin-top: 1.5rem !important;
-    }
-  }
-   */
 
   > *:not(form):first-child:not(.formbody) {
     margin-bottom: 2rem;

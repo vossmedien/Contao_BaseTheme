@@ -48,19 +48,6 @@
       padding: $override-padding !important;
     }
   }
-
-  .ce_text {
-    //margin-top: 0px;
-  }
-
-  /*
-    &.row {
-    > div[class*="col-"]:first-of-type {
-      margin-top: 0px;
-    }
-  }
-   */
-
 }
 
 @keyframes fadein {
@@ -80,10 +67,6 @@
 }
 
 
-
-
-
-
 %make-fullwidth {
   width: 100vw;
   position: relative;
@@ -92,8 +75,6 @@
   margin-left: -50vw;
   margin-right: -50vw;
 }
-
-
 
 
 %half-container {
