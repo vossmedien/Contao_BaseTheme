@@ -1,19 +1,18 @@
-body.theme-3 {
-  &:not(.start) {
-    #main {
-      padding-top: rfs-value(60px);
-
-      @include media-breakpoint-up(lg) {
-        padding-top: rfs-value(90px);
-      }
-    }
-  }
-}
-
 .header--content {
   &.type--3 {
     background-color: var(--bs-header-navbar-bg);
     box-shadow: $box-shadow;
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    min-height: var(--bs-header-minheight);
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+
+    &.is--scrolling {
+      position: fixed;
+    }
 
     #headerLogo {
       img {
@@ -51,14 +50,12 @@ body.theme-3 {
             }
           }
 
-          > a,
-          > span,
-          > strong {
+          > * {
             color: var(--bs-header-link-color);
             text-decoration: none;
             display: block;
             white-space: nowrap;
-            line-height: 90px;
+            line-height: var(--bs-header-minheight);
             position: relative;
             transition: all 0.3s ease;
             @include font-size(16px);

@@ -1,26 +1,14 @@
-
-
-/*
 document.addEventListener(
     "DOMContentLoaded",
     function (event) {
-        function setImageHeight() {
-            var containers = document.querySelectorAll(
-                ".mainimage--content-inner"
-            );
+        const movingHeadimagelogoElements = document.querySelectorAll(".ce_rsce_headimagelogo.move-content");
 
-            containers.forEach(function (container) {
-                container.parentElement.style.minHeight = container.offsetHeight + 75 + "px";
-            });
-        }
-
-        setImageHeight();
-
-        window.onresize = function () {
-            setImageHeight();
-        };
+        movingHeadimagelogoElements.forEach((el) => {
+            const nextElement = el.nextElementSibling;
+            if (nextElement) {
+                nextElement.style.marginTop = `${el.offsetHeight}px`;
+            }
+        });
     },
-    {passive: true}
+    { passive: true }
 );
-
- */

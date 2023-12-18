@@ -95,7 +95,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
                             <div class="<?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>col-12 col-md-6<?php endif; ?>">
                                 <?php if ($this->element_type == 'is_slider'): ?>
                                     <div class="position-relative">
-                                        <div class="content-slider content-slider_<?= $this->id; ?> swiper custom <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>is-vertical<?php endif; ?>">
+                                        <div class="<?php if ($this->show_pagination): ?>with-pagination<?php endif;?> content-slider content-slider_<?= $this->id; ?> swiper custom <?php if ($this->nav_position == 3 || $this->nav_position == 4): ?>is-vertical<?php endif; ?>">
                                             <!-- Additional required wrapper -->
                                             <div class="swiper-wrapper align-items-center">
                                                 <!-- Slides -->

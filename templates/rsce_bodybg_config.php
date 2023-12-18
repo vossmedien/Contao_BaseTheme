@@ -177,7 +177,7 @@ return array(
             'label' => array('', ''),
             'inputType' => 'checkbox',
             'options' => array(
-                '1' => 'Abschrägung aktiviere. Wichtig: deaktiviert parallax-Effekt',
+                '1' => 'Abschrägung aktivieren. Wichtig: deaktiviert parallax-Effekt',
             ),
         ),
 

@@ -14,8 +14,27 @@ html body {
   }
 
   .ce_rsce_headimagelogo {
+
+    &.move-content {
+      position: fixed !important;
+      z-index: 0 !important;
+      top: 0;
+      padding-bottom: 0px !important;
+
+
+      .mainimage--content-inner > * {
+        animation: parallax linear;
+        animation-timeline: scroll();
+        --parallax-speed: -1.5;
+      }
+
+      & + *{
+        padding-top: var(--main-gap);
+      }
+    }
+
     .swiper-slide {
-      overflow: hidden;
+      //overflow: hidden;
     }
 
     &.pull-content:not(.pull-content-next) {
@@ -23,7 +42,7 @@ html body {
 
       > .ce--inner {
         margin-bottom: var(
-          --pull-content-amount
+                        --pull-content-amount
         ); //togglebar machen für mobile?
       }
 
@@ -83,7 +102,7 @@ html body {
 
       &:not(.not-fullHeight):not(.no-text) {
         .image--holder {
-          height: 100vh;
+          //height: 100dvh;
         }
       }
 
@@ -108,16 +127,16 @@ html body {
         position: relative;
         //overflow: hidden;
 
-          @include media-breakpoint-down(md) {
-            min-height: 500px !important;
-          }
+        @include media-breakpoint-down(md) {
+          //min-height: 500px !important;
+        }
 
         @media (orientation: landscape) {
           //height: rfs-value(450px);
         }
 
         &.with-video {
-          overflow: hidden;
+          //overflow: hidden;
         }
 
         video {
@@ -172,7 +191,7 @@ html body {
             }
 
             &[class*="-bottom"] {
-              bottom: rfs-value(75px);
+              bottom: rfs-value(80px);
             }
 
             /*
@@ -210,8 +229,6 @@ html body {
               }
             }
              */
-
-
 
 
             .infotext--text {

@@ -1,7 +1,8 @@
 #wrapper {
-  contain: paint;
+  overflow-x: clip;
   display: flex;
   flex-flow: column nowrap;
+  background-color: var(--bs-body-bg);
 
   #container {
     @include media-breakpoint-up(md) {
@@ -27,10 +28,13 @@
 
   #main {
     .inside {
-      --main-gap: #{clamp($basic-gutter * 0.75, 5vw, $basic-gutter * 1.5)};
-      display: flex;
-      flex-flow: column nowrap;
-      gap: var(--main-gap);
+
+
+      > * {
+        &:not(:last-child) {
+          padding-bottom: var(--main-gap);
+        }
+      }
     }
 
     .mod_article {
@@ -56,15 +60,17 @@
       }
 
       .article-content {
-        display: flex;
-        flex-flow: column nowrap;
-        gap: var(--main-gap) 0;
+        > * {
+          position: relative;
+          z-index: 1;
+          background-color: var(--bs-body-bg);
+
+          &:not(:last-child) {
+            padding-bottom: var(--main-gap);
+          }
+        }
       }
 
-
-      .article-content > *:last-child {
-        margin-bottom: 0;
-      }
 
 
       *[class*="bg-dark"] {

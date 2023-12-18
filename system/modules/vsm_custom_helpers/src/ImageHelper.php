@@ -9,7 +9,7 @@ use Contao\Image;
 
 class ImageHelper
 {
-    public static function generateImageHTML($imageUuid, $altText = '', $headline = '', $size = null, $class = '', $inSlider = false)
+    public static function generateImageHTML($imageUuid, $altText = '', $headline = '', $size = null, $class = '', $inSlider = false, $lazy = true)
     {
         $imageObject = FilesModel::findByUuid($imageUuid);
         if (!$imageObject) {
@@ -45,12 +45,23 @@ class ImageHelper
 
 
         // Erstellung des Bild-HTML-Codes
-        if ($inSlider) {
-            $classAttribute = $class ? ' class=" ' . htmlspecialchars($class) . '"' : ' class=""';
-            $imageHTML = $linkStart . '<div class="swiper-lazy-preloader"></div><img' . $classAttribute . ' loading="lazy" src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+        if ($lazy) {
+            if ($inSlider) {
+                $classAttribute = $class ? ' class=" ' . htmlspecialchars($class) . '"' : ' class=""';
+                $imageHTML = $linkStart . '<div class="swiper-lazy-preloader"></div><img' . $classAttribute . ' loading="lazy" src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+            } else {
+                $classAttribute = $class ? ' class="lazy ' . htmlspecialchars($class) . '"' : ' class="lazy"';
+                $imageHTML = $linkStart . '<img' . $classAttribute . ' loading="lazy" data-src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+            }
         } else {
-            $classAttribute = $class ? ' class="lazy ' . htmlspecialchars($class) . '"' : ' class="lazy"';
-            $imageHTML = $linkStart . '<img' . $classAttribute . ' loading="lazy" data-src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+            if ($inSlider) {
+                $classAttribute = $class ? ' class=" ' . htmlspecialchars($class) . '"' : ' class=""';
+                $imageHTML = $linkStart . '<img' . $classAttribute . '  src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+            } else {
+                $classAttribute = $class ? ' class=" ' . htmlspecialchars($class) . '"' : ' ';
+                $imageHTML = $linkStart . '<img' . $classAttribute . ' src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+            }
+
         }
 
 

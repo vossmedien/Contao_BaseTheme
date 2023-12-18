@@ -12,7 +12,6 @@
     <meta name="description" content="<?= Contao\StringUtil::substr($this->description, 320) ?>">
     <meta name="generator" content="Contao Open Source CMS">
     <?php $this->endblock(); ?>
-
     <?php if ($this->canonical): ?>
         <link rel="canonical" href="<?= $this->canonical ?>">
     <?php endif; ?>

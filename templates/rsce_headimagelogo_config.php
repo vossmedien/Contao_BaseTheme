@@ -175,6 +175,13 @@ return array(
         ),
 
 
+        'not_as_bg' => array(
+            'label' => array('Bild "skalierbar" integrieren', 'Nicht as Hintergrundbild mit Fester Höhe - viele Einstellungen werden dadurch unwirksam'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
         'settings_1' => array(
             'label' => array('Einstellungen', ''),
             'inputType' => 'group',
@@ -185,6 +192,10 @@ return array(
             'inputType' => 'checkbox',
         ),
 
+        'move_content' => array(
+            'label' => array('Inhalt darunter hinter dem Slider verschwinden lassen', ''),
+            'inputType' => 'checkbox',
+        ),
 
         'diagonal_cut' => array(
             'label' => array('Mit diagonalem Abschluss', ''),
@@ -411,7 +422,6 @@ return array(
                 ),
 
 
-
                 'image' => array(
                     'label' => array('Bild / Video', 'Video-Format: MP4'),
                     'inputType' => 'fileTree',
@@ -438,17 +448,6 @@ return array(
                     ),
                 ),
 
-                   'darken_image' => array(
-                    'label' => array('', ''),
-                    'inputType' => 'checkbox',
-                    'options' => array(
-                        '1' => 'Hintergrundbild zusätzlich abdunkeln',
-                    ),
-                             'eval' => array(
-                        'tl_class' => 'clr',
-                    ),
-                ),
-
 
                 'size' => array(
                     'label' => array('Bildbreite und Bildhöhe', ''),
@@ -459,6 +458,31 @@ return array(
                         'rgxp' => 'digit',
                         'tl_class' => 'clr',
                         'includeBlankOption' => true,
+                    ),
+                ),
+
+
+                'size_mobile' => array(
+                    'label' => array('Bildbreite und Bildhöhe (Mobile)', ''),
+                    'inputType' => 'imageSize',
+                    'options' => System::getImageSizes(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'tl_class' => 'clr',
+                        'includeBlankOption' => true,
+                    ),
+                ),
+
+
+                'darken_image' => array(
+                    'label' => array('', ''),
+                    'inputType' => 'checkbox',
+                    'options' => array(
+                        '1' => 'Hintergrundbild zusätzlich abdunkeln',
+                    ),
+                    'eval' => array(
+                        'tl_class' => 'clr',
                     ),
                 ),
 
@@ -667,11 +691,14 @@ return array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
-                'dynamic_fontsize' => array(
+                /*
+                      'dynamic_fontsize' => array(
                     'label' => array('Schriftgröße abhängig von Bildschirmbreite skalieren', ''),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
+
+                 */
 
 
                 'headline_type' => array(
@@ -890,6 +917,8 @@ return array(
                                 'btn-outline-primary' => 'Hauptfarbe(Outline)',
                                 'btn-secondary' => 'Sekundär - Farbe',
                                 'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
+                                'btn-tertiary' => 'Tertiär - Farbe',
+                                'btn-outline-tertiary' => 'Tertiär - Farbe(Outline)',
                                 'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
                                 'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
                                 'btn-white' => 'Weißer Button mit schwarzer Schrift',

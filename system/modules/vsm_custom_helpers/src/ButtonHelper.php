@@ -18,7 +18,7 @@ class ButtonHelper
                 $buttonType = !empty($btn->link_type) ? $btn->link_type : '';
                 $buttonSize = !empty($btn->link_size) ? $btn->link_size : '';
                 $buttonUrl = !empty($btn->link_url) ? $btn->link_url : '';
-                $linkText = !empty($btn->link_text) ? htmlspecialchars($btn->link_text, ENT_QUOTES, 'UTF-8') : '';
+                $linkText = !empty($btn->link_text) ? htmlspecialchars_decode(htmlspecialchars($btn->link_text, ENT_QUOTES, 'UTF-8')) : '';
 
                 $buttonHTML .= "<a class=\"d-inline-block btn {$buttonSize} {$buttonType}\"";
                 $buttonHTML .= " data-aos=\"{$animationType}\"";

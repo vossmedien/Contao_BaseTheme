@@ -37,11 +37,6 @@ html {
     }
 
 
-
-    .mod_article > .content--element:not(.content--box) {
-      //@extend %make-fullwidth;
-    }
-
     &#tinymce {
       @include padding(7px 12px);
       opacity: 1;

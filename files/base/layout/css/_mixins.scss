@@ -67,6 +67,13 @@
 }
 
 
+@keyframes parallax {
+  to {
+    transform:
+      translateY(calc(var(--parallax-speed) * 100px));
+  }
+}
+
 %make-fullwidth {
   width: 100vw;
   position: relative;
