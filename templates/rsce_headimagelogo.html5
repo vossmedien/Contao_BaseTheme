@@ -45,7 +45,7 @@ if (TL_MODE == 'FE') {
                     <div class="swiper-slide">
                         <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline && !$slide->text_topline) : ?>no-text<?php endif; ?> ">
                             <div class="image--holder <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>"
-                                 style="<?php if ($this->image_minheight) : ?>min-height: <?= $this->image_minheight;?>;<?php endif; ?> <?php if ($this->image_maxheight && !$this->not_as_bg) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height) : ?>height: <?php echo $this->image_height; ?>vh; <?php endif; ?> <?php if ($this->image_maxwidth) : ?>background-size: <?= $this->image_maxwidth; ?> auto;<?php else: ?>background-size: cover;<?php endif; ?>">
+                                 style="<?php if ($this->image_minheight) : ?>min-height: <?= $this->image_minheight; ?>;<?php endif; ?> <?php if ($this->image_maxheight && !$this->not_as_bg) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height && !$this->not_as_bg) : ?>height: <?php echo $this->image_height; ?>vh; <?php endif; ?> <?php if ($this->image_maxwidth) : ?>background-size: <?= $this->image_maxwidth; ?> auto;<?php else: ?>background-size: cover;<?php endif; ?>">
 
 
                                 <?php if (!$this->not_as_bg): ?>
@@ -91,7 +91,7 @@ if (TL_MODE == 'FE') {
                                         ?>
 
                                         html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner:before,
-                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner--wrapper:not(.extra) .mainimage--content-inner--holder:after {
+                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-2 .mainimage--content .mainimage--content-inner:after {
                                             background-color: <?= $color; ?> !important;
                                         }
 
@@ -118,7 +118,7 @@ if (TL_MODE == 'FE') {
                                         ?>
 
                                         html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .slide_<?php echo $key; ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper.extra:before,
-                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .slide_<?php echo $key; ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper .mainimage--content-inner--holder.extra:after {
+                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .slide_<?php echo $key; ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper:after {
                                             background-color: <?= $color; ?> !important;
                                         }
 
@@ -152,22 +152,22 @@ if (TL_MODE == 'FE') {
 
                                 <?php if ($this->not_as_bg): ?>
                                     <?php if ($ext != "mp4"): ?>
-
-
-
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, "d-none d-md-block", false, false); ?>
+                                        <div class="plain-image-holder">
+                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, "d-none d-md-inline-block", false, false); ?>
+                                        </div>
                                     <?php endif; ?>
                                     <?php if ($slide->mobile_image && $ext_mobile != "mp4"): ?>
-
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, "d-md-none", false, false); ?>
+                                        <div class="plain-image-holder">
+                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, "d-md-none", false, false); ?>
+                                        </div>
                                     <?php endif; ?>
                                 <?php endif; ?>
 
 
                                 <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1) : ?>
-                                    <div data-aos="<?php if ($slide->animation_type) : ?><?php echo $slide->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                         class="mainimage--content"
-                                         <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
+                                    <div
+                                            class="mainimage--content"
+                                            <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
 
 
                                         <div class="<?php if ($slide->text_style == "style-2"): ?>container<?php else: ?><?php endif; ?>">
@@ -176,7 +176,7 @@ if (TL_MODE == 'FE') {
                                             <div class="mainimage--content-inner <?php echo $slide->textbox_position; ?> <?php echo $slide->text_align; ?>"
                                                  style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?> <?php if ($slide->maxWidth) : ?>max-width: <?php echo $slide->maxWidth; ?>;<?php endif; ?>">
 
-                                                <div class="mainimage--content-inner--wrapper">
+                                                <div class="mainimage--content-inner--wrapper" data-aos="<?= $slide->animation_type; ?>">
                                                     <div class="mainimage--content-inner--holder">
 
 
@@ -206,7 +206,7 @@ if (TL_MODE == 'FE') {
 
 
                                                 <?php if (($slide->text_infotext || count($slide->buttons) >= 1) && $slide->own_box) : ?>
-                                                    <div class="mainimage--content-inner--wrapper extra mt-3">
+                                                    <div class="mainimage--content-inner--wrapper extra mt-3" data-aos="<?= $slide->animation_type; ?>">
                                                         <div class="mainimage--content-inner--holder extra ">
                                                             <?php if ($slide->text_infotext): ?>
                                                                 <div class="infotext--text mt-0">

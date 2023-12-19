@@ -12,6 +12,7 @@
 
     &.is--scrolling {
       position: fixed;
+      top: 0 !important;
     }
 
     #headerLogo {

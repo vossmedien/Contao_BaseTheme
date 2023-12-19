@@ -688,7 +688,7 @@ return array(
                 'maxWidth' => array(
                     'label' => array('Maximale Breite der Textbox', 'inkl. Maßeinheit, z. B. 400px'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'clr'),
                 ),
 
                 /*
@@ -700,6 +700,24 @@ return array(
 
                  */
 
+
+                'text_topline' => array(
+                    'label' => array('Topline', ''),
+                    'inputType' => 'text',
+                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
+                ),
+
+                'text_secondline' => array(
+                    'label' => array('Subline', ''),
+                    'inputType' => 'text',
+                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
+                ),
+
+                'text_firstline' => array(
+                    'label' => array('Überschrift', ''),
+                    'inputType' => 'text',
+                    'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
+                ),
 
                 'headline_type' => array(
                     'label' => array(
@@ -714,27 +732,14 @@ return array(
                         'h5' => 'H5',
                         'h6' => 'H6',
                     ),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
-                'text_topline' => array(
-                    'label' => array('Topline', ''),
-                    'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
-                ),
-                'text_firstline' => array(
-                    'label' => array('Überschrift', ''),
-                    'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
-                ),
-                'text_secondline' => array(
-                    'label' => array('Subline', ''),
-                    'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
-                ),
 
                 'onlystyle' => array(
                     'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
                     'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
                 ),
 
                 'text_infotext' => array(
