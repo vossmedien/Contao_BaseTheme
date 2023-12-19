@@ -229,8 +229,21 @@ const lazyLoadInstance = new LazyLoad({
             }
         }
     },
-
 });
+
+
+var searchActivator = document.querySelector('.searchActivator');
+
+if (searchActivator) {
+    var searchCol = document.querySelector('.search-col');
+
+    searchActivator.addEventListener('click', function () {
+        if (searchCol) {
+            searchCol.classList.toggle('is-visible');
+        }
+    });
+}
+
 
 const matrixCells = document.querySelectorAll(".matrix td");
 matrixCells.forEach((cell) => {

@@ -156,8 +156,40 @@
       }
     }
 
-    .navActivator {
+    .navActivator, .searchActivator {
       color: var(--bs-header-link-color);
+      cursor: pointer;
     }
+
+
+    .search-col {
+
+      .mod_search{
+        transform: scale(.75);
+      }
+
+
+      @include media-breakpoint-down(md) {
+        background-color: var(--bs-secondary);
+        max-height: 0px;
+        position: absolute;
+        overflow: hidden;
+        top: 100%;
+        transition: max-height .3s ease-in-out;
+        padding: 0px;
+
+        .mod_search#searchWidget {
+          min-width: 0px;
+          padding: 5px;
+           transform: none;
+        }
+
+        &.is-visible {
+          max-height: 100px;
+
+        }
+      }
+    }
+
   }
 }
