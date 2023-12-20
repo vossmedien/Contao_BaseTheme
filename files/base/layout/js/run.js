@@ -237,7 +237,7 @@ var searchActivator = document.querySelector('.searchActivator');
 if (searchActivator) {
     var searchCol = document.querySelector('.search-col');
 
-    searchActivator.addEventListener('click', function () {
+    searchActivator.addEventListener('touchstart', function () {
         if (searchCol) {
             searchCol.classList.toggle('is-visible');
         }
@@ -476,32 +476,39 @@ const isHeadImageAndMoveContent = document.querySelector(".ce_rsce_headimagelogo
 
 if (isHeadImageAndMoveContent) {
     function movingContent() {
-        const movingHeadimagelogoElements = document.querySelectorAll(".ce_rsce_headimagelogo.move-content");
+        const movingHeadimagelogoElement = document.querySelector(".ce_rsce_headimagelogo.move-content");
 
-        movingHeadimagelogoElements.forEach((el) => {
-            const nextElement = el.nextElementSibling;
-            if (nextElement) {
-                nextElement.style.marginTop = `${el.offsetHeight}px`;
+        // Prüfen, ob 'moved-content' bereits existiert
+        let articleContent = document.querySelector('.moved-content');
+        if (!articleContent) {
+            // Erstellen des neuen 'article-content' div, wenn es noch nicht existiert
+            articleContent = document.createElement('div');
+            articleContent.classList.add('moved-content');
+
+            // Sammeln aller Elemente nach 'move-content' und zum 'article-content' hinzufügen
+            let nextElement = movingHeadimagelogoElement.nextElementSibling;
+            while (nextElement) {
+                articleContent.appendChild(nextElement);
+                nextElement = movingHeadimagelogoElement.nextElementSibling;
             }
-        });
+
+            // Einfügen des 'article-content' div nach 'move-content'
+            movingHeadimagelogoElement.parentNode.insertBefore(articleContent, movingHeadimagelogoElement.nextSibling);
+        }
+
+        // 'margin-top' des 'article-content' divs setzen
+        articleContent.style.paddingTop = `${movingHeadimagelogoElement.offsetHeight}px`;
     }
 
     scrollFunctions.push(movingContent);
 }
 
 
-window.addEventListener("scroll", () => {
-    scrollFunctions.forEach((func) => func());
-});
+function executeScrollFunctions() {
+    scrollFunctions.forEach(func => func());
+}
 
-window.addEventListener("load", () => {
-    scrollFunctions.forEach((func) => func());
-});
-
-window.addEventListener("touchmove", () => {
-    scrollFunctions.forEach((func) => func());
-});
-
-window.addEventListener("resize", () => {
-    scrollFunctions.forEach((func) => func());
-});
+window.addEventListener("scroll", executeScrollFunctions);
+window.addEventListener("load", executeScrollFunctions);
+window.addEventListener("touchmove", executeScrollFunctions);
+window.addEventListener("resize", executeScrollFunctions);

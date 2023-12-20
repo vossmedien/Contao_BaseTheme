@@ -42,7 +42,6 @@
 <div class="BodyScrollToTop"><i class="fa-sharp fa-light fa-arrow-up"></i></div>
 
 
-
 <div id="wrapper">
     <?php $this->block('header'); ?>
     <?php if ($this->header) : ?>
@@ -101,6 +100,11 @@
     <?php $this->block('footer'); ?>
     <?php if ($this->footer) : ?>
         <footer data-aos="animate__fadeIn" id="footer">
+
+            <div class="d-flex justify-content-between align-items-end">
+                <img data-aos="animate__slideInLeft" title="Megaman" data-src="/files/base/content/capcom/megaman.png" class="lazy megaman footer-icon">
+                <img data-aos="animate__headShake" title="Megaman Enemy" data-src="/files/base/content/capcom/megaman-enemy.png" class="lazy megaman footer-icon">
+            </div>
             <div class="inside">
                 <?= $this->footer ?>
             </div>

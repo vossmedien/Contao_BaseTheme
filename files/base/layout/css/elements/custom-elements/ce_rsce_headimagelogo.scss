@@ -16,21 +16,17 @@ html body {
   .ce_rsce_headimagelogo {
 
     &.move-content {
-      position: fixed !important;
-      z-index: 0 !important;
+      position: fixed ;
+      z-index: 0;
       top: 0;
-      padding-bottom: 0px !important;
 
 
       .mainimage--content-inner > * {
         animation: parallax linear;
         animation-timeline: scroll();
-        --parallax-speed: -5;
+        --parallax-speed: -7.5;
       }
 
-      & + * {
-        padding-top: var(--main-gap);
-      }
     }
 
     .plain-image-holder{

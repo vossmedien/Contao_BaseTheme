@@ -129,3 +129,12 @@ a.disabled-link {
   position: relative;
   z-index: 3;
 }
+
+.moved-content {
+  > * {
+    padding-top: var(--main-gap);
+    z-index: 1;
+    position: relative;
+    background-color: var(--bs-body-bg);
+  }
+}
