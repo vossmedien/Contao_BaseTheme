@@ -2,7 +2,7 @@
 
 <div class="col-12 col-md-4">
     <div class="project--box" data-aos="animate__fadeInUp"
-         style="background: linear-gradient(black, black),url(<?= $this->listing_image["src"]; ?>)  center center no-repeat; background-size: cover;">
+         style="background: url(<?= $this->listing_image["src"]; ?>)  center center no-repeat; background-size: contain;">
 
 
         <div class="project-box--flex-wrapper">

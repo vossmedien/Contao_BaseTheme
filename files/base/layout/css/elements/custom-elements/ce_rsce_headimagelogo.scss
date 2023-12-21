@@ -14,53 +14,39 @@ html body {
   }
 
   .ce_rsce_headimagelogo {
-
-    &.move-content {
-      position: fixed ;
-      z-index: 0;
-      top: 0;
-
-
-      .mainimage--content-inner > * {
-        animation: parallax linear;
-        animation-timeline: scroll();
-        --parallax-speed: -7.5;
-      }
-
+    .mainimage--content-inner--holder > * {
+      animation: parallax linear;
+      animation-timeline: scroll();
+      --parallax-speed: -4;
     }
 
-    .plain-image-holder{
+    &.move-content {
+      position: fixed;
+      z-index: 0;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    .plain-image-holder {
       text-align: center;
+
       img {
         width: 100%;
         height: auto;
       }
     }
 
-    .swiper-slide {
-      //overflow: hidden;
-    }
 
     &.pull-content:not(.pull-content-next) {
       z-index: 0;
 
       > .ce--inner {
-        margin-bottom: var(
-                        --pull-content-amount
-        ); //togglebar machen für mobile?
-      }
-
-      @include media-breakpoint-up(md) {
-      }
-
-      & + * {
-        //z-index: 5;
-        //position: relative;
+        margin-bottom: var(--pull-content-amount); //togglebar machen für mobile?
       }
 
       .mainimage--content {
         top: 35%;
-        //transform: translate(0%, -35%) !important;
       }
     }
 
@@ -76,10 +62,6 @@ html body {
       bottom: 0;
       text-align: center;
       z-index: 5;
-
-      @include media-breakpoint-down(sm) {
-        //width: 80%;
-      }
 
       img {
         max-width: calc(300px + 4rem);
@@ -104,11 +86,7 @@ html body {
         }
       }
 
-      &:not(.not-fullHeight):not(.no-text) {
-        .image--holder {
-          //height: 100dvh;
-        }
-      }
+
 
       .swiper-button-prev {
         @include media-breakpoint-up(sm) {
@@ -125,24 +103,11 @@ html body {
 
     .ce--mainimage {
       position: relative;
-      //overflow: hidden;
+
 
       .image--holder {
         position: relative;
         width: 100vw;
-        //overflow: hidden;
-
-        @include media-breakpoint-down(md) {
-          //min-height: 500px !important;
-        }
-
-        @media (orientation: landscape) {
-          //height: rfs-value(450px);
-        }
-
-        &.with-video {
-          //overflow: hidden;
-        }
 
         video {
           object-fit: cover;
@@ -151,21 +116,6 @@ html body {
           height: 100%;
           left: 0;
           top: 0;
-          /*
-             min-width: 100vw;
-          min-height: 100vh; 
-          width: auto;
-          height: auto;
-          z-index: -1000;
-          overflow: hidden;
-          max-width: none;
-     
-          transform: translate(-50%, -50%);
-    
-          top: 50%;  
-          left: 50%;
-          max-height: none;
-           */
         }
 
         .mainimage--content {
@@ -173,7 +123,6 @@ html body {
           width: 100vw;
           position: absolute;
           top: 0;
-
 
           > .container {
             position: relative;
@@ -184,7 +133,6 @@ html body {
             display: inline-block;
             position: absolute;
             width: 100%;
-            //padding: 1rem 1rem 1.5rem 0px;
 
             @include media-breakpoint-down(sm) {
               width: 100%;
@@ -199,45 +147,8 @@ html body {
             }
 
             &[class*="-bottom"] {
-              bottom: rfs-value(80px);
+              bottom: 100px;
             }
-
-            /*
-              span {
-              display: block;
-              line-height: 1;
-
-              &.first-line {
-                font-weight: $font-weight-bold;
-                &:not([class*="dynamic-fontsize"]) {
-                  @include font-size(26px);
-                  @include media-breakpoint-up(md) {
-                    @include font-size(36px);
-                  }
-                }
-              }
-              &.second-line {
-                margin-top: 8px;
-                font-weight: $font-weight-semibold;
-
-                &:not([class*="dynamic-fontsize"]) {
-                  @include font-size(18px);
-                  @include media-breakpoint-up(md) {
-                    @include font-size(22px);
-                  }
-                }
-              }
-            }
-
-                 h1 {
-              font-weight: $font-weight-bold;
-
-              &:not([class*="dynamic-fontsize"]) {
-                @include font-size(36px);
-              }
-            }
-             */
-
 
             .infotext--text {
               margin-top: 1.25rem;
@@ -259,28 +170,6 @@ html body {
               width: 100% !important;
               max-width: 100% !important;
             }
-
-            /*
-                span:not([class*="dynamic-fontsize"]) {
-              &:first-of-type {
-                @include font-size(70px);
-              }
-
-              &:last-of-type {
-                @include font-size(60px);
-              }
-            }
-
-            h1:not([class*="dynamic-fontsize"]) {
-              @include font-size(70px);
-            }
-
-            h1 {
-              margin-bottom: 0px;
-            }
-
-             */
-
             .button--wrapper {
               margin-top: 1.75rem;
             }

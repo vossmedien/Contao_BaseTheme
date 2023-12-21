@@ -22,7 +22,7 @@
   .project-box--flex-wrapper {
     display: flex;
     flex-flow: column wrap;
-    min-height: rfs-value(300px);
+    min-height: rfs-value(300px); //@TODO rework
     justify-content: center;
     align-items: center;
 

@@ -1,0 +1,7 @@
+  <a class="btn btn-primary" href="<?= $this->masterUrl ?>">Mehr erfahren</a>
+
+    <?php
+    echo "<pre>";
+    echo $this->showTemplateVars();
+    echo "</pre>";
+    ?>

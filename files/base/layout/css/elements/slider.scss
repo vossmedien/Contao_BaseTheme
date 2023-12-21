@@ -1,6 +1,7 @@
 .swiper {
   transition: all 0.25s ease;
   opacity: 0;
+  overflow: clip;
 
   &.swiper-initialized {
     opacity: 1;
@@ -8,6 +9,10 @@
 
   &:not(.mainslider).with-pagination {
     padding-bottom: calc(var(--swiper-pagination-bullet-height) + 1rem);
+  }
+
+  .swiper-slide{
+    overflow: clip;
   }
 }
 

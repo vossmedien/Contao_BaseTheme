@@ -2,9 +2,9 @@
 <?php $this->block('content'); ?>
 
 <?php if ($this->message): ?>
-<div class="container">
-    <p class="mt-0 ctlg_view_message alert alert-warning"><?= $this->message; ?></p>
-</div>
+    <div class="container">
+        <p class="mt-0 ctlg_view_message alert alert-warning"><?= $this->message; ?></p>
+    </div>
 <?php endif; ?>
 
 <?php if (!empty($this->createOperation) && is_array($this->createOperation)): ?>
@@ -24,7 +24,7 @@
         <div class="ctlg_group_content"><?= join($arrOutput); ?></div>
         </div>
     <?php endforeach; ?>
-<?php elseif (count($this->data)>1): ?>
+<?php elseif ($this->output): ?>
     <div class="container">
         <div class="row justify-content-center g-lg-2">
             <?= $this->output; ?>
