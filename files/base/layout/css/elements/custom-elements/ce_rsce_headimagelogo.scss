@@ -14,7 +14,10 @@ html body {
   }
 
   .ce_rsce_headimagelogo {
-    .mainimage--content-inner--wrapper, .mainimage--content-inner:before, .mainimage--content-inner:after {
+    .mainimage--content-inner--wrapper,
+    .mainimage--content-inner:before,
+    .mainimage--content-inner:after,
+    .mainimage--content-inner--holder > *{
       animation: parallax linear;
       animation-timeline: scroll();
       --parallax-speed: -4;
