@@ -14,21 +14,18 @@ html body {
   }
 
   .ce_rsce_headimagelogo {
-    .mainimage--content-inner--wrapper,
-    .mainimage--content-inner:before,
-    .mainimage--content-inner:after,
-    .mainimage--content-inner--holder > *{
-      animation: parallax linear;
-      animation-timeline: scroll();
-      --parallax-speed: -4;
-    }
-
     &.move-content {
-      position: fixed;
-      z-index: 0;
+      position: fixed !important;
+      //z-index: -1 !important;
       top: 0;
       left: 0;
       width: 100%;
+
+     .mainimage--content-inner--wrapper {
+        animation: parallax linear;
+        animation-timeline: scroll();
+        --parallax-speed: -4;
+      }
     }
 
     .plain-image-holder {
@@ -40,12 +37,13 @@ html body {
       }
     }
 
-
     &.pull-content:not(.pull-content-next) {
       z-index: 0;
 
       > .ce--inner {
-        margin-bottom: var(--pull-content-amount); //togglebar machen für mobile?
+        margin-bottom: var(
+          --pull-content-amount
+        ); //togglebar machen für mobile?
       }
 
       .mainimage--content {
@@ -76,6 +74,8 @@ html body {
       }
     }
 
+
+
     .mainslider {
       &.with-diagonalCut {
         &:after {
@@ -88,8 +88,6 @@ html body {
           z-index: 5;
         }
       }
-
-
 
       .swiper-button-prev {
         @include media-breakpoint-up(sm) {
@@ -107,6 +105,11 @@ html body {
     .ce--mainimage {
       position: relative;
 
+
+         .ce--headline > *{
+                padding-left: 0px;
+                padding-right: 0px;
+              }
 
       .image--holder {
         position: relative;
@@ -136,12 +139,8 @@ html body {
             display: inline-block;
             position: absolute;
             width: 100%;
-
-            @include media-breakpoint-down(sm) {
-              width: 100%;
-              padding-left: 1rem;
-              padding-right: 1rem;
-            }
+            padding-left: 1rem;
+            padding-right: 1rem;
 
             &:not([class*="pos-"]) {
               transform: translate(0%, -50%);
@@ -173,6 +172,7 @@ html body {
               width: 100% !important;
               max-width: 100% !important;
             }
+
             .button--wrapper {
               margin-top: 1.75rem;
             }
@@ -205,7 +205,6 @@ html body {
               }
             }
 
-
             &:before {
               content: "";
               position: absolute;
@@ -223,10 +222,11 @@ html body {
             .mainimage--content-inner--holder {
               //padding: 10px 2rem 10px 0px;
 
-
               > * {
                 position: relative;
               }
+
+
 
               .button--wrapper {
                 margin-top: 1.5rem;

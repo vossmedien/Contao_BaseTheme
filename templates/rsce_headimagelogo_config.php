@@ -193,7 +193,7 @@ return array(
         ),
 
         'move_content' => array(
-            'label' => array('Inhalt darunter hinter dem Slider verschwinden lassen', ''),
+            'label' => array('Inhalt darunter hinter dem Slider verschwinden lassen', 'Funktioniert nur, wenn dass das erste Element im Artikel ist und darunter Elemente kommen'),
             'inputType' => 'checkbox',
         ),
 
