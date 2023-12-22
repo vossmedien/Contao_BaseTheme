@@ -1,7 +1,7 @@
 .swiper {
   transition: all 0.25s ease;
   opacity: 0;
-  overflow: clip;
+
 
   &.swiper-initialized {
     opacity: 1;
@@ -11,10 +11,12 @@
     padding-bottom: calc(var(--swiper-pagination-bullet-height) + 1rem);
   }
 
+
+}
+
   .swiper-slide{
     overflow: clip;
   }
-}
 
 [class*="swiper-button-"] {
   text-align: center;
