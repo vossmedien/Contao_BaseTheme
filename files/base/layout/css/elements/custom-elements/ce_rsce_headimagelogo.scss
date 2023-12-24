@@ -21,7 +21,7 @@ html body {
       left: 0;
       width: 100%;
 
-     .mainimage--content-inner--wrapper {
+      .mainimage--content-inner--wrapper {
         animation: parallax linear;
         animation-timeline: scroll();
         --parallax-speed: -4;
@@ -74,8 +74,6 @@ html body {
       }
     }
 
-
-
     .mainslider {
       &.with-diagonalCut {
         &:after {
@@ -105,15 +103,19 @@ html body {
     .ce--mainimage {
       position: relative;
 
-
-         .ce--headline > *{
-                padding-left: 0px;
-                padding-right: 0px;
-              }
+      .ce--headline > * {
+        padding-left: 0px;
+        padding-right: 0px;
+      }
 
       .image--holder {
         position: relative;
         width: 100vw;
+
+        @include media-breakpoint-down(md) {
+          height: 100dvh !important;
+          min-height: 0 !important;
+        }
 
         video {
           object-fit: cover;
@@ -225,8 +227,6 @@ html body {
               > * {
                 position: relative;
               }
-
-
 
               .button--wrapper {
                 margin-top: 1.5rem;

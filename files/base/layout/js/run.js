@@ -383,27 +383,29 @@ if (type1FixedHeader) {
 
 const type2Header = document.querySelector(".header--content.type--2");
 if (type2Header) {
-  const navWrapper = document.querySelector(".hc--bottom");
-  let navOffset;
-  if (document.querySelector(".mod_pageImage")) {
-    navOffset = navWrapper.offsetTop - 15;
-  } else {
-    navOffset = document.querySelector(".mainslider").offsetHeight;
-    navWrapper.style.bottom = "auto";
-    navWrapper.style.top = navOffset - navWrapper.offsetHeight + "px";
-  }
+    const navWrapper = document.querySelector(".hc--bottom");
+    let navOffset;
 
-  const detectIfScrolled = function () {
-    if (window.scrollY > navOffset - navWrapper.offsetHeight) {
-      navWrapper.classList.add("is--scrolling");
-      navWrapper.style.top = "0px";
-    } else {
-      navWrapper.classList.remove("is--scrolling");
-      navWrapper.style.top = navOffset - navWrapper.offsetHeight + "px";
-    }
-  };
 
-  scrollFunctions.push(detectIfScrolled);
+    const detectIfScrolled = function () {
+        if (window.scrollY > navOffset - navWrapper.offsetHeight) {
+            navWrapper.classList.add("is--scrolling");
+            navWrapper.style.top = "0px";
+        } else {
+            navWrapper.classList.remove("is--scrolling");
+            navWrapper.style.top = navOffset - navWrapper.offsetHeight + "px";
+        }
+
+        if (document.querySelector(".mod_pageImage")) {
+            navOffset = navWrapper.offsetTop - 15;
+        } else {
+            navOffset = document.querySelector(".mainslider").offsetHeight;
+            navWrapper.style.bottom = "auto";
+            navWrapper.style.top = navOffset - navWrapper.offsetHeight + "px";
+        }
+    };
+
+    scrollFunctions.push(detectIfScrolled);
 }
 
 const type3Header = document.querySelector(".header--content.type--3");
