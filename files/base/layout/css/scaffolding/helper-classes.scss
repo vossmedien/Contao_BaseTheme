@@ -131,10 +131,14 @@ a.disabled-link {
 }
 
 .moved-content {
+  padding-bottom: var(--main-gap);
+  margin-bottom: calc(-1 * var(--main-gap));
+  background-color: var(--bs-body-bg);
+
   > * {
     padding-top: var(--main-gap);
     z-index: 1;
     position: relative;
-    background-color: var(--bs-body-bg);
+    //background-color: var(--bs-body-bg);
   }
 }

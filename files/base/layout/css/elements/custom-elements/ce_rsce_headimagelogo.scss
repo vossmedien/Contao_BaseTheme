@@ -41,9 +41,7 @@ html body {
       z-index: 0;
 
       > .ce--inner {
-        margin-bottom: var(
-          --pull-content-amount
-        ); //togglebar machen für mobile?
+        margin-bottom: var(--pull-content-amount); //togglebar machen für mobile?
       }
 
       .mainimage--content {
