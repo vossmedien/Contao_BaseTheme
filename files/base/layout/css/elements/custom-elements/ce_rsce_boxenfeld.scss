@@ -11,13 +11,43 @@ html body {
       padding-right: 1rem;
     }
 
-    img.box--image {
-      border-radius: var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px 0px;
+    &.container {
+      img.box--image, .box--content {
+        border-radius: var(--bs-border-radius-xl);
+      }
     }
 
-    &.container {
+    &:not(.container) {
+      .row {
+        &:not(.flex-lg-row-reverse) {
+          img.box--image {
+            border-radius: 0px var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px;
+          }
+
+          .box--content {
+            border-radius: var(--bs-border-radius-xl) 0px 0px var(--bs-border-radius-xl);
+          }
+        }
+
+        &.flex-lg-row-reverse {
+          img.box--image {
+            border-radius: var(--bs-border-radius-xl) 0px 0px var(--bs-border-radius-xl);
+          }
+
+          .box--content {
+            border-radius: 0px var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px;
+          }
+        }
+      }
+    }
+
+    @include media-breakpoint-down(lg) {
       img.box--image {
-        border-radius: var(--bs-border-radius-xl) !important;
+        border-radius: var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px 0px !important;
+      }
+
+      .box--content {
+        border-radius: 0px 0px var(--bs-border-radius-xl) var(--bs-border-radius-xl) !important;
       }
     }
 
@@ -31,29 +61,15 @@ html body {
           margin-right: auto;
         }
 
-        .box--image {
-          @include media-breakpoint-up(lg) {
-            border-radius: 0 var(--bs-border-radius-xl)
-              var(--bs-border-radius-xl) 0;
-          }
-        }
-
-        &.flex-row-reverse {
+        &.flex-lg-row-reverse {
           .half-container {
             margin-left: auto;
             margin-right: 0;
           }
-
-          .box--image {
-            @include media-breakpoint-up(lg) {
-              border-radius: var(--bs-border-radius-xl) 0 0
-                var(--bs-border-radius-xl);
-            }
-          }
         }
       }
 
-      .row.flex-row-reverse {
+      .row.flex-lg-row-reverse {
         @include media-breakpoint-up(lg) {
           flex-flow: row-reverse;
         }
@@ -71,12 +87,9 @@ html body {
       padding: 3rem;
       z-index: 9;
       position: relative;
-      border-radius: var(--bs-border-radius-xl);
 
       @include media-breakpoint-down(lg) {
         top: 0 !important;
-        border-radius: 0px 0px var(--bs-border-radius-xl)
-          var(--bs-border-radius-xl);
       }
 
       @include media-breakpoint-up(xxl) {
@@ -85,22 +98,6 @@ html body {
 
       .box--button {
         margin-top: 1.5rem;
-      }
-    }
-
-    .ce--inner:not(.container) .row.flex-row-reverse {
-      .box--content {
-        border-radius: var(--bs-border-radius-xl);
-      }
-    }
-
-    .ce--inner.container {
-      .box--content {
-        border-radius: 0px 0px var(--bs-border-radius-xl)
-          var(--bs-border-radius-xl);
-        @include media-breakpoint-up(lg) {
-          border-radius: var(--bs-border-radius-xl);
-        }
       }
     }
   }

@@ -24,7 +24,7 @@ if (TL_MODE == 'FE') {
             <?php foreach ($this->box as $b) : ?>
                 <div class="boxes--outer "
                      <?php if ($b->versatz && (strpos($b->versatz, '-') !== false)) : ?>style="padding-top: <?php echo str_replace("-", "", $b->versatz); ?>px" <?php endif; ?>>
-                    <div class="row justify-content-center align-items-center gx-0 gx-lg-3 <?php if (!$b->versatz): ?>align-items-center<?php endif; ?> <?php if ($b->reverse) : ?>flex-row-reverse <?php endif; ?>"
+                    <div class="row justify-content-center align-items-center gx-0 gx-lg-3 <?php if (!$b->versatz): ?>align-items-center<?php endif; ?> <?php if ($b->reverse) : ?>flex-lg-row-reverse <?php endif; ?>"
                          >
 
                         <div class="col-12 col-lg text-center" data-aos="<?= $b->animation_type_image; ?>">

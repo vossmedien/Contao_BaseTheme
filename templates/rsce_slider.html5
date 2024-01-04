@@ -184,8 +184,6 @@ if (TL_MODE == 'FE') {
                     <?php endif;?>
 
                 });
-
-
             }
         }, {passive: true})
     </script>

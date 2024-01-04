@@ -9,21 +9,20 @@ use Contao\Image;
 
 class ImageHelper
 {
-    public static function generateImageHTML($imageUuid, $altText = '', $headline = '', $size = null, $class = '', $inSlider = false, $lazy = true)
+    public static function generateImageHTML($imageSource, $altText = '', $headline = '', $size = null, $class = '', $inSlider = false, $lazy = true)
     {
-        $imageObject = FilesModel::findByUuid($imageUuid);
-        if (!$imageObject) {
-            return ''; // Prüfen, ob das Bildobjekt existiert
-        }
-
-        $imageMeta = StringUtil::deserialize($imageObject->meta, true);
-
-        // Holen Sie sich die aktuelle Sprache oder den Standard
+        $imageObject = FilesModel::findByUuid($imageSource);
+        $isPath = false;
         $globalLanguage = System::getContainer()->getParameter('kernel.default_locale');
         $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? $globalLanguage;
 
-        // Metadaten für die aktuelle Sprache oder die erste verfügbare Sprache verwenden
-        $meta = $imageMeta[$currentLanguage] ?? reset($imageMeta) ?? [];
+        if (!$imageObject) {
+            $isPath = true;
+        } else {
+            $imageMeta = StringUtil::deserialize($imageObject->meta, true);
+            $meta = $imageMeta[$currentLanguage] ?? reset($imageMeta) ?? [];
+        }
+
 
         // Alt und Titel von Metadaten oder alternativ Text verwenden; Headline als Fallback für den Titel
         $alt = $meta['alt'] ?: ($meta['title'] ?: ($headline ?: ''));
@@ -35,15 +34,17 @@ class ImageHelper
         $sizeParams = $size ?: [null, null, null];
 
         // Pfad zum Bild generieren
-        $imageSrc = Image::get($imageObject->path, $sizeParams[0], $sizeParams[1], $sizeParams[2]);
+        if ($isPath) {
+            $imageSrc = $imageSource;
+        } else {
+            $imageSrc = Image::get($imageObject->path, $sizeParams[0], $sizeParams[1], $sizeParams[2]);
+        }
 
         // Erstellung des HTML-Links, falls vorhanden
         $linkStart = $link ? '<a href="' . htmlspecialchars($link) . '" title="' . htmlspecialchars($title) . '">' : '';
         $linkEnd = $link ? '</a>' : '';
 
         // Hinzufügen der Klasse, falls vorhanden
-
-
         // Erstellung des Bild-HTML-Codes
         if ($lazy) {
             if ($inSlider) {
