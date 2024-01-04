@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
- 'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50'),
         ),
         'animation_type' => array(
             'label' => array(
@@ -140,7 +140,7 @@ return array(
                 'animate__slideOutRight' => 'slideOutRight',
                 'animate__slideOutUp' => 'slideOutUp',
             ),
-            'eval' => array('chosen' => 'true','tl_class' => 'clr')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
 
 
@@ -406,7 +406,7 @@ return array(
 
 
                 'icon' => array(
-                    'label' => array('Alternativ zum Bild Font-Awesome Klasse angeben', 'überschreibt das Bild, z. B. fa-facebook fab'),
+                    'label' => array('Alternativ zum Bild Font-Awesome Klasse angeben', 'überschreibt das Bild, z. B. fa-sharp fa-light fa-circle-info'),
                     'inputType' => 'text',
                     'dependsOn' => array(
                         'field' => 'topType',
@@ -656,7 +656,7 @@ return array(
                         'h3' => 'H3',
                         'h4' => 'H4',
                         'h5' => 'H5',
-'h6' => 'H6',
+                        'h6' => 'H6',
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),

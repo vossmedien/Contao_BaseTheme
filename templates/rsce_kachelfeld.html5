@@ -4,6 +4,24 @@ if (TL_MODE == 'FE') {
 }
 ?>
 
+
+<!-- @TODO
+
+- Bildgrößen
+- Überschrift
+- Textposition innerhalb der Kachel?
+- Kachelpositionen fixen
+- Innenabstand für oberen Bereich?
+- Überschriftenfarbe
+- Hintergrundbild+Höhe ausblenden bei Icon
+- Boxschriftfarbe bei Hover
+- 100% Höhe nur bei aktiver Checkbox (aktuell immer)
+- Textausrichtung auch auf Buttons
+- Kachelhover-Farbe?
+- Icons = Icon-Picker?
+-->
+
+
 <?php
 if (!isset($this->size)) {
     $this->{"size"} = "";

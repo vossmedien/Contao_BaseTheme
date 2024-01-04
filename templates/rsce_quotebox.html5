@@ -20,7 +20,7 @@ if (TL_MODE == 'FE') {
 
 
     <div class="ce--quote">
-        <div class="row g-lg-3">
+        <div class="row g-2">
             <?php foreach ($this->quote as $quote) : ?>
 
 
@@ -56,7 +56,7 @@ if (TL_MODE == 'FE') {
                             <?php endif; ?>
 
                             <span class="quote--name">
-                                    <?php echo $quote->name ?>
+                                   -- <?php echo $quote->name ?>
                                 </span>
                         </div>
                     </div>

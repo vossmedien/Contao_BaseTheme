@@ -1,5 +1,3 @@
-
-
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
@@ -7,7 +5,6 @@
 @import "../../../_fonts/fontawesome-iconset/scss/fontawesome";
 
 @import "../../scss-variables";
-
 
 html body {
   .ce_rsce_quotebox {
@@ -17,51 +14,53 @@ html body {
 
       .quote--image {
         margin-bottom: 1.5rem;
-        //height: rfs-value(100px);
         display: flex;
         flex-flow: column wrap;
         justify-content: center;
-
-        img {
-          //max-height: rfs-value(100px);
-          //max-width: rfs-value(285px);
-        }
       }
 
       .quote--detail {
-        display: inline-block;
+        //display: inline-block;
 
         .quote--text {
-          display: inline-block;
+          display: flex;
+          gap: 0.5rem;
+          justify-content: center;
           position: relative;
-          padding: 0rem 2.25rem;
+               //margin: 0 2rem;
+          //padding: 0rem 2.25rem;
           font-size: 2rem;
 
+          *{
+             line-height: 1.15;
+          }
 
           &::before {
-            left: 0;
+            right: 100%;
             top: 0;
             content: fa-content($fa-var-quote-left);
           }
 
           &::after {
             bottom: 0;
-            right: 0;
+            left: 100%;
             content: fa-content($fa-var-quote-right);
+            align-self: flex-end;
           }
 
-          &:before, &:after {
+          &:before,
+          &:after {
             @include font-size(24px);
-            position: absolute;
+            //position: absolute;
 
             @extend #{$icon-type};
           }
         }
 
         .quote--name {
-          padding: 0 2.25rem;
+          //padding: 0 2.25rem;
           display: block;
-          margin-top: .75rem;
+          margin-top: 0.75rem;
           @include font-size(14px);
           text-align: right;
         }
