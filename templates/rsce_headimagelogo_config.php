@@ -5,20 +5,12 @@ return array(
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('headline', 'cssID'),
+    'standardFields' => array( 'cssID'),
     'wrapper' => array(
         'type' => 'none',
     ),
     'fields' => array(
-        'topline' => array(
-            'label' => array('Topline', 'Text oberhalb der Überschrift'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ), 'subline' => array(
-            'label' => array('Subline', 'Text unterhalb der Überschrift'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
+
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
