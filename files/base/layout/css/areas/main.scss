@@ -41,7 +41,7 @@
       transition: background-position 0s ease-in-out;
 
       &:last-child:first-child > div:last-child:first-child {
-        padding-top: var(--main-gap);
+        //padding-top: var(--main-gap);
       }
 
       &:last-child > div:last-child {
@@ -64,6 +64,10 @@
           position: relative;
           z-index: 1;
           //background-color: var(--bs-body-bg);
+
+          &:first-child{
+            padding-top: var(--main-gap);
+          }
 
           &:not(:last-child) {
             padding-bottom: var(--main-gap);

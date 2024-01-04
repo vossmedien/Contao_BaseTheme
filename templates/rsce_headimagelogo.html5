@@ -7,7 +7,7 @@ if (TL_MODE == 'FE') {
 
 
 <div <?php echo $this->cssID; ?>
-        class="content--element <?php if ($this->move_content) : ?> move-content pb-0<?php endif; ?> <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?> <?php if ($this->pull_content_next) : ?>pull-content-next<?php endif; ?>">
+        class="content--element <?php if ($this->move_content) : ?> move-content py-0<?php endif; ?> <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?> <?php if ($this->pull_content_next) : ?>pull-content-next<?php endif; ?>">
     <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>" style="--pull-content-amount: -<?php if ($this->pull_amount) : ?><?= $this->pull_amount; ?>px<?php else: ?>250px<?php endif; ?>;">
 
 
