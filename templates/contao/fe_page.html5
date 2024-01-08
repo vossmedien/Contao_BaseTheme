@@ -99,7 +99,7 @@
     <?php $this->sections('after'); ?>
     <?php $this->block('footer'); ?>
     <?php if ($this->footer) : ?>
-        <footer data-aos="animate__fadeIn" id="footer">
+        <footer id="footer">
             <div class="inside">
                 <?= $this->footer ?>
             </div>
@@ -111,25 +111,6 @@
 
 
 <?php $this->endblock(); ?>
-<!--
-<div class="openContactForm">
-    <i data-bs-toggle="modal" data-bs-target="#contactForm" class="fa-duotone fa-comment-pen" style=" --fa-secondary-opacity: 1; --fa-primary-color: var(--bs-body-color-inverse); --fa-secondary-color: var(--bs-secondary);"></i>
-</div>
-
-<div class="modal fade" id="contactForm" tabindex="-1" aria-labelledby="contactFormLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header py-2">
-                <span class="h2 modal-title mt-1 mb-0" id="contactFormLabel">Kontakt aufnehmen</span>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                {{insert_node::2}}
-            </div>
-        </div>
-    </div>
-</div>
--->
 
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>
