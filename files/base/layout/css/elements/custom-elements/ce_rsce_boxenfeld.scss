@@ -1,7 +1,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
-
+@import "../../mixins";
 @import "../../scss-variables";
 
 html body {
@@ -12,7 +12,7 @@ html body {
     }
 
     &.container {
-      img.box--image, .box--content {
+      img.box--image, .box--content, iframe {
         border-radius: var(--bs-border-radius-xl);
       }
     }
@@ -20,7 +20,7 @@ html body {
     &:not(.container) {
       .row {
         &:not(.flex-lg-row-reverse) {
-          img.box--image {
+          img.box--image, iframe {
             border-radius: 0px var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px;
           }
 
@@ -30,7 +30,7 @@ html body {
         }
 
         &.flex-lg-row-reverse {
-          img.box--image {
+          img.box--image, iframe {
             border-radius: var(--bs-border-radius-xl) 0px 0px var(--bs-border-radius-xl);
           }
 
@@ -42,7 +42,7 @@ html body {
     }
 
     @include media-breakpoint-down(lg) {
-      img.box--image {
+      img.box--image, iframe {
         border-radius: var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px 0px !important;
       }
 
@@ -87,6 +87,8 @@ html body {
       padding: 3rem;
       z-index: 9;
       position: relative;
+
+      @extend %remove-headline-padding;
 
       @include media-breakpoint-down(lg) {
         top: 0 !important;

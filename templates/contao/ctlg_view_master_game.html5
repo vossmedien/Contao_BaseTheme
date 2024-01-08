@@ -7,29 +7,74 @@ if (TL_MODE == 'FE') {
 ?>
 
 
+    <div class="fixed--game-notes is-visible">
+        <div class="fixed--game-notes--inner" data-aos="animate__fadeInRight">
+            <ul>
+                <li>
+                    <strong class="d-block">Veröffentlichung:</strong>
+                    <?php if (!$this->is_upcoming): ?>
+                        <?= date("d.m.Y", $this->veroffentlichungsdatum); ?>
+                    <?php elseif ($this->releasetime && $this->is_upcoming) : ?>
+                        <?= $this->releasetime; ?>
+                    <?php endif; ?>
+                </li>
+                <li>
+                    <strong class="d-block">Plattformen:</strong>
+                    <?= implode(", ", $this->plattform); ?>
+                </li>
+                <li>
+                    <strong class="d-block">Genre:</strong>
+                    <?= $this->genre; ?>
+                </li>
+                <li>
+                    <strong class="d-block">Altersfreigabe:</strong>
+                    <?= $this->altersfreigabe; ?>
+                </li>
+
+                <li class="d-none d-md-block">
+                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["singleSRC"], null, $this->title, null, null, false); ?>
+                </li>
+            </ul>
+
+            <span class="expand-button">
+                <span class="hide"><span class="d-none d-md-block">Verbergen</span><span class="d-md-none fs-2">{{icon_sharp::fa-solid:fa-eye-slash}}</span></span>
+                <span class="show"><span class="d-none d-md-block">Kurzinfo anzeigen</span><span class="d-md-none fs-2">{{icon_sharp::fa-solid:fa-eye}}</span></span>
+            </span>
+        </div>
+    </div>
+
+
     <div class="content--element move-content py-0 ce_rsce_headimagelogo">
         <div class="ce--inner">
             <div class="mainslider game-detail-header not-fullHeight ">
                 <div class="ce--mainimage  style-1  no-text ">
-                    <div class="image--holder with-maxheight " style=" max-height: 600px !important;  height: 100dvh;  background-size: cover;">
+                    <div class="image--holder with-maxheight remove-settings-mobile" style="height: 600px;   background-size: cover;">
                         <style>
                             html body .ce_rsce_headimagelogo .game-detail-header .image--holder {
-                                background: url(files/base/content/capcom/header-bilder/DD2-Capcom-Germany-Header.jpg) center center no-repeat
+                                background: url(<?= $this->content_image_1["singleSRC"];?>) center center no-repeat
                             }
 
-                            @media (max-width: 767px) {
+                            @media (max-width: 576px) {
                                 html body .ce_rsce_headimagelogo .game-detail-header .image--holder {
-                                    background: url(assets/images/7/DD2-Capcom-Germany-Header-7440b56b.jpg) center center no-repeat
+                                    min-height: 0px;
+                                    max-height: none;
+                                    height: auto !important;
+                                    background-image: none;
                                 }
                             }
                         </style>
+
+                        <div class="plain-image-holder">
+                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->kopfbild_mobile["singleSRC"], null, $this->title, null, "d-sm-none", false, false); ?>
+                        </div>
+
                         <div class="mainimage--content">
                             <div class="">
                                 <div class="mainimage--content-inner pos-bottom-left text-start" style=" ">
                                     <div class="mainimage--content-inner--wrapper" data-aos="animate__fadeInLeft">
                                         <div class="mainimage--content-inner--holder">
                                             <div class="ce--buttons mt-3">
-                                                <a class="d-inline-block btn btn-lg btn-tertiary" data-aos="animate__fadeInLeft" href="/">
+                                                <a class="d-inline-block btn btn-lg btn-tertiary" target="_blank" data-aos="animate__fadeInLeft" href="<?= $this->website; ?>">
                                                     Offizielle Website besuchen
                                                 </a>
                                             </div>
@@ -46,15 +91,6 @@ if (TL_MODE == 'FE') {
 
     <div class="mod_article">
         <div class="article-content">
-
-
-            <?php
-            echo "<pre>";
-            echo $this->showTemplateVars();
-            echo "</pre>";
-            ?>
-
-
             <div class="content--element ce_rsce_boxenfeld">
                 <div class="ce--inner ">
                     <div class="ce--boxenfeld">
@@ -63,38 +99,29 @@ if (TL_MODE == 'FE') {
                                 <div class="col-12 col-lg-6 text-center " data-aos="animate__fadeInLeft">
 
 
-                                    <div class="swiper content-slider_<?= $this->id; ?> with-pagination">
-                                        <div class="content-slider_<?= $this->id; ?> swiper-pagination"></div>
+                                    <div class="swiper content-slider_<?= $this->id; ?> ">
+                                        <div class="content-slider_<?= $this->id; ?> swiper-pagination mb-2"></div>
                                         <div style="left: 1rem;" class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
                                         <div style="right: 1rem;" class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
 
                                         <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <img class="lazy box--image" loading="lazy" data-src="files/base/content/bilder/free-stocks/jeremy-kwok-P7ONVcSKzOc-unsplash.jpg" alt="Überschrift" title="Überschrift">
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <img class="lazy box--image" loading="lazy" data-src="files/base/content/bilder/free-stocks/jeremy-kwok-P7ONVcSKzOc-unsplash.jpg" alt="Überschrift" title="Überschrift">
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <img class="lazy box--image" loading="lazy" data-src="files/base/content/bilder/free-stocks/jeremy-kwok-P7ONVcSKzOc-unsplash.jpg" alt="Überschrift" title="Überschrift">
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <img class="lazy box--image" loading="lazy" data-src="files/base/content/bilder/free-stocks/jeremy-kwok-P7ONVcSKzOc-unsplash.jpg" alt="Überschrift" title="Überschrift">
-                                            </div>
+                                            <?php foreach ($this->screenshots[0] as $key => $value): ?>
+                                                <div class="swiper-slide">
+                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($value->uuid, null, $this->title, null, "box--image", false); ?>
+                                                </div>
+                                            <?php endforeach; ?>
                                         </div>
                                     </div>
                                 </div>
 
 
                                 <div data-aos="animate__fadeInRight" class="col-12 col-lg-6  animate__fadeInRight">
-                                    <div class="box--content shadow-lg " style="position: relative; top: 100px;background-color: var(--bs-secondary);color: var(--bs-light);border-color: var(--bs-dark);">
+                                    <div class="box--content shadow-lg " style="position: relative; top: 0px;background-color: var(--bs-secondary);color: var(--bs-light);border-color: var(--bs-dark);">
                                         <div class="ce--headline hl-h1" data-aos="">
                                             <h1 style="color:var(--bs-body-color-inverse);"><?= $this->title; ?></h1>
                                             <?php if ($this->plattform): ?>
                                                 <span class="ce--subline">erhältlich auf:
-                                                <?php foreach ($this->plattform as $key => $value): ?>
-                                                    <span><?= $value; ?></span>
-                                                <?php endforeach; ?>
+                                                <?= implode(", ", $this->plattform); ?>
                                              </span>
                                             <?php endif; ?>
                                         </div>
@@ -102,32 +129,56 @@ if (TL_MODE == 'FE') {
                                             <?= $this->description_1; ?>
                                         </div>
                                         <div class="ce--buttons mt-3">
-                                            <a class="d-inline-block btn  btn-primary" data-aos="animate__fadeInUp" href="/">Beschriftung</a><a class="d-inline-block btn btn-lg btn-secondary" data-aos="animate__fadeInUp" href="/">Beschriftung</a>
+                                            <a class="d-inline-block btn btn-lg btn-tertiary" target="_blank" href="<?= $this->website; ?>">
+                                                Offizielle Website besuchen
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="boxes--outer " style="padding-top: 100px">
-                            <div class="row justify-content-center align-items-center flex-lg-row-reverse gx-0 gx-lg-3">
+                        <div class="boxes--outer " style="padding-top: 0px">
+                            <div class="row justify-content-center align-items-center <?php if ($this->description_2): ?>flex-lg-row-reverse<?php endif; ?> gx-0 gx-lg-3">
 
-                                <div class="col-12 col-lg text-center" data-aos="animate__fadeInLeft">
-                                    <img class="lazy box--image" loading="lazy" data-src="files/base/content/bilder/free-stocks/jeremy-kwok-P7ONVcSKzOc-unsplash.jpg" alt="Überschrift" title="Überschrift">
-                                </div>
+                                <div class="col-12 col-lg-6 text-center" data-aos="animate__fadeInRight">
 
-                                <div data-aos="animate__fadeInRight" class="col-12 col-12 col-lg-6">
-                                    <div class="box--content shadow-lg " style="position: relative; top: -100px;border-color: var(--bs-primary);">
-                                        <div class="ce--headline hl-h4 px-0" data-aos="">
-                                            <span class="h4 px-0" style="">Spieleeigenschaften</span>
-                                        </div>
-                                        <div class="box--text">
-                                            <?= $this->description_2; ?>
-                                        </div>
-                                        <div class="ce--buttons mt-3">
-                                            <a class="d-inline-block btn  btn-primary" data-aos="animate__fadeInUp" href="/">Beschriftung</a><a class="d-inline-block btn btn-lg btn-secondary" data-aos="animate__fadeInUp" href="/">Beschriftung</a>
+                                    <?php $videoArray = explode("\n", trim($this->videos)); ?>
+
+
+                                    <div class="swiper video-slider_<?= $this->id; ?> ">
+                                        <div class="video-slider_<?= $this->id; ?> swiper-pagination mb-2"></div>
+                                        <div style="left: 1rem;" class="video-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                                        <div style="right: 1rem;" class="video-slider_<?= $this->id; ?> swiper-button-next"></div>
+
+                                        <div class="swiper-wrapper">
+                                            <?php foreach ($videoArray as $video): ?>
+                                                <div class="swiper-slide">
+                                                    <div class="video_container">
+                                                        <iframe <?php if (!$this->description_2): ?>class="rounded"<?php endif; ?> data-source="https://www.youtube-nocookie.com/embed/<?= $video; ?>?enablejsapi=1"
+                                                                title="<?php echo $this->title; ?>" frameborder="0"
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; "
+                                                                allowfullscreen></iframe>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
                                         </div>
                                     </div>
+
+
                                 </div>
+
+                                <?php if ($this->description_2): ?>
+                                    <div data-aos="animate__fadeInLeft" class="col-12 col-12 col-lg-6">
+                                        <div class="box--content shadow-lg " style="position: relative; top: -100px;border-color: var(--bs-primary);">
+                                            <div class="ce--headline hl-h4 px-0" data-aos="">
+                                                <span class="h4" style="">Spieleeigenschaften</span>
+                                            </div>
+                                            <div class="box--text">
+                                                <?= $this->description_2; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
 
                             </div>
                         </div>
@@ -135,17 +186,24 @@ if (TL_MODE == 'FE') {
                     </div>
                 </div>
             </div>
-
-
-            <div class="content--element">
-                {{insert_node::9}}
-            </div>
         </div>
     </div>
 
 <?php if (TL_MODE == 'FE'): ?>
     <script type="text/javascript" async>
         window.addEventListener('load', function () {
+
+            function pauseAllYouTubeVideos() {
+                var iframes = document.querySelectorAll('.swiper iframe');
+                iframes.forEach(function (iframe) {
+                    var message = JSON.stringify({
+                        event: 'command',
+                        func: 'pauseVideo'
+                    });
+                    iframe.contentWindow.postMessage(message, '*');
+                });
+            }
+
             if ($('.swiper.content-slider_<?= $this->id;?>').length) {
                 const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
 
@@ -181,9 +239,58 @@ if (TL_MODE == 'FE') {
                     },
                     slidesPerView: 1,
 
+                });
+            }
+
+            if ($('.swiper.video-slider_<?= $this->id;?>').length) {
+                var isSwiperInitialized = false;
+                const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.video-slider_<?php echo $this->id; ?>', {
+
+                    direction: 'horizontal',
+
+                    loop: true,
+                    //loopedSlides: 1,
+
+                    preloadImages: false,
+                    lazy: true,
+
+                    spaceBetween: 30,
+
+                    speed: 1500,
+                    effect: 'slide',
+
+                    autoplay: false,
+
+                    fadeEffect: {
+                        crossFade: true
+                    },
+
+                    navigation: {
+                        nextEl: '.video-slider_<?= $this->id;?>.swiper-button-next',
+                        prevEl: '.video-slider_<?= $this->id;?>.swiper-button-prev',
+                    },
+
+                    pagination: {
+                        el: '.video-slider_<?php echo $this->id; ?>.swiper-pagination',
+                        clickable: true,
+                    },
+                    slidesPerView: 1,
+
+                    on: {
+                        init: function () {
+                            isSwiperInitialized = true;
+                        },
+                        slideChange: function () {
+                            if (isSwiperInitialized) {
+                                pauseAllYouTubeVideos();
+                            }
+                        }
+                    }
 
                 });
             }
+
+
         }, {passive: true})
     </script>
 <?php endif; ?>

@@ -109,3 +109,11 @@
     max-width: calc(var(--bs-container-width-xxl) / 2);
   }
 }
+
+
+%remove-headline-padding {
+  .ce--headline > * {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}

@@ -1,0 +1,32 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+    <form <?= $this->formID ?> action="<?= $this->action ?>" method="<?= $this->method ?>" <?php if ($this->cssClass): ?>class="<?= $this->cssClass ?>"<?php endif; ?> <?= $this->attributes ?>>
+        <?php if ($this->method == 'POST'): ?>
+            <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formSubmit ?>">
+            <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+        <?php endif; ?>
+
+        <small class="d-block mb-1"><b>Bitte wählen um zu filtern</b></small>
+
+        <div class="input-group">
+            <?php if (!empty($this->fields) && is_array($this->fields)): ?>
+                <?php foreach ($this->fields as $strField): ?>
+                    <?= $strField ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            <div class="input-group-append">
+                <a class="btn btn-outline-secondary" title="Filter zurücksetzen" href="/" id="id_reset_1"><span style="position: relative;top: 3px;">{{icon_sharp::fa-solid:fa-filter-circle-xmark}}</span></a>
+            </div>
+        </div>
+    </form>
+
+<?php if ($this->trigger): ?>
+    <script>document.addEventListener('DOMContentLoaded', function () {
+            var objForm = document.getElementById('id_form_<?= $this->triggerId ?>');
+            objForm.submit();
+        })</script>
+<?php endif; ?>
+
+
+<?php $this->endblock(); ?>

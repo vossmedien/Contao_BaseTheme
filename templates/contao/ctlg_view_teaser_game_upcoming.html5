@@ -1,0 +1,34 @@
+<div class="swiper-slide">
+    <ul>
+        <li>
+            <strong class="d-block title"> <?= $this->title; ?></strong>
+        </li>
+        <li>
+            <strong class="d-block">Veröffentlichung:</strong>
+            <?php if(!$this->is_upcoming):?>
+            <?= date("d.m.Y", $this->veroffentlichungsdatum); ?>
+            <?php elseif($this->releasetime && $this->is_upcoming) :?>
+            <?= $this->releasetime;?>
+            <?php endif;?>
+        </li>
+        <li>
+            <strong class="d-block">Plattformen:</strong>
+            <?= implode(", ", $this->plattform); ?>
+        </li>
+        <li>
+            <strong class="d-block">Genre:</strong>
+            <?= $this->genre; ?>
+        </li>
+        <li>
+            <strong class="d-block">Altersfreigabe:</strong>
+            <?= $this->altersfreigabe; ?>
+        </li>
+
+        <li class="d-none d-md-block">
+            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["src"], null, $this->title, null, null, false); ?>
+        </li>
+    </ul>
+
+</div>
+
+

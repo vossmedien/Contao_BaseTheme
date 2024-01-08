@@ -1,7 +1,30 @@
-  <a class="btn btn-primary" href="<?= $this->masterUrl ?>">Mehr erfahren</a>
+<div class="col-12 col-lg-9">
+    <div class="news-box mb-3 <?= $this->cssClass; ?>" <?php if (str_contains($this->cssClass, "even")): ?>data-aos="animate__fadeInLeft"<?php else:?>data-aos="animate__fadeInRight"<?php endif; ?>>
+        <div class="image-holder">
 
-    <?php
-    echo "<pre>";
-    echo $this->showTemplateVars();
-    echo "</pre>";
-    ?>
+            <a href="<?= $this->masterUrl ?>"></a>
+
+            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["singleSRC"], null, $this->title, null, null, false); ?>
+
+
+            <div class="overlay-wrapper">
+                <div class="non-hover--content">
+                    <h2 class="h5 m-0 text-primary">
+                        <span class="d-block"><?= $this->title; ?></span>
+                    </h2>
+                </div>
+                <div class="hover-content h5">
+                    <?php $date = DateTime::createFromFormat('d.m.Y H:i', $this->tstamp); ?>
+                    <span class="d-block">zum vollständigen Artikel vom</span>
+                    <span class="d-block"><?= $date->format('d.m.Y'); ?> von <?= $this->autor; ?></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-holder">
+            <?= $this->teaser; ?>
+        </div>
+    </div>
+</div>
+
+

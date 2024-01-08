@@ -11,6 +11,38 @@ if (TL_MODE == 'FE') {
     <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>" style="--pull-content-amount: -<?php if ($this->pull_amount) : ?><?= $this->pull_amount; ?>px<?php else: ?>250px<?php endif; ?>;">
 
 
+        <style>
+            html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .image--holder {
+            <?php if ($this->image_minheight) : ?> min-height: <?= $this->image_minheight; ?>;
+            <?php endif; ?><?php if ($this->image_maxheight && !$this->not_as_bg) : ?> max-height: <?php echo $this->image_maxheight; ?>;
+            <?php endif; ?><?php if ($this->image_height && !$this->not_as_bg) : ?> height: <?php echo $this->image_height; ?>dvh;
+            <?php endif; ?><?php if ($this->image_maxwidth) : ?> background-size: <?= $this->image_maxwidth; ?> auto;
+            <?php else: ?> background-size: cover;
+            <?php endif; ?>
+
+
+            }
+
+            @media (max-width: 576px) {
+                html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .image--holder {
+                <?php if ($this->not_as_bg_mobile): ?>
+                    min-height: 0px;
+                    max-height: none;
+                    height: auto;
+                    background-image: none;
+                <?php endif; ?>
+
+                <?php if ($this->image_mobile_maxheight): ?>
+                     max-height:<?= $this->image_mobile_maxheight;?>;
+                <?php endif;?>
+
+                <?php if ($this->image_mobile_minheight): ?>
+                    min-height:<?= $this->image_mobile_minheight;?>;
+                <?php endif;?>
+
+                }
+            }
+        </style>
 
 
         <div class="<?php if (count($this->slides) > 1) : ?>swiper<?php endif; ?> mainslider mainslider_<?php echo $this->id; ?> <?php if ($this->image_height) : ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut) : ?>with-diagonalCut<?php endif; ?>">
@@ -26,7 +58,6 @@ if (TL_MODE == 'FE') {
                     }
                     ?>
 
-
                     <?php
                     $filename = FilesModel::findByUuid($slide->image)->path;
                     $ext = pathinfo($filename, PATHINFO_EXTENSION);
@@ -36,8 +67,8 @@ if (TL_MODE == 'FE') {
 
                     <div class="swiper-slide">
                         <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline && !$slide->text_topline) : ?>no-text<?php endif; ?> ">
-                            <div class="image--holder <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>"
-                                 style="<?php if ($this->image_minheight) : ?>min-height: <?= $this->image_minheight; ?>;<?php endif; ?> <?php if ($this->image_maxheight && !$this->not_as_bg) : ?>max-height: <?php echo $this->image_maxheight; ?> !important;<?php endif; ?>  <?php if ($this->image_height && !$this->not_as_bg) : ?>height: <?php echo $this->image_height; ?>dvh; <?php endif; ?> <?php if ($this->image_maxwidth) : ?>background-size: <?= $this->image_maxwidth; ?> auto;<?php else: ?>background-size: cover;<?php endif; ?>">
+                            <div class="image--holder <?php if ($this->not_as_bg_mobile): ?>remove-settings-mobile<?php endif; ?> <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>"
+                                 style="">
 
 
                                 <?php if (!$this->not_as_bg): ?>
@@ -48,27 +79,25 @@ if (TL_MODE == 'FE') {
                                                     rgba(0, 0, 0, 0.5),
                                                     rgba(0, 0, 0, 0.5)
                                             ),<?php endif;?>
-                                                url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center no-repeat;
+                                                url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center / cover no-repeat;
                                         }
 
 
                                         <?php endif;?>
 
                                         <?php if($slide->mobile_image && $ext_mobile != "mp4"):?>
-                                        @media (max-width: 767px) {
+                                        @media (max-width: 576px) {
                                             html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?> .image--holder {
                                                 background: <?php if ($slide->darken_image): ?> linear-gradient(
                                                         rgba(0, 0, 0, 0.5),
                                                         rgba(0, 0, 0, 0.5)
-                                                ),<?php endif;?>url(<?= Image::get(FilesModel::findByUuid($slide->mobile_image)->path, $slide->size_mobile[0], $slide->size_mobile[1], $slide->size_mobile[2]); ?>) center center no-repeat;
+                                                ),<?php endif;?>url(<?= Image::get(FilesModel::findByUuid($slide->mobile_image)->path, $slide->size_mobile[0], $slide->size_mobile[1], $slide->size_mobile[2]); ?>) center center / cover no-repeat;
                                             }
                                         }
 
                                         <?php endif;?>
                                     </style>
                                 <?php endif; ?>
-
-
 
 
                                 <?php if ($slide->alternate_background_color): ?>
@@ -126,7 +155,7 @@ if (TL_MODE == 'FE') {
 
                                 <?php if ($ext == "mp4") : ?>
                                     <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
-                                           <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class="d-none d-md-block" <?php endif; ?>
+                                           <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class="d-none d-sm-block" <?php endif; ?>
                                            autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
                                         <source type="video/mp4" src="{{file::<?= $slide->image ?>}}">
                                     </video>
@@ -134,7 +163,7 @@ if (TL_MODE == 'FE') {
 
                                 <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>
                                     <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
-                                           class="d-md-none" src="{{file::<?= $slide->mobile_image ?>}}"
+                                           class="d-sm-none" src="{{file::<?= $slide->mobile_image ?>}}"
                                            autoplay muted loop playsinline
                                     >
                                         <source type="video/mp4" src="{{file::<?= $slide->mobile_image ?>}}">
@@ -145,16 +174,19 @@ if (TL_MODE == 'FE') {
                                 <?php if ($this->not_as_bg): ?>
                                     <?php if ($ext != "mp4"): ?>
                                         <div class="plain-image-holder">
-                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, "d-none d-md-inline-block", false, false); ?>
-                                        </div>
-                                    <?php endif; ?>
-                                    <?php if ($slide->mobile_image && $ext_mobile != "mp4"): ?>
-                                        <div class="plain-image-holder">
-                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, "d-md-none", false, false); ?>
+                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, "d-none d-sm-inline-block", false, false); ?>
                                         </div>
                                     <?php endif; ?>
                                 <?php endif; ?>
 
+
+                                <?php if ($this->not_as_bg_mobile): ?>
+                                    <?php if ($slide->mobile_image && $ext_mobile != "mp4"): ?>
+                                        <div class="plain-image-holder">
+                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, "d-sm-none", false, false); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endif; ?>
 
                                 <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1) : ?>
                                     <div
@@ -260,6 +292,9 @@ if (TL_MODE == 'FE') {
                         effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
                         'slide'<?php endif;?>,
 
+                        <?php if ($this->autoheight):?>
+                        autoHeight: true,
+                        <?php endif;?>
                         <?php if ($this->autoplay) : ?>
                         autoplay: {
                             delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
@@ -272,10 +307,12 @@ if (TL_MODE == 'FE') {
                             prevEl: '.swiper-button-prev.mainslider_<?php echo $this->id; ?>',
                         },
                         <?php if (!$this->boxed_image) : ?>
+                        /*
                         pagination: {
+
                             el: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-pagination',
                             clickable: true,
-                        },
+                        },    */
                         <?php endif; ?>
                         <?php endif; ?>
 

@@ -130,12 +130,26 @@ a.disabled-link {
   z-index: 3;
 }
 
+.move-content + * {
+  display: none;
+}
+
+.article-content {
+  .moved-content{
+
+  }
+}
+
 .moved-content {
   position: relative;
-  padding-bottom: var(--main-gap);
-  margin-bottom: calc(-1 * var(--main-gap));
+
   background-color: var(--bs-body-bg);
-    z-index: 1;
+  z-index: 1;
+  display: block;
+
+  &[style] {
+    opacity: 1;
+  }
 
   > * {
     //padding-top: calc(var(--main-gap));
@@ -143,3 +157,4 @@ a.disabled-link {
     //background-color: var(--bs-body-bg);
   }
 }
+

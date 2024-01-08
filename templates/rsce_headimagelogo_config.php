@@ -5,7 +5,7 @@ return array(
     'types' => array('content'),
     'contentCategory' => 'texts',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array( 'cssID'),
+    'standardFields' => array('cssID'),
     'wrapper' => array(
         'type' => 'none',
     ),
@@ -137,39 +137,60 @@ return array(
 
 
         'settings_size' => array(
-            'label' => array('Größe', ''),
+            'label' => array('Größeneinstellung der Bilder', ''),
             'inputType' => 'group',
         ),
 
-        'image_height' => array(
-            'label' => array('Höhe des Bereichs in %', 'Standard sind "100", also 100% Viewport-Height'),
-            'inputType' => 'text',
-
+        'not_as_bg' => array(
+            'label' => array('Desktop-Bild "skalierbar" integrieren', 'Höhen-Einstellungen werden dadurch unwirksam'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
         ),
 
         'image_maxheight' => array(
-            'label' => array('Maximale Höhe des Bereichs', 'Einheit (px, rem, vh usw.) bitte angeben'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-        'image_maxwidth' => array(
-            'label' => array('Maximale Breite des Bildes', 'Einheit (px, rem, vh usw.) bitte angeben'),
+            'label' => array('Maximale Höhe des Bereichs (Desktop)', 'Einheit (px, rem, vh usw.) bitte angeben'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
 
 
         'image_minheight' => array(
-            'label' => array('Minimale Höhe des Bereichs', 'Einheit (px, rem, vh usw.) bitte angeben'),
+            'label' => array('Minimale Höhe des Bereichs (Desktop)', 'Einheit (px, rem, vh usw.) bitte angeben'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
 
 
-        'not_as_bg' => array(
-            'label' => array('Bild "skalierbar" integrieren', 'Nicht as Hintergrundbild mit Fester Höhe - viele Einstellungen werden dadurch unwirksam'),
+        'not_as_bg_mobile' => array(
+            'label' => array('Mobile-Bild "skalierbar" integrieren', 'Höhen-Einstellungen werden dadurch unwirksam'),
             'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'image_mobile_maxheight' => array(
+            'label' => array('Maximale Höhe des Bereichs (Mobile)', 'Einheit (px, rem, vh usw.) bitte angeben'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+
+        'image_mobile_minheight' => array(
+            'label' => array('Minimale Höhe des Bereichs (Mobile)', 'Einheit (px, rem, vh usw.) bitte angeben'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+
+        'image_height' => array(
+            'label' => array('Höhe des Bereichs in %', 'Standard sind "100", also 100% Viewport-Height'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
+        'image_maxwidth' => array(
+            'label' => array('Maximale Breite des Bildes wenn als Hintergrund eingebunden', 'Einheit (px, rem, vh usw.) bitte angeben'),
+            'inputType' => 'text',
             'eval' => array('tl_class' => 'clr'),
         ),
 
@@ -224,6 +245,13 @@ return array(
             'inputType' => 'group',
         ),
 
+        'autoheight' => array(
+            'label' => array('Slide-Höhe verändert sich je nach notwendiger Höhe des aktiven Slides', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ''),
+        ),
+
+
         'slide_effect' => array(
             'label' => array(
                 'de' => array('Slide-Effekt', ''),
@@ -239,6 +267,7 @@ return array(
             ),
             'eval' => array('tl_class' => 'w50'),
         ),
+
 
         'transition_time' => array(
             'label' => array('Animationszeit in ms', 'Standard: 1500'),

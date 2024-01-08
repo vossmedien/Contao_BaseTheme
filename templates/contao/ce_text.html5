@@ -1,12 +1,9 @@
 <?php $this->extend('block_searchable'); ?>
 <?php $this->block('content'); ?>
-    <div style="--bs-gutter-x: 15px;--bs-gutter-y: 15px;" class="text--wrapper <?php if ($this->addImage) : ?>with-image image-<?php echo $this->floating; ?><?php endif; ?> ">
+    <div class="text--wrapper <?php if ($this->addImage) : ?>with-image image-<?php echo $this->floating; ?><?php endif; ?> ">
         <?php if ($this->addImage) : ?>
-
-
             <?php $size = unserialize($this->size); ?>
-
-            <div class="image" style="--image-container-height: <?= $size[1]; ?>px; height: <?= $size[1]; ?>px;">
+            <div class="image" <?php if ($size[1]): ?>style="--image-container-height: <?= $size[1]; ?>px; height: <?= $size[1]; ?>px;"<?php endif; ?>>
                 <?php $this->insert('image', $this->arrData); ?>
             </div>
         <?php endif; ?>

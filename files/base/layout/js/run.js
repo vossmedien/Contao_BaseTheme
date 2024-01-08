@@ -1,4 +1,7 @@
 const scrollFunctions = [];
+const loadFunctions = [];
+const touchMoveFunctions = [];
+const ResizeFunctions = [];
 
 // Polyfill für die matches Methode
 if (!Element.prototype.matches) {
@@ -6,6 +9,7 @@ if (!Element.prototype.matches) {
         Element.prototype.msMatchesSelector ||
         Element.prototype.webkitMatchesSelector;
 }
+
 
 // Alle Parameter aus der URL extrahieren
 var urlParams = new URLSearchParams(window.location.search);
@@ -24,22 +28,14 @@ for (var parameterName of parameterNames) {
     }
 }
 
-$('*:not([data-aos])[class*="animate__"]').each(function (index) {
-    var classes = $.grep(this.className.split(" "), function (v, i) {
-        return v.indexOf("animate__") === 0;
-    }).join();
-    $(this).removeClass(classes);
-    $(this).attr("data-aos", classes);
-});
 
 // Sammle alle [data-aos] Elemente
 var aosElements = document.querySelectorAll("[data-aos]");
+var delay = 0;
 var filteredElements = Array.from(aosElements).filter(function (element) {
     return !element.style.animationDelay;
 });
-// Eine Map, um Elemente basierend auf ihren übergeordneten Elementen zu gruppieren
 var parentGroups = new Map();
-
 filteredElements.forEach(function (elem) {
     // Finde das nächstgelegene übergeordnete Element
     var parent = elem.parentElement;
@@ -52,37 +48,18 @@ filteredElements.forEach(function (elem) {
     // Füge das aktuelle [data-aos] Element zur entsprechenden Gruppe hinzu
     parentGroups.get(parent).push(elem);
 });
-
-// Wende nun die Logik für jedes [data-aos] Element in jeder Gruppe separat an
 parentGroups.forEach(function (group) {
     group.forEach(function (elem, index) {
         // Das erste Element bekommt kein Delay, für die nachfolgenden Elemente wird das Delay um 0.25s pro Element erhöht
-        var delay = index * 0.35; // Das erste Element erhält 0s, das zweite 0.25s, das dritte 0.5s usw.
+
+        if (delay < 1) {
+            delay = index * 0.25;
+        }
+
         elem.style.animationDelay = delay + "s";
     });
 });
 
-setTimeout(function () {
-    AOS.init({
-        // Global settings:
-        disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
-        startEvent: "DOMContentLoaded", // name of the event dispatched on the document, that AOS should initialize on
-        initClassName: false, // class applied after initialization
-        animatedClassName: "animate__animated", // class applied on animation
-        useClassNames: true, // if true, will add content of `data-aos` as classes on scroll
-        disableMutationObserver: false, // disables automatic mutations' detections (advanced)
-        //debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
-        //throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
-
-        // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-        offset: 50, // offset (in px) from the original trigger point
-        //delay: 250000,
-        //duration: 5000,
-        once: true, // whether animation should happen only once - while scrolling down
-        mirror: true, // whether elements should animate out while scrolling past them
-        anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
-    });
-}, 500); // 500ms Verzögerung vor der Initialisierung von AOS
 
 const addStylesToArticlesWithBg = () => {
     // Wählen Sie das letzte .mod_article Element aus
@@ -361,7 +338,11 @@ if (type1NonFixedHeader) {
     };
 
     scrollFunctions.push(detectIfScrolled);
+    loadFunctions.push(detectIfScrolled);
+    touchMoveFunctions.push(detectIfScrolled);
+    ResizeFunctions.push(detectIfScrolled);
 }
+
 const type1FixedHeader = document.querySelector(
     ".header--content.type--1.fixed"
 );
@@ -379,6 +360,9 @@ if (type1FixedHeader) {
     };
 
     scrollFunctions.push(detectIfScrolled);
+    loadFunctions.push(detectIfScrolled);
+    touchMoveFunctions.push(detectIfScrolled);
+    ResizeFunctions.push(detectIfScrolled);
 }
 
 const type2Header = document.querySelector(".header--content.type--2");
@@ -406,6 +390,9 @@ if (type2Header) {
     };
 
     scrollFunctions.push(detectIfScrolled);
+    loadFunctions.push(detectIfScrolled);
+    touchMoveFunctions.push(detectIfScrolled);
+    ResizeFunctions.push(detectIfScrolled);
 }
 
 const type3Header = document.querySelector(".header--content.type--3");
@@ -447,6 +434,9 @@ if (type3Header) {
     }
 
     scrollFunctions.push(detectIfScrolled);
+    loadFunctions.push(detectIfScrolled);
+    touchMoveFunctions.push(detectIfScrolled);
+    ResizeFunctions.push(detectIfScrolled);
 }
 
 const type6Header = document.querySelector(".header--content.type--6");
@@ -462,6 +452,9 @@ if (type6Header) {
     };
 
     scrollFunctions.push(detectIfScrolled);
+    loadFunctions.push(detectIfScrolled);
+    touchMoveFunctions.push(detectIfScrolled);
+    ResizeFunctions.push(detectIfScrolled);
 }
 
 const type7Header = document.querySelector(".header--content.type--7");
@@ -477,17 +470,69 @@ if (type7Header) {
     };
 
     scrollFunctions.push(detectIfScrolled);
+    loadFunctions.push(detectIfScrolled);
+    touchMoveFunctions.push(detectIfScrolled);
+    ResizeFunctions.push(detectIfScrolled);
 }
+
+
+function resetAOS() {
+    $('*[data-aos][class*="animate__"]').each(function (index) {
+        var classes = this.className.split(/\s+/);
+        for (var i = 0; i < classes.length; i++) {
+            if (classes[i].startsWith('animate__')) {
+                $(this).removeClass(classes[i]);
+            }
+        }
+    });
+    AOS.refreshHard();
+}
+
+
+function initAOS() {
+    $('*:not([data-aos])[class*="animate__"]').each(function (index) {
+        var classes = $.grep(this.className.split(" "), function (v, i) {
+            return v.indexOf("animate__") === 0;
+        }).join();
+        $(this).removeClass(classes);
+        $(this).attr("data-aos", classes);
+    });
+    AOS.init({
+        // Global settings:
+        disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
+        startEvent: "load", // name of the event dispatched on the document, that AOS should initialize on
+        initClassName: false, // class applied after initialization
+        animatedClassName: "animate__animated", // class applied on animation
+        useClassNames: true, // if true, will add content of `data-aos` as classes on scroll
+        disableMutationObserver: true, // disables automatic mutations' detections (advanced)
+        //debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
+        //throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
+
+        // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
+        offset: 100, // offset (in px) from the original trigger point
+        //delay: 250000,
+        //duration: 5000,
+        once: true, // whether animation should happen only once - while scrolling down
+        mirror: true, // whether elements should animate out while scrolling past them
+        anchorPlacement: "center", // defines which position of the element regarding to window should trigger the animation
+    });
+}
+
 
 const isHeadImageAndMoveContent = document.querySelector(
     ".ce_rsce_headimagelogo.move-content"
 );
 
+
+if (!isHeadImageAndMoveContent) {
+    setTimeout(function () {
+        initAOS();
+    }, 500);
+}
+
 if (isHeadImageAndMoveContent) {
     function movingContent() {
-        const movingHeadimagelogoElement = document.querySelector(
-            ".ce_rsce_headimagelogo.move-content"
-        );
+        const movingHeadimagelogoElement = document.querySelector(".ce_rsce_headimagelogo.move-content");
 
         // Prüfen, ob 'moved-content' bereits existiert
         let articleContent = document.querySelector(".moved-content");
@@ -504,32 +549,50 @@ if (isHeadImageAndMoveContent) {
             }
 
             // Einfügen des 'article-content' div nach 'move-content'
-            movingHeadimagelogoElement.parentNode.insertBefore(
-                articleContent,
-                movingHeadimagelogoElement.nextSibling
-            );
+            movingHeadimagelogoElement.parentNode.insertBefore(articleContent, movingHeadimagelogoElement.nextSibling);
         }
 
         const headerElement = document.getElementById("header"); // Ersetzen Sie "header" mit der tatsächlichen ID Ihres Header-Elements
 
-        // Überprüfen Sie, ob beide Elemente existieren, bevor Sie ihre Höhen abrufen
+        // Überprüfen, ob beide Elemente existieren, bevor Sie ihre Höhen abrufen
         if (headerElement && movingHeadimagelogoElement) {
-            const totalOffsetHeight =
-                movingHeadimagelogoElement.offsetHeight - headerElement.offsetHeight;
-            articleContent.style.marginTop = `calc(${totalOffsetHeight}px )`;
+            const totalOffsetHeight = movingHeadimagelogoElement.offsetHeight - headerElement.offsetHeight;
+            articleContent.style.marginTop = `calc(${totalOffsetHeight}px)`;
         } else {
-            articleContent.style.marginTop = `calc(${totalOffsetHeight}px )`;
+            articleContent.style.marginTop = '0px'; // Setzen Sie einen Standardwert, wenn die Elemente nicht vorhanden sind
         }
+        initAOS();
     }
 
-    scrollFunctions.push(movingContent);
+    loadFunctions.push(movingContent);
+    ResizeFunctions.push(movingContent);
 }
 
 function executeScrollFunctions() {
     scrollFunctions.forEach((func) => func());
 }
 
+function executeLoadFunctions() {
+    loadFunctions.forEach((func) => func());
+}
+
+function executeTouchFunctions() {
+    touchMoveFunctions.forEach((func) => func());
+}
+
+function executeResizeFunctions() {
+    ResizeFunctions.forEach((func) => func());
+}
+
+window.addEventListener("load", executeLoadFunctions);
 window.addEventListener("scroll", executeScrollFunctions);
-window.addEventListener("load", executeScrollFunctions);
-window.addEventListener("touchmove", executeScrollFunctions);
-window.addEventListener("resize", executeScrollFunctions);
+window.addEventListener("touchmove", executeTouchFunctions);
+window.addEventListener("resize", executeResizeFunctions);
+window.dispatchEvent(new Event('resize'));
+
+document.querySelectorAll('img')
+    .forEach((img) =>
+        img.addEventListener('load', () =>
+            AOS.refresh()
+        )
+    );

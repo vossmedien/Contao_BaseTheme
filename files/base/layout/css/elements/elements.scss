@@ -83,13 +83,17 @@
   min-height: 100%;
 
   &.with-image {
-    --bs-gutter-x: 30px;
-    --bs-gutter-y: 0;
     display: flex;
-    flex-wrap: wrap;
-    margin-top: calc(-1 * var(--bs-gutter-y));
+    //flex-flow: row wrap;
+    gap: 1.5rem;
+    /*
+        --bs-gutter-x: 30px;
+    --bs-gutter-y: 0;
+        margin-top: calc(-1 * var(--bs-gutter-y));
     margin-right: calc(-0.5 * var(--bs-gutter-x));
     margin-left: calc(-0.5 * var(--bs-gutter-x));
+     */
+
 
     &.image-right {
       flex-flow: row-reverse;
@@ -112,7 +116,7 @@
         }
 
         @include media-breakpoint-up(md) {
-          @include padding-right(35px);
+          //@include padding-right(35px);
         }
       }
     }
@@ -136,7 +140,7 @@
         }
 
         @include media-breakpoint-up(md) {
-          @include padding-left(35px);
+          //@include padding-left(35px);
         }
       }
     }

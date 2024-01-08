@@ -1,7 +1,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
-
+@import "../../mixins";
 @import "../../scss-variables";
 
 html body {
@@ -100,14 +100,17 @@ html body {
 
     .ce--mainimage {
       position: relative;
+      @extend %remove-headline-padding;
 
       .image--holder {
         position: relative;
         width: 100vw;
 
-        @include media-breakpoint-down(md) {
-          height: 100dvh !important;
-          min-height: 0 !important;
+        @include media-breakpoint-down(sm) {
+          &:not(.remove-settings-mobile) {
+            height: 100dvh !important;
+            min-height: 0 !important;
+          }
         }
 
         video {
