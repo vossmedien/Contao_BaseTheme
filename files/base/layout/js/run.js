@@ -471,6 +471,19 @@ if (type7Header) {
     ResizeFunctions.push(detectIfScrolled);
 }
 
+
+function resetAOS() {
+    $('*[data-aos][class*="animate__"]').each(function (index) {
+        var classes = this.className.split(/\s+/);
+        for (var i = 0; i < classes.length; i++) {
+            if (classes[i].startsWith('animate__')) {
+                $(this).removeClass(classes[i]);
+            }
+        }
+    });
+    AOS.refresh();
+}
+
 function initAOS() {
     $('*:not([data-aos])[class*="animate__"]').each(function (index) {
         var classes = $.grep(this.className.split(" "), function (v, i) {
@@ -483,7 +496,7 @@ function initAOS() {
     AOS.init({
         // Global settings:
         disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
-        startEvent: "load", // name of the event dispatched on the document, that AOS should initialize on
+        startEvent: "DOMContentLoaded", // name of the event dispatched on the document, that AOS should initialize on
         initClassName: false, // class applied after initialization
         animatedClassName: "animate__animated", // class applied on animation
         useClassNames: true, // if true, will add content of `data-aos` as classes on scroll
@@ -547,7 +560,6 @@ if (isHeadImageAndMoveContent) {
         } else {
             articleContent.style.marginTop = "0px"; // Setzen Sie einen Standardwert, wenn die Elemente nicht vorhanden sind
         }
-        initAOS();
     }
 
     loadFunctions.push(movingContent);
@@ -575,9 +587,17 @@ window.addEventListener("scroll", executeScrollFunctions);
 window.addEventListener("touchmove", executeTouchFunctions);
 window.addEventListener("resize", executeResizeFunctions);
 
-setTimeout(function () {
-    window.dispatchEvent(new Event("resize"));
-}, 750);
+
+
+window.addEventListener("resize", function () {
+    resetAOS(); initAOS();
+});
+
+
+
+window.dispatchEvent(new Event("resize"));
+
+
 document
     .querySelectorAll("img")
     .forEach((img) => img.addEventListener("load", () => AOS.refresh()));
