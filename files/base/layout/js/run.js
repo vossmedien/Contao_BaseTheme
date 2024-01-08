@@ -577,7 +577,7 @@ window.addEventListener("resize", executeResizeFunctions);
 
 setTimeout(function () {
     window.dispatchEvent(new Event("resize"));
-}, 600);
+}, 750);
 document
     .querySelectorAll("img")
     .forEach((img) => img.addEventListener("load", () => AOS.refresh()));
