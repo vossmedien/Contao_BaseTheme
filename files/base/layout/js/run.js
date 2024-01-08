@@ -473,7 +473,7 @@ if (type7Header) {
 
 
 function resetAOS() {
-    if (!/(iPhone|iPod|Android|Windows Phone|BlackBerry|Opera Mini)/i.test(window.userAgent)) {
+    if (window.innerWidth >= 768) {
         $('*[data-aos][class*="animate__"]').each(function (index) {
             var classes = this.className.split(/\s+/);
             for (var i = 0; i < classes.length; i++) {
