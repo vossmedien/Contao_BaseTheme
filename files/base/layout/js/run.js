@@ -473,15 +473,17 @@ if (type7Header) {
 
 
 function resetAOS() {
-    $('*[data-aos][class*="animate__"]').each(function (index) {
-        var classes = this.className.split(/\s+/);
-        for (var i = 0; i < classes.length; i++) {
-            if (classes[i].startsWith('animate__')) {
-                $(this).removeClass(classes[i]);
+    if (!/(iPhone|iPod|Android|Windows Phone|BlackBerry|Opera Mini)/i.test(window.userAgent)) {
+        $('*[data-aos][class*="animate__"]').each(function (index) {
+            var classes = this.className.split(/\s+/);
+            for (var i = 0; i < classes.length; i++) {
+                if (classes[i].startsWith('animate__')) {
+                    $(this).removeClass(classes[i]);
+                }
             }
-        }
-    });
-    AOS.refresh();
+        });
+        AOS.refresh();
+    }
 }
 
 function initAOS() {
