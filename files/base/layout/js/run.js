@@ -473,7 +473,7 @@ if (type7Header) {
 
 
 function resetAOS() {
-    if (window.innerWidth >= 768) {
+    if (window.innerWidth >= 932) {
         $('*[data-aos][class*="animate__"]').each(function (index) {
             var classes = this.className.split(/\s+/);
             for (var i = 0; i < classes.length; i++) {
@@ -502,12 +502,12 @@ function initAOS() {
         initClassName: false, // class applied after initialization
         animatedClassName: "animate__animated", // class applied on animation
         useClassNames: true, // if true, will add content of `data-aos` as classes on scroll
-        disableMutationObserver: true, // disables automatic mutations' detections (advanced)
+        disableMutationObserver: false, // disables automatic mutations' detections (advanced)
         //debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
         //throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
 
         // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-        offset: 100, // offset (in px) from the original trigger point
+        offset: 50, // offset (in px) from the original trigger point
         //delay: 500,
         //duration: 5000,
         once: true, // whether animation should happen only once - while scrolling down

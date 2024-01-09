@@ -42,7 +42,7 @@ html body {
     }
 
     @include media-breakpoint-down(lg) {
-      img.box--image, iframe {
+      img.box--image:not(.rounded), iframe:not(.rounded) {
         border-radius: var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px 0px !important;
       }
 
