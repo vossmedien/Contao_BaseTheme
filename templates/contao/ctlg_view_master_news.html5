@@ -56,9 +56,11 @@ if (TL_MODE == 'FE') {
             <div class="ce--mainimage  style-1  no-text ">
                 <div class="image--holder with-maxheight remove-settings-mobile" style="height: 600px; background-size: cover;">
                     <style>
+                         <?php if ($this->content_image_1["singleSRC"]): ?>
                         html body .ce_rsce_headimagelogo .game-detail-header .image--holder {
                             background: url(<?= $this->content_image_1["singleSRC"];?>) center center no-repeat
                         }
+                         <?php endif;?>
 
                         @media (max-width: 576px) {
                             html body .ce_rsce_headimagelogo .game-detail-header .image--holder {
@@ -70,37 +72,39 @@ if (TL_MODE == 'FE') {
                         }
                     </style>
 
+                    <?php if ($this->kopfbild_mobile["singleSRC"]): ?>
+                        <div class="plain-image-holder">
+                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->kopfbild_mobile["singleSRC"], null, $this->title, null, "d-sm-none", false, false); ?>
+                        </div>
+                    <?php endif; ?>
 
-                    <div class="plain-image-holder">
-                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->kopfbild_mobile["singleSRC"], null, $this->title, null, "d-sm-none", false, false); ?>
-                    </div>
-
-
-                    <div class="mainimage--content">
-                        <div class="">
-                            <div class="mainimage--content-inner pos-bottom-left text-start" style=" ">
-                                <div class="mainimage--content-inner--wrapper" data-aos="animate__fadeInLeft">
-                                    <div class="mainimage--content-inner--holder">
-                                        <div class="ce--buttons mt-3">
-                                            <a class="d-inline-block btn btn-lg btn-tertiary" target="_blank" data-aos="animate__fadeInLeft" href="<?= $this->website; ?>">
-                                                Offizielle Website besuchen
-                                            </a>
+                    <?php if ($this->website): ?>
+                        <div class="mainimage--content">
+                            <div class="">
+                                <div class="mainimage--content-inner pos-bottom-left text-start" style=" ">
+                                    <div class="mainimage--content-inner--wrapper" data-aos="animate__fadeInLeft">
+                                        <div class="mainimage--content-inner--holder">
+                                            <div class="ce--buttons mt-3">
+                                                <a class="d-inline-block btn btn-lg btn-tertiary" target="_blank" data-aos="animate__fadeInLeft" href="<?= $this->website; ?>">
+                                                    Offizielle Website besuchen
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+<?php if($this->contentElements):?>
 <div class="mod_article">
     <div class="article-content">
         <?= $this->contentElements; ?>
     </div>
 </div>
-
+<?php endif;?>
 

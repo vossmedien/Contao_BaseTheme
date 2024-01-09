@@ -30,10 +30,11 @@ if (TL_MODE == 'FE') {
                     <strong class="d-block">Altersfreigabe:</strong>
                     <?= $this->altersfreigabe; ?>
                 </li>
-
-                <li class="d-none d-md-block">
-                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["singleSRC"], null, $this->title, null, null, false); ?>
-                </li>
+                <?php if ($this->listing_image["singleSRC"]): ?>
+                    <li class="d-none d-md-block">
+                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["singleSRC"], null, $this->title, null, null, false); ?>
+                    </li>
+                <?php endif; ?>
             </ul>
 
             <span class="expand-button">
@@ -50,10 +51,12 @@ if (TL_MODE == 'FE') {
                 <div class="ce--mainimage  style-1  no-text ">
                     <div class="image--holder with-maxheight remove-settings-mobile" style="height: 600px;   background-size: cover;">
                         <style>
+                            <?php if ($this->content_image_1["singleSRC"]): ?>
                             html body .ce_rsce_headimagelogo .game-detail-header .image--holder {
                                 background: url(<?= $this->content_image_1["singleSRC"];?>) center center no-repeat
                             }
 
+                            <?php endif; ?>
                             @media (max-width: 576px) {
                                 html body .ce_rsce_headimagelogo .game-detail-header .image--holder {
                                     min-height: 0px;
@@ -64,25 +67,28 @@ if (TL_MODE == 'FE') {
                             }
                         </style>
 
-                        <div class="plain-image-holder">
-                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->kopfbild_mobile["singleSRC"], null, $this->title, null, "d-sm-none", false, false); ?>
-                        </div>
-
-                        <div class="mainimage--content">
-                            <div class="">
-                                <div class="mainimage--content-inner pos-bottom-left text-start" style=" ">
-                                    <div class="mainimage--content-inner--wrapper" data-aos="animate__fadeInLeft">
-                                        <div class="mainimage--content-inner--holder">
-                                            <div class="ce--buttons mt-3">
-                                                <a class="d-inline-block btn btn-lg btn-tertiary" target="_blank" data-aos="animate__fadeInLeft" href="<?= $this->website; ?>">
-                                                    Offizielle Website besuchen
-                                                </a>
+                        <?php if ($this->kopfbild_mobile["singleSRC"]): ?>
+                            <div class="plain-image-holder">
+                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->kopfbild_mobile["singleSRC"], null, $this->title, null, "d-sm-none", false, false); ?>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($this->website): ?>
+                            <div class="mainimage--content">
+                                <div class="">
+                                    <div class="mainimage--content-inner pos-bottom-left text-start" style=" ">
+                                        <div class="mainimage--content-inner--wrapper" data-aos="animate__fadeInLeft">
+                                            <div class="mainimage--content-inner--holder">
+                                                <div class="ce--buttons mt-3">
+                                                    <a class="d-inline-block btn btn-lg btn-tertiary" target="_blank" data-aos="animate__fadeInLeft" href="<?= $this->website; ?>">
+                                                        Offizielle Website besuchen
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -96,24 +102,23 @@ if (TL_MODE == 'FE') {
                     <div class="ce--boxenfeld">
                         <div class="boxes--outer ">
                             <div class="row justify-content-center align-items-center gx-0 gx-lg-3  ">
-                                <div class="col-12 col-lg-6 text-center " data-aos="animate__fadeInLeft">
+                                <?php if ($this->screenshots[0]): ?>
+                                    <div class="col-12 col-lg-6 text-center " data-aos="animate__fadeInLeft">
+                                        <div class="swiper content-slider_<?= $this->id; ?> ">
+                                            <div class="content-slider_<?= $this->id; ?> swiper-pagination mb-2"></div>
+                                            <div style="left: 1rem;" class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                                            <div style="right: 1rem;" class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
 
-
-                                    <div class="swiper content-slider_<?= $this->id; ?> ">
-                                        <div class="content-slider_<?= $this->id; ?> swiper-pagination mb-2"></div>
-                                        <div style="left: 1rem;" class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
-                                        <div style="right: 1rem;" class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
-
-                                        <div class="swiper-wrapper">
-                                            <?php foreach ($this->screenshots[0] as $key => $value): ?>
-                                                <div class="swiper-slide">
-                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($value->uuid, null, $this->title, null, "box--image", false); ?>
-                                                </div>
-                                            <?php endforeach; ?>
+                                            <div class="swiper-wrapper">
+                                                <?php foreach ($this->screenshots[0] as $key => $value): ?>
+                                                    <div class="swiper-slide">
+                                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($value->uuid, null, $this->title, null, "box--image", false); ?>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
+                                <?php endif; ?>
 
                                 <div data-aos="animate__fadeInRight" class="col-12 col-lg-6  animate__fadeInRight">
                                     <div class="box--content shadow-lg " style="position: relative; top: 0px;background-color: var(--bs-secondary);color: var(--bs-light);border-color: var(--bs-dark);">
@@ -128,11 +133,13 @@ if (TL_MODE == 'FE') {
                                         <div class="box--text">
                                             <?= $this->description_1; ?>
                                         </div>
-                                        <div class="ce--buttons mt-3">
-                                            <a class="d-inline-block btn btn-lg btn-tertiary" target="_blank" href="<?= $this->website; ?>">
-                                                Offizielle Website besuchen
-                                            </a>
-                                        </div>
+                                        <?php if ($this->website): ?>
+                                            <div class="ce--buttons mt-3">
+                                                <a class="d-inline-block btn btn-lg btn-tertiary" target="_blank" href="<?= $this->website; ?>">
+                                                    Offizielle Website besuchen
+                                                </a>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
@@ -140,6 +147,7 @@ if (TL_MODE == 'FE') {
                         <div class="boxes--outer " style="padding-top: 0px">
                             <div class="row justify-content-center align-items-center <?php if ($this->description_2): ?>flex-lg-row-reverse<?php endif; ?> gx-0 gx-lg-3">
 
+                                 <?php if ($this->videos): ?>
                                 <div class="col-12 col-lg-6 text-center" data-aos="animate__fadeInRight">
 
                                     <?php $videoArray = explode("\n", trim($this->videos)); ?>
@@ -163,9 +171,8 @@ if (TL_MODE == 'FE') {
                                             <?php endforeach; ?>
                                         </div>
                                     </div>
-
-
                                 </div>
+                                <?php endif;?>
 
                                 <?php if ($this->description_2): ?>
                                     <div data-aos="animate__fadeInLeft" class="col-12 col-12 col-lg-6">
