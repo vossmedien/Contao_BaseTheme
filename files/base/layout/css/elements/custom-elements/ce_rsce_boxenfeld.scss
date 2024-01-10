@@ -84,7 +84,7 @@ html body {
 
     .box--content {
       border: 7px solid var(--bs-primary);
-      padding: 3rem;
+      padding: clamp(1.5rem, 5vw, 3rem);
       z-index: 9;
       position: relative;
 

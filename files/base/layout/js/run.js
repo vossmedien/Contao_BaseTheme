@@ -602,4 +602,4 @@ window.dispatchEvent(new Event("resize"));
 
 document
     .querySelectorAll("img")
-    .forEach((img) => img.addEventListener("load", () => AOS.hardRefresh()));
+    .forEach((img) => img.addEventListener("load", () => AOS.refresh()));
