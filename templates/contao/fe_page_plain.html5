@@ -1,10 +1,57 @@
+<!DOCTYPE html>
+<html lang="<?= $this->language ?>" <?php if ($this->isRTL) : ?> dir="rtl" <?php endif; ?>>
+
+<head>
+    <?php $this->block('head'); ?>
+    <meta charset="<?= $this->charset ?>">
+    <title><?= $this->title ?></title>
+    <base href="<?= $this->base ?>">
+
+    <?php $this->block('meta'); ?>
+    <meta name="robots" content="<?= $this->robots ?>">
+    <meta name="description" content="<?= Contao\StringUtil::substr($this->description, 320) ?>">
+    <meta name="generator" content="Contao Open Source CMS">
+    <?php $this->endblock(); ?>
+    <?php if ($this->canonical): ?>
+        <link rel="canonical" href="<?= $this->canonical ?>">
+    <?php endif; ?>
+
+
+    <script type="text/javascript" src="/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js"></script>
+
+    <?= $this->viewport ?>
+    <?= $this->mooScripts ?>
+
+    <?= $this->stylesheets ?>
+    <?= $this->head ?>
+    <?php $this->endblock(); ?>
+
+
+    <style>
+        html, body {
+            overflow-x: clip;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+</head>
+
+
+<body id="top" <?php if ($this->class) : ?> class="<?= $this->class ?>" <?php endif; ?><?php if ($this->onload) : ?> onload="<?= $this->onload ?>" <?php endif; ?>
+      itemscope itemtype="http://schema.org/WebPage">
+<?php $this->block('body'); ?>
+<?php $this->sections('top'); ?>
+
 <?= $this->main ?>
 
-<style>
-    html, body {
-        overflow-x: clip;
-        width: 100vw;
-        margin: 0;
-        padding: 0;
-    }
-</style>
+<?php $this->endblock(); ?>
+
+
+
+<?= $this->mootools ?>
+<?= $this->jsonLdScripts ?>
+
+</body>
+</html>
