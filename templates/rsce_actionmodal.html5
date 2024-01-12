@@ -54,7 +54,7 @@ if (TL_MODE == 'FE') {
                                          data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
                                          style="background-position: center center; background-repeat: no-repeat; background-size: cover; <?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>"></div>
                                 <?php else: ?>
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->modal_headline, null, null, false); ?>
+                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->modal_headline, null, null, false, true); ?>
                                 <?php endif; ?>
                             <?php endif; ?>
 
@@ -92,7 +92,7 @@ if (TL_MODE == 'FE') {
 
                             <?php if ($this->image_left): ?>
                                 <div class="col-12 col-md-5">
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image_left, null, $this->headline, null, null, false); ?>
+                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image_left, null, $this->headline, null, null, false, true); ?>
                                 </div>
                             <?php endif; ?>
 
@@ -108,7 +108,7 @@ if (TL_MODE == 'FE') {
                                         <?php if ($this->progress_image): ?>
                                             <div class="progressbar--images">
                                                 <?php for ($i = 0; $i <= $this->progress_amount; $i++) : ?>
-                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->progress_image, null,$this->headline,null,null,false); ?>
+                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->progress_image, null,$this->headline,null,null,false, true); ?>
                                                 <?php endfor; ?>
                                             </div>
                                         <?php else: ?>
@@ -163,6 +163,7 @@ if (TL_MODE == 'FE') {
                                         $this->headline, // Optionaler Parameter: Überschrift/Headline, wird als Titel verwendet, falls keine Metadaten vorhanden sind
                                         null, // $optionalSize, // Optionaler Parameter: Bildgröße als Array [Breite, Höhe, Modus]
                                         'd-inline-block ms-2', // Optionaler Parameter: Eigene CSS-Klasse für das <img>-Element,
+                                        false,
                                         false
                                     ); ?>
 

@@ -174,7 +174,7 @@ if (TL_MODE == 'FE') {
                                 <?php if ($this->not_as_bg): ?>
                                     <?php if ($ext != "mp4"): ?>
                                         <div class="plain-image-holder">
-                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, "d-none d-sm-inline-block", false, false); ?>
+                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, "d-none d-sm-inline-block", false, true); ?>
                                         </div>
                                     <?php endif; ?>
                                 <?php endif; ?>
@@ -183,7 +183,7 @@ if (TL_MODE == 'FE') {
                                 <?php if ($this->not_as_bg_mobile): ?>
                                     <?php if ($slide->mobile_image && $ext_mobile != "mp4"): ?>
                                         <div class="plain-image-holder">
-                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, "d-sm-none", false, false); ?>
+                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, "d-sm-none", false, true); ?>
                                         </div>
                                     <?php endif; ?>
                                 <?php endif; ?>

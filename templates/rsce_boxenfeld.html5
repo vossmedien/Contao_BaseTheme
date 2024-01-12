@@ -34,7 +34,7 @@ if (TL_MODE == 'FE') {
                                     $b->{"size"} = "";
                                 } ?>
 
-                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($b->image, null, $b->headline, $b->size, "box--image", false); ?>
+                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($b->image, null, $b->headline, $b->size, "box--image", false, true); ?>
                             <?php endif; ?>
                         </div>
 

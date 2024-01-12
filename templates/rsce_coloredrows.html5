@@ -30,7 +30,7 @@ if (TL_MODE == 'FE') {
                                 <?php if ($row->headline_image) : ?>
                                     <div class="col-auto">
                                         <div class="image--wrapper">
-                                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->headline_image, null, $row->headline, $row->size, null, false); ?>
+                                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->headline_image, null, $row->headline, $row->size, null, false, true); ?>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -64,7 +64,7 @@ if (TL_MODE == 'FE') {
                                         </div>
                                         <div class="cr--image">
 
-                                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($col->image, null, $col->headline, $col->size, null, false); ?>
+                                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($col->image, null, $col->headline, $col->size, null, false, true); ?>
 
                                         </div>
                                         <div class="cr--content">
