@@ -13,7 +13,11 @@
   }
 }
 
-
+[data-aos]{
+    @include media-breakpoint-down(sm) {
+      animation-delay: 0s !important;
+    }
+}
 
 
 /* CUSTOM AOS

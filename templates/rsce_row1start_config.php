@@ -162,14 +162,10 @@ return array(
         ),
 
 
-        'settings_row' => array(
-            'label' => array('Slider-Einstellungen', ''),
+        'settings_1' => array(
+            'label' => array('Spalten-Einstellungen', ''),
             'inputType' => 'group',
             'eval' => array('tl_class' => 'clr'),
-            'dependsOn' => array(
-                'field' => 'element_type',
-                'value' => 'is_row',
-            ),
         ),
 
         'add_mid_element' => array(
@@ -181,20 +177,14 @@ return array(
             'label' => array('Text für Element', ''),
             'inputType' => 'textarea',
             'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
-
-            'dependsOn' => array(
-                'field' => 'add_mid_element',
-            ),
         ),
 
-        'settings_slider' => array(
+
+        'settings_2' => array(
             'label' => array('Slider-Einstellungen', ''),
             'inputType' => 'group',
             'eval' => array('tl_class' => 'clr'),
-            'dependsOn' => array(
-                'field' => 'element_type',
-                'value' => 'is_slider',
-            ),
+
         ),
 
         'slide_effect' => array(
@@ -223,6 +213,11 @@ return array(
             'eval' => array('tl_class' => 'w50'),
         ),
 
+        'slides_centered' => array(
+            'label' => array('Slides mittig zu einander ausrichten', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
 
         'show_pagination' => array(
             'label' => array('Paginierung anzeigen', 'mittig unter dem Slider, in Form von Punkten'),

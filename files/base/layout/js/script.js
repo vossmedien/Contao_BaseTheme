@@ -58,6 +58,4 @@ const init = () => {
 // Activate scripts based on options
 
 
-window.addEventListener("DOMContentLoaded", function () {
 init();
-});

@@ -176,9 +176,9 @@ if (TL_MODE == 'FE') {
 
                                 <?php if ($this->description_2): ?>
                                     <div data-aos="animate__fadeInLeft" class="col-12 col-12 col-lg-6">
-                                        <div class="box--content shadow-lg " style="position: relative; top: -100px;border-color: var(--bs-primary);">
+                                        <div class="box--content shadow-lg " style="position: relative; border-color: var(--bs-primary);">
                                             <div class="ce--headline hl-h4 px-0 mb-3" data-aos="">
-                                                <span class="h4" style="">Spieleeigenschaften</span>
+                                                <span class="h4" style="">Spieleigenschaften</span>
                                             </div>
                                             <div class="box--text">
                                                 <?= $this->description_2; ?>

@@ -142,7 +142,7 @@ if (TL_MODE == 'FE') {
     <?php endif; ?>
 
     <div class="swiper content-slider_<?= $this->id; ?> <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?>">
-    <div class="swiper-wrapper">
+    <div class="swiper-wrapper <?php if($this->slides_centered):?>align-items-center<?php endif;?>">
 
 <?php endif; ?>
 

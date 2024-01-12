@@ -1,4 +1,3 @@
-
 function setupFunctions() {
     initFrames();
     InitBasefeatures();
@@ -6,20 +5,28 @@ function setupFunctions() {
 
 function initFrames() {
     if (document.cookie.includes("cookie_iframes")) {
-        const iframes = document.querySelectorAll("iframe[data-source],embed[data-source]");
+        const iframes = document.querySelectorAll("*[data-source]");
+
+
         iframes.forEach(iframe => {
+            const source = iframe.getAttribute("data-source");
             iframe.src = iframe.getAttribute("data-source");
+
+            if (iframe.tagName.toLowerCase() === "script") {
+                const script = document.createElement("script");
+                script.src = source;
+                iframe.parentNode.replaceChild(script, iframe);
+            }
         });
 
-        // Note: The colorbox functionality requires jQuery.
-        // If you wish to move away from jQuery completely, you'll need to find a vanilla JS alternative to colorbox.
+
     } else {
-        const iframes = document.querySelectorAll("iframe[data-source],embed[data-source]");
+        const iframes = document.querySelectorAll("*[data-source]");
         iframes.forEach(iframe => {
-            iframe.src = "iframe.php";
+            if (iframe.tagName.toLowerCase() != "script") {
+                iframe.src = "iframe.php";
+            }
         });
-
-        // Note: As mentioned above, the colorbox functionality requires jQuery.
     }
 }
 

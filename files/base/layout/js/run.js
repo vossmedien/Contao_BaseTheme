@@ -2,6 +2,9 @@ const scrollFunctions = [];
 const loadFunctions = [];
 const touchMoveFunctions = [];
 const ResizeFunctions = [];
+const isHeadImageAndMoveContent = document.querySelector(
+    ".ce_rsce_headimagelogo.move-content"
+);
 
 // Polyfill für die matches Methode
 if (!Element.prototype.matches) {
@@ -27,36 +30,6 @@ for (var parameterName of parameterNames) {
     }
 }
 
-// Sammle alle [data-aos] Elemente
-var aosElements = document.querySelectorAll("[data-aos]");
-var delay = 0;
-var filteredElements = Array.from(aosElements).filter(function (element) {
-    return !element.style.animationDelay;
-});
-var parentGroups = new Map();
-filteredElements.forEach(function (elem) {
-    // Finde das nächstgelegene übergeordnete Element
-    var parent = elem.parentElement;
-
-    // Prüfe, ob die Gruppe für dieses übergeordnete Element bereits existiert
-    if (!parentGroups.has(parent)) {
-        parentGroups.set(parent, []);
-    }
-
-    // Füge das aktuelle [data-aos] Element zur entsprechenden Gruppe hinzu
-    parentGroups.get(parent).push(elem);
-});
-parentGroups.forEach(function (group) {
-    group.forEach(function (elem, index) {
-        // Das erste Element bekommt kein Delay, für die nachfolgenden Elemente wird das Delay um 0.25s pro Element erhöht
-
-        if (delay < 1) {
-            delay = index * 0.25;
-        }
-
-        elem.style.animationDelay = delay + "s";
-    });
-});
 
 const addStylesToArticlesWithBg = () => {
     // Wählen Sie das letzte .mod_article Element aus
@@ -494,6 +467,7 @@ function initAOS() {
         $(this).removeClass(classes);
         $(this).attr("data-aos", classes);
     });
+
     setTimeout(function () {
         AOS.init({
             // Global settings:
@@ -514,12 +488,38 @@ function initAOS() {
             mirror: true, // whether elements should animate out while scrolling past them
             anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
         });
-    }, 150);
+    }, 750);
 }
 
-const isHeadImageAndMoveContent = document.querySelector(
-    ".ce_rsce_headimagelogo.move-content"
-);
+
+var delayIncrement = 0.15; // Inkrement für das Delay in Sekunden
+var resetDelayTime = 500; // Zeit in Millisekunden, nach der das Delay zurückgesetzt wird
+var currentDelay = 0;
+var resetDelayTimer;
+
+function resetDelay() {
+    currentDelay = 0; // Delay zurücksetzen
+}
+
+function isFirstChild(element) {
+    return element.parentElement && element.parentElement.firstElementChild === element;
+}
+
+document.addEventListener('aos:in', ({detail}) => {
+    if (isFirstChild(detail)) {
+        // Wenn das Element das erste Kind ist, setze das Delay zurück
+        currentDelay = 0;
+    }
+
+    // Setze das Delay für das aktuelle Element
+    detail.style.animationDelay = `${currentDelay}s`;
+    currentDelay += delayIncrement;
+
+    // Timer zurücksetzen
+    clearTimeout(resetDelayTimer);
+    resetDelayTimer = setTimeout(resetDelay, resetDelayTime);
+});
+
 
 if (!isHeadImageAndMoveContent) {
     loadFunctions.push(initAOS);
@@ -569,6 +569,7 @@ if (isHeadImageAndMoveContent) {
     ResizeFunctions.push(movingContent);
 }
 
+
 function executeScrollFunctions() {
     scrollFunctions.forEach((func) => func());
 }
@@ -601,5 +602,5 @@ window.dispatchEvent(new Event("resize"));
 
 
 document
-    .querySelectorAll("img")
+    .querySelectorAll("img.lazy")
     .forEach((img) => img.addEventListener("load", () => AOS.refresh()));
