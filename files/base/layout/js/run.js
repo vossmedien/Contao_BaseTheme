@@ -602,5 +602,5 @@ window.dispatchEvent(new Event("resize"));
 
 
 document
-    .querySelectorAll("main img.lazy:not(.loaded)")
+    .querySelectorAll("main img.lazy")
     .forEach((img) => img.addEventListener("load", () => AOS.refresh()));

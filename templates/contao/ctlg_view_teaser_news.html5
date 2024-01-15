@@ -1,5 +1,5 @@
 <div class="col-12 col-lg-9">
-    <div class="news-box mb-3 <?= $this->cssClass; ?>" <?php if (str_contains($this->cssClass, "even")): ?>data-aos="animate__fadeInLeft"<?php else:?>data-aos="animate__fadeInRight"<?php endif; ?>>
+    <div class="news-box mb-3 <?= $this->cssClass; ?>" <?php if (str_contains($this->cssClass, "even")): ?>data-aos="animate__fadeInLeft" <?php else: ?>data-aos="animate__fadeInRight"<?php endif; ?>>
         <div class="image-holder">
 
             <a href="<?= $this->masterUrl ?>"></a>
@@ -14,9 +14,17 @@
                     </h2>
                 </div>
                 <div class="hover-content h5">
-                    <?php $date = DateTime::createFromFormat('d.m.Y H:i', $this->tstamp); ?>
+                    <?php
+                    if (!$this->veroeffentlichungsdatum) {
+                        $date = DateTime::createFromFormat('d.m.Y H:i', $this->tstamp);
+                        $date->format('d.m.Y');
+                    } else {
+                        $date = $this->veroeffentlichungsdatum;
+                    }
+
+                    ?>
                     <span class="d-block">zum vollständigen Artikel vom</span>
-                    <span class="d-block"><?= $date->format('d.m.Y'); ?> von <?= $this->autor; ?></span>
+                    <span class="d-block"><?= $date ?> von <?= $this->autor; ?></span>
                 </div>
             </div>
         </div>

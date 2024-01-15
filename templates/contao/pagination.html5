@@ -1,9 +1,11 @@
 <!-- indexer::stop -->
-<nav class=" block" aria-label="<?= $this->pagination ?>">
+<div class="container text-center">
 
-    <p><?= $this->total ?></p>
+<nav class="mt-3 block" aria-label="<?= $this->pagination ?>">
 
-    <ul class="pagination">
+    <p class="mb-1"><small><?= $this->total ?></small></p>
+
+    <ul class="pagination d-inline-flex">
         <?php if ($this->hasFirst): ?>
             <li class="page-item first"><a href="<?= $this->first['href'] ?>" class="first page-link"
                                            title="<?= $this->first['title'] ?>"><?= $this->first['link'] ?></a></li>
@@ -38,4 +40,5 @@
     </ul>
 
 </nav>
+</div>
 <!-- indexer::continue -->

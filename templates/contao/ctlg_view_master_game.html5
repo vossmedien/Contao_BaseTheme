@@ -121,7 +121,7 @@ if (TL_MODE == 'FE') {
                                 <?php endif; ?>
 
                                 <div data-aos="animate__fadeInRight" class="col-12 col-lg-6  animate__fadeInRight">
-                                    <div class="box--content shadow-lg " style="position: relative; top: 0px;background-color: var(--bs-secondary);color: var(--bs-light);border-color: var(--bs-dark);">
+                                    <div class="box--content shadow-lg " style="--bs-headline-color: var(--bs-light); position: relative; top: 0px;background-color: var(--bs-secondary);color: var(--bs-light);border-color: var(--bs-dark);">
                                         <div class="ce--headline hl-h1 mb-4" data-aos="">
                                             <h1 style="color:var(--bs-body-color-inverse);"><?= $this->title; ?></h1>
                                             <?php if ($this->plattform): ?>

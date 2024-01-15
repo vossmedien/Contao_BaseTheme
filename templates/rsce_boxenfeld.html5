@@ -42,7 +42,9 @@ if (TL_MODE == 'FE') {
                         <div  data-aos="<?= $b->animation_type_content; ?>" class="col-12 <?php if ($b->column_width) : ?><?= $b->column_width; ?><?php else: ?>col-lg-6<?php endif; ?>">
                             <div class="box--content <?php if ($b->has_shadow): ?>shadow-lg<?php endif; ?> <?php if ($this->without_container): ?>half-container<?php endif; ?>"
 
-                                 style="<?php if ($b->versatz) : ?>position: relative; top: <?php echo $b->versatz; ?>px;<?php endif; ?>
+                                 style="
+                                 <?php if ($b->alt_headlinecolor) : ?>--bs-headline-color: <?= $b->alt_headlinecolor;?>;  <?php endif; ?>
+                                 <?php if ($b->versatz) : ?>position: relative; top: <?php echo $b->versatz; ?>px;<?php endif; ?>
                                  <?php if ($b->alt_background) : ?>
                                          background-color: <?= $b->alt_background;?>;
                                  <?php endif; ?>

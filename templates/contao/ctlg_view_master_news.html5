@@ -12,7 +12,7 @@ if (TL_MODE == 'FE') {
     <div class="fixed--game-notes--inner" data-aos="animate__fadeInRight">
         <ul>
             <li>
-                <strong class="d-block fs-5"><a style="text-decoration: none;" class="text-secondary" title="mehr zum Spiel erfahren" href="/games/<?= $this->gamesAlias; ?>"><?= $this->gamesTitle; ?></a></strong>
+                <strong class="d-block fs-5"><a style="text-decoration: none;" class="text-secondary" title="mehr zum Spiel erfahren" href="/games/details/<?= $this->gamesAlias; ?>"><?= $this->gamesTitle; ?></a></strong>
             </li>
             <li>
                 <strong class="d-block">Veröffentlichung:</strong>
