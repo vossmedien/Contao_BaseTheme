@@ -18,7 +18,7 @@ const loadScript = async (url) => {
     return new Promise((resolve, reject) => {
         const script = document.createElement("script");
         script.src = url;
-        script.async = false;
+        script.async = true;
         script.onload = () => resolve(url);
         script.onerror = () => reject(url);
         document.body.appendChild(script);

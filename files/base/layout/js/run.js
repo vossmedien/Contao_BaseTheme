@@ -1,7 +1,9 @@
 const scrollFunctions = [];
 const loadFunctions = [];
 const touchMoveFunctions = [];
+const DomLoadFunctions = [];
 const ResizeFunctions = [];
+
 const isHeadImageAndMoveContent = document.querySelector(
     ".ce_rsce_headimagelogo.move-content"
 );
@@ -557,14 +559,14 @@ if (isHeadImageAndMoveContent) {
 
         // Überprüfen, ob beide Elemente existieren, bevor Sie ihre Höhen abrufen
         if (headerElement && movingHeadimagelogoElement) {
-            const totalOffsetHeight =
-                movingHeadimagelogoElement.offsetHeight - headerElement.offsetHeight;
-            articleContent.style.marginTop = `calc(${totalOffsetHeight}px)`;
+            const totalOffsetHeight = movingHeadimagelogoElement.offsetHeight - headerElement.offsetHeight;
+            articleContent.style.marginTop = `${totalOffsetHeight}px`;
         } else {
             articleContent.style.marginTop = "0px"; // Setzen Sie einen Standardwert, wenn die Elemente nicht vorhanden sind
         }
     }
 
+    //DomLoadFunctions.push(movingContent);
     loadFunctions.push(movingContent);
     ResizeFunctions.push(movingContent);
 }
@@ -578,6 +580,10 @@ function executeLoadFunctions() {
     loadFunctions.forEach((func) => func());
 }
 
+function executeDomLoadFunctions() {
+    DomLoadFunctions.forEach((func) => func());
+}
+
 function executeTouchFunctions() {
     touchMoveFunctions.forEach((func) => func());
 }
@@ -586,6 +592,8 @@ function executeResizeFunctions() {
     ResizeFunctions.forEach((func) => func());
 }
 
+
+window.addEventListener("DOMContentLoaded", executeDomLoadFunctions);
 window.addEventListener("load", executeLoadFunctions);
 window.addEventListener("scroll", executeScrollFunctions);
 window.addEventListener("touchmove", executeTouchFunctions);
@@ -602,5 +610,5 @@ window.dispatchEvent(new Event("resize"));
 
 
 document
-    .querySelectorAll("main img.lazy")
+    .querySelectorAll("main .moved-content .article-content img.lazy")
     .forEach((img) => img.addEventListener("load", () => AOS.refresh()));

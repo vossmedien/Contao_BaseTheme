@@ -74,7 +74,7 @@ if (TL_MODE == 'FE') {
 
                     <?php if ($this->kopfbild_mobile["singleSRC"]): ?>
                         <div class="plain-image-holder">
-                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->kopfbild_mobile["singleSRC"], null, $this->title, null, "d-sm-none", false, true); ?>
+                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->kopfbild_mobile["singleSRC"], null, $this->title, null, "d-sm-none", false, false); ?>
                         </div>
                     <?php endif; ?>
 
