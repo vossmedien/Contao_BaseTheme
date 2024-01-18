@@ -16,10 +16,6 @@
         <link rel="canonical" href="<?= $this->canonical ?>">
     <?php endif; ?>
 
-
-    <script type="text/javascript" src="/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js"></script>
-
-
     <?= $this->viewport ?>
     <?= $this->framework ?>
 
@@ -29,7 +25,6 @@
     <?= $this->mooScripts ?>
     <?= $this->head ?>
     <?php $this->endblock(); ?>
-
 </head>
 
 
@@ -40,7 +35,6 @@
 
 
 <div class="BodyScrollToTop"><i class="fa-sharp fa-light fa-arrow-up"></i></div>
-
 
 <div id="wrapper">
     <?php $this->block('header'); ?>
@@ -112,8 +106,21 @@
 
 <?php $this->endblock(); ?>
 
+<script type="text/javascript" src="/files/base/layout/_vendor/node_modules/aos/dist/aos.js"></script>
+<script type="text/javascript" src="/files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js"></script>
+
+<script async type="text/javascript" src="/files/base/layout/_vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script async type="text/javascript" src="/files/base/layout/_vendor/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+<script async type="text/javascript" src="/files/base/layout/_vendor/node_modules/swiper/swiper-bundle.min.js"></script>
+
+<script async type="text/javascript" src="/files/base/layout/js/_element-handling.js"></script>
+
+<script async type="module" src="/files/base/layout/js/base.js"></script>
+<script async type="module" src="/files/base/layout/js/run.js"></script>
+
+<script async type="text/javascript" src="/files/base/layout/js/_theme/theme.js"></script>
+
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>
-
 </body>
 </html>

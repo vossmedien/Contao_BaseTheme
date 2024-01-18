@@ -10,8 +10,6 @@
     "bootstrap": "*",
     "fullpage.js": "^4.0.15",
     "js-cookie": "*",
-    "simplelightbox": "^2.14.2",
-    "swipebox": "^1.4.6",
     "swiper": "*",
     "vanilla-lazyload": "*"
   },

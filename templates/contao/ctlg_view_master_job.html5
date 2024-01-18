@@ -53,7 +53,7 @@ if (TL_MODE == 'FE') {
                     </div>
                 <?php endif; ?>
                 <div class="col-12 col-lg-6">
-                    <div class="box--content half-container"
+                    <div class="box--content"
                          data-aos="animate__fadeInUp"
                          style="position: relative; top: 75px">
                         <div class="box--headline">
@@ -160,12 +160,12 @@ if (TL_MODE == 'FE') {
 </div>
 
 
-<div class="content--element ce_rsce_boxenfeld testimonials--bottom">
-    <div class="ce--inner container">
+<div class="content--element ce_rsce_boxenfeld testimonials--bottom container">
+    <div class="ce--inner ">
 
         <div class="ce--boxenfeld">
             <div class="boxes--outer">
-                <div class="row gy-0 flex-row-reverse">
+                <div class="row gy-0 flex-lg-row-reverse">
                     <?php if ($this->content_image_3["src"]): ?>
                         <div class="col-12 col-lg-6">
                             <img loading="lazy"   class="lazy box--image" data-src="<?= $this->content_image_3["src"]; ?>">
