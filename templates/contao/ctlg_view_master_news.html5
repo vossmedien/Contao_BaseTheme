@@ -5,7 +5,7 @@ if (TL_MODE == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_boxenfeld.min.css|static';
 }
 ?>
-
+<!-- indexer::stop -->
 <div class="fixed--game-notes is-visible">
 
 
@@ -107,4 +107,4 @@ if (TL_MODE == 'FE') {
     </div>
 </div>
 <?php endif;?>
-
+<!-- indexer::continue -->

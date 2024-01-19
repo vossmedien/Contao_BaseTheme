@@ -39,11 +39,13 @@
 <div id="wrapper">
     <?php $this->block('header'); ?>
     <?php if ($this->header) : ?>
+    <!-- indexer::stop -->
         <header id="header">
             <div class="inside">
                 <?= $this->header ?>
             </div>
         </header>
+    <!-- indexer::continue -->
     <?php endif; ?>
     <?php $this->endblock(); ?>
     <?php $this->sections('before'); ?>
@@ -93,11 +95,13 @@
     <?php $this->sections('after'); ?>
     <?php $this->block('footer'); ?>
     <?php if ($this->footer) : ?>
+      <!-- indexer::stop -->
         <footer id="footer">
             <div class="inside">
                 <?= $this->footer ?>
             </div>
         </footer>
+    <!-- indexer::continue -->
     <?php endif; ?>
     <?php $this->endblock(); ?>
 </div>
