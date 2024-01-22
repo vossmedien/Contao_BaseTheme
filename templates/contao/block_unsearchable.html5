@@ -29,7 +29,6 @@ $cleanedClass = str_replace("content--box", "", $cleanedClass);
 
             <?php $this->block('content'); ?>
             <?php $this->endblock(); ?>
-
         </div>
     </div>
 </div>
