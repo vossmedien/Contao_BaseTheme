@@ -1,3 +1,5 @@
+<!-- indexer::stop -->
+
 <?php
 $cleanedClass = str_replace("container", "", $this->class);
 $cleanedClass = str_replace("content--box", "", $cleanedClass);
@@ -31,3 +33,6 @@ $cleanedClass = str_replace("content--box", "", $cleanedClass);
         </div>
     </div>
 </div>
+
+
+<!-- indexer::continue -->

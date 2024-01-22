@@ -22,42 +22,6 @@ if (form) {
   });
 }
 
-
-
-const initAOS = () => {
-  $('*:not([data-aos])[class*="animate__"]').each(function (index) {
-    var classes = $.grep(this.className.split(" "), function (v, i) {
-      return v.indexOf("animate__") === 0;
-    }).join();
-    $(this).removeClass(classes);
-    $(this).attr("data-aos", classes);
-  });
-
-  setTimeout(function () {
-    AOS.init({
-      // Global settings:
-      disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
-      startEvent: "DOMContentLoaded", // name of the event dispatched on the document, that AOS should initialize on
-      initClassName: false, // class applied after initialization
-      animatedClassName: "animate__animated", // class applied on animation
-      useClassNames: true, // if true, will add content of `data-aos` as classes on scroll
-      disableMutationObserver: true, // disables automatic mutations' detections (advanced)
-      //debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
-      //throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
-
-      // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-      offset: 0, // offset (in px) from the original trigger point
-      //delay: 500,
-      //duration: 5000,
-      once: true, // whether animation should happen only once - while scrolling down
-      mirror: true, // whether elements should animate out while scrolling past them
-      anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
-    });
-  }, 500);
-};
-ResizeFunctions.push(initAOS);
-loadFunctions.push(initAOS);
-
 const resetAOS = () => {
   if (window.innerWidth >= 932) {
     $('*[data-aos][class*="animate__"]').each(function (index) {
@@ -72,6 +36,37 @@ const resetAOS = () => {
   }
 };
 ResizeFunctions.push(resetAOS);
+
+const initAOS = () => {
+  $('*:not([data-aos])[class*="animate__"]').each(function (index) {
+    var classes = $.grep(this.className.split(" "), function (v, i) {
+      return v.indexOf("animate__") === 0;
+    }).join();
+    $(this).removeClass(classes);
+    $(this).attr("data-aos", classes);
+  });
+  AOS.init({
+    // Global settings:
+    disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
+    startEvent: "DOMContentLoaded", // name of the event dispatched on the document, that AOS should initialize on
+    initClassName: false, // class applied after initialization
+    animatedClassName: "animate__animated", // class applied on animation
+    useClassNames: true, // if true, will add content of `data-aos` as classes on scroll
+    disableMutationObserver: true, // disables automatic mutations' detections (advanced)
+    //debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
+    //throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
+
+    // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
+    offset: 0, // offset (in px) from the original trigger point
+    //delay: 500,
+    //duration: 5000,
+    once: true, // whether animation should happen only once - while scrolling down
+    mirror: true, // whether elements should animate out while scrolling past them
+    anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
+  });
+};
+ResizeFunctions.push(initAOS);
+loadFunctions.push(initAOS);
 
 const addStylesToArticlesWithBg = () => {
   // Wählen Sie das letzte .mod_article Element aus
@@ -88,9 +83,9 @@ const addStylesToArticlesWithBg = () => {
 
   // Prüfen Sie, ob das erste .mod_article Element existiert und ein style.with-bg Kind hat
   if (articleFirst && articleFirst.querySelector("style.with-bg")) {
-    articleFirst.style.padding =
-      "calc(var(--with-body-bg-spacing) * 2) 0 var(--with-body-bg-spacing) 0";
-    articleFirst.style.marginTop = "calc(-1 * var(--with-body-bg-spacing))";
+    //articleFirst.style.padding =
+    ("calc(var(--with-body-bg-spacing) * 2) 0 var(--with-body-bg-spacing) 0");
+    //articleFirst.style.marginTop = "calc(-1 * var(--with-body-bg-spacing))";
   }
 };
 loadFunctions.push(addStylesToArticlesWithBg);
@@ -434,8 +429,6 @@ loadFunctions.push(addBootstrapClasses);
 loadFunctions.push(adjustTableResponsive);
 loadFunctions.push(adjustFormLayout);
 loadFunctions.push(addPlaceholders);
-
-
 
 function executeScrollFunctions() {
   scrollFunctions.forEach((func) => func());

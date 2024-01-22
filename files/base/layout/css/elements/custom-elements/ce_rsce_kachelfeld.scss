@@ -6,18 +6,10 @@
 
 html body {
   .ce_rsce_kachelfeld {
-    margin-bottom: calc(#{$basic-gutter} - 25px);
-
-    .row {
-      justify-content: center;
-
-      > div {
-        margin-bottom: 1rem;
-      }
-    }
+    //margin-bottom: calc(#{$basic-gutter} - 25px);
 
     &.columns-evenly {
-      margin-bottom: 0px;
+      //margin-bottom: 0px;
 
       .ce--inner {
         @include media-breakpoint-up(md) {

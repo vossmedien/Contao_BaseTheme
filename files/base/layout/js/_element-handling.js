@@ -28,7 +28,7 @@ modalElements.forEach(function (modalElement) {
   }
 });
 
-
+/*
 document
   .querySelectorAll(
     "#main .mod_article > .article-content > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_iso_productreader):not(.mod_catalogUniversalView):not(.mod_pageimage):not(style):not(.body-slider)"
@@ -50,3 +50,5 @@ document
     element.parentNode.insertBefore(container, element);
     container.appendChild(element);
   });
+
+ */

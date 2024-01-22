@@ -28,8 +28,6 @@
 
   #main {
     .inside {
-
-
       > * {
         &:not(:last-child) {
           padding-bottom: var(--main-gap);
@@ -60,12 +58,12 @@
       }
 
       .article-content {
-        > * {
+        > *:not(.body-slider):not(.bgvideo) {
           position: relative;
           z-index: 1;
           //background-color: var(--bs-body-bg);
 
-          &:first-child{
+          &:first-child {
             padding-top: var(--main-gap);
           }
 
@@ -74,8 +72,6 @@
           }
         }
       }
-
-
 
       *[class*="bg-dark"] {
         color: var(--bs-body-color-inverse);

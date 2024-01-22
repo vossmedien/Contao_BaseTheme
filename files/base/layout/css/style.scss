@@ -25,10 +25,10 @@ html {
 
   body {
     #wrapper {
-      opacity: 0;
+      //opacity: 0;
       //transition: padding-top 0.5s ease, opacity 0.25s ease;
-      animation: fadeinBody 0.25s forwards;
-      animation-delay: 0.5s;
+      //animation: fadeinBody 0.25s forwards;
+      //animation-delay: 0.5s;
     }
 
     *[id] {
