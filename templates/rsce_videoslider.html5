@@ -1,6 +1,6 @@
 <?php header('Access-Control-Allow-Origin: *'); ?>
 
-<?php if (TL_MODE == 'FE') {
+<?php if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_videoslider.min.css|static';
 }
 
@@ -146,7 +146,7 @@ if (!isset($this->size)) {
 
     </div>
 
-<?php if (TL_MODE == 'FE'): ?>
+<?php if ($GLOBALS['TL_MODE'] == 'FE'): ?>
 
 
     <?php

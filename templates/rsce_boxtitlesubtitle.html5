@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_boxtitlesubtitle.min.css|static';
 }
 ?>
@@ -48,7 +48,7 @@ if (TL_MODE == 'FE') {
                                     </script>
                                     <a href="<?= Image::get(FilesModel::findByUuid($b->images[0])->path, null, null, null); ?>"
                                        class="main--image group_<?php echo $rand; ?> bts-cboxElement cboxElement">
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($b->image, null, $this->headline, $this->size, null, false, true); ?>
+                                        <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($b->image, null, $this->headline, $this->size, null, false, true); ?>
                                     </a>
                                     <div class="invisible">
                                         <?php foreach ($b->images as $i => $img) : ?>
@@ -59,7 +59,7 @@ if (TL_MODE == 'FE') {
                                         <?php endforeach; ?>
                                     </div>
                                 <?php else : ?>
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($b->image, null, $this->headline, $this->size, null, false, true); ?>
+                                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($b->image, null, $this->headline, $this->size, null, false, true); ?>
                                 <?php endif; ?>
                             </div>
                             <div class="bts--content">

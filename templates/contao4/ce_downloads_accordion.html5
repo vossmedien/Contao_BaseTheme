@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/alternate-contao-elements/ce_custom_downloads_accordion.min.css|static';
 }
 ?>

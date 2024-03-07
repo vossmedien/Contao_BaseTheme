@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_switchingcards.min.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_switchingcards.js|static';
 }
@@ -49,7 +49,7 @@ if (TL_MODE == 'FE') {
                                             >
                                                 <?php if ($row->image_front && !$row->front_as_bg): ?>
                                                     <div class="fc--image">
-                                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image_front, $row->front_content_headline, $row->front_headline, $row->size_front, null, false); ?>
+                                                        <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image_front, $row->front_content_headline, $row->front_headline, $row->size_front, null, false); ?>
                                                         <?php if ($this->is_slider): ?>
                                                             <div class="swiper-lazy-preloader"></div><?php endif; ?>
                                                     </div>
@@ -81,7 +81,7 @@ if (TL_MODE == 'FE') {
                                                 <div class="back--inner">
                                                     <?php if ($row->image_back): ?>
                                                         <div class="fc--image">
-                                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image_back, $row->back_content_headline, $row->back_headline, $row->size_back, null, (bool)$this->slider); ?>
+                                                            <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image_back, $row->back_content_headline, $row->back_headline, $row->size_back, null, (bool)$this->slider); ?>
                                                         </div>
                                                     <?php endif; ?>
                                                     <?php if ($row->back_headline): ?>
@@ -136,7 +136,7 @@ if (TL_MODE == 'FE') {
     </div>
 </div>
 
-<?php if (TL_MODE == 'FE'): ?>
+<?php if ($GLOBALS['TL_MODE'] == 'FE'): ?>
     <script type="text/javascript" async>
         if ($('.flipping-card--wrapper').length) {
             $('body').on('click', '.flipping-card--wrapper', function (e) {
@@ -148,7 +148,7 @@ if (TL_MODE == 'FE') {
 <?php endif; ?>
 
 
-<?php if ($this->is_slider && TL_MODE == 'FE'): ?>
+<?php if ($this->is_slider && $GLOBALS['TL_MODE'] == 'FE'): ?>
     <script type="text/javascript" async>
         window.addEventListener('load', function () {
             if ($('.swiper.switchingcards-slider_<?= $this->id;?>').length) {

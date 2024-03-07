@@ -25,7 +25,7 @@
         </li>
 
         <li class="d-none d-md-block">
-            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["src"], null, $this->title, null, null, false); ?>
+            <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["src"], null, $this->title, null, null, false); ?>
         </li>
     </ul>
 

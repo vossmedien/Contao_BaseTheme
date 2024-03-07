@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_headimagelogo.min.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_headimagelogo.js|static';
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_boxenfeld.min.css|static';
@@ -32,7 +32,7 @@ if (TL_MODE == 'FE') {
                 </li>
                 <?php if ($this->listing_image["singleSRC"]): ?>
                     <li class="d-none d-md-block">
-                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["singleSRC"], null, $this->title, null, null, false); ?>
+                        <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["singleSRC"], null, $this->title, null, null, false); ?>
                     </li>
                 <?php endif; ?>
             </ul>
@@ -69,7 +69,7 @@ if (TL_MODE == 'FE') {
 
                         <?php if ($this->kopfbild_mobile["singleSRC"]): ?>
                             <div class="plain-image-holder">
-                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->kopfbild_mobile["singleSRC"], null, $this->title, null, "d-sm-none", false, false); ?>
+                                <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->kopfbild_mobile["singleSRC"], null, $this->title, null, "d-sm-none", false, false); ?>
                             </div>
                         <?php endif; ?>
                         <?php if ($this->website): ?>
@@ -112,7 +112,7 @@ if (TL_MODE == 'FE') {
                                             <div class="swiper-wrapper">
                                                 <?php foreach ($this->screenshots[0] as $key => $value): ?>
                                                     <div class="swiper-slide">
-                                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($value->uuid, null, $this->title, null, "box--image", false); ?>
+                                                        <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($value->uuid, null, $this->title, null, "box--image", false); ?>
                                                     </div>
                                                 <?php endforeach; ?>
                                             </div>
@@ -196,7 +196,7 @@ if (TL_MODE == 'FE') {
         </div>
     </div>
 
-<?php if (TL_MODE == 'FE'): ?>
+<?php if ($GLOBALS['TL_MODE'] == 'FE'): ?>
     <script type="text/javascript" async>
         window.addEventListener('load', function () {
 

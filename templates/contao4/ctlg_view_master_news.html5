@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_headimagelogo.min.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_headimagelogo.js|static';
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_boxenfeld.min.css|static';
@@ -38,7 +38,7 @@ if (TL_MODE == 'FE') {
 
             <li class="d-none d-md-block">
                 <a title="mehr zum Spiel erfahren" href="/games/<?= $this->gamesAlias; ?>">
-                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->gamesListing_image["src"], null, $this->title, null, null, false); ?>
+                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->gamesListing_image["src"], null, $this->title, null, null, false); ?>
                 </a>
             </li>
         </ul>
@@ -74,7 +74,7 @@ if (TL_MODE == 'FE') {
 
                     <?php if ($this->kopfbild_mobile["singleSRC"]): ?>
                         <div class="plain-image-holder">
-                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->kopfbild_mobile["singleSRC"], null, $this->title, null, "d-sm-none", false, false); ?>
+                            <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->kopfbild_mobile["singleSRC"], null, $this->title, null, "d-sm-none", false, false); ?>
                         </div>
                     <?php endif; ?>
 

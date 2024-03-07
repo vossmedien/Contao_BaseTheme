@@ -54,7 +54,7 @@
 <?php endif; ?>
 
 
-<?php if (TL_MODE == 'FE'): ?>
+<?php if ($GLOBALS['TL_MODE'] == 'FE'): ?>
     <script type="text/javascript" async>
         window.addEventListener('load', function () {
 

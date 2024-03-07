@@ -291,7 +291,7 @@ return array(
                 'size' => array(
                     'label' => array('Bildbreite und Bildhöhe', ''),
                     'inputType' => 'imageSize',
-                    'options' => System::getImageSizes(),
+                    'options' => $GLOBALS['TL_CONFIG']['imageSizes'],
                     'reference' => &$GLOBALS['TL_LANG']['MSC'],
                     'eval' => array(
                         'rgxp' => 'digit',
@@ -499,7 +499,7 @@ return array(
                         'size' => array(
                             'label' => array('Bildbreite und Bildhöhe', ''),
                             'inputType' => 'imageSize',
-                            'options' => System::getImageSizes(),
+                            'options' => $GLOBALS['TL_CONFIG']['imageSizes'],
                             'reference' => &$GLOBALS['TL_LANG']['MSC'],
                             'eval' => array(
                                 'rgxp' => 'digit',

@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_boxenfeld.min.css|static';
 }
 ?>
@@ -34,7 +34,7 @@ if (TL_MODE == 'FE') {
                                     $b->{"size"} = "";
                                 } ?>
 
-                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($b->image, null, $b->headline, $b->size, "box--image", false, true); ?>
+                                <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($b->image, null, $b->headline, $b->size, "box--image", false, true); ?>
                             <?php endif; ?>
                         </div>
 

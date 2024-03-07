@@ -25,6 +25,8 @@ const lazyLoadInstance = new LazyLoad({
 
 window.addEventListener("cookiebar_save", setupFunctions);
 window.addEventListener("scroll", changeAnchorLinks);
+
+
 document.addEventListener("aos:in", ({ detail }) => {
   if (isFirstChild(detail)) {
     // Wenn das Element das erste Kind ist, setze das Delay zurück
@@ -52,14 +54,6 @@ function isFirstChild(element) {
   );
 }
 
-const btn = document.querySelector(".reset-cookies");
-if (btn) {
-  btn.addEventListener("click", function (e) {
-    e.preventDefault();
-    resetCookies();
-  });
-}
-
 var delayIncrement = 0.15; // Inkrement für das Delay in Sekunden
 var resetDelayTime = 500; // Zeit in Millisekunden, nach der das Delay zurückgesetzt wird
 var currentDelay = 0;
@@ -69,6 +63,16 @@ function resetDelay() {
   currentDelay = 0; // Delay zurücksetzen
 }
 
+
+
+
+const btn = document.querySelector(".reset-cookies");
+if (btn) {
+  btn.addEventListener("click", function (e) {
+    e.preventDefault();
+    resetCookies();
+  });
+}
 
 
 //window.dispatchEvent(new Event("resize"));

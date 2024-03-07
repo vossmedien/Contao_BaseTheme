@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_timeline.min.css|static';
 }
 ?>
@@ -38,7 +38,7 @@ if (TL_MODE == 'FE') {
                                         <?php if ($row->icon): ?>
                                             <div class="col-auto">
                                             <span style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" class="step--icon">
-                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->icon, $row->description, $row->headline, $row->size_right, null,false); ?>
+                                                <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($row->icon, $row->description, $row->headline, $row->size_right, null,false); ?>
                                             </span>
                                             </div>
                                         <?php endif; ?>
@@ -53,7 +53,7 @@ if (TL_MODE == 'FE') {
                                 <div class="right-col--inner" style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                     <?php if ($row->image): ?>
                                         <div class="step--image mb-4">
-                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, $row->description, $row->headline, $row->size_right, null,false); ?>
+                                            <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, $row->description, $row->headline, $row->size_right, null,false); ?>
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($row->headline): ?>

@@ -4,7 +4,7 @@
 
             <a href="<?= $this->masterUrl ?>"></a>
 
-            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["singleSRC"], null, $this->title, null, null, false); ?>
+            <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["singleSRC"], null, $this->title, null, null, false); ?>
 
 
             <div class="overlay-wrapper">

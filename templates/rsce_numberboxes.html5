@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_numberboxes.min.css|static';
 }
 
@@ -66,7 +66,7 @@ if (!isset($this->size_bg)) {
 
                                 <?php if ($box->image && $box->not_as_bg): ?>
                                     <div class="number-box--image mb-3 w-100">
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($box->image, null, $box->headline, $box->size, null, false); ?>
+                                        <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($box->image, null, $box->headline, $box->size, null, false); ?>
                                     </div>
                                 <?php endif; ?>
 

@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_coloredrows.min.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_coloredrows.js|static';
 }
@@ -30,7 +30,7 @@ if (TL_MODE == 'FE') {
                                 <?php if ($row->headline_image) : ?>
                                     <div class="col-auto" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                                         <div class="image--wrapper" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->headline_image, null, $row->headline, $row->size, null, false, true); ?>
+                                             <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($row->headline_image, null, $row->headline, $row->size, null, false, true); ?>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -63,7 +63,7 @@ if (TL_MODE == 'FE') {
                                         </div>
                                         <div class="cr--image" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
-                                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($col->image, null, $col->headline, $col->size, null, false, true); ?>
+                                             <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($col->image, null, $col->headline, $col->size, null, false, true); ?>
 
                                         </div>
                                         <div class="cr--content" data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">

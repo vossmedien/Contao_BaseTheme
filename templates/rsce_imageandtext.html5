@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_imageandtext.min.css|static';
 }
 ?>
@@ -68,7 +68,7 @@ if (TL_MODE == 'FE') {
                                         <?php if ($row->image): ?>
                                             <div data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class=" <?php if ($row->reverse_columns) : ?>order-2 <?php endif; ?> col-12 image   <?php if (!$this->as_rows) : ?>mt-2 mt-md-0 mb-md-3 order-2<?php else: ?> text-lg-start <?= $row->column_width; ?><?php endif; ?>">
                                                 <div class="image--wrapper">
-                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, null, $row->headline, $row->size, null, false); ?>
+                                                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, null, $row->headline, $row->size, null, false); ?>
                                                 </div>
                                             </div>
                                         <?php endif; ?>

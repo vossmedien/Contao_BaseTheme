@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_fullwidthstoerer.min.css|static';
 }
 ?>
@@ -24,7 +24,7 @@ if (TL_MODE == 'FE') {
                     <div class="row align-items-center">
                         <?php if ($this->image) : ?>
                             <div class="d-none col-6 d-md-block" data-aos="<?= $this->animation_type_image;?>"  style="animation-delay: 1s;">
-                                 <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, $this->ce_headline, null, $this->size, null,false); ?>
+                                 <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, $this->ce_headline, null, $this->size, null,false); ?>
                             </div>
                         <?php endif; ?>
                         <div class="col">

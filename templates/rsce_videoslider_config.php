@@ -155,7 +155,7 @@ return array(
         'size' => array(
             'label' => array('Breite & Höhe', 'Für gleichgroße Slides'),
             'inputType' => 'imageSize',
-            'options' => System::getImageSizes(),
+            'options' => $GLOBALS['TL_CONFIG']['imageSizes'],
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
             'eval' => array(
                 'tl_class' => 'clr',

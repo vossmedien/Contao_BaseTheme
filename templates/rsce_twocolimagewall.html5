@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_twocolimagewall.min.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_twocolimagewall.js|static';
 }
@@ -244,7 +244,7 @@ if (TL_MODE == 'FE') {
                              <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>style="<?php if ($row->min_height): ?>min-height: <?= $row->min_height; ?>;<?php else: ?>min-height: 500px;<?php endif; ?>;" data-bg="" <?php endif; ?>>
                             <?php if (!$row->not_as_bg && !$row->image_both && $row->image) : ?>
                                 <div class="zoom-container">
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, null, $row->ce_headline, $row->size_right, null, false); ?>
+                                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, null, $row->ce_headline, $row->size_right, null, false); ?>
                                 </div>
                             <?php endif; ?>
                             <?php if ($row->boxed_headline) : ?>
@@ -268,7 +268,7 @@ if (TL_MODE == 'FE') {
 
                             <?php if ($row->not_as_bg) : ?>
                                 <div class="image--wrapper">
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, null, $row->ce_headline, $row->size_right, null, false); ?>
+                                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, null, $row->ce_headline, $row->size_right, null, false); ?>
                                 </div>
                             <?php endif; ?>
 

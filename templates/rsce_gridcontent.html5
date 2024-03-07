@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_gridcontent.min.css|static';
 }
 ?>
@@ -85,7 +85,7 @@ if (TL_MODE == 'FE') {
                                                     $column->{"size"} = "";
                                                 } ?>
 
-                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($column->image, null, $column->headline, $column->size, null,false); ?>
+                                                <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($column->image, null, $column->headline, $column->size, null,false); ?>
                                             </div>
                                         <?php endif; ?>
                                         <?php if ($column->text) : ?>

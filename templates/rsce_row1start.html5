@@ -1,11 +1,11 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_row1start.min.css|static';
 }
 ?>
 
 
-<?php if ($this->element_type == 'is_slider' && TL_MODE == 'FE'): ?>
+<?php if ($this->element_type == 'is_slider' && $GLOBALS['TL_MODE'] == 'FE'): ?>
     <script type="text/javascript" async>
         window.addEventListener('load', function () {
 
@@ -91,12 +91,12 @@ if (TL_MODE == 'FE') {
 <?php endif; ?>
 
 
-<?php if (TL_MODE == 'BE') {
+<?php if ($GLOBALS['TL_MODE'] == 'BE') {
     echo $this->element_type;
 } ?>
 
 
-<?php if (TL_MODE == 'FE'): ?>
+<?php if ($GLOBALS['TL_MODE'] == 'FE'): ?>
 <div <?php echo $this->cssID; ?> class="content--element  row-wrapper <?php echo $this->class; ?>" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
     <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(

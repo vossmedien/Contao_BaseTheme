@@ -1,6 +1,6 @@
 <?php header('Access-Control-Allow-Origin: *'); ?>
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_contentslider.min.css|static';
 }
 ?>
@@ -112,7 +112,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
                                                             <?php if ($slide->image): ?>
                                                                 <div class="<?= $slide->column_width; ?>">
-                                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text, $slide->size, null, true); ?>
+                                                                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text, $slide->size, null, true); ?>
                                                                 </div>
                                                             <?php endif; ?>
 
@@ -158,7 +158,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
 
                                 <?php if ($this->element_type == 'is_buttons' && $this->fixed_image): ?>
                                     <div class="fixed-image text-center">
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->fixed_image, null, $this->headline, $this->size_fixed, null, false); ?>
+                                        <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->fixed_image, null, $this->headline, $this->size_fixed, null, false); ?>
                                     </div>
                                 <?php endif; ?>
 
@@ -193,7 +193,7 @@ if (!isset($this->fixed_image) && $this->element_type == 'is_buttons') {
     </div>
 
 
-<?php if ($this->element_type == 'is_slider' && TL_MODE == 'FE'): ?>
+<?php if ($this->element_type == 'is_slider' && $GLOBALS['TL_MODE'] == 'FE'): ?>
     <script type="text/javascript" async>
         window.addEventListener('load', function () {
             if ($('.swiper.content-slider_<?= $this->id;?>').length) {

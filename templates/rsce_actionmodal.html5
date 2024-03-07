@@ -1,5 +1,5 @@
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_actionmodal.min.css|static';
 }
 ?>
@@ -32,8 +32,10 @@ if (TL_MODE == 'FE') {
 
 
                             <?php
-                            $filename = FilesModel::findByUuid($this->image)->path;
-                            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                            $uuid = $this->image; // Assuming $this->image holds the UUID
+                            $model = \Contao\FilesModel::findByUuid($uuid);
+                            $filename = $model ? $model->path : '';
+                            $ext = $filename ? pathinfo($filename, PATHINFO_EXTENSION) : '';
                             ?>
 
                             <?php if ($ext && $ext == "mp4"): ?>
@@ -54,7 +56,7 @@ if (TL_MODE == 'FE') {
                                          data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
                                          style="background-position: center center; background-repeat: no-repeat; background-size: cover; <?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>"></div>
                                 <?php else: ?>
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->modal_headline, null, null, false, true); ?>
+                                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->modal_headline, null, null, false, true); ?>
                                 <?php endif; ?>
                             <?php endif; ?>
 
@@ -92,7 +94,7 @@ if (TL_MODE == 'FE') {
 
                             <?php if ($this->image_left): ?>
                                 <div class="col-12 col-md-5">
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image_left, null, $this->headline, null, null, false, true); ?>
+                                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image_left, null, $this->headline, null, null, false, true); ?>
                                 </div>
                             <?php endif; ?>
 
@@ -108,7 +110,7 @@ if (TL_MODE == 'FE') {
                                         <?php if ($this->progress_image): ?>
                                             <div class="progressbar--images">
                                                 <?php for ($i = 0; $i <= $this->progress_amount; $i++) : ?>
-                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->progress_image, null,$this->headline,null,null,false, true); ?>
+                                                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->progress_image, null,$this->headline,null,null,false, true); ?>
                                                 <?php endfor; ?>
                                             </div>
                                         <?php else: ?>
@@ -157,15 +159,7 @@ if (TL_MODE == 'FE') {
                                 <?php foreach ($this->sponsors as $s) : ?><?php if ($s->link): ?>
                                     <a href="<?php echo $s->link; ?>" target="_blank"><?php endif; ?>
 
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
-                                        $s->image,
-                                        null, // $optionalAltText, // Optionaler Parameter: Eigener Alt-Text
-                                        $this->headline, // Optionaler Parameter: Überschrift/Headline, wird als Titel verwendet, falls keine Metadaten vorhanden sind
-                                        null, // $optionalSize, // Optionaler Parameter: Bildgröße als Array [Breite, Höhe, Modus]
-                                        'd-inline-block ms-2', // Optionaler Parameter: Eigene CSS-Klasse für das <img>-Element,
-                                        false,
-                                        false
-                                    ); ?>
+                                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($s->image,null, // $optionalAltText, // Optionaler Parameter: Eigener Alt-Text$this->headline, // Optionaler Parameter: Überschrift/Headline, wird als Titel verwendet, falls keine Metadaten vorhanden sindnull, // $optionalSize, // Optionaler Parameter: Bildgröße als Array [Breite, Höhe, Modus]'d-inline-block ms-2', // Optionaler Parameter: Eigene CSS-Klasse für das <img>-Element,false,false ); ?>
 
                                     <?php if ($s->link): ?></a><?php endif; ?><?php endforeach ?>
                             </div>
@@ -177,7 +171,7 @@ if (TL_MODE == 'FE') {
     </div>
 
 
-<?php if (TL_MODE == 'FE'): ?>
+<?php if ($GLOBALS['TL_MODE'] == 'FE'): ?>
     <script type="text/javascript" async>
         $(window).on('load', function () {
 

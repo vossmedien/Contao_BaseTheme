@@ -2,7 +2,7 @@
     <div class="game-box">
         <a href="<?= $this->masterUrl ?>"></a>
 
-        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["src"], null, $this->title, null, null, false); ?>
+        <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($this->listing_image["src"], null, $this->title, null, null, false); ?>
 
         <div class="game-box--hover-content">
             <span><?= $this->title; ?></span>

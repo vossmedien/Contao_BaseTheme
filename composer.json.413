@@ -1,0 +1,57 @@
+{
+  "type": "project",
+  "require": {
+    "alnv/catalog-manager": "^1.32",
+    "contao-themes-net/font-awesome-inserttag-bundle": "^1.0",
+    "contao/calendar-bundle": "4.13.*",
+    "contao/conflicts": "*@dev",
+    "contao/manager-bundle": "4.13.*",
+    "contao/news-bundle": "4.13.*",
+    "derhaeuptling/contao-mega-menu": "^1.0",
+    "dklemmt/contao_dk_mmenu": "^4.0",
+    "heimseiten/contao-custom-backend-settings-bundle": "^1.0",
+    "heimseiten/contao-sticky-footer-backend-bundle": "^1.0",
+    "inspiredminds/contao-extended-form-fields": "^2.7",
+    "inspiredminds/contao-include-info": "^2.0",
+    "isotope/isotope-core": "^2.8",
+    "madeyourday/contao-rocksolid-custom-elements": "^2.0",
+    "madeyourday/contao-rocksolid-icon-picker": "^2.1",
+    "oveleon/contao-component-style-manager": "^3.4",
+    "oveleon/contao-cookiebar": "^1.13",
+    "pdir/mobilede-bundle": "^3.3",
+    "terminal42/contao-ajaxform": "^1.3",
+    "terminal42/contao-changelanguage": "^3.6",
+    "terminal42/contao-easy_themes": "^3.1",
+    "terminal42/contao-folderpage": "^3.0",
+    "terminal42/contao-leads": "^1.4",
+    "terminal42/contao-node": "^1.5",
+    "terminal42/contao-pageimage": "^4.1",
+    "terminal42/notification_center": "^1.6",
+    "trilobit-gmbh/contao-tiles-bundle": "^1.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "VSM_HelperFunctions\\": "system/modules/vsm_custom_helpers/src/"
+    }
+  },
+  "extra": {
+    "contao-component-dir": "assets",
+    "public-dir": "web"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "@php vendor/bin/contao-setup"
+    ],
+    "post-update-cmd": [
+      "@php vendor/bin/contao-setup"
+    ]
+  },
+  "config": {
+    "allow-plugins": {
+      "contao-components/installer": true,
+      "php-http/discovery": true,
+      "contao-community-alliance/composer-plugin": true,
+      "contao/manager-plugin": true
+    }
+  }
+}

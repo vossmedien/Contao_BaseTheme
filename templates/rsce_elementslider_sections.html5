@@ -1,13 +1,13 @@
 <?php header('Access-Control-Allow-Origin: *'); ?>
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_elementslider_sections.min.css|static';
 }
 ?>
 
 
 <?php
-if (TL_MODE == 'FE') {
+if ($GLOBALS['TL_MODE'] == 'FE') {
     if (!isset($this->size)) {
         $this->{"size"} = "";
     }
@@ -129,7 +129,7 @@ if (TL_MODE == 'FE') {
             </div>
         </div>
     </div>
-<?php if (TL_MODE == 'FE'): ?>
+<?php if ($GLOBALS['TL_MODE'] == 'FE'): ?>
     <script type="text/javascript" async>
         window.addEventListener('load', function () {
 

@@ -4,7 +4,7 @@
 /composer.phar
 /files/base/layout/css/bundle.min.css
 /files/base/layout/_vendor/node_modules
-app/config/parameters.yml
+config/parameters.yml
 /.idea
 /files/base/layout/css/_theme/
 /composer.json
