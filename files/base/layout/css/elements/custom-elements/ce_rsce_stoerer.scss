@@ -7,20 +7,66 @@
 html body {
   .content--element.ce_rsce_stoerer {
     position: absolute;
-    z-index: 10;
+    z-index: 1000;
+
+    &[style*="right: 0px;"] {
+      .ce--stoerer {
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+      }
+    }
 
     .ce--stoerer {
       position: relative;
       border-radius: var(--bs-border-radius);
-      padding: 1rem;
+      padding: .5rem;
       display: flex;
       align-items: center;
       gap: 1rem;
       flex-flow: row nowrap;
       transition: all .3s ease-in-out;
+      white-space: nowrap;
+      box-shadow: $box-shadow;
 
-      svg{
-         transition: all .3s ease-in-out;
+      @include media-breakpoint-up(md) {
+        padding: 1rem;
+      }
+
+
+      &.is-expandable {
+        transition: all .3s ease-in-out;
+        //padding-right: 0 !important;
+
+         gap: 0rem;
+
+        .stoerer--content {
+          max-width: 0px;
+          overflow: hidden;
+          transition: max-width .3s ease-in-out;
+        }
+
+        &:hover {
+          padding-right: .5rem;
+               gap: .5rem;
+
+          @include media-breakpoint-up(md) {
+            padding-right: 1rem;
+               gap: 1rem;
+          }
+
+          .stoerer--content {
+            max-width: 300px;
+          }
+        }
+      }
+
+      svg {
+        transition: all .3s ease-in-out;
+
+        @include media-breakpoint-down(md) {
+          max-width: 25px;
+        }
+
       }
 
       &:not(:last-child) {
@@ -37,6 +83,10 @@ html body {
 
       .stoerer--content {
         @include font-size(18px);
+
+        p {
+          margin-bottom: 0;
+        }
       }
     }
   }

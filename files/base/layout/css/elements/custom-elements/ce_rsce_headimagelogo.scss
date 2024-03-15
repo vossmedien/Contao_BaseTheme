@@ -168,7 +168,7 @@ html body {
           .mainimage--content-inner {
             @include media-breakpoint-down(md) {
               width: 100% !important;
-              max-width: 100% !important;
+              //max-width: 100% !important;
             }
 
             .button--wrapper {

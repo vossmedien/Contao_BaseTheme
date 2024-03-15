@@ -13,7 +13,7 @@ if (TL_MODE == 'FE') {
 
         <style>
             html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .image--holder {
-            <?php if ($this->image_minheight) : ?> min-height: <?= $this->image_minheight; ?>;
+            <?php if ($this->image_minheight) : ?> height: <?= $this->image_minheight; ?>;
             <?php endif; ?><?php if ($this->image_maxheight && !$this->not_as_bg) : ?> max-height: <?php echo $this->image_maxheight; ?>;
             <?php endif; ?><?php if ($this->image_height && !$this->not_as_bg) : ?> height: <?php echo $this->image_height; ?>dvh;
             <?php endif; ?><?php if ($this->image_maxwidth) : ?> background-size: <?= $this->image_maxwidth; ?> auto;
@@ -37,7 +37,7 @@ if (TL_MODE == 'FE') {
                 <?php endif;?>
 
                 <?php if ($this->image_mobile_minheight): ?>
-                    min-height:<?= $this->image_mobile_minheight;?>;
+                    height:<?= $this->image_mobile_minheight;?>;
                 <?php endif;?>
 
                 }
@@ -206,10 +206,10 @@ if (TL_MODE == 'FE') {
 
                                                         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
                                                             $slide->text_topline,
-                                                            $slide->firstline_headline,
+                                                            $slide->text_firstline,
                                                             $slide->text_secondline,
                                                             $slide->headline_type,
-                                                            $slide->animation_type,
+                                                            null,
                                                             $slide->headline_color,
                                                             $slide->onlystyle,
                                                             "mb-0"

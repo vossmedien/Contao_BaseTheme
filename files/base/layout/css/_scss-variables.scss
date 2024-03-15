@@ -12,9 +12,9 @@ $gray-800: #343a40;
 $gray-900: #212529;
 $black: #000;
 
-$primary: #871623;
-$secondary: #00274a;
-$tertiary: #6610f2;
+$primary: #609a73;
+$secondary: #7db28c;
+$tertiary: #396447;
 
 // scss-docs-start theme-colors-map
 $theme-colors: (
@@ -22,9 +22,10 @@ $theme-colors: (
   "secondary": $secondary,
   "tertiary": $tertiary,
 
-  "red": #871623,
-  "blue": #00274a,
-  "purple": #6610f2,
+  "green-light" : $primary,
+  "green": $secondary,
+  "green-dark": $tertiary,
+
 
   "success": #dbe8e2,
   "info": #d1ecf1,

@@ -35,7 +35,7 @@
 
       &.is--scrolling {
         position: fixed;
-        top: 0;
+        top: 0 !important;
         bottom: auto;
         z-index: 15;
 
@@ -54,21 +54,24 @@
 
         ul {
           > li {
-            > a,
-            > span,
-            > strong {
-              &:not(.btn) {
-                color: var(--bs-body-color-inverse);
-                display: block;
-                border-bottom: 5px solid transparent;
+            > * {
+              font-weight: $font-weight-normal;
+              color: var(--bs-body-color-inverse);
+              display: block;
+              border-bottom: 5px solid transparent;
+              transition: all .15s ease-in-out;
 
-                &:hover,
-                &.active,
-                &.trail {
-                  border-bottom-color: var(--bs-secondary);
-                }
+              &:hover,
+              &.active,
+              &.trail {
+                //border-bottom-color: var(--bs-secondary);
+                text-shadow: 1px 0 rgba(255, 255, 255, .35),
+                -1px 0 rgba(255, 255, 255, .35),
+                0 1px rgba(255, 255, 255, .35),
+                0 -1px rgba(255, 255, 255, .35)
               }
             }
+
           }
 
           &.level_1 {
@@ -83,39 +86,36 @@
               display: inline-block;
               padding: 0 1.5rem 0 1.25rem;
 
-              > a,
-              > strong,
-              > span {
-                &:not(.btn) {
-                  display: inline-block;
+              > * {
+                display: inline-block;
+                @include font-size(14px);
+                padding: 1.5rem 0 1rem 0;
+                text-decoration: none;
+                white-space: nowrap;
+
+                @include media-breakpoint-up(md) {
                   @include font-size(14px);
-                  padding: 1.5rem 0 1rem 0;
-                  text-decoration: none;
-                  white-space: nowrap;
+                }
 
-                  @include media-breakpoint-up(md) {
-                    @include font-size(14px);
-                  }
+                @include media-breakpoint-up(lg) {
+                  @include font-size(15px);
+                }
 
-                  @include media-breakpoint-up(lg) {
-                    @include font-size(15px);
-                  }
+                @include media-breakpoint-up(xl) {
+                  @include font-size(16px);
+                }
 
-                  @include media-breakpoint-up(xl) {
-                    @include font-size(16px);
-                  }
+                @include media-breakpoint-up(xxl) {
+                  @include font-size(18px);
+                }
 
-                  @include media-breakpoint-up(xxl) {
-                    @include font-size(18px);
-                  }
-
-                  &:hover,
-                  &.active,
-                  &.trail {
-                    border-bottom-color: var(--bs-secondary);
-                  }
+                &:hover,
+                &.active,
+                &.trail {
+                  //border-bottom-color: var(--bs-secondary);
                 }
               }
+
 
               &:hover {
                 > ul.level_2 {
@@ -140,28 +140,23 @@
               display: block;
               padding: 0 1.5rem;
 
-              > a,
-              > span,
-              > strong {
-                &:not(.btn) {
-                  padding: 0.75rem 0rem;
-                  text-decoration: none;
-                }
-
-                &:hover,
-                &.active,
-                &.trail {
-                }
+              > * {
+                padding: 0.75rem 0rem;
+                text-decoration: none;
               }
+
+
             }
           }
         }
       }
+    }
 
-      .navActivator {
-        background-color: var(--bs-white);
-        padding: 0.75rem;
-      }
+    .navActivator {
+      background-color: var(--bs-white);
+      padding: 0.75rem;
     }
   }
 }
+
+

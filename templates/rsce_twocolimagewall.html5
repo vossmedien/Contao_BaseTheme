@@ -7,7 +7,7 @@ if (TL_MODE == 'FE') {
 
 
 <div <?php echo $this->cssID; ?>
-        class="p-0 content--element <?php echo $this->class; ?> <?php if ($this->no_padding) : ?>no-spacing<?php endif; ?>">
+        class="px-0 content--element <?php echo $this->class; ?> <?php if ($this->no_padding) : ?>no-spacing<?php endif; ?>">
     <div class="ce--inner ">
 
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
