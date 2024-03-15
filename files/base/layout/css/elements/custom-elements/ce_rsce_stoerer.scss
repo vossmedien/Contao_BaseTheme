@@ -16,7 +16,20 @@ html body {
       }
     }
 
+    &[style*="right:"] {
+      .ce--stoerer {
+        margin-left: auto;
+      }
+    }
+
+    &[style*="left:"] {
+      .ce--stoerer {
+        margin-right: auto;
+      }
+    }
+
     .ce--stoerer {
+      --stoerer-padding: .75rem;
       position: relative;
       border-radius: var(--bs-border-radius);
       padding: .5rem;
@@ -27,36 +40,23 @@ html body {
       transition: all .3s ease-in-out;
       white-space: nowrap;
       box-shadow: $box-shadow;
+      @include media-breakpoint-down(md) {
+        --stoerer-width: 25px !important;
+      }
 
       @include media-breakpoint-up(md) {
-        padding: 1rem;
+        padding: var(--stoerer-padding);
       }
 
 
       &.is-expandable {
         transition: all .3s ease-in-out;
-        //padding-right: 0 !important;
+        max-width: calc(var(--stoerer-width) + calc(var(--stoerer-padding) * 2));
+        overflow: hidden;
 
-         gap: 0rem;
-
-        .stoerer--content {
-          max-width: 0px;
-          overflow: hidden;
-          transition: max-width .3s ease-in-out;
-        }
 
         &:hover {
-          padding-right: .5rem;
-               gap: .5rem;
-
-          @include media-breakpoint-up(md) {
-            padding-right: 1rem;
-               gap: 1rem;
-          }
-
-          .stoerer--content {
-            max-width: 300px;
-          }
+          max-width: 300px;
         }
       }
 
@@ -64,7 +64,7 @@ html body {
         transition: all .3s ease-in-out;
 
         @include media-breakpoint-down(md) {
-          max-width: 25px;
+          max-width: var(--stoerer-width);
         }
 
       }
