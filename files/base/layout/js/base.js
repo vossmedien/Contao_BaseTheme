@@ -1,4 +1,3 @@
-import LazyLoad from "/files/base/layout/_vendor/node_modules/vanilla-lazyload/dist/lazyload.esm.js";
 import { setupFunctions, resetCookies } from "./cookieManager.js";
 import {
   changeAnchorLinks,
@@ -6,8 +5,7 @@ import {
 } from "./navigationHandling.js";
 import { onImageLoaded } from "./elementHeightAdjustments.js";
 
-//import { isOnScreen } from "./viewportChecks.js";
-//import { animate } from "./animations.js";
+
 
 const lazyLoadInstance = new LazyLoad({
   callback_loaded: onImageLoaded,
@@ -24,7 +22,23 @@ const lazyLoadInstance = new LazyLoad({
 
 
 window.addEventListener("cookiebar_save", setupFunctions);
+const btn = document.querySelector(".reset-cookies");
+if (btn) {
+  btn.addEventListener("click", function (e) {
+    e.preventDefault();
+    resetCookies();
+  });
+}
+
+
 window.addEventListener("scroll", changeAnchorLinks);
+
+// Weitere Logik zur Initialisierung
+if (window.location.hash) {
+  changeNavLinksAfterLoad();
+}
+
+
 
 document.addEventListener("aos:in", ({ detail }) => {
   if (isFirstChild(detail)) {
@@ -42,23 +56,11 @@ document.addEventListener("aos:in", ({ detail }) => {
   resetDelayTimer = setTimeout(resetDelay, resetDelayTime);
 });
 
-// Weitere Logik zur Initialisierung
-if (window.location.hash) {
-  changeNavLinksAfterLoad();
-}
 
 function isFirstChild(element) {
   return (
     element.parentElement && element.parentElement.firstElementChild === element
   );
-}
-
-const btn = document.querySelector(".reset-cookies");
-if (btn) {
-  btn.addEventListener("click", function (e) {
-    e.preventDefault();
-    resetCookies();
-  });
 }
 
 var delayIncrement = 0.15; // Inkrement für das Delay in Sekunden

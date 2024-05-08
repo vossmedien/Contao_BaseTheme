@@ -27,28 +27,3 @@ modalElements.forEach(function (modalElement) {
     document.body.appendChild(modalElement);
   }
 });
-
-/*
-document
-  .querySelectorAll(
-    "#main .mod_article > .article-content > *:not(.content--element):not(.container):not(.ce_html):not(.mod_catalogMasterView):not(.mod_iso_productreader):not(.mod_catalogUniversalView):not(.mod_pageimage):not(style):not(.body-slider)"
-  )
-  .forEach(function (element) {
-    var container = document.createElement("div");
-    container.classList.add("container");
-    element.parentNode.insertBefore(container, element);
-    container.appendChild(element);
-  });
-
-document
-  .querySelectorAll(
-    '#main > .inside > div[class^="mod_"]:not(.mod_article):not(.mod_iso_productreader):not(.mod_pageimage):not(.container):not(style)'
-  )
-  .forEach(function (element) {
-    var container = document.createElement("div");
-    container.classList.add("container");
-    element.parentNode.insertBefore(container, element);
-    container.appendChild(element);
-  });
-
- */
