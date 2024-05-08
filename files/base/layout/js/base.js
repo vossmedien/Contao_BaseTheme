@@ -25,6 +25,7 @@ const lazyLoadInstance = new LazyLoad({
 
 window.addEventListener("cookiebar_save", setupFunctions);
 window.addEventListener("scroll", changeAnchorLinks);
+
 document.addEventListener("aos:in", ({ detail }) => {
   if (isFirstChild(detail)) {
     // Wenn das Element das erste Kind ist, setze das Delay zurück

@@ -4,10 +4,14 @@
 
 @import "../../scss-variables";
 
-html body {
+html body main {
   .content--element.ce_rsce_stoerer {
     position: absolute;
     z-index: 1000;
+
+    &.is-fixed {
+      position: fixed;
+    }
 
     &[style*="right: 0px;"] {
       .ce--stoerer {
@@ -29,24 +33,20 @@ html body {
     }
 
     .ce--stoerer {
-      --stoerer-padding: .75rem;
+      --stoerer-padding: .5rem;
       position: relative;
       border-radius: var(--bs-border-radius);
-      padding: .5rem;
+      padding: var(--stoerer-padding);
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: .5rem;
       flex-flow: row nowrap;
       transition: all .3s ease-in-out;
       white-space: nowrap;
       box-shadow: $box-shadow;
-      @include media-breakpoint-down(md) {
-        --stoerer-width: 25px !important;
-      }
+      background-color: var(--bs-body-bg);
 
-      @include media-breakpoint-up(md) {
-        padding: var(--stoerer-padding);
-      }
+
 
 
       &.is-expandable {
@@ -55,18 +55,16 @@ html body {
         overflow: hidden;
 
 
-        &:hover {
+        &:hover, &:focus, &:focus-visible {
           max-width: 300px;
         }
       }
 
-      svg {
+      svg, img {
         transition: all .3s ease-in-out;
-
-        @include media-breakpoint-down(md) {
-          max-width: var(--stoerer-width);
-        }
-
+        flex: var(--stoerer-width);
+        min-width: var(--stoerer-width);
+        max-width: var(--stoerer-width);
       }
 
       &:not(:last-child) {

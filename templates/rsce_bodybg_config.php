@@ -3,7 +3,7 @@
 return array(
     'label' => array('Custom | Hintergrund für Website / Artikel (bodybg)', ''),
     'types' => array('content'),
-    'contentCategory' => 'texts',
+    'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
     'standardFields' => array('cssID'),
     'wrapper' => array(
@@ -43,13 +43,10 @@ return array(
             ),
         ),
 
-        'settings_slider' => array(
-            'label' => array('Slider-Einstellungen', ''),
+        'settings' => array(
+            'label' => array('Einstellungen', ''),
             'inputType' => 'group',
-            'dependsOn' => array(
-                'field' => 'element_type',
-                'value' => '1',
-            ),
+
         ),
 
         'multiSRC' => array(
@@ -63,6 +60,10 @@ return array(
                 'mandatory' => false,
                 'isGallery' => true,
                 'extensions' => 'jpg,jpeg,png,svg,webp',
+            ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '1',
             ),
         ),
 
@@ -79,33 +80,10 @@ return array(
                 'cube' => 'Cube',
 
             ),
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-
-        'autoplay_time' => array(
-            'label' => array('Autoplay-Zyklus', 'nach wie viel MS soll zum nächsten Slide gewechselt werden, Standard: 7500'),
-            'inputType' => 'text',
-            'dependsOn' => array(
-                'field' => 'autoplay',
-            ),
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-
-        'transition_time' => array(
-            'label' => array('Animationszeit in ms', 'Standard: 1500'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-
-        'settings_single' => array(
-            'label' => array('Einstellungen', ''),
-            'inputType' => 'group',
+            'eval' => array('tl_class' => ''),
             'dependsOn' => array(
                 'field' => 'element_type',
-                'value' => '2',
+                'value' => '1',
             ),
         ),
 
@@ -113,8 +91,43 @@ return array(
         'darken_image' => array(
             'label' => array('', ''),
             'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ''),
             'options' => array(
                 '1' => 'Hintergrundbild zusätzlich abdunkeln',
+            ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '2',
+            ),
+        ),
+
+        'autoplay' => array(
+            'label' => array('Autoplay aktivieren', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ''),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '1',
+            ),
+        ),
+
+        'autoplay_time' => array(
+            'label' => array('Autoplay-Zyklus', 'nach wie viel MS soll zum nächsten Slide gewechselt werden, Standard: 7500'),
+            'inputType' => 'text',
+            'dependsOn' => array(
+                'field' => 'autoplay',
+            ),
+            'eval' => array('tl_class' => ''),
+        ),
+
+
+        'transition_time' => array(
+            'label' => array('Animationszeit in ms', 'Standard: 1500'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => ''),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '1',
             ),
         ),
 
@@ -127,6 +140,11 @@ return array(
                 'fieldType' => 'radio',
                 'filesOnly' => true,
                 'extensions' => 'jpg,jpeg,png,mp4,svg',
+                'tl_class' => 'clr'
+            ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '2',
             ),
         ),
 
@@ -139,6 +157,10 @@ return array(
                 'filesOnly' => true,
                 'extensions' => 'jpg,jpeg,png,svg,webp',
             ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '2',
+            ),
         ),
 
         'fit_image' => array(
@@ -147,37 +169,33 @@ return array(
             'options' => array(
                 '1' => 'Bild auf Breite und Höhe des Bereichs strecken',
             ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '2',
+            ),
         ),
 
-        'settings_code' => array(
-            'label' => array('Einstellungen', ''),
-            'inputType' => 'group',
+
+        'css' => array(
+            'label' => array('Eigener Code', 'wird als inline-style innerhalb von "background: #WERT#" eingebunden. Falls ausgefüllt, wird dieser Wert auch für die Abschrägungen genutzt.'),
+            'inputType' => 'text',
+            'eval' => array('allowHtml' => true),
             'dependsOn' => array(
                 'field' => 'element_type',
                 'value' => '3',
             ),
         ),
 
-        'css' => array(
-            'label' => array('Eigener Code', 'wird als inline-style innerhalb von "background: #WERT#" eingebunden. Falls ausgefüllt, wird dieser Wert auch für die Abschrägungen genutzt.'),
-            'inputType' => 'text',
-            'eval' => array('allowHtml' => true),
-        ),
-
-        'settings_diagonal' => array(
-            'label' => array('Abschrägung', ''),
-            'inputType' => 'group',
-            'dependsOn' => array(
-                'field' => 'only_article',
-                'value' => '1',
-            ),
-        ),
 
         'activate' => array(
             'label' => array('', ''),
             'inputType' => 'checkbox',
             'options' => array(
                 '1' => 'Abschrägung aktivieren. Wichtig: deaktiviert parallax-Effekt',
+            ),
+            'dependsOn' => array(
+                'field' => 'only_article',
+                'value' => '1',
             ),
         ),
 
@@ -189,29 +207,12 @@ return array(
                 'maxlength' => 2, // Erlaubt bis zu 3 Zeichen (z.B. "-5" oder "5")
                 'tl_class' => 'w50'
             ),
-            'sql' => "varchar(2) NOT NULL default ''"
+            'sql' => "varchar(2) NOT NULL default ''",
+            'dependsOn' => array(
+                'field' => 'activate',
+                'value' => '1',
+            ),
+
         ),
-
-
-        /*
-            'skew_fix' => array(
-                'label' => array('', ''),
-                'inputType' => 'checkbox',
-                'options' => array(
-                    '1' => 'FIX für Abschrägung (Evtl. auch bei Abstandsproblemen testen)',
-                ),
-            ),
-
-            'padding_fix' => array(
-                'label' => array('', ''),
-                'inputType' => 'checkbox',
-                'options' => array(
-                    '1' => 'FIX für Abstandsprobleme (zu klein / zu groß)',
-                ),
-            ),
-
-             */
-
-
     ),
 );

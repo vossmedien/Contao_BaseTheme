@@ -1,7 +1,7 @@
 :root {
   --width: 100vw;
   --full-width: 100vw;
-   --main-gap: #{clamp($basic-gutter * 0.75, 5vw, $basic-gutter * 1.5)};
+  --main-gap: #{clamp($basic-gutter * 0.75, 5vw, $basic-gutter * 1.5)};
 
 
   --bs-font-primary: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -140,7 +140,8 @@
   --bs-fixed-stoerer--top: 35vh;
   --bs-fixed-stoerer--border-radius: 10px 0px 0px 10px;
 
-  //MMenu
+  /*
+    //MMenu
   --mm-line-height: 20px;
   --mm-listitem-size: 44px;
   --mm-navbar-size: 44px;
@@ -158,6 +159,8 @@
   --mm-color-background-emphasis: rgba(var(--bs-white-rgb), 0.4);
   --mm-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   --mm-logo: url("/files/base/layout/img/logo.svg");
+   */
+
 
   //variables-layout beachten
   --bs-container-width-sm: 540px;
@@ -167,9 +170,10 @@
   --bs-container-width-xxl: 1600px;
 
   --bs-mobile-max-width: 767px;
+  --bs-container-gutter: 15px;
 
   // Animate on Scroll
-  --animate-duration: 1000ms;
+  --animate-duration: 750ms;
   --animate-delay: 0s;
   //--animate-repeat: 0;
   //--animate-sequence: 1;

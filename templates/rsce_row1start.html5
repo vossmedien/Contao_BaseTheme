@@ -1,102 +1,88 @@
 <?php
-if (TL_MODE == 'FE') {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_row1start.min.css|static';
-}
+$GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row1start.min.css|static';
 ?>
 
 
-<?php if ($this->element_type == 'is_slider' && TL_MODE == 'FE'): ?>
-    <script type="text/javascript" async>
+<?php if ($this->element_type == 'is_slider' && VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+    <script type="text/javascript" defer>
         window.addEventListener('load', function () {
-
-
-            $('.swiper.content-slider_<?= $this->id;?> .swiper-wrapper > *').each(function () {
-                $(this).wrap('<div class="swiper-slide"></div>');
-            });
-
-
-            if ($('.swiper.content-slider_<?= $this->id;?>').length) {
-                const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
-
+            const swiperElementCheck_<?= $this->id; ?> = document.querySelector('.swiper.content-slider_<?= $this->id; ?>');
+            if (swiperElementCheck_<?= $this->id; ?>) {
+                const swiper_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?= $this->id; ?>', {
+                    direction: 'horizontal',
+                    loop: <?= $this->loop ? 'true' : 'false'; ?>,
+                    preloadImages: false,
                     lazy: true,
-                    loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
-
-
-                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>500<?php endif;?>,
-
-
+                    spaceBetween: <?= $this->space_between ? $this->space_between : 30; ?>,
+                    speed: <?= $this->transition_time ? $this->transition_time : 1500; ?>,
+                    effect: '<?= $this->slide_effect ? $this->slide_effect : 'slide'; ?>',
                     <?php if ($this->autoplay) : ?>
                     autoplay: {
-                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                        delay: <?= $this->autoplay_time ? $this->autoplay_time : 3000; ?>,
                     },
                     <?php endif; ?>
-
-                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'
-                    <?php else:?>'slide'<?php endif;?>,
+                    autoHeight: false,
                     <?php if ($this->slide_effect == "coverflow") : ?>
                     coverflowEffect: {
-                        rotate: 50, // Slide rotate in degrees
-                        stretch: 0, // Stretch space between slides (in px)
-                        depth: 100, // Depth offset in px (slides translate in Z axis)
-                        modifier: 1, // Effect multipler
-                        slideShadows: true, // Enables slides shadows
+                        rotate: 50,
+                        stretch: 0,
+                        depth: 100,
+                        modifier: 1,
+                        slideShadows: true,
                     },
                     <?php endif;?>
-
                     <?php if ($this->slide_effect == "fade") : ?>
                     fadeEffect: {
                         crossFade: true
                     },
                     <?php endif;?>
-
-                    <?php if ($this->show_arrows): ?>
+                    <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
                     navigation: {
                         nextEl: '.content-slider_<?= $this->id;?>.swiper-button-next',
                         prevEl: '.content-slider_<?= $this->id;?>.swiper-button-prev',
                     },
-                    <?php endif;?>
-
-                    <?php if($this->show_pagination):?>
                     pagination: {
-                        el: '.content-slider_<?php echo $this->id; ?>.swiper-pagination',
+                        el: '.content-slider_<?= $this->id; ?>.swiper-pagination',
                         clickable: true,
                     },
-                    <?php endif;?>
-
-                    spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
-                    slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>
-                    'auto'<?php endif;?>,
-
-
+                    <?php endif; ?>
                     <?php if ($this->slides_per_view) : ?>
+                    <?php if ($this->slides_per_view > 1) : ?>
+                    slidesPerView: 1.5,
                     breakpoints: {
-                        320: {
-                            slidesPerView: 1,
-                        },
-                        480: {
-                            slidesPerView: 2,
-                        },
                         768: {
-                            slidesPerView: <?= $this->slides_per_view / 2; ?>,
+                            slidesPerView: <?= $this->slides_per_view ? $this->slides_per_view / 2 : 1; ?>,
                         },
                         992: {
-                            slidesPerView: <?= $this->slides_per_view; ?>,
+                            slidesPerView: <?= $this->slides_per_view ? $this->slides_per_view : 3; ?>,
                         }
                     },
+                    <?php else:?>
+                    slidesPerView: 1,
+                    <?php endif;?>
+                    <?php else:?>
+                    slidesPerView: 'auto',
                     <?php endif;?>
                 });
+
+                document.querySelectorAll('.swiper.content-slider_<?= $this->id;?> .swiper-wrapper > *').forEach(function (element) {
+                    const swiperSlide = document.createElement('div');
+                    swiperSlide.classList.add('swiper-slide');
+                    element.parentNode.insertBefore(swiperSlide, element);
+                    swiperSlide.appendChild(element);
+                });
             }
-        }, {passive: true})
+        }, {passive: true});
     </script>
 <?php endif; ?>
 
 
-<?php if (TL_MODE == 'BE') {
+<?php if (VSM_HelperFunctions\EnvHelper::isBackend()) {
     echo $this->element_type;
 } ?>
 
 
-<?php if (TL_MODE == 'FE'): ?>
+<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
 <div <?php echo $this->cssID; ?> class="content--element  row-wrapper <?php echo $this->class; ?>" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
 
     <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
@@ -110,10 +96,10 @@ if (TL_MODE == 'FE') {
         null
     ); ?>
 
-<div class="<?php if (!$this->is_fullwidth): ?>container<?php else: ?>is-fullwidth<?php endif; ?> position-relative">
+    <div class="position-relative">
     <?php if ($this->element_type != 'is_slider'): ?>
     <div>
-    <div class="row gy-2 <?php echo $this->cssID; ?> <?php if ($this->mid_element_content): ?>   with-mid-content  <?php endif; ?>
+    <div class="row <?php echo $this->cssID; ?> <?php if ($this->mid_element_content): ?>   with-mid-content  <?php endif; ?>
 <?= $this->styleManager->get('spaltenausrichtung', ['ausrichtung']); ?>   <?= $this->styleManager->get('spaltenausrichtung', ['ausrichtung_horizontal']); ?>   <?= $this->styleManager->get('spaltenausrichtung', ['umkehren']); ?>
 
 <?php if ($this->styleManager->get('spaltenabstand', ['spaltenabstaende']) && (!$this->styleManager->get('spaltenabstand', ['spaltenabstaende_x']) && !$this->styleManager->get('spaltenabstand', ['spaltenabstaende_y']))): ?>
@@ -142,7 +128,7 @@ if (TL_MODE == 'FE') {
     <?php endif; ?>
 
     <div class="swiper content-slider_<?= $this->id; ?> <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?>">
-    <div class="swiper-wrapper <?php if($this->slides_centered):?>align-items-center<?php endif;?>">
+    <div class="swiper-wrapper <?php if ($this->slides_centered): ?>align-items-center<?php endif; ?>">
 
 <?php endif; ?>
 

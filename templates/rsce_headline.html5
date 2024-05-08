@@ -1,26 +1,14 @@
-<?php
-if (TL_MODE == 'FE') {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_headline_image_and_box.min.css|static';
-}
-?>
-
-<div id="<?= $this->cssID[0]; ?>" class=" content--element <?= $this->class; ?>">
-    <div class="ce--inner container">
-
-
-   <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                        $this->topline,
-                        $this->headline,
-                        $this->subline,
-                        $this->headline_type,
-                        $this->animation_type,
-                        null,
-                        false,
-                        null
-                    ); ?>
-
-
-
-
+<div id="<?= $this->cssID[0]; ?>" class="content--element <?= $this->class; ?> pb-0">
+    <div class="ce--inner ">
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->headline_type,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
     </div>
 </div>

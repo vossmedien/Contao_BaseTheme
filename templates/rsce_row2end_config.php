@@ -7,4 +7,7 @@ return array(
     'moduleCategory' => 'miscellaneous',
     'standardFields' => array('cssID'),
     'fields' => array(),
+    'wrapper' => array(
+        'type' => 'stop',
+    ),
 );

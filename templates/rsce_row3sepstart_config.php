@@ -6,7 +6,9 @@ return array(
     'contentCategory' => 'Spalten',
     'moduleCategory' => 'miscellaneous',
     'standardFields' => array('cssID'),
-
+    'wrapper' => array(
+        'type' => 'start',
+    ),
     'fields' => array(
         'background_color' => array(
             'label' => array('Spalten-Hintergrundfarbe', 'In HEX oder rgb(a) angeben, funktioniert bei 2 Spalten!'),

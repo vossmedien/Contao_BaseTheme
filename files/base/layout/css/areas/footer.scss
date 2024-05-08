@@ -1,7 +1,6 @@
-#footer{
+footer{
   margin-top: auto;
   position: relative;
-  //z-index: 1;
 
   .fc--top{
     background-color: $footer-top-bg;
@@ -14,9 +13,4 @@
   .fc--bottom{
     background-color: $footer-bottom-bg;
   }
-
-  p:last-child{
-    margin-bottom: 0px;
-  }
-
 }

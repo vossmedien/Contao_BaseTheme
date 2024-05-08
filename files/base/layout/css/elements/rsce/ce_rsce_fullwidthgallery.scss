@@ -1,5 +1,3 @@
-
-
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
@@ -44,8 +42,12 @@ html body {
         }
 
         &:hover {
+          .gallery-column--initial-content * {
+            opacity: 0;
+          }
+
           .gallery-column--hover-content {
-            opacity: 1;
+            animation-fill-mode: both;
           }
 
           .column--image-holder {
@@ -70,11 +72,11 @@ html body {
           font-size: 1.35rem;
         }
 
-        .gallery-column--hover-content {
+
+        .gallery-column--initial-content {
           height: 100%;
           width: 100%;
           padding: 3rem;
-          opacity: 0;
           transition: all 0.3s ease;
           background-color: rgba(0, 0, 0, 0.5);
           display: flex;
@@ -82,9 +84,8 @@ html body {
           justify-content: center;
           align-content: center;
           align-items: center;
-          position: relative;
+          position: absolute;
           z-index: 55;
-
           min-height: rfs-value(350px);
           @include media-breakpoint-up(lg) {
             min-height: rfs-value(550px);
@@ -92,12 +93,47 @@ html body {
 
           @include font-size(22px);
 
+          * {
+            transition: all 0.3s ease;
+          }
+
+          .ce--headline {
+            > * {
+              max-width: 100%;
+              padding: 0px;
+            }
+          }
+        }
+
+
+        .gallery-column--hover-content {
+          height: 100%;
+          width: 100%;
+          padding: 3rem;
+          //opacity: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          flex-flow: column wrap;
+          justify-content: center;
+          align-content: center;
+          align-items: center;
+          animation-duration: .5s;
+          animation-fill-mode: both;
+          position: absolute;
+          z-index: 55;
+          min-height: rfs-value(350px);
+          @include font-size(22px);
+
+          @include media-breakpoint-up(lg) {
+            min-height: rfs-value(550px);
+          }
+
           .hover-content--inner {
             margin: auto;
           }
 
-          .ce--headline{
-            > *{
+          .ce--headline {
+            > * {
               max-width: 100%;
               padding: 0px;
             }

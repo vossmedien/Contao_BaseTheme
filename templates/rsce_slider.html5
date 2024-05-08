@@ -1,190 +1,212 @@
 <?php
-if (TL_MODE == 'FE') {
-    if (!isset($this->size)) {
-        $this->{"size"} = "";
-    }
+
+
+if (!isset($this->size)) {
+    $this->{"size"} = "";
 }
 ?>
-
 
 <div <?php echo $this->cssID; ?> class="content--element  <?php if (!str_contains($this->class, "col")): ?>container<?php else: ?><?php echo $this->class; ?><?php endif; ?>">
     <div class="ce--inner <?php if (!str_contains($this->class, "col")): ?><?php echo $this->class; ?><?php endif; ?> ">
 
 
-            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                $this->topline,
-                $this->headline,
-                $this->subline,
-                $this->hl,
-                $this->animation_type,
-                null,
-                false,
-                null
-            ); ?>
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
 
-            <?php
-            if ($this->selecttype == "multiple") {
-                $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
+        <?php
+        use Contao\StringUtil;
+        if ($this->selecttype == "multiple") {
+            $unserializedData = unserialize($this->multiSRC);
+            if (is_array($unserializedData)) {
+                $dataSorted = array_map([StringUtil::class, 'binToUuid'], $unserializedData);
             } else {
                 $dataSorted = [];
             }
-            ?>
+        } else {
+            $dataSorted = [];
+        }
+        ?>
 
+        <div class="ce--content-slider  <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <?php $rand = rand(1, 100); ?>
 
-            <div class="ce--content-slider  <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
-                 data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                <?php $rand = rand(1, 100); ?>
-
-                <?php if ($this->open_lightbox): ?>
-                    <script type="text/javascript" async>
-                        $(function () {
-                            $(".group_<?php echo $rand; ?>").colorbox({
-                                rel: "group_<?php echo $rand; ?>",
-                                current: "Bild {current} von {total}",
-                                maxWidth: '95%',
-                                maxHeight: '95%'
-                            });
+            <?php if ($this->open_lightbox): ?>
+                <script type="text/javascript" defer>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        new VenoBox({
+                            selector: ".lightbox_<?= $rand;?>", //Items selector
+                            infinigall: true, // Ermöglicht eine endlose Navigation durch die Galerie. Standardwert: false
+                            maxWidth: '95%', // Maximale Breite des Lightbox-Fensters. Standardwert: '100%'
+                            numeration: true, // Zeigt Nummerierung der aktuellen und Gesamtanzahl der Elemente in der Galerie an. Standardwert: false
+                            spinner: 'flow', //  'plane' | 'chase' | 'bounce' | 'wave' | 'pulse' | 'flow' | 'swing' | 'circle' | 'circle-fade' | 'grid' | 'fold | 'wander'
+                            initialScale: 0.9, // Anfangsgröße der Skalierungstransformation für Elemente. Standardwert: 0.9
+                            transitionSpeed: 200, // Übergangsgeschwindigkeit für eingehende Elemente in Millisekunden. Standardwert: 500
+                            fitView: true, // Passt Bilder an, um innerhalb der Höhe des Viewports zu passen. Standardwert: true
+                            //autoplay: false, // Automatic play for videos. Standardwert: false
+                            //bgcolor: '#ffffff', // Hintergrundfarbe des Lightbox-Elements. Standardwert: '#ffffff'
+                            //border: '0px', // Dicke des Rahmens um das Lightbox-Fenster. Standardwert: '0px'
+                            //customClass: '', // Zusätzliche benutzerdefinierte Klasse für das Styling der Lightbox. Standardwert: ''
+                            //focusItem: false, // Setzt den Fokus auf das aktuelle Element nach dem Schließen der Lightbox. Standardwert: false
+                            //navigation: true, // Zeigt Navigationspfeile zur Bildnavigation an. Standardwert: true
+                            //navKeyboard: true, // Ermöglicht die Navigation mit Tastaturtasten. Standardwert: true
+                            //navTouch: true, // Ermöglicht die Navigation durch Wischen/Touch auf Touch-Geräten. Standardwert: true
+                            //navSpeed: 300, // Geschwindigkeit der Galerieübergänge in Millisekunden. Standardwert: 300
+                            //overlayClose: true, // Ermöglicht das Schließen der Lightbox durch Klicken auf den Overlay-Hintergrund. Standardwert: true
+                            //overlayColor: 'rgba(255,255,255,0.85)', // Farbe des Hintergrund-Overlays. Standardwert: 'rgba(0,0,0,0.5)'
+                            //popup: false, // Zeigt automatisch ein Popup beim Laden der Seite an. Standardwert: false
+                            //ratio: '16x9', // '1x1' | '4x3' | '16x9' | '21x9' | 'full'
+                            //share: false, // Zeigt Teilen-Buttons für Bilder und Videos an. Standardwert: false
+                            //shareStyle: 'bar', // Stil der Teilen-Buttons. Standardwert: 'bar'
+                            //spinColor: '#d2d2d2', // Farbe des Preloaders. Standardwert: '#d2d2d2'
+                            //titleattr: 'data-title', // Attribut, das für die Anzeige des Titels verwendet wird. Standardwert: 'title'
+                            //titlePosition: 'bottom', // 'top' or 'bottom'
+                            //titleStyle: 'pill', // 'block' | 'pill' | 'transparent' | 'bar'
+                            //toolsBackground: '#1C1C1C', // Hintergrundfarbe der UI-Elemente. Standardwert: '#ffffff'
+                            //toolsColor: '#d2d2d2', // Farbe der UI-Elemente. Standardwert: '#d2d2d2'
                         });
-                    </script>
-                <?php endif; ?>
-                <?php if ($this->text_on_slider): ?>
-                    <div class="slider-caption"
-                         style="<?php if ($this->alternate_background_color): ?>background-color: <?= $this->alternate_background_color; ?>;<?php endif; ?> <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>">
-                        <?= $this->text_on_slider; ?>
-                    </div>
-                <?php endif; ?>
+                    });
+                </script>
+            <?php endif; ?>
 
-                <div class="swiper <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> content-slider_<?= $this->id; ?>">
-                    <!-- Additional required wrapper -->
-                    <div class="swiper-wrapper align-items-center">
-                        <!-- Slides -->
-                        <?php if ($dataSorted) : ?>
-
-                            <?php foreach ($dataSorted as $data) : ?>
-
-
-                                <div class="swiper-slide text-center">
-                                    <?php if ($this->open_lightbox): ?>
-                                    <a href="<?= Image::get(FilesModel::findByUuid($data)->path, null, null, null); ?>" class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
-
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, null, $this->headline, $this->size, null, true); ?>
-
-                                        <?php if ($this->open_lightbox): ?></a><?php endif; ?>
-                                </div>
-
-
-                            <?php endforeach ?>
-
-                        <?php else : ?>
-
-                            <?php foreach ($this->galery as $slide) : ?>
-                                <div class="swiper-slide text-center">
-                                    <?php if ($this->open_lightbox): ?>
-                                    <a href="<?= Image::get(FilesModel::findByUuid($slide->slide)->path, null, null, null); ?>"
-                                       class="group_<?php echo $rand; ?> bts-cboxElement cboxElement"><?php endif; ?>
-
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->slide, null, $this->headline, $this->size, null, true); ?>
-                                        <?php if ($this->open_lightbox): ?> </a><?php endif; ?>
-                                    <?php if ($slide->slide_text) : ?>
-                                        <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endforeach ?>
-
-                        <?php endif; ?>
-                    </div>
-
+            <?php if ($this->text_on_slider): ?>
+                <div class="slider-caption"
+                     style="<?php if ($this->alternate_background_color): ?>background-color: <?= $this->alternate_background_color; ?>;<?php endif; ?> <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>">
+                    <?= $this->text_on_slider; ?>
                 </div>
-                <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
-                    <?php if ($this->show_pagination): ?>
-                        <div class="content-slider_<?= $this->id; ?> swiper-pagination"></div>
+            <?php endif; ?>
+
+            <div class="swiper <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> content-slider_<?= $this->id; ?>">
+                <!-- Additional required wrapper -->
+                <div class="swiper-wrapper align-items-center">
+                    <!-- Slides -->
+
+
+                    <?php if ($dataSorted) : ?>
+                        <?php
+                        $length = count($dataSorted); // Anzahl der Elemente im Array
+                        $index = 0;
+                        foreach ($dataSorted as $data) : ?>
+                            <?php if ($index < $length - 1): ?>
+                                <div class="swiper-slide text-center">
+                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, $this->headline, strip_tags($data->slide_text), $this->size, null, true, $rand); ?>
+                                </div>
+                            <?php endif;
+                            $index++; ?>
+                        <?php endforeach ?>
+                    <?php else : ?>
+                        <?php foreach ($this->galery as $slide) : ?>
+                            <div class="swiper-slide text-center">
+                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->slide, $this->headline, strip_tags($slide->slide_text), $this->size, null, true, $rand); ?>
+                                <?php if ($slide->slide_text) : ?>
+                                    <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach ?>
+
                     <?php endif; ?>
-                    <?php if ($this->show_arrows): ?>
-                        <div class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
-                        <div class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
-                    <?php endif; ?>
-                <?php endif; ?>
+                </div>
+
             </div>
+            <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
+                <?php if ($this->show_pagination): ?>
+                    <div class="content-slider_<?= $this->id; ?> swiper-pagination"></div>
+                <?php endif; ?>
+                <?php if ($this->show_arrows): ?>
+                    <div class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                    <div class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
     </div>
-<?php if (TL_MODE == 'FE'): ?>
-    <script type="text/javascript" async>
-        window.addEventListener('load', function () {
-            if ($('.swiper.content-slider_<?= $this->id;?>').length) {
-                const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
+</div>
+ <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+<script type="text/javascript" defer>
+    window.addEventListener('load', function () {
+        let swiperElementCheck_<?= $this->id; ?> = document.querySelector('.swiper.content-slider_<?= $this->id; ?>');
+        if (swiperElementCheck_<?= $this->id; ?>) {
+            swiperElementCheck_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
 
-                    direction: 'horizontal',
+                direction: 'horizontal',
 
-                    loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
-                    //loopedSlides: 1,
+                loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
+                //loopedSlides: 1,
 
-                    preloadImages: false,
-                    lazy: true,
+                preloadImages: false,
+                lazy: true,
 
-                    spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
-                    //centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
-                    //slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>1<?php endif;?>,
+                spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
+                //centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
+                //slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>1<?php endif;?>,
 
-                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
-                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
-                    'slide'<?php endif;?>,
+                speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
+                effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
+                'slide'<?php endif;?>,
 
-                    <?php if ($this->autoplay) : ?>
-                    autoplay: {
-                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                <?php if ($this->autoplay) : ?>
+                autoplay: {
+                    delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                },
+                <?php endif; ?>
+                autoHeight: false,
+
+                <?php if ($this->slide_effect == "coverflow") : ?>
+                coverflowEffect: {
+                    rotate: 50, // Slide rotate in degrees
+                    stretch: 0, // Stretch space between slides (in px)
+                    depth: 100, // Depth offset in px (slides translate in Z axis)
+                    modifier: 1, // Effect multipler
+                    slideShadows: true, // Enables slides shadows
+                },
+                <?php endif;?>
+
+                <?php if ($this->slide_effect == "fade") : ?>
+                fadeEffect: {
+                    crossFade: true
+                },
+                <?php endif;?>
+
+                <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
+                navigation: {
+                    nextEl: '.content-slider_<?= $this->id;?>.swiper-button-next',
+                    prevEl: '.content-slider_<?= $this->id;?>.swiper-button-prev',
+                },
+
+                pagination: {
+                    el: '.content-slider_<?php echo $this->id; ?>.swiper-pagination',
+                    clickable: true,
+                },
+                <?php endif; ?>
+
+
+                <?php if ($this->slides_per_view) : ?>
+
+                <?php if ($this->slides_per_view > 1) : ?>
+                slidesPerView: 1.5,
+                breakpoints: {
+                    768: {
+                        slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view / 2; ?><?php else:?>1<?php endif;?>,
                     },
-                    <?php endif; ?>
-                    autoHeight: true,
+                    992: {
+                        slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>3<?php endif;?>,
+                    }
+                } <?php else:?>
+                slidesPerView: 1,
+                <?php endif;?>
+                <?php else:?>
+                slidesPerView: 'auto',
+                <?php endif;?>
 
-                    <?php if ($this->slide_effect == "coverflow") : ?>
-                    coverflowEffect: {
-                        rotate: 50, // Slide rotate in degrees
-                        stretch: 0, // Stretch space between slides (in px)
-                        depth: 100, // Depth offset in px (slides translate in Z axis)
-                        modifier: 1, // Effect multipler
-                        slideShadows: true, // Enables slides shadows
-                    },
-                    <?php endif;?>
-
-                    <?php if ($this->slide_effect == "fade") : ?>
-                    fadeEffect: {
-                        crossFade: true
-                    },
-                    <?php endif;?>
-
-                    <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
-                    navigation: {
-                        nextEl: '.content-slider_<?= $this->id;?>.swiper-button-next',
-                        prevEl: '.content-slider_<?= $this->id;?>.swiper-button-prev',
-                    },
-
-                    pagination: {
-                        el: '.content-slider_<?php echo $this->id; ?>.swiper-pagination',
-                        clickable: true,
-                    },
-                    <?php endif; ?>
-
-
-                    <?php if ($this->slides_per_view) : ?>
-
-                    <?php if ($this->slides_per_view > 1) : ?>
-                    slidesPerView: 1.5,
-                    breakpoints: {
-                        768: {
-                            slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view / 2; ?><?php else:?>1<?php endif;?>,
-                        },
-                        992: {
-                            slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>3<?php endif;?>,
-                        }
-                    } <?php else:?>
-                    slidesPerView: 1,
-                    <?php endif;?>
-                    <?php else:?>
-                    slidesPerView: 'auto',
-                    <?php endif;?>
-
-                });
-            }
-        }, {passive: true})
-    </script>
-<?php endif; ?>
+            });
+        }
+    }, {passive: true})
+</script>
+     <?php endif; ?>

@@ -5,13 +5,7 @@
 @import "../../scss-variables";
 
 html body {
-  //Adjust the Centering of Text if Header is fixed
 
-  &.theme-4 {
-    .ce_rsce_headimagelogo .mainimage--content .mainimage--content-inner {
-      margin-top: rfs-value(40px);
-    }
-  }
 
   .ce_rsce_headimagelogo {
     &.move-content {
@@ -30,10 +24,14 @@ html body {
 
     .plain-image-holder {
       text-align: center;
+      height: 100%;
 
-      img {
-        width: 100%;
-        height: auto;
+      &.is-bg {
+        img, video {
+          object-fit: cover;
+          width: 100%;
+          height: 100%;
+        }
       }
     }
 
@@ -50,7 +48,7 @@ html body {
     }
 
     .with-boxed-logo {
-      margin-bottom: 6rem;
+      //margin-bottom: 6rem;
     }
 
     .boxed-logo {
@@ -58,7 +56,7 @@ html body {
       position: absolute;
       right: 50%;
       transform: translate(50%, 50%);
-      bottom: 0;
+      top: 90%;
       text-align: center;
       z-index: 5;
 
@@ -75,13 +73,17 @@ html body {
     .mainslider {
       &.with-diagonalCut {
         &:after {
+          --diagonalHeight: 15vh;
+
           content: "";
           position: absolute;
-          bottom: 0;
+          bottom: calc(-1 * calc(var(--diagonalHeight) / 2));
           left: 0;
-          border-right: 100vw solid $body-bg;
-          border-top: 10vw solid transparent;
           z-index: 5;
+          height: var(--diagonalHeight);
+          width: 105vw;
+          background-color: $body-bg;
+          transform: rotate(-2.5deg);
         }
       }
 
@@ -105,40 +107,21 @@ html body {
       .image--holder {
         position: relative;
         width: 100vw;
-
-        @include media-breakpoint-down(sm) {
-          &:not(.remove-settings-mobile) {
-            height: 100dvh !important;
-            min-height: 0 !important;
-          }
-        }
-
-        video {
-          object-fit: cover;
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          left: 0;
-          top: 0;
-        }
+        overflow: hidden;
 
         .mainimage--content {
           height: 100%;
           width: 100vw;
           position: absolute;
           top: 0;
+          max-width: 100%;
 
-          > .container {
-            position: relative;
-            height: 100%;
-          }
 
           .mainimage--content-inner {
             display: inline-block;
             position: absolute;
-            width: 100%;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            //width: 100%;
+            padding-inline: var(--bs-gutter-x);
 
             &:not([class*="pos-"]) {
               transform: translate(0%, -50%);
@@ -166,11 +149,6 @@ html body {
       &.style-1 {
         .mainimage--content {
           .mainimage--content-inner {
-            @include media-breakpoint-down(md) {
-              width: 100% !important;
-              //max-width: 100% !important;
-            }
-
             .button--wrapper {
               margin-top: 1.75rem;
             }
@@ -184,13 +162,15 @@ html body {
             position: absolute;
             z-index: 10;
             min-width: 50vw;
-            padding: 2rem calc(var(--bs-gutter-x) * 0.5);
+            padding: 2rem calc(var(--bs-gutter-x) * .5) !important;
+            width: 100%;
 
-            @include media-breakpoint-up(md) {
-              max-width: 75%;
-              //padding: 2rem 0;
-            }
+
             @include media-breakpoint-up(sm) {
+              max-width: 75%;
+              width: auto;
+
+
               &:after {
                 content: "";
                 display: block;
@@ -231,6 +211,11 @@ html body {
           }
         }
       }
+    }
+
+
+    .swiper:has(.swiper-button-prev):has(.ce--mainimage.style-2) .ce--mainimage.style-2 .mainimage--content-inner {
+      padding-inline: 85px !important;
     }
   }
 }

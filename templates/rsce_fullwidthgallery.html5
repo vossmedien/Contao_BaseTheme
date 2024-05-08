@@ -1,34 +1,57 @@
-<?php
-if (TL_MODE == 'FE') {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_fullwidthgallery.min.css|static';
-}
-?>
-
+<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_fullwidthgallery.min.css|static';
+} ?>
 <div <?php echo $this->cssID; ?> class="content--element <?= $this->class; ?>">
     <div class="ce--inner">
 
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-            $this->topline,
-            $this->headline,
-            $this->subline,
-            $this->hl,
-            $this->animation_type,
-            null,
-            false,
-            null
-        ); ?>
+
+        <?php if ($this->topline || $this->headline || $this->subline): ?>
+            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                $this->topline,
+                $this->headline,
+                $this->subline,
+                $this->hl,
+                $this->animation_type,
+                null,
+                false,
+                null
+            ); ?>
+        <?php endif; ?>
 
         <?php if ($this->gallery): ?>
             <div class="ce--fullwidthgallery" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
                 <div class="row gx-0">
+                    <style>
+                        <?php foreach ($this->gallery as $x => $e) : ?>
+                        .gallery-column-<?= $this->id; ?>-<?= $x; ?>:hover .gallery-column--hover-content {
+                            animation-name: <?= $e->show_effect; ?>;
+                        }
+
+                        <?php
+                        $reverseEffect = $e->show_effect;
+                        if (strpos($reverseEffect, 'Down') !== false || strpos($reverseEffect, 'Up') !== false || strpos($reverseEffect, 'Left') !== false || strpos($reverseEffect, 'Right') !== false || strpos($reverseEffect, 'In') !== false) {
+                            $reverseEffect = str_replace('Down', 'Up', $reverseEffect);
+                            $reverseEffect = str_replace('Up', 'Down', $reverseEffect);
+                            $reverseEffect = str_replace('Left', 'Right', $reverseEffect);
+                            $reverseEffect = str_replace('Right', 'Left', $reverseEffect);
+                            $reverseEffect = str_replace('In', 'Out', $reverseEffect);
+                            ?>
+                        .gallery-column-<?= $this->id; ?>-<?= $x; ?> .gallery-column--hover-content {
+                            animation-name: <?= $reverseEffect; ?>;
+                        }
+
+                        <?php } ?>
+                        <?php endforeach; ?>
+                    </style>
+
                     <?php foreach ($this->gallery as $x => $e) : ?>
-                        <div class="<?= $e->column_width; ?>"
+                        <div class="<?= $e->column_width; ?> <?php if ($e->show_contents): ?>has-hovercontent<?php endif; ?>"
                              data-aos="<?php if ($e->animation_type) : ?><?php echo $e->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                            <div class="gallery-column">
+                            <div class="gallery-column gallery-column-<?= $this->id; ?>-<?= $x; ?>">
 
                                 <div class="gallery-column--inner">
 
-                                    <div data-bg="<?= Image::get(FilesModel::findByUuid($e->image)->path, $e->size[0], $e->size[1], $e->size[2]); ?>"
+                                    <div data-bg="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($e->image, $e->size); ?>"
                                          style="background-size: cover; background-repeat: no-repeat;"
                                          class="lazy column--image-holder"></div>
 
@@ -36,30 +59,65 @@ if (TL_MODE == 'FE') {
                                         <a href="<?= $e->link; ?>"></a>
                                     <?php endif; ?>
 
-
-                                    <?php if ($e->desc || $e->headline): ?>
-                                        <div class="hover-content--info-icon">
-                                            <i class="fa-sharp fa-light fa-info"></i>
-                                        </div>
-
-                                        <div class="gallery-column--hover-content" style="
+                                    <?php if ($e->show_initial_content): ?>
+                                        <div class="gallery-column--initial-content <?= $e->textalign; ?>" style="
                                         <?php if ($e->background_color): ?>background-color: <?= $e->background_color; ?>;<?php endif; ?>
                                         <?php if ($e->text_color): ?>color: <?= $e->text_color; ?>;<?php endif; ?>">
+                                            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                $e->topline,
+                                                $e->headline,
+                                                $e->subline,
+                                                $e->headline_type,
+                                                null,
+                                                $e->text_color,
+                                                $e->onlystyle,
+                                                null
+                                            ); ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($e->desc || $e->hover_topline || $e->hover_headline || $e->hover_subline || $e->buttons): ?>
+                                        <?php if ($this->show_icon): ?>
+                                            <div class="hover-content--info-icon">
+                                                <i class="fa-sharp fa-light fa-info"></i>
+                                            </div>
+                                        <?php endif; ?>
+
+
+                                        <div class="gallery-column--hover-content  <?= $e->hover_textalign; ?>" style="
+                                        <?php if ($e->hover_background_color): ?>background-color: <?= $e->hover_background_color; ?>;<?php endif; ?>
+                                        <?php if ($e->hover_text_color): ?>color: <?= $e->hover_text_color; ?>;<?php endif; ?>">
 
                                             <div class="hover-content--inner">
-                                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                                                    $e->topline,
-                                                    $e->headline,
-                                                    $e->subline,
-                                                    $e->headline_type,
-                                                    null,
-                                                    $e->text_color,
-                                                    $e->onlystyle,
-                                                    null
-                                                ); ?>
+                                                <?php if ($e->hover_topline || $e->hover_headline || $e->hover_subline): ?>
+                                                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                        $e->hover_topline,
+                                                        $e->hover_headline,
+                                                        $e->hover_subline,
+                                                        $e->hover_headline_type,
+                                                        null,
+                                                        $e->hover_text_color,
+                                                        $e->hover_onlystyle,
+                                                        null
+                                                    ); ?>
+                                                <?php endif; ?>
 
                                                 <?php if ($e->desc): ?>
                                                     <?= $e->desc; ?>
+                                                <?php endif; ?>
+
+                                                <?php if ($e->buttons): ?>
+                                                    <div class="button-wrapper">
+                                                        <?php foreach ($e->buttons as $button): ?>
+                                                            <?php if ($button->link_url): ?>
+                                                                <a href="<?= $button->link_url; ?>"
+                                                                   class="btn <?= $button->link_type; ?> <?= $button->link_size; ?> <?php if ($button->new_tab): ?>_blank<?php endif; ?>"
+                                                                   title="<?= $button->link_text; ?>"
+                                                                   <?php if ($button->link_betreff): ?>subject="<?= $button->link_betreff; ?>"<?php endif; ?>
+                                                                   data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"><?= $button->link_text; ?></a>
+                                                            <?php endif; ?>
+                                                        <?php endforeach; ?>
+                                                    </div>
                                                 <?php endif; ?>
                                             </div>
                                         </div>
@@ -67,7 +125,7 @@ if (TL_MODE == 'FE') {
                                 </div>
                             </div>
                         </div>
-                    <?php endforeach ?>
+                    <?php endforeach; ?>
                 </div>
             </div>
         <?php endif; ?>

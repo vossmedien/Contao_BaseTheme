@@ -151,13 +151,14 @@ return array(
         ),
 
         'size' => array(
-            'label' => array('Bildbreite und Bildhöhe', ''),
+            'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
             'inputType' => 'imageSize',
-            'options' => System::getImageSizes(),
+            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
             'eval' => array(
                 'rgxp' => 'digit',
                 'includeBlankOption' => true,
+                'tl_class' => ' clr'
             ),
         ),
 
