@@ -1,0 +1,38 @@
+{
+  "type": "project",
+  "require": {
+    "alnv/catalog-manager-bundle": "^3.0",
+    "contao/calendar-bundle": "5.3.*",
+    "contao/conflicts": "*@dev",
+    "contao/listing-bundle": "5.3.*",
+    "contao/manager-bundle": "5.3.*",
+    "contao/news-bundle": "5.3.*",
+    "heimseiten/contao-custom-backend-settings-bundle": "^2.1",
+    "madeyourday/contao-rocksolid-custom-elements": "^2.4",
+    "oveleon/contao-component-style-manager": "^3.5",
+    "oveleon/contao-cookiebar": "^2.0",
+    "terminal42/contao-changelanguage": "^3.6",
+    "terminal42/contao-folderpage": "^3.2",
+    "terminal42/contao-leads": "^3.0",
+    "terminal42/contao-node": "^1.5",
+    "terminal42/notification_center": "^2.0",
+    "trilobit-gmbh/contao-tiles-bundle": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "VSM_HelperFunctions\\": "system/modules/vsm_custom_helpers/src/"
+    }
+  },
+  "extra": {
+    "public-dir": "public",
+    "contao-component-dir": "assets"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "@php vendor/bin/contao-setup"
+    ],
+    "post-update-cmd": [
+      "@php vendor/bin/contao-setup"
+    ]
+  }
+}
