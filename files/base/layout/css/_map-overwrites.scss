@@ -1,0 +1,63 @@
+$theme-colors: (
+        "primary": $primary,
+        "secondary": $secondary,
+        "tertiary": $tertiary,
+        "red": #871623,
+        "blue": #00274a,
+        "purple": #6610f2,
+        "success": #dbe8e2,
+        "info": #d1ecf1,
+        "warning": #fff3cd,
+        "danger": #f8d7da,
+        "light": $gray-100,
+        "dark": $gray-900,
+);
+
+
+$spacers: (
+        0: 0,
+        1: 0.5rem,
+        2: 1rem,
+        3: 1.5rem,
+        4: 2rem,
+        5: 2.5rem,
+        6: 3rem,
+        7: 3.5rem,
+        8: 4rem,
+        9: 4.5rem,
+        10: 5rem,
+);
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1640px,
+);
+$gutters: (
+        0: 0,
+        1: $grid-gutter-width * 0.5,
+        2: $grid-gutter-width,
+        3: $grid-gutter-width * 2,
+        4: $grid-gutter-width * 3,
+        5: $grid-gutter-width * 4,
+);
+
+//CSS Variablen beachten
+$container-max-widths: (
+        sm: 100%,
+        md: 100%,
+        lg: 100%,
+        xl: 1140px,
+        xxl: 1600px,
+);
+
+$font-sizes: (
+        1: $h1-font-size,
+        2: $h2-font-size,
+        3: $h3-font-size,
+        4: $h4-font-size,
+        5: $h5-font-size,
+        6: $h6-font-size,
+);

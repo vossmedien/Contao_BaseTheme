@@ -5,7 +5,6 @@ html body {
   -ms-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
-  color: var(--bs-body-color);
   font-size: clamp(
     var(--bs-body-font-size),
     1vw,
@@ -47,11 +46,6 @@ html body {
 
   a {
     transition: color 0.3s ease;
-    color: var(--bs-link-color);
-
-    &:hover {
-      color: var(--bs-link-hover-color);
-    }
   }
 
   span:not([data-bs-toggle="dropdown"]) {

@@ -90,7 +90,7 @@ h1,
   display: block;
   //padding: 0px;
   transition: color 0.3s ease-in-out;
-  color: var(--bs-headline-color);
+  //color: var(--bs-headline-color);
 
   font-size: clamp(
           var(--hl-font-size-min),
@@ -179,7 +179,6 @@ h6,
   display: block;
   //padding: 0px;
   transition: color 0.3s ease-in-out;
-  color: var(--bs-headline-color);
 }
 
 .ce--topline {

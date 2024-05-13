@@ -1,24 +1,7 @@
 :root {
-  --width: 100vw;
-  --full-width: 100vw;
   --main-gap: #{clamp($basic-gutter * 0.75, 5vw, $basic-gutter * 1.5)};
 
-
-  --bs-font-primary: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --bs-font-secondary: var(--bs-font-primary);
-  --bs-font-tertiary: var(--bs-font-primary);
-
-  --bs-font-sans-serif: var(--bs-font-primary);
-  --bs-font-monospace: var(--bs-font-secondary);
-
   --bs-gray: #{$gray};
-
-  /*
-  --bs-gradient: linear-gradient(
-    180deg,
-    rgba(var(--bs-white-rgb), 0.15),
-    rgba(var(--bs-white-rgb), 0)
-  );  */
 
   --bs-gradient: linear-gradient(to top, #004878, #002c50);
 
@@ -28,22 +11,12 @@
           calc(#{$basic-gutter} * 1.25)
   );
 
-  --bs-font-weight-100: 100;
-  --bs-font-weight-200: 200;
-  --bs-font-weight-300: 300;
-  --bs-font-weight-400: 400;
-  --bs-font-weight-500: 500;
-  --bs-font-weight-600: 600;
-  --bs-font-weight-700: 700;
-  --bs-font-weight-800: 800;
-  --bs-font-weight-900: 900;
 
   --bs-btn-padding-top: 0.75rem;
   --bs-btn-padding-bottom: 0.85rem;
   --bs-btn-padding-left: 1rem;
   --bs-btn-padding-right: 1rem;
 
-  --bs-body-font-family: var(--bs-font-primary);
   --bs-body-font-size: 1rem;
 
   --bs-body-font-weight: var(--bs-font-weight-300);
@@ -53,17 +26,8 @@
   --bs-body-line-height: 1.3;
   --bs-body-line-height-lg: 1.5;
 
-  --bs-body-color: var(--bs-gray-900);
-  --bs-body-color-rgb: 33, 37, 41;
-
-  --bs-body-bg: #{$body-bg};
-  --bs-body-bg-rgb: 255, 255, 255;
   --bs-body-color-inverse: #fff;
 
-  --bs-link-color: var(--bs-body-color);
-  --bs-link-hover-color: var(--bs-primary);
-
-  --bs-headline-color: var(--bs-body-color);
   --bs-topline-color: var(--bs-primary);
   --bs-subline-color: var(--bs-primary);
 
@@ -82,7 +46,6 @@
   --bs-border-radius: 10px;
   --bs-border-radius-xl: calc(var(--bs-border-radius) * 2);
 
-  --bs-base-box-shadow: 0 0 12px rgba(39, 39, 39, 0.15);
   --bs-box-shadow-inset-lg: inset 0px 25px 40px rgba(0, 0, 0, 0.5);
 
   --bs-border-color: var(--bs-gray-400);
@@ -140,8 +103,8 @@
   --bs-fixed-stoerer--top: 35vh;
   --bs-fixed-stoerer--border-radius: 10px 0px 0px 10px;
 
-  /*
-    //MMenu
+
+  //MMenu
   --mm-line-height: 20px;
   --mm-listitem-size: 44px;
   --mm-navbar-size: 44px;
@@ -159,7 +122,6 @@
   --mm-color-background-emphasis: rgba(var(--bs-white-rgb), 0.4);
   --mm-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   --mm-logo: url("/files/base/layout/img/logo.svg");
-   */
 
 
   //variables-layout beachten
