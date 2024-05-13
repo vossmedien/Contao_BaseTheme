@@ -3,65 +3,19 @@
 }
 
 
+/* AOS.js */
 
-/* AOS.j s*/
-[data-aos], [class*="animate__"]:not(.animate__animated) {
+[data-aos*="animate__"], [class*="animate__"]:not(.animate__animated) {
 
-  &:not([data-aos="no-animation"]){
-      visibility: hidden;
+
+  &:not([data-aos="no-animation"]) {
+    visibility: hidden;
   }
-
 
   &.animate__animated {
     visibility: visible;
   }
 }
-
-[data-aos]{
-    @include media-breakpoint-down(sm) {
-      //animation-delay: 0s !important;
-    }
-}
-
-
-/* CUSTOM AOS
-[data-aos]:not([data-aos="no-animation"]) {
-  opacity: 0;
-
-  &.animate__animated {
-    opacity: 1;
-    transition: opacity var(--animate-duration) var(--animate-delay);
-  }
-}
-
- */
-
-/*
-[data-aos],
-[class*="ce_"]:not([data-aos]) {
-
-  &:not(.ce_rsce_onepagenavi){
-    z-index: 1;
-  position: relative;
-  }
-}
-
- */
-
-/*
-header,
-footer {
-  *[data-aos] {
-    transition: none !important;
-    animation: none !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-}
-
- */
-
-
 
 
 .lazy {
@@ -76,43 +30,15 @@ footer {
 
 
 .container {
-  .container {
+ padding-inline: var(--bs-container-gutter);
+
+  .container:not([class*="col"]) {
     max-width: none;
-    padding: 0px;
+
     width: inherit;
   }
 }
 
-.ce_form {
-  .row.boostrap5 {
-    width: 100%;
-  }
-}
-
-.container {
-  //--bs-gutter-x: 0;
-  //overflow: auto;
-}
-
-.container {
-  @include media-breakpoint-down(sm) {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .container {
-    padding-left: 0px;
-    padding-right: 0px;
-
-    &:not(.ce--inner) {
-      //overflow: hidden;
-    }
-  }
-}
-
-.alpdeskfee-article {
-  margin: 0px !important;
-}
 
 *[data-bs-toggle] {
   cursor: pointer;
@@ -129,14 +55,7 @@ footer {
   }
 }
 
-.row > [class*="col-"] > .container > [class*="col-"]{
+.row > [class*="col-"] > .container > [class*="col-"] {
   width: 100%;
 }
 
-.remove-bottom-gutter{
-    margin-bottom: calc(-1 * var(--main-gap)) !important;
-}
-
-.remove-top-gutter{
-  margin-top: calc(-1 * var(--main-gap)) !important;
-}

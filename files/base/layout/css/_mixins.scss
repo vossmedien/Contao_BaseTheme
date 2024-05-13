@@ -2,37 +2,6 @@
 @import "../_vendor/node_modules/bootstrap/scss/variables";
 @import "../_vendor/node_modules/bootstrap/scss/mixins";
 
-@mixin aspect-ratio($width, $height, $float: false) {
-  position: relative;
-  @if $float {
-    overflow: hidden;
-    &:before {
-      display: table;
-      content: "";
-      padding-top: ($height / $width) * 100%;
-      float: left;
-    }
-  } @else {
-    &:before {
-      display: block;
-      content: "";
-      width: 100%;
-      padding-top: ($height / $width) * 100%;
-    }
-    > * {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
-  }
-}
-
-@mixin background-opacity($color, $opacity: 0.3) {
-  background: $color; /* The Fallback */
-  background: rgba($color, $opacity);
-}
 
 @mixin content-box($override-padding: "") {
   border-radius: $border-radius;
@@ -43,36 +12,13 @@
 
   &:not([class*="p-"]):not([class*="px-"]):not([class*="py-"]) {
     @if $override-padding == "" {
-      padding: calc(var(--main-gap)/2);
+      padding: calc(var(--main-gap) / 2);
     } @else {
       padding: $override-padding !important;
     }
   }
 }
 
-@keyframes fadein {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: .5;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@mixin element-color($color) {
-  background-image: url('data:image/svg+xml;utf8,<svg ...><g stroke="#{$color}" ... /></g></svg>');
-}
-
-
-@keyframes parallax {
-  to {
-    transform:
-      translateY(calc(var(--parallax-speed) * 100px));
-  }
-}
 
 %make-fullwidth {
   width: 100vw;

@@ -4,7 +4,7 @@ export function changeAnchorLinks() {
 
   document
     .querySelectorAll(
-      '#mainNav  a[href*="#"]:not(.invisible), .onepagenavi--wrapper a'
+      ' #mainNav  a[href*="#"]:not(.invisible), .onepagenavi--wrapper a'
     )
     .forEach((currElement) => {
       const currLink = currElement.getAttribute("href");
@@ -23,7 +23,7 @@ export function changeAnchorLinks() {
         ) {
           // Entferne active-Klasse von anderen Elementen
           const activeElem = document.querySelector(
-            "#mainNav .level_2 .active"
+            "#mainNav .active"
           );
           if (activeElem) {
             activeElem.classList.remove("active");
@@ -64,3 +64,4 @@ export function changeNavLinksAfterLoad() {
 
     changeAnchorLinks();
 }
+

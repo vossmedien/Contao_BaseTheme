@@ -2,13 +2,28 @@
 
 namespace Contao;
 
-if ($GLOBALS['TL_CONFIG']['useRTE']) :
-    // Use document.write() here in case TinyMCE is loaded in a subpalette (see #1424)
+if ($GLOBALS['TL_CONFIG']['useRTE']):
+
+// Use document.write() here in case TinyMCE is loaded in a subpalette (see #1424)
     ?>
+    <script>window.tinymce || document.write('<script src="<?= $this->asset('js/tinymce.min.js', 'contao-components/tinymce4') ?>">\x3C/script>')</script>
     <script>
-        window.tinymce || document.write('<script src="<?= $this->asset('js/tinymce.min.js', 'contao-components/tinymce4') ?>">\x3C/script>')
-    </script>
-    <script>
+
+        function wrapParentElement(editor, classes) {
+            const selectedNode = editor.selection.getNode();
+            const parentElement = selectedNode.parentElement;
+
+            if (parentElement.tagName === 'BODY') {
+                editor.execCommand('mceInsertContent', false, '<div class="' + classes + '">' + selectedNode.outerHTML + '</div>');
+                selectedNode.remove();
+            } else {
+                const wrapper = document.createElement('div');
+                wrapper.className = classes;
+                parentElement.insertBefore(wrapper, selectedNode);
+                wrapper.appendChild(selectedNode);
+            }
+        }
+
         window.tinymce && tinymce.init({
             selector: '#<?= $this->selector ?>',
             min_height: 336,
@@ -17,21 +32,26 @@ if ($GLOBALS['TL_CONFIG']['useRTE']) :
             document_base_url: '<?= Environment::get('base') ?>',
             entities: '160,nbsp,60,lt,62,gt,173,shy',
             branding: false,
+            promotion: false,
             verify_html: false,
-            fontsize_formats: "8px 9px 10px 11px 12px 13px 14px 15px 16px 17px 18px 19px 20px 22px 24px 26px 28px 30px 32px 34px 36px 38px 40px 42px 44px 46px 48px 50px 52px 54px 56px 58px 60px",
-            setup: function (editor) {
+            skin: (document.documentElement.dataset.colorScheme === 'dark' ? 'tinymce-5-dark' : 'tinymce-5'),
+            setup: (editor) => {
                 editor.getElement().removeAttribute('required');
+                document.querySelectorAll('[accesskey]').forEach((el) => {
+                    editor.addShortcut('access+' + el.accessKey, el.id, () => el.click());
+                });
+
                 editor.ui.registry.addButton('bgPrimary', {
                     text: 'Hintergrund in Hauptfarbe',
-                    onAction: function () {
-                        wrapParentElement(editor, 'bg-primary text-white p-3');
+                    onAction: () => {
+                        wrapParentElement(editor, 'bg-primary text-white p-3 tinymce-box');
                     }
                 });
 
                 editor.ui.registry.addButton('bgSecondary', {
                     text: 'Hintergrund in Sekundärfarbe',
-                    onAction: function () {
-                        wrapParentElement(editor, 'bg-secondary text-white p-3');
+                    onAction: () => {
+                        wrapParentElement(editor, 'bg-secondary text-white p-3 tinymce-box');
                     }
                 });
             },
@@ -39,10 +59,9 @@ if ($GLOBALS['TL_CONFIG']['useRTE']) :
                 if (document.activeElement && document.activeElement.id && document.activeElement.id == editor.id) {
                     editor.editorManager.get(editor.id).focus();
                 }
-                editor.on('focus', function () {
-                    Backend.getScrollOffset();
-                });
+                editor.on('focus', () => window.dispatchEvent(new Event('store-scroll-offset')));
             },
+
             <?php $this->block('picker'); ?>
             file_picker_callback: function (callback, value, meta) {
                 Backend.openModalSelector({
@@ -50,52 +69,106 @@ if ($GLOBALS['TL_CONFIG']['useRTE']) :
                     'title': document.getElement('.tox-dialog__title').get('text'),
                     'url': Contao.routes.backend_picker + '?context=' + (meta.filetype == 'file' ? 'link' : 'file') + '&amp;extras[fieldType]=radio&amp;extras[filesOnly]=true&amp;extras[source]=<?= $this->source ?>&amp;value=' + value + '&amp;popup=1',
                     'callback': function (table, val) {
+                        document.getElement('.tox-dialog input')?.focus();
                         callback(val.join(','));
                     }
                 });
             },
-            file_picker_types: <?= json_encode($this->fileBrowserTypes) ?>,
+            file_picker_types: '<?= $this->fileBrowserTypes ?>',
             <?php $this->endblock(); ?>
+
             <?php $this->block('content_css'); ?>
-            content_css: ['system/themes/<?= Backend::getTheme() ?>/tinymce.min.css', 'files/base/layout/css/style.min.css',],
+            content_css: [document.documentElement.dataset.colorScheme === 'dark' ? '<?= $this->asset('tinymce-dark.css', 'system/themes/' . Backend::getTheme()) ?>' : '<?= $this->asset('tinymce.css', 'system/themes/' . Backend::getTheme()) ?>', 'files/base/layout/css/style.min.css'],
             importcss_selector_converter: function (selector) {
                 return false;
             },
             <?php $this->endblock(); ?>
+
+
             <?php $this->block('plugins'); ?>
-            plugins: 'autosave charmap code fullscreen image importcss link lists paste searchreplace stripnbsp tabfocus table visualblocks visualchars',
+            plugins: 'autosave charmap code fullscreen image importcss link lists searchreplace stripnbsp table visualblocks visualchars',
             <?php $this->endblock(); ?>
+
             <?php $this->block('valid_elements'); ?>
-            extended_valid_elements: 'q[cite|class|title],article,section,hgroup,figure,figcaption',
+            extended_valid_elements: 'q[cite|class|title],article,section,hgroup,figure,figcaption,i[class]/em',
             <?php $this->endblock(); ?>
+
             <?php $this->block('menubar'); ?>
-            menubar: 'edit insert format table',
+            menubar: 'edit insert table',
             <?php $this->endblock(); ?>
+
             <?php $this->block('toolbar'); ?>
-            toolbar: 'bgPrimary bgSecondary | link unlink | image | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code ',
+            toolbar: 'styles | bgPrimary bgSecondary | link unlink | image | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code ',
             <?php $this->endblock(); ?>
+            paste_as_text: true,
+            <?php $this->block('contextmenu'); ?>
+            contextmenu: false,
+            <?php $this->endblock(); ?>
+
+            <?php $this->block('cache_suffix'); ?>
+            cache_suffix: '?v=<?= $this->assetVersion('js/tinymce.min.js', 'contao-components/tinymce4') ?>',
+            <?php $this->endblock(); ?>
+
             <?php $this->block('custom'); ?>
             <?php $this->endblock(); ?>
+
+            <?php if ($this->readonly): ?>
+            readonly: true,
+            <?php endif; ?>
+
             browser_spellcheck: true,
-            tabfocus_elements: ':prev,:next',
             importcss_append: true,
 
             style_formats_merge: true,
-            style_formats: [{
-                title: 'Custom',
-                items: [
-                    {
-                        title: 'Text in Hauptfarbe',
-                        inline: 'span',
-                        classes: 'text-primary'
-                    },
-                    {
-                        title: 'Text in Grau',
-                        inline: 'span',
-                        classes: 'text-gray'
-                    }
-                ]
-            }],
+            style_formats: [
+                {
+                    title: 'Schriftgrößen',
+                    items: [
+                        {
+                            title: 'Überschrift 1',
+                            inline: 'span',
+                            classes: 'h1',
+                        },
+                        {
+                            title: 'Überschrift 2',
+                            inline: 'span',
+                            classes: 'h2',
+                        },
+                        {
+                            title: 'Überschrift 3',
+                            inline: 'span',
+                            classes: 'h3',
+                        },
+                        {
+                            title: 'Überschrift 4',
+                            inline: 'span',
+                            classes: 'h4',
+                        },
+                        {
+                            title: 'Überschrift 5',
+                            inline: 'span',
+                            classes: 'h5',
+                        },
+                        {
+                            title: 'Überschrift 6',
+                            inline: 'span',
+                            classes: 'h6',
+                        },
+                        {
+                            title: 'Kleine Schrift',
+                            inline: 'small',
+                        },
+                    ],
+                },
+                {
+                    title: 'Farben',
+                    items: [
+                        {title: 'Text in Hauptfarbe', inline: 'span', classes: 'text-primary'},
+                        {title: 'Text in Grau', inline: 'span', classes: 'text-gray'},
+                    ],
+                },
+                // Fügen Sie weitere Kategorien und Formate nach Bedarf hinzu
+            ],
             link_class_list: [{
                 title: 'None',
                 value: ''
@@ -131,23 +204,5 @@ if ($GLOBALS['TL_CONFIG']['useRTE']) :
                 },
             ]
         });
-
-       function wrapParentElement(editor, classes) {
-    var node = editor.selection.getNode();
-    while (node && node.nodeName !== 'UL' && node.nodeName !== 'OL') {
-        node = node.parentNode;
-    }
-    if (node) {
-        if (node.parentNode && node.parentNode.nodeName === 'DIV' && editor.dom.hasClass(node.parentNode, classes.split(' ')[0])) {
-            // Wenn das übergeordnete Element ein DIV mit der gewünschten Klasse ist, entfernen Sie das DIV und lassen den Inhalt unverändert
-            editor.dom.replace(node, node.parentNode);
-        } else {
-            // Andernfalls umschließen Sie das UL/OL mit einem DIV mit den gewünschten Klassen
-            var div = editor.dom.create('div', { 'class': classes }, node.outerHTML);
-            editor.dom.replace(div, node);
-        }
-    }
-}
-
     </script>
 <?php endif; ?>

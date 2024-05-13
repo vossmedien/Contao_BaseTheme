@@ -24,7 +24,8 @@
 
   * {
     margin-bottom: 0px;
-    @extend .container;
+    //
+     // --bs-container-gutter: 0px;
   }
 
   &.hl-h1 {

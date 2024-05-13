@@ -1,320 +1,272 @@
 <?php
-if ($GLOBALS['TL_MODE'] == 'FE') {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_bodybg.min.css|static';
-    $this->size = $this->size ?? "";
+use Contao\FilesModel;
+use Contao\StringUtil;
+
+if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_bodybg.min.css|static';
+    $articleSelector = "[data-articleid=\"article-$this->pid\"]";
+    $angle = $this->winkel ? (strpos($this->winkel, '-') !== false ? str_replace("-", "", $this->winkel) . "deg" : "-{$this->winkel}deg") : 'calc(-1 * var(--base-skew))';
+    $backgroundImage = $this->image ? FilesModel::findByUuid($this->image)->path : '';
+    $backgroundImageMobile = $this->image_mobile ? FilesModel::findByUuid($this->image_mobile)->path : '';
+
+    $backgroundStyle = html_entity_decode($this->css);
+    if ($this->darken_image) {
+        $backgroundStyle = $this->css ? $backgroundStyle : "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url($backgroundImage)";
+    } else {
+        $backgroundStyle = $this->css ? $backgroundStyle : "url($backgroundImage)";
+    }
 }
 ?>
 
-
-<?php if ($this->only_article): ?>
-
-    <style>
-        html body #wrapper #main [data-articleid="article-<?php echo $this->pid; ?>"] {
-            padding-bottom: var(--with-body-bg-spacing) !important;
-        }
-
-        html body #wrapper #main [data-articleid="article-<?php echo $this->pid; ?>"]:last-child > div:last-child {
-            padding-bottom: var(--with-body-bg-spacing) !important;
-        }
-    </style>
-
-
-    <?php if ($this->is_between): ?>
-        <style>
-            [data-articleid="article-<?php echo $this->pid; ?>"] {
-                margin-top: calc(-1 * (var(--with-body-bg-spacing)) - 2px);
-            }
-        </style>
-    <?php endif; ?>
-<?php endif; ?>
-
-    <style>
-        [data-articleid="article-<?php echo $this->pid; ?>"] {
-            --angle: <?php echo $this->winkel ? $this->winkel.'deg' : 'var(--base-skew)'; ?>;
-            position: relative;
-            outline: 1px solid transparent;
-            transform-origin: top left;
-        <?php if ($this->activate): ?> padding: var(--with-body-bg-spacing) 0 var(--with-body-bg-spacing) 0;
-        <?php endif; ?>
-        }
-
-        <?php if (!$this->activate): ?>
-        [data-articleid="article-<?php echo $this->pid; ?>"] {
-            padding: calc(var(--main-gap)) 0;
-        }
-
-        <?php endif; ?>
-    </style>
-
-
-<?php if ($this->element_type == 2 || $this->element_type == 3) : ?>
-
-    <?php
-    $filename = FilesModel::findByUuid($this->image)->path;
-    $ext = pathinfo($filename, PATHINFO_EXTENSION);
-    ?>
-
-
-    <!-- Datei ist KEIN Video -->
-    <?php if ($ext != "mp4") : ?>
-        <?php
-        $backgroundStyle = html_entity_decode($this->css);
-        ?>
-
-        <style class="with-bg <?php echo $this->is_between ? 'is-between' : ''; ?> <?php echo $this->image ? 'with-image' : ''; ?>">
-            <?php
-            $articleSelector = "[data-articleid=\"article-$this->pid\"]";
-            $backgroundImage = $this->image ? Image::get(FilesModel::findByUuid($this->image)->path, null, null, null) : '';
-            $backgroundImageMobile = $this->image_mobile ? Image::get(FilesModel::findByUuid($this->image_mobile)->path, null, null, null) : '';
-
-
-             if ($this->darken_image){
-             $backgroundStyle = $this->css ? $backgroundStyle : "linear-gradient(
-                        rgba(0, 0, 0, 0.5),
-                        rgba(0, 0, 0, 0.5)
-                ),url($backgroundImage)";
-             } else {
-         $backgroundStyle = $this->css ? $backgroundStyle : "url($backgroundImage)";
-               }
-
-
-            $angle = $this->winkel ?
-        (strpos($this->winkel, '-') !== false ?
-        str_replace("-", "", $this->winkel) . "deg" :
-        "-{$this->winkel}deg") :
-        'calc(-1 * var(--base-skew))';
-
-            ?>
-
-            <?php if ($this->only_article): ?>
-            <?php echo $articleSelector; ?>
-            {
-                background:
-            <?php echo $backgroundStyle; ?>
-            ;
-                backface-visibility: hidden
-            ;
-                background-attachment: fixed
-            ;
-                background-size: cover
-            ;
-                background-position: center center
-            ;
-                background-repeat: no-repeat
-            ;
-            <?php if ($this->activate): ?>
-                transform: skewy(var(--angle))
-            ;
-                transform-origin: 50% 0
-            ;
-            <?php endif; ?>
-            }
-
-            <?php if ($this->activate): ?>
-            <?php echo $articleSelector; ?>
-            .article-content {
-                position: relative;
-                z-index: 1;
-                transform: skewy(<?php echo $angle; ?>);
-
-            }
-
-            <?php endif; ?>
-            <?php else: ?>
-            html body #wrapper main#main .inside > <?php echo $articleSelector; ?> > .article-content {
-                padding: calc(var(--main-gap)) 0;
-                background: <?php echo $backgroundStyle; ?>;
-            <?php if ($this->fit_image): ?> background-size: 100% 100%;
-            <?php else: ?> background-size: cover;
-                background-attachment: fixed;
-            <?php endif; ?>
-            }
-
-            <?php if ($backgroundImageMobile): ?>
-            @media (max-width: 767px) {
-                html body #wrapper main#main .inside > <?php echo $articleSelector; ?> > .article-content {
-                    background: url(<?php echo $backgroundImageMobile; ?>) center center no-repeat;
-                }
-            }
-
-            <?php endif; ?>
-            <?php endif; ?>
-
-            <?php if (!$this->only_article && $this->image): ?>
-            body {
-                background: <?php if ($this->darken_image): ?> linear-gradient(
-                        rgba(0, 0, 0, 0.5),
-                        rgba(0, 0, 0, 0.5)
-                ),<?php endif;?>
-                url(<?php echo $backgroundImage; ?>) center center no-repeat;
-                background-attachment: fixed;
-                background-size: cover;
-            }
-
-            <?php endif; ?>
-        </style>
-    <?php endif; ?>
-
-    <!-- Datei IST Video -->
-    <?php if ($ext == "mp4") : ?>
-        <style>
-            [data-articleid="article-<?php echo $this->pid; ?>"] {
-
-            <?php if (!$this->activate): ?> padding: calc(var(--main-gap) * 3) 0;
-            <?php endif; ?>
-            }
-
-            [data-articleid="article-<?php echo $this->pid; ?>"] video {
-                transform-origin: 50% 0;
-                will-change: transform;
-                backface-visibility: hidden;
-                z-index: -1;
-                filter: blur(0px);
-                object-fit: cover;
-                outline: 1px solid transparent;
-                box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
-            <?php if ($this->activate): ?> transform: skewy(var(--angle));
-            <?php endif; ?><?php if ($this->only_article): ?> left: 0;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                position: absolute;
-            <?php else: ?> margin-top: calc(-1 * var(--main-gap));
-                height: 100%;
-                position: fixed;
-                width: 100vw;
-                top: 0;
-                bottom: 0;
-            <?php endif; ?>
-            }
-        </style>
-
-        <video class="bgvideo lazy" autoplay muted loop playsinline data-src="{{file::<?php echo $this->image; ?>}}">
-            <source type="video/mp4" src="{{file::<?php echo $this->image; ?>}}">
-        </video>
-    <?php endif; ?>
-<?php endif; ?>
-    <!-- Slider -->
-<?php if ($this->element_type == 1): ?>
-
+<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
     <?php if ($this->only_article): ?>
         <style>
-            [data-articleid="article-<?= $this->pid;?>"] .body-slider {
-                transform-origin: 50% 0;
-                backface-visibility: hidden;
-                z-index: -1;
-                object-fit: cover;
-
-            <?php if($this->activate):?> transform: skewy(var(--angle));
-            <?php endif;?><?php if($this->only_article):?> left: 0;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                position: absolute;
-            <?php else:?> margin-top: calc(-1 * var(--main-gap));
-                height: 100%;
-                position: fixed;
-                width: 100vw;
-                top: 0;
-                bottom: 0;
-            <?php endif;?>
+            <?php echo $articleSelector; ?>
+            {
+                --angle:
+            <?php echo $this->winkel ? $this->winkel . 'deg' : 'var(--base-skew)'; ?>
+            ;
+                position: relative
+            ;
+                outline: 1px solid transparent
+            ;
+                transform-origin: top left
+            ;
+            <?php if ($this->activate): ?>
+                padding: var(--with-body-bg-spacing) 0 var(--with-body-bg-spacing) 0
+            ;
+            <?php endif; ?>
             }
 
-            [data-articleid="article-<?= $this->pid;?>"] .body-slider .swiper {
-                height: 100%;
+            <?php if (!$this->activate): ?>
+            <?php echo $articleSelector; ?>
+            {
+                padding: calc(var(--main-gap)) 0
+            ;
             }
+            <?php endif; ?>
 
+            <?php if ($this->is_between): ?>
+            <?php echo $articleSelector; ?>
+            {
+                margin-top: calc(-1 * (var(--with-body-bg-spacing)) - 2px)
+            ;
+            }
+            <?php endif; ?>
         </style>
     <?php endif; ?>
+    <?php if ($this->element_type == 2 || $this->element_type == 3): ?>
+        <?php
+        $filename = FilesModel::findByUuid($this->image)->path;
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        ?>
 
+        <?php if ($ext != "mp4"): ?>
+            <style class="<?php if ($this->only_article): ?>with-bg<?php endif; ?> <?php echo $this->is_between ? 'is-between' : ''; ?> <?php echo $this->image ? 'with-image' : ''; ?>">
+                <?php if ($this->only_article): ?>
+                <?php echo $articleSelector; ?>
+                {
+                    background:
+                <?php echo $backgroundStyle; ?>
+                ;
+                    backface-visibility: hidden
+                ;
+                    background-attachment: fixed
+                ;
+                    background-size: cover
+                ;
+                    background-position: center center
+                ;
+                    background-repeat: no-repeat
+                ;
+                <?php if ($this->activate): ?>
+                    transform: skewy(var(--angle))
+                ;
+                    transform-origin: 50% 0
+                ;
+                <?php endif; ?>
+                }
 
-    <?php if (!$this->only_article): ?>
-        <style>
-            .body-slider {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                z-index: -1;
+                <?php if ($this->activate): ?>
+                <?php echo $articleSelector; ?>
+                .article-content {
+                    position: relative;
+                    z-index: 1;
+                    transform: skewy(<?php echo $angle; ?>);
+                }
 
-                .swiper {
+                <?php endif; ?>
+                <?php else: ?>
+                html body #wrapper main#main .inside > <?php echo $articleSelector; ?> > .article-content {
+                    padding: calc(var(--main-gap)) 0;
+                    background: <?php echo $backgroundStyle; ?>;
+                <?php if ($this->fit_image): ?> background-size: 100% 100%;
+                <?php else: ?> background-size: cover;
+                    background-attachment: fixed;
+                <?php endif; ?>
+                }
+
+                <?php if ($backgroundImageMobile): ?>
+                @media (max-width: 767px) {
+                    html body #wrapper main#main .inside > <?php echo $articleSelector; ?> > .article-content {
+                        background: url(<?php echo $backgroundImageMobile; ?>) center center no-repeat;
+                    }
+                }
+
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if (!$this->only_article && $this->image): ?>
+                body {
+                    background: <?php if ($this->darken_image): ?> linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),<?php endif; ?> url(<?= $backgroundImage; ?>) center center no-repeat;
+                    background-attachment: fixed;
+                    background-size: cover;
+                }
+
+                <?php endif; ?>
+            </style>
+        <?php endif; ?>
+
+        <?php if ($ext == "mp4"): ?>
+            <style>
+                <?php echo $articleSelector; ?>
+                {
+                <?php if (!$this->activate): ?>
+                    padding: calc(var(--main-gap) * 3) 0
+                ;
+                <?php endif; ?>
+                }
+
+                <?php echo $articleSelector; ?>
+                video {
+                    transform-origin: 50% 0;
+                    will-change: transform;
+                    backface-visibility: hidden;
+                    z-index: -1;
+                    filter: blur(0px);
+                    object-fit: cover;
+                    outline: 1px solid transparent;
+                    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+                <?php if ($this->activate): ?> transform: skewy(var(--angle));
+                <?php endif; ?><?php if ($this->only_article): ?> left: 0;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    position: absolute;
+                <?php else: ?> margin-top: calc(-1 * var(--main-gap));
+                    height: 100%;
+                    position: fixed;
+                    width: 100vw;
+                    top: 0;
+                    bottom: 0;
+                <?php endif; ?>
+                }
+            </style>
+
+            <video class="bgvideo lazy" autoplay muted loop playsinline data-src="{{file::<?php echo $this->image; ?>}}">
+                <source type="video/mp4" src="{{file::<?php echo $this->image; ?>}}">
+            </video>
+        <?php endif; ?>
+    <?php endif; ?>
+    <?php if ($this->element_type == 1): ?>
+        <?php if ($this->only_article): ?>
+            <style>
+                <?php echo $articleSelector; ?>
+                .body-slider {
+                    transform-origin: 50% 0;
+                    backface-visibility: hidden;
+                    z-index: 0;
+                    object-fit: cover;
+                <?php if ($this->activate): ?> transform: skewy(var(--angle));
+                <?php endif; ?><?php if ($this->only_article): ?> left: 0;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    position: absolute;
+                <?php else: ?> margin-top: calc(-1 * var(--main-gap));
+                    height: 100%;
+                    position: fixed;
+                    width: 100vw;
+                    top: 0;
+                    bottom: 0;
+                <?php endif; ?>
+                }
+
+                <?php echo $articleSelector; ?>
+                .body-slider .swiper {
+                    height: 100%;
+                }
+            </style>
+        <?php endif; ?>
+
+        <?php if (!$this->only_article): ?>
+            <style>
+                .body-slider {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    z-index: 0;
+                }
+
+                .body-slider .swiper {
                     width: 100vw;
                     height: 100vh;
                 }
-            }
-        </style>
-    <?php endif; ?>
+            </style>
+        <?php endif; ?>
 
+        <?php
+        $dataSorted = [];
+        $unserializedData = unserialize($this->multiSRC);
+        if (is_array($unserializedData)) {
+            $dataSorted = array_map([StringUtil::class, 'binToUuid'], $unserializedData);
+        }
+        ?>
 
-    <?php
-    $dataSorted = array_map('\StringUtil::binToUuid', deserialize($this->orderSRC, true));
-    $rand = rand(1, 100);
-    ?>
-
-    <div class="body-slider">
-        <div class="swiper body-slider_<?= $this->id; ?>">
-            <!-- Additional required wrapper -->
-            <div class="swiper-wrapper">
-                <!-- Slides -->
-                <?php if ($dataSorted) : ?>
-
-                    <?php foreach ($dataSorted as $data) : ?>
-
-                        <?php if ($image = $this->getImageObject($data, $this->size)) : ?>
-                            <div style=" background-position center center; background-repeat: no-repeat; background-size: cover; background-image:url(<?= Image::get(FilesModel::findByUuid($image->uuid)->path, $this->size[0], $this->size[1], $this->size[2]); ?>);" class="swiper-slide"></div>
-                        <?php endif; ?>
-
-                    <?php endforeach ?>
-                <?php endif; ?>
+        <div class="body-slider">
+            <div class="swiper body-slider_<?= $this->id; ?>">
+                <div class="swiper-wrapper">
+                    <?php foreach ($dataSorted as $data): ?>
+                        <div style="background-position: center center; background-repeat: no-repeat; background-size: cover; background-image:url(<?= FilesModel::findByUuid($data)->path; ?>);" class="swiper-slide"></div>
+                    <?php endforeach; ?>
+                </div>
             </div>
-
         </div>
-    </div>
-    <script type="text/javascript" async>
 
-
-        window.addEventListener('load', function () {
-
-            if ($('.swiper.body-slider_<?= $this->id;?>').length) {
-
-                const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.body-slider_<?php echo $this->id; ?>', {
-                    direction: 'horizontal',
-                    loop: true,
-                    preloadImages: true,
-                    lazy: false,
-
-                    spaceBetween: 0,
-
-                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
-                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'
-                    <?php else:?>'slide'<?php endif;?>,
-
-                    autoplay: {
-                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>7500<?php endif;?>,
-                    },
-
-                    <?php if ($this->slide_effect == "coverflow") : ?>
-                    coverflowEffect: {
-                        rotate: 50, // Slide rotate in degrees
-                        stretch: 0, // Stretch space between slides (in px)
-                        depth: 100, // Depth offset in px (slides translate in Z axis)
-                        modifier: 1, // Effect multipler
-                        slideShadows: true, // Enables slides shadows
-                    },
-                    <?php endif;?>
-
-                    <?php if ($this->slide_effect == "fade") : ?>
-                    fadeEffect: {
-                        crossFade: true
-                    },
-                    <?php endif;?>
-
-
-                    slidesPerView: 1,
-                });
-            }
-        }, {passive: true})
-    </script>
-
+        <script type="text/javascript" async>
+            window.addEventListener('load', function () {
+                if ($('.swiper.body-slider_<?= $this->id; ?>').length) {
+                    const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.body-slider_<?php echo $this->id; ?>', {
+                        direction: 'horizontal',
+                        loop: true,
+                        preloadImages: true,
+                        lazy: false,
+                        spaceBetween: 0,
+                        speed: <?php echo $this->transition_time ?: 1500; ?>,
+                        effect: '<?php echo $this->slide_effect ?: 'slide'; ?>',
+                        autoplay: {
+                            delay: <?php echo $this->autoplay_time ?: 7500; ?>,
+                        },
+                        <?php if ($this->slide_effect == "coverflow"): ?>
+                        coverflowEffect: {
+                            rotate: 50,
+                            stretch: 0,
+                            depth: 100,
+                            modifier: 1,
+                            slideShadows: true,
+                        },
+                        <?php endif; ?>
+                        <?php if ($this->slide_effect == "fade"): ?>
+                        fadeEffect: {
+                            crossFade: true
+                        },
+                        <?php endif; ?>
+                        slidesPerView: 1,
+                    });
+                }
+            }, {passive: true});
+        </script>
+    <?php endif; ?>
 <?php endif; ?>

@@ -4,7 +4,7 @@
  * Funktion für sanftes Scrollen zu einem Ankerpunkt.
  */
 export function initializeSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]:not(.reset-cookies)').forEach(anchor => {
+    document.querySelectorAll('a[href^="#"]:not(.reset-cookies):not(.navActivator)').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
 

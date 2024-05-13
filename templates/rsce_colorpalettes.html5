@@ -1,33 +1,14 @@
 <?php
-if ($GLOBALS['TL_MODE'] == 'FE') {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_colorpalettes.min.css|static';
+if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_colorpalettes.min.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_colorpalettes.js|static';
 }
 ?>
 
-
-
-<?php
-if (!isset($this->size)) {
-    $this->{"size"} = "";
-}
-?>
-
-
-<!-- @TODO
-
-Cursor: Pointer fixen
-Reset-Button um Standard-Text anzuzeigen?
-Schriftfarbe der Headline
-Typ usw. von Headline
-
--->
-
-
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?> ">
-    <div class="ce--inner container">
+    <div class="ce--inner">
 
-               <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -38,70 +19,82 @@ Typ usw. von Headline
             null
         ); ?>
 
-    <?php if ($this->activate_top): ?>
-        <div class="colorpalettes-top" data-basicdesc="<?= $this->basic_desc; ?>"
-             data-basicheadline="<?= $this->basic_headline; ?>"
-             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-            <div class="row flex-lg-row-reverse">
-                <div class="col-12 col-lg-7">
-                    <div class="color-palette--content">
-                        <div class="color-palette-content--inner <?php if ($this->alternate_background_color): ?>with-padding<?php endif; ?>"
-                             style="
-                             <?php if ($this->alternate_background_color): ?>background-color: <?= $this->alternate_background_color; ?>;<?php endif; ?>
-                             <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>
-                                     ">
+        <div class="colorpalettes-wrapper <?php if (!$this->swap_divs && $this->activate_top): ?>flex-md-column-reverse<?php endif; ?> " data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php endif; ?>">
 
-                            <h3 class="color-palette--headline"><?= $this->basic_headline; ?></h3>
+            <?php if ($this->activate_top): ?>
+                <div class="colorpalettes-desc"
+                     data-basicdesc='<?= $this->basic_desc; ?>'
+                     data-basictopline="<?= $this->basic_topline; ?>"
+                     data-basicheadline="<?= $this->basic_headline; ?>"
+                     data-basicsubline="<?= $this->basic_subline; ?>"
+                     data-aos="<?php if ($this->basic_animation_type) : ?><?php echo $this->basic_animation_type; ?><?php endif; ?>">
+                    <div class="row flex-lg-row-reverse gy-1">
+                        <div class="col-12 col-lg-7">
+                            <div class="color-palette--content">
+                                <div class="color-palette-content--inner <?php if ($this->alternate_background_color): ?>with-padding<?php endif; ?>"
+                                     style="
+                                     <?php if ($this->alternate_background_color): ?>background-color: <?= $this->alternate_background_color; ?>;<?php endif; ?>
+                                     <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>
+                                             ">
 
-                            <div class="color-palette--desc">
-                                <?= $this->basic_desc; ?>
+                                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                        $this->basic_topline,
+                                        $this->basic_headline,
+                                        $this->basic_subline,
+                                        $this->basic_headline_type,
+                                        $this->basic_animation_type,
+                                        null,
+                                        false,
+                                        "mb-3"
+                                    ); ?>
+
+                                    <div class="color-palette--desc" data-aos="<?php if ($this->basic_animation_type) : ?><?php echo $this->basic_animation_type; ?><?php endif; ?>">
+                                        <?= $this->basic_desc; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-5">
+                            <div class="selected-color-element--outer h-100">
+                                <div class="selected-color--element h-100" data-aos="<?php if ($this->basic_animation_type) : ?><?php echo $this->basic_animation_type; ?><?php endif; ?>">
+                                    <div class="image-holder h-100 w-100" data-aos="animate__fadeIn" style="background: url(<?= VSM_HelperFunctions\ImageHelper::generateImageURL($this->elements[0]->img, $this->size); ?>) center center no-repeat; background-size: cover;"></div>
+                                    <span class="selected-color-element--title"><?= $this->elements[0]->title; ?></span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            <?php endif; ?>
 
-                <div class="col-12 col-lg-5">
-                    <div class="selected-color-element--outer h-100">
-                        <div class="selected-color--element  h-100">
+            <?php if ($this->elements): ?>
+                <div class="colorpalettes-gallery" data-aos="<?php if ($this->basic_animation_type) : ?><?php echo $this->basic_animation_type; ?><?php endif; ?>">
+                    <div class="color-list--wrapper">
+                        <?php foreach ($this->elements as $x => $e) : ?>
+                            <div class="color-list-element--outer <?php if (!$this->show_tooltip): ?>wider<?php endif; ?>">
+                                <div class="color-list--element"
 
-                            <div class="image-holder h-100 w-100"
-                                 style="background: url(<?= Image::get(FilesModel::findByUuid($this->elements[0]->img)->path, null, null, null); ?>) center center no-repeat; background-size: cover;"></div>
+                                     data-topline="<?= $e->alternate_topline; ?>"
+                                     data-headline="<?= $e->alternate_headline; ?>"
+                                     data-subline="<?= $e->alternate_subline; ?>"
+                                     data-desc='<?= $e->desc; ?>'
+                                     data-img="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($e->img, $e->size); ?>"
+                                     data-title="<?= $e->title; ?>" <?php if ($this->show_tooltip): ?>title="<?= $e->title; ?>"
+                                     data-bs-toggle="tooltip"<?php endif; ?>>
 
-                            <span class="selected-color-element--title"><?= $this->elements[0]->title; ?></span>
-                        </div>
+                                    <div class="color-list-element--image-holder">
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($e->img, null, $e->title, $this->size, null, false, false); ?>
+                                        <?php if (!$this->show_tooltip && $e->title): ?>
+                                            <span><?= $e->title; ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach ?>
                     </div>
                 </div>
-            </div>
+            <?php endif; ?>
+
         </div>
-    <?php endif; ?>
-    <?php if ($this->elements): ?>
-        <div class="colorpalettes-bottom">
-            <div class="color-list--wrapper">
-                <?php foreach ($this->elements as $x => $e) : ?>
-
-
-                    <div class="color-list-element--outer <?php if (!$this->show_tooltip): ?>wider<?php endif; ?>">
-                        <div class="color-list--element" data-headline="<?= $e->alternate_headline; ?>"
-                             data-desc="<?= $e->desc; ?>"
-                             data-img="<?= Image::get(FilesModel::findByUuid($e->img)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
-                             data-title="<?= $e->title; ?>" <?php if ($this->show_tooltip): ?>title="<?= $e->title; ?>"
-                             data-bs-toggle="tooltip"<?php endif; ?>>
-                            <div class="color-list-element--image-holder"
-                                 data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-
-
-                                <img loading="lazy"   class="lazy"
-                                     data-src="<?= Image::get(FilesModel::findByUuid($e->img)->path, $this->size[0], $this->size[1], $this->size[2]); ?>">
-
-
-                                <?php if (!$this->show_tooltip && $e->title): ?>
-                                    <span><?= $e->title; ?></span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach ?>
-            </div>
-        </div>
-    <?php endif; ?>
-</div></div>
+    </div>
+</div>

@@ -1,6 +1,0 @@
-
-    <?php
-    echo "<pre>";
-    echo $this->showTemplateVars();
-    echo "</pre>";
-    ?>

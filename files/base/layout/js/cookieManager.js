@@ -41,7 +41,9 @@ function initFrames() {
  * Initialisiert Basisfunktionen abhängig von Cookies.
  */
 function initBaseFeatures() {
-    // Fügen Sie hier Logik für Basisfunktionen hinzu, falls benötigt.
+      if (document.cookie.includes("cookie_basefeatures")) {
+
+      }
 }
 
 /**

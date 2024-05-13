@@ -1,0 +1,151 @@
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+
+
+html body {
+  .ce_rsce_colorpalettes {
+
+    .colorpalettes-wrapper{
+      display: flex;
+      flex-flow: column wrap;
+      gap: $mini-spacing;
+    }
+
+    .colorpalettes-desc {
+      width: 100%;
+      .selected-color-element--outer {
+        position: relative;
+
+        .selected-color--element {
+          min-height: rfs-value(300px);
+
+          .image-holder{
+            --animate-duration: 350ms;
+          }
+
+
+          > span {
+            position: absolute;
+            display: block;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(var(--bs-white-rgb), 0.8);
+            padding: 0.5rem 0.75rem;
+            text-align: center;
+            @include font-size(20px);
+            width: 100%;
+          }
+        }
+      }
+
+      .color-palette--content {
+        height: 100%;
+
+        .color-palette-content--inner {
+          min-height: 100%;
+
+          &.with-padding {
+            padding: 2rem;
+          }
+        }
+      }
+
+      & + .colorpalettes-gallery {
+        .color-list--element {
+          cursor: pointer;
+        }
+      }
+    }
+
+    .colorpalettes-gallery {
+      width: 100%;
+
+      .color-list--wrapper {
+        display: flex;
+        flex-flow: row wrap;
+        margin-left: -$mini-spacing/2;
+        margin-right: -$mini-spacing/2;
+
+        .color-list-element--outer {
+          padding: 0 $mini-spacing/2;
+
+
+          &:not(.wider) {
+            width: 33.333%;
+
+            @include media-breakpoint-up(sm) {
+              width: 25%;
+            }
+
+            @include media-breakpoint-up(md) {
+              width: 20%;
+            }
+
+            @include media-breakpoint-up(lg) {
+              width: 16.66%;
+            }
+
+            @include media-breakpoint-up(xl) {
+              width: 11.11%;
+            }
+          }
+
+          &.wider {
+            width: 50%;
+
+            @include media-breakpoint-up(md) {
+              width: 33.333%;
+            }
+
+            @include media-breakpoint-up(lg) {
+              width: 25%;
+            }
+          }
+
+          .color-list--element {
+            .color-list-element--image-holder {
+              position: relative;
+
+              &:has(> * + figcaption) {
+                figcaption {
+                  display: none;
+                }
+              }
+
+              &:hover{
+                img{
+                  opacity: .9;
+                }
+              }
+
+              img {
+                object-fit: cover;
+                width: 100%;
+                height: 100%;
+              }
+
+              a {
+                pointer-events: none;
+              }
+
+              > span, > figcaption {
+                position: absolute;
+                display: block;
+                bottom: 0;
+                left: 0;
+                background-color: rgba(var(--bs-white-rgb), 0.8);
+                padding: 0.35rem 0.5rem;
+                text-align: center;
+                @include font-size(16px);
+                width: 100%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

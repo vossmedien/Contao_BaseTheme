@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@awesome.me/kit-c9b4e661cb": "*",
     "@popperjs/core": "*",
     "animate.css": "*",
-    "aos": "^3.0.0-beta.6",
     "bootstrap": "*",
-    "fullpage.js": "^4.0.15",
     "js-cookie": "*",
+    "mmenu-js": "^9.3.0",
     "swiper": "*",
-    "vanilla-lazyload": "*"
+    "vanilla-lazyload": "*",
+    "venobox": "*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

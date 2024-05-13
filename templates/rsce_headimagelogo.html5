@@ -1,51 +1,42 @@
 <?php
-if ($GLOBALS['TL_MODE'] == 'FE') {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_headimagelogo.min.css|static';
+if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_headimagelogo.min.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_headimagelogo.js|static';
 }
 ?>
 
 <!-- indexer::stop -->
 <div <?php echo $this->cssID; ?>
-      data-aos="animate__fadeIn" style="animation-delay: .25s;" class="content--element <?php if ($this->move_content) : ?> move-content py-0<?php endif; ?> <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?> <?php if ($this->pull_content_next) : ?>pull-content-next<?php endif; ?>">
-    <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>" style="--pull-content-amount: -<?php if ($this->pull_amount) : ?><?= $this->pull_amount; ?>px<?php else: ?>250px<?php endif; ?>;">
 
+        class="content--element <?php if ($this->move_content) : ?> move-content py-0<?php endif; ?> <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>
+        <?php if ($this->pull_content_next) : ?>pull-content-next<?php endif; ?>
+        ">
+
+    <div class="ce--inner <?php if ($this->boxed_image) : ?>with-boxed-logo<?php endif; ?>" style="--pull-content-amount: -<?php if ($this->pull_amount) : ?><?= $this->pull_amount; ?>px<?php else: ?>250px<?php endif; ?>;">
 
         <style>
             html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .image--holder {
-            <?php if ($this->image_minheight) : ?> min-height: <?= $this->image_minheight; ?>;
-            <?php endif; ?><?php if ($this->image_maxheight && !$this->not_as_bg) : ?> max-height: <?php echo $this->image_maxheight; ?>;
-            <?php endif; ?><?php if ($this->image_height && !$this->not_as_bg) : ?> height: <?php echo $this->image_height; ?>dvh;
-            <?php endif; ?><?php if ($this->image_maxwidth) : ?> background-size: <?= $this->image_maxwidth; ?> auto;
-            <?php else: ?> background-size: cover;
-            <?php endif; ?>
-
-
+            <?php if ($this->image_minheight): ?> height: <?= $this->image_minheight; ?>;<?php else:?>height: 700px;<?php endif; ?>
+            <?php if ($this->image_maxheight && !$this->not_as_bg): ?> max-height: <?php echo $this->image_maxheight; ?>;<?php else:?>max-height: 100%;<?php endif; ?>
             }
 
             @media (max-width: 576px) {
                 html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .image--holder {
-                <?php if ($this->not_as_bg_mobile): ?>
-                    min-height: 0px;
+                <?php if ($this->not_as_bg_mobile): ?> min-height: 0px;
                     max-height: none;
                     height: auto;
-                    background-image: none;
-                <?php endif; ?>
-
-                <?php if ($this->image_mobile_maxheight): ?>
-                     max-height:<?= $this->image_mobile_maxheight;?>;
+                <?php endif; ?><?php if ($this->image_mobile_maxheight): ?> max-height: <?= $this->image_mobile_maxheight;?>;
+                <?php endif;?><?php if ($this->image_mobile_minheight): ?> height: <?= $this->image_mobile_minheight;?>;
                 <?php endif;?>
-
-                <?php if ($this->image_mobile_minheight): ?>
-                    min-height:<?= $this->image_mobile_minheight;?>;
-                <?php endif;?>
-
                 }
             }
         </style>
 
 
-        <div class="<?php if (count($this->slides) > 1) : ?>swiper<?php endif; ?> mainslider mainslider_<?php echo $this->id; ?> <?php if ($this->image_height) : ?>not-fullHeight<?php endif; ?> <?php if ($this->diagonal_cut) : ?>with-diagonalCut<?php endif; ?>">
+        <div class="
+            <?php if (count($this->slides) > 1) : ?>swiper <?php if (!$this->boxed_image && $this->show_pagination) : ?>with-pagination<?php endif; ?> <?php endif; ?> mainslider mainslider_<?php echo $this->id; ?>
+            <?php if ($this->diagonal_cut) : ?>with-diagonalCut<?php endif; ?>
+            ">
             <!-- Additional required wrapper -->
             <div class="swiper-wrapper">
                 <!-- Slides -->
@@ -53,52 +44,17 @@ if ($GLOBALS['TL_MODE'] == 'FE') {
                 <?php foreach ($this->slides as $key => $slide) : ?>
 
                     <?php
-                    if (!property_exists($slide, "size")) {
-                        $slide->{"size"} = "";
-                    }
-                    ?>
-
-                    <?php
-                    $filename = FilesModel::findByUuid($slide->image)->path;
+                    $filename = \Contao\FilesModel::findByUuid($slide->image)->path;
                     $ext = pathinfo($filename, PATHINFO_EXTENSION);
-                    $filename_mobile = FilesModel::findByUuid($slide->mobile_image)->path;
+                    $filename_mobile = \Contao\FilesModel::findByUuid($slide->mobile_image)->path;
                     $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
                     ?>
 
                     <div class="swiper-slide">
-                        <div class="ce--mainimage slide_<?php echo $key; ?> <?php echo $slide->text_style; ?>  <?php if (!$slide->text_firstline && !$slide->text_secondline && !$slide->text_topline) : ?>no-text<?php endif; ?> ">
-                            <div class="image--holder <?php if ($this->not_as_bg_mobile): ?>remove-settings-mobile<?php endif; ?> <?php if ($this->image_maxheight) : ?>with-maxheight<?php endif; ?> <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>"
-                                 style="">
+                        <div class="ce--mainimage slide_<?php echo $key; ?>
+                           <?php echo $slide->text_style; ?>">
 
-
-                                <?php if (!$this->not_as_bg): ?>
-                                    <style>
-                                        <?php if($ext != "mp4"):?>
-                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?> .image--holder {
-                                            background: <?php if ($slide->darken_image): ?> linear-gradient(
-                                                    rgba(0, 0, 0, 0.5),
-                                                    rgba(0, 0, 0, 0.5)
-                                            ),<?php endif;?>
-                                                url(<?= Image::get(FilesModel::findByUuid($slide->image)->path, $slide->size[0], $slide->size[1], $slide->size[2]); ?>) center center / cover no-repeat;
-                                        }
-
-
-                                        <?php endif;?>
-
-                                        <?php if($slide->mobile_image && $ext_mobile != "mp4"):?>
-                                        @media (max-width: 576px) {
-                                            html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?> .image--holder {
-                                                background: <?php if ($slide->darken_image): ?> linear-gradient(
-                                                        rgba(0, 0, 0, 0.5),
-                                                        rgba(0, 0, 0, 0.5)
-                                                ),<?php endif;?>url(<?= Image::get(FilesModel::findByUuid($slide->mobile_image)->path, $slide->size_mobile[0], $slide->size_mobile[1], $slide->size_mobile[2]); ?>) center center / cover no-repeat;
-                                            }
-                                        }
-
-                                        <?php endif;?>
-                                    </style>
-                                <?php endif; ?>
-
+                            <div class="image--holder  <?php if ($ext == "mp4") : ?>with-video<?php endif; ?>">
 
                                 <?php if ($slide->alternate_background_color): ?>
                                     <style>
@@ -122,6 +78,9 @@ if ($GLOBALS['TL_MODE'] == 'FE') {
                                             box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
                                         }
 
+                                         html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-1 .mainimage--content-inner{
+                                            padding-inline: 0;
+                                        }
                                     </style>
                                 <?php endif; ?>
 
@@ -152,109 +111,82 @@ if ($GLOBALS['TL_MODE'] == 'FE') {
                                 <?php endif; ?>
 
 
+                                <div class="plain-image-holder  <?php if (!$this->not_as_bg): ?>is-bg<?php endif; ?>">
+                                    <?php if ($ext == "mp4") : ?>
+                                        <video class="lazy <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>d-none d-sm-block<?php endif; ?>"
+                                               autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
+                                            <source type="video/mp4" data-src="{{file::<?= $slide->image ?>}}">
+                                        </video>
+                                    <?php endif; ?>
 
-                                <?php if ($ext == "mp4") : ?>
-                                    <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
-                                           <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>class="d-none d-sm-block" <?php endif; ?>
-                                           autoplay muted loop playsinline data-src="{{file::<?= $slide->image ?>}}">
-                                        <source type="video/mp4" src="{{file::<?= $slide->image ?>}}">
-                                    </video>
-                                <?php endif; ?>
+                                    <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>
+                                        <video class="d-sm-none lazy" style="<?php if ($this->image_maxheight) : ?>max-height: <?php echo $this->image_maxheight; ?>;<?php endif; ?>"
+                                               autoplay muted loop playsinline data-src="{{file::<?= $slide->mobile_image ?>}}">
+                                            <source type="video/mp4" data-src="{{file::<?= $slide->mobile_image ?>}}">
+                                        </video>
+                                    <?php endif; ?>
 
-                                <?php if ($ext_mobile == "mp4" && $ext_mobile) : ?>
-                                    <video style="<?php if ($this->image_maxheight) : ?>min-height: <?php echo $this->image_maxheight; ?>; min-width: 0px;<?php endif; ?>"
-                                           class="d-sm-none" src="{{file::<?= $slide->mobile_image ?>}}"
-                                           autoplay muted loop playsinline
-                                    >
-                                        <source type="video/mp4" src="{{file::<?= $slide->mobile_image ?>}}">
-                                    </video>
-                                <?php endif; ?>
-
-
-                                <?php if ($this->not_as_bg): ?>
                                     <?php if ($ext != "mp4"): ?>
-                                        <div class="plain-image-holder">
-                                            <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, "d-none d-sm-inline-block", true, false); ?>
-                                        </div>
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, ($slide->mobile_image ? 'd-none d-sm-inline-block' : ''), true, false); ?>
                                     <?php endif; ?>
-                                <?php endif; ?>
 
 
-                                <?php if ($this->not_as_bg_mobile): ?>
                                     <?php if ($slide->mobile_image && $ext_mobile != "mp4"): ?>
-                                        <div class="plain-image-holder">
-                                            <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, "d-sm-none", true, false); ?>
-                                        </div>
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, ($slide->mobile_image ? 'd-none d-sm-inline-block' : ''), true, false); ?>
                                     <?php endif; ?>
-                                <?php endif; ?>
+                                </div>
 
                                 <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1) : ?>
-                                    <div
-                                            class="mainimage--content"
-                                            <?php if ($slide->image_height < 50 && $slide->image_height != "") : ?>style="top: 140px;" <?php endif; ?>>
+                                    <div data-aos="<?= $slide->animation_type; ?>" class=" mainimage--content">
+                                        <div class="mainimage--content-inner <?php echo $slide->textbox_position; ?> <?php echo $slide->text_align; ?>"
+                                             style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?> <?php if ($slide->maxWidth) : ?>width: 100%; max-width: <?php echo $slide->maxWidth; ?>;<?php endif; ?>">
 
+                                            <div class="mainimage--content-inner--wrapper">
+                                                <div class="mainimage--content-inner--holder">
 
-                                        <div class="<?php if ($slide->text_style == "style-2"): ?>container<?php else: ?><?php endif; ?>">
+                                                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                        $slide->text_topline,
+                                                        $slide->text_firstline,
+                                                        $slide->text_secondline,
+                                                        $slide->headline_type,
+                                                        $slide->animation_type,
+                                                        $slide->headline_color,
+                                                        $slide->onlystyle,
+                                                        "mb-0"
+                                                    ); ?>
 
+                                                    <?php if ($slide->text_infotext && !$slide->own_box) : ?>
+                                                        <div class="infotext--text">
+                                                            <?php echo $slide->text_infotext; ?>
+                                                        </div>
+                                                    <?php endif; ?>
 
-                                            <div class="mainimage--content-inner <?php echo $slide->textbox_position; ?> <?php echo $slide->text_align; ?>"
-                                                 style="<?php if ($slide->text_color) : ?>color: <?php echo $slide->text_color; ?>;<?php endif; ?> <?php if ($slide->maxWidth) : ?>max-width: <?php echo $slide->maxWidth; ?>;<?php endif; ?>">
+                                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($slide->buttons); ?>
+                                                </div>
+                                            </div>
 
-                                                <div class="mainimage--content-inner--wrapper" data-aos="<?= $slide->animation_type; ?>">
-                                                    <div class="mainimage--content-inner--holder">
-
-
-                                                        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                                                            $slide->text_topline,
-                                                            $slide->firstline_headline,
-                                                            $slide->text_secondline,
-                                                            $slide->headline_type,
-                                                            $slide->animation_type,
-                                                            $slide->headline_color,
-                                                            $slide->onlystyle,
-                                                            "mb-0"
-                                                        ); ?>
-
-
-
-                                                        <?php if ($slide->text_infotext && !$slide->own_box) : ?>
-                                                            <div class="infotext--text">
+                                            <?php if (($slide->text_infotext || count($slide->buttons) >= 1) && $slide->own_box) : ?>
+                                                <div class="mainimage--content-inner--wrapper extra mt-3" data-aos="<?= $slide->animation_type; ?>">
+                                                    <div class="mainimage--content-inner--holder extra ">
+                                                        <?php if ($slide->text_infotext): ?>
+                                                            <div class="infotext--text mt-0">
                                                                 <?php echo $slide->text_infotext; ?>
                                                             </div>
                                                         <?php endif; ?>
 
-                                                        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($slide->buttons); ?>
-
+                                                        <?php if (count($slide->buttons) >= 1) : ?>
+                                                            <div class="button--wrapper">
+                                                                <?php foreach ($slide->buttons as $button) : ?>
+                                                                    <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php endif; ?>"
+                                                                       class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
+                                                                       href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
+                                                                <?php endforeach ?>
+                                                            </div>
+                                                        <?php endif; ?>
                                                     </div>
                                                 </div>
-
-
-                                                <?php if (($slide->text_infotext || count($slide->buttons) >= 1) && $slide->own_box) : ?>
-                                                    <div class="mainimage--content-inner--wrapper extra mt-3" data-aos="<?= $slide->animation_type; ?>">
-                                                        <div class="mainimage--content-inner--holder extra ">
-                                                            <?php if ($slide->text_infotext): ?>
-                                                                <div class="infotext--text mt-0">
-                                                                    <?php echo $slide->text_infotext; ?>
-                                                                </div>
-                                                            <?php endif; ?>
-
-                                                            <?php if (count($slide->buttons) >= 1) : ?>
-                                                                <div class="button--wrapper">
-                                                                    <?php foreach ($slide->buttons as $button) : ?>
-                                                                        <a data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                                                           class="d-inline-block btn <?php if ($button->link_size) : ?><?php echo $button->link_size; ?><?php endif; ?> <?php echo $button->link_type; ?>"
-                                                                           href="<?php echo $button->link_url; ?><?php if ($button->link_betreff) : ?>?subject=<?php echo $button->link_betreff; ?><?php endif; ?>"><?php echo $button->link_text; ?></a>
-                                                                    <?php endforeach ?>
-                                                                </div>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                    </div>
-                                                <?php endif; ?>
-
-                                            </div>
-
+                                            <?php endif; ?>
                                         </div>
-
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -263,38 +195,36 @@ if ($GLOBALS['TL_MODE'] == 'FE') {
                 <?php endforeach ?>
             </div>
             <?php if (count($this->slides) > 1) : ?>
-
-                <?php if (!$this->boxed_image) : ?>
-                    <div class="swiper-pagination"></div>
+                <?php if (!$this->boxed_image && $this->show_pagination) : ?>
+                    <div class="swiper-pagination mainslider_<?= $this->id; ?>"></div>
                 <?php endif; ?>
-                <div class="swiper-button-prev mainslider_<?php echo $this->id; ?>"></div>
-                <div class="swiper-button-next mainslider_<?php echo $this->id; ?>"></div>
+                <?php if ($this->show_arrows) : ?>
+                    <div class="swiper-button-prev mainslider_<?php echo $this->id; ?>"></div>
+                    <div class="swiper-button-next mainslider_<?php echo $this->id; ?>"></div>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
 
         <?php if ($this->boxed_image) : ?>
-            <div class="boxed-logo">
-                <img class="lazy" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                     data-src="<?= Image::get(FilesModel::findByUuid($this->boxed_image)->path, null, null, null); ?>">
+            <div class="boxed-logo" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php endif; ?>">
+                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->boxed_image, null, null, null, "", false, false, true); ?>
             </div>
         <?php endif; ?>
     </div>
 
-    <?php if ($GLOBALS['TL_MODE'] == 'FE'): ?>
-        <script type="text/javascript" async>
+    <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+        <script type="text/javascript" defer>
+            window.addEventListener("resize", movingContent);
             window.addEventListener('load', function () {
-                if ($('.swiper.mainslider_<?php echo $this->id; ?>').length) {
-                    const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {
+                let swiperElementCheck_<?= $this->id; ?> = document.querySelector('.swiper.mainslider_<?= $this->id; ?>');
+                if (swiperElementCheck_<?= $this->id; ?>) {
+                    swiperElementCheck_<?= $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {
                         loop: true,
                         lazy: true,
-                        //loopedSlides: 1,
                         speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
                         effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
                         'slide'<?php endif;?>,
 
-                        <?php if ($this->autoheight):?>
-                        autoHeight: true,
-                        <?php endif;?>
                         <?php if ($this->autoplay) : ?>
                         autoplay: {
                             delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
@@ -302,20 +232,22 @@ if ($GLOBALS['TL_MODE'] == 'FE') {
                         <?php endif; ?>
 
                         <?php if (count($this->slides) > 1) : ?>
+
+                        <?php if ($this->show_arrows) : ?>
                         navigation: {
                             nextEl: '.swiper-button-next.mainslider_<?php echo $this->id; ?>',
                             prevEl: '.swiper-button-prev.mainslider_<?php echo $this->id; ?>',
                         },
-                        <?php if (!$this->boxed_image) : ?>
-                        /*
+                        <?php endif; ?>
+
+                        <?php if (!$this->boxed_image && $this->show_pagination) : ?>
                         pagination: {
-
-                            el: '.swiper.mainslider_<?php echo $this->id; ?> .swiper-pagination',
+                            el: '.mainslider_<?php echo $this->id; ?>.swiper-pagination',
                             clickable: true,
-                        },    */
-                        <?php endif; ?>
-                        <?php endif; ?>
+                        },
 
+                        <?php endif; ?>
+                        <?php endif; ?>
 
                         on: {
                             realIndexChange: function () {
@@ -331,14 +263,14 @@ if ($GLOBALS['TL_MODE'] == 'FE') {
                     });
                 }
             }, {passive: true})
+            window.addEventListener("load", movingContent);
         </script>
     <?php endif; ?>
     <?php if ($this->show_breadcrumb) : ?>
         <div class="container mt-3 mb-5">
-            {{insert_module::48}}
+            {{insert_module::5}}
         </div>
     <?php endif; ?>
-
 </div>
 <!-- indexer::continue -->
 

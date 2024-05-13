@@ -134,27 +134,22 @@ a.disabled-link {
   display: none;
 }
 
-.article-content {
-  .moved-content{
-
-  }
-}
-
 .moved-content {
   position: relative;
-
   background-color: var(--bs-body-bg);
-  z-index: 1;
+  z-index: 4;
   display: block;
+  padding-top: calc(var(--main-gap));
 
   &[style] {
     opacity: 1;
   }
-
-  > * {
-    //padding-top: calc(var(--main-gap));
-    //position: relative;
-    //background-color: var(--bs-body-bg);
-  }
 }
 
+.remove-bottom-gutter {
+  margin-bottom: calc(-1 * var(--main-gap)) !important;
+}
+
+.remove-top-gutter {
+  margin-top: calc(-1 * var(--main-gap)) !important;
+}

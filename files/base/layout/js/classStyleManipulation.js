@@ -106,4 +106,3 @@ export function adjustTableResponsive() {
     }
 }
 
-// Weitere spezifische Funktionen zur Stil- und Klassenmanipulation können hier hinzugefügt werden.

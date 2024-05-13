@@ -1,0 +1,224 @@
+[class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery):not(.badge):not(.ce--headline) {
+  padding-top: $basic-gutter;
+  padding-bottom: $basic-gutter;
+
+  /*
+    @include media-breakpoint-down(md) {
+    padding-left: 0rem;
+    padding-right: 0rem;
+  }
+   */
+
+  > *:last-child:not(hr) {
+    margin-bottom: 0px !important;
+  }
+
+  .content--element:first-child .row-mid-content {
+    @include media-breakpoint-down(md) {
+      padding-top: 0px;
+    }
+  }
+}
+
+.mod_article .ce_headline {
+  & + div {
+    margin-top: 0px;
+  }
+}
+
+.content--element {
+  position: relative;
+
+  &.content--box.content--box.content--box.content--box {
+    z-index: 10;
+    padding: calc(var(--main-gap) / 2);
+  }
+
+  &.border-top {
+    padding-top: var(--main-gap);
+    margin-top: var(--main-gap);
+  }
+
+  &.border-bottom {
+    padding-bottom: var(--main-gap);
+    margin-bottom: var(--main-gap);
+  }
+}
+
+.content--box {
+  @include content-box();
+  //@extend .container;
+}
+
+.ce_text {
+  figure.float_above {
+    text-align: center;
+  }
+}
+
+.progress {
+  background-color: var(--bs-gray-100);
+}
+
+body.start {
+  .mod_pageimage {
+    .page-image--holder {
+      min-height: 75vh;
+      @include media-breakpoint-up(md) {
+        background-attachment: fixed;
+      }
+    }
+  }
+}
+
+body:not(.start) {
+  .mod_pageimage {
+    .page-image--holder {
+      min-height: rfs-value(275px);
+    }
+  }
+}
+
+.text--wrapper {
+  min-height: 100%;
+
+  &.with-image {
+    display: flex;
+    flex-flow: row wrap;
+    //flex-flow: row wrap;
+    gap: 1.5rem;
+    /*
+        --bs-gutter-x: 30px;
+    --bs-gutter-y: 0;
+        margin-top: calc(-1 * var(--bs-gutter-y));
+    margin-right: calc(-0.5 * var(--bs-gutter-x));
+    margin-left: calc(-0.5 * var(--bs-gutter-x));
+     */
+
+
+    &.image-right {
+      flex-flow: row-reverse wrap;
+
+      .image {
+        @include media-breakpoint-up(lg) {
+          flex: 0 0 auto;
+         width: calc(50% - .75rem);
+        }
+
+        @include media-breakpoint-down(md) {
+          margin-top: 1rem;
+        }
+      }
+
+      .text {
+        @include media-breakpoint-up(lg) {
+          flex: 0 0 auto;
+          width: calc(50% - .75rem);
+        }
+
+        @include media-breakpoint-up(md) {
+          //@include padding-right(35px);
+        }
+      }
+    }
+
+    &.image-left {
+      .image {
+        @include media-breakpoint-up(lg) {
+          flex: 0 0 auto;
+          width: calc(50% - .75rem);
+        }
+
+        @include media-breakpoint-down(md) {
+          margin-top: 1rem;
+        }
+      }
+
+      .text {
+        @include media-breakpoint-up(lg) {
+          flex: 0 0 auto;
+          width: calc(50% - .75rem);
+        }
+
+        @include media-breakpoint-up(md) {
+          //@include padding-left(35px);
+        }
+      }
+    }
+  }
+}
+
+.BodyScrollToTop {
+  width: rfs-value(60px);
+  height: rfs-value(60px);
+  line-height: rfs-value(55px);
+  text-align: center;
+  color: var(--bs-white);
+  border: 2px solid var(--bs-primary);
+  background-color: var(--bs-primary);
+  border-radius: 50%;
+  margin: 1.5rem auto 0 auto;
+  transition: all 0.3s ease;
+  @include font-size(30px);
+  cursor: pointer;
+  bottom: 25px;
+  left: 25px;
+  position: fixed;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: $box-shadow;
+  z-index: 5;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  i {
+    line-height: rfs-value(56px);
+  }
+
+  &:hover {
+    color: var(--bs-primary);
+    background-color: var(--bs-white);
+  }
+}
+
+.openContactForm {
+  position: fixed;
+  bottom: 25px;
+  right: 35px;
+  cursor: pointer;
+  z-index: 5;
+  font-size: 5rem;
+  line-height: 0;
+
+  &:hover {
+    i {
+      transition: all 0.15s ease-in-out;
+      --fa-primary-color: var(--bs-secondary) !important;
+      --fa-secondary-color: var(--bs-primary) !important;
+
+      &:before,
+      &:after {
+        transition: all 0.15s ease-in-out;
+      }
+    }
+  }
+}
+
+.video_container {
+  position: relative;
+  padding-bottom: 56.25%;
+
+  iframe,
+  embed,
+  video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+}

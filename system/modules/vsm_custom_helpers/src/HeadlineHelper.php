@@ -16,34 +16,32 @@ class HeadlineHelper
     )
     {
         $textColorStyle = $textColor ? "color:{$textColor};" : '';
-
-        // Hier wird die optionale Klasse hinzugefügt, falls vorhanden.
         $headlineClassAttribute = "class=\"ce--headline hl-{$headlineType}" . ($headlineClass ? " {$headlineClass}" : '') . "\"";
 
         $headlineHTML = "";
 
         if ($headline || $topline || $subline) {
 
-            $headlineHTML = "<div {$headlineClassAttribute} data-aos=\"{$animationType}\">";
+            $headlineHTML = "<div {$headlineClassAttribute} >";
 
             if ($topline) {
-                $headlineHTML .= "<span class=\"ce--topline\">";
+                $headlineHTML .= "<span data-aos=\"{$animationType}\" class=\"ce--topline\">";
                 $headlineHTML .= htmlspecialchars($topline, ENT_QUOTES, 'UTF-8');
                 $headlineHTML .= "</span>";
             }
 
             if (!$onlyStyle && $headline != "") {
-                $headlineHTML .= "<{$headlineType} style=\"{$textColorStyle}\">";
+                $headlineHTML .= "<{$headlineType} data-aos=\"{$animationType}\" style=\"{$textColorStyle}\">";
                 $headlineHTML .= htmlspecialchars($headline, ENT_QUOTES, 'UTF-8');
                 $headlineHTML .= "</{$headlineType}>";
             } elseif ($headline != "") {
-                $headlineHTML .= "<span class=\"{$headlineType}\" style=\"{$textColorStyle}\">";
+                $headlineHTML .= "<span data-aos=\"{$animationType}\" class=\"{$headlineType}\" style=\"{$textColorStyle}\">";
                 $headlineHTML .= htmlspecialchars($headline, ENT_QUOTES, 'UTF-8');
                 $headlineHTML .= "</span>";
             }
 
             if ($subline) {
-                $headlineHTML .= "<span class=\"ce--subline\">";
+                $headlineHTML .= "<span data-aos=\"{$animationType}\" class=\"ce--subline\">";
                 $headlineHTML .= htmlspecialchars($subline, ENT_QUOTES, 'UTF-8');
                 $headlineHTML .= "</span>";
             }

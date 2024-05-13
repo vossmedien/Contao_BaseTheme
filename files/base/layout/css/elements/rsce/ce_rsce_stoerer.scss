@@ -1,0 +1,91 @@
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+
+html body main {
+  .content--element.ce_rsce_stoerer {
+    position: absolute;
+    z-index: 1000;
+
+    &.is-fixed {
+      position: fixed;
+    }
+
+    &[style*="right: 0px;"] {
+      .ce--stoerer {
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+      }
+    }
+
+    &[style*="right:"] {
+      .ce--stoerer {
+        margin-left: auto;
+      }
+    }
+
+    &[style*="left:"] {
+      .ce--stoerer {
+        margin-right: auto;
+      }
+    }
+
+    .ce--stoerer {
+      --stoerer-padding: .5rem;
+      position: relative;
+      border-radius: var(--bs-border-radius);
+      padding: var(--stoerer-padding);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-flow: row nowrap;
+      transition: all .3s ease-in-out;
+      white-space: nowrap;
+      box-shadow: $box-shadow;
+      background-color: var(--bs-body-bg);
+
+
+
+
+      &.is-expandable {
+        transition: all .3s ease-in-out;
+        max-width: calc(var(--stoerer-width) + calc(var(--stoerer-padding) * 2));
+        overflow: hidden;
+
+
+        &:hover, &:focus, &:focus-visible {
+          max-width: 300px;
+        }
+      }
+
+      svg, img {
+        transition: all .3s ease-in-out;
+        flex: var(--stoerer-width);
+        min-width: var(--stoerer-width);
+        max-width: var(--stoerer-width);
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 0.25rem;
+      }
+
+      > a {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .stoerer--content {
+        @include font-size(18px);
+
+        p {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}

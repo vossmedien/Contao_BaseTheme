@@ -3,7 +3,6 @@
 @import "scss-variables";
 @import "_theme/variables";
 @import "../_vendor/vendor";
-@import "../_fonts/fontawesome-iconset/scss/fontawesome";
 @import "icon-package";
 
 @import "_theme/fonts";
@@ -16,59 +15,60 @@
 @import "scaffolding/headlines";
 @import "scaffolding/forms";
 @import "scaffolding/buttons";
-@import "scaffolding/spacing";
 @import "scaffolding/hacks";
+
+@import "areas/header";
+@import "areas/main";
+@import "areas/aside";
+@import "areas/footer";
+
+// Vendor Widgets
+@import "elements/vendor-widgets/swiper";
+
+//Custom HTML
+@import "elements/custom-html-elements/elements";
+
+//Contao
+@import "elements/contao-elements/ce_downloads";
+@import "elements/contao-elements/ce_image";
+@import "elements/contao-elements/ce_gallery";
+@import "elements/contao-elements/ce_text";
+@import "elements/contao-elements/mod_breadcrumb";
+
+//Bootstrap
+@import "elements/vendor-widgets/bootstrap/modal";
+@import "elements/vendor-widgets/bootstrap/accordions";
+@import "elements/vendor-widgets/bootstrap/pagination";
+@import "elements/vendor-widgets/bootstrap/tooltips";
+@import "elements/vendor-widgets/bootstrap/popover";
+@import "elements/vendor-widgets/bootstrap/alerts";
+
+/*
+@import "elements/navigation";
+@import "elements/form-elements";
+@import "elements/news";
+@import "elements/events";
+@import "elements/megamenu";
+@import "elements/mmenu";
+@import "elements/offcanvas";
+@import "elements/search";
+*/
+
 
 html {
   scroll-behavior: smooth;
   font-size: var(--bs-body-font-size);
 
   body {
-    #wrapper {
-      //opacity: 0;
-      //transition: padding-top 0.5s ease, opacity 0.25s ease;
-      //animation: fadeinBody 0.25s forwards;
-      //animation-delay: 0.5s;
-    }
-
     *[id] {
       scroll-behavior: smooth;
       scroll-margin-top: var(--bs-scrolloffset);
     }
 
-
     &#tinymce {
       @include padding(7px 12px);
       opacity: 1;
     }
-
-    @import "areas/header";
-    @import "areas/main";
-    @import "areas/aside";
-    @import "areas/footer";
-
-    @import "elements/elements";
-    @import "elements/navigation";
-    @import "elements/modal";
-    @import "elements/form-elements";
-    @import "elements/slider";
-    @import "elements/news";
-    @import "elements/events";
-    @import "elements/accordions";
-    @import "elements/ce_downloads";
-    @import "elements/ce_image";
-    @import "elements/ce_gallery";
-    @import "elements/ce_text";
-    @import "elements/megamenu";
-    @import "elements/breadcrumb";
-    @import "elements/mmenu";
-    @import "elements/offcanvas";
-    @import "elements/search";
-    @import "elements/fixed-stoerer-base";
-    @import "elements/tooltips";
-    @import "elements/popover";
-    @import "elements/alerts";
-    @import "elements/pagination";
   }
 
   @import "_theme/includes";
@@ -76,11 +76,3 @@ html {
 
 @import "_theme/styles";
 
-@keyframes fadeinBody {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}

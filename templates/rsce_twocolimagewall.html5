@@ -1,13 +1,16 @@
 <?php
-if ($GLOBALS['TL_MODE'] == 'FE') {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/custom-elements/ce_rsce_twocolimagewall.min.css|static';
+
+use Contao\StringUtil;
+
+
+if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_twocolimagewall.min.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_twocolimagewall.js|static';
 }
 ?>
 
 
-<div <?php echo $this->cssID; ?>
-        class="p-0 content--element <?php echo $this->class; ?> <?php if ($this->no_padding) : ?>no-spacing<?php endif; ?>">
+<div <?php echo $this->cssID; ?> class="px-0 content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
 
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
@@ -18,239 +21,149 @@ if ($GLOBALS['TL_MODE'] == 'FE') {
             $this->animation_type,
             null,
             false,
-            null
+            "container"
         ); ?>
 
-        <?php foreach ($this->row as $row) : ?>
-
-        <?php
-        if (!isset($row->size_left)) {
-            $row->{"size_left"} = "";
-        }
-
-        if (!isset($row->size_right)) {
-            $row->{"size_right"} = "";
-        }
-        ?>
+        <?php $rand = rand(1, 100);
+        foreach ($this->row as $row) : ?>
 
 
-        <div class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> ">
-            <?php
-            $classes = ['ce--imagetextwall'];
+            <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
 
-            if ($this->not_fullwidth) {
-                $classes[] = 'container';
-            } else {
-                $classes[] = 'with-bg';
-            }
+            <?php if ($this->open_lightbox): ?>
+            <script type="text/javascript" defer>
+                document.addEventListener('DOMContentLoaded', function () {
+                    new VenoBox({
+                        selector: ".lightbox_<?= $rand;?>", //Items selector
+                        infinigall: true, // Ermöglicht eine endlose Navigation durch die Galerie. Standardwert: false
+                        maxWidth: '95%', // Maximale Breite des Lightbox-Fensters. Standardwert: '100%'
+                        numeration: true, // Zeigt Nummerierung der aktuellen und Gesamtanzahl der Elemente in der Galerie an. Standardwert: false
+                        spinner: 'flow', //  'plane' | 'chase' | 'bounce' | 'wave' | 'pulse' | 'flow' | 'swing' | 'circle' | 'circle-fade' | 'grid' | 'fold | 'wander'
+                        initialScale: 0.9, // Anfangsgröße der Skalierungstransformation für Elemente. Standardwert: 0.9
+                        transitionSpeed: 200, // Übergangsgeschwindigkeit für eingehende Elemente in Millisekunden. Standardwert: 500
+                        fitView: true, // Passt Bilder an, um innerhalb der Höhe des Viewports zu passen. Standardwert: true
+                    });
+                });
+            </script>
+        <?php endif; ?>
 
-            if ($row->boxed_headline) {
-                $classes[] = 'with-boxed-image';
-            }
+        <?php if (is_array($row->image) && count($row->image) > 1) : ?>
+            <script type="text/javascript" defer>
+                window.addEventListener('load', function () {
+                    let swiperElementCheck_<?= $rand; ?> = document.querySelector('.swiper.content-slider_<?= $rand; ?>');
+                    if (swiperElementCheck_<?= $rand; ?>) {
+                        swiperElementCheck_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $rand; ?>', {
 
-            if ($row->alternate_image) {
-                $classes[] = 'with-code';
-            }
+                            direction: 'horizontal',
 
-            if ($row->alternate_background) {
-                $classes[] = 'with-custom-bgcolor';
-            }
+                            loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
+                            //loopedSlides: 1,
 
-            if ($row->innerpadding && $row->alternate_background) {
-                $classes[] = 'with-border';
-            }
+                            preloadImages: false,
+                            lazy: true,
 
-            if ($row->not_as_bg) {
-                $classes[] = 'not-as-bg';
-            }
+                            spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
+                            //centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
+                            //slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>1<?php endif;?>,
 
-            $styles = [];
+                            speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
+                            effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
+                            'slide'<?php endif;?>,
 
-            if (!$row->not_as_bg) {
-                $styles[] = $row->min_height ? 'min-height: ' . $row->min_height . 'px;' : 'min-height: 500px;';
-            }
+                            <?php if ($this->autoplay) : ?>
+                            autoplay: {
+                                delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                            },
+                            <?php endif; ?>
+                            autoHeight: false,
 
-            if ($row->image && $row->image_both) {
-                $file = FilesModel::findByUuid($row->image);
-                if ($file) {
-                    $imagePath = Image::get($file->path, $row->size_right[0], $row->size_right[1], $row->size_right[2]);
-                    $styles[] = 'background-image: url(' . $imagePath . '); background-position: center center; background-repeat: no-repeat; background-size: cover;';
+                            <?php if ($this->slide_effect == "coverflow") : ?>
+                            coverflowEffect: {
+                                rotate: 50, // Slide rotate in degrees
+                                stretch: 0, // Stretch space between slides (in px)
+                                depth: 100, // Depth offset in px (slides translate in Z axis)
+                                modifier: 1, // Effect multipler
+                                slideShadows: true, // Enables slides shadows
+                            },
+                            <?php endif;?>
+
+                            <?php if ($this->slide_effect == "fade") : ?>
+                            fadeEffect: {
+                                crossFade: true
+                            },
+                            <?php endif;?>
+
+
+                            navigation: {
+                                nextEl: '.content-slider_<?= $rand;?>.swiper-button-next',
+                                prevEl: '.content-slider_<?= $rand;?>.swiper-button-prev',
+                            },
+
+                            pagination: {
+                                el: '.content-slider_<?php echo $rand; ?>.swiper-pagination',
+                                clickable: true,
+                            },
+
+
+
+                            <?php if ($this->slides_per_view) : ?>
+
+                            <?php if ($this->slides_per_view > 1) : ?>
+                            slidesPerView: 1.5,
+                            breakpoints: {
+                                768: {
+                                    slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view / 2; ?><?php else:?>1<?php endif;?>,
+                                },
+                                992: {
+                                    slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>3<?php endif;?>,
+                                }
+                            } <?php else:?>
+                            slidesPerView: 1,
+                            <?php endif;?>
+                            <?php else:?>
+                            slidesPerView: 'auto',
+                            <?php endif;?>
+
+                        });
+                    }
+                }, {passive: true})
+            </script>
+        <?php endif; ?>
+        <?php endif; ?>
+
+
+            <div class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> ">
+                <?php
+                $classes = ['ce--imagetextwall'];
+
+
+                if ($row->boxed_headline) {
+                    $classes[] = 'with-boxed-image';
                 }
-            }
 
-            if ($row->alternate_textcolor) {
-                $styles[] = 'color: ' . $row->alternate_textcolor . ';';
-            }
+                if ($row->alternate_image) {
+                    $classes[] = 'with-code';
+                }
 
-            if ($row->alternate_background && !$this->not_fullwidth) {
-                $styles[] = 'background-color: ' . $row->alternate_background . ';';
-            }
-            ?>
+                if ($row->alternate_background) {
+                    $classes[] = 'with-custom-bgcolor';
+                }
 
-            <div class="<?= implode(' ', $classes); ?>"
-                 style="<?= implode(' ', $styles); ?>">
+                if ($row->innerpadding && $row->alternate_background) {
+                    $classes[] = 'with-border';
+                }
+                ?>
 
-                <div style="<?php if ($row->alternate_background && $this->not_fullwidth) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>" class="content-holder  <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if (!$this->not_fullwidth): ?>container force-container<?php endif; ?>">
-                    <div style="<?php if (!$row->not_as_bg): ?> <?php if ($row->min_height): ?>min-height: <?= $row->min_height;?>;<?php else:?>min-height: 500px;<?php endif; ?><?php endif; ?>" class="row g-0 align-items-center <?php if ($row->reverse) : ?>reverse-cols<?php endif; ?> <?php if ($row->content_rightcol && !$row->alternate_image) : ?>only-text--right-col<?php endif; ?>">
-                        <div class="content--col d-flex align-items-center  <?php if ($row->alternate_background) : ?>with-bg<?php endif; ?> <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>"
-                             style="">
-
-                            <?php if ($row->boxed_headline && !$row->content_rightcol && !$row->image && !$row->alternate_image && !$row->video) : ?>
-                            <div class="boxed-headline" style="transform: translate(0%, -50%);">
-                                <div class="ce--headline m-0 headline--wrapper hl-<?= $row->boxed_headline_type; ?>"
-                                     data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                    <?php if (!$row->boxed_headline_onlystyle) : ?>
-                                    <<?php echo $row->boxed_headline_type; ?> >
-                                    <?php echo $row->boxed_headline; ?>
-                                </<?php echo $row->boxed_headline_type; ?>>
-                                <?php if ($row->boxed_subheadline) : ?>
-                                    <span class="ce--subline">
-                                <?php echo $row->boxed_subheadline; ?>
-                            </span>
-                                <?php endif; ?>
-                                <?php else : ?>
-                                    <span class="<?php echo $row->boxed_headline_type; ?>"><?php echo $row->boxed_headline; ?></span>
-                                    <?php if ($row->boxed_subheadline) : ?>
-                                        <span class="ce--subline">
-                                    <?php echo $row->boxed_subheadline; ?>
-                                </span>
-                                    <?php endif; ?>
-                                    </span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <?php endif; ?>
+                <div class="<?= implode(' ', $classes); ?>">
 
 
-                        <?php if ($row->ce_headline || $row->content || $row->buttons[0]->link_text != ""): ?>
-                        <div class="<?php if ($row->boxed_headline): ?>mt-lg-10 mb-lg-8<?php endif; ?> content-col--inner py-3 <?php echo $row->textalign; ?> <?php if ($row->alternate_background): ?> p-lg-3<?php endif; ?>  <?php if ($row->reverse) : ?>ps-lg-4<?php else: ?>pe-lg-4<?php endif; ?>">
-                            <?php if ($row->ce_headline) : ?>
-                            <div class="ce--headline hl-<?= $row->headline_type; ?> content--headline-wrapper"
-                                 data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                <?php if (!$row->onlystyle) : ?>
-                                <<?php echo $row->headline_type; ?> class="content--headline"
-                                style="<?php if ($row->alternate_textcolor) : ?>color:<?php echo $row->alternate_textcolor; ?>;<?php endif; ?>
-                                ">
-                                <?php echo $row->ce_headline; ?>
-                            </<?php echo $row->headline_type; ?>>
-                        <?php if ($row->ce_subline) : ?>
-                            <span class="ce--subline content--subline"
-                            >
-                                <?php echo $row->ce_subline; ?>
-                            </span>
-                        <?php endif; ?>
-                        <?php else : ?>
-                            <span class="<?php echo $row->headline_type; ?> content--headline"
-                            >
-                                <?php echo $row->ce_headline; ?>
-                            </span>
-                            <?php if ($row->ce_subline) : ?>
-                                <span class="ce--subline content--subline"
-                                >
-                                    <?php echo $row->ce_subline; ?>
-                                </span>
-                            <?php endif; ?><?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-                        <?php if ($row->content) : ?>
-                            <div class="content--text "
-                                 data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                <?php echo $row->content; ?>
-                            </div>
-                        <?php endif; ?>
-                        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($row->buttons); ?>
-                    </div>
-                    <?php endif; ?>
-
-                    <?php if ($row->image_leftcol || $row->kachel_left_text): ?>
-                        <div class="content-col--image" <?php if ($row->image_leftcol): ?>style="min-height: 12.5rem; background: url(<?= Image::get(FilesModel::findByUuid($row->image_leftcol)->path, $row->size_left[0], $row->size_left[1], $row->size_left[2]); ?>) center center no-repeat; background-size: cover;" <?php endif; ?>></div>
-                    <?php endif; ?>
-
-                    <?php if ($row->kachel_left_text): ?>
-                        <div class="kachel-column-width--indicator <?php if ($row->expand_left_kachel): ?>expandable<?php endif; ?>">
-                            <div class="column-kachel--wrapper  <?php if ($row->kachel_left_url): ?> with-url<?php endif; ?> <?php echo $row->kachel_left_position; ?>">
-                                <div class="column--kachel <?php echo $row->kachel_left_text_position; ?>"
-                                     data-aos="<?php if ($row->animation_type_left_kachel) : ?><?php echo $row->animation_type_left_kachel; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                     style="
-                                     <?php if ($row->kachel_left_background_color): ?>
-                                             background-color: <?= $row->kachel_left_background_color;?>;
-                            <?php endif; ?>
-
-                                     <?php if ($row->kachel_left_text_color): ?>
-                                             color: <?= $row->kachel_left_text_color;?>;
-                            <?php endif; ?>
-                                             ">
-
-                                    <?php if ($row->kachel_left_button_url): ?>
-                                        <a href="<?= $row->kachel_left_url; ?>"></a>
-                                    <?php endif; ?>
-
-                                    <div class="column-kachel--inner <?php if ($row->kachel_left_hover_text || $row->kachel_left_url): ?>with-hover-content<?php endif; ?>">
-                                        <span>
-                                            <?php echo $row->kachel_left_text; ?>
-                                        </span>
-
-                                        <?php if ($row->kachel_left_hover_text || $row->kachel_left_url): ?>
-                                            <div class="kachel-hover--content">
-                                                <?php if ($row->kachel_left_hover_text): ?>
-                                                    <div class="kachel--long-text">
-                                                        <?php echo $row->kachel_left_hover_text; ?>
-                                                    </div>
-                                                <?php endif; ?>
-
-                                                <?php if ($row->kachel_left_button_text): ?>
-                                                    <div class="kachel--more-button">
-
-                                                        <a <?php if ($row->new_tab): ?>target="_blank"<?php endif; ?>
-                                                           class="d-inline-block btn <?php if ($row->kachel_left_button_size) : ?><?php echo $row->kachel_left_button_size; ?><?php endif; ?> <?php echo $row->kachel_left_button_type; ?>"
-                                                           href="<?php echo $row->kachel_left_button_url; ?><?php if ($row->kachel_left_button_betreff) : ?>?subject=<?php echo $row->kachel_left_button_betreff; ?><?php endif; ?>"><?php echo $row->kachel_left_button_text; ?> </a>
-
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                        <?php endif; ?>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                </div>
-                <?php if (($row->image && !$row->image_both) || $row->alternate_image || $row->content_rightcol || $row->video) : ?>
-                    <div class="image--col col-12 col-lg  <?php if ($row->video) : ?>with-video col-lg-6<?php endif; ?>  my-lg-0"
-                    >
+                    <div class="px-0 container content-holder ">
+                        <div style="<?php if ($row->min_height): ?>min-height: <?= $row->min_height; ?>;<?php endif; ?>" class="align-items-center g-0 row <?php if ($row->reverse) : ?>flex-row-reverse<?php endif; ?>">
+                            <div class="content--col <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>">
 
 
-                        <div data-aos="<?php if ($row->animation_type_image_col) : ?><?php echo $row->animation_type_image_col; ?><?php else : ?>animate__fadeIn<?php endif; ?>"
-                             style="<?php if ($row->alternate_background && !$row->image_both) : ?>background-color:<?php echo $row->alternate_background; ?>;<?php endif; ?>"
-                             class=" <?php if ($row->video) : ?>with-video<?php endif; ?> <?php if ($row->alternate_image): ?>with-iframe<?php endif; ?> <?php if (!$row->not_as_bg && !$row->alternate_image) : ?>lazy<?php endif; ?>
-
-          <?php if (!$row->not_as_bg) : ?>
-          image-col--inner
-        <?php if ($row->column_width == "col-12 col-lg-6 col-xxl-5") : ?>
-        col-12 col-lg-6 col-xxl-7
-        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-4") : ?>
-        col-12 col-lg-6 col-xxl-8
-        <?php elseif ($row->column_width == "col-12 col-lg-6") : ?>
-        col-12 col-lg-6
-        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-8") : ?>
-        col-12 col-xxl-4 col-lg-6
-        <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-9") : ?>
-        col-12 col-xxl-3 col-lg-6
-        <?php endif; ?>
-        <?php endif; ?>
-"
-                             <?php if (!$row->alternate_image && ($row->image && !$row->image_both) && !$row->not_as_bg) : ?>style="<?php if ($row->min_height): ?>min-height: <?= $row->min_height; ?>;<?php else: ?>min-height: 500px;<?php endif; ?>;" data-bg="" <?php endif; ?>>
-                            <?php if (!$row->not_as_bg && !$row->image_both && $row->image) : ?>
-                                <div class="zoom-container">
-                                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, null, $row->ce_headline, $row->size_right, null, false); ?>
-                                </div>
-                            <?php endif; ?>
-                            <?php if ($row->boxed_headline) : ?>
-                                <div class="boxed-headline--wrapper">
+                                <?php if ($row->boxed_headline && $row->reverse) : ?>
                                     <div class="boxed-headline">
-
                                         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
                                             $row->boxed_topheadline,
                                             $row->boxed_headline,
@@ -261,100 +174,231 @@ if ($GLOBALS['TL_MODE'] == 'FE') {
                                             $row->boxed_headline_onlystyle,
                                             "m-0 headline--wrapper"
                                         ); ?>
-
                                     </div>
-                                </div>
+                                <?php endif; ?>
+
+                                <div class="zoom-container" style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
+                                    <?php if ($row->image_leftcol) : ?>
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image_leftcol, null, $row->ce_headline, $row->size_left, null, false); ?>
+                                    <?php endif; ?>
+                                    <?php if ($row->kachel_left_text): ?>
+                                        <div class="kachel-column-width--indicator <?php if ($row->expand_left_kachel): ?>expandable<?php endif; ?>">
+                                            <div class="column-kachel--wrapper  <?php if ($row->kachel_left_url): ?> with-url<?php endif; ?> <?php echo $row->kachel_left_position; ?>">
+                                                <div class="column--kachel <?php echo $row->kachel_left_text_position; ?>"
+                                                     data-aos="<?php if ($row->animation_type_left_kachel) : ?><?php echo $row->animation_type_left_kachel; ?><?php endif; ?>"
+                                                     style="
+                                                     <?php if ($row->kachel_left_background_color): ?>
+                                                             background-color: <?= $row->kachel_left_background_color;?>;
                             <?php endif; ?>
 
-                            <?php if ($row->not_as_bg) : ?>
-                                <div class="image--wrapper">
-                                    <?php //VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, null, $row->ce_headline, $row->size_right, null, false); ?>
-                                </div>
+                                                     <?php if ($row->kachel_left_text_color): ?>
+                                                             color: <?= $row->kachel_left_text_color;?>;
                             <?php endif; ?>
+                                                             ">
 
+                                                    <?php if ($row->kachel_left_button_url): ?>
+                                                        <a href="<?= $row->kachel_left_url; ?>"></a>
+                                                    <?php endif; ?>
 
+                                                    <div class="column-kachel--inner <?php if ($row->kachel_left_hover_text || $row->kachel_left_url): ?>with-hover-content<?php endif; ?>">
+                                        <span>
+                                            <?php echo $row->kachel_left_text; ?>
+                                        </span>
 
+                                                        <?php if ($row->kachel_left_hover_text || $row->kachel_left_url): ?>
+                                                            <div class="kachel-hover--content">
+                                                                <?php if ($row->kachel_left_hover_text): ?>
+                                                                    <div class="kachel--long-text">
+                                                                        <?php echo $row->kachel_left_hover_text; ?>
+                                                                    </div>
+                                                                <?php endif; ?>
 
-                            <?php if ($row->alternate_image) : ?>
-                                <div class="zoom-container">
-                                    <?php echo str_replace("https:", "", str_replace(" src=", " data-source=", html_entity_decode($row->alternate_image))); ?>
+                                                                <?php if ($row->kachel_left_button_text): ?>
+                                                                    <div class="kachel--more-button">
+
+                                                                        <a <?php if ($row->new_tab): ?>target="_blank"<?php endif; ?>
+                                                                           class="d-inline-block btn <?php if ($row->kachel_left_button_size) : ?><?php echo $row->kachel_left_button_size; ?><?php endif; ?> <?php echo $row->kachel_left_button_type; ?>"
+                                                                           href="<?php echo $row->kachel_left_button_url; ?><?php if ($row->kachel_left_button_betreff) : ?>?subject=<?php echo $row->kachel_left_button_betreff; ?><?php endif; ?>"><?php echo $row->kachel_left_button_text; ?> </a>
+
+                                                                    </div>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        <?php endif; ?>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
-                            <?php endif; ?>
 
+                                <div class="content--inner <?php if ($row->boxed_headline): ?>mt-lg-10 mb-lg-8<?php endif; ?> <?php echo $row->textalign; ?>">
+                                    <?php if ($row->ce_headline): ?>
+                                        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                            $row->ce_topline,
+                                            $row->ce_headline,
+                                            $row->ce_subline,
+                                            $row->headline_type,
+                                            $row->animation_type,
+                                            $row->alternate_textcolor,
+                                            $row->onlystyle,
+                                            "content--headline-wrapper"
+                                        ); ?>
+                                    <?php endif; ?>
 
+                                    <?php if ($row->content) : ?>
+                                        <div class="content--text "
+                                             data-aos="<?= $row->animation_type ? $row->animation_type : '' ?>">
+                                            <?php echo $row->content; ?>
+                                        </div>
+                                    <?php endif; ?>
 
-                            <?php if ($row->video) : ?>
-                                <div class="zoom-container">
-                                    <video autoplay muted loop playsinline controls data-src="{{file::<?= $row->video ?>}}">
-                                        <source type="video/mp4" src="{{file::<?= $row->video ?>}}">
-                                    </video>
+                                    <?php if ($row->buttons[0]->link_text != "") : ?>
+                                        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($row->buttons); ?>
+                                    <?php endif; ?>
                                 </div>
-                            <?php endif; ?>
-
-
-                        </div>
-                        <?php if ($row->content_rightcol) : ?>
-                            <div class="image-col--extra-text"
-                                 data-aos="<?php if ($row->animation_type) : ?><?php echo $row->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
-                                <?php echo $row->content_rightcol; ?>
                             </div>
-                        <?php endif; ?>
+                            <?php if ($row->image || $row->alternate_image || $row->content_rightcol || $row->video) : ?>
+                                <div class="image--col col-12
+                                     <?php if ($row->column_width == "col-12 col-lg-6 col-xxl-5") : ?>
+                                            col-12 col-lg-6 col-xxl-7
+                                            <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-4") : ?>
+                                            col-12 col-lg-6 col-xxl-8
+                                            <?php elseif ($row->column_width == "col-12 col-lg-6") : ?>
+                                            col-12 col-lg-6
+                                            <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-8") : ?>
+                                            col-12 col-xxl-4 col-lg-6
+                                            <?php elseif ($row->column_width == "col-12 col-lg-6 col-xxl-9") : ?>
+                                            col-12 col-xxl-3 col-lg-6
+                                            <?php endif; ?>
+                                    ">
 
 
-                        <?php if ($row->kachel_right_text): ?>
-                            <div class="kachel-column-width--indicator <?php if ($row->reverse) : ?>start-0<?php else: ?>end-0<?php endif; ?> <?php if ($row->expand_right_kachel): ?>expandable<?php endif; ?>">
-                                <div class="column-kachel--wrapper <?php echo $row->kachel_right_position; ?>  <?php if ($row->kachel_right_url): ?> with-url<?php endif; ?>">
-                                    <div class="column--kachel  <?php echo $row->kachel_right_text_position; ?>"
-                                         data-aos="<?php if ($row->animation_type_right_kachel) : ?><?php echo $row->animation_type_right_kachel; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
-                                         style="
-                                         <?php if ($row->kachel_right_background_color): ?>
-                                                 background-color: <?= $row->kachel_right_background_color;?>;
+                                    <div class="<?php if ($row->image_both): ?>is-row-bg<?php endif; ?> <?php if (!$row->not_as_bg): ?>zoom-container<?php else: ?>position-relative<?php endif; ?>">
+                                        <?php if ($row->kachel_right_text): ?>
+                                            <div class="kachel-column-width--indicator <?php if ($row->reverse) : ?>start-0<?php else: ?>end-0<?php endif; ?> <?php if ($row->expand_right_kachel): ?>expandable<?php endif; ?>">
+                                                <div class="column-kachel--wrapper <?php echo $row->kachel_right_position; ?>  <?php if ($row->kachel_right_url): ?> with-url<?php endif; ?>">
+                                                    <div class="column--kachel  <?php echo $row->kachel_right_text_position; ?>"
+                                                         data-aos="<?php if ($row->animation_type_right_kachel) : ?><?php echo $row->animation_type_right_kachel; ?><?php endif; ?>"
+                                                         style="
+                                                         <?php if ($row->kachel_right_background_color): ?>
+                                                                 background-color: <?= $row->kachel_right_background_color;?>;
                             <?php endif; ?>
 
-                                         <?php if ($row->kachel_right_text_color): ?>
-                                                 color: <?= $row->kachel_right_text_color;?>;
+                                                         <?php if ($row->kachel_right_text_color): ?>
+                                                                 color: <?= $row->kachel_right_text_color;?>;
                             <?php endif; ?>
-                                                 ">
+                                                                 ">
 
-                                        <?php if ($row->kachel_right_button_url): ?>
-                                            <a href="<?= $row->kachel_button_right_url; ?>"></a>
+                                                        <?php if ($row->kachel_right_button_url): ?>
+                                                            <a href="<?= $row->kachel_button_right_url; ?>"></a>
+                                                        <?php endif; ?>
+
+                                                        <div class="column-kachel--inner <?php if ($row->kachel_right_hover_text || $row->kachel_right_url): ?>with-hover-content<?php endif; ?>">
+                                                        <span>
+                                                            <?php echo $row->kachel_right_text; ?>
+                                                        </span>
+
+                                                            <?php if ($row->kachel_right_hover_text || $row->kachel_right_url): ?>
+                                                                <div class="kachel-hover--content">
+                                                                    <?php if ($row->kachel_right_hover_text): ?>
+                                                                        <div class="kachel--long-text">
+                                                                            <?php echo $row->kachel_right_hover_text; ?>
+                                                                        </div>
+                                                                    <?php endif; ?>
+
+                                                                    <?php if ($row->kachel_right_button_text): ?>
+                                                                        <div class="kachel--more-button">
+
+                                                                            <a <?php if ($row->new_tab): ?>target="_blank"<?php endif; ?>
+                                                                               class="d-inline-block btn <?php if ($row->kachel_right_button_size) : ?><?php echo $row->kachel_right_button_size; ?><?php endif; ?> <?php echo $row->kachel_right_button_type; ?>"
+                                                                               href="<?php echo $row->kachel_right_button_url; ?><?php if ($row->kachel_right_button_betreff) : ?>?subject=<?php echo $row->kachel_right_button_betreff; ?><?php endif; ?>"><?php echo $row->kachel_right_button_text; ?> </a>
+
+                                                                        </div>
+                                                                    <?php endif; ?>
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         <?php endif; ?>
 
-                                        <div class="column-kachel--inner <?php if ($row->kachel_right_hover_text || $row->kachel_right_url): ?>with-hover-content<?php endif; ?>">
-                                    <span>
-                                        <?php echo $row->kachel_right_text; ?>
-                                    </span>
+                                        <?php if ($row->alternate_image) : ?>
+                                            <?php echo str_replace("https:", "", str_replace(" src=", " data-source=", html_entity_decode($row->alternate_image))); ?>
+                                        <?php endif; ?>
 
-                                            <?php if ($row->kachel_right_hover_text || $row->kachel_right_url): ?>
-                                                <div class="kachel-hover--content">
-                                                    <?php if ($row->kachel_right_hover_text): ?>
-                                                        <div class="kachel--long-text">
-                                                            <?php echo $row->kachel_right_hover_text; ?>
-                                                        </div>
-                                                    <?php endif; ?>
+                                        <?php if ($row->video) : ?>
+                                            <video autoplay muted loop playsinline controls data-src="{{file::<?= $row->video ?>}}">
+                                                <source type="video/mp4" src="{{file::<?= $row->video ?>}}">
+                                            </video>
+                                        <?php endif; ?>
 
-                                                    <?php if ($row->kachel_right_button_text): ?>
-                                                        <div class="kachel--more-button">
 
-                                                            <a <?php if ($row->new_tab): ?>target="_blank"<?php endif; ?>
-                                                               class="d-inline-block btn <?php if ($row->kachel_right_button_size) : ?><?php echo $row->kachel_right_button_size; ?><?php endif; ?> <?php echo $row->kachel_right_button_type; ?>"
-                                                               href="<?php echo $row->kachel_right_button_url; ?><?php if ($row->kachel_right_button_betreff) : ?>?subject=<?php echo $row->kachel_right_button_betreff; ?><?php endif; ?>"><?php echo $row->kachel_right_button_text; ?> </a>
 
-                                                        </div>
-                                                    <?php endif; ?>
+
+                                        <?php if (is_array($row->image) && count($row->image) > 1) : ?>
+                                            <div class="swiper content-slider_<?= $rand; ?>">
+                                                <div class="swiper-wrapper align-items-center">
+                                                    <?php
+                                                    $length = count($row->image); // Anzahl der Elemente im Array
+                                                    $index = 0;
+                                                    foreach ($row->image as $data) : ?>
+                                                        <?php if ($index < $length - 1): ?>
+                                                            <div class="swiper-slide text-center">
+                                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, null, $row->ce_headline, $row->size_right, null, true, $rand); ?>
+                                                            </div>
+                                                        <?php endif;
+                                                        $index++; ?>
+                                                    <?php endforeach ?>
                                                 </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endif; ?>
+                                            </div>
 
+
+                                            <?php if (count($row->image) > 1) : ?>
+                                                <?php if ($this->show_pagination): ?>
+                                                    <div class="mb-2 content-slider_<?= $rand ?> swiper-pagination"></div>
+                                                <?php endif; ?>
+                                                <?php if ($this->show_arrows): ?>
+                                                    <div class="content-slider_<?= $rand; ?> swiper-button-prev"></div>
+                                                    <div class="content-slider_<?= $rand; ?> swiper-button-next"></div>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+
+                                        <?php elseif ($row->image): ?>
+                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image[0], null, $row->ce_headline, $row->size_right, null, false); ?>
+                                        <?php endif; ?>
+
+                                    </div>
+                                    <?php if ($row->boxed_headline && !$row->reverse) : ?>
+                                        <div class="boxed-headline">
+                                            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                $row->boxed_topheadline,
+                                                $row->boxed_headline,
+                                                $row->boxed_subheadline,
+                                                $row->boxed_headline_type,
+                                                $this->animation_type,
+                                                null,
+                                                $row->boxed_headline_onlystyle,
+                                                "m-0 headline--wrapper"
+                                            ); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if ($row->content_rightcol) : ?>
+                                        <div data-aos="<?php if ($row->animation_type_image_col) : ?><?php echo $row->animation_type_image_col; ?><?php endif; ?>" class="image--inner">
+                                            <div class="image-col--extra-text"
+                                                 data-aos="<?= $row->animation_type ? $row->animation_type : '' ?>">
+                                                <?php echo $row->content_rightcol; ?>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                <?php endif; ?>
+                </div>
             </div>
-        </div>
+        <?php endforeach; ?>
     </div>
 </div>
-<?php endforeach; ?>
-</div></div>
+
