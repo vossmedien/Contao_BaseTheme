@@ -35,8 +35,7 @@ if (!isset($this->size)) {
         }
         ?>
 
-        <div class="ce--content-slider  <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>"
-             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php endif; ?>">
+        <div class="ce--content-slider  <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> slider-<?= $this->style_type; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>">
             <?php $rand = rand(1, 100); ?>
 
             <?php if ($this->open_lightbox): ?>

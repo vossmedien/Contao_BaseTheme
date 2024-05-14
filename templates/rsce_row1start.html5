@@ -83,7 +83,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row1start.mi
 
 
 <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
-<div <?php echo $this->cssID; ?> class="content--element  row-wrapper <?php echo $this->class; ?>" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php endif; ?>">
+<div <?php echo $this->cssID; ?> class="content--element  row-wrapper <?php echo $this->class; ?>" >
 
     <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
         $this->topline,

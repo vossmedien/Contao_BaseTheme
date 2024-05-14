@@ -26,23 +26,23 @@ class HeadlineHelper
 
             if ($topline) {
                 $headlineHTML .= "<span data-aos=\"{$animationType}\" class=\"ce--topline\">";
-                $headlineHTML .= htmlspecialchars($topline, ENT_QUOTES, 'UTF-8');
+                $headlineHTML .= $topline;
                 $headlineHTML .= "</span>";
             }
 
             if (!$onlyStyle && $headline != "") {
                 $headlineHTML .= "<{$headlineType} data-aos=\"{$animationType}\" style=\"{$textColorStyle}\">";
-                $headlineHTML .= htmlspecialchars($headline, ENT_QUOTES, 'UTF-8');
+                $headlineHTML .= $headline;
                 $headlineHTML .= "</{$headlineType}>";
             } elseif ($headline != "") {
                 $headlineHTML .= "<span data-aos=\"{$animationType}\" class=\"{$headlineType}\" style=\"{$textColorStyle}\">";
-                $headlineHTML .= htmlspecialchars($headline, ENT_QUOTES, 'UTF-8');
+                $headlineHTML .= $headline;
                 $headlineHTML .= "</span>";
             }
 
             if ($subline) {
                 $headlineHTML .= "<span data-aos=\"{$animationType}\" class=\"ce--subline\">";
-                $headlineHTML .= htmlspecialchars($subline, ENT_QUOTES, 'UTF-8');
+                $headlineHTML .= $subline;
                 $headlineHTML .= "</span>";
             }
 

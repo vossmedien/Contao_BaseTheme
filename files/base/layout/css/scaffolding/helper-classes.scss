@@ -139,7 +139,7 @@ a.disabled-link {
   background-color: var(--bs-body-bg);
   z-index: 4;
   display: block;
-  padding-top: calc(var(--main-gap));
+  box-shadow: var(--bs-box-shadow-lg);
 
   &[style] {
     opacity: 1;

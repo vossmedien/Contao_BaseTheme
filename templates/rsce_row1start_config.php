@@ -11,12 +11,12 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50','allowHtml' => true),
         ),
         'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50','allowHtml' => true),
         ),
 
         'animation_type' => array(

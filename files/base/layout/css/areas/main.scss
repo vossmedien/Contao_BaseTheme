@@ -32,14 +32,6 @@ html, body, #wrapper{
   }
 
   #main {
-    .inside {
-      > * {
-        &:not(:last-child) {
-          padding-bottom: var(--main-gap);
-        }
-      }
-    }
-
     .mod_article {
       transition: background-position 0s ease-in-out;
 
@@ -53,13 +45,14 @@ html, body, #wrapper{
 
       .content--element {
         z-index: 3;
-        &[class*="col"]:not(.ce_rsce_coloredrows) {
+        &[class*="col"]:not(.ce_rsce_coloredrows, .ce_rsce_twocolimagewall) {
           padding-left: calc(var(--bs-gutter-x) * 0.5);
           padding-right: calc(var(--bs-gutter-x) * 0.5);
         }
       }
 
-      .article-content {
+      .article-content:not(:has(.moved-content)),
+      .article-content > .moved-content {
         > *:not(.body-slider):not(.bgvideo) {
           position: relative;
           //z-index: 1;

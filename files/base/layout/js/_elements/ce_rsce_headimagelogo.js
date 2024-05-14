@@ -30,4 +30,13 @@ function movingContent() {
     }
 }
 
+document.addEventListener(
+    "DOMContentLoaded",
+    function (event) {
+        movingContent();
+    },
+    {passive: true}
+);
+
+
 window.addEventListener("resize", movingContent);

@@ -206,15 +206,16 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
         </div>
 
         <?php if ($this->boxed_image) : ?>
-            <div class="boxed-logo" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php endif; ?>">
-                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->boxed_image, null, null, null, "", false, false, true); ?>
+            <div class="boxed-logo">
+                <div class="boxed-logo--inner" data-aos="<?php if ($this->boxed_image_animation_type) : ?><?php echo $this->boxed_image_animation_type; ?><?php endif; ?>">
+                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->boxed_image, null, null, $this->boxed_image_size, "", false, false, true); ?>
+                </div>
             </div>
         <?php endif; ?>
     </div>
 
     <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
         <script type="text/javascript" defer>
-            window.addEventListener("resize", movingContent);
             window.addEventListener('load', function () {
                 let swiperElementCheck_<?= $this->id; ?> = document.querySelector('.swiper.mainslider_<?= $this->id; ?>');
                 if (swiperElementCheck_<?= $this->id; ?>) {
@@ -263,7 +264,6 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                     });
                 }
             }, {passive: true})
-            window.addEventListener("load", movingContent);
         </script>
     <?php endif; ?>
     <?php if ($this->show_breadcrumb) : ?>

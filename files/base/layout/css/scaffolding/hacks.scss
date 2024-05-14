@@ -6,8 +6,6 @@
 /* AOS.js */
 
 [data-aos*="animate__"], [class*="animate__"]:not(.animate__animated) {
-
-
   &:not([data-aos="no-animation"]) {
     visibility: hidden;
   }

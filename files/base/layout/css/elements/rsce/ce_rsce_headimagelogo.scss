@@ -47,26 +47,26 @@ html body {
       }
     }
 
-    .with-boxed-logo {
-      //margin-bottom: 6rem;
-    }
 
     .boxed-logo {
       display: inline-block;
       position: absolute;
       right: 50%;
       transform: translate(50%, 50%);
-      top: 90%;
+      bottom: 0;
       text-align: center;
       z-index: 5;
 
-      img {
-        max-width: calc(300px + 4rem);
-        width: 100%;
-        height: auto;
+      .boxed-logo--inner {
         padding: 2rem;
         background-color: $body-bg;
         box-shadow: $box-shadow;
+
+        img {
+          max-width: calc(300px + 4rem);
+          width: 100%;
+          height: auto;
+        }
       }
     }
 
@@ -180,6 +180,7 @@ html body {
                 clip-path: polygon(0 0, 0% 100%, 100% 0);
                 width: 200px;
                 height: 100%;
+                background-color: var(--bs-white);
               }
             }
 

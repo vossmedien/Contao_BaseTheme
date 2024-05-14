@@ -13,11 +13,11 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ), 'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
         'animation_type' => array(
             'label' => array(
@@ -26,9 +26,9 @@ return array(
             'inputType' => 'select',
             'options' => array(
                 /* Fading entrances  */
-           'animate__fadeIn' => 'fadeIn (Meistens Standard)',    
- 'no-animation' => 'Keine Animation',
- 'animate__fadeInUp' => 'fadeInUp ',
+                'animate__fadeIn' => 'fadeIn (Meistens Standard)',
+                'no-animation' => 'Keine Animation',
+                'animate__fadeInUp' => 'fadeInUp ',
                 'animate__fadeInDown' => 'fadeInDown',
                 'animate__fadeInDownBig' => 'fadeInDownBig',
                 'animate__fadeInLeft' => 'fadeInLeft',
@@ -58,15 +58,15 @@ return array(
                 'animate__backInLeft' => 'backInLeft',
                 'animate__backInRight' => 'backInRight',
                 'animate__backInUp' => 'backInUp',
-         
+
                 /* Bouncing entrances  */
                 'animate__bounceIn' => 'bounceIn',
                 'animate__bounceInDown' => 'bounceInDown',
                 'animate__bounceInLeft' => 'bounceInLeft',
                 'animate__bounceInRight' => 'bounceInRight',
                 'animate__bounceInUp' => 'bounceInUp',
-    
-             
+
+
                 /* Flippers */
                 'animate__flip' => 'flip',
                 'animate__flipInX' => 'flipInX',
@@ -75,14 +75,14 @@ return array(
                 /* Lightspeed */
                 'animate__lightSpeedInRight' => 'lightSpeedInRight',
                 'animate__lightSpeedInLeft' => 'lightSpeedInLeft',
-           
+
                 /* Rotating entrances */
                 'animate__rotateIn' => 'rotateIn',
                 'animate__rotateInDownLeft' => 'rotateInDownLeft',
                 'animate__rotateInDownRight' => 'rotateInDownRight',
                 'animate__rotateInUpLeft' => 'rotateInUpLeft',
                 'animate__rotateInUpRight' => 'rotateInUpRight',
-            
+
                 /* Specials */
                 'animate__hinge' => 'hinge',
                 'animate__jackInTheBox' => 'jackInTheBox',
@@ -94,13 +94,13 @@ return array(
                 'animate__zoomInLeft' => 'zoomInLeft',
                 'animate__zoomInRight' => 'zoomInRight',
                 'animate__zoomInUp' => 'zoomInUp',
-              
+
                 /* Sliding entrances */
                 'animate__slideInDown' => 'slideInDown',
                 'animate__slideInLeft' => 'slideInLeft',
                 'animate__slideInRight' => 'slideInRight',
                 'animate__slideInUp' => 'slideInUp',
-         
+
             ),
             'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),

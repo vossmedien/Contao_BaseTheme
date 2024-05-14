@@ -97,7 +97,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                 <?php endif; ?>
                 <?php else: ?>
-                html body #wrapper main#main .inside > <?php echo $articleSelector; ?> > .article-content {
+                html body #wrapper main#main .main-content > <?php echo $articleSelector; ?> > .article-content {
                     padding: calc(var(--main-gap)) 0;
                     background: <?php echo $backgroundStyle; ?>;
                 <?php if ($this->fit_image): ?> background-size: 100% 100%;
@@ -108,7 +108,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                 <?php if ($backgroundImageMobile): ?>
                 @media (max-width: 767px) {
-                    html body #wrapper main#main .inside > <?php echo $articleSelector; ?> > .article-content {
+                    html body #wrapper main#main .main-content > <?php echo $articleSelector; ?> > .article-content {
                         background: url(<?php echo $backgroundImageMobile; ?>) center center no-repeat;
                     }
                 }

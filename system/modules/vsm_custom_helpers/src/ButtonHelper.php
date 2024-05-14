@@ -4,12 +4,12 @@ namespace VSM_HelperFunctions;
 
 class ButtonHelper
 {
-    public static function generateButtonHTML($buttons)
+    public static function generateButtonHTML($buttons, $css = null)
     {
         $buttonHTML = "";
 
         if (!empty($buttons)) {
-            $buttonHTML .= "<div class=\"ce--buttons mt-3\">";
+            $buttonHTML .= "<div class=\"ce--buttons" . (!empty($css) ? " {$css}" : "") . "\">";
 
             foreach ($buttons as $btn) {
                 $animationType = $btn->animation_type ?? 'animate__fadeInUp';

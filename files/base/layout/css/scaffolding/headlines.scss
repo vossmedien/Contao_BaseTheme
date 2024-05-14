@@ -12,7 +12,7 @@
   --hl-font-size-scale: 3vw;
   --hl-margin: calc(var(--hl-font-size-base) * 0.5);
   --hl-gap: calc(var(--hl-font-size-base) * 0.25) 0;
-  line-height: 1;
+  line-height: 1.05;
   display: flex;
   flex-flow: column wrap;
   gap: var(--hl-gap);
@@ -23,9 +23,10 @@
   }
 
   * {
+    line-height: 1.15;
     margin-bottom: 0px;
     //
-     // --bs-container-gutter: 0px;
+    // --bs-container-gutter: 0px;
   }
 
   &.hl-h1 {

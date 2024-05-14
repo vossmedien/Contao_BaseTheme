@@ -58,9 +58,9 @@ if (!empty($styles)) {
                                  echo(!empty($this->alternate_left_position) ? 'left: ' . $this->alternate_left_position . '; ' : '');
                                  echo $rotationStyle;
                                  ?>">
-    <?php foreach ($this->stoerer as $stoerer): ?>
+    <?php $counterElements = 0; foreach ($this->stoerer as $stoerer): ?>
         <?php
-        $uniqueId = 'stoerer-' . $this->id . '-' . $counterElements;
+         $uniqueId = 'stoerer-' . $this->id . '-' . $counterElements;
         $isExpandableClass = isset($this->expand) && $this->expand ? 'is-expandable' : '';
         $animationClass = isset($stoerer->animation_type) ? $stoerer->animation_type : '';
 
@@ -107,7 +107,7 @@ if (!empty($styles)) {
                     if (!empty($hoverColor)) {
                         echo "<style>#$uniqueId:hover svg { fill: $hoverColor !important; }</style>";
                     } else {
-                        echo "<style>#$uniqueId:hover svg { fill: var(--bs-secondary) !important; }</style>";
+                        //echo "<style>#$uniqueId:hover svg { fill: var(--bs-secondary) !important; }</style>";
                     }
                 } else {
                     // Helper-Funktion für andere Bildtypen verwenden
@@ -122,5 +122,7 @@ if (!empty($styles)) {
                 </div>
             <?php endif; ?>
         </div>
-    <?php endforeach; ?>
+
+
+    <?php     $counterElements++; endforeach; ?>
 </div>
