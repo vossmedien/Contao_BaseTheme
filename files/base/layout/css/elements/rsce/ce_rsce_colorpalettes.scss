@@ -8,7 +8,7 @@
 html body {
   .ce_rsce_colorpalettes {
 
-    .colorpalettes-wrapper{
+    .colorpalettes-wrapper {
       display: flex;
       flex-flow: column wrap;
       gap: $mini-spacing;
@@ -16,13 +16,30 @@ html body {
 
     .colorpalettes-desc {
       width: 100%;
+
+
+      p:has(.btn) {
+        display: flex;
+        flex-flow: row wrap;
+
+         @include media-breakpoint-down(sm) {
+           justify-content: center;
+         }
+        gap: .5rem;
+      }
+
       .selected-color-element--outer {
         position: relative;
+
+
+        .selected-color-element--title:empty {
+          display: none !important;
+        }
 
         .selected-color--element {
           min-height: rfs-value(300px);
 
-          .image-holder{
+          .image-holder {
             --animate-duration: 350ms;
           }
 
@@ -66,11 +83,18 @@ html body {
       .color-list--wrapper {
         display: flex;
         flex-flow: row wrap;
-        margin-left: -$mini-spacing/2;
-        margin-right: -$mini-spacing/2;
+        margin-left: -$mini-spacing/4;
+        margin-right: -$mini-spacing/4;
+
+
+        @include media-breakpoint-down(sm) {
+          justify-content: center;
+          margin-block: 1rem;
+        }
 
         .color-list-element--outer {
-          padding: 0 $mini-spacing/2;
+          padding: 0 $mini-spacing/4;
+          margin-bottom: $mini-spacing/2;
 
 
           &:not(.wider) {
@@ -96,7 +120,8 @@ html body {
           &.wider {
             width: 50%;
 
-            @include media-breakpoint-up(md) {
+
+            @include media-breakpoint-up(sm) {
               width: 33.333%;
             }
 
@@ -115,8 +140,8 @@ html body {
                 }
               }
 
-              &:hover{
-                img{
+              &:hover {
+                img {
                   opacity: .9;
                 }
               }

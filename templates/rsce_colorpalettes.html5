@@ -28,19 +28,19 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                      data-basicheadline="<?= $this->basic_headline; ?>"
                      data-basicsubline="<?= $this->basic_subline; ?>"
                      data-aos="<?php if ($this->basic_animation_type) : ?><?php echo $this->basic_animation_type; ?><?php endif; ?>">
-                    <div class="row flex-lg-row-reverse gy-1">
-                        <div class="col-12 col-lg-7">
+                    <div class="row flex-md-row-reverse gy-1">
+                        <div class="col-12 col-lg-7 <?php if ($this->swap_divs && $this->activate_top): ?>order-2 order-md-1<?php endif;?>">
                             <div class="color-palette--content">
-                                <div class="color-palette-content--inner <?php if ($this->alternate_background_color): ?>with-padding<?php endif; ?>"
+                                <div class="color-palette-content--inner text-center text-md-start <?php if ($this->alternate_background_color): ?>with-padding<?php endif; ?>"
                                      style="
                                      <?php if ($this->alternate_background_color): ?>background-color: <?= $this->alternate_background_color; ?>;<?php endif; ?>
                                      <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>
                                              ">
 
                                     <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                                        $this->basic_topline,
-                                        $this->basic_headline,
-                                        $this->basic_subline,
+                                        $this->basic_topline ? $this->basic_topline : " ",
+                                        $this->basic_headline? $this->basic_headline : " ",
+                                        $this->basic_subline? $this->basic_subline : " ",
                                         $this->basic_headline_type,
                                         $this->basic_animation_type,
                                         null,
@@ -55,11 +55,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                             </div>
                         </div>
 
-                        <div class="col-12 col-lg-5">
+                        <div class="col-12 col-lg-5  <?php if ($this->swap_divs && $this->activate_top): ?>order-1 order-md-2<?php endif;?>">
                             <div class="selected-color-element--outer h-100">
                                 <div class="selected-color--element h-100" data-aos="<?php if ($this->basic_animation_type) : ?><?php echo $this->basic_animation_type; ?><?php endif; ?>">
-                                    <div class="image-holder h-100 w-100" data-aos="animate__fadeIn" style="background: url(<?= VSM_HelperFunctions\ImageHelper::generateImageURL($this->elements[0]->img, $this->size); ?>) center center no-repeat; background-size: cover;"></div>
-                                    <span class="selected-color-element--title"><?= $this->elements[0]->title; ?></span>
+                                    <div class="image-holder h-100 w-100" data-aos="animate__fadeIn" style="background: url(<?= VSM_HelperFunctions\ImageHelper::generateImageURL($this->base_img, $this->size); ?>) center center no-repeat; background-size: cover;"></div>
+                                    <span class="selected-color-element--title"><?= $this->basic_img_title; ?></span>
                                 </div>
                             </div>
                         </div>

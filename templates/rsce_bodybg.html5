@@ -132,13 +132,12 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 <?php echo $articleSelector; ?>
                 {
                 <?php if (!$this->activate): ?>
-                    padding: calc(var(--main-gap) * 3) 0
-                ;
+
                 <?php endif; ?>
                 }
 
-                <?php echo $articleSelector; ?>
-                video {
+
+                video.bgvideo {
                     transform-origin: 50% 0;
                     will-change: transform;
                     backface-visibility: hidden;
@@ -153,8 +152,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                     right: 0;
                     bottom: 0;
                     position: absolute;
-                <?php else: ?> margin-top: calc(-1 * var(--main-gap));
-                    height: 100%;
+                <?php else: ?>
+                    height: 100dvh;
                     position: fixed;
                     width: 100vw;
                     top: 0;

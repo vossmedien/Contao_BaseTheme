@@ -56,7 +56,7 @@
                 <?php $this->block('left'); ?>
                 <?php if ($this->left) : ?>
                     <aside id="left" class="col-12 col-md-auto ">
-                        <div class="inside">
+                        <div class="left-content">
                             <?= $this->left ?>
                         </div>
                     </aside>
@@ -76,7 +76,7 @@
                 <?php $this->block('right'); ?>
                 <?php if ($this->right) : ?>
                     <aside id="right" class="col-12 col-md-auto ">
-                        <div class="inside">
+                        <div class="right-content">
                             <?= $this->right ?>
                         </div>
                     </aside>
