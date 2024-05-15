@@ -15,71 +15,78 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 var storeSubline = this.getAttribute("data-subline");
 
                 var colorpalettesTop = parentDiv.querySelector(".colorpalettes-desc");
-                var basicTopline = colorpalettesTop.getAttribute("data-basictopline");
-                var basicHeadline = colorpalettesTop.getAttribute("data-basicheadline");
-                var basicSubline = colorpalettesTop.getAttribute("data-basicsubline");
-
                 var basicDesc = colorpalettesTop.getAttribute("data-basicdesc");
 
                 var colorPaletteDesc = parentDiv.querySelector(".color-palette--desc");
-                colorPaletteDesc.style.display = "none";
-                setTimeout(function () {
-                    if (storeDesc) {
-                        colorPaletteDesc.innerHTML = storeDesc;
-                    } else {
-                        colorPaletteDesc.innerHTML = basicDesc;
-                    }
-                    colorPaletteDesc.style.display = "block";
-                }, 0);
+                if (colorPaletteDesc) {
+                    colorPaletteDesc.style.display = "none";
+                    setTimeout(function () {
+                        if (storeDesc) {
+                            colorPaletteDesc.innerHTML = storeDesc;
+                        } else {
+                            colorPaletteDesc.innerHTML = basicDesc;
+                        }
+                        colorPaletteDesc.style.display = "block";
+                    }, 0);
+                }
 
                 var ceTopline = parentDiv.querySelector('.ce--headline span.ce--topline');
-                ceTopline.style.display = "none";
-                setTimeout(function () {
-                    if (storeTopline) {
-                        ceTopline.innerHTML = storeTopline;
-                        ceTopline.style.display = "block";
-                    }
-                }, 0);
+                if (ceTopline) {
+                    ceTopline.style.display = "none";
+                    setTimeout(function () {
+                        if (storeTopline) {
+                            ceTopline.innerHTML = storeTopline;
+                            ceTopline.style.display = "block";
+                        }
+                    }, 0);
+                }
 
-                var ceHeadline = parentDiv.querySelector('.ce--headline *:not([class*="ce"])');
-                ceHeadline.style.display = "none";
-                setTimeout(function () {
-                    if (storeHeadline) {
-                        ceHeadline.innerHTML = storeHeadline;
-                        ceHeadline.style.display = "block";
-                    }
-                }, 0);
+                var ceHeadline = parentDiv.querySelector('.ce--headline  *:not([class*="ce"])');
+                if (ceHeadline) {
+                    ceHeadline.style.display = "none";
+                    setTimeout(function () {
+                        if (storeHeadline) {
+                            ceHeadline.innerHTML = storeHeadline;
+                            ceHeadline.style.display = "block";
+                        }
+                    }, 0);
+                }
 
                 var ceSubline = parentDiv.querySelector('.ce--headline span.ce--subline');
-                ceSubline.style.display = "none";
-                setTimeout(function () {
-                    if (storeSubline) {
-                        ceSubline.innerHTML = storeSubline;
-                        ceSubline.style.display = "block";
-                    }
-                }, 0);
+                if (ceSubline) {
+                    ceSubline.style.display = "none";
+                    setTimeout(function () {
+                        if (storeSubline) {
+                            ceSubline.innerHTML = storeSubline;
+                            ceSubline.style.display = "block";
+                        }
+                    }, 0);
+                }
 
                 var selectedColorElementTitle = parentDiv.querySelector(".selected-color-element--title");
-                selectedColorElementTitle.style.display = "none";
-                setTimeout(function () {
-                    if (storeTitle) {
-                        selectedColorElementTitle.innerHTML = storeTitle;
-                    }
-                    selectedColorElementTitle.style.display = "block";
-                }, 0);
-
+                if (selectedColorElementTitle) {
+                    selectedColorElementTitle.style.display = "none";
+                    setTimeout(function () {
+                        if (storeTitle) {
+                            selectedColorElementTitle.innerHTML = storeTitle;
+                        }
+                        selectedColorElementTitle.style.display = "block";
+                    }, 0);
+                }
 
                 var imageHolder = parentDiv.querySelector(".image-holder");
-                imageHolder.style.opacity = 0;
-                imageHolder.style.display = "none";
+                if (imageHolder) {
+                    imageHolder.style.opacity = 0;
+                    imageHolder.style.display = "none";
 
-                setTimeout(function () {
-                    if (storeImg) {
-                        imageHolder.style.backgroundImage = "url(" + storeImg + ")";
-                    }
-                    imageHolder.style.display = "block";
-                    imageHolder.style.opacity = 1;
-                }, 0);
+                    setTimeout(function () {
+                        if (storeImg) {
+                            imageHolder.style.backgroundImage = "url(" + storeImg + ")";
+                        }
+                        imageHolder.style.display = "block";
+                        imageHolder.style.opacity = 1;
+                    }, 0);
+                }
             });
         });
     }

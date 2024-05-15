@@ -100,7 +100,7 @@ if ($GLOBALS['TL_CONFIG']['useRTE']):
             <?php $this->block('toolbar'); ?>
             toolbar: 'styles | bgPrimary bgSecondary | link unlink | image | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code ',
             <?php $this->endblock(); ?>
-            paste_as_text: true,
+            //paste_as_text: true,
             <?php $this->block('contextmenu'); ?>
             contextmenu: false,
             <?php $this->endblock(); ?>
