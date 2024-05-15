@@ -149,9 +149,9 @@ body:not(.start) {
 }
 
 .BodyScrollToTop {
-  width: rfs-value(60px);
-  height: rfs-value(60px);
-  line-height: rfs-value(55px);
+  width: rfs-value(40px);
+  height: rfs-value(40px);
+  line-height: rfs-value(35px);
   text-align: center;
   color: var(--bs-white);
   border: 2px solid var(--bs-primary);
@@ -161,8 +161,8 @@ body:not(.start) {
   transition: all 0.3s ease;
   @include font-size(30px);
   cursor: pointer;
-  bottom: 25px;
-  left: 25px;
+  bottom: 75px;
+  right: 25px;
   position: fixed;
   opacity: 0;
   visibility: hidden;
@@ -175,7 +175,7 @@ body:not(.start) {
   }
 
   i {
-    line-height: rfs-value(56px);
+    line-height: 1;
   }
 
   &:hover {
