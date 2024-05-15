@@ -14,13 +14,13 @@ return array(
         'topline' => array(
             'label' => array('Topline', ''),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50','allowHtml' => true),
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
 
         'subline' => array(
             'label' => array('Subline', ''),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50','allowHtml' => true),
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
 
 
@@ -246,10 +246,29 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
+
+        'base_img' => array(
+            'label' => array('Standard-Bild', ''),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,svg,webp',
+            ),
+        ),
+
+        'basic_img_title' => array(
+            'label' => array('Bild-Titel', ''),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
+        ),
+
+
         'basic_topline' => array(
             'label' => array('Topline', ''),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50','allowHtml' => true),
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
 
         'basic_subline' => array(
@@ -336,19 +355,19 @@ return array(
                 'alternate_topline' => array(
                     'label' => array('Topline', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50','allowHtml' => true),
+                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
 
                 'alternate_subline' => array(
                     'label' => array('Subline', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50','allowHtml' => true),
+                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
 
                 'alternate_headline' => array(
                     'label' => array('Standard-Überschrift', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'clr','allowHtml' => true),
+                    'eval' => array('tl_class' => 'clr', 'allowHtml' => true),
                 ),
 
 

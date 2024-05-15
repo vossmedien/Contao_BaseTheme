@@ -29,7 +29,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                      data-basicsubline="<?= $this->basic_subline; ?>"
                      data-aos="<?php if ($this->basic_animation_type) : ?><?php echo $this->basic_animation_type; ?><?php endif; ?>">
                     <div class="row flex-md-row-reverse gy-1">
-                        <div class="col-12 col-lg-7 <?php if ($this->swap_divs && $this->activate_top): ?>order-2 order-md-1<?php endif;?>">
+                        <div class="align-self-center col-12 col-lg-7 <?php if ($this->swap_divs && $this->activate_top): ?>order-2 order-md-1<?php endif;?>">
                             <div class="color-palette--content">
                                 <div class="color-palette-content--inner text-center text-md-start <?php if ($this->alternate_background_color): ?>with-padding<?php endif; ?>"
                                      style="
