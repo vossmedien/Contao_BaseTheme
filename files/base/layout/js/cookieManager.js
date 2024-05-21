@@ -10,7 +10,6 @@ export function setupFunctions() {
 }
 
 
-
 /**
  * Initialisiert iframes basierend auf dem Cookie-Zustand.
  */
@@ -41,16 +40,30 @@ function initFrames() {
  * Initialisiert Basisfunktionen abhängig von Cookies.
  */
 function initBaseFeatures() {
-      if (document.cookie.includes("cookie_basefeatures")) {
+    if (document.cookie.includes("cookie_basefeatures")) {
 
-      }
+    }
 }
 
 /**
  * Löscht alle Cookies und lädt die Seite neu.
  */
+function getLanguage() {
+    // Diese Funktion gibt die aktuelle Sprache zurück. Passe dies an deine Bedürfnisse an.
+    return document.documentElement.lang || 'en'; // Standardmäßig auf Englisch setzen, falls keine Sprache gefunden wird.
+}
+
 export function resetCookies() {
-    if (confirm("Dadurch werden alle Cookies gelöscht und die Seite wird neu geladen, fortfahren?")) {
+    const language = getLanguage();
+    let message = "This will delete all cookies and reload the page, continue?";
+
+    if (language === 'de') {
+        message = "Dadurch werden alle Cookies gelöscht und die Seite wird neu geladen, fortfahren?";
+    } else if (language === 'en') {
+        message = "This will delete all cookies and reload the page, continue?";
+    }
+
+    if (confirm(message)) {
         window.localStorage.clear();
         const cookies = document.cookie.split(";");
         cookies.forEach(cookie => {

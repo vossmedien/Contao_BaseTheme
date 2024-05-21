@@ -38,13 +38,21 @@
 
 <div style="height: 100%; min-width: 100%; padding: 15px; text-align: center; ">
     <div style="">
+        {{iflng::de}}
         <strong style="display: block; font-weight: bold; font-size: 18px; margin-bottom: 1rem;">Um diesen Inhalt sehen
-            zu können, müssen
-            Cookies akzeptiert werden.</strong>
+            zu können, müssen Cookies akzeptiert werden.</strong>
         Sie können Ihre Einstellungen jederzeit über diesen Link <a onclick="reset()" href="" class="reset-cookies"
                                                                     style="margin: 15px 0; display: block;">Cookie-Einstellungen
-            zurücksetzen</a>
-        zurücksetzen.
+            zurücksetzen</a> zurücksetzen.
+        {{iflng}}
+
+        {{iflng::en}}
+        <strong style="display: block; font-weight: bold; font-size: 18px; margin-bottom: 1rem;">To view this content,
+            cookies must be accepted.</strong>
+        You can reset your preferences at any time via this link <a onclick="reset()" href="" class="reset-cookies"
+                                                                    style="margin: 15px 0; display: block;">Reset cookie
+            preferences</a>.
+        {{iflng}}
     </div>
 </div>
 </body>
