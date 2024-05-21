@@ -66,13 +66,16 @@ export function addBootstrapClasses() {
         el.classList.add("btn", "btn-outline-primary");
     });
 
-    document.querySelectorAll("#footerNav ul").forEach((el) => {
+    /*
+      document.querySelectorAll("#footerNav ul").forEach((el) => {
         el.classList.add("list-inline");
     });
 
     document.querySelectorAll("#footerNav ul > li").forEach((el) => {
         el.classList.add("list-inline-item");
     });
+     */
+
 
     document.querySelectorAll("p.empty:not(.message)").forEach((el) => {
         el.classList.add("alert", "alert-primary");

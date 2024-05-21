@@ -69,7 +69,7 @@ html body {
             }
 
             a:not(.btn) {
-              color: currentColor;
+              //color: currentColor;
             }
           }
 
@@ -187,20 +187,28 @@ html body {
                 }
               }
 
-              &.darkened-content .zoom-container {
+              &.darkened-content {
 
-                img{
-                  z-index: -1;
+                a:not(.btn) {
+                  color: currentColor;
                 }
 
-                &:before {
-                  content: "";
-                  height: 100%;
-                  background-color: rgba(0, 0, 0, 0.5);
-                  position: absolute;
-                  left: 0;
-                  width: 100%;
-                  z-index: 0;
+
+                .zoom-container {
+
+                  img {
+                    z-index: -1;
+                  }
+
+                  &:before {
+                    content: "";
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    position: absolute;
+                    left: 0;
+                    width: 100%;
+                    z-index: 0;
+                  }
                 }
               }
             }
@@ -233,6 +241,9 @@ html body {
     object-fit: cover;
   }
 
+  iframe {
+    min-height: 250px;
+  }
 
   img,
   video,
@@ -242,7 +253,7 @@ html body {
     height: 100%;
     transition: all 0.3s ease-in-out !important;
     @include media-breakpoint-down(lg) {
-      max-height: 275px;
+      //max-height: 275px;
       bottom: 0;
     }
   }
