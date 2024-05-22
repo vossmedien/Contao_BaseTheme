@@ -127,12 +127,12 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                     <?php endif; ?>
 
                                     <?php if ($ext != "mp4"): ?>
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, ($slide->mobile_image ? 'd-none d-sm-inline-block' : ''), true, false); ?>
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, ($slide->mobile_image ? 'd-none d-sm-inline-block' : ''), true, false, false); ?>
                                     <?php endif; ?>
 
 
                                     <?php if ($slide->mobile_image && $ext_mobile != "mp4"): ?>
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, ($slide->mobile_image ? 'd-none d-sm-inline-block' : ''), true, false); ?>
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, ($slide->mobile_image ? 'd-none d-sm-inline-block' : ''), true, false, false); ?>
                                     <?php endif; ?>
                                 </div>
 
@@ -221,7 +221,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 if (swiperElementCheck_<?= $this->id; ?>) {
                     swiperElementCheck_<?= $this->id; ?> = new Swiper('.swiper.mainslider_<?php echo $this->id; ?>', {
                         loop: true,
-                        lazy: true,
+                        lazy: false,
+                        preloadImages: true,
                         speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
                         effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
                         'slide'<?php endif;?>,
