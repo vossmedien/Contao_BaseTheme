@@ -13,9 +13,10 @@ html body {
       padding-inline: var(--bs-container-gutter);
 
       @include media-breakpoint-up(lg) {
-        padding-inline: calc(var(--bs-container-gutter) * 2);
+        padding-inline: calc(var(--bs-container-gutter) * 3);
       }
     }
+
 
     .content--col {
       @include media-breakpoint-down(lg) {
@@ -28,6 +29,21 @@ html body {
         order: 1;
       }
     }
+
+    .ce--imagetextwall {
+      &:has(.flex-row-reverse) {
+        .content--col .content--inner{
+          padding-right: var(--bs-container-gutter);
+        }
+      }
+
+      &:not(:has(.flex-row-reverse)) {
+        .content--col .content--inner{
+          padding-left: var(--bs-container-gutter);
+        }
+      }
+    }
+
 
     .boxed-headline {
       text-align: center;
