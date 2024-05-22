@@ -22,7 +22,7 @@ if (form) {
 }
 
 function initAnimations() {
-    document.querySelectorAll('*:not([data-aos])[class*="animate__"]').forEach(function (element) {
+    document.querySelectorAll('*:not(html):not([data-aos])[class*="animate__"]').forEach(function (element) {
         var classes = Array.from(element.classList)
             .filter(function (className) {
                 return className.startsWith('animate__');

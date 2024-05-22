@@ -4,9 +4,8 @@
 @import "../../mixins";
 @import "../../scss-variables";
 
+
 html body {
-
-
   .ce_rsce_headimagelogo {
     &.move-content {
       position: fixed !important;
@@ -14,12 +13,6 @@ html body {
       top: 0;
       left: 0;
       width: 100%;
-
-      .mainimage--content-inner--wrapper {
-        animation: parallax linear;
-        animation-timeline: scroll();
-        --parallax-speed: -4;
-      }
     }
 
     .plain-image-holder {

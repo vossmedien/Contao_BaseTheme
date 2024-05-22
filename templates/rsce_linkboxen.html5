@@ -358,7 +358,7 @@ if (!isset($this->size)) {
 <?php if ($this->is_slider && VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
     <script type="text/javascript" defer>
 
-        window.addEventListener('load', function () {
+        window.addEventListener('DOMContentLoaded', function () {
             let swiperElementCheck_<?= $this->id; ?> = document.querySelector('.swiper.linkboxes-slider_<?= $this->id; ?>');
             if (swiperElementCheck_<?= $this->id; ?>) {
                 swiperElementCheck_<?= $this->id; ?> = new Swiper('.swiper.linkboxes-slider_<?php echo $this->id; ?>', {

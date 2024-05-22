@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= $this->language ?>"<?php if ($this->isRTL): ?> dir="rtl"<?php endif; ?>>
+<html  lang="<?= $this->language ?>"<?php if ($this->isRTL): ?> dir="rtl"<?php endif; ?>>
 <head>
     <?php $this->block('head'); ?>
     <meta charset="<?= $this->charset ?>">
@@ -72,7 +72,7 @@
 
                 <?php $this->block('right'); ?>
                 <?php if ($this->right) : ?>
-                    <aside id="right" class="col-12 col-md-auto ">
+                    <aside id="right" class="col-12 col-md-auto">
                         <div class="right-content">
                             <?= $this->right ?>
                         </div>
@@ -103,16 +103,16 @@
 <?php
 // JavaScript im <head> hinzufügen
 $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js|static';
-$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/venobox/dist/venobox.min.js|static';
 $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/vanilla-lazyload/dist/lazyload.min.js|static';
 
-$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js|static';
-$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/@popperjs/core/dist/umd/popper.min.js|static';
-$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/swiper/swiper-bundle.min.js|static';
+$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js|defer|static';
+$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/venobox/dist/venobox.min.js|defer|static';
+$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/@popperjs/core/dist/umd/popper.min.js|defer|static';
+$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/swiper/swiper-bundle.min.js|defer|static';
 
 // JavaScript am Ende von <body> hinzufügen
-$GLOBALS['TL_BODY'][] = '<script async defer type="module" src="/files/base/layout/js/base.js"></script>';
-$GLOBALS['TL_BODY'][] = '<script async defer type="module" src="/files/base/layout/js/run.js"></script>';
+$GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/base.js"></script>';
+$GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/run.js"></script>';
 $GLOBALS['TL_BODY'][] = '<script async defer type="module" src="/files/base/layout/js/_element-handling.js"></script>';
 $GLOBALS['TL_BODY'][] = '<script async defer type="module" src="/files/base/layout/js/_theme/theme.js"></script>';
 ?>

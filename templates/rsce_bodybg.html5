@@ -235,7 +235,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
         </div>
 
         <script type="text/javascript" async>
-            window.addEventListener('load', function () {
+            window.addEventListener('DOMContentLoaded', function () {
                 if ($('.swiper.body-slider_<?= $this->id; ?>').length) {
                     const swiper_<?php echo $this->id; ?> = new Swiper('.swiper.body-slider_<?php echo $this->id; ?>', {
                         direction: 'horizontal',

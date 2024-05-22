@@ -38,7 +38,7 @@ function movingContent() {
 
         // Verwende requestAnimationFrame für besseres Rendering
         requestAnimationFrame(() => {
-            articleContent.style.transition = "opacity 0.5s ease-in-out";
+            articleContent.style.transition = "opacity 0.25s ease-in-out";
             articleContent.style.opacity = 1;
             // Platzhalter entfernen, nachdem die Animation gestartet wurde
             requestAnimationFrame(() => placeholder.remove());
@@ -50,3 +50,4 @@ function movingContent() {
 
 document.addEventListener("DOMContentLoaded", movingContent);
 window.addEventListener("resize", movingContent);
+

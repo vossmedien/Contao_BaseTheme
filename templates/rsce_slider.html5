@@ -129,7 +129,7 @@ if (!isset($this->size)) {
 </div>
  <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
 <script type="text/javascript" defer>
-    window.addEventListener('load', function () {
+    window.addEventListener('DOMContentLoaded', function () {
         let swiperElementCheck_<?= $this->id; ?> = document.querySelector('.swiper.content-slider_<?= $this->id; ?>');
         if (swiperElementCheck_<?= $this->id; ?>) {
             swiperElementCheck_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {

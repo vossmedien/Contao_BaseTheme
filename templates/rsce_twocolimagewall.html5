@@ -49,7 +49,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
         <?php if (is_array($row->image) && count($row->image) > 1) : ?>
             <script type="text/javascript" defer>
-                window.addEventListener('load', function () {
+                window.addEventListener('DOMContentLoaded', function () {
                     let swiperElementCheck_<?= $rand; ?> = document.querySelector('.swiper.content-slider_<?= $rand; ?>');
                     if (swiperElementCheck_<?= $rand; ?>) {
                         swiperElementCheck_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $rand; ?>', {

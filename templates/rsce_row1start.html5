@@ -5,7 +5,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row1start.mi
 
 <?php if ($this->element_type == 'is_slider' && VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
     <script type="text/javascript" defer>
-        window.addEventListener('load', function () {
+        window.addEventListener('DOMContentLoaded', function () {
             const swiperElementCheck_<?= $this->id; ?> = document.querySelector('.swiper.content-slider_<?= $this->id; ?>');
             if (swiperElementCheck_<?= $this->id; ?>) {
                 const swiper_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?= $this->id; ?>', {
