@@ -47,7 +47,7 @@
     <?php $this->sections('before'); ?>
 
     <?php $this->block('container'); ?>
-    <div id="container" class="<?php if ($this->left) : ?>with--left-col<?php endif; ?> <?php if ($this->right) : ?>with--right-col<?php endif; ?>">
+    <div id="container" data-aos="animate__fadeIn" class="<?php if ($this->left) : ?>with--left-col<?php endif; ?> <?php if ($this->right) : ?>with--right-col<?php endif; ?>">
         <?php if ($this->left || $this->right) : ?>
         <div class="pt-md-3 pb-3 container"><?php endif; ?>
             <div class="row">
