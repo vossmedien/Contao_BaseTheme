@@ -28,9 +28,6 @@
     </FilesMatch>
 </IfModule>
 
-<IfModule http2_module>
-    Protocols h2 h2c http/1.1
-</IfModule>
 
 <IfModule mod_gzip.c>
     mod_gzip_on Yes
@@ -173,18 +170,7 @@
         "id:1234,phase:2,deny,status:403,msg:'SQL Injection detected'"
 </IfModule>
 
-<IfModule mod_ssl.c>
-    SSLProtocol all -SSLv3 -TLSv1 -TLSv1.1
-    SSLHonorCipherOrder On
-    SSLCipherSuite HIGH:!aNULL:!MD5:!3DES
-    SSLCompression off
-    SSLSessionTickets Off
 
-    # OCSP Stapling
-    SSLUseStapling On
-    SSLStaplingResponderTimeout 5
-    SSLStaplingReturnResponderErrors Off
-</IfModule>
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
