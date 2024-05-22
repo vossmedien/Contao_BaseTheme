@@ -1,14 +1,13 @@
 <?php
 if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_headimagelogo.min.css|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_headimagelogo.js|static|defer';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_headimagelogo.js|defer|static';
 }
 ?>
 
 <!-- indexer::stop -->
 <div <?php echo $this->cssID; ?>
-
-        class="content--element <?php if ($this->move_content) : ?> move-content py-0<?php endif; ?> <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>
+     class="content--element <?php if ($this->move_content) : ?> move-content py-0<?php endif; ?> <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>
         <?php if ($this->pull_content_next) : ?>pull-content-next<?php endif; ?>
         ">
 
@@ -16,8 +15,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
         <style>
             html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .image--holder {
-            <?php if ($this->image_minheight): ?> height: <?= $this->image_minheight; ?>;<?php else:?>height: 700px;<?php endif; ?>
-            <?php if ($this->image_maxheight && !$this->not_as_bg): ?> max-height: <?php echo $this->image_maxheight; ?>;<?php else:?>max-height: 100%;<?php endif; ?>
+            <?php if ($this->image_minheight): ?> height: <?= $this->image_minheight; ?>;
+                <?php else:?> height: 700px;
+            <?php endif; ?><?php if ($this->image_maxheight && !$this->not_as_bg): ?> max-height: <?php echo $this->image_maxheight; ?>;
+                <?php else:?> max-height: 100%;
+            <?php endif; ?>
             }
 
             @media (max-width: 576px) {
@@ -78,7 +80,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                             box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
                                         }
 
-                                         html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-1 .mainimage--content-inner{
+                                        html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id;?> .slide_<?php echo $key;?>.style-1 .mainimage--content-inner {
                                             padding-inline: 0;
                                         }
                                     </style>

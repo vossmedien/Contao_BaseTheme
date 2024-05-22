@@ -43,6 +43,8 @@ function movingContent() {
             // Platzhalter entfernen, nachdem die Animation gestartet wurde
             requestAnimationFrame(() => placeholder.remove());
         });
+
+
     }
 }
 

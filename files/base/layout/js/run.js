@@ -64,7 +64,7 @@ function initAnimations() {
     });
 }
 
-loadFunctions.push(initAnimations);
+DomLoadFunctions.push(initAnimations);
 
 
 const addStylesToArticlesWithBg = () => {
@@ -87,7 +87,7 @@ const addStylesToArticlesWithBg = () => {
         //articleFirst.style.marginTop = "calc(-1 * var(--with-body-bg-spacing))";
     }
 };
-loadFunctions.push(addStylesToArticlesWithBg);
+DomLoadFunctions.push(addStylesToArticlesWithBg);
 
 
 const initializePopovers = () => {
@@ -98,7 +98,7 @@ const initializePopovers = () => {
         new bootstrap.Popover(popoverTriggerEl);
     });
 };
-loadFunctions.push(initializePopovers);
+DomLoadFunctions.push(initializePopovers);
 
 
 const initializeTooltips = () => {
@@ -109,7 +109,7 @@ const initializeTooltips = () => {
         new bootstrap.Tooltip(tooltipTriggerEl);
     });
 };
-loadFunctions.push(initializeTooltips);
+DomLoadFunctions.push(initializeTooltips);
 
 
 const loadSearchParams = () => {
@@ -134,14 +134,14 @@ const loadSearchParams = () => {
 DomLoadFunctions.push(loadSearchParams);
 
 
-loadFunctions.push(setSwitchingcardsHeight);
-loadFunctions.push(initializeSmoothScrolling);
-loadFunctions.push(scrollToTop);
-loadFunctions.push(setupFunctions);
-loadFunctions.push(initializeMarginAdjustments);
-loadFunctions.push(addBootstrapClasses);
-loadFunctions.push(adjustTableResponsive);
-loadFunctions.push(addPlaceholders);
+DomLoadFunctions.push(setSwitchingcardsHeight);
+DomLoadFunctions.push(initializeSmoothScrolling);
+DomLoadFunctions.push(scrollToTop);
+DomLoadFunctions.push(setupFunctions);
+DomLoadFunctions.push(initializeMarginAdjustments);
+DomLoadFunctions.push(addBootstrapClasses);
+DomLoadFunctions.push(adjustTableResponsive);
+DomLoadFunctions.push(addPlaceholders);
 
 function executeScrollFunctions() {
     scrollFunctions.forEach((func) => func());

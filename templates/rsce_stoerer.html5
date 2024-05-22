@@ -1,6 +1,6 @@
 <?php
 if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
-    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_stoerer.js|static|defer';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_stoerer.js|defer|static';
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_stoerer.min.css|static';
 }
 

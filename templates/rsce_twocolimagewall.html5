@@ -5,7 +5,7 @@ use Contao\StringUtil;
 
 if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_twocolimagewall.min.css|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_twocolimagewall.js|static|defer';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_twocolimagewall.js|defer|static';
 }
 ?>
 
