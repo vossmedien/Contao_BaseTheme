@@ -33,37 +33,53 @@
 
 
 </head>
+
+
 <body>
 
+<?php
+// Bestimme die aktuelle Sprache anhand der URL des übergeordneten Dokuments (iframe)
+$url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'];
+$lang = (strpos($url, '/en/') !== false) ? 'en' : 'de';
 
-<div style="height: 100%; min-width: 100%; padding: 15px; text-align: center; ">
-    <div style="">
-        {{iflng::de}}
-        <strong style="display: block; font-weight: bold; font-size: 18px; margin-bottom: 1rem;">Um diesen Inhalt sehen
-            zu können, müssen Cookies akzeptiert werden.</strong>
-        Sie können Ihre Einstellungen jederzeit über diesen Link <a onclick="reset()" href="" class="reset-cookies"
-                                                                    style="margin: 15px 0; display: block;">Cookie-Einstellungen
-            zurücksetzen</a> zurücksetzen.
-        {{iflng}}
+// Definition der Texte in beiden Sprachen
+$content = [
+    'de' => [
+        'message' => 'Um diesen Inhalt sehen zu können, müssen Cookies akzeptiert werden.',
+        'linkText' => 'Cookie-Einstellungen zurücksetzen',
+        'confirmText' => 'Dadurch werden alle Cookies gelöscht und die Seite wird neu geladen, fortfahren?',
+        'additionalText' => 'Sie können Ihre Einstellungen jederzeit über diesen Link ',
+        'resetSuffix' => ' zurücksetzen.'
+    ],
+    'en' => [
+        'message' => 'To view this content, you must accept cookies.',
+        'linkText' => 'Reset cookie settings',
+        'confirmText' => 'This will delete all cookies and reload the page, proceed?',
+        'additionalText' => 'You can reset your settings anytime using this link ',
+        'resetSuffix' => '.'
+    ]
+];
 
-        {{iflng::en}}
-        <strong style="display: block; font-weight: bold; font-size: 18px; margin-bottom: 1rem;">To view this content,
-            cookies must be accepted.</strong>
-        You can reset your preferences at any time via this link <a onclick="reset()" href="" class="reset-cookies"
-                                                                    style="margin: 15px 0; display: block;">Reset cookie
-            preferences</a>.
-        {{iflng}}
+// Wähle die Texte basierend auf der aktuellen Sprache
+$texts = $content[$lang] ?? $content['de'];
+?>
+
+<div style="height: 100%; min-width: 100%; padding: 15px; text-align: center;">
+    <div>
+        <strong style="display: block; font-weight: bold; font-size: 18px; margin-bottom: 1rem;">
+            <?php echo htmlspecialchars($texts['message']); ?>
+        </strong>
+        <?php echo htmlspecialchars($texts['additionalText']); ?>
+        <a onclick="reset()" href="" class="reset-cookies" style="margin: 15px 0; display: block;">
+            <?php echo htmlspecialchars($texts['linkText']); ?>
+        </a>
+        <?php echo htmlspecialchars($texts['resetSuffix']); ?>
     </div>
 </div>
-</body>
 
 <script type="text/javascript" async>
-
     function reset() {
-
-
-        if (confirm('Dadurch werden alle Cookies gelöscht und die Seite wird neu geladen, fortfahren?')) {
-
+        if (confirm('<?php echo htmlspecialchars($texts['confirmText']); ?>')) {
             window.localStorage.clear();
 
             var cookies = document.cookie.split("; ");
@@ -87,10 +103,8 @@
             });
 
             window.top.location.reload();
-
-
         }
-
     }
 </script>
+</body>
 </html>
