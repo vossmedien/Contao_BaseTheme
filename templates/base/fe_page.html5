@@ -104,7 +104,7 @@
 // JavaScript im <head> hinzufügen
 $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/js-cookie/dist/js.cookie.min.js|static';
 $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/venobox/dist/venobox.min.js|defer|static';
-$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/vanilla-lazyload/dist/lazyload.min.js|defer|static';
+$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/vanilla-lazyload/dist/lazyload.min.js|async|static';
 
 $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js|defer|static';
 $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/@popperjs/core/dist/umd/popper.min.js|defer|static';
