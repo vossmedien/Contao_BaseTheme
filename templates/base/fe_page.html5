@@ -18,14 +18,12 @@
 
     <?= $this->viewport ?>
 
-    <!-- Preload critical CSS -->
-    <link rel="preload" href="files/base/layout/css/style.min.css" as="style">
-    <link rel="stylesheet" href="files/base/layout/css/style.min.css">
-
     <?= $this->framework ?>
     <?= $this->stylesheets ?>
+     <!-- Preload critical CSS -->
+    <link rel="preload" href="files/base/layout/css/style.min.css" as="style" >
+    <link rel="stylesheet" href="files/base/layout/css/style.min.css">
 
-    <?php $GLOBALS['TL_CSS'][] = 'files/base/layout/css/style.min.css|static'; ?>
     <?= $this->mooScripts ?>
     <?= $this->head ?>
     <?php $this->endblock(); ?>

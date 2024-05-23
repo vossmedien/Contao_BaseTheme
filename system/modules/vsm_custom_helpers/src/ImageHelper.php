@@ -85,18 +85,18 @@ class ImageHelper
         if ($lazy) {
             if ($inSlider) {
                 $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : ' class=""';
-                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><div class="swiper-lazy-preloader"></div><img fetchpriority="high"' . $classAttribute . ' loading="lazy" src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><div class="swiper-lazy-preloader"></div><img importance="high" fetchpriority="high"' . $classAttribute . ' loading="lazy" src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
             } else {
                 $classAttribute = $class ? ' class="lazy ' . htmlspecialchars($class) . '"' : ' class="lazy"';
-                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><img fetchpriority="high"' . $classAttribute . ' loading="lazy" data-src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><img importance="high" fetchpriority="high"' . $classAttribute . ' loading="lazy" data-src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
             }
         } else {
             if ($inSlider) {
                 $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : ' class=""';
-                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><img fetchpriority="high"' . $classAttribute . ' src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><img importance="high" fetchpriority="high"' . $classAttribute . ' src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
             } else {
                 $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : ' ';
-                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><img fetchpriority="high"' . $classAttribute . ' src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><img importance="high" fetchpriority="high"' . $classAttribute . ' src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
             }
         }
 
