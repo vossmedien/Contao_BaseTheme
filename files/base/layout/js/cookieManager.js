@@ -7,6 +7,7 @@
 export function setupFunctions() {
     initFrames();
     initBaseFeatures();
+
 }
 
 
@@ -15,17 +16,34 @@ export function setupFunctions() {
  */
 function initFrames() {
     if (document.cookie.includes("cookie_iframes")) {
-        const iframes = document.querySelectorAll("*[data-source]");
-        iframes.forEach(iframe => {
-            const source = iframe.getAttribute("data-source");
-            iframe.src = source;
+          const iframes = document.querySelectorAll("*[data-source]");
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const iframe = entry.target;
+                        const source = iframe.getAttribute("data-source");
+                        iframe.src = source;
 
-            if (iframe.tagName.toLowerCase() === "script") {
-                const script = document.createElement("script");
-                script.src = source;
-                iframe.parentNode.replaceChild(script, iframe);
-            }
-        });
+                        // Falls es sich um ein Script-Tag handelt
+                        if (iframe.tagName.toLowerCase() === "script") {
+                            const script = document.createElement("script");
+                            script.src = source;
+                            iframe.parentNode.replaceChild(script, iframe);
+                        }
+
+                        // Sobald der iframe geladen ist, nicht mehr beobachten
+                        observer.unobserve(iframe);
+                    }
+                });
+            }, {
+                root: null, // Viewport ist der root
+                rootMargin: "200px 0px 0px 0px",
+                threshold: 0 // Sobald auch nur ein Pixel sichtbar ist
+            });
+
+            iframes.forEach(iframe => {
+                observer.observe(iframe);
+            });
     } else {
         const iframes = document.querySelectorAll("*[data-source]");
         iframes.forEach(iframe => {
@@ -50,7 +68,7 @@ function initBaseFeatures() {
  */
 function getLanguage() {
     // Diese Funktion gibt die aktuelle Sprache zurück. Passe dies an deine Bedürfnisse an.
-    return document.documentElement.lang || 'en'; // Standardmäßig auf Englisch setzen, falls keine Sprache gefunden wird.
+    return document.documentElement.lang || 'de'; // Standardmäßig auf Englisch setzen, falls keine Sprache gefunden wird.
 }
 
 export function resetCookies() {
