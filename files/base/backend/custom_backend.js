@@ -37,7 +37,7 @@ function elementMatches(element, selector) {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    var rsceGroups = document.querySelectorAll('.rsce_group:not(.rsce_group_no_legend), .rsce_list, .tl_box');
+    var rsceGroups = document.querySelectorAll('.rsce_group:not(.rsce_group_no_legend), .rsce_list, .tl_box:not(.rsce_group)');
 
 // Die Klasse "collapsed" zu jedem Element hinzufügen, wenn sie nicht bereits vorhanden ist
     rsceGroups.forEach(function (group) {

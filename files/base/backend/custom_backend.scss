@@ -1,6 +1,6 @@
 .widget {
   &:has(
-    input[name*="topline"], input[name*="text"],
+    input[name*="topline"],
     input[name*="headline"],input[name*="firstline"],
     input[name*="subline"], input[name*="secondline"],
       *[name*="link_"]
@@ -33,9 +33,32 @@
   }
 }
 
-.rsce_group:not(.rsce_group_no_legend), .rsce_list{
+.rsce_group:not(.rsce_group_no_legend), .rsce_list {
   display: block;
-  &:not(.changed){
+
+  &:not(.changed) {
     display: none;
+  }
+}
+
+
+fieldset:has(
+    input[name*="topline"],
+    input[name*="headline"],input[name*="firstline"],
+    input[name*="subline"], input[name*="secondline"],
+      *[name*="link_"]) {
+
+
+  > legend {
+    font-weight: bold;
+    color: var(--green);
+  }
+}
+
+
+fieldset:has( .selector_container img) {
+  > legend {
+    font-weight: bold;
+    color: var(--green);
   }
 }
