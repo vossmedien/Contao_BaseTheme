@@ -7,7 +7,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
 <!-- indexer::stop -->
 <div <?php echo $this->cssID; ?>
-     class="content--element <?php if ($this->move_content) : ?> move-content py-0<?php endif; ?> <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>
+        class="content--element <?php if ($this->move_content) : ?> move-content py-0<?php endif; ?> <?php echo $this->class; ?> <?php if ($this->pull_content) : ?>pull-content<?php endif; ?>
         <?php if ($this->pull_content_next) : ?>pull-content-next<?php endif; ?>
         ">
 
@@ -16,9 +16,9 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
         <style>
             html body .ce_rsce_headimagelogo .mainslider_<?php echo $this->id; ?> .image--holder {
             <?php if ($this->image_minheight): ?> height: <?= $this->image_minheight; ?>;
-                <?php else:?> height: 700px;
+            <?php else:?> height: 700px;
             <?php endif; ?><?php if ($this->image_maxheight && !$this->not_as_bg): ?> max-height: <?php echo $this->image_maxheight; ?>;
-                <?php else:?> max-height: 100%;
+            <?php else:?> max-height: 100%;
             <?php endif; ?>
             }
 
@@ -46,10 +46,23 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 <?php foreach ($this->slides as $key => $slide) : ?>
 
                     <?php
-                    $filename = \Contao\FilesModel::findByUuid($slide->image)->path;
-                    $ext = pathinfo($filename, PATHINFO_EXTENSION);
-                    $filename_mobile = \Contao\FilesModel::findByUuid($slide->mobile_image)->path;
-                    $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
+                    $filesModel = \Contao\FilesModel::findByUuid($slide->image);
+                    if ($filesModel !== null) {
+                        $filename = $filesModel->path;
+                        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                    } else {
+                        $filename = '';
+                        $ext = '';
+                    }
+
+                    $filesModelMobile = \Contao\FilesModel::findByUuid($slide->mobile_image);
+                    if ($filesModelMobile !== null) {
+                        $filename_mobile = $filesModelMobile->path;
+                        $ext_mobile = pathinfo($filename_mobile, PATHINFO_EXTENSION);
+                    } else {
+                        $filename_mobile = '';
+                        $ext_mobile = '';
+                    }
                     ?>
 
                     <div class="swiper-slide">

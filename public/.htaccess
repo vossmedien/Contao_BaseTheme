@@ -4,11 +4,11 @@
     Header always set X-XSS-Protection "1; mode=block"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-    Header set Cache-Control "max-age=31536000, public"
+    #Header set Cache-Control "max-age=31536000, public"
     # Assets in /assets and /bundles either contain a hash in their filename
     # or are called with a ?version suffix, therefore cache them for 1 year.
     RewriteRule ^(assets|bundles)/ - [ENV=CONTAO_ASSETS:true]
-    Header set Cache-Control "max-age=31536000" env=CONTAO_ASSETS
+    #Header set Cache-Control "max-age=31536000" env=CONTAO_ASSETS
 
     # Allow CORS on the Contao TinyMCE skin.
     RewriteRule ^assets/tinymce4/js/skins/contao/fonts/ - [ENV=CONTAO_TINYMCE_SKIN:true]
@@ -20,7 +20,7 @@
     </FilesMatch>
 
     <FilesMatch "\.(gif|ico|jpeg|jpg|png|css|js)$">
-        Header set Cache-Control "max-age=2592000, public"
+        #Header set Cache-Control "max-age=2592000, public"
     </FilesMatch>
 
     <FilesMatch "\.(js|css|xml|gz|html)$">
@@ -155,9 +155,9 @@
     ExpiresByType video/x-ms-asf "access plus 1 month"
 
     ## HTML and text files expiration: 1 month after request
-    ExpiresByType text/html "access plus 1 month"
-    ExpiresByType text/plain "access plus 1 month"
-    ExpiresByType text/xml "access plus 1 month"
+    #ExpiresByType text/html "access plus 1 month"
+    #ExpiresByType text/plain "access plus 1 month"
+    #ExpiresByType text/xml "access plus 1 month"
 
     ## PDF files expiration: 1 month after request
     ExpiresByType application/pdf "access plus 1 month"
@@ -190,6 +190,7 @@
     RewriteCond %{HTTP:X-Forwarded-Proto} !https
     RewriteCond %{HTTPS} off
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 
 
     # Determine the RewriteBase automatically and set it as environment variable.

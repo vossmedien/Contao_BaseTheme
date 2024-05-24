@@ -60,10 +60,30 @@ class ImageHelper
         }
 
         $imageSrc = str_replace($rootDir, "", $imageSrc);
-        $alt = $meta['alt'] ?? $meta['title'] ?? $altText ?? $headline ?? '';
-        $title = $headline ?: $meta['title'] ?: $meta['alt'] ?: $altText ?: '';
-        $link = $meta['link'] ?: '';
-        $caption = $meta['caption'] ?: '';
+
+        $alt = '';
+        if (is_array($meta)) {
+            $alt = $meta['alt'] ?? $meta['title'] ?? '';
+        }
+        if (empty($alt) && is_string($altText)) {
+            $alt = $altText;
+        }
+        if (empty($alt) && is_string($headline)) {
+            $alt = $headline;
+        }
+
+        $title = '';
+        if (is_string($headline)) {
+            $title = $headline;
+        } elseif (is_array($meta)) {
+            $title = $meta['title'] ?? $meta['alt'] ?? '';
+        }
+        if (empty($title) && is_string($altText)) {
+            $title = $altText;
+        }
+
+        $link = is_array($meta) ? ($meta['link'] ?? '') : '';
+        $caption = is_array($meta) ? ($meta['caption'] ?? '') : '';
 
 
         // Hinzufügen der Klasse, falls vorhanden

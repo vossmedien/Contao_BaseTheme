@@ -252,7 +252,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                         </div>
                                     <?php endif; ?>
 
-                                    <?php if ($row->buttons[0]->link_text != "") : ?>
+                                    <?php if (is_array($row->buttons) && isset($row->buttons[0]) && $row->buttons[0]->link_text != ""): ?>
                                         <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($row->buttons); ?>
                                     <?php endif; ?>
                                 </div>
