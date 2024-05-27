@@ -13,12 +13,12 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50','allowHtml' => true),
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
         'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50','allowHtml' => true),
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
         'animation_type' => array(
             'label' => array(
@@ -27,9 +27,9 @@ return array(
             'inputType' => 'select',
             'options' => array(
                 /* Fading entrances  */
-           'animate__fadeIn' => 'fadeIn (Meistens Standard)',
- 'no-animation' => 'Keine Animation',
- 'animate__fadeInUp' => 'fadeInUp ',
+                'animate__fadeIn' => 'fadeIn (Meistens Standard)',
+                'no-animation' => 'Keine Animation',
+                'animate__fadeInUp' => 'fadeInUp ',
                 'animate__fadeInDown' => 'fadeInDown',
                 'animate__fadeInDownBig' => 'fadeInDownBig',
                 'animate__fadeInLeft' => 'fadeInLeft',
@@ -130,8 +130,8 @@ return array(
                     'options' => array(
                         /* Fading entrances  */
                         'animate__fadeIn' => 'fadeIn (Meistens Standard)',
-'no-animation' => 'Keine Animation',
-'animate__fadeInUp' => 'fadeInUp',
+                        'no-animation' => 'Keine Animation',
+                        'animate__fadeInUp' => 'fadeInUp',
                         'animate__fadeInDown' => 'fadeInDown',
                         'animate__fadeInDownBig' => 'fadeInDownBig',
                         'animate__fadeInLeft' => 'fadeInLeft',
@@ -229,6 +229,7 @@ return array(
                 'settings_image' => array(
                     'label' => array('Bildeinstellungen', ''),
                     'inputType' => 'group',
+                        'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
 
                 'image' => array(
@@ -308,7 +309,7 @@ return array(
                 'topline' => array(
                     'label' => array('Topline', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50','allowHtml' => true),
+                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
 
                 'subline' => array(
@@ -463,7 +464,7 @@ return array(
                 'hover_topline' => array(
                     'label' => array('Topline', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50','allowHtml' => true),
+                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
 
                 'hover_subline' => array(

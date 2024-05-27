@@ -14,12 +14,12 @@ return array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50','allowHtml' => true),
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
         'subline' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50','allowHtml' => true),
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
 
         'size' => array(
@@ -60,6 +60,7 @@ return array(
                 'field' => 'is_slider',
                 'value' => '1',
             ),
+            'eval' => array('collapsible' => true, 'collapsed' => true),
         ),
 
 
@@ -108,6 +109,7 @@ return array(
                 'field' => 'is_slider',
                 'value' => '2',
             ),
+            'eval' => array('collapsible' => true, 'collapsed' => true),
         ),
 
 
@@ -196,6 +198,7 @@ return array(
                 'settings_1' => array(
                     'label' => array('Einstellungen', ''),
                     'inputType' => 'group',
+                    'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
 
                 'box_style' => array(
@@ -469,13 +472,13 @@ return array(
                 'topline' => array(
                     'label' => array('Topline', 'Text oberhalb der Überschrift'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50','allowHtml' => true),
+                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
 
                 'subline' => array(
                     'label' => array('Subline', 'Text unterhalb der Überschrift'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50','allowHtml' => true),
+                    'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
                 ),
 
 
@@ -508,7 +511,6 @@ return array(
                         'value' => '1',
                     ),
                 ),
-
 
 
                 'is_map' => array(
@@ -647,6 +649,7 @@ return array(
                         'field' => 'box_style',
                         'value' => array('style-1', 'style-2'),
                     ),
+                    'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
 
                 'textalign' => array(

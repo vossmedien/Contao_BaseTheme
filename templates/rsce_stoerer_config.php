@@ -85,8 +85,8 @@ return array(
                     'options' => array(
                         /* Fading entrances  */
                         'animate__fadeIn' => 'fadeIn (Meistens Standard)',
-'no-animation' => 'Keine Animation',
-'animate__fadeInUp' => 'fadeInUp',
+                        'no-animation' => 'Keine Animation',
+                        'animate__fadeInUp' => 'fadeInUp',
                         'animate__fadeInDown' => 'fadeInDown',
                         'animate__fadeInDownBig' => 'fadeInDownBig',
                         'animate__fadeInLeft' => 'fadeInLeft',
@@ -157,6 +157,7 @@ return array(
                 'settings_color' => array(
                     'label' => array('Farben', ''),
                     'inputType' => 'group',
+                    'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
 
                 'text_color' => array(
