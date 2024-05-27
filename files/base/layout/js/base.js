@@ -7,7 +7,10 @@ import { onImageLoaded } from "./elementHeightAdjustments.js";
 
 
 
-const lazyLoadInstance = new LazyLoad({
+
+
+
+const lazyLoadInstance = new LazyLoad({/*
   callback_loaded: onImageLoaded,
   function(element) {
     if (element.closest("header")) {
@@ -16,7 +19,7 @@ const lazyLoadInstance = new LazyLoad({
         const navWrapperHeight = navWrapper.offsetHeight;
       }
     }
-  },
+  }, */
 });
 
 
