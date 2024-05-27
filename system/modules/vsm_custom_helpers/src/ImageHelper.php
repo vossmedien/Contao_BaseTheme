@@ -10,14 +10,21 @@ use Contao\Image\ResizeConfiguration;
 
 class ImageHelper
 {
-    public static function generateImageHTML($imageSource, $altText = '', $headline = '', $size = null, $class = '', $inSlider = false, $colorBox = false, $lazy = true)
+    public static function generateImageHTML(
+        $imageSource,
+        $altText = '',
+        $headline = '',
+        $size = null,
+        $class = '',
+        $inSlider = false,
+        $colorBox = false,
+        $lazy = true
+    )
     {
         $imageObject = FilesModel::findByUuid($imageSource);
-        $originalSrc = $imageObject->path;
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
         $globalLanguage = System::getContainer()->getParameter('kernel.default_locale');
         $imageFactory = System::getContainer()->get('contao.image.factory');
-
         $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? $globalLanguage;
 
         if ($imageObject) {
@@ -25,41 +32,48 @@ class ImageHelper
             $meta = $imageMeta[$currentLanguage] ?? reset($imageMeta) ?? [];
         }
 
-
-        // Bildgrößenkonfiguration definieren
-        $config = new ResizeConfiguration();
-
-
-        if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "")) {
-            $width = isset($size[0]) ? (int)$size[0] : null;
-            $height = isset($size[1]) ? (int)$size[1] : null;
-            $mode = $size[2] ?? null;
-
-            if ($width !== null) {
-                $config->setWidth($width);
-            }
-            if ($height !== null) {
-                $config->setHeight($height);
-            }
-            if ($mode !== null) {
-                $config->setMode($mode);
-            }
-        } else {
-            $size = $size ?: [null, null, null];
-        }
-
         $relativeImagePath = $imageObject->path;
         $absoluteImagePath = $rootDir . '/' . $relativeImagePath;
 
+        $config = new ResizeConfiguration();
+        $originalWidth = 0;
+        $originalHeight = 0;
 
         try {
-            $processedImage = $imageFactory->create($absoluteImagePath, $config);
-            $imageSrc = $processedImage->getPath();
+            $imageDimensions = getimagesize($absoluteImagePath);
+            $originalWidth = $imageDimensions[0];
+            $originalHeight = $imageDimensions[1];
+
+            if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "")) {
+                $width = isset($size[0]) ? (int)$size[0] : null;
+                $height = isset($size[1]) ? (int)$size[1] : null;
+                $mode = $size[2] ?? null;
+
+                if ($width !== null) {
+                    $config->setWidth($width);
+                }
+                if ($height !== null) {
+                    $config->setHeight($height);
+                }
+                if ($mode !== null) {
+                    $config->setMode($mode);
+                }
+
+                $processedImage = $imageFactory->create($absoluteImagePath, $config);
+                $imageSrc = $processedImage->getPath();
+                $imageSrc = str_replace($rootDir, "", $imageSrc);
+
+                $resizeWidth = $width ?? $originalWidth;
+            } else {
+                $processedImage = $imageFactory->create($absoluteImagePath, $config);
+                $imageSrc = $processedImage->getPath();
+                $imageSrc = str_replace($rootDir, "", $imageSrc);
+
+                $resizeWidth = $originalWidth;
+            }
         } catch (\Exception $e) {
             echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
         }
-
-        $imageSrc = str_replace($rootDir, "", $imageSrc);
 
         $alt = '';
         if (is_array($meta)) {
@@ -85,49 +99,68 @@ class ImageHelper
         $link = is_array($meta) ? ($meta['link'] ?? '') : '';
         $caption = is_array($meta) ? ($meta['caption'] ?? '') : '';
 
-
-        // Hinzufügen der Klasse, falls vorhanden
-        // Erstellung des Bild-HTML-Codes
         if (!empty($colorBox)) {
-            $linkStart = '<a title="' . $title . '" data-gall="group_' . htmlspecialchars($colorBox) . '" href="' . htmlspecialchars($originalSrc) . '" class="lightbox_' . htmlspecialchars($colorBox) . '">';
+            $linkStart = '<a title="' . $title . '" data-gall="group_' . htmlspecialchars($colorBox) . '" href="' . htmlspecialchars($relativeImagePath) . '" class="lightbox_' . htmlspecialchars($colorBox) . '">';
             $linkEnd = '</a>';
         } else {
             if (!empty($link)) {
-                // Erstellung des HTML-Links, falls vorhanden
-                $linkStart = $link ? '<a href="' . htmlspecialchars($link) . '" title="' . htmlspecialchars($title) . '">' : '';
-                $linkEnd = $link ? '</a>' : '';
+                $linkStart = '<a href="' . htmlspecialchars($link) . '" title="' . htmlspecialchars($title) . '">';
+                $linkEnd = '</a>';
             } else {
                 $linkStart = '';
                 $linkEnd = '';
             }
         }
 
-        if ($lazy) {
-            if ($inSlider) {
-                $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : ' class=""';
-                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><div class="swiper-lazy-preloader"></div><img importance="high" fetchpriority="high"' . $classAttribute . ' loading="lazy" src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+
+        $GLOBALS['TL_HEAD'][] = '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image">';
+
+        // Bildgrößen für das <picture>-Tag generieren
+        $srcSetParts = [];
+        $breakpoints = [480, 768, 992, 1200, 1600, 1920];
+
+        foreach ($breakpoints as $bp) {
+            // Entscheiden, ob die Breakpoints anhand der Originalbildgröße oder der übergebenen $size-Variable verwendet werden
+            if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "")) {
+                if ($bp <= $size[0]) {
+                    try {
+                        $config->setWidth($bp);
+                        $processedImage = $imageFactory->create($absoluteImagePath, $config);
+                        $srcSetParts[] = $processedImage->getPath() . ' ' . $bp . 'w';
+                    } catch (\Exception $e) {
+                        echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
+                    }
+                }
             } else {
-                $classAttribute = $class ? ' class="lazy ' . htmlspecialchars($class) . '"' : ' class="lazy"';
-                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><img importance="high" fetchpriority="high"' . $classAttribute . ' loading="lazy" data-src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
-            }
-        } else {
-            if ($inSlider) {
-                $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : ' class=""';
-                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><img importance="high" fetchpriority="high"' . $classAttribute . ' src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
-            } else {
-                $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : ' ';
-                $imageHTML = $linkStart . '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image"><img importance="high" fetchpriority="high"' . $classAttribute . ' src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '" title="' . htmlspecialchars($title) . '">' . $linkEnd;
+                if ($bp <= $originalWidth) {
+                    try {
+                        $config->setWidth($bp);
+                        $processedImage = $imageFactory->create($absoluteImagePath, $config);
+                        $srcSetParts[] = $processedImage->getPath() . ' ' . $bp . 'w';
+                    } catch (\Exception $e) {
+                        echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
+                    }
+                }
             }
         }
 
-        // Hinzufügen der Bildunterschrift, falls vorhanden
-        if ($caption) {
-            $imageHTML .= '<figcaption class="">' . htmlspecialchars($caption) . '</figcaption>';
-        }
+        $srcSet = implode(', ', array_map(fn($path) => htmlspecialchars(str_replace($rootDir, "", $path)), $srcSetParts));
 
-        return $imageHTML;
+        // Generierung des Bild-HTML mit <picture>-Tag
+        $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : ' class=""';
+
+        $pictureTag = '<picture>';
+        if ($srcSet) {
+            $pictureTag .= '<source srcset="' . $srcSet . '" sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, (max-width: 992px) 992px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px, 1920px">';
+        }
+        $pictureTag .= '<img' . $classAttribute . ' src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '"' . ($lazy ? ' loading="lazy"' : '') . '>';
+        $pictureTag .= '</picture>';
+
+        // Ausgabe des vollständigen HTML
+        $output = $linkStart . $pictureTag . $linkEnd;
+
+        return $output;
     }
-
 
     public static function generateImageURL($imageSource, $size = null)
     {
