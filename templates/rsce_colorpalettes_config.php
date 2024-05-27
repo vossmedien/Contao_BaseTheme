@@ -27,6 +27,7 @@ return array(
         'settings_1' => array(
             'label' => array('Einstellungen', ''),
             'inputType' => 'group',
+                'eval' => array('collapsible' => true, 'collapsed' => true),
         ),
 
 
@@ -167,6 +168,7 @@ return array(
             'dependsOn' => array(
                 'field' => 'activate_top',
             ),
+                'eval' => array('collapsible' => true, 'collapsed' => true),
         ),
 
         'basic_animation_type' => array(

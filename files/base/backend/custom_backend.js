@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var rsceGroups = document.querySelectorAll('.rsce_group:not(.rsce_group_no_legend), .rsce_list, .tl_box:not(.rsce_group)');
 
     rsceGroups.forEach(function (group) {
-        group.classList.add('collapsed');
+        //group.classList.add('collapsed');
         group.classList.add('changed');
     });
 });

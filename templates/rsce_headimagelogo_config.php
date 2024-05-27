@@ -99,6 +99,7 @@ return array(
         'settings_size' => array(
             'label' => array('Größeneinstellung der Bilder', ''),
             'inputType' => 'group',
+            'eval' => array('collapsible' => true, 'collapsed' => true),
         ),
 
         'not_as_bg' => array(
@@ -143,6 +144,7 @@ return array(
         'settings_1' => array(
             'label' => array('Einstellungen', ''),
             'inputType' => 'group',
+               'eval' => array('collapsible' => true, 'collapsed' => true),
         ),
 
 
@@ -190,6 +192,7 @@ return array(
         'settings_slider' => array(
             'label' => array('Slider', ''),
             'inputType' => 'group',
+               'eval' => array('collapsible' => true, 'collapsed' => true),
         ),
 
         'slide_effect' => array(
@@ -233,7 +236,7 @@ return array(
         'settings_2' => array(
             'label' => array('Boxed-Image (z. B. ein Logo)', ''),
             'inputType' => 'group',
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'clr','collapsible' => true, 'collapsed' => true),
         ),
         'boxed_image' => array(
             'label' => array('Bild mittig unten liegend', 'Meistens ein Logo'),
@@ -244,6 +247,7 @@ return array(
                 'filesOnly' => true,
                 'extensions' => 'jpg,jpeg,png,svg,webp',
             ),
+
         ),
         'boxed_image_animation_type' => array(
             'label' => array(

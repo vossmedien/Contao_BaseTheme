@@ -101,7 +101,7 @@ return array(
         'settings_slider' => array(
             'label' => array('Slider-Einstellungen', ''),
             'inputType' => 'group',
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'clr','collapsible' => true, 'collapsed' => true),
         ),
 
 
@@ -195,6 +195,7 @@ return array(
                 'settings_1' => array(
                     'label' => array('Einstellungen', ''),
                     'inputType' => 'group',
+                        'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
                 'animation_type' => array(
                     'label' => array(
@@ -374,6 +375,7 @@ return array(
                         'field' => 'kachel_left',
                         'value' => '1',
                     ),
+                        'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
                 'animation_type_left_kachel' => array(
                     'label' => array(
@@ -597,6 +599,7 @@ return array(
                         'field' => 'kachel_right',
                         'value' => '1',
                     ),
+                        'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
                 'animation_type_right_kachel' => array(
                     'label' => array(

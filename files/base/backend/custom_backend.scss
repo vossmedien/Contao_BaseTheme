@@ -32,6 +32,9 @@
 
   &.active {
     max-height: none;
+    > h2{
+      background-color: rgba(255,255,255,.25);
+    }
   }
 }
 

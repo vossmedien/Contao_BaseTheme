@@ -11,6 +11,45 @@ return array(
     ),
     'fields' => array(
 
+
+        'image' => array(
+            'label' => array('Bild / Video', ""),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,mp4,svg',
+                'tl_class' => 'clr'
+            ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '2',
+            ),
+        ),
+
+        'image_mobile' => array(
+            'label' => array('Alternative für Mobile', ""),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,svg,webp',
+            ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '2',
+            ),
+        ),
+
+
+        'settings' => array(
+            'label' => array('Einstellungen', ''),
+            'inputType' => 'group',
+            'eval' => array('collapsible' => true, 'collapsed' => true),
+        ),
+
         'element_type' => array(
             'label' => array('Darstellungstyp', ''),
             'inputType' => 'radio',
@@ -43,11 +82,6 @@ return array(
             ),
         ),
 
-        'settings' => array(
-            'label' => array('Einstellungen', ''),
-            'inputType' => 'group',
-
-        ),
 
         'multiSRC' => array(
             'inputType' => 'standardField',
@@ -131,37 +165,6 @@ return array(
             ),
         ),
 
-
-        'image' => array(
-            'label' => array('Bild / Video', ""),
-            'inputType' => 'fileTree',
-            'eval' => array(
-                'multiple' => false,
-                'fieldType' => 'radio',
-                'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,mp4,svg',
-                'tl_class' => 'clr'
-            ),
-            'dependsOn' => array(
-                'field' => 'element_type',
-                'value' => '2',
-            ),
-        ),
-
-        'image_mobile' => array(
-            'label' => array('Alternative für Mobile', ""),
-            'inputType' => 'fileTree',
-            'eval' => array(
-                'multiple' => false,
-                'fieldType' => 'radio',
-                'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg,webp',
-            ),
-            'dependsOn' => array(
-                'field' => 'element_type',
-                'value' => '2',
-            ),
-        ),
 
         'fit_image' => array(
             'label' => array('', ''),

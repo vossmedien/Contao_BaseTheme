@@ -124,6 +124,7 @@ return array(
                     'dependsOn' => array(
                         'field' => 'is_slider',
                     ),
+                        'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
 
                 'animation_type' => array(
