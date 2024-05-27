@@ -35,6 +35,11 @@ class ImageHelper
         $relativeImagePath = $imageObject->path;
         $absoluteImagePath = $rootDir . '/' . $relativeImagePath;
 
+        if (!file_exists($absoluteImagePath)) {
+            echo "Fehler: Das Bild '$absoluteImagePath' existiert nicht.";
+            return '';
+        }
+
         $config = new ResizeConfiguration();
         $originalWidth = 0;
         $originalHeight = 0;
@@ -73,6 +78,7 @@ class ImageHelper
             }
         } catch (\Exception $e) {
             echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
+            return '';
         }
 
         $alt = '';
@@ -100,7 +106,7 @@ class ImageHelper
         $caption = is_array($meta) ? ($meta['caption'] ?? '') : '';
 
         if (!empty($colorBox)) {
-            $linkStart = '<a title="' . $title . '" data-gall="group_' . htmlspecialchars($colorBox) . '" href="' . htmlspecialchars($relativeImagePath) . '" class="lightbox_' . htmlspecialchars($colorBox) . '">';
+            $linkStart = '<a title="' . htmlspecialchars($title) . '" data-gall="group_' . htmlspecialchars($colorBox) . '" href="' . htmlspecialchars($relativeImagePath) . '" class="lightbox_' . htmlspecialchars($colorBox) . '">';
             $linkEnd = '</a>';
         } else {
             if (!empty($link)) {
@@ -112,23 +118,29 @@ class ImageHelper
             }
         }
 
-
-        $GLOBALS['TL_HEAD'][] = '<link rel="preload" href="' . htmlspecialchars($imageSrc) . '" as="image">';
-
-        // Bildgrößen für das <picture>-Tag generieren
+        // Bildgrößen für das <picture>-Tag und WebP-Version
         $srcSetParts = [];
+        $webpSrcSetParts = [];
         $breakpoints = [480, 768, 992, 1200, 1600, 1920];
 
         foreach ($breakpoints as $bp) {
-            // Entscheiden, ob die Breakpoints anhand der Originalbildgröße oder der übergebenen $size-Variable verwendet werden
+            // Entscheiden, ob die Breakpoints anhand der Originalbildgröße oder der übergebenen $size-Variablen verwendet werden
             if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "")) {
                 if ($bp <= $size[0]) {
                     try {
                         $config->setWidth($bp);
                         $processedImage = $imageFactory->create($absoluteImagePath, $config);
                         $srcSetParts[] = $processedImage->getPath() . ' ' . $bp . 'w';
+
+                        // WebP-Version generieren
+                        $webpPath = str_replace(['.jpg', '.jpeg', '.png'], '.webp', $processedImage->getPath());
+                        if (!file_exists($webpPath)) {
+                            $imagineImage = $processedImage->getImagine()->open($processedImage->getPath());
+                            $imagineImage->save($webpPath, ['format' => 'webp']);
+                        }
+                        $webpSrcSetParts[] = $webpPath . ' ' . $bp . 'w';
                     } catch (\Exception $e) {
-                        echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
+                        //echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
                     }
                 }
             } else {
@@ -137,19 +149,31 @@ class ImageHelper
                         $config->setWidth($bp);
                         $processedImage = $imageFactory->create($absoluteImagePath, $config);
                         $srcSetParts[] = $processedImage->getPath() . ' ' . $bp . 'w';
+
+                        // WebP-Version generieren
+                        $webpPath = str_replace(['.jpg', '.jpeg', '.png'], '.webp', $processedImage->getPath());
+                        if (!file_exists($webpPath)) {
+                            $imagineImage = $processedImage->getImagine()->open($processedImage->getPath());
+                            $imagineImage->save($webpPath, ['format' => 'webp']);
+                        }
+                        $webpSrcSetParts[] = $webpPath . ' ' . $bp . 'w';
                     } catch (\Exception $e) {
-                        echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
+                        //echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
                     }
                 }
             }
         }
 
         $srcSet = implode(', ', array_map(fn($path) => htmlspecialchars(str_replace($rootDir, "", $path)), $srcSetParts));
+        $webpSrcSet = implode(', ', array_map(fn($path) => htmlspecialchars(str_replace($rootDir, "", $path)), $webpSrcSetParts));
 
         // Generierung des Bild-HTML mit <picture>-Tag
         $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : ' class=""';
 
         $pictureTag = '<picture>';
+        if ($webpSrcSet) {
+            $pictureTag .= '<source type="image/webp" srcset="' . $webpSrcSet . '" sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, (max-width: 992px) 992px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px, 1920px">';
+        }
         if ($srcSet) {
             $pictureTag .= '<source srcset="' . $srcSet . '" sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, (max-width: 992px) 992px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px, 1920px">';
         }
