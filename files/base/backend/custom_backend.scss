@@ -1,11 +1,14 @@
 .widget {
   &:has(
     input[name*="topline"],
-    input[name*="headline"],input[name*="firstline"],
-    input[name*="subline"], input[name*="secondline"],
-      *[name*="link_"]
+    input[name*="headline"],
+    input[name*="firstline"],
+    input[name*="subline"],
+    input[name*="secondline"],
+    *[name*="link_"]
   ) {
-    input:not([name*="color"], [name*="background"]), select:not([name*="color"], [name*="background"]) {
+    input:not([name*="color"], [name*="background"]),
+    select:not([name*="color"], [name*="background"]) {
       &:not([type="checkbox"], [type="radio"]) {
         background-color: #cbffcb;
         outline: 1px solid green;
@@ -18,7 +21,6 @@
     }
   }
 }
-
 
 .rsce_list_inner > .rsce_list_item {
   max-height: 28px;
@@ -33,7 +35,8 @@
   }
 }
 
-.rsce_group:not(.rsce_group_no_legend), .rsce_list {
+.rsce_group:not(.rsce_group_no_legend),
+.rsce_list {
   display: block;
 
   &:not(.changed) {
@@ -41,24 +44,25 @@
   }
 }
 
-
-fieldset:has(
+fieldset {
+  &:has(
     input[name*="topline"],
-    input[name*="headline"],input[name*="firstline"],
-    input[name*="subline"], input[name*="secondline"],
-      *[name*="link_"]) {
-
-
-  > legend {
-    font-weight: bold;
-    color: var(--green);
+    input[name*="headline"],
+    input[name*="firstline"],
+    input[name*="subline"],
+    input[name*="secondline"],
+    *[name*="link_"]
+  ) {
+    > legend {
+      font-weight: bold;
+      color: var(--green);
+    }
   }
-}
 
-
-fieldset:has( .selector_container img) {
-  > legend {
-    font-weight: bold;
-    color: var(--green);
+  &:has(.selector_container img) {
+    > legend {
+      font-weight: bold;
+      color: var(--green);
+    }
   }
 }

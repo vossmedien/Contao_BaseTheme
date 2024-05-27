@@ -17,7 +17,6 @@ document.addEventListener('click', function (event) {
     }
 });
 
-// Hilfsfunktion zur Überprüfung der Übereinstimmung von Elementselektoren
 function elementMatches(element, selector) {
     if (element.matches) {
         return element.matches(selector);
@@ -33,13 +32,9 @@ function elementMatches(element, selector) {
     }
 }
 
-// Alle Elemente mit der Klasse .rsce_group auswählen
-
-
 document.addEventListener('DOMContentLoaded', function () {
     var rsceGroups = document.querySelectorAll('.rsce_group:not(.rsce_group_no_legend), .rsce_list, .tl_box:not(.rsce_group)');
 
-// Die Klasse "collapsed" zu jedem Element hinzufügen, wenn sie nicht bereits vorhanden ist
     rsceGroups.forEach(function (group) {
         group.classList.add('collapsed');
         group.classList.add('changed');
