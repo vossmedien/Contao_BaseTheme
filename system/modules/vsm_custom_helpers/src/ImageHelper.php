@@ -118,6 +118,25 @@ class ImageHelper
             }
         }
 
+        // Funktion zum Bereinigen des Dateinamens
+        $sanitizeFileName = function ($filename) {
+            // Ersetze Umlaute
+            $umlaute = ['ä', 'ö', 'ü', 'ß', 'Ä', 'Ö', 'Ü'];
+            $ersetze = ['ae', 'oe', 'ue', 'ss', 'Ae', 'Oe', 'Ue'];
+            $filename = str_replace($umlaute, $ersetze, $filename);
+
+            // Ersetze Sonderzeichen
+            $filename = preg_replace('/[^a-zA-Z0-9\.\-_]/', '', $filename);
+
+            // Konvertiere Leerzeichen zu Unterstrichen
+            $filename = str_replace(' ', '_', $filename);
+
+            // Konvertiere den Dateinamen zu Kleinbuchstaben
+            $filename = strtolower($filename);
+
+            return $filename;
+        };
+
         // Bildgrößen für das <picture>-Tag und WebP-Version
         $srcSetParts = [];
         $webpSrcSetParts = [];
@@ -130,15 +149,30 @@ class ImageHelper
                     try {
                         $config->setWidth($bp);
                         $processedImage = $imageFactory->create($absoluteImagePath, $config);
-                        $srcSetParts[] = $processedImage->getPath() . ' ' . $bp . 'w';
+                        $processedImagePath = $processedImage->getPath();
+
+                        // Dateipfad und -name des generierten Bildes bereinigen
+                        $pathParts = pathinfo($processedImagePath);
+                        $sanitizedFilename = $sanitizeFileName($pathParts['basename']);
+                        $sanitizedProcessedImagePath = $pathParts['dirname'] . '/' . $sanitizedFilename;
+
+                        // Sicherstellen, dass das bereinigte Bild erstellt wird
+                        if (!file_exists($sanitizedProcessedImagePath)) {
+                            copy($processedImagePath, $sanitizedProcessedImagePath);
+                        }
+
+                        // Relativen Pfad für srcset verwenden
+                        $relativeSanitizedProcessedImagePath = str_replace($rootDir, '', $sanitizedProcessedImagePath);
+                        $srcSetParts[] = $relativeSanitizedProcessedImagePath . ' ' . $bp . 'w';
 
                         // WebP-Version generieren
-                        $webpPath = str_replace(['.jpg', '.jpeg', '.png'], '.webp', $processedImage->getPath());
+                        $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $sanitizedProcessedImagePath);
                         if (!file_exists($webpPath)) {
-                            $imagineImage = $processedImage->getImagine()->open($processedImage->getPath());
+                            $imagineImage = $processedImage->getImagine()->open($sanitizedProcessedImagePath);
                             $imagineImage->save($webpPath, ['format' => 'webp']);
-                        }
-                        $webpSrcSetParts[] = $webpPath . ' ' . $bp . 'w';
+                        }               // Relativen Pfad für WebP srcset verwenden
+                        $relativeWebpPath = str_replace($rootDir, '', $webpPath);
+                        $webpSrcSetParts[] = $relativeWebpPath . ' ' . $bp . 'w';
                     } catch (\Exception $e) {
                         //echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
                     }
@@ -148,15 +182,32 @@ class ImageHelper
                     try {
                         $config->setWidth($bp);
                         $processedImage = $imageFactory->create($absoluteImagePath, $config);
-                        $srcSetParts[] = $processedImage->getPath() . ' ' . $bp . 'w';
+                        $processedImagePath = $processedImage->getPath();
+
+                        // Dateipfad und -name des generierten Bildes bereinigen
+                        $pathParts = pathinfo($processedImagePath);
+                        $sanitizedFilename = $sanitizeFileName($pathParts['basename']);
+                        $sanitizedProcessedImagePath = $pathParts['dirname'] . '/' . $sanitizedFilename;
+
+                        // Sicherstellen, dass das bereinigte Bild erstellt wird
+                        if (!file_exists($sanitizedProcessedImagePath)) {
+                            copy($processedImagePath, $sanitizedProcessedImagePath);
+                        }
+
+                        // Relativen Pfad für srcset verwenden
+                        $relativeSanitizedProcessedImagePath = str_replace($rootDir, '', $sanitizedProcessedImagePath);
+                        $srcSetParts[] = $relativeSanitizedProcessedImagePath . ' ' . $bp . 'w';
 
                         // WebP-Version generieren
-                        $webpPath = str_replace(['.jpg', '.jpeg', '.png'], '.webp', $processedImage->getPath());
+                        $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $sanitizedProcessedImagePath);
                         if (!file_exists($webpPath)) {
-                            $imagineImage = $processedImage->getImagine()->open($processedImage->getPath());
+                            $imagineImage = $processedImage->getImagine()->open($sanitizedProcessedImagePath);
                             $imagineImage->save($webpPath, ['format' => 'webp']);
                         }
-                        $webpSrcSetParts[] = $webpPath . ' ' . $bp . 'w';
+
+                        // Relativen Pfad für WebP srcset verwenden
+                        $relativeWebpPath = str_replace($rootDir, '', $webpPath);
+                        $webpSrcSetParts[] = $relativeWebpPath . ' ' . $bp . 'w';
                     } catch (\Exception $e) {
                         //echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
                     }
@@ -164,12 +215,15 @@ class ImageHelper
             }
         }
 
-        $srcSet = implode(', ', array_map(fn($path) => htmlspecialchars(str_replace($rootDir, "", $path)), $srcSetParts));
-        $webpSrcSet = implode(', ', array_map(fn($path) => htmlspecialchars(str_replace($rootDir, "", $path)), $webpSrcSetParts));
+        $srcSet = implode(', ', array_map(fn($path) => htmlspecialchars($path), $srcSetParts));
+        $webpSrcSet = implode(', ', array_map(fn($path) => htmlspecialchars($path), $webpSrcSetParts));
+
+        // Quelldateipfad bereinigen
+        $sanitizedImageSrc = str_replace($rootDir, '', $absoluteImagePath);
+        $sanitizedImageSrc = dirname($sanitizedImageSrc) . '/' . $sanitizeFileName(basename($sanitizedImageSrc));
 
         // Generierung des Bild-HTML mit <picture>-Tag
-        $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : ' class=""';
-
+        $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : '';
         $pictureTag = '<picture>';
         if ($webpSrcSet) {
             $pictureTag .= '<source type="image/webp" srcset="' . $webpSrcSet . '" sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, (max-width: 992px) 992px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px, 1920px">';
@@ -177,13 +231,17 @@ class ImageHelper
         if ($srcSet) {
             $pictureTag .= '<source srcset="' . $srcSet . '" sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, (max-width: 992px) 992px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px, 1920px">';
         }
-        $pictureTag .= '<img' . $classAttribute . ' src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($alt) . '"' . ($lazy ? ' loading="lazy"' : '') . '>';
+        $pictureTag .= '<img' . $classAttribute . ' src="' . htmlspecialchars($sanitizedImageSrc) . '" alt="' . htmlspecialchars($alt) . '"' . ($lazy ? ' loading="lazy"' : '') . '>';
+
+        // Swiper-Preloader hinzufügen, wenn $inSlider true ist
+        if ($inSlider) {
+            $pictureTag .= '<div class="swiper-lazy-preloader"></div>';
+        }
+
         $pictureTag .= '</picture>';
 
         // Ausgabe des vollständigen HTML
-        $output = $linkStart . $pictureTag . $linkEnd;
-
-        return $output;
+        return $linkStart . $pictureTag . $linkEnd;
     }
 
     public static function generateImageURL($imageSource, $size = null)
