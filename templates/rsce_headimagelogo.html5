@@ -147,7 +147,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
 
                                     <?php if ($slide->mobile_image && $ext_mobile != "mp4"): ?>
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, ($slide->mobile_image ? 'd-none d-sm-inline-block' : ''), true, false, false); ?>
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, ($slide->mobile_image ? 'd-sm-none' : ''), true, false, false); ?>
                                     <?php endif; ?>
                                 </div>
 

@@ -1,7 +1,21 @@
+function setArticleContentMargin() {
+    const movingHeadimagelogoElement = document.querySelector(".ce_rsce_headimagelogo.move-content");
+    const articleContent = document.querySelector(".moved-content");
+
+    if (movingHeadimagelogoElement && articleContent) {
+        const headerElement = document.getElementById("header");
+        let totalOffsetHeight = movingHeadimagelogoElement.offsetHeight;
+        if (headerElement) {
+            totalOffsetHeight -= headerElement.offsetHeight;
+        }
+
+        articleContent.style.marginTop = `${totalOffsetHeight}px`;
+    }
+}
+
 function movingContent() {
-    const movingHeadimagelogoElement = document.querySelector(
-        ".ce_rsce_headimagelogo.move-content"
-    );
+    console.log("test");
+    const movingHeadimagelogoElement = document.querySelector(".ce_rsce_headimagelogo.move-content");
 
     if (!movingHeadimagelogoElement) return;
 
@@ -23,18 +37,10 @@ function movingContent() {
             nextElement = movingHeadimagelogoElement.nextElementSibling;
         }
 
-        movingHeadimagelogoElement.parentNode.insertBefore(
-            articleContent,
-            movingHeadimagelogoElement.nextSibling
-        );
+        movingHeadimagelogoElement.parentNode.insertBefore(articleContent, movingHeadimagelogoElement.nextSibling);
 
-        const headerElement = document.getElementById("header");
-        let totalOffsetHeight = movingHeadimagelogoElement.offsetHeight;
-        if (headerElement) {
-            totalOffsetHeight -= headerElement.offsetHeight;
-        }
-
-        articleContent.style.marginTop = `${totalOffsetHeight}px`;
+        // Setze das marginTop initial
+        setArticleContentMargin();
 
         // Verwende requestAnimationFrame für besseres Rendering
         requestAnimationFrame(() => {
@@ -43,11 +49,11 @@ function movingContent() {
             // Platzhalter entfernen, nachdem die Animation gestartet wurde
             requestAnimationFrame(() => placeholder.remove());
         });
-
-
+    } else {
+        // Falls das Element bereits existiert, aktualisieren wir einfach das marginTop
+        setArticleContentMargin();
     }
 }
 
 document.addEventListener("DOMContentLoaded", movingContent);
-window.addEventListener("resize", movingContent);
-
+window.addEventListener("resize", setArticleContentMargin);
