@@ -9,7 +9,7 @@
     "animate.css": "*",
     "bootstrap": "*",
     "js-cookie": "*",
-    "mmenu-js": "^9.3.0",
+    "mmenu-light": "^3.2.2",
     "swiper": "*",
     "vanilla-lazyload": "*",
     "venobox": "*"

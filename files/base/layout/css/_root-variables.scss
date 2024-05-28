@@ -70,13 +70,7 @@
   --swiper-pagination-bullet-width: var(--swiper-pagination-bullet-height);
   --swiper-navigation-size: 35px;
 
-  --bs-megamenu-width: 1100px;
-  --bs-megamenu-background: rgba(0, 0, 0, 0.85);
-  --bs-megamenu-overlay-background: rgba(var(--bs-white-rgb), 0.5);
-  --bs-megamenu-lvl1-color: var(--bs-body-color-inverse);
-  --bs-megamenu-lvl2-color: var(--bs-primary);
-  --bs-megamenu-lvl3-color: var(--bs-body-color-inverse);
-  --bs-megamenu-imageHeight: 125px;
+
 
   //Inputs
   --bs-input-border-radius: var(--bs-border-radius);
@@ -101,26 +95,6 @@
   --bs-fixed-stoerer--right: 0;
   --bs-fixed-stoerer--top: 35vh;
   --bs-fixed-stoerer--border-radius: 10px 0px 0px 10px;
-
-
-  //MMenu
-  --mm-line-height: 20px;
-  --mm-listitem-size: 44px;
-  --mm-navbar-size: 44px;
-  --mm-offset-top: 0;
-  --mm-offset-right: 0;
-  --mm-offset-bottom: 0;
-  --mm-offset-left: 0;
-  --mm-color-border: rgba(0, 0, 0, 0.1);
-  --mm-color-button: rgba(0, 0, 0, 0.3);
-  --mm-color-text: var(--bs-body-color);
-  --mm-color-text-dimmed: rgba(0, 0, 0, 0.3);
-  --mm-color-text-highlighted: rgba(0, 0, 0, 0.05);
-  --mm-color-background: var(--bs-body-bg);
-  --mm-color-background-highlight: rgba(0, 0, 0, 0.05);
-  --mm-color-background-emphasis: rgba(var(--bs-white-rgb), 0.4);
-  --mm-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  --mm-logo: url("/files/base/layout/img/logo.svg");
 
 
   //variables-layout beachten

@@ -3,24 +3,9 @@ import {
   changeAnchorLinks,
   changeNavLinksAfterLoad,
 } from "./navigationHandling.js";
-import { onImageLoaded } from "./elementHeightAdjustments.js";
 
 
-
-
-
-
-const lazyLoadInstance = new LazyLoad({/*
-  callback_loaded: onImageLoaded,
-  function(element) {
-    if (element.closest("header")) {
-      const navWrapper = document.querySelector(".hc--bottom");
-      if (navWrapper) {
-        const navWrapperHeight = navWrapper.offsetHeight;
-      }
-    }
-  }, */
-});
+const lazyLoadInstance = new LazyLoad({});
 
 
 
@@ -74,24 +59,7 @@ matrixCells.forEach((cell) => {
   }
 });
 
-// Weiterer Code, der jQuery verwendet hat und nun in Vanilla JavaScript umgewandelt wurde
-const offCanvasBasketOpener = document.querySelector(
-  ".mod_mmenuHtml a.offCanvasBasketOpener"
-);
-if (offCanvasBasketOpener) {
-  offCanvasBasketOpener.addEventListener("click", function () {
-    setTimeout(function () {
-      document.body.classList.add("mm-wrapper_opened", "mm-wrapper_blocking");
-    }, 1000);
-  });
-}
 
-const mmenuCloseButton = document.querySelector(".mmenu_close_button");
-if (mmenuCloseButton) {
-  mmenuCloseButton.addEventListener("click", function (e) {
-    e.preventDefault();
-  });
-}
 
 const accordionIcons = document.querySelectorAll(".accordion-nav i");
 accordionIcons.forEach((icon) => {

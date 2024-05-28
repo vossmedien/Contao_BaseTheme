@@ -21,6 +21,27 @@ if (form) {
     });
 }
 
+
+function initMobileNav() {
+    // https://mmenujs.com/mmenu-light/docs.html
+    const mobileNavElement = document.querySelector("#mobileNav");
+    const triggerElement = document.querySelector('a[href="#mobileNav"]');
+
+    if (mobileNavElement && triggerElement) {
+        const menu = new MmenuLight(mobileNavElement);
+
+        const navigator = menu.navigation();
+        const drawer = menu.offcanvas();
+
+        triggerElement.addEventListener('click', (evnt) => {
+            evnt.preventDefault();
+            drawer.open();
+        });
+    }
+}
+
+DomLoadFunctions.push(initMobileNav);
+
 function initAnimations() {
     document.querySelectorAll('*:not(html):not([data-aos])[class*="animate__"]').forEach(function (element) {
         var classes = Array.from(element.classList)

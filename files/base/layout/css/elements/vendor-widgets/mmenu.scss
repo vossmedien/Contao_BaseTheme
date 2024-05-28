@@ -1,0 +1,60 @@
+.mm-spn.mod_navigation {
+  --mmenu-bg-color: #fff;
+  --menu-text-color: var(--bs-body-color);
+  --mmenu-link-color: var(--bs-body-color);
+  --mmenu-active-color: var(--bs-primary);
+  --mmenu-active-bg-color: rgba(0, 0, 0, .015);
+  --mmenu-titlebar-logo: url('/files/base/layout/img/logo.svg');
+  --mmenu-titlebar-logo-bg-color: transparent;
+  --mmenu-titlebar-logo-height: 100px;
+
+  background-color: var(--mmenu-bg-color);
+  color: var(--menu-text-color);
+
+  &:after {
+    content: '';
+    background: var(--mmenu-titlebar-logo-bg-color) var(--mmenu-titlebar-logo) center center / auto 65% no-repeat;
+    height: var(--mmenu-titlebar-logo-height);
+    opacity: 1;
+  }
+
+  ul {
+    top: var(--mmenu-titlebar-logo-height);
+    background-color: var(--mmenu-bg-color);
+  }
+
+  li {
+    &.active, &.trail {
+      background-color: var(--mmenu-active-bg-color);
+      color: var(--mmenu-active-color);
+    }
+
+    &:after {
+      margin-left: 0;
+    }
+  }
+}
+
+
+//mobileNav
+.mmenu {
+  display: none;
+
+  &.mm-spn {
+    display: block;
+  }
+}
+
+.mobileNav__activator{
+  line-height: 40px;
+  width: 40px;
+  display: inline-block;
+  background-color: $primary;
+  color: $white;
+  text-align: center;
+  font-size: 1.5rem;
+
+  i{
+    vertical-align: middle;
+  }
+}

@@ -14,7 +14,6 @@ function setArticleContentMargin() {
 }
 
 function movingContent() {
-    console.log("test");
     const movingHeadimagelogoElement = document.querySelector(".ce_rsce_headimagelogo.move-content");
 
     if (!movingHeadimagelogoElement) return;

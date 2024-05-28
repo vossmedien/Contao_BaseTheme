@@ -131,9 +131,6 @@ class ImageHelper
             // Konvertiere Leerzeichen zu Unterstrichen
             $filename = str_replace(' ', '_', $filename);
 
-            // Konvertiere den Dateinamen zu Kleinbuchstaben
-            $filename = strtolower($filename);
-
             return $filename;
         };
 
