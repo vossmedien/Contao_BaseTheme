@@ -1,4 +1,8 @@
 :root {
+  @each $color, $value in $theme-colors {
+    --bs-#{$color}-rgb: #{to-rgb($value)};
+  }
+
   --main-gap: #{clamp($basic-gutter * 0.75, 5vw, $basic-gutter * 1.5)};
 
   --bs-gray: #{$gray};
@@ -12,8 +16,8 @@
   );
 
 
-  --bs-btn-padding-top: 0.75rem;
-  --bs-btn-padding-bottom: 0.85rem;
+  --bs-btn-padding-top: 16px;
+  --bs-btn-padding-bottom: 0.75rem;
   --bs-btn-padding-left: 1rem;
   --bs-btn-padding-right: 1rem;
 
@@ -69,7 +73,6 @@
   --swiper-pagination-bullet-height: 14px;
   --swiper-pagination-bullet-width: var(--swiper-pagination-bullet-height);
   --swiper-navigation-size: 35px;
-
 
 
   //Inputs

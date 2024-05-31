@@ -7,6 +7,31 @@
 
 .btn {
   //--bs-btn-line-height: var(--bs-body-line-height);
+  padding: var(--bs-btn-padding-top) var(--bs-btn-padding-right) var(--bs-btn-padding-bottom) var(--bs-btn-padding-left);
+
+  &.btn-sm {
+    padding-top: #{calc(var(--bs-btn-padding-top) * 0.75)};
+    padding-right: #{calc(var(--bs-btn-padding-right) * 0.75)};
+    padding-bottom: #{calc(var(--bs-btn-padding-bottom) * 0.75)};
+    padding-left: #{calc(var(--bs-btn-padding-left) * 0.75)};
+    --bs-btn-font-size: .75rem;
+  }
+
+  &.btn-lg {
+    padding-top: #{calc(var(--bs-btn-padding-top) * 1.25)};
+    padding-right: #{calc(var(--bs-btn-padding-right) * 1.25)};
+    padding-bottom: #{calc(var(--bs-btn-padding-bottom) * 1.25)};
+    padding-left: #{calc(var(--bs-btn-padding-left) * 1.25)};
+    --bs-btn-font-size: 1.25rem;
+  }
+
+  &.btn-xl {
+    padding-top: #{calc(var(--bs-btn-padding-top) * 1.5)};
+    padding-right: #{calc(var(--bs-btn-padding-right) * 1.5)};
+    padding-bottom: #{calc(var(--bs-btn-padding-bottom) * 1.5)};
+    padding-left: #{calc(var(--bs-btn-padding-left) * 1.5)};
+    --bs-btn-font-size: 1.5rem;
+  }
 
   > i {
     margin: 0 0.25rem;

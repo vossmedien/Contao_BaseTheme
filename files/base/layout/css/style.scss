@@ -14,7 +14,6 @@
 @import "_theme/variables";
 
 
-
 @import "../_vendor/node_modules/bootstrap/scss/variables";
 @import "../_vendor/node_modules/bootstrap/scss/variables-dark";
 
@@ -70,6 +69,9 @@
 
 @import "root-variables";
 @import "_theme/root-variables";
+
+
+
 
 @import "scaffolding/helper-classes";
 @import "scaffolding/typo";

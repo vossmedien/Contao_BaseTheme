@@ -101,7 +101,7 @@ return array(
         'settings_slider' => array(
             'label' => array('Slider-Einstellungen', ''),
             'inputType' => 'group',
-            'eval' => array('tl_class' => 'clr','collapsible' => true, 'collapsed' => true),
+            'eval' => array('tl_class' => 'clr', 'collapsible' => true, 'collapsed' => true),
         ),
 
 
@@ -192,10 +192,11 @@ return array(
                     'inputType' => 'text',
                 ),
 
+
                 'settings_1' => array(
                     'label' => array('Einstellungen', ''),
                     'inputType' => 'group',
-                        'eval' => array('collapsible' => true, 'collapsed' => true),
+                    'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
                 'animation_type' => array(
                     'label' => array(
@@ -282,6 +283,14 @@ return array(
                     ),
                     'eval' => array('chosen' => 'true')
                 ),
+
+                'alternate_background_row' => array(
+                    'label' => array('Alternative Hintergrundfarbe für komplette Zeile', 'In HEX oder rgb(a) angeben'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => ''),
+                ),
+
+
                 'reverse' => array(
                     'label' => array('Spalten umkehren', 'die Positionen der linken und rechten Spalte werden getauscht'),
                     'inputType' => 'checkbox',
@@ -375,7 +384,7 @@ return array(
                         'field' => 'kachel_left',
                         'value' => '1',
                     ),
-                        'eval' => array('collapsible' => true, 'collapsed' => true),
+                    'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
                 'animation_type_left_kachel' => array(
                     'label' => array(
@@ -562,13 +571,17 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'btn-primary' => 'Hauptfarbe',
-                        'btn-outline-primary' => 'Hauptfarbe (Outline)',
-                        'btn-secondary' => 'Sekundär-Farbe',
-                        'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
-                        'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
-                        'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
-                        'btn-white' => 'Weißer Button mit schwarzer Schrift',
+                        'options' => array(
+                            'btn-primary' => 'Hauptfarbe',
+                            'btn-outline-primary' => 'Hauptfarbe (Outline)',
+                            'btn-secondary' => 'Sekundär-Farbe',
+                            'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
+                            'btn-tertiary' => 'Tertiär-Farbe',
+                            'btn-outline-tertiary' => 'Tertiär-Farbe (Outline)',
+                            'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                            'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
+                            'btn-white' => 'Weißer Button mit schwarzer Schrift',
+                        ),
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -581,6 +594,7 @@ return array(
                         '' => 'Standard',
                         'btn-sm' => 'Klein',
                         'btn-lg' => 'Groß',
+                        'btn-xl' => 'Sehr groß',
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -599,7 +613,7 @@ return array(
                         'field' => 'kachel_right',
                         'value' => '1',
                     ),
-                        'eval' => array('collapsible' => true, 'collapsed' => true),
+                    'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
                 'animation_type_right_kachel' => array(
                     'label' => array(
@@ -787,13 +801,17 @@ return array(
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'btn-primary' => 'Hauptfarbe',
-                        'btn-outline-primary' => 'Hauptfarbe (Outline)',
-                        'btn-secondary' => 'Sekundär-Farbe',
-                        'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
-                        'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
-                        'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
-                        'btn-white' => 'Weißer Button mit schwarzer Schrift',
+                        'options' => array(
+                            'btn-primary' => 'Hauptfarbe',
+                            'btn-outline-primary' => 'Hauptfarbe (Outline)',
+                            'btn-secondary' => 'Sekundär-Farbe',
+                            'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
+                            'btn-tertiary' => 'Tertiär-Farbe',
+                            'btn-outline-tertiary' => 'Tertiär-Farbe (Outline)',
+                            'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
+                            'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
+                            'btn-white' => 'Weißer Button mit schwarzer Schrift',
+                        ),
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -806,6 +824,7 @@ return array(
                         '' => 'Standard',
                         'btn-sm' => 'Klein',
                         'btn-lg' => 'Groß',
+                        'btn-xl' => 'Sehr groß',
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
@@ -1088,6 +1107,7 @@ return array(
                                 '' => 'Standard',
                                 'btn-sm' => 'Klein',
                                 'btn-lg' => 'Groß',
+                                'btn-xl' => 'Sehr groß',
                             ),
                             'eval' => array('tl_class' => 'w50'),
                         ),
@@ -1116,12 +1136,26 @@ return array(
                     ),
                 ),
 
+                'dont_stretch_bg' => array(
+                    'label' => array('Hintergrundbild nicht auf komplette Breite ziehen', ''),
+                    'inputType' => 'checkbox',
+                ),
+
                 'not_as_bg' => array(
-                    'label' => array('Bild nicht als "Hintergrund" einfügen', 'sondern in die Spalte "legen" damit es proportional mitskaliert.'),
+                    'label' => array('Bild nicht als "Hintergrund" einfügen', 'sondern in die Spalte "legen" damit es proportional mitskaliert. (Innerhalb des Containers)'),
                     'inputType' => 'checkbox',
                     'dependsOn' => array(
                         'field' => 'contentType',
                         'value' => '1',
+                    ),
+                ),
+
+                'rotate_image' => array(
+                    'label' => array('Bild bei scrollen rotieren', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => ' clr'),
+                    'dependsOn' => array(
+                        'field' => 'not_as_bg',
                     ),
                 ),
 

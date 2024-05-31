@@ -797,6 +797,7 @@ return array(
                                 '' => 'Standard',
                                 'btn-sm' => 'Klein',
                                 'btn-lg' => 'Groß',
+                                'btn-xl' => 'Sehr groß',
                             ),
                             'eval' => array('tl_class' => 'w50'),
                         ),

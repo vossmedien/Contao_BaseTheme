@@ -139,6 +139,37 @@ class ImageHelper
         $webpSrcSetParts = [];
         $breakpoints = [480, 768, 992, 1200, 1600, 1920];
 
+
+        if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "") && $size[0] < min($breakpoints)) {
+            try {
+                $config->setWidth($size[0])->setHeight($size[1])->setMode($size[2]);
+                $processedImage = $imageFactory->create($absoluteImagePath, $config);
+                $processedImagePath = $processedImage->getPath();
+
+                // Dateipfad und -name des generierten Bildes bereinigen
+                $pathParts = pathinfo($processedImagePath);
+                $sanitizedFilename = $sanitizeFileName($pathParts['basename']);
+                $sanitizedProcessedImagePath = $pathParts['dirname'] . '/' . $sanitizedFilename;
+
+                // Sicherstellen, dass das bereinigte Bild erstellt wird
+                if (!file_exists($sanitizedProcessedImagePath)) {
+                    copy($processedImagePath, $sanitizedProcessedImagePath);
+                }
+
+                // Relativen Pfad verwenden
+                $relativeSanitizedProcessedImagePath = str_replace($rootDir, '', $sanitizedProcessedImagePath);
+
+                // Klassennamen und Loading-Attribut hinzufügen
+                $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : '';
+                $loadingAttribute = $lazy ? ' loading="lazy"' : '';
+
+                // Ausgabe des Bildes ohne <picture>-Tag oder srcset
+                return $linkStart . '<img' . $classAttribute . ' src="' . htmlspecialchars($relativeSanitizedProcessedImagePath) . '" alt="' . htmlspecialchars($alt) . '"' . $loadingAttribute . '>' . $linkEnd;
+            } catch (\Exception $e) {
+                //echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
+            }
+        }
+
         foreach ($breakpoints as $bp) {
             // Entscheiden, ob die Breakpoints anhand der Originalbildgröße oder der übergebenen $size-Variablen verwendet werden
             if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "")) {
@@ -223,13 +254,12 @@ class ImageHelper
         $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : '';
         $pictureTag = '<picture>';
         if ($webpSrcSet) {
-            $pictureTag .= '<source type="image/webp" srcset="' . $webpSrcSet . '" sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, (max-width: 992px) 992px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px, 1920px">';
+            $pictureTag .= '<source type="image/webp" srcset="' . $webpSrcSet . ', ' . htmlspecialchars($sanitizedImageSrc) . ' ' . $originalWidth . 'w" sizes="(max-width: 480px) 480px, 100vw">';
         }
         if ($srcSet) {
-            $pictureTag .= '<source srcset="' . $srcSet . '" sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, (max-width: 992px) 992px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px, 1920px">';
+            $pictureTag .= '<source srcset="' . $srcSet . ', ' . htmlspecialchars($sanitizedImageSrc) . ' ' . $originalWidth . 'w" sizes="(max-width: 480px) 480px, 100vw">';
         }
         $pictureTag .= '<img' . $classAttribute . ' src="' . htmlspecialchars($sanitizedImageSrc) . '" alt="' . htmlspecialchars($alt) . '"' . ($lazy ? ' loading="lazy"' : '') . '>';
-
         // Swiper-Preloader hinzufügen, wenn $inSlider true ist
         if ($inSlider) {
             $pictureTag .= '<div class="swiper-lazy-preloader"></div>';

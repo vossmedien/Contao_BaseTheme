@@ -42,7 +42,7 @@ function initMobileNav() {
 
 DomLoadFunctions.push(initMobileNav);
 
-function initAnimations() {
+const initAnimations = () => {
     document.querySelectorAll('*:not(html):not([data-aos])[class*="animate__"]').forEach(function (element) {
         var classes = Array.from(element.classList)
             .filter(function (className) {
@@ -86,6 +86,52 @@ function initAnimations() {
 }
 
 DomLoadFunctions.push(initAnimations);
+
+
+const rotateImage = () => {
+    const images = document.querySelectorAll('.rotateImage');
+    let lastScrollTop = 0;
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                window.addEventListener('scroll', rotateImages);
+            } else {
+                window.removeEventListener('scroll', rotateImages);
+            }
+        });
+    });
+
+    images.forEach(image => {
+        image.rotation = 0; // Initialisiere die Rotation für jedes Bild
+        observer.observe(image);
+    });
+
+    function rotateImages() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollDirection = scrollTop > lastScrollTop ? .5 : -.5; // Bestimme die Scroll-Richtung
+
+        images.forEach(image => {
+            if (isElementInViewport(image)) {
+                image.rotation += scrollDirection;
+                image.style.transform = `rotate(${image.rotation}deg)`;
+            }
+        });
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Für Mobile oder negativen Wert
+    }
+
+    function isElementInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+};
+DomLoadFunctions.push(rotateImage);
 
 
 const addStylesToArticlesWithBg = () => {

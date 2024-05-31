@@ -1,0 +1,16 @@
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+
+
+html body {
+  .ce_rsce_teaserstripe {
+    .ce--inner {
+      &.with-bg {
+            padding-block: var(--bs-basic-spacing);
+      }
+    }
+  }
+}
