@@ -67,7 +67,7 @@ html body {
           text-align: center;
           width: rfs-value(50px);
           height: rfs-value(50px);
-          z-index: 56;
+          z-index: 57;
           color: var(--bs-primary);
           font-size: 1.35rem;
         }
@@ -119,8 +119,8 @@ html body {
           align-items: center;
           animation-duration: .5s;
           animation-fill-mode: both;
-          position: absolute;
-          z-index: 55;
+          position: relative;
+          z-index: 56;
           min-height: rfs-value(350px);
           @include font-size(22px);
 

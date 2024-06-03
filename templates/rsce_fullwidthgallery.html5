@@ -71,7 +71,7 @@
                                                 null,
                                                 $e->text_color,
                                                 $e->onlystyle,
-                                                null
+                                                "mb-0"
                                             ); ?>
                                         </div>
                                     <?php endif; ?>

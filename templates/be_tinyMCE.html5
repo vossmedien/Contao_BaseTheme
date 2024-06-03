@@ -196,6 +196,14 @@ if ($GLOBALS['TL_CONFIG']['useRTE']):
                     value: 'btn btn-outline-secondary'
                 },
                 {
+                    title: 'Tertiärer Button',
+                    value: 'btn btn-tertiary'
+                },
+                {
+                    title: 'Tertiärer Button (Outline)',
+                    value: 'btn btn-outline-tertiary'
+                },
+                {
                     title: 'Weißer Button mit schwarzer Schrift',
                     value: 'btn btn-white'
                 },

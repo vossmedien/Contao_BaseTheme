@@ -96,7 +96,7 @@ if (!isset($this->size)) {
                         foreach ($dataSorted as $data) : ?>
                             <?php if ($index < $length - 1): ?>
                                 <div class="swiper-slide text-center">
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, $this->headline, strip_tags($data->slide_text), $this->size, null, true, $rand); ?>
+                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, $this->headline, strip_tags($data->slide_text), $this->size, null, true, $this->open_lightbox ? $rand : ""); ?>
                                 </div>
                             <?php endif;
                             $index++; ?>
@@ -104,7 +104,7 @@ if (!isset($this->size)) {
                     <?php else : ?>
                         <?php foreach ($this->galery as $slide) : ?>
                             <div class="swiper-slide text-center">
-                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->slide, $this->headline, strip_tags($slide->slide_text), $this->size, null, true, $rand); ?>
+                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->slide, $this->headline, strip_tags($slide->slide_text), $this->size, null, true, $this->open_lightbox ? $rand : ""); ?>
                                 <?php if ($slide->slide_text) : ?>
                                     <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
                                 <?php endif; ?>

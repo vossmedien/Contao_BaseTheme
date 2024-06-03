@@ -27,13 +27,17 @@ class ImageHelper
         $imageFactory = System::getContainer()->get('contao.image.factory');
         $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? $globalLanguage;
 
+
         if ($imageObject) {
             $imageMeta = StringUtil::deserialize($imageObject->meta, true);
             $meta = $imageMeta[$currentLanguage] ?? reset($imageMeta) ?? [];
+            $relativeImagePath = $imageObject->path;
+            $absoluteImagePath = $rootDir . '/' . $relativeImagePath;
+        } else {
+            $imageObject = $imageSource;
+            $relativeImagePath = $imageObject;
+            $absoluteImagePath = $rootDir . '' . $relativeImagePath;
         }
-
-        $relativeImagePath = $imageObject->path;
-        $absoluteImagePath = $rootDir . '/' . $relativeImagePath;
 
         if (!file_exists($absoluteImagePath)) {
             echo "Fehler: Das Bild '$absoluteImagePath' existiert nicht.";
@@ -104,6 +108,7 @@ class ImageHelper
 
         $link = is_array($meta) ? ($meta['link'] ?? '') : '';
         $caption = is_array($meta) ? ($meta['caption'] ?? '') : '';
+
 
         if (!empty($colorBox)) {
             $linkStart = '<a title="' . htmlspecialchars($title) . '" data-gall="group_' . htmlspecialchars($colorBox) . '" href="' . htmlspecialchars($relativeImagePath) . '" class="lightbox_' . htmlspecialchars($colorBox) . '">';
