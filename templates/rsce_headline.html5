@@ -1,4 +1,4 @@
-<div id="<?= $this->cssID[0]; ?>" class="content--element <?= $this->class; ?> pb-0">
+<div id="<?= $this->cssID[0]; ?>" class="content--element <?= $this->class; ?>    <?php if (!$this->text): ?>pb-0<?php endif;?>">
     <div class="ce--inner ">
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
@@ -10,5 +10,12 @@
             false,
             null
         ); ?>
+
+
+        <?php if ($this->text): ?>
+            <div class="text">
+                <?= $this->text; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>

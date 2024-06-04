@@ -58,17 +58,27 @@ form .widget {
     z-index: 5;
     color: rgba(var(--bs-placeholder-color));
     padding-top: 0px;
-    line-height: calc(var(--bs-input-height) - 2px);
+    //line-height: calc(var(--bs-input-height) + 2px);
     //padding-left: 1.25rem;
     //line-height: 1;
     //padding-top: 2.2rem;
     padding-bottom: 0px;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
     //line-height: 1.2;
     margin-left: calc(var(--bs-gutter-x) / 2);
     font-size: var(--bs-body-font-size);
 
     &:after {
       display: none !important;
+    }
+  }
+
+  &.widget-textarea{
+    label{
+      justify-content: flex-start;
+      padding-top: .9rem;
     }
   }
 
@@ -86,6 +96,9 @@ form .widget {
     line-height: rfs-value(44px);
   }
 }
+
+
+
 
 .input-group {
   &.form-floating {

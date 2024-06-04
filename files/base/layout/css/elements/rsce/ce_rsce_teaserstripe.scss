@@ -5,12 +5,7 @@
 @import "../../scss-variables";
 
 
-html body {
-  .ce_rsce_teaserstripe {
-    .ce--inner {
-      &.with-bg {
-            padding-block: var(--bs-basic-spacing);
-      }
-    }
-  }
+html body #wrapper #main .mod_article .article-content:not(:has(.moved-content)) > *:not(.body-slider):not(.bgvideo).ce_rsce_teaserstripe.with-bg {
+  padding-block: calc(var(--bs-basic-spacing) / 2);
+  margin-bottom: var(--bs-basic-spacing);
 }

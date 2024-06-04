@@ -21,259 +21,181 @@ class ImageHelper
         $lazy = true
     )
     {
-        $imageObject = FilesModel::findByUuid($imageSource);
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
-        $globalLanguage = System::getContainer()->getParameter('kernel.default_locale');
         $imageFactory = System::getContainer()->get('contao.image.factory');
-        $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? $globalLanguage;
+        $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? System::getContainer()->getParameter('kernel.default_locale');
 
-
-        if ($imageObject) {
+        if ($imageObject = FilesModel::findByUuid($imageSource)) {
             $imageMeta = StringUtil::deserialize($imageObject->meta, true);
             $meta = $imageMeta[$currentLanguage] ?? reset($imageMeta) ?? [];
             $relativeImagePath = $imageObject->path;
-            $absoluteImagePath = $rootDir . '/' . $relativeImagePath;
         } else {
-            $imageObject = $imageSource;
-            $relativeImagePath = $imageObject;
-            $absoluteImagePath = $rootDir . '' . $relativeImagePath;
+            $relativeImagePath = $imageSource;
+            $meta = [];
         }
+
+        $absoluteImagePath = $rootDir . '/' . urldecode($relativeImagePath);
 
         if (!file_exists($absoluteImagePath)) {
-            echo "Fehler: Das Bild '$absoluteImagePath' existiert nicht.";
+            echo "File does not exist: $absoluteImagePath\n";
             return '';
         }
 
-        $config = new ResizeConfiguration();
-        $originalWidth = 0;
-        $originalHeight = 0;
+        $alt = $meta['alt'] ?? $meta['title'] ?? $altText ?? $headline ?? '';
+        $title = $headline ?? $meta['title'] ?? $meta['alt'] ?? $altText ?? '';
+        $link = $meta['link'] ?? '';
+        $caption = $meta['caption'] ?? '';
 
-        try {
-            $imageDimensions = getimagesize($absoluteImagePath);
-            $originalWidth = $imageDimensions[0];
-            $originalHeight = $imageDimensions[1];
-
-            if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "")) {
-                $width = isset($size[0]) ? (int)$size[0] : null;
-                $height = isset($size[1]) ? (int)$size[1] : null;
-                $mode = $size[2] ?? null;
-
-                if ($width !== null) {
-                    $config->setWidth($width);
-                }
-                if ($height !== null) {
-                    $config->setHeight($height);
-                }
-                if ($mode !== null) {
-                    $config->setMode($mode);
-                }
-
-                $processedImage = $imageFactory->create($absoluteImagePath, $config);
-                $imageSrc = $processedImage->getPath();
-                $imageSrc = str_replace($rootDir, "", $imageSrc);
-
-                $resizeWidth = $width ?? $originalWidth;
-            } else {
-                $processedImage = $imageFactory->create($absoluteImagePath, $config);
-                $imageSrc = $processedImage->getPath();
-                $imageSrc = str_replace($rootDir, "", $imageSrc);
-
-                $resizeWidth = $originalWidth;
-            }
-        } catch (\Exception $e) {
-            echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
-            return '';
-        }
-
-        $alt = '';
-        if (is_array($meta)) {
-            $alt = $meta['alt'] ?? $meta['title'] ?? '';
-        }
-        if (empty($alt) && is_string($altText)) {
-            $alt = $altText;
-        }
-        if (empty($alt) && is_string($headline)) {
-            $alt = $headline;
-        }
-
-        $title = '';
-        if (is_string($headline)) {
-            $title = $headline;
-        } elseif (is_array($meta)) {
-            $title = $meta['title'] ?? $meta['alt'] ?? '';
-        }
-        if (empty($title) && is_string($altText)) {
-            $title = $altText;
-        }
-
-        $link = is_array($meta) ? ($meta['link'] ?? '') : '';
-        $caption = is_array($meta) ? ($meta['caption'] ?? '') : '';
-
-
-        if (!empty($colorBox)) {
-            $linkStart = '<a title="' . htmlspecialchars($title) . '" data-gall="group_' . htmlspecialchars($colorBox) . '" href="' . htmlspecialchars($relativeImagePath) . '" class="lightbox_' . htmlspecialchars($colorBox) . '">';
+        $linkStart = $linkEnd = '';
+        if ($colorBox) {
+            $linkStart = sprintf('<a title="%s" data-gall="group_%s" href="%s" class="lightbox_%s">',
+                htmlspecialchars($title), htmlspecialchars($colorBox), $relativeImagePath, htmlspecialchars($colorBox));
             $linkEnd = '</a>';
-        } else {
-            if (!empty($link)) {
-                $linkStart = '<a href="' . htmlspecialchars($link) . '" title="' . htmlspecialchars($title) . '">';
-                $linkEnd = '</a>';
-            } else {
-                $linkStart = '';
-                $linkEnd = '';
-            }
+        } elseif ($link) {
+            $linkStart = sprintf('<a href="%s" title="%s">', htmlspecialchars($link), htmlspecialchars($title));
+            $linkEnd = '</a>';
         }
 
-        // Funktion zum Bereinigen des Dateinamens
-        $sanitizeFileName = function ($filename) {
-            // Ersetze Umlaute
-            $umlaute = ['ä', 'ö', 'ü', 'ß', 'Ä', 'Ö', 'Ü'];
-            $ersetze = ['ae', 'oe', 'ue', 'ss', 'Ae', 'Oe', 'Ue'];
-            $filename = str_replace($umlaute, $ersetze, $filename);
+        $baseImagePath = $absoluteImagePath;
+        $baseImagePath = dirname($baseImagePath) . "/" . rawurlencode(basename($baseImagePath));
 
-            // Ersetze Sonderzeichen
-            $filename = preg_replace('/[^a-zA-Z0-9\.\-_]/', '', $filename);
+        if ($size && is_array($size)) {
+            $width = isset($size[0]) ? (int)$size[0] : null;
+            $height = isset($size[1]) ? (int)$size[1] : null;
+            $mode = $size[2] ?? null;
 
-            // Konvertiere Leerzeichen zu Unterstrichen
-            $filename = str_replace(' ', '_', $filename);
+            $config = new ResizeConfiguration();
 
-            return $filename;
-        };
+            if ($width !== "") {
+                $config->setWidth($width);
+            }
+            if ($height !== "") {
+                $config->setHeight($height);
+            }
+            if ($mode !== "") {
+                $config->setMode($mode);
+            }
 
-        // Bildgrößen für das <picture>-Tag und WebP-Version
-        $srcSetParts = [];
-        $webpSrcSetParts = [];
-        $breakpoints = [480, 768, 992, 1200, 1600, 1920];
-
-
-        if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "") && $size[0] < min($breakpoints)) {
             try {
-                $config->setWidth($size[0])->setHeight($size[1])->setMode($size[2]);
-                $processedImage = $imageFactory->create($absoluteImagePath, $config);
-                $processedImagePath = $processedImage->getPath();
-
-                // Dateipfad und -name des generierten Bildes bereinigen
-                $pathParts = pathinfo($processedImagePath);
-                $sanitizedFilename = $sanitizeFileName($pathParts['basename']);
-                $sanitizedProcessedImagePath = $pathParts['dirname'] . '/' . $sanitizedFilename;
-
-                // Sicherstellen, dass das bereinigte Bild erstellt wird
-                if (!file_exists($sanitizedProcessedImagePath)) {
-                    copy($processedImagePath, $sanitizedProcessedImagePath);
-                }
-
-                // Relativen Pfad verwenden
-                $relativeSanitizedProcessedImagePath = str_replace($rootDir, '', $sanitizedProcessedImagePath);
-
-                // Klassennamen und Loading-Attribut hinzufügen
-                $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : '';
-                $loadingAttribute = $lazy ? ' loading="lazy"' : '';
-
-                // Ausgabe des Bildes ohne <picture>-Tag oder srcset
-                return $linkStart . '<img' . $classAttribute . ' src="' . htmlspecialchars($relativeSanitizedProcessedImagePath) . '" alt="' . htmlspecialchars($alt) . '"' . $loadingAttribute . '>' . $linkEnd;
+                $baseImage = $imageFactory->create($absoluteImagePath, $config);
+                $baseImagePath = $baseImage->getPath();
             } catch (\Exception $e) {
-                //echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
+                echo "Error creating base image: " . $e->getMessage();
+                echo "File: " . $e->getFile();
+                echo "Line: " . $e->getLine();
+                echo "Trace: " . $e->getTraceAsString();
+                return '';
             }
         }
 
-        foreach ($breakpoints as $bp) {
-            // Entscheiden, ob die Breakpoints anhand der Originalbildgröße oder der übergebenen $size-Variablen verwendet werden
-            if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "")) {
-                if ($bp <= $size[0]) {
-                    try {
-                        $config->setWidth($bp);
-                        $processedImage = $imageFactory->create($absoluteImagePath, $config);
-                        $processedImagePath = $processedImage->getPath();
+        $maxWidth = $size[0] ?? null;
+        $breakpoints = [
+            //['maxWidth' => 480, 'width' => 480],
+            //['maxWidth' => 640, 'width' => 640],
+            ['maxWidth' => 768, 'width' => 768],
+            ['maxWidth' => 992, 'width' => 992],
+            ['maxWidth' => 1200, 'width' => 1200],
+            ['maxWidth' => 1600, 'width' => 1600],
+            ['maxWidth' => null, 'width' => $maxWidth]
+        ];
 
-                        // Dateipfad und -name des generierten Bildes bereinigen
-                        $pathParts = pathinfo($processedImagePath);
-                        $sanitizedFilename = $sanitizeFileName($pathParts['basename']);
-                        $sanitizedProcessedImagePath = $pathParts['dirname'] . '/' . $sanitizedFilename;
+        $sources = [];
+        $webpSources = [];
+        $processedSrcsets = [];
 
-                        // Sicherstellen, dass das bereinigte Bild erstellt wird
-                        if (!file_exists($sanitizedProcessedImagePath)) {
-                            copy($processedImagePath, $sanitizedProcessedImagePath);
-                        }
+        foreach ($breakpoints as $breakpoint) {
+            $config = new ResizeConfiguration();
+            $width = $breakpoint['width'];
 
-                        // Relativen Pfad für srcset verwenden
-                        $relativeSanitizedProcessedImagePath = str_replace($rootDir, '', $sanitizedProcessedImagePath);
-                        $srcSetParts[] = $relativeSanitizedProcessedImagePath . ' ' . $bp . 'w';
+            if ($maxWidth && $width > $maxWidth) {
+                continue;
+            }
 
-                        // WebP-Version generieren
-                        $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $sanitizedProcessedImagePath);
-                        if (!file_exists($webpPath)) {
-                            $imagineImage = $processedImage->getImagine()->open($sanitizedProcessedImagePath);
-                            $imagineImage->save($webpPath, ['format' => 'webp']);
-                        }               // Relativen Pfad für WebP srcset verwenden
-                        $relativeWebpPath = str_replace($rootDir, '', $webpPath);
-                        $webpSrcSetParts[] = $relativeWebpPath . ' ' . $bp . 'w';
-                    } catch (\Exception $e) {
-                        //echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
-                    }
+            if ($width) {
+                $config->setWidth($width);
+            }
+
+            try {
+                $processedImage = $imageFactory->create($baseImagePath, $config);
+                $processedImagePath = $processedImage->getPath();
+                // Simulieren des Aufrufs des Bildes
+                $imageUrl = str_replace($rootDir, '', $processedImagePath);
+                $currentDomain = $_SERVER['HTTP_HOST'];
+                $imageUrl = 'https://' . $currentDomain . $imageUrl;
+
+
+                // Überprüfen, ob die Datei existiert
+                if (!file_exists($processedImagePath)) {
+                    $context = stream_context_create(['http' => ['timeout' => 0]]);
+                    @file_get_contents($imageUrl, false, $context);
+                    //throw new \Exception("File does not exist: $processedImagePath");
                 }
-            } else {
-                if ($bp <= $originalWidth) {
-                    try {
-                        $config->setWidth($bp);
-                        $processedImage = $imageFactory->create($absoluteImagePath, $config);
-                        $processedImagePath = $processedImage->getPath();
 
-                        // Dateipfad und -name des generierten Bildes bereinigen
-                        $pathParts = pathinfo($processedImagePath);
-                        $sanitizedFilename = $sanitizeFileName($pathParts['basename']);
-                        $sanitizedProcessedImagePath = $pathParts['dirname'] . '/' . $sanitizedFilename;
+                $imageSrc = str_replace($rootDir, '', $processedImagePath);
+                $imageSrc = dirname($imageSrc) . '/' . rawurlencode(basename($imageSrc));
 
-                        // Sicherstellen, dass das bereinigte Bild erstellt wird
-                        if (!file_exists($sanitizedProcessedImagePath)) {
-                            copy($processedImagePath, $sanitizedProcessedImagePath);
-                        }
-
-                        // Relativen Pfad für srcset verwenden
-                        $relativeSanitizedProcessedImagePath = str_replace($rootDir, '', $sanitizedProcessedImagePath);
-                        $srcSetParts[] = $relativeSanitizedProcessedImagePath . ' ' . $bp . 'w';
-
-                        // WebP-Version generieren
-                        $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $sanitizedProcessedImagePath);
-                        if (!file_exists($webpPath)) {
-                            $imagineImage = $processedImage->getImagine()->open($sanitizedProcessedImagePath);
-                            $imagineImage->save($webpPath, ['format' => 'webp']);
-                        }
-
-                        // Relativen Pfad für WebP srcset verwenden
-                        $relativeWebpPath = str_replace($rootDir, '', $webpPath);
-                        $webpSrcSetParts[] = $relativeWebpPath . ' ' . $bp . 'w';
-                    } catch (\Exception $e) {
-                        //echo "Fehler beim Bearbeiten des Bildes: " . $e->getMessage();
-                    }
+                // WebP-Version generieren
+                $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $processedImagePath);
+                if (!file_exists($webpPath)) {
+                    $imagineImage = $processedImage->getImagine()->open($processedImagePath);
+                    $imagineImage->save($webpPath, ['format' => 'webp']);
                 }
+                $webpSrc = str_replace($rootDir, '', $webpPath);
+                $webpSrc = dirname($webpSrc) . '/' . rawurlencode(basename($webpSrc));
+
+                if ($breakpoint['maxWidth']) {
+                    if (!in_array($imageSrc, $processedSrcsets)) {
+                        $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
+                        $sources[] = "<source srcset=\"{$imageSrc}\" media=\"{$mediaQuery}\">";
+                        $processedSrcsets[] = $imageSrc;
+                    }
+
+                    if (!in_array($webpSrc, $processedSrcsets)) {
+                        $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
+                        $webpSources[] = "<source srcset=\"{$webpSrc}\" media=\"{$mediaQuery}\" type=\"image/webp\">";
+                        $processedSrcsets[] = $webpSrc;
+                    }
+                } elseif (!$breakpoint['maxWidth']) {
+                    $sources[] = "<source srcset=\"{$imageSrc}\">";
+                    $webpSources[] = "<source srcset=\"{$webpSrc}\" type=\"image/webp\">";
+                }
+            } catch (\Exception $e) {
+                echo "Error creating image: " . $e->getMessage();
+                //echo "File: " . $e->getFile();
+                //echo "Line: " . $e->getLine();
+                //echo "Trace: " . $e->getTraceAsString();
+                continue;
             }
         }
 
-        $srcSet = implode(', ', array_map(fn($path) => htmlspecialchars($path), $srcSetParts));
-        $webpSrcSet = implode(', ', array_map(fn($path) => htmlspecialchars($path), $webpSrcSetParts));
-
-        // Quelldateipfad bereinigen
-        $sanitizedImageSrc = str_replace($rootDir, '', $absoluteImagePath);
-        $sanitizedImageSrc = dirname($sanitizedImageSrc) . '/' . $sanitizeFileName(basename($sanitizedImageSrc));
-
-        // Generierung des Bild-HTML mit <picture>-Tag
         $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : '';
-        $pictureTag = '<picture>';
-        if ($webpSrcSet) {
-            $pictureTag .= '<source type="image/webp" srcset="' . $webpSrcSet . ', ' . htmlspecialchars($sanitizedImageSrc) . ' ' . $originalWidth . 'w" sizes="(max-width: 480px) 480px, 100vw">';
+        $lazyAttribute = $lazy ? ' loading="lazy"' : '';
+
+        $imgTag = '<picture>';
+
+        $imgTag .= implode("\n", $webpSources);
+        $imgTag .= implode("\n", $sources);
+
+        if ($webpSources || $sources) {
+            $imgTag .= '<img' . $classAttribute . ' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
+        } elseif ($imageSrc) {
+            $imgTag .= '<img' . $classAttribute . ' src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
         }
-        if ($srcSet) {
-            $pictureTag .= '<source srcset="' . $srcSet . ', ' . htmlspecialchars($sanitizedImageSrc) . ' ' . $originalWidth . 'w" sizes="(max-width: 480px) 480px, 100vw">';
-        }
-        $pictureTag .= '<img' . $classAttribute . ' src="' . htmlspecialchars($sanitizedImageSrc) . '" alt="' . htmlspecialchars($alt) . '"' . ($lazy ? ' loading="lazy"' : '') . '>';
-        // Swiper-Preloader hinzufügen, wenn $inSlider true ist
+
         if ($inSlider) {
-            $pictureTag .= '<div class="swiper-lazy-preloader"></div>';
+            $imgTag .= '<div class="swiper-lazy-preloader"></div>';
+            if ($caption) {
+                $imgTag .= '<div class="slider-caption">';
+                $imgTag .= htmlspecialchars($caption);
+                $imgTag .= '</div>';
+            }
         }
+        $imgTag .= '</picture>';
 
-        $pictureTag .= '</picture>';
-
-        // Ausgabe des vollständigen HTML
-        return $linkStart . $pictureTag . $linkEnd;
+        if ($linkStart || $linkEnd) {
+            return $linkStart . $imgTag . $linkEnd;
+        }
+        return $imgTag;
     }
 
     public static function generateImageURL($imageSource, $size = null)

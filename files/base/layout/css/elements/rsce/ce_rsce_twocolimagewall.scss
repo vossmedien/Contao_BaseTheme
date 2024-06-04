@@ -32,13 +32,20 @@ html body {
 
     .ce--imagetextwall {
       &:has(.flex-row-reverse) {
-        .content--col .content--inner{
+        .content--col .content--inner {
           padding-right: var(--bs-container-gutter);
         }
       }
 
       &:not(:has(.flex-row-reverse)) {
-        .content--col .content--inner{
+        picture {
+          display: flex;
+           justify-content: flex-end;
+
+
+        }
+
+        .content--col .content--inner {
           padding-left: var(--bs-container-gutter);
         }
       }
@@ -90,7 +97,7 @@ html body {
           }
 
           &:hover {
-            .zoom-container  img {
+            .zoom-container img {
               transform: scale(1.035);
             }
           }
@@ -100,7 +107,7 @@ html body {
           margin-bottom: $mini-spacing;
         }
 
-        .content--inner{
+        .content--inner {
           position: relative;
           z-index: 2;
         }
@@ -156,6 +163,7 @@ html body {
             &.flex-row-reverse {
               @include media-breakpoint-up(lg) {
                 flex-flow: row-reverse;
+
 
                 .content--col {
                   .content-col--image,
@@ -247,13 +255,17 @@ html body {
   top: 0;
   line-height: 0;
   overflow: hidden;
-  display: flex;
 
-  picture{
+  .swiper {
+    height: 100%;
+  }
+
+  picture, figure {
     display: block;
     width: 100%;
     height: 100%;
   }
+
 
   @include media-breakpoint-up(lg) {
     position: absolute;
@@ -264,9 +276,6 @@ html body {
     left: 0;
   }
 
-  img, video {
-    object-fit: cover;
-  }
 
   iframe {
     min-height: 250px;
@@ -276,7 +285,6 @@ html body {
   video,
   iframe {
     left: 0;
-    width: 100%;
     height: 100%;
     transition: all 0.3s ease-in-out !important;
     @include media-breakpoint-down(lg) {
@@ -285,12 +293,35 @@ html body {
     }
   }
 
-  &.no-stretch{
-    img, video, iframe{
-      width: auto;
+  &:not(.no-stretch) {
+
+    img, video {
+      object-fit: cover;
+      display: block;
+    }
+
+    img,
+    video,
+    iframe {
+      width: 100%;
+    }
+  }
+
+  &.no-stretch {
+    img {
+      //flex: 1;
+    }
+
+    @include media-breakpoint-down(lg) {
+      width: 100%;
+
+      picture {
+        display: flex;
+      }
     }
   }
 }
+
 
 .kachel-column-width--indicator {
   height: 100%;

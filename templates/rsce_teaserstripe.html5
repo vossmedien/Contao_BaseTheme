@@ -5,10 +5,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 ?>
 
 
-<div <?php echo $this->cssID; ?> class=" content--element <?php echo str_replace("container", "", $this->class); ?>">
-    <div
-
-        <?php if ($this->image): ?>data-bg="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($this->image, $this->size); ?>"<?php endif; ?>
+<div <?php echo $this->cssID; ?> class="<?php if ($this->image): ?>lazy<?php endif; ?> <?php if ($this->alternate_background_color) : ?>with-bg<?php endif; ?> content--element <?php echo str_replace("container", "", $this->class); ?>"
+ <?php if ($this->image): ?>data-bg="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($this->image, $this->size); ?>"<?php endif; ?>
         style="background-position: center center; background-repeat:no-repeat; background-size: cover;
         <?php if ($this->text_color) : ?>
                 color: <?= $this->text_color;?>;
@@ -18,8 +16,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 background-color: <?= $this->alternate_background_color;?>;
              <?php endif; ?>
                 "
-
-        class="<?php if ($this->image): ?>lazy<?php endif; ?> ce--inner <?php if ($this->alternate_background_color) : ?>with-bg<?php endif; ?>">
+>
+    <div class=" ce--inner ">
 
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
@@ -41,9 +39,9 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 <div class="container" <?php if ($this->text_color): ?>style="--bs-headline-color: <?= $this->text_color; ?>"<?php endif; ?>>
 
 
-                    <div class="<?php if (!$this->nocolumns) : ?>row gx-md-5<?php endif; ?>  align-items-end">
+                    <div class="<?php if (!$this->nocolumns) : ?>row gx-lg-5<?php endif; ?>  align-items-end">
                         <?php if ($this->ce_headline || $this->ce_subline || $this->text) : ?>
-                            <div class="col-12 col-md">
+                            <div class="col-12 col-lg">
 
                                 <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
                                     $this->ce_topline,

@@ -30,13 +30,13 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                     <div class="row align-items-center">
                                         <?php if ($row->step): ?>
                                             <div class="col-auto">
-                                                <span class="h4 mb-0 step--title"><?php echo $row->step; ?></span>
+                                                <span class="h1 mb-0 step--title"><?php echo $row->step; ?></span>
                                             </div>
                                         <?php endif; ?>
                                         <?php if ($row->icon): ?>
                                             <div class="col-auto">
                                             <span style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" class="step--icon">
-                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->icon, $row->description, $row->headline, $row->size_right, null, false); ?>
+                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->icon, strip_tags($row->description), $row->headline, $row->size_right, null, false); ?>
                                             </span>
                                             </div>
                                         <?php endif; ?>
@@ -51,7 +51,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 <div class="right-col--inner" style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>">
                                     <?php if ($row->image): ?>
                                         <div class="step--image mb-4">
-                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, $row->description, $row->headline, $row->size_right, null, false); ?>
+                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, strip_tags($row->description), $row->headline, $row->size_right, null, false); ?>
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($row->headline): ?>

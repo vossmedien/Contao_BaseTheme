@@ -1,16 +1,24 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Überschrift (headline)', ''),
+    'label' => array('Custom | Runde Boxen mit Icon / Bild sowie Verlinkung (bubblelist)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('cssID'),
+    'standardFields' => array('headline', 'cssID'),
     'wrapper' => array(
         'type' => 'none',
     ),
     'fields' => array(
-
+        'topline' => array(
+            'label' => array('Topline', 'Text oberhalb der Überschrift'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ), 'subline' => array(
+            'label' => array('Subline', 'Text unterhalb der Überschrift'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -50,91 +58,141 @@ return array(
                 'animate__backInLeft' => 'backInLeft',
                 'animate__backInRight' => 'backInRight',
                 'animate__backInUp' => 'backInUp',
+
                 /* Bouncing entrances  */
                 'animate__bounceIn' => 'bounceIn',
                 'animate__bounceInDown' => 'bounceInDown',
                 'animate__bounceInLeft' => 'bounceInLeft',
                 'animate__bounceInRight' => 'bounceInRight',
                 'animate__bounceInUp' => 'bounceInUp',
+
+
                 /* Flippers */
                 'animate__flip' => 'flip',
                 'animate__flipInX' => 'flipInX',
                 'animate__flipInY' => 'flipInY',
+
                 /* Lightspeed */
                 'animate__lightSpeedInRight' => 'lightSpeedInRight',
                 'animate__lightSpeedInLeft' => 'lightSpeedInLeft',
+
                 /* Rotating entrances */
                 'animate__rotateIn' => 'rotateIn',
                 'animate__rotateInDownLeft' => 'rotateInDownLeft',
                 'animate__rotateInDownRight' => 'rotateInDownRight',
                 'animate__rotateInUpLeft' => 'rotateInUpLeft',
                 'animate__rotateInUpRight' => 'rotateInUpRight',
+
                 /* Specials */
                 'animate__hinge' => 'hinge',
                 'animate__jackInTheBox' => 'jackInTheBox',
                 'animate__rollIn' => 'rollIn',
+
                 /* Zooming entrances */
                 'animate__zoomIn' => 'zoomIn',
                 'animate__zoomInDown' => 'zoomInDown',
                 'animate__zoomInLeft' => 'zoomInLeft',
                 'animate__zoomInRight' => 'zoomInRight',
                 'animate__zoomInUp' => 'zoomInUp',
+
                 /* Sliding entrances */
                 'animate__slideInDown' => 'slideInDown',
                 'animate__slideInLeft' => 'slideInLeft',
                 'animate__slideInRight' => 'slideInRight',
                 'animate__slideInUp' => 'slideInUp',
+
             ),
-            'eval' => array('chosen' => 'true')
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
+        ),
+        'backgroundcolor' => array(
+            'label' => array('Hintergrundfarbe', 'Im Hexformat, z. B. #000 für schwarz (Standard: weiß)'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'linkcolor' => array(
+            'label' => array('Schriftfarbe', 'Im Hexformat, z. B. #000 für schwarz (Standard: Hauptfarbe)'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
-        'onlystyle' => array(
-            'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),
+        'hide_circle' => array(
+            'label' => array('Runden Rahmen ausblenden', 'standardmäßig aktiv'),
             'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
         ),
 
-
-        'headline' => array(
-            'label' => array('Überschrift', ''),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-        'headline_type' => array(
-            'label' => array(
-                'de' => array('Typ der Überschrift', ''),
+        'size' => array(
+            'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
+            'inputType' => 'imageSize',
+            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => ' clr'
             ),
-            'inputType' => 'select',
-            'options' => array(
-                'h1' => 'H1 (Haupt-Headline für SEO, darf nur 1x vorkommen)',
-                'h2' => 'H2 (Sollte H1 thematisch untergeordnet sein)',
-                'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
-                'h4' => 'H4',
-                'h5' => 'H5',
+        ),
+
+        'galery' => array(
+            'label' => array('Boxen', ''),
+            'elementLabel' => '%s. Box',
+            'inputType' => 'list',
+            'minItems' => 1,
+            'maxItems' => 99,
+            'fields' => array(
+                'img' => array(
+                    'label' => array('Bild', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'tl_class' => 'w50'
+                    ),
+                ),
+
+
+                'size' => array(
+                    'label' => array('Größe der Bubble inkl. Maßeinheit', 'ist immer quadratisch, daher reicht ein Wert.'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'color' => array(
+                    'label' => array('Alternative Farbe für Element', 'Standard: Hauptfarbe'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'hover_color' => array(
+                    'label' => array('Alternative Hover-Farbe für Element', 'Standard: Sekundärfarbe'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+
+                'icon' => array(
+                    'label' => array('Alternativ zum Bild Font-Awesome Klasse angeben', 'überschreibt das Bild, z. B. fa-facebook fab'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+
+                'text' => array(
+                    'label' => array('Text', ''),
+                    'inputType' => 'textarea',
+                    'eval' => array('rte' => 'tinyMCE'),
+
+                ),
+                'url' => array(
+                    'label' => array('URL', ''),
+                    'inputType' => 'url',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
             ),
-            'eval' => array('tl_class' => 'w50'),
-        ),
-
-
-        'topline' => array(
-            'label' => array('Topline', 'Text oberhalb der Überschrift'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
-        ),
-
-
-        'subline' => array(
-            'label' => array('Subline', 'Text unterhalb der Überschrift'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
-
-        ),
-
-
-        'desc' => array(
-            'label' => array('Text', 'optional'),
-            'inputType' => 'textarea',
-            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
         ),
     ),
 );

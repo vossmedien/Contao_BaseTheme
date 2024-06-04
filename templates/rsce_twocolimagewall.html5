@@ -232,18 +232,16 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                                 <div style="<?= $row->alternate_textcolor ? 'color:' . $row->alternate_textcolor . ';' : '' ?>"
                                      class="content--inner <?php if ($row->boxed_headline): ?>mt-lg-10 mb-lg-8<?php endif; ?> <?php echo $row->textalign; ?>">
-                                    <?php if ($row->ce_headline): ?>
-                                        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                                            $row->ce_topline,
-                                            $row->ce_headline,
-                                            $row->ce_subline,
-                                            $row->headline_type,
-                                            $row->animation_type,
-                                            $row->alternate_textcolor,
-                                            $row->onlystyle,
-                                            "content--headline-wrapper"
-                                        ); ?>
-                                    <?php endif; ?>
+                                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                        $row->ce_topline,
+                                        $row->ce_headline,
+                                        $row->ce_subline,
+                                        $row->headline_type,
+                                        $row->animation_type,
+                                        $row->alternate_textcolor,
+                                        $row->onlystyle,
+                                        "content--headline-wrapper"
+                                    ); ?>
 
                                     <?php if ($row->content) : ?>
                                         <div class="content--text"
@@ -252,7 +250,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                         </div>
                                     <?php endif; ?>
 
-                                      <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($row->buttons, "mt-3"); ?>
+                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($row->buttons, "mt-3"); ?>
                                 </div>
                             </div>
                             <?php if (($row->image || $row->alternate_image || $row->content_rightcol || $row->video) && $row->column_width != "col-12 full-width") : ?>
@@ -271,7 +269,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                     ">
 
 
-                                    <div class="<?php if ($row->image_both): ?>is-row-bg<?php endif; ?>   <?php if ($row->dont_stretch_bg): ?>no-stretch<?php endif; ?>    <?php if (!$row->not_as_bg): ?>zoom-container<?php else: ?>position-relative text-center text-lg-start<?php endif; ?>">
+                                    <div class="<?php if ($row->image_both): ?>is-row-bg<?php endif; ?>   <?php if ($row->dont_stretch_bg): ?> no-stretch <?php endif; ?>    <?php if (!$row->not_as_bg): ?>zoom-container <?php else: ?>position-relative text-center text-lg-start px-2<?php endif; ?>">
                                         <?php if ($row->kachel_right_text): ?>
                                             <div class="kachel-column-width--indicator <?php if ($row->reverse) : ?>start-0<?php else: ?>end-0<?php endif; ?> <?php if ($row->expand_right_kachel): ?>expandable<?php endif; ?>">
                                                 <div class="column-kachel--wrapper <?php echo $row->kachel_right_position; ?>  <?php if ($row->kachel_right_url): ?> with-url<?php endif; ?>">
@@ -331,26 +329,22 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                             </video>
                                         <?php endif; ?>
 
-
-
-
                                         <?php if (is_array($row->image) && count($row->image) > 1) : ?>
                                             <div class="<?php if ($row->dont_stretch_bg && !$row->reverse): ?>ms-lg-auto me-lg-0<?php endif; ?> swiper content-slider_<?= $rand; ?>">
-                                                <div class="swiper-wrapper align-items-center">
+                                                <div class="swiper-wrapper ">
                                                     <?php
                                                     $length = count($row->image); // Anzahl der Elemente im Array
                                                     $index = 0;
                                                     foreach ($row->image as $data) : ?>
                                                         <?php if ($index < $length - 1): ?>
                                                             <div class="swiper-slide">
-                                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, null, $row->ce_headline, $row->size_right, null, true, $this->open_lightbox ? $rand : ""); ?>
+                                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, null, $row->ce_headline, $row->size_right, null, true, $this->open_lightbox ? $rand : "", false); ?>
                                                             </div>
                                                         <?php endif;
                                                         $index++; ?>
                                                     <?php endforeach ?>
                                                 </div>
                                             </div>
-
 
                                             <?php if (count($row->image) > 1) : ?>
                                                 <?php if ($this->show_pagination): ?>
@@ -363,11 +357,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                             <?php endif; ?>
 
                                         <?php elseif ($row->image): ?>
-                                            <div class="<?php if ($row->dont_stretch_bg && !$row->reverse): ?>text-md-end<?php endif; ?>">
-                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image[0], null, $row->ce_headline, $row->size_right, $row->rotate_image ? "rotateImage" : "", false); ?>
-                                            </div>
+                                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image[0], null, $row->ce_headline, $row->size_right, $row->rotate_image ? "rotateImage" : "", false); ?>
                                         <?php endif; ?>
-
                                     </div>
                                     <?php if ($row->boxed_headline && !$row->reverse) : ?>
                                         <div class="boxed-headline">

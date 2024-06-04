@@ -6,6 +6,15 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row1start.mi
 <?php if ($this->element_type == 'is_slider' && VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
     <script type="text/javascript" defer>
         window.addEventListener('DOMContentLoaded', function () {
+
+             document.querySelectorAll('.swiper.content-slider_<?= $this->id;?> .swiper-wrapper > *').forEach(function (element) {
+                    const swiperSlide = document.createElement('div');
+                    swiperSlide.classList.add('swiper-slide');
+                    element.parentNode.insertBefore(swiperSlide, element);
+                    swiperSlide.appendChild(element);
+                });
+
+
             const swiperElementCheck_<?= $this->id; ?> = document.querySelector('.swiper.content-slider_<?= $this->id; ?>');
             if (swiperElementCheck_<?= $this->id; ?>) {
                 const swiper_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?= $this->id; ?>', {
@@ -36,16 +45,21 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row1start.mi
                         crossFade: true
                     },
                     <?php endif;?>
-                    <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
+
+                    <?php if ($this->show_arrows) : ?>
                     navigation: {
                         nextEl: '.content-slider_<?= $this->id;?>.swiper-button-next',
                         prevEl: '.content-slider_<?= $this->id;?>.swiper-button-prev',
                     },
+                    <?php endif; ?>
+
+                    <?php if ($this->show_pagination) : ?>
                     pagination: {
                         el: '.content-slider_<?= $this->id; ?>.swiper-pagination',
                         clickable: true,
                     },
                     <?php endif; ?>
+
                     <?php if ($this->slides_per_view) : ?>
                     <?php if ($this->slides_per_view > 1) : ?>
                     slidesPerView: 1.5,
@@ -65,12 +79,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row1start.mi
                     <?php endif;?>
                 });
 
-                document.querySelectorAll('.swiper.content-slider_<?= $this->id;?> .swiper-wrapper > *').forEach(function (element) {
-                    const swiperSlide = document.createElement('div');
-                    swiperSlide.classList.add('swiper-slide');
-                    element.parentNode.insertBefore(swiperSlide, element);
-                    swiperSlide.appendChild(element);
-                });
+
             }
         }, {passive: true});
     </script>
@@ -83,7 +92,8 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row1start.mi
 
 
 <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
-<div <?php echo $this->cssID; ?> class="content--element  row-wrapper <?php echo $this->class; ?>" >
+
+<div  <?php echo $this->cssID; ?> class="content--element  row-wrapper <?php echo $this->class; ?>">
 
     <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
         $this->topline,
@@ -99,7 +109,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row1start.mi
     <div class="position-relative">
     <?php if ($this->element_type != 'is_slider'): ?>
     <div>
-    <div class="row <?php echo $this->cssID; ?> <?php if ($this->mid_element_content): ?>   with-mid-content  <?php endif; ?>
+    <div <?php echo $this->cssID; ?>  class="row <?php if ($this->mid_element_content): ?>   with-mid-content  <?php endif; ?>
 <?= $this->styleManager->get('spaltenausrichtung', ['ausrichtung']); ?>   <?= $this->styleManager->get('spaltenausrichtung', ['ausrichtung_horizontal']); ?>   <?= $this->styleManager->get('spaltenausrichtung', ['umkehren']); ?>
 
 <?php if ($this->styleManager->get('spaltenabstand', ['spaltenabstaende']) && (!$this->styleManager->get('spaltenabstand', ['spaltenabstaende_x']) && !$this->styleManager->get('spaltenabstand', ['spaltenabstaende_y']))): ?>
@@ -122,6 +132,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row1start.mi
     <?php if ($this->show_pagination): ?>
         <div class="content-slider_<?= $this->id; ?> swiper-pagination"></div>
     <?php endif; ?>
+
     <?php if ($this->show_arrows): ?>
         <div class="content-slider_<?= $this->id; ?> swiper-button-prev"></div>
         <div class="content-slider_<?= $this->id; ?> swiper-button-next"></div>
