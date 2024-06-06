@@ -26,6 +26,7 @@ class ImageHelper
         $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? System::getContainer()->getParameter('kernel.default_locale');
 
         if ($imageObject = FilesModel::findByUuid($imageSource)) {
+
             $imageMeta = StringUtil::deserialize($imageObject->meta, true);
             $meta = $imageMeta[$currentLanguage] ?? reset($imageMeta) ?? [];
             $relativeImagePath = $imageObject->path;
@@ -41,20 +42,6 @@ class ImageHelper
             return '';
         }
 
-        $alt = $meta['alt'] ?? $meta['title'] ?? $altText ?? $headline ?? '';
-        $title = $headline ?? $meta['title'] ?? $meta['alt'] ?? $altText ?? '';
-        $link = $meta['link'] ?? '';
-        $caption = $meta['caption'] ?? '';
-
-        $linkStart = $linkEnd = '';
-        if ($colorBox) {
-            $linkStart = sprintf('<a title="%s" data-gall="group_%s" href="%s" class="lightbox_%s">',
-                htmlspecialchars($title), htmlspecialchars($colorBox), $relativeImagePath, htmlspecialchars($colorBox));
-            $linkEnd = '</a>';
-        } elseif ($link) {
-            $linkStart = sprintf('<a href="%s" title="%s">', htmlspecialchars($link), htmlspecialchars($title));
-            $linkEnd = '</a>';
-        }
 
         $baseImagePath = $absoluteImagePath;
         $baseImagePath = dirname($baseImagePath) . "/" . rawurlencode(basename($baseImagePath));
@@ -89,6 +76,7 @@ class ImageHelper
             }
         }
 
+
         $maxWidth = $size[0] ?? null;
         $breakpoints = [
             //['maxWidth' => 480, 'width' => 480],
@@ -109,7 +97,7 @@ class ImageHelper
             $config = new ResizeConfiguration();
             $width = $breakpoint['width'];
             //$height = isset($size[1]) ? (int)$size[1] : null;
-             $mode = $size[2] ?? "proportional";
+            $mode = $size[2] ?? "proportional";
             if ($maxWidth && $width > $maxWidth) {
                 continue;
             }
@@ -177,7 +165,24 @@ class ImageHelper
         }
         $lazyAttribute = $lazy ? ' loading="lazy"' : '';
 
-        $imgTag = '<picture>';
+
+        $alt = $meta['alt'] ?? $meta['title'] ?? $altText ?? $headline ?? '';
+        $title = $headline ?? $meta['title'] ?? $meta['alt'] ?? $altText ?? '';
+        $link = $meta['link'] ?? '';
+        $caption = $meta['caption'] ?? '';
+
+        $linkStart = $linkEnd = '';
+        if ($colorBox) {
+            $linkStart = sprintf('<a title="%s" data-gall="group_%s" href="%s" class="lightbox_%s">',
+                htmlspecialchars($title), htmlspecialchars($colorBox), $imageSrc, htmlspecialchars($colorBox));
+            $linkEnd = '</a>';
+        } elseif ($link) {
+            $linkStart = sprintf('<a href="%s" title="%s">', htmlspecialchars($link), htmlspecialchars($title));
+            $linkEnd = '</a>';
+        }
+
+
+        $imgTag = '<figure><picture>';
 
         $imgTag .= implode("\n", $webpSources);
         $imgTag .= implode("\n", $sources);
@@ -187,6 +192,9 @@ class ImageHelper
         } elseif ($imageSrc) {
             $imgTag .= '<img ' . $classAttribute . ' data-src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
         }
+
+
+        $imgTag .= '</picture>';
 
         if ($inSlider) {
             $imgTag .= '<div class="swiper-lazy-preloader"></div>';
@@ -198,8 +206,14 @@ class ImageHelper
 
             $imgTag = str_replace("data-src", "src", $imgTag);
             $imgTag = str_replace('loading="lazy"', '" ', $imgTag);
+        } elseif ($caption) {
+            if ($caption) {
+                $imgTag .= '<figcaption>';
+                $imgTag .= htmlspecialchars($caption);
+                $imgTag .= '</figcaption>';
+            }
         }
-        $imgTag .= '</picture>';
+        $imgTag .= '</figure>';
 
         if ($linkStart || $linkEnd) {
             return $linkStart . $imgTag . $linkEnd;
@@ -219,7 +233,7 @@ class ImageHelper
         if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "")) {
             $width = isset($size[0]) ? (int)$size[0] : null;
             $height = isset($size[1]) ? (int)$size[1] : null;
-             $mode = $size[2] ?? "proportional";
+            $mode = $size[2] ?? "proportional";
 
             if ($width !== null) {
                 $config->setWidth($width);

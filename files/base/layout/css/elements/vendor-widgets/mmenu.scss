@@ -26,7 +26,11 @@
   li {
     &.active, &.trail {
       background-color: var(--mmenu-active-bg-color);
-      color: var(--mmenu-active-color);
+
+
+      > a, > span, > strong{
+         color: var(--mmenu-active-color);
+      }
     }
 
     &:after {

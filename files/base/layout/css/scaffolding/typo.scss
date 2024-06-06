@@ -43,9 +43,12 @@ html body {
 
 
 
-
   a {
     transition: color 0.3s ease;
+
+    figcaption{
+      color: $body-color;
+    }
   }
 
   span:not([data-bs-toggle="dropdown"]) {

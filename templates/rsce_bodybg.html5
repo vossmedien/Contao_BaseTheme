@@ -2,6 +2,7 @@
 use Contao\FilesModel;
 use Contao\StringUtil;
 
+
 if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_bodybg.min.css|static';
     $articleSelector = "[data-articleid=\"article-$this->pid\"]";
@@ -10,9 +11,14 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
     $backgroundImageMobile = $this->image_mobile ? FilesModel::findByUuid($this->image_mobile)->path : '';
 
     $backgroundStyle = html_entity_decode($this->css);
-    if ($this->darken_image) {
+    if ($this->darken_image == "1") {
         $backgroundStyle = $this->css ? $backgroundStyle : "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url($backgroundImage)";
-    } else {
+    }
+    elseif ($this->darken_image == "2") {
+          $backgroundStyle = $this->css ? $backgroundStyle : "linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),url($backgroundImage)";
+    }
+
+    else {
         $backgroundStyle = $this->css ? $backgroundStyle : "url($backgroundImage)";
     }
 }
@@ -118,7 +124,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                 <?php if (!$this->only_article && $this->image): ?>
                 body {
-                    background: <?php if ($this->darken_image): ?> linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),<?php endif; ?> url(<?= $backgroundImage; ?>) center center no-repeat;
+                    background: <?php if ($this->darken_image == "1"): ?> linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),<?php endif; ?><?php if ($this->darken_image == "2"): ?> linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),<?php endif; ?> url(<?= $backgroundImage; ?>) center center no-repeat;
                     background-attachment: fixed;
                     background-size: cover;
                 }

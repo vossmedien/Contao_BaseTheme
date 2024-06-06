@@ -124,16 +124,18 @@ return array(
 
         'darken_image' => array(
             'label' => array('', ''),
-            'inputType' => 'checkbox',
+            'inputType' => 'radio',
             'eval' => array('tl_class' => ''),
             'options' => array(
                 '1' => 'Hintergrundbild zusätzlich abdunkeln',
+                '2' => 'Hintergrundbild zusätzlich erhellen',
             ),
             'dependsOn' => array(
                 'field' => 'element_type',
                 'value' => '2',
             ),
         ),
+
 
         'autoplay' => array(
             'label' => array('Autoplay aktivieren', ''),
