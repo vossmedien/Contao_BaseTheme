@@ -8,7 +8,7 @@
             $this->animation_type,
             null,
             false,
-            null
+            $this->text ? "" : "mb-0"
         ); ?>
 
 

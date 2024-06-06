@@ -26,19 +26,8 @@ html body {
           //margin: rfs-value(20px 0px 20px 0px);
           position: relative;
           width: auto;
-
           flex-flow: row wrap;
 
-          @include media-breakpoint-up(md) {
-            max-width: 25%;
-            flex: 1 25%;
-
-          }
-
-          @include media-breakpoint-up(lg) {
-            max-width: 100%;
-            flex: 1;
-          }
 
           * {
 

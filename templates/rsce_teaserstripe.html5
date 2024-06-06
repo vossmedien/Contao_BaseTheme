@@ -6,16 +6,16 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
 
 <div <?php echo $this->cssID; ?> class="<?php if ($this->image): ?>lazy<?php endif; ?> <?php if ($this->alternate_background_color) : ?>with-bg<?php endif; ?> content--element <?php echo str_replace("container", "", $this->class); ?>"
- <?php if ($this->image): ?>data-bg="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($this->image, $this->size); ?>"<?php endif; ?>
-        style="background-position: center center; background-repeat:no-repeat; background-size: cover;
-        <?php if ($this->text_color) : ?>
-                color: <?= $this->text_color;?>;
+                                 <?php if ($this->image): ?>data-bg="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($this->image, $this->size); ?>"<?php endif; ?>
+                                 style="background-position: center center; background-repeat:no-repeat; background-size: cover;
+                                 <?php if ($this->text_color) : ?>
+                                         color: <?= $this->text_color;?>;
              <?php endif; ?>
 
-        <?php if ($this->alternate_background_color) : ?>
-                background-color: <?= $this->alternate_background_color;?>;
+                                 <?php if ($this->alternate_background_color) : ?>
+                                         background-color: <?= $this->alternate_background_color;?>;
              <?php endif; ?>
-                "
+                                         "
 >
     <div class=" ce--inner ">
 

@@ -92,6 +92,10 @@ export function addBootstrapClasses() {
     document.querySelectorAll(".widget-radio span.note").forEach((el) => {
         el.classList.add("alert", "alert-primary");
     });
+
+   document.querySelectorAll(".row > div.container").forEach((el) => {
+        el.classList.remove("container");
+    });
 }
 
 /**

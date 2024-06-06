@@ -28,11 +28,10 @@
 
 
 .container {
- padding-inline: var(--bs-container-gutter);
+  padding-inline: var(--bs-container-gutter);
 
   .container:not([class*="col"]) {
     max-width: none;
-
     width: inherit;
   }
 }

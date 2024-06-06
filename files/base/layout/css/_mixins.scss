@@ -63,3 +63,26 @@
     padding-right: 0px;
   }
 }
+
+
+%darkened-content {
+  a:not(.btn) {
+    color: currentColor;
+  }
+
+  picture {
+    img {
+      z-index: -1;
+    }
+
+    &:before {
+      content: "";
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.33);
+      position: absolute;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+    }
+  }
+}

@@ -9,9 +9,6 @@ return array(
     'wrapper' => array(
         'type' => 'none',
     ),
-    'templates' => [
-        'rsce_buttonsonly' => 'rsce_buttonsonly.html.twig',
-    ],
     'fields' => array(
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),

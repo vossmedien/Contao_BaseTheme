@@ -62,7 +62,7 @@ class ImageHelper
         if ($size && is_array($size)) {
             $width = isset($size[0]) ? (int)$size[0] : null;
             $height = isset($size[1]) ? (int)$size[1] : null;
-            $mode = $size[2] ?? null;
+            $mode = $size[2] ?? "proportional";
 
             $config = new ResizeConfiguration();
 
@@ -72,6 +72,7 @@ class ImageHelper
             if ($height !== "") {
                 $config->setHeight($height);
             }
+
             if ($mode !== "") {
                 $config->setMode($mode);
             }
@@ -80,10 +81,10 @@ class ImageHelper
                 $baseImage = $imageFactory->create($absoluteImagePath, $config);
                 $baseImagePath = $baseImage->getPath();
             } catch (\Exception $e) {
-                echo "Error creating base image: " . $e->getMessage();
-                echo "File: " . $e->getFile();
-                echo "Line: " . $e->getLine();
-                echo "Trace: " . $e->getTraceAsString();
+                //echo "Error creating base image: " . $e->getMessage();
+                //echo "File: " . $e->getFile();
+                //echo "Line: " . $e->getLine();
+                //echo "Trace: " . $e->getTraceAsString();
                 return '';
             }
         }
@@ -92,10 +93,11 @@ class ImageHelper
         $breakpoints = [
             //['maxWidth' => 480, 'width' => 480],
             //['maxWidth' => 640, 'width' => 640],
-            ['maxWidth' => 768, 'width' => 768],
+            //['maxWidth' => 768, 'width' => 768],
             ['maxWidth' => 992, 'width' => 992],
             ['maxWidth' => 1200, 'width' => 1200],
             ['maxWidth' => 1600, 'width' => 1600],
+            ['maxWidth' => 1920, 'width' => 1920],
             ['maxWidth' => null, 'width' => $maxWidth]
         ];
 
@@ -106,13 +108,18 @@ class ImageHelper
         foreach ($breakpoints as $breakpoint) {
             $config = new ResizeConfiguration();
             $width = $breakpoint['width'];
-
+            //$height = isset($size[1]) ? (int)$size[1] : null;
+             $mode = $size[2] ?? "proportional";
             if ($maxWidth && $width > $maxWidth) {
                 continue;
             }
 
-            if ($width) {
+            if ($width !== "") {
                 $config->setWidth($width);
+            }
+
+            if ($mode !== "") {
+                $config->setMode($mode);
             }
 
             try {
@@ -122,8 +129,6 @@ class ImageHelper
                 $imageUrl = str_replace($rootDir, '', $processedImagePath);
                 $currentDomain = $_SERVER['HTTP_HOST'];
                 $imageUrl = 'https://' . $currentDomain . $imageUrl;
-
-
                 // Überprüfen, ob die Datei existiert
                 if (!file_exists($processedImagePath)) {
                     $context = stream_context_create(['http' => ['timeout' => 0]]);
@@ -146,29 +151,30 @@ class ImageHelper
                 if ($breakpoint['maxWidth']) {
                     if (!in_array($imageSrc, $processedSrcsets)) {
                         $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
-                        $sources[] = "<source srcset=\"{$imageSrc}\" media=\"{$mediaQuery}\">";
+                        $sources[] = "<source data-srcset=\"{$imageSrc}\" media=\"{$mediaQuery}\">";
                         $processedSrcsets[] = $imageSrc;
                     }
 
                     if (!in_array($webpSrc, $processedSrcsets)) {
                         $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
-                        $webpSources[] = "<source srcset=\"{$webpSrc}\" media=\"{$mediaQuery}\" type=\"image/webp\">";
+                        $webpSources[] = "<source data-srcset=\"{$webpSrc}\" media=\"{$mediaQuery}\" type=\"image/webp\">";
                         $processedSrcsets[] = $webpSrc;
                     }
                 } elseif (!$breakpoint['maxWidth']) {
-                    $sources[] = "<source srcset=\"{$imageSrc}\">";
-                    $webpSources[] = "<source srcset=\"{$webpSrc}\" type=\"image/webp\">";
+                    $sources[] = "<source data-srcset=\"{$imageSrc}\">";
+                    $webpSources[] = "<source data-srcset=\"{$webpSrc}\" type=\"image/webp\">";
                 }
             } catch (\Exception $e) {
-                echo "Error creating image: " . $e->getMessage();
-                //echo "File: " . $e->getFile();
-                //echo "Line: " . $e->getLine();
-                //echo "Trace: " . $e->getTraceAsString();
+                //echo "Error creating image: " . $e->getMessage();
                 continue;
             }
         }
 
-        $classAttribute = $class ? ' class="' . htmlspecialchars($class) . '"' : '';
+        if ($inSlider) {
+            $classAttribute = $class ? ' class="' . htmlspecialchars($class) . ' "' : '';
+        } else {
+            $classAttribute = $class ? ' class="lazy ' . htmlspecialchars($class) . ' "' : 'class="lazy"';
+        }
         $lazyAttribute = $lazy ? ' loading="lazy"' : '';
 
         $imgTag = '<picture>';
@@ -177,9 +183,9 @@ class ImageHelper
         $imgTag .= implode("\n", $sources);
 
         if ($webpSources || $sources) {
-            $imgTag .= '<img' . $classAttribute . ' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
+            $imgTag .= '<img ' . $classAttribute . ' data-src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
         } elseif ($imageSrc) {
-            $imgTag .= '<img' . $classAttribute . ' src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
+            $imgTag .= '<img ' . $classAttribute . ' data-src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
         }
 
         if ($inSlider) {
@@ -189,6 +195,9 @@ class ImageHelper
                 $imgTag .= htmlspecialchars($caption);
                 $imgTag .= '</div>';
             }
+
+            $imgTag = str_replace("data-src", "src", $imgTag);
+            $imgTag = str_replace('loading="lazy"', '" ', $imgTag);
         }
         $imgTag .= '</picture>';
 
@@ -210,7 +219,7 @@ class ImageHelper
         if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "")) {
             $width = isset($size[0]) ? (int)$size[0] : null;
             $height = isset($size[1]) ? (int)$size[1] : null;
-            $mode = $size[2] ?? null;
+             $mode = $size[2] ?? "proportional";
 
             if ($width !== null) {
                 $config->setWidth($width);

@@ -266,17 +266,6 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                         <?php endif; ?>
                         <?php endif; ?>
 
-                        on: {
-                            realIndexChange: function () {
-                                $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage *[data-aos]').removeClass('aos-init').removeClass('aos-animate');
-                                $('.mainslider_<?php echo $this->id; ?> .swiper-slide:not(.swiper-slide-active) .ce--mainimage .mainimage--content').hide();
-
-                                setTimeout(function () {
-                                    $('.mainslider_<?php echo $this->id; ?> .swiper-slide .ce--mainimage .mainimage--content').show();
-                                }, 500);
-                            },
-                        },
-
                     });
                 }
             }, {passive: true})

@@ -5,7 +5,12 @@
 @import "../../scss-variables";
 
 
-html body #wrapper #main .mod_article .article-content:not(:has(.moved-content)) > *:not(.body-slider):not(.bgvideo).ce_rsce_teaserstripe.with-bg {
-  padding-block: calc(var(--bs-basic-spacing) / 2);
+html body #wrapper #main .mod_article .article-content:not(:has(.moved-content)) > *:not(.body-slider):not(.bgvideo).ce_rsce_teaserstripe.with-bg,
+html body #wrapper #main .mod_article .article-content:not(:has(.moved-content)) > * > *:not(.body-slider):not(.bgvideo).ce_rsce_teaserstripe.with-bg {
+  padding-block: calc(var(--bs-basic-spacing));
   margin-bottom: var(--bs-basic-spacing);
+
+  @include media-breakpoint-up(lg) {
+    padding-block: calc(var(--bs-basic-spacing) / 2);
+  }
 }

@@ -96,10 +96,12 @@ const rotateImage = () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 window.addEventListener('scroll', rotateImages);
-            } else {
+            } else if (entry.intersectionRatio === 0) {
                 window.removeEventListener('scroll', rotateImages);
             }
         });
+    }, {
+        threshold: [0] // Beobachte, wenn das Bild vollständig außerhalb des sichtbaren Bereichs ist
     });
 
     images.forEach(image => {
@@ -112,25 +114,15 @@ const rotateImage = () => {
         const scrollDirection = scrollTop > lastScrollTop ? .5 : -.5; // Bestimme die Scroll-Richtung
 
         images.forEach(image => {
-            if (isElementInViewport(image)) {
-                image.rotation += scrollDirection;
-                image.style.transform = `rotate(${image.rotation}deg)`;
-            }
+            image.rotation += scrollDirection;
+            image.style.transform = `rotate(${image.rotation}deg)`;
         });
 
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Für Mobile oder negativen Wert
     }
-
-    function isElementInViewport(el) {
-        const rect = el.getBoundingClientRect();
-        return (
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-        );
-    }
 };
+
+
 DomLoadFunctions.push(rotateImage);
 
 

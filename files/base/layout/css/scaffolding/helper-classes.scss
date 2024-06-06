@@ -155,12 +155,16 @@ a.disabled-link {
 }
 
 
-
-
-.font-primary{
+.font-primary {
   font-family: $font-family-base;
 }
 
-.font-secondary{
+.font-secondary {
   font-family: $headings-font-family;
+}
+
+
+
+.darkened-content {
+  @extend %darkened-content;
 }
