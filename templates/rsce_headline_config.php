@@ -1,7 +1,7 @@
 <?php
 // rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Überschrift (headline)', ''),
+    'label' => array('Custom | Überschrift & Text (headline)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
