@@ -30,7 +30,25 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
             <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
 
-            <?php if ($this->open_lightbox): ?>
+            <?php if ($row->open_lightbox): ?>
+            <script type="text/javascript" defer>
+                document.addEventListener('DOMContentLoaded', function () {
+                    new VenoBox({
+                        selector: ".lightbox_single_<?= $rand;?>", //Items selector
+                        infinigall: true, // Ermöglicht eine endlose Navigation durch die Galerie. Standardwert: false
+                        maxWidth: '95%', // Maximale Breite des Lightbox-Fensters. Standardwert: '100%'
+                        numeration: true, // Zeigt Nummerierung der aktuellen und Gesamtanzahl der Elemente in der Galerie an. Standardwert: false
+                        spinner: 'flow', //  'plane' | 'chase' | 'bounce' | 'wave' | 'pulse' | 'flow' | 'swing' | 'circle' | 'circle-fade' | 'grid' | 'fold | 'wander'
+                        initialScale: 0.9, // Anfangsgröße der Skalierungstransformation für Elemente. Standardwert: 0.9
+                        transitionSpeed: 200, // Übergangsgeschwindigkeit für eingehende Elemente in Millisekunden. Standardwert: 500
+                        fitView: true, // Passt Bilder an, um innerhalb der Höhe des Viewports zu passen. Standardwert: true
+                    });
+                });
+            </script>
+        <?php endif; ?>
+
+
+        <?php if ($this->open_lightbox): ?>
             <script type="text/javascript" defer>
                 document.addEventListener('DOMContentLoaded', function () {
                     new VenoBox({
@@ -357,7 +375,9 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                             <?php endif; ?>
 
                                         <?php elseif ($row->image): ?>
-                                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image[0], null, $row->ce_headline, $row->size_right, $row->rotate_image ? "rotateImage" : "", false); ?>
+
+
+                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image[0], null, $row->ce_headline, $row->size_right, $row->rotate_image ? "rotateImage" : "", false, $row->open_lightbox ? $rand : "", false); ?>
                                         <?php endif; ?>
                                     </div>
                                     <?php if ($row->boxed_headline && !$row->reverse) : ?>

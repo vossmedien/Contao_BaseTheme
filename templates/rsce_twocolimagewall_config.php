@@ -1138,6 +1138,17 @@ return array(
                     ),
                 ),
 
+
+                'open_lightbox' => array(
+                    'label' => array('Bilder in Lightbox öffnen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => ' clr'),
+                    'dependsOn' => array(
+                        'field' => 'contentType',
+                        'value' => '1',
+                    ),
+                ),
+
                 'dont_stretch_bg' => array(
                     'label' => array('Hintergrundbild nicht auf komplette Breite ziehen', ''),
                     'inputType' => 'checkbox',

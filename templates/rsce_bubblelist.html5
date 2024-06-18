@@ -21,7 +21,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
         <div class="ce--bubble-list <?php if($this->hide_circle):?>no-border<?php endif;?>"
              <?php if ($this->backgroundcolor) : ?>style="background-color: <?php echo $this->backgroundcolor; ?>" <?php endif; ?>>
-            <div class="bl--inner container force-container">
+            <div class="bl--inner ">
                 <div class="bl--list">
                     <?php foreach ($this->galery as $item) : ?>
                         <div

@@ -166,10 +166,10 @@ class ImageHelper
         $lazyAttribute = $lazy ? ' loading="lazy"' : '';
 
 
-        $alt = $meta['alt'] ?? $meta['title'] ?? $altText ?? $headline ?? '';
-        $title = $meta['caption'] ?? $headline ?? $meta['title'] ?? $meta['alt'] ?? $altText ?? '';
-        $link = $meta['link'] ?? '';
-        $caption = $meta['caption'] ?? '';
+       $alt = !empty($meta['alt']) ? $meta['alt'] : (!empty($meta['title']) ? $meta['title'] : (!empty($altText) ? $altText : (!empty($headline) ? $headline : '')));
+$title = !empty($meta['title']) ? $meta['title'] : (!empty($meta['caption']) ? $meta['caption'] : (!empty($headline) ? $headline : (!empty($meta['alt']) ? $meta['alt'] : (!empty($altText) ? $altText : ''))));
+$link = !empty($meta['link']) ? $meta['link'] : '';
+$caption = !empty($meta['caption']) ? $meta['caption'] : '';
 
         $linkStart = $linkEnd = '';
         if ($colorBox) {
