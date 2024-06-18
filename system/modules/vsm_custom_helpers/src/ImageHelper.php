@@ -167,7 +167,7 @@ class ImageHelper
 
 
         $alt = $meta['alt'] ?? $meta['title'] ?? $altText ?? $headline ?? '';
-        $title = $headline ?? $meta['title'] ?? $meta['alt'] ?? $altText ?? '';
+        $title = $meta['caption'] ?? $headline ?? $meta['title'] ?? $meta['alt'] ?? $altText ?? '';
         $link = $meta['link'] ?? '';
         $caption = $meta['caption'] ?? '';
 

@@ -51,12 +51,12 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                     $this->animation_type,
                                     null,
                                     $this->onlystyle,
-                                    "mb-0"
+                                    $this->text ? "" : "mb-0"
                                 ); ?>
 
 
                                 <?php if ($this->text) : ?>
-                                    <div class="ts--text <?php if ($this->dynamic_fontsize): ?>dynamic-fontsize-sm<?php endif; ?> <?php if ($this->ce_headline || $this->ce_subline) : ?>mt-1<?php endif; ?>">
+                                    <div class="ts--text <?php if ($this->dynamic_fontsize): ?>dynamic-fontsize-sm<?php endif; ?> ">
                                         <?php echo $this->text; ?>
                                     </div>
                                 <?php endif; ?>
