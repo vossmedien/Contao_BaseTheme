@@ -166,10 +166,10 @@ class ImageHelper
         $lazyAttribute = $lazy ? ' loading="lazy"' : '';
 
 
-       $alt = !empty($meta['alt']) ? $meta['alt'] : (!empty($meta['title']) ? $meta['title'] : (!empty($altText) ? $altText : (!empty($headline) ? $headline : '')));
-$title = !empty($meta['title']) ? $meta['title'] : (!empty($meta['caption']) ? $meta['caption'] : (!empty($headline) ? $headline : (!empty($meta['alt']) ? $meta['alt'] : (!empty($altText) ? $altText : ''))));
-$link = !empty($meta['link']) ? $meta['link'] : '';
-$caption = !empty($meta['caption']) ? $meta['caption'] : '';
+        $alt = !empty($meta['alt']) ? $meta['alt'] : (!empty($meta['title']) ? $meta['title'] : (!empty($altText) ? $altText : (!empty($headline) ? $headline : '')));
+        $title = !empty($meta['title']) ? $meta['title'] : (!empty($meta['caption']) ? $meta['caption'] : (!empty($headline) ? $headline : (!empty($meta['alt']) ? $meta['alt'] : (!empty($altText) ? $altText : ''))));
+        $link = !empty($meta['link']) ? $meta['link'] : '';
+        $caption = !empty($meta['caption']) ? $meta['caption'] : '';
 
         $linkStart = $linkEnd = '';
         if ($colorBox) {
@@ -181,7 +181,6 @@ $caption = !empty($meta['caption']) ? $meta['caption'] : '';
             $linkEnd = '</a>';
         }
 
-
         $imgTag = '<figure><picture>';
 
         $imgTag .= implode("\n", $webpSources);
@@ -192,7 +191,6 @@ $caption = !empty($meta['caption']) ? $meta['caption'] : '';
         } elseif ($imageSrc) {
             $imgTag .= '<img ' . $classAttribute . ' data-src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
         }
-
 
         $imgTag .= '</picture>';
 
@@ -206,18 +204,23 @@ $caption = !empty($meta['caption']) ? $meta['caption'] : '';
 
             $imgTag = str_replace("data-src", "src", $imgTag);
             $imgTag = str_replace('loading="lazy"', '" ', $imgTag);
-        } elseif ($caption) {
-            if ($caption) {
-                $imgTag .= '<figcaption>';
-                $imgTag .= htmlspecialchars($caption);
-                $imgTag .= '</figcaption>';
+        } else {
+            if ($linkStart || $linkEnd) {
+                // If there's a link, include the figcaption inside the link
+                $imgTag = $linkStart . $imgTag . $linkEnd;
+                if ($caption) {
+                    $imgTag = str_replace($linkEnd, '<figcaption>' . htmlspecialchars($caption) . '</figcaption>' . $linkEnd, $imgTag);
+                }
+            } else {
+                // If there's no link, add the figcaption normally
+                if ($caption) {
+                    $imgTag .= '<figcaption>' . htmlspecialchars($caption) . '</figcaption>';
+                }
             }
         }
+
         $imgTag .= '</figure>';
 
-        if ($linkStart || $linkEnd) {
-            return $linkStart . $imgTag . $linkEnd;
-        }
         return $imgTag;
     }
 
