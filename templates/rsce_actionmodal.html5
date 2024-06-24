@@ -185,16 +185,17 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 <?php endif; ?>
             </div>
         </div>
-    </div>
-
-<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+    </div><?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
     <script type="text/javascript">
         window.addEventListener('DOMContentLoaded', function () {
-            var showDelay = <?php echo $this->show_delay ? $this->show_delay : 15; ?>;
-            var scrollAmount = <?php echo $this->scroll_amount ? intval($this->scroll_amount) : 700; ?>;
+            var openingType = '<?php echo $this->opening_type; ?>';
+            var showDelay = <?php echo $this->show_delay ? $this->show_delay : 'null'; ?>;
+            var scrollAmount = <?php echo $this->scroll_amount ? intval($this->scroll_amount) : 'null'; ?>;
             var onlyMobile = <?php echo $this->only_mobile ? 'true' : 'false'; ?>;
             var cookieHide = <?php echo $this->cookie_hide ? 'true' : 'false'; ?>;
             var modalShown = false;
+            var initialScrollPosition = window.pageYOffset;
+            var totalScrolledAmount = 0;
 
             function openModal_<?php echo $this->id; ?>() {
                 if (cookieHide && getCookie('actionModal_<?php echo $this->id; ?>')) {
@@ -202,13 +203,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 }
 
                 if (!modalShown) {
-                    <?php if (!$this->initial_hidden): ?>
                     var modal = document.querySelector('.actionModal_<?php echo $this->id; ?>');
                     var bsModal = new bootstrap.Modal(modal);
                     bsModal.show();
                     modalShown = true;
                     document.body.style.overflow = 'auto';
-                    <?php endif; ?>
                 }
             }
 
@@ -219,15 +218,41 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 openModal_<?php echo $this->id; ?>();
             }
 
-            setTimeout(checkConditionsAndOpenModal, showDelay * 1000);
+            switch(openingType) {
+                case 'after_time':
+                    if (showDelay !== null) {
+                        setTimeout(checkConditionsAndOpenModal, showDelay * 1000);
+                    } else {
+                        checkConditionsAndOpenModal();
+                    }
+                    break;
+                case 'after_scrolling':
+                    if (scrollAmount !== null) {
+                        var lastScrollPosition = initialScrollPosition;
+                        var scrollHandler = function () {
+                            var currentScrollPosition = window.pageYOffset;
+                            var scrollDifference = Math.abs(currentScrollPosition - lastScrollPosition);
+                            totalScrolledAmount += scrollDifference;
+                            lastScrollPosition = currentScrollPosition;
 
-            var scrollHandler = function () {
-                if (window.pageYOffset > scrollAmount) {
+                            if (totalScrolledAmount > scrollAmount) {
+                                checkConditionsAndOpenModal();
+                                window.removeEventListener('scroll', scrollHandler);
+                            }
+                        };
+                        window.addEventListener('scroll', scrollHandler);
+                    } else {
+                        checkConditionsAndOpenModal();
+                    }
+                    break;
+                case 'initial_hidden':
+                    // Do nothing, modal will remain hidden
+                    break;
+                default:
+                    // Open immediately for any other case (including empty string)
                     checkConditionsAndOpenModal();
-                    window.removeEventListener('scroll', scrollHandler);
-                }
-            };
-            window.addEventListener('scroll', scrollHandler);
+                    break;
+            }
         });
 
         <?php if ($this->cookie_hide) : ?>
