@@ -48,6 +48,10 @@
       box-shadow: $box-shadow;
 
       .modal-header {
+        display: block;
+        padding-top: 1.75rem;
+
+
         .modal-title {
           color: var(--bs-primary);
           font-size: 2.5rem;
@@ -57,18 +61,27 @@
   }
 
   .btn-close {
-    padding: 0.25rem;
-    color: var(--bs-primary);
-    font-size: rfs-value(24px);
-    opacity: 1;
-    background: var(--bs-primary);
+    --bs-btn-close-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='var(--bs-primary)'%3E%3Cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3E%3C/svg%3E");
+    --bs-btn-close-color: var(--bs-primary);
+    --bs-btn-close-opacity: 1;
+    mask-image: var(--bs-btn-close-bg);
     mask-repeat: no-repeat;
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='var(--bs-primary)'%3E%3Cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3E%3C/svg%3E");
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='var(--bs-primary)'%3E%3Cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3E%3C/svg%3E");
+    background: var(--bs-btn-close-color);
+    color: var(--bs-btn-close-color);
+    padding: 0;
     margin: 0;
+    position: absolute;
+    right: calc(var(--bs-modal-header-padding-x) * .5);
+    top: calc(var(--bs-modal-header-padding-y) * .5);
+    width: calc(var(--bs-modal-header-padding-x) * 1.5);
+    height: calc(var(--bs-modal-header-padding-y) * 1.5);
+    //font-size: rfs-value(24px);
+    //margin: 0;
   }
 
-  .btn--close {
+
+  /*
+    .btn--close {
     position: absolute;
     right: 10px;
     top: 5px;
@@ -81,6 +94,8 @@
     line-height: 1;
     z-index: 5;
   }
+   */
+
 }
 
 .modal.details-modal.modal-xl {
@@ -100,7 +115,7 @@
         padding-top: 3rem;
         padding-bottom: 4rem;
 
-        .btn--close {
+        .btn-close {
           top: 1rem;
           right: 0;
         }

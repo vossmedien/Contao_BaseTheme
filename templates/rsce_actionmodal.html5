@@ -1,0 +1,260 @@
+<?php
+if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_actionmodal.min.css|static';
+}
+?>
+
+    <div class="<?php echo $this->cssID; ?> modal <?php echo $this->class; ?> actionModal_<?php echo $this->id; ?>" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog <?php echo $this->modal_size; ?> modal-dialog-centered"
+             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+            <div class="modal-content"
+                 <?php if ($this->modal_backgroundcolor): ?>style="background-color: <?php echo $this->modal_backgroundcolor; ?>"<?php endif; ?>>
+
+                <?php if ($this->modal_headline): ?>
+                    <div class="modal-header">
+
+
+                        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                            $this->modal_topline,
+                            $this->modal_headline,
+                            $this->modal_subline,
+                            $this->modal_headline_type,
+                            null,
+                            null,
+                            false,
+                            "modal-title mb-0"
+                        ); ?>
+
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen">
+
+                        </button>
+                    </div>
+                <?php endif; ?>
+                <div class="modal-body" style="overflow-x: hidden;">
+                    <?php if ($this->image): ?>
+                        <div class="modal--image mb-2 <?php if ($this->remove_image_padding): ?>without-padding<?php endif; ?>">
+                            <?php if (!$this->modal_headline): ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen">
+                                    <i class="fa-sharp fa-light fa-xmark"></i>
+                                </button>
+                            <?php endif; ?>
+
+
+                            <?php
+                            $filename = FilesModel::findByUuid($this->image)->path;
+                            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                            ?>
+
+                            <?php if ($ext && $ext == "mp4"): ?>
+
+                                <?php if ($this->as_bg && $this->fixed_height): ?>
+                                    <div class="modal-image--wrapper" style="<?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>">
+                                <?php endif; ?>
+
+                                <video class="modal-video lazy" autoplay muted loop playsinline data-src="{{file::<?= $this->image ?>}}">
+                                    <source type="video/mp4" src="{{file::<?= $this->image ?>}}">
+                                </video>
+
+                                <?php if ($this->as_bg && $this->fixed_height): ?></div><?php endif; ?>
+
+                            <?php else: ?>
+                                <?php if ($this->as_bg): ?>
+                                    <div class="modal-image--wrapper lazy"
+                                         data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
+                                         style="background-position: center center; background-repeat: no-repeat; background-size: cover; <?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>"></div>
+                                <?php else: ?>
+                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->modal_headline, null, null, false, true); ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
+
+
+                            <div class="image--content">
+                                <div class="d-flex gap-4 align-items-center">
+                                    <?php if ($this->image_headline_left): ?>
+                                        <div class="col-12 left--col <?php if ($this->image_headline_right || $this->image_text_right): ?>col-lg-5<?php endif; ?>">
+                                            <div class="modal-image--big-headline" data-aos="animate__fadeInLeft">
+                                                <span><?php echo $this->image_headline_left; ?></span>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if ($this->image_headline_right || $this->image_text_right): ?>
+                                        <div class="col-12 d-none d-xl-block right--col <?php if ($this->image_headline_left): ?>col-lg-7<?php endif; ?>">
+                                            <div class="modal-image--text-wrapper" data-aos="animate__fadeInRight"
+                                                 style="<?php if ($this->image_right_col_background_color): ?>background-color: <?php echo $this->image_right_col_background_color; ?>;<?php endif; ?> <?php if ($this->image_right_col_text_color): ?>color: <?php echo $this->image_right_col_text_color; ?><?php endif; ?>">
+                                                <?php if ($this->image_headline_right): ?>
+                                                    <span><?php echo $this->image_headline_right; ?></span>
+                                                <?php endif; ?>
+                                                <?php if ($this->image_text_right): ?><?php echo $this->image_text_right; ?><?php endif; ?>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="modal--lower-content">
+                        <div class="d-flex gap-4">
+                            <?php if ($this->image_left): ?>
+                                <div class="col-12 col-md-5">
+                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image_left, null, $this->headline, null, null, false, true); ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="col">
+
+                                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                        $this->topline,
+                                        $this->headline,
+                                        $this->subline,
+                                        $this->headline_type,
+                                        null,
+                                        null,
+                                        false,
+                                        null
+                                    ); ?>
+
+
+                                <?php if ($this->progress_amount): ?>
+                                    <div class="modal--progress mb-3" data-aos="animate__fadeInUp">
+                                        <?php if ($this->progress_image): ?>
+                                            <div class="progressbar--images">
+                                                <?php for ($i = 0; $i <= $this->progress_amount; $i++) : ?>
+                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->progress_image, null, $this->headline, null, null, false, true); ?>
+                                                <?php endfor; ?>
+                                            </div>
+                                        <?php else: ?>
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                                     role="progressbar"
+                                                     aria-valuenow="<?php echo $this->progress_amount; ?>"
+                                                     aria-valuemin="0"
+                                                     aria-valuemax="100"
+                                                     style="width: <?php echo $this->progress_amount; ?>%"></div>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($this->text): ?>
+                                    <div class="modal--text">
+                                        <?php echo $this->text; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php if ($this->buttons[0]->link_text != "" || $this->show_footer_close) : ?>
+                    <div class="modal-footer">
+                        <?php if ($this->buttons[0]->link_text != "") : ?>
+                            <div class="ce--buttons">
+                                <?php foreach ($this->buttons as $b) : ?>
+                                    <a class="d-inline-block btn me-2 <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
+                                       data-aos="animate__fadeInUp"
+                                       href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
+                                <?php endforeach ?>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($this->show_footer_close && !$this->sponsors): ?>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fortfahren
+                                </button>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($this->sponsors): ?>
+                            <div class="text-end" data-aos="animate__fadeIn">
+                                <?php foreach ($this->sponsors as $s) : ?><?php if ($s->link): ?>
+                                    <a href="<?php echo $s->link; ?>" target="_blank"><?php endif; ?>
+
+                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                                        $s->image,
+                                        null, // $optionalAltText, // Optionaler Parameter: Eigener Alt-Text
+                                        $this->headline, // Optionaler Parameter: Überschrift/Headline, wird als Titel verwendet, falls keine Metadaten vorhanden sind
+                                        null, // $optionalSize, // Optionaler Parameter: Bildgröße als Array [Breite, Höhe, Modus]
+                                        'd-inline-block ms-2', // Optionaler Parameter: Eigene CSS-Klasse für das <img>-Element,
+                                        false,
+                                        false
+                                    ); ?>
+
+                                    <?php if ($s->link): ?></a><?php endif; ?><?php endforeach ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+    <script type="text/javascript">
+        window.addEventListener('DOMContentLoaded', function () {
+            var showDelay = <?php echo $this->show_delay ? $this->show_delay : 15; ?>;
+            var scrollAmount = <?php echo $this->scroll_amount ? intval($this->scroll_amount) : 700; ?>;
+            var onlyMobile = <?php echo $this->only_mobile ? 'true' : 'false'; ?>;
+            var cookieHide = <?php echo $this->cookie_hide ? 'true' : 'false'; ?>;
+            var modalShown = false;
+
+            function openModal_<?php echo $this->id; ?>() {
+                if (cookieHide && getCookie('actionModal_<?php echo $this->id; ?>')) {
+                    return;
+                }
+
+                if (!modalShown) {
+                    <?php if (!$this->initial_hidden): ?>
+                    var modal = document.querySelector('.actionModal_<?php echo $this->id; ?>');
+                    var bsModal = new bootstrap.Modal(modal);
+                    bsModal.show();
+                    modalShown = true;
+                    document.body.style.overflow = 'auto';
+                    <?php endif; ?>
+                }
+            }
+
+            function checkConditionsAndOpenModal() {
+                if (onlyMobile && window.innerWidth >= parseInt(getComputedStyle(document.documentElement).getPropertyValue('--bs-mobile-max-width'))) {
+                    return;
+                }
+                openModal_<?php echo $this->id; ?>();
+            }
+
+            setTimeout(checkConditionsAndOpenModal, showDelay * 1000);
+
+            var scrollHandler = function () {
+                if (window.pageYOffset > scrollAmount) {
+                    checkConditionsAndOpenModal();
+                    window.removeEventListener('scroll', scrollHandler);
+                }
+            };
+            window.addEventListener('scroll', scrollHandler);
+        });
+
+        <?php if ($this->cookie_hide) : ?>
+        var myActionModal = document.querySelector('.actionModal_<?php echo $this->id; ?>');
+        myActionModal.addEventListener('hidden.bs.modal', function (event) {
+            if (getCookie('cookie_basefeatures')) {
+                setCookie('actionModal_<?php echo $this->id; ?>', 'true', 7);
+            }
+            document.body.style.overflow = '';
+        });
+        <?php endif; ?>
+
+        // Hilfsfunktionen
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; secure; samesite=strict";
+        }
+    </script>
+<?php endif; ?>

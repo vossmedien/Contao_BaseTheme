@@ -319,7 +319,7 @@ if (!isset($this->size)) {
                 <div class="modal-body">
 
                     <div class="container container">
-                        <button type="button" class="btn--close" data-bs-dismiss="modal" aria-label="Schließen">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen">
                             <i class="fa-sharp fa-light fa-xmark"></i>
                         </button>
 

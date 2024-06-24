@@ -6,6 +6,9 @@
 }
 
 .btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   //--bs-btn-line-height: var(--bs-body-line-height);
   padding: var(--bs-btn-padding-top) var(--bs-btn-padding-right) var(--bs-btn-padding-bottom) var(--bs-btn-padding-left);
 
