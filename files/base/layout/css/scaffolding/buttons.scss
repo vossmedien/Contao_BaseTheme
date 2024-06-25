@@ -10,35 +10,39 @@
   justify-content: center;
   align-items: center;
   //--bs-btn-line-height: var(--bs-body-line-height);
-  padding: var(--bs-btn-padding-top) var(--bs-btn-padding-right) var(--bs-btn-padding-bottom) var(--bs-btn-padding-left);
+  padding: 0 var(--bs-btn-padding-right) 0 var(--bs-btn-padding-left);
+  min-height: 45px;
+  gap: .25rem;
+  line-height: 0;
 
   &.btn-sm {
-    padding-top: #{calc(var(--bs-btn-padding-top) * 0.75)};
+    // padding-top: #{calc(var(--bs-btn-padding-top) * 0.75)};
     padding-right: #{calc(var(--bs-btn-padding-right) * 0.75)};
-    padding-bottom: #{calc(var(--bs-btn-padding-bottom) * 0.75)};
+    // padding-bottom: #{calc(var(--bs-btn-padding-bottom) * 0.75)};
     padding-left: #{calc(var(--bs-btn-padding-left) * 0.75)};
     --bs-btn-font-size: .75rem;
+    min-height: 30px;
   }
 
   &.btn-lg {
-    padding-top: #{calc(var(--bs-btn-padding-top) * 1.25)};
+    //padding-top: #{calc(var(--bs-btn-padding-top) * 1.25)};
     padding-right: #{calc(var(--bs-btn-padding-right) * 1.25)};
-    padding-bottom: #{calc(var(--bs-btn-padding-bottom) * 1.25)};
+    //padding-bottom: #{calc(var(--bs-btn-padding-bottom) * 1.25)};
     padding-left: #{calc(var(--bs-btn-padding-left) * 1.25)};
     --bs-btn-font-size: 1.25rem;
+    min-height: 55px;
   }
 
   &.btn-xl {
-    padding-top: #{calc(var(--bs-btn-padding-top) * 1.5)};
+    //padding-top: #{calc(var(--bs-btn-padding-top) * 1.5)};
     padding-right: #{calc(var(--bs-btn-padding-right) * 1.5)};
-    padding-bottom: #{calc(var(--bs-btn-padding-bottom) * 1.5)};
+    //padding-bottom: #{calc(var(--bs-btn-padding-bottom) * 1.5)};
     padding-left: #{calc(var(--bs-btn-padding-left) * 1.5)};
     --bs-btn-font-size: 1.5rem;
+    min-height: 65px;
   }
 
-  > i {
-    margin: 0 0.25rem;
-  }
+
 
   &.btn-white {
     --bs-btn-hover-border-color: var(--bs-body-color);
@@ -88,6 +92,7 @@
   &.btn-link {
     padding: 0px;
     --bs-btn-color: var(--bs-primary);
+    min-height: 0;
 
     &:hover,
     &:focus {
@@ -97,13 +102,13 @@
 
     &.with-arrow {
       text-decoration: none;
+      --bs-btn-padding-left: 0;
 
       &:after {
         @extend %fa-icon;
         @extend #{$icon-type};
         content: fa-content($fa-var-angles-right);
         display: inline-block;
-        margin-left: rfs-value(5px);
         vertical-align: middle;
         white-space: nowrap;
         position: relative;
@@ -113,10 +118,12 @@
     }
   }
 
+
   &.btn-blank {
     --bs-btn-bg: transparent;
     border: 0px;
     padding: 0px;
+    min-height: 0;
   }
 
   &.btn-block {

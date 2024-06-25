@@ -19,7 +19,7 @@ class ButtonHelper
                 $buttonSize = $btn->link_size ?? '';
                 $buttonUrl = $btn->link_url ?? '';
                 $linkText = $btn->link_text ? htmlspecialchars_decode(htmlspecialchars($btn->link_text, ENT_QUOTES, 'UTF-8')) : '';
-                $buttonHTML .= "<a class=\"d-inline-block btn {$buttonSize} {$buttonType}\"";
+                $buttonHTML .= "<a class=\" btn {$buttonSize} {$buttonType}\"";
                 $buttonHTML .= " data-aos=\"{$animationType}\"";
                 $buttonHTML .= " href=\"{$buttonUrl}{$betreff}\"{$newTab}>{$linkText}</a>";
             }
