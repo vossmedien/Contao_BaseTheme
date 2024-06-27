@@ -76,7 +76,7 @@ html body {
         .gallery-column--initial-content {
           height: 100%;
           width: 100%;
-          padding: 3rem;
+          padding: 1rem;
           transition: all 0.3s ease;
           background-color: rgba(0, 0, 0, 0.5);
           display: flex;
@@ -87,6 +87,11 @@ html body {
           position: absolute;
           z-index: 55;
           min-height: rfs-value(350px);
+
+          @include media-breakpoint-up(md) {
+                 padding: 3rem;
+          }
+
           @include media-breakpoint-up(lg) {
             min-height: rfs-value(550px);
           }
