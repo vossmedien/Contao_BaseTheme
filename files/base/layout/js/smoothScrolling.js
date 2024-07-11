@@ -10,13 +10,20 @@ export function initializeSmoothScrolling() {
 
             let target = document.querySelector(this.getAttribute('href'));
             if (target) {
+                const scrollOffset = getCSSVariableValue('--bs-scrolloffset');
                 window.scrollTo({
-                    top: target.offsetTop,
+                    top: target.offsetTop - scrollOffset,
                     behavior: 'smooth'
                 });
             }
         });
     });
+}
+
+function getCSSVariableValue(variableName) {
+    const value = getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
+    const numericValue = parseFloat(value);
+    return isNaN(numericValue) ? 0 : numericValue;
 }
 
 /**

@@ -94,14 +94,13 @@ if (!isset($this->size)) {
                         <?php if ($dataSorted) : ?>
                             <?php
                             $length = count($dataSorted); // Anzahl der Elemente im Array
-                            $index = 0;
+
                             foreach ($dataSorted as $data) : ?>
-                                <?php if ($index < $length - 1): ?>
+
                                     <div class="swiper-slide text-center">
                                         <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, $this->headline, strip_tags($data->slide_text), $this->size, null, true, $this->open_lightbox ? $rand : ""); ?>
                                     </div>
-                                <?php endif;
-                                $index++; ?>
+
                             <?php endforeach ?>
                         <?php else : ?>
                             <?php foreach ($this->galery as $slide) : ?>
