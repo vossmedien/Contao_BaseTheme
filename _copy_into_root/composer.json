@@ -1,12 +1,13 @@
 {
   "type": "project",
   "require": {
-    "alnv/catalog-manager-bundle": "^3.0",
-    "contao/calendar-bundle": "5.3.*",
+    "alnv/catalog-manager-bundle": "^3.1",
+    "cgoit/contao-leads-optin-bundle": "^3.0",
+    "contao/calendar-bundle": "5.3.9",
     "contao/conflicts": "*@dev",
-    "contao/listing-bundle": "5.3.*",
-    "contao/manager-bundle": "5.3.*",
-    "contao/news-bundle": "5.3.*",
+    "contao/listing-bundle": "5.3.9",
+    "contao/manager-bundle": "5.3.9",
+    "contao/news-bundle": "5.3.9",
     "heimseiten/contao-custom-backend-settings-bundle": "^2.1",
     "madeyourday/contao-rocksolid-custom-elements": "^2.4",
     "oveleon/contao-component-style-manager": "^3.5",
