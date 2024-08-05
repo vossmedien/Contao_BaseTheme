@@ -46,17 +46,13 @@ html body main {
       box-shadow: $box-shadow;
       background-color: var(--bs-body-bg);
 
-
-
-
       &.is-expandable {
         transition: all .3s ease-in-out;
         max-width: calc(var(--stoerer-width) + calc(var(--stoerer-padding) * 2));
         overflow: hidden;
 
-
         &:hover, &:focus, &:focus-visible {
-          max-width: 768px;
+          max-width: var(--expanded-width, 768px);
         }
       }
 

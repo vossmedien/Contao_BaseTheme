@@ -1,1 +1,17 @@
-.ce_custom_downloads_accordion.list-only .download-element a{text-decoration:none;gap:15px}.ce_custom_downloads_accordion.with-previews i{transition:all .3s ease-in-out;font-size:calc(1.325rem + 0.9vw);color:var(--bs-primary)}@media(min-width: 1200px){.ce_custom_downloads_accordion.with-previews i{font-size:2rem}}.ce_custom_downloads_accordion.with-previews i:hover{color:var(--bs-accordion-active-color)}
+/* Error: Can't find stylesheet to import.
+ *   ,
+ * 3 | @import "../../../../_vendor/node_modules/bootstrap/scss/functions";
+ *   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *   '
+ *   ce_custom_downloads_accordion.scss 3:9  root stylesheet */
+
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: Can't find stylesheet to import.\a   \2577 \a 3 \2502  @import \"../../../../_vendor/node_modules/bootstrap/scss/functions\";\a   \2502          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\a   \2575 \a   ce_custom_downloads_accordion.scss 3:9  root stylesheet";
+}
