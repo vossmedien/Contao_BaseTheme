@@ -167,7 +167,7 @@ body:not(.start) {
   opacity: 0;
   visibility: hidden;
   box-shadow: $box-shadow;
-  z-index: 5;
+  z-index: 6;
 
   &.visible {
     opacity: 1;
@@ -207,9 +207,9 @@ body:not(.start) {
   }
 }
 
-.video_container {
-  position: relative;
-  padding-bottom: 56.25%;
+.video_container, .content-youtube {
+  position: relative !important;
+  padding-bottom: 56.25% !important;
 
   iframe,
   embed,
@@ -222,3 +222,5 @@ body:not(.start) {
     cursor: pointer;
   }
 }
+
+

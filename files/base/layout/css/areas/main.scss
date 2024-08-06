@@ -45,21 +45,16 @@ html, body, #wrapper{
 
       .content--element {
         z-index: 3;
-        &[class*="col"]:not(.ce_rsce_coloredrows, .ce_rsce_twocolimagewall) {
-          //padding-left: calc(var(--bs-gutter-x) * 0.5);
-          //padding-right: calc(var(--bs-gutter-x) * 0.5);
-        }
       }
 
       .article-content:not(:has(.moved-content)),
       .article-content > .moved-content {
         > *:not(.body-slider):not(.bgvideo) {
           position: relative;
-          //z-index: 1;
           padding-bottom: var(--main-gap);
 
           &:first-child {
-            padding-top: var(--main-gap);
+            //padding-top: var(--main-gap);
           }
         }
       }
