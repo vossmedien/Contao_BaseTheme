@@ -8,7 +8,7 @@
 html body {
   .ce_rsce_fullwidthgallery {
     .row > div {
-      overflow: hidden;
+      //overflow: hidden;
     }
 
     .gallery-column {
@@ -17,9 +17,9 @@ html body {
 
       .gallery-column--inner {
         height: 100%;
-        min-height: rfs-value(350px);
+        //min-height: rfs-value(350px);
         @include media-breakpoint-up(lg) {
-          min-height: rfs-value(550px);
+          //min-height: rfs-value(550px);
         }
 
         > a {
@@ -32,13 +32,13 @@ html body {
         }
 
         .column--image-holder {
-          position: absolute;
-          left: 0;
-          top: 0;
+          //position: absolute;
+          //left: 0;
+          //top: 0;
           transition: all 0.3s ease;
-          height: 100%;
-          width: 100%;
-          background-position: center center;
+          //height: 100%;
+          //width: 100%;
+          //background-position: center center;
         }
 
         &:hover {
@@ -51,7 +51,7 @@ html body {
           }
 
           .column--image-holder {
-            transform: scale(1.1);
+            transform: scale(1.035);
           }
         }
 
@@ -86,14 +86,14 @@ html body {
           align-items: center;
           position: absolute;
           z-index: 55;
-          min-height: rfs-value(350px);
+          //min-height: rfs-value(350px);
 
           @include media-breakpoint-up(md) {
                  padding: 3rem;
           }
 
           @include media-breakpoint-up(lg) {
-            min-height: rfs-value(550px);
+            //min-height: rfs-value(550px);
           }
 
           @include font-size(22px);
@@ -124,14 +124,12 @@ html body {
           align-items: center;
           animation-duration: .5s;
           animation-fill-mode: both;
-          position: relative;
+          position: absolute;
+          left: 0;
+          top: 0;
           z-index: 56;
-          min-height: rfs-value(350px);
+          //min-height: rfs-value(350px);
           @include font-size(22px);
-
-          @include media-breakpoint-up(lg) {
-            min-height: rfs-value(550px);
-          }
 
           .hover-content--inner {
             margin: auto;

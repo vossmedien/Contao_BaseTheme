@@ -151,7 +151,7 @@ body:not(.start) {
 .BodyScrollToTop {
   width: rfs-value(40px);
   height: rfs-value(40px);
-  line-height: rfs-value(35px);
+  line-height: rfs-value(40px);
   text-align: center;
   color: var(--bs-white);
   border: 2px solid var(--bs-primary);
@@ -175,7 +175,7 @@ body:not(.start) {
   }
 
   i {
-    line-height: 1;
+    //line-height: 1;
   }
 
   &:hover {

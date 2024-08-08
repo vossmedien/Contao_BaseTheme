@@ -1,4 +1,6 @@
-// Funktionen für Smooth Scrolling und Scroll-to-Top
+import {
+    changeAnchorLinks
+} from "./navigationHandling.js";
 
 /**
  * Funktion für sanftes Scrollen zu einem Ankerpunkt.
@@ -8,19 +10,37 @@ export function initializeSmoothScrolling() {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
 
-            let target = document.querySelector(this.getAttribute('href'));
+            const targetId = this.getAttribute('href').substring(1);
+            const target = document.getElementById(targetId);
             if (target) {
                 const scrollOffset = getCSSVariableValue('--bs-scrolloffset');
+                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - scrollOffset;
+
                 window.scrollTo({
-                    top: target.offsetTop - scrollOffset,
+                    top: targetPosition,
                     behavior: 'smooth'
                 });
+
+                // Setze den aktiven Link nach einer kurzen Verzögerung
+                setTimeout(() => {
+                    setActiveLink(this);
+                    changeAnchorLinks();
+                }, 50);
             }
         });
     });
 }
+export function setActiveLink(element) {
+    document.querySelectorAll("#mainNav .active, .onepagenavi--wrapper .active").forEach(el => {
+        el.classList.remove("active");
+    });
 
-function getCSSVariableValue(variableName) {
+    if (element) {
+        element.classList.add("active");
+    }
+}
+
+export function getCSSVariableValue(variableName) {
     const value = getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
     const numericValue = parseFloat(value);
     return isNaN(numericValue) ? 0 : numericValue;

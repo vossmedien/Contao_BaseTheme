@@ -113,6 +113,17 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
+               'size' => array(
+                    'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
+                    'inputType' => 'imageSize',
+                    'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'includeBlankOption' => true,
+                        'tl_class' => ' clr'
+                    ),
+                ),
 
         'gallery' => array(
             'label' => array('Elemente', ''),
@@ -245,17 +256,7 @@ return array(
                     ),
                 ),
 
-                'size' => array(
-                    'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
-                    'inputType' => 'imageSize',
-                    'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
-                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
-                    'eval' => array(
-                        'rgxp' => 'digit',
-                        'includeBlankOption' => true,
-                        'tl_class' => ' clr'
-                    ),
-                ),
+
 
                 'show_initial_content' => array(
                     'label' => array('Inhalt initial auf Bild anzeigen', ''),
@@ -264,6 +265,25 @@ return array(
                         '1' => 'Inhalt initial auf Bild anzeigen',
                     ),
                 ),
+
+                                   'settings_url' => array(
+                    'label' => array('Box-Einstellungen', ''),
+                    'inputType' => 'group',
+                        'eval' => array('collapsible' => true, 'collapsed' => true),
+                ),
+
+                   'box_link_type' => array(
+                    'label' => array('Verlinkung der Box', ''),
+                    'inputType' => 'radio',
+                    'options' => array(
+                        '1' => 'Ganze Box verlinken',
+                        '2' => 'Buttons anzeigen',
+                        '3' => 'Bild in Großansicht anzeigen',
+                    ),
+                    'default' => 1
+                ),
+
+
                 'show_contents' => array(
                     'label' => array('', ''),
                     'inputType' => 'checkbox',
@@ -512,15 +532,7 @@ return array(
                     ),
                 ),
 
-                'box_link_type' => array(
-                    'label' => array('Verlinkung der Box', ''),
-                    'inputType' => 'radio',
-                    'options' => array(
-                        '1' => 'Ganze Box verlinken',
-                        '2' => 'Buttons anzeigen',
-                    ),
-                    'default' => 1
-                ),
+
 
                 'link' => array(
                     'label' => array('Link', ''),

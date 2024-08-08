@@ -102,7 +102,8 @@ class ImageHelper
                 continue;
             }
 
-            if ($width !== "") {
+
+            if ($width !== "" && $width != NULL) {
                 $config->setWidth($width);
             }
 

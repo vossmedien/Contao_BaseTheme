@@ -1,8 +1,4 @@
 import {setupFunctions, resetCookies} from "./cookieManager.js";
-import {
-    changeAnchorLinks,
-    changeNavLinksAfterLoad,
-} from "./navigationHandling.js";
 
 
 const lazyLoadInstance = new LazyLoad({});
@@ -18,10 +14,7 @@ if (btn) {
 }
 
 
-window.addEventListener("scroll", changeAnchorLinks);
-if (window.location.hash) {
-    changeNavLinksAfterLoad();
-}
+
 
 
 //window.dispatchEvent(new Event("resize"));

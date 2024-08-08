@@ -98,7 +98,11 @@ if (!isset($this->size)) {
                             foreach ($dataSorted as $data) : ?>
 
                                     <div class="swiper-slide text-center">
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, $this->headline, strip_tags($data->slide_text), $this->size, null, true, $this->open_lightbox ? $rand : ""); ?>
+                                     <?php
+$slideText = is_object($data) && property_exists($data, 'slide_text') ? $data->slide_text : '';
+?>
+
+<?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, $this->headline, $slideText, $this->size, null, true, $this->open_lightbox ? $rand : ""); ?>
                                     </div>
 
                             <?php endforeach ?>

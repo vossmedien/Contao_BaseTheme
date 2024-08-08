@@ -1,10 +1,11 @@
 <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_fullwidthgallery.min.css|static';
 } ?>
+
+
+
 <div <?php echo $this->cssID; ?> class="content--element <?= $this->class; ?>">
     <div class="ce--inner">
-
-
         <?php if ($this->topline || $this->headline || $this->subline): ?>
             <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
                 $this->topline,
@@ -20,7 +21,15 @@
 
         <?php if ($this->gallery): ?>
             <div class="ce--fullwidthgallery" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php endif; ?>">
-                <div class="row gx-0">
+                <div class="row
+
+<?php if ($this->styleManager->get('spaltenabstand', ['spaltenabstaende']) && (!$this->styleManager->get('spaltenabstand', ['spaltenabstaende_x']) && !$this->styleManager->get('spaltenabstand', ['spaltenabstaende_y']))): ?>
+ <?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende']); ?>
+<?php else: ?>
+<?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende_x']); ?> <?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende_y']); ?>
+<?php endif; ?>
+
+">
                     <style>
                         <?php foreach ($this->gallery as $x => $e) : ?>
                         .gallery-column-<?= $this->id; ?>-<?= $x; ?>:hover .gallery-column--hover-content {
@@ -44,19 +53,30 @@
                         <?php endforeach; ?>
                     </style>
 
-                    <?php foreach ($this->gallery as $x => $e) : ?>
+                    <?php
+                    $rand = uniqid();
+                    $lightboxImages = [];
+                    foreach ($this->gallery as $x => $e) :
+                        $imageUrl = VSM_HelperFunctions\ImageHelper::generateImageURL($e->image, $this->size);
+                        if ($e->box_link_type == '3') {
+                            $lightboxImages[] = [
+                                'url' => $imageUrl,
+                                'title' => $e->hover_headline ?: $e->headline
+                            ];
+                        }
+                    ?>
                         <div class="<?= $e->column_width; ?> <?php if ($e->show_contents): ?>has-hovercontent<?php endif; ?>"
                              data-aos="<?php if ($e->animation_type) : ?><?php echo $e->animation_type; ?><?php endif; ?>">
                             <div class="gallery-column gallery-column-<?= $this->id; ?>-<?= $x; ?>">
-
                                 <div class="gallery-column--inner">
+                                    <div class="column--image-holder">
+                                         <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($e->image, null, $e->headline, $this->size, null, false, false); ?>
+                                    </div>
 
-                                    <div data-bg="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($e->image, $e->size); ?>"
-                                         style="background-size: cover; background-repeat: no-repeat;"
-                                         class="lazy column--image-holder"></div>
-
-                                    <?php if ($e->link): ?>
+                                    <?php if ($e->box_link_type == '1' && $e->link): ?>
                                         <a href="<?= $e->link; ?>"></a>
+                                    <?php elseif ($e->box_link_type == '3'): ?>
+                                        <a href="<?= $imageUrl; ?>" class="lightbox_<?= $rand; ?>" data-gall="gallery_<?= $rand; ?>" title="<?= htmlspecialchars($e->hover_headline ?: $e->headline); ?>"></a>
                                     <?php endif; ?>
 
                                     <?php if ($e->show_initial_content): ?>
@@ -76,18 +96,16 @@
                                         </div>
                                     <?php endif; ?>
 
-                                    <?php if ($e->desc || $e->hover_topline || $e->hover_headline || $e->hover_subline || $e->buttons): ?>
+                                    <?php if ($e->desc || $e->hover_topline || $e->hover_headline || $e->hover_subline || ($e->box_link_type == '2' && $e->buttons)): ?>
                                         <?php if ($this->show_icon): ?>
                                             <div class="hover-content--info-icon">
                                                 <i class="fa-sharp fa-light fa-info"></i>
                                             </div>
                                         <?php endif; ?>
 
-
                                         <div class="gallery-column--hover-content  <?= $e->hover_textalign; ?>" style="
                                         <?php if ($e->hover_background_color): ?>background-color: <?= $e->hover_background_color; ?>;<?php endif; ?>
                                         <?php if ($e->hover_text_color): ?>color: <?= $e->hover_text_color; ?>;<?php endif; ?>">
-
                                             <div class="hover-content--inner">
                                                 <?php if ($e->hover_topline || $e->hover_headline || $e->hover_subline): ?>
                                                     <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
@@ -106,7 +124,7 @@
                                                     <?= $e->desc; ?>
                                                 <?php endif; ?>
 
-                                                <?php if ($e->buttons): ?>
+                                                <?php if ($e->box_link_type == '2' && $e->buttons): ?>
                                                     <div class="button-wrapper">
                                                         <?php foreach ($e->buttons as $button): ?>
                                                             <?php if ($button->link_url): ?>
@@ -131,3 +149,25 @@
         <?php endif; ?>
     </div>
 </div>
+
+<?php if (!empty($lightboxImages)): ?>
+    <script type="text/javascript" defer>
+        document.addEventListener('DOMContentLoaded', function () {
+            new VenoBox({
+                selector: ".lightbox_<?= $rand;?>",
+                infinigall: true,
+                maxWidth: '95%',
+                numeration: true,
+                spinner: 'flow',
+                initialScale: 0.9,
+                transitionSpeed: 200,
+                fitView: true,
+                titlePosition: 'top',
+                titleStyle: 'block',
+                navSpeed: 300,
+                overlayColor: 'rgba(0,0,0,0.85)',
+                titleattr: 'title',
+            });
+        });
+    </script>
+<?php endif; ?>

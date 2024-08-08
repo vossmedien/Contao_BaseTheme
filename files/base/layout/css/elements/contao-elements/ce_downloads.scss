@@ -11,7 +11,7 @@
 
 
       &:hover a {
-        color: var(--bs-primary);
+        color: var(--bs-tertiary);
       }
 
       figure {
@@ -38,7 +38,7 @@
             @extend #{$icon-type};
             content: fa-content($fa-var-download);
             padding-right: rfs-value(5px);
-            color: var(--bs-primary);
+
           }
         }
       }

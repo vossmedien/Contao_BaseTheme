@@ -28,7 +28,7 @@ window.addEventListener("load", function (event) {
     function updateNavPosition() {
         if (!divElement) return;
 
-        var currentDivOffset = divElement.getBoundingClientRect().top + window.pageYOffset;
+
 
         if (!isMobile && window.pageYOffset >= initialDivOffset && !divElement.classList.contains('is-scrolling')) {
             divElement.classList.add('is-scrolling');

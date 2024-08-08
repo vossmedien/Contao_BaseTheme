@@ -7,6 +7,10 @@ import {
     adjustTableResponsive,
 } from "./classStyleManipulation.js";
 import {addPlaceholders} from "./floatingLabels.js";
+import {
+    changeAnchorLinks,
+    changeNavLinksAfterLoad,
+} from "./navigationHandling.js";
 
 const scrollFunctions = [];
 const loadFunctions = [];
@@ -195,12 +199,17 @@ DomLoadFunctions.push(loadSearchParams);
 
 DomLoadFunctions.push(setSwitchingcardsHeight);
 DomLoadFunctions.push(initializeSmoothScrolling);
+DomLoadFunctions.push(changeNavLinksAfterLoad);
 DomLoadFunctions.push(scrollToTop);
 DomLoadFunctions.push(setupFunctions);
 DomLoadFunctions.push(initializeMarginAdjustments);
 DomLoadFunctions.push(addBootstrapClasses);
 DomLoadFunctions.push(adjustTableResponsive);
 DomLoadFunctions.push(addPlaceholders);
+
+
+scrollFunctions.push(changeAnchorLinks);
+
 
 function executeScrollFunctions() {
     scrollFunctions.forEach((func) => func());
