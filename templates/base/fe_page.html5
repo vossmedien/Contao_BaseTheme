@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html  lang="<?= $this->language ?>"<?php if ($this->isRTL): ?> dir="rtl"<?php endif; ?>>
+<html lang="<?= $this->language ?>"<?php if ($this->isRTL): ?> dir="rtl"<?php endif; ?>>
 <head>
     <?php $this->block('head'); ?>
     <meta charset="<?= $this->charset ?>">
@@ -20,8 +20,8 @@
 
     <?= $this->framework ?>
     <?= $this->stylesheets ?>
-     <!-- Preload critical CSS -->
-    <link rel="preload" href="files/base/layout/css/style.min.css" as="style" >
+    <!-- Preload critical CSS -->
+    <link rel="preload" href="files/base/layout/css/style.min.css" as="style">
     <link rel="stylesheet" href="files/base/layout/css/style.min.css">
 
     <?= $this->mooScripts ?>
@@ -33,19 +33,21 @@
 <?php $this->block('body'); ?>
 <?php $this->sections('top'); ?>
 
-<div id="wrapper" >
+<div id="wrapper">
     <?php $this->block('header'); ?>
+    <!-- indexer::stop -->
     <?php if ($this->header): ?>
         <header id="header">
             <?= $this->header ?>
         </header>
     <?php endif; ?>
+    <!-- indexer::continue -->
     <?php $this->endblock(); ?>
 
     <?php $this->sections('before'); ?>
 
     <?php $this->block('container'); ?>
-    <div id="container"  class="<?php if ($this->left) : ?>with--left-col<?php endif; ?> <?php if ($this->right) : ?>with--right-col<?php endif; ?>">
+    <div id="container" class="<?php if ($this->left) : ?>with--left-col<?php endif; ?> <?php if ($this->right) : ?>with--right-col<?php endif; ?>">
         <?php if ($this->left || $this->right) : ?>
         <div class="pt-md-3 pb-3 container"><?php endif; ?>
             <div class="row">
@@ -60,8 +62,8 @@
                 <?php $this->endblock(); ?>
 
                 <?php $this->block('main'); ?>
-                <main id="main" class="col col-md-12" >
-                    <div class="main-content" >
+                <main id="main" class="col col-md-12">
+                    <div class="main-content">
                         <?= $this->main ?>
                     </div>
                     <?php $this->sections('main'); ?>
@@ -87,11 +89,13 @@
     <?php $this->sections('after'); ?>
 
     <?php $this->block('footer'); ?>
+    <!-- indexer::stop -->
     <?php if ($this->footer): ?>
         <footer id="footer">
             <?= $this->footer ?>
         </footer>
     <?php endif; ?>
+    <!-- indexer::continue -->
     <?php $this->endblock(); ?>
 </div>
 

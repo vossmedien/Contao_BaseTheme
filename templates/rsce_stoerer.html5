@@ -49,7 +49,7 @@ if (!empty($styles)) {
     echo "<style>$styles</style>";
 }
 ?>
-
+<!-- indexer::stop -->
 <div <?php echo $this->cssID; ?> class="<?php if ($this->is_fixed): ?>is-fixed<?php endif; ?> content--element <?php echo str_replace("container", "", $this->class) . $additionalClasses; ?>"
                                  style="<?php
                                  echo(!empty($this->alternate_top_position) ? 'top: ' . $this->alternate_top_position . '; ' : '');
@@ -126,3 +126,4 @@ if (!empty($styles)) {
 
     <?php     $counterElements++; endforeach; ?>
 </div>
+<!-- indexer::continue -->
