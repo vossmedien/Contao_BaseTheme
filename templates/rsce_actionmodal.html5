@@ -3,7 +3,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_actionmodal.min.css|static';
 }
 ?>
-
+    <!-- indexer::stop -->
     <div class="<?php echo $this->cssID; ?> modal <?php echo $this->class; ?> actionModal_<?php echo $this->id; ?>" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog <?php echo $this->modal_size; ?> modal-dialog-centered"
              data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
@@ -104,16 +104,16 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                             <div class="col">
 
-                                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                                        $this->topline,
-                                        $this->headline,
-                                        $this->subline,
-                                        $this->headline_type,
-                                        null,
-                                        null,
-                                        false,
-                                        null
-                                    ); ?>
+                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                    $this->topline,
+                                    $this->headline,
+                                    $this->subline,
+                                    $this->headline_type,
+                                    null,
+                                    null,
+                                    false,
+                                    null
+                                ); ?>
 
 
                                 <?php if ($this->progress_amount): ?>
@@ -186,6 +186,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
             </div>
         </div>
     </div><?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+    <!-- indexer::continue -->
+
     <script type="text/javascript">
         window.addEventListener('DOMContentLoaded', function () {
             var openingType = '<?php echo $this->opening_type; ?>';
@@ -218,7 +220,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 openModal_<?php echo $this->id; ?>();
             }
 
-            switch(openingType) {
+            switch (openingType) {
                 case 'after_time':
                     if (showDelay !== null) {
                         setTimeout(checkConditionsAndOpenModal, showDelay * 1000);
