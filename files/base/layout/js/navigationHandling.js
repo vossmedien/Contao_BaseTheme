@@ -15,30 +15,36 @@ export function changeAnchorLinks() {
 
     let activeLink = null;
 
-    // Check if scrolled close to the bottom
+    // Überprüfen, ob nahe am unteren Rand gescrollt wurde
     if (scrollPos + windowHeight > documentHeight - 50) {
-        const lastLink = links[links.length - 1];
-        const lastLinkHref = lastLink.getAttribute("href");
-        const lastElementId = lastLinkHref.split('#')[1];
-        const lastElement = document.getElementById(lastElementId);
+        if (links.length > 0) {
+            const lastLink = links[links.length - 1];
+            if (lastLink && lastLink.getAttribute("href")) {
+                const lastLinkHref = lastLink.getAttribute("href");
+                const lastElementId = lastLinkHref.split('#')[1];
+                const lastElement = document.getElementById(lastElementId);
 
-        if (lastElement) {
-            activeLink = lastLink;
+                if (lastElement) {
+                    activeLink = lastLink;
+                }
+            }
         }
     } else {
         for (let i = links.length - 1; i >= 0; i--) {
             const currElement = links[i];
-            const currLink = currElement.getAttribute("href");
-            const refElementId = currLink.split('#')[1];
-            const refElement = document.getElementById(refElementId);
+            if (currElement && currElement.getAttribute("href")) {
+                const currLink = currElement.getAttribute("href");
+                const refElementId = currLink.split('#')[1];
+                const refElement = document.getElementById(refElementId);
 
-            if (refElement) {
-                const refElementPos = refElement.getBoundingClientRect().top + window.pageYOffset - scrollOffset;
+                if (refElement) {
+                    const refElementPos = refElement.getBoundingClientRect().top + window.pageYOffset - scrollOffset;
 
-                // Check if the top of the section is visible
-                if (scrollPos >= refElementPos - 5) {
-                    activeLink = currElement;
-                    break; // Stop at the first section that is visible
+                    // Überprüfen, ob der obere Teil des Abschnitts sichtbar ist
+                    if (scrollPos >= refElementPos - 5) {
+                        activeLink = currElement;
+                        break; // Beim ersten sichtbaren Abschnitt abbrechen
+                    }
                 }
             }
         }
