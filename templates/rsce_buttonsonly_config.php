@@ -199,6 +199,12 @@ return array(
                     'label' => array('Verlinkung', 'z . B . mailto:info@domain.de'),
                     'inputType' => 'url',
                 ),
+                     'new_tab' => array(
+                    'label' => array('Link in neuen Tab öffnen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
                 'link_betreff' => array(
                     'label' => array('Betreffzeile für "mailto:" - Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
                     'inputType' => 'text',
@@ -234,6 +240,8 @@ return array(
                     ),
                     'eval' => array('tl_class' => 'w50'),
                 ),
+
+
             ),
         ),
     ),

@@ -15,6 +15,10 @@
   gap: .25rem;
   line-height:1.4;
 
+  &:has(i){
+    gap: .75rem;
+  }
+
   &.btn-sm {
     padding-top: #{calc(var(--bs-btn-padding-top) * 0.75)};
     padding-right: #{calc(var(--bs-btn-padding-right) * 0.75)};

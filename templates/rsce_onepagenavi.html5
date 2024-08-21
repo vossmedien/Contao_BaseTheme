@@ -7,7 +7,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 <!-- indexer::stop -->
 <div <?php echo $this->cssID; ?>
         class="py-0  <?php if ($this->nav_style == "style-1"): ?>p-0<?php endif; ?> <?php if ($this->smaller_containers): ?>with-smaller-containers<?php endif; ?> content--element <?php echo $this->class; ?> <?php if ($this->hide_mobile): ?>d-none d-md-block<?php endif; ?>">
-    <div data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>" class="ce--inner <?php if ($this->nav_style == "style-1"): ?><?php endif; ?>">
+    <div  class="ce--inner <?php if ($this->nav_style == "style-1"): ?><?php endif; ?>">
         <?php if ($this->urls): ?>
 
             <div <?php if ($this->nav_style == "style-1"): ?>style="float: right;"<?php endif; ?>>
