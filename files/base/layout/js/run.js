@@ -63,48 +63,37 @@ const initMobileNav = () => {
 DomLoadFunctions.push(initMobileNav);
 
 const initAnimations = () => {
-    document.querySelectorAll('*:not(html):not([data-aos])[class*="animate__"]').forEach(function (element) {
-        var classes = Array.from(element.classList)
-            .filter(function (className) {
-                return className.startsWith('animate__');
-            })
-            .join(' ');
+    // Sammle alle Elemente einmalig
+    const elements = document.querySelectorAll('*:not(html):not([data-aos])[class*="animate__"], [data-aos]');
 
-        element.classList.remove(...classes.split(' '));
-        element.setAttribute('data-aos', classes);
-    });
-
-    var elements = document.querySelectorAll('[data-aos]');
-    var observer = new IntersectionObserver(function (entries, observer) {
-        entries.forEach(function (entry) {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                var container = entry.target.parentElement;
-                var animateElements = Array.from(container.children).filter(function (element) {
-                    return element.getAttribute('data-aos') && element.getAttribute('data-aos').includes('animate__');
-                });
+                const element = entry.target;
+                const animateClass = element.getAttribute('data-aos') || Array.from(element.classList).find(cls => cls.startsWith('animate__'));
 
+                if (animateClass) {
+                    // Nutze requestAnimationFrame für flüssigere Animationen
+                    requestAnimationFrame(() => {
+                        element.classList.add(animateClass, 'animate__animated');
+                    });
 
-                animateElements.forEach(function (element, index) {
-                    var animateClass = element.getAttribute('data-aos').match(/animate__[\w-]+/)[0];
-                    //var newAnimateClass = animateClass.replace('animate-', 'animate__');
-
-                    //element.classList.remove(animateClass);
-                    element.classList.add(animateClass, 'animate__animated');
-                    element.style.animationDelay = (index * 0.2) + 's';
-                });
-
-                animateElements.forEach(function (element) {
+                    // Entferne den Observer nach der Animation
                     observer.unobserve(element);
-                });
+                }
             }
         });
-    }, {threshold: 0.25});
+    }, {threshold: 0.1, rootMargin: '50px'}); // Niedrigerer Threshold und rootMargin für früheres Triggern
 
-    elements.forEach(function (element) {
+    elements.forEach(element => {
+        if (element.classList.contains('animate__')) {
+            const animateClass = Array.from(element.classList).find(cls => cls.startsWith('animate__'));
+            element.classList.remove(animateClass);
+            element.setAttribute('data-aos', animateClass);
+        }
         observer.observe(element);
     });
 }
-
 DomLoadFunctions.push(initAnimations);
 
 
