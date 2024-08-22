@@ -199,10 +199,17 @@ return array(
                     'label' => array('Verlinkung', 'z . B . mailto:info@domain.de'),
                     'inputType' => 'url',
                 ),
-                     'new_tab' => array(
-                    'label' => array('Link in neuen Tab öffnen', ''),
-                    'inputType' => 'checkbox',
+                'new_tab' => array(
+                    'label' => array('Link-Ziel', ''),
+                    'inputType' => 'select',
                     'eval' => array('tl_class' => 'clr'),
+
+                    'options' => array(
+                        /* Fading entrances  */
+                        '' => 'Selbe Seite (Standard)',
+                        'new_tab' => 'neues Tab öffnen',
+                        'lightbox' => 'In Lightbox öffnen'
+                    )
                 ),
 
                 'link_betreff' => array(

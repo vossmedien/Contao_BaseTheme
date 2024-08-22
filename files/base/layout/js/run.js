@@ -26,20 +26,36 @@ if (form) {
 }
 
 
-function initMobileNav() {
-    // https://mmenujs.com/mmenu-light/docs.html
+const initMobileNav = () => {
     const mobileNavElement = document.querySelector("#mobileNav");
     const triggerElement = document.querySelector('a[href="#mobileNav"]');
+    const body = document.querySelector('body');
 
     if (mobileNavElement && triggerElement) {
         const menu = new MmenuLight(mobileNavElement);
 
         const navigator = menu.navigation();
-        const drawer = menu.offcanvas();
+        const drawer = menu.offcanvas({
+            position: 'right'  // Das Menü von rechts öffnen
+        });
+
 
         triggerElement.addEventListener('click', (evnt) => {
             evnt.preventDefault();
-            drawer.open();
+
+            if (body.classList.contains("mm-ocd-opened")) {
+                drawer.close();
+            } else {
+                drawer.open();
+            }
+        });
+
+        // Event-Listener für alle Menüpunkte innerhalb der Navigation hinzufügen
+        const menuItems = mobileNavElement.querySelectorAll('a');
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                drawer.close();
+            });
         });
     }
 }
@@ -91,6 +107,32 @@ const initAnimations = () => {
 
 DomLoadFunctions.push(initAnimations);
 
+
+const initVenobox = () => {
+    new VenoBox({
+        selector: 'a[href*="webm"]', //Items selector
+        infinigall: true, // Ermöglicht eine endlose Navigation durch die Galerie. Standardwert: false
+        maxWidth: '80%', // Maximale Breite des Lightbox-Fensters. Standardwert: '100%'
+        numeration: true, // Zeigt Nummerierung der aktuellen und Gesamtanzahl der Elemente in der Galerie an. Standardwert: false
+        spinner: 'flow', //  'plane' | 'chase' | 'bounce' | 'wave' | 'pulse' | 'flow' | 'swing' | 'circle' | 'circle-fade' | 'grid' | 'fold | 'wander'
+        initialScale: 0.9, // Anfangsgröße der Skalierungstransformation für Elemente. Standardwert: 0.9
+        transitionSpeed: 200, // Übergangsgeschwindigkeit für eingehende Elemente in Millisekunden. Standardwert: 500
+        fitView: true, // Passt Bilder an, um innerhalb der Höhe des Viewports zu passen. Standardwert: true
+    });
+
+
+    const lightboxLinks = document.querySelectorAll('a[href*="webm"],a[href*="mp4"]');
+
+    lightboxLinks.forEach(function (link) {
+        const href = link.getAttribute('href');
+        if (href && (href.endsWith('.mp4') || href.endsWith('.webm'))) {
+            link.setAttribute('data-autoplay', 'true');
+            link.setAttribute('data-vbtype', 'video');
+            link.setAttribute('data-ratio', 'full');
+        }
+    });
+}
+DomLoadFunctions.push(initVenobox);
 
 const rotateImage = () => {
     const images = document.querySelectorAll('.rotateImage');

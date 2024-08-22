@@ -70,7 +70,7 @@ h6, .h6 {
 
   font-size: clamp(var(--hl-font-size-min), var(--hl-font-size-scale), var(--hl-font-size-max));
 
-  > span {
+  > span:not[class] {
     display: block;
   }
 }

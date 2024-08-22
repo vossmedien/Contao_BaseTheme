@@ -181,7 +181,7 @@ if (!isset($this->size)) {
 
                                     <?php if ($ext == "mp4") : ?>
                                         <div style="height: <?php if ($this->imagearea_height): ?><?= $this->imagearea_height; ?><?php else: ?> auto<?php endif; ?>;" class="image--holder is--video <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
-                                            <video autoplay muted controls playsinline>
+                                            <video  autoplay muted controls playsinline>
                                                 <source type="video/mp4" src="{{file::<?= $box->image ?>}}">
                                             </video>
                                         </div>

@@ -32,7 +32,7 @@
 
   .container:not([class*="col"]) {
     max-width: none;
-    width: inherit;
+    width: auto;
   }
 }
 

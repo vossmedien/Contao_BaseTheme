@@ -22,27 +22,27 @@ class HeadlineHelper
 
         if ($headline || $topline || $subline) {
 
-            $headlineHTML = "<div {$headlineClassAttribute} >";
+            $headlineHTML = "<div {$headlineClassAttribute}>";
 
             if ($topline) {
                 $headlineHTML .= "<span data-aos=\"{$animationType}\" class=\"ce--topline\">";
-                $headlineHTML .= $topline;
+                $headlineHTML .= htmlspecialchars($topline, ENT_QUOTES, 'UTF-8');
                 $headlineHTML .= "</span>";
             }
 
             if (!$onlyStyle && $headline != "") {
                 $headlineHTML .= "<{$headlineType} data-aos=\"{$animationType}\" style=\"{$textColorStyle}\">";
-                $headlineHTML .= $headline;
+                $headlineHTML .= html_entity_decode($headline, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $headlineHTML .= "</{$headlineType}>";
             } elseif ($headline != "") {
                 $headlineHTML .= "<span data-aos=\"{$animationType}\" class=\"{$headlineType}\" style=\"{$textColorStyle}\">";
-                $headlineHTML .= $headline;
+                $headlineHTML .= html_entity_decode($headline, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $headlineHTML .= "</span>";
             }
 
             if ($subline) {
                 $headlineHTML .= "<span data-aos=\"{$animationType}\" class=\"ce--subline\">";
-                $headlineHTML .= $subline;
+                $headlineHTML .= htmlspecialchars($subline, ENT_QUOTES, 'UTF-8');
                 $headlineHTML .= "</span>";
             }
 

@@ -172,6 +172,7 @@ class ImageHelper
         $link = !empty($meta['link']) ? $meta['link'] : '';
         $caption = !empty($meta['caption']) ? $meta['caption'] : '';
 
+
         $linkStart = $linkEnd = '';
         if ($colorBox) {
             $linkStart = sprintf('<a title="%s" data-gall="group_%s" href="%s" class="lightbox_%s">',
@@ -182,8 +183,7 @@ class ImageHelper
             $linkEnd = '</a>';
         }
 
-        $imgTag = '<figure><picture>';
-
+        $imgTag = '<picture>';
         $imgTag .= implode("\n", $webpSources);
         $imgTag .= implode("\n", $sources);
 
@@ -195,34 +195,30 @@ class ImageHelper
 
         $imgTag .= '</picture>';
 
+        $finalOutput = '<figure>' . $imgTag;
+
         if ($inSlider) {
-            $imgTag .= '<div class="swiper-lazy-preloader"></div>';
+            $finalOutput .= '<div class="swiper-lazy-preloader"></div>';
             if ($caption) {
-                $imgTag .= '<div class="slider-caption">';
-                $imgTag .= htmlspecialchars($caption);
-                $imgTag .= '</div>';
+                $finalOutput .= '<div class="slider-caption">' . htmlspecialchars($caption) . '</div>';
             }
 
-            $imgTag = str_replace("data-src", "src", $imgTag);
-            $imgTag = str_replace('loading="lazy"', '" ', $imgTag);
+            $finalOutput = str_replace("data-src", "src", $finalOutput);
+            $finalOutput = str_replace('loading="lazy"', '', $finalOutput);
         } else {
-            if ($linkStart || $linkEnd) {
-                // If there's a link, include the figcaption inside the link
-                $imgTag = $linkStart . $imgTag . $linkEnd;
-                if ($caption) {
-                    $imgTag = str_replace($linkEnd, '<figcaption>' . htmlspecialchars($caption) . '</figcaption>' . $linkEnd, $imgTag);
-                }
-            } else {
-                // If there's no link, add the figcaption normally
-                if ($caption) {
-                    $imgTag .= '<figcaption>' . htmlspecialchars($caption) . '</figcaption>';
-                }
+            if ($caption) {
+                $finalOutput .= '<figcaption>' . htmlspecialchars($caption) . '</figcaption>';
             }
         }
 
-        $imgTag .= '</figure>';
+        $finalOutput .= '</figure>';
 
-        return $imgTag;
+// Füge den Link hinzu, wenn vorhanden
+        if ($linkStart || $linkEnd) {
+            $finalOutput = $linkStart . $finalOutput . $linkEnd;
+        }
+
+        return $finalOutput;
     }
 
     public static function generateImageURL($imageSource, $size = null)
@@ -264,5 +260,40 @@ class ImageHelper
 
         return $imageSrc;
     }
+
+
+    public static function isVideoFormat($extension)
+    {
+        $videoFormats = ['mp4', 'webm', 'ogg', 'mov']; // Fügen Sie hier weitere Videoformate hinzu, falls nötig
+        return in_array(strtolower($extension), $videoFormats);
+    }
+
+
+    public static function getFileInfo($uuid)
+    {
+        $filesModel = \Contao\FilesModel::findByUuid($uuid);
+        if ($filesModel !== null) {
+            return [
+                'filename' => $filesModel->path,
+                'ext' => pathinfo($filesModel->path, PATHINFO_EXTENSION)
+            ];
+        }
+        return ['filename' => '', 'ext' => ''];
+    }
+
+    public static function renderVideo($src, $ext, $classes = '')
+    {
+        return "<video class='lazy $classes' autoplay muted loop playsinline data-src='{{file::$src}}'>
+                    <source type='video/$ext' data-src='{{file::$src}}'>
+                </video>";
+    }
+
+    public static function cleanColor($color)
+    {
+        $search = ["&#41;", "&#40;", "(;", "&#35;", ");"];
+        $replace = [")", "(", "(", "#", ")"];
+        return str_replace($search, $replace, $color);
+    }
+
 
 }

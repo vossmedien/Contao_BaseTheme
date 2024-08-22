@@ -2,6 +2,9 @@ import {
     getCSSVariableValue, setActiveLink
 } from "./smoothScrolling.js";
 
+const links = Array.from(document.querySelectorAll(
+    '#mainNav a[href*="#"]:not(.invisible), .onepagenavi--wrapper a, #mobileNav a[href*="#"]:not(.invisible)'
+));
 
 export function changeAnchorLinks() {
     const scrollPos = window.pageYOffset;
@@ -9,9 +12,6 @@ export function changeAnchorLinks() {
     const documentHeight = document.documentElement.scrollHeight;
     const scrollOffset = getCSSVariableValue('--bs-scrolloffset');
 
-    const links = Array.from(document.querySelectorAll(
-        '#mainNav a[href*="#"]:not(.invisible), .onepagenavi--wrapper a'
-    ));
 
     let activeLink = null;
 
@@ -58,7 +58,7 @@ export function changeAnchorLinks() {
 export function changeNavLinksAfterLoad() {
     const hash = window.location.hash;
 
-    document.querySelectorAll("#mobileNav li > *, #mainNav li > *, .onepagenavi--wrapper li > *").forEach(currElement => {
+    links.forEach(currElement => {
         if (currElement.getAttribute("href") === hash) {
             setActiveLink(currElement);
         } else if (hash === '' && currElement.getAttribute("href") === "#top") {

@@ -1,0 +1,26 @@
+/* roboto-300 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../_fonts/roboto/font/roboto-v32-latin-300.eot'); /* IE9 Compat Modes */
+  src: url('../_fonts/roboto/font/roboto-v32-latin-300.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../_fonts/roboto/font/roboto-v32-latin-300.woff2') format('woff2'), /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+       url('../_fonts/roboto/font/roboto-v32-latin-300.woff') format('woff'), /* Chrome 5+, Firefox 3.6+, IE 9+, Safari 5.1+, iOS 5+ */
+       url('../_fonts/roboto/font/roboto-v32-latin-300.ttf') format('truetype'), /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+       url('../_fonts/roboto/font/roboto-v32-latin-300.svg#Roboto') format('svg'); /* Legacy iOS */
+}
+/* roboto-900 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  src: url('../_fonts/roboto/font/roboto-v32-latin-900.eot'); /* IE9 Compat Modes */
+  src: url('../_fonts/roboto/font/roboto-v32-latin-900.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../_fonts/roboto/font/roboto-v32-latin-900.woff2') format('woff2'), /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+       url('../_fonts/roboto/font/roboto-v32-latin-900.woff') format('woff'), /* Chrome 5+, Firefox 3.6+, IE 9+, Safari 5.1+, iOS 5+ */
+       url('../_fonts/roboto/font/roboto-v32-latin-900.ttf') format('truetype'), /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+       url('../_fonts/roboto/font/roboto-v32-latin-900.svg#Roboto') format('svg'); /* Legacy iOS */
+}

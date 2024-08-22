@@ -1,8 +1,7 @@
-<?php
-if (TL_MODE == 'FE') {
+
+<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()):
 $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row3sepstart.min.css|static';
-}
-?>
+endif; ?>
 
 <div class="<?php if($this->background_color):?>with-bg<?php endif;?> <?php echo $this->class; ?>">
     <?php if($this->background_color):?><span data-aos="animate__fadeIn" style="background-color: <?= $this->background_color;?>"></span><?php endif;?>

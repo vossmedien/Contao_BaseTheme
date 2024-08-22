@@ -111,6 +111,8 @@ $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/bootstrap/
 $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/venobox/dist/venobox.min.js|defer|static';
 $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/@popperjs/core/dist/umd/popper.min.js|defer|static';
 $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/swiper/swiper-bundle.min.js|defer|static';
+$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/macy/dist/macy.js|defer|static';
+$GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/_vendor/node_modules/mmenu-light/dist/mmenu-light.js|defer|static';
 
 // JavaScript am Ende von <body> hinzufügen
 $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/base.js"></script>';

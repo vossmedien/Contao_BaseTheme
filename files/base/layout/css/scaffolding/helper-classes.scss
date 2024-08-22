@@ -168,3 +168,7 @@ a.disabled-link {
 .darkened-content {
   @extend %darkened-content;
 }
+
+.invisible{
+  display: none !important;
+}

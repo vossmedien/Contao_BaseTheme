@@ -147,7 +147,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                     transform-origin: 50% 0;
                     will-change: transform;
                     backface-visibility: hidden;
-                    z-index: -1;
+                    z-index: 0;
                     filter: blur(0px);
                     object-fit: cover;
                     outline: 1px solid transparent;

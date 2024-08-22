@@ -4,7 +4,6 @@
   }
 
 
-
   --main-gap: #{clamp($basic-gutter * 0.75, 5vw, $basic-gutter * 1.5)};
 
   --bs-gray: #{$gray};
@@ -18,7 +17,7 @@
   );
 
 
-  --bs-btn-padding-top:  0.5rem;
+  --bs-btn-padding-top: 0.5rem;
   --bs-btn-padding-bottom: 0.5rem;
   --bs-btn-padding-left: 1rem;
   --bs-btn-padding-right: 1rem;
@@ -102,10 +101,9 @@
   --bs-fixed-stoerer--border-radius: 10px 0px 0px 10px;
 
 
-
   //OnePageNav
   --bs-onepage-nav--width: 250px;
---bs-onepage-nav--offset: 200px;
+  --bs-onepage-nav--offset: 200px;
   //variables-layout beachten
   --bs-container-width-sm: 540px;
   --bs-container-width-md: 720px;
@@ -127,4 +125,15 @@
 
 
   --bs-scrolloffset: 125px;
+
+
+  //MobileNav
+  --mm-ocd-min-width: 300px;
+  --mm-ocd-max-width: 400px;
+
+  --mm-ocd-width: var(--mm-ocd-min-width);
+
+  @include media-breakpoint-up(md) {
+    --mm-ocd-width: var(--mm-ocd-max-width);
+  }
 }

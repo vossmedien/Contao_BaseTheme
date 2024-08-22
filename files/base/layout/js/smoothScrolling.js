@@ -2,11 +2,14 @@ import {
     changeAnchorLinks
 } from "./navigationHandling.js";
 
+
+
+
 /**
  * Funktion für sanftes Scrollen zu einem Ankerpunkt.
  */
 export function initializeSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]:not(.reset-cookies):not(.navActivator)').forEach(anchor => {
+    document.querySelectorAll('a[href^="#"]:not(.reset-cookies,.navActivator,[href*="Nav"])').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
 
@@ -31,7 +34,7 @@ export function initializeSmoothScrolling() {
     });
 }
 export function setActiveLink(element) {
-    document.querySelectorAll("#mainNav .active, .onepagenavi--wrapper .active").forEach(el => {
+    document.querySelectorAll("ul .active").forEach(el => {
         el.classList.remove("active");
     });
 

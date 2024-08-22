@@ -6,8 +6,8 @@ if (!isset($this->size)) {
 }
 ?>
 
-    <div <?php echo $this->cssID; ?> class="content--element">
-        <div class="ce--inner <?php echo $this->class; ?>">
+    <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+        <div class="ce--inner ">
 
 
             <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
@@ -52,27 +52,6 @@ if (!isset($this->size)) {
                                 initialScale: 0.9, // Anfangsgröße der Skalierungstransformation für Elemente. Standardwert: 0.9
                                 transitionSpeed: 200, // Übergangsgeschwindigkeit für eingehende Elemente in Millisekunden. Standardwert: 500
                                 fitView: true, // Passt Bilder an, um innerhalb der Höhe des Viewports zu passen. Standardwert: true
-                                //autoplay: false, // Automatic play for videos. Standardwert: false
-                                //bgcolor: '#ffffff', // Hintergrundfarbe des Lightbox-Elements. Standardwert: '#ffffff'
-                                //border: '0px', // Dicke des Rahmens um das Lightbox-Fenster. Standardwert: '0px'
-                                //customClass: '', // Zusätzliche benutzerdefinierte Klasse für das Styling der Lightbox. Standardwert: ''
-                                //focusItem: false, // Setzt den Fokus auf das aktuelle Element nach dem Schließen der Lightbox. Standardwert: false
-                                //navigation: true, // Zeigt Navigationspfeile zur Bildnavigation an. Standardwert: true
-                                //navKeyboard: true, // Ermöglicht die Navigation mit Tastaturtasten. Standardwert: true
-                                //navTouch: true, // Ermöglicht die Navigation durch Wischen/Touch auf Touch-Geräten. Standardwert: true
-                                //navSpeed: 300, // Geschwindigkeit der Galerieübergänge in Millisekunden. Standardwert: 300
-                                //overlayClose: true, // Ermöglicht das Schließen der Lightbox durch Klicken auf den Overlay-Hintergrund. Standardwert: true
-                                //overlayColor: 'rgba(255,255,255,0.85)', // Farbe des Hintergrund-Overlays. Standardwert: 'rgba(0,0,0,0.5)'
-                                //popup: false, // Zeigt automatisch ein Popup beim Laden der Seite an. Standardwert: false
-                                //ratio: '16x9', // '1x1' | '4x3' | '16x9' | '21x9' | 'full'
-                                //share: false, // Zeigt Teilen-Buttons für Bilder und Videos an. Standardwert: false
-                                //shareStyle: 'bar', // Stil der Teilen-Buttons. Standardwert: 'bar'
-                                //spinColor: '#d2d2d2', // Farbe des Preloaders. Standardwert: '#d2d2d2'
-                                //titleattr: 'data-title', // Attribut, das für die Anzeige des Titels verwendet wird. Standardwert: 'title'
-                                //titlePosition: 'bottom', // 'top' or 'bottom'
-                                //titleStyle: 'pill', // 'block' | 'pill' | 'transparent' | 'bar'
-                                //toolsBackground: '#1C1C1C', // Hintergrundfarbe der UI-Elemente. Standardwert: '#ffffff'
-                                //toolsColor: '#d2d2d2', // Farbe der UI-Elemente. Standardwert: '#d2d2d2'
                             });
                         });
                     </script>
@@ -89,26 +68,24 @@ if (!isset($this->size)) {
                     <!-- Additional required wrapper -->
                     <div class="swiper-wrapper align-items-center">
                         <!-- Slides -->
-
-
                         <?php if ($dataSorted) : ?>
                             <?php
                             $length = count($dataSorted); // Anzahl der Elemente im Array
 
                             foreach ($dataSorted as $data) : ?>
 
-                                    <div class="swiper-slide text-center">
-                                     <?php
-$slideText = is_object($data) && property_exists($data, 'slide_text') ? $data->slide_text : '';
-?>
+                                <div class="swiper-slide text-center" data-aos="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
+                                    <?php
+                                    $slideText = is_object($data) && property_exists($data, 'slide_text') ? $data->slide_text : '';
+                                    ?>
 
-<?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, $this->headline, $slideText, $this->size, null, true, $this->open_lightbox ? $rand : ""); ?>
-                                    </div>
+                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, $this->headline, $slideText, $this->size, null, true, $this->open_lightbox ? $rand : ""); ?>
+                                </div>
 
                             <?php endforeach ?>
                         <?php else : ?>
                             <?php foreach ($this->galery as $slide) : ?>
-                                <div class="swiper-slide text-center">
+                                <div class="swiper-slide text-center" data-aos="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
                                     <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->slide, $this->headline, strip_tags($slide->slide_text), $this->size, null, true, $this->open_lightbox ? $rand : ""); ?>
                                     <?php if ($slide->slide_text) : ?>
                                         <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
@@ -132,85 +109,190 @@ $slideText = is_object($data) && property_exists($data, 'slide_text') ? $data->s
             </div>
         </div>
     </div>
+
+
 <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
-    <script type="text/javascript" defer>
+
+
+    <script type="text/javascript">
         window.addEventListener('DOMContentLoaded', function () {
-            let swiperElementCheck_<?= $this->id; ?> = document.querySelector('.swiper.content-slider_<?= $this->id; ?>');
-            if (swiperElementCheck_<?= $this->id; ?>) {
-                swiperElementCheck_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
+            let swiper_<?= $this->id; ?>;
+            let macy_<?= $this->id; ?>;
 
-
-                    direction: 'horizontal',
-
-                    loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
-                    //loopedSlides: 1,
-
-                    lazy: true,
-
-                    spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
-                    //centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
-                    //slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>1<?php endif;?>,
-
-                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
-                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
-                    'slide'<?php endif;?>,
-
-                    <?php if ($this->autoplay) : ?>
-                    autoplay: {
-                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
-                    },
-                    <?php endif; ?>
-                    autoHeight: false,
-
-                    <?php if ($this->slide_effect == "coverflow") : ?>
-                    coverflowEffect: {
-                        rotate: 50, // Slide rotate in degrees
-                        stretch: 0, // Stretch space between slides (in px)
-                        depth: 100, // Depth offset in px (slides translate in Z axis)
-                        modifier: 1, // Effect multipler
-                        slideShadows: true, // Enables slides shadows
-                    },
-                    <?php endif;?>
-
-                    <?php if ($this->slide_effect == "fade") : ?>
-                    fadeEffect: {
-                        crossFade: true
-                    },
-                    <?php endif;?>
-
-                    <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
-                    navigation: {
-                        nextEl: '.content-slider_<?= $this->id;?>.swiper-button-next',
-                        prevEl: '.content-slider_<?= $this->id;?>.swiper-button-prev',
-                    },
-
-                    pagination: {
-                        el: '.content-slider_<?php echo $this->id; ?>.swiper-pagination',
-                        clickable: true,
-                    },
-                    <?php endif; ?>
-
-
-                    <?php if ($this->slides_per_view) : ?>
-
-                    <?php if ($this->slides_per_view > 1) : ?>
-                    slidesPerView: 1.5,
-                    breakpoints: {
-                        768: {
-                            slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view / 2; ?><?php else:?>1<?php endif;?>,
-                        },
-                        992: {
-                            slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>3<?php endif;?>,
-                        }
-                    } <?php else:?>
-                    slidesPerView: 1,
-                    <?php endif;?>
-                    <?php else:?>
-                    slidesPerView: 'auto',
-                    <?php endif;?>
-
-                });
+            function loadMacy(callback) {
+                if (typeof Macy !== 'undefined') {
+                    callback();
+                } else {
+                    setTimeout(function () {
+                        loadMacy(callback);
+                    }, 50);
+                }
             }
-        }, {passive: true})
+
+            function initOrDestroySwiper() {
+                let isMobile = window.innerWidth < 768;
+                let shouldUseMacy = false;
+
+                <?php if ($this->deactivate_slider === ''): ?>
+                shouldUseMacy = false; // Immer Swiper verwenden
+                <?php elseif ($this->deactivate_slider === 'desktop'): ?>
+                shouldUseMacy = !isMobile;
+                <?php elseif ($this->deactivate_slider === 'mobile'): ?>
+                shouldUseMacy = isMobile;
+                <?php endif; ?>
+                let container = document.querySelector('.content-slider_<?= $this->id; ?>');
+
+                // Immer zuerst aufräumen
+                if (swiper_<?= $this->id; ?> && !swiper_<?= $this->id; ?>.destroyed) {
+                    swiper_<?= $this->id; ?>.destroy(true, true);
+                }
+                if (macy_<?= $this->id; ?>) {
+                    macy_<?= $this->id; ?>.remove();
+                    macy_<?= $this->id; ?> = null;
+                }
+
+                // Entferne alle Klassen und setze die Struktur zurück
+                container.classList.remove('swiper', 'with-pagination', 'macy-container');
+                let items = container.querySelectorAll('.swiper-slide, .macy-item');
+                items.forEach(item => {
+                    item.classList.remove('swiper-slide', 'macy-item');
+                });
+
+                let wrapper = container.querySelector('.swiper-wrapper');
+                if (wrapper) {
+                    while (wrapper.firstChild) {
+                        container.appendChild(wrapper.firstChild);
+                    }
+                    wrapper.remove();
+                }
+
+                // Entferne Swiper-spezifische Elemente
+                let swiperElements = container.querySelectorAll('.swiper-lazy-preloader, .swiper-pagination');
+                swiperElements.forEach(el => el.remove());
+
+                if (shouldUseMacy) {
+                    // Macy Setup
+                    container.classList.add('macy-container');
+                    items.forEach(item => item.classList.add('macy-item'));
+
+
+                    <?php
+                    // Standardwerte setzen
+                    $defaultDesktopColumns = 3;
+                    $defaultMobileColumns = 2;
+
+                    // Werte aus den Feldern holen oder Standardwerte verwenden
+                    $desktopColumns = $this->masonry_spalten ?: $defaultDesktopColumns;
+                    $mobileColumns = $this->masonry_spalten_mobile ?: $defaultMobileColumns;
+                    ?>
+
+
+                    loadMacy(function () {
+                        macy_<?= $this->id; ?> = Macy({
+                            container: '.macy-container',
+                            trueOrder: true,
+                            waitForImages: true,
+                            margin: 20,
+                            columns: <?= $desktopColumns ?>,
+                            breakAt: {
+                                768: <?= $mobileColumns ?>,
+                            }
+                        });
+
+                        // Lade Bilder und berechne Layout neu
+                        let images = container.querySelectorAll('img');
+                        images.forEach(img => {
+                            if (img.src.startsWith('data:image/gif;base64')) {
+                                let sources = img.parentElement.querySelectorAll('source');
+                                if (sources.length > 0) {
+                                    img.src = sources[sources.length - 1].srcset;
+                                }
+                            }
+                            img.addEventListener('load', () => {
+                                macy_<?= $this->id; ?>.recalculate(true);
+                            });
+                        });
+                    });
+                } else {
+                    // Swiper Setup
+                    container.classList.add('swiper', 'with-pagination');
+
+                    wrapper = document.createElement('div');
+                    wrapper.classList.add('swiper-wrapper');
+                    Array.from(container.children).forEach(child => wrapper.appendChild(child));
+                    container.appendChild(wrapper);
+
+                    items.forEach(item => item.classList.add('swiper-slide'));
+
+                    let pagination = document.createElement('div');
+                    pagination.classList.add('swiper-pagination');
+                    container.appendChild(pagination);
+
+                    swiper_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
+                        // Ihre bestehende Swiper-Konfiguration hier
+
+                        direction: 'horizontal',
+                        loop: <?php echo $this->loop ? 'true' : 'false'; ?>,
+                        lazy: true,
+                        spaceBetween: <?php echo $this->space_between ?: 30; ?>,
+                        speed: <?php echo $this->transition_time ?: 1500; ?>,
+                        effect: <?php echo $this->slide_effect ? "'$this->slide_effect'" : "'slide'"; ?>,
+                        <?php if ($this->autoplay): ?>
+                        autoplay: {
+                            delay: <?php echo $this->autoplay_time ?: 3000; ?>,
+                        },
+                        <?php endif; ?>
+                        autoHeight: false,
+                        <?php if ($this->slide_effect == "coverflow"): ?>
+                        coverflowEffect: {
+                            rotate: 50,
+                            stretch: 0,
+                            depth: 100,
+                            modifier: 1,
+                            slideShadows: true,
+                        },
+                        <?php endif; ?>
+                        <?php if ($this->slide_effect == "fade"): ?>
+                        fadeEffect: {
+                            crossFade: true
+                        },
+                        <?php endif; ?>
+                        <?php if (count($this->galery) > 1 || count($dataSorted) > 1): ?>
+                        navigation: {
+                            nextEl: '.content-slider_<?= $this->id; ?>.swiper-button-next',
+                            prevEl: '.content-slider_<?= $this->id; ?>.swiper-button-prev',
+                        },
+                        pagination: {
+                            el: '.content-slider_<?php echo $this->id; ?>.swiper-pagination',
+                            clickable: true,
+                        },
+                        <?php endif; ?>
+                        <?php if ($this->slides_per_view): ?>
+                        <?php if ($this->slides_per_view > 1): ?>
+                        slidesPerView: 1.5,
+                        breakpoints: {
+                            768: {
+                                slidesPerView: <?php echo $this->slides_per_view / 2; ?>,
+                            },
+                            992: {
+                                slidesPerView: <?php echo $this->slides_per_view; ?>,
+                            }
+                        }
+                        <?php else: ?>
+                        slidesPerView: 1,
+                        <?php endif; ?>
+                        <?php else: ?>
+                        slidesPerView: 'auto',
+                        <?php endif; ?>
+                    });
+                }
+            }
+
+            // Führe die Funktion beim Laden der Seite aus
+            initOrDestroySwiper();
+
+            // Führe die Funktion bei Änderung der Fenstergröße aus
+            window.addEventListener('resize', initOrDestroySwiper);
+        });
     </script>
 <?php endif; ?>

@@ -363,13 +363,13 @@ return array(
 
 
                 'image' => array(
-                    'label' => array('Bild / Video', 'Video-Format: MP4'),
+                    'label' => array('Bild / Video', 'Video-Format: MP4/WEBM'),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,mp4,webp',
+                        'extensions' => 'jpg,jpeg,png,mp4,webm,webp',
 
                     ),
                 ),

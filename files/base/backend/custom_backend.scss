@@ -32,8 +32,9 @@
 
   &.active {
     max-height: none;
-    > h2{
-      background-color: rgba(255,255,255,.25);
+
+    > h2 {
+      background-color: rgba(255, 255, 255, .25);
     }
   }
 }
@@ -67,5 +68,12 @@ fieldset {
       font-weight: bold;
       color: var(--green);
     }
+  }
+}
+
+.cte_preview {
+  &:not(+ .limit_toggler) {
+    max-height: 150px;
+    overflow: scroll;
   }
 }

@@ -298,7 +298,8 @@ form {
     }
 
     &.widget-submit {
-      text-align: right;
+      text-align: center;
+      margin-top: 2rem;
 
       button:not(.btn) {
         @extend .btn, .btn-primary;
