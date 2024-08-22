@@ -70,26 +70,25 @@ const initAnimations = () => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 const element = entry.target;
-                const animateClass = element.getAttribute('data-aos') || Array.from(element.classList).find(cls => cls.startsWith('animate__'));
+                const animateClass = element.getAttribute('data-aos');
 
                 if (animateClass) {
-                    // Nutze requestAnimationFrame für flüssigere Animationen
                     requestAnimationFrame(() => {
                         element.classList.add(animateClass, 'animate__animated');
                     });
 
-                    // Entferne den Observer nach der Animation
                     observer.unobserve(element);
                 }
             }
         });
-    }, {threshold: 0.1, rootMargin: '50px'}); // Niedrigerer Threshold und rootMargin für früheres Triggern
+    }, {threshold: 0.1, rootMargin: '50px'});
 
     elements.forEach(element => {
-        if (element.classList.contains('animate__')) {
-            const animateClass = Array.from(element.classList).find(cls => cls.startsWith('animate__'));
-            element.classList.remove(animateClass);
-            element.setAttribute('data-aos', animateClass);
+        const animateClasses = Array.from(element.classList).filter(cls => cls.startsWith('animate__'));
+        if (animateClasses.length > 0) {
+            const animateClassString = animateClasses.join(' ');
+            element.classList.remove(...animateClasses);
+            element.setAttribute('data-aos', animateClassString);
         }
         observer.observe(element);
     });
