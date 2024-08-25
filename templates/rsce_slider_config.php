@@ -248,7 +248,7 @@ return array(
         'settings_design' => array(
             'label' => array('Darstellungs-Einstellungen', ''),
             'inputType' => 'group',
-             'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'clr'),
         ),
 
         'style_type' => array(
@@ -320,7 +320,21 @@ return array(
         'slides_per_view' => array(
             'label' => array('Wie viele Slides sind sichtbar', 'Beispielsweise 1.5 um rechts und links eine Vorschau des nächsten Slides anzuzeigen'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array(
+                'tl_class' => 'w50',
+                'rgxp' => 'digit', // Erlaubt nur Zahlen
+                'maxlength' => 2   // Begrenzt die Eingabe auf maximal 2 Ziffern
+            ),
+        ),
+
+        'slides_per_view_mobile' => array(
+            'label' => array('Wie viele Slides sind sichtbar (mobile)', 'Standard: 1'),
+            'inputType' => 'text',
+            'eval' => array(
+                'tl_class' => 'w50',
+                'rgxp' => 'digit', // Erlaubt nur Zahlen
+                'maxlength' => 2   // Begrenzt die Eingabe auf maximal 2 Ziffern
+            ),
         ),
 
 

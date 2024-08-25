@@ -113,186 +113,204 @@ if (!isset($this->size)) {
 
 <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
 
+<script type="text/javascript">
+window.addEventListener('DOMContentLoaded', function () {
+    let swiper_<?= $this->id; ?>;
+    let macy_<?= $this->id; ?>;
+    let lastWidth = window.innerWidth;
 
-    <script type="text/javascript">
-        window.addEventListener('DOMContentLoaded', function () {
-            let swiper_<?= $this->id; ?>;
-            let macy_<?= $this->id; ?>;
+    function loadMacy(callback) {
+        if (typeof Macy !== 'undefined') {
+            callback();
+        } else {
+            setTimeout(function () {
+                loadMacy(callback);
+            }, 50);
+        }
+    }
 
-            function loadMacy(callback) {
-                if (typeof Macy !== 'undefined') {
-                    callback();
-                } else {
-                    setTimeout(function () {
-                        loadMacy(callback);
-                    }, 50);
-                }
+    function initOrDestroySwiper(forceInit = false) {
+        let currentWidth = window.innerWidth;
+        let isMobile = currentWidth < 768;
+        let shouldUseMacy = false;
+
+        <?php if ($this->deactivate_slider === ''): ?>
+        shouldUseMacy = false; // Immer Swiper verwenden
+        <?php elseif ($this->deactivate_slider === 'desktop'): ?>
+        shouldUseMacy = !isMobile;
+        <?php elseif ($this->deactivate_slider === 'mobile'): ?>
+        shouldUseMacy = isMobile;
+        <?php endif; ?>
+
+        // Überprüfen, ob sich die Breite tatsächlich geändert hat oder ob eine Initialisierung erzwungen wird
+        if (!forceInit && Math.abs(currentWidth - lastWidth) < 50) {
+            return; // Keine signifikante Änderung, nicht neu initialisieren
+        }
+
+        lastWidth = currentWidth;
+
+        let container = document.querySelector('.content-slider_<?= $this->id; ?>');
+
+        // Immer zuerst aufräumen
+        if (swiper_<?= $this->id; ?> && !swiper_<?= $this->id; ?>.destroyed) {
+            swiper_<?= $this->id; ?>.destroy(true, true);
+        }
+        if (macy_<?= $this->id; ?>) {
+            macy_<?= $this->id; ?>.remove();
+            macy_<?= $this->id; ?> = null;
+        }
+
+        // Entferne alle Klassen und setze die Struktur zurück
+        container.classList.remove('swiper', 'macy-container');
+        let items = container.querySelectorAll('.swiper-slide, .macy-item');
+        items.forEach(item => {
+            item.classList.remove('swiper-slide', 'macy-item');
+        });
+
+        let wrapper = container.querySelector('.swiper-wrapper');
+        if (wrapper) {
+            while (wrapper.firstChild) {
+                container.appendChild(wrapper.firstChild);
             }
+            wrapper.remove();
+        }
 
-            function initOrDestroySwiper() {
-                let isMobile = window.innerWidth < 768;
-                let shouldUseMacy = false;
+        // Entferne Swiper-spezifische Elemente
+        let swiperElements = container.querySelectorAll('.swiper-lazy-preloader, .swiper-pagination');
+        swiperElements.forEach(el => el.remove());
 
-                <?php if ($this->deactivate_slider === ''): ?>
-                shouldUseMacy = false; // Immer Swiper verwenden
-                <?php elseif ($this->deactivate_slider === 'desktop'): ?>
-                shouldUseMacy = !isMobile;
-                <?php elseif ($this->deactivate_slider === 'mobile'): ?>
-                shouldUseMacy = isMobile;
-                <?php endif; ?>
-                let container = document.querySelector('.content-slider_<?= $this->id; ?>');
+        if (shouldUseMacy) {
+            // Macy Setup
+            container.classList.add('macy-container');
+            items.forEach(item => item.classList.add('macy-item'));
 
-                // Immer zuerst aufräumen
-                if (swiper_<?= $this->id; ?> && !swiper_<?= $this->id; ?>.destroyed) {
-                    swiper_<?= $this->id; ?>.destroy(true, true);
-                }
-                if (macy_<?= $this->id; ?>) {
-                    macy_<?= $this->id; ?>.remove();
-                    macy_<?= $this->id; ?> = null;
-                }
+            <?php
+            // Standardwerte setzen
+            $defaultDesktopColumns = 3;
+            $defaultMobileColumns = 2;
 
-                // Entferne alle Klassen und setze die Struktur zurück
-                container.classList.remove('swiper', 'with-pagination', 'macy-container');
-                let items = container.querySelectorAll('.swiper-slide, .macy-item');
-                items.forEach(item => {
-                    item.classList.remove('swiper-slide', 'macy-item');
+            // Werte aus den Feldern holen oder Standardwerte verwenden
+            $desktopColumns = $this->masonry_spalten ?: $defaultDesktopColumns;
+            $mobileColumns = $this->masonry_spalten_mobile ?: $defaultMobileColumns;
+            ?>
+
+            loadMacy(function () {
+                macy_<?= $this->id; ?> = Macy({
+                    container: '.macy-container',
+                    trueOrder: true,
+                    waitForImages: true,
+                    margin: 20,
+                    columns: <?= $desktopColumns ?>,
+                    breakAt: {
+                        768: <?= $mobileColumns ?>,
+                    }
                 });
 
-                let wrapper = container.querySelector('.swiper-wrapper');
-                if (wrapper) {
-                    while (wrapper.firstChild) {
-                        container.appendChild(wrapper.firstChild);
-                    }
-                    wrapper.remove();
-                }
-
-                // Entferne Swiper-spezifische Elemente
-                let swiperElements = container.querySelectorAll('.swiper-lazy-preloader, .swiper-pagination');
-                swiperElements.forEach(el => el.remove());
-
-                if (shouldUseMacy) {
-                    // Macy Setup
-                    container.classList.add('macy-container');
-                    items.forEach(item => item.classList.add('macy-item'));
-
-
-                    <?php
-                    // Standardwerte setzen
-                    $defaultDesktopColumns = 3;
-                    $defaultMobileColumns = 2;
-
-                    // Werte aus den Feldern holen oder Standardwerte verwenden
-                    $desktopColumns = $this->masonry_spalten ?: $defaultDesktopColumns;
-                    $mobileColumns = $this->masonry_spalten_mobile ?: $defaultMobileColumns;
-                    ?>
-
-
-                    loadMacy(function () {
-                        macy_<?= $this->id; ?> = Macy({
-                            container: '.macy-container',
-                            trueOrder: true,
-                            waitForImages: true,
-                            margin: 20,
-                            columns: <?= $desktopColumns ?>,
-                            breakAt: {
-                                768: <?= $mobileColumns ?>,
-                            }
-                        });
-
-                        // Lade Bilder und berechne Layout neu
-                        let images = container.querySelectorAll('img');
-                        images.forEach(img => {
-                            if (img.src.startsWith('data:image/gif;base64')) {
-                                let sources = img.parentElement.querySelectorAll('source');
-                                if (sources.length > 0) {
-                                    img.src = sources[sources.length - 1].srcset;
-                                }
-                            }
-                            img.addEventListener('load', () => {
-                                macy_<?= $this->id; ?>.recalculate(true);
-                            });
-                        });
-                    });
-                } else {
-                    // Swiper Setup
-                    container.classList.add('swiper', 'with-pagination');
-
-                    wrapper = document.createElement('div');
-                    wrapper.classList.add('swiper-wrapper');
-                    Array.from(container.children).forEach(child => wrapper.appendChild(child));
-                    container.appendChild(wrapper);
-
-                    items.forEach(item => item.classList.add('swiper-slide'));
-
-                    let pagination = document.createElement('div');
-                    pagination.classList.add('swiper-pagination');
-                    container.appendChild(pagination);
-
-                    swiper_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
-                        // Ihre bestehende Swiper-Konfiguration hier
-
-                        direction: 'horizontal',
-                        loop: <?php echo $this->loop ? 'true' : 'false'; ?>,
-                        lazy: true,
-                        spaceBetween: <?php echo $this->space_between ?: 30; ?>,
-                        speed: <?php echo $this->transition_time ?: 1500; ?>,
-                        effect: <?php echo $this->slide_effect ? "'$this->slide_effect'" : "'slide'"; ?>,
-                        <?php if ($this->autoplay): ?>
-                        autoplay: {
-                            delay: <?php echo $this->autoplay_time ?: 3000; ?>,
-                        },
-                        <?php endif; ?>
-                        autoHeight: false,
-                        <?php if ($this->slide_effect == "coverflow"): ?>
-                        coverflowEffect: {
-                            rotate: 50,
-                            stretch: 0,
-                            depth: 100,
-                            modifier: 1,
-                            slideShadows: true,
-                        },
-                        <?php endif; ?>
-                        <?php if ($this->slide_effect == "fade"): ?>
-                        fadeEffect: {
-                            crossFade: true
-                        },
-                        <?php endif; ?>
-                        <?php if (count($this->galery) > 1 || count($dataSorted) > 1): ?>
-                        navigation: {
-                            nextEl: '.content-slider_<?= $this->id; ?>.swiper-button-next',
-                            prevEl: '.content-slider_<?= $this->id; ?>.swiper-button-prev',
-                        },
-                        pagination: {
-                            el: '.content-slider_<?php echo $this->id; ?>.swiper-pagination',
-                            clickable: true,
-                        },
-                        <?php endif; ?>
-                        <?php if ($this->slides_per_view): ?>
-                        <?php if ($this->slides_per_view > 1): ?>
-                        slidesPerView: 1.5,
-                        breakpoints: {
-                            768: {
-                                slidesPerView: <?php echo $this->slides_per_view / 2; ?>,
-                            },
-                            992: {
-                                slidesPerView: <?php echo $this->slides_per_view; ?>,
-                            }
+                // Lade Bilder und berechne Layout neu
+                let images = container.querySelectorAll('img');
+                images.forEach(img => {
+                    if (img.src.startsWith('data:image/gif;base64')) {
+                        let sources = img.parentElement.querySelectorAll('source');
+                        if (sources.length > 0) {
+                            img.src = sources[sources.length - 1].srcset;
                         }
-                        <?php else: ?>
-                        slidesPerView: 1,
-                        <?php endif; ?>
-                        <?php else: ?>
-                        slidesPerView: 'auto',
-                        <?php endif; ?>
+                    }
+                    img.addEventListener('load', () => {
+                        macy_<?= $this->id; ?>.recalculate(true);
                     });
+                });
+            });
+        } else {
+            // Swiper Setup
+            container.classList.add('swiper');
+
+            wrapper = document.createElement('div');
+            wrapper.classList.add('swiper-wrapper');
+            Array.from(container.children).forEach(child => wrapper.appendChild(child));
+            container.appendChild(wrapper);
+
+            items.forEach(item => item.classList.add('swiper-slide'));
+
+            let pagination = document.createElement('div');
+            pagination.classList.add('swiper-pagination');
+            container.appendChild(pagination);
+
+            swiper_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
+                direction: 'horizontal',
+                loop: <?php echo $this->loop ? 'true' : 'false'; ?>,
+                lazy: true,
+                spaceBetween: <?php echo $this->space_between ?: 30; ?>,
+                speed: <?php echo $this->transition_time ?: 1500; ?>,
+                effect: <?php echo $this->slide_effect ? "'$this->slide_effect'" : "'slide'"; ?>,
+                <?php if ($this->autoplay): ?>
+                autoplay: {
+                    delay: <?php echo $this->autoplay_time ?: 3000; ?>,
+                },
+                <?php endif; ?>
+                autoHeight: false,
+                <?php if ($this->slide_effect == "coverflow"): ?>
+                coverflowEffect: {
+                    rotate: 50,
+                    stretch: 0,
+                    depth: 100,
+                    modifier: 1,
+                    slideShadows: true,
+                },
+                <?php endif; ?>
+                <?php if ($this->slide_effect == "fade"): ?>
+                fadeEffect: {
+                    crossFade: true
+                },
+                <?php endif; ?>
+                <?php if (count($this->galery) > 1 || count($dataSorted) > 1): ?>
+                navigation: {
+                    nextEl: '.content-slider_<?= $this->id; ?>.swiper-button-next',
+                    prevEl: '.content-slider_<?= $this->id; ?>.swiper-button-prev',
+                },
+                pagination: {
+                    el: '.content-slider_<?php echo $this->id; ?>.swiper-pagination',
+                    clickable: true,
+                },
+                <?php endif; ?>
+                <?php if ($this->slides_per_view): ?>
+                <?php if ($this->slides_per_view > 1): ?>
+                slidesPerView: <?= $this->slides_per_view_mobile ?? 1 ?>,
+                breakpoints: {
+                    768: {
+                        slidesPerView: <?php echo $this->slides_per_view / 2; ?>,
+                    },
+                    992: {
+                        slidesPerView: <?php echo $this->slides_per_view; ?>,
+                    }
                 }
-            }
+                <?php else: ?>
+                slidesPerView: 1,
+                <?php endif; ?>
+                <?php else: ?>
+                slidesPerView: 'auto',
+                <?php endif; ?>
+            });
+        }
+    }
 
-            // Führe die Funktion beim Laden der Seite aus
-            initOrDestroySwiper();
+    // Debounce-Funktion
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
 
-            // Führe die Funktion bei Änderung der Fenstergröße aus
-            window.addEventListener('resize', initOrDestroySwiper);
-        });
-    </script>
+    // Führe die Funktion beim Laden der Seite aus und erzwinge die Initialisierung
+    initOrDestroySwiper(true);
+
+    // Führe die Funktion bei Änderung der Fenstergröße aus, mit Debounce
+    window.addEventListener('resize', debounce(() => initOrDestroySwiper(false), 250));
+});
+</script>
 <?php endif; ?>
