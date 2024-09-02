@@ -30,10 +30,7 @@ class ButtonHelper
                         break;
                     case 'lightbox':
                         $buttonClasses .= ' lightbox';
-                        // Füge die data-Attribute für Lightbox hinzu
-                        $additionalAttributes[] = 'data-autoplay="true"';
-                        $additionalAttributes[] = 'data-vbtype="video"';
-                         $additionalAttributes[] = 'data-ratio="full"';
+
                         break;
                     default:
                         // Standardfall: Öffnen im selben Tab

@@ -73,23 +73,17 @@ if (!isset($this->size)) {
                             $length = count($dataSorted); // Anzahl der Elemente im Array
 
                             foreach ($dataSorted as $data) : ?>
-
                                 <div class="swiper-slide text-center" data-aos="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
                                     <?php
                                     $slideText = is_object($data) && property_exists($data, 'slide_text') ? $data->slide_text : '';
                                     ?>
-
                                     <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, $this->headline, $slideText, $this->size, null, true, $this->open_lightbox ? $rand : ""); ?>
                                 </div>
-
                             <?php endforeach ?>
                         <?php else : ?>
                             <?php foreach ($this->galery as $slide) : ?>
                                 <div class="swiper-slide text-center" data-aos="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->slide, $this->headline, strip_tags($slide->slide_text), $this->size, null, true, $this->open_lightbox ? $rand : ""); ?>
-                                    <?php if ($slide->slide_text) : ?>
-                                        <span class="slider-subline"><?php echo $slide->slide_text; ?></span>
-                                    <?php endif; ?>
+                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->slide, $this->headline, $slide->slide_text, $slide->size, null, true, $this->open_lightbox ? $rand : ""); ?>
                                 </div>
                             <?php endforeach ?>
 
@@ -199,7 +193,7 @@ window.addEventListener('DOMContentLoaded', function () {
                     container: '.macy-container',
                     trueOrder: true,
                     waitForImages: true,
-                    margin: 20,
+                    margin: <?php echo $this->space_between ?: 20; ?>,
                     columns: <?= $desktopColumns ?>,
                     breakAt: {
                         768: <?= $mobileColumns ?>,
@@ -239,7 +233,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 direction: 'horizontal',
                 loop: <?php echo $this->loop ? 'true' : 'false'; ?>,
                 lazy: true,
-                spaceBetween: <?php echo $this->space_between ?: 30; ?>,
+                spaceBetween: <?php echo $this->space_between ?: 20; ?>,
                 speed: <?php echo $this->transition_time ?: 1500; ?>,
                 effect: <?php echo $this->slide_effect ? "'$this->slide_effect'" : "'slide'"; ?>,
                 <?php if ($this->autoplay): ?>
@@ -274,7 +268,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 <?php endif; ?>
                 <?php if ($this->slides_per_view): ?>
                 <?php if ($this->slides_per_view > 1): ?>
-                slidesPerView: <?= $this->slides_per_view_mobile ?? 1 ?>,
+                 slidesPerView: <?= (!empty($this->slides_per_view_mobile) && is_numeric($this->slides_per_view_mobile)) ? intval($this->slides_per_view_mobile) : 1 ?>,
                 breakpoints: {
                     768: {
                         slidesPerView: <?php echo $this->slides_per_view / 2; ?>,

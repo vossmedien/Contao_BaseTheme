@@ -26,7 +26,6 @@ class ImageHelper
         $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? System::getContainer()->getParameter('kernel.default_locale');
 
         if ($imageObject = FilesModel::findByUuid($imageSource)) {
-
             $imageMeta = StringUtil::deserialize($imageObject->meta, true);
             $meta = $imageMeta[$currentLanguage] ?? reset($imageMeta) ?? [];
             $relativeImagePath = $imageObject->path;
@@ -41,7 +40,6 @@ class ImageHelper
             echo "File does not exist: $absoluteImagePath\n";
             return '';
         }
-
 
         $baseImagePath = $absoluteImagePath;
         $baseImagePath = dirname($baseImagePath) . "/" . rawurlencode(basename($baseImagePath));
@@ -68,20 +66,12 @@ class ImageHelper
                 $baseImage = $imageFactory->create($absoluteImagePath, $config);
                 $baseImagePath = $baseImage->getPath();
             } catch (\Exception $e) {
-                //echo "Error creating base image: " . $e->getMessage();
-                //echo "File: " . $e->getFile();
-                //echo "Line: " . $e->getLine();
-                //echo "Trace: " . $e->getTraceAsString();
                 return '';
             }
         }
 
-
         $maxWidth = $size[0] ?? null;
         $breakpoints = [
-            //['maxWidth' => 480, 'width' => 480],
-            //['maxWidth' => 640, 'width' => 640],
-            //['maxWidth' => 768, 'width' => 768],
             ['maxWidth' => 992, 'width' => 992],
             ['maxWidth' => 1200, 'width' => 1200],
             ['maxWidth' => 1600, 'width' => 1600],
@@ -96,12 +86,10 @@ class ImageHelper
         foreach ($breakpoints as $breakpoint) {
             $config = new ResizeConfiguration();
             $width = $breakpoint['width'];
-            //$height = isset($size[1]) ? (int)$size[1] : null;
             $mode = $size[2] ?? "proportional";
             if ($maxWidth && $width > $maxWidth) {
                 continue;
             }
-
 
             if ($width !== "" && $width != NULL) {
                 $config->setWidth($width);
@@ -114,21 +102,17 @@ class ImageHelper
             try {
                 $processedImage = $imageFactory->create($baseImagePath, $config);
                 $processedImagePath = $processedImage->getPath();
-                // Simulieren des Aufrufs des Bildes
-                $imageUrl = str_replace($rootDir, '', $processedImagePath);
                 $currentDomain = $_SERVER['HTTP_HOST'];
-                $imageUrl = 'https://' . $currentDomain . $imageUrl;
-                // Überprüfen, ob die Datei existiert
+                $imageUrl = 'https://' . $currentDomain . str_replace($rootDir, '', $processedImagePath);
+
                 if (!file_exists($processedImagePath)) {
                     $context = stream_context_create(['http' => ['timeout' => 0]]);
                     @file_get_contents($imageUrl, false, $context);
-                    //throw new \Exception("File does not exist: $processedImagePath");
                 }
 
                 $imageSrc = str_replace($rootDir, '', $processedImagePath);
                 $imageSrc = dirname($imageSrc) . '/' . rawurlencode(basename($imageSrc));
 
-                // WebP-Version generieren
                 $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $processedImagePath);
                 if (!file_exists($webpPath)) {
                     $imagineImage = $processedImage->getImagine()->open($processedImagePath);
@@ -154,8 +138,27 @@ class ImageHelper
                     $webpSources[] = "<source data-srcset=\"{$webpSrc}\" type=\"image/webp\">";
                 }
             } catch (\Exception $e) {
-                //echo "Error creating image: " . $e->getMessage();
                 continue;
+            }
+        }
+
+        $lightboxImageSrc = $imageSrc; // Default to normal image for lightbox
+
+        if ($colorBox && ($size[0] < 1200 || $size[1] < 1200)) {
+            // Generate a larger version for the lightbox
+            $lightboxConfig = new ResizeConfiguration();
+            $lightboxConfig->setWidth(1200);
+            $lightboxConfig->setHeight(1200);
+            $lightboxConfig->setMode('box'); // Keeps aspect ratio and fills the box
+
+            try {
+                $lightboxImage = $imageFactory->create($absoluteImagePath, $lightboxConfig);
+                $lightboxImagePath = $lightboxImage->getPath();
+                $lightboxImageSrc = str_replace($rootDir, '', $lightboxImagePath);
+                $lightboxImageSrc = dirname($lightboxImageSrc) . '/' . rawurlencode(basename($lightboxImageSrc));
+            } catch (\Exception $e) {
+                // Error handling if the image can't be created
+                // We keep the original image for the lightbox in this case
             }
         }
 
@@ -166,17 +169,15 @@ class ImageHelper
         }
         $lazyAttribute = $lazy ? ' loading="lazy"' : '';
 
-
         $alt = !empty($meta['alt']) ? $meta['alt'] : (!empty($meta['title']) ? $meta['title'] : (!empty($altText) ? $altText : (!empty($headline) ? $headline : '')));
         $title = !empty($meta['title']) ? $meta['title'] : (!empty($meta['caption']) ? $meta['caption'] : (!empty($headline) ? $headline : (!empty($meta['alt']) ? $meta['alt'] : (!empty($altText) ? $altText : ''))));
         $link = !empty($meta['link']) ? $meta['link'] : '';
         $caption = !empty($meta['caption']) ? $meta['caption'] : '';
 
-
         $linkStart = $linkEnd = '';
         if ($colorBox) {
             $linkStart = sprintf('<a title="%s" data-gall="group_%s" href="%s" class="lightbox_%s">',
-                htmlspecialchars($title), htmlspecialchars($colorBox), $imageSrc, htmlspecialchars($colorBox));
+                htmlspecialchars($title), htmlspecialchars($colorBox), $lightboxImageSrc, htmlspecialchars($colorBox));
             $linkEnd = '</a>';
         } elseif ($link) {
             $linkStart = sprintf('<a href="%s" title="%s">', htmlspecialchars($link), htmlspecialchars($title));
@@ -213,7 +214,6 @@ class ImageHelper
 
         $finalOutput .= '</figure>';
 
-// Füge den Link hinzu, wenn vorhanden
         if ($linkStart || $linkEnd) {
             $finalOutput = $linkStart . $finalOutput . $linkEnd;
         }
@@ -261,39 +261,6 @@ class ImageHelper
         return $imageSrc;
     }
 
-
-    public static function isVideoFormat($extension)
-    {
-        $videoFormats = ['mp4', 'webm', 'ogg', 'mov']; // Fügen Sie hier weitere Videoformate hinzu, falls nötig
-        return in_array(strtolower($extension), $videoFormats);
-    }
-
-
-    public static function getFileInfo($uuid)
-    {
-        $filesModel = \Contao\FilesModel::findByUuid($uuid);
-        if ($filesModel !== null) {
-            return [
-                'filename' => $filesModel->path,
-                'ext' => pathinfo($filesModel->path, PATHINFO_EXTENSION)
-            ];
-        }
-        return ['filename' => '', 'ext' => ''];
-    }
-
-    public static function renderVideo($src, $ext, $classes = '')
-    {
-        return "<video class='lazy $classes' autoplay muted loop playsinline data-src='{{file::$src}}'>
-                    <source type='video/$ext' data-src='{{file::$src}}'>
-                </video>";
-    }
-
-    public static function cleanColor($color)
-    {
-        $search = ["&#41;", "&#40;", "(;", "&#35;", ");"];
-        $replace = [")", "(", "(", "#", ")"];
-        return str_replace($search, $replace, $color);
-    }
 
 
 }

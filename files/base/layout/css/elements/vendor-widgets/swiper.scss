@@ -211,3 +211,8 @@ div:not(:has(.swiper)) {
   line-height: 1;
   width: auto;
 }
+
+
+.macy-container  + .swiper-pagination{
+  display: none;
+}

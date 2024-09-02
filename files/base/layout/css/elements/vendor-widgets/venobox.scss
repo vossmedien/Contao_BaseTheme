@@ -1,0 +1,23 @@
+/* Hochkant-Formate */
+.venoratio-9x16 {
+  --vb-aspect-ratio: calc(16 / 9 * 100%);
+  max-width: calc(min(var(--vbox-max-width), (100vh - 60px) * 9 / 16));
+}
+
+.venoratio-3x4 {
+  --vb-aspect-ratio: calc(4 / 3 * 100%);
+  max-width: calc(min(var(--vbox-max-width), (100vh - 60px) * 3 / 4));
+}
+
+/* Anpassung für volle Höhe bei Hochkant-Formaten */
+.vbox-fit .vbox-child.venoratio-9x16,
+.vbox-fit .vbox-child.venoratio-3x4 {
+  max-height: calc(100vh - 60px);
+  width: auto;
+}
+
+/* Zusätzliche Flexibilität für ungewöhnliche Formate */
+.venoratio-custom {
+  --vb-aspect-ratio: var(--custom-aspect-ratio, 100%);
+  max-width: var(--custom-max-width, var(--vbox-max-width));
+}

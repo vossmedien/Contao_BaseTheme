@@ -192,18 +192,6 @@ return array(
         ),
 
 
-        'size' => array(
-            'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
-            'inputType' => 'imageSize',
-            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
-            'reference' => &$GLOBALS['TL_LANG']['MSC'],
-            'eval' => array(
-                'rgxp' => 'digit',
-                'includeBlankOption' => true,
-                'tl_class' => 'clr'
-            ),
-        ),
-
         'deactivate_slider' => array(
             'label' => array('Slider deaktivieren auf...', 'Ansicht wird auf "masonry" umgestellt'),
             'inputType' => 'select',
@@ -300,6 +288,24 @@ return array(
             'options' => array(
                 'multiple' => 'Mehrere Bilder oder Ordner auswählen',
                 'single' => 'Bilder einzeln auswählen und optional Bildbeschreibung und Bildtitel hinzufügen',
+            ),
+        ),
+
+
+        'size' => array(
+            'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
+            'inputType' => 'imageSize',
+            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => 'clr'
+            ),
+
+            'dependsOn' => array(
+                'field' => 'selecttype',
+                'value' => 'multiple',
             ),
         ),
 
@@ -437,6 +443,22 @@ return array(
                 'value' => 'single',
             ),
             'fields' => array(
+
+                'size' => array(
+                    'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
+                    'inputType' => 'imageSize',
+                    'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                    'eval' => array(
+                        'rgxp' => 'digit',
+                        'includeBlankOption' => true,
+                        'tl_class' => 'clr'
+                    ),
+
+
+                ),
+
+
                 'slide' => array(
                     'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
@@ -445,12 +467,12 @@ return array(
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,svg,webp',
+                            'tl_class' => 'clr'
                     ),
                 ),
                 'slide_text' => array(
                     'label' => array('Beschreibung', ''),
-                    'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE'),
+                    'inputType' => 'text',
                 ),
             ),
         ),

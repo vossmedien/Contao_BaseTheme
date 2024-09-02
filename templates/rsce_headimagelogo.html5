@@ -1,5 +1,12 @@
 <?php
-const MAIN_SLIDER_CLASS = 'mainslider_';
+if (!defined('MAIN_SLIDER_CLASS')) {
+    define('MAIN_SLIDER_CLASS', 'mainslider_');
+} else {
+    $alternativeSliderClass = 'alt_mainslider_' . uniqid();
+}
+
+// Verwendung:
+$sliderClass = defined('MAIN_SLIDER_CLASS') ? MAIN_SLIDER_CLASS : $alternativeSliderClass;
 
 if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_headimagelogo.min.css|static';
@@ -48,10 +55,10 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
             <div class="swiper-wrapper">
                 <?php foreach ($this->slides as $key => $slide): ?>
                     <?php
-                    $mainImageInfo = VSM_HelperFunctions\ImageHelper::getFileInfo($slide->image);
-                    $mobileImageInfo = VSM_HelperFunctions\ImageHelper::getFileInfo($slide->mobile_image);
-                    $isMainVideo = VSM_HelperFunctions\ImageHelper::isVideoFormat($mainImageInfo['ext']);
-                    $isMobileVideo = !empty($mobileImageInfo['filename']) && VSM_HelperFunctions::isVideoFormat($mobileImageInfo['ext']);
+                    $mainImageInfo = VSM_HelperFunctions\BasicHelper::getFileInfo($slide->image);
+                    $mobileImageInfo = VSM_HelperFunctions\BasicHelper::getFileInfo($slide->mobile_image);
+                    $isMainVideo = VSM_HelperFunctions\VideoHelper::isVideoFormat($mainImageInfo['ext']);
+                    $isMobileVideo = !empty($mobileImageInfo['filename']) && VSM_HelperFunctions\VideoHelper::isVideoFormat($mobileImageInfo['ext']);
                     ?>
 
                     <div class="swiper-slide">
@@ -60,8 +67,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 <?php if ($slide->alternate_background_color || $slide->box_background_color): ?>
                                     <style>
                                         <?php
-                                        $altColor = VSM_HelperFunctions\ImageHelper::cleanColor($slide->alternate_background_color);
-                                        $boxColor = VSM_HelperFunctions\ImageHelper::cleanColor($slide->box_background_color);
+                                        $altColor = VSM_HelperFunctions\BasicHelper::cleanColor($slide->alternate_background_color);
+                                        $boxColor = VSM_HelperFunctions\BasicHelper::cleanColor($slide->box_background_color);
                                         ?>
 
                                         html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner:before,
@@ -94,11 +101,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                                 <div class="plain-image-holder <?= !$this->not_as_bg ? 'is-bg' : '' ?>">
                                     <?php if ($isMainVideo): ?>
-                                        <?= VSM_HelperFunctions\ImageHelper::renderVideo($slide->image, $mainImageInfo['ext'], $isMobileVideo ? 'd-none d-sm-block' : '') ?>
+                                        <?= VSM_HelperFunctions\VideoHelper::renderVideo($slide->image, $mainImageInfo['ext'], $isMobileVideo ? 'd-none d-sm-block' : '') ?>
                                     <?php endif; ?>
 
                                     <?php if ($isMobileVideo): ?>
-                                        <?= VSM_HelperFunctions\ImageHelper::renderVideo($slide->mobile_image, $mobileImageInfo['ext'], 'd-sm-none') ?>
+                                        <?= VSM_HelperFunctions\VideoHelper::renderVideo($slide->mobile_image, $mobileImageInfo['ext'], 'd-sm-none') ?>
                                     <?php endif; ?>
 
                                     <?php if (!$isMainVideo): ?>

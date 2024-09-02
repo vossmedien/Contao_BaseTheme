@@ -6,9 +6,9 @@ html body {
   -webkit-hyphens: auto;
   hyphens: auto;
   font-size: clamp(
-    var(--bs-body-font-size),
-    1vw,
-    calc(var(--bs-body-font-size) * 1.15)
+          var(--bs-body-font-size),
+          1vw,
+          calc(var(--bs-body-font-size) * 1.15)
   );
 
   *:focus,
@@ -42,11 +42,10 @@ html body {
   }
 
 
-
   a {
     transition: color 0.3s ease;
 
-    figcaption{
+    figcaption {
       color: $body-color;
     }
   }
@@ -234,8 +233,8 @@ html body {
 
   //line-height: var(--bs-body-line-height-xs);
 
-  p{
-      line-height: 1.25;
+  p {
+    line-height: 1.25;
   }
 }
 
@@ -379,3 +378,4 @@ ul[class*="list-"][class*="text-"] {
     }
   }
 }
+
