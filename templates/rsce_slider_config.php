@@ -224,7 +224,7 @@ return array(
             ),
         ),
         'masonry_spalten_mobile' => array(
-            'label' => array('Wie viele Spalten soll das Masonry-Grid standardmäßig haben', 'Standard: 2'),
+            'label' => array('Wie viele Spalten soll das Masonry-Grid auf mobile standardmäßig haben', 'Standard: 2'),
             'inputType' => 'text',
             'eval' => array(
                 'tl_class' => 'w50',

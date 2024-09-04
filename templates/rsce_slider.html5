@@ -271,10 +271,7 @@ window.addEventListener('DOMContentLoaded', function () {
                  slidesPerView: <?= (!empty($this->slides_per_view_mobile) && is_numeric($this->slides_per_view_mobile)) ? intval($this->slides_per_view_mobile) : 1 ?>,
                 breakpoints: {
                     768: {
-                        slidesPerView: <?php echo $this->slides_per_view / 2; ?>,
-                    },
-                    992: {
-                        slidesPerView: <?php echo $this->slides_per_view; ?>,
+                        slidesPerView: <?php echo $this->slides_per_view ; ?>,
                     }
                 }
                 <?php else: ?>

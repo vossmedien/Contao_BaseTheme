@@ -33,6 +33,7 @@
   .container:not([class*="col"]) {
     max-width: none;
     width: auto;
+    padding-inline: 0;
   }
 }
 
