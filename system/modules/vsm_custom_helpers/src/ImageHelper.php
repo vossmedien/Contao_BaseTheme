@@ -62,6 +62,8 @@ class ImageHelper
                 $config->setMode($mode);
             }
 
+            //$config->setPreserveColor(true);
+
             try {
                 $baseImage = $imageFactory->create($absoluteImagePath, $config);
                 $baseImagePath = $baseImage->getPath();
@@ -83,6 +85,9 @@ class ImageHelper
         $webpSources = [];
         $processedSrcsets = [];
 
+        $imagine = new \Imagine\Gd\Imagine();
+        //$imagine->setOptions(['gd.jpeg_ignore_warning' => true]);
+
         foreach ($breakpoints as $breakpoint) {
             $config = new ResizeConfiguration();
             $width = $breakpoint['width'];
@@ -98,6 +103,8 @@ class ImageHelper
             if ($mode !== "") {
                 $config->setMode($mode);
             }
+
+            //$config->setPreserveColor(true);
 
             try {
                 $processedImage = $imageFactory->create($baseImagePath, $config);
@@ -115,8 +122,11 @@ class ImageHelper
 
                 $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $processedImagePath);
                 if (!file_exists($webpPath)) {
-                    $imagineImage = $processedImage->getImagine()->open($processedImagePath);
-                    $imagineImage->save($webpPath, ['format' => 'webp']);
+                    $imagineImage = $imagine->open($processedImagePath);
+                    $imagineImage->save($webpPath, [
+                        'webp_quality' => 100,
+                        'webp_lossless' => true
+                    ]);
                 }
                 $webpSrc = str_replace($rootDir, '', $webpPath);
                 $webpSrc = dirname($webpSrc) . '/' . rawurlencode(basename($webpSrc));
@@ -150,6 +160,7 @@ class ImageHelper
             $lightboxConfig->setWidth(1200);
             $lightboxConfig->setHeight(1200);
             $lightboxConfig->setMode('box'); // Keeps aspect ratio and fills the box
+            //$lightboxConfig->setPreserveColor(true);
 
             try {
                 $lightboxImage = $imageFactory->create($absoluteImagePath, $lightboxConfig);
@@ -260,7 +271,6 @@ class ImageHelper
 
         return $imageSrc;
     }
-
 
 
 }
