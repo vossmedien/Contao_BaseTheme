@@ -23,9 +23,12 @@ function setImageWidth() {
             }
 
             if (imageZoomContainer) {
+                const rowWidth = row.offsetWidth;
+                const contentColWidth = row.querySelector('.content--col').offsetWidth;
+                const availableWidth = rowWidth - contentColWidth;
                 const imageColumnWidth = imageZoomContainer.parentElement.offsetWidth;
-                const imageImageWidth = imageColumnWidth + (isRowReverse ? gapLeft : gapRight);
-                const imageImageMoveX = isRowReverse ? -gapRight : 0;
+                const imageImageWidth = Math.min(availableWidth, imageColumnWidth + (isRowReverse ? gapLeft : gapRight));
+                const imageImageMoveX = isRowReverse ? Math.max(-gapRight, availableWidth - imageImageWidth) : 0;
 
                 imageZoomContainer.style.width = imageImageWidth + 'px';
                 imageZoomContainer.style.marginLeft = isRowReverse ? imageImageMoveX + 'px' : 'auto';

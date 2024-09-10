@@ -287,7 +287,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                     ">
 
 
-                                    <div class="<?php if ($row->image_both): ?>is-row-bg<?php endif; ?>   <?php if ($row->dont_stretch_bg): ?> no-stretch <?php endif; ?>    <?php if (!$row->not_as_bg): ?>zoom-container <?php else: ?>position-relative text-center px-2<?php endif; ?>">
+                                    <div class="<?php if ($row->image_both): ?>is-row-bg<?php endif; ?>   <?php if ($row->dont_stretch_bg): ?> no-stretch <?php endif; ?>    <?php if (!$row->not_as_bg): ?>zoom-container <?php else: ?>position-relative text-center<?php endif; ?>">
                                         <?php if ($row->kachel_right_text): ?>
                                             <div class="kachel-column-width--indicator <?php if ($row->reverse) : ?>start-0<?php else: ?>end-0<?php endif; ?> <?php if ($row->expand_right_kachel): ?>expandable<?php endif; ?>">
                                                 <div class="column-kachel--wrapper <?php echo $row->kachel_right_position; ?>  <?php if ($row->kachel_right_url): ?> with-url<?php endif; ?>">

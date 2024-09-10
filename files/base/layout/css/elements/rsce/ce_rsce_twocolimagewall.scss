@@ -8,6 +8,12 @@ html body {
   .ce_rsce_twocolimagewall {
     position: relative;
 
+    &.container {
+      .ce--imagetextwall:not(:has(.flex-row-reverse)) .content--col .content--inner {
+        padding-left: 0;
+      }
+    }
+
     .content--inner,
     .image--inner {
       padding-inline: var(--bs-container-gutter);
@@ -40,7 +46,7 @@ html body {
       &:not(:has(.flex-row-reverse)) {
         picture {
           display: flex;
-           justify-content: flex-end;
+          justify-content: flex-end;
 
 
         }
@@ -85,7 +91,8 @@ html body {
 
           .image--inner,
           .content--inner {
-            padding-block: var(--bs-basic-spacing);
+            padding-top: var(--main-gap);
+            padding-bottom: var(--bs-basic-spacing);
 
             @include media-breakpoint-down(lg) {
               //padding-top: calc(var(--bs-basic-spacing) * 0.5);
@@ -104,7 +111,7 @@ html body {
         }
 
         &.with-spacing {
-          margin-bottom: $mini-spacing;
+          margin-bottom: calc(var(--main-gap) / 2);
         }
 
         .content--inner {
