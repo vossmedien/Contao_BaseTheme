@@ -4,218 +4,192 @@ namespace Contao;
 
 if ($GLOBALS['TL_CONFIG']['useRTE']):
 
-// Use document.write() here in case TinyMCE is loaded in a subpalette (see #1424)
     ?>
-    <script>window.tinymce || document.write('<script src="<?= $this->asset('js/tinymce.min.js', 'contao-components/tinymce4') ?>">\x3C/script>')</script>
     <script>
+        {
+            const config = {
+                min_height: 336,
+                language: '<?= Backend::getTinyMceLanguage() ?>',
+                element_format: 'html',
+                document_base_url: '<?= Environment::get('base') ?>',
+                entities: '160,nbsp,60,lt,62,gt,173,shy',
+                license_key: 'gpl',
+                branding: false,
+                promotion: false,
+                skin: (document.documentElement.dataset.colorScheme === 'dark' ? 'tinymce-5-dark' : 'tinymce-5'),
+                setup: function (editor) {
+                    editor.getElement().removeAttribute('required');
+                    document.querySelectorAll('[accesskey]').forEach(function (el) {
+                        editor.addShortcut('access+' + el.accessKey, el.id, () => el.click());
+                    });
+                },
+                init_instance_callback: function (editor) {
+                    if (document.activeElement && document.activeElement.id && document.activeElement.id == editor.id) {
+                        editor.editorManager.get(editor.id).focus();
+                    }
+                    editor.on('focus', () => window.dispatchEvent(new Event('store-scroll-offset')));
+                },
 
-        function wrapParentElement(editor, classes) {
-            const selectedNode = editor.selection.getNode();
-            const parentElement = selectedNode.parentElement;
+                <?php $this->block('picker'); ?>
+                file_picker_callback: function (callback, value, meta) {
+                    Backend.openModalSelector({
+                        'id': 'tl_listing',
+                        'title': document.getElement('.tox-dialog__title').get('text'),
+                        'url': Contao.routes.backend_picker + '?context=' + (meta.filetype == 'file' ? 'link' : 'file') + '&amp;extras[fieldType]=radio&amp;extras[filesOnly]=true&amp;extras[source]=<?= $this->source ?>&amp;value=' + value + '&amp;popup=1',
+                        'callback': function (table, val) {
+                            document.getElement('.tox-dialog input')?.focus();
+                            callback(val.join(','));
+                        }
+                    });
+                },
+                file_picker_types: '<?= $this->fileBrowserTypes ?>',
+                <?php $this->endblock(); ?>
 
-            if (parentElement.tagName === 'BODY') {
-                editor.execCommand('mceInsertContent', false, '<div class="' + classes + '">' + selectedNode.outerHTML + '</div>');
-                selectedNode.remove();
-            } else {
-                const wrapper = document.createElement('div');
-                wrapper.className = classes;
-                parentElement.insertBefore(wrapper, selectedNode);
-                wrapper.appendChild(selectedNode);
-            }
+                <?php $this->block('content_css'); ?>
+                content_css: [document.documentElement.dataset.colorScheme === 'dark' ? '<?= $this->asset('tinymce-dark.css', 'system/themes/' . Backend::getTheme()) ?>' : '<?= $this->asset('tinymce.css', 'system/themes/' . Backend::getTheme()) ?>', 'files/base/layout/css/style.min.css'],
+                importcss_selector_converter: function (selector) {
+                    return false;
+                },
+                <?php $this->endblock(); ?>
+
+
+
+
+                <?php $this->block('plugins'); ?>
+                plugins: 'autosave charmap code fullscreen image importcss link lists searchreplace stripnbsp table visualblocks visualchars',
+                <?php $this->endblock(); ?>
+
+                <?php $this->block('valid_elements'); ?>
+                extended_valid_elements: 'q[cite|class|title],article,section,hgroup,figure,figcaption,i[class]/em',
+                <?php $this->endblock(); ?>
+
+                <?php $this->block('menubar'); ?>
+                menubar: 'edit insert table',
+                <?php $this->endblock(); ?>
+
+                <?php $this->block('toolbar'); ?>
+                toolbar: 'styles | bgPrimary bgSecondary | link unlink | image | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code ',
+
+                <?php $this->endblock(); ?>
+
+                <?php $this->block('contextmenu'); ?>
+                contextmenu: false,
+                <?php $this->endblock(); ?>
+
+                <?php $this->block('cache_suffix'); ?>
+                cache_suffix: '?v=<?= $this->assetVersion('js/tinymce.min.js', 'contao-components/tinymce4') ?>',
+                <?php $this->endblock(); ?>
+
+                <?php $this->block('custom'); ?>
+                <?php $this->endblock(); ?>
+
+                <?php if ($this->readonly): ?>
+                readonly: true,
+                <?php endif; ?>
+
+                browser_spellcheck: true,
+                importcss_append: true,
+
+                style_formats_merge: true,
+                style_formats: [
+                    {
+                        title: 'Schriftgrößen',
+                        items: [
+                            {
+                                title: 'Größe XXL',
+                                inline: 'span',
+                                classes: 'fs-1',
+                            },
+                            {
+                                title: 'Größe XL',
+                                inline: 'span',
+                                classes: 'fs-2',
+                            },
+                            {
+                                title: 'Größe LG',
+                                inline: 'span',
+                                classes: 'fs-3',
+                            },
+                            {
+                                title: 'Größe MD',
+                                inline: 'span',
+                                classes: 'fs-4',
+                            },
+                            {
+                                title: 'Größe SM',
+                                inline: 'span',
+                                classes: 'fs-5',
+                            },
+                            {
+                                title: 'Größe XS',
+                                inline: 'span',
+                                classes: 'fs-6',
+                            },
+                            {
+                                title: 'Kleine Schrift',
+                                inline: 'small',
+                            },
+                        ],
+                    },
+                    {
+                        title: 'Farben',
+                        items: [
+                            {title: 'Text in Hauptfarbe', inline: 'span', classes: 'text-primary'},
+                            {title: 'Text in Grau', inline: 'span', classes: 'text-gray'},
+                        ],
+                    },
+                    // Fügen Sie weitere Kategorien und Formate nach Bedarf hinzu
+                ],
+                link_class_list: [{
+                    title: 'None',
+                    value: ''
+
+                },
+                    {
+                        title: 'Haupt-Button',
+                        value: 'btn btn-primary'
+                    },
+                    {
+                        title: 'Haupt-Button (Outline)',
+                        value: 'btn btn-outline-primary'
+                    },
+                    {
+                        title: 'Sekundärer Button',
+                        value: 'btn btn-secondary'
+                    },
+                    {
+                        title: 'Sekundärer Button (Outline)',
+                        value: 'btn btn-outline-secondary'
+                    },
+                    {
+                        title: 'Tertiärer Button',
+                        value: 'btn btn-tertiary'
+                    },
+                    {
+                        title: 'Tertiärer Button (Outline)',
+                        value: 'btn btn-outline-tertiary'
+                    },
+                    {
+                        title: 'Weißer Button mit schwarzer Schrift',
+                        value: 'btn btn-white'
+                    },
+                    {
+                        title: 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                        value: 'btn btn-outline-black'
+                    },
+                    {
+                        title: 'Transparenter Button mit weißer Schrift und Rahmen',
+                        value: 'btn btn-outline-white'
+                    },
+                ]
+
+            };
+
+            // Add Stimulus data and controller reference
+            const target = document.querySelector('#<?= $this->selector ?>');
+            target.tinymceConfig = config;
+            target.setAttribute('data-action', 'turbo:before-visit@window->contao--tinymce#leave');
+            target.setAttribute('data-controller', 'contao--tinymce');
         }
-
-        window.tinymce && tinymce.init({
-            selector: '#<?= $this->selector ?>',
-            min_height: 336,
-            language: '<?= Backend::getTinyMceLanguage() ?>',
-            element_format: 'html',
-            document_base_url: '<?= Environment::get('base') ?>',
-            entities: '160,nbsp,60,lt,62,gt,173,shy',
-            branding: false,
-            promotion: false,
-            verify_html: false,
-            skin: (document.documentElement.dataset.colorScheme === 'dark' ? 'tinymce-5-dark' : 'tinymce-5'),
-            setup: (editor) => {
-                editor.getElement().removeAttribute('required');
-                document.querySelectorAll('[accesskey]').forEach((el) => {
-                    editor.addShortcut('access+' + el.accessKey, el.id, () => el.click());
-                });
-
-                editor.ui.registry.addButton('bgPrimary', {
-                    text: 'Hintergrund in Hauptfarbe',
-                    onAction: () => {
-                        wrapParentElement(editor, 'bg-primary text-white p-3 tinymce-box');
-                    }
-                });
-
-                editor.ui.registry.addButton('bgSecondary', {
-                    text: 'Hintergrund in Sekundärfarbe',
-                    onAction: () => {
-                        wrapParentElement(editor, 'bg-secondary text-white p-3 tinymce-box');
-                    }
-                });
-            },
-            init_instance_callback: function (editor) {
-                if (document.activeElement && document.activeElement.id && document.activeElement.id == editor.id) {
-                    editor.editorManager.get(editor.id).focus();
-                }
-                editor.on('focus', () => window.dispatchEvent(new Event('store-scroll-offset')));
-            },
-
-            <?php $this->block('picker'); ?>
-            file_picker_callback: function (callback, value, meta) {
-                Backend.openModalSelector({
-                    'id': 'tl_listing',
-                    'title': document.getElement('.tox-dialog__title').get('text'),
-                    'url': Contao.routes.backend_picker + '?context=' + (meta.filetype == 'file' ? 'link' : 'file') + '&amp;extras[fieldType]=radio&amp;extras[filesOnly]=true&amp;extras[source]=<?= $this->source ?>&amp;value=' + value + '&amp;popup=1',
-                    'callback': function (table, val) {
-                        document.getElement('.tox-dialog input')?.focus();
-                        callback(val.join(','));
-                    }
-                });
-            },
-            file_picker_types: '<?= $this->fileBrowserTypes ?>',
-            <?php $this->endblock(); ?>
-
-            <?php $this->block('content_css'); ?>
-            content_css: [document.documentElement.dataset.colorScheme === 'dark' ? '<?= $this->asset('tinymce-dark.css', 'system/themes/' . Backend::getTheme()) ?>' : '<?= $this->asset('tinymce.css', 'system/themes/' . Backend::getTheme()) ?>', 'files/base/layout/css/style.min.css'],
-            importcss_selector_converter: function (selector) {
-                return false;
-            },
-            <?php $this->endblock(); ?>
-
-
-            <?php $this->block('plugins'); ?>
-            plugins: 'autosave charmap code fullscreen image importcss link lists searchreplace stripnbsp table visualblocks visualchars',
-            <?php $this->endblock(); ?>
-
-            <?php $this->block('valid_elements'); ?>
-            extended_valid_elements: 'q[cite|class|title],article,section,hgroup,figure,figcaption,i[class]/em',
-            <?php $this->endblock(); ?>
-
-            <?php $this->block('menubar'); ?>
-            menubar: 'edit insert table',
-            <?php $this->endblock(); ?>
-
-            convert_urls: false,
-            relative_urls: false,
-            remove_script_host: false,
-
-
-            <?php $this->block('toolbar'); ?>
-            toolbar: 'styles | bgPrimary bgSecondary | link unlink | image | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code ',
-            <?php $this->endblock(); ?>
-            //paste_as_text: true,
-            <?php $this->block('contextmenu'); ?>
-            contextmenu: false,
-            <?php $this->endblock(); ?>
-
-            <?php $this->block('cache_suffix'); ?>
-            cache_suffix: '?v=<?= $this->assetVersion('js/tinymce.min.js', 'contao-components/tinymce4') ?>',
-            <?php $this->endblock(); ?>
-
-            <?php $this->block('custom'); ?>
-            <?php $this->endblock(); ?>
-
-            <?php if ($this->readonly): ?>
-            readonly: true,
-            <?php endif; ?>
-
-            browser_spellcheck: true,
-            importcss_append: true,
-
-            style_formats_merge: true,
-            style_formats: [
-                {
-                    title: 'Schriftgrößen',
-                    items: [
-                        {
-                            title: 'Größe XXL',
-                            inline: 'span',
-                            classes: 'fs-1',
-                        },
-                        {
-                            title: 'Größe XL',
-                            inline: 'span',
-                            classes: 'fs-2',
-                        },
-                        {
-                            title: 'Größe LG',
-                            inline: 'span',
-                            classes: 'fs-3',
-                        },
-                        {
-                            title: 'Größe MD',
-                            inline: 'span',
-                            classes: 'fs-4',
-                        },
-                        {
-                            title: 'Größe SM',
-                            inline: 'span',
-                            classes: 'fs-5',
-                        },
-                        {
-                            title: 'Größe XS',
-                            inline: 'span',
-                            classes: 'fs-6',
-                        },
-                        {
-                            title: 'Kleine Schrift',
-                            inline: 'small',
-                        },
-                    ],
-                },
-                {
-                    title: 'Farben',
-                    items: [
-                        {title: 'Text in Hauptfarbe', inline: 'span', classes: 'text-primary'},
-                        {title: 'Text in Grau', inline: 'span', classes: 'text-gray'},
-                    ],
-                },
-                // Fügen Sie weitere Kategorien und Formate nach Bedarf hinzu
-            ],
-            link_class_list: [{
-                title: 'None',
-                value: ''
-
-            },
-                {
-                    title: 'Haupt-Button',
-                    value: 'btn btn-primary'
-                },
-                {
-                    title: 'Haupt-Button (Outline)',
-                    value: 'btn btn-outline-primary'
-                },
-                {
-                    title: 'Sekundärer Button',
-                    value: 'btn btn-secondary'
-                },
-                {
-                    title: 'Sekundärer Button (Outline)',
-                    value: 'btn btn-outline-secondary'
-                },
-                {
-                    title: 'Tertiärer Button',
-                    value: 'btn btn-tertiary'
-                },
-                {
-                    title: 'Tertiärer Button (Outline)',
-                    value: 'btn btn-outline-tertiary'
-                },
-                {
-                    title: 'Weißer Button mit schwarzer Schrift',
-                    value: 'btn btn-white'
-                },
-                {
-                    title: 'Transparenter Button mit schwarzer Schrift und Rahmen',
-                    value: 'btn btn-outline-black'
-                },
-                {
-                    title: 'Transparenter Button mit weißer Schrift und Rahmen',
-                    value: 'btn btn-outline-white'
-                },
-            ]
-        });
     </script>
 <?php endif; ?>
