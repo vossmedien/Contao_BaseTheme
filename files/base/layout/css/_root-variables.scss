@@ -4,17 +4,11 @@
   }
 
 
-  --main-gap: #{clamp($basic-gutter * 0.75, 5vw, $basic-gutter * 1.5)};
+  --main-gap: #{clamp($spacer, 5vw, $spacer-lg)};
 
-  --bs-gray: #{$gray};
+  //--bs-gray: #{$gray};
 
   --bs-gradient: linear-gradient(to top, #004878, #002c50);
-
-  --bs-basic-spacing: clamp(
-          calc(#{$basic-gutter} / 2),
-          5vw,
-          calc(#{$basic-gutter} * 1.25)
-  );
 
 
   --bs-btn-padding-top: 0.5rem;
@@ -22,7 +16,7 @@
   --bs-btn-padding-left: 1rem;
   --bs-btn-padding-right: 1rem;
 
-  --bs-body-font-size: 1rem;
+  --content-box--padding: clamp(2.5rem, 5vw, 3.5rem);
 
   --bs-body-font-weight: var(--bs-font-weight-300);
 
@@ -36,39 +30,14 @@
   --bs-topline-color: var(--bs-primary);
   --bs-subline-color: var(--bs-primary);
 
-  --bs-h1-font-weight: #{$font-weight-bold};
-  --bs-h2-font-weight: #{$font-weight-bold};
-  --bs-h3-font-weight: #{$font-weight-bold};
-  --bs-h4-font-weight: #{$font-weight-bold};
-  --bs-h5-font-weight: #{$font-weight-bold};
-  --bs-h6-font-weight: #{$font-weight-bold};
 
-  --bs-topline-font-weight: #{$font-weight-black};
+  --bs-topline-font-weight: #{$font-weight-bold};
   --bs-subline-font-weight: #{$font-weight-light};
-
-  --bs-border-radius-sm: calc(var(--bs-border-radius) / 2);
-  --bs-border-radius: 10px;
-  --bs-border-radius-xl: calc(var(--bs-border-radius) * 2);
 
   --bs-box-shadow-inset-lg: inset 0px 25px 40px rgba(0, 0, 0, 0.5);
 
   --bs-border-color: var(--bs-gray-400);
 
-  --bs-header-navbar-bg: rgba(255, 255, 255, 0.9);
-  --bs-header-border-color: var(--bs-border-color);
-  --bs-header-link-color: var(--bs-body-color);
-  --bs-header-link-hover-color: var(--bs-primary);
-  --bs-header-font-weight: #{$font-weight-bold};
-  --bs-header-navbar-subnav-bg: var(--bs-secondary);
-  --bs-header-navbar-subnav-link-color: var(--bs-body-color);
-  --bs-header-navbar-subnav-hover-link-color: var(--bs-primary);
-  --bs-header-navbar-subnav-font-weight: var(--bs-body-font-weight);
-  --bs-header-minheight: 60px;
-
-  --bs-footer-top-bg: var(--bs-gray-600);
-  --bs-footer-middle-bg: var(--bs-primary);
-  --bs-footer-bottom-bg: var(--bs-black);
-  --bs-footer-color: var(--bs-body-color-inverse);
 
   --swiper-theme-color: var(--bs-primary);
   --swiper-pagination-bullet-height: 14px;
@@ -77,6 +46,7 @@
 
 
   //Inputs
+
   --bs-input-border-radius: var(--bs-border-radius);
   --bs-input-border: 1px solid var(--bs-border-color);
   --bs-input-shadow: var(--bs-base-box-shadow);
@@ -86,9 +56,6 @@
   --bs-placeholder-color: var(--bs-body-color-rgb), 0.4;
   --bs-input-height: 58px;
 
-  //Shop
-  --bs-shop-bg: var(--bs-gray-200);
-  --bs-shop-filter-bg: var(--bs-gray-100);
 
   //Stöerer
   --bs-fixed-stoerer--bg: var(--bs-white);
@@ -104,14 +71,9 @@
   //OnePageNav
   --bs-onepage-nav--width: 250px;
   --bs-onepage-nav--offset: 200px;
-  //variables-layout beachten
-  --bs-container-width-sm: 540px;
-  --bs-container-width-md: 720px;
-  --bs-container-width-lg: 960px;
-  --bs-container-width-xl: 1140px;
-  --bs-container-width-xxl: 1600px;
 
-  --bs-mobile-max-width: 767px;
+
+  --bs-mobile-max-width: 992px;
   --bs-container-gutter: 15px;
 
   // Animate on Scroll
@@ -120,7 +82,7 @@
   //--animate-repeat: 0;
   //--animate-sequence: 1;
 
-  --with-body-bg-spacing: calc(var(--bs-basic-spacing) * 1.5);
+  --with-body-bg-spacing: calc(var(--main-gap) * 1.5);
   --base-skew: -2.5deg;
 
 

@@ -5,7 +5,7 @@
   --bs-accordion-bg: transparent;
   --bs-accordion-active-bg: var(--bs-accordion-bg);
   --bs-accordion-btn-padding-x: 0;
-  --bs-accordion-btn-padding-y: 5px;
+  --bs-accordion-btn-padding-y: .75rem;
   --bs-accordion-border-width: 0px;
   --bs-accordion-body-padding-x: 0;
   --bs-accordion-body-padding-y: 1rem;
@@ -14,20 +14,23 @@
   --bs-accordion-btn-focus-box-shadow: none;
 
   .accordion-item {
+    border-bottom: 1px solid var(--bs-accordion-active-color);
 
     &:not(:last-child) {
       margin-bottom: 1rem;
     }
 
+
+    &:has(.collapsed) {
+      border-bottom-color: var(--bs-accordion-color);
+    }
+
     .accordion-header {
       --bs-accordion-btn-icon: var(--bs-accordion-btn-icon);
       --bs-accordion-btn-active-icon: var(--bs-accordion-btn-active-icon);
-      border-bottom: 1px solid var(--bs-accordion-active-color);
+
       transition: none;
 
-      &:has(.collapsed) {
-        border-bottom-color: var(--bs-accordion-color);
-      }
 
       &:after {
         display: none !important;
@@ -38,8 +41,12 @@
         //font-weight: $font-weight-bold;
         transition: none;
 
-        *{
-           transition: none;
+        * {
+          transition: none;
+        }
+
+        .ce--headline > * {
+          @extend h5;
         }
 
         &:after {

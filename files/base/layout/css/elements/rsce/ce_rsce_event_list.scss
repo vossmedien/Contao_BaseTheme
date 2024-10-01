@@ -1,0 +1,70 @@
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../scss-variables";
+
+.event-list {
+  .events {
+    .event {
+      background-color: var(--bs-light);
+      border-radius: 8px;
+      padding: clamp(1.5rem, 5vw, 2.5rem);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .event-icon {
+        flex: 0 0 auto;
+        width: 30px;
+        margin-right: 20px;
+        svg {
+          display: block;
+        }
+      }
+
+      .event-content {
+        flex: 1 1 auto;
+      }
+
+      .event-title {
+        margin-bottom: 10px;
+      }
+
+      .event-description {
+        margin-bottom: 15px;
+      }
+
+      .event-details {
+        font-size: 0.85rem;
+
+        p {
+          margin-bottom: 5px;
+          display: flex;
+          align-items: center;
+
+          svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 10px;
+            flex-shrink: 0;
+          }
+        }
+
+        .event-website {
+          a {
+            text-decoration: underline;
+
+            &:hover {
+              text-decoration: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

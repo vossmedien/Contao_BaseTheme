@@ -1,0 +1,51 @@
+<?php
+if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_services_grid.min.css|static';
+}
+?>
+
+<div <?php echo $this->cssID; ?> class="content--element services-grid">
+    <div class="ce--inner <?php echo $this->class; ?>">
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
+
+        <div class="row g-2 gy-4 " >
+            <?php foreach ($this->services as $service): ?>
+                <div class="col-12 col-md-6 service-item" data-aos="<?php echo $this->animation_type; ?>">
+                    <div class="service-inner">
+                        <a href="<?php echo $service->link; ?>" class="service-image-link">
+                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                                $service->image,
+                                null,
+                                $service->title,
+                                $this->size,
+                                'img-fluid',
+                                false,
+                                false
+                            ); ?>
+                        </a>
+
+
+                        <div class="service-content">
+
+                        <h2 class="h4 service-title">
+                            <span class="service-arrow"><i class="fasl fa-long-arrow-right"></i></span> <?php echo $service->title; ?>
+                        </h2>
+
+                        <p class="service-description"><?php echo $service->description; ?></p>
+                        <a href="<?php echo $service->link; ?>" class="service-link">Mehr erfahren +</a>
+                            </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>

@@ -8,7 +8,7 @@ html body {
   font-size: clamp(
           var(--bs-body-font-size),
           1vw,
-          calc(var(--bs-body-font-size) * 1.15)
+          calc(var(--bs-body-font-size) * 1.2)
   );
 
   *:focus,
@@ -379,3 +379,24 @@ ul[class*="list-"][class*="text-"] {
   }
 }
 
+
+// Schriftgrößen-Klassen
+.text-xs {
+  @include font-size($font-size-xs);
+}
+
+.text-sm {
+  @include font-size($font-size-sm);
+}
+
+.text-base {
+  font-size: $font-size-base !important;
+}
+
+.text-lg {
+  @include font-size($font-size-lg);
+}
+
+.text-xl {
+  @include font-size($font-size-xl);
+}

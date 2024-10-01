@@ -58,9 +58,23 @@
 }
 
 
-
 div:has([class*="text-"]):has([class*="-center"]) {
   .ce--buttons {
     justify-content: center;
+  }
+}
+
+
+
+@include media-breakpoint-up(lg) {
+  .content--element:has(.pull-bottom){
+    padding-bottom: 0 !important;
+  }
+}
+
+@include media-breakpoint-down(lg) {
+  .pulled-up-element {
+    margin-bottom: 0 !important;
+    transform: none !important;
   }
 }

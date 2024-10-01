@@ -27,14 +27,7 @@ $spacers: (
         9: 4.5rem,
         10: 5rem,
 );
-$grid-breakpoints: (
-        xs: 0,
-        sm: 576px,
-        md: 768px,
-        lg: 992px,
-        xl: 1200px,
-        xxl: 1640px,
-);
+
 $gutters: (
         0: 0,
         1: $grid-gutter-width * 0.5,
@@ -50,14 +43,55 @@ $container-max-widths: (
         md: 100%,
         lg: 100%,
         xl: 1140px,
-        xxl: 1600px,
+        xxl: 1600px
 );
 
-$font-sizes: (
-        1: $h1-font-size,
-        2: $h2-font-size,
-        3: $h3-font-size,
-        4: $h4-font-size,
-        5: $h5-font-size,
-        6: $h6-font-size,
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1640px,
 );
+
+
+
+
+$headings-font-sizes: (
+        'h1': (
+                'mobile': 32px,
+                'tablet': 46px,
+                'desktop': 61px
+        ),
+        'h2': (
+                'mobile': 29px,
+                'tablet': 39px,
+                'desktop': 49px
+        ),
+        'h3': (
+                'mobile': 26px,
+                'tablet': 32px,
+                'desktop': 39px
+        ),
+        'h4': (
+                'mobile': 23px,
+                'tablet': 27px,
+                'desktop': 31px
+        ),
+        'h5': (
+                'mobile': 20px,
+                'tablet': 22px,
+                'desktop': 25px
+        ),
+        'h6': (
+                'mobile': 18px,
+                'tablet': 19px,
+                'desktop': 20px
+        )
+);
+
+
+
+@import "_theme/map-overwrites";

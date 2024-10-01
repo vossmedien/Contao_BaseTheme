@@ -1,61 +1,90 @@
-function setImageWidth() {
-    const rows = document.querySelectorAll('.row');
-    const container = document.querySelector('.container');
-    const viewportWidth = window.innerWidth;
-    const containerWidth = container.offsetWidth;
-    const gapLeft = (viewportWidth - containerWidth) / 2;
-    const gapRight = viewportWidth - (containerWidth + gapLeft);
+document.addEventListener("DOMContentLoaded", function (event) {
+    function setImageWidth() {
+        const rows = document.querySelectorAll('.ce--imagetextwall--outer .row');
+        const container = document.querySelector('.container');
+        const wrapper = document.querySelector('#wrapper');
+        const viewportWidth = window.innerWidth;
+        const containerWidth = container.offsetWidth;
+        const wrapperWidth = wrapper.offsetWidth;
+        const wrapperMaxWidth = parseInt(window.getComputedStyle(wrapper).maxWidth) || viewportWidth;
 
-    rows.forEach(function (row) {
-        const contentZoomContainer = row.querySelector('.content--col:not(.full-width) .zoom-container');
-        const imageZoomContainer = row.querySelector('.image--col .zoom-container');
-        const isRowReverse = row.classList.contains('flex-row-reverse');
+        const effectiveWidth = Math.min(viewportWidth, wrapperMaxWidth);
+        const gapToEdge = (effectiveWidth - containerWidth) / 2;
 
-        if (window.innerWidth >= 992) {
-            if (contentZoomContainer) {
-                const contentColumnWidth = contentZoomContainer.parentElement.offsetWidth;
-                const contentImageWidth = contentColumnWidth + (isRowReverse ? gapRight : gapLeft);
-                const contentImageMoveX = isRowReverse ? 0 : -gapLeft;
+        rows.forEach(function (row) {
+            const contentCol = row.querySelector('.content--col');
+            const contentZoomContainer = contentCol ? contentCol.querySelector('.zoom-container') : null;
+            const imageCol = row.querySelector('.image--col');
+            const imageZoomContainer = imageCol ? imageCol.querySelector('.zoom-container') : null;
+            const isRowReverse = row.classList.contains('flex-row-reverse');
 
-                contentZoomContainer.style.width = contentImageWidth + 'px';
-                contentZoomContainer.style.marginLeft = isRowReverse ? 'auto' : contentImageMoveX + 'px';
-                contentZoomContainer.style.marginRight = isRowReverse ? contentImageMoveX + 'px' : 'auto';
+            if (window.innerWidth >= 992) {
+                if (contentZoomContainer && contentCol) {
+                    const contentColWidth = contentCol.offsetWidth;
+                    const contentZoomWidth = isRowReverse
+                        ? contentColWidth + gapToEdge
+                        : contentColWidth;
+
+                    contentZoomContainer.style.width = contentZoomWidth + 'px';
+                    contentZoomContainer.style.marginLeft = isRowReverse ? '' : '0';
+                    contentZoomContainer.style.marginRight = isRowReverse ? '0' : '';
+                }
+
+                if (imageZoomContainer && imageCol) {
+                    const imageColWidth = imageCol.offsetWidth;
+                    const imageZoomWidth = imageColWidth + gapToEdge;
+
+                    imageZoomContainer.style.width = imageZoomWidth + 'px';
+
+                    if (isRowReverse) {
+                        imageZoomContainer.style.marginLeft = -gapToEdge + 'px';
+                        imageZoomContainer.style.marginRight = '';
+                    } else {
+                        imageZoomContainer.style.marginLeft = '';
+                        imageZoomContainer.style.marginRight = -gapToEdge + 'px';
+                    }
+                }
+            } else {
+                // Reset styles for mobile view
+                [contentZoomContainer, imageZoomContainer].forEach(container => {
+                    if (container) {
+                        container.style.width = '100%';
+                        container.style.marginLeft = '';
+                        container.style.marginRight = '';
+                    }
+                });
             }
 
-            if (imageZoomContainer) {
-                const rowWidth = row.offsetWidth;
-                const contentColWidth = row.querySelector('.content--col').offsetWidth;
-                const availableWidth = rowWidth - contentColWidth;
-                const imageColumnWidth = imageZoomContainer.parentElement.offsetWidth;
-                const imageImageWidth = Math.min(availableWidth, imageColumnWidth + (isRowReverse ? gapLeft : gapRight));
-                const imageImageMoveX = isRowReverse ? Math.max(-gapRight, availableWidth - imageImageWidth) : 0;
+            // Einblenden der Container nach der Berechnung
+            [contentZoomContainer, imageZoomContainer].forEach(container => {
+                if (container) {
+                    container.style.opacity = '1';
+                }
+            });
+        });
+    }
 
-                imageZoomContainer.style.width = imageImageWidth + 'px';
-                imageZoomContainer.style.marginLeft = isRowReverse ? imageImageMoveX + 'px' : 'auto';
-                imageZoomContainer.style.marginRight = isRowReverse ? 'auto' : imageImageMoveX + 'px';
-            }
-        } else {
-            if (contentZoomContainer) {
-                contentZoomContainer.style.width = '';
-                contentZoomContainer.style.marginLeft = '';
-                contentZoomContainer.style.marginRight = '';
-            }
-
-            if (imageZoomContainer) {
-                imageZoomContainer.style.width = '';
-                imageZoomContainer.style.marginLeft = '';
-                imageZoomContainer.style.marginRight = '';
-            }
-        }
+    // Initial alle Zoom-Container ausblenden
+    document.querySelectorAll('.zoom-container').forEach(container => {
+        container.style.opacity = '0';
+        container.style.transition = 'opacity 0.3s ease-in-out';
     });
-}
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function (event) {
-        setImageWidth();
-    },
-    {passive: true}
-);
+    // Funktion zum Verzögern der initialen Ausführung
+    function delayedSetImageWidth() {
+        requestAnimationFrame(setImageWidth);
+    }
 
-window.addEventListener("resize", setImageWidth);
+    // Initiale Ausführung nach dem Laden aller Ressourcen
+    window.addEventListener('load', delayedSetImageWidth);
+
+    // Ausführung bei Resize
+    var resizeTimer;
+    window.addEventListener("resize", function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(setImageWidth, 50);
+    });
+
+    // Zusätzliche Ausführung nach einem kurzen Timeout
+    setTimeout(setImageWidth, 100);
+}, {passive: true});

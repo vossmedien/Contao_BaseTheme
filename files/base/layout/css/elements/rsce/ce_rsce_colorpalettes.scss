@@ -11,7 +11,7 @@ html body {
     .colorpalettes-wrapper {
       display: flex;
       flex-flow: column wrap;
-      gap: $mini-spacing;
+      gap: $spacer-sm;
     }
 
     .colorpalettes-desc {
@@ -83,8 +83,8 @@ html body {
       .color-list--wrapper {
         display: flex;
         flex-flow: row wrap;
-        margin-left: -$mini-spacing/4;
-        margin-right: -$mini-spacing/4;
+        margin-left: -$spacer-sm/4;
+        margin-right: -$spacer-sm/4;
 
 
         @include media-breakpoint-down(sm) {
@@ -93,8 +93,8 @@ html body {
         }
 
         .color-list-element--outer {
-          padding: 0 $mini-spacing/4;
-          margin-bottom: $mini-spacing/2;
+          padding: 0 $spacer-sm/4;
+          margin-bottom: $spacer-sm/2;
 
 
           &:not(.wider) {

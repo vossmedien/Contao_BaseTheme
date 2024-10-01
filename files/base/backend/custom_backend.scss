@@ -1,3 +1,16 @@
+// Variablen für nicht ausgefüllte Felder
+$unfilled-bg: #e6f3e6;
+$unfilled-border: #a8d5a8;
+$unfilled-text: #2E7D32;
+
+// Variablen für ausgefüllte Felder
+$filled-bg: #b8e6b8;
+$filled-border: #4CAF50;
+$filled-text: #1B5E20;
+
+// Aktiver Hintergrund
+$active-bg: rgba(184, 230, 184, 0.5);
+
 .widget {
   &:has(
     input[name*="topline"],
@@ -10,42 +23,59 @@
     input:not([name*="color"], [name*="background"]),
     select:not([name*="color"], [name*="background"]) {
       &:not([type="checkbox"], [type="radio"]) {
-        background-color: #cbffcb;
-        outline: 1px solid green;
-        color: black;
+        background-color: $unfilled-bg;
+        outline: 1px solid $unfilled-border;
+        color: $unfilled-text;
 
         &:focus {
           background-color: white;
         }
+
+        &.filled {
+          background-color: $filled-bg;
+          outline-color: $filled-border;
+          color: $filled-text;
+        }
+      }
+    }
+  }
+
+  .tl_checkbox_single_container{
+    //margin-top: 0;
+    //margin-bottom: .5rem;
+  }
+}
+
+.rsce_list_inner {
+  margin: 0;
+
+  > .rsce_list_item {
+    max-height: 28px;
+    padding-bottom: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+
+    h2.rsce_list_item_title {
+      cursor: pointer;
+    }
+
+    &.active {
+      max-height: none;
+
+      > h2 {
+        background-color: $active-bg;
       }
     }
   }
 }
 
-.rsce_list_inner > .rsce_list_item {
-  max-height: 28px;
-  overflow: hidden;
-
-  h2.rsce_list_item_title {
-    cursor: pointer;
-  }
-
-  &.active {
-    max-height: none;
-
-    > h2 {
-      background-color: rgba(255, 255, 255, .25);
-    }
-  }
+.tl_help, .tl_help a {
+  margin-block: .25rem 0.5rem;
 }
 
 .rsce_group:not(.rsce_group_no_legend),
 .rsce_list {
   display: block;
-
-  &:not(.changed) {
-    display: none;
-  }
 }
 
 fieldset {
@@ -55,18 +85,12 @@ fieldset {
     input[name*="firstline"],
     input[name*="subline"],
     input[name*="secondline"],
-    *[name*="link_"]
+    *[name*="link_"],
+    .selector_container img
   ) {
     > legend {
       font-weight: bold;
-      color: var(--green);
-    }
-  }
-
-  &:has(.selector_container img) {
-    > legend {
-      font-weight: bold;
-      color: var(--green);
+      color: $filled-text;
     }
   }
 }
@@ -74,6 +98,26 @@ fieldset {
 .cte_preview {
   &:not(+ .limit_toggler) {
     max-height: 150px;
-    overflow: scroll;
+    overflow-y: auto;
   }
 }
+
+.filled {
+  background-color: $filled-bg !important;
+  border-color: $filled-border !important;
+  color: $filled-text !important;
+}
+
+@mixin generate-tab-styles($max-tabs: 40) {
+  .stylemanager {
+    @for $i from 0 through $max-tabs - 1 {
+      .tab-nav[id^="nav-#{$i}"]:checked ~ [id^="tab-#{$i}"] {
+     display: flex !important;
+  flex-flow: row wrap;
+      }
+    }
+  }
+}
+
+// Verwendung der Mixin
+@include generate-tab-styles();

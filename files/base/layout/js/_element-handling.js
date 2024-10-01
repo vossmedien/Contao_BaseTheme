@@ -14,6 +14,7 @@ if (headerContent) {
 }
 
 
+/*
 let elementsWithPullTop = Array.from(
     document.querySelectorAll(".content--element")
 ).filter((el) => el.querySelector(".pull-top"));
@@ -27,6 +28,8 @@ elementsWithPullTop.forEach((element) => {
         previousSibling.style.marginBottom = "0";
     }
 });
+ */
+
 
 var modalElements = document.querySelectorAll(".modal");
 

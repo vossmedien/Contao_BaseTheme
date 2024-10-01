@@ -1,5 +1,7 @@
 <?php
-// rsce_my_element_config.php
+use VSM_HelperFunctions\ButtonHelper;
+use VSM_HelperFunctions\GlobalElementConfig;
+//rsce_my_element_config.php
 return array(
     'label' => array('Custom | Bildwechsler mit Beschreibungstext (colorpalettes)', ''),
     'types' => array('content'),
@@ -36,75 +38,7 @@ return array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
             ),
             'inputType' => 'select',
-            'options' => array(
-                /* Fading entrances  */
-                'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
-                'no-animation' => 'Keine Animation',
-                'animate__fadeIn' => 'fadeIn',
-                'animate__fadeInDown' => 'fadeInDown',
-                'animate__fadeInDownBig' => 'fadeInDownBig',
-                'animate__fadeInLeft' => 'fadeInLeft',
-                'animate__fadeInLeftBig' => 'fadeInLeftBig',
-                'animate__fadeInRight' => 'fadeInRight',
-                'animate__fadeInRightBig' => 'fadeInRightBig',
-                'animate__fadeInUpBig' => 'fadeInUpBig',
-                'animate__fadeInTopLeft' => 'fadeInTopLeft',
-                'animate__fadeInTopRight' => 'fadeInTopRight',
-                'animate__fadeInBottomLeft' => 'fadeInBottomLeft',
-                'animate__fadeInBottomRight' => 'fadeInBottomRight',
-                /* Attention seekers  */
-                'animate__bounce' => 'bounce',
-                'animate__flash' => 'flash',
-                'animate__pulse' => 'pulse',
-                'animate__rubberBand' => 'rubberBand',
-                'animate__shakeX' => 'shakeX',
-                'animate__shakeY' => 'shakeY',
-                'animate__headShake' => 'headShake',
-                'animate__swing' => 'swing',
-                'animate__tada' => 'tada',
-                'animate__wobble' => 'wobble',
-                'animate__jello' => 'jello',
-                'animate__heartBeat' => 'heartBeat',
-                /* Back entrances */
-                'animate__backInDown' => 'backInDown',
-                'animate__backInLeft' => 'backInLeft',
-                'animate__backInRight' => 'backInRight',
-                'animate__backInUp' => 'backInUp',
-                /* Bouncing entrances  */
-                'animate__bounceIn' => 'bounceIn',
-                'animate__bounceInDown' => 'bounceInDown',
-                'animate__bounceInLeft' => 'bounceInLeft',
-                'animate__bounceInRight' => 'bounceInRight',
-                'animate__bounceInUp' => 'bounceInUp',
-                /* Flippers */
-                'animate__flip' => 'flip',
-                'animate__flipInX' => 'flipInX',
-                'animate__flipInY' => 'flipInY',
-                /* Lightspeed */
-                'animate__lightSpeedInRight' => 'lightSpeedInRight',
-                'animate__lightSpeedInLeft' => 'lightSpeedInLeft',
-                /* Rotating entrances */
-                'animate__rotateIn' => 'rotateIn',
-                'animate__rotateInDownLeft' => 'rotateInDownLeft',
-                'animate__rotateInDownRight' => 'rotateInDownRight',
-                'animate__rotateInUpLeft' => 'rotateInUpLeft',
-                'animate__rotateInUpRight' => 'rotateInUpRight',
-                /* Specials */
-                'animate__hinge' => 'hinge',
-                'animate__jackInTheBox' => 'jackInTheBox',
-                'animate__rollIn' => 'rollIn',
-                /* Zooming entrances */
-                'animate__zoomIn' => 'zoomIn',
-                'animate__zoomInDown' => 'zoomInDown',
-                'animate__zoomInLeft' => 'zoomInLeft',
-                'animate__zoomInRight' => 'zoomInRight',
-                'animate__zoomInUp' => 'zoomInUp',
-                /* Sliding entrances */
-                'animate__slideInDown' => 'slideInDown',
-                'animate__slideInLeft' => 'slideInLeft',
-                'animate__slideInRight' => 'slideInRight',
-                'animate__slideInUp' => 'slideInUp',
-            ),
+             'options' => GlobalElementConfig::getAnimations(),
             'eval' => array('chosen' => 'true')
         ),
 
@@ -178,9 +112,9 @@ return array(
             'inputType' => 'select',
             'options' => array(
                 /* Fading entrances  */
-                'animate__fadeInUp' => 'fadeInUp (Meistens Standard)',
-                'no-animation' => 'Keine Animation',
-                'animate__fadeIn' => 'fadeIn',
+              'animate__fadeIn' => 'fadeIn (Standard)',
+                        'no-animation' => 'Keine Animation',
+                        'animate__fadeInUp' => 'fadeInUp ',
                 'animate__fadeInDown' => 'fadeInDown',
                 'animate__fadeInDownBig' => 'fadeInDownBig',
                 'animate__fadeInLeft' => 'fadeInLeft',

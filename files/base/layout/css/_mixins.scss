@@ -5,14 +5,14 @@
 
 @mixin content-box($override-padding: "") {
   border-radius: $border-radius;
-  box-shadow: var(--bs-base-box-shadow);
+  box-shadow: $box-shadow;
   position: relative;
   z-index: 5;
   background-color: $body-bg;
 
   &:not([class*="p-"]):not([class*="px-"]):not([class*="py-"]) {
     @if $override-padding == "" {
-      padding: calc(var(--main-gap) / 2);
+      padding: calc(var(--content-box--padding));
     } @else {
       padding: $override-padding !important;
     }
@@ -35,27 +35,20 @@
   padding-left: 1rem;
   padding-right: 1rem;
 
-  @include media-breakpoint-up(sm) {
-    max-width: calc(var(--bs-container-width-sm));
-    padding: 0px;
-  }
-
-  @include media-breakpoint-up(md) {
-    max-width: calc(var(--bs-container-width-md) / 2);
-  }
-
-  @include media-breakpoint-up(lg) {
-    max-width: calc(var(--bs-container-width-lg) / 2);
-  }
-  @include media-breakpoint-up(xl) {
-    max-width: calc(var(--bs-container-width-xl) / 2);
-  }
-
-  @include media-breakpoint-up(xxl) {
-    max-width: calc(var(--bs-container-width-xxl) / 2);
+  @each $breakpoint, $container-max-width in $container-max-widths {
+    @include media-breakpoint-up($breakpoint) {
+      @if $container-max-width != 100% {
+        max-width: $container-max-width / 2;
+        padding-left: 0;
+        padding-right: 0;
+      } @else if $breakpoint == sm {
+        max-width: 540px;
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
   }
 }
-
 
 %remove-headline-padding {
   .ce--headline > * {
@@ -86,3 +79,52 @@
     }
   }
 }
+
+@mixin offset-styles($size, $value) {
+  $directions: (
+    x: (left, right),
+    y: (top, bottom),
+    top: (top),
+    bottom: (bottom),
+    left: (left),
+    right: (right),
+    all: (top, bottom, left, right)
+  );
+
+  @each $key, $dirs in $directions {
+    &-#{$key} {
+      @each $dir in $dirs {
+        @if $dir == top {
+          position: relative;
+          top: -$value;
+          margin-top: $value;
+          margin-bottom: -$value;
+        } @else if $dir == bottom {
+          margin-bottom: -$value;
+          //margin-bottom: calc(-1*(var(--main-gap) + 60px));
+        } @else if $dir == left {
+          margin-left: -$value;
+        } @else if $dir == right {
+          margin-right: -$value;
+        }
+      }
+    }
+  }
+}
+
+@mixin padding-styles($size, $value) {
+  $directions: (x: (left, right), y: (top, bottom), top: (top), bottom: (bottom), left: (left), right: (right), all: (all));
+
+  @each $key, $dirs in $directions {
+    &-#{$key} {
+      @if $key == 'all' {
+        padding: $value;
+      } @else {
+        @each $dir in $dirs {
+          padding-#{$dir}: $value;
+        }
+      }
+    }
+  }
+}
+

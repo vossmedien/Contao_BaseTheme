@@ -1,0 +1,56 @@
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+@import "../../scss-variables";
+
+
+.services-grid {
+  .service-item {
+    margin-bottom: 2rem;
+  }
+
+  .service-inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .service-content {
+      padding: 1.5rem 1.5rem 0 1.5rem;
+
+      @include media-breakpoint-up(md) {
+        padding: 1.5rem 2rem 0 2rem;
+      }
+    }
+  }
+
+  .service-image-link {
+    display: block;
+    overflow: hidden;
+
+    img {
+      transition: transform 0.3s ease;
+      border-radius: $border-radius;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .service-title {
+    .service-arrow {
+      margin-right: 0.5rem;
+    }
+  }
+
+  .service-description {
+    flex-grow: 1;
+    margin-bottom: 1rem;
+  }
+
+  .service-link {
+    align-self: flex-start;
+    text-decoration: none;
+    font-weight: bold;
+  }
+}

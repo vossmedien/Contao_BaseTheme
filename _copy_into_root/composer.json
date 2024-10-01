@@ -1,8 +1,11 @@
 {
   "type": "project",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "require": {
     "alnv/catalog-manager-bundle": "^3.1",
     "cgoit/contao-leads-optin-bundle": "^3.0",
+    "cgoit/contao-megamenu-bundle": "^1.0",
     "contao/calendar-bundle": "^5.4.0",
     "contao/conflicts": "*@dev",
     "contao/listing-bundle": "^5.4.0",
@@ -14,22 +17,22 @@
     "oveleon/contao-component-style-manager": "^3.5",
     "oveleon/contao-cookiebar": "^2.0",
     "terminal42/contao-changelanguage": "^3.6",
-    "terminal42/contao-conditionalselectmenu": "^4.2",
     "terminal42/contao-folderpage": "^3.2",
     "terminal42/contao-leads": "^3.0",
-    "terminal42/contao-news_newsletter": "^1.2",
     "terminal42/contao-node": "^1.5",
     "terminal42/notification_center": "^2.0",
-    "trilobit-gmbh/contao-tiles-bundle": "^2.0"
+    "trilobit-gmbh/contao-tiles-bundle": "^2.0",
+    "vsm/custom-helpers-bundle": "1.0.0"
   },
   "autoload": {
     "psr-4": {
-      "VSM_HelperFunctions\\": "system/modules/vsm_custom_helpers/src/"
+      "VSM_HelperFunctions\\": "system/modules/vsm_custom_helpers/Helper"
     }
   },
   "extra": {
     "public-dir": "public",
-    "contao-component-dir": "assets"
+    "contao-component-dir": "assets",
+    "contao-manager-plugin": "VSM_HelperFunctions\\ContaoManager\\Plugin"
   },
   "scripts": {
     "post-install-cmd": [
@@ -38,5 +41,11 @@
     "post-update-cmd": [
       "@php vendor/bin/contao-setup"
     ]
-  }
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "system/modules/vsm_custom_helpers"
+    }
+  ]
 }

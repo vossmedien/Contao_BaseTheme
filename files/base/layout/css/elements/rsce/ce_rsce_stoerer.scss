@@ -1,87 +1,118 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
-
 @import "../../scss-variables";
 
-html body main {
-  .content--element.ce_rsce_stoerer {
-    position: absolute;
-    z-index: 1000;
+.content--element.ce_rsce_stoerer {
+  --stoerer-padding: .75rem;
+  --transition-duration: 0.6s;
+  position: absolute;
+  z-index: 1000;
 
-    &.is-fixed {
-      position: fixed;
+  &.is-fixed {
+    position: fixed;
+  }
+
+  .ce--stoerer {
+    position: relative;
+    display: inline-flex; // Ändert auf inline-flex für dynamische Breite
+    align-items: center;
+    padding: var(--stoerer-padding);
+    border-radius: var(--bs-border-radius);
+    background-color: var(--bs-body-bg);
+    box-shadow: $box-shadow;
+
+    transition: all var(--transition-duration) ease-in-out;
+    max-width: 100%; // Verhindert Überlauf auf kleinen Bildschirmen
+
+    &:not(:last-child) {
+      margin-bottom: 0.25rem;
     }
 
-    &[style*="right: 0px;"] {
-      .ce--stoerer {
-        border-top-right-radius: 0px;
-        border-bottom-right-radius: 0px;
-      }
-    }
-
-    &[style*="right:"] {
-      .ce--stoerer {
-        margin-left: auto;
-      }
-    }
-
-    &[style*="left:"] {
-      .ce--stoerer {
-        margin-right: auto;
-      }
-    }
-
-    .ce--stoerer {
-      --stoerer-padding: .5rem;
-      position: relative;
-      border-radius: var(--bs-border-radius);
-      padding: var(--stoerer-padding);
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      flex-flow: row nowrap;
-      transition: all .3s ease-in-out;
-      white-space: nowrap;
-      box-shadow: $box-shadow;
-      background-color: var(--bs-body-bg);
-
-      &.is-expandable {
-        transition: all .3s ease-in-out;
-        max-width: calc(var(--stoerer-width) + calc(var(--stoerer-padding) * 2));
-        overflow: hidden;
-
-        &:hover, &:focus, &:focus-visible {
-          max-width: var(--expanded-width, 768px);
-        }
-      }
-
-      svg, img {
-        transition: all .3s ease-in-out;
-        flex: var(--stoerer-width);
-        min-width: var(--stoerer-width);
-        max-width: var(--stoerer-width);
-      }
-
-      &:not(:last-child) {
-        margin-bottom: 0.25rem;
-      }
-
-      > a {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-      }
-
+    &.is-expandable {
       .stoerer--content {
-        @include font-size(18px);
+        max-width: 0;
+        opacity: 0;
+        transition: max-width var(--transition-duration) ease-in-out,
+        opacity var(--transition-duration) ease-in-out;
+      }
 
-        p {
-          margin-bottom: 0;
+      &:hover, &:focus-within {
+        .stoerer--content {
+          max-width: 500px; // Große max-width, wird durch den Inhalt begrenzt
+          opacity: 1;
         }
       }
+    }
+
+    img, svg {
+      //flex: 0 0 var(--stoerer-width);
+      //width: var(--stoerer-width);
+      height: auto;
+      transition: all var(--transition-duration) ease-in-out;
+    }
+
+    > a {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .stoerer--content {
+      @include font-size(18px);
+      position: relative;
+      z-index: 2;
+      white-space: nowrap;
+      overflow: hidden;
+
+      .stoerer-content--inner {
+        border-left: 1px solid currentColor;
+        //padding-block: 1rem;
+        padding-inline: 1.5rem;
+        margin-left: 1.5rem;
+      }
+
+      p {
+        margin-bottom: 0;
+      }
+
+      a {
+        position: relative;
+        z-index: 3;
+        color: inherit;
+        display: inline-block;
+        border-bottom: 1px solid transparent;
+        transition: all .3s ease-in-out;
+        line-height: 1.1;
+
+        &:hover {
+          border-bottom: 1px solid currentColor;
+        }
+      }
+    }
+  }
+
+  &[style*="right: 0px;"] .ce--stoerer {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &[style*="right:"] .ce--stoerer {
+    margin-left: auto;
+  }
+
+  &[style*="left:"] .ce--stoerer {
+    margin-right: auto;
+  }
+}
+
+// Media Query für mobile Geräte
+@media (max-width: 767px) {
+  .content--element.ce_rsce_stoerer .ce--stoerer {
+    &.is-expandable {
+      max-width: 90vw; // Begrenzt die Breite auf mobilen Geräten
     }
   }
 }

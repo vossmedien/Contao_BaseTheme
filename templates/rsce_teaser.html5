@@ -1,0 +1,62 @@
+<?php
+
+
+// Generiere inline Styles für Hintergrund und Textfarbe
+$inlineStyles = [];
+if ($this->text_color) {
+    $inlineStyles[] = "color: {$this->text_color};";
+}
+
+if ($this->background_type === 'color' && $this->background_color) {
+    $inlineStyles[] = "background-color: {$this->background_color};";
+} elseif ($this->background_type === 'image' && $this->background_image) {
+    $backgroundImage = VSM_HelperFunctions\ImageHelper::generateImageURL(
+        $this->background_image,
+        $this->background_image_size
+    );
+    $inlineStyles[] = "background-image: url('{$backgroundImage}');";
+    $inlineStyles[] = "background-size: cover;";
+    $inlineStyles[] = "background-position: center;";
+}
+
+$inlineStyleString = implode(' ', $inlineStyles);
+?>
+
+<div class="job-teaser <?= $this->class ?>" <?= $this->cssID ?> >
+    <div class="job-teaser_inner offset-margin-sm-x rounded" style="<?= $inlineStyleString ?>">
+        <div class="job-teaser__image offset-padding-sm-x offset-margin-sm-top">
+            <?php if ($this->image): ?>
+                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                    $this->image,
+                    $this->headline,
+                    $this->headline,
+                    $this->size,
+                    "rounded"
+                ); ?>
+            <?php endif; ?>
+        </div>
+
+        <div class="job-teaser__content p-5 p-lg-8 pt-lg-5">
+            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                $this->topline,
+                $this->headline,
+                $this->subline,
+                $this->hl, // Standard-Typ, da 'hl' nicht mehr verwendet wird
+                $this->animation_type,
+                null,
+                false,
+                $this->text_color ? '' : 'text-white' // Entferne text-white wenn eine benutzerdefinierte Textfarbe gesetzt ist
+            ); ?>
+
+            <?php if ($this->text): ?>
+                <div class="job-teaser__text" data-aos="<?= $this->animation_type ?>">
+                    <?= $this->text ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($this->buttons): ?>
+                <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons, 'mt-4'); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

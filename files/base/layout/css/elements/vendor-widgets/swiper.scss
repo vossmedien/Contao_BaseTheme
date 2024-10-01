@@ -1,7 +1,16 @@
+.ce--content-slider{
+   &:has( .swiper-button-prev){
+     @include media-breakpoint-down(md) {
+           padding-inline: 3rem;
+     }
+  }
+}
+
 .swiper {
   transition: all 0.25s ease;
   opacity: 0;
   overflow: clip;
+
 
   &.swiper-initialized {
     opacity: 1;
@@ -10,6 +19,8 @@
   &.with-pagination, &:has(figcaption), {
     padding-bottom: calc(var(--swiper-pagination-bullet-height) + 1rem);
   }
+
+
 
 
   .swiper-wrapper {

@@ -6,12 +6,12 @@
 
 
 html body .ce_rsce_teaserstripe.with-bg {
-  padding-block: calc(var(--bs-basic-spacing));
+  padding-block: calc(var(--main-gap));
 
 
-  //margin-bottom: var(--bs-basic-spacing);
+  //margin-bottom: var(--main-gap);
 
   @include media-breakpoint-up(lg) {
-    padding-block: calc(var(--bs-basic-spacing) / 2);
+    padding-block: calc(var(--main-gap) / 2);
   }
 }

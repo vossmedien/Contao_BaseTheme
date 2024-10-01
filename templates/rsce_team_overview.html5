@@ -1,0 +1,50 @@
+<?php
+if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_team_overview.min.css|static';
+}
+?>
+
+<div <?php echo $this->cssID; ?> class="content--element team-overview">
+    <div class="ce--inner <?php echo $this->class; ?>">
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
+
+        <div class="team-members" >
+            <?php foreach ($this->team_members as $index => $member): ?>
+                <div data-aos="<?php echo $this->animation_type; ?>" class="team-member <?php echo $index % 2 != 0 ? 'even' : 'odd'; ?>">
+                    <div class="row gx-md-5 <?php echo $index % 2 != 0 ? 'flex-row-reverse' : ''; ?>">
+                        <div class="col-12 col-md-6 member-image">
+                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                                $member->image,
+                                null,
+                                $member->name,
+                                $this->size,
+                                'img-fluid',
+                                false,
+                                false
+                            ); ?>
+                        </div>
+                        <div class="col-12 col-md-6 member-info">
+                            <h2 class="member-name h5"><?php echo $member->name; ?></h2>
+                            <p class="member-position"><?php echo $member->position; ?></p>
+                            <p class="member-phone">
+                                <i class="fal fa-phone"></i> <a href="tel:+<?php echo preg_replace('/[^0-9]/', '', $member->phone); ?>"><?php echo $member->phone; ?></a>
+                            </p>
+                            <div class="member-description">
+                                <?php echo $member->description; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>

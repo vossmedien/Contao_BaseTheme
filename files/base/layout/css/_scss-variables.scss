@@ -1,117 +1,78 @@
-/*
-$enable-caret:                true !default;
-$enable-rounded:              true !default;
-$enable-shadows:              false !default;
-$enable-gradients:            false !default;
-$enable-transitions:          true !default;
-$enable-reduced-motion:       true !default;
-$enable-smooth-scroll:        true !default;
-$enable-grid-classes:         true !default;
-$enable-container-classes:    true !default;
-$enable-cssgrid:              false !default;
-$enable-button-pointers:      true !default;
-$enable-rfs:                  true !default;
-$enable-validation-icons:     true !default;
-$enable-negative-margins:     false !default;
-$enable-deprecation-messages: true !default;
-$enable-important-utilities:  true !default;
+$white: #fff !default;
+$gray: var(--bs-gray-300) !default;
 
-$enable-dark-mode:            true !default;
-$color-mode-type:             data !default; // `data` or `media-query`
- */
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #888888 !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black: #000 !default;
 
-$white: #fff;
-$gray: var(--bs-gray-300);
+$primary: #871623 !default;
+$secondary: #00274a !default;
+$tertiary: #6610f2 !default;
 
-$gray-100: #f8f9fa;
-$gray-200: #e9ecef;
-$gray-300: #dee2e6;
-$gray-400: #ced4da;
-$gray-500: #adb5bd;
-$gray-600: #888888;
-$gray-700: #495057;
-$gray-800: #343a40;
-$gray-900: #212529;
-$black: #000;
+$body-bg: #ffffff !default;
+$body-color: #212529 !default;
 
-$primary: #871623;
-$secondary: #00274a;
-$tertiary: #6610f2;
+$border-radius: var(--bs-border-radius) !default;
+$box-shadow: 0 0 12px rgba(39, 39, 39, 0.15) !default;
 
-// Weitere Farben
-$body-bg: #ffffff;
-$body-color: #212529; //#{var(--bs-gray-900)}
+$offset-sm: 60px !default;
+$offset-lg: 240px !default;
 
-$border-radius: var(--bs-border-radius);
-$box-shadow: 0 0 12px rgba(39, 39, 39, 0.15);
-
-
-// Links
 $link-decoration: none;
-$link-shade-percentage: 20%;
-$link-hover-decoration: null;
+$link-shade-percentage: 20% !default;
+$link-hover-decoration: null !default;
 
+$input-focus-border-color: var(--bs-primary-rgb) !default;
+$input-placeholder-color: var(--bs-placeholder-color) !default;
 
+$fa-font-display: swap !default;
 
+$fa-font-path: "/files/base/layout/_vendor/node_modules/@awesome.me/kit-c9b4e661cb/icons/webfonts" !default;
+$enable-cssgrid: true !default;
+$enable-rounded: true !default;
+$icon-type: ".fasl" !default;
 
-//Inputs
-$input-focus-border-color: var(--bs-primary-rgb);
-$input-placeholder-color: var(--bs-placeholder-color);
-
-$fa-font-display: swap;
-
-
-
-$fa-font-path: "/files/base/layout/_vendor/node_modules/@awesome.me/kit-c9b4e661cb/icons/webfonts";
-
-$enable-cssgrid: true;
-$enable-rounded: true;
 $spacer: 2.5rem;
-$icon-type: ".fasl";
+$spacer-sm: $spacer/2;
+$spacer-lg: $spacer*2;
+
+$grid-gutter-width: 30px !default;
+
+$left-col--width: 275px !default;
+$right-col--width: 250px !default;
+
+$modal-sm: 520px !default;
+$modal-md: 760px !default;
+$modal-lg: 940px !default;
+$modal-xl: 1140px !default;
+
+$btn-line-height: 1 !default;
+$font-family-base: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+
+$font-weight-black: 900 !default;
+
+$font-size-xs: 10px !default;
+$font-size-sm: 14px !default;
+$font-size-base: 16px !default;
+$font-size-lg: 20px !default;
+$font-size-xl: 28px !default;
+
+$headings-margin-bottom: $spacer * 0.5 !default;
+$headings-font-family: null !default;
+$headings-font-style: null !default;
+$headings-font-weight: 700 !default;
+$headings-line-height: 1.2 !default;
 
 
-//Abstände
-$basic-gutter: $spacer * 2;
-$mini-spacing: $spacer/2;
+$link-color: $body-color !default;
+$link-hover-color:mix(black, $link-color, 25%) !default;
 
 
-$grid-gutter-width: 30px;
-
-
-// Spalten
-$left-col--width: 275px;
-$right-col--width: 250px;
-
-// Modales Fenster
-$modal-sm: 520px;
-$modal-md: 760px;
-$modal-lg: 940px;
-$modal-xl: 1140px;
-
-$btn-line-height: 1;
-$font-family-base: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-
-$font-weight-black: 900;
-
-
-//$font-weight-base: $font-weight-normal;
-
-$font-size-base: 1rem; // Assumes the browser default, typically `16px`
-$font-size-sm: $font-size-base * 0.875;
-$font-size-lg: $font-size-base * 1.25;
-
-$h1-font-size: $font-size-base * 2.5;
-$h2-font-size: $font-size-base * 2;
-$h3-font-size: $font-size-base * 1.75;
-$h4-font-size: $font-size-base * 1.5;
-$h5-font-size: $font-size-base * 1.25;
-$h6-font-size: $font-size-base;
-
-
-$headings-margin-bottom: $spacer * 0.5;
-$headings-font-family: null;
-$headings-font-style: null;
-$headings-font-weight: 500;
-$headings-line-height: 1.2;
-
-
+@import "_theme/variables";

@@ -1,5 +1,5 @@
 <div id="<?= $this->cssID; ?>" class="content--element <?= $this->class; ?>">
-    <div class="ce--inner ">
+    <div class="ce--inner">
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
@@ -12,36 +12,57 @@
         ); ?>
 
         <?php if (!empty($this->elements)): ?>
-    <div class="accordion" id="accordion_<?= $this->id ?>">
-        <?php foreach ($this->elements as $index => $element): ?>
-            <?php $isOpen = !empty($element->is_open); // Überprüft, ob das Akkordeon anfangs geöffnet sein soll ?>
-            <div class="accordion-item">
-                <div class="accordion-header" id="heading<?= $index. $this->id ?>">
-                    <div class="accordion-button <?= $isOpen ? '' : 'collapsed' ?>" data-bs-toggle="collapse" data-bs-target="#collapse<?= $index. $this->id ?>" aria-expanded="<?= $isOpen ? 'true' : 'false' ?>" aria-controls="collapse<?= $index. $this->id ?>">
-                        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                            $element->topline,
-                            $element->headline,
-                            $element->subline,
-                            $element->headline_type,
-                            null,
-                            null,
-                            $element->onlystyle,
-                            "mb-0"
-                        ); ?>
-                    </div>
-                </div>
+            <div class="accordion" id="accordion_<?= $this->id ?>">
+                <?php foreach ($this->elements as $index => $element): ?>
+                    <?php $isOpen = !empty($element->is_open); ?>
+                    <div data-aos="<?= $this->animation_type;?>" class="accordion-item">
+                        <div class="accordion-header" id="heading<?= $index. $this->id ?>">
+                            <div class="accordion-button <?= $isOpen ? '' : 'collapsed' ?>" data-bs-toggle="collapse" data-bs-target="#collapse<?= $index. $this->id ?>" aria-expanded="<?= $isOpen ? 'true' : 'false' ?>" aria-controls="collapse<?= $index. $this->id ?>">
+                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                    $element->topline,
+                                    $element->headline,
+                                    $element->subline,
+                                    $element->headline_type,
+                                    null,
+                                    null,
+                                    $element->onlystyle,
+                                    "mb-0"
+                                ); ?>
+                            </div>
+                        </div>
 
-                <div id="collapse<?= $index. $this->id ?>" class="accordion-collapse collapse <?= $isOpen ? 'show' : '' ?>" aria-labelledby="heading<?= $index. $this->id ?>" data-bs-parent="#accordion_<?= $this->id ?>">
-                    <div class="accordion-body">
-                        <?php if ($element->desc): ?>
-                            <?= $element->desc; ?>
-                        <?php endif; ?>
-                        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($element->buttons); ?>
+                        <div id="collapse<?= $index. $this->id ?>" class="accordion-collapse collapse <?= $isOpen ? 'show' : '' ?>" aria-labelledby="heading<?= $index. $this->id ?>" data-bs-parent="#accordion_<?= $this->id ?>">
+                            <div class="accordion-body">
+                                <?php if ($element->desc): ?>
+                                    <?= $element->desc; ?>
+                                <?php endif; ?>
+                                <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($element->buttons); ?>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                <?php endforeach; ?>
             </div>
-        <?php endforeach; ?>
-    </div>
-<?php endif; ?>
+
+            <?php if ($this->is_faq): ?>
+                <script type="application/ld+json">
+                {
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    "mainEntity": [
+                        <?php foreach ($this->elements as $index => $element): ?>
+                            {
+                                "@type": "Question",
+                                "name": <?= json_encode($element->headline) ?>,
+                                "acceptedAnswer": {
+                                    "@type": "Answer",
+                                    "text": <?= json_encode(strip_tags($element->desc)) ?>
+                                }
+                            }<?= $index < count($this->elements) - 1 ? ',' : '' ?>
+                        <?php endforeach; ?>
+                    ]
+                }
+                </script>
+            <?php endif; ?>
+        <?php endif; ?>
     </div>
 </div>

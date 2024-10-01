@@ -4,6 +4,12 @@ namespace VSM_HelperFunctions;
 
 class ButtonHelper
 {
+    public static function getButtonConfig()
+    {
+        return GlobalElementConfig::getButtonConfig();
+    }
+
+
     public static function generateButtonHTML($buttons, $css = null)
     {
         $buttonHTML = "";
@@ -17,6 +23,7 @@ class ButtonHelper
                 $buttonSize = $btn->link_size ?? '';
                 $buttonUrl = $btn->link_url ?? '';
                 $linkTarget = $btn->new_tab ?? '';
+                $buttonId = $btn->link_id ?? ''; // Neue Zeile für die Button-ID
 
                 // Behandle HTML im Linktext korrekt
                 $linkText = $btn->link_text ? html_entity_decode($btn->link_text, ENT_QUOTES | ENT_HTML5, 'UTF-8') : '';
@@ -30,7 +37,6 @@ class ButtonHelper
                         break;
                     case 'lightbox':
                         $buttonClasses .= ' lightbox';
-
                         break;
                     default:
                         // Standardfall: Öffnen im selben Tab
@@ -43,6 +49,11 @@ class ButtonHelper
                 $buttonHTML .= "<a class=\"{$buttonClasses}\"";
                 $buttonHTML .= " data-aos=\"{$animationType}\"";
                 $buttonHTML .= " href=\"{$buttonUrl}{$betreff}\"";
+
+                // Füge ID hinzu, falls vorhanden
+                if (!empty($buttonId)) {
+                    $buttonHTML .= " id=\"{$buttonId}\"";
+                }
 
                 // Füge zusätzliche Attribute hinzu
                 if (!empty($additionalAttributes)) {

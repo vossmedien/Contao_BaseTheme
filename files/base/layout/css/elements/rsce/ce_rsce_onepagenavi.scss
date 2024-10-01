@@ -49,12 +49,6 @@ html body {
         }
 
         @include media-breakpoint-up(md) {
-          /*
-             &:not(.is-scrolling) {
-            margin-top: calc(-1 * #{$basic-gutter});
-            margin-bottom: $basic-gutter;
-          }
-           */
 
 
           &.is-scrolling {

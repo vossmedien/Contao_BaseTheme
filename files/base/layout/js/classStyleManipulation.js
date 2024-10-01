@@ -113,3 +113,16 @@ export function adjustTableResponsive() {
     }
 }
 
+export function adjustContentBox() {
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.content--box.container').forEach(el => {
+      el.classList.remove('container');
+      let parent = el.parentElement;
+      if (parent) {
+        requestAnimationFrame(() => {
+          parent.classList.add('container');
+        });
+      }
+    });
+  });
+}

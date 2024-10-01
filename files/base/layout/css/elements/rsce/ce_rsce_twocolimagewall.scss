@@ -92,10 +92,10 @@ html body {
           .image--inner,
           .content--inner {
             padding-top: var(--main-gap);
-            padding-bottom: var(--bs-basic-spacing);
+            padding-bottom: var(--main-gap);
 
             @include media-breakpoint-down(lg) {
-              //padding-top: calc(var(--bs-basic-spacing) * 0.5);
+              //padding-top: calc(var(--main-gap) * 0.5);
             }
 
             a:not(.btn) {

@@ -1,0 +1,67 @@
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+@import "../../scss-variables";
+
+.team-overview {
+  .team-members {
+    .team-member {
+      margin-bottom: 3rem;
+
+      .row {
+        align-items: center;
+      }
+
+      .member-image {
+        img {
+          width: 100%;
+          height: auto;
+          border-radius: 10px;
+        }
+      }
+
+      .member-info {
+        padding: 1rem;
+
+        .member-name {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .member-position {
+          margin-bottom: 0.5rem;
+        }
+
+        .member-phone {
+          margin-bottom: 1rem;
+
+        }
+
+      }
+
+      &.even {
+        .member-info {
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    .team-members {
+      .team-member {
+        .row {
+          flex-direction: column !important;
+        }
+
+        .member-image {
+          margin-bottom: 1rem;
+        }
+
+        .member-info {
+          text-align: center !important;
+        }
+      }
+    }
+  }
+}

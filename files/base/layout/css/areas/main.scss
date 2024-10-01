@@ -72,5 +72,5 @@ html, body, #wrapper{
 
 
 .mod_article[class*="bg-"] + .mod_article:not([class*="bg-"]) {
-  padding-top: $basic-gutter;
+  padding-top: var(--main-gap)
 }

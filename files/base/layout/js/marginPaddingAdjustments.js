@@ -1,91 +1,57 @@
-// marginPaddingAdjustments.js
+export function adjustPullElements() {
+  setTimeout(() => {
+    const pullElements = document.querySelectorAll('.pull-bottom');
+    const mobileMaxWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--bs-mobile-max-width'));
 
-/**
- * Passt den Margin von Elementen an.
- * @param {NodeList} elements - Die zu bearbeitenden DOM-Elemente.
- * @param {string} direction - Die Richtung des Margins ('top', 'bottom', 'left', 'right').
- * @param {boolean} isNegative - Gibt an, ob der Margin negativ sein soll.
- */
-export function adjustMargin(elements, direction, isNegative) {
-  elements.forEach((element) => {
-    let size =
-      direction === "top" || direction === "bottom"
-        ? element.offsetHeight
-        : element.offsetWidth;
-    let rootFontSize = parseFloat(
-      getComputedStyle(document.documentElement).fontSize
-    );
-    let bsBasicSpacingRem = parseFloat(
-      getComputedStyle(document.documentElement).getPropertyValue(
-        "--bs-basic-spacing"
-      )
-    );
-    let bsBasicSpacingPx = bsBasicSpacingRem * rootFontSize;
+    if (window.innerWidth <= mobileMaxWidth) {
+      pullElements.forEach(element => {
+        let contentElement = findTopLevelContentElement(element);
+        if (!contentElement) return;
 
-    let marginValue =
-      (isNegative ? -1 : 1) * (size / 2) - bsBasicSpacingPx * 2 + "px";
+        let nextContentElement = findNextContentElement(contentElement);
 
-    if (direction === "top" || direction === "bottom") {
-      element.style.marginTop = marginValue;
-    } else {
-      element.style.marginLeft = marginValue;
-    }
-
-    // Vom ausgehenden Element das nächste vorhandene .article-content div (im parent nach oben) finden
-    let articleContentAbove = element
-      .closest(".mod_article")
-      .querySelector(".article-content");
-    if (articleContentAbove) {
-      articleContentAbove.style.paddingTop = `calc(var(--bs-basic-spacing)*2)`;
-    }
-
-    // Vom ausgehenden Element zum aktuellen parent .mod_article
-    let currentArticle = element.closest(".mod_article");
-    if (currentArticle) {
-      // Das vorherige .mod_article Geschwisterelement finden
-      let previousArticle = currentArticle.previousElementSibling;
-      while (
-        previousArticle &&
-        !previousArticle.classList.contains("mod_article")
-      ) {
-        previousArticle = previousArticle.previousElementSibling;
-      }
-
-      if (previousArticle) {
-        let articleContentPrevious =
-          previousArticle.querySelector(".article-content");
-        if (articleContentPrevious) {
-          articleContentPrevious.style.paddingBottom = `calc(var(--bs-basic-spacing)*3)`;
+        if (nextContentElement) {
+          nextContentElement.style.transform = '';
+          nextContentElement.style.marginBottom = '';
+          nextContentElement.classList.remove('pulled-up-element');
+          element.style.paddingBottom = '';
         }
-      }
+      });
+      return;
     }
-  });
-}
 
-let resizeTimeout;
+    pullElements.forEach(element => {
+      let contentElement = findTopLevelContentElement(element);
+      if (!contentElement) return;
 
-/**
- * Optimiert die Funktion `adjustMargin` für den Einsatz bei Resize-Events.
- */
-function optimizedAdjustMargin() {
-  if (resizeTimeout) {
-    clearTimeout(resizeTimeout);
-  }
+      let nextContentElement = findNextContentElement(contentElement);
 
-  resizeTimeout = setTimeout(() => {
-    window.requestAnimationFrame(() => {
-      adjustMargin(document.querySelectorAll(".pull-top"), "top", true);
-      adjustMargin(document.querySelectorAll(".pull-bottom"), "bottom", false);
-      adjustMargin(document.querySelectorAll(".pull-start"), "left", true);
-      adjustMargin(document.querySelectorAll(".pull-end"), "right", false);
+      if (nextContentElement) {
+        const pullPercentage = 0.35;
+        let pullAmount = nextContentElement.offsetHeight * pullPercentage;
+        pullAmount = Math.min(pullAmount, 150);
+
+        nextContentElement.style.transform = `translateY(-${pullAmount}px)`;
+        nextContentElement.style.marginBottom = `-${pullAmount}px`;
+        nextContentElement.classList.add('pulled-up-element');
+        element.style.paddingBottom = `calc(var(--main-gap) + ${pullAmount}px)`;
+      }
     });
-  }, 100);
+  }, 0);
 }
 
-/**
- * Initialisiert die Margin-Anpassungen.
- */
-export function initializeMarginAdjustments() {
-  optimizedAdjustMargin();
-  window.addEventListener("resize", optimizedAdjustMargin);
+function findTopLevelContentElement(element) {
+  let contentElement = element.closest('.content--element');
+  if (!contentElement) return null;
+
+  let parentContentElement = contentElement.parentElement.closest('.content--element');
+  return parentContentElement || contentElement;
+}
+
+function findNextContentElement(element) {
+  let nextElement = element.nextElementSibling;
+  while (nextElement && !nextElement.classList.contains('content--element')) {
+    nextElement = nextElement.nextElementSibling;
+  }
+  return nextElement;
 }

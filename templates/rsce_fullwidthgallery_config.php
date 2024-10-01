@@ -1,5 +1,9 @@
 <?php
-// rsce_my_element_config.php
+
+use VSM_HelperFunctions\ButtonHelper;
+use VSM_HelperFunctions\GlobalElementConfig;
+
+//rsce_my_element_config.php
 return array(
     'label' => array('Custom | Galerie auf voller Breite mit Hover-Text & Verlinkung (fullwidthgallery)', ''),
     'types' => array('content'),
@@ -25,84 +29,7 @@ return array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
             ),
             'inputType' => 'select',
-            'options' => array(
-                /* Fading entrances  */
-                'animate__fadeIn' => 'fadeIn (Meistens Standard)',
-                'no-animation' => 'Keine Animation',
-                'animate__fadeInUp' => 'fadeInUp ',
-                'animate__fadeInDown' => 'fadeInDown',
-                'animate__fadeInDownBig' => 'fadeInDownBig',
-                'animate__fadeInLeft' => 'fadeInLeft',
-                'animate__fadeInLeftBig' => 'fadeInLeftBig',
-                'animate__fadeInRight' => 'fadeInRight',
-                'animate__fadeInRightBig' => 'fadeInRightBig',
-                'animate__fadeInUpBig' => 'fadeInUpBig',
-                'animate__fadeInTopLeft' => 'fadeInTopLeft',
-                'animate__fadeInTopRight' => 'fadeInTopRight',
-                'animate__fadeInBottomLeft' => 'fadeInBottomLeft',
-                'animate__fadeInBottomRight' => 'fadeInBottomRight',
-                /* Attention seekers  */
-                'animate__bounce' => 'bounce',
-                'animate__flash' => 'flash',
-                'animate__pulse' => 'pulse',
-                'animate__rubberBand' => 'rubberBand',
-                'animate__shakeX' => 'shakeX',
-                'animate__shakeY' => 'shakeY',
-                'animate__headShake' => 'headShake',
-                'animate__swing' => 'swing',
-                'animate__tada' => 'tada',
-                'animate__wobble' => 'wobble',
-                'animate__jello' => 'jello',
-                'animate__heartBeat' => 'heartBeat',
-                /* Back entrances */
-                'animate__backInDown' => 'backInDown',
-                'animate__backInLeft' => 'backInLeft',
-                'animate__backInRight' => 'backInRight',
-                'animate__backInUp' => 'backInUp',
-
-                /* Bouncing entrances  */
-                'animate__bounceIn' => 'bounceIn',
-                'animate__bounceInDown' => 'bounceInDown',
-                'animate__bounceInLeft' => 'bounceInLeft',
-                'animate__bounceInRight' => 'bounceInRight',
-                'animate__bounceInUp' => 'bounceInUp',
-
-
-                /* Flippers */
-                'animate__flip' => 'flip',
-                'animate__flipInX' => 'flipInX',
-                'animate__flipInY' => 'flipInY',
-
-                /* Lightspeed */
-                'animate__lightSpeedInRight' => 'lightSpeedInRight',
-                'animate__lightSpeedInLeft' => 'lightSpeedInLeft',
-
-                /* Rotating entrances */
-                'animate__rotateIn' => 'rotateIn',
-                'animate__rotateInDownLeft' => 'rotateInDownLeft',
-                'animate__rotateInDownRight' => 'rotateInDownRight',
-                'animate__rotateInUpLeft' => 'rotateInUpLeft',
-                'animate__rotateInUpRight' => 'rotateInUpRight',
-
-                /* Specials */
-                'animate__hinge' => 'hinge',
-                'animate__jackInTheBox' => 'jackInTheBox',
-                'animate__rollIn' => 'rollIn',
-
-                /* Zooming entrances */
-                'animate__zoomIn' => 'zoomIn',
-                'animate__zoomInDown' => 'zoomInDown',
-                'animate__zoomInLeft' => 'zoomInLeft',
-                'animate__zoomInRight' => 'zoomInRight',
-                'animate__zoomInUp' => 'zoomInUp',
-
-                /* Sliding entrances */
-                'animate__slideInDown' => 'slideInDown',
-                'animate__slideInLeft' => 'slideInLeft',
-                'animate__slideInRight' => 'slideInRight',
-                'animate__slideInUp' => 'slideInUp',
-
-            ),
+            'options' => GlobalElementConfig::getAnimations(),
             'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
 
@@ -113,17 +40,17 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
-               'size' => array(
-                    'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
-                    'inputType' => 'imageSize',
-                    'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
-                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
-                    'eval' => array(
-                        'rgxp' => 'digit',
-                        'includeBlankOption' => true,
-                        'tl_class' => ' clr'
-                    ),
-                ),
+        'size' => array(
+            'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
+            'inputType' => 'imageSize',
+            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => ' clr'
+            ),
+        ),
 
         'gallery' => array(
             'label' => array('Elemente', ''),
@@ -138,83 +65,7 @@ return array(
                         'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
                     ),
                     'inputType' => 'select',
-                    'options' => array(
-                        /* Fading entrances  */
-                        'animate__fadeIn' => 'fadeIn (Meistens Standard)',
-                        'no-animation' => 'Keine Animation',
-                        'animate__fadeInUp' => 'fadeInUp',
-                        'animate__fadeInDown' => 'fadeInDown',
-                        'animate__fadeInDownBig' => 'fadeInDownBig',
-                        'animate__fadeInLeft' => 'fadeInLeft',
-                        'animate__fadeInLeftBig' => 'fadeInLeftBig',
-                        'animate__fadeInRight' => 'fadeInRight',
-                        'animate__fadeInRightBig' => 'fadeInRightBig',
-                        'animate__fadeInUpBig' => 'fadeInUpBig',
-                        'animate__fadeInTopLeft' => 'fadeInTopLeft',
-                        'animate__fadeInTopRight' => 'fadeInTopRight',
-                        'animate__fadeInBottomLeft' => 'fadeInBottomLeft',
-                        'animate__fadeInBottomRight' => 'fadeInBottomRight',
-                        /* Attention seekers  */
-                        'animate__bounce' => 'bounce',
-                        'animate__flash' => 'flash',
-                        'animate__pulse' => 'pulse',
-                        'animate__rubberBand' => 'rubberBand',
-                        'animate__shakeX' => 'shakeX',
-                        'animate__shakeY' => 'shakeY',
-                        'animate__headShake' => 'headShake',
-                        'animate__swing' => 'swing',
-                        'animate__tada' => 'tada',
-                        'animate__wobble' => 'wobble',
-                        'animate__jello' => 'jello',
-                        'animate__heartBeat' => 'heartBeat',
-                        /* Back entrances */
-                        'animate__backInDown' => 'backInDown',
-                        'animate__backInLeft' => 'backInLeft',
-                        'animate__backInRight' => 'backInRight',
-                        'animate__backInUp' => 'backInUp',
-
-                        /* Bouncing entrances  */
-                        'animate__bounceIn' => 'bounceIn',
-                        'animate__bounceInDown' => 'bounceInDown',
-                        'animate__bounceInLeft' => 'bounceInLeft',
-                        'animate__bounceInRight' => 'bounceInRight',
-                        'animate__bounceInUp' => 'bounceInUp',
-
-                        /* Flippers */
-                        'animate__flip' => 'flip',
-                        'animate__flipInX' => 'flipInX',
-                        'animate__flipInY' => 'flipInY',
-
-                        /* Lightspeed */
-                        'animate__lightSpeedInRight' => 'lightSpeedInRight',
-                        'animate__lightSpeedInLeft' => 'lightSpeedInLeft',
-
-                        /* Rotating entrances */
-                        'animate__rotateIn' => 'rotateIn',
-                        'animate__rotateInDownLeft' => 'rotateInDownLeft',
-                        'animate__rotateInDownRight' => 'rotateInDownRight',
-                        'animate__rotateInUpLeft' => 'rotateInUpLeft',
-                        'animate__rotateInUpRight' => 'rotateInUpRight',
-
-                        /* Specials */
-                        'animate__hinge' => 'hinge',
-                        'animate__jackInTheBox' => 'jackInTheBox',
-                        'animate__rollIn' => 'rollIn',
-
-                        /* Zooming entrances */
-                        'animate__zoomIn' => 'zoomIn',
-                        'animate__zoomInDown' => 'zoomInDown',
-                        'animate__zoomInLeft' => 'zoomInLeft',
-                        'animate__zoomInRight' => 'zoomInRight',
-                        'animate__zoomInUp' => 'zoomInUp',
-
-                        /* Sliding entrances */
-                        'animate__slideInDown' => 'slideInDown',
-                        'animate__slideInLeft' => 'slideInLeft',
-                        'animate__slideInRight' => 'slideInRight',
-                        'animate__slideInUp' => 'slideInUp',
-
-                    ),
+                    'options' => GlobalElementConfig::getAnimations(),
                     'eval' => array('chosen' => 'true', 'tl_class' => 'w50')
                 ),
 
@@ -240,7 +91,7 @@ return array(
                 'settings_image' => array(
                     'label' => array('Bildeinstellungen', ''),
                     'inputType' => 'group',
-                        'eval' => array('collapsible' => true, 'collapsed' => true),
+                    'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
 
                 'image' => array(
@@ -257,7 +108,6 @@ return array(
                 ),
 
 
-
                 'show_initial_content' => array(
                     'label' => array('Inhalt initial auf Bild anzeigen', ''),
                     'inputType' => 'checkbox',
@@ -266,13 +116,13 @@ return array(
                     ),
                 ),
 
-                                   'settings_url' => array(
+                'settings_url' => array(
                     'label' => array('Box-Einstellungen', ''),
                     'inputType' => 'group',
-                        'eval' => array('collapsible' => true, 'collapsed' => true),
+                    'eval' => array('collapsible' => true, 'collapsed' => true),
                 ),
 
-                   'box_link_type' => array(
+                'box_link_type' => array(
                     'label' => array('Verlinkung der Box', ''),
                     'inputType' => 'radio',
                     'options' => array(
@@ -533,7 +383,6 @@ return array(
                 ),
 
 
-
                 'link' => array(
                     'label' => array('Link', ''),
                     'inputType' => 'url',
@@ -545,161 +394,13 @@ return array(
                 ),
 
                 'buttons' => array(
-                    'label' => array('Button', ''),
+                    'label' => array('Buttons', ''),
                     'elementLabel' => '%s. Button',
                     'inputType' => 'list',
-                    'minItems' => 0,
-                    'maxItems' => 10,
-                    'fields' => array(
-                        'animation_type' => array(
-                            'label' => array(
-                                'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
-                            ),
-                            'inputType' => 'select',
-                            'options' => array(
-                                /* Fading entrances  */
-                                'fadeInUp' => 'fadeInUp (Meistens Standard)',
-                                'no-animation' => 'Keine Animation',
-                                'fadeIn' => 'fadeIn',
-                                'fadeInDown' => 'fadeInDown',
-                                'fadeInDownBig' => 'fadeInDownBig',
-                                'fadeInLeft' => 'fadeInLeft',
-                                'fadeInLeftBig' => 'fadeInLeftBig',
-                                'fadeInRight' => 'fadeInRight',
-                                'fadeInRightBig' => 'fadeInRightBig',
-                                'fadeInUpBig' => 'fadeInUpBig',
-                                'fadeInTopLeft' => 'fadeInTopLeft',
-                                'fadeInTopRight' => 'fadeInTopRight',
-                                'fadeInBottomLeft' => 'fadeInBottomLeft',
-                                'fadeInBottomRight' => 'fadeInBottomRight',
-                                /* Attention seekers  */
-                                'bounce' => 'bounce',
-                                'flash' => 'flash',
-                                'pulse' => 'pulse',
-                                'rubberBand' => 'rubberBand',
-                                'shakeX' => 'shakeX',
-                                'shakeY' => 'shakeY',
-                                'headShake' => 'headShake',
-                                'swing' => 'swing',
-                                'tada' => 'tada',
-                                'wobble' => 'wobble',
-                                'jello' => 'jello',
-                                'heartBeat' => 'heartBeat',
-                                /* Back entrances */
-                                'backInDown' => 'backInDown',
-                                'backInLeft' => 'backInLeft',
-                                'backInRight' => 'backInRight',
-                                'backInUp' => 'backInUp',
-
-                                /* Bouncing entrances  */
-                                'bounceIn' => 'bounceIn',
-                                'bounceInDown' => 'bounceInDown',
-                                'bounceInLeft' => 'bounceInLeft',
-                                'bounceInRight' => 'bounceInRight',
-                                'bounceInUp' => 'bounceInUp',
-                                /* Bouncing exits  */
-                                'bounceOut' => 'bounceOut',
-                                'bounceOutDown' => 'bounceOutDown',
-                                'bounceOutLeft' => 'bounceOutLeft',
-                                'bounceOutRight' => 'bounceOutRight',
-                                'bounceOutUp' => 'bounceOutUp',
-                                /* Fading exits */
-                                'fadeOut' => 'fadeOut',
-                                'fadeOutDown' => 'fadeOutDown',
-                                'fadeOutDownBig' => 'fadeOutDownBig',
-                                'fadeOutLeft' => 'fadeOutLeft',
-                                'fadeOutLeftBig' => 'fadeOutLeftBig',
-                                'fadeOutRight' => 'fadeOutRight',
-                                'fadeOutRightBig' => 'fadeOutRightBig',
-                                'fadeOutUp' => 'fadeOutUp',
-                                'fadeOutUpBig' => 'fadeOutUpBig',
-                                'fadeOutTopLeft' => 'fadeOutTopLeft',
-                                'fadeOutTopRight' => 'fadeOutTopRight',
-                                'fadeOutBottomRight' => 'fadeOutBottomRight',
-                                'fadeOutBottomLeft' => 'fadeOutBottomLeft',
-                                /* Flippers */
-                                'flip' => 'flip',
-                                'flipInX' => 'flipInX',
-                                'flipInY' => 'flipInY',
-                                /* Lightspeed */
-                                'lightSpeedInRight' => 'lightSpeedInRight',
-                                'lightSpeedInLeft' => 'lightSpeedInLeft',
-                                /* Rotating entrances */
-                                'rotateIn' => 'rotateIn',
-                                'rotateInDownLeft' => 'rotateInDownLeft',
-                                'rotateInDownRight' => 'rotateInDownRight',
-                                'rotateInUpLeft' => 'rotateInUpLeft',
-                                'rotateInUpRight' => 'rotateInUpRight',
-                                /* Specials */
-                                'hinge' => 'hinge',
-                                'jackInTheBox' => 'jackInTheBox',
-                                /* Zooming entrances */
-                                'zoomIn' => 'zoomIn',
-                                'zoomInDown' => 'zoomInDown',
-                                'zoomInLeft' => 'zoomInLeft',
-                                'zoomInRight' => 'zoomInRight',
-                                'zoomInUp' => 'zoomInUp',
-                                /* Sliding entrances */
-                                'slideInDown' => 'slideInDown',
-                                'slideInLeft' => 'slideInLeft',
-                                'slideInRight' => 'slideInRight',
-                                'slideInUp' => 'slideInUp',
-                            ),
-                            'eval' => array('chosen' => 'true')
-                        ),
-                        'link_text' => array(
-                            'label' => array(
-                                'de' => array('Button-Beschriftung', 'Button befindet sich rechts unter dem Text'),
-                            ),
-                            'inputType' => 'text',
-                        ),
-                        'link_url' => array(
-                            'label' => array('Verlinkung', 'z . B . mailto:info@domain.de'),
-                            'inputType' => 'url',
-                        ),
-
-                        'new_tab' => array(
-                            'label' => array('Link in neuen Tab öffnen', ''),
-                            'inputType' => 'checkbox',
-                            'eval' => array('tl_class' => 'clr'),
-                        ),
-
-                        'link_betreff' => array(
-                            'label' => array('Betreffzeile für "mailto:" - Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
-                            'inputType' => 'text',
-                        ),
-                        'link_type' => array(
-                            'label' => array(
-                                'de' => array('Optik des Buttons', ''),
-                            ),
-                            'inputType' => 'select',
-                            'options' => array(
-                                'btn-primary' => 'Hauptfarbe',
-                                'btn-outline-primary' => 'Hauptfarbe(Outline)',
-                                'btn-secondary' => 'Sekundär - Farbe',
-                                'btn-outline-secondary' => 'Sekundär - Farbe(Outline)',
-                                'btn-tertiary' => 'Tertiär - Farbe',
-                                'btn-outline-tertiary' => 'Tertiär - Farbe(Outline)',
-                                'btn-link with-arrow' => 'Link - Optik mit Pfeilen',
-                                'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
-                                'btn-white' => 'Weißer Button mit schwarzer Schrift',
-                            ),
-                            'eval' => array('tl_class' => 'w50'),
-                        ),
-                        'link_size' => array(
-                            'label' => array(
-                                'de' => array('Größe des Buttons', ''),
-                            ),
-                            'inputType' => 'select',
-                            'options' => array(
-                                '' => 'Standard',
-                                'btn-sm' => 'Klein',
-                                'btn-lg' => 'Groß',
-                                'btn-xl' => 'Sehr groß',
-                            ),
-                            'eval' => array('tl_class' => 'w50'),
-                        ),
-                    ),
+                    'minItems' => 1,
+                    'maxItems' => 20,
+                    'eval' => array('tl_class' => 'clr'),
+                    'fields' => ButtonHelper::getButtonConfig(),
                     'dependsOn' => array(
                         'field' => 'box_link_type',
                         'value' => '2',

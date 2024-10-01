@@ -1,0 +1,55 @@
+<?php
+if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_services_overview.min.css|static';
+    $GLOBALS['TL_BODY'][] = '<script defer src="/files/base/layout/js/_elements/ce_rsce_services_overview.js"></script>';
+}
+?>
+
+<div <?php echo $this->cssID; ?> class="content--element services-overview">
+    <div class="ce--inner <?php echo $this->class; ?>">
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
+
+        <div class="mt-md-5">
+            <div class="row g-5" >
+                <div class="col-md-6">
+                    <ul class="services-list">
+                        <?php foreach ($this->services as $index => $service): ?>
+                            <li data-aos="<?php echo $this->animation_type; ?>" class="service-item" data-index="<?php echo $index; ?>">
+                                <a href="<?php echo $service->link; ?>" class="service-link">
+                                    <h3 class="mb-0 h5"><i class="fasl fa-long-arrow-right"></i> <?php echo $service->title; ?></h3>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <div class="col-md-6 d-none d-md-block" data-aos="<?php echo $this->animation_type; ?>">
+                    <div class="service-image-container h-100">
+                        <?php foreach ($this->services as $index => $service): ?>
+                            <div class="service-image <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
+                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                                    $service->image,
+                                    null,
+                                    $service->title,
+                                    $this->size,
+                                    null,
+                                    false,
+                                    false
+                                ); ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

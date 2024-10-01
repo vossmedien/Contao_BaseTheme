@@ -1,139 +1,138 @@
+// Mixin für responsive Schriftgrößen (unverändert)
+@mixin responsive-font-size($heading) {
+  $sizes: map-get($headings-font-sizes, $heading);
 
+  font-size: map-get($sizes, 'mobile');
+
+  @include media-breakpoint-up(md) {
+    font-size: map-get($sizes, 'tablet');
+  }
+
+  @include media-breakpoint-up(xl) {
+    font-size: map-get($sizes, 'desktop');
+  }
+}
+
+// Funktion zur Berechnung des Headline-Gaps (unverändert)
+@function calculate-headline-gap($heading) {
+  $desktop-size: map-get(map-get($headings-font-sizes, $heading), 'desktop');
+  @return calc(var(--#{$prefix}headline-base-gap) * #{$desktop-size / 16px});
+}
+
+// Angepasste Funktion zur Berechnung des Abstands basierend auf der Schriftgröße
+@function calculate-headline-spacing($heading) {
+  $desktop-size: map-get(map-get($headings-font-sizes, $heading), 'desktop');
+  @return calc(#{$desktop-size} * 0.7);
+}
+
+// Globale Überschriften-Stile
+@each $heading, $sizes in $headings-font-sizes {
+  #{$heading}, .#{$heading} {
+    &:not(:has([class*="h"])) {
+      @include responsive-font-size($heading);
+      line-height: $headings-line-height;
+      font-weight: var(--bs-#{$heading}-font-weight, $headings-font-weight);
+      --current-headline-gap: #{calculate-headline-gap($heading)};
+      --current-headline-spacing: #{calculate-headline-spacing($heading)};
+
+      &:not(.ce--headline *) {
+        margin-bottom: var(--current-headline-spacing);
+      }
+    }
+
+  }
+}
+
+// Angepasste Headline-Klassen
 .ce--headline {
-  --hl-font-size-multi: 1;
-  --hl-font-size-base: calc(var(--bs-body-font-size) * var(--hl-font-size-multi));
-  --hl-font-size-min: calc(var(--hl-font-size-base) * 0.75);
-  --hl-font-size-max: calc(var(--hl-font-size-base) * 1.5);
-  --hl-font-size-scale: 3vw;
-  --hl-margin: max(1.25rem, calc(var(--hl-font-size-base)));
-  --hl-gap: calc(var(--hl-font-size-base) * 0.25) 0;
-  line-height: 1.05;
+  --#{$prefix}headline-base-gap: 0.175rem;
+  gap: var(--current-headline-gap);
   display: flex;
   flex-flow: column wrap;
-  gap: var(--hl-gap);
-  margin-bottom: var(--hl-margin);
-
+  margin-bottom: var(--current-headline-spacing);
 
   * {
-    line-height: 1.15;
-    margin-bottom: 0px;
+    margin: 0 !important;
     max-width: 100%;
   }
 
-  &.hl-h1 {
-    --hl-font-size-multi: 2.25;
-  }
+  @each $heading in map-keys($headings-font-sizes) {
+    &.hl-#{$heading} {
+      --current-headline-gap: #{calculate-headline-gap($heading)};
+      --current-headline-spacing: #{calculate-headline-spacing($heading)};
+      margin-bottom: var(--current-headline-spacing);
 
-  &.hl-h2 {
-    --hl-font-size-multi: 2;
-  }
+      .ce--topline {
+        margin-bottom: calc(var(--current-headline-gap) * 1.75);
+      }
 
-  &.hl-h3 {
-    --hl-font-size-multi: 1.75;
-  }
+      .ce--subline {
+        margin-top: var(--current-headline-gap);
+      }
 
-  &.hl-h4 {
-    --hl-font-size-multi: 1.5;
-  }
-
-  &.hl-h5 {
-    --hl-font-size-multi: 1.25;
-  }
-
-  &.hl-h6 {
-    --hl-font-size-multi: 1;
-  }
-
-  .ce--topline {
-    --topline-font-size-multi: calc(var(--hl-font-size-multi) * 1.25);
-  }
-
-  .ce--subline {
-    --subline-font-size-multi: calc(var(--hl-font-size-multi) * 0.75);
+      @if $heading != 'h6' {
+        $next-heading: nth(map-keys($headings-font-sizes), index(map-keys($headings-font-sizes), $heading) + 1);
+        .ce--topline,
+        .ce--subline {
+          @include responsive-font-size($next-heading);
+        }
+      } @else {
+        .ce--topline,
+        .ce--subline {
+          font-size: $font-size-base;
+        }
+      }
+    }
   }
 }
 
-h1, .h1,
-h2, .h2,
-h3, .h3,
-h4, .h4,
-h5, .h5,
-h6, .h6 {
-  --hl-font-size-base: calc(var(--bs-body-font-size) * var(--hl-font-size-multi));
-  --hl-font-size-max-multi: 1;
-
-  --hl-font-size-min: var(--hl-font-size-base);
-  --hl-font-size-max: calc(var(--hl-font-size-base) * var(--hl-font-size-max-multi));
-  --hl-font-size-scale: 3vw;
-
-  display: block;
-  transition: color 0.3s ease-in-out;
-
-  font-size: clamp(var(--hl-font-size-min), var(--hl-font-size-scale), var(--hl-font-size-max));
-
-  > span:not[class] {
-    display: block;
-  }
-}
-
-h1, .h1 {
-  --hl-font-size-multi: 2.25;
-  --hl-font-size-max-multi: 1.5;
-  font-weight: var(--bs-h1-font-weight);
-}
-
-h2, .h2 {
-  --hl-font-size-multi: 2;
-  --hl-font-size-max-multi: 1.25;
-  font-weight: var(--bs-h2-font-weight);
-}
-
-h3, .h3 {
-  --hl-font-size-multi: 1.75;
-  font-weight: var(--bs-h3-font-weight);
-}
-
-h4, .h4 {
-  --hl-font-size-multi: 1.5;
-  font-weight: var(--bs-h4-font-weight);
-}
-
-h5, .h5 {
-  --hl-font-size-multi: 1.25;
-  font-weight: var(--bs-h5-font-weight);
-}
-
-h6, .h6 {
-  --hl-font-size-multi: 1;
-  font-weight: var(--bs-h6-font-weight);
-}
-
-.ce--topline,
-.ce--subline {
-  --hl-font-size-min: calc(var(--bs-body-font-size) * 1.1);
-  --hl-font-size-max: calc(var(--hl-font-size-base) * 1.25);
-  font-size: clamp(var(--hl-font-size-min), var(--hl-font-size-scale), var(--hl-font-size-max));
-  display: block;
-  transition: color 0.3s ease-in-out;
-}
-
-.ce--topline {
-  --hl-font-size-base: calc(var(--bs-body-font-size) * var(--topline-font-size-multi));
-  font-weight: var(--bs-topline-font-weight);
-  color: var(--bs-topline-color);
-}
-
-.ce--subline {
-  --hl-font-size-base: calc(var(--bs-body-font-size) * var(--subline-font-size-multi));
-  font-weight: var(--bs-subline-font-weight);
-  color: var(--bs-subline-color);
-}
-
-
+// Zusätzliche Stile (unverändert)
 .container .ce--headline > .container {
   margin: 0;
 }
 
 [class*="text-white"] .ce--headline {
-  --bs-headline-color: var(--bs-white);
+  --#{$prefix}headline-color: var(--#{$prefix}white);
+}
+
+// Mixin für Headline-Gewichte (unverändert)
+@mixin headline-weights {
+  @for $i from 1 through 6 {
+    h#{$i}, .h#{$i} {
+      &:not(:has([class*="h"])) {
+        font-weight: var(--bs-h#{$i}-font-weight, $headings-font-weight);
+      }
+    }
+  }
+}
+
+// Anwendung des Mixins (unverändert)
+@include headline-weights;
+
+// Responsive Anpassungen
+@include media-breakpoint-down(md) {
+  :root {
+    @include font-size(14px);
+  }
+
+  .ce--headline {
+    --#{$prefix}headline-base-gap: 0.125rem;
+
+    @each $heading in map-keys($headings-font-sizes) {
+      $heading-selector: '&.hl-#{$heading}, #{$heading}, .#{$heading}';
+      #{$heading-selector} {
+        --current-headline-spacing: calc(#{calculate-headline-spacing($heading)} * 0.8);
+      }
+    }
+  }
+}
+
+.ce--subline {
+  color: var(--bs-subline-color);
+  font-weight: var(--bs-subline-font-weight);
+}
+
+.ce--topline {
+  color: var(--bs-topline-color);
+  font-weight: var(--bs-topline-font-weight);
 }

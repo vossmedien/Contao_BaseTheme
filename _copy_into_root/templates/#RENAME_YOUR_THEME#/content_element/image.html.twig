@@ -1,0 +1,23 @@
+{% extends "@Contao_ContaoCoreBundle/content_element/image.html.twig" %}
+
+{% block figure_component %}
+    {% if figure.linkHref|default %}
+        {% set link_attributes = attrs(figure.linkAttributes(true)|default)
+            .setIfExists('title', figure.hasLightbox and figure.hasMetadata ? figure.metadata.title : null)
+            .mergeWith(figure.options.link_attr|default)
+            .mergeWith(link_attributes|default)
+        %}
+        <a{{ link_attributes }}>
+    {% endif %}
+
+    {{ parent() }}
+
+    {% if figure.linkHref|default %}
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block media_link %}
+    {# Überschreiben des media_link Blocks, um den inneren Link zu entfernen #}
+    {{ block('media') }}
+{% endblock %}

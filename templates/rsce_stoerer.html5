@@ -4,126 +4,98 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
     $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_stoerer.js"></script>';
 }
 
-// Dynamische Stile für jedes Störer-Element
+// Hilfsfunktion zum Decodieren der Farbwerte
+function decodeColor($color) {
+    return html_entity_decode($color, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+
+// Generiere dynamische Stile
 $styles = '';
 $counterElements = 0;
 
-// Bestimmt die zusätzlichen Klassen basierend auf den Positionierungsvariablen
-$additionalClasses = '';
-$additionalClasses .= (!empty($this->alternate_top_position) ? ' is-top' : '');
-$additionalClasses .= (!empty($this->alternate_bottom_position) ? ' is-bottom' : '');
-$additionalClasses .= (!empty($this->alternate_right_position) ? ' is-right' : '');
-$additionalClasses .= (!empty($this->alternate_left_position) ? ' is-left' : '');
+// Bestimme zusätzliche Klassen basierend auf Positionierungsvariablen
+$additionalClasses = [];
+if (!empty($this->alternate_top_position)) $additionalClasses[] = 'is-top';
+if (!empty($this->alternate_bottom_position)) $additionalClasses[] = 'is-bottom';
+if (!empty($this->alternate_right_position)) $additionalClasses[] = 'is-right';
+if (!empty($this->alternate_left_position)) $additionalClasses[] = 'is-left';
+$additionalClassesString = implode(' ', $additionalClasses);
 
-// Bestimmt die Rotationsstile für das äußere Element
-$rotationStyle = (!empty($this->text_rotation)) ? "transform: rotate({$this->text_rotation}deg);" : '';
+// Bestimme Rotationsstile für das äußere Element
+//$rotationStyle = !empty($this->text_rotation) ? "transform: rotate({$this->text_rotation}deg);" : '';
 
 foreach ($this->stoerer as $stoerer) {
     $uniqueId = 'stoerer-' . $this->id . '-' . $counterElements;
 
-    // Text- und Hintergrundfarben für jedes Element
-    if (isset($stoerer->text_color)) {
-        $textColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->text_color);
-        $styles .= "#$uniqueId { color: $textColor; }";
+    // Generiere Stile
+    if (!empty($stoerer->text_color)) {
+        $textColor = decodeColor($stoerer->text_color);
+        $styles .= "#$uniqueId, #$uniqueId .stoerer--content, #$uniqueId a { color: $textColor; }";
     }
-    if (isset($stoerer->bg_color)) {
-        $bgColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->bg_color);
+    if (!empty($stoerer->bg_color)) {
+        $bgColor = decodeColor($stoerer->bg_color);
         $styles .= "#$uniqueId { background-color: $bgColor; }";
     }
-
-    // Hover-Stile für jedes Element
-    if (isset($stoerer->text_hover_color)) {
-        $hoverTextColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->text_hover_color);
-        $styles .= "#$uniqueId:hover { color: $hoverTextColor !important; }";
+    if (!empty($stoerer->text_hover_color)) {
+        $hoverTextColor = decodeColor($stoerer->text_hover_color);
+        $styles .= "#$uniqueId:hover, #$uniqueId:hover .stoerer--content, #$uniqueId:hover a { color: $hoverTextColor !important; }";
     }
-    if (isset($stoerer->bg_hover_color)) {
-        $hoverBgColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->bg_hover_color);
+    if (!empty($stoerer->bg_hover_color)) {
+        $hoverBgColor = decodeColor($stoerer->bg_hover_color);
         $styles .= "#$uniqueId:hover { background-color: $hoverBgColor !important; }";
     }
 
     $counterElements++;
 }
 
-// Fügt die definierten Stile in einem <style>-Tag hinzu
+// Füge die definierten Stile in einem <style>-Tag hinzu
 if (!empty($styles)) {
     echo "<style>$styles</style>";
 }
 ?>
 <!-- indexer::stop -->
-<div <?php echo $this->cssID; ?> class="<?php if ($this->is_fixed): ?>is-fixed<?php endif; ?> content--element <?php echo str_replace("container", "", $this->class) . $additionalClasses; ?>"
-                                 style="<?php
-                                 echo(!empty($this->alternate_top_position) ? 'top: ' . $this->alternate_top_position . '; ' : '');
-                                 echo(!empty($this->alternate_bottom_position) ? 'bottom: ' . $this->alternate_bottom_position . '; ' : '');
-                                 echo(!empty($this->alternate_right_position) ? 'right: ' . $this->alternate_right_position . '; ' : '');
-                                 echo(!empty($this->alternate_left_position) ? 'left: ' . $this->alternate_left_position . '; ' : '');
-                                 echo $rotationStyle;
-                                 ?>">
+<div <?php echo $this->cssID; ?> class="<?php echo ($this->is_fixed ? 'is-fixed ' : '') . 'content--element ' . str_replace("container", "", $this->class) . ' ' . $additionalClassesString; ?>"
+     style="<?php
+     echo !empty($this->alternate_top_position) ? "top: {$this->alternate_top_position};" : '';
+     echo !empty($this->alternate_bottom_position) ? "bottom: {$this->alternate_bottom_position};" : '';
+     echo !empty($this->alternate_right_position) ? "right: {$this->alternate_right_position};" : '';
+     echo !empty($this->alternate_left_position) ? "left: {$this->alternate_left_position};" : '';
+     //echo $rotationStyle;
+     ?>">
     <?php $counterElements = 0; foreach ($this->stoerer as $stoerer): ?>
         <?php
-         $uniqueId = 'stoerer-' . $this->id . '-' . $counterElements;
+        $uniqueId = 'stoerer-' . $this->id . '-' . $counterElements;
         $isExpandableClass = isset($this->expand) && $this->expand ? 'is-expandable' : '';
-        $animationClass = isset($stoerer->animation_type) ? $stoerer->animation_type : '';
-
-        // Positionierungs- und Rotationsstile für jedes Element
+        $animationClass = $stoerer->animation_type ?? '';
         $elementStyles = isset($stoerer->text_rotation) ? "transform: rotate({$stoerer->text_rotation}deg);" : '';
         ?>
 
-        <div id="<?php echo $uniqueId; ?>" class="ce--stoerer <?php echo $isExpandableClass; ?> <?php echo $animationClass; ?>" style="<?php echo $elementStyles; ?> --stoerer-width: <?php echo $this->size[0]; ?>px;">
+        <div id="<?php echo $uniqueId; ?>" class="ce--stoerer <?php echo $isExpandableClass; ?> <?php echo $animationClass; ?>"
+        >
             <?php if ($stoerer->link_url): ?>
-                <a href="<?= $stoerer->link_url; ?>" <?php if ($stoerer->new_tab): ?>target="_blank"<?php endif; ?>></a>
+                <a href="<?= $stoerer->link_url; ?>" <?php if ($stoerer->new_tab): ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>></a>
             <?php endif; ?>
 
             <?php if (isset($stoerer->img) && $stoerer->img): ?>
                 <?php
-                $imageObject = \Contao\FilesModel::findByUuid($stoerer->img);
-                if ($imageObject !== null && strtolower(pathinfo($imageObject->path, PATHINFO_EXTENSION)) === 'svg') {
-                    // SVG direkt laden
-                    $projectDir = \Contao\System::getContainer()->getParameter('kernel.project_dir');
-                    $svgContent = file_get_contents($projectDir . '/' . $imageObject->path);
-
-                    // Stil für Breite und Höhe erstellen
-                    $style = '';
-                    if (!empty($this->size[0])) {
-                        //$style .= 'min-width:' . $this->size[0] . 'px; ';
-                    }
-                    if (!empty($this->size[1])) {
-                        $style .= 'height:' . $this->size[1] . 'px; ';
-                    }
-
-                    // Farben korrigieren und SVG ausgeben
-                    $fillColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->text_color);
-                    if (!empty($fillColor)) {
-                        $svgContent = preg_replace('/<svg(.*?)>/', "<svg$1 style=\"$style fill: $fillColor;\"", $svgContent, 1);
-                    } else {
-                        $svgContent = preg_replace('/<svg(.*?)>/', "<svg$1 style=\"$style fill: var(--bs-primary);\"", $svgContent, 1);
-                    }
-
-
-                    echo $svgContent;
-
-                    $uniqueId = 'stoerer-' . $this->id . '-' . $counterElements;
-                    $hoverColor = str_replace(array('&#40;', '&#41;'), array('(', ')'), $stoerer->text_hover_color);
-
-                    if (!empty($hoverColor)) {
-                        echo "<style>#$uniqueId:hover svg { fill: $hoverColor !important; }</style>";
-                    } else {
-                        //echo "<style>#$uniqueId:hover svg { fill: var(--bs-secondary) !important; }</style>";
-                    }
-                } else {
-                    // Helper-Funktion für andere Bildtypen verwenden
-                    echo VSM_HelperFunctions\ImageHelper::generateImageHTML($stoerer->img, strip_tags($stoerer->content), null, $this->size, null, false);
-                }
+                echo VSM_HelperFunctions\ImageHelper::generateImageHTML($stoerer->img, strip_tags($stoerer->content), null, $this->size, $stoerer->img_mobile ? "d-none d-md-block":"", false);
                 ?>
             <?php endif; ?>
 
+               <?php if (isset($stoerer->img_mobile) && $stoerer->img_mobile): ?>
+                <?php
+                echo VSM_HelperFunctions\ImageHelper::generateImageHTML($stoerer->img_mobile, strip_tags($stoerer->content), null, $this->size_mobile, "d-md-none", false);
+                ?>
+            <?php endif; ?>
+
+
             <?php if (isset($stoerer->content) && $stoerer->content): ?>
                 <div class="stoerer--content">
-                    <?= $stoerer->content; ?>
+                    <div class="stoerer-content--inner"><?= $stoerer->content; ?></div>
                 </div>
             <?php endif; ?>
         </div>
 
-
-    <?php     $counterElements++; endforeach; ?>
+    <?php $counterElements++; endforeach; ?>
 </div>
 <!-- indexer::continue -->

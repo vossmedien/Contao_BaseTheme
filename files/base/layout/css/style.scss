@@ -10,9 +10,6 @@
 
 
 @import "scss-variables";
-@import "variable-overwritings";
-@import "_theme/variables";
-
 
 @import "../_vendor/node_modules/bootstrap/scss/variables";
 @import "../_vendor/node_modules/bootstrap/scss/variables-dark";
@@ -130,15 +127,15 @@ html {
       scroll-behavior: smooth;
       scroll-margin-top: var(--bs-scrolloffset);
     }
-
-    &#tinymce {
-      @include padding(7px 12px);
-      opacity: 1;
-    }
   }
 
   @import "_theme/includes";
 }
+
+[data-bs-theme=dark]{
+  color: var(--bs-body-color);
+}
+
 
 @import "_theme/styles";
 

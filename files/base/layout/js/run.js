@@ -1,10 +1,11 @@
 import {setSwitchingcardsHeight} from "./elementHeightAdjustments.js";
 import {initializeSmoothScrolling, scrollToTop} from "./smoothScrolling.js";
 import {setupFunctions} from "./cookieManager.js";
-import {initializeMarginAdjustments} from "./marginPaddingAdjustments.js";
+import {adjustPullElements} from "./marginPaddingAdjustments.js";
 import {
     addBootstrapClasses,
     adjustTableResponsive,
+    adjustContentBox
 } from "./classStyleManipulation.js";
 import {addPlaceholders} from "./floatingLabels.js";
 import {
@@ -58,34 +59,57 @@ const initMobileNav = () => {
 };
 
 const initAnimations = () => {
-    const elements = document.querySelectorAll('*:not(html):not([data-aos])[class*="animate__"], [data-aos]');
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                const element = entry.target;
-                const animateClass = element.getAttribute('data-aos');
-
-                if (animateClass) {
-                    requestAnimationFrame(() => {
-                        element.classList.add(animateClass, 'animate__animated');
-                    });
-
-                    observer.unobserve(element);
-                }
+    const initAnimateElements = () => {
+        const animateElements = document.querySelectorAll('[class*="animate__"]');
+        animateElements.forEach(element => {
+            const animateClasses = Array.from(element.classList).filter(cls => cls.startsWith('animate__'));
+            if (animateClasses.length > 0) {
+                const animateClassString = animateClasses.join(' ');
+                element.classList.remove(...animateClasses);
+                element.setAttribute('data-animation', animateClassString);
             }
         });
-    }, {threshold: 0.1, rootMargin: '50px'});
+    };
 
-    elements.forEach(element => {
-        const animateClasses = Array.from(element.classList).filter(cls => cls.startsWith('animate__'));
-        if (animateClasses.length > 0) {
-            const animateClassString = animateClasses.join(' ');
-            element.classList.remove(...animateClasses);
-            element.setAttribute('data-aos', animateClassString);
-        }
-        observer.observe(element);
-    });
+    const initAosElements = () => {
+        return document.querySelectorAll('[data-aos]');
+    };
+
+    const observeElements = (elements) => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const element = entry.target;
+                    const parentContainer = element.parentElement;
+
+                    // Finden Sie alle zu animierenden Elemente im selben unmittelbaren Elternelement
+                    const siblingElements = Array.from(parentContainer.children).filter(child =>
+                        child.hasAttribute('data-animation') || child.hasAttribute('data-aos')
+                    );
+
+                    siblingElements.forEach((siblingElement, index) => {
+                        const animateClass = siblingElement.getAttribute('data-animation') || siblingElement.getAttribute('data-aos');
+
+                        if (animateClass) {
+                            requestAnimationFrame(() => {
+                                siblingElement.classList.add(...animateClass.split(' '), 'animate__animated');
+                                siblingElement.style.animationDelay = `${index * 0.2}s`;
+                            });
+
+                            observer.unobserve(siblingElement);
+                        }
+                    });
+                }
+            });
+        }, {threshold: 0.1, rootMargin: '50px'});
+
+        elements.forEach(element => observer.observe(element));
+    };
+
+    initAnimateElements();
+    const aosElements = initAosElements();
+    const allAnimatedElements = [...document.querySelectorAll('[data-animation]'), ...aosElements];
+    observeElements(allAnimatedElements);
 };
 
 const rotateImage = () => {
@@ -177,13 +201,18 @@ DomLoadFunctions.push(
     changeNavLinksAfterLoad,
     scrollToTop,
     setupFunctions,
-    initializeMarginAdjustments,
+    //initializeMarginAdjustments,
+    adjustPullElements,
     addBootstrapClasses,
     adjustTableResponsive,
+    adjustContentBox,
     addPlaceholders
 );
 
 scrollFunctions.push(changeAnchorLinks);
+ResizeFunctions.push(adjustPullElements);
+
+
 
 const executeFunctions = (functions) => {
     functions.forEach((func) => {
