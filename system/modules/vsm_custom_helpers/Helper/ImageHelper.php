@@ -62,8 +62,6 @@ class ImageHelper
                 $config->setMode($mode);
             }
 
-            //$config->setPreserveColor(true);
-
             try {
                 $baseImage = $imageFactory->create($absoluteImagePath, $config);
                 $baseImagePath = $baseImage->getPath();
@@ -74,24 +72,24 @@ class ImageHelper
 
         $maxWidth = $size[0] ?? null;
         $breakpoints = [
+            //['maxWidth' => 576, 'width' => 576],
+            ['maxWidth' => 768, 'width' => 768],
             ['maxWidth' => 992, 'width' => 992],
             ['maxWidth' => 1200, 'width' => 1200],
             ['maxWidth' => 1600, 'width' => 1600],
-            ['maxWidth' => 1920, 'width' => 1920],
-            ['maxWidth' => null, 'width' => $maxWidth]
+            ['maxWidth' => null, 'width' => $maxWidth ?: 1920]
         ];
 
         $sources = [];
-        $webpSources = [];
         $processedSrcsets = [];
-
-        $imagine = new \Imagine\Gd\Imagine();
-        //$imagine->setOptions(['gd.jpeg_ignore_warning' => true]);
+        $srcset = [];
+        $sizes = [];
 
         foreach ($breakpoints as $breakpoint) {
             $config = new ResizeConfiguration();
             $width = $breakpoint['width'];
             $mode = $size[2] ?? "proportional";
+
             if ($maxWidth && $width > $maxWidth) {
                 continue;
             }
@@ -104,11 +102,13 @@ class ImageHelper
                 $config->setMode($mode);
             }
 
-            //$config->setPreserveColor(true);
-
             try {
                 $processedImage = $imageFactory->create($baseImagePath, $config);
                 $processedImagePath = $processedImage->getPath();
+
+                // Bildoptimierung nach der Generierung
+                self::optimizeImage($processedImagePath);
+
                 $currentDomain = $_SERVER['HTTP_HOST'];
                 $imageUrl = 'https://' . $currentDomain . str_replace($rootDir, '', $processedImagePath);
 
@@ -120,16 +120,13 @@ class ImageHelper
                 $imageSrc = str_replace($rootDir, '', $processedImagePath);
                 $imageSrc = dirname($imageSrc) . '/' . rawurlencode(basename($imageSrc));
 
-                $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $processedImagePath);
-                if (!file_exists($webpPath)) {
-                    $imagineImage = $imagine->open($processedImagePath);
-                    $imagineImage->save($webpPath, [
-                        'webp_quality' => 100,
-                        'webp_lossless' => true
-                    ]);
+                // Adaptive Bildgrößen
+                $srcset[] = $imageSrc . ' ' . $breakpoint['width'] . 'w';
+                if ($breakpoint['maxWidth']) {
+                    $sizes[] = '(max-width: ' . $breakpoint['maxWidth'] . 'px) ' . $breakpoint['width'] . 'px';
+                } else {
+                    $sizes[] = $breakpoint['width'] . 'px';
                 }
-                $webpSrc = str_replace($rootDir, '', $webpPath);
-                $webpSrc = dirname($webpSrc) . '/' . rawurlencode(basename($webpSrc));
 
                 if ($breakpoint['maxWidth']) {
                     if (!in_array($imageSrc, $processedSrcsets)) {
@@ -137,15 +134,8 @@ class ImageHelper
                         $sources[] = "<source data-srcset=\"{$imageSrc}\" media=\"{$mediaQuery}\">";
                         $processedSrcsets[] = $imageSrc;
                     }
-
-                    if (!in_array($webpSrc, $processedSrcsets)) {
-                        $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
-                        $webpSources[] = "<source data-srcset=\"{$webpSrc}\" media=\"{$mediaQuery}\" type=\"image/webp\">";
-                        $processedSrcsets[] = $webpSrc;
-                    }
-                } elseif (!$breakpoint['maxWidth']) {
+                } else {
                     $sources[] = "<source data-srcset=\"{$imageSrc}\">";
-                    $webpSources[] = "<source data-srcset=\"{$webpSrc}\" type=\"image/webp\">";
                 }
             } catch (\Exception $e) {
                 continue;
@@ -160,7 +150,6 @@ class ImageHelper
             $lightboxConfig->setWidth(1200);
             $lightboxConfig->setHeight(1200);
             $lightboxConfig->setMode('box'); // Keeps aspect ratio and fills the box
-            //$lightboxConfig->setPreserveColor(true);
 
             try {
                 $lightboxImage = $imageFactory->create($absoluteImagePath, $lightboxConfig);
@@ -180,7 +169,13 @@ class ImageHelper
         }
         $lazyAttribute = $lazy ? ' loading="lazy"' : '';
 
-        $alt = !empty($meta['alt']) ? $meta['alt'] : (!empty($meta['title']) ? $meta['title'] : (!empty($altText) ? $altText : (!empty($headline) ? $headline : '')));
+        // Verbesserte Alt-Text-Generierung
+        $alt = !empty($meta['alt']) ? $meta['alt'] :
+            (!empty($meta['title']) ? $meta['title'] :
+                (!empty($altText) ? $altText :
+                    (!empty($headline) ? $headline :
+                        'Bild ' . basename($imageSrc)))); // Fallback mit Dateinamen
+
         $title = !empty($meta['title']) ? $meta['title'] : (!empty($meta['caption']) ? $meta['caption'] : (!empty($headline) ? $headline : (!empty($meta['alt']) ? $meta['alt'] : (!empty($altText) ? $altText : ''))));
         $link = !empty($meta['link']) ? $meta['link'] : '';
         $caption = !empty($meta['caption']) ? $meta['caption'] : '';
@@ -195,16 +190,12 @@ class ImageHelper
             $linkEnd = '</a>';
         }
 
+        $srcsetAttribute = implode(', ', $srcset);
+        $sizesAttribute = implode(', ', $sizes) . ', 100vw';
+
         $imgTag = '<picture>';
-        $imgTag .= implode("\n", $webpSources);
         $imgTag .= implode("\n", $sources);
-
-        if ($webpSources || $sources) {
-            $imgTag .= '<img ' . $classAttribute . ' data-src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
-        } elseif ($imageSrc) {
-            $imgTag .= '<img ' . $classAttribute . ' data-src="' . $imageSrc . '" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
-        }
-
+        $imgTag .= '<img ' . $classAttribute . ' data-src="' . $imageSrc . '" data-srcset="' . $srcsetAttribute . '" sizes="' . $sizesAttribute . '" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
         $imgTag .= '</picture>';
 
         $finalOutput = '<figure>' . $imgTag;
@@ -230,6 +221,46 @@ class ImageHelper
         }
 
         return $finalOutput;
+    }
+
+// Neue Funktion für die Bildoptimierung
+    private static function optimizeImage($imagePath)
+    {
+        $extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+
+        if ($extension === 'jpg' || $extension === 'jpeg') {
+            if (function_exists('imagecreatefromjpeg')) {
+                $image = @imagecreatefromjpeg($imagePath);
+                if ($image === false) {
+                    error_log("Failed to create image from JPEG: $imagePath");
+                    return;
+                }
+                $result = imagejpeg($image, $imagePath, 85);
+                if ($result === false) {
+                    error_log("Failed to save optimized JPEG: $imagePath");
+                }
+                imagedestroy($image);
+            } else {
+                error_log("imagecreatefromjpeg function not available");
+            }
+        } elseif ($extension === 'png') {
+            if (function_exists('imagecreatefrompng')) {
+                $image = @imagecreatefrompng($imagePath);
+                if ($image === false) {
+                    error_log("Failed to create image from PNG: $imagePath");
+                    return;
+                }
+                $result = imagepng($image, $imagePath, 9);
+                if ($result === false) {
+                    error_log("Failed to save optimized PNG: $imagePath");
+                }
+                imagedestroy($image);
+            } else {
+                error_log("imagecreatefrompng function not available");
+            }
+        } else {
+            error_log("Unsupported image format for optimization: $extension");
+        }
     }
 
     public static function generateImageURL($imageSource, $size = null)

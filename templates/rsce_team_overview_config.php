@@ -55,7 +55,7 @@ return array(
                 'phone' => array(
                     'label' => array('Telefonnummer', ''),
                     'inputType' => 'text',
-                    'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'description' => array(
                     'label' => array('Beschreibung', ''),
