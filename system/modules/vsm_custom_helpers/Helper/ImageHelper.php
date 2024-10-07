@@ -107,7 +107,11 @@ class ImageHelper
                 $processedImagePath = $processedImage->getPath();
 
                 // Bildoptimierung nach der Generierung
-                self::optimizeImage($processedImagePath);
+                try {
+                    self::optimizeImage($processedImagePath);
+                } catch (\Exception $e) {
+                    error_log("Image optimization failed: " . $e->getMessage());
+                }
 
                 $currentDomain = $_SERVER['HTTP_HOST'];
                 $imageUrl = 'https://' . $currentDomain . str_replace($rootDir, '', $processedImagePath);
