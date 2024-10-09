@@ -243,7 +243,7 @@ class ImageHelper
                     error_log("Failed to create image from JPEG: $imagePath");
                     return;
                 }
-                $result = imagejpeg($image, $imagePath, 85);
+                $result = imagejpeg($image, $imagePath, 95);
                 if ($result === false) {
                     error_log("Failed to save optimized JPEG: $imagePath");
                 }
