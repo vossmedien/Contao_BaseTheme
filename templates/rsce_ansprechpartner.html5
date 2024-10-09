@@ -24,7 +24,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
             </div>
 
             <div class="col-md-7">
-                <div class="row justify-content-center g-2 ">
+                <div class="row gy-3 justify-content-center g-md-2 ">
                     <?php foreach ($this->partners as $partner): ?>
                         <div class="col-md-6 col-lg-4" data-aos="<?php if ($partner->animation_type) : ?><?php echo $partner->animation_type; ?><?php endif; ?>">
                             <div class="text-center text-base">

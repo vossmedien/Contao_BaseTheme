@@ -70,6 +70,11 @@ div:has([class*="text-"]):has([class*="-center"]) {
   .content--element:has(.pull-bottom){
     padding-bottom: 0 !important;
   }
+  .pulled-up-element{
+    .row > div:last-child{
+      padding-top: calc((var(--main-gap)) + 150px);
+    }
+  }
 }
 
 @include media-breakpoint-down(lg) {

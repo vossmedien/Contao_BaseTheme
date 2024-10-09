@@ -12,8 +12,8 @@
     padding-bottom: 50px;
     @include media-breakpoint-up(lg) {
       //min-height: 700px;
-      padding-top: 225px;
-      padding-bottom: 100px;
+      padding-top: 200px;
+      padding-bottom: 150px;
     }
   }
 
@@ -46,7 +46,7 @@
     .img-container + .container {
       padding-block: 75px;
       @include media-breakpoint-up(lg) {
-        padding-block: 100px;
+        padding-block: 100px 125px;
       }
 
     }

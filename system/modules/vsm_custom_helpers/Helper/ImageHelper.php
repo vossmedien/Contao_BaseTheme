@@ -6,7 +6,7 @@ use Contao\FilesModel;
 use Contao\System;
 use Contao\StringUtil;
 use Contao\Image\ResizeConfiguration;
-
+use Contao\Image\Image;
 
 class ImageHelper
 {
@@ -72,12 +72,12 @@ class ImageHelper
 
         $maxWidth = $size[0] ?? null;
         $breakpoints = [
-            //['maxWidth' => 576, 'width' => 576],
-            ['maxWidth' => 768, 'width' => 768],
-            ['maxWidth' => 992, 'width' => 992],
-            ['maxWidth' => 1200, 'width' => 1200],
-            ['maxWidth' => 1600, 'width' => 1600],
-            ['maxWidth' => null, 'width' => $maxWidth ?: 1920]
+            // ['maxWidth' => 576, 'width' => 576, 'retina' => 1152],
+            ['maxWidth' => 768, 'width' => 768, 'retina' => 1536],
+            ['maxWidth' => 992, 'width' => 992, 'retina' => 1984],
+            ['maxWidth' => 1200, 'width' => 1200, 'retina' => 2400],
+            ['maxWidth' => 1600, 'width' => 1600, 'retina' => 3200],
+            ['maxWidth' => null, 'width' => $maxWidth ?: 1920, 'retina' => ($maxWidth ?: 1920) * 2]
         ];
 
         $sources = [];
@@ -88,25 +88,42 @@ class ImageHelper
         foreach ($breakpoints as $breakpoint) {
             $config = new ResizeConfiguration();
             $width = $breakpoint['width'];
+            $retinaWidth = $width * 2;
             $mode = $size[2] ?? "proportional";
 
             if ($maxWidth && $width > $maxWidth) {
                 continue;
             }
 
-            if ($width !== "" && $width != NULL) {
+            // Prüfen, ob das Originalbild kleiner ist als die Retina-Breite
+            $originalImageInfo = getimagesize($baseImagePath);
+            if ($originalImageInfo === false) {
+                error_log("Unable to get image size for: $baseImagePath");
+                continue;
+            }
+            $originalWidth = $originalImageInfo[0];
+
+            if ($originalWidth < $retinaWidth) {
+                // Verwende das Originalbild als 1x Version
+                $config->setWidth($originalWidth);
+                $retinaConfig = clone $config;
+            } else {
+                // Normales Verhalten für größere Bilder
                 $config->setWidth($width);
+                $retinaConfig = clone $config;
+                $retinaConfig->setWidth($retinaWidth);
             }
 
             if ($mode !== "") {
                 $config->setMode($mode);
+                $retinaConfig->setMode($mode);
             }
 
             try {
+                // Normales Bild
                 $processedImage = $imageFactory->create($baseImagePath, $config);
                 $processedImagePath = $processedImage->getPath();
 
-                // Bildoptimierung nach der Generierung
                 try {
                     self::optimizeImage($processedImagePath);
                 } catch (\Exception $e) {
@@ -124,24 +141,48 @@ class ImageHelper
                 $imageSrc = str_replace($rootDir, '', $processedImagePath);
                 $imageSrc = dirname($imageSrc) . '/' . rawurlencode(basename($imageSrc));
 
-                // Adaptive Bildgrößen
-                $srcset[] = $imageSrc . ' ' . $breakpoint['width'] . 'w';
+                $srcset[] = $imageSrc . ' ' . $config->getWidth() . 'w';
+
+                // Retina Bild
+                if ($originalWidth >= $retinaWidth) {
+                    $retinaImage = $imageFactory->create($baseImagePath, $retinaConfig);
+                    $retinaImagePath = $retinaImage->getPath();
+
+                    try {
+                        self::optimizeImage($retinaImagePath);
+                    } catch (\Exception $e) {
+                        error_log("Retina image optimization failed: " . $e->getMessage());
+                    }
+
+                    $retinaImageSrc = str_replace($rootDir, '', $retinaImagePath);
+                    $retinaImageSrc = dirname($retinaImageSrc) . '/' . rawurlencode(basename($retinaImageSrc));
+
+                    $srcset[] = $retinaImageSrc . ' ' . $retinaConfig->getWidth() . 'w';
+                }
+
                 if ($breakpoint['maxWidth']) {
-                    $sizes[] = '(max-width: ' . $breakpoint['maxWidth'] . 'px) ' . $breakpoint['width'] . 'px';
+                    $sizes[] = '(max-width: ' . $breakpoint['maxWidth'] . 'px) ' . $config->getWidth() . 'px';
                 } else {
-                    $sizes[] = $breakpoint['width'] . 'px';
+                    $sizes[] = '100vw'; // Verwende die volle Breite für größere Bildschirme
                 }
 
                 if ($breakpoint['maxWidth']) {
                     if (!in_array($imageSrc, $processedSrcsets)) {
                         $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
-                        $sources[] = "<source data-srcset=\"{$imageSrc}\" media=\"{$mediaQuery}\">";
+                        $retinaAttribute = $originalWidth >= $retinaWidth ? ", {$retinaImageSrc} 2x" : "";
+                        $sources[] = "<source data-srcset=\"{$imageSrc} 1x{$retinaAttribute}\" media=\"{$mediaQuery}\">";
                         $processedSrcsets[] = $imageSrc;
                     }
                 } else {
-                    $sources[] = "<source data-srcset=\"{$imageSrc}\">";
+                    $retinaAttribute = $originalWidth >= $retinaWidth ? ", {$retinaImageSrc} 2x" : "";
+                    $sources[] = "<source data-srcset=\"{$imageSrc} 1x{$retinaAttribute}\">";
                 }
+
+                // Debug-Ausgabe
+                error_log("Breakpoint: {$breakpoint['width']}px, Original width: {$originalWidth}px, Generated 1x width: {$config->getWidth()}px, Generated 2x width: " . ($originalWidth >= $retinaWidth ? $retinaConfig->getWidth() : "N/A") . "px");
+
             } catch (\Exception $e) {
+                error_log("Error processing image for breakpoint {$breakpoint['width']}px: " . $e->getMessage());
                 continue;
             }
         }
@@ -197,9 +238,12 @@ class ImageHelper
         $srcsetAttribute = implode(', ', $srcset);
         $sizesAttribute = implode(', ', $sizes) . ', 100vw';
 
+        $srcsetAttribute = implode(', ', $srcset);
+        $sizesAttribute = implode(', ', $sizes) . ', 100vw';
+
         $imgTag = '<picture>';
         $imgTag .= implode("\n", $sources);
-        $imgTag .= '<img ' . $classAttribute . ' data-src="' . $imageSrc . '" data-srcset="' . $srcsetAttribute . '" sizes="' . $sizesAttribute . '" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
+        $imgTag .= '<img ' . $classAttribute . ' src="' . $imageSrc . '" srcset="' . $srcsetAttribute . '" sizes="' . $sizesAttribute . '" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
         $imgTag .= '</picture>';
 
         $finalOutput = '<figure>' . $imgTag;
@@ -239,7 +283,7 @@ class ImageHelper
                     error_log("Failed to create image from JPEG: $imagePath");
                     return;
                 }
-                $result = imagejpeg($image, $imagePath, 85);
+                $result = imagejpeg($image, $imagePath, 90);
                 if ($result === false) {
                     error_log("Failed to save optimized JPEG: $imagePath");
                 }
@@ -254,7 +298,10 @@ class ImageHelper
                     error_log("Failed to create image from PNG: $imagePath");
                     return;
                 }
-                $result = imagepng($image, $imagePath, 9);
+                // Erhalte Transparenz
+                imagealphablending($image, false);
+                imagesavealpha($image, true);
+                $result = imagepng($image, $imagePath, 6); // Reduzierte Kompression für bessere Qualität
                 if ($result === false) {
                     error_log("Failed to save optimized PNG: $imagePath");
                 }
