@@ -9,13 +9,12 @@
 @import "../_vendor/node_modules/bootstrap/scss/functions";
 
 
-@import "scss-variables";
+@import "_theme/variables";
 
 @import "../_vendor/node_modules/bootstrap/scss/variables";
 @import "../_vendor/node_modules/bootstrap/scss/variables-dark";
 
 @import "../_vendor/node_modules/bootstrap/scss/maps";
-@import "map-overwrites";
 @import "_theme/map-overwrites";
 
 // Layout & components
@@ -62,8 +61,6 @@
 @import "icon-package";
 
 @import "_theme/fonts";
-
-@import "root-variables";
 @import "_theme/root-variables";
 
 

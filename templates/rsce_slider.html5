@@ -187,7 +187,6 @@ window.addEventListener('DOMContentLoaded', function () {
             $desktopColumns = $this->masonry_spalten ?: $defaultDesktopColumns;
             $mobileColumns = $this->masonry_spalten_mobile ?: $defaultMobileColumns;
             ?>
-
             loadMacy(function () {
                 macy_<?= $this->id; ?> = Macy({
                     container: '.macy-container',

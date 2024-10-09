@@ -1,9 +1,10 @@
-/* Error: Undefined variable.
- *    ,
- * 22 |   box-shadow: $box-shadow;
- *    |               ^^^^^^^^^^^
- *    '
- *   swiper.scss 22:15  root stylesheet */
+/* Error: Undefined mixin.
+ *   ,
+ * 3 | /      @include media-breakpoint-down(md) {
+ * 4 | |            padding-inline: 3rem;
+ * 5 | \      }
+ *   '
+ *   swiper.scss 3:6  root stylesheet */
 
 body::before {
   font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
@@ -13,5 +14,5 @@ body::before {
   padding: 1em;
   margin-bottom: 1em;
   border-bottom: 2px solid black;
-  content: "Error: Undefined variable.\a    \2577 \a 22 \2502    box-shadow: $box-shadow;\a    \2502                ^^^^^^^^^^^\a    \2575 \a   swiper.scss 22:15  root stylesheet";
+  content: "Error: Undefined mixin.\a   \2577 \a 3 \2502  \250c       @include media-breakpoint-down(md) {\a 4 \2502  \2502             padding-inline: 3rem;\a 5 \2502  \2514       }\a   \2575 \a   swiper.scss 3:6  root stylesheet";
 }

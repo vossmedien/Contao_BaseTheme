@@ -1,0 +1,93 @@
+$theme-colors: (
+        "primary": $primary,
+        "secondary": $secondary,
+        "tertiary": $tertiary,
+        "red": #871623,
+        "blue": #00274a,
+        "purple": #6610f2,
+        "success": #dbe8e2,
+        "info": #d1ecf1,
+        "warning": #fff3cd,
+        "danger": #f8d7da,
+        "light": $gray-100,
+        "dark": $gray-900,
+);
+
+
+$spacers: (
+        0: 0,
+        1: 0.5rem,
+        2: 1rem,
+        3: 1.5rem,
+        4: 2rem,
+        5: 2.5rem,
+        6: 3rem,
+        7: 3.5rem,
+        8: 4rem,
+        9: 4.5rem,
+        10: 5rem,
+);
+
+$gutters: (
+        0: 0,
+        1: $grid-gutter-width * 0.5,
+        2: $grid-gutter-width,
+        3: $grid-gutter-width * 2,
+        4: $grid-gutter-width * 3,
+        5: $grid-gutter-width * 4,
+);
+
+//CSS Variablen beachten
+$container-max-widths: (
+        sm: 100%,
+        md: 100%,
+        lg: 100%,
+        xl: 1140px,
+        xxl: 1600px
+);
+
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1640px,
+);
+
+
+
+
+$headings-font-sizes: (
+        'h1': (
+                'mobile': 32px,
+                'tablet': 46px,
+                'desktop': 61px
+        ),
+        'h2': (
+                'mobile': 29px,
+                'tablet': 39px,
+                'desktop': 49px
+        ),
+        'h3': (
+                'mobile': 26px,
+                'tablet': 32px,
+                'desktop': 39px
+        ),
+        'h4': (
+                'mobile': 23px,
+                'tablet': 27px,
+                'desktop': 31px
+        ),
+        'h5': (
+                'mobile': 20px,
+                'tablet': 22px,
+                'desktop': 25px
+        ),
+        'h6': (
+                'mobile': 18px,
+                'tablet': 19px,
+                'desktop': 20px
+        )
+);

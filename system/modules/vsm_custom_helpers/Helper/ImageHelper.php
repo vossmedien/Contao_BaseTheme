@@ -6,7 +6,7 @@ use Contao\FilesModel;
 use Contao\System;
 use Contao\StringUtil;
 use Contao\Image\ResizeConfiguration;
-
+use Contao\Image\ResizeOptions;
 
 class ImageHelper
 {
@@ -37,27 +37,75 @@ class ImageHelper
         $absoluteImagePath = $rootDir . '/' . urldecode($relativeImagePath);
 
         if (!file_exists($absoluteImagePath)) {
-            echo "File does not exist: $absoluteImagePath\n";
-            return '';
+            error_log("File does not exist: $absoluteImagePath");
+            //return '';
         }
 
         $baseImagePath = $absoluteImagePath;
         $baseImagePath = dirname($baseImagePath) . "/" . rawurlencode(basename($baseImagePath));
 
+        // Überprüfen, ob es sich um eine SVG-Datei handelt
+        $isSvg = strtolower(pathinfo($baseImagePath, PATHINFO_EXTENSION)) === 'svg';
+
+        if ($isSvg) {
+            // Für SVGs verwenden wir die ursprüngliche Datei ohne Verarbeitung
+            $imageSrc = str_replace($rootDir, '', $baseImagePath);
+            $imageSrc = dirname($imageSrc) . '/' . rawurlencode(basename($imageSrc));
+
+            $alt = !empty($meta['alt']) ? $meta['alt'] : (!empty($altText) ? $altText : (!empty($headline) ? $headline : 'SVG Bild'));
+
+            $style = '';
+            if ($size && is_array($size)) {
+                $width = isset($size[0]) && $size[0] !== '' ? (int)$size[0] : null;
+                $height = isset($size[1]) && $size[1] !== '' ? (int)$size[1] : null;
+
+                if ($width) {
+                    $style .= "width: {$width}px; ";
+                }
+                if ($height) {
+                    $style .= "height: {$height}px; ";
+                }
+            }
+
+            $svgTag = sprintf('<img data-src="%s" alt="%s" class="lazy %s"%s>',
+                $imageSrc,
+                htmlspecialchars($alt),
+                htmlspecialchars($class),
+                $style ? ' style="' . htmlspecialchars($style) . '"' : ''
+            );
+
+            return '<figure>' . $svgTag . '</figure>';
+        }
+
+        // Rest des bestehenden Codes für Nicht-SVG-Bilder
+        $originalImageInfo = getimagesize($baseImagePath);
+        if ($originalImageInfo === false) {
+            error_log("Failed to get image size for: $baseImagePath");
+            //return '';
+        }
+        $originalWidth = (int)$originalImageInfo[0];
+        $originalHeight = (int)$originalImageInfo[1];
+
+        // Verdoppeln der übergebenen Größe
         if ($size && is_array($size)) {
-            $width = isset($size[0]) ? (int)$size[0] : null;
-            $height = isset($size[1]) ? (int)$size[1] : null;
+            $requestedWidth = isset($size[0]) && $size[0] !== '' ? (int)$size[0] : null;
+            $requestedHeight = isset($size[1]) && $size[1] !== '' ? (int)$size[1] : null;
+            $doubledWidth = $requestedWidth ? $requestedWidth * 2 : null;
+            $doubledHeight = $requestedHeight ? $requestedHeight * 2 : null;
             $mode = $size[2] ?? "proportional";
+
+            // Verwenden der verdoppelten Größe, wenn das Originalbild groß genug ist
+            $width = ($doubledWidth && $doubledWidth <= $originalWidth) ? $doubledWidth : $requestedWidth;
+            $height = ($doubledHeight && $doubledHeight <= $originalHeight) ? $doubledHeight : $requestedHeight;
 
             $config = new ResizeConfiguration();
 
-            if ($width !== "") {
+            if ($width !== null) {
                 $config->setWidth($width);
             }
-            if ($height !== "") {
+            if ($height !== null) {
                 $config->setHeight($height);
             }
-
             if ($mode !== "") {
                 $config->setMode($mode);
             }
@@ -65,92 +113,164 @@ class ImageHelper
             try {
                 $baseImage = $imageFactory->create($absoluteImagePath, $config);
                 $baseImagePath = $baseImage->getPath();
+                $baseWidth = $width;
+                $baseHeight = $height;
             } catch (\Exception $e) {
-                return '';
+                error_log("Error creating base image: " . $e->getMessage());
+                //return '';
             }
+        } else {
+            $baseWidth = $originalWidth;
+            $baseHeight = $originalHeight;
         }
 
-        $maxWidth = $size[0] ?? null;
         $breakpoints = [
-            //['maxWidth' => 576, 'width' => 576, 'retina' => 1152],
-            //['maxWidth' => 768, 'width' => 768, 'retina' => 1536],
-            ['maxWidth' => 992, 'width' => 992, 'retina' => 1984],
-            ['maxWidth' => 1200, 'width' => 1200, 'retina' => 2400],
-            ['maxWidth' => 1600, 'width' => 1600, 'retina' => 3200],
-            ['maxWidth' => null, 'width' => $maxWidth ?: 1920, 'retina' => ($maxWidth ?: 1920) * 2]
+            ['maxWidth' => 576, 'width' => 576],
+            ['maxWidth' => 768, 'width' => 768],
+            ['maxWidth' => 992, 'width' => 992],
+            ['maxWidth' => 1200, 'width' => 1200],
+            ['maxWidth' => 1600, 'width' => 1600],
+            ['maxWidth' => null, 'width' => $baseWidth]
         ];
 
         $sources = [];
         $processedSrcsets = [];
         $srcset = [];
+        $webpSrcset = [];
         $sizes = [];
 
         foreach ($breakpoints as $breakpoint) {
             $config = new ResizeConfiguration();
-            $width = $breakpoint['width'];
+            $width = (int)$breakpoint['width'];
             $mode = $size[2] ?? "proportional";
 
-            if ($maxWidth && $width > $maxWidth) {
+            if ($width > $baseWidth) {
                 continue;
             }
 
-            if ($width !== "" && $width != NULL) {
-                $config->setWidth($width);
-            }
-
+            $config->setWidth($width);
             if ($mode !== "") {
                 $config->setMode($mode);
             }
 
             try {
+                // Generiere normales Bild
                 $processedImage = $imageFactory->create($baseImagePath, $config);
                 $processedImagePath = $processedImage->getPath();
 
-                // Bildoptimierung nach der Generierung
+                // Generiere WebP-Version
+                $webpOptions = new ResizeOptions();
+                $webpOptions->setImagineOptions(['format' => 'webp']);
+                $webpImage = $imageFactory->create($baseImagePath, $config, $webpOptions);
+                $webpImagePath = $webpImage->getPath();
 
                 try {
                     self::optimizeImage($processedImagePath);
+                    self::optimizeImage($webpImagePath);
                 } catch (\Exception $e) {
                     error_log("Image optimization failed: " . $e->getMessage());
-                }
-
-
-                $currentDomain = $_SERVER['HTTP_HOST'];
-                $imageUrl = 'https://' . $currentDomain . str_replace($rootDir, '', $processedImagePath);
-
-                if (!file_exists($processedImagePath)) {
-                    $context = stream_context_create(['http' => ['timeout' => 0]]);
-                    @file_get_contents($imageUrl, false, $context);
                 }
 
                 $imageSrc = str_replace($rootDir, '', $processedImagePath);
                 $imageSrc = dirname($imageSrc) . '/' . rawurlencode(basename($imageSrc));
 
-                $srcset[] = $imageSrc . ' ' . $breakpoint['width'] . 'w';
+                $webpSrc = str_replace($rootDir, '', $webpImagePath);
+                $webpSrc = dirname($webpSrc) . '/' . rawurlencode(basename($webpSrc));
+
+                $srcset[] = $imageSrc . ' ' . $width . 'w';
+                $webpSrcset[] = $webpSrc . ' ' . $width . 'w';
+
+                // Retina Bild (2x und 3x für mobile, nur 2x für andere)
+                $retina2xWidth = min($width * 2, $originalWidth);
+                $retina3xWidth = min($width * 3, $originalWidth);
+                $retinaImageSrc = $imageSrc; // Default to normal image
+                $retinaWebpSrc = $webpSrc; // Default to normal WebP image
+                $retina3xImageSrc = $imageSrc; // Default to normal image for 3x
+                $retina3xWebpSrc = $webpSrc; // Default to normal WebP image for 3x
+
+                if ($retina2xWidth > $width) {
+                    $retina2xConfig = clone $config;
+                    $retina2xConfig->setWidth($retina2xWidth);
+                    $retina2xImage = $imageFactory->create($baseImagePath, $retina2xConfig);
+                    $retina2xImagePath = $retina2xImage->getPath();
+
+                    $retina2xWebpImage = $imageFactory->create($baseImagePath, $retina2xConfig, $webpOptions);
+                    $retina2xWebpImagePath = $retina2xWebpImage->getPath();
+
+                    try {
+                        self::optimizeImage($retina2xImagePath);
+                        self::optimizeImage($retina2xWebpImagePath);
+                    } catch (\Exception $e) {
+                        error_log("Retina 2x image optimization failed: " . $e->getMessage());
+                    }
+
+                    $retinaImageSrc = str_replace($rootDir, '', $retina2xImagePath);
+                    $retinaImageSrc = dirname($retinaImageSrc) . '/' . rawurlencode(basename($retinaImageSrc));
+                    $srcset[] = $retinaImageSrc . ' ' . $retina2xWidth . 'w';
+
+                    $retinaWebpSrc = str_replace($rootDir, '', $retina2xWebpImagePath);
+                    $retinaWebpSrc = dirname($retinaWebpSrc) . '/' . rawurlencode(basename($retinaWebpSrc));
+                    $webpSrcset[] = $retinaWebpSrc . ' ' . $retina2xWidth . 'w';
+                }
+
+                // 3x Version nur für mobile Breakpoints (576px und 768px)
+                if ($width <= 768 && $retina3xWidth > $retina2xWidth) {
+                    $retina3xConfig = clone $config;
+                    $retina3xConfig->setWidth($retina3xWidth);
+                    $retina3xImage = $imageFactory->create($baseImagePath, $retina3xConfig);
+                    $retina3xImagePath = $retina3xImage->getPath();
+
+                    $retina3xWebpImage = $imageFactory->create($baseImagePath, $retina3xConfig, $webpOptions);
+                    $retina3xWebpImagePath = $retina3xWebpImage->getPath();
+
+                    try {
+                        self::optimizeImage($retina3xImagePath);
+                        self::optimizeImage($retina3xWebpImagePath);
+                    } catch (\Exception $e) {
+                        error_log("Retina 3x image optimization failed: " . $e->getMessage());
+                    }
+
+                    $retina3xImageSrc = str_replace($rootDir, '', $retina3xImagePath);
+                    $retina3xImageSrc = dirname($retina3xImageSrc) . '/' . rawurlencode(basename($retina3xImageSrc));
+                    $srcset[] = $retina3xImageSrc . ' ' . $retina3xWidth . 'w';
+
+                    $retina3xWebpSrc = str_replace($rootDir, '', $retina3xWebpImagePath);
+                    $retina3xWebpSrc = dirname($retina3xWebpSrc) . '/' . rawurlencode(basename($retina3xWebpSrc));
+                    $webpSrcset[] = $retina3xWebpSrc . ' ' . $retina3xWidth . 'w';
+                }
+
                 if ($breakpoint['maxWidth']) {
-                    $sizes[] = '(max-width: ' . $breakpoint['maxWidth'] . 'px) ' . $breakpoint['width'] . 'px';
+                    $sizes[] = '(max-width: ' . $breakpoint['maxWidth'] . 'px) ' . $width . 'px';
                 } else {
-                    $sizes[] = '100vw'; // Verwende die volle Breite für größere Bildschirme
+                    $sizes[] = $width . 'px';
                 }
 
                 if ($breakpoint['maxWidth']) {
                     if (!in_array($imageSrc, $processedSrcsets)) {
                         $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
-                        $sources[] = "<source data-srcset=\"{$imageSrc}\" media=\"{$mediaQuery}\">";
+                        if ($width <= 768) {
+                            $sources[] = "<source type=\"image/webp\" data-srcset=\"{$webpSrc} 1x, {$retinaWebpSrc} 2x, {$retina3xWebpSrc} 3x\" media=\"{$mediaQuery}\">";
+                            $sources[] = "<source data-srcset=\"{$imageSrc} 1x, {$retinaImageSrc} 2x, {$retina3xImageSrc} 3x\" media=\"{$mediaQuery}\">";
+                        } else {
+                            $sources[] = "<source type=\"image/webp\" data-srcset=\"{$webpSrc} 1x, {$retinaWebpSrc} 2x\" media=\"{$mediaQuery}\">";
+                            $sources[] = "<source data-srcset=\"{$imageSrc} 1x, {$retinaImageSrc} 2x\" media=\"{$mediaQuery}\">";
+                        }
                         $processedSrcsets[] = $imageSrc;
                     }
                 } else {
-                    $sources[] = "<source data-srcset=\"{$imageSrc}\">";
+                    $sources[] = "<source type=\"image/webp\" data-srcset=\"{$webpSrc} 1x, {$retinaWebpSrc} 2x\">";
+                    $sources[] = "<source data-srcset=\"{$imageSrc} 1x, {$retinaImageSrc} 2x\">";
                 }
             } catch (\Exception $e) {
+                error_log("Error processing image for breakpoint {$width}px: " . $e->getMessage());
                 continue;
             }
         }
 
         $lightboxImageSrc = $imageSrc; // Default to normal image for lightbox
 
-        if ($colorBox && ($size[0] < 1200 || $size[1] < 1200)) {
-            // Generate a larger version for the lightbox
+        if ($colorBox && ($originalWidth > 1200 || $originalHeight > 1200)) {
+            // Generate a larger version for the lightbox only if the original is larger
             $lightboxConfig = new ResizeConfiguration();
             $lightboxConfig->setWidth(1200);
             $lightboxConfig->setHeight(1200);
@@ -162,7 +282,7 @@ class ImageHelper
                 $lightboxImageSrc = str_replace($rootDir, '', $lightboxImagePath);
                 $lightboxImageSrc = dirname($lightboxImageSrc) . '/' . rawurlencode(basename($lightboxImageSrc));
             } catch (\Exception $e) {
-                // Error handling if the image can't be created
+                error_log("Error creating lightbox image: " . $e->getMessage());
                 // We keep the original image for the lightbox in this case
             }
         }
@@ -196,9 +316,7 @@ class ImageHelper
         }
 
         $srcsetAttribute = implode(', ', $srcset);
-        $sizesAttribute = implode(', ', $sizes) . ', 100vw';
-
-        $srcsetAttribute = implode(', ', $srcset);
+        $webpSrcsetAttribute = implode(', ', $webpSrcset);
         $sizesAttribute = implode(', ', $sizes) . ', 100vw';
 
         $imgTag = '<picture>';
@@ -213,8 +331,9 @@ class ImageHelper
             if ($caption) {
                 $finalOutput .= '<div class="slider-caption">' . htmlspecialchars($caption) . '</div>';
             }
-            $finalOutput = str_replace("data-srcset", "srcset", $finalOutput);
+
             $finalOutput = str_replace("data-src", "src", $finalOutput);
+            $finalOutput = str_replace("data-srcset", "srcset", $finalOutput);
             $finalOutput = str_replace('loading="lazy"', '', $finalOutput);
         } else {
             if ($caption) {
