@@ -6,7 +6,7 @@ use Contao\FilesModel;
 use Contao\System;
 use Contao\StringUtil;
 use Contao\Image\ResizeConfiguration;
-use Contao\Image\Image;
+
 
 class ImageHelper
 {
@@ -72,8 +72,8 @@ class ImageHelper
 
         $maxWidth = $size[0] ?? null;
         $breakpoints = [
-            // ['maxWidth' => 576, 'width' => 576, 'retina' => 1152],
-            ['maxWidth' => 768, 'width' => 768, 'retina' => 1536],
+            //['maxWidth' => 576, 'width' => 576, 'retina' => 1152],
+            //['maxWidth' => 768, 'width' => 768, 'retina' => 1536],
             ['maxWidth' => 992, 'width' => 992, 'retina' => 1984],
             ['maxWidth' => 1200, 'width' => 1200, 'retina' => 2400],
             ['maxWidth' => 1600, 'width' => 1600, 'retina' => 3200],
@@ -88,47 +88,32 @@ class ImageHelper
         foreach ($breakpoints as $breakpoint) {
             $config = new ResizeConfiguration();
             $width = $breakpoint['width'];
-            $retinaWidth = $width * 2;
             $mode = $size[2] ?? "proportional";
 
             if ($maxWidth && $width > $maxWidth) {
                 continue;
             }
 
-            // Prüfen, ob das Originalbild kleiner ist als die Retina-Breite
-            $originalImageInfo = getimagesize($baseImagePath);
-            if ($originalImageInfo === false) {
-                error_log("Unable to get image size for: $baseImagePath");
-                continue;
-            }
-            $originalWidth = $originalImageInfo[0];
-
-            if ($originalWidth < $retinaWidth) {
-                // Verwende das Originalbild als 1x Version
-                $config->setWidth($originalWidth);
-                $retinaConfig = clone $config;
-            } else {
-                // Normales Verhalten für größere Bilder
+            if ($width !== "" && $width != NULL) {
                 $config->setWidth($width);
-                $retinaConfig = clone $config;
-                $retinaConfig->setWidth($retinaWidth);
             }
 
             if ($mode !== "") {
                 $config->setMode($mode);
-                $retinaConfig->setMode($mode);
             }
 
             try {
-                // Normales Bild
                 $processedImage = $imageFactory->create($baseImagePath, $config);
                 $processedImagePath = $processedImage->getPath();
+
+                // Bildoptimierung nach der Generierung
 
                 try {
                     self::optimizeImage($processedImagePath);
                 } catch (\Exception $e) {
                     error_log("Image optimization failed: " . $e->getMessage());
                 }
+
 
                 $currentDomain = $_SERVER['HTTP_HOST'];
                 $imageUrl = 'https://' . $currentDomain . str_replace($rootDir, '', $processedImagePath);
@@ -141,27 +126,9 @@ class ImageHelper
                 $imageSrc = str_replace($rootDir, '', $processedImagePath);
                 $imageSrc = dirname($imageSrc) . '/' . rawurlencode(basename($imageSrc));
 
-                $srcset[] = $imageSrc . ' ' . $config->getWidth() . 'w';
-
-                // Retina Bild
-                if ($originalWidth >= $retinaWidth) {
-                    $retinaImage = $imageFactory->create($baseImagePath, $retinaConfig);
-                    $retinaImagePath = $retinaImage->getPath();
-
-                    try {
-                        self::optimizeImage($retinaImagePath);
-                    } catch (\Exception $e) {
-                        error_log("Retina image optimization failed: " . $e->getMessage());
-                    }
-
-                    $retinaImageSrc = str_replace($rootDir, '', $retinaImagePath);
-                    $retinaImageSrc = dirname($retinaImageSrc) . '/' . rawurlencode(basename($retinaImageSrc));
-
-                    $srcset[] = $retinaImageSrc . ' ' . $retinaConfig->getWidth() . 'w';
-                }
-
+                $srcset[] = $imageSrc . ' ' . $breakpoint['width'] . 'w';
                 if ($breakpoint['maxWidth']) {
-                    $sizes[] = '(max-width: ' . $breakpoint['maxWidth'] . 'px) ' . $config->getWidth() . 'px';
+                    $sizes[] = '(max-width: ' . $breakpoint['maxWidth'] . 'px) ' . $breakpoint['width'] . 'px';
                 } else {
                     $sizes[] = '100vw'; // Verwende die volle Breite für größere Bildschirme
                 }
@@ -169,20 +136,13 @@ class ImageHelper
                 if ($breakpoint['maxWidth']) {
                     if (!in_array($imageSrc, $processedSrcsets)) {
                         $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
-                        $retinaAttribute = $originalWidth >= $retinaWidth ? ", {$retinaImageSrc} 2x" : "";
-                        $sources[] = "<source data-srcset=\"{$imageSrc} 1x{$retinaAttribute}\" media=\"{$mediaQuery}\">";
+                        $sources[] = "<source data-srcset=\"{$imageSrc}\" media=\"{$mediaQuery}\">";
                         $processedSrcsets[] = $imageSrc;
                     }
                 } else {
-                    $retinaAttribute = $originalWidth >= $retinaWidth ? ", {$retinaImageSrc} 2x" : "";
-                    $sources[] = "<source data-srcset=\"{$imageSrc} 1x{$retinaAttribute}\">";
+                    $sources[] = "<source data-srcset=\"{$imageSrc}\">";
                 }
-
-                // Debug-Ausgabe
-                error_log("Breakpoint: {$breakpoint['width']}px, Original width: {$originalWidth}px, Generated 1x width: {$config->getWidth()}px, Generated 2x width: " . ($originalWidth >= $retinaWidth ? $retinaConfig->getWidth() : "N/A") . "px");
-
             } catch (\Exception $e) {
-                error_log("Error processing image for breakpoint {$breakpoint['width']}px: " . $e->getMessage());
                 continue;
             }
         }
@@ -283,7 +243,7 @@ class ImageHelper
                     error_log("Failed to create image from JPEG: $imagePath");
                     return;
                 }
-                $result = imagejpeg($image, $imagePath, 90);
+                $result = imagejpeg($image, $imagePath, 85);
                 if ($result === false) {
                     error_log("Failed to save optimized JPEG: $imagePath");
                 }
