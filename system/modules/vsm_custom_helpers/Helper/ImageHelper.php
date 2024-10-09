@@ -203,7 +203,7 @@ class ImageHelper
 
         $imgTag = '<picture>';
         $imgTag .= implode("\n", $sources);
-        $imgTag .= '<img ' . $classAttribute . ' src="' . $imageSrc . '" srcset="' . $srcsetAttribute . '" sizes="' . $sizesAttribute . '" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
+        $imgTag .= '<img ' . $classAttribute . ' data-src="' . $imageSrc . '" data-srcset="' . $srcsetAttribute . '" sizes="' . $sizesAttribute . '" alt="' . htmlspecialchars($alt) . '"' . $lazyAttribute . '>';
         $imgTag .= '</picture>';
 
         $finalOutput = '<figure>' . $imgTag;
@@ -213,7 +213,7 @@ class ImageHelper
             if ($caption) {
                 $finalOutput .= '<div class="slider-caption">' . htmlspecialchars($caption) . '</div>';
             }
-
+            $finalOutput = str_replace("data-srcset", "srcset", $finalOutput);
             $finalOutput = str_replace("data-src", "src", $finalOutput);
             $finalOutput = str_replace('loading="lazy"', '', $finalOutput);
         } else {
