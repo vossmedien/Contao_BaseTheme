@@ -13,9 +13,9 @@
   padding: var(--bs-btn-padding-top) var(--bs-btn-padding-right) var(--bs-btn-padding-bottom) var(--bs-btn-padding-left);
   min-height: 45px;
   gap: .25rem;
-  line-height:1.4;
+  line-height: 1.4;
 
-  &:has(i){
+  &:has(i) {
     gap: .75rem;
   }
 
@@ -26,6 +26,10 @@
     padding-left: #{calc(var(--bs-btn-padding-left) * 0.75)};
     --bs-btn-font-size: .75rem;
     min-height: 30px;
+    
+    &:has(i) {
+      gap: .45rem;
+    }
   }
 
   &.btn-lg {

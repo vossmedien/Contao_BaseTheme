@@ -3,13 +3,11 @@ import {
 } from "./navigationHandling.js";
 
 
-
-
 /**
  * Funktion für sanftes Scrollen zu einem Ankerpunkt.
  */
 export function initializeSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]:not(.reset-cookies,.navActivator,[href*="Nav"])').forEach(anchor => {
+    document.querySelectorAll('a[href^="#"]:not(.reset-cookies,.navActivator,[href*="Nav"], .venobox)').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
 
@@ -33,6 +31,7 @@ export function initializeSmoothScrolling() {
         });
     });
 }
+
 export function setActiveLink(element) {
     document.querySelectorAll("ul .active").forEach(el => {
         el.classList.remove("active");
@@ -58,7 +57,7 @@ export function scrollToTop() {
     scrollToTopBtn.forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({top: 0, behavior: 'smooth'});
         });
     });
 

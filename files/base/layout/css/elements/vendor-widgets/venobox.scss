@@ -21,3 +21,33 @@
   --vb-aspect-ratio: var(--custom-aspect-ratio, 100%);
   max-width: var(--custom-max-width, var(--vbox-max-width));
 }
+
+.vbox-content {
+  .left-col--inner {
+    line-height: 0;
+    position: relative;
+
+    .insta-note {
+      position: absolute;
+      right: calc((var(--bs-gutter-x)/2) + 2rem);
+      bottom: 2rem;
+    }
+
+    iframe {
+      min-height: 615px;
+
+      @include media-breakpoint-up(md) {
+        min-height: 844px;
+      }
+    }
+  }
+
+  .right-col--inner {
+    padding: 0 2rem 2rem 10px;
+
+    @include media-breakpoint-up(md) {
+      padding-top: 50px;
+      padding-left: 0;
+    }
+  }
+}

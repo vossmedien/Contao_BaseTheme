@@ -35,9 +35,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                         <div class="col-12 col-md-6 member-info">
                             <h2 class="member-name h5"><?php echo $member->name; ?></h2>
                             <p class="member-position"><?php echo $member->position; ?></p>
+                            <?php if($member->phone):?>
                             <p class="member-phone">
                                 <i class="fal fa-phone"></i> <a href="tel:+<?php echo preg_replace('/[^0-9]/', '', $member->phone); ?>"><?php echo $member->phone; ?></a>
                             </p>
+                            <?php endif;?>
                             <div class="member-description">
                                 <?php echo $member->description; ?>
                             </div>
