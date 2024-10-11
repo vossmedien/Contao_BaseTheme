@@ -22,7 +22,8 @@
     "terminal42/contao-node": "^1.5",
     "terminal42/notification_center": "^2.0",
     "trilobit-gmbh/contao-tiles-bundle": "^2.0",
-    "vsm/custom-helpers-bundle": "1.0.0"
+    "vsm/custom-helpers-bundle": "1.0.0",
+    "codefog/contao-instagram": "^2.5"
   },
   "autoload": {
     "psr-4": {
@@ -47,5 +48,12 @@
       "type": "path",
       "url": "system/modules/vsm_custom_helpers"
     }
-  ]
+  ],
+  "config": {
+    "allow-plugins": {
+      "contao-components/installer": true,
+      "php-http/discovery": true,
+      "contao/manager-plugin": true
+    }
+  }
 }

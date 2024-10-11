@@ -24,7 +24,9 @@ class ImageHelper
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
         $imageFactory = System::getContainer()->get('contao.image.factory');
         $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? System::getContainer()->getParameter('kernel.default_locale');
-
+        $originalImageInfo = false;
+        $originalWidth = 0;
+        $originalHeight = 0;
         if ($imageObject = FilesModel::findByUuid($imageSource)) {
             $imageMeta = StringUtil::deserialize($imageObject->meta, true);
             $meta = $imageMeta[$currentLanguage] ?? reset($imageMeta) ?? [];
@@ -37,7 +39,7 @@ class ImageHelper
         $absoluteImagePath = $rootDir . '/' . urldecode($relativeImagePath);
 
         if (!file_exists($absoluteImagePath)) {
-            error_log("File does not exist: $absoluteImagePath");
+            //error_log("File does not exist: $absoluteImagePath");
             //return '';
         }
 
@@ -78,9 +80,19 @@ class ImageHelper
         }
 
         // Rest des bestehenden Codes für Nicht-SVG-Bilder
-        $originalImageInfo = getimagesize($baseImagePath);
+        if (file_exists($baseImagePath)) {
+            $originalImageInfo = @getimagesize($baseImagePath);
+            if ($originalImageInfo !== false && is_array($originalImageInfo) && isset($originalImageInfo[0], $originalImageInfo[1])) {
+                $originalWidth = (int)$originalImageInfo[0];
+                $originalHeight = (int)$originalImageInfo[1];
+            } else {
+                //error_log("Failed to get image size for: $baseImagePath");
+            }
+        } else {
+            //error_log("File does not exist: $baseImagePath");
+        }
         if ($originalImageInfo === false) {
-            error_log("Failed to get image size for: $baseImagePath");
+            //error_log("Failed to get image size for: $baseImagePath");
             //return '';
         }
         $originalWidth = (int)$originalImageInfo[0];
@@ -113,11 +125,12 @@ class ImageHelper
             try {
                 $baseImage = $imageFactory->create($absoluteImagePath, $config);
                 $baseImagePath = $baseImage->getPath();
-                $baseWidth = $width;
-                $baseHeight = $height;
+                $baseWidth = $width ?? $originalWidth;
+                $baseHeight = $height ?? $originalHeight;
             } catch (\Exception $e) {
-                error_log("Error creating base image: " . $e->getMessage());
-                //return '';
+                // error_log("Error creating base image: " . $e->getMessage());
+                $baseWidth = $originalWidth;
+                $baseHeight = $originalHeight;
             }
         } else {
             $baseWidth = $originalWidth;
@@ -168,7 +181,7 @@ class ImageHelper
                     self::optimizeImage($processedImagePath);
                     self::optimizeImage($webpImagePath);
                 } catch (\Exception $e) {
-                    error_log("Image optimization failed: " . $e->getMessage());
+                    //error_log("Image optimization failed: " . $e->getMessage());
                 }
 
                 $imageSrc = str_replace($rootDir, '', $processedImagePath);
@@ -201,7 +214,7 @@ class ImageHelper
                         self::optimizeImage($retina2xImagePath);
                         self::optimizeImage($retina2xWebpImagePath);
                     } catch (\Exception $e) {
-                        error_log("Retina 2x image optimization failed: " . $e->getMessage());
+                        //error_log("Retina 2x image optimization failed: " . $e->getMessage());
                     }
 
                     $retinaImageSrc = str_replace($rootDir, '', $retina2xImagePath);
@@ -227,7 +240,7 @@ class ImageHelper
                         self::optimizeImage($retina3xImagePath);
                         self::optimizeImage($retina3xWebpImagePath);
                     } catch (\Exception $e) {
-                        error_log("Retina 3x image optimization failed: " . $e->getMessage());
+                        //error_log("Retina 3x image optimization failed: " . $e->getMessage());
                     }
 
                     $retina3xImageSrc = str_replace($rootDir, '', $retina3xImagePath);
@@ -262,7 +275,7 @@ class ImageHelper
                     $sources[] = "<source data-srcset=\"{$imageSrc} 1x, {$retinaImageSrc} 2x\">";
                 }
             } catch (\Exception $e) {
-                error_log("Error processing image for breakpoint {$width}px: " . $e->getMessage());
+                //error_log("Error processing image for breakpoint {$width}px: " . $e->getMessage());
                 continue;
             }
         }
@@ -282,7 +295,7 @@ class ImageHelper
                 $lightboxImageSrc = str_replace($rootDir, '', $lightboxImagePath);
                 $lightboxImageSrc = dirname($lightboxImageSrc) . '/' . rawurlencode(basename($lightboxImageSrc));
             } catch (\Exception $e) {
-                error_log("Error creating lightbox image: " . $e->getMessage());
+                //error_log("Error creating lightbox image: " . $e->getMessage());
                 // We keep the original image for the lightbox in this case
             }
         }
@@ -359,22 +372,22 @@ class ImageHelper
             if (function_exists('imagecreatefromjpeg')) {
                 $image = @imagecreatefromjpeg($imagePath);
                 if ($image === false) {
-                    error_log("Failed to create image from JPEG: $imagePath");
+                    //error_log("Failed to create image from JPEG: $imagePath");
                     return;
                 }
                 $result = imagejpeg($image, $imagePath, 95);
                 if ($result === false) {
-                    error_log("Failed to save optimized JPEG: $imagePath");
+                    //error_log("Failed to save optimized JPEG: $imagePath");
                 }
                 imagedestroy($image);
             } else {
-                error_log("imagecreatefromjpeg function not available");
+                //error_log("imagecreatefromjpeg function not available");
             }
         } elseif ($extension === 'png') {
             if (function_exists('imagecreatefrompng')) {
                 $image = @imagecreatefrompng($imagePath);
                 if ($image === false) {
-                    error_log("Failed to create image from PNG: $imagePath");
+                    //error_log("Failed to create image from PNG: $imagePath");
                     return;
                 }
                 // Erhalte Transparenz
@@ -382,14 +395,14 @@ class ImageHelper
                 imagesavealpha($image, true);
                 $result = imagepng($image, $imagePath, 6); // Reduzierte Kompression für bessere Qualität
                 if ($result === false) {
-                    error_log("Failed to save optimized PNG: $imagePath");
+                    //error_log("Failed to save optimized PNG: $imagePath");
                 }
                 imagedestroy($image);
             } else {
-                error_log("imagecreatefrompng function not available");
+                //error_log("imagecreatefrompng function not available");
             }
         } else {
-            error_log("Unsupported image format for optimization: $extension");
+            //error_log("Unsupported image format for optimization: $extension");
         }
     }
 
