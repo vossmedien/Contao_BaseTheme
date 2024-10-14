@@ -1,0 +1,21 @@
+<div id="<?= $this->cssID; ?>" class="content--element <?= $this->class; ?>   ">
+    <div class="ce--inner ">
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
+
+
+        <?php if ($this->image): ?>
+            <div data-aos="<?= $this->animation_type;?>" class="image">
+                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->headline, $this->size, null, null); ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>

@@ -72,7 +72,7 @@ div:has([class*="text-"]):has([class*="-center"]) {
   }
   .pulled-up-element{
     .row > div:last-child{
-      padding-top: calc((var(--main-gap)) + 150px);
+      padding-top: calc((var(--main-gap)) + 150px) !important;
     }
   }
 }
