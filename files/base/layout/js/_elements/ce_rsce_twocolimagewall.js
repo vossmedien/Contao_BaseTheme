@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function (event) {
-    function setImageWidth() {
+     function setImageWidth() {
         const rows = document.querySelectorAll('.ce--imagetextwall--outer .row');
         const container = document.querySelector('.container');
         const wrapper = document.querySelector('#wrapper');
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         ? contentColWidth + gapToEdge
                         : contentColWidth;
 
-                    contentZoomContainer.style.width = contentZoomWidth + 'px';
+                    contentZoomContainer.style.width = `calc(${contentZoomWidth}px + var(--bs-container-gutter))`;
                     contentZoomContainer.style.marginLeft = isRowReverse ? '' : '0';
                     contentZoomContainer.style.marginRight = isRowReverse ? '0' : '';
                 }
@@ -34,14 +34,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     const imageColWidth = imageCol.offsetWidth;
                     const imageZoomWidth = imageColWidth + gapToEdge;
 
-                    imageZoomContainer.style.width = imageZoomWidth + 'px';
+                    imageZoomContainer.style.width = `calc(${imageZoomWidth}px + var(--bs-container-gutter))`;
 
                     if (isRowReverse) {
-                        imageZoomContainer.style.marginLeft = -gapToEdge + 'px';
+                        imageZoomContainer.style.marginLeft = `calc(-${gapToEdge}px - var(--bs-container-gutter))`;
                         imageZoomContainer.style.marginRight = '';
                     } else {
                         imageZoomContainer.style.marginLeft = '';
-                        imageZoomContainer.style.marginRight = -gapToEdge + 'px';
+                        imageZoomContainer.style.marginRight = `calc(-${gapToEdge}px - var(--bs-container-gutter))`;
                     }
                 }
             } else {
@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             });
         });
     }
+
 
     // Initial alle Zoom-Container ausblenden
     document.querySelectorAll('.zoom-container').forEach(container => {
