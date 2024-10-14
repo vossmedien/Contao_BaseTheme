@@ -37,6 +37,7 @@
 
       &:not(.ce--headline *) {
         margin-bottom: var(--current-headline-spacing);
+        display: block;
       }
     }
 

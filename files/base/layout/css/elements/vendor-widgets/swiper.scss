@@ -1,4 +1,5 @@
 .ce--content-slider{
+  position: relative;
    &:has( .swiper-button-prev){
      @include media-breakpoint-down(md) {
            padding-inline: 3rem;
