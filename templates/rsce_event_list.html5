@@ -27,8 +27,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                     </div>
                     <div class="event-content">
                         <h3 class="event-title h5" itemprop="name"><?php echo $event->title; ?></h3>
-                        <p class="event-description" itemprop="description"><?php echo $event->description; ?></p>
-                        <div class="event-details">
+                        <div class="event-description" itemprop="description"><?php echo $event->description; ?></div>
+                        <div class="event-details mt-3">
                             <p class="event-time">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14.104 14.104">
                                     <path id="clock" d="M10.052,17.1A7.052,7.052,0,1,1,17.1,10.052,7.052,7.052,0,0,1,10.052,17.1Zm5.642-7.052a5.642,5.642,0,1,0-5.642,5.642,5.642,5.642,0,0,0,5.642-5.642Zm-2.821-.705a.705.705,0,0,1,0,1.41H10.757a1.415,1.415,0,0,1-1.41-1.41V6.526a.705.705,0,0,1,1.41,0V9.347Z" transform="translate(-3 -3)" fill="#3e4e58" fill-rule="evenodd"/>

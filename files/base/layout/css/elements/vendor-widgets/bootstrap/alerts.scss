@@ -25,22 +25,22 @@
 
   &.alert-info {
     --bs-alert-bg: var(--bs-info);
-    --bs-alert-color: var(--bs-blue);
+    --bs-alert-color: var(--bs-body-color);
   }
 
   &.alert-warning {
     --bs-alert-bg: var(--bs-warning);
-    --bs-alert-color: var(--bs-orange);
+    --bs-alert-color: var(--bs-body-color-inverse);
   }
 
   &.alert-danger {
     --bs-alert-bg: var(--bs-danger);
-    --bs-alert-color: var(--bs-red);
+    --bs-alert-color: var(--bs-body-color-inverse);
   }
 
   &.alert-success {
     --bs-alert-bg: var(--bs-success);
-    --bs-alert-color: var(--bs-green);
+    --bs-alert-color: var(--bs-body-color-inverse);
   }
 
   &.alert-light {
