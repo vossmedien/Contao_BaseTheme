@@ -11,10 +11,9 @@
             null
         ); ?>
 
-
-        <?php if ($this->image): ?>
+        <?php $rand = rand(1, 100); if ($this->image): ?>
             <div data-aos="<?= $this->animation_type;?>" class="image">
-                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->headline, $this->size, null, null); ?>
+                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, $this->alt, $this->imageTitle, $this->size, null, null, $this->fullsize ? $rand : false, true, $this->caption, $this->imageUrl); ?>
             </div>
         <?php endif; ?>
     </div>

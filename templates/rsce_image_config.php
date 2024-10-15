@@ -14,7 +14,6 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
@@ -25,8 +24,6 @@ return array(
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
-
-
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
@@ -35,7 +32,6 @@ return array(
             'options' => GlobalElementConfig::getAnimations(),
             'eval' => array('chosen' => 'true')
         ),
-
         'image' => array(
             'label' => array('Bild', ''),
             'inputType' => 'fileTree',
@@ -46,7 +42,6 @@ return array(
                 'extensions' => 'jpg,jpeg,png,svg,tif',
             ),
         ),
-
         'size' => array(
             'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
             'inputType' => 'imageSize',
@@ -58,6 +53,31 @@ return array(
                 'tl_class' => ' clr'
             ),
         ),
-
+        // Neue Felder
+        'alt' => array(
+            'label' => array('Alternativer Text', 'Beschreibung des Bildes für Screenreader und wenn das Bild nicht geladen werden kann'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'imageTitle' => array(
+            'label' => array('Bildtitel', 'Titel des Bildes (wird als Tooltip angezeigt)'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'imageUrl' => array(
+            'label' => array('Bildlink-Adresse (URL)', 'Geben Sie eine URL ein, zu der das Bild verlinkt werden soll'),
+            'inputType' => 'url',
+            'eval' => array('rgxp'=>'url', 'decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50 wizard'),
+        ),
+        'caption' => array(
+            'label' => array('Bildunterschrift', 'Kurze Beschreibung unterhalb des Bildes'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'fullsize' => array(
+            'label' => array('Großansicht/Neues Fenster', 'Bild-Großansicht und Link in neuem Fenster öffnen'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 m12'),
+        ),
     ),
 );
