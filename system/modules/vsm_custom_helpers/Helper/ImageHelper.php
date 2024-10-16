@@ -104,50 +104,136 @@ class ImageHelper
             ['maxWidth' => null, 'width' => $baseWidth]
         ];
 
-        $sources = [];
+       $sources = [];
+        $processedSrcsets = [];
         $srcset = [];
         $webpSrcset = [];
         $sizes = [];
 
         foreach ($breakpoints as $breakpoint) {
-            $width = min((int)$breakpoint['width'], $baseWidth);
+            $config = new ResizeConfiguration();
+            $width = (int)$breakpoint['width'];
+            $mode = $size[2] ?? "proportional";
+
+            if ($width > $baseWidth) {
+                continue;
+            }
+
             $config->setWidth($width);
+            if ($mode !== "") {
+                $config->setMode($mode);
+            }
 
             try {
+                // Generiere normales Bild
                 $processedImage = $imageFactory->create($baseImagePath, $config);
-                $webpImage = $imageFactory->create($baseImagePath, $config, new ResizeOptions(['format' => 'webp']));
+                $processedImagePath = $processedImage->getPath();
 
-                $imageSrc = self::getRelativeImagePath($rootDir, $processedImage->getPath());
-                $webpSrc = self::getRelativeImagePath($rootDir, $webpImage->getPath());
+                // Generiere WebP-Version
+                $webpOptions = new ResizeOptions();
+                $webpOptions->setImagineOptions(['format' => 'webp']);
+                $webpImage = $imageFactory->create($baseImagePath, $config, $webpOptions);
+                $webpImagePath = $webpImage->getPath();
+
+                try {
+                    self::optimizeImage($processedImagePath);
+                    self::optimizeImage($webpImagePath);
+                } catch (\Exception $e) {
+                    //error_log("Image optimization failed: " . $e->getMessage());
+                }
+
+                $imageSrc = str_replace($rootDir, '', $processedImagePath);
+                $imageSrc = dirname($imageSrc) . '/' . rawurlencode(basename($imageSrc));
+
+                $webpSrc = str_replace($rootDir, '', $webpImagePath);
+                $webpSrc = dirname($webpSrc) . '/' . rawurlencode(basename($webpSrc));
 
                 $srcset[] = $imageSrc . ' ' . $width . 'w';
                 $webpSrcset[] = $webpSrc . ' ' . $width . 'w';
 
+                // Retina Bild (2x und 3x für mobile, nur 2x für andere)
                 $retina2xWidth = min($width * 2, $originalWidth);
+                $retina3xWidth = min($width * 3, $originalWidth);
+                $retinaImageSrc = $imageSrc; // Default to normal image
+                $retinaWebpSrc = $webpSrc; // Default to normal WebP image
+                $retina3xImageSrc = $imageSrc; // Default to normal image for 3x
+                $retina3xWebpSrc = $webpSrc; // Default to normal WebP image for 3x
+
                 if ($retina2xWidth > $width) {
                     $retina2xConfig = clone $config;
                     $retina2xConfig->setWidth($retina2xWidth);
                     $retina2xImage = $imageFactory->create($baseImagePath, $retina2xConfig);
-                    $retina2xWebpImage = $imageFactory->create($baseImagePath, $retina2xConfig, new ResizeOptions(['format' => 'webp']));
+                    $retina2xImagePath = $retina2xImage->getPath();
 
-                    $retinaImageSrc = self::getRelativeImagePath($rootDir, $retina2xImage->getPath());
-                    $retinaWebpSrc = self::getRelativeImagePath($rootDir, $retina2xWebpImage->getPath());
+                    $retina2xWebpImage = $imageFactory->create($baseImagePath, $retina2xConfig, $webpOptions);
+                    $retina2xWebpImagePath = $retina2xWebpImage->getPath();
 
+                    try {
+                        self::optimizeImage($retina2xImagePath);
+                        self::optimizeImage($retina2xWebpImagePath);
+                    } catch (\Exception $e) {
+                        //error_log("Retina 2x image optimization failed: " . $e->getMessage());
+                    }
+
+                    $retinaImageSrc = str_replace($rootDir, '', $retina2xImagePath);
+                    $retinaImageSrc = dirname($retinaImageSrc) . '/' . rawurlencode(basename($retinaImageSrc));
                     $srcset[] = $retinaImageSrc . ' ' . $retina2xWidth . 'w';
+
+                    $retinaWebpSrc = str_replace($rootDir, '', $retina2xWebpImagePath);
+                    $retinaWebpSrc = dirname($retinaWebpSrc) . '/' . rawurlencode(basename($retinaWebpSrc));
                     $webpSrcset[] = $retinaWebpSrc . ' ' . $retina2xWidth . 'w';
+                }
+
+                // 3x Version nur für mobile Breakpoints (576px und 768px)
+                if ($width <= 768 && $retina3xWidth > $retina2xWidth) {
+                    $retina3xConfig = clone $config;
+                    $retina3xConfig->setWidth($retina3xWidth);
+                    $retina3xImage = $imageFactory->create($baseImagePath, $retina3xConfig);
+                    $retina3xImagePath = $retina3xImage->getPath();
+
+                    $retina3xWebpImage = $imageFactory->create($baseImagePath, $retina3xConfig, $webpOptions);
+                    $retina3xWebpImagePath = $retina3xWebpImage->getPath();
+
+                    try {
+                        self::optimizeImage($retina3xImagePath);
+                        self::optimizeImage($retina3xWebpImagePath);
+                    } catch (\Exception $e) {
+                        //error_log("Retina 3x image optimization failed: " . $e->getMessage());
+                    }
+
+                    $retina3xImageSrc = str_replace($rootDir, '', $retina3xImagePath);
+                    $retina3xImageSrc = dirname($retina3xImageSrc) . '/' . rawurlencode(basename($retina3xImageSrc));
+                    $srcset[] = $retina3xImageSrc . ' ' . $retina3xWidth . 'w';
+
+                    $retina3xWebpSrc = str_replace($rootDir, '', $retina3xWebpImagePath);
+                    $retina3xWebpSrc = dirname($retina3xWebpSrc) . '/' . rawurlencode(basename($retina3xWebpSrc));
+                    $webpSrcset[] = $retina3xWebpSrc . ' ' . $retina3xWidth . 'w';
                 }
 
                 if ($breakpoint['maxWidth']) {
                     $sizes[] = '(max-width: ' . $breakpoint['maxWidth'] . 'px) ' . $width . 'px';
-                    $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
-                    $sources[] = "<source type=\"image/webp\" data-srcset=\"{$webpSrc} 1x, {$retinaWebpSrc} 2x\" media=\"{$mediaQuery}\">";
-                    $sources[] = "<source data-srcset=\"{$imageSrc} 1x, {$retinaImageSrc} 2x\" media=\"{$mediaQuery}\">";
                 } else {
                     $sizes[] = $width . 'px';
+                }
+
+                if ($breakpoint['maxWidth']) {
+                    if (!in_array($imageSrc, $processedSrcsets)) {
+                        $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
+                        if ($width <= 768) {
+                            $sources[] = "<source type=\"image/webp\" data-srcset=\"{$webpSrc} 1x, {$retinaWebpSrc} 2x, {$retina3xWebpSrc} 3x\" media=\"{$mediaQuery}\">";
+                            $sources[] = "<source data-srcset=\"{$imageSrc} 1x, {$retinaImageSrc} 2x, {$retina3xImageSrc} 3x\" media=\"{$mediaQuery}\">";
+                        } else {
+                            $sources[] = "<source type=\"image/webp\" data-srcset=\"{$webpSrc} 1x, {$retinaWebpSrc} 2x\" media=\"{$mediaQuery}\">";
+                            $sources[] = "<source data-srcset=\"{$imageSrc} 1x, {$retinaImageSrc} 2x\" media=\"{$mediaQuery}\">";
+                        }
+                        $processedSrcsets[] = $imageSrc;
+                    }
+                } else {
                     $sources[] = "<source type=\"image/webp\" data-srcset=\"{$webpSrc} 1x, {$retinaWebpSrc} 2x\">";
                     $sources[] = "<source data-srcset=\"{$imageSrc} 1x, {$retinaImageSrc} 2x\">";
                 }
             } catch (\Exception $e) {
+                //error_log("Error processing image for breakpoint {$width}px: " . $e->getMessage());
                 continue;
             }
         }
