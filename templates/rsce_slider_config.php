@@ -3,7 +3,7 @@ use VSM_HelperFunctions\ButtonHelper;
 use VSM_HelperFunctions\GlobalElementConfig;
 //rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Bilder-Slider (slider)', ''),
+    'label' => array('Custom | Bilder-Galerie (slider)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
@@ -87,7 +87,8 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
-        'style_type' => array(
+        /*
+                'style_type' => array(
             'label' => array('Darstellungstyp ', ''),
             'inputType' => 'select',
             'options' => array(
@@ -127,6 +128,8 @@ return array(
                 'value' => 'type-2',
             ),
         ),
+         */
+
 
 
         'selecttype' => array(
@@ -175,9 +178,7 @@ return array(
             'label' => array('Wie viele Slides sind sichtbar', 'Beispielsweise 1.5 um rechts und links eine Vorschau des nächsten Slides anzuzeigen'),
             'inputType' => 'text',
             'eval' => array(
-                'tl_class' => 'w50',
-                'rgxp' => 'digit', // Erlaubt nur Zahlen
-                'maxlength' => 2   // Begrenzt die Eingabe auf maximal 2 Ziffern
+                'tl_class' => 'w50', // Erlaubt nur Zahlen// Begrenzt die Eingabe auf maximal 2 Ziffern
             ),
         ),
 
@@ -186,8 +187,7 @@ return array(
             'inputType' => 'text',
             'eval' => array(
                 'tl_class' => 'w50',
-                'rgxp' => 'digit', // Erlaubt nur Zahlen
-                'maxlength' => 2   // Begrenzt die Eingabe auf maximal 2 Ziffern
+                // Erlaubt nur Zahlen// Begrenzt die Eingabe auf maximal 2 Ziffern
             ),
         ),
 

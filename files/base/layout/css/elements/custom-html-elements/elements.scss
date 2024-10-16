@@ -152,7 +152,7 @@ body:not(.start) {
   height: rfs-value(40px);
   line-height: rfs-value(40px);
   text-align: center;
-  color: var(--bs-white);
+  color: var(--bs-body-color-inverse);
   border: 2px solid var(--bs-primary);
   background-color: var(--bs-primary);
   border-radius: 50%;
@@ -230,6 +230,17 @@ body:not(.start) {
   .grid-item {
     position: relative;
 
+    .play-button {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, .5);
+      padding: .5rem;
+      box-shadow: $box-shadow;
+    }
+
     .item, figure, a {
       height: 100%;
     }
@@ -249,16 +260,15 @@ body:not(.start) {
   grid-template-columns: repeat(2, 1fr);
   grid-auto-rows: 1fr;
 
-    @include media-breakpoint-up(sm) {
-      // Tablet layout (3 columns)
-      grid-template-columns: repeat(3, 1fr);
-    }
+  @include media-breakpoint-up(sm) {
+    // Tablet layout (3 columns)
+    grid-template-columns: repeat(3, 1fr);
+  }
 
-    @include media-breakpoint-up(md) {
-      // Larger tablet layout (4 columns)
-      grid-template-columns: repeat(4, 1fr);
-    }
-
+  @include media-breakpoint-up(md) {
+    // Larger tablet layout (4 columns)
+    grid-template-columns: repeat(4, 1fr);
+  }
 
 
   &:has(.grid-item:nth-child(10)) {

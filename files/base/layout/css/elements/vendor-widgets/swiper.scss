@@ -33,6 +33,7 @@
   }
 }
 
+/*
 .slider-type-2 {
   position: relative;
 
@@ -61,8 +62,8 @@
     padding: 0px;
     opacity: 1;
     margin-top: 0px;
-    background-color: var(--bs-white);
-    color: var(--bs-primary);
+    background-color: var(--bs-body-color);
+    color: var(--bs-body-color-inverse);
     bottom: -40px;
     top: auto;
     border-radius: 0px;
@@ -109,6 +110,8 @@
     }
   }
 }
+ */
+
 
 div:not(:has(.swiper)) {
   .swiper-lazy-preloader {
@@ -144,7 +147,8 @@ div:not(:has(.swiper)) {
   transition: all 0.3s ease;
   opacity: 0.9;
   text-decoration: none;
-  background-color: var(--bs-white);
+    background-color: var(--bs-body-color);
+    color: var(--bs-body-color-inverse);
 
   &:hover {
     opacity: 1;

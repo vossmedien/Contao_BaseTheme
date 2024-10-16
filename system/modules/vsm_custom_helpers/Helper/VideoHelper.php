@@ -5,100 +5,130 @@ namespace VSM_HelperFunctions;
 use Contao\FilesModel;
 use Contao\System;
 use Contao\StringUtil;
+
 class VideoHelper
 {
-public static function renderVideo($fileId, $ext, $classes = '', $name = null, $description = null, $uploadDate = null)
-{
-    $fileModel = FilesModel::findByUuid($fileId);
-    if ($fileModel === null) {
-        return ''; // Datei nicht gefunden
-    }
+    public static function renderVideo($source, $classes = '', $name = null, $description = null, $uploadDate = null, $posterUrl = null, $videoParams = '')
+    {
+        $isUrl = filter_var($source, FILTER_VALIDATE_URL) !== false;
+        $sources = [];
+        $mp4Path = '';
+        $posterPath = '';
+        $ext = null;
 
-    $rootDir = System::getContainer()->getParameter('kernel.project_dir');
-    $filePath = $rootDir . '/' . $fileModel->path;
-    $baseDir = dirname($filePath);
-    $fileName = pathinfo($filePath, PATHINFO_FILENAME);
+        if ($isUrl) {
+            // If source is a URL, use it directly and try to determine the extension
+            $ext = pathinfo(parse_url($source, PHP_URL_PATH), PATHINFO_EXTENSION);
+            if (self::isVideoFormat($ext)) {
+                $sources[] = "<source src='$source' type='video/$ext'>";
+                $mp4Path = $source;
+            } else {
+                return ''; // Invalid video format or unable to determine format
+            }
+        } else {
+            // If source is a fileID, process it as before
+            $fileModel = FilesModel::findByUuid($source);
+            if ($fileModel === null) {
+                return ''; // File not found
+            }
 
-    $formatOrder = ['webm', 'mp4', 'ogg'];
+            $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+            $filePath = $rootDir . '/' . $fileModel->path;
+            $baseDir = dirname($filePath);
+            $fileName = pathinfo($filePath, PATHINFO_FILENAME);
 
-    $sources = [];
-    $posterPath = '';
-    $mp4Path = '';
+            $formatOrder = ['webm', 'mp4', 'ogg'];
 
-    foreach ($formatOrder as $format) {
-        $potentialFile = $baseDir . '/' . $fileName . '.' . $format;
-        if (file_exists($potentialFile)) {
-            $potentialFileModel = FilesModel::findByPath(str_replace($rootDir . '/', '', $potentialFile));
-            if ($potentialFileModel !== null) {
-                $sources[] = "<source data-src='" . $potentialFileModel->path . "' type='video/$format'>";
-                if ($format === 'mp4' && empty($mp4Path)) {
-                    $mp4Path = $potentialFileModel->path;
+            foreach ($formatOrder as $format) {
+                $potentialFile = $baseDir . '/' . $fileName . '.' . $format;
+                if (file_exists($potentialFile)) {
+                    $potentialFileModel = FilesModel::findByPath(str_replace($rootDir . '/', '', $potentialFile));
+                    if ($potentialFileModel !== null) {
+                        $sources[] = "<source data-src='" . $potentialFileModel->path . "' type='video/$format'>";
+                        if ($format === 'mp4' && empty($mp4Path)) {
+                            $mp4Path = $potentialFileModel->path;
+                        }
+                    }
+                }
+            }
+
+            // Search for a poster image if not provided
+            if ($posterUrl === null) {
+                $posterFile = $baseDir . '/' . $fileName . '.jpg'; // or .png
+                if (file_exists($posterFile)) {
+                    $posterFileModel = FilesModel::findByPath(str_replace($rootDir . '/', '', $posterFile));
+                    if ($posterFileModel !== null) {
+                        $posterPath = $posterFileModel->path;
+                    }
                 }
             }
         }
-    }
 
-    // Suche nach einem Poster-Bild
-    $posterFile = $baseDir . '/' . $fileName . '.jpg'; // oder .png
-    if (file_exists($posterFile)) {
-        $posterFileModel = FilesModel::findByPath(str_replace($rootDir . '/', '', $posterFile));
-        if ($posterFileModel !== null) {
-            $posterPath = $posterFileModel->path;
+        if (empty($sources)) {
+            return ''; // No valid video sources found
         }
-    }
 
-    $sourceString = implode("\n        ", $sources);
-    $posterAttr = $posterPath ? " data-poster='$posterPath'" : '';
+        $sourceString = implode("\n        ", $sources);
+        $posterAttr = $posterUrl ? " poster='$posterUrl'" : ($posterPath ? " poster='$posterPath'" : '');
 
-    // Metadaten abrufen
-    $meta = StringUtil::deserialize($fileModel->meta);
-    $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? 'de';
-    $langMeta = $meta[$currentLanguage] ?? [];
+        // Set video parameters
+        $videoParams = trim($videoParams);
+        if (empty($videoParams)) {
+            $videoParams = 'autoplay muted loop playsinline';
+        }
 
-    // Daten für strukturierte Daten vorbereiten
-    $structuredData = [
-        '@context' => 'https://schema.org',
-        '@type' => 'VideoObject'
-    ];
+        // Retrieve metadata
+        $meta = [];
+        $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? 'de';
+        if (!$isUrl) {
+            $meta = StringUtil::deserialize($fileModel->meta);
+            $langMeta = $meta[$currentLanguage] ?? [];
+        }
 
-    if ($name ?? $langMeta['title'] ?? null) {
-        $structuredData['name'] = strip_tags($name ?? $langMeta['title']);
-    }
+        // Prepare data for structured data
+        $structuredData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'VideoObject'
+        ];
 
-    if ($description ?? $langMeta['description'] ?? null) {
-        $structuredData['description'] = strip_tags($description ?? $langMeta['description']);
-    }
+        if ($name ?? $langMeta['title'] ?? null) {
+            $structuredData['name'] = strip_tags($name ?? $langMeta['title']);
+        }
 
-    if ($uploadDate ?? ($fileModel->tstamp ? date('c', $fileModel->tstamp) : null)) {
-        $structuredData['uploadDate'] = $uploadDate ?? date('c', $fileModel->tstamp);
-    }
+        if ($description ?? $langMeta['description'] ?? null) {
+            $structuredData['description'] = strip_tags($description ?? $langMeta['description']);
+        }
 
-    if ($posterPath) {
-        $structuredData['thumbnailUrl'] = 'https://' . $_SERVER['HTTP_HOST'] . '/' . $posterPath;
-    }
+        if ($uploadDate ?? (!$isUrl && $fileModel->tstamp ? date('c', $fileModel->tstamp) : null)) {
+            $structuredData['uploadDate'] = $uploadDate ?? (!$isUrl ? date('c', $fileModel->tstamp) : null);
+        }
 
-    if ($mp4Path) {
-        $structuredData['contentUrl'] = 'https://' . $_SERVER['HTTP_HOST'] . '/' . $mp4Path;
-    }
+        if ($posterUrl || $posterPath) {
+            $structuredData['thumbnailUrl'] = 'https://' . $_SERVER['HTTP_HOST'] . '/' . ($posterUrl ?: $posterPath);
+        }
 
-    // Strukturierte Daten erstellen, wenn mindestens ein Feld vorhanden ist
-    $structuredDataScript = '';
-    if (count($structuredData) > 2) { // Mehr als @context und @type
-        $structuredDataScript = '<script type="application/ld+json">' . json_encode($structuredData) . '</script>';
-    }
+        if ($mp4Path) {
+            $structuredData['contentUrl'] = 'https://' . $_SERVER['HTTP_HOST'] . '/' . $mp4Path;
+        }
 
-    $videoHtml = "<video class='lazy $classes' autoplay muted loop playsinline$posterAttr>
+        // Create structured data if at least one field is present
+        $structuredDataScript = '';
+        if (count($structuredData) > 2) { // More than @context and @type
+            $structuredDataScript = '<script type="application/ld+json">' . json_encode($structuredData) . '</script>';
+        }
+
+        $lazyClass = $isUrl ? '' : ' lazy';
+        $videoHtml = "<video class='$classes$lazyClass' $videoParams$posterAttr>
         $sourceString
-        <p>Ihr Browser unterstützt kein HTML5-Video. Hier ist stattdessen ein <a href='$mp4Path'>Link zum Video</a>.</p>
+        <p>Your browser does not support HTML5 video. Here is a <a href='$mp4Path'>link to the video</a> instead.</p>
     </video>";
 
-    return $structuredDataScript . $videoHtml;
-}
-
+        return $structuredDataScript . $videoHtml;
+    }
 
     public static function isVideoFormat($extension)
     {
-        $videoFormats = ['mp4', 'webm', 'ogg', 'mov']; // Fügen Sie hier weitere Videoformate hinzu, falls nötig
+        $videoFormats = ['mp4', 'webm', 'ogg', 'mov']; // Add more video formats here if needed
         return in_array(strtolower($extension), $videoFormats);
     }
 }

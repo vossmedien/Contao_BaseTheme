@@ -1,0 +1,59 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php
+// Generate a unique gallery identifier
+$uniqueGalleryId = 'gallery_' . time() . '_' . rand(1000, 9999);
+
+// Deserialisiere das imgSize Array
+$imgSize = unserialize($this->imgSize);
+
+
+?>
+
+
+
+<div class="insta-grid" >
+    <?php foreach ($this->items as $item): ?>
+        <div class="grid-item" data-aos="animate__fadeIn">
+            <div class="item" >
+                <a href="#content-<?= $item['id'] ?>" class="venobox" data-vbtype="inline" data-gall="<?= $uniqueGalleryId ?>" data-maxwidth="1200px">
+                      <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($item['contao']['uuid'], $item['caption'], '', $imgSize, '', false); ?>
+                </a>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+</div>
+
+<?php foreach ($this->items as $item): ?>
+    <div id="content-<?= $item['id'] ?>" class="insta-iframe--content" style="display:none;">
+        <div class="row">
+            <div class="col-md-8 left-col--inner" >
+                <a href="<?= $item['permalink'];?>"  target="_blank" title="Auf Instagram ansehen" class="btn btn-outline-light btn-sm insta-note"><i class="fa-sharp fa-light fa-magnifying-glass"></i> Auf Instagram ansehen</a>
+                <iframe src="<?= $item['permalink'] ?>embed" width="100%"  frameborder="0" scrolling="no" allowtransparency="true" allow="autoplay; encrypted-media" ></iframe>
+            </div>
+            <div class="col-md-4">
+                <div class="right-col--inner">
+                    <p><?= nl2br($item['caption']) ?></p>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        new VenoBox({
+            selector: '.venobox',
+            numeration: true,
+            infinigall: true,
+            share: false,
+            spinner: 'rotating-plane',
+            maxWidth: '80%',
+        });
+    });
+</script>
+
+<?php $this->endblock(); ?>
