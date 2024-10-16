@@ -65,14 +65,24 @@ div:has([class*="text-"]):has([class*="-center"]) {
 }
 
 
-
 @include media-breakpoint-up(lg) {
-  .content--element:has(.pull-bottom){
+  .content--element:has(.pull-bottom) {
     padding-bottom: 0 !important;
   }
-  .pulled-up-element{
-    .row > div:last-child{
-      padding-top: calc((var(--main-gap)) + 150px) !important;
+  .pulled-up-element {
+    .row:not(.align-items-center) > div:last-child {
+      padding-top: calc((var(--main-gap)/2) + 150px) !important;
+      //padding-top: 150px !important;
+    }
+
+    .team-members .team-member:first-child {
+      .row.align-items-center{
+        align-items: flex-start !important;
+      }
+
+      .member-info {
+        padding-top: calc((var(--main-gap)/2) + 150px) !important;
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
-@import "../../scss-variables";
+@import "../../_theme/variables";
 
 .team-overview {
   .team-members {
@@ -9,7 +9,7 @@
       margin-bottom: 3rem;
 
       .row {
-        align-items: center;
+        //align-items: center;
       }
 
       .member-image {
@@ -21,7 +21,7 @@
       }
 
       .member-info {
-        padding: 1rem;
+        //padding: 1rem;
 
         .member-name {
           font-size: 1.5rem;

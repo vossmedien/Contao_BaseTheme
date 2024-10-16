@@ -322,13 +322,13 @@ class ImageHelper
                     //error_log("Failed to create image from JPEG: $imagePath");
                     return;
                 }
-                $result = imagejpeg($image, $imagePath, 95);
+                $result = imagejpeg($image, $imagePath, 85);
                 if ($result === false) {
                     //error_log("Failed to save optimized JPEG: $imagePath");
                 }
                 imagedestroy($image);
             } else {
-                //error_log("imKampfmittelbergungagecreatefromjpeg function not available");
+                //error_log("imagecreatefromjpeg function not available");
             }
         } elseif ($extension === 'png') {
             if (function_exists('imagecreatefrompng')) {
