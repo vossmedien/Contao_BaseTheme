@@ -71,7 +71,7 @@ class ImageHelper
             }
         }
 
-      
+
 
         if($originalImageInfo) {
 
@@ -265,7 +265,7 @@ class ImageHelper
 
             $classAttribute = $inSlider ? ($class ? ' class="' . htmlspecialchars($class) . '"' : '') :
                 ($class ? ' class="lazy ' . htmlspecialchars($class) . '"' : ' class="lazy"');
-            $lazyAttribute = $lazy ? ' loading="lazy"' : '';
+            //$lazyAttribute = $lazy ? ' loading="lazy"' : '';
 
             $alt = $altText ?: (!empty($meta['alt']) ? $meta['alt'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : '')));
             $title = !empty($meta['title']) ? $meta['title'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : ''));
@@ -273,14 +273,14 @@ class ImageHelper
             $finalLink = $imageUrl ?: (!empty($meta['link']) ? $meta['link'] : '');
 
             $imgTag = '<picture>' . implode("\n", $sources);
-            $imgTag .= sprintf('<img %s data-src="%s" data-srcset="%s" sizes="%s" alt="%s"%s%s>',
+            $imgTag .= sprintf('<img %s data-src="%s" data-srcset="%s" sizes="%s" alt="%s" %s loading="lazy">',
                 $classAttribute,
                 $imageSrc,
                 implode(', ', $srcset),
                 implode(', ', $sizes) . ', 100vw',
                 htmlspecialchars($alt),
                 $title ? ' title="' . htmlspecialchars($title) . '"' : '',
-                $lazyAttribute
+                //$lazyAttribute
             );
             $imgTag .= '</picture>';
 
@@ -290,7 +290,7 @@ class ImageHelper
                 if ($finalCaption) {
                     $finalOutput .= '<div class="slider-caption">' . htmlspecialchars($finalCaption) . '</div>';
                 }
-                $finalOutput = str_replace(["data-src", "data-srcset", 'loading="lazy"'], ["src", "srcset", ''], $finalOutput);
+                $finalOutput = str_replace(["data-src", "data-srcset"], ["src", "srcset"], $finalOutput);
             } elseif ($finalCaption) {
                 $finalOutput .= '<figcaption>' . htmlspecialchars($finalCaption) . '</figcaption>';
             }

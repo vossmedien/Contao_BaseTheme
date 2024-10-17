@@ -1,6 +1,8 @@
 <?php
+
 use VSM_HelperFunctions\ButtonHelper;
 use VSM_HelperFunctions\GlobalElementConfig;
+
 //rsce_my_element_config.php
 return array(
     'label' => array('Custom | Bilder-Galerie (slider)', ''),
@@ -26,7 +28,7 @@ return array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
             ),
             'inputType' => 'select',
-             'options' => GlobalElementConfig::getAnimations(),
+            'options' => GlobalElementConfig::getAnimations(),
             'eval' => array('chosen' => 'true', 'tl_class' => 'w50')
         ),
 
@@ -35,7 +37,7 @@ return array(
                 'de' => array('Art der Einblendeanimation der Slides', 'Siehe https://animate.style/ für Beispiele'),
             ),
             'inputType' => 'select',
-             'options' => GlobalElementConfig::getAnimations(),
+            'options' => GlobalElementConfig::getAnimations(),
             'eval' => array('chosen' => 'true', 'tl_class' => 'w50')
         ),
 
@@ -67,8 +69,8 @@ return array(
             'inputType' => 'text',
             'eval' => array(
                 'tl_class' => 'w50',
-                'rgxp' => 'digit', // Erlaubt nur Zahlen
-                'maxlength' => 2   // Begrenzt die Eingabe auf maximal 2 Ziffern
+                'rgxp' => 'digit',
+                'maxlength' => 2
             ),
         ),
         'masonry_spalten_mobile' => array(
@@ -76,8 +78,27 @@ return array(
             'inputType' => 'text',
             'eval' => array(
                 'tl_class' => 'w50',
-                'rgxp' => 'digit', // Erlaubt nur Zahlen
-                'maxlength' => 2   // Begrenzt die Eingabe auf maximal 2 Ziffern
+                'rgxp' => 'digit',
+                'maxlength' => 2
+            ),
+        ),
+
+
+        'limit_display' => array(
+            'label' => array('Darstellung begrenzen', 'Nur eine bestimmte Anzahl von Zeilen anzeigen'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 m12'),
+            'dependsOn' => array(
+                'field' => 'deactivate_slider',
+                'value' => array('desktop', 'mobile', 'both'),
+            ),
+        ),
+        'visible_rows' => array(
+            'label' => array('Anzahl sichtbarer Zeilen', 'Wie viele Zeilen sollen initial sichtbar sein?'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50', 'rgxp' => 'natural'),
+            'dependsOn' => array(
+                'field' => 'limit_display',
             ),
         ),
 
@@ -86,50 +107,6 @@ return array(
             'inputType' => 'group',
             'eval' => array('tl_class' => 'clr'),
         ),
-
-        /*
-                'style_type' => array(
-            'label' => array('Darstellungstyp ', ''),
-            'inputType' => 'select',
-            'options' => array(
-                'type-1' => 'Typ 1: Pfeile rechts und links, Bildbeschreibung unter dem Bild',
-                'type-2' => 'Typ 2: Überschrift und Pfeile links auf dem Bild mit Hintergrund hinterlegt.',
-            ),
-        ),
-
-
-        'text_on_slider' => array(
-            'label' => array('Text, der links auf dem Slider steht', 'auf Hintergrund'),
-            'inputType' => 'textarea',
-            'eval' => array('rte' => 'tinyMCE'),
-
-            'dependsOn' => array(
-                'field' => 'style_type',
-                'value' => 'type-2',
-            ),
-        ),
-
-        'alternate_background_color' => array(
-            'label' => array('Alternative Hintergrundfarbe für Inhalt', 'Standardmäßig weiß'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-            'dependsOn' => array(
-                'field' => 'style_type',
-                'value' => 'type-2',
-            ),
-        ),
-
-        'alternate_text_color' => array(
-            'label' => array('Schriftfarbe als HEX-Wert falls abweichend', 'Standard-Farbe ist die Basis-Textfarbe'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-            'dependsOn' => array(
-                'field' => 'style_type',
-                'value' => 'type-2',
-            ),
-        ),
-         */
-
 
 
         'selecttype' => array(
@@ -291,7 +268,6 @@ return array(
                 'value' => 'single',
             ),
             'fields' => array(
-
                 'size' => array(
                     'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
                     'inputType' => 'imageSize',
@@ -302,10 +278,7 @@ return array(
                         'includeBlankOption' => true,
                         'tl_class' => 'clr'
                     ),
-
-
                 ),
-
 
                 'slide' => array(
                     'label' => array('Bild', ''),
@@ -315,7 +288,7 @@ return array(
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,svg,webp',
-                            'tl_class' => 'clr'
+                        'tl_class' => 'clr'
                     ),
                 ),
                 'slide_text' => array(

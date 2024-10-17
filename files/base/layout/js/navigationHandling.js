@@ -56,20 +56,24 @@ export function changeAnchorLinks() {
 }
 
 export function changeNavLinksAfterLoad() {
-    const hash = window.location.hash;
+    let hash = window.location.hash;
+
+    // Extrahiere den reinen Hash ohne Parameter
+    const hashParts = hash.split('?');
+    const pureHash = hashParts[0];
 
     links.forEach(currElement => {
-        if (currElement.getAttribute("href") === hash) {
+        if (currElement.getAttribute("href") === pureHash) {
             setActiveLink(currElement);
-        } else if (hash === '' && currElement.getAttribute("href") === "#top") {
+        } else if (pureHash === '' && currElement.getAttribute("href") === "#top") {
             setActiveLink(currElement);
         }
     });
 
     // Scroll to the correct position after setting the active link
-    if (hash) {
+    if (pureHash) {
         setTimeout(() => {
-            const target = document.querySelector(hash);
+            const target = document.querySelector(pureHash);
             if (target) {
                 const scrollOffset = getCSSVariableValue('--bs-scrolloffset');
                 const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - scrollOffset;
@@ -79,6 +83,16 @@ export function changeNavLinksAfterLoad() {
                 });
             }
         }, 0);
+    }
+
+    // Handle the event parameter if present
+    const params = new URLSearchParams(hashParts[1] || '');
+    const eventName = params.get('event');
+    if (eventName) {
+        const eventField = document.querySelector('input[name="Event"]');
+        if (eventField) {
+            eventField.value = decodeURIComponent(eventName);
+        }
     }
 
     changeAnchorLinks();

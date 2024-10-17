@@ -40,24 +40,24 @@ class GlobalElementConfig
             'animate__backInLeft' => 'backInLeft',
             'animate__backInRight' => 'backInRight',
             'animate__backInUp' => 'backInUp',
-            /* Back exits */
+            /* Back exits
             'animate__backOutDown' => 'backOutDown',
             'animate__backOutLeft' => 'backOutLeft',
             'animate__backOutRight' => 'backOutRight',
-            'animate__backOutUp' => 'backOutUp',
+            'animate__backOutUp' => 'backOutUp', */
             /* Bouncing entrances  */
             'animate__bounceIn' => 'bounceIn',
             'animate__bounceInDown' => 'bounceInDown',
             'animate__bounceInLeft' => 'bounceInLeft',
             'animate__bounceInRight' => 'bounceInRight',
             'animate__bounceInUp' => 'bounceInUp',
-            /* Bouncing exits  */
+            /* Bouncing exits
             'animate__bounceOut' => 'bounceOut',
             'animate__bounceOutDown' => 'bounceOutDown',
             'animate__bounceOutLeft' => 'bounceOutLeft',
             'animate__bounceOutRight' => 'bounceOutRight',
-            'animate__bounceOutUp' => 'bounceOutUp',
-            /* Fading exits */
+            'animate__bounceOutUp' => 'bounceOutUp', */
+            /* Fading exits
             'animate__fadeOut' => 'fadeOut',
             'animate__fadeOutDown' => 'fadeOutDown',
             'animate__fadeOutDownBig' => 'fadeOutDownBig',
@@ -70,7 +70,7 @@ class GlobalElementConfig
             'animate__fadeOutTopLeft' => 'fadeOutTopLeft',
             'animate__fadeOutTopRight' => 'fadeOutTopRight',
             'animate__fadeOutBottomRight' => 'fadeOutBottomRight',
-            'animate__fadeOutBottomLeft' => 'fadeOutBottomLeft',
+            'animate__fadeOutBottomLeft' => 'fadeOutBottomLeft', */
             /* Flippers */
             'animate__flip' => 'flip',
             'animate__flipInX' => 'flipInX',
@@ -88,12 +88,12 @@ class GlobalElementConfig
             'animate__rotateInDownRight' => 'rotateInDownRight',
             'animate__rotateInUpLeft' => 'rotateInUpLeft',
             'animate__rotateInUpRight' => 'rotateInUpRight',
-            /* Rotating exits */
+            /* Rotating exits
             'animate__rotateOut' => 'rotateOut',
             'animate__rotateOutDownLeft' => 'rotateOutDownLeft',
             'animate__rotateOutDownRight' => 'rotateOutDownRight',
             'animate__rotateOutUpLeft' => 'rotateOutUpLeft',
-            'animate__rotateOutUpRight' => 'rotateOutUpRight',
+            'animate__rotateOutUpRight' => 'rotateOutUpRight',*/
             /* Specials */
             'animate__hinge' => 'hinge',
             'animate__jackInTheBox' => 'jackInTheBox',
@@ -105,22 +105,22 @@ class GlobalElementConfig
             'animate__zoomInLeft' => 'zoomInLeft',
             'animate__zoomInRight' => 'zoomInRight',
             'animate__zoomInUp' => 'zoomInUp',
-            /* Zooming exits */
+            /* Zooming exits
             'animate__zoomOut' => 'zoomOut',
             'animate__zoomOutDown' => 'zoomOutDown',
             'animate__zoomOutLeft' => 'zoomOutLeft',
             'animate__zoomOutRight' => 'zoomOutRight',
-            'animate__zoomOutUp' => 'zoomOutUp',
+            'animate__zoomOutUp' => 'zoomOutUp',*/
             /* Sliding entrances */
             'animate__slideInDown' => 'slideInDown',
             'animate__slideInLeft' => 'slideInLeft',
             'animate__slideInRight' => 'slideInRight',
             'animate__slideInUp' => 'slideInUp',
-            /* Sliding exits */
+            /* Sliding exits
             'animate__slideOutDown' => 'slideOutDown',
             'animate__slideOutLeft' => 'slideOutLeft',
             'animate__slideOutRight' => 'slideOutRight',
-            'animate__slideOutUp' => 'slideOutUp',
+            'animate__slideOutUp' => 'slideOutUp',*/
         ];
     }
 

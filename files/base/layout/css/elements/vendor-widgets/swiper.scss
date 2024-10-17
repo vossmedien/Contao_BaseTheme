@@ -232,3 +232,17 @@ div:not(:has(.swiper)) {
 .macy-container  + .swiper-pagination{
   display: none;
 }
+
+
+
+@media (min-width: 768px) {
+    .hidden-desktop {
+        display: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .hidden-mobile {
+        display: none !important;
+    }
+}

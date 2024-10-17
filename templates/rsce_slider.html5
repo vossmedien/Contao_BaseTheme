@@ -1,6 +1,4 @@
 <?php
-
-
 if (!isset($this->size)) {
     $this->{"size"} = "";
 }
@@ -8,7 +6,6 @@ if (!isset($this->size)) {
 
     <div <?php echo $this->cssID; ?> class="content--element">
         <div class="ce--inner  <?php echo $this->class; ?>">
-
 
             <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
                 $this->topline,
@@ -35,23 +32,34 @@ if (!isset($this->size)) {
             } else {
                 $dataSorted = [];
             }
+
+            // Berechnen der sichtbaren Elemente für Masonry
+            $totalItems = count($dataSorted);
+            $desktopColumns = $this->masonry_spalten ?: 3;
+            $mobileColumns = $this->masonry_spalten_mobile ?: 2;
+            $visibleRows = $this->visible_rows ?: 2;
+
+            $desktopVisibleItems = $desktopColumns * $visibleRows;
+            $mobileVisibleItems = $mobileColumns * $visibleRows;
+
+            $showMoreButton = $this->limit_display && $totalItems > $desktopVisibleItems;
             ?>
 
-            <div class="ce--content-slider <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?>  <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>">
+            <div class="ce--content-slider <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>">
                 <?php $rand = rand(1, 100); ?>
 
                 <?php if ($this->open_lightbox): ?>
                     <script type="text/javascript" defer>
                         document.addEventListener('DOMContentLoaded', function () {
                             new VenoBox({
-                                selector: ".lightbox_<?= $rand;?>", //Items selector
-                                infinigall: true, // Ermöglicht eine endlose Navigation durch die Galerie. Standardwert: false
-                                maxWidth: '95%', // Maximale Breite des Lightbox-Fensters. Standardwert: '100%'
-                                numeration: true, // Zeigt Nummerierung der aktuellen und Gesamtanzahl der Elemente in der Galerie an. Standardwert: false
-                                spinner: 'flow', //  'plane' | 'chase' | 'bounce' | 'wave' | 'pulse' | 'flow' | 'swing' | 'circle' | 'circle-fade' | 'grid' | 'fold | 'wander'
-                                initialScale: 0.9, // Anfangsgröße der Skalierungstransformation für Elemente. Standardwert: 0.9
-                                transitionSpeed: 200, // Übergangsgeschwindigkeit für eingehende Elemente in Millisekunden. Standardwert: 500
-                                fitView: true, // Passt Bilder an, um innerhalb der Höhe des Viewports zu passen. Standardwert: true
+                                selector: ".lightbox_<?= $rand;?>",
+                                infinigall: true,
+                                maxWidth: '95%',
+                                numeration: true,
+                                spinner: 'flow',
+                                initialScale: 0.9,
+                                transitionSpeed: 200,
+                                fitView: true,
                             });
                         });
                     </script>
@@ -65,39 +73,35 @@ if (!isset($this->size)) {
                 <?php endif; ?>
 
                 <div class="swiper <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> content-slider_<?= $this->id; ?>">
-                    <!-- Additional required wrapper -->
                     <div class="swiper-wrapper align-items-center">
-                        <!-- Slides -->
-
-
+                        <?php $itemCount = 0; ?>
                         <?php if ($dataSorted) : ?>
                             <?php
-                            // Filter out folders from $dataSorted
                             $dataSorted = array_filter($dataSorted, function ($uuid) {
                                 $file = \Contao\FilesModel::findByUuid($uuid);
                                 return $file !== null && !$file->isDir;
                             });
 
-                            $length = count($dataSorted); // Number of elements in the filtered array
-
                             foreach ($dataSorted as $uuid) : ?>
                                 <?php $file = \Contao\FilesModel::findByUuid($uuid); ?>
                                 <?php if ($file !== null && $file->type === 'file') : ?>
                                     <div class="swiper-slide text-center" data-aos="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($uuid, null, $this->headline, $this->size, null, true, $this->open_lightbox ? $rand : ""); ?>
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($uuid, null, $this->headline, $this->size, null, false, $this->open_lightbox ? $rand : ""); ?>
                                     </div>
+                                    <?php $itemCount++; ?>
                                 <?php endif; ?>
                             <?php endforeach ?>
                         <?php else : ?>
                             <?php foreach ($this->galery as $slide) : ?>
                                 <div class="swiper-slide text-center" data-aos="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->slide, $this->headline, $slide->slide_text, $slide->size, null, true, $this->open_lightbox ? $rand : ""); ?>
+                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->slide, $this->headline, $slide->slide_text, $slide->size, null, false, $this->open_lightbox ? $rand : ""); ?>
                                 </div>
+                                <?php $itemCount++; ?>
                             <?php endforeach ?>
                         <?php endif; ?>
                     </div>
-
                 </div>
+
                 <?php if (count($this->galery) > 1 || count($dataSorted) > 1) : ?>
                     <?php if ($this->show_pagination): ?>
                         <div class="content-slider_<?= $this->id; ?> swiper-pagination"></div>
@@ -108,9 +112,14 @@ if (!isset($this->size)) {
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
+
+            <?php if ($showMoreButton): ?>
+                <div class="show-more-container text-center mt-3" style="display: none;">
+                    <button class="btn btn-primary show-more-button">Mehr anzeigen</button>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
-
 
 <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
     <script type="text/javascript">
@@ -118,6 +127,11 @@ if (!isset($this->size)) {
             let swiper_<?= $this->id; ?>;
             let macy_<?= $this->id; ?>;
             let lastWidth = window.innerWidth;
+
+
+            var lazyLoadInstance = new LazyLoad({
+                elements_selector: ".lazy"
+            });
 
             function loadMacy(callback) {
                 if (typeof Macy !== 'undefined') {
@@ -135,25 +149,24 @@ if (!isset($this->size)) {
                 let shouldUseMacy = false;
 
                 <?php if ($this->deactivate_slider === ''): ?>
-                shouldUseMacy = false; // Immer Swiper verwenden
+                shouldUseMacy = false;
                 <?php elseif ($this->deactivate_slider === 'desktop'): ?>
                 shouldUseMacy = !isMobile;
                 <?php elseif ($this->deactivate_slider === 'mobile'): ?>
                 shouldUseMacy = isMobile;
                 <?php elseif ($this->deactivate_slider === 'both'): ?>
-                shouldUseMacy = true; // Immer Macy verwenden
+                shouldUseMacy = true;
                 <?php endif; ?>
 
-                // Überprüfen, ob sich die Breite tatsächlich geändert hat oder ob eine Initialisierung erzwungen wird
                 if (!forceInit && Math.abs(currentWidth - lastWidth) < 50) {
-                    return; // Keine signifikante Änderung, nicht neu initialisieren
+                    return;
                 }
 
                 lastWidth = currentWidth;
 
                 let container = document.querySelector('.content-slider_<?= $this->id; ?>');
+                let showMoreContainer = document.querySelector('.show-more-container');
 
-                // Immer zuerst aufräumen
                 if (swiper_<?= $this->id; ?> && !swiper_<?= $this->id; ?>.destroyed) {
                     swiper_<?= $this->id; ?>.destroy(true, true);
                 }
@@ -162,11 +175,10 @@ if (!isset($this->size)) {
                     macy_<?= $this->id; ?> = null;
                 }
 
-                // Entferne alle Klassen und setze die Struktur zurück
                 container.classList.remove('swiper', 'macy-container');
                 let items = container.querySelectorAll('.swiper-slide, .macy-item');
                 items.forEach(item => {
-                    item.classList.remove('swiper-slide', 'macy-item');
+                    item.classList.remove('swiper-slide', 'macy-item', 'hidden-desktop', 'hidden-mobile');
                 });
 
                 let wrapper = container.querySelector('.swiper-wrapper');
@@ -177,21 +189,28 @@ if (!isset($this->size)) {
                     wrapper.remove();
                 }
 
-                // Entferne Swiper-spezifische Elemente
                 let swiperElements = container.querySelectorAll('.swiper-lazy-preloader, .swiper-pagination');
                 swiperElements.forEach(el => el.remove());
 
                 if (shouldUseMacy) {
-                    // Macy Setup
                     container.classList.add('macy-container');
-                    items.forEach(item => item.classList.add('macy-item'));
+                    items.forEach((item, index) => {
+                        item.classList.add('macy-item');
+                        if (index >= <?= $desktopVisibleItems ?>) {
+                            item.classList.add('hidden-desktop');
+                        }
+                        if (index >= <?= $mobileVisibleItems ?>) {
+                            item.classList.add('hidden-mobile');
+                        }
+                    });
+
+                    if (showMoreContainer) {
+                        showMoreContainer.style.display = 'block';
+                    }
 
                     <?php
-                    // Standardwerte setzen
                     $defaultDesktopColumns = 3;
                     $defaultMobileColumns = 2;
-
-                    // Werte aus den Feldern holen oder Standardwerte verwenden
                     $desktopColumns = $this->masonry_spalten ?: $defaultDesktopColumns;
                     $mobileColumns = $this->masonry_spalten_mobile ?: $defaultMobileColumns;
                     ?>
@@ -207,7 +226,6 @@ if (!isset($this->size)) {
                             }
                         });
 
-                        // Lade Bilder und berechne Layout neu
                         let images = container.querySelectorAll('img');
                         images.forEach(img => {
                             if (img.src.startsWith('data:image/gif;base64')) {
@@ -222,8 +240,10 @@ if (!isset($this->size)) {
                         });
                     });
                 } else {
-                    // Swiper Setup
                     container.classList.add('swiper');
+                    if (showMoreContainer) {
+                        showMoreContainer.style.display = 'none';
+                    }
 
                     wrapper = document.createElement('div');
                     wrapper.classList.add('swiper-wrapper');
@@ -239,7 +259,7 @@ if (!isset($this->size)) {
                     swiper_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
                         direction: 'horizontal',
                         loop: <?php echo $this->loop ? 'true' : 'false'; ?>,
-                        lazy: true,
+                        lazy: false,
                         spaceBetween: <?php echo $this->space_between ?: 20; ?>,
                         speed: <?php echo $this->transition_time ?: 1500; ?>,
                         effect: <?php echo $this->slide_effect ? "'$this->slide_effect'" : "'slide'"; ?>,
@@ -280,18 +300,80 @@ if (!isset($this->size)) {
                             768: {
                                 slidesPerView: <?php echo $this->slides_per_view; ?>,
                             }
-                        }
+                        },
                         <?php else: ?>
                         slidesPerView: 1,
                         <?php endif; ?>
                         <?php else: ?>
                         slidesPerView: 'auto',
                         <?php endif; ?>
+                        on: {
+                            init: function () {
+                                updateLazyLoading(this);
+                            },
+                            slideChange: function () {
+                                updateLazyLoading(this);
+                            }
+                        }
                     });
+                }
+
+                initShowMoreButton();
+            }
+
+            function updateLazyLoading(swiper) {
+                const slidesPerView = swiper.params.slidesPerView;
+
+                // Nur fortfahren, wenn slidesPerView keine ganze Zahl ist
+                if (Number.isInteger(slidesPerView)) return;
+
+                const currentIndex = swiper.activeIndex;
+                const floorIndex = currentIndex + Math.floor(slidesPerView);
+                const ceilIndex = currentIndex + Math.ceil(slidesPerView);
+
+                // Funktion zum Entfernen des loading-Attributs
+                const removeLazyLoading = (index) => {
+                    if (index < swiper.slides.length) {
+                        const slide = swiper.slides[index];
+                        const img = slide.querySelector('img');
+                        if (img && img.getAttribute('loading') === 'lazy') {
+                            img.removeAttribute('loading');
+                        }
+                    }
+                };
+
+                // Entfernen des loading-Attributs für beide relevante Elemente
+                removeLazyLoading(floorIndex);
+                removeLazyLoading(ceilIndex);
+
+                lazyLoadInstance.update();
+            }
+
+            function initShowMoreButton() {
+                const showMoreContainer = document.querySelector('.show-more-container');
+                if (!showMoreContainer) {
+                    return;
+                }
+                const showMoreButton = showMoreContainer.querySelector('.show-more-button');
+                const hiddenItems = document.querySelectorAll('.hidden-desktop, .hidden-mobile');
+
+                if (showMoreButton && hiddenItems.length > 0) {
+                    showMoreButton.style.display = 'inline-flex';
+                    showMoreButton.addEventListener('click', function () {
+                        hiddenItems.forEach(item => {
+                            item.classList.remove('hidden-desktop', 'hidden-mobile');
+                        });
+                        showMoreButton.style.display = 'none';
+
+                        if (macy_<?= $this->id; ?>) {
+                            macy_<?= $this->id; ?>.recalculate(true);
+                        }
+                    });
+                } else if (showMoreButton) {
+                    showMoreButton.style.display = 'none';
                 }
             }
 
-            // Debounce-Funktion
             function debounce(func, wait) {
                 let timeout;
                 return function executedFunction(...args) {
@@ -304,10 +386,8 @@ if (!isset($this->size)) {
                 };
             }
 
-            // Führe die Funktion beim Laden der Seite aus und erzwinge die Initialisierung
             initOrDestroySwiper(true);
 
-            // Führe die Funktion bei Änderung der Fenstergröße aus, mit Debounce
             window.addEventListener('resize', debounce(() => initOrDestroySwiper(false), 250));
         });
     </script>
