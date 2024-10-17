@@ -356,7 +356,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                                     foreach ($row->image as $data) : ?>
                                                         <?php if ($index < $length - 1): ?>
                                                             <div class="swiper-slide">
-                                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, null, $row->ce_headline, $row->size_right, null, true, $this->open_lightbox ? $rand : "", false); ?>
+                                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, null, $row->ce_headline, $row->size_right, null, false, $this->open_lightbox ? $rand : "", false); ?>
                                                             </div>
                                                         <?php endif;
                                                         $index++; ?>

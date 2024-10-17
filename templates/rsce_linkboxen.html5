@@ -171,7 +171,7 @@ if (!isset($this->size)) {
                                         <?php endif; ?>
                                         <?php if ($ext != "mp4" && $box->not_as_bg) : ?>
                                             <div style="height: <?php if ($this->imagearea_height): ?><?= $this->imagearea_height; ?><?php else: ?> auto<?php endif; ?>; text-align: center;" class="image--holder <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
-                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($box->image, null, $box->image_headline, $this->size, null, ($this->is_slider == 2 ? true : false)); ?>
+                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($box->image, null, $box->image_headline, $this->size, null, false); ?>
                                             </div>
                                         <?php endif; ?>
 
@@ -250,7 +250,7 @@ if (!isset($this->size)) {
                                             <div class="box-lower--expand <?php if ($box->is_map == "code") : ?>is-map<?php endif; ?> <?php if ($box->expand_longtext && $box->expand_longtext != "show_all") : ?>expandable<?php endif; ?> <?php if ($box->expand_longtext == "hide_preview") : ?>hide-preview<?php endif; ?>">
                                                 <?php if ($box->expand_image) : ?>
                                                     <div class="box--expand-image text-center">
-                                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($box->expand_image, null, $box->image_headline, $this->size, null, ($this->is_slider == 2 ? true : false)); ?>
+                                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($box->expand_image, null, $box->image_headline, $this->size, null, false); ?>
                                                     </div>
                                                 <?php endif; ?>
 
