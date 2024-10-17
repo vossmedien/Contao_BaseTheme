@@ -49,11 +49,11 @@
 
 
   ul {
-    top: calc(var(--mm-spn-logoHeight) + 3rem);
+    top: calc(var(--mm-spn-logoHeight) );
     //display: flex;
     //flex-flow: column nowrap;
 
-    ul{
+    ul {
       background-color: var(--mm-spn-bg);
     }
 
@@ -63,7 +63,10 @@
   }
 
   .logo {
-    text-align: center;
+    height: var(--mm-spn-logoHeight);
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
 
     a {
       padding: 1.5rem 0;
@@ -125,6 +128,7 @@
     a {
       padding: 0;
       line-height: var(--mm-spn-item-height);
+      background-color: transparent;
 
       &:after {
         height: var(--mm-spn-item-height);

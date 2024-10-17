@@ -2,7 +2,7 @@
   position: relative;
    &:has( .swiper-button-prev){
      @include media-breakpoint-down(md) {
-           padding-inline: 3rem;
+           //padding-inline: 3rem;
      }
   }
 }

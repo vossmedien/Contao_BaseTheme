@@ -34,15 +34,17 @@ if (!isset($this->size)) {
             }
 
             // Berechnen der sichtbaren Elemente für Masonry
-            $totalItems = count($dataSorted);
-            $desktopColumns = $this->masonry_spalten ?: 3;
-            $mobileColumns = $this->masonry_spalten_mobile ?: 2;
-            $visibleRows = $this->visible_rows ?: 2;
+$totalItems = count($dataSorted);
+$desktopColumns = $this->masonry_spalten ?: 3;
+$mobileColumns = $this->masonry_spalten_mobile ?: 2;
+$visibleRows = $this->visible_rows ?: 2;
 
-            $desktopVisibleItems = $desktopColumns * $visibleRows;
-            $mobileVisibleItems = $mobileColumns * $visibleRows;
+$desktopVisibleItems = $desktopColumns * $visibleRows;
+$mobileVisibleItems = $mobileColumns * $visibleRows;
 
-            $showMoreButton = $this->limit_display && $totalItems > $desktopVisibleItems;
+$showMoreButtonDesktop = $this->limit_display && $totalItems > $desktopVisibleItems;
+$showMoreButtonMobile = $this->limit_display && $totalItems > $mobileVisibleItems;
+$showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
             ?>
 
             <div class="ce--content-slider <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>">
@@ -112,12 +114,16 @@ if (!isset($this->size)) {
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
-
-            <?php if ($showMoreButton): ?>
-                <div class="show-more-container text-center mt-3" style="display: none;">
-                    <button class="btn btn-primary show-more-button">Mehr anzeigen</button>
-                </div>
-            <?php endif; ?>
+<?php if ($showMoreButton): ?>
+    <div class="show-more-container text-center mt-3">
+        <?php if ($showMoreButtonDesktop): ?>
+            <button class="btn btn-primary show-more-button show-more-desktop" data-show-more="true">Mehr anzeigen</button>
+        <?php endif; ?>
+        <?php if ($showMoreButtonMobile): ?>
+            <button class="btn btn-primary show-more-button show-more-mobile" data-show-more="true">Mehr anzeigen</button>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
         </div>
     </div>
 
@@ -349,30 +355,57 @@ if (!isset($this->size)) {
                 lazyLoadInstance.update();
             }
 
-            function initShowMoreButton() {
-                const showMoreContainer = document.querySelector('.show-more-container');
-                if (!showMoreContainer) {
-                    return;
-                }
-                const showMoreButton = showMoreContainer.querySelector('.show-more-button');
-                const hiddenItems = document.querySelectorAll('.hidden-desktop, .hidden-mobile');
+function initShowMoreButton() {
+    const showMoreContainer = document.querySelector('.show-more-container');
+    if (!showMoreContainer) {
+        return;
+    }
+    const showMoreButtonDesktop = showMoreContainer.querySelector('.show-more-desktop');
+    const showMoreButtonMobile = showMoreContainer.querySelector('.show-more-mobile');
+    const hiddenDesktopItems = document.querySelectorAll('.hidden-desktop');
+    const hiddenMobileItems = document.querySelectorAll('.hidden-mobile');
 
-                if (showMoreButton && hiddenItems.length > 0) {
-                    showMoreButton.style.display = 'inline-flex';
-                    showMoreButton.addEventListener('click', function () {
-                        hiddenItems.forEach(item => {
-                            item.classList.remove('hidden-desktop', 'hidden-mobile');
-                        });
-                        showMoreButton.style.display = 'none';
+    function updateButtonVisibility() {
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+            if (showMoreButtonMobile) showMoreButtonMobile.style.display = 'inline-flex';
+            if (showMoreButtonDesktop) showMoreButtonDesktop.style.display = 'none';
+        } else {
+            if (showMoreButtonDesktop) showMoreButtonDesktop.style.display = 'inline-flex';
+            if (showMoreButtonMobile) showMoreButtonMobile.style.display = 'none';
+        }
+        showMoreContainer.style.display = 'block';
+    }
 
-                        if (macy_<?= $this->id; ?>) {
-                            macy_<?= $this->id; ?>.recalculate(true);
-                        }
-                    });
-                } else if (showMoreButton) {
-                    showMoreButton.style.display = 'none';
-                }
+    function toggleItems(items, button) {
+        const isShowingMore = button.getAttribute('data-show-more') === 'true';
+        items.forEach(item => {
+            if (isShowingMore) {
+                item.classList.remove(button.classList.contains('show-more-desktop') ? 'hidden-desktop' : 'hidden-mobile');
+            } else {
+                item.classList.add(button.classList.contains('show-more-desktop') ? 'hidden-desktop' : 'hidden-mobile');
             }
+        });
+
+        button.textContent = isShowingMore ? 'Weniger anzeigen' : 'Mehr anzeigen';
+        button.setAttribute('data-show-more', isShowingMore ? 'false' : 'true');
+
+        if (macy_<?= $this->id; ?>) {
+            macy_<?= $this->id; ?>.recalculate(true);
+        }
+    }
+
+    if (showMoreButtonDesktop) {
+        showMoreButtonDesktop.addEventListener('click', () => toggleItems(hiddenDesktopItems, showMoreButtonDesktop));
+    }
+
+    if (showMoreButtonMobile) {
+        showMoreButtonMobile.addEventListener('click', () => toggleItems(hiddenMobileItems, showMoreButtonMobile));
+    }
+
+    updateButtonVisibility();
+    window.addEventListener('resize', debounce(updateButtonVisibility, 250));
+}
 
             function debounce(func, wait) {
                 let timeout;

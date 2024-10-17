@@ -41,7 +41,7 @@ const initMobileNav = () => {
         const menu = new MmenuLight(mobileNavElement);
 
         const navigator = menu.navigation({
-            
+            theme: "dark"
         });
         const drawer = menu.offcanvas({
             position: 'right'
