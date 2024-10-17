@@ -60,7 +60,7 @@ $imgSize = unserialize($this->imgSize);
             <div class="col-md-4">
                 <div class="right-col--inner">
 
-                    <div class="logo text-end mb-5">
+                    <div class="logo text-end mb-5 pt-3 pt-md-0">
                         <img class="d-inline-block" style="max-height: 70px;" src="/files/base/layout/img/logo.svg">
                     </div>
 
