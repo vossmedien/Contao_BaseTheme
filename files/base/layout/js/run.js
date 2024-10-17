@@ -40,7 +40,9 @@ const initMobileNav = () => {
     if (mobileNavElement && triggerElement) {
         const menu = new MmenuLight(mobileNavElement);
 
-        const navigator = menu.navigation();
+        const navigator = menu.navigation({
+            theme: "theme"
+        });
         const drawer = menu.offcanvas({
             position: 'right'
         });
