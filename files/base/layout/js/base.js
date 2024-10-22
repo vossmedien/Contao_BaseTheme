@@ -119,4 +119,40 @@ document.querySelectorAll(".count").forEach((el) => {
 
 
 
+window.pushToDataLayer = function (type, position, element, additional) {
+    console.log("Pushing to dataLayer:");
+    console.log("Type:", type);
+    console.log("Position:", position);
+    console.log("Element:", element);
+    console.log("Additional:", additional);
+
+    dataLayer.push({
+        "event": "navigationClick",
+        "navigationType": type,
+        "navigationPosition": position,
+        "navigationElement": element,
+        "navigationAdditional": additional
+    });
+
+    console.log("Current dataLayer:", dataLayer);
+};
+
+// Event-Listener hinzufügen
+
+var trackingLinks = document.querySelectorAll('[data-event-type]');
+trackingLinks.forEach(function (link) {
+    link.addEventListener('click', function (e) {
+        var type = this.getAttribute('data-event-type');
+        var position = this.getAttribute('data-event-position');
+        var element = this.getAttribute('data-event-element');
+        var additional = this.getAttribute('data-event-additional');
+
+        window.pushToDataLayer(type, position, element, additional);
+    });
+});
+
+
+
+
+
 

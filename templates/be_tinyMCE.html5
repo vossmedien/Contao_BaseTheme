@@ -57,7 +57,7 @@ if ($GLOBALS['TL_CONFIG']['useRTE']):
                 <?php $this->endblock(); ?>
 
                 <?php $this->block('valid_elements'); ?>
-                extended_valid_elements: 'q[cite|class|title],article,section,hgroup,figure,figcaption,i[class]',
+                extended_valid_elements: 'q[cite|class|title],article,section,hgroup,figure,figcaption,i[class],a[*]',
                 entity_encoding: 'raw',
                 <?php $this->endblock(); ?>
 
