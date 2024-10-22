@@ -120,12 +120,6 @@ document.querySelectorAll(".count").forEach((el) => {
 
 
 window.pushToDataLayer = function (type, position, element, additional) {
-    console.log("Pushing to dataLayer:");
-    console.log("Type:", type);
-    console.log("Position:", position);
-    console.log("Element:", element);
-    console.log("Additional:", additional);
-
     dataLayer.push({
         "event": "navigationClick",
         "navigationType": type,
@@ -133,8 +127,6 @@ window.pushToDataLayer = function (type, position, element, additional) {
         "navigationElement": element,
         "navigationAdditional": additional
     });
-
-    console.log("Current dataLayer:", dataLayer);
 };
 
 // Event-Listener hinzufügen
