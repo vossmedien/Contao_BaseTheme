@@ -9,7 +9,6 @@ class ButtonHelper
         return GlobalElementConfig::getButtonConfig();
     }
 
-
     public static function generateButtonHTML($buttons, $css = null)
     {
         $buttonHTML = "";
@@ -23,9 +22,10 @@ class ButtonHelper
                 $buttonSize = $btn->link_size ?? '';
                 $buttonUrl = $btn->link_url ?? '';
                 $linkTarget = $btn->new_tab ?? '';
-                $buttonId = $btn->link_id ?? ''; // Neue Zeile für die Button-ID
+                $buttonId = $btn->link_id ?? '';
+                $enableTracking = $btn->enable_tracking ?? false;
+                $trackingPosition = $btn->tracking_position ?? '';
 
-                // Behandle HTML im Linktext korrekt
                 $linkText = $btn->link_text ? html_entity_decode($btn->link_text, ENT_QUOTES | ENT_HTML5, 'UTF-8') : '';
 
                 $buttonClasses = "btn {$buttonSize} {$buttonType}";
@@ -39,23 +39,27 @@ class ButtonHelper
                         $buttonClasses .= ' lightbox';
                         break;
                     default:
-                        // Standardfall: Öffnen im selben Tab
                         break;
                 }
 
-                // Füge Betreff hinzu, falls vorhanden
                 $betreff = $btn->link_betreff ? "?subject=" . urlencode($btn->link_betreff) : '';
 
                 $buttonHTML .= "<a class=\"{$buttonClasses}\"";
                 $buttonHTML .= " data-aos=\"{$animationType}\"";
                 $buttonHTML .= " href=\"{$buttonUrl}{$betreff}\"";
 
-                // Füge ID hinzu, falls vorhanden
                 if (!empty($buttonId)) {
                     $buttonHTML .= " id=\"{$buttonId}\"";
                 }
 
-                // Füge zusätzliche Attribute hinzu
+                // Add tracking if enabled
+                if ($enableTracking) {
+                    $trackingText = strip_tags($linkText); // Remove HTML tags
+                    $trackingText = trim(preg_replace('/\s+/', ' ', $trackingText)); // Remove extra whitespace
+                    $trackingCode = "window.pushToDataLayer('Button', '" . addslashes($trackingPosition) . "', '" . addslashes($trackingText) . "');";
+                    $buttonHTML .= " onclick=\"" . $trackingCode . "\"";
+                }
+
                 if (!empty($additionalAttributes)) {
                     $buttonHTML .= " " . implode(" ", $additionalAttributes);
                 }

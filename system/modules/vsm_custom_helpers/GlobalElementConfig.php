@@ -196,6 +196,20 @@ class GlobalElementConfig
                 'options' => self::getButtonSizes(),
                 'eval' => ['tl_class' => 'w50'],
             ],
+            'enable_tracking' => array(
+                'label' => array('Klicktracking aktivieren', 'Aktiviert das Klick-Tracking'),
+                'inputType' => 'checkbox',
+                'eval' => array('tl_class' => 'w50'),
+            ),
+
+            'tracking_position' => array(
+                'label' => array('Tracking-Position', 'Wird im Analytics Tool definiert'),
+                'inputType' => 'text',
+                'eval' => array('tl_class' => 'w50'),
+                'dependsOn' => array(
+                    'field' => 'enable_tracking',
+                ),
+            ),
         ];
     }
 }

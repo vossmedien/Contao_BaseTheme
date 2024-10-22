@@ -56,57 +56,62 @@
     > a {
       position: absolute;
       inset: 0;
-      z-index: 3;
       text-decoration: none;
       color: inherit;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 5;
+    }
+  }
+
+  .stoerer--content {
+    @include font-size(18px);
+    position: relative;
+    z-index: 2;
+    white-space: nowrap;
+    overflow: hidden;
+
+    .stoerer-content--inner {
+      border-left: 1px solid currentColor;
+      //padding-block: 1rem;
+      padding-inline: 1.5rem;
+      margin-left: 1.5rem;
     }
 
-    .stoerer--content {
-      @include font-size(18px);
+    p {
+      margin-bottom: 0;
+    }
+
+    a {
       position: relative;
-      z-index: 2;
-      white-space: nowrap;
-      overflow: hidden;
+      z-index: 3;
+      color: inherit;
+      display: inline-block;
+      border-bottom: 1px solid transparent;
+      transition: all .3s ease-in-out;
+      line-height: 1.1;
 
-      .stoerer-content--inner {
-        border-left: 1px solid currentColor;
-        //padding-block: 1rem;
-        padding-inline: 1.5rem;
-        margin-left: 1.5rem;
-      }
-
-      p {
-        margin-bottom: 0;
-      }
-
-      a {
-        position: relative;
-        z-index: 3;
-        color: inherit;
-        display: inline-block;
-        border-bottom: 1px solid transparent;
-        transition: all .3s ease-in-out;
-        line-height: 1.1;
-
-        &:hover {
-          border-bottom: 1px solid currentColor;
-        }
+      &:hover {
+        border-bottom: 1px solid currentColor;
       }
     }
   }
+}
 
-  &[style*="right: 0px;"] .ce--stoerer {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
+&[style*="right: 0px;"] .ce--stoerer {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
 
-  &[style*="right:"] .ce--stoerer {
-    margin-left: auto;
-  }
+&[style*="right:"] .ce--stoerer {
+  margin-left: auto;
+}
 
-  &[style*="left:"] .ce--stoerer {
-    margin-right: auto;
-  }
+&[style*="left:"] .ce--stoerer {
+  margin-right: auto;
+}
+
 }
 
 // Media Query für mobile Geräte
