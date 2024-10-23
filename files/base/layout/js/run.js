@@ -95,7 +95,7 @@ const initAnimations = () => {
                         if (animateClass) {
                             requestAnimationFrame(() => {
                                 siblingElement.classList.add(...animateClass.split(' '), 'animate__animated');
-                                siblingElement.style.animationDelay = `${index * 0.2}s`;
+                                siblingElement.style.animationDelay = `${index * 0.15}s`;
                             });
 
                             observer.unobserve(siblingElement);

@@ -34,17 +34,17 @@ if (!isset($this->size)) {
             }
 
             // Berechnen der sichtbaren Elemente für Masonry
-$totalItems = count($dataSorted);
-$desktopColumns = $this->masonry_spalten ?: 3;
-$mobileColumns = $this->masonry_spalten_mobile ?: 2;
-$visibleRows = $this->visible_rows ?: 2;
+            $totalItems = count($dataSorted);
+            $desktopColumns = $this->masonry_spalten ?: 3;
+            $mobileColumns = $this->masonry_spalten_mobile ?: 2;
+            $visibleRows = $this->visible_rows ?: 2;
 
-$desktopVisibleItems = $desktopColumns * $visibleRows;
-$mobileVisibleItems = $mobileColumns * $visibleRows;
+            $desktopVisibleItems = $desktopColumns * $visibleRows;
+            $mobileVisibleItems = $mobileColumns * $visibleRows;
 
-$showMoreButtonDesktop = $this->limit_display && $totalItems > $desktopVisibleItems;
-$showMoreButtonMobile = $this->limit_display && $totalItems > $mobileVisibleItems;
-$showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
+            $showMoreButtonDesktop = $this->limit_display && $totalItems > $desktopVisibleItems;
+            $showMoreButtonMobile = $this->limit_display && $totalItems > $mobileVisibleItems;
+            $showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
             ?>
 
             <div class="ce--content-slider <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> <?php if (count($this->galery) > $this->slides_per_view || count($dataSorted) > $this->slides_per_view) : ?>is-slider<?php endif; ?>">
@@ -114,26 +114,30 @@ $showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
-<?php if ($showMoreButton): ?>
-    <div class="show-more-container text-center mt-3">
-        <?php if ($showMoreButtonDesktop): ?>
-            <button class="btn btn-primary show-more-button show-more-desktop" data-show-more="true">Mehr anzeigen</button>
-        <?php endif; ?>
-        <?php if ($showMoreButtonMobile): ?>
-            <button class="btn btn-primary show-more-button show-more-mobile" data-show-more="true">Mehr anzeigen</button>
-        <?php endif; ?>
-    </div>
-<?php endif; ?>
+            <?php if ($showMoreButton): ?>
+                <div class="show-more-container text-center mt-3">
+                    <?php if ($showMoreButtonDesktop): ?>
+                        <button class="btn btn-primary show-more-button d-none d-md-inline-block show-more-desktop" data-show-more="true">
+                            Mehr anzeigen
+                        </button>
+                    <?php endif; ?>
+                    <?php if ($showMoreButtonMobile): ?>
+                        <button class="btn btn-primary show-more-button d-md-none show-more-mobile" data-show-more="true">
+                            Mehr anzeigen
+                        </button>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
 <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
     <script type="text/javascript">
         window.addEventListener('DOMContentLoaded', function () {
-            let swiper_<?= $this->id; ?>;
-            let macy_<?= $this->id; ?>;
+            const containerId = '<?= $this->id; ?>';
+            const swiperInstances = {};
+            const macyInstances = {};
             let lastWidth = window.innerWidth;
-
 
             var lazyLoadInstance = new LazyLoad({
                 elements_selector: ".lazy"
@@ -154,6 +158,7 @@ $showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
                 let isMobile = currentWidth < 768;
                 let shouldUseMacy = false;
 
+                // Slider-Deaktivierungs-Logik basierend auf PHP-Variablen
                 <?php if ($this->deactivate_slider === ''): ?>
                 shouldUseMacy = false;
                 <?php elseif ($this->deactivate_slider === 'desktop'): ?>
@@ -164,29 +169,35 @@ $showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
                 shouldUseMacy = true;
                 <?php endif; ?>
 
+                // Prüfe ob Neuinitialisierung notwendig ist
                 if (!forceInit && Math.abs(currentWidth - lastWidth) < 50) {
                     return;
                 }
 
                 lastWidth = currentWidth;
 
-                let container = document.querySelector('.content-slider_<?= $this->id; ?>');
-                let showMoreContainer = document.querySelector('.show-more-container');
+                let container = document.querySelector('.content-slider_' + containerId);
+                if (!container) return;
 
-                if (swiper_<?= $this->id; ?> && !swiper_<?= $this->id; ?>.destroyed) {
-                    swiper_<?= $this->id; ?>.destroy(true, true);
+                let showMoreContainer = container.parentElement.querySelector('.show-more-container');
+
+                // Cleanup bestehender Instanzen
+                if (swiperInstances[containerId] && !swiperInstances[containerId].destroyed) {
+                    swiperInstances[containerId].destroy(true, true);
                 }
-                if (macy_<?= $this->id; ?>) {
-                    macy_<?= $this->id; ?>.remove();
-                    macy_<?= $this->id; ?> = null;
+                if (macyInstances[containerId]) {
+                    macyInstances[containerId].remove();
+                    macyInstances[containerId] = null;
                 }
 
+                // Reset Container-Klassen
                 container.classList.remove('swiper', 'macy-container');
                 let items = container.querySelectorAll('.swiper-slide, .macy-item');
                 items.forEach(item => {
                     item.classList.remove('swiper-slide', 'macy-item', 'hidden-desktop', 'hidden-mobile');
                 });
 
+                // Wrapper-Cleanup
                 let wrapper = container.querySelector('.swiper-wrapper');
                 if (wrapper) {
                     while (wrapper.firstChild) {
@@ -195,10 +206,12 @@ $showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
                     wrapper.remove();
                 }
 
+                // Entferne Swiper-Elemente
                 let swiperElements = container.querySelectorAll('.swiper-lazy-preloader, .swiper-pagination');
                 swiperElements.forEach(el => el.remove());
 
                 if (shouldUseMacy) {
+                    // Macy Setup
                     container.classList.add('macy-container');
                     items.forEach((item, index) => {
                         item.classList.add('macy-item');
@@ -214,21 +227,15 @@ $showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
                         showMoreContainer.style.display = 'block';
                     }
 
-                    <?php
-                    $defaultDesktopColumns = 3;
-                    $defaultMobileColumns = 2;
-                    $desktopColumns = $this->masonry_spalten ?: $defaultDesktopColumns;
-                    $mobileColumns = $this->masonry_spalten_mobile ?: $defaultMobileColumns;
-                    ?>
                     loadMacy(function () {
-                        macy_<?= $this->id; ?> = Macy({
-                            container: '.macy-container',
+                        macyInstances[containerId] = Macy({
+                            container: container,
                             trueOrder: true,
                             waitForImages: true,
                             margin: <?php echo $this->space_between ?: 20; ?>,
-                            columns: <?= $desktopColumns ?>,
+                            columns: <?= $this->masonry_spalten ?: 3 ?>,
                             breakAt: {
-                                768: <?= $mobileColumns ?>,
+                                768: <?= $this->masonry_spalten_mobile ?: 2 ?>,
                             }
                         });
 
@@ -241,11 +248,14 @@ $showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
                                 }
                             }
                             img.addEventListener('load', () => {
-                                macy_<?= $this->id; ?>.recalculate(true);
+                                if (macyInstances[containerId]) {
+                                    macyInstances[containerId].recalculate(true);
+                                }
                             });
                         });
                     });
                 } else {
+                    // Swiper Setup
                     container.classList.add('swiper');
                     if (showMoreContainer) {
                         showMoreContainer.style.display = 'none';
@@ -262,7 +272,7 @@ $showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
                     pagination.classList.add('swiper-pagination');
                     container.appendChild(pagination);
 
-                    swiper_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $this->id; ?>', {
+                    swiperInstances[containerId] = new Swiper('.swiper.content-slider_' + containerId, {
                         direction: 'horizontal',
                         loop: <?php echo $this->loop ? 'true' : 'false'; ?>,
                         lazy: false,
@@ -291,11 +301,11 @@ $showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
                         <?php endif; ?>
                         <?php if (count($this->galery) > 1 || count($dataSorted) > 1): ?>
                         navigation: {
-                            nextEl: '.content-slider_<?= $this->id; ?>.swiper-button-next',
-                            prevEl: '.content-slider_<?= $this->id; ?>.swiper-button-prev',
+                            nextEl: '.content-slider_' + containerId + '.swiper-button-next',
+                            prevEl: '.content-slider_' + containerId + '.swiper-button-prev',
                         },
                         pagination: {
-                            el: '.content-slider_<?php echo $this->id; ?>.swiper-pagination',
+                            el: '.content-slider_' + containerId + '.swiper-pagination',
                             clickable: true,
                         },
                         <?php endif; ?>
@@ -329,15 +339,12 @@ $showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
 
             function updateLazyLoading(swiper) {
                 const slidesPerView = swiper.params.slidesPerView;
-
-                // Nur fortfahren, wenn slidesPerView keine ganze Zahl ist
                 if (Number.isInteger(slidesPerView)) return;
 
                 const currentIndex = swiper.activeIndex;
                 const floorIndex = currentIndex + Math.floor(slidesPerView);
                 const ceilIndex = currentIndex + Math.ceil(slidesPerView);
 
-                // Funktion zum Entfernen des loading-Attributs
                 const removeLazyLoading = (index) => {
                     if (index < swiper.slides.length) {
                         const slide = swiper.slides[index];
@@ -348,64 +355,125 @@ $showMoreButton = $showMoreButtonDesktop || $showMoreButtonMobile;
                     }
                 };
 
-                // Entfernen des loading-Attributs für beide relevante Elemente
                 removeLazyLoading(floorIndex);
                 removeLazyLoading(ceilIndex);
-
                 lazyLoadInstance.update();
             }
 
-function initShowMoreButton() {
-    const showMoreContainer = document.querySelector('.show-more-container');
-    if (!showMoreContainer) {
-        return;
-    }
-    const showMoreButtonDesktop = showMoreContainer.querySelector('.show-more-desktop');
-    const showMoreButtonMobile = showMoreContainer.querySelector('.show-more-mobile');
-    const hiddenDesktopItems = document.querySelectorAll('.hidden-desktop');
-    const hiddenMobileItems = document.querySelectorAll('.hidden-mobile');
+            function initShowMoreButton() {
+                // Spezifischen Container und seine Show-More-Buttons finden
+                const container = document.querySelector('.content-slider_' + containerId);
+                if (!container) return;
 
-    function updateButtonVisibility() {
-        const isMobile = window.innerWidth < 768;
-        if (isMobile) {
-            if (showMoreButtonMobile) showMoreButtonMobile.style.display = 'inline-flex';
-            if (showMoreButtonDesktop) showMoreButtonDesktop.style.display = 'none';
-        } else {
-            if (showMoreButtonDesktop) showMoreButtonDesktop.style.display = 'inline-flex';
-            if (showMoreButtonMobile) showMoreButtonMobile.style.display = 'none';
-        }
-        showMoreContainer.style.display = 'block';
-    }
+                const showMoreContainer = container.closest('.ce--inner').querySelector('.show-more-container');
+                if (!showMoreContainer) return;
 
-    function toggleItems(items, button) {
-        const isShowingMore = button.getAttribute('data-show-more') === 'true';
-        items.forEach(item => {
-            if (isShowingMore) {
-                item.classList.remove(button.classList.contains('show-more-desktop') ? 'hidden-desktop' : 'hidden-mobile');
-            } else {
-                item.classList.add(button.classList.contains('show-more-desktop') ? 'hidden-desktop' : 'hidden-mobile');
+                // Buttons für diesen spezifischen Container
+                const showMoreButtonDesktop = showMoreContainer.querySelector('.show-more-button.show-more-desktop');
+                const showMoreButtonMobile = showMoreContainer.querySelector('.show-more-button.show-more-mobile');
+
+                // Items nur aus diesem Container
+                const hiddenDesktopItems = container.parentElement.querySelectorAll('.macy-item.hidden-desktop');
+                const hiddenMobileItems = container.parentElement.querySelectorAll('.macy-item.hidden-mobile');
+
+                function updateButtonVisibility() {
+                    const isMobile = window.innerWidth < 768;
+
+                    // Zeige immer nur einen Button basierend auf der Bildschirmgröße
+                    if (isMobile) {
+                        if (showMoreButtonMobile) {
+                            showMoreButtonMobile.style.display = hiddenMobileItems.length > 0 ? 'inline-flex' : 'none';
+                        }
+                        if (showMoreButtonDesktop) {
+                            showMoreButtonDesktop.style.display = 'none';
+                        }
+                    } else {
+                        if (showMoreButtonDesktop) {
+                            showMoreButtonDesktop.style.display = hiddenDesktopItems.length > 0 ? 'inline-flex' : 'none';
+                        }
+                        if (showMoreButtonMobile) {
+                            showMoreButtonMobile.style.display = 'none';
+                        }
+                    }
+
+                    // Zeige den Container nur, wenn mindestens ein Button sichtbar ist
+                    showMoreContainer.style.display =
+                        (hiddenDesktopItems.length > 0 || hiddenMobileItems.length > 0) ? 'block' : 'none';
+                }
+
+                function toggleItems(items, button) {
+                    if (!items.length) return;
+
+                    const isShowingMore = button.getAttribute('data-show-more') === 'true';
+                    const className = button.classList.contains('show-more-desktop') ? 'hidden-desktop' : 'hidden-mobile';
+
+                    if (isShowingMore) {
+                        // Array aus items erstellen und nach DOM-Reihenfolge sortieren
+                        const itemsArray = Array.from(items);
+                        itemsArray.sort((a, b) => {
+                            return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+                        });
+
+                        // Items mit inkrementellem Delay anzeigen
+                        itemsArray.forEach((item, index) => {
+                            item.style.animationDelay = `${index * 0.1}s`;
+                            item.classList.remove(className);
+
+                            // Animation neu starten
+                            if (item.hasAttribute('data-animation')) {
+                                const animations = item.getAttribute('data-animation').split(' ');
+                                item.classList.remove(...animations, 'animate__animated');
+                                requestAnimationFrame(() => {
+                                    item.classList.add(...animations, 'animate__animated');
+                                });
+                            }
+                            if (item.hasAttribute('data-aos')) {
+                                const animation = item.getAttribute('data-aos');
+                                item.classList.remove(animation);
+                                requestAnimationFrame(() => {
+                                    item.classList.add(animation);
+                                });
+                            }
+                        });
+                    } else {
+                        // Beim Ausblenden alle Delays zurücksetzen und Items ausblenden
+                        items.forEach(item => {
+                            item.style.animationDelay = '0s';
+                            item.classList.add(className);
+                        });
+                    }
+
+                    button.textContent = isShowingMore ? 'Weniger anzeigen' : 'Mehr anzeigen';
+                    button.setAttribute('data-show-more', isShowingMore ? 'false' : 'true');
+
+                    if (macyInstances[containerId]) {
+                        macyInstances[containerId].recalculate(true);
+                    }
+                }
+
+                // Event-Listener nur einmal pro Button hinzufügen
+                if (showMoreButtonDesktop) {
+                    // Entferne alte Event-Listener
+                    const newDesktopButton = showMoreButtonDesktop.cloneNode(true);
+                    showMoreButtonDesktop.parentNode.replaceChild(newDesktopButton, showMoreButtonDesktop);
+                    newDesktopButton.addEventListener('click', () => toggleItems(hiddenDesktopItems, newDesktopButton));
+                }
+
+                if (showMoreButtonMobile) {
+                    // Entferne alte Event-Listener
+                    const newMobileButton = showMoreButtonMobile.cloneNode(true);
+                    showMoreButtonMobile.parentNode.replaceChild(newMobileButton, showMoreButtonMobile);
+                    newMobileButton.addEventListener('click', () => toggleItems(hiddenMobileItems, newMobileButton));
+                }
+
+                // Initial Button-Sichtbarkeit setzen
+                updateButtonVisibility();
+
+                // Resize-Handler für Button-Sichtbarkeit
+                const resizeHandler = debounce(updateButtonVisibility, 250);
+                window.removeEventListener('resize', resizeHandler);
+                window.addEventListener('resize', resizeHandler);
             }
-        });
-
-        button.textContent = isShowingMore ? 'Weniger anzeigen' : 'Mehr anzeigen';
-        button.setAttribute('data-show-more', isShowingMore ? 'false' : 'true');
-
-        if (macy_<?= $this->id; ?>) {
-            macy_<?= $this->id; ?>.recalculate(true);
-        }
-    }
-
-    if (showMoreButtonDesktop) {
-        showMoreButtonDesktop.addEventListener('click', () => toggleItems(hiddenDesktopItems, showMoreButtonDesktop));
-    }
-
-    if (showMoreButtonMobile) {
-        showMoreButtonMobile.addEventListener('click', () => toggleItems(hiddenMobileItems, showMoreButtonMobile));
-    }
-
-    updateButtonVisibility();
-    window.addEventListener('resize', debounce(updateButtonVisibility, 250));
-}
 
             function debounce(func, wait) {
                 let timeout;
@@ -419,8 +487,8 @@ function initShowMoreButton() {
                 };
             }
 
+            // Initialisierung
             initOrDestroySwiper(true);
-
             window.addEventListener('resize', debounce(() => initOrDestroySwiper(false), 250));
         });
     </script>
