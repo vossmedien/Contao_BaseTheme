@@ -108,11 +108,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                     <?php endif; ?>
 
                                     <?php if (!$isMainVideo): ?>
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, ($isMobileVideo ? 'd-none d-sm-inline-block' : ''), false, false, false) ?>
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, ($isMobileVideo ? 'd-none d-sm-inline-block' : ''), false, false, true) ?>
                                     <?php endif; ?>
 
                                     <?php if ($slide->mobile_image && !$isMobileVideo): ?>
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, 'd-sm-none', false, false, false) ?>
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, 'd-sm-none', false, false, true) ?>
                                     <?php endif; ?>
                                 </div>
 
