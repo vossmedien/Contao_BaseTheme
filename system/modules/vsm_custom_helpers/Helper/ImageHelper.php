@@ -41,6 +41,12 @@ class ImageHelper
         if ($width * $factor <= $originalWidth) {
             $retinaConfig = clone $baseConfig;
             $retinaConfig->setWidth($width * $factor);
+
+            // Wenn eine Höhe gesetzt ist, diese auch anpassen
+            if ($baseConfig->getHeight()) {
+                $retinaConfig->setHeight($baseConfig->getHeight() * $factor);
+            }
+
             return $retinaConfig;
         }
         return null;
@@ -155,14 +161,14 @@ class ImageHelper
             $requestedHeight = isset($size[1]) && $size[1] !== '' ? (int)$size[1] : null;
             $mode = $size[2] ?? "proportional";
 
-            $canCreate2x = ($requestedWidth * 2 <= $originalWidth) && ($requestedHeight * 2 <= $originalHeight);
+            // Grundkonfiguration mit den ursprünglich gewünschten Maßen
+            if ($requestedWidth) $config->setWidth($requestedWidth);
+            if ($requestedHeight) $config->setHeight($requestedHeight);
+            if ($mode) $config->setMode($mode);
 
-            $width = $canCreate2x ? $requestedWidth * 2 : $requestedWidth;
-            $height = $canCreate2x ? $requestedHeight * 2 : $requestedHeight;
-
-            if ($width !== null) $config->setWidth($width);
-            if ($height !== null) $config->setHeight($height);
-            if ($mode !== "") $config->setMode($mode);
+            // Basisbreite für Breakpoints setzen
+            $baseWidth = $requestedWidth;
+            $baseHeight = $requestedHeight;
         }
 
         try {
@@ -171,8 +177,8 @@ class ImageHelper
                 $config,
                 self::getResizeOptions()
             );
-            $baseWidth = $width ?? $originalWidth;
-            $baseHeight = $height ?? $originalHeight;
+            $baseWidth = $baseWidth ?? $originalWidth;
+            $baseHeight = $baseHeight ?? $originalHeight;
         } catch (\Exception $e) {
             $baseWidth = $originalWidth;
             $baseHeight = $originalHeight;
@@ -195,9 +201,22 @@ class ImageHelper
             $width = (int)$breakpoint['width'];
             $mode = $size[2] ?? "proportional";
 
-            $config->setWidth($width);
-            if ($mode !== "") {
+            if ($width > $baseWidth) {
+                continue;
+            }
+
+            // Konfiguration für Crop-Mode
+            if ($mode === 'crop' && !empty($size[0]) && !empty($size[1])) {
+                $ratio = $size[1] / $size[0];
+                $height = round($width * $ratio);
+                $config->setWidth($width);
+                $config->setHeight($height);
                 $config->setMode($mode);
+            } else {
+                $config->setWidth($width);
+                if ($mode !== "") {
+                    $config->setMode($mode);
+                }
             }
 
             try {
@@ -407,10 +426,14 @@ class ImageHelper
         $imageFactory = System::getContainer()->get('contao.image.factory');
 
         $config = new ResizeConfiguration();
-        if ($size && is_array($size) && ($size[0] != "" && $size[1] != "" && $size[2] != "")) {
-            if ($size[0]) $config->setWidth((int)$size[0]);
-            if ($size[1]) $config->setHeight((int)$size[1]);
-            if ($size[2]) $config->setMode($size[2]);
+        if ($size && is_array($size)) {
+            $width = !empty($size[0]) ? (int)$size[0] : null;
+            $height = !empty($size[1]) ? (int)$size[1] : null;
+            $mode = !empty($size[2]) ? $size[2] : 'proportional';
+
+            if ($width) $config->setWidth($width);
+            if ($height) $config->setHeight($height);
+            if ($mode) $config->setMode($mode);
         }
 
         try {

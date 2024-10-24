@@ -1,10 +1,10 @@
 /* Error: Undefined mixin.
  *   ,
- * 3 | /      @include media-breakpoint-down(md) {
- * 4 | |            padding-inline: 3rem;
- * 5 | \      }
+ * 4 | /      @include media-breakpoint-down(md) {
+ * 5 | |            padding-inline: 3rem;
+ * 6 | \      }
  *   '
- *   swiper.scss 3:6  root stylesheet */
+ *   swiper.scss 4:6  root stylesheet */
 
 body::before {
   font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
@@ -14,5 +14,5 @@ body::before {
   padding: 1em;
   margin-bottom: 1em;
   border-bottom: 2px solid black;
-  content: "Error: Undefined mixin.\a   \2577 \a 3 \2502  \250c       @include media-breakpoint-down(md) {\a 4 \2502  \2502             padding-inline: 3rem;\a 5 \2502  \2514       }\a   \2575 \a   swiper.scss 3:6  root stylesheet";
+  content: "Error: Undefined mixin.\a   \2577 \a 4 \2502  \250c       @include media-breakpoint-down(md) {\a 5 \2502  \2502             padding-inline: 3rem;\a 6 \2502  \2514       }\a   \2575 \a   swiper.scss 4:6  root stylesheet";
 }
