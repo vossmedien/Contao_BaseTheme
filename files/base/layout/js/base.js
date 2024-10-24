@@ -1,8 +1,9 @@
 import {setupFunctions, resetCookies} from "./cookieManager.js";
 
-
-const lazyLoadInstance = new LazyLoad({});
-
+// Namespace erstellen (falls noch nicht vorhanden)
+window.VSM = window.VSM || {};
+// LazyLoad-Instanz dem Namespace hinzufügen
+window.VSM.lazyLoadInstance = new LazyLoad({});
 
 window.addEventListener("cookiebar_save", setupFunctions);
 const btn = document.querySelector(".reset-cookies");
@@ -12,9 +13,6 @@ if (btn) {
         resetCookies();
     });
 }
-
-
-
 
 
 //window.dispatchEvent(new Event("resize"));
@@ -114,9 +112,6 @@ const observer = new IntersectionObserver(
 document.querySelectorAll(".count").forEach((el) => {
     observer.observe(el);
 });
-
-
-
 
 
 window.pushToDataLayer = function (type, position, element, additional) {

@@ -17,19 +17,19 @@ class VideoHelper
         $ext = null;
 
         if ($isUrl) {
-            // If source is a URL, use it directly and try to determine the extension
+            // Für externe URLs
             $ext = pathinfo(parse_url($source, PHP_URL_PATH), PATHINFO_EXTENSION);
             if (self::isVideoFormat($ext)) {
-                $sources[] = "<source src='$source' type='video/$ext'>";
+                $sources[] = "<source data-src='$source' type='video/$ext'>";
                 $mp4Path = $source;
             } else {
-                return ''; // Invalid video format or unable to determine format
+                return '';
             }
         } else {
-            // If source is a fileID, process it as before
+            // Für lokale Dateien
             $fileModel = FilesModel::findByUuid($source);
             if ($fileModel === null) {
-                return ''; // File not found
+                return '';
             }
 
             $rootDir = System::getContainer()->getParameter('kernel.project_dir');
@@ -52,9 +52,9 @@ class VideoHelper
                 }
             }
 
-            // Search for a poster image if not provided
+            // Poster-Bild suchen wenn nicht bereitgestellt
             if ($posterUrl === null) {
-                $posterFile = $baseDir . '/' . $fileName . '.jpg'; // or .png
+                $posterFile = $baseDir . '/' . $fileName . '.jpg';
                 if (file_exists($posterFile)) {
                     $posterFileModel = FilesModel::findByPath(str_replace($rootDir . '/', '', $posterFile));
                     if ($posterFileModel !== null) {
@@ -65,19 +65,26 @@ class VideoHelper
         }
 
         if (empty($sources)) {
-            return ''; // No valid video sources found
+            return '';
         }
 
         $sourceString = implode("\n        ", $sources);
-        $posterAttr = $posterUrl ? " poster='$posterUrl'" : ($posterPath ? " poster='$posterPath'" : '');
 
-        // Set video parameters
+        // Poster-URL für Lazy Loading vorbereiten
+        $posterAttr = '';
+        if ($posterUrl) {
+            $posterAttr = " data-poster='$posterUrl'";
+        } elseif ($posterPath) {
+            $posterAttr = " data-poster='$posterPath'";
+        }
+
+        // Video-Parameter
         $videoParams = trim($videoParams);
         if (empty($videoParams)) {
             $videoParams = 'autoplay muted loop playsinline';
         }
 
-        // Retrieve metadata
+        // Metadaten
         $meta = [];
         $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? 'de';
         if (!$isUrl) {
@@ -85,7 +92,7 @@ class VideoHelper
             $langMeta = $meta[$currentLanguage] ?? [];
         }
 
-        // Prepare data for structured data
+        // Structured Data vorbereiten
         $structuredData = [
             '@context' => 'https://schema.org',
             '@type' => 'VideoObject'
@@ -111,14 +118,13 @@ class VideoHelper
             $structuredData['contentUrl'] = 'https://' . $_SERVER['HTTP_HOST'] . '/' . $mp4Path;
         }
 
-        // Create structured data if at least one field is present
         $structuredDataScript = '';
-        if (count($structuredData) > 2) { // More than @context and @type
+        if (count($structuredData) > 2) {
             $structuredDataScript = '<script type="application/ld+json">' . json_encode($structuredData) . '</script>';
         }
 
-        $lazyClass = $isUrl ? '' : ' lazy';
-        $videoHtml = "<video class='$classes$lazyClass' $videoParams$posterAttr>
+        // Video-HTML mit Lazy Loading
+        $videoHtml = "<video class='$classes lazy' $videoParams$posterAttr preload='none'>
         $sourceString
         <p>Your browser does not support HTML5 video. Here is a <a href='$mp4Path'>link to the video</a> instead.</p>
     </video>";
@@ -128,7 +134,7 @@ class VideoHelper
 
     public static function isVideoFormat($extension)
     {
-        $videoFormats = ['mp4', 'webm', 'ogg', 'mov']; // Add more video formats here if needed
+        $videoFormats = ['mp4', 'webm', 'ogg', 'mov'];
         return in_array(strtolower($extension), $videoFormats);
     }
 }
