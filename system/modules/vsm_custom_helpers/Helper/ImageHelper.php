@@ -54,18 +54,27 @@ class ImageHelper
 
     private static function generateSource(string $type, string $src, ?string $retinaSrc = null, ?string $retina3xSrc = null, ?string $mediaQuery = null): string
     {
-        $srcset = $src . ' 1x';
-        if ($retinaSrc) {
-            $srcset .= ', ' . $retinaSrc . ' 2x';
-        }
-        if ($retina3xSrc) {
-            $srcset .= ', ' . $retina3xSrc . ' 3x';
+        // Nur vollständige Bildpfade verwenden
+        $srcsetParts = [];
+
+        if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $src)) {
+            $srcsetParts[] = $src . ' 1x';
         }
 
-        return sprintf(
+        if ($retinaSrc && preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $retinaSrc)) {
+            $srcsetParts[] = $retinaSrc . ' 2x';
+        }
+
+        if ($retina3xSrc && preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $retina3xSrc)) {
+            $srcsetParts[] = $retina3xSrc . ' 3x';
+        }
+
+        $srcset = implode(', ', $srcsetParts);
+
+        return empty($srcset) ? '' : sprintf(
             '<source type="%s" data-srcset="%s"%s>',
             $type,
-            $srcset,
+            self::cleanAttribute($srcset),
             $mediaQuery ? ' media="' . $mediaQuery . '"' : ''
         );
     }
@@ -88,17 +97,25 @@ class ImageHelper
         $imageFactory = System::getContainer()->get('contao.image.factory');
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
 
-        // Pfad für die Verarbeitung dekodieren
-        $decodedPath = urldecode($path);
-
-        $processedImage = $imageFactory->create($decodedPath, $config, $options);
+        $processedImage = $imageFactory->create($path, $config, $options);
         $processedPath = $processedImage->getPath();
 
+        // Vollständigen relativen Pfad erstellen
         $relativePath = str_replace($rootDir, '', $processedPath);
+
+        // Sicherstellen, dass der Pfad mit .jpg, .png etc. endet
+        if (!preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $relativePath)) {
+            return ['path' => $processedPath, 'src' => ''];
+        }
+
+        // URL-Encode jedes Verzeichnis-Segment einzeln
+        $pathParts = explode('/', $relativePath);
+        $encodedParts = array_map('rawurlencode', $pathParts);
+        $encodedPath = implode('/', $encodedParts);
 
         return [
             'path' => $processedPath,
-            'src' => ltrim($relativePath, '/')  // Führenden Slash entfernen
+            'src' => $encodedPath
         ];
     }
 
@@ -255,6 +272,7 @@ class ImageHelper
                 $srcset[] = $imageSrc . ' ' . $width . 'w';
                 $webpSrcset[] = $webpSrc . ' ' . $width . 'w';
 
+
                 // Retina Versionen
                 $retinaImageSrc = $imageSrc;
                 $retinaWebpSrc = $webpSrc;
@@ -397,7 +415,7 @@ class ImageHelper
             '<img %s data-src="%s" data-srcset="%s" sizes="%s" alt="%s" %s loading="lazy">',
             $classAttribute,
             self::cleanAttribute($imageSrc),
-            self::cleanAttribute(implode(', ', $srcset)),
+            self::formatSrcset($srcset), // Neue Hilfsmethode verwenden
             self::cleanAttribute(implode(', ', $sizes) . ', 100vw'),
             $alt,
             $title ? ' title="' . $title . '"' : ''
@@ -446,6 +464,20 @@ class ImageHelper
         }
 
         return $finalOutput;
+    }
+
+    private static function formatSrcset(array $srcset): string
+    {
+        // Filtere ungültige Einträge und stelle korrektes Format sicher
+        $validSrcset = array_filter($srcset, function ($entry) {
+            // Prüfe auf vollständigen Bildpfad und korrektes Format
+            return preg_match('/\.(jpg|jpeg|png|gif|webp)\s+\d+w$/i', $entry);
+        });
+
+        // Entferne doppelte Einträge
+        $validSrcset = array_unique($validSrcset);
+
+        return self::cleanAttribute(implode(', ', $validSrcset));
     }
 
     private static function encodePath(string $path): string
