@@ -88,13 +88,17 @@ class ImageHelper
         $imageFactory = System::getContainer()->get('contao.image.factory');
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
 
-        $processedImage = $imageFactory->create($path, $config, $options);
+        // Pfad für die Verarbeitung dekodieren
+        $decodedPath = urldecode($path);
+
+        $processedImage = $imageFactory->create($decodedPath, $config, $options);
         $processedPath = $processedImage->getPath();
 
         $relativePath = str_replace($rootDir, '', $processedPath);
+
         return [
             'path' => $processedPath,
-            'src' => dirname($relativePath) . '/' . rawurlencode(basename($relativePath))
+            'src' => ltrim($relativePath, '/')  // Führenden Slash entfernen
         ];
     }
 
@@ -141,7 +145,14 @@ class ImageHelper
         }
 
         $absoluteImagePath = $rootDir . '/' . urldecode($relativeImagePath);
-        $baseImagePath = dirname($absoluteImagePath) . "/" . rawurlencode(basename($absoluteImagePath));
+        $baseImagePath = str_replace('\\', '/', urldecode($absoluteImagePath));
+
+// Für file_exists den dekodierten Pfad verwenden
+        if (!file_exists($baseImagePath) ||
+            !($originalImageInfo = @getimagesize($baseImagePath)) ||
+            !is_array($originalImageInfo)) {
+            return '';
+        }
 
         // SVG Handling
         if (strtolower(pathinfo($baseImagePath, PATHINFO_EXTENSION)) === 'svg') {
@@ -238,8 +249,8 @@ class ImageHelper
                     self::getResizeOptions('webp')
                 );
 
-                $imageSrc = $processedImage['src'];
-                $webpSrc = $webpImage['src'];
+                $imageSrc = self::encodePath($processedImage['src']);
+                $webpSrc = self::encodePath($webpImage['src']);
 
                 $srcset[] = $imageSrc . ' ' . $width . 'w';
                 $webpSrcset[] = $webpSrc . ' ' . $width . 'w';
@@ -396,7 +407,7 @@ class ImageHelper
         // Figure Tag erstellen
         $finalOutput = '<figure>' . $imgTag;
         if ($inSlider) {
-            $finalOutput .= '<div class="swiper-lazy-preloader"></div>';
+            $finalOutput .= '';
             if ($finalCaption) {
                 $finalOutput .= '<div class="slider-caption">' . $finalCaption . '</div>';
             }
@@ -437,10 +448,33 @@ class ImageHelper
         return $finalOutput;
     }
 
+    private static function encodePath(string $path): string
+    {
+        // Sicherstellen, dass der Pfad mit einem Slash beginnt
+        $path = ltrim($path, '/');
+
+        // Pfad in Segmente aufteilen
+        $segments = explode('/', $path);
+
+        // Letztes Segment (Dateiname) separat behandeln
+        $fileName = array_pop($segments);
+
+        // Verzeichnispfad segmentweise kodieren
+        $encodedSegments = array_map(function ($segment) {
+            return rawurlencode(urldecode($segment));
+        }, $segments);
+
+        // Dateinamen kodieren
+        $encodedFileName = rawurlencode(urldecode($fileName));
+
+        // Alles wieder zusammenfügen
+        return '/' . implode('/', $encodedSegments) . '/' . $encodedFileName;
+    }
+
     private static function handleSvg($baseImagePath, $rootDir, $altText, $meta, $headline, $size, $class): string
     {
         $imageSrc = str_replace($rootDir, '', $baseImagePath);
-        $imageSrc = dirname($imageSrc) . '/' . rawurlencode(basename($imageSrc));
+        $imageSrc = self::encodePath($imageSrc);
 
         $alt = self::cleanAttribute($altText ?: (!empty($meta['alt']) ? $meta['alt'] : (!empty($headline) ? $headline : 'SVG Bild')));
 
@@ -485,11 +519,12 @@ class ImageHelper
 
         try {
             $processedImage = $imageFactory->create(
-                $rootDir . '/' . $imageObject->path,
+                $rootDir . '/' . urldecode($imageObject->path),
                 $config,
                 self::getResizeOptions()
             );
-            return str_replace($rootDir, "", $processedImage->getPath());
+            $path = str_replace($rootDir, "", $processedImage->getPath());
+            return self::encodePath($path);
         } catch (\Exception $e) {
             return '';
         }
