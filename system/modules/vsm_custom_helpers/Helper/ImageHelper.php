@@ -52,11 +52,15 @@ class ImageHelper
         return null;
     }
 
-    private static function generateSource(string $type, string $src, string $retinaSrc, ?string $retina3xSrc = null, ?string $mediaQuery = null): string
+    private static function generateSource(string $type, string $src, ?string $retinaSrc = null, ?string $retina3xSrc = null, ?string $mediaQuery = null): string
     {
-        $srcset = $retina3xSrc
-            ? "{$src} 1x, {$retinaSrc} 2x, {$retina3xSrc} 3x"
-            : "{$src} 1x, {$retinaSrc} 2x";
+        $srcset = $src . ' 1x';
+        if ($retinaSrc) {
+            $srcset .= ', ' . $retinaSrc . ' 2x';
+        }
+        if ($retina3xSrc) {
+            $srcset .= ', ' . $retina3xSrc . ' 3x';
+        }
 
         return sprintf(
             '<source type="%s" data-srcset="%s"%s>',
@@ -246,42 +250,46 @@ class ImageHelper
                 $retina3xImageSrc = $imageSrc;
                 $retina3xWebpSrc = $webpSrc;
 
-                // 2x Retina
-                if ($retinaConfig = self::getRetinaConfig($config, $width, $originalWidth, 2)) {
-                    $retina2xImage = self::processImage(
-                        $absoluteImagePath,
-                        $retinaConfig,
-                        self::getResizeOptions()
-                    );
-                    $retina2xWebp = self::processImage(
-                        $absoluteImagePath,
-                        $retinaConfig,
-                        self::getResizeOptions('webp')
-                    );
+                // 2x Retina nur wenn das Originalbild mindestens doppelt so groß ist
+                if ($width * 2 <= $originalWidth) {
+                    if ($retinaConfig = self::getRetinaConfig($config, $width, $originalWidth, 2)) {
+                        $retina2xImage = self::processImage(
+                            $absoluteImagePath,
+                            $retinaConfig,
+                            self::getResizeOptions()
+                        );
+                        $retina2xWebp = self::processImage(
+                            $absoluteImagePath,
+                            $retinaConfig,
+                            self::getResizeOptions('webp')
+                        );
 
-                    $retinaImageSrc = $retina2xImage['src'];
-                    $retinaWebpSrc = $retina2xWebp['src'];
-                    $srcset[] = $retinaImageSrc . ' ' . ($width * 2) . 'w';
-                    $webpSrcset[] = $retinaWebpSrc . ' ' . ($width * 2) . 'w';
+                        $retinaImageSrc = $retina2xImage['src'];
+                        $retinaWebpSrc = $retina2xWebp['src'];
+                        $srcset[] = $retinaImageSrc . ' ' . ($width * 2) . 'w';
+                        $webpSrcset[] = $retinaWebpSrc . ' ' . ($width * 2) . 'w';
+                    }
                 }
 
-                // 3x Retina für mobile
-                if ($width <= 768 && ($retinaConfig = self::getRetinaConfig($config, $width, $originalWidth, 3))) {
-                    $retina3xImage = self::processImage(
-                        $absoluteImagePath,
-                        $retinaConfig,
-                        self::getResizeOptions()
-                    );
-                    $retina3xWebp = self::processImage(
-                        $absoluteImagePath,
-                        $retinaConfig,
-                        self::getResizeOptions('webp')
-                    );
+// 3x Retina für mobile nur wenn das Originalbild mindestens dreimal so groß ist
+                if ($width <= 768 && $width * 3 <= $originalWidth) {
+                    if ($retinaConfig = self::getRetinaConfig($config, $width, $originalWidth, 3)) {
+                        $retina3xImage = self::processImage(
+                            $absoluteImagePath,
+                            $retinaConfig,
+                            self::getResizeOptions()
+                        );
+                        $retina3xWebp = self::processImage(
+                            $absoluteImagePath,
+                            $retinaConfig,
+                            self::getResizeOptions('webp')
+                        );
 
-                    $retina3xImageSrc = $retina3xImage['src'];
-                    $retina3xWebpSrc = $retina3xWebp['src'];
-                    $srcset[] = $retina3xImageSrc . ' ' . ($width * 3) . 'w';
-                    $webpSrcset[] = $retina3xWebpSrc . ' ' . ($width * 3) . 'w';
+                        $retina3xImageSrc = $retina3xImage['src'];
+                        $retina3xWebpSrc = $retina3xWebp['src'];
+                        $srcset[] = $retina3xImageSrc . ' ' . ($width * 3) . 'w';
+                        $webpSrcset[] = $retina3xWebpSrc . ' ' . ($width * 3) . 'w';
+                    }
                 }
 
                 // Sizes und Sources generieren
@@ -294,16 +302,55 @@ class ImageHelper
                 if ($breakpoint['maxWidth'] && !in_array($imageSrc, $processedSrcsets)) {
                     $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
                     if ($width <= 768) {
-                        $sources[] = self::generateSource("image/webp", $webpSrc, $retinaWebpSrc, $retina3xWebpSrc, $mediaQuery);
-                        $sources[] = self::generateSource("image/jpeg", $imageSrc, $retinaImageSrc, $retina3xImageSrc, $mediaQuery);
+                        $has3x = $width * 3 <= $originalWidth;
+                        $has2x = $width * 2 <= $originalWidth;
+
+                        $sources[] = self::generateSource(
+                            "image/webp",
+                            $webpSrc,
+                            $has2x ? $retinaWebpSrc : null,
+                            $has3x ? $retina3xWebpSrc : null,
+                            $mediaQuery
+                        );
+                        $sources[] = self::generateSource(
+                            "image/jpeg",
+                            $imageSrc,
+                            $has2x ? $retinaImageSrc : null,
+                            $has3x ? $retina3xImageSrc : null,
+                            $mediaQuery
+                        );
                     } else {
-                        $sources[] = self::generateSource("image/webp", $webpSrc, $retinaWebpSrc, null, $mediaQuery);
-                        $sources[] = self::generateSource("image/jpeg", $imageSrc, $retinaImageSrc, null, $mediaQuery);
+                        $has2x = $width * 2 <= $originalWidth;
+
+                        $sources[] = self::generateSource(
+                            "image/webp",
+                            $webpSrc,
+                            $has2x ? $retinaWebpSrc : null,
+                            null,
+                            $mediaQuery
+                        );
+                        $sources[] = self::generateSource(
+                            "image/jpeg",
+                            $imageSrc,
+                            $has2x ? $retinaImageSrc : null,
+                            null,
+                            $mediaQuery
+                        );
                     }
                     $processedSrcsets[] = $imageSrc;
                 } elseif (!$breakpoint['maxWidth']) {
-                    $sources[] = self::generateSource("image/webp", $webpSrc, $retinaWebpSrc);
-                    $sources[] = self::generateSource("image/jpeg", $imageSrc, $retinaImageSrc);
+                    $has2x = $width * 2 <= $originalWidth;
+
+                    $sources[] = self::generateSource(
+                        "image/webp",
+                        $webpSrc,
+                        $has2x ? $retinaWebpSrc : null
+                    );
+                    $sources[] = self::generateSource(
+                        "image/jpeg",
+                        $imageSrc,
+                        $has2x ? $retinaImageSrc : null
+                    );
                 }
             } catch (\Exception $e) {
                 continue;
