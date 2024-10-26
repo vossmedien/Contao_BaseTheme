@@ -10,13 +10,17 @@ $uniqueGalleryId = 'gallery_' . time() . '_' . rand(1000, 9999);
 $imgSize = unserialize($this->imgSize);
 ?>
 
-
     <div class="insta-grid">
         <?php foreach ($this->items as $item): ?>
             <div class="grid-item" data-aos="animate__fadeIn">
                 <div class="item">
                     <a href="#content-<?= $item['id'] ?>" class="venobox" data-vbtype="inline" data-gall="<?= $uniqueGalleryId ?>" data-maxwidth="1200px">
-                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($item['contao']['uuid'], $item['caption'], '', $imgSize, '', false); ?>
+                        <?php if ($item['media_type'] === 'IMAGE' || $item['media_type'] === 'VIDEO'): ?>
+                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($item['contao']['uuid'], $item['caption'], '', $imgSize, '', false); ?>
+                        <?php else: ?>
+                            <img title="<?= $item['caption']; ?>" alt="<?= $item['caption']; ?>" class="lazy" data-src="<?= $item['media_url']; ?>">
+                        <?php endif; ?>
+
                         <?php if ($item['media_type'] == 'VIDEO'): ?>
                             <div class="play-button">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
@@ -34,12 +38,11 @@ $imgSize = unserialize($this->imgSize);
     <div id="content-<?= $item['id'] ?>" class="insta-iframe--content" style="display:none;">
         <div class="row">
             <div class="col-md-8 left-col--inner">
-
-                <a href="<?= $item['permalink']; ?>" target="_blank" title="Auf Instagram ansehen" class="btn btn-outline-light btn-sm insta-note"><i class="fa-sharp fa-light fa-magnifying-glass"></i>
-                    Auf Instagram ansehen</a>
-
+                <?php if ($item['media_type'] === 'IMAGE' || $item['media_type'] === 'VIDEO'): ?>
+                    <a href="<?= $item['permalink']; ?>" target="_blank" title="Auf Instagram ansehen" class="btn btn-outline-light btn-sm insta-note"><i class="fa-sharp fa-light fa-magnifying-glass"></i>
+                        Auf Instagram ansehen</a>
+                <?php endif; ?>
                 <?php if ($item['media_type'] === 'IMAGE'): ?>
-
                     <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($item['contao']['uuid'], $item['caption'], '', ["1600", "1600", "crop"], '', false, false, false, false, false); ?>
                 <?php elseif ($item['media_type'] === 'VIDEO'): ?>
                     <?= VSM_HelperFunctions\VideoHelper::renderVideo(
@@ -55,22 +58,18 @@ $imgSize = unserialize($this->imgSize);
                     <!-- Fallback für CAROUSEL_ALBUM oder unbekannte Typen -->
                     <iframe src="<?= $item['permalink'] ?>embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
                 <?php endif; ?>
-
             </div>
             <div class="col-md-4">
                 <div class="right-col--inner">
-
                     <div class="logo text-end mb-5 pt-3 pt-md-0">
                         <img class="d-inline-block" style="max-height: 70px;" src="/files/base/layout/img/logo.svg">
                     </div>
-
                     <p><?= nl2br($item['caption']) ?></p>
                 </div>
             </div>
         </div>
     </div>
 <?php endforeach; ?>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             new VenoBox({
@@ -78,27 +77,35 @@ $imgSize = unserialize($this->imgSize);
                 numeration: true,
                 infinigall: true,
                 share: false,
+                navTouch: false,
                 spinner: 'rotating-plane',
                 maxWidth: '80%',
                 bgcolor: 'rgba(0,0,0,.75)',
-                onPostOpen: function () {
-                    // Suche nach dem Video im geöffneten VenoBox-Container
+                onContentLoaded: function () {
                     const venoboxContainer = document.querySelector('.vbox-content');
                     if (venoboxContainer) {
+                        // LazyLoad über den Namespace aufrufen
+                        window.VSM.lazyLoadInstance.update();
+
                         const video = venoboxContainer.querySelector('video');
                         if (video) {
-                            video.play().catch(e => console.error("Error playing video:", e));
+                            if (video.readyState >= 2) {
+                                video.play().catch(e => console.error("Error playing video:", e));
+                            } else {
+                                video.addEventListener('loadeddata', function () {
+                                    video.play().catch(e => console.error("Error playing video:", e));
+                                }, {once: true});
+                            }
                         }
                     }
                 },
                 onPreClose: function () {
-                    // Suche nach dem Video im geöffneten VenoBox-Container
                     const venoboxContainer = document.querySelector('.vbox-content');
                     if (venoboxContainer) {
                         const video = venoboxContainer.querySelector('video');
                         if (video) {
                             video.pause();
-                            video.currentTime = 0; // Setzt das Video auf den Anfang zurück
+                            video.currentTime = 0;
                         }
                     }
                 }

@@ -58,10 +58,10 @@
     }
 
     iframe {
-      min-height: 615px;
+      height: 615px;
 
       @include media-breakpoint-up(md) {
-        min-height: 844px;
+        height: 1042px;
       }
     }
   }
