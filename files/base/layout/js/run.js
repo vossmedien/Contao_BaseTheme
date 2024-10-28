@@ -78,13 +78,16 @@ const initAnimations = () => {
     };
 
     const observeElements = (elements) => {
+        // Prüfen ob es ein mobiles Gerät ist
+        const isMobile = window.innerWidth <= 768;
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                if (entry.isIntersecting) {
+                // Früher triggern wenn das Element nur teilweise sichtbar ist
+                if (entry.intersectionRatio > 0) {
                     const element = entry.target;
                     const parentContainer = element.parentElement;
 
-                    // Finden Sie alle zu animierenden Elemente im selben unmittelbaren Elternelement
                     const siblingElements = Array.from(parentContainer.children).filter(child =>
                         child.hasAttribute('data-animation') || child.hasAttribute('data-aos')
                     );
@@ -93,9 +96,12 @@ const initAnimations = () => {
                         const animateClass = siblingElement.getAttribute('data-animation') || siblingElement.getAttribute('data-aos');
 
                         if (animateClass) {
+                            // Kürzere Verzögerung auf mobilen Geräten
+                            const delay = isMobile ? index * 0.1 : index * 0.2;
+
                             requestAnimationFrame(() => {
                                 siblingElement.classList.add(...animateClass.split(' '), 'animate__animated');
-                                siblingElement.style.animationDelay = `${index * 0.15}s`;
+                                siblingElement.style.animationDelay = `${delay}s`;
                             });
 
                             observer.unobserve(siblingElement);
@@ -103,17 +109,36 @@ const initAnimations = () => {
                     });
                 }
             });
-        }, {threshold: 0.1, rootMargin: '50px'});
+        }, {
+            // Angepasste Observer-Optionen
+            threshold: [0, 0.1, 0.2], // Mehrere Schwellenwerte für bessere Erkennung
+            rootMargin: isMobile ? '0px 0px -10% 0px' : '0px 0px -20% 0px' // Früher triggern, besonders auf Mobile
+        });
 
-        elements.forEach(element => observer.observe(element));
+        elements.forEach(element => {
+            // Prüfen ob Element bereits im Viewport ist
+            const rect = element.getBoundingClientRect();
+            const isInViewport = rect.top <= (window.innerHeight || document.documentElement.clientHeight);
+
+            if (isInViewport) {
+                // Sofort animieren wenn Element bereits sichtbar ist
+                const animateClass = element.getAttribute('data-animation') || element.getAttribute('data-aos');
+                if (animateClass) {
+                    element.classList.add(...animateClass.split(' '), 'animate__animated');
+                }
+            } else {
+                // Sonst beobachten
+                observer.observe(element);
+            }
+        });
     };
+
 
     initAnimateElements();
     const aosElements = initAosElements();
     const allAnimatedElements = [...document.querySelectorAll('[data-animation]'), ...aosElements];
     observeElements(allAnimatedElements);
 };
-
 const rotateImage = () => {
     const images = document.querySelectorAll('.rotateImage');
     let lastScrollTop = 0;
@@ -213,7 +238,6 @@ DomLoadFunctions.push(
 
 scrollFunctions.push(changeAnchorLinks);
 ResizeFunctions.push(adjustPullElements);
-
 
 
 const executeFunctions = (functions) => {

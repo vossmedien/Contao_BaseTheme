@@ -139,6 +139,9 @@ class ImageHelper
         $caption = $caption ?? '';
         $imageUrl = $imageUrl ?? '';
 
+
+
+
         if (empty($imageSource)) {
             return '';
         }
@@ -168,7 +171,7 @@ class ImageHelper
         if (!file_exists($baseImagePath) ||
             !($originalImageInfo = @getimagesize($baseImagePath)) ||
             !is_array($originalImageInfo)) {
-            return '';
+           // return '';
         }
 
         // SVG Handling
