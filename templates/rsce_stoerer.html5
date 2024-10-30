@@ -5,7 +5,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 }
 
 // Hilfsfunktion zum Decodieren der Farbwerte
-function decodeColor($color) {
+function decodeColor($color)
+{
     return html_entity_decode($color, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }
 
@@ -20,9 +21,6 @@ if (!empty($this->alternate_bottom_position)) $additionalClasses[] = 'is-bottom'
 if (!empty($this->alternate_right_position)) $additionalClasses[] = 'is-right';
 if (!empty($this->alternate_left_position)) $additionalClasses[] = 'is-left';
 $additionalClassesString = implode(' ', $additionalClasses);
-
-// Bestimme Rotationsstile für das äußere Element
-//$rotationStyle = !empty($this->text_rotation) ? "transform: rotate({$this->text_rotation}deg);" : '';
 
 foreach ($this->stoerer as $stoerer) {
     $uniqueId = 'stoerer-' . $this->id . '-' . $counterElements;
@@ -55,14 +53,14 @@ if (!empty($styles)) {
 ?>
 <!-- indexer::stop -->
 <div <?php echo $this->cssID; ?> class="<?php echo ($this->is_fixed ? 'is-fixed ' : '') . 'content--element ' . str_replace("container", "", $this->class) . ' ' . $additionalClassesString; ?>"
-     style="<?php
-     echo !empty($this->alternate_top_position) ? "top: {$this->alternate_top_position};" : '';
-     echo !empty($this->alternate_bottom_position) ? "bottom: {$this->alternate_bottom_position};" : '';
-     echo !empty($this->alternate_right_position) ? "right: {$this->alternate_right_position};" : '';
-     echo !empty($this->alternate_left_position) ? "left: {$this->alternate_left_position};" : '';
-     //echo $rotationStyle;
-     ?>">
-    <?php $counterElements = 0; foreach ($this->stoerer as $stoerer): ?>
+                                 style="<?php
+                                 echo !empty($this->alternate_top_position) ? "top: {$this->alternate_top_position};" : '';
+                                 echo !empty($this->alternate_bottom_position) ? "bottom: {$this->alternate_bottom_position};" : '';
+                                 echo !empty($this->alternate_right_position) ? "right: {$this->alternate_right_position};" : '';
+                                 echo !empty($this->alternate_left_position) ? "left: {$this->alternate_left_position};" : '';
+                                 ?>">
+    <?php $counterElements = 0;
+    foreach ($this->stoerer as $stoerer): ?>
         <?php
         $uniqueId = 'stoerer-' . $this->id . '-' . $counterElements;
         $isExpandableClass = isset($this->expand) && $this->expand ? 'is-expandable' : '';
@@ -70,24 +68,27 @@ if (!empty($styles)) {
         $elementStyles = isset($stoerer->text_rotation) ? "transform: rotate({$stoerer->text_rotation}deg);" : '';
         ?>
 
-        <div id="<?php echo $uniqueId; ?>" class="ce--stoerer <?php echo $isExpandableClass; ?> <?php echo $animationClass; ?>"
-        >
+        <div id="<?php echo $uniqueId; ?>" class="ce--stoerer <?php echo $isExpandableClass; ?> <?php echo $animationClass; ?>">
             <?php if ($stoerer->link_url): ?>
-                <a href="<?= $stoerer->link_url; ?>" <?php if ($stoerer->new_tab): ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>></a>
+                <a href="<?php if ($stoerer->is_phone_number): ?>tel:<?php endif; ?><?= $stoerer->link_url; ?>"
+                   <?php if ($stoerer->new_tab): ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>
+                    <?php if ($stoerer->is_phone_number): ?>
+                        onclick="window.pushToDataLayer('Telefon', 'Stoerer', '<?php echo $stoerer->link_url; ?>', '');"
+                    <?php endif; ?>
+                ></a>
             <?php endif; ?>
 
             <?php if (isset($stoerer->img) && $stoerer->img): ?>
                 <?php
-                echo VSM_HelperFunctions\ImageHelper::generateImageHTML($stoerer->img, strip_tags($stoerer->content), null, $this->size, $stoerer->img_mobile ? "d-none d-md-block":"", false);
+                echo VSM_HelperFunctions\ImageHelper::generateImageHTML($stoerer->img, strip_tags($stoerer->content), null, $this->size, $stoerer->img_mobile ? "d-none d-md-block" : "", false);
                 ?>
             <?php endif; ?>
 
-               <?php if (isset($stoerer->img_mobile) && $stoerer->img_mobile): ?>
+            <?php if (isset($stoerer->img_mobile) && $stoerer->img_mobile): ?>
                 <?php
                 echo VSM_HelperFunctions\ImageHelper::generateImageHTML($stoerer->img_mobile, strip_tags($stoerer->content), null, $this->size_mobile, "d-md-none", false);
                 ?>
             <?php endif; ?>
-
 
             <?php if (isset($stoerer->content) && $stoerer->content): ?>
                 <div class="stoerer--content">
@@ -96,6 +97,6 @@ if (!empty($styles)) {
             <?php endif; ?>
         </div>
 
-    <?php $counterElements++; endforeach; ?>
+        <?php $counterElements++; endforeach; ?>
 </div>
 <!-- indexer::continue -->
