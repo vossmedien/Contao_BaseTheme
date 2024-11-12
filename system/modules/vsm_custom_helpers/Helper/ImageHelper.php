@@ -140,8 +140,6 @@ class ImageHelper
         $imageUrl = $imageUrl ?? '';
 
 
-
-
         if (empty($imageSource)) {
             return '';
         }
@@ -151,12 +149,19 @@ class ImageHelper
         $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? System::getContainer()->getParameter('kernel.default_locale');
         $originalWidth = $originalHeight = 0;
 
-        // Metadaten verarbeiten
+// Metadaten verarbeiten
         if ($imageObject = FilesModel::findByUuid($imageSource)) {
             $imageMeta = StringUtil::deserialize($imageObject->meta, true);
             $meta = [];
-            foreach ($imageMeta[$currentLanguage] ?? reset($imageMeta) ?? [] as $key => $value) {
-                $meta[$key] = self::cleanAttribute($value);
+
+            // Prüfen ob $imageMeta ein Array ist
+            if (is_array($imageMeta) && !empty($imageMeta)) {
+                $currentMeta = isset($imageMeta[$currentLanguage]) ? $imageMeta[$currentLanguage] : reset($imageMeta);
+                if (is_array($currentMeta)) {
+                    foreach ($currentMeta as $key => $value) {
+                        $meta[$key] = self::cleanAttribute($value);
+                    }
+                }
             }
             $relativeImagePath = $imageObject->path;
         } else {
@@ -171,7 +176,7 @@ class ImageHelper
         if (!file_exists($baseImagePath) ||
             !($originalImageInfo = @getimagesize($baseImagePath)) ||
             !is_array($originalImageInfo)) {
-           // return '';
+            // return '';
         }
 
         // SVG Handling
