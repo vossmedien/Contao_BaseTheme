@@ -61,10 +61,58 @@ const initMobileNav = () => {
 };
 
 const initAnimations = () => {
+    const CONFIG = {
+        // Mobile-Konfiguration (Bildschirmbreite <= 768px)
+        mobile: {
+            // Breakpoint für mobile Geräte in Pixeln
+            breakpoint: 768,
+
+            // Verzögerung zwischen Animationen von Geschwisterelementen in Sekunden
+            // Beispiel: Bei 3 Elementen -> 1. Element: sofort, 2. Element: 0.1s, 3. Element: 0.2s
+            delay: 0.1,
+
+            // Anpassung des Erkennungsbereichs für Animationen
+            // Format: 'top right bottom left'
+            // -25% bedeutet: Element muss 25% der Viewport-Höhe weiter nach oben gescrollt sein
+            rootMargin: '0px 0px -25% 0px',
+
+            // Grundverzögerung für jede Animation in Sekunden
+            // Wird bei allen Elementen angewendet, auch bei einzelnen
+            baseDelay: 0.1,
+
+            // Mindestanteil des Elements, der sichtbar sein muss (0.3 = 30%)
+            // Erst wenn dieser Anteil sichtbar ist, startet die Animation
+            visibilityThreshold: 0.3
+        },
+
+        // Desktop-Konfiguration (Bildschirmbreite > 768px)
+        desktop: {
+            // Längere Verzögerung zwischen Geschwisterelementen für smoothere Animationen
+            delay: 0.1,
+
+            // Größerer Abstand zum Viewport-Ende für frühere Animation
+            rootMargin: '0px 0px -35% 0px',
+
+            // Etwas längere Grundverzögerung für smoothere Desktop-Animationen
+            baseDelay: 0.15,
+
+            // Gleicher Schwellenwert wie mobile für konsistentes Verhalten
+            visibilityThreshold: 0.4
+        },
+
+        // CSS-Klasse die für Animationen verwendet wird (animate.css Bibliothek)
+        animationClass: 'animate__animated'
+    };
+
+    let animatedElements = new Set();
+    let observer;
+
     const initAnimateElements = () => {
         const animateElements = document.querySelectorAll('[class*="animate__"]');
         animateElements.forEach(element => {
-            const animateClasses = Array.from(element.classList).filter(cls => cls.startsWith('animate__'));
+            const animateClasses = Array.from(element.classList)
+                .filter(cls => cls.startsWith('animate__'));
+
             if (animateClasses.length > 0) {
                 const animateClassString = animateClasses.join(' ');
                 element.classList.remove(...animateClasses);
@@ -73,72 +121,125 @@ const initAnimations = () => {
         });
     };
 
-    const initAosElements = () => {
-        return document.querySelectorAll('[data-aos]');
+    const isElementInViewport = (element) => {
+        const rect = element.getBoundingClientRect();
+        const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+        const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+
+        // Berechne den sichtbaren Anteil des Elements
+        const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+        const totalHeight = rect.bottom - rect.top;
+        const visibilityRatio = visibleHeight / totalHeight;
+
+        const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
+        const {visibilityThreshold} = isMobile ? CONFIG.mobile : CONFIG.desktop;
+
+        return visibilityRatio >= visibilityThreshold;
     };
 
-    const observeElements = (elements) => {
-        // Prüfen ob es ein mobiles Gerät ist
-        const isMobile = window.innerWidth <= 768;
+    const getVisibleSiblings = (element) => {
+        const container = element.closest('.team-members') || element.parentElement;
+        if (!container) return [];
 
-        const observer = new IntersectionObserver((entries) => {
+        return Array.from(container.querySelectorAll('[data-animation], [data-aos]'))
+            .filter(el => !animatedElements.has(el) && isElementInViewport(el));
+    };
+
+    const animateElement = (element, visibleSiblings) => {
+        if (animatedElements.has(element)) return false;
+
+        const animateClass = element.getAttribute('data-animation') || element.getAttribute('data-aos');
+        if (animateClass) {
+            const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
+            const {delay, baseDelay} = isMobile ? CONFIG.mobile : CONFIG.desktop;
+
+            requestAnimationFrame(() => {
+                element.classList.add(...animateClass.split(' '), CONFIG.animationClass);
+
+                // Basis-Verzögerung plus zusätzliche Verzögerung für Gruppen
+                if (visibleSiblings.length > 1) {
+                    const elementIndex = visibleSiblings.indexOf(element);
+                    element.style.animationDelay = `${baseDelay + (elementIndex * delay)}s`;
+                } else {
+                    element.style.animationDelay = `${baseDelay}s`;
+                }
+            });
+            animatedElements.add(element);
+            return true;
+        }
+        return false;
+    };
+
+    const setupObserver = () => {
+        const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
+        const {rootMargin, visibilityThreshold} = isMobile ? CONFIG.mobile : CONFIG.desktop;
+
+        observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                // Früher triggern wenn das Element nur teilweise sichtbar ist
-                if (entry.intersectionRatio > 0) {
+                if (entry.intersectionRatio >= visibilityThreshold) {
                     const element = entry.target;
-                    const parentContainer = element.parentElement;
+                    if (!animatedElements.has(element)) {
+                        const visibleSiblings = getVisibleSiblings(element);
 
-                    const siblingElements = Array.from(parentContainer.children).filter(child =>
-                        child.hasAttribute('data-animation') || child.hasAttribute('data-aos')
-                    );
-
-                    siblingElements.forEach((siblingElement, index) => {
-                        const animateClass = siblingElement.getAttribute('data-animation') || siblingElement.getAttribute('data-aos');
-
-                        if (animateClass) {
-                            // Kürzere Verzögerung auf mobilen Geräten
-                            const delay = isMobile ? index * 0.1 : index * 0.2;
-
-                            requestAnimationFrame(() => {
-                                siblingElement.classList.add(...animateClass.split(' '), 'animate__animated');
-                                siblingElement.style.animationDelay = `${delay}s`;
+                        if (visibleSiblings.length > 0) {
+                            visibleSiblings.forEach(sibling => {
+                                animateElement(sibling, visibleSiblings);
+                                observer.unobserve(sibling);
                             });
-
-                            observer.unobserve(siblingElement);
+                        } else {
+                            animateElement(element, [element]);
+                            observer.unobserve(element);
                         }
-                    });
+                    }
                 }
             });
         }, {
-            // Angepasste Observer-Optionen
-            threshold: [0, 0.1, 0.2], // Mehrere Schwellenwerte für bessere Erkennung
-            rootMargin: isMobile ? '0px 0px -10% 0px' : '0px 0px -20% 0px' // Früher triggern, besonders auf Mobile
+            threshold: [0, visibilityThreshold],
+            rootMargin
         });
+    };
 
+    const handleElements = () => {
+        const elements = document.querySelectorAll('[data-animation], [data-aos]');
         elements.forEach(element => {
-            // Prüfen ob Element bereits im Viewport ist
-            const rect = element.getBoundingClientRect();
-            const isInViewport = rect.top <= (window.innerHeight || document.documentElement.clientHeight);
-
-            if (isInViewport) {
-                // Sofort animieren wenn Element bereits sichtbar ist
-                const animateClass = element.getAttribute('data-animation') || element.getAttribute('data-aos');
-                if (animateClass) {
-                    element.classList.add(...animateClass.split(' '), 'animate__animated');
+            if (!animatedElements.has(element)) {
+                if (isElementInViewport(element)) {
+                    const visibleSiblings = getVisibleSiblings(element);
+                    if (visibleSiblings.length > 0) {
+                        visibleSiblings.forEach(sibling => {
+                            animateElement(sibling, visibleSiblings);
+                            observer.unobserve(sibling);
+                        });
+                    }
+                } else {
+                    observer.observe(element);
                 }
-            } else {
-                // Sonst beobachten
-                observer.observe(element);
             }
         });
     };
 
+    try {
+        initAnimateElements();
+        setupObserver();
+        handleElements();
 
-    initAnimateElements();
-    const aosElements = initAosElements();
-    const allAnimatedElements = [...document.querySelectorAll('[data-animation]'), ...aosElements];
-    observeElements(allAnimatedElements);
+        scrollFunctions.push(handleElements);
+        ResizeFunctions.push(handleElements);
+
+    } catch (error) {
+        console.error('Animation initialization failed:', error);
+    }
+
+    return () => {
+        observer?.disconnect();
+        const scrollIndex = scrollFunctions.indexOf(handleElements);
+        if (scrollIndex > -1) scrollFunctions.splice(scrollIndex, 1);
+        const resizeIndex = ResizeFunctions.indexOf(handleElements);
+        if (resizeIndex > -1) ResizeFunctions.splice(resizeIndex, 1);
+    };
 };
+
+
 const rotateImage = () => {
     const images = document.querySelectorAll('.rotateImage');
     let lastScrollTop = 0;
