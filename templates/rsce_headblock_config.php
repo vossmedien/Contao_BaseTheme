@@ -4,7 +4,7 @@ use VSM_HelperFunctions\ButtonHelper;
 use VSM_HelperFunctions\GlobalElementConfig;
 
 return [
-    'label' => ['Custom | Kopfbereich', ''],
+    'label' => ['Custom | Kopfbereich (headblock)', ''],
     'types' => ['content'],
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',

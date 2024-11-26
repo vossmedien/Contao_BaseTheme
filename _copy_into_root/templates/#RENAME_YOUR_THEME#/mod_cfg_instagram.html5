@@ -2,6 +2,9 @@
 
 <?php $this->block('content'); ?>
 
+
+
+
 <?php
 // Generate a unique gallery identifier
 $uniqueGalleryId = 'gallery_' . time() . '_' . rand(1000, 9999);
@@ -18,7 +21,10 @@ $imgSize = unserialize($this->imgSize);
                         <?php if ($item['media_type'] === 'IMAGE' || $item['media_type'] === 'VIDEO'): ?>
                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($item['contao']['uuid'], $item['caption'], '', $imgSize, '', false); ?>
                         <?php else: ?>
-                            <img title="<?= $item['caption']; ?>" alt="<?= $item['caption']; ?>" class="lazy" data-src="<?= $item['media_url']; ?>">
+                            <figure><picture>
+                                    <img title="<?= $item['caption']; ?>" alt="<?= $item['caption']; ?>" class="lazy" data-src="<?= $item['media_url']; ?>">
+                                </picture>
+                            </figure>
                         <?php endif; ?>
 
                         <?php if ($item['media_type'] == 'VIDEO'): ?>

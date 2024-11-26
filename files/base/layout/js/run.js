@@ -145,16 +145,22 @@ const initAnimations = () => {
             .filter(el => !animatedElements.has(el) && isElementInViewport(el));
     };
 
-    const animateElement = (element, visibleSiblings) => {
-        if (animatedElements.has(element)) return false;
+   const animateElement = (element, visibleSiblings) => {
+    if (animatedElements.has(element)) return false;
 
-        const animateClass = element.getAttribute('data-animation') || element.getAttribute('data-aos');
-        if (animateClass) {
-            const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
-            const {delay, baseDelay} = isMobile ? CONFIG.mobile : CONFIG.desktop;
+    const animateClass = element.getAttribute('data-animation') || element.getAttribute('data-aos');
+    if (animateClass) {
+        const hasExistingDelay = element.style.animationDelay ||
+                                element.getAttribute('data-animation-delay') ||
+                                window.getComputedStyle(element).animationDelay !== '0s';
 
-            requestAnimationFrame(() => {
-                element.classList.add(...animateClass.split(' '), CONFIG.animationClass);
+        requestAnimationFrame(() => {
+            element.classList.add(...animateClass.split(' '), CONFIG.animationClass);
+
+            // Nur Delay setzen, wenn kein bestehendes Delay vorhanden ist
+            if (!hasExistingDelay) {
+                const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
+                const {delay, baseDelay} = isMobile ? CONFIG.mobile : CONFIG.desktop;
 
                 // Basis-Verzögerung plus zusätzliche Verzögerung für Gruppen
                 if (visibleSiblings.length > 1) {
@@ -163,12 +169,13 @@ const initAnimations = () => {
                 } else {
                     element.style.animationDelay = `${baseDelay}s`;
                 }
-            });
-            animatedElements.add(element);
-            return true;
-        }
-        return false;
-    };
+            }
+        });
+        animatedElements.add(element);
+        return true;
+    }
+    return false;
+};
 
     const setupObserver = () => {
         const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;

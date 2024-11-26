@@ -8,7 +8,7 @@ use Contao\StringUtil;
 
 class VideoHelper
 {
-    public static function renderVideo($source, $classes = '', $name = null, $description = null, $uploadDate = null, $posterUrl = null, $videoParams = '')
+    public static function renderVideo($source, $classes = '', $name = null, $description = null, $uploadDate = null, $posterUrl = null, $videoParams = '', $lazy = true)
     {
         $isUrl = filter_var($source, FILTER_VALIDATE_URL) !== false;
         $sources = [];
@@ -20,7 +20,7 @@ class VideoHelper
             // Für externe URLs
             $ext = pathinfo(parse_url($source, PHP_URL_PATH), PATHINFO_EXTENSION);
             if (self::isVideoFormat($ext)) {
-                $sources[] = "<source data-src='$source' type='video/$ext'>";
+                $sources[] = "<source " . ($lazy ? "data-src" : "src") . "='$source' type='video/$ext'>";
                 $mp4Path = $source;
             } else {
                 return '';
@@ -44,7 +44,7 @@ class VideoHelper
                 if (file_exists($potentialFile)) {
                     $potentialFileModel = FilesModel::findByPath(str_replace($rootDir . '/', '', $potentialFile));
                     if ($potentialFileModel !== null) {
-                        $sources[] = "<source data-src='" . $potentialFileModel->path . "' type='video/$format'>";
+                        $sources[] = "<source " . ($lazy ? "data-src" : "src") . "='" . $potentialFileModel->path . "' type='video/$format'>";
                         if ($format === 'mp4' && empty($mp4Path)) {
                             $mp4Path = $potentialFileModel->path;
                         }
@@ -70,12 +70,15 @@ class VideoHelper
 
         $sourceString = implode("\n        ", $sources);
 
-        // Poster-URL für Lazy Loading vorbereiten
+        // Poster-URL für Loading vorbereiten
         $posterAttr = '';
         if ($posterUrl) {
-            $posterAttr = " data-poster='$posterUrl'";
+            if (preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $posterUrl)) {
+                $posterUrl = ImageHelper::generateImageURL($posterUrl);
+            }
+            $posterAttr = ($lazy ? " data-poster" : " poster") . "='$posterUrl'";
         } elseif ($posterPath) {
-            $posterAttr = " data-poster='$posterPath'";
+            $posterAttr = ($lazy ? " data-poster" : " poster") . "='$posterPath'";
         }
 
         // Video-Parameter
@@ -123,8 +126,8 @@ class VideoHelper
             $structuredDataScript = '<script type="application/ld+json">' . json_encode($structuredData) . '</script>';
         }
 
-        // Video-HTML mit Lazy Loading
-        $videoHtml = "<video class='$classes lazy' $videoParams$posterAttr preload='none'>
+        // Video-HTML mit optionalem Lazy Loading
+        $videoHtml = "<video class='$classes" . ($lazy ? " lazy" : "") . "' $videoParams$posterAttr preload='none'>
         $sourceString
         <p>Your browser does not support HTML5 video. Here is a <a href='$mp4Path'>link to the video</a> instead.</p>
     </video>";
