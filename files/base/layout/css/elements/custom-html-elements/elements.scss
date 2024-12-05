@@ -10,6 +10,7 @@
 
   > *:last-child:not(hr) {
     margin-bottom: 0px !important;
+    padding-bottom: 0 !important;
   }
 
   .content--element:first-child .row-mid-content {
@@ -17,6 +18,12 @@
       padding-top: 0px;
     }
   }
+
+
+}
+
+.mod_article:has(.article-content[class*="bg-"]) + .mod_article {
+  padding-top: var(--main-gap);
 }
 
 .mod_article .ce_headline {

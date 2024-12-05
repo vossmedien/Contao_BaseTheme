@@ -13,23 +13,18 @@ $this->wrapperAttributes = $this
 <!-- indexer::stop -->
 <nav<?= $this->wrapperAttributes ?>>
 
-<div class="logo">
-    <a title="B-MOS" href="/">
-        <img class="lazy" alt="B-MOS Logo" title="B-MOS" data-src="/files/base/layout/img/logo.png">
-    </a>
-</div>
+    <div class="logo">
+        <a title="B-MOS" href="/">
+                 <?= VSM_HelperFunctions\ImageHelper::generateImageHTML("files/base/layout/img/logo.png", "BÜRGERBÜRO E. V.", null, null, null, false); ?>
+        </a>
+    </div>
 
 
-<?= $this->items ?>
+    <?= $this->items ?>
 
 
-
-
-
-        <div class="extra-content mt-auto mobileNav_footer" data-bs-theme="dark">
-            {{insert_module::11}}
-        </div>
-
-
+    <div class="extra-content mt-auto mobileNav_footer" data-bs-theme="dark">
+        {{insert_module::17}}
+    </div>
 </nav>
 <!-- indexer::continue -->

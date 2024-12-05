@@ -26,7 +26,7 @@ class HeadlineHelper
 
             if ($topline) {
                 $headlineHTML .= "<span data-aos=\"{$animationType}\" class=\"ce--topline\">";
-                $headlineHTML .= htmlspecialchars($topline, ENT_QUOTES, 'UTF-8');
+                $headlineHTML .= html_entity_decode($topline, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $headlineHTML .= "</span>";
             }
 
@@ -42,7 +42,7 @@ class HeadlineHelper
 
             if ($subline) {
                 $headlineHTML .= "<span data-aos=\"{$animationType}\" class=\"ce--subline\">";
-                $headlineHTML .= htmlspecialchars($subline, ENT_QUOTES, 'UTF-8');
+                $headlineHTML .= html_entity_decode($subline, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $headlineHTML .= "</span>";
             }
 

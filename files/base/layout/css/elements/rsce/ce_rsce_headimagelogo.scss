@@ -19,7 +19,7 @@ html body {
       text-align: center;
       height: 100%;
 
-      figure{
+      figure {
         height: 100%;
       }
 
@@ -31,9 +31,6 @@ html body {
         }
       }
     }
-
-
-
 
     .boxed-logo {
       display: inline-block;
@@ -109,17 +106,25 @@ html body {
             position: absolute;
             max-width: 100%;
             width: 100%;
-           padding-inline: var(--bs-container-gutter);
+            padding-inline: var(--bs-container-gutter);
 
-               @include media-breakpoint-up(sm) {
-                   padding-inline: 50px;
-               }
+            @include media-breakpoint-up(sm) {
+              padding-inline: 50px;
+            }
 
             &:not([class*="pos-"]) {
               transform: translate(0%, -50%);
               top: 50%;
               left: 0;
             }
+
+
+            .ce--headline{
+              .ce--subline, .ce--topline{
+                color: currentColor;
+              }
+            }
+
 
             &[class*="-bottom"] {
               bottom: 50px;

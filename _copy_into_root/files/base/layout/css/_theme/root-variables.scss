@@ -1,7 +1,11 @@
 :root {
   @each $color, $value in $theme-colors {
     --bs-#{$color}-rgb: #{to-rgb($value)};
+    --bs-#{$color}-text-emphasis: #{shade-color($value, 60%)};
+    --bs-#{$color}-bg-subtle: #{tint-color($value, 80%)};
+    --bs-#{$color}-border-subtle: #{shade-color($value, 40%)};
   }
+
 
 
   --main-gap: #{clamp($spacer, 5vw, $spacer-lg)};
