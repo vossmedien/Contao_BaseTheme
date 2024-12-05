@@ -49,7 +49,7 @@ html, body, #wrapper{
 
       .article-content:not(:has(.moved-content)),
       .article-content > .moved-content {
-        > *:not(.body-slider):not(.bgvideo, .ce_rsce_headline) {
+        > *:not(.body-slider,.bgvideo, .ce_rsce_headline:not(:has(.text))) {
           position: relative;
           padding-bottom: var(--main-gap);
 
