@@ -123,7 +123,7 @@ class ImageHelper
         $imageSource,
         ?string $altText = '',
         ?string $headline = '',
-        ?array $size = null,
+        array|string|null $size = null,
         ?string $class = '',
         bool $inSlider = false,
         $colorBox = false,
@@ -196,19 +196,32 @@ class ImageHelper
 
         // Basiskonfiguration
         $config = new ResizeConfiguration();
-        if ($size && is_array($size)) {
-            $requestedWidth = isset($size[0]) && $size[0] !== '' ? (int)$size[0] : null;
-            $requestedHeight = isset($size[1]) && $size[1] !== '' ? (int)$size[1] : null;
-            $mode = $size[2] ?? "proportional";
+        if ($size) {
+            // Falls size als serialisierter String übergeben wurde
+            if (is_string($size) && strpos($size, 'a:') === 0) {
+                $size = StringUtil::deserialize($size);
+            }
 
-            // Grundkonfiguration mit den ursprünglich gewünschten Maßen
-            if ($requestedWidth) $config->setWidth($requestedWidth);
-            if ($requestedHeight) $config->setHeight($requestedHeight);
-            if ($mode) $config->setMode($mode);
+            // Prüfen ob das Array tatsächlich Werte enthält
+            if (is_array($size) && (!empty($size[0]) || !empty($size[1]))) {
+                $requestedWidth = !empty($size[0]) ? (int)$size[0] : null;
+                $requestedHeight = !empty($size[1]) ? (int)$size[1] : null;
+                $mode = !empty($size[2]) ? $size[2] : "proportional";
 
-            // Basisbreite für Breakpoints setzen
-            $baseWidth = $requestedWidth;
-            $baseHeight = $requestedHeight;
+                // Grundkonfiguration mit den ursprünglich gewünschten Maßen
+                if ($requestedWidth) $config->setWidth($requestedWidth);
+                if ($requestedHeight) $config->setHeight($requestedHeight);
+                if ($mode) $config->setMode($mode);
+
+                // Basisbreite für Breakpoints setzen
+                $baseWidth = $requestedWidth;
+                $baseHeight = $requestedHeight;
+            } else {
+                // Bei leeren Werten setzen wir die Originalmaße und proportionalen Modus
+                $config->setMode("proportional");
+                $baseWidth = $originalWidth;
+                $baseHeight = $originalHeight;
+            }
         }
 
         try {
@@ -537,7 +550,7 @@ class ImageHelper
         return '<figure>' . $svgTag . '</figure>';
     }
 
-    public static function generateImageURL($imageSource, $size = null): string
+    public static function generateImageURL($imageSource, array|string|null $size = null): string
     {
         if (!$imageObject = FilesModel::findByUuid($imageSource)) {
             return '';
@@ -547,14 +560,25 @@ class ImageHelper
         $imageFactory = System::getContainer()->get('contao.image.factory');
 
         $config = new ResizeConfiguration();
-        if ($size && is_array($size)) {
-            $width = !empty($size[0]) ? (int)$size[0] : null;
-            $height = !empty($size[1]) ? (int)$size[1] : null;
-            $mode = !empty($size[2]) ? $size[2] : 'proportional';
+        if ($size) {
+            // Falls size als serialisierter String übergeben wurde
+            if (is_string($size) && strpos($size, 'a:') === 0) {
+                $size = StringUtil::deserialize($size);
+            }
 
-            if ($width) $config->setWidth($width);
-            if ($height) $config->setHeight($height);
-            if ($mode) $config->setMode($mode);
+            // Prüfen ob das Array tatsächlich Werte enthält
+            if (is_array($size) && (!empty($size[0]) || !empty($size[1]))) {
+                $width = !empty($size[0]) ? (int)$size[0] : null;
+                $height = !empty($size[1]) ? (int)$size[1] : null;
+                $mode = !empty($size[2]) ? $size[2] : 'proportional';
+
+                if ($width) $config->setWidth($width);
+                if ($height) $config->setHeight($height);
+                if ($mode) $config->setMode($mode);
+            } else {
+                // Bei leeren Werten setzen wir nur den proportionalen Modus
+                $config->setMode("proportional");
+            }
         }
 
         try {
@@ -568,5 +592,46 @@ class ImageHelper
         } catch (\Exception $e) {
             return '';
         }
+    }
+
+    public static function getSvgCode($uuid, $alt = '', $size = null, $classes = ''): string
+    {
+        if (!$fileModel = FilesModel::findByUuid($uuid)) {
+            return '';
+        }
+
+        $projectDir = System::getContainer()->getParameter('kernel.project_dir');
+        $fullPath = $projectDir . '/' . $fileModel->path;
+
+        if (!file_exists($fullPath)) {
+            return '';
+        }
+
+        $svgContent = file_get_contents($fullPath);
+        if (!$svgContent) {
+            return '';
+        }
+
+        // Style basierend auf Größe
+        $style = '';
+        if (is_array($size) && !empty($size[0])) {
+            $style = 'width: ' . $size[0] . 'px;';
+        }
+
+        // Basis-Klassen für SVG
+        $baseClasses = 'svg-image ' . $classes;
+
+        // SVG modifizieren für bessere Farbsteuerung
+        $svgContent = preg_replace('/<svg /', '<svg class="' . $baseClasses . '" style="' . $style . '" ', $svgContent, 1);
+
+        // Entferne eventuell vorhandene fill-Attribute
+        $svgContent = preg_replace('/fill="[^"]*"/', '', $svgContent);
+
+        // Füge title für Barrierefreiheit hinzu, wenn noch nicht vorhanden
+        if (!strpos($svgContent, '<title>') && $alt) {
+            $svgContent = preg_replace('/<svg ([^>]*)>/', '<svg $1><title>' . htmlspecialchars($alt) . '</title>', $svgContent);
+        }
+
+        return $svgContent;
     }
 }

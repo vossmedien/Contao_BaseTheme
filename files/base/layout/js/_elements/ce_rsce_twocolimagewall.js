@@ -1,91 +1,58 @@
-document.addEventListener("DOMContentLoaded", function (event) {
-     function setImageWidth() {
-        const rows = document.querySelectorAll('.ce--imagetextwall--outer .row');
-        const container = document.querySelector('.container');
-        const wrapper = document.querySelector('#wrapper');
-        const viewportWidth = window.innerWidth;
-        const containerWidth = container.offsetWidth;
-        const wrapperWidth = wrapper.offsetWidth;
-        const wrapperMaxWidth = parseInt(window.getComputedStyle(wrapper).maxWidth) || viewportWidth;
+document.addEventListener("DOMContentLoaded", function() {
+    function setImageWidth() {
+        // Alle twocolimagewall Elemente auswählen
+        const mainContainers = document.querySelectorAll('.ce_rsce_twocolimagewall');
 
-        const effectiveWidth = Math.min(viewportWidth, wrapperMaxWidth);
-        const gapToEdge = (effectiveWidth - containerWidth) / 2;
-
-        rows.forEach(function (row) {
-            const contentCol = row.querySelector('.content--col');
-            const contentZoomContainer = contentCol ? contentCol.querySelector('.zoom-container') : null;
-            const imageCol = row.querySelector('.image--col');
-            const imageZoomContainer = imageCol ? imageCol.querySelector('.zoom-container') : null;
-            const isRowReverse = row.classList.contains('flex-row-reverse');
-
-            if (window.innerWidth >= 992) {
-                if (contentZoomContainer && contentCol) {
-                    const contentColWidth = contentCol.offsetWidth;
-                    const contentZoomWidth = isRowReverse
-                        ? contentColWidth + gapToEdge
-                        : contentColWidth;
-
-                    contentZoomContainer.style.width = `calc(${contentZoomWidth}px + var(--bs-container-gutter))`;
-                    contentZoomContainer.style.marginLeft = isRowReverse ? '' : '0';
-                    contentZoomContainer.style.marginRight = isRowReverse ? '0' : '';
-                }
-
-                if (imageZoomContainer && imageCol) {
-                    const imageColWidth = imageCol.offsetWidth;
-                    const imageZoomWidth = imageColWidth + gapToEdge;
-
-                    imageZoomContainer.style.width = `calc(${imageZoomWidth}px + var(--bs-container-gutter))`;
-
-                    if (isRowReverse) {
-                        imageZoomContainer.style.marginLeft = `calc(-${gapToEdge}px - var(--bs-container-gutter))`;
-                        imageZoomContainer.style.marginRight = '';
-                    } else {
-                        imageZoomContainer.style.marginLeft = '';
-                        imageZoomContainer.style.marginRight = `calc(-${gapToEdge}px - var(--bs-container-gutter))`;
-                    }
-                }
-            } else {
-                // Reset styles for mobile view
-                [contentZoomContainer, imageZoomContainer].forEach(container => {
-                    if (container) {
-                        container.style.width = '100%';
-                        container.style.marginLeft = '';
-                        container.style.marginRight = '';
-                    }
-                });
+        mainContainers.forEach(mainContainer => {
+            // Wenn der Container die Klasse "container" hat, diesen Container überspringen
+            if (mainContainer.classList.contains('container')) {
+                return;
             }
 
-            // Einblenden der Container nach der Berechnung
-            [contentZoomContainer, imageZoomContainer].forEach(container => {
-                if (container) {
-                    container.style.opacity = '1';
+            const container = mainContainer.closest('.container') || document.querySelector('.container');
+            const containerLeft = container.getBoundingClientRect().left;
+
+            // Nur innerhalb des aktuellen mainContainer suchen
+            mainContainer.querySelectorAll('.ce--imagetextwall--outer .row').forEach(row => {
+                const contentCol = row.querySelector('.content--col');
+                const imageCol = row.querySelector('.image--col');
+                const contentZoom = contentCol?.querySelector('.zoom-container');
+                const imageZoom = imageCol?.querySelector('.zoom-container');
+                const isReverse = row.classList.contains('flex-row-reverse');
+
+                if (window.innerWidth >= 992) {
+                    if (contentZoom && contentCol) {
+                        const contentWidth = isReverse
+                            ? window.innerWidth - contentCol.getBoundingClientRect().left
+                            : contentCol.getBoundingClientRect().right;
+
+                        contentZoom.style.width = `${contentWidth}px`;
+                        contentZoom.style.marginLeft = isReverse ? '' : `${-containerLeft}px`;
+                    }
+
+                    if (imageZoom && imageCol) {
+                        imageZoom.style.width = isReverse
+                            ? `${imageCol.getBoundingClientRect().right}px`
+                            : `${window.innerWidth - imageCol.getBoundingClientRect().left}px`;
+                        imageZoom.style.marginLeft = isReverse ? `${-containerLeft}px` : '';
+                    }
+                } else {
+                    [contentZoom, imageZoom].forEach(zoom => {
+                        if (zoom) {
+                            zoom.style.width = '100%';
+                            zoom.style.marginLeft = '';
+                        }
+                    });
                 }
             });
         });
     }
 
-
-    // Initial alle Zoom-Container ausblenden
-    document.querySelectorAll('.zoom-container').forEach(container => {
-        container.style.opacity = '0';
-        container.style.transition = 'opacity 0.3s ease-in-out';
-    });
-
-    // Funktion zum Verzögern der initialen Ausführung
-    function delayedSetImageWidth() {
-        requestAnimationFrame(setImageWidth);
-    }
-
-    // Initiale Ausführung nach dem Laden aller Ressourcen
-    window.addEventListener('load', delayedSetImageWidth);
-
-    // Ausführung bei Resize
-    var resizeTimer;
-    window.addEventListener("resize", function () {
+    let resizeTimer;
+    window.addEventListener('load', () => requestAnimationFrame(setImageWidth));
+    window.addEventListener("resize", () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(setImageWidth, 50);
-    });
-
-    // Zusätzliche Ausführung nach einem kurzen Timeout
+    }, { passive: true });
     setTimeout(setImageWidth, 100);
-}, {passive: true});
+}, { passive: true });

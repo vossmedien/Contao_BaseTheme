@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@awesome.me/kit-c9b4e661cb": "^1.0.158",
+    "@awesome.me/kit-c9b4e661cb": "^1.0.211",
     "@popperjs/core": "*",
     "animate.css": "*",
     "bootstrap": "*",

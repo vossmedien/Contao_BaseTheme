@@ -1,4 +1,6 @@
 <?php
+
+
 if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_stoerer.min.css|static';
     $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_stoerer.js"></script>';
@@ -9,6 +11,7 @@ function decodeColor($color)
 {
     return html_entity_decode($color, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }
+
 
 // Generiere dynamische Stile
 $styles = '';
@@ -22,6 +25,13 @@ if (!empty($this->alternate_right_position)) $additionalClasses[] = 'is-right';
 if (!empty($this->alternate_left_position)) $additionalClasses[] = 'is-left';
 $additionalClassesString = implode(' ', $additionalClasses);
 
+// Berechne padding/margin Wert basierend auf Size
+$contentPaddingStyle = '';
+if (isset($this->size) && is_array($this->size) && !empty($this->size[0])) {
+    $paddingValue = intval($this->size[0]) / 3;
+    $contentPaddingStyle = "padding-inline: {$paddingValue}px; margin-left: {$paddingValue}px;";
+}
+
 foreach ($this->stoerer as $stoerer) {
     $uniqueId = 'stoerer-' . $this->id . '-' . $counterElements;
 
@@ -29,6 +39,7 @@ foreach ($this->stoerer as $stoerer) {
     if (!empty($stoerer->text_color)) {
         $textColor = decodeColor($stoerer->text_color);
         $styles .= "#$uniqueId, #$uniqueId .stoerer--content, #$uniqueId a { color: $textColor; }";
+        $styles .= "#$uniqueId .svg-image { fill: $textColor; }";
     }
     if (!empty($stoerer->bg_color)) {
         $bgColor = decodeColor($stoerer->bg_color);
@@ -37,6 +48,7 @@ foreach ($this->stoerer as $stoerer) {
     if (!empty($stoerer->text_hover_color)) {
         $hoverTextColor = decodeColor($stoerer->text_hover_color);
         $styles .= "#$uniqueId:hover, #$uniqueId:hover .stoerer--content, #$uniqueId:hover a { color: $hoverTextColor !important; }";
+        $styles .= "#$uniqueId:hover .svg-image { fill: $hoverTextColor !important; }";
     }
     if (!empty($stoerer->bg_hover_color)) {
         $hoverBgColor = decodeColor($stoerer->bg_hover_color);
@@ -52,13 +64,15 @@ if (!empty($styles)) {
 }
 ?>
 <!-- indexer::stop -->
-<div <?php echo $this->cssID; ?> class="<?php echo ($this->is_fixed ? 'is-fixed ' : '') . 'content--element ' . str_replace("container", "", $this->class) . ' ' . $additionalClassesString; ?>"
-                                 style="<?php
-                                 echo !empty($this->alternate_top_position) ? "top: {$this->alternate_top_position};" : '';
-                                 echo !empty($this->alternate_bottom_position) ? "bottom: {$this->alternate_bottom_position};" : '';
-                                 echo !empty($this->alternate_right_position) ? "right: {$this->alternate_right_position};" : '';
-                                 echo !empty($this->alternate_left_position) ? "left: {$this->alternate_left_position};" : '';
-                                 ?>">
+<div <?php echo $this->cssID; ?>
+     class="<?php echo ($this->is_fixed ? 'is-fixed ' : '') . 'content--element ' . str_replace("container", "", $this->class) . ' ' . $additionalClassesString; ?>"
+     style="<?php
+         echo !empty($this->alternate_top_position) ? "top: {$this->alternate_top_position};" : '';
+         echo !empty($this->alternate_bottom_position) ? "bottom: {$this->alternate_bottom_position};" : '';
+         echo !empty($this->alternate_right_position) ? "right: {$this->alternate_right_position};" : '';
+         echo !empty($this->alternate_left_position) ? "left: {$this->alternate_left_position};" : '';
+         echo isset($this->size[0]) ? "--stoerer-padding:" . (intval($this->size[0]) / 3) . "px;" : '';
+     ?>">
     <?php $counterElements = 0;
     foreach ($this->stoerer as $stoerer): ?>
         <?php
@@ -78,21 +92,55 @@ if (!empty($styles)) {
                 ></a>
             <?php endif; ?>
 
-            <?php if (isset($stoerer->img) && $stoerer->img): ?>
-                <?php
-                echo VSM_HelperFunctions\ImageHelper::generateImageHTML($stoerer->img, strip_tags($stoerer->content), null, $this->size, $stoerer->img_mobile ? "d-none d-md-block" : "", false);
-                ?>
-            <?php endif; ?>
+      <?php if (isset($stoerer->img) && $stoerer->img): ?>
+    <?php
+    $imagePath = VSM_HelperFunctions\ImageHelper::generateImageURL($stoerer->img, $this->size);
+    if (substr($imagePath, -4) === '.svg') {
+        echo VSM_HelperFunctions\ImageHelper::getSvgCode(
+            $stoerer->img,
+            strip_tags($stoerer->content),
+            $this->size,
+            $stoerer->img_mobile ? "d-none d-md-block" : ""
+        );
+    } else {
+        echo VSM_HelperFunctions\ImageHelper::generateImageHTML(
+            $stoerer->img,
+            strip_tags($stoerer->content),
+            null,
+            $this->size,
+            $stoerer->img_mobile ? "d-none d-md-block" : "",
+            false
+        );
+    }
+    ?>
+<?php endif; ?>
 
-            <?php if (isset($stoerer->img_mobile) && $stoerer->img_mobile): ?>
-                <?php
-                echo VSM_HelperFunctions\ImageHelper::generateImageHTML($stoerer->img_mobile, strip_tags($stoerer->content), null, $this->size_mobile, "d-md-none", false);
-                ?>
-            <?php endif; ?>
+<?php if (isset($stoerer->img_mobile) && $stoerer->img_mobile): ?>
+    <?php
+    $imagePathMobile = VSM_HelperFunctions\ImageHelper::generateImageURL($stoerer->img_mobile, $this->size_mobile);
+    if (substr($imagePathMobile, -4) === '.svg') {
+        echo VSM_HelperFunctions\ImageHelper::getSvgCode(
+            $stoerer->img_mobile,
+            strip_tags($stoerer->content),
+            $this->size_mobile,
+            "d-md-none"
+        );
+    } else {
+        echo VSM_HelperFunctions\ImageHelper::generateImageHTML(
+            $stoerer->img_mobile,
+            strip_tags($stoerer->content),
+            null,
+            $this->size_mobile,
+            "d-md-none",
+            false
+        );
+    }
+    ?>
+<?php endif; ?>
 
             <?php if (isset($stoerer->content) && $stoerer->content): ?>
                 <div class="stoerer--content">
-                    <div class="stoerer-content--inner"><?= $stoerer->content; ?></div>
+                    <div class="stoerer-content--inner" style="<?php echo $contentPaddingStyle; ?>"><?= $stoerer->content; ?></div>
                 </div>
             <?php endif; ?>
         </div>

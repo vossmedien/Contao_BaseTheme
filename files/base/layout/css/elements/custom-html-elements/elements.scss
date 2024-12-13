@@ -1,4 +1,4 @@
-[class*="bg-"]:not(.alert):not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery):not(.badge):not(.ce--headline) {
+.article-content > [class*="bg-"]:not(.ce_rsce_twocolimagewall):not(.ce_rsce_fullwidthgallery):not(.badge):not(.ce--headline) {
   padding-block: var(--main-gap);
 
   /*

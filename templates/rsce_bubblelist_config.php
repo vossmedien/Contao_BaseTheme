@@ -1,6 +1,8 @@
 <?php
-use VSM_HelperFunctions\ButtonHelper;
+
+
 use VSM_HelperFunctions\GlobalElementConfig;
+
 //rsce_my_element_config.php
 return array(
     'label' => array('Custom | Runde Boxen mit Icon / Bild sowie Verlinkung (bubblelist)', ''),
@@ -26,7 +28,7 @@ return array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
             ),
             'inputType' => 'select',
-             'options' => GlobalElementConfig::getAnimations(),
+            'options' => GlobalElementConfig::getAnimations(),
             'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
         'backgroundcolor' => array(

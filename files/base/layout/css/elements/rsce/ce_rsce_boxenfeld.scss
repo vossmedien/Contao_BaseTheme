@@ -1,0 +1,104 @@
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+@import "../../_theme/variables";
+
+html body {
+  .ce_rsce_boxenfeld {
+    @include media-breakpoint-down(lg) {
+      &:not(.container) {
+        padding-inline: var(--bs-gutter-x);
+      }
+    }
+
+    &.container {
+      img.box--image, .box--content, iframe {
+        border-radius: var(--bs-border-radius-xl);
+      }
+    }
+
+    &:not(.container) {
+      .row {
+        &:not(.flex-lg-row-reverse) {
+          img.box--image, iframe {
+            border-radius: 0px var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px;
+          }
+
+          .box--content {
+            border-radius: var(--bs-border-radius-xl) 0px 0px var(--bs-border-radius-xl);
+          }
+        }
+
+        &.flex-lg-row-reverse {
+          img.box--image, iframe {
+            border-radius: var(--bs-border-radius-xl) 0px 0px var(--bs-border-radius-xl);
+          }
+
+          .box--content {
+            border-radius: 0px var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px;
+          }
+        }
+      }
+    }
+
+    @include media-breakpoint-down(lg) {
+      img.box--image:not(.rounded), iframe:not(.rounded) {
+        border-radius: var(--bs-border-radius-xl) var(--bs-border-radius-xl) 0px 0px !important;
+      }
+
+      .box--content {
+        border-radius: 0px 0px var(--bs-border-radius-xl) var(--bs-border-radius-xl) !important;
+      }
+    }
+
+    .boxes--outer {
+      &:not(:last-child) {
+        margin-bottom: var(--main-gap);
+      }
+
+      > .row {
+        .half-container {
+          margin-left: auto;
+        }
+
+        &.flex-lg-row-reverse {
+          .half-container {
+            margin-right: auto;
+            margin-left: 0;
+          }
+        }
+      }
+
+      .row.flex-lg-row-reverse {
+        @include media-breakpoint-up(lg) {
+          flex-flow: row-reverse;
+        }
+      }
+    }
+
+    .half-container {
+      @include media-breakpoint-down(lg) {
+        max-width: 100%;
+      }
+    }
+
+    .box--content {
+      border: 7px solid var(--bs-primary);
+      padding: clamp(1.5rem, 5vw, 3rem);
+      z-index: 9;
+      position: relative;
+
+      @include media-breakpoint-down(lg) {
+        top: 0 !important;
+      }
+
+      @include media-breakpoint-up(xxl) {
+        border-radius: var(--bs-border-radius-xl);
+      }
+
+      .box--button {
+        margin-top: 1.5rem;
+      }
+    }
+  }
+}
