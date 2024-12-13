@@ -18,8 +18,6 @@
       padding-top: 0px;
     }
   }
-
-
 }
 
 .mod_article:has(.article-content[class*="bg-"]) + .mod_article {
@@ -30,6 +28,10 @@
   & + div {
     margin-top: 0px;
   }
+}
+
+.mod_article .article-content[class*="bg-"]{
+  padding-top: var(--main-gap);
 }
 
 .content--element {
