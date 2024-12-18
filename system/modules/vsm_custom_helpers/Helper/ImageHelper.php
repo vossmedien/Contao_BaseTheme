@@ -20,6 +20,136 @@ class ImageHelper
         ['maxWidth' => 1600, 'width' => 1600]
     ];
 
+
+    private static function handleImageFormat(string $imagePath): array
+    {
+        $extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+        $standardFormats = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+        if ($extension === 'svg') {
+            return [
+                'type' => 'svg',
+                'path' => $imagePath
+            ];
+        }
+
+        if (in_array($extension, $standardFormats)) {
+            return [
+                'type' => 'standard',
+                'path' => $imagePath
+            ];
+        }
+
+        // Versuche Konvertierung für unbekannte Formate
+        $converted = self::convertToJpeg($imagePath);
+        if ($converted) {
+            return [
+                'type' => 'converted',
+                'path' => $converted['path']
+            ];
+        }
+
+        // Wenn Konvertierung fehlschlägt, als unknown markieren
+        return [
+            'type' => 'unknown',
+            'path' => $imagePath
+        ];
+    }
+
+    private static function handleUnknownFormat($imagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy): string
+    {
+        // SVG direkt ausgeben
+        if (strtolower(pathinfo($imagePath, PATHINFO_EXTENSION)) === 'svg') {
+            return self::handleSvg($imagePath, $rootDir, $altText, $meta, $headline, [], $class);
+        }
+
+        $imageSrc = str_replace($rootDir, '', $imagePath);
+        $imageSrc = self::encodePath($imageSrc);
+
+        $alt = self::cleanAttribute($altText ?: (!empty($meta['alt']) ? $meta['alt'] : (!empty($headline) ? $headline : '')));
+        $title = self::cleanAttribute(!empty($meta['title']) ? $meta['title'] : (!empty($headline) ? $headline : ''));
+
+        // Picture Tag mit Original-Bild
+        $imgTag = '<picture>';
+        $imgTag .= sprintf(
+            '<img %ssrc="%s" alt="%s"%s%s%s>',
+            $lazy ? 'data-' : '',
+            $imageSrc,
+            $alt,
+            $class ? ' class="' . ($lazy ? 'lazy ' : '') . htmlspecialchars($class) . '"' : ($lazy ? ' class="lazy"' : ''),
+            $title ? ' title="' . htmlspecialchars($title) . '"' : '',
+            $lazy ? ' loading="lazy"' : ''
+        );
+        $imgTag .= '</picture>';
+
+        $finalOutput = '<figure>' . $imgTag;
+        if ($caption) {
+            $finalOutput .= '<figcaption>' . htmlspecialchars($caption) . '</figcaption>';
+        }
+        $finalOutput .= '</figure>';
+
+        return $finalOutput;
+    }
+
+    private static function convertToJpeg(string $imagePath): ?array
+    {
+        try {
+            $container = System::getContainer();
+            $projectDir = $container->getParameter('kernel.project_dir');
+            $logger = $container->get('monolog.logger.contao');
+
+            if (!file_exists($imagePath)) {
+                $logger->error('Source file does not exist: ' . $imagePath);
+                return null;
+            }
+
+            $targetDir = $projectDir . '/assets/images/converted';
+            if (!is_dir($targetDir)) {
+                if (!mkdir($targetDir, 0777, true)) {
+                    $logger->error('Failed to create target directory: ' . $targetDir);
+                    return null;
+                }
+            }
+
+            $baseName = pathinfo($imagePath, PATHINFO_FILENAME);
+            $targetPath = $targetDir . '/' . $baseName . '_' . uniqid() . '.jpg';
+
+            if (extension_loaded('imagick')) {
+                try {
+                    $image = new \Imagick();
+                    $image->readImage($imagePath);
+                    $image->setImageFormat('jpeg');
+                    $image->setImageCompressionQuality(self::DEFAULT_QUALITY);
+                    $image->writeImage($targetPath);
+                    $image->clear();
+                    $image->destroy();
+
+                    if (file_exists($targetPath)) {
+                        $logger->info('Successfully converted to: ' . $targetPath);
+                        return [
+                            'path' => $targetPath,
+                            'src' => str_replace($projectDir, '', $targetPath)
+                        ];
+                    }
+                } catch (\ImagickException $e) {
+                    $logger->notice('Conversion failed for ' . $imagePath . ': ' . $e->getMessage());
+                    return null;
+                }
+            }
+
+            return null;
+
+        } catch (\Exception $e) {
+            if (isset($logger)) {
+                $logger->error(
+                    'Image conversion exception: ' . $e->getMessage(),
+                    ['file' => $imagePath, 'trace' => $e->getTraceAsString()]
+                );
+            }
+            return null;
+        }
+    }
+
     private static function getResizeOptions($format = null): ResizeOptions
     {
         $options = new ResizeOptions();
@@ -57,15 +187,15 @@ class ImageHelper
         // Nur vollständige Bildpfade verwenden
         $srcsetParts = [];
 
-        if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $src)) {
+        if (preg_match('/\.(jpg|jpeg|png|gif|webp|heic)$/i', $src)) {
             $srcsetParts[] = $src . ' 1x';
         }
 
-        if ($retinaSrc && preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $retinaSrc)) {
+        if ($retinaSrc && preg_match('/\.(jpg|jpeg|png|gif|webp|heic)$/i', $retinaSrc)) {
             $srcsetParts[] = $retinaSrc . ' 2x';
         }
 
-        if ($retina3xSrc && preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $retina3xSrc)) {
+        if ($retina3xSrc && preg_match('/\.(jpg|jpeg|png|gif|webp|heic)$/i', $retina3xSrc)) {
             $srcsetParts[] = $retina3xSrc . ' 3x';
         }
 
@@ -85,8 +215,17 @@ class ImageHelper
             return '';
         }
 
+        // Explizit <wbr> in allen Varianten entfernen (vor strip_tags)
+        $str = preg_replace('/<wbr\s*\/?>/i', '', $str);
+
+        // HTML-Tags und Entities vollständig entfernen
         $str = strip_tags($str);
         $str = html_entity_decode($str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // Soft hyphens (weiche Bindestriche) entfernen
+        $str = str_replace(["\xC2\xAD", "­", "<wbr>", "<", ">"], '', $str);
+
+        // Mehrfache Leerzeichen durch einzelnes ersetzen
         $str = preg_replace('/\s+/', ' ', trim($str));
 
         return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
@@ -104,7 +243,7 @@ class ImageHelper
         $relativePath = str_replace($rootDir, '', $processedPath);
 
         // Sicherstellen, dass der Pfad mit .jpg, .png etc. endet
-        if (!preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $relativePath)) {
+        if (!preg_match('/\.(jpg|jpeg|png|gif|webp|heic)$/i', $relativePath)) {
             return ['path' => $processedPath, 'src' => ''];
         }
 
@@ -179,10 +318,19 @@ class ImageHelper
             // return '';
         }
 
-        // SVG Handling
-        if (strtolower(pathinfo($baseImagePath, PATHINFO_EXTENSION)) === 'svg') {
-            return self::handleSvg($baseImagePath, $rootDir, $altText, $meta, $headline, $size, $class);
+// NEU:
+        $imageFormat = self::handleImageFormat($baseImagePath);
+
+        switch ($imageFormat['type']) {
+            case 'svg':
+                return self::handleSvg($baseImagePath, $rootDir, $altText, $meta, $headline, $size, $class);
+            case 'unknown':
+                return self::handleUnknownFormat($baseImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
+            default:
+                $baseImagePath = $imageFormat['path'];
+                $absoluteImagePath = $imageFormat['path'];
         }
+
 
         // Originalbild-Dimensionen prüfen
         if (!file_exists($baseImagePath) ||
@@ -492,7 +640,7 @@ class ImageHelper
         // Filtere ungültige Einträge und stelle korrektes Format sicher
         $validSrcset = array_filter($srcset, function ($entry) {
             // Prüfe auf vollständigen Bildpfad und korrektes Format
-            return preg_match('/\.(jpg|jpeg|png|gif|webp)\s+\d+w$/i', $entry);
+            return preg_match('/\.(jpg|jpeg|png|gif|webp|heic)\s+\d+w$/i', $entry);
         });
 
         // Entferne doppelte Einträge
@@ -557,7 +705,18 @@ class ImageHelper
         }
 
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
-        $imageFactory = System::getContainer()->get('contao.image.factory');
+        $absolutePath = $rootDir . '/' . urldecode($imageObject->path);
+
+        // Prüfe auf nicht-Standard-Format
+        $imageFormat = self::handleImageFormat($absolutePath);
+
+        switch ($imageFormat['type']) {
+            case 'svg':
+            case 'unknown':
+                return self::encodePath(str_replace($rootDir, '', $absolutePath));
+            default:
+                $absolutePath = $imageFormat['path'];
+        }
 
         $config = new ResizeConfiguration();
         if ($size) {
@@ -582,11 +741,13 @@ class ImageHelper
         }
 
         try {
-            $processedImage = $imageFactory->create(
-                $rootDir . '/' . urldecode($imageObject->path),
-                $config,
-                self::getResizeOptions()
-            );
+            $processedImage = System::getContainer()
+                ->get('contao.image.factory')
+                ->create(
+                    $absolutePath,
+                    $config,
+                    self::getResizeOptions()
+                );
             $path = str_replace($rootDir, "", $processedImage->getPath());
             return self::encodePath($path);
         } catch (\Exception $e) {
