@@ -30,7 +30,7 @@
   }
 }
 
-.mod_article .article-content[class*="bg-"]{
+.mod_article .article-content[class*="bg-"] {
   padding-top: var(--main-gap);
 }
 
@@ -320,8 +320,12 @@ body:not(.start) {
 }
 
 
-.contao-cookiebar{
-  &:not(.cc-saved){
-        background-color: var(--body-bg-cookies-not-accepted);
+.contao-cookiebar {
+  &.cc-active {
+    background-color: var(--body-bg-cookies-not-accepted);
+
+    &.cc-saved {
+      background-color: transparent;
+    }
   }
 }

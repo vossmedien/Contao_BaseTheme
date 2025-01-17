@@ -7,8 +7,8 @@ $theme-colors: (
         "purple": #6610f2,
         "success": #dbe8e2,
         "info": #d1ecf1,
-        "warning": #fff3cd,
-        "danger": #f8d7da,
+        "warning": #ffc107,
+        "danger": #dc3545,
         "light": $gray-100,
         "dark": $gray-900,
 );
@@ -55,8 +55,6 @@ $grid-breakpoints: (
         xl: 1200px,
         xxl: 1640px,
 );
-
-
 
 
 $headings-font-sizes: (

@@ -1,0 +1,257 @@
+<?php
+
+use Contao\PageModel;
+use Contao\System;
+use Contao\Input;
+use Contao\Controller;
+use Contao\StringUtil;
+
+if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/validation-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/stripe-element-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/ui-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/stripe-payment-handler.js|static';
+
+      $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_product_payment.min.css|static';
+}
+
+// Generische Produktdaten-Aufbereitung
+$productData = array_map(function ($item, $index) {
+    return [
+        'id' => $index,
+        'title' => $item->title,
+        'price' => $item->price,
+        'duration' => intval($item->subscription_duration ?? 0),
+        'status' => $item->status ?? 'active',
+        'eventName' => $item->plunk_event_name ?? null,
+    ];
+}, $this->products, array_keys($this->products));
+
+$pageModel = Controller::getContainer()
+    ->get('contao.framework')
+    ->getAdapter(PageModel::class);
+
+$successPage = $pageModel->findByPk($this->success_page);
+$successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
+?>
+
+
+<!-- Textkonfiguration -->
+<div id="payment-texts"
+     data-error-required="Bitte füllen Sie alle Pflichtfelder aus."
+     data-error-general="Ein Fehler ist aufgetreten"
+     data-error-product-not-found="Produkt nicht gefunden"
+     data-validation-password="Das Passwort muss mindestens 8 Zeichen lang sein und mindestens eine Zahl, einen Groß- und einen Kleinbuchstaben enthalten."
+     data-validation-email="Bitte geben Sie eine gültige E-Mail-Adresse ein."
+     data-validation-username="Der Benutzername muss zwischen 3 und 20 Zeichen lang sein und darf nur Buchstaben, Zahlen, Unterstrich und Bindestrich enthalten."
+     data-stripe-errors='{
+        "incomplete_number": "Die Kartennummer ist unvollständig.",
+        "invalid_number": "Die Kartennummer ist ungültig.",
+        "incomplete_expiry": "Das Ablaufdatum ist unvollständig.",
+        "invalid_expiry": "Das Ablaufdatum ist ungültig.",
+        "incomplete_cvc": "Der Sicherheitscode ist unvollständig.",
+        "invalid_cvc": "Der Sicherheitscode ist ungültig.",
+        "default": "Ein Fehler ist aufgetreten."
+     }'
+></div>
+
+
+<!-- Produkt-Anzeige -->
+<div <?php echo $this->cssID; ?> class="<?= $this->class ?> content--element product-cards">
+    <div class="ce--inner">
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
+
+        <?php if ($this->description): ?>
+            <div class="row">
+                <div class="col-12">
+                    <div class="description mb-4">
+                        <?= $this->description ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <div class="grid g-4">
+            <?php foreach ($this->products as $index => $product): ?>
+                <?php if ($product->status !== 'hidden'): ?>
+                    <div class="g-col-12 g-col-md-6 g-col-lg-3" data-aos="<?= $this->animation_type ?>">
+                        <div class="card h-100 <?= $product->status === 'sold_out' ? 'product-sold-out' : '' ?>">
+                            <?php if ($product->image): ?>
+                                <div class="card-img-top">
+                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                                        $product->image,
+                                        $product->title,
+                                        null,
+                                        $product->image_size,
+                                        'img-fluid'
+                                    ); ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="card-body">
+                                <?php if ($product->label): ?>
+                                    <div class="product-label mb-2">
+                                        <?= $product->label ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($product->title): ?>
+                                    <h5 class="card-title">
+                                        <?= $product->title ?>
+                                        <?php if ($product->subtitle): ?>
+                                            <small class="d-block text-muted"><?= $product->subtitle ?></small>
+                                        <?php endif; ?>
+                                    </h5>
+                                <?php endif; ?>
+
+                                <?php if ($product->description): ?>
+                                    <div class="card-text mb-3">
+                                        <?= $product->description ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($product->features): ?>
+                                    <ul class="list-check mb-3">
+                                        <?php foreach (explode("\n", $product->features) as $feature): ?>
+                                            <?php if (trim($feature)): ?>
+                                                <li class=""><?= trim($feature) ?></li>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+
+                                <?php if ($product->price): ?>
+                                    <div class="price-container mt-auto">
+                                        <?php if ($product->old_price): ?>
+                                            <del class="text-muted me-2">
+                                                <span data-price-display data-amount="<?= $product->old_price ?>" data-currency="<?= $this->stripe_currency ?>">
+                                                    <?= number_format($product->old_price, 2, ',', '.') ?> <?= strtoupper($this->stripe_currency) ?>
+                                                </span>
+                                            </del>
+                                        <?php endif; ?>
+                                        <strong class="price">
+                                            <span data-price-display data-amount="<?= $product->price ?>" data-currency="<?= $this->stripe_currency ?>">
+                                                <?= number_format($product->price, 2, ',', '.') ?> <?= strtoupper($this->stripe_currency) ?>
+                                            </span>
+                                            <?php if ($product->price_info): ?>
+                                                <small class="d-block text-muted"><?= $product->price_info ?></small>
+                                            <?php endif; ?>
+                                        </strong>
+                                    </div>
+                                <?php endif; ?>
+
+
+                                <?php if ($product->status === 'sold_out'): ?>
+                                    <div class="alert alert-warning mb-0">
+                                        <?= $product->sold_out_text ?: 'Dieses Produkt ist derzeit nicht verfügbar.' ?>
+                                    </div>
+                                <?php endif; ?>
+
+
+                            </div>
+
+                            <div class="card-footer d-flex flex-row gap-1 bg-transparent">
+                                <?php if ($product->status === 'sold_out'): ?>
+
+                                <?php elseif ($this->stripe_enabled && !$product->disable_payment): ?>
+                                    <button type="button" class="btn btn-primary" onclick="openPaymentModal(<?= htmlspecialchars(json_encode($productData[$index])) ?>)">
+                                        <?= $product->button_text ?: 'Jetzt kaufen' ?>
+                                    </button>
+                                <?php endif; ?>
+
+                                <?php if ($product->buttons): ?>
+                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($product->buttons); ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<?php if ($this->stripe_enabled && !$product->disable_payment): ?>
+    <!-- Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true"
+         aria-labelledby="paymentModalTitle"
+         aria-describedby="paymentModalDescription">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentModalTitle">Produkt bestellen</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+                </div>
+                <div id="paymentModalDescription" class="visually-hidden">
+                    Formular zur Eingabe Ihrer Bestell- und Zahlungsdaten
+                </div>
+
+
+                <!-- Produkt Info Template -->
+                <template id="product-info-template"
+                          data-heading="Ihre Bestellung"
+                          data-product-label="Produkt:"
+                          data-price-label="Preis:"
+                          data-price-badge="einmalig"
+                          data-duration-label="Laufzeit:"
+                          data-expiry-label="Gültig bis:">
+                    <div class="card border-info mb-4">
+                        <div class="card-header bg-info border-info">
+                            <h6 class="card-title mb-0" data-template-heading></h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-1">
+                                <div class="col-sm-6">
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-muted me-2" data-template-product-label></span>
+                                        <strong data-product-title></strong>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-muted me-2" data-template-price-label></span>
+                                        <strong data-product-price></strong>
+                                        <span class="badge bg-primary ms-2" data-template-price-badge></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 d-none" data-duration-row>
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-muted me-2" data-template-duration-label></span>
+                                        <strong data-product-duration></strong>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 d-none" data-expiry-row>
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-muted me-2" data-template-expiry-label></span>
+                                        <strong data-product-expiry></strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Rest des Formulars -->
+                <?= VSM_HelperFunctions\PaymentFormHelper::generatePaymentFormHTML(
+                    $this->personal_data_fields,
+                    $this->stripe_public_key,
+                    $successUrl,
+                    $this->stripe_currency,
+                    $productData,
+                    $this->id,
+                    $this->create_user,
+                    $this->show_privacy_notice,
+                    $this->privacy_page
+                ); ?>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

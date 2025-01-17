@@ -19,7 +19,9 @@ $tertiary: #6610f2;
 $body-bg: #ffffff;
 $body-color: #212529;
 
-$border-radius: 10px;
+$border-radius: 12px;
+$border-radius-lg: 18px;
+
 $box-shadow: 0 0 12px rgba(39, 39, 39, 0.15);
 
 $offset-sm: 60px;
@@ -71,5 +73,14 @@ $headings-font-weight: 700;
 $headings-line-height: 1.2;
 
 
-$link-color: $body-color;
+$link-color: $primary;
 $link-hover-color:mix(black, $link-color, 25%);
+
+
+
+//$form-floating-padding-y:30px;
+//$form-floating-height: 100px;
+//$form-floating-padding-x:30px;
+//$form-floating-label-opacity:0.9;
+
+$form-floating-real-padding-x: calc(var(--bs-gutter-x)*.5 + #{$form-floating-padding-x});

@@ -42,7 +42,6 @@
 
   --bs-border-color: var(--bs-gray-400);
 
-
   --swiper-theme-color: var(--bs-primary);
   --swiper-pagination-bullet-height: 14px;
   --swiper-pagination-bullet-width: var(--swiper-pagination-bullet-height);
@@ -53,7 +52,7 @@
 
   --bs-input-border-radius: var(--bs-border-radius);
   --bs-input-border: 1px solid var(--bs-border-color);
-  --bs-input-shadow: var(--bs-base-box-shadow);
+    --bs-input-shadow: 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(0, 0, 0, 0.02);
   --bs-input-padding-x: 0.75rem;
   --bs-input-padding-y: 1rem;
   --bs-input-color: var(--bs-body-color);

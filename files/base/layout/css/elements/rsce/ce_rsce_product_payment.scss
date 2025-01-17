@@ -1,0 +1,27 @@
+
+.product-cards .price {
+  font-size: 1.25rem;
+  color: var(--bs-primary);
+}
+
+.product-cards .product-sold-out {
+  opacity: 0.8;
+
+  &::before {
+    content: "Ausgebucht";
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--bs-warning);
+    color: var(--bs-dark);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: bold;
+  }
+
+}
+
+
+#payment-error {
+  margin-top: 1rem;
+}
