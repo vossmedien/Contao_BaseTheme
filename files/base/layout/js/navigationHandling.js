@@ -89,18 +89,26 @@ class NavigationManager {
         return null;
     }
 
-    handleInitialState() {
-        const hash = window.location.hash;
-        if (hash) {
+   handleInitialState() {
+    const hash = window.location.hash;
+    if (hash) {
+        // Prüfe ob der Anker existiert
+        const sectionId = hash.substring(1); // Entferne das # am Anfang
+        if (document.getElementById(sectionId)) {
             this.setActiveLink(hash);
-        } else {
-            // Wenn kein Hash, setze den ersten Link als aktiv
-            const firstLink = this.links[0];
-            if (firstLink) {
-                this.setActiveLink(firstLink.getAttribute('href'));
+        }
+    } else {
+        // Wenn kein Hash, prüfe ob der erste Link einen gültigen Anker hat
+        const firstLink = this.links[0];
+        if (firstLink) {
+            const href = firstLink.getAttribute('href');
+            const sectionId = href.split('#').pop();
+            if (document.getElementById(sectionId)) {
+                this.setActiveLink(href);
             }
         }
     }
+}
 }
 
 // Erstelle eine Instanz

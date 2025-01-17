@@ -22,28 +22,34 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
         $gridId = 'video-grid-' . rand(1000, 9999);
         $videos = $this->videos;
 
-        // Videos in drei Arrays aufteilen
-        $columns = [[], [], []];
-        $visibleSlides = 3; // Anzahl der gleichzeitig sichtbaren Slides
-        $minSlidesForLoop = $visibleSlides + 1; // Mindestanzahl für Loop-Funktion
+        // Konfiguration
+        $numColumns = 3;
+        $visibleSlides = 3; // Sichtbare Slides pro Spalte
+        $bufferSlides = 2;  // Zusätzliche Slides für smoothes Scrolling
+        $minSlidesPerColumn = $visibleSlides + $bufferSlides; // Mindestens 5 Slides
+        $maxSlidesPerColumn = min(12, max($minSlidesPerColumn, count($videos))); // Maximum von 12 Slides
+
+        // Videos in Arrays aufteilen
+        $columns = array_fill(0, $numColumns, []);
 
         // Erste Verteilung der Videos auf die Spalten
         foreach ($videos as $index => $video) {
-            $columnIndex = $index % 3;
+            $columnIndex = $index % $numColumns;
             $columns[$columnIndex][] = $video;
         }
 
-        // Für jede Spalte: Wenn nötig, minimal aufüllen für Loop
+        // Für jede Spalte: Wenn nötig, optimal aufüllen
         foreach ($columns as $columnIndex => &$columnVideos) {
             $currentCount = count($columnVideos);
 
-            // Wenn weniger als Mindestanzahl, fülle auf
-            if ($currentCount < $minSlidesForLoop) {
-                $needed = $minSlidesForLoop - $currentCount;
-                // Nehme nur so viele Videos wie nötig vom Anfang
+            while (count($columnVideos) < $maxSlidesPerColumn) {
+                $needed = min($maxSlidesPerColumn - count($columnVideos), count($columnVideos));
                 $additional = array_slice($columnVideos, 0, $needed);
                 $columnVideos = array_merge($columnVideos, $additional);
             }
+
+            // Zufällig mischen
+            shuffle($columnVideos);
         }
         ?>
         <div class="container">

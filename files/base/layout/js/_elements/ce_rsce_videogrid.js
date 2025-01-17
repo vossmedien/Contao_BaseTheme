@@ -124,7 +124,7 @@ function init3DEffect(container) {
                 loopedSlides: 3,
                 slidesPerView: 3,
                 spaceBetween: 0,
-                speed: isMobile ? 40000 : 60000,
+                speed: isMobile ? 12500 : 25000,
                 autoplay: {
                     delay: 0,
                     disableOnInteraction: false,
