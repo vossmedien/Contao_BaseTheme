@@ -1,4 +1,5 @@
-import { changeAnchorLinks } from "./navigationHandling.js";
+// smoothScrolling.js
+import {changeAnchorLinks} from "./navigationHandling.js";
 
 // IIFE für initiales Hash-Handling
 (() => {
@@ -16,16 +17,6 @@ export function getCSSVariableValue(variableName) {
     const value = getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
     const numericValue = parseFloat(value);
     return isNaN(numericValue) ? 100 : numericValue;
-}
-
-export function setActiveLink(element) {
-    document.querySelectorAll("ul .active").forEach(el => {
-        el.classList.remove("active");
-    });
-
-    if (element) {
-        element.classList.add("active");
-    }
 }
 
 function handleInitialHash() {
@@ -73,12 +64,8 @@ function scrollToTarget(targetId) {
                 });
             }
 
-            // Setze aktive Links nach dem Scrollen
-            const activeAnchor = document.querySelector(`a[href="#${targetId}"]`);
-            if (activeAnchor) {
-                setActiveLink(activeAnchor);
-                changeAnchorLinks();
-            }
+            // Aktualisiere die Navigation nach dem Scrollen
+            changeAnchorLinks();
         }, 300);
 
         window.location.hash = `#${targetId}`;
@@ -113,7 +100,7 @@ function scrollToTarget(targetId) {
 
 function scrollToAnchor(e) {
     e.preventDefault();
-    const targetId = this.getAttribute('href').substring(1);
+    const targetId = this.getAttribute('href').split('#')[1];
     scrollToTarget(targetId);
 }
 

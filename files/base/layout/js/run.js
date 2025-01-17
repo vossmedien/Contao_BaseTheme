@@ -1,5 +1,5 @@
 import {setSwitchingcardsHeight} from "./elementHeightAdjustments.js";
-import {initializeSmoothScrolling, scrollToTop} from "./smoothScrolling.js";
+import {scrollToTop} from "./smoothScrolling.js";
 import {setupFunctions} from "./cookieManager.js";
 import {adjustPullElements} from "./marginPaddingAdjustments.js";
 import {
@@ -321,7 +321,7 @@ DomLoadFunctions.push(
     initVideoLightbox,
     initImageLightbox,
     setSwitchingcardsHeight,
-    initializeSmoothScrolling,
+    //initializeSmoothScrolling,
     changeNavLinksAfterLoad,
     scrollToTop,
     setupFunctions,

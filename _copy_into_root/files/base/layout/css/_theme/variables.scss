@@ -21,7 +21,6 @@ $body-color: #212529;
 
 $border-radius: 12px;
 $border-radius-lg: 18px;
-
 $box-shadow: 0 0 12px rgba(39, 39, 39, 0.15);
 
 $offset-sm: 60px;
@@ -58,7 +57,9 @@ $modal-xl: 1140px;
 $btn-line-height: 1;
 $font-family-base: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
-$font-weight-black: 900;
+$font-weight-base: 300;
+$font-weight-bold: 800;
+$font-weight-black: 800;
 
 $font-size-xs: 10px;
 $font-size-sm: 14px;
@@ -78,9 +79,21 @@ $link-hover-color:mix(black, $link-color, 25%);
 
 
 
-//$form-floating-padding-y:30px;
-//$form-floating-height: 100px;
-//$form-floating-padding-x:30px;
-//$form-floating-label-opacity:0.9;
+//CSS Variablen beachten
+$container-max-widths: (
+        sm: 100%,
+        md: 100%,
+        lg: 100%,
+        xl: 1140px,
+        xxl: 1600px
+);
 
-$form-floating-real-padding-x: calc(var(--bs-gutter-x)*.5 + #{$form-floating-padding-x});
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1640px,
+);
