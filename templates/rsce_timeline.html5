@@ -5,7 +5,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 ?>
 
 <div <?php echo $this->cssID; ?> class="content--element ">
-    <div class="ce--inner <?php echo $this->class; ?>">
+    <div class="ce--inner <?php echo $this->class; ?>" >
 
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
@@ -19,17 +19,22 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
         ); ?>
 
         <?php if ($this->rows) : ?>
-            <div class="ce--timeline pt-5">
+            <div class="ce--timeline">
                 <?php foreach ($this->rows as $i => $row) : ?>
-                    <div class="step--wrapper row gx-5" data-aos="<?= $row->animation_type ? $row->animation_type : '' ?>">
+                    <div class="step--wrapper row gy-md-0" data-aos="<?= $row->animation_type ? $row->animation_type : '' ?>">
 
                         <div class="col-md-6 col-12" data-aos="animate__fadeIn">
                             <div class="step--info mb-2 mb-md-0">
                                 <div class="left-col--inner">
 
                                     <div class="row align-items-center">
+                                        <?php if ($row->step): ?>
+                                            <div class="col-auto">
+                                                <span class="h1 mb-0 step--title"><?php echo $row->step; ?></span>
+                                            </div>
+                                        <?php endif; ?>
                                         <?php if ($row->icon): ?>
-                                            <div class="col-auto m-auto m-md-0">
+                                            <div class="col-auto">
                                             <span style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" class="step--icon">
                                                 <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->icon, strip_tags($row->description), $row->headline, $row->size, null, false); ?>
                                             </span>
@@ -44,7 +49,6 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                         <div class="col-12 col-md-6" data-aos="animate__fadeIn">
                             <div class="step--content">
                                 <div class="right-col--inner" style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>">
-                                    <span class="h1 mb-0 step--title"><?php echo $row->step; ?></span>
                                     <?php if ($row->image): ?>
                                         <div class="step--image mb-4">
                                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, strip_tags($row->description), $row->headline, $row->size, null, false); ?>
@@ -60,7 +64,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                                 $row->animation_type,
                                                 $row->textcolor,
                                                 $row->onlystyle,
-                                                null
+                                                "mb-3"
                                             ); ?>
                                         </div>
                                     <?php endif; ?>
