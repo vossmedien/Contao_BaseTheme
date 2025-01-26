@@ -76,7 +76,7 @@ const initAnimations = () => {
             delay: 0.1,
             rootMargin: '0px 0px -35% 0px',
             baseDelay: 0.15,
-            visibilityThreshold: 0.4
+            visibilityThreshold: 0.2
         },
 
         animationClass: 'animate__animated'

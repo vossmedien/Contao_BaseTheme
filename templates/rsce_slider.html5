@@ -4,8 +4,8 @@ if (!isset($this->size)) {
 }
 ?>
 
-    <div <?php echo $this->cssID; ?> class="content--element">
-        <div class="ce--inner  <?php echo $this->class; ?>">
+    <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+        <div class="ce--inner  ">
 
             <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
                 $this->topline,

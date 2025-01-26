@@ -343,6 +343,7 @@ class ImageHelper
         $originalHeight = (int)$originalImageInfo[1];
 
         // Basiskonfiguration
+// Basiskonfiguration
         $config = new ResizeConfiguration();
         if ($size) {
             // Falls size als serialisierter String übergeben wurde
@@ -351,19 +352,25 @@ class ImageHelper
             }
 
             // Prüfen ob das Array tatsächlich Werte enthält
-            if (is_array($size) && (!empty($size[0]) || !empty($size[1]))) {
+            if (is_array($size)) {
                 $requestedWidth = !empty($size[0]) ? (int)$size[0] : null;
                 $requestedHeight = !empty($size[1]) ? (int)$size[1] : null;
                 $mode = !empty($size[2]) ? $size[2] : "proportional";
 
                 // Grundkonfiguration mit den ursprünglich gewünschten Maßen
-                if ($requestedWidth) $config->setWidth($requestedWidth);
-                if ($requestedHeight) $config->setHeight($requestedHeight);
-                if ($mode) $config->setMode($mode);
+                if ($requestedWidth) {
+                    $config->setWidth($requestedWidth);
+                }
+                if ($requestedHeight) {
+                    $config->setHeight($requestedHeight);
+                }
+                if ($mode) {
+                    $config->setMode($mode);
+                }
 
                 // Basisbreite für Breakpoints setzen
-                $baseWidth = $requestedWidth;
-                $baseHeight = $requestedHeight;
+                $baseWidth = $requestedWidth ?? ($requestedHeight ? round($originalWidth * ($requestedHeight / $originalHeight)) : $originalWidth);
+                $baseHeight = $requestedHeight ?? ($requestedWidth ? round($originalHeight * ($requestedWidth / $originalWidth)) : $originalHeight);
             } else {
                 // Bei leeren Werten setzen wir die Originalmaße und proportionalen Modus
                 $config->setMode("proportional");

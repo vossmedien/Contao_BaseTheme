@@ -30,6 +30,7 @@ function renderLine($words)
 
 ?>
 
+
 <div class="container pb-0">
     <span data-animation="animate__fadeIn" class="we-are">Wir sind</span>
 </div>
@@ -57,7 +58,21 @@ function renderLine($words)
     </div>
 </div>
 
+
+<div class="row">
+    <div class="col-lg-6 offset-lg-6">
+        <div class="ps-2 ps-lg-0 claim-wrapper" data-animation="animate__fadeIn">
+
+            <span class="claim">
+                Wir helfen dir dein <span class="text-primary">Unternehmen</span> richtig zu präsentieren
+            </span>
+        </div>
+    </div>
+</div>
+
+
 <style>
+
 
     .we-are {
         font-size: 38px;
@@ -74,6 +89,7 @@ function renderLine($words)
         text-transform: uppercase;
         line-height: 1;
     }
+
 
     .ticker {
         display: flex;
@@ -96,7 +112,7 @@ function renderLine($words)
     }
 
     .ticker-right {
-        animation: moveRight 500s linear infinite;
+        animation: moveRight 350s linear infinite;
     }
 
     @keyframes moveLeft {

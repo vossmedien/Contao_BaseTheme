@@ -123,7 +123,9 @@ form {
       }
     }
   }
-
+   textarea.form-control {
+      min-height: 140px !important;
+    }
 
   .widget:not(.form-floating) {
     ::placeholder {
@@ -174,9 +176,7 @@ form {
       }
     }
 
-    textarea.form-control {
-      min-height: 140px;
-    }
+
 
 
     &.error {
@@ -252,15 +252,6 @@ form {
     margin-bottom: .25rem;
   }
 
-  .form-select, .form-control {
-    //font-size: var(--bs-body-font-size);
-    box-shadow: var(--bs-input-shadow);
-
-    &:focus, &:active {
-      box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .2);
-      border-color: var(--bs-primary);
-    }
-  }
 
   .captcha_text {
     margin-bottom: 5px;
@@ -279,3 +270,14 @@ form {
   }
 }
 
+
+
+  .form-select, .form-control {
+    //font-size: var(--bs-body-font-size);
+    box-shadow: var(--bs-input-shadow);
+
+    &:focus, &:active {
+      box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .2);
+      border-color: var(--bs-primary);
+    }
+  }
