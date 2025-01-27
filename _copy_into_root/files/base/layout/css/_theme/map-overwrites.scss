@@ -37,55 +37,37 @@ $gutters: (
         5: $grid-gutter-width * 4,
 );
 
-//CSS Variablen beachten
-$container-max-widths: (
-        sm: 100%,
-        md: 100%,
-        lg: 100%,
-        xl: 1140px,
-        xxl: 1600px
-);
-
-
-$grid-breakpoints: (
-        xs: 0,
-        sm: 576px,
-        md: 768px,
-        lg: 992px,
-        xl: 1200px,
-        xxl: 1640px,
-);
 
 
 $headings-font-sizes: (
         'h1': (
-                'mobile': 32px,
-                'tablet': 46px,
-                'desktop': 61px
+                'mobile': rfs-value(32px),
+                'tablet': rfs-value(46px),
+                'desktop': rfs-value(61px)
         ),
         'h2': (
-                'mobile': 29px,
-                'tablet': 39px,
-                'desktop': 49px
+                'mobile': rfs-value(29px),
+                'tablet': rfs-value(39px),
+                'desktop': rfs-value(49px)
         ),
         'h3': (
-                'mobile': 26px,
-                'tablet': 32px,
-                'desktop': 39px
+                'mobile': rfs-value(26px),
+                'tablet': rfs-value(32px),
+                'desktop': rfs-value(39px)
         ),
         'h4': (
-                'mobile': 23px,
-                'tablet': 27px,
-                'desktop': 31px
+                'mobile': rfs-value(23px),
+                'tablet': rfs-value(27px),
+                'desktop': rfs-value(31px)
         ),
         'h5': (
-                'mobile': 20px,
-                'tablet': 22px,
-                'desktop': 25px
+                'mobile': rfs-value(20px),
+                'tablet': rfs-value(22px),
+                'desktop': rfs-value(25px)
         ),
         'h6': (
-                'mobile': 18px,
-                'tablet': 19px,
-                'desktop': 20px
+                'mobile': rfs-value(18px),
+                'tablet': rfs-value(19px),
+                'desktop': rfs-value(20px)
         )
 );

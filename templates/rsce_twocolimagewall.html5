@@ -148,7 +148,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
         <?php endif; ?>
 
 
-            <div class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> ">
+            <div <?php if($row->row_id):?>id="<?= $row->row_id;?>"<?php endif;?>  class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> ">
                 <?php
                 $classes = ['ce--imagetextwall'];
 
@@ -176,20 +176,21 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                     <div class="px-0 container content-holder ">
                         <div style="<?php if ($row->min_height): ?>min-height: <?= $row->min_height; ?>;<?php endif; ?>" class="align-items-center g-0 row <?php if ($row->reverse) : ?>flex-row-reverse<?php endif; ?>">
                             <div class="content--col <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>">
-
-
                                 <?php if ($row->boxed_headline && $row->reverse) : ?>
                                     <div class="boxed-headline">
-                                        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                                            $row->boxed_topheadline,
-                                            $row->boxed_headline,
-                                            $row->boxed_subheadline,
-                                            $row->boxed_headline_type,
-                                            $this->animation_type,
-                                            null,
-                                            $row->boxed_headline_onlystyle,
-                                            "m-0 headline--wrapper"
-                                        ); ?>
+                                        <div class="boxed-headline--inner" data-animation="animate__fadeInUp">
+                                            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                $row->boxed_topheadline,
+                                                $row->boxed_headline,
+                                                $row->boxed_subheadline,
+                                                $row->boxed_headline_type,
+                                                null,
+                                                null,
+                                                $row->boxed_headline_onlystyle,
+                                                "m-0 headline--wrapper"
+                                            ); ?>
+                                        </div>
+
                                     </div>
                                 <?php endif; ?>
 
@@ -382,16 +383,19 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                     </div>
                                     <?php if ($row->boxed_headline && !$row->reverse) : ?>
                                         <div class="boxed-headline">
-                                            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                                                $row->boxed_topheadline,
-                                                $row->boxed_headline,
-                                                $row->boxed_subheadline,
-                                                $row->boxed_headline_type,
-                                                $this->animation_type,
-                                                null,
-                                                $row->boxed_headline_onlystyle,
-                                                "m-0 headline--wrapper"
-                                            ); ?>
+                                            <div class="boxed-headline--inner" data-animation="animate__fadeInUp">
+                                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                    $row->boxed_topheadline,
+                                                    $row->boxed_headline,
+                                                    $row->boxed_subheadline,
+                                                    $row->boxed_headline_type,
+                                                    null,
+                                                    null,
+                                                    $row->boxed_headline_onlystyle,
+                                                    "m-0 headline--wrapper"
+                                                ); ?>
+                                            </div>
+
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($row->content_rightcol) : ?>

@@ -1,1 +1,1 @@
-html body .ce_rsce_teaserstripe.with-bg{padding-block:calc(var(--main-gap))}@media(min-width: 992px){html body .ce_rsce_teaserstripe.with-bg{padding-block:calc(var(--main-gap) / 2)}}
+html body .ce_rsce_teaserstripe .ce--inner.with-bg .content-wrapper{padding-block:var(--main-gap)}

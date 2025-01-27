@@ -26,6 +26,7 @@
   .service-image-link {
     display: block;
     overflow: hidden;
+    border-radius: $border-radius;
 
     img {
       transition: transform 0.3s ease;
@@ -45,8 +46,17 @@
 
   .service-description {
     flex-grow: 1;
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
   }
+
+  .button-wrapper {
+    padding: 0 1.5rem 0 1.5rem;
+
+    @include media-breakpoint-up(md) {
+      padding: 0 2rem 0 2rem;
+    }
+  }
+
 
   .service-link {
     align-self: flex-start;

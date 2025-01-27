@@ -80,11 +80,6 @@ return array(
                 ),
 
 
-                'size' => array(
-                    'label' => array('Größe der Bubble inkl. Maßeinheit', 'ist immer quadratisch, daher reicht ein Wert.'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
 
 
                 'color' => array(

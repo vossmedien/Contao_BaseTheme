@@ -19,7 +19,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
             null
         ); ?>
 
-        <div class="ce--bubble-list <?php if($this->hide_circle):?>no-border<?php endif;?>"
+        <div class="ce--bubble-list <?php if ($this->hide_circle): ?>no-border<?php endif; ?>"
              <?php if ($this->backgroundcolor) : ?>style="background-color: <?php echo $this->backgroundcolor; ?>" <?php endif; ?>>
             <div class="bl--inner ">
                 <div class="bl--list">
@@ -28,7 +28,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 style="
                                         --vsm-bubblecolor: <?php if ($item->color): ?><?= $item->color; ?><?php else: ?>var(--bs-primary)<?php endif; ?>;
                                         --vsm-bubblecolor-hover: <?php if ($item->hover_color): ?><?= $item->hover_color; ?><?php else: ?>var(--bs-secondary)<?php endif; ?>;
-                                        --vsm-bubble-size: <?php if ($item->size): ?><?= $item->size; ?><?php else: ?>100px<?php endif; ?>;
+                                        --vsm-bubble-size: <?php if ($item->size): ?><?= $this->size[0]; ?>px<?php else: ?>100px<?php endif; ?>;
                                         "
 
                                 data-aos="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
@@ -40,11 +40,13 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                             <?php endif; ?>
 
                             <?php if ($item->icon || $item->img): ?>
-                                <div class="bl-i--image   <?php if (!$item->icon): ?>lazy<?php endif; ?>"
-                                    <?php if (!$item->icon): ?>
-                                        data-bg="<?= Image::get(FilesModel::findByUuid($item->img)->path, $this->size[0], $this->size[1], $this->size[2]); ?>"
+                                <div class="bl-i--image">
+
+
+                                    <?php if (!$item->icon && $item->img): ?>
+                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($item->img, '', '', $this->size, '', false, false, false, false, false); ?>
                                     <?php endif; ?>
-                                >
+
 
                                     <?php if ($item->icon): ?>
                                         <i class="<?= $item->icon; ?>"></i>

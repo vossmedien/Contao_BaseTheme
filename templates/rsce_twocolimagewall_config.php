@@ -128,6 +128,11 @@ return array(
                     'inputType' => 'text',
                 ),
 
+                'row_id' => array(
+                    'label' => array('ID für Zeile', 'z. B. für Ankernavigation'),
+                    'inputType' => 'text',
+                ),
+
 
                 'settings_1' => array(
                     'label' => array('Einstellungen', ''),
@@ -678,7 +683,7 @@ return array(
                     'label' => array('Buttons', ''),
                     'elementLabel' => '%s. Button',
                     'inputType' => 'list',
-                    'minItems' => 1,
+                    'minItems' => 0,
                     'maxItems' => 20,
                     'eval' => array('tl_class' => 'clr'),
                     'dependsOn' => array(

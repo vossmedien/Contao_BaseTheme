@@ -138,6 +138,29 @@ return array(
             ),
         ),
 
+        'right_column_image' => array(
+            'label' => array('Bild: Rechte Spalte', 'Wird in der rechten Spalte angezeigt'),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png',
+                'tl_class' => 'clr'
+            ),
+        ),
+
+        'size_right_image' => array(
+            'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
+            'inputType' => 'imageSize',
+            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+            ),
+        ),
+
         'dynamic_fontsize' => array(
             'label' => array('Schriftgröße abhängig von Bildschirmbreite skalieren', ''),
             'inputType' => 'checkbox',
@@ -149,7 +172,7 @@ return array(
             'label' => array('Buttons', ''),
             'elementLabel' => '%s. Button',
             'inputType' => 'list',
-            'minItems' => 1,
+            'minItems' => 0,
             'maxItems' => 20,
             'eval' => array('tl_class' => 'clr'),
             'fields' => ButtonHelper::getButtonConfig(),

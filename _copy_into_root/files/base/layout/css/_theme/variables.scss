@@ -97,3 +97,7 @@ $grid-breakpoints: (
         xl: 1200px,
         xxl: 1640px,
 );
+
+
+
+$form-floating-real-padding-x: calc(var(--bs-gutter-x)*.5 + #{$form-floating-padding-x});

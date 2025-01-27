@@ -27,14 +27,14 @@ document.addEventListener("DOMContentLoaded", function() {
                             : contentCol.getBoundingClientRect().right;
 
                         contentZoom.style.width = `${contentWidth}px`;
-                        contentZoom.style.marginLeft = isReverse ? '' : `${-containerLeft}px`;
+                       // contentZoom.style.marginLeft = isReverse ? '' : `${-containerLeft}px`;
                     }
 
                     if (imageZoom && imageCol) {
                         imageZoom.style.width = isReverse
                             ? `${imageCol.getBoundingClientRect().right}px`
                             : `${window.innerWidth - imageCol.getBoundingClientRect().left}px`;
-                        imageZoom.style.marginLeft = isReverse ? `${-containerLeft}px` : '';
+                       // imageZoom.style.marginLeft = isReverse ? `${-containerLeft}px` : '';
                     }
                 } else {
                     [contentZoom, imageZoom].forEach(zoom => {
