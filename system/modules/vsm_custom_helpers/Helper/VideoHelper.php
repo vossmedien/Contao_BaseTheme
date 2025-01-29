@@ -37,7 +37,8 @@ class VideoHelper
             $baseDir = dirname($filePath);
             $fileName = pathinfo($filePath, PATHINFO_FILENAME);
 
-            $formatOrder = ['webm', 'mp4', 'ogg'];
+            // WebM vor MP4 priorisieren
+            $formatOrder = ['webm', 'mp4'];
 
             foreach ($formatOrder as $format) {
                 $potentialFile = $baseDir . '/' . $fileName . '.' . $format;
@@ -69,17 +70,6 @@ class VideoHelper
         }
 
         $sourceString = implode("\n        ", $sources);
-
-        // Poster-URL für Loading vorbereiten
-        $posterAttr = '';
-        if ($posterUrl) {
-            if (preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $posterUrl)) {
-                $posterUrl = ImageHelper::generateImageURL($posterUrl);
-            }
-            $posterAttr = ($lazy ? " data-poster" : " poster") . "='$posterUrl'";
-        } elseif ($posterPath) {
-            $posterAttr = ($lazy ? " data-poster" : " poster") . "='$posterPath'";
-        }
 
         // Video-Parameter
         $videoParams = trim($videoParams);
@@ -113,12 +103,19 @@ class VideoHelper
             $structuredData['uploadDate'] = $uploadDate ?? (!$isUrl ? date('c', $fileModel->tstamp) : null);
         }
 
+        // Poster und ContentURL für Structured Data
+        $host = 'https://' . $_SERVER['HTTP_HOST'];
+
         if ($posterUrl || $posterPath) {
-            $structuredData['thumbnailUrl'] = 'https://' . $_SERVER['HTTP_HOST'] . '/' . ($posterUrl ?: $posterPath);
+            $posterSrc = $posterUrl ?: $posterPath;
+            $structuredData['thumbnailUrl'] = $host . '/' . $posterSrc;
+            $posterAttr = $lazy ? " data-poster='$posterSrc'" : " poster='$posterSrc'";
+        } else {
+            $posterAttr = '';
         }
 
         if ($mp4Path) {
-            $structuredData['contentUrl'] = 'https://' . $_SERVER['HTTP_HOST'] . '/' . $mp4Path;
+            $structuredData['contentUrl'] = $host . '/' . $mp4Path;
         }
 
         $structuredDataScript = '';
@@ -126,18 +123,39 @@ class VideoHelper
             $structuredDataScript = '<script type="application/ld+json">' . json_encode($structuredData) . '</script>';
         }
 
-        // Video-HTML mit optionalem Lazy Loading
-        $videoHtml = "<video class='$classes" . ($lazy ? " lazy" : "") . "' $videoParams$posterAttr preload='none'>
-        $sourceString
-        <p>Your browser does not support HTML5 video. Here is a <a href='$mp4Path'>link to the video</a> instead.</p>
-    </video>";
+        // Video-HTML mit content-media Wrapper
+        $videoHtml = "<div class='content-media'>\n";
+        $videoHtml .= "    <video class='" . trim("$classes" . ($lazy ? " lazy" : "")) . "' ";
+        $videoHtml .= $videoParams . $posterAttr;
+        $videoHtml .= " preload='none'";
+        if ($lazy) {
+            $videoHtml .= " data-src='$mp4Path'";
+        } else {
+            $videoHtml .= " src='$mp4Path'";
+        }
+        $videoHtml .= ">\n";
+        $videoHtml .= "        $sourceString\n";
+        $videoHtml .= "        <p>Your browser does not support HTML5 video. Here is a <a href='$mp4Path'>link to the video</a> instead.</p>\n";
+        $videoHtml .= "    </video>\n";
+        $videoHtml .= "</div>";
+
+        // Event-Trigger für dynamisches Nachladen
+        if ($lazy) {
+            $videoHtml .= "\n<script>
+                document.dispatchEvent(new CustomEvent('vsm:videoLoaded', {
+                    detail: {
+                        videoElement: document.currentScript.previousElementSibling.querySelector('video')
+                    }
+                }));
+            </script>";
+        }
 
         return $structuredDataScript . $videoHtml;
     }
 
     public static function isVideoFormat($extension)
     {
-        $videoFormats = ['mp4', 'webm', 'ogg', 'mov'];
+        $videoFormats = ['mp4', 'webm'];
         return in_array(strtolower($extension), $videoFormats);
     }
 }

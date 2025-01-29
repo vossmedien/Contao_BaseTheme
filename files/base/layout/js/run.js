@@ -68,7 +68,7 @@ const initAnimations = () => {
             delay: 0.1,
             rootMargin: '0px 0px -25% 0px',
             baseDelay: 0.1,
-            visibilityThreshold: 0.3
+            visibilityThreshold: 0.1
         },
 
         // Desktop-Konfiguration (Bildschirmbreite > 768px)
