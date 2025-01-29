@@ -20,6 +20,11 @@ form .widget:not(.form-floating) {
   }
 }
 
+.widget {
+  *[class*="col"] {
+    width: 100%;
+  }
+}
 
 .widget.form-floating {
   label {
@@ -123,9 +128,10 @@ form {
       }
     }
   }
-   textarea.form-control {
-      min-height: 140px !important;
-    }
+
+  textarea.form-control {
+    min-height: 140px !important;
+  }
 
   .widget:not(.form-floating) {
     ::placeholder {
@@ -175,8 +181,6 @@ form {
         line-height: rfs-value(50px);
       }
     }
-
-
 
 
     &.error {
@@ -271,13 +275,12 @@ form {
 }
 
 
+.form-select, .form-control {
+  //font-size: var(--bs-body-font-size);
+  box-shadow: var(--bs-input-shadow);
 
-  .form-select, .form-control {
-    //font-size: var(--bs-body-font-size);
-    box-shadow: var(--bs-input-shadow);
-
-    &:focus, &:active {
-      box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .2);
-      border-color: var(--bs-primary);
-    }
+  &:focus, &:active {
+    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .2);
+    border-color: var(--bs-primary);
   }
+}

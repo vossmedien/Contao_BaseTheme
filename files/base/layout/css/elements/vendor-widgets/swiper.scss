@@ -1,10 +1,5 @@
 .ce--content-slider{
   position: relative;
-   &:has( .swiper-button-prev){
-     @include media-breakpoint-down(md) {
-           //padding-inline: 3rem;
-     }
-  }
 }
 
 .swiper {
@@ -32,86 +27,6 @@
     }
   }
 }
-
-/*
-.slider-type-2 {
-  position: relative;
-
-  .slider-caption {
-    display: inline-block;
-    background-color: var(--bs-white);
-    color: var(--bs-body-color);
-    padding: 1.75rem;
-    width: 100%;
-    z-index: 10;
-
-    @include media-breakpoint-up(lg) {
-      position: absolute;
-      left: -80px;
-      width: auto;
-      top: calc(50% - 60px);
-      transform: translate(0%, -50%);
-    }
-  }
-
-  [class*="swiper-button-"] {
-    width: 80px;
-    height: 80px;
-    text-align: center;
-    line-height: 80px;
-    padding: 0px;
-    opacity: 1;
-    margin-top: 0px;
-    background-color: var(--bs-body-color);
-    color: var(--bs-body-color-inverse);
-    bottom: -40px;
-    top: auto;
-    border-radius: 0px;
-    left: 50%;
-    right: auto;
-    transform: translate(-90%, 0%);
-
-    @include media-breakpoint-up(md) {
-      top: calc(50% + 70px);
-      bottom: auto;
-      transform: translate(0%, -50%);
-    }
-
-    &.swiper-button-disabled {
-      color: var(--bs-light);
-    }
-  }
-
-  &.with-pagination {
-    .slider-caption {
-      @include media-breakpoint-up(md) {
-        top: calc(50% - 80px);
-      }
-    }
-
-    [class*="swiper-button-"] {
-      @include media-breakpoint-up(md) {
-        top: calc(50% + 50px);
-      }
-    }
-  }
-
-  .swiper-button-prev {
-    @include media-breakpoint-up(md) {
-      left: -80px;
-    }
-  }
-
-  .swiper-button-next {
-    margin-left: 80px;
-    @include media-breakpoint-up(md) {
-      left: 0;
-      margin-left: 0px;
-    }
-  }
-}
- */
-
 
 div:not(:has(.swiper)) {
   .swiper-lazy-preloader {

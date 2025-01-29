@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectTasksOptions">
     <enabled-global>
-      <option value="SCSS style.min.css" />
+      <option value="SCSS" />
+      <option value="CSS" />
     </enabled-global>
   </component>
 </project>
