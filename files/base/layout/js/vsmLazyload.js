@@ -1,12 +1,15 @@
-class LazyMediaLoader {
-    constructor() {
+class VSMLazyLoader {
+    constructor(options = {}) {
         this.options = {
             root: null,
             rootMargin: '100px 0px',
-            threshold: 0.01
+            threshold: 0.01,
+            excludeSelectors: [], // Slider-spezifische Ausschlüsse entfernt
+            spinnerEnabled: true,
+            timeout: 5000,
+            ...options
         };
 
-        this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         this.loadingVideos = new Map();
         this.imageObserver = null;
         this.videoObserver = null;
@@ -16,9 +19,7 @@ class LazyMediaLoader {
 
     init() {
         if (!document.body) {
-            window.addEventListener('DOMContentLoaded', () => {
-                this.init();
-            });
+            window.addEventListener('DOMContentLoaded', () => this.init());
             return;
         }
 
@@ -27,72 +28,47 @@ class LazyMediaLoader {
             this.setupVideoObserver();
             this.setupMutationObserver();
             this.observeElements();
-            this.setupSwiperListeners();
+
+            // Generischer Scroll-Event-Listener
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                if (scrollTimeout) {
+                    window.cancelAnimationFrame(scrollTimeout);
+                }
+                scrollTimeout = window.requestAnimationFrame(() => {
+                    document.querySelectorAll('img[data-src], img.lazy').forEach(img => {
+                        if (!img.classList.contains('loaded') && this.shouldHandleElement(img)) {
+                            this.imageObserver.observe(img);
+                        }
+                    });
+                });
+            }, {passive: true});
         } else {
             this.loadAllMediaDirectly();
         }
     }
 
-    setupSwiperListeners() {
-        // Globaler Event-Listener für Swiper-Events
-        document.addEventListener('swiper:slideChange', () => {
-            this.handleSwiperSlideChange();
-        });
 
-        document.addEventListener('swiper:init', () => {
-            this.handleSwiperInit();
-        });
-    }
-
-    handleSwiperInit(swiperEl) {
-        const activeSlides = swiperEl ?
-            swiperEl.querySelectorAll('.swiper-slide-active, .swiper-slide-next') :
-            document.querySelectorAll('.swiper-slide-active, .swiper-slide-next');
-
-        activeSlides.forEach(slide => {
-            const videos = slide.querySelectorAll('video[data-src], video.lazy');
-            videos.forEach(video => {
-                if (!video.classList.contains('loaded')) {
-                    this.loadVideo(video);
-                }
-            });
-        });
-    }
-
-    handleSwiperSlideChange(swiperEl) {
-        const slidesToCheck = swiperEl ?
-            swiperEl.querySelectorAll('.swiper-slide-active, .swiper-slide-next') :
-            document.querySelectorAll('.swiper-slide-active, .swiper-slide-next');
-
-        slidesToCheck.forEach(slide => {
-            const videos = slide.querySelectorAll('video[data-src], video.lazy');
-            videos.forEach(video => {
-                if (!video.classList.contains('loaded')) {
-                    this.loadVideo(video);
-                }
-            });
-        });
+    shouldHandleElement(element) {
+        return !this.options.excludeSelectors.some(selector =>
+            element.matches(selector) || element.closest(selector)
+        );
     }
 
     setupMutationObserver() {
-        // Sicherstellen, dass document.body existiert
-        if (!document.body) {
-            window.addEventListener('DOMContentLoaded', () => {
-                this.setupMutationObserver();
-            });
-            return;
-        }
-
         this.mutationObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.addedNodes.length) {
                     mutation.addedNodes.forEach((node) => {
-                        if (node.nodeType === 1) {
+                        if (node.nodeType === 1 && this.shouldHandleElement(node)) {
                             this.handleNewElement(node);
                             if (node.querySelectorAll) {
-                                node.querySelectorAll('img[data-src], video.lazy source[data-src], video[data-src], .cms-html-video-container, .content-media').forEach(element => {
-                                    this.handleNewElement(element);
-                                });
+                                node.querySelectorAll('img[data-src], video.lazy source[data-src], video[data-src], .cms-html-video-container, .content-media')
+                                    .forEach(element => {
+                                        if (this.shouldHandleElement(element)) {
+                                            this.handleNewElement(element);
+                                        }
+                                    });
                             }
                         }
                     });
@@ -103,7 +79,9 @@ class LazyMediaLoader {
         try {
             this.mutationObserver.observe(document.body, {
                 childList: true,
-                subtree: true
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style', 'class']
             });
         } catch (e) {
             console.warn('MutationObserver konnte nicht initialisiert werden:', e);
@@ -111,35 +89,17 @@ class LazyMediaLoader {
     }
 
     handleNewElement(element) {
-        // Wenn es ein Video in einem Swiper-Slide ist, überlassen wir das Laden dem Swiper-Handler
-        if (element.closest('.swiper-slide')) {
-            return;
-        }
+        if (!this.shouldHandleElement(element)) return;
 
-        const addSpinner = (target) => {
-            const existingSpinners = target.querySelectorAll('.lazy-loader-spinner');
-            existingSpinners.forEach(spinner => spinner.remove());
-            target.appendChild(this.createSpinner());
-        };
-
-        if ((element.classList.contains('cms-html-video-container') ||
-                element.classList.contains('content-media')) &&
-            !element.querySelector('.lazy-loader-spinner')) {
-            addSpinner(element);
+        if (this.options.spinnerEnabled) {
+            this.handleSpinner(element);
         }
 
         if (element.tagName.toLowerCase() === 'video' ||
             (element.tagName.toLowerCase() === 'source' && element.parentElement.tagName.toLowerCase() === 'video')) {
             const videoElement = element.tagName.toLowerCase() === 'source' ? element.parentElement : element;
 
-            // Füge Spinner nur hinzu, wenn es kein Swiper-Video ist
-            if (!videoElement.closest('.swiper-slide')) {
-                if ((videoElement.classList.contains('lazy') || videoElement.hasAttribute('data-src'))) {
-                    const container = videoElement.closest('.content-media') || videoElement.parentNode;
-                    if (!container.querySelector('.lazy-loader-spinner')) {
-                        addSpinner(container);
-                    }
-                }
+            if (videoElement.classList.contains('lazy') || videoElement.hasAttribute('data-src')) {
                 this.loadVideo(videoElement);
             }
         }
@@ -151,10 +111,42 @@ class LazyMediaLoader {
         return spinner;
     }
 
+    handleSpinner(element) {
+        if ((element.classList.contains('cms-html-video-container') ||
+                element.classList.contains('content-media')) &&
+            !element.querySelector('.lazy-loader-spinner')) {
+            this.addSpinner(element);
+        }
+    }
+
+    addSpinner(target) {
+        if (!this.options.spinnerEnabled) return;
+
+        const existingSpinners = target.querySelectorAll('.lazy-loader-spinner');
+        existingSpinners.forEach(spinner => spinner.remove());
+        target.appendChild(this.createSpinner());
+    }
+
+    removeSpinner(element) {
+        const spinners = [
+            element.closest('.content-media')?.querySelector('.lazy-loader-spinner'),
+            element.parentElement?.querySelector('.lazy-loader-spinner'),
+            element.querySelector('.lazy-loader-spinner'),
+            element.nextElementSibling?.classList.contains('lazy-loader-spinner') ?
+                element.nextElementSibling : null
+        ].filter(Boolean);
+
+        spinners.forEach(spinner => {
+            if (spinner && spinner.parentElement) {
+                spinner.parentElement.removeChild(spinner);
+            }
+        });
+    }
+
     setupImageObserver() {
         this.imageObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
+                if (entry.isIntersecting && this.shouldHandleElement(entry.target)) {
                     this.loadImage(entry.target);
                     this.imageObserver.unobserve(entry.target);
                 }
@@ -165,7 +157,7 @@ class LazyMediaLoader {
     setupVideoObserver() {
         this.videoObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting || entry.target.closest('.swiper-slide-active, .swiper-slide-next')) {
+                if (entry.isIntersecting && this.shouldHandleElement(entry.target)) {
                     this.loadVideo(entry.target);
                     this.videoObserver.unobserve(entry.target);
                 }
@@ -174,27 +166,34 @@ class LazyMediaLoader {
     }
 
     observeElements() {
-        document.querySelectorAll('.cms-html-video-container:not(:has(.lazy-loader-spinner)), .content-media:not(:has(.lazy-loader-spinner))').forEach(element => {
-            element.appendChild(this.createSpinner());
-        });
+        /*
+            if (this.options.spinnerEnabled) {
+        document.querySelectorAll('.cms-html-video-container:not(:has(.lazy-loader-spinner)), .content-media:not(:has(.lazy-loader-spinner))')
+            .forEach(element => {
+                if (this.shouldHandleElement(element)) {
+                    this.addSpinner(element);
+                }
+            });
+    }
+         */
 
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            if (!img.nextElementSibling?.classList.contains('lazy-loader-spinner')) {
-                img.parentNode.insertBefore(this.createSpinner(), img.nextSibling);
+
+        document.querySelectorAll('img[data-src], img.lazy').forEach(img => {
+            if (this.shouldHandleElement(img)) {
+                if (this.options.spinnerEnabled && !img.nextElementSibling?.classList.contains('lazy-loader-spinner')) {
+                    const spinnerContainer = img.closest('picture') || img.parentNode;
+                    spinnerContainer.appendChild(this.createSpinner());
+                }
+                this.imageObserver.observe(img);
             }
-            this.imageObserver.observe(img);
         });
 
         document.querySelectorAll('video[data-src], video.lazy').forEach(video => {
-            const isInActiveSlide = video.closest('.swiper-slide-active, .swiper-slide-next');
-            if (!video.closest('.content-media')?.querySelector('.lazy-loader-spinner')) {
-                const container = video.closest('.content-media') || video.parentNode;
-                container.appendChild(this.createSpinner());
-            }
-
-            if (isInActiveSlide) {
-                this.loadVideo(video);
-            } else {
+            if (this.shouldHandleElement(video)) {
+                if (this.options.spinnerEnabled && !video.closest('.content-media')?.querySelector('.lazy-loader-spinner')) {
+                    const container = video.closest('.content-media') || video.parentNode;
+                    this.addSpinner(container);
+                }
                 this.videoObserver.observe(video);
             }
         });
@@ -202,36 +201,54 @@ class LazyMediaLoader {
 
     loadImage(img) {
         return new Promise((resolve, reject) => {
-            const src = img.dataset.src;
-            const srcset = img.dataset.srcset;
-
-            if (!src && !srcset) {
-                reject(new Error('No source found'));
+            // Prüfen ob das Bild bereits geladen wird
+            if (img.classList.contains('loading')) {
                 return;
             }
+            img.classList.add('loading');
 
-            if (src) {
-                img.src = src;
+            // Sources in picture Element laden
+            if (img.closest('picture')) {
+                const sources = img.closest('picture').querySelectorAll('source[data-srcset]');
+                sources.forEach(source => {
+                    if (source.dataset.srcset) {
+                        source.srcset = source.dataset.srcset;
+                        source.removeAttribute('data-srcset');
+                    }
+                });
+            }
+
+            // Haupt-Bild laden
+            if (img.dataset.srcset) {
+                img.srcset = img.dataset.srcset;
+                img.removeAttribute('data-srcset');
+            }
+            if (img.dataset.src) {
+                img.src = img.dataset.src;
                 img.removeAttribute('data-src');
             }
 
-            if (srcset) {
-                img.srcset = srcset;
-                img.removeAttribute('data-srcset');
-            }
-
-            img.onload = () => {
+            const handleLoad = () => {
+                img.classList.remove('loading');
+                img.classList.remove('lazy');
                 img.classList.add('loaded');
-                const nextSibling = img.nextElementSibling;
-                if (nextSibling?.classList.contains('lazy-loader-spinner')) {
-                    nextSibling.remove();
-                }
+                this.removeSpinner(img);
                 resolve();
             };
 
-            img.onerror = (error) => {
+            const handleError = (error) => {
+                img.classList.remove('loading');
+                console.error('Fehler beim Laden des Bildes:', error);
+                this.removeSpinner(img);
                 reject(error);
             };
+
+            if (img.complete) {
+                handleLoad();
+            } else {
+                img.addEventListener('load', handleLoad, {once: true});
+                img.addEventListener('error', handleError, {once: true});
+            }
         });
     }
 
@@ -252,39 +269,27 @@ class LazyMediaLoader {
             video.removeAttribute('data-src');
         }
 
-        const sources = video.querySelectorAll('source[data-src]');
-        sources.forEach(source => {
+        video.querySelectorAll('source[data-src]').forEach(source => {
             source.src = source.dataset.src;
             source.removeAttribute('data-src');
         });
 
-        const loadPromise = new Promise((resolve, reject) => {
-            const removeSpinner = () => {
-                const spinners = [
-                    video.closest('.content-media')?.querySelector('.lazy-loader-spinner'),
-                    video.parentElement?.querySelector('.lazy-loader-spinner'),
-                    video.querySelector('.lazy-loader-spinner'),
-                    video.nextElementSibling?.classList.contains('lazy-loader-spinner') ? video.nextElementSibling : null
-                ].filter(Boolean);
-
-                spinners.forEach(spinner => {
-                    if (spinner && spinner.parentElement) {
-                        spinner.parentElement.removeChild(spinner);
-                    }
-                });
+        return new Promise((resolve, reject) => {
+            const cleanup = () => {
+                this.removeSpinner(video);
+                this.loadingVideos.delete(video);
             };
 
             const success = () => {
+                video.classList.remove('lazy');
                 video.classList.add('loaded');
-                removeSpinner();
-                this.loadingVideos.delete(video);
+                cleanup();
                 resolve();
             };
 
             const error = (e) => {
                 console.error('Video load error:', e);
-                removeSpinner();
-                this.loadingVideos.delete(video);
+                cleanup();
                 this.showVideoFallback(video);
                 reject(e);
             };
@@ -296,45 +301,30 @@ class LazyMediaLoader {
 
             video.addEventListener('error', error, {once: true});
 
+            // Timeout-Handler
             setTimeout(() => {
                 if (this.loadingVideos.has(video)) {
                     successEvents.forEach(event => {
                         video.removeEventListener(event, success);
                     });
                     video.removeEventListener('error', error);
-                    this.loadingVideos.delete(video);
-                    removeSpinner();
+                    cleanup();
                 }
-            }, 5000);
-        });
+            }, this.options.timeout);
 
-        video.load();
+            video.load();
 
-        if (video.hasAttribute('autoplay')) {
-            loadPromise.then(() => {
+            if (video.hasAttribute('autoplay')) {
                 video.play().catch(() => {
                     video.muted = true;
-                    video.play().catch(e => console.warn('Muted autoplay failed:', e));
+                    video.play().catch(console.warn);
                 });
-            });
-        }
-
-        return loadPromise;
+            }
+        });
     }
 
     showVideoFallback(video) {
-        const spinners = [
-            video.closest('.content-media')?.querySelector('.lazy-loader-spinner'),
-            video.parentElement?.querySelector('.lazy-loader-spinner'),
-            video.querySelector('.lazy-loader-spinner'),
-            video.nextElementSibling?.classList.contains('lazy-loader-spinner') ? video.nextElementSibling : null
-        ].filter(Boolean);
-
-        spinners.forEach(spinner => {
-            if (spinner && spinner.parentElement) {
-                spinner.parentElement.removeChild(spinner);
-            }
-        });
+        this.removeSpinner(video);
 
         const container = video.closest('.content-media') || video.parentNode;
         const existingFallback = container.querySelector('.video-fallback');
@@ -367,10 +357,15 @@ class LazyMediaLoader {
 
     loadAllMediaDirectly() {
         document.querySelectorAll('img[data-src]').forEach(img => {
-            this.loadImage(img);
+            if (this.shouldHandleElement(img)) {
+                this.loadImage(img);
+            }
         });
+
         document.querySelectorAll('video[data-src], video.lazy').forEach(video => {
-            this.loadVideo(video);
+            if (this.shouldHandleElement(video)) {
+                this.loadVideo(video);
+            }
         });
     }
 
@@ -391,18 +386,17 @@ class LazyMediaLoader {
 
 // Namespace und Initialisierung
 window.VSM = window.VSM || {};
-window.VSM.lazyMediaLoader = new LazyMediaLoader();
+window.VSM.lazyLoader = new VSMLazyLoader();
 
-// Für Abwärtskompatibilität
+// Abwärtskompatibilität
 window.VSM.lazyLoadInstance = {
-    update: function () {
-        // Leere Methode für Kompatibilität
+    update: () => {
     }
 };
 
 // Event-Listener für dynamisch nachgeladene Videos
 document.addEventListener('vsm:videoLoaded', function (e) {
-    if (window.VSM.lazyMediaLoader) {
-        window.VSM.lazyMediaLoader.handleNewElement(e.detail.videoElement);
+    if (window.VSM.lazyLoader && e.detail.videoElement) {
+        window.VSM.lazyLoader.handleNewElement(e.detail.videoElement);
     }
 });

@@ -1,13 +1,27 @@
 import {setupFunctions, resetCookies} from "./cookieManager.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Namespace erstellen
     window.VSM = window.VSM || {};
 
-    // Prüfen ob LazyMediaLoader bereits existiert
-    if (!window.VSM.lazyMediaLoader) {
-        window.VSM.lazyMediaLoader = new LazyMediaLoader();
+    // Haupt-Instanz erstellen
+    if (!window.VSM.lazyLoader) {
+        window.VSM.lazyLoader = new VSMLazyLoader({
+            excludeSelectors: ['.swiper-slide']
+        });
     }
+
+    // Slider-Instanz erstellen
+    if (!window.VSM.sliderMediaLoader) {
+        window.VSM.sliderMediaLoader = new VSMSliderMediaLoader();
+    }
+
+    // Alias für Abwärtskompatibilität
+    window.VSM.lazyMediaLoader = window.VSM.lazyLoader;
+
+    // LazyLoadInstance für alte API-Kompatibilität
+    window.VSM.lazyLoadInstance = {
+        update: () => {}
+    };
 });
 
 window.addEventListener("cookiebar_save", setupFunctions);
