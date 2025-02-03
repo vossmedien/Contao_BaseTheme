@@ -23,7 +23,8 @@
     <!-- Preload critical CSS -->
     <link rel="preload" href="files/base/layout/css/style.min.css" as="style">
     <link rel="stylesheet" href="files/base/layout/css/style.min.css">
-
+    <link rel="preload" href="files/base/layout/css/_theme/root-variables.min.css" as="style">
+    <link rel="stylesheet" href="files/base/layout/css/_theme/root-variables.min.css">
     <?= $this->mooScripts ?>
     <?= $this->head ?>
     <?php $this->endblock(); ?>
