@@ -4,7 +4,6 @@
 
 @import "../../_theme/variables";
 
-
 .filter-bubbles {
   display: flex;
   flex-wrap: wrap;
@@ -71,7 +70,6 @@
     .video-placeholder {
       width: 50%;
       height: 175px;
-      opacity: 0;
       transition: opacity 0.5s ease;
       will-change: opacity;
 
@@ -144,6 +142,13 @@
     display: inline-block;
     position: relative;
 
+    @include media-breakpoint-down(md) {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      left: 50%;
+      top: 50%;
+    }
+
     .play-button {
       width: 35px;
       height: 35px;
@@ -206,11 +211,10 @@
           }
         }
 
-        /* Schwarzweiß-Effekt beim Hover */
         img,
         video {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-   filter: grayscale(100%) contrast(125%) brightness(95%);
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          filter: grayscale(100%) contrast(125%) brightness(95%);
         }
 
         .video-info {
@@ -243,8 +247,6 @@
       }
     }
 
-
-    /* Angepasstes Overlay */
     .video-info {
       position: absolute;
       left: 0;
@@ -257,15 +259,13 @@
       flex-flow: column wrap;
       justify-content: center;
       align-items: center;
-      background: rgba(var(--bs-primary-rgb), 0.45); /* reduzierte Deckkraft von 0.75 auf 0.55 */
+      background: rgba(var(--bs-primary-rgb), 0.45);
       opacity: 0;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(4px); /* reduzierter Blur-Effekt von 8px auf 4px */
+      backdrop-filter: blur(4px);
       transform: translateZ(20px);
       z-index: 4;
     }
-
-
   }
 
   // Desktop styles
@@ -314,23 +314,28 @@
     }
 
     .video-column {
-      height: 100%;
+      position: relative;
+      overflow: hidden;
 
-      .swiper {
+      .scroll-content {
+        position: relative;
+        width: 100%;
         height: 100%;
+      }
 
-        &-wrapper {
-          transition-timing-function: linear;
-        }
+      .video-item {
+        position: absolute;
+        width: 100%;
+        will-change: transform;
+      }
+    }
 
-        &-slide {
-          height: 350px !important;
-          transition: opacity .3s ease-in-out;
+    .video-item {
+      height: 350px !important;
+      transition: opacity .3s ease-in-out;
 
-          &.filtered-hidden {
-            opacity: 0.15;
-          }
-        }
+      &.filtered-hidden {
+        opacity: 0.15;
       }
     }
   }
@@ -342,53 +347,28 @@
       padding: 10px;
     }
   }
-
-  @include media-breakpoint-up(xxl) {
-
-    .swiper-slide {
-      /*
-      height: 450px !important;
-
-      @include media-breakpoint-up(xl) {
-        height: 500px !important;
-      }
-
-      @include media-breakpoint-up(xxl) {
-        height: 550px !important;
-      }
-      */
-    }
-  }
 }
 
 .lazy-video-container {
   position: relative;
   height: 100%;
   background: #000;
+  border-radius: var(--bs-border-radius);
 }
 
 .video-placeholder {
-  opacity: 0;
   transition: opacity 0.5s ease;
   will-change: opacity;
 }
 
-.video-item {
-  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
-  will-change: transform, box-shadow;
-}
-
-
+// Grid-Spalten Konfiguration
 .ce_rsce_videogrid {
   .video-columns {
     @include media-breakpoint-up(lg) {
-
-      // Default
       grid-template-columns: repeat(3, 1fr);
     }
   }
 
-  // Spezifische Spaltenanzahlen
   &.columns-3 {
     .video-columns {
       @include media-breakpoint-up(lg) {
@@ -399,7 +379,6 @@
 
   &.columns-4 {
     .video-columns {
-
       @include media-breakpoint-up(lg) {
         grid-template-columns: repeat(3, 1fr);
       }
@@ -409,4 +388,9 @@
       }
     }
   }
+}
+
+// Utility-Klassen für das Scrolling
+.scroll-paused {
+  animation-play-state: paused !important;
 }

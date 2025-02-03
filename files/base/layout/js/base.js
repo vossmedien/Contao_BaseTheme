@@ -1,9 +1,14 @@
 import {setupFunctions, resetCookies} from "./cookieManager.js";
 
-// Namespace erstellen (falls noch nicht vorhanden)
-window.VSM = window.VSM || {};
-// LazyLoad-Instanz dem Namespace hinzufügen
-window.VSM.lazyLoadInstance = new LazyLoad({});
+document.addEventListener('DOMContentLoaded', () => {
+    // Namespace erstellen
+    window.VSM = window.VSM || {};
+
+    // Prüfen ob LazyMediaLoader bereits existiert
+    if (!window.VSM.lazyMediaLoader) {
+        window.VSM.lazyMediaLoader = new LazyMediaLoader();
+    }
+});
 
 window.addEventListener("cookiebar_save", setupFunctions);
 const btn = document.querySelector(".reset-cookies");

@@ -17,19 +17,28 @@ document.addEventListener('DOMContentLoaded', function () {
         // Helper function to check if we're on mobile
         const isMobile = () => window.innerWidth < 992;
 
-        function filterSlides(activeFilters) {
-            const slides = targetGrid.querySelectorAll('.swiper-slide');
-            slides.forEach(slide => {
-                const schwerpunkte = slide.dataset.schwerpunkte?.split(' ') || [];
+        function filterItems(activeFilters) {
+            const items = targetGrid.querySelectorAll('.video-item');
+            items.forEach(item => {
+                const parentSlide = item.closest('[data-schwerpunkte]');
+                const schwerpunkte = parentSlide?.dataset.schwerpunkte?.split(' ') || [];
                 const shouldShow = activeFilters.size === 0 ||
                     schwerpunkte.some(s => activeFilters.has(s));
 
                 if (isMobile()) {
-                    slide.classList.toggle('d-none', !shouldShow);
+                    item.classList.toggle('d-none', !shouldShow);
                 } else {
-                    slide.classList.toggle('filtered-hidden', !shouldShow);
+                    item.classList.toggle('filtered-hidden', !shouldShow);
                 }
             });
+
+            // Aktualisiere die Scroll-Container
+            if (!isMobile()) {
+                targetGrid.querySelectorAll('.scroll-wrapper').forEach(wrapper => {
+                    const visibleItems = wrapper.querySelectorAll('.video-item:not(.filtered-hidden)');
+                    wrapper.classList.toggle('empty-column', visibleItems.length === 0);
+                });
+            }
         }
 
         // Desktop Filter Bubbles
@@ -70,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
 
-                filterSlides(activeFilters);
+                filterItems(activeFilters);
             });
         });
 
@@ -95,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-                filterSlides(activeFilters);
+                filterItems(activeFilters);
             });
         }
 
@@ -104,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
-                filterSlides(activeFilters);
+                filterItems(activeFilters);
             }, 250);
         });
     });

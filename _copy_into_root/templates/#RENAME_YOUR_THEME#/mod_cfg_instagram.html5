@@ -76,46 +76,79 @@ $imgSize = unserialize($this->imgSize);
         </div>
     </div>
 <?php endforeach; ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            new VenoBox({
-                selector: '.venobox',
-                numeration: true,
-                infinigall: true,
-                share: false,
-                navTouch: false,
-                spinner: 'rotating-plane',
-                maxWidth: '80%',
-                bgcolor: 'rgba(0,0,0,.75)',
-                onContentLoaded: function () {
-                    const venoboxContainer = document.querySelector('.vbox-content');
-                    if (venoboxContainer) {
-                        // LazyLoad über den Namespace aufrufen
-                        window.VSM.lazyLoadInstance.update();
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        new VenoBox({
+            selector: '.venobox',
+            numeration: true,
+            infinigall: true,
+            share: false,
+            navTouch: false,
+            spinner: 'rotating-plane',
+            maxWidth: '80%',
+            bgcolor: 'rgba(0,0,0,.75)',
+            onContentLoaded: function () {
+                const venoboxContainer = document.querySelector('.vbox-content');
+                if (!venoboxContainer) return;
 
-                        const video = venoboxContainer.querySelector('video');
-                        if (video) {
-                            if (video.readyState >= 2) {
-                                video.play().catch(e => console.error("Error playing video:", e));
-                            } else {
-                                video.addEventListener('loadeddata', function () {
-                                    video.play().catch(e => console.error("Error playing video:", e));
-                                }, {once: true});
-                            }
-                        }
+                // Finde alle Medien-Elemente, die lazy geladen werden sollen
+                const mediaElements = venoboxContainer.querySelectorAll('img[data-src], video[data-src], video.lazy');
+
+                // Benachrichtige den LazyMediaLoader über neue Elemente
+                mediaElements.forEach(element => {
+                    if (window.VSM && window.VSM.lazyMediaLoader) {
+                        window.VSM.lazyMediaLoader.handleNewElement(element);
                     }
-                },
-                onPreClose: function () {
-                    const venoboxContainer = document.querySelector('.vbox-content');
-                    if (venoboxContainer) {
-                        const video = venoboxContainer.querySelector('video');
-                        if (video) {
-                            video.pause();
-                            video.currentTime = 0;
+                });
+
+                // Videobehandlung
+                const video = venoboxContainer.querySelector('video');
+                if (video) {
+                    // Warte auf Video-Bereitschaft
+                    const playVideo = () => {
+                        if (video.readyState >= 2) {
+                            video.play().catch(e => console.error("Error playing video:", e));
+                        } else {
+                            video.addEventListener('loadeddata', function () {
+                                video.play().catch(e => console.error("Error playing video:", e));
+                            }, {once: true});
                         }
+                    };
+
+                    // Wenn das Video bereits geladen ist
+                    if (video.classList.contains('loaded')) {
+                        playVideo();
+                    } else {
+                        // Warte auf das Laden durch den LazyMediaLoader
+                        const observer = new MutationObserver((mutations) => {
+                            mutations.forEach((mutation) => {
+                                if (mutation.type === 'attributes' &&
+                                    mutation.attributeName === 'class' &&
+                                    video.classList.contains('loaded')) {
+                                    playVideo();
+                                    observer.disconnect();
+                                }
+                            });
+                        });
+
+                        observer.observe(video, {
+                            attributes: true,
+                            attributeFilter: ['class']
+                        });
                     }
                 }
-            });
+            },
+            onPreClose: function () {
+                const venoboxContainer = document.querySelector('.vbox-content');
+                if (venoboxContainer) {
+                    const video = venoboxContainer.querySelector('video');
+                    if (video) {
+                        video.pause();
+                        video.currentTime = 0;
+                    }
+                }
+            }
         });
-    </script>
+    });
+</script>
 <?php $this->endblock(); ?>

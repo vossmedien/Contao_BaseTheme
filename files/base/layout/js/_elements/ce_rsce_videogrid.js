@@ -1,41 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Globaler Cache für Video-HTML
     const videoCache = new Map();
-
-    const lazyLoadConfig = {
-        elements_selector: ".lazy",
-        threshold: 300,
-        callback_loading: (element) => {
-            if (element.tagName === 'VIDEO') {
-                const placeholder = element.closest('.video-placeholder');
-                if (placeholder && !placeholder.dataset.opacitySet) {
-                    placeholder.style.opacity = '0';
-                    placeholder.dataset.opacitySet = 'true';
-                }
-            }
-        },
-        callback_loaded: (element) => {
-            if (element.tagName === 'VIDEO') {
-                const placeholder = element.closest('.video-placeholder');
-                if (placeholder) {
-                    setTimeout(() => {
-                        element.play().catch(console.error);
-                        requestAnimationFrame(() => {
-                            placeholder.style.opacity = '1';
-                        });
-                    }, 750);
-                }
-            }
-        },
-        callback_error: (element) => {
-            if (element.tagName === 'VIDEO') {
-                const placeholder = element.closest('.video-placeholder');
-                if (placeholder) {
-                    placeholder.style.opacity = '1';
-                }
-            }
-        }
-    };
+    const loadedContainers = new WeakSet();
 
     function init3DEffect(container) {
         if (!window.matchMedia('(min-width: 1024px)').matches) return;
@@ -49,38 +14,42 @@ document.addEventListener('DOMContentLoaded', function () {
                 const rotateX = (y - rect.height / 2) / 10;
                 const rotateY = (rect.width / 2 - x) / 10;
 
-                item.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.0) translateZ(20px)`;
+                // Bestehende translateY-Transformation beibehalten
+                const currentTranslateY = item.style.transform?.match(/translateY\(([^)]+)\)/)?.[1] || '0px';
+
+                item.style.transform = `translateY(${currentTranslateY}) perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.0) translateZ(20px)`;
                 item.style.boxShadow = `${-rotateY / 2}px ${rotateX / 2}px 20px rgba(0,0,0,0.2)`;
             };
 
             const handleMouseLeave = () => {
-                item.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1) translateZ(0)';
+                // Bestehende translateY-Transformation beibehalten
+                const currentTranslateY = item.style.transform?.match(/translateY\(([^)]+)\)/)?.[1] || '0px';
+                item.style.transform = `translateY(${currentTranslateY})`;
                 item.style.boxShadow = 'none';
             };
 
             item.addEventListener('mousemove', handleMouseMove);
             item.addEventListener('mouseleave', handleMouseLeave);
-            item.style.transition = 'transform 0.1s ease-out, box-shadow 0.1s ease-out';
         });
     }
 
-    async function loadVideo(container, lazyLoadInstance) {
+    async function loadVideo(container) {
         if (!container || container.dataset.videoLoaded === 'true') return;
 
         const lazyContainer = container.querySelector('.lazy-video-container');
         if (!lazyContainer) return;
 
         const params = lazyContainer.dataset.videoParams;
-
-        // Prüfe Cache
-        if (videoCache.has(params)) {
-            lazyContainer.innerHTML = videoCache.get(params);
-            container.dataset.videoLoaded = 'true';
-            lazyLoadInstance?.update();
-            return;
-        }
+        if (!params) return;
 
         try {
+            if (videoCache.has(params)) {
+                lazyContainer.innerHTML = videoCache.get(params);
+                container.dataset.videoLoaded = 'true';
+                initVideoAfterLoad(lazyContainer);
+                return;
+            }
+
             const response = await fetch('/video/render', {
                 method: 'POST',
                 headers: {
@@ -90,172 +59,174 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: params
             });
 
-            if (response.ok) {
-                const html = await response.text();
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const html = await response.text();
+            if (html) {
                 videoCache.set(params, html);
                 lazyContainer.innerHTML = html;
                 container.dataset.videoLoaded = 'true';
-                lazyLoadInstance?.update();
+                initVideoAfterLoad(lazyContainer);
             }
         } catch (error) {
-            console.error('Error loading video:', error);
+            console.error('Fehler beim Laden des Videos:', error);
+            container.dataset.videoLoaded = 'false';
         }
     }
 
-    function initVerticalSlider(container) {
-        if (!container || container.dataset.initialized === 'true') return;
+    function initVideoAfterLoad(container) {
+        const video = container.querySelector('video');
+        if (!video) return;
 
-        const gridLazyLoad = new LazyLoad({
-            ...lazyLoadConfig,
-            container: container
+        if (video.dataset.src) {
+            video.src = video.dataset.src;
+            video.removeAttribute('data-src');
+        }
+
+        const sources = video.querySelectorAll('source[data-src]');
+        sources.forEach(source => {
+            source.src = source.dataset.src;
+            source.removeAttribute('data-src');
         });
 
-        const loadedContainers = new WeakSet();
-        const isDesktop = window.matchMedia('(min-width: 769px)').matches;
+        if (video.dataset.poster) {
+            video.poster = video.dataset.poster;
+        }
 
-        function loadSlideVideo(slide, force = false) {
-            if (!slide) return false;
-            const container = slide.querySelector('.video-preview');
-            if (!container || loadedContainers.has(container)) return false;
+        video.load();
 
-            const isVisible = force || slide.classList.contains('swiper-slide-visible');
-            if (!isVisible) return false;
-
-            requestAnimationFrame(() => {
-                loadVideo(container, gridLazyLoad);
-                loadedContainers.add(container);
+        if (video.autoplay) {
+            video.play().catch(e => {
+                console.warn('AutoPlay fehlgeschlagen, versuche mit muted:', e);
+                video.muted = true;
+                video.play().catch(e => console.warn('Auch muted AutoPlay fehlgeschlagen:', e));
             });
-
-            return true;
         }
 
-        if (isDesktop) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const column = entry.target;
-                    const swiper = column.swiper;
-                    if (!swiper) return;
-
-                    if (entry.isIntersecting) {
-                        swiper.autoplay.start();
-                        const visibleSlides = Array.from(swiper.slides)
-                            .filter(slide => slide.classList.contains('swiper-slide-visible'));
-                        visibleSlides.forEach(slide => loadSlideVideo(slide));
-                    } else {
-                        swiper.autoplay.stop();
-                    }
-                });
-            }, {threshold: 0.1});
-
-            container.querySelectorAll('.swiper').forEach((column, index) => {
-    console.log(`Initialisiere Swiper Spalte ${index}`);
-
-    const swiper = new Swiper(column, {
-        direction: 'vertical',
-        loop: true,
-
-        spaceBetween: 0,
-        speed: 50000,
-        preloadImages: false,
-        watchSlidesProgress: true,
-                loopedSlides: 5, // Anpassung: Setze auf die Gesamtanzahl der Slides
-        slidesPerView: 4,
-        lazy: {
-            loadPrevNext: true,
-            loadPrevNextAmount: 1,
-            loadOnTransitionStart: true
-        },
-        autoplay: {
-            delay: 0,
-            disableOnInteraction: false,
-            reverseDirection: (index % 2) === 1
-        },
-        allowTouchMove: false,
-        observer: true,
-        observeParents: true,
-        on: {
-            init: function(swiper) {
-                console.log('Swiper Init', {
-                    totalSlides: swiper.slides.length,
-                    activeIndex: swiper.activeIndex,
-                    realIndex: swiper.realIndex,
-                    slidesPerView: swiper.params.slidesPerView,
-                    columnIndex: index
-                });
-
-                // Lade nur die initial sichtbaren Slides
-                const visibleSlides = Array.from(swiper.slides)
-                    .slice(swiper.activeIndex, swiper.activeIndex + swiper.params.slidesPerView);
-
-                console.log(`Lade ${visibleSlides.length} sichtbare Slides für Spalte ${index}`);
-                visibleSlides.forEach(slide => {
-                    loadSlideVideo(slide, true);
-                });
-
-                init3DEffect(column);
-            },
-            slideChange: function(swiper) {
-                // Lade das nächste Slide vorausschauend
-                const direction = swiper.params.autoplay.reverseDirection ? -1 : 1;
-                const nextIndex = (swiper.activeIndex + (direction * swiper.params.slidesPerView)) % swiper.slides.length;
-                const nextSlide = swiper.slides[nextIndex];
-
-                if (nextSlide) {
-                    loadSlideVideo(nextSlide);
-                }
-
-                // Prüfe und lade fehlende sichtbare Slides nach
-                const currentVisibleSlides = Array.from(swiper.slides)
-                    .slice(swiper.activeIndex, swiper.activeIndex + swiper.params.slidesPerView);
-
-                currentVisibleSlides.forEach(slide => {
-                    loadSlideVideo(slide);
-                });
-            },
-            reachEnd: function(swiper) {
-                // Stelle sicher, dass der Loop funktioniert
-                if (swiper.params.loop) {
-                    swiper.slideToLoop(0, 0);
-                }
-            }
+        if (window.VSM && window.VSM.lazyMediaLoader) {
+            video.classList.add('lazy-handled', 'loaded');
+            document.dispatchEvent(new CustomEvent('vsm:videoLoaded', {
+                detail: {videoElement: video}
+            }));
         }
-    });
-
-    observer.observe(column);
-});
-        } else {
-            const mobileList = container.querySelector('.video-list');
-            if (mobileList) {
-                const videoObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const container = entry.target;
-                            if (!loadedContainers.has(container)) {
-                                loadVideo(container, gridLazyLoad);
-                                loadedContainers.add(container);
-                            }
-                            videoObserver.unobserve(container);
-                        }
-                    });
-                }, {
-                    rootMargin: '50px 0px',
-                    threshold: 0.1
-                });
-
-                mobileList.querySelectorAll('.video-preview').forEach(container => {
-                    videoObserver.observe(container);
-                });
-            }
-        }
-
-        container.dataset.initialized = 'true';
     }
 
-    // Init Observer für alle .ce_rsce_videogrid Elemente
+function initInfiniteScroll(container) {
+    if (!container || container.dataset.initialized === 'true') return;
+
+    // Nur für Desktop initialisieren (ab 768px)
+    if (!window.matchMedia('(min-width: 768px)').matches) {
+        // Für Mobile nur Videos laden
+        container.querySelectorAll('.video-preview').forEach(preview => {
+            if (!loadedContainers.has(preview)) {
+                loadVideo(preview);
+                loadedContainers.add(preview);
+            }
+        });
+        return;
+    }
+
+    container.querySelectorAll('.video-column').forEach((column, index) => {
+        const scrollContent = column.querySelector('.scroll-content');
+        if (!scrollContent) return;
+
+        // Berechne sichtbare Items
+        const columnHeight = column.offsetHeight;
+        const items = Array.from(scrollContent.querySelectorAll('.video-item'));
+        const itemHeight = items[0].offsetHeight;
+        const visibleItems = Math.ceil(columnHeight / itemHeight);
+
+        // Nur so viele Items duplizieren wie nötig (visibleItems + 2 für smooth transition)
+        const neededItems = visibleItems + 2;
+        while (items.length < neededItems) {
+            const clonedItems = items.slice(0, Math.min(items.length, neededItems - items.length)).map(item => {
+                const clone = item.cloneNode(true);
+                scrollContent.appendChild(clone);
+                return clone;
+            });
+            items.push(...clonedItems);
+        }
+
+        // Alle Videos laden
+        scrollContent.querySelectorAll('.video-preview').forEach(preview => {
+            if (!loadedContainers.has(preview)) {
+                loadVideo(preview);
+                loadedContainers.add(preview);
+            }
+        });
+
+        let currentScroll = 0;
+        const speed = 0.2;
+        const direction = index % 2 === 0 ? 1 : -1;
+        let isPaused = false;
+        let animationFrameId = null;
+
+        function animate() {
+            if (!isPaused) {
+                currentScroll += speed * direction;
+                items.forEach(item => {
+                    let itemPosition = parseFloat(item.style.transform?.match(/translateY\(([^)]+)\)/)?.[1] || 0);
+                    itemPosition -= speed * direction;
+
+                    // Wenn ein Element aus dem Viewport verschwindet
+                    if (direction > 0) {
+                        if (itemPosition < -itemHeight) {
+                            itemPosition = columnHeight;
+                        }
+                    } else {
+                        if (itemPosition > columnHeight) {
+                            itemPosition = -itemHeight;
+                        }
+                    }
+
+                    // Bestehende 3D-Transformationen beibehalten
+                    const current3DTransform = item.style.transform?.match(/(perspective.*$)/) || [''];
+                    item.style.transform = `translateY(${itemPosition}px) ${current3DTransform[0]}`;
+                });
+            }
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        // Initiale Positionen setzen
+        items.forEach((item, i) => {
+            item.style.position = 'absolute';
+            item.style.top = '0';
+            item.style.left = '0';
+            item.style.width = '100%';
+            item.style.transform = `translateY(${i * itemHeight}px)`;
+        });
+
+        // Hover-Effekte
+        column.addEventListener('mouseenter', () => {
+            isPaused = true;
+        });
+
+        column.addEventListener('mouseleave', () => {
+            isPaused = false;
+        });
+
+        // 3D-Effekt initialisieren
+        init3DEffect(column);
+
+        // Animation starten
+        animate();
+
+        // Cleanup für Animation bei Unmount
+        column.cleanup = () => {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+        };
+    });
+
+    container.dataset.initialized = 'true';
+}
+
+    // Intersection Observer für lazy loading
     const gridObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                initVerticalSlider(entry.target);
+                initInfiniteScroll(entry.target);
             }
         });
     }, {
@@ -263,44 +234,16 @@ document.addEventListener('DOMContentLoaded', function () {
         threshold: 0.1
     });
 
+    // Alle Video-Grids initialisieren
     document.querySelectorAll('.ce_rsce_videogrid').forEach(grid => {
         gridObserver.observe(grid);
     });
 
-    // Optimierter Resize Handler
-    const debouncedResize = debounce(() => {
-        document.querySelectorAll('.ce_rsce_videogrid').forEach(container => {
-            if (container.dataset.initialized === 'true') {
-                const swipers = container.querySelectorAll('.swiper');
-                swipers.forEach(column => {
-                    if (column.swiper) {
-                        column.swiper.update();
-                    }
-                });
-            }
-        });
-    }, 250);
-
-    window.addEventListener('resize', debouncedResize);
-
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
-
-    // Cleanup-Funktion für den Cache
+    // Cache aufräumen
     function cleanupCache() {
         videoCache.clear();
     }
 
-    // Cache leeren wenn Seite nicht sichtbar
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
             cleanupCache();

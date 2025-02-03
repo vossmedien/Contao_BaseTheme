@@ -15,6 +15,13 @@ class LazyMediaLoader {
     }
 
     init() {
+        if (!document.body) {
+            window.addEventListener('DOMContentLoaded', () => {
+                this.init();
+            });
+            return;
+        }
+
         if ('IntersectionObserver' in window) {
             this.setupImageObserver();
             this.setupVideoObserver();
@@ -27,22 +34,21 @@ class LazyMediaLoader {
     }
 
     setupSwiperListeners() {
+        // Globaler Event-Listener für Swiper-Events
         document.addEventListener('swiper:slideChange', () => {
             this.handleSwiperSlideChange();
         });
 
-        document.querySelectorAll('.swiper').forEach(swiperEl => {
-            swiperEl.addEventListener('slideChange', () => {
-                this.handleSwiperSlideChange(swiperEl);
-            });
-            swiperEl.addEventListener('init', () => {
-                this.handleSwiperInit(swiperEl);
-            });
+        document.addEventListener('swiper:init', () => {
+            this.handleSwiperInit();
         });
     }
 
     handleSwiperInit(swiperEl) {
-        const activeSlides = swiperEl.querySelectorAll('.swiper-slide-active, .swiper-slide-next');
+        const activeSlides = swiperEl ?
+            swiperEl.querySelectorAll('.swiper-slide-active, .swiper-slide-next') :
+            document.querySelectorAll('.swiper-slide-active, .swiper-slide-next');
+
         activeSlides.forEach(slide => {
             const videos = slide.querySelectorAll('video[data-src], video.lazy');
             videos.forEach(video => {
@@ -69,28 +75,47 @@ class LazyMediaLoader {
     }
 
     setupMutationObserver() {
+        // Sicherstellen, dass document.body existiert
+        if (!document.body) {
+            window.addEventListener('DOMContentLoaded', () => {
+                this.setupMutationObserver();
+            });
+            return;
+        }
+
         this.mutationObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.addedNodes.length) {
                     mutation.addedNodes.forEach((node) => {
                         if (node.nodeType === 1) {
                             this.handleNewElement(node);
-                            node.querySelectorAll('img[data-src], video.lazy source[data-src], video[data-src], .cms-html-video-container, .content-media').forEach(element => {
-                                this.handleNewElement(element);
-                            });
+                            if (node.querySelectorAll) {
+                                node.querySelectorAll('img[data-src], video.lazy source[data-src], video[data-src], .cms-html-video-container, .content-media').forEach(element => {
+                                    this.handleNewElement(element);
+                                });
+                            }
                         }
                     });
                 }
             });
         });
 
-        this.mutationObserver.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
+        try {
+            this.mutationObserver.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        } catch (e) {
+            console.warn('MutationObserver konnte nicht initialisiert werden:', e);
+        }
     }
 
     handleNewElement(element) {
+        // Wenn es ein Video in einem Swiper-Slide ist, überlassen wir das Laden dem Swiper-Handler
+        if (element.closest('.swiper-slide')) {
+            return;
+        }
+
         const addSpinner = (target) => {
             const existingSpinners = target.querySelectorAll('.lazy-loader-spinner');
             existingSpinners.forEach(spinner => spinner.remove());
@@ -103,28 +128,19 @@ class LazyMediaLoader {
             addSpinner(element);
         }
 
-        if (element.tagName.toLowerCase() === 'img' && element.hasAttribute('data-src')) {
-            if (!element.nextElementSibling?.classList.contains('lazy-loader-spinner')) {
-                element.parentNode.insertBefore(this.createSpinner(), element.nextSibling);
-            }
-            this.imageObserver.observe(element);
-        }
-
         if (element.tagName.toLowerCase() === 'video' ||
             (element.tagName.toLowerCase() === 'source' && element.parentElement.tagName.toLowerCase() === 'video')) {
             const videoElement = element.tagName.toLowerCase() === 'source' ? element.parentElement : element;
-            if ((videoElement.classList.contains('lazy') || videoElement.hasAttribute('data-src'))) {
-                const container = videoElement.closest('.content-media') || videoElement.parentNode;
-                if (!container.querySelector('.lazy-loader-spinner')) {
-                    addSpinner(container);
-                }
-            }
 
-            const isInActiveSlide = videoElement.closest('.swiper-slide-active, .swiper-slide-next');
-            if (isInActiveSlide) {
+            // Füge Spinner nur hinzu, wenn es kein Swiper-Video ist
+            if (!videoElement.closest('.swiper-slide')) {
+                if ((videoElement.classList.contains('lazy') || videoElement.hasAttribute('data-src'))) {
+                    const container = videoElement.closest('.content-media') || videoElement.parentNode;
+                    if (!container.querySelector('.lazy-loader-spinner')) {
+                        addSpinner(container);
+                    }
+                }
                 this.loadVideo(videoElement);
-            } else {
-                this.videoObserver.observe(videoElement);
             }
         }
     }
@@ -275,10 +291,10 @@ class LazyMediaLoader {
 
             const successEvents = ['loadedmetadata', 'loadeddata', 'canplay'];
             successEvents.forEach(event => {
-                video.addEventListener(event, success, { once: true });
+                video.addEventListener(event, success, {once: true});
             });
 
-            video.addEventListener('error', error, { once: true });
+            video.addEventListener('error', error, {once: true});
 
             setTimeout(() => {
                 if (this.loadingVideos.has(video)) {
@@ -379,13 +395,13 @@ window.VSM.lazyMediaLoader = new LazyMediaLoader();
 
 // Für Abwärtskompatibilität
 window.VSM.lazyLoadInstance = {
-    update: function() {
+    update: function () {
         // Leere Methode für Kompatibilität
     }
 };
 
 // Event-Listener für dynamisch nachgeladene Videos
-document.addEventListener('vsm:videoLoaded', function(e) {
+document.addEventListener('vsm:videoLoaded', function (e) {
     if (window.VSM.lazyMediaLoader) {
         window.VSM.lazyMediaLoader.handleNewElement(e.detail.videoElement);
     }
