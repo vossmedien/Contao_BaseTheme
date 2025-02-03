@@ -27,7 +27,9 @@ class VSMLazyLoader {
             this.setupImageObserver();
             this.setupVideoObserver();
             this.setupMutationObserver();
+            this.setupScrollListeners();
             this.observeElements();
+
 
             // Generischer Scroll-Event-Listener
             let scrollTimeout;
@@ -54,6 +56,22 @@ class VSMLazyLoader {
             element.matches(selector) || element.closest(selector)
         );
     }
+
+
+
+setupScrollListeners() {
+    document.querySelectorAll('.scroll-wrapper').forEach(scrollWrapper => {
+        scrollWrapper.addEventListener('scroll', debounce(() => {
+            scrollWrapper.querySelectorAll('img[data-src], img.lazy').forEach(img => {
+                if (!img.classList.contains('loaded') && this.shouldHandleElement(img)) {
+                    this.loadImage(img);
+                }
+            });
+        }, 100), { passive: true });
+    });
+}
+
+
 
     setupMutationObserver() {
         this.mutationObserver = new MutationObserver((mutations) => {
@@ -143,16 +161,40 @@ class VSMLazyLoader {
         });
     }
 
-    setupImageObserver() {
-        this.imageObserver = new IntersectionObserver((entries) => {
+setupImageObserver() {
+    // Standard Observer für normale Bilder
+    this.imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && this.shouldHandleElement(entry.target)) {
+                this.loadImage(entry.target);
+                this.imageObserver.unobserve(entry.target);
+            }
+        });
+    }, this.options);
+
+    // Zusätzliche Observer für Scroll-Container
+    document.querySelectorAll('.scroll-wrapper').forEach(scrollWrapper => {
+        const scrollObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && this.shouldHandleElement(entry.target)) {
                     this.loadImage(entry.target);
-                    this.imageObserver.unobserve(entry.target);
+                    scrollObserver.unobserve(entry.target);
                 }
             });
-        }, this.options);
-    }
+        }, {
+            root: scrollWrapper,
+            rootMargin: '50% 0px',
+            threshold: 0
+        });
+
+        // Beobachte alle Bilder im Scroll-Container
+        scrollWrapper.querySelectorAll('img[data-src], img.lazy').forEach(img => {
+            if (!img.classList.contains('loaded')) {
+                scrollObserver.observe(img);
+            }
+        });
+    });
+}
 
     setupVideoObserver() {
         this.videoObserver = new IntersectionObserver((entries) => {
@@ -165,92 +207,103 @@ class VSMLazyLoader {
         }, this.options);
     }
 
-    observeElements() {
-        /*
-            if (this.options.spinnerEnabled) {
-        document.querySelectorAll('.cms-html-video-container:not(:has(.lazy-loader-spinner)), .content-media:not(:has(.lazy-loader-spinner))')
-            .forEach(element => {
-                if (this.shouldHandleElement(element)) {
-                    this.addSpinner(element);
+observeElements() {
+    // Für Bilder außerhalb von Scroll-Containern
+    document.querySelectorAll('img[data-src], img.lazy').forEach(img => {
+        if (!img.closest('.scroll-wrapper') && this.shouldHandleElement(img)) {
+            if (this.options.spinnerEnabled && !img.nextElementSibling?.classList.contains('lazy-loader-spinner')) {
+                const spinnerContainer = img.closest('picture') || img.parentNode;
+                spinnerContainer.appendChild(this.createSpinner());
+            }
+            this.imageObserver.observe(img);
+        }
+    });
+
+    // Videos wie gehabt behandeln
+    document.querySelectorAll('video[data-src], video.lazy').forEach(video => {
+        if (this.shouldHandleElement(video)) {
+            if (this.options.spinnerEnabled && !video.closest('.content-media')?.querySelector('.lazy-loader-spinner')) {
+                const container = video.closest('.content-media') || video.parentNode;
+                this.addSpinner(container);
+            }
+            this.videoObserver.observe(video);
+        }
+    });
+}
+
+loadImage(img) {
+    return new Promise((resolve, reject) => {
+        // Wenn das Bild bereits geladen wird oder bereits geladen wurde, early return
+        if (img.classList.contains('loaded')) {
+            return resolve();
+        }
+
+        // Wenn das Bild bereits src/srcset hat aber noch loading ist,
+        // direkt als geladen markieren
+        if (img.src && img.srcset && img.classList.contains('loading')) {
+            img.classList.remove('loading');
+            img.classList.remove('lazy');
+            img.classList.add('loaded');
+            this.removeSpinner(img);
+            return resolve();
+        }
+
+        // Neue Loading-Session starten
+        img.classList.add('loading');
+
+        // Sources in picture Element laden
+        if (img.closest('picture')) {
+            const sources = img.closest('picture').querySelectorAll('source[data-srcset]');
+            sources.forEach(source => {
+                if (source.dataset.srcset) {
+                    source.srcset = source.dataset.srcset;
+                    source.removeAttribute('data-srcset');
                 }
             });
-    }
-         */
+        }
 
+        // Haupt-Bild laden
+        if (img.dataset.srcset) {
+            img.srcset = img.dataset.srcset;
+            img.removeAttribute('data-srcset');
+        }
+        if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+        }
 
-        document.querySelectorAll('img[data-src], img.lazy').forEach(img => {
-            if (this.shouldHandleElement(img)) {
-                if (this.options.spinnerEnabled && !img.nextElementSibling?.classList.contains('lazy-loader-spinner')) {
-                    const spinnerContainer = img.closest('picture') || img.parentNode;
-                    spinnerContainer.appendChild(this.createSpinner());
+        const handleLoad = () => {
+            img.classList.remove('loading');
+            img.classList.remove('lazy');
+            img.classList.add('loaded');
+            this.removeSpinner(img);
+            resolve();
+        };
+
+        const handleError = (error) => {
+            img.classList.remove('loading');
+            img.classList.remove('lazy');
+            console.error('Fehler beim Laden des Bildes:', error);
+            this.removeSpinner(img);
+            reject(error);
+        };
+
+        // Wenn das Bild bereits vollständig geladen ist
+        if (img.complete) {
+            handleLoad();
+        } else {
+            img.addEventListener('load', handleLoad, { once: true });
+            img.addEventListener('error', handleError, { once: true });
+
+            // Timeout als Fallback
+            setTimeout(() => {
+                if (img.classList.contains('loading')) {
+                    handleLoad(); // Force completion after timeout
                 }
-                this.imageObserver.observe(img);
-            }
-        });
-
-        document.querySelectorAll('video[data-src], video.lazy').forEach(video => {
-            if (this.shouldHandleElement(video)) {
-                if (this.options.spinnerEnabled && !video.closest('.content-media')?.querySelector('.lazy-loader-spinner')) {
-                    const container = video.closest('.content-media') || video.parentNode;
-                    this.addSpinner(container);
-                }
-                this.videoObserver.observe(video);
-            }
-        });
-    }
-
-    loadImage(img) {
-        return new Promise((resolve, reject) => {
-            // Prüfen ob das Bild bereits geladen wird
-            if (img.classList.contains('loading')) {
-                return;
-            }
-            img.classList.add('loading');
-
-            // Sources in picture Element laden
-            if (img.closest('picture')) {
-                const sources = img.closest('picture').querySelectorAll('source[data-srcset]');
-                sources.forEach(source => {
-                    if (source.dataset.srcset) {
-                        source.srcset = source.dataset.srcset;
-                        source.removeAttribute('data-srcset');
-                    }
-                });
-            }
-
-            // Haupt-Bild laden
-            if (img.dataset.srcset) {
-                img.srcset = img.dataset.srcset;
-                img.removeAttribute('data-srcset');
-            }
-            if (img.dataset.src) {
-                img.src = img.dataset.src;
-                img.removeAttribute('data-src');
-            }
-
-            const handleLoad = () => {
-                img.classList.remove('loading');
-                img.classList.remove('lazy');
-                img.classList.add('loaded');
-                this.removeSpinner(img);
-                resolve();
-            };
-
-            const handleError = (error) => {
-                img.classList.remove('loading');
-                console.error('Fehler beim Laden des Bildes:', error);
-                this.removeSpinner(img);
-                reject(error);
-            };
-
-            if (img.complete) {
-                handleLoad();
-            } else {
-                img.addEventListener('load', handleLoad, {once: true});
-                img.addEventListener('error', handleError, {once: true});
-            }
-        });
-    }
+            }, this.options.timeout);
+        }
+    });
+}
 
     loadVideo(video) {
         if (this.loadingVideos.has(video)) return;
@@ -400,3 +453,15 @@ document.addEventListener('vsm:videoLoaded', function (e) {
         window.VSM.lazyLoader.handleNewElement(e.detail.videoElement);
     }
 });
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
