@@ -1,3 +1,12 @@
+@import "../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "variables";
+@import "map-overwrites";
+
+
+
 :root {
   @each $color, $value in $theme-colors {
     --bs-#{$color}-rgb: #{to-rgb($value)};
@@ -5,7 +14,6 @@
     --bs-#{$color}-bg-subtle: #{tint-color($value, 80%)};
     --bs-#{$color}-border-subtle: #{shade-color($value, 40%)};
   }
-
 
 
   --main-gap: #{clamp($spacer, 5vw, $spacer-lg)};
@@ -99,7 +107,10 @@
 
   --mm-ocd-width: var(--mm-ocd-min-width);
 
-  @include media-breakpoint-up(md) {
+}
+
+@include media-breakpoint-up(md) {
+  :root {
     --mm-ocd-width: var(--mm-ocd-max-width);
   }
 }

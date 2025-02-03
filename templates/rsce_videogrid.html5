@@ -67,15 +67,7 @@ foreach ($columns as $columnIndex => &$columnVideos) {
                                                              'poster' => VSM_HelperFunctions\ImageHelper::generateImageURL($video->poster_image, $this->size),
                                                              'attributes' => 'autoplay muted loop playsinline'
                                                          ])) ?>">
-                                                        <?= VSM_HelperFunctions\VideoHelper::renderVideo(
-                                                            $video->preview_video,
-                                                            'video-preview--player lazy',
-                                                            $video->title,
-                                                            $video->description,
-                                                            null,
-                                                            VSM_HelperFunctions\ImageHelper::generateImageURL($video->poster_image, $this->size),
-                                                            'autoplay muted loop playsinline'
-                                                        ) ?>
+
                                                     </div>
                                                 </div>
 
