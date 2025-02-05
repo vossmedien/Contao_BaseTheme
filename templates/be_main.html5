@@ -41,8 +41,11 @@
     <script src="/files/base/backend/custom_backend.js"></script>
     <?php $this->endblock(); ?>
 
-    <?php /* If the following hash changes, Turbo will reload the entire page instead of merging contents. */ ?>
+
+        <?php /* If the following hash changes, Turbo will reload the entire page instead of merging contents. */ ?>
     <meta data-turbo-track="reload" content="<?= md5($this->stylesheets . "\0" . $this->javascripts); ?>">
+
+
 </head>
 <body id="top" class="be_main<?php if ($this->isPopup): ?> popup<?php endif; ?>"<?= $this->attributes ?> data-controller="contao--tooltip">
 
@@ -102,71 +105,63 @@
 </div>
 <?php $this->endblock(); ?>
 
-<?php if ($this->isPopup): ?>
+<?php if ($this->isPopup): ?><?php endif; ?>
+
+<?= $this->mootools ?>
+
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // VSM Loader Initialization
+    window.VSM = window.VSM || {};
 
-    var saveButton = document.getElementById('save');
-    if (saveButton) {
-        saveButton.addEventListener('click', function (e) {
-            e.preventDefault(); // Verhindert den Standard-Button-Klick
-            var form = document.querySelector('form.tl_edit_form');
-            if (form) {
-                form.submit();
-            }
+    if (!window.VSM.lazyLoader) {
+        window.VSM.lazyLoader = new VSMLazyLoader({
+            excludeSelectors: ['.swiper-slide']
         });
     }
 
+    if (!window.VSM.sliderMediaLoader) {
+        window.VSM.sliderMediaLoader = new VSMSliderMediaLoader();
+    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        window.VSM = window.VSM || {};
+    // Legacy compatibility
+    window.VSM.lazyMediaLoader = window.VSM.lazyLoader;
+    window.VSM.lazyLoadInstance = { update: () => {} };
 
-        // Haupt-Instanz erstellen
-        if (!window.VSM.lazyLoader) {
-            window.VSM.lazyLoader = new VSMLazyLoader({
-                excludeSelectors: ['.swiper-slide']
-            });
-        }
+    // Turbo Deactivation & Form Handling
+    if (typeof Turbo !== 'undefined') {
+        Turbo.session.drive = false;
+    }
 
-        // Slider-Instanz erstellen
-        if (!window.VSM.sliderMediaLoader) {
-            window.VSM.sliderMediaLoader = new VSMSliderMediaLoader();
-        }
-
-        // Alias für Abwärtskompatibilität
-        window.VSM.lazyMediaLoader = window.VSM.lazyLoader;
-
-        // LazyLoadInstance für alte API-Kompatibilität
-        window.VSM.lazyLoadInstance = {
-            update: () => {
-            }
-        };
+    // Form Handlers
+    document.querySelectorAll('form').forEach(form => {
+        form.setAttribute('data-turbo', 'false');
+        form.removeAttribute('data-turbo-frame');
     });
 
-
-    // Handler für Duplizieren- und Neu-Buttons
-    document.addEventListener('click', function (event) {
-        var target = event.target.closest('.rsce_list_toolbar_duplicate, .rsce_list_toolbar_new');
-        if (target) {
+    // Combined Click & Submit Handlers
+    document.addEventListener('click', (event) => {
+        const duplicateOrNewButton = event.target.closest('.rsce_list_toolbar_duplicate, .rsce_list_toolbar_new');
+        if (duplicateOrNewButton) {
             event.preventDefault();
-
-
-            // Warten Sie kurz, um sicherzustellen, dass die RSCE-Aktion abgeschlossen ist
-            setTimeout(function () {
-                var form = document.querySelector('form#tl_content');
-                if (form) {
-                    form.submit();
-                }
-            }, 200);
+            const form = document.querySelector('form#tl_content');
+            if (form) form.submit();
         }
     });
 
+    document.addEventListener('submit', (event) => {
+        const form = event.target;
+        if (form.querySelector('button[name="save"]')) {
+            event.preventDefault();
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form)
+            }).then(() => window.location.reload(true));
+        }
+    });
+});
 </script>
-<?php endif; ?>
-
-<?= $this->mootools ?>
-<?php
-?>
 
 
 </body>

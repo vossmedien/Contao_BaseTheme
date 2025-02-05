@@ -2,9 +2,12 @@ class ValidationHandler {
     constructor(form, texts) {
         this.form = form;
         this.texts = texts;
+        this.submitButton = form.querySelector('[data-payment-submit]');
+        this.spinner = form.querySelector('[data-payment-spinner]');
         this._validateEmail = null;
         this._validateUsername = null;
         this._validatePassword = null;
+        this.hasErrors = false;
     }
 
     initialize() {
@@ -64,6 +67,7 @@ class ValidationHandler {
             if (!emailValid || !usernameValid) return;
 
             try {
+                this.toggleLoadingState(true);
                 const result = await this.checkUserExists(emailInput.value, usernameInput.value);
                 if (!result.valid) {
                     this.showCombinedError(result.message, emailInput, usernameInput);
@@ -72,6 +76,8 @@ class ValidationHandler {
                 }
             } catch (error) {
                 this.showCombinedError(this.texts.networkError, emailInput, usernameInput);
+            } finally {
+                this.toggleLoadingState(false);
             }
         };
 
@@ -115,6 +121,19 @@ class ValidationHandler {
         return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(password);
     }
 
+    updateSubmitButtonState() {
+        if (this.submitButton) {
+            this.submitButton.disabled = this.hasErrors;
+        }
+    }
+
+    toggleLoadingState(isLoading) {
+        if (this.submitButton && this.spinner) {
+            this.submitButton.disabled = isLoading || this.hasErrors;
+            this.spinner.classList.toggle('d-none', !isLoading);
+        }
+    }
+
     toggleError(input, isValid, message) {
         if (!input) return;
 
@@ -129,6 +148,9 @@ class ValidationHandler {
 
         feedback.textContent = message;
         feedback.style.display = isValid ? 'none' : 'block';
+
+        this.hasErrors = this.form.querySelectorAll('.is-invalid').length > 0;
+        this.updateSubmitButtonState();
     }
 
     showCombinedError(message, emailInput, usernameInput) {
@@ -145,6 +167,9 @@ class ValidationHandler {
             feedback.textContent = message;
             feedback.style.display = 'block';
         });
+
+        this.hasErrors = true;
+        this.updateSubmitButtonState();
     }
 
     clearCombinedError(emailInput, usernameInput) {
@@ -157,5 +182,8 @@ class ValidationHandler {
                 feedback.style.display = 'none';
             }
         });
+
+        this.hasErrors = this.form.querySelectorAll('.is-invalid').length > 0;
+        this.updateSubmitButtonState();
     }
 }
