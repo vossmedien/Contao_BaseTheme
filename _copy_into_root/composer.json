@@ -22,12 +22,14 @@
     "terminal42/contao-node": "^1.5",
     "terminal42/notification_center": "^2.0",
     "trilobit-gmbh/contao-tiles-bundle": "^2.0",
-    "vsm/custom-helpers-bundle": "1.0.0",
-    "codefog/contao-instagram": "^2.5"
+    "vsm/custom-helpers-bundle": "^1.0",
+    "codefog/contao-instagram": "^2.5",
+    "stripe/stripe-php": "^16.4"
   },
   "autoload": {
     "psr-4": {
-      "VSM_HelperFunctions\\": "system/modules/vsm_custom_helpers/Helper"
+      "VSM_HelperFunctions\\": "system/modules/vsm_custom_helpers/Helper",
+      "App\\": "src/"
     }
   },
   "extra": {

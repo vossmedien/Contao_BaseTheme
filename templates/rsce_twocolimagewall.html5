@@ -194,7 +194,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                     </div>
                                 <?php endif; ?>
 
-                                <div class="zoom-container" style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
+                                <div  data-animation="animate__fadeIn" class="zoom-container" style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
                                     <?php if ($row->image_leftcol) : ?>
                                         <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image_leftcol, null, $row->ce_headline, $row->size_left, null, false); ?>
                                     <?php endif; ?>
@@ -250,7 +250,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 </div>
 
                                 <div style="<?= $row->alternate_textcolor ? 'color:' . $row->alternate_textcolor . ';' : '' ?>"
-                                     class="content--inner <?php if ($row->boxed_headline): ?>mt-lg-10 mb-lg-8<?php endif; ?> <?php echo $row->textalign; ?>">
+                                     class="content--inner <?php if ($row->boxed_headline): ?>my-lg-8<?php endif; ?> <?php echo $row->textalign; ?>">
                                     <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
                                         $row->ce_topline,
                                         $row->ce_headline,
@@ -288,7 +288,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                     ">
 
 
-                                    <div class="<?php if ($row->image_both): ?>is-row-bg<?php endif; ?>   <?php if ($row->dont_stretch_bg): ?> no-stretch <?php endif; ?>    <?php if (!$row->not_as_bg): ?>zoom-container <?php else: ?>position-relative text-center<?php endif; ?>">
+                                    <div  data-animation="<?= $row->animation_type_image_col;?>" class="<?php if ($row->image_both): ?>is-row-bg<?php endif; ?>   <?php if ($row->dont_stretch_bg): ?> no-stretch <?php endif; ?>    <?php if (!$row->not_as_bg): ?>zoom-container <?php else: ?>position-relative text-center<?php endif; ?>">
                                         <?php if ($row->kachel_right_text): ?>
                                             <div class="kachel-column-width--indicator <?php if ($row->reverse) : ?>start-0<?php else: ?>end-0<?php endif; ?> <?php if ($row->expand_right_kachel): ?>expandable<?php endif; ?>">
                                                 <div class="column-kachel--wrapper <?php echo $row->kachel_right_position; ?>  <?php if ($row->kachel_right_url): ?> with-url<?php endif; ?>">

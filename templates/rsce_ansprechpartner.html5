@@ -1,6 +1,6 @@
 <?php
 if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_ansprechpartner.min.css|static';
+
 }
 ?>
 
