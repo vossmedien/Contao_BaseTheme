@@ -1,9 +1,14 @@
-@import "../_vendor/vendor";
+@use "sass:math";
+@use "sass:color";
+@use "sass:map";
+@use "sass:meta";
 
-@import "../_vendor/node_modules/bootstrap/scss/mixins";
-@import "../_vendor/node_modules/bootstrap/scss/mixins/banner";
+@use "../_vendor/vendor";
 
-@include bsBanner("");
+@use "../_vendor/node_modules/bootstrap/scss/mixins";
+@use "../_vendor/node_modules/bootstrap/scss/mixins/banner";
+
+//@include bsBanner("");
 @import "mixins";
 
 @import "../_vendor/node_modules/bootstrap/scss/functions";

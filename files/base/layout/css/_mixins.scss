@@ -18,68 +18,6 @@
     }
   }
 }
-
-
-%make-fullwidth {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-}
-
-
-%half-container {
-  max-width: 100%;
-  padding-left: 1rem;
-  padding-right: 1rem;
-
-  @each $breakpoint, $container-max-width in $container-max-widths {
-    @include media-breakpoint-up($breakpoint) {
-      @if $container-max-width != 100% {
-        max-width: $container-max-width / 2;
-        padding-left: 0;
-        padding-right: 0;
-      } @else if $breakpoint == sm {
-        max-width: 540px;
-        padding-left: 0;
-        padding-right: 0;
-      }
-    }
-  }
-}
-
-%remove-headline-padding {
-  .ce--headline > * {
-    padding-left: 0px;
-    padding-right: 0px;
-  }
-}
-
-
-%darkened-content {
-  a:not(.btn) {
-    color: currentColor;
-  }
-
-  picture {
-    img {
-      z-index: -1;
-    }
-
-    &:before {
-      content: "";
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.33);
-      position: absolute;
-      left: 0;
-      width: 100%;
-      z-index: 1;
-    }
-  }
-}
-
 @mixin offset-styles($size, $value) {
   $directions: (
     x: (left, right),
@@ -111,7 +49,6 @@
     }
   }
 }
-
 @mixin padding-styles($size, $value) {
   $directions: (x: (left, right), y: (top, bottom), top: (top), bottom: (bottom), left: (left), right: (right), all: (all));
 
@@ -127,4 +64,64 @@
     }
   }
 }
+
+%make-fullwidth {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+%half-container {
+  max-width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  @each $breakpoint, $container-max-width in $container-max-widths {
+    @include media-breakpoint-up($breakpoint) {
+      @if $container-max-width != 100% {
+        max-width: $container-max-width / 2;
+        padding-left: 0;
+        padding-right: 0;
+      } @else if $breakpoint == sm {
+        max-width: 540px;
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+  }
+}
+
+%remove-headline-padding {
+  .ce--headline > * {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+
+%darkened-content {
+  a:not(.btn) {
+    color: currentColor;
+  }
+
+  picture {
+    img {
+      z-index: -1;
+    }
+
+    &:before {
+      content: "";
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.33);
+      position: absolute;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+    }
+  }
+}
+
+
 
