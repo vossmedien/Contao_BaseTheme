@@ -6,6 +6,7 @@
     "alnv/catalog-manager-bundle": "^3.1",
     "cgoit/contao-leads-optin-bundle": "^3.0",
     "cgoit/contao-megamenu-bundle": "^1.0",
+    "codefog/contao-instagram": "^2.5",
     "contao/calendar-bundle": "^5.4.0",
     "contao/conflicts": "*@dev",
     "contao/listing-bundle": "^5.4.0",
@@ -16,20 +17,19 @@
     "madeyourday/contao-rocksolid-custom-elements": "^2.4",
     "oveleon/contao-component-style-manager": "^3.5",
     "oveleon/contao-cookiebar": "^2.0",
+    "stripe/stripe-php": "^16.5",
     "terminal42/contao-changelanguage": "^3.6",
     "terminal42/contao-folderpage": "^3.2",
     "terminal42/contao-leads": "^3.0",
     "terminal42/contao-node": "^1.5",
     "terminal42/notification_center": "^2.0",
     "trilobit-gmbh/contao-tiles-bundle": "^2.0",
-    "vsm/custom-helpers-bundle": "^1.0",
-    "codefog/contao-instagram": "^2.5",
-    "stripe/stripe-php": "^16.4"
+    "vsm/custom-helpers-bundle": "^1.0"
   },
   "autoload": {
     "psr-4": {
-      "VSM_HelperFunctions\\": "system/modules/vsm_custom_helpers/Helper",
-      "App\\": "src/"
+      "App\\": "src/",
+      "VSM_HelperFunctions\\": "system/modules/vsm_custom_helpers/Helper"
     }
   },
   "extra": {
