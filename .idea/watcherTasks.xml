@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectTasksOptions">
     <TaskOptions isEnabled="true">
-      <option name="arguments" value="-c &quot;/Users/vossmedien/.nvm/versions/node/v20.9.0/lib/node_modules/sass/sass.js --style=compressed --no-source-map --no-charset --no-error-css --quiet-deps --precision=5 --update $FileName$:$FileNameWithoutAllExtensions$.css --load-path=node_modules &amp;&amp; touch $FileNameWithoutAllExtensions$.css &amp;&amp; /Users/vossmedien/.nvm/versions/node/v20.9.0/bin/postcss $FileNameWithoutAllExtensions$.css -o $FileNameWithoutAllExtensions$.min.css --config /Users/vossmedien/.postcss/postcss.config.js --no-map&quot;" />
+      <option name="arguments" value="-c &quot;sass_file=$FileNameWithoutAllExtensions$.css &amp;&amp; /Users/vossmedien/.nvm/versions/node/v20.9.0/lib/node_modules/sass/sass.js --style=compressed --no-source-map --no-charset --no-error-css --quiet-deps --precision=5 --update $FileName$:$sass_file &amp;&amp; while [ ! -f $sass_file ] || [ $(( $(date +%s) - $(stat -f %m $sass_file) )) -gt 2 ]; do sleep 0.1; done &amp;&amp; /Users/vossmedien/.nvm/versions/node/v20.9.0/bin/postcss $sass_file -o $FileNameWithoutAllExtensions$.min.css --config /Users/vossmedien/.postcss/postcss.config.js --no-map&quot;" />
       <option name="checkSyntaxErrors" value="true" />
       <option name="description" />
-      <option name="exitCodeBehavior" value="ALWAYS" />
+      <option name="exitCodeBehavior" value="ERROR" />
       <option name="fileExtension" value="scss" />
       <option name="immediateSync" value="false" />
       <option name="name" value="Kombination" />
