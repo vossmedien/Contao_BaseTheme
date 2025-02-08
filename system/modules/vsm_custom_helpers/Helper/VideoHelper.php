@@ -128,9 +128,8 @@ class VideoHelper
         $videoHtml .= "    <video class='" . trim("$classes" . ($lazy ? " lazy" : "")) . "' ";
         $videoHtml .= $videoParams . $posterAttr;
         $videoHtml .= " preload='none'";
-        if ($lazy) {
-            $videoHtml .= " data-src='$mp4Path'";
-        } else {
+// Entfernen der data-src/src vom Video-Element selbst
+        if (!$lazy) {
             $videoHtml .= " src='$mp4Path'";
         }
         $videoHtml .= ">\n";
