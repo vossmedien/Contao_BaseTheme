@@ -4,12 +4,13 @@ class VSMLazyLoader {
             root: null,
             rootMargin: '100px 0px',
             threshold: 0.01,
-            excludeSelectors: [], // Slider-spezifische Ausschlüsse entfernt
+            excludeSelectors: [],
             spinnerEnabled: true,
-            timeout: 5000,
+            timeout: 8000, // Erhöht für bessere Mobile-Performance
             ...options
         };
 
+        this.loadedElements = new Set();
         this.loadingVideos = new Map();
         this.imageObserver = null;
         this.videoObserver = null;
@@ -30,58 +31,89 @@ class VSMLazyLoader {
             this.setupScrollListeners();
             this.observeElements();
 
-
-            // Generischer Scroll-Event-Listener
-            let scrollTimeout;
-            window.addEventListener('scroll', () => {
-                if (scrollTimeout) {
-                    window.cancelAnimationFrame(scrollTimeout);
-                }
-                scrollTimeout = window.requestAnimationFrame(() => {
-                    document.querySelectorAll('img[data-src], img.lazy').forEach(img => {
-                        if (!img.classList.contains('loaded') && this.shouldHandleElement(img)) {
-                            this.imageObserver.observe(img);
-                        }
-                    });
-                });
-            }, {passive: true});
+            // Periodische Überprüfung für verlorene Elemente
+            setInterval(() => this.checkLostElements(), 10000);
         } else {
             this.loadAllMediaDirectly();
         }
     }
 
-
-    shouldHandleElement(element) {
-        return !this.options.excludeSelectors.some(selector =>
-            element.matches(selector) || element.closest(selector)
-        );
-    }
-
-
-
-setupScrollListeners() {
-    document.querySelectorAll('.scroll-wrapper').forEach(scrollWrapper => {
-        scrollWrapper.addEventListener('scroll', debounce(() => {
-            scrollWrapper.querySelectorAll('img[data-src], img.lazy').forEach(img => {
-                if (!img.classList.contains('loaded') && this.shouldHandleElement(img)) {
-                    this.loadImage(img);
+    setupImageObserver() {
+        this.imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !this.loadedElements.has(entry.target) &&
+                    this.shouldHandleElement(entry.target)) {
+                    this.loadImage(entry.target);
+                    this.imageObserver.unobserve(entry.target);
                 }
             });
-        }, 100), { passive: true });
-    });
-}
+        }, this.options);
 
+        // Scroll-Container spezifische Observer
+        document.querySelectorAll('.scroll-wrapper').forEach(scrollWrapper => {
+            const scrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !this.loadedElements.has(entry.target) &&
+                        this.shouldHandleElement(entry.target)) {
+                        this.loadImage(entry.target);
+                        scrollObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: scrollWrapper,
+                rootMargin: '50% 0px',
+                threshold: 0
+            });
 
+            scrollWrapper.querySelectorAll('img[data-src], img.lazy').forEach(img => {
+                if (!img.classList.contains('loaded')) {
+                    scrollObserver.observe(img);
+                }
+            });
+        });
+    }
+
+    setupVideoObserver() {
+        this.videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !this.loadedElements.has(entry.target) &&
+                    this.shouldHandleElement(entry.target)) {
+                    this.loadVideo(entry.target);
+                    this.videoObserver.unobserve(entry.target);
+                }
+            });
+        }, this.options);
+    }
+
+    setupScrollListeners() {
+        let scrollTimeout;
+        const scrollHandler = () => {
+            if (scrollTimeout) {
+                window.cancelAnimationFrame(scrollTimeout);
+            }
+            scrollTimeout = window.requestAnimationFrame(() => {
+                this.checkVisibleElements();
+            });
+        };
+
+        window.addEventListener('scroll', scrollHandler, {passive: true});
+
+        document.querySelectorAll('.scroll-wrapper').forEach(scrollWrapper => {
+            scrollWrapper.addEventListener('scroll', debounce(() => {
+                this.checkVisibleElements(scrollWrapper);
+            }, 100), {passive: true});
+        });
+    }
 
     setupMutationObserver() {
         this.mutationObserver = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
+            mutations.forEach(mutation => {
                 if (mutation.addedNodes.length) {
-                    mutation.addedNodes.forEach((node) => {
+                    mutation.addedNodes.forEach(node => {
                         if (node.nodeType === 1 && this.shouldHandleElement(node)) {
                             this.handleNewElement(node);
                             if (node.querySelectorAll) {
-                                node.querySelectorAll('img[data-src], video.lazy source[data-src], video[data-src], .cms-html-video-container, .content-media')
+                                node.querySelectorAll('img[data-src], video source[data-src], video[data-src]')
                                     .forEach(element => {
                                         if (this.shouldHandleElement(element)) {
                                             this.handleNewElement(element);
@@ -106,6 +138,41 @@ setupScrollListeners() {
         }
     }
 
+    checkVisibleElements(container = document) {
+        const elements = container.querySelectorAll('img[data-src], video[data-src]');
+        elements.forEach(element => {
+            if (!this.loadedElements.has(element) && this.isInViewport(element)) {
+                if (element.tagName.toLowerCase() === 'video') {
+                    this.loadVideo(element);
+                } else {
+                    this.loadImage(element);
+                }
+            }
+        });
+    }
+
+    checkLostElements() {
+        document.querySelectorAll('img.lazy:not(.loaded), video.lazy:not(.loaded)').forEach(element => {
+            if (!this.loadedElements.has(element) && this.isInViewport(element)) {
+                if (element.tagName.toLowerCase() === 'video') {
+                    this.loadVideo(element);
+                } else {
+                    this.loadImage(element);
+                }
+            }
+        });
+    }
+
+    isInViewport(element) {
+        const rect = element.getBoundingClientRect();
+        return (
+            rect.top >= -rect.height &&
+            rect.left >= -rect.width &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + rect.height &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth) + rect.width
+        );
+    }
+
     handleNewElement(element) {
         if (!this.shouldHandleElement(element)) return;
 
@@ -116,11 +183,20 @@ setupScrollListeners() {
         if (element.tagName.toLowerCase() === 'video' ||
             (element.tagName.toLowerCase() === 'source' && element.parentElement.tagName.toLowerCase() === 'video')) {
             const videoElement = element.tagName.toLowerCase() === 'source' ? element.parentElement : element;
-
             if (videoElement.classList.contains('lazy') || videoElement.hasAttribute('data-src')) {
                 this.loadVideo(videoElement);
             }
+        } else if (element.tagName.toLowerCase() === 'img') {
+            if (element.classList.contains('lazy') || element.hasAttribute('data-src')) {
+                this.loadImage(element);
+            }
         }
+    }
+
+    shouldHandleElement(element) {
+        return !this.options.excludeSelectors.some(selector =>
+            element.matches(selector) || element.closest(selector)
+        );
     }
 
     createSpinner() {
@@ -139,7 +215,6 @@ setupScrollListeners() {
 
     addSpinner(target) {
         if (!this.options.spinnerEnabled) return;
-
         const existingSpinners = target.querySelectorAll('.lazy-loader-spinner');
         existingSpinners.forEach(spinner => spinner.remove());
         target.appendChild(this.createSpinner());
@@ -161,173 +236,80 @@ setupScrollListeners() {
         });
     }
 
-setupImageObserver() {
-    // Standard Observer für normale Bilder
-    this.imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && this.shouldHandleElement(entry.target)) {
-                this.loadImage(entry.target);
-                this.imageObserver.unobserve(entry.target);
-            }
-        });
-    }, this.options);
-
-    // Zusätzliche Observer für Scroll-Container
-    document.querySelectorAll('.scroll-wrapper').forEach(scrollWrapper => {
-        const scrollObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && this.shouldHandleElement(entry.target)) {
-                    this.loadImage(entry.target);
-                    scrollObserver.unobserve(entry.target);
-                }
-            });
-        }, {
-            root: scrollWrapper,
-            rootMargin: '50% 0px',
-            threshold: 0
-        });
-
-        // Beobachte alle Bilder im Scroll-Container
-        scrollWrapper.querySelectorAll('img[data-src], img.lazy').forEach(img => {
-            if (!img.classList.contains('loaded')) {
-                scrollObserver.observe(img);
-            }
-        });
-    });
-}
-
-    setupVideoObserver() {
-        this.videoObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && this.shouldHandleElement(entry.target)) {
-                    this.loadVideo(entry.target);
-                    this.videoObserver.unobserve(entry.target);
-                }
-            });
-        }, this.options);
-    }
-
-observeElements() {
-    // Für Bilder außerhalb von Scroll-Containern
-    document.querySelectorAll('img[data-src], img.lazy').forEach(img => {
-        if (!img.closest('.scroll-wrapper') && this.shouldHandleElement(img)) {
-            if (this.options.spinnerEnabled && !img.nextElementSibling?.classList.contains('lazy-loader-spinner')) {
-                const spinnerContainer = img.closest('picture') || img.parentNode;
-                spinnerContainer.appendChild(this.createSpinner());
-            }
-            this.imageObserver.observe(img);
-        }
-    });
-
-    // Videos wie gehabt behandeln
-    document.querySelectorAll('video[data-src], video.lazy').forEach(video => {
-        if (this.shouldHandleElement(video)) {
-            if (this.options.spinnerEnabled && !video.closest('.content-media')?.querySelector('.lazy-loader-spinner')) {
-                const container = video.closest('.content-media') || video.parentNode;
-                this.addSpinner(container);
-            }
-            this.videoObserver.observe(video);
-        }
-    });
-}
-
-loadImage(img) {
-    return new Promise((resolve, reject) => {
-        // Wenn das Bild bereits geladen wird oder bereits geladen wurde, early return
-        if (img.classList.contains('loaded')) {
-            return resolve();
-        }
-
-        // Wenn das Bild bereits src/srcset hat aber noch loading ist,
-        // direkt als geladen markieren
-        if (img.src && img.srcset && img.classList.contains('loading')) {
-            img.classList.remove('loading');
-            img.classList.remove('lazy');
-            img.classList.add('loaded');
-            this.removeSpinner(img);
-            return resolve();
-        }
-
-        // Neue Loading-Session starten
-        img.classList.add('loading');
-
-        // Sources in picture Element laden
-        if (img.closest('picture')) {
-            const sources = img.closest('picture').querySelectorAll('source[data-srcset]');
-            sources.forEach(source => {
-                if (source.dataset.srcset) {
-                    source.srcset = source.dataset.srcset;
-                    source.removeAttribute('data-srcset');
-                }
-            });
-        }
-
-        // Haupt-Bild laden
-        if (img.dataset.srcset) {
-            img.srcset = img.dataset.srcset;
-            img.removeAttribute('data-srcset');
-        }
-        if (img.dataset.src) {
-            img.src = img.dataset.src;
-            img.removeAttribute('data-src');
-        }
-
-        const handleLoad = () => {
-            img.classList.remove('loading');
-            img.classList.remove('lazy');
-            img.classList.add('loaded');
-            this.removeSpinner(img);
-            resolve();
-        };
-
-        const handleError = (error) => {
-            img.classList.remove('loading');
-            img.classList.remove('lazy');
-            console.error('Fehler beim Laden des Bildes:', error);
-            this.removeSpinner(img);
-            reject(error);
-        };
-
-        // Wenn das Bild bereits vollständig geladen ist
-        if (img.complete) {
-            handleLoad();
-        } else {
-            img.addEventListener('load', handleLoad, { once: true });
-            img.addEventListener('error', handleError, { once: true });
-
-            // Timeout als Fallback
-            setTimeout(() => {
-                if (img.classList.contains('loading')) {
-                    handleLoad(); // Force completion after timeout
-                }
-            }, this.options.timeout);
-        }
-    });
-}
-
-    loadVideo(video) {
-        if (this.loadingVideos.has(video)) return;
-
-        const videoId = Math.random().toString(36).substr(2, 9);
-        this.loadingVideos.set(video, {
-            id: videoId,
-            startTime: Date.now()
-        });
-
-        video.setAttribute('playsinline', '');
-        video.muted = true;
-
-        if (video.dataset.src) {
-            video.src = video.dataset.src;
-            video.removeAttribute('data-src');
-        }
-
-        video.querySelectorAll('source[data-src]').forEach(source => {
-            source.src = source.dataset.src;
-            source.removeAttribute('data-src');
-        });
+    loadImage(img) {
+        if (this.loadedElements.has(img)) return Promise.resolve();
 
         return new Promise((resolve, reject) => {
+            const handleLoad = () => {
+                img.classList.remove('lazy', 'loading');
+                img.classList.add('loaded');
+                this.loadedElements.add(img);
+                this.removeSpinner(img);
+                resolve();
+            };
+
+            const handleError = (error) => {
+                console.error('Fehler beim Laden des Bildes:', error);
+                this.removeSpinner(img);
+                reject(error);
+            };
+
+            img.classList.add('loading');
+
+            if (img.closest('picture')) {
+                const sources = img.closest('picture').querySelectorAll('source[data-srcset]');
+                sources.forEach(source => {
+                    if (source.dataset.srcset) {
+                        source.srcset = source.dataset.srcset;
+                        source.removeAttribute('data-srcset');
+                    }
+                });
+            }
+
+            if (img.dataset.srcset) {
+                img.srcset = img.dataset.srcset;
+                img.removeAttribute('data-srcset');
+            }
+            if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+            }
+
+            if (img.complete) {
+                handleLoad();
+            } else {
+                img.addEventListener('load', handleLoad, {once: true});
+                img.addEventListener('error', handleError, {once: true});
+
+                setTimeout(() => {
+                    if (img.classList.contains('loading')) {
+                        handleLoad();
+                    }
+                }, this.options.timeout);
+            }
+        });
+    }
+
+    loadVideo(video) {
+        if (this.loadedElements.has(video) || this.loadingVideos.has(video)) return Promise.resolve();
+
+        const videoId = Math.random().toString(36).substr(2, 9);
+        this.loadingVideos.set(video, {id: videoId, startTime: Date.now()});
+
+        return new Promise((resolve, reject) => {
+            video.setAttribute('playsinline', '');
+            video.muted = true;
+
+            video.querySelectorAll('source[data-src]').forEach(source => {
+                source.src = source.dataset.src;
+                source.removeAttribute('data-src');
+            });
+
+            if (video.dataset.src) {
+                video.src = video.dataset.src;
+                video.removeAttribute('data-src');
+            }
+
             const cleanup = () => {
                 this.removeSpinner(video);
                 this.loadingVideos.delete(video);
@@ -336,7 +318,16 @@ loadImage(img) {
             const success = () => {
                 video.classList.remove('lazy');
                 video.classList.add('loaded');
+                this.loadedElements.add(video);
                 cleanup();
+                this.videoObserver?.unobserve(video);
+
+                if (video.hasAttribute('autoplay')) {
+                    video.play().catch(() => {
+                        video.muted = true;
+                        video.play().catch(console.warn);
+                    });
+                }
                 resolve();
             };
 
@@ -347,43 +338,22 @@ loadImage(img) {
                 reject(e);
             };
 
-            const successEvents = ['loadedmetadata', 'loadeddata', 'canplay'];
-            successEvents.forEach(event => {
-                video.addEventListener(event, success, {once: true});
-            });
-
+            video.addEventListener('loadeddata', success, {once: true});
             video.addEventListener('error', error, {once: true});
 
-            // Timeout-Handler
             setTimeout(() => {
                 if (this.loadingVideos.has(video)) {
-                    successEvents.forEach(event => {
-                        video.removeEventListener(event, success);
-                    });
-                    video.removeEventListener('error', error);
                     cleanup();
                 }
             }, this.options.timeout);
 
             video.load();
-
-            if (video.hasAttribute('autoplay')) {
-                video.play().catch(() => {
-                    video.muted = true;
-                    video.play().catch(console.warn);
-                });
-            }
         });
     }
 
     showVideoFallback(video) {
         this.removeSpinner(video);
-
         const container = video.closest('.content-media') || video.parentNode;
-        const existingFallback = container.querySelector('.video-fallback');
-        if (existingFallback) {
-            existingFallback.remove();
-        }
 
         const fallback = document.createElement('div');
         fallback.className = 'video-fallback';
@@ -408,36 +378,43 @@ loadImage(img) {
         container.appendChild(fallback);
     }
 
-    loadAllMediaDirectly() {
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            if (this.shouldHandleElement(img)) {
-                this.loadImage(img);
+    observeElements() {
+        document.querySelectorAll('img[data-src], video[data-src]').forEach(element => {
+            if (!this.loadedElements.has(element) && this.shouldHandleElement(element)) {
+                if (this.options.spinnerEnabled) {
+                    this.handleSpinner(element);
+                }
+                if (element.tagName.toLowerCase() === 'video') {
+                    this.videoObserver.observe(element);
+                } else {
+                    this.imageObserver.observe(element);
+                }
             }
         });
+    }
 
-        document.querySelectorAll('video[data-src], video.lazy').forEach(video => {
-            if (this.shouldHandleElement(video)) {
-                this.loadVideo(video);
+    loadAllMediaDirectly() {
+        document.querySelectorAll('img[data-src], video[data-src]').forEach(element => {
+            if (this.shouldHandleElement(element)) {
+                if (element.tagName.toLowerCase() === 'video') {
+                    this.loadVideo(element);
+                } else {
+                    this.loadImage(element);
+                }
             }
         });
     }
 
     destroy() {
+        this.loadedElements.clear();
         this.loadingVideos.clear();
-
-        if (this.imageObserver) {
-            this.imageObserver.disconnect();
-        }
-        if (this.videoObserver) {
-            this.videoObserver.disconnect();
-        }
-        if (this.mutationObserver) {
-            this.mutationObserver.disconnect();
-        }
+        if (this.imageObserver) this.imageObserver.disconnect();
+        if (this.videoObserver) this.videoObserver.disconnect();
+        if (this.mutationObserver) this.mutationObserver.disconnect();
     }
 }
 
-// Namespace und Initialisierung
+// Initialisierung
 window.VSM = window.VSM || {};
 window.VSM.lazyLoader = new VSMLazyLoader();
 
@@ -456,12 +433,8 @@ document.addEventListener('vsm:videoLoaded', function (e) {
 
 function debounce(func, wait) {
     let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
+    return function (...args) {
         clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+        timeout = setTimeout(() => func.apply(this, args), wait);
     };
 }
