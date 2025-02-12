@@ -516,8 +516,8 @@ class VSMLazyLoader {
         fallback.innerHTML = `
             <div class="video-error-message">
                 <p>Video konnte nicht geladen werden</p>
-                <button class="retry-video-btn">Video erneut laden</button>
-                <button class="reload-page-btn">Seite neu laden</button>
+                <button class="btn btn-primary btn-sm retry-video-btn">Video erneut laden</button>
+                <button class="btn btn-outline-primary btn-sm reload-page-btn">Seite neu laden</button>
             </div>
         `;
 
