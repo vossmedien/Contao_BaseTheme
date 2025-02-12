@@ -6,7 +6,7 @@
 
 .services-grid {
   .service-item {
-    margin-bottom: 2rem;
+   // margin-bottom: 2rem;
   }
 
   .service-inner {
@@ -15,10 +15,10 @@
     flex-direction: column;
 
     .service-content {
-      padding: 1.5rem 1.5rem 0 1.5rem;
+      padding: 0 1.5rem 0 1.5rem;
 
       @include media-breakpoint-up(md) {
-        padding: 1.5rem 2rem 0 2rem;
+        padding: 0 2rem 0 2rem;
       }
     }
   }

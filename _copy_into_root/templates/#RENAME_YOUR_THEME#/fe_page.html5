@@ -21,8 +21,12 @@
     <?= $this->framework ?>
     <?= $this->stylesheets ?>
     <!-- Preload critical CSS -->
+    <link rel="preload" href="files/base/layout/_vendor/node_modules/animate.css/animate.min.css" as="style">
+    <link rel="stylesheet" href="files/base/layout/_vendor/node_modules/animate.css/animate.min.css">
     <link rel="preload" href="files/base/layout/css/style.min.css" as="style">
     <link rel="stylesheet" href="files/base/layout/css/style.min.css">
+    <link rel="preload" href="files/base/layout/css/_theme/styles.min.css" as="style">
+    <link rel="stylesheet" href="files/base/layout/css/_theme/styles.min.css">
     <link rel="preload" href="files/base/layout/css/_theme/root-variables.min.css" as="style">
     <link rel="stylesheet" href="files/base/layout/css/_theme/root-variables.min.css">
     <?= $this->mooScripts ?>
@@ -30,7 +34,7 @@
     <?php $this->endblock(); ?>
 </head>
 <body itemscope itemtype="http://schema.org/WebPage" id="top"<?php if ($this->class): ?> class="<?= $this->class ?>"<?php endif; ?><?php if ($this->onload): ?> onload="<?= $this->onload ?>"<?php endif; ?>>
-<div class="BodyScrollToTop"><i class="fa-sharp fa-light fa-arrow-up"></i></div>
+<div class="BodyScrollToTop"><i class="fasl fa-arrow-up "></i></div>
 <?php $this->block('body'); ?>
 <?php $this->sections('top'); ?>
 
@@ -104,6 +108,7 @@
 <?php $this->endblock(); ?>
 
 <?php
+
 use VSM_HelperFunctions\ButtonHelper;
 use VSM_HelperFunctions\GlobalElementConfig;
 

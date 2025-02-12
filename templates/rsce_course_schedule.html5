@@ -1,0 +1,336 @@
+<?php
+if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_course_schedule.min.css|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/elements/rsce/ce_rsce_course_schedule.min.js|static';
+}
+?>
+
+<div <?php echo $this->cssID; ?> class="content--element course-schedule">
+    <div class="ce--inner <?php echo $this->class; ?>">
+        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
+
+        <div class="filter-bar mb-4 d-none d-md-block">
+            <div class=" " data-animation="<?php echo $this->animation_type; ?>">
+
+                <div class="btn-group flex-wrap" role="group">
+                    <button type="button" class="btn btn-outline-primary active" data-filter="all">Alle Kurse
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="minis">Minis (3-5)</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="kids_6_9">Kids (6-9)</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="teens">Teens (10-14)</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="adults">Erwachsene</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="seniors">50 PLUS</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="fitness">FitnessBoxen
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row" data-animation="<?php echo $this->animation_type; ?>">
+            <?php
+            $weekdays = ['monday' => 'Montag', 'tuesday' => 'Dienstag', 'wednesday' => 'Mittwoch',
+                'thursday' => 'Donnerstag', 'friday' => 'Freitag', 'saturday' => 'Samstag',
+                'sunday' => 'Sonntag'];
+
+            foreach ($weekdays as $day_key => $day_name):
+                $hasCourses = false;
+                foreach ($this->courses as $course) {
+                    if ($course->weekday === $day_key) {
+                        $hasCourses = true;
+                        break;
+                    }
+                }
+                if (!$hasCourses) continue;
+                ?>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="card-title h5 mb-0"><?php echo $day_name; ?></h3>
+                        </div>
+                        <div class="card-body">
+                            <?php foreach ($this->courses as $course): ?>
+                                <?php if ($course->weekday === $day_key): ?>
+                                    <div class="course-item p-3 border-start border-4 border-primary bg-light cursor-pointer"
+                                         data-category="<?php echo $course->category; ?>"
+                                         data-day="<?php echo $day_name; ?>"
+                                         data-time="<?php echo $course->time; ?>"
+                                         onclick="handleCourseClick(this)"
+                                         style="cursor: pointer;">
+                                        <div class="fw-bold text-primary"><?php echo $course->time; ?> Uhr</div>
+                                        <div class="small d-block mt-1">
+                                            <?php
+                                            $categories = [
+                                                'minis' => 'Minis',
+                                                'kids_6_9' => 'Kids',
+                                                'teens' => 'Teenager',
+                                                'adults' => 'WingTsun Erwachsene',
+                                                'seniors' => 'WingTsun 50 Plus',
+                                                'fitness' => 'Fitnessboxen'
+                                            ];
+                                            $categoryMapping = [
+                                                'minis' => 'minis',
+                                                'kids_6_9' => 'Kids (6-9)',
+                                                'teens' => 'Teenager (10-14)',
+                                                'adults' => 'wingtsun-erwachsene',
+                                                'seniors' => 'wingtsun-50plus',
+                                                'fitness' => 'fitnessboxen'
+                                            ];
+                                            echo $categories[$course->category];
+                                            ?>
+                                        </div>
+                                        <?php if ($course->additional_info): ?>
+                                            <div class="text-muted small mt-1"><?php echo $course->additional_info; ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
+
+<script>
+const filterButtons = document.querySelectorAll('[data-filter]');
+const courseItems = document.querySelectorAll('.course-item');
+
+filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        // Add active class to clicked button
+        button.classList.add('active');
+
+        const filter = button.getAttribute('data-filter');
+
+        courseItems.forEach(item => {
+            if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                item.classList.remove('filtered');
+            } else {
+                item.classList.add('filtered');
+            }
+        });
+    });
+});
+
+function handleCourseClick(element) {
+    const category = element.getAttribute('data-category');
+    const day = element.getAttribute('data-day');
+    const time = element.getAttribute('data-time');
+
+    // Mapping der Kategorien zu den Checkbox-Werten und lesbaren Namen
+    const categoryMapping = {
+        'minis': {
+            value: 'minis',
+            label: 'Minis (3-5 Jahre)'
+        },
+        'kids_6_9': {
+            value: 'kids',
+            label: 'Kids (6-9 Jahre)'
+        },
+        'teens': {
+            value: 'teenager',
+            label: 'Teenager (10-14 Jahre)'
+        },
+        'adults': {
+            value: 'wingtsun-erwachsene',
+            label: 'WingTsun Erwachsene'
+        },
+        'seniors': {
+            value: 'wingtsun-50plus',
+            label: 'WingTsun 50 Plus'
+        },
+        'fitness': {
+            value: 'fitnessboxen',
+            label: 'Fitnessboxen'
+        }
+    };
+
+    // Erstelle den Betreff mit Kurssparte
+    const betreff = `Interesse am ${categoryMapping[category].label}-Training am ${day} (${time})`;
+
+    // Erstelle die URL mit den Parametern
+    const url = new URL('/probetraining', window.location.origin);
+    url.searchParams.append('preset_sparte', categoryMapping[category].value);
+    url.searchParams.append('preset_betreff', betreff);
+
+    // Formatiere das Datum für das Wunschtermin-Feld
+    const nextOccurrence = getNextDayOccurrence(day);
+    url.searchParams.append('preset_wunschtermin', nextOccurrence);
+
+    // Weiterleitung zur Probetraining-Seite
+    window.location.href = url.toString();
+}
+
+// Hilfsfunktion um das nächste Datum für einen bestimmten Wochentag zu ermitteln
+function getNextDayOccurrence(dayName) {
+    const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+    const today = new Date();
+    const dayIndex = days.indexOf(dayName);
+
+    let daysUntilNext = dayIndex - today.getDay();
+    if (daysUntilNext <= 0) {
+        daysUntilNext += 7;
+    }
+
+    const nextDate = new Date(today.setDate(today.getDate() + daysUntilNext));
+    return nextDate.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
+}
+
+// Formular Vorausfüllung und Scroll (wenn auf der Probetraining-Seite)
+if (window.location.pathname === '/probetraining') {
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hole URL-Parameter
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Prüfe ob Parameter vorhanden sind
+        const hasParams = urlParams.has('preset_sparte') ||
+                        urlParams.has('preset_betreff') ||
+                        urlParams.has('preset_wunschtermin');
+
+        // Vorbelegen der Sparte (Checkbox)
+        const preset_sparte = urlParams.get('preset_sparte');
+        if (preset_sparte) {
+            const checkbox = document.querySelector(`input[name="sparte[]"][value="${preset_sparte}"]`);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        }
+
+        // Vorbelegen des Betreffs
+        const preset_betreff = urlParams.get('preset_betreff');
+        if (preset_betreff) {
+            const betreffInput = document.querySelector('input[name="betreff"]');
+            if (betreffInput) {
+                betreffInput.value = preset_betreff;
+            }
+        }
+
+        // Vorbelegen des Wunschtermins
+        const preset_wunschtermin = urlParams.get('preset_wunschtermin');
+        if (preset_wunschtermin) {
+            const wunschterminInput = document.querySelector('input[name="wunschtermin"]');
+            if (wunschterminInput) {
+                wunschterminInput.value = preset_wunschtermin;
+            }
+        }
+
+        // Wenn Parameter vorhanden sind, zum Formular scrollen
+        if (hasParams) {
+            // Warte einen kurzen Moment, bis die Seite vollständig geladen ist
+            setTimeout(() => {
+                const formElement = document.querySelector('#probetraining-formular');
+                if (formElement) {
+                    formElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }, 100);
+        }
+    });
+}
+</script>
+
+
+<style>
+    .course-schedule .btn-outline-primary {
+        --bs-btn-color: #A17A33;
+        --bs-btn-border-color: #A17A33;
+        --bs-btn-hover-color: #fff;
+        --bs-btn-hover-bg: #A17A33;
+        --bs-btn-hover-border-color: #A17A33;
+        --bs-btn-active-color: #fff;
+        --bs-btn-active-bg: #A17A33;
+        --bs-btn-active-border-color: #A17A33;
+    }
+
+    .course-schedule .card-header.bg-primary {
+        background-color: #A17A33 !important;
+    }
+
+    .course-schedule .border-primary {
+        border-color: #A17A33 !important;
+    }
+
+    .course-schedule .text-primary {
+        color: #A17A33 !important;
+    }
+
+    .course-schedule .course-item {
+        position: relative;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .course-schedule .course-item:not(:last-child) {
+        margin-bottom: 1rem;
+    }
+
+    .course-schedule .course-item.filtered {
+        opacity: 0.3;
+        pointer-events: none;
+        transform: scale(0.98);
+    }
+
+    /* Hover-Effekte */
+    .course-schedule .course-item {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .course-schedule .course-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(161, 122, 51, 0.2);
+        background-color: #fff !important;
+    }
+
+    .course-schedule .course-item::after {
+        content: " →";
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #A17A33;
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .course-schedule .course-item:hover::after {
+        opacity: 1;
+        right: 1.5rem;
+    }
+
+    /* Subtle highlight effect */
+    .course-schedule .course-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(161, 122, 51, 0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .course-schedule .course-item:hover::before {
+        opacity: 1;
+    }
+</style>

@@ -140,8 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
         form.removeAttribute('data-turbo-frame');
     });
 
-    // Combined Click & Submit Handlers
-    document.addEventListener('click', (event) => {
+    /*
+        document.addEventListener('click', (event) => {
         const duplicateOrNewButton = event.target.closest('.rsce_list_toolbar_duplicate, .rsce_list_toolbar_new');
         if (duplicateOrNewButton) {
             event.preventDefault();
@@ -150,19 +150,71 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.addEventListener('submit', (event) => {
-        const form = event.target;
-        if (form.querySelector('button[name="save"]')) {
-            event.preventDefault();
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form)
-            }).then(() => window.location.reload(true));
-        }
-    });
+     */
+    // Combined Click & Submit Handlers
+
+
 });
 </script>
 
+<script>
+
+    var saveButton = document.getElementById('save');
+    if (saveButton) {
+        saveButton.addEventListener('click', function (e) {
+            e.preventDefault(); // Verhindert den Standard-Button-Klick
+            var form = document.querySelector('form.tl_edit_form');
+            if (form) {
+                form.submit();
+            }
+        });
+    }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        window.VSM = window.VSM || {};
+
+        // Haupt-Instanz erstellen
+        if (!window.VSM.lazyLoader) {
+            window.VSM.lazyLoader = new VSMLazyLoader({
+                excludeSelectors: ['.swiper-slide']
+            });
+        }
+
+        // Slider-Instanz erstellen
+        if (!window.VSM.sliderMediaLoader) {
+            window.VSM.sliderMediaLoader = new VSMSliderMediaLoader();
+        }
+
+        // Alias für Abwärtskompatibilität
+        window.VSM.lazyMediaLoader = window.VSM.lazyLoader;
+
+        // LazyLoadInstance für alte API-Kompatibilität
+        window.VSM.lazyLoadInstance = {
+            update: () => {
+            }
+        };
+    });
+
+
+    // Handler für Duplizieren- und Neu-Buttons
+    document.addEventListener('click', function (event) {
+        var target = event.target.closest('.rsce_list_toolbar_duplicate, .rsce_list_toolbar_new, .rsce_list_toolbar_delete');
+        if (target) {
+            event.preventDefault();
+
+
+            // Warten Sie kurz, um sicherzustellen, dass die RSCE-Aktion abgeschlossen ist
+            setTimeout(function () {
+                var form = document.querySelector('form#tl_content');
+                if (form) {
+                    form.submit();
+                }
+            }, 200);
+        }
+    });
+
+</script>
 
 </body>
 </html>

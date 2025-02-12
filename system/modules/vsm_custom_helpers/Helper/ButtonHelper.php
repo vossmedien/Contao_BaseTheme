@@ -45,7 +45,7 @@ class ButtonHelper
                 $betreff = $btn->link_betreff ? "?subject=" . urlencode($btn->link_betreff) : '';
 
                 $buttonHTML .= "<a class=\"{$buttonClasses}\"";
-                $buttonHTML .= " data-aos=\"{$animationType}\"";
+                $buttonHTML .= " data-animation=\"{$animationType}\"";
                 $buttonHTML .= " href=\"{$buttonUrl}{$betreff}\"";
 
                 if (!empty($buttonId)) {

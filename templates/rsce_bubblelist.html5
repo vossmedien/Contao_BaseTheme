@@ -5,8 +5,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 ?>
 
 
-<div <?php echo $this->cssID; ?> class="content--element">
-    <div class="ce--inner <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner ">
 
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
@@ -19,7 +19,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
             null
         ); ?>
 
-        <div class="ce--bubble-list <?php if ($this->hide_circle): ?>no-border<?php endif; ?>"
+
+        <div class="ce--bubble-list container <?php if ($this->hide_circle): ?>no-border<?php endif; ?>"
              <?php if ($this->backgroundcolor) : ?>style="background-color: <?php echo $this->backgroundcolor; ?>" <?php endif; ?>>
             <div class="bl--inner ">
                 <div class="bl--list">

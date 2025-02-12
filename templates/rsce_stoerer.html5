@@ -7,9 +7,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 }
 
 // Hilfsfunktion zum Decodieren der Farbwerte
-function decodeColor($color)
-{
-    return html_entity_decode($color, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+if (!function_exists('decodeColor')) {
+    function decodeColor($color)
+    {
+        return html_entity_decode($color, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    }
 }
 
 

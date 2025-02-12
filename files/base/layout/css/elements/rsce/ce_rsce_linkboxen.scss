@@ -59,6 +59,11 @@ html body {
         transition: all 0.3s ease-in-out;
       }
 
+      .ce--buttons{
+        display: flex;
+        padding-bottom: 1rem;
+      }
+
       &.image-grayed-out {
         .image--holder {
           filter: grayscale(100%);
@@ -330,9 +335,9 @@ html body {
       .box-lower--wrapper {
         position: relative;
         flex: 1;
-        display: flex;
-        flex-flow: column wrap;
-        background-color: $gray-100;
+        //display: flex;
+        //flex-flow: column wrap;
+        background-color: var(--bs-light);
 
         .box--lower {
           //flex: 1;

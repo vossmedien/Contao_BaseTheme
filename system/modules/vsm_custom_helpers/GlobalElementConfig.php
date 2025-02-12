@@ -137,6 +137,7 @@ class GlobalElementConfig
             'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
             'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
             'btn-white' => 'Weißer Button mit schwarzer Schrift',
+             'btn-danger' => 'Roter Button',
         ];
     }
 

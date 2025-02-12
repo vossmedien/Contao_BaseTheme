@@ -10,8 +10,8 @@ if (!isset($this->size)) {
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element  <?php if ($this->separator_color): ?>with-border<?php endif; ?>" <?php if ($this->separator_color): ?>style="--linkboxes-separator-color: <?= $this->separator_color; ?>"<?php endif; ?>>
-    <div class="ce--inner <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?> <?php if ($this->separator_color): ?>with-border<?php endif; ?>" <?php if ($this->separator_color): ?>style="--linkboxes-separator-color: <?= $this->separator_color; ?>"<?php endif; ?>>
+    <div class="ce--inner">
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
@@ -50,7 +50,7 @@ if (!isset($this->size)) {
                 <div class="swiper-wrapper <?php if ($this->centered_slides) : ?>align-items-center<?php endif; ?>">
                     <?php endif; ?>
                     <?php foreach ($this->boxes as $i => $box) : ?>
-                        <div <?php if ($this->is_slider == 1): ?>data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php endif; ?>"<?php endif; ?> class="
+                        <div <?php if ($this->is_slider == 1): ?>data-animation="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php endif; ?>"<?php endif; ?> class="
 
                         <?php if ($this->is_slider == 2): ?>
                         swiper-slide
@@ -206,7 +206,7 @@ if (!isset($this->size)) {
                                             <?php if ($box->add_items == "modal") : ?>
                                                 <div class="ce--buttons  <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
                                                 <span class="d-inline-block btn     <?php if ($box->modal_button_size) : ?><?php echo $box->modal_button_size; ?><?php endif; ?> <?php echo $box->modal_button_type; ?>"
-                                                      data-aos="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php endif; ?>"
+                                                      data-animation="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php endif; ?>"
                                                       data-bs-toggle="modal"
                                                       data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"><?php echo $box->modal_button_text; ?></span>
                                                 </div>
@@ -268,7 +268,7 @@ if (!isset($this->size)) {
                                                 <?php if ($box->add_items == "modal" && !$box->linkoverlay) : ?>
                                                     <div class="ce--buttons justify-content-center <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
                                                          <span class="d-inline-block btn     <?php if ($box->modal_button_size) : ?><?php echo $box->modal_button_size; ?><?php endif; ?> <?php echo $box->modal_button_type; ?>"
-                                                               data-aos="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php endif; ?>"
+                                                               data-animation="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php endif; ?>"
                                                                data-bs-toggle="modal"
                                                                data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"><?php echo $box->modal_button_text; ?></span>
                                                     </div>
@@ -312,7 +312,7 @@ if (!isset($this->size)) {
     >
         <div class="modal-dialog">
             <div class="modal-content"
-                 data-aos="<?php if ($box->modal_animation_type) : ?><?php echo $box->modal_animation_type; ?><?php endif; ?>"
+                 data-animation="<?php if ($box->modal_animation_type) : ?><?php echo $box->modal_animation_type; ?><?php endif; ?>"
                  <?php if ($box->modal_backgroundcolor): ?>style="background-color: <?php echo $box->modal_backgroundcolor; ?>"<?php endif; ?>>
                 <div class="modal-body">
 

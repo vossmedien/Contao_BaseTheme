@@ -36,7 +36,7 @@ html, body, #wrapper{
       transition: background-position 0s ease-in-out;
 
       &:last-child > div:last-child {
-        padding-bottom: var(--main-gap);
+        margin-bottom: var(--main-gap);
       }
 
       .ce--inner {
@@ -51,7 +51,7 @@ html, body, #wrapper{
       .article-content > .moved-content {
         > *:not(.body-slider,.bgvideo, .ce_rsce_headline:not(:has(.text))) {
           position: relative;
-          padding-bottom: var(--main-gap);
+          margin-bottom: var(--main-gap);
 
           &:first-child {
             //padding-top: var(--main-gap);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ProjectTasksOptions">
-    <TaskOptions isEnabled="true">
+    <TaskOptions isEnabled="false">
       <option name="arguments" value="-c &quot;sass_file=$FileNameWithoutAllExtensions$.css &amp;&amp; /Users/vossmedien/.nvm/versions/node/v20.9.0/lib/node_modules/sass/sass.js --style=compressed --no-source-map --no-charset --no-error-css --quiet-deps --precision=5 --update $FileName$:$sass_file &amp;&amp; while [ ! -f $sass_file ] || [ $(( $(date +%s) - $(stat -f %m $sass_file) )) -gt 2 ]; do sleep 0.1; done &amp;&amp; /Users/vossmedien/.nvm/versions/node/v20.9.0/bin/postcss $sass_file -o $FileNameWithoutAllExtensions$.min.css --config /Users/vossmedien/.postcss/postcss.config.js --no-map&quot;" />
       <option name="checkSyntaxErrors" value="true" />
       <option name="description" />
@@ -21,5 +21,8 @@
       <option name="workingDir" value="$FileDir$" />
       <envs />
     </TaskOptions>
+    <enabled-global>
+      <option value="SCSS" />
+    </enabled-global>
   </component>
 </project>

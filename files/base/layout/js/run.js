@@ -62,24 +62,20 @@ const initMobileNav = () => {
 
 const initAnimations = () => {
     const CONFIG = {
-        // Mobile-Konfiguration (Bildschirmbreite <= 768px)
         mobile: {
             breakpoint: 768,
-            delay: 0.1,
             rootMargin: '0px 0px -25% 0px',
-            baseDelay: 0.1,
             visibilityThreshold: 0.1
         },
-
-        // Desktop-Konfiguration (Bildschirmbreite > 768px)
         desktop: {
-            delay: 0.1,
             rootMargin: '0px 0px -35% 0px',
-            baseDelay: 0.15,
             visibilityThreshold: 0.2
         },
-
-        animationClass: 'animate__animated'
+        animation: {
+            baseDelay: 0.25,    // Basis-Delay für das erste Element in jedem Container
+            increment: 0.2,      // Inkrement für weitere Elemente im selben Container
+            class: 'animate__animated'
+        }
     };
 
     let animatedElements = new Set();
@@ -94,7 +90,6 @@ const initAnimations = () => {
         if (elementHeight > viewportHeight) {
             return Math.max(0.1, baseThreshold * (viewportHeight / elementHeight));
         }
-
         return baseThreshold;
     };
 
@@ -115,54 +110,45 @@ const initAnimations = () => {
     const isElementInViewport = (element) => {
         const rect = element.getBoundingClientRect();
         const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-        const windowWidth = window.innerWidth || document.documentElement.clientWidth;
 
         const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
         const totalHeight = rect.bottom - rect.top;
         const visibilityRatio = visibleHeight / totalHeight;
 
-        const threshold = getElementVisibilityThreshold(element);
-
-        return visibilityRatio >= threshold;
+        return visibilityRatio >= getElementVisibilityThreshold(element);
     };
 
-    const getVisibleSiblings = (element) => {
-        const container = element.closest('.team-members') || element.parentElement;
-        if (!container) return [];
+const getImmediateAnimatableChildren = (container) => {
+    // Direkt die ce--stoerer Elemente oder ähnliche direkte Kinder finden
+    return Array.from(container.children)
+        .filter(child => {
+            return !animatedElements.has(child) &&
+                   isElementInViewport(child) &&
+                   (child.hasAttribute('data-animation') || child.hasAttribute('data-aos'));
+        });
+};
 
-        return Array.from(container.querySelectorAll('[data-animation], [data-aos]'))
-            .filter(el => !animatedElements.has(el) && isElementInViewport(el));
-    };
+const animateElement = (element, groupElements) => {
+    if (animatedElements.has(element)) return false;
 
-    const animateElement = (element, visibleSiblings) => {
-        if (animatedElements.has(element)) return false;
+    const animateClass = element.getAttribute('data-animation') || element.getAttribute('data-aos');
+    if (!animateClass) return false;
 
-        const animateClass = element.getAttribute('data-animation') || element.getAttribute('data-aos');
-        if (animateClass) {
-            const hasExistingDelay = element.style.animationDelay ||
-                element.getAttribute('data-animation-delay') ||
-                window.getComputedStyle(element).animationDelay !== '0s';
+    const hasExistingDelay = element.hasAttribute('data-animation-delay');
 
-            requestAnimationFrame(() => {
-                element.classList.add(...animateClass.split(' '), CONFIG.animationClass);
+    requestAnimationFrame(() => {
+        element.classList.add(...animateClass.split(' '), CONFIG.animation.class);
 
-                if (!hasExistingDelay) {
-                    const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
-                    const {delay, baseDelay} = isMobile ? CONFIG.mobile : CONFIG.desktop;
-
-                    if (visibleSiblings.length > 1) {
-                        const elementIndex = visibleSiblings.indexOf(element);
-                        element.style.animationDelay = `${baseDelay + (elementIndex * delay)}s`;
-                    } else {
-                        element.style.animationDelay = `${baseDelay}s`;
-                    }
-                }
-            });
-            animatedElements.add(element);
-            return true;
+        if (!hasExistingDelay) {
+            const elementIndex = Array.from(element.parentElement.children).indexOf(element);
+            const newDelay = CONFIG.animation.baseDelay + (elementIndex * CONFIG.animation.increment);
+            element.style.setProperty('animation-delay', `${newDelay}s`, 'important');
         }
-        return false;
-    };
+    });
+
+    animatedElements.add(element);
+    return true;
+};
 
     const setupObserver = () => {
         const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
@@ -170,23 +156,14 @@ const initAnimations = () => {
 
         observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                const element = entry.target;
-                const threshold = getElementVisibilityThreshold(element);
+                if (entry.isIntersecting && !animatedElements.has(entry.target)) {
+                    const parent = entry.target.parentElement;
+                    const groupElements = getImmediateAnimatableChildren(parent);
 
-                if (entry.intersectionRatio >= threshold) {
-                    if (!animatedElements.has(element)) {
-                        const visibleSiblings = getVisibleSiblings(element);
-
-                        if (visibleSiblings.length > 0) {
-                            visibleSiblings.forEach(sibling => {
-                                animateElement(sibling, visibleSiblings);
-                                observer.unobserve(sibling);
-                            });
-                        } else {
-                            animateElement(element, [element]);
-                            observer.unobserve(element);
-                        }
-                    }
+                    groupElements.forEach(element => {
+                        animateElement(element, groupElements);
+                        observer.unobserve(element);
+                    });
                 }
             });
         }, {
@@ -200,13 +177,13 @@ const initAnimations = () => {
         elements.forEach(element => {
             if (!animatedElements.has(element)) {
                 if (isElementInViewport(element)) {
-                    const visibleSiblings = getVisibleSiblings(element);
-                    if (visibleSiblings.length > 0) {
-                        visibleSiblings.forEach(sibling => {
-                            animateElement(sibling, visibleSiblings);
-                            observer.unobserve(sibling);
-                        });
-                    }
+                    const parent = element.parentElement;
+                    const groupElements = getImmediateAnimatableChildren(parent);
+
+                    groupElements.forEach(groupElement => {
+                        animateElement(groupElement, groupElements);
+                        observer.unobserve(groupElement);
+                    });
                 } else {
                     observer.observe(element);
                 }
@@ -221,7 +198,6 @@ const initAnimations = () => {
 
         scrollFunctions.push(handleElements);
         ResizeFunctions.push(handleElements);
-
     } catch (error) {
         console.error('Animation initialization failed:', error);
     }

@@ -55,7 +55,7 @@ return array(
                 'link' => array(
                     'label' => array('Link', ''),
                     'inputType' => 'url',
-                    'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'image' => array(
                     'label' => array('Bild', ''),
@@ -64,7 +64,6 @@ return array(
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,gif,svg',
                         'fieldType' => 'radio',
-                        'mandatory' => true,
                         'tl_class' => 'clr'
                     ),
                 ),

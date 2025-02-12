@@ -17,11 +17,15 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
             null
         ); ?>
 
-        <div class="row g-2 gy-4 ">
+        <div class="row g-2">
             <?php foreach ($this->services as $service): ?>
-                <div class="col-12 col-md-6 service-item" data-aos="<?php echo $this->animation_type; ?>">
+                <div class="col-12 col-md-4 service-item" data-aos="<?php echo $this->animation_type; ?>">
                     <div class="service-inner">
-                        <a href="<?php echo $service->link; ?>" class="service-image-link">
+                        <?php if ($service->link && $service->image): ?>
+                            <a href="<?php echo $service->link; ?>" class="service-image-link">
+                        <?php endif; ?>
+
+                        <?php if ($service->image): ?>
                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
                                 $service->image,
                                 null,
@@ -31,7 +35,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 false,
                                 false
                             ); ?>
-                        </a>
+                        <?php endif; ?>
+
+                        <?php if ($service->link && $service->image): ?>
+                            </a>
+                        <?php endif; ?>
 
                         <div class="service-content">
                             <h2 class="h4 service-title">
@@ -40,11 +48,12 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                             <div class="service-description"><?php echo $service->description; ?></div>
                         </div>
 
-                        <div class="button-wrapper pt-3 mt-auto">
-                            <a href="<?php echo $service->link; ?>" class="service-link">Mehr erfahren +</a>
-                        </div>
+                        <?php if ($service->link): ?>
+                            <div class="button-wrapper pt-3 mt-auto">
+                                <a href="<?php echo $service->link; ?>" class="service-link">Mehr erfahren +</a>
+                            </div>
+                        <?php endif; ?>
                     </div>
-
                 </div>
             <?php endforeach; ?>
         </div>

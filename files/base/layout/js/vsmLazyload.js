@@ -1,12 +1,15 @@
 class VSMLazyLoader {
     constructor(options = {}) {
+        this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
         this.options = {
             root: null,
-            rootMargin: '100px 0px',
+            rootMargin: this.isMobile ? '50px 0px' : '250px 0px',
             threshold: 0.01,
             excludeSelectors: [],
             spinnerEnabled: true,
-            timeout: 8000, // Erhöht für bessere Mobile-Performance
+            timeout: 8000,
+            maxSimultaneousLoads: this.isMobile ? 3 : 6,
             ...options
         };
 
@@ -28,11 +31,14 @@ class VSMLazyLoader {
             this.setupImageObserver();
             this.setupVideoObserver();
             this.setupMutationObserver();
-            this.setupScrollListeners();
+            if (!this.isMobile) {
+                this.setupScrollListeners();
+            }
             this.observeElements();
 
-            // Periodische Überprüfung für verlorene Elemente
-            setInterval(() => this.checkLostElements(), 10000);
+            if (!this.isMobile) {
+                setInterval(() => this.checkLostElements(), 10000);
+            }
         } else {
             this.loadAllMediaDirectly();
         }
@@ -43,19 +49,31 @@ class VSMLazyLoader {
             entries.forEach(entry => {
                 if (entry.isIntersecting && !this.loadedElements.has(entry.target) &&
                     this.shouldHandleElement(entry.target)) {
-                    this.loadImage(entry.target);
+                    if (entry.target.hasAttribute('data-bg')) {
+                        this.loadBackgroundImage(entry.target);
+                    } else if (entry.target.hasAttribute('data-src')) {
+                        this.loadImage(entry.target);
+                    }
                     this.imageObserver.unobserve(entry.target);
                 }
             });
-        }, this.options);
+        }, {
+            root: null,
+            rootMargin: this.isMobile ? '50px 0px' : this.options.rootMargin,
+            threshold: 0.01
+        });
 
-        // Scroll-Container spezifische Observer
+        // Scroll wrapper observer setup bleibt gleich
         document.querySelectorAll('.scroll-wrapper').forEach(scrollWrapper => {
             const scrollObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting && !this.loadedElements.has(entry.target) &&
                         this.shouldHandleElement(entry.target)) {
-                        this.loadImage(entry.target);
+                        if (entry.target.hasAttribute('data-bg')) {
+                            this.loadBackgroundImage(entry.target);
+                        } else if (entry.target.hasAttribute('data-src')) {
+                            this.loadImage(entry.target);
+                        }
                         scrollObserver.unobserve(entry.target);
                     }
                 });
@@ -65,9 +83,9 @@ class VSMLazyLoader {
                 threshold: 0
             });
 
-            scrollWrapper.querySelectorAll('img[data-src], img.lazy').forEach(img => {
-                if (!img.classList.contains('loaded')) {
-                    scrollObserver.observe(img);
+            scrollWrapper.querySelectorAll('[data-src], [data-bg]').forEach(element => {
+                if (!element.classList.contains('loaded')) {
+                    scrollObserver.observe(element);
                 }
             });
         });
@@ -76,16 +94,74 @@ class VSMLazyLoader {
     setupVideoObserver() {
         this.videoObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting && !this.loadedElements.has(entry.target) &&
-                    this.shouldHandleElement(entry.target)) {
-                    this.loadVideo(entry.target);
-                    this.videoObserver.unobserve(entry.target);
+                const video = entry.target;
+
+                if (this.isMobile) {
+                    if (entry.isIntersecting) {
+                        if (!video.classList.contains('loaded')) {
+                            this.loadVideo(video);
+                        } else if (video.paused && video.hasAttribute('autoplay')) {
+                            video.play().catch(console.warn);
+                        }
+                    } else {
+                        this.unloadVideo(video);
+                    }
+                } else if (entry.isIntersecting && !this.loadedElements.has(video) &&
+                    this.shouldHandleElement(video)) {
+                    this.loadVideo(video);
+                    this.videoObserver.unobserve(video);
                 }
             });
-        }, this.options);
+        }, {
+            root: null,
+            rootMargin: this.isMobile ? '50px 0px' : this.options.rootMargin,
+            threshold: 0.01
+        });
+    }
+
+    unloadVideo(video) {
+        if (!this.isMobile) return;
+
+        // Video stoppen und zurücksetzen
+        video.pause();
+        video.currentTime = 0;
+
+        // Wenn das Video noch am Laden ist
+        if (this.loadingVideos.has(video)) {
+            this.loadingVideos.delete(video);
+            this.removeSpinner(video);
+        }
+
+        // Aus loadedElements entfernen
+        this.loadedElements.delete(video);
+
+        // Alle Event-Listener entfernen
+        video.removeAttribute('src');
+        video.load();
+
+        // Sources wiederherstellen
+        video.querySelectorAll('source').forEach(source => {
+            const currentSrc = source.getAttribute('src');
+            if (currentSrc) {
+                source.setAttribute('data-src', currentSrc);
+                source.removeAttribute('src');
+            }
+        });
+
+        // Original data-src wiederherstellen wenn vorhanden
+        const originalSrc = video.getAttribute('data-original-src');
+        if (originalSrc) {
+            video.setAttribute('data-src', originalSrc);
+        }
+
+        // Klassen zurücksetzen
+        video.classList.remove('loading', 'loaded');
+        video.classList.add('lazy');
     }
 
     setupScrollListeners() {
+        if (this.isMobile) return; // Skip auf Mobile
+
         let scrollTimeout;
         const scrollHandler = () => {
             if (scrollTimeout) {
@@ -113,7 +189,7 @@ class VSMLazyLoader {
                         if (node.nodeType === 1 && this.shouldHandleElement(node)) {
                             this.handleNewElement(node);
                             if (node.querySelectorAll) {
-                                node.querySelectorAll('img[data-src], video source[data-src], video[data-src]')
+                                node.querySelectorAll('[data-src], [data-bg]')
                                     .forEach(element => {
                                         if (this.shouldHandleElement(element)) {
                                             this.handleNewElement(element);
@@ -139,10 +215,14 @@ class VSMLazyLoader {
     }
 
     checkVisibleElements(container = document) {
-        const elements = container.querySelectorAll('img[data-src], video[data-src]');
+        if (this.isMobile) return; // Skip auf Mobile
+
+        const elements = container.querySelectorAll('[data-src], [data-bg]');
         elements.forEach(element => {
             if (!this.loadedElements.has(element) && this.isInViewport(element)) {
-                if (element.tagName.toLowerCase() === 'video') {
+                if (element.hasAttribute('data-bg')) {
+                    this.loadBackgroundImage(element);
+                } else if (element.tagName.toLowerCase() === 'video') {
                     this.loadVideo(element);
                 } else {
                     this.loadImage(element);
@@ -152,9 +232,13 @@ class VSMLazyLoader {
     }
 
     checkLostElements() {
-        document.querySelectorAll('img.lazy:not(.loaded), video.lazy:not(.loaded)').forEach(element => {
+        if (this.isMobile) return; // Skip auf Mobile
+
+        document.querySelectorAll('[data-src]:not(.loaded), [data-bg]:not(.loaded)').forEach(element => {
             if (!this.loadedElements.has(element) && this.isInViewport(element)) {
-                if (element.tagName.toLowerCase() === 'video') {
+                if (element.hasAttribute('data-bg')) {
+                    this.loadBackgroundImage(element);
+                } else if (element.tagName.toLowerCase() === 'video') {
                     this.loadVideo(element);
                 } else {
                     this.loadImage(element);
@@ -180,15 +264,17 @@ class VSMLazyLoader {
             this.handleSpinner(element);
         }
 
-        if (element.tagName.toLowerCase() === 'video' ||
+        if (element.hasAttribute('data-bg')) {
+            this.imageObserver.observe(element);
+        } else if (element.tagName.toLowerCase() === 'video' ||
             (element.tagName.toLowerCase() === 'source' && element.parentElement.tagName.toLowerCase() === 'video')) {
             const videoElement = element.tagName.toLowerCase() === 'source' ? element.parentElement : element;
-            if (videoElement.classList.contains('lazy') || videoElement.hasAttribute('data-src')) {
-                this.loadVideo(videoElement);
+            if (videoElement.hasAttribute('data-src')) {
+                this.videoObserver.observe(videoElement);
             }
         } else if (element.tagName.toLowerCase() === 'img') {
-            if (element.classList.contains('lazy') || element.hasAttribute('data-src')) {
-                this.loadImage(element);
+            if (element.hasAttribute('data-src')) {
+                this.imageObserver.observe(element);
             }
         }
     }
@@ -236,12 +322,55 @@ class VSMLazyLoader {
         });
     }
 
+    loadBackgroundImage(element) {
+        if (this.loadedElements.has(element)) return Promise.resolve();
+
+        return new Promise((resolve, reject) => {
+            const bgUrl = element.getAttribute('data-bg');
+            if (!bgUrl) {
+                reject('Kein data-bg Attribut gefunden');
+                return;
+            }
+
+            const img = new Image();
+            img.onload = () => {
+                element.style.backgroundImage = `url('${bgUrl}')`;
+                element.classList.add('loaded');
+                element.removeAttribute('data-bg');
+                this.loadedElements.add(element);
+                this.removeSpinner(element);
+                resolve();
+            };
+
+            img.onerror = (error) => {
+                console.error('Fehler beim Laden des Hintergrundbildes:', error);
+                this.removeSpinner(element);
+                reject(error);
+            };
+
+            if (this.options.spinnerEnabled) {
+                this.handleSpinner(element);
+            }
+
+            img.src = bgUrl;
+
+            setTimeout(() => {
+                if (!this.loadedElements.has(element)) {
+                    element.style.backgroundImage = `url('${bgUrl}')`;
+                    element.classList.add('loaded');
+                    this.loadedElements.add(element);
+                    this.removeSpinner(element);
+                    resolve();
+                }
+            }, this.options.timeout);
+        });
+    }
+
     loadImage(img) {
         if (this.loadedElements.has(img)) return Promise.resolve();
 
         return new Promise((resolve, reject) => {
             const handleLoad = () => {
-                img.classList.remove('lazy', 'loading');
                 img.classList.add('loaded');
                 this.loadedElements.add(img);
                 this.removeSpinner(img);
@@ -253,8 +382,6 @@ class VSMLazyLoader {
                 this.removeSpinner(img);
                 reject(error);
             };
-
-            img.classList.add('loading');
 
             if (img.closest('picture')) {
                 const sources = img.closest('picture').querySelectorAll('source[data-srcset]');
@@ -282,7 +409,7 @@ class VSMLazyLoader {
                 img.addEventListener('error', handleError, {once: true});
 
                 setTimeout(() => {
-                    if (img.classList.contains('loading')) {
+                    if (!this.loadedElements.has(img)) {
                         handleLoad();
                     }
                 }, this.options.timeout);
@@ -293,8 +420,23 @@ class VSMLazyLoader {
     loadVideo(video) {
         if (this.loadedElements.has(video) || this.loadingVideos.has(video)) return Promise.resolve();
 
+        // Prüfe Anzahl aktuell ladender Videos auf Mobile
+        if (this.isMobile) {
+            const currentlyLoading = document.querySelectorAll('video.loading').length;
+            if (currentlyLoading >= this.options.maxSimultaneousLoads) {
+                setTimeout(() => this.loadVideo(video), 500);
+                return Promise.resolve();
+            }
+        }
+
+        // Auf Mobile: Alte src sichern
+        if (this.isMobile && video.getAttribute('data-src')) {
+            video.setAttribute('data-original-src', video.getAttribute('data-src'));
+        }
+
         const videoId = Math.random().toString(36).substr(2, 9);
         this.loadingVideos.set(video, {id: videoId, startTime: Date.now()});
+        video.classList.add('loading');
 
         return new Promise((resolve, reject) => {
             video.setAttribute('playsinline', '');
@@ -313,16 +455,19 @@ class VSMLazyLoader {
             const cleanup = () => {
                 this.removeSpinner(video);
                 this.loadingVideos.delete(video);
+                video.classList.remove('loading');
             };
 
             const success = () => {
-                video.classList.remove('lazy');
                 video.classList.add('loaded');
                 this.loadedElements.add(video);
                 cleanup();
-                this.videoObserver?.unobserve(video);
 
-                if (video.hasAttribute('autoplay')) {
+                if (!this.isMobile) {
+                    this.videoObserver.unobserve(video);
+                }
+
+                if (video.hasAttribute('autoplay') && this.isInViewport(video)) {
                     video.play().catch(() => {
                         video.muted = true;
                         video.play().catch(console.warn);
@@ -334,18 +479,29 @@ class VSMLazyLoader {
             const error = (e) => {
                 console.error('Video load error:', e);
                 cleanup();
-                this.showVideoFallback(video);
+                if (this.isMobile) {
+                    this.unloadVideo(video);
+                } else {
+                    this.showVideoFallback(video);
+                }
                 reject(e);
             };
 
             video.addEventListener('loadeddata', success, {once: true});
             video.addEventListener('error', error, {once: true});
 
-            setTimeout(() => {
+            const timeoutId = setTimeout(() => {
                 if (this.loadingVideos.has(video)) {
-                    cleanup();
+                    if (this.isMobile) {
+                        this.unloadVideo(video);
+                    } else {
+                        cleanup();
+                        this.showVideoFallback(video);
+                    }
                 }
             }, this.options.timeout);
+
+            video.addEventListener('loadeddata', () => clearTimeout(timeoutId), {once: true});
 
             video.load();
         });
@@ -379,7 +535,7 @@ class VSMLazyLoader {
     }
 
     observeElements() {
-        document.querySelectorAll('img[data-src], video[data-src]').forEach(element => {
+        document.querySelectorAll('[data-src], [data-bg]').forEach(element => {
             if (!this.loadedElements.has(element) && this.shouldHandleElement(element)) {
                 if (this.options.spinnerEnabled) {
                     this.handleSpinner(element);
@@ -394,9 +550,11 @@ class VSMLazyLoader {
     }
 
     loadAllMediaDirectly() {
-        document.querySelectorAll('img[data-src], video[data-src]').forEach(element => {
+        document.querySelectorAll('[data-src], [data-bg]').forEach(element => {
             if (this.shouldHandleElement(element)) {
-                if (element.tagName.toLowerCase() === 'video') {
+                if (element.hasAttribute('data-bg')) {
+                    this.loadBackgroundImage(element);
+                } else if (element.tagName.toLowerCase() === 'video') {
                     this.loadVideo(element);
                 } else {
                     this.loadImage(element);
@@ -420,8 +578,7 @@ window.VSM.lazyLoader = new VSMLazyLoader();
 
 // Abwärtskompatibilität
 window.VSM.lazyLoadInstance = {
-    update: () => {
-    }
+    update: () => {}
 };
 
 // Event-Listener für dynamisch nachgeladene Videos
