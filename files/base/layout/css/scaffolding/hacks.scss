@@ -4,7 +4,6 @@
 
 
 /* AOS */
-
 [data-animation*="animate__"],
 [data-aos*="animate__"],
 [class*="animate__"] {
@@ -18,16 +17,6 @@
   }
 }
 
-
-.lazy {
-  opacity: 0;
-  transition: opacity 0.25s ease-in-out;
-
-  &.loaded,
-  &[loading="eager"] {
-    opacity: 1;
-  }
-}
 
 
 .container {

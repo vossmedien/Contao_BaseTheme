@@ -2,13 +2,14 @@
     width: 50px;
     height: 50px;
     border: 5px solid #f3f3f3;
-    border-top: 5px solid #3498db;
+    border-top: 5px solid var(--bs-primary);
     border-radius: 50%;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     animation: spin 1s linear infinite;
+    transition: all .3s ease-in-out;
 }
 
 @keyframes spin {
@@ -37,7 +38,7 @@
 .video-error-message button {
     margin: 10px;
     padding: 8px 16px;
-    background: #3498db;
+    background: var(--bs-primary);
     border: none;
     border-radius: 4px;
     color: white;
@@ -45,10 +46,25 @@
 }
 
 .video-error-message button:hover {
-    background: #2980b9;
+    background: var(--bs-primary);
 }
 
 .content-media{
     height: 100%;
     width: 100%;
+}
+
+
+.lazy {
+  opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+
+  &.loaded,
+  &[loading="eager"] {
+    opacity: 1;
+
+    & + .lazy-loader-spinner{
+      opacity: 0;
+    }
+  }
 }
