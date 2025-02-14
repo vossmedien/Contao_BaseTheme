@@ -46,7 +46,7 @@ if ($GLOBALS['TL_CONFIG']['useRTE']):
                 <?php $this->endblock(); ?>
 
                 <?php $this->block('content_css'); ?>
-                content_css: [document.documentElement.dataset.colorScheme === 'dark' ? '<?= $this->asset('tinymce-dark.css', 'system/themes/' . Backend::getTheme()) ?>' : '<?= $this->asset('tinymce.css', 'system/themes/' . Backend::getTheme()) ?>', 'files/base/layout/css/style.min.css', 'files/base/backend/tinymce.min.css'],
+                content_css: [document.documentElement.dataset.colorScheme === 'dark' ? '<?= $this->asset('tinymce-dark.css', 'system/themes/' . Backend::getTheme()) ?>' : '<?= $this->asset('tinymce.css', 'system/themes/' . Backend::getTheme()) ?>', 'files/base/layout/css/style.css', 'files/base/backend/tinymce.min.css'],
                 importcss_selector_converter: function (selector) {
                     return false;
                 },

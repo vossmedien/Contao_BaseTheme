@@ -1,5 +1,5 @@
 <div <?php echo $this->cssID; ?> class="<?php echo $this->class; ?> content--element">
-    <div class="ce--inner ">
+    <div class="ce--inner container">
 
 
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
