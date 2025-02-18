@@ -12,7 +12,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/ui-handler.js|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/stripe-payment-handler.js|static';
 
-      $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_product_payment.min.css|static';
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_product_payment.min.css|static';
 }
 
 // Generische Produktdaten-Aufbereitung
@@ -70,12 +70,8 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
         ); ?>
 
         <?php if ($this->description): ?>
-            <div class="row">
-                <div class="col-12">
-                    <div class="description mb-4">
-                        <?= $this->description ?>
-                    </div>
-                </div>
+            <div class="description mb-4" data-animation="<?= $this->animation_type ?>">
+                <?= $this->description ?>
             </div>
         <?php endif; ?>
 
