@@ -57,7 +57,7 @@ $this->bodyAttributes = $this
 
 </head>
 <body<?= $this->bodyAttributes ?>>
-<div class="BodyScrollToTop"><i class="fa-sharp fa-light fa-arrow-up"></i></div>
+<div class="BodyScrollToTop"><i class="fasl fa-arrow-up "></i></div>
 <?php $this->block('body'); ?>
 <?php $this->sections('top'); ?>
 
