@@ -10,8 +10,8 @@ if (!isset($this->size)) {
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?> <?php if ($this->separator_color): ?>with-border<?php endif; ?>" <?php if ($this->separator_color): ?>style="--linkboxes-separator-color: <?= $this->separator_color; ?>"<?php endif; ?>>
-    <div class="ce--inner">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?> <?php if ($this->separator_color): ?>with-border<?php endif; ?>" <?php if ($this->separator_color): ?>style="--linkboxes-separator-color: <?= $this->separator_color; ?>"<?php endif; ?>>
+    <div class="ce--inner ">
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,

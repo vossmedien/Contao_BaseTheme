@@ -5,8 +5,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element course-schedule">
-    <div class="ce--inner <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element course-schedule <?php echo $this->class; ?>">
+    <div class="ce--inner ">
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,

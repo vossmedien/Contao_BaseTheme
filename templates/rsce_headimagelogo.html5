@@ -117,7 +117,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 </div>
 
                                 <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1): ?>
-                                    <div data-aos="<?= $slide->animation_type ?>" class="mainimage--content">
+                                    <div data-animation="<?= $slide->animation_type ?>" class="mainimage--content">
                                         <div class="mainimage--content-inner <?= $slide->textbox_position ?> <?= $slide->text_align ?>"
                                              style="<?= $slide->text_color ? "color: {$slide->text_color};" : '' ?> <?= $slide->maxWidth ? "width: 100%; max-width: {$slide->maxWidth};" : '' ?>">
                                             <div class="mainimage--content-inner--wrapper">
@@ -144,7 +144,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                             </div>
 
                                             <?php if (($slide->text_infotext || count($slide->buttons) >= 1) && $slide->own_box): ?>
-                                                <div class="mainimage--content-inner--wrapper extra mt-3" data-aos="<?= $slide->animation_type ?>">
+                                                <div class="mainimage--content-inner--wrapper extra mt-3" data-animation="<?= $slide->animation_type ?>">
                                                     <div class="mainimage--content-inner--holder extra">
                                                         <?php if ($slide->text_infotext): ?>
                                                             <div class="infotext--text mt-0">
@@ -178,7 +178,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
         <?php if ($this->boxed_image): ?>
             <div class="boxed-logo">
-                <div class="boxed-logo--inner" data-aos="<?= $this->boxed_image_animation_type ?? '' ?>">
+                <div class="boxed-logo--inner" data-animation="<?= $this->boxed_image_animation_type ?? '' ?>">
                     <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->boxed_image, null, null, $this->boxed_image_size, "", false, false, true) ?>
                 </div>
             </div>

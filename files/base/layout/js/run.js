@@ -124,14 +124,14 @@ const getImmediateAnimatableChildren = (container) => {
         .filter(child => {
             return !animatedElements.has(child) &&
                    isElementInViewport(child) &&
-                   (child.hasAttribute('data-animation') || child.hasAttribute('data-aos'));
+                   (child.hasAttribute('data-animation'));
         });
 };
 
 const animateElement = (element, groupElements) => {
     if (animatedElements.has(element)) return false;
 
-    const animateClass = element.getAttribute('data-animation') || element.getAttribute('data-aos');
+    const animateClass = element.getAttribute('data-animation');
     if (!animateClass) return false;
 
     const hasExistingDelay = element.hasAttribute('data-animation-delay');
@@ -173,7 +173,7 @@ const animateElement = (element, groupElements) => {
     };
 
     const handleElements = () => {
-        const elements = document.querySelectorAll('[data-animation], [data-aos]');
+        const elements = document.querySelectorAll('[data-animation]');
         elements.forEach(element => {
             if (!animatedElements.has(element)) {
                 if (isElementInViewport(element)) {

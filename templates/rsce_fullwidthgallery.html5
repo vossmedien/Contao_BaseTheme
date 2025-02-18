@@ -20,7 +20,7 @@
         <?php endif; ?>
 
         <?php if ($this->gallery): ?>
-            <div class="ce--fullwidthgallery" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php endif; ?>">
+            <div class="ce--fullwidthgallery" data-animation="<?= $this->animation_type; ?>">
                 <div class="row g-0 justify-content-center">
                     <style>
                         <?php foreach ($this->gallery as $x => $e) : ?>
@@ -58,7 +58,7 @@
                         }
                     ?>
                         <div class="<?= $e->column_width; ?> <?php if ($e->show_contents): ?>has-hovercontent<?php endif; ?>"
-                             data-aos="<?php if ($e->animation_type) : ?><?php echo $e->animation_type; ?><?php endif; ?>">
+                             data-animation="<?php if ($e->animation_type) : ?><?php echo $e->animation_type; ?><?php endif; ?>">
                             <div class="gallery-column gallery-column-<?= $this->id; ?>-<?= $x; ?>">
                                 <div class="gallery-column--inner">
                                     <div class="column--image-holder">
@@ -124,7 +124,7 @@
                                                                    class="btn <?= $button->link_type; ?> <?= $button->link_size; ?> <?php if ($button->new_tab): ?>_blank<?php endif; ?>"
                                                                    title="<?= $button->link_text; ?>"
                                                                    <?php if ($button->link_betreff): ?>subject="<?= $button->link_betreff; ?>"<?php endif; ?>
-                                                                   data-aos="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php endif; ?>"><?= $button->link_text; ?></a>
+                                                                   data-animation="<?php if ($button->animation_type) : ?><?php echo $button->animation_type; ?><?php endif; ?>"><?= $button->link_text; ?></a>
                                                             <?php endif; ?>
                                                         <?php endforeach; ?>
                                                     </div>

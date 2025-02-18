@@ -202,7 +202,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                         <div class="kachel-column-width--indicator <?php if ($row->expand_left_kachel): ?>expandable<?php endif; ?>">
                                             <div class="column-kachel--wrapper  <?php if ($row->kachel_left_url): ?> with-url<?php endif; ?> <?php echo $row->kachel_left_position; ?>">
                                                 <div class="column--kachel <?php echo $row->kachel_left_text_position; ?>"
-                                                     data-aos="<?php if ($row->animation_type_left_kachel) : ?><?php echo $row->animation_type_left_kachel; ?><?php endif; ?>"
+                                                     data-animation="<?php if ($row->animation_type_left_kachel) : ?><?php echo $row->animation_type_left_kachel; ?><?php endif; ?>"
                                                      style="
                                                      <?php if ($row->kachel_left_background_color): ?>
                                                              background-color: <?= $row->kachel_left_background_color;?>;
@@ -264,7 +264,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                                     <?php if ($row->content) : ?>
                                         <div class="content--text"
-                                             data-aos="<?= $row->animation_type ? $row->animation_type : '' ?>">
+                                             data-animation="<?= $row->animation_type ? $row->animation_type : '' ?>">
                                             <?php echo $row->content; ?>
                                         </div>
                                     <?php endif; ?>
@@ -293,7 +293,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                             <div class="kachel-column-width--indicator <?php if ($row->reverse) : ?>start-0<?php else: ?>end-0<?php endif; ?> <?php if ($row->expand_right_kachel): ?>expandable<?php endif; ?>">
                                                 <div class="column-kachel--wrapper <?php echo $row->kachel_right_position; ?>  <?php if ($row->kachel_right_url): ?> with-url<?php endif; ?>">
                                                     <div class="column--kachel  <?php echo $row->kachel_right_text_position; ?>"
-                                                         data-aos="<?php if ($row->animation_type_right_kachel) : ?><?php echo $row->animation_type_right_kachel; ?><?php endif; ?>"
+                                                         data-animation="<?php if ($row->animation_type_right_kachel) : ?><?php echo $row->animation_type_right_kachel; ?><?php endif; ?>"
                                                          style="
                                                          <?php if ($row->kachel_right_background_color): ?>
                                                                  background-color: <?= $row->kachel_right_background_color;?>;
@@ -399,9 +399,9 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($row->content_rightcol) : ?>
-                                        <div data-aos="<?php if ($row->animation_type_image_col) : ?><?php echo $row->animation_type_image_col; ?><?php endif; ?>" class="image--inner">
+                                        <div data-animation="<?php if ($row->animation_type_image_col) : ?><?php echo $row->animation_type_image_col; ?><?php endif; ?>" class="image--inner">
                                             <div class="image-col--extra-text"
-                                                 data-aos="<?= $row->animation_type ? $row->animation_type : '' ?>">
+                                                 data-animation="<?= $row->animation_type ? $row->animation_type : '' ?>">
                                                 <?php echo $row->content_rightcol; ?>
                                             </div>
                                         </div>

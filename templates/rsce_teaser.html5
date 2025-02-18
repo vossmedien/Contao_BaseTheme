@@ -49,7 +49,7 @@ $inlineStyleString = implode(' ', $inlineStyles);
             ); ?>
 
             <?php if ($this->text): ?>
-                <div class="job-teaser__text" data-aos="<?= $this->animation_type ?>">
+                <div class="job-teaser__text" data-animation="<?= $this->animation_type ?>">
                     <?= $this->text ?>
                 </div>
             <?php endif; ?>

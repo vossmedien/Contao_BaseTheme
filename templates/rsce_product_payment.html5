@@ -55,7 +55,6 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
      }'
 ></div>
 
-
 <!-- Produkt-Anzeige -->
 <div <?php echo $this->cssID; ?> class="<?= $this->class ?> content--element product-cards">
     <div class="ce--inner">
@@ -83,7 +82,7 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
         <div class="grid g-4">
             <?php foreach ($this->products as $index => $product): ?>
                 <?php if ($product->status !== 'hidden'): ?>
-                    <div class="g-col-12 g-col-md-6 g-col-lg-3" data-aos="<?= $this->animation_type ?>">
+                    <div class="g-col-12 g-col-md-6 g-col-lg-3" data-animation="<?= $this->animation_type ?>">
                         <div class="card h-100 <?= $product->status === 'sold_out' ? 'product-sold-out' : '' ?>">
                             <?php if ($product->image): ?>
                                 <div class="card-img-top">

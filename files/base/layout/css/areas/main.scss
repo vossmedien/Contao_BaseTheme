@@ -45,6 +45,12 @@ html, body, #wrapper{
 
       .content--element {
         z-index: 3;
+
+        &[class*="bg-"]{
+          > .ce--inner{
+            @extend .container;
+          }
+        }
       }
 
       .article-content:not(:has(.moved-content)),

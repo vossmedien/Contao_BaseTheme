@@ -4,11 +4,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php endif; ?>">
-    <div class="ce--inner <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>" data-animation="<?= $this->animation_type; ?>">
+    <div class="ce--inner ">
         <div class="row g-3 flex-md-row-reverse align-items-center">
 
-            <div class="col-md-5 text-center text-md-start" data-aos="animate__fadeIn">
+            <div class="col-md-5 text-center text-md-start" data-animation="animate__fadeIn">
                 <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
                     $this->topline,
                     $this->headline,
@@ -26,7 +26,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
             <div class="col-md-7">
                 <div class="row gy-3 justify-content-center g-md-2 ">
                     <?php foreach ($this->partners as $partner): ?>
-                        <div class="col-md-6 col-lg-4" data-aos="<?php if ($partner->animation_type) : ?><?php echo $partner->animation_type; ?><?php endif; ?>">
+                        <div class="col-md-6 col-lg-4" data-animation="<?php if ($partner->animation_type) : ?><?php echo $partner->animation_type; ?><?php endif; ?>">
                             <div class="text-center text-base">
                                 <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($partner->image, null, $partner->name, $this->size, "mb-2 rounded-circle", false, false); ?>
                                 <h3 class="mb-0 text-base fw-bold"><?= $partner->name; ?></h3>

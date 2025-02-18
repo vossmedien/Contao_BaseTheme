@@ -46,7 +46,7 @@ foreach ($columns as $columnIndex => &$columnVideos) {
 ?>
 
 
-        <div class="container">
+
             <div class="video-grid" id="<?= $gridId ?>">
                 <div class="video-columns">
                     <?php foreach ($columns as $columnIndex => $columnVideos): ?>
@@ -102,7 +102,7 @@ foreach ($columns as $columnIndex => &$columnVideos) {
                     <?php endforeach; ?>
                 </div>
             </div>
-        </div>
+
 
         <!-- Mobile View -->
         <div class="video-list d-lg-none">

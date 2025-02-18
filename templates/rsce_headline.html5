@@ -13,7 +13,7 @@
 
 
         <?php if ($this->desc): ?>
-            <div data-aos="<?= $this->animation_type;?>" class="text">
+            <div data-animation="<?= $this->animation_type;?>" class="text">
                 <?= $this->desc; ?>
             </div>
         <?php endif; ?>

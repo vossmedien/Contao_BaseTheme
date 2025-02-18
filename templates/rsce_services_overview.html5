@@ -5,8 +5,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element services-overview">
-    <div class="ce--inner <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element services-overview <?= $this->class; ?>">
+    <div class="ce--inner">
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
@@ -23,7 +23,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 <div class="col-md-6">
                     <ul class="services-list">
                         <?php foreach ($this->services as $index => $service): ?>
-                            <li data-aos="<?php echo $this->animation_type; ?>" class="service-item" data-index="<?php echo $index; ?>">
+                            <li data-animation="<?php echo $this->animation_type; ?>" class="service-item" data-index="<?php echo $index; ?>">
                                 <a href="<?php echo $service->link; ?>" class="service-link">
                                     <h3 class="mb-0 h5"><i class="fasl fa-long-arrow-right"></i> <?php echo $service->title; ?></h3>
                                 </a>
@@ -31,7 +31,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                         <?php endforeach; ?>
                     </ul>
                 </div>
-                <div class="col-md-6 d-none d-md-block" data-aos="<?php echo $this->animation_type; ?>">
+                <div class="col-md-6 d-none d-md-block" data-animation="<?php echo $this->animation_type; ?>">
                     <div class="service-image-container h-100">
                         <?php foreach ($this->services as $index => $service): ?>
                             <div class="service-image <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">

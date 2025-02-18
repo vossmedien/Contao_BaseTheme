@@ -7,25 +7,25 @@ $uniqueId = 'content-block-' . uniqid();
 $isTwoColumn = $this->layout === 'two_column';
 ?>
 
-<div id="<?= $uniqueId ?>" <?php echo $this->cssID; ?> class=" content--element" data-aos="<?php echo $this->animation_type; ?>">
-    <div class="ce--inner  <?php echo $isTwoColumn ? 'offset-padding-sm-bottom' : ''; ?> <?php echo $this->class; ?>">
+<div id="<?= $uniqueId ?>" <?php echo $this->cssID; ?> class="<?php echo $this->class; ?> content--element" data-animation="<?php echo $this->animation_type; ?>">
+    <div class="ce--inner  <?php echo $isTwoColumn ? 'offset-padding-sm-bottom' : ''; ?> ">
         <div class="row <?php echo $isTwoColumn ? 'g-0 flex-lg-row-reverse' : 'flex-column'; ?>">
             <?php if ($isTwoColumn && $this->image): ?>
-            <div class="col-lg-6" data-aos="animate__fadeIn">
+            <div class="col-lg-6" data-animation="animate__fadeIn">
                 <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->headline, $this->size, "img-fluid", false, false); ?>
             </div>
             <?php endif; ?>
 
             <div class="<?php echo $isTwoColumn ? 'col-lg-6 offset-all-margin-sm-bottom' : 'col-12'; ?>">
                 <div class="  <?php echo $isTwoColumn ? 'p-5 p-lg-8' : ''; ?> d-flex flex-column justify-content-center <?php if ($this->pull_up_next_element): ?>pull-bottom<?php endif;?> content-block__text-area <?= $this->text_background_image ? 'has-background lazy' : '' ?>"
-                     data-aos="animate__fadeIn"
+                     data-animation="animate__fadeIn"
                      <?php if ($this->text_background_image): ?>
                      data-bg="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($this->text_background_image, $this->size_background); ?>"
                      <?php endif; ?>
                      style="<?= $this->text_color ? 'color: #' . $this->text_color . ';' : '' ?>">
 
                       <?php if (!$isTwoColumn && $this->image): ?>
-                        <div class="img-container" data-aos="animate__fadeIn">
+                        <div class="img-container" data-animation="animate__fadeIn">
                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->headline, $this->size, "img-fluid", false, false); ?>
                         </div>
                         <?php endif; ?>

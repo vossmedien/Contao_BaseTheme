@@ -52,7 +52,7 @@
   flex-flow: column wrap;
   margin-bottom: var(--current-headline-spacing);
 
-  @extend .container;
+  //@extend .container;
 
   * {
     margin: 0 !important;

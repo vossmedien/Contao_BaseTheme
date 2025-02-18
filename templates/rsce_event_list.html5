@@ -4,8 +4,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element event-list">
-    <div class="ce--inner <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element event-list  <?php echo $this->class; ?>">
+    <div class="ce--inner">
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
@@ -17,9 +17,9 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
             null
         ); ?>
 
-        <div class="events" data-aos="<?php echo $this->animation_type; ?>">
+        <div class="events" data-animation="<?php echo $this->animation_type; ?>">
             <?php foreach ($this->events as $event): ?>
-                <div data-aos="<?= $this->animation_type;?>" class="event" itemscope itemtype="http://schema.org/Event">
+                <div data-animation="<?= $this->animation_type;?>" class="event" itemscope itemtype="http://schema.org/Event">
                     <div class="event-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="29.002" height="32.225" viewBox="0 0 29.002 32.225">
                             <path id="calendar" d="M12.556,6.222h12.89V3h3.222V6.222H30.28A3.222,3.222,0,0,1,33.5,9.445V32a3.222,3.222,0,0,1-3.222,3.222H7.722A3.222,3.222,0,0,1,4.5,32V9.445A3.222,3.222,0,0,1,7.722,6.222H9.334V3h3.222ZM7.722,12.667V32H30.28V12.667ZM10.945,17.5h3.222v3.222H10.945Zm6.445,0h3.222v3.222H17.39Zm6.445,0h3.222v3.222H23.835Zm0,6.445h3.222v3.222H23.835Zm-6.445,0h3.222v3.222H17.39Zm-6.445,0h3.222v3.222H10.945Z" transform="translate(-4.5 -3)" fill="#3e4e58" fill-rule="evenodd"/>

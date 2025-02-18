@@ -4,8 +4,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element services-grid">
-    <div class="ce--inner <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="content--element services-grid <?php echo $this->class; ?>">
+    <div class="ce--inner ">
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
@@ -17,15 +17,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
             null
         ); ?>
 
-        <div class="row g-2">
+        <div class="row g-2 gy-4 ">
             <?php foreach ($this->services as $service): ?>
-                <div class="col-12 col-md-4 service-item" data-aos="<?php echo $this->animation_type; ?>">
+                <div class="col-12 col-md-6 service-item" data-animation="<?php echo $this->animation_type; ?>">
                     <div class="service-inner">
-                        <?php if ($service->link && $service->image): ?>
-                            <a href="<?php echo $service->link; ?>" class="service-image-link">
-                        <?php endif; ?>
-
-                        <?php if ($service->image): ?>
+                        <a href="<?php echo $service->link; ?>" class="service-image-link">
                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
                                 $service->image,
                                 null,
@@ -35,11 +31,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 false,
                                 false
                             ); ?>
-                        <?php endif; ?>
-
-                        <?php if ($service->link && $service->image): ?>
-                            </a>
-                        <?php endif; ?>
+                        </a>
 
                         <div class="service-content">
                             <h2 class="h4 service-title">
@@ -48,12 +40,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                             <div class="service-description"><?php echo $service->description; ?></div>
                         </div>
 
-                        <?php if ($service->link): ?>
-                            <div class="button-wrapper pt-3 mt-auto">
-                                <a href="<?php echo $service->link; ?>" class="service-link">Mehr erfahren +</a>
-                            </div>
-                        <?php endif; ?>
+                        <div class="button-wrapper pt-3 mt-auto">
+                            <a href="<?php echo $service->link; ?>" class="service-link">Mehr erfahren +</a>
+                        </div>
                     </div>
+
                 </div>
             <?php endforeach; ?>
         </div>

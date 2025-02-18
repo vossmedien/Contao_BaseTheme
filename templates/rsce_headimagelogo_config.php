@@ -86,17 +86,16 @@ return array(
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
         ),
-        'move_content' => array(
-            'label' => array('Inhalt darunter hinter dem Slider verschwinden lassen', ''),
-            'inputType' => 'checkbox',
-        ),
-        /*
-          'show_breadcrumb' => array(
+
+        'show_breadcrumb' => array(
             'label' => array('Breadcrumb darunter anzeigen', ''),
             'inputType' => 'checkbox',
         ),
 
-
+        'move_content' => array(
+            'label' => array('Inhalt darunter hinter dem Slider verschwinden lassen', 'Funktioniert nur, wenn dass das erste Element im Artikel ist und darunter Elemente kommen und der Header "fixed" ist'),
+            'inputType' => 'checkbox',
+        ),
 
         'diagonal_cut' => array(
             'label' => array('Mit diagonalem Abschluss', ''),
@@ -107,8 +106,6 @@ return array(
             'label' => array('Inhalt darunter "hochziehen"', ''),
             'inputType' => 'checkbox',
         ),
-         */
-
 
         'settings_slider' => array(
             'label' => array('Slider', ''),

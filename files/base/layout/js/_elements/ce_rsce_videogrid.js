@@ -18,14 +18,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 const currentTranslateY = item.style.transform?.match(/translateY\(([^)]+)\)/)?.[1] || '0px';
 
                 item.style.transform = `translateY(${currentTranslateY}) perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.0) translateZ(20px)`;
-                item.style.boxShadow = `${-rotateY / 2}px ${rotateX / 2}px 20px rgba(0,0,0,0.2)`;
+                //item.style.boxShadow = `${-rotateY / 2}px ${rotateX / 2}px 20px rgba(0,0,0,0.2)`;
             };
 
             const handleMouseLeave = () => {
                 // Bestehende translateY-Transformation beibehalten
                 const currentTranslateY = item.style.transform?.match(/translateY\(([^)]+)\)/)?.[1] || '0px';
                 item.style.transform = `translateY(${currentTranslateY})`;
-                item.style.boxShadow = 'none';
+               // item.style.boxShadow = 'none';
             };
 
             item.addEventListener('mousemove', handleMouseMove);

@@ -5,19 +5,19 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 ?>
 
 
-<div <?php echo $this->cssID; ?> class="<?php if ($this->image): ?>lazy<?php endif; ?>  content--element <?php echo str_replace("container", "", $this->class); ?>"
+<div <?php echo $this->cssID; ?> class="<?php if ($this->image): ?>lazy<?php endif; ?>  content--element <?= $this->class; ?>"
                                  <?php if ($this->image): ?>data-bg="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($this->image, $this->size); ?>"<?php endif; ?>
 
 >
     <div class=" ce--inner <?php if ($this->alternate_background_color) : ?>with-bg<?php endif; ?>" style="background-position: center center; background-repeat:no-repeat; background-size: cover;
-                                 <?php if ($this->text_color) : ?>
-                                         color: <?= $this->text_color;?>;
+    <?php if ($this->text_color) : ?>
+            color: <?= $this->text_color;?>;
              <?php endif; ?>
 
-                                 <?php if ($this->alternate_background_color) : ?>
-                                         background-color: <?= $this->alternate_background_color;?>;
+    <?php if ($this->alternate_background_color) : ?>
+            background-color: <?= $this->alternate_background_color;?>;
              <?php endif; ?>
-                                         ">
+            ">
 
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
@@ -33,60 +33,60 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
         <div class="ce--teaser-stripe"
         >
             <div class="ts--inner"
-                 data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
+                 data-animation="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"
             >
 
                 <div class="container" <?php if ($this->text_color): ?>style="--bs-headline-color: <?= $this->text_color; ?>"<?php endif; ?>>
-    <div class="<?php if (!$this->nocolumns) : ?>row <?php endif; ?> align-items-end">
-        <?php if ($this->ce_headline || $this->ce_subline || $this->text) : ?>
-            <div class="col-12 <?php if (!$this->nocolumns) : ?><?php echo $this->right_column_image ? 'col-md-8' : 'col-md-10'; ?><?php endif;?>">
-            <div class="content-wrapper">
-                            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
-                    $this->ce_topline,
-                    $this->ce_headline,
-                    $this->ce_subline,
-                    $this->headline_type,
-                    $this->animation_type,
-                    null,
-                    $this->onlystyle,
-                    $this->text ? "" : "mb-0"
-                ); ?>
+                    <div class="<?php if (!$this->nocolumns) : ?>row <?php endif; ?> align-items-end">
+                        <?php if ($this->ce_headline || $this->ce_subline || $this->text) : ?>
+                            <div class="col-12 <?php if (!$this->nocolumns) : ?><?php echo $this->right_column_image ? 'col-md-8' : 'col-md-10'; ?><?php endif; ?>">
+                                <div class="content-wrapper">
+                                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                        $this->ce_topline,
+                                        $this->ce_headline,
+                                        $this->ce_subline,
+                                        $this->headline_type,
+                                        $this->animation_type,
+                                        null,
+                                        $this->onlystyle,
+                                        $this->text ? "" : "mb-0"
+                                    ); ?>
 
-                <?php if ($this->text) : ?>
-                    <div class="ts--text <?php if ($this->dynamic_fontsize): ?>dynamic-fontsize-sm<?php endif; ?>">
-                        <?php echo $this->text; ?>
+                                    <?php if ($this->text) : ?>
+                                        <div class="ts--text <?php if ($this->dynamic_fontsize): ?>dynamic-fontsize-sm<?php endif; ?>">
+                                            <?php echo $this->text; ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($this->buttons && $this->nocolumns) : ?>
+                                        <div class="mt-3">
+                                            <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($this->right_column_image): ?>
+                            <div class="col-12 <?php if (!$this->nocolumns) : ?>col-md-4<?php endif; ?> mt-4 mt-md-0">
+                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->right_column_image, null, '', $this->size_right_image, null, false, false); ?>
+
+                                <?php if ($this->buttons && !$this->nocolumns) : ?>
+                                    <div class="mt-3">
+                                        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons); ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php elseif ($this->buttons && !$this->nocolumns) : ?>
+                            <div class="col-auto">
+                                <div class="content-wrapper">
+                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons, "mt-3"); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                <?php endif; ?>
-
-                <?php if ($this->buttons && $this->nocolumns) : ?>
-                    <div class="mt-3">
-                        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons); ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-
-            </div>
-        <?php endif; ?>
-
-        <?php if ($this->right_column_image): ?>
-            <div class="col-12 <?php if (!$this->nocolumns) : ?>col-md-4<?php endif; ?> mt-4 mt-md-0">
-                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->right_column_image, null, '', $this->size_right_image, null, false, false); ?>
-
-                <?php if ($this->buttons && !$this->nocolumns) : ?>
-                    <div class="mt-3">
-                        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons); ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-        <?php elseif ($this->buttons && !$this->nocolumns) : ?>
-            <div class="col-auto">
-                   <div class="content-wrapper">
-                <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons, "mt-3"); ?>
-                   </div>
-            </div>
-        <?php endif; ?>
-    </div>
-</div>
+                </div>
             </div>
         </div>
     </div>

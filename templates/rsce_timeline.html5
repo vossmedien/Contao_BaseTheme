@@ -4,8 +4,8 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element ">
-    <div class="ce--inner <?php echo $this->class; ?>" >
+<div <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?>">
+    <div class="ce--inner" >
 
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
@@ -21,9 +21,9 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
         <?php if ($this->rows) : ?>
             <div class="ce--timeline">
                 <?php foreach ($this->rows as $i => $row) : ?>
-                    <div class="step--wrapper row gy-md-0" data-aos="<?= $row->animation_type ? $row->animation_type : '' ?>">
+                    <div class="step--wrapper row gy-md-0" data-animation="<?= $row->animation_type ? $row->animation_type : '' ?>">
 
-                        <div class="col-md-6 col-12" data-aos="animate__fadeIn">
+                        <div class="col-md-6 col-12" data-animation="animate__fadeIn">
                             <div class="step--info mb-2 mb-md-0">
                                 <div class="left-col--inner">
 
@@ -46,7 +46,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                         </div>
 
 
-                        <div class="col-12 col-md-6" data-aos="animate__fadeIn">
+                        <div class="col-12 col-md-6" data-animation="animate__fadeIn">
                             <div class="step--content">
                                 <div class="right-col--inner" style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>">
                                     <?php if ($row->image): ?>
