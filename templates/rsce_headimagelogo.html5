@@ -70,8 +70,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                         $boxColor = VSM_HelperFunctions\BasicHelper::cleanColor($slide->box_background_color);
                                         ?>
 
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner:before,
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner:after {
+                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner {
                                             background-color: <?= $altColor ?> !important;
                                         }
 
@@ -85,8 +84,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                             padding-inline: 0;
                                         }
 
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper.extra:before,
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper:after {
+                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper{
                                             background-color: <?= $boxColor ?> !important;
                                         }
 

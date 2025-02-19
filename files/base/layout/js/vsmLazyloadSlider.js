@@ -1,37 +1,71 @@
 class VSMSliderMediaLoader {
     constructor() {
         this.activeSliders = new Map();
-        this.preloadDistance = 2; // Anzahl der Slides, die vorgeladen werden sollen
-        this.loadingPromises = new Map();
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.init());
-        } else {
-            this.init();
-        }
+        this.preloadDistance = 1; // Reduziert auf 1, da wir gezielter laden
+        this.init();
     }
 
     init() {
-        this.setupEventListeners();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.init());
+            return;
+        }
+
+        // Direkte Integration mit Swiper
+        if (window.Swiper) {
+            this.extendSwiper();
+        } else {
+            // Warten auf Swiper
+            document.addEventListener('swiper:loaded', () => this.extendSwiper());
+        }
+
+        this.setupMutationObserver();
         this.handleExistingSliders();
     }
 
-    setupEventListeners() {
-        // Swiper Events
-        document.addEventListener('swiper:init', this.handleSwiperEvent.bind(this));
-        document.addEventListener('swiper:slideChange', this.handleSwiperEvent.bind(this));
-        document.addEventListener('swiper:destroy', this.handleSwiperDestroy.bind(this));
+    handleExistingSliders() {
+        // Alle existierenden Swiper auf der Seite finden und initialisieren
+        document.querySelectorAll('.swiper').forEach(sliderElement => {
+            this.handleNewSlider(sliderElement);
+        });
+    }
 
-        // Mutation Observer für dynamisch hinzugefügte Slider
-        this.setupMutationObserver();
+    extendSwiper() {
+        const originalInit = Swiper.prototype.init;
+        Swiper.prototype.init = function(...args) {
+            const result = originalInit.apply(this, args);
+
+            // Event für neuen Slider auslösen
+            const event = new CustomEvent('swiper:init', {
+                detail: { swiper: this }
+            });
+            document.dispatchEvent(event);
+
+            // Slide Change Event registrieren
+            this.on('slideChange', () => {
+                const event = new CustomEvent('swiper:slideChange', {
+                    detail: { swiper: this }
+                });
+                document.dispatchEvent(event);
+            });
+
+            return result;
+        };
     }
 
     setupMutationObserver() {
         const observer = new MutationObserver((mutations) => {
             mutations.forEach(mutation => {
                 mutation.addedNodes.forEach(node => {
-                    if (node.nodeType === 1 && node.classList?.contains('swiper')) {
-                        this.handleNewSlider(node);
+                    if (node.nodeType === 1) {
+                        if (node.classList?.contains('swiper')) {
+                            this.handleNewSlider(node);
+                        }
+                        // Auch in Kind-Elementen suchen
+                        const sliders = node.querySelectorAll?.('.swiper');
+                        if (sliders) {
+                            sliders.forEach(slider => this.handleNewSlider(slider));
+                        }
                     }
                 });
             });
@@ -39,14 +73,7 @@ class VSMSliderMediaLoader {
 
         observer.observe(document.body, {
             childList: true,
-            subtree: true,
-            attributes: false
-        });
-    }
-
-    handleExistingSliders() {
-        document.querySelectorAll('.swiper').forEach(slider => {
-            this.handleNewSlider(slider);
+            subtree: true
         });
     }
 
@@ -56,109 +83,68 @@ class VSMSliderMediaLoader {
                 element: sliderElement,
                 loadedSlides: new Set()
             });
-            this.preloadInitialSlides(sliderElement);
-        }
-    }
 
-    handleSwiperEvent(event) {
-        const swiperInstance = event.detail?.swiper;
-        if (!swiperInstance?.el) return;
+            // Initiales Laden der ersten Slides
+            if (sliderElement.swiper) {
+                this.preloadInitialSlides(sliderElement.swiper);
+            } else {
+                // Warten auf Swiper-Initialisierung
+                const observer = new MutationObserver((mutations, obs) => {
+                    if (sliderElement.swiper) {
+                        this.preloadInitialSlides(sliderElement.swiper);
+                        obs.disconnect();
+                    }
+                });
 
-        const sliderElement = swiperInstance.el;
-
-        // Slider-Daten aktualisieren oder erstellen
-        if (!this.activeSliders.has(sliderElement)) {
-            this.handleNewSlider(sliderElement);
-        }
-
-        this.loadVisibleAndUpcomingSlides(swiperInstance);
-    }
-
-    handleSwiperDestroy(event) {
-        const sliderElement = event.detail?.swiper?.el;
-        if (sliderElement) {
-            this.activeSliders.delete(sliderElement);
-            this.loadingPromises.delete(sliderElement);
-        }
-    }
-
-    async loadVisibleAndUpcomingSlides(swiperInstance) {
-        const sliderData = this.activeSliders.get(swiperInstance.el);
-        if (!sliderData) return;
-
-        const currentIndex = swiperInstance.activeIndex;
-        const slidesToLoad = new Set();
-
-        // Bestimme zu ladende Slides
-        for (let i = -1; i <= this.preloadDistance; i++) {
-            const slideIndex = currentIndex + i;
-            const slide = swiperInstance.slides[slideIndex];
-            if (slide && !sliderData.loadedSlides.has(slide)) {
-                slidesToLoad.add(slide);
+                observer.observe(sliderElement, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
             }
         }
-
-        // Lade alle ermittelten Slides parallel
-        const loadingPromises = Array.from(slidesToLoad).map(slide =>
-            this.loadSlideMedia(slide, sliderData));
-
-        try {
-            await Promise.all(loadingPromises);
-        } catch (error) {
-            console.warn('Fehler beim Laden der Slider-Medien:', error);
-        }
     }
 
-    async loadSlideMedia(slide, sliderData) {
-        if (sliderData.loadedSlides.has(slide)) return;
+    async preloadInitialSlides(swiperInstance) {
+        if (!swiperInstance || !swiperInstance.slides) return;
 
-        const mediaElements = slide.querySelectorAll('img[data-src],  video[data-src]');
+        const activeIndex = swiperInstance.activeIndex;
+        const nextIndex = (activeIndex + 1) % swiperInstance.slides.length;
+
+        // Aktuelle Slide laden
+        await this.loadSlideMedia(swiperInstance.slides[activeIndex]);
+
+        // Nächste Slide vorladen
+        await this.loadSlideMedia(swiperInstance.slides[nextIndex]);
+    }
+
+    async loadSlideMedia(slide) {
+        if (!slide || !window.VSM.lazyLoader) return;
+
+        const mediaElements = slide.querySelectorAll('img[data-src], video[data-src]');
         const loadingPromises = [];
 
         mediaElements.forEach(media => {
             if (!media.classList.contains('loaded')) {
-                const loadPromise = this.loadMediaElement(media);
-                loadingPromises.push(loadPromise);
+                const promise = media.tagName.toLowerCase() === 'video'
+                    ? window.VSM.lazyLoader.loadVideo(media)
+                    : window.VSM.lazyLoader.loadImage(media);
+                loadingPromises.push(promise);
             }
         });
 
         try {
             await Promise.all(loadingPromises);
-            sliderData.loadedSlides.add(slide);
         } catch (error) {
-            console.warn('Fehler beim Laden der Medien für Slide:', error);
+            console.warn('Fehler beim Laden der Medien:', error);
         }
     }
 
-    async loadMediaElement(media) {
-        if (!window.VSM.lazyLoader) return;
-
-        try {
-            if (media.tagName.toLowerCase() === 'video') {
-                await window.VSM.lazyLoader.loadVideo(media);
-            } else {
-                await window.VSM.lazyLoader.loadImage(media);
-            }
-        } catch (error) {
-            console.warn('Fehler beim Laden des Medienelements:', error);
-        }
-    }
-
-    preloadInitialSlides(sliderElement) {
-        const swiperInstance = sliderElement.swiper;
-        if (swiperInstance) {
-            this.loadVisibleAndUpcomingSlides(swiperInstance);
-        }
-    }
-
+    // Hilfsmethode zum Aufräumen
     destroy() {
         this.activeSliders.clear();
-        this.loadingPromises.clear();
     }
 }
 
 // Initialization
 window.VSM = window.VSM || {};
-if (!window.VSM.sliderMediaLoader) {
-    window.VSM.sliderMediaLoader = new VSMSliderMediaLoader();
-}
+window.VSM.sliderMediaLoader = new VSMSliderMediaLoader();
