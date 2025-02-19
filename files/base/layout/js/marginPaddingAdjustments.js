@@ -34,7 +34,7 @@ export function adjustPullElements() {
         nextContentElement.style.transform = `translateY(-${pullAmount}px)`;
         nextContentElement.style.marginBottom = `-${pullAmount}px`;
         nextContentElement.classList.add('pulled-up-element');
-        element.style.paddingBottom = `calc(var(--main-gap) + ${pullAmount}px)`;
+        //element.style.paddingBottom = `calc(var(--main-gap) + ${pullAmount}px)`;
       }
     });
   }, 0);

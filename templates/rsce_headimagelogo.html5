@@ -17,7 +17,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
 <!-- indexer::stop -->
 <div <?= $this->cssID ?>
-     class="content--element <?= $this->move_content ? 'move-content py-0' : '' ?> <?= $this->class ?> <?= $this->pull_content ? 'pull-bottom' : '' ?>">
+     class="content--element <?= $this->move_content ? 'move-content py-0' : '' ?> <?= $this->class ?> <?= $this->pull_content ? 'pull-bottom mb-0' : '' ?>">
 
     <div class="ce--inner <?= $this->boxed_image ? 'with-boxed-logo' : '' ?>"
          style="--pull-content-amount: -<?= $this->pull_amount ?? '250px' ?>;">

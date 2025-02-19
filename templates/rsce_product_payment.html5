@@ -36,7 +36,12 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
 ?>
 
 
-<!-- Textkonfiguration -->
+
+<!-- Produkt-Anzeige -->
+<div <?php echo $this->cssID; ?> class="<?= $this->class ?> content--element product-cards">
+    <div class="ce--inner">
+
+        <!-- Textkonfiguration -->
 <div id="payment-texts"
      data-error-required="Bitte füllen Sie alle Pflichtfelder aus."
      data-error-general="Ein Fehler ist aufgetreten"
@@ -55,9 +60,7 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
      }'
 ></div>
 
-<!-- Produkt-Anzeige -->
-<div <?php echo $this->cssID; ?> class="<?= $this->class ?> content--element product-cards">
-    <div class="ce--inner">
+
         <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,

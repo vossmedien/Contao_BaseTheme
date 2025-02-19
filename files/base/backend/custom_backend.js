@@ -101,7 +101,7 @@ document.addEventListener('click', function (event) {
     }
 });
 
-
+/*
 // Handler für Duplizieren- und Neu-Buttons
 document.addEventListener('click', function (event) {
     var target = event.target.closest('.rsce_list_toolbar_duplicate, .rsce_list_toolbar_new, .rsce_list_toolbar_delete');
@@ -118,4 +118,6 @@ document.addEventListener('click', function (event) {
         }, 200);
     }
 });
+
+ */
 
