@@ -1,12 +1,6 @@
-import {setSwitchingcardsHeight} from "./elementHeightAdjustments.js";
 import {scrollToTop} from "./smoothScrolling.js";
 import {setupFunctions} from "./cookieManager.js";
 import {adjustPullElements} from "./marginPaddingAdjustments.js";
-import {
-    addBootstrapClasses,
-    adjustTableResponsive,
-    adjustContentBox
-} from "./classStyleManipulation.js";
 import {addPlaceholders} from "./floatingLabels.js";
 import {
     changeAnchorLinks,
@@ -296,16 +290,10 @@ DomLoadFunctions.push(
     initVenoBox,
     initVideoLightbox,
     initImageLightbox,
-    setSwitchingcardsHeight,
-    //initializeSmoothScrolling,
     changeNavLinksAfterLoad,
     scrollToTop,
     setupFunctions,
-    //initializeMarginAdjustments,
     adjustPullElements,
-    addBootstrapClasses,
-    adjustTableResponsive,
-    adjustContentBox,
     addPlaceholders
 );
 

@@ -1,4 +1,0 @@
-when@codefog_instagram:
-    codefog_instagram:
-        access_token_ttl: 3600
-        cache_ttl: 3600

@@ -14,7 +14,7 @@
 @import "../_vendor/node_modules/bootstrap/scss/functions";
 
 @import "../_vendor/node_modules/bootstrap/scss/variables";
-@import "../_vendor/node_modules/bootstrap/scss/variables-dark";
+//@import "../_vendor/node_modules/bootstrap/scss/variables-dark";
 @import "_theme/variables";
 
 @import "../_vendor/node_modules/bootstrap/scss/maps";
@@ -30,7 +30,7 @@
 //@import "../_vendor/node_modules/bootstrap/scss/tables";
 @import "../_vendor/node_modules/bootstrap/scss/forms";
 @import "../_vendor/node_modules/bootstrap/scss/buttons";
-@import "../_vendor/node_modules/bootstrap/scss/transitions" ;
+//@import "../_vendor/node_modules/bootstrap/scss/transitions" ;
 @import "../_vendor/node_modules/bootstrap/scss/dropdown";
 @import "../_vendor/node_modules/bootstrap/scss/button-group";
 //@import "../_vendor/node_modules/bootstrap/scss/nav";
@@ -85,6 +85,7 @@
 @import "elements/vendor-widgets/venobox";
 @import "elements/vendor-widgets/vsmLazyload";
 
+/*
 //Custom HTML
 @import "elements/custom-html-elements/elements";
 
@@ -102,6 +103,8 @@
 @import "elements/vendor-widgets/bootstrap/tooltips";
 @import "elements/vendor-widgets/bootstrap/popover";
 @import "elements/vendor-widgets/bootstrap/alerts";
+
+ */
 
 html {
   scroll-behavior: smooth;

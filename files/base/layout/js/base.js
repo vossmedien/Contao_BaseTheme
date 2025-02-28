@@ -34,49 +34,6 @@ if (btn) {
 }
 
 
-//window.dispatchEvent(new Event("resize"));
-
-// Clickhandler START
-
-var searchActivator = document.querySelector(".searchActivator");
-
-if (searchActivator) {
-    var searchCol = document.querySelector(".search-col");
-
-    searchActivator.addEventListener("touchstart", function () {
-        if (searchCol) {
-            searchCol.classList.toggle("is-visible");
-        }
-    });
-}
-
-const matrixCells = document.querySelectorAll(".matrix td");
-matrixCells.forEach((cell) => {
-    const input = cell.querySelector("input");
-    if (input) {
-        cell.addEventListener("click", function (e) {
-            if (input.type === "radio") {
-                const radios = cell.parentNode.querySelectorAll("input[type=radio]");
-                radios.forEach((radio) => {
-                    radio.checked = radio === input;
-                });
-            } else if (input.type === "checkbox" && e.target.nodeName === "TD") {
-                input.checked = !input.checked;
-            }
-        });
-    }
-});
-
-
-const accordionIcons = document.querySelectorAll(".accordion-nav i");
-accordionIcons.forEach((icon) => {
-    icon.addEventListener("click", function () {
-        this.closest("li").classList.toggle("expanded");
-    });
-});
-
-// Clickhandler ENDE
-
 
 function startCounter(element) {
     if (element.classList.contains("doneCounting")) {
@@ -133,6 +90,9 @@ document.querySelectorAll(".count").forEach((el) => {
 });
 
 
+
+
+/*
 window.pushToDataLayer = function (type, position, element, additional) {
     dataLayer.push({
         "event": "navigationClick",
@@ -156,6 +116,9 @@ trackingLinks.forEach(function (link) {
         window.pushToDataLayer(type, position, element, additional);
     });
 });
+
+
+ */
 
 
 
