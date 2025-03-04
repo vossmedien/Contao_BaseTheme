@@ -293,12 +293,12 @@ DomLoadFunctions.push(
     changeNavLinksAfterLoad,
     scrollToTop,
     setupFunctions,
-    adjustPullElements,
+   //adjustPullElements,
     addPlaceholders
 );
 
 scrollFunctions.push(changeAnchorLinks);
-ResizeFunctions.push(adjustPullElements);
+//ResizeFunctions.push(adjustPullElements);
 
 
 const executeFunctions = (functions) => {

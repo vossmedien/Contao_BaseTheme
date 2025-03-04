@@ -1,5 +1,8 @@
 import {setupFunctions, resetCookies} from "./cookieManager.js";
 
+
+
+/*
 document.addEventListener('DOMContentLoaded', () => {
     window.VSM = window.VSM || {};
 
@@ -24,6 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
+
+
+
 window.addEventListener("cookiebar_save", setupFunctions);
 const btn = document.querySelector(".reset-cookies");
 if (btn) {
@@ -32,6 +38,9 @@ if (btn) {
         resetCookies();
     });
 }
+
+ */
+
 
 
 

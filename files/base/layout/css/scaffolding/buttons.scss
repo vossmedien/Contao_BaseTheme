@@ -107,7 +107,8 @@
       box-shadow: none;
     }
 
-    &.with-arrow {
+    /*
+        &.with-arrow {
       text-decoration: none;
       --bs-btn-padding-left: 0;
 
@@ -123,6 +124,8 @@
         @include font-size(20px);
       }
     }
+     */
+
   }
 
 
