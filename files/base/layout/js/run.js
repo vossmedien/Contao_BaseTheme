@@ -1,6 +1,6 @@
 import {scrollToTop} from "./smoothScrolling.js";
 import {setupFunctions} from "./cookieManager.js";
-import {adjustPullElements} from "./marginPaddingAdjustments.js";
+//import {adjustPullElements} from "./marginPaddingAdjustments.js";
 import {addPlaceholders} from "./floatingLabels.js";
 import {
     changeAnchorLinks,

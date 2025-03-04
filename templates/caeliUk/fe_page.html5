@@ -37,19 +37,16 @@ $this->bodyAttributes = $this
     <?= $this->framework ?>
     <?= $this->stylesheets ?>
 
-    <link rel="preload" href="files/base/layout/_vendor/node_modules/animate.css/animate.min.css" as="style">
-    <link rel="preload" href="files/base/layout/css/caeli_uk.min.css" as="style">
-    <link rel="preload" href="files/base/layout/css/_caeli_uk/styles.min.css" as="style">
-    <link rel="preload" href="files/base/layout/css/_caeli_uk/root-variables.min.css" as="style">
-
-
     <?php
     $GLOBALS['TL_CSS'][] = 'files/base/layout/_vendor/node_modules/animate.css/animate.min.css|static';
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/caeli_uk.min.css|static';
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/_caeli_uk/styles.min.css|static';
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/_caeli_uk/root-variables.min.css|static';
-    ?>
 
+
+    //$GLOBALS['TL_HEAD'][] = '<link rel="preload" href="files/base/layout/css/caeli_uk.min.css" as="style" crossorigin="anonymous">';
+    //$GLOBALS['TL_HEAD'][] = '<link rel="preload" href="files/base/layout/css/_caeli_uk/root-variables.min.css" as="style" crossorigin="anonymous">';
+    ?>
 
     <?= $this->mooScripts ?>
     <?= $this->head ?>
