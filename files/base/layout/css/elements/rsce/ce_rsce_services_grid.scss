@@ -1,7 +1,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
-@import "../../_theme/variables";
+//@import "../../_theme/variables";
 
 
 .services-grid {
@@ -26,11 +26,11 @@
   .service-image-link {
     display: block;
     overflow: hidden;
-    border-radius: $border-radius;
+    border-radius: var(--bs-border-radius);
 
     img {
       transition: transform 0.3s ease;
-      border-radius: $border-radius;
+      border-radius: var(--bs-border-radius);
 
       &:hover {
         transform: scale(1.05);

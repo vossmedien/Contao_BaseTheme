@@ -15,10 +15,10 @@
 
 @import "../_vendor/node_modules/bootstrap/scss/variables";
 //@import "../_vendor/node_modules/bootstrap/scss/variables-dark";
-@import "_theme/variables";
+@import "_caeli_uk/variables";
 
 @import "../_vendor/node_modules/bootstrap/scss/maps";
-@import "_theme/map-overwrites";
+@import "_caeli_uk/map-overwrites";
 
 // Layout & components
 @import "../_vendor/node_modules/bootstrap/scss/root";
@@ -62,7 +62,7 @@
 
 @import "icon-package";
 
-@import "_theme/fonts";
+@import "_caeli_uk/fonts";
 //@import "_theme/root-variables";
 
 

@@ -5,7 +5,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 @import "../../../_vendor/node_modules/@awesome.me/kit-c9b4e661cb/icons/scss/fontawesome";
 
-@import "../../_theme/variables";
+//@import "../../_theme/variables";
 
 html body {
   .ce_rsce_linkboxen {
@@ -89,7 +89,7 @@ html body {
         .box--upper {
           .image--holder {
             height: rfs-value(250px);
-            border-radius: $border-radius $border-radius 0px 0px;
+            border-radius: var(--bs-border-radius) var(--bs-border-radius) 0px 0px;
             overflow: hidden;
 
             &.image--holder {
@@ -99,7 +99,7 @@ html body {
         }
 
         .box-lower--wrapper {
-          border-radius: 0px 0px $border-radius $border-radius;
+          border-radius: 0px 0px var(--bs-border-radius) var(--bs-border-radius);
 
 
           .box--lower {
@@ -110,9 +110,9 @@ html body {
 
             &.with-url {
               &:before {
-                @extend %fa-icon;
-                @extend #{$icon-type};
-                content: fa-content($fa-var-angles-right);
+                //@extend %fa-icon;
+                //@extend #{$icon-type};
+                //content: fa-content($fa-var-angles-right);
                 vertical-align: baseline;
                 @include font-size(28px);
                 padding-right: 1rem;
@@ -158,9 +158,9 @@ html body {
 
           &.with-url {
             &:after {
-              @extend %fa-icon;
-              @extend #{$icon-type};
-              content: fa-content($fa-var-arrow-right-long);
+              //@extend %fa-icon;
+              //@extend #{$icon-type};
+              //content: fa-content($fa-var-arrow-right-long);
               position: absolute;
 
               top: 50%;
@@ -347,7 +347,7 @@ html body {
           padding: 1.25rem 1.25rem 0 1.25rem;
 
           &.as-box {
-            background-color: $body-bg;
+            background-color: var(--bs-body-bg);
             color: var(--bs-body-color);
             box-shadow: var(--bs-base-box-shadow);
             padding: 1.5rem 2rem;
