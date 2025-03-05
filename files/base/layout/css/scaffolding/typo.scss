@@ -1,10 +1,13 @@
 html body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  -moz-hyphens: auto;
+  /*
+    -moz-hyphens: auto;
   -ms-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
+   */
+
   font-size: clamp(
           var(--bs-body-font-size),
           1vw,

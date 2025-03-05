@@ -34,8 +34,8 @@
 
 *:not(.row) {
   > *[class*="col-"]:not(.make-fullwidth) {
-    margin-left: auto;
-    margin-right: auto;
+    //margin-left: auto;
+    //margin-right: auto;
 
     > .container {
       width: auto;
@@ -68,3 +68,11 @@ div:has([class*="text-"]):has([class*="-center"]) {
   }
 }
 
+
+.content--element.ce_rsce_headline.mb-0 .ce--headline{
+  //margin-bottom: 0;
+}
+
+[class*="col-"] > .ce--inner{
+  //max-width: inherit;
+}

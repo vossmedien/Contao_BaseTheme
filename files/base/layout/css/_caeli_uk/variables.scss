@@ -1,7 +1,7 @@
 $white: #fff;
 $gray: var(--bs-gray-300);
 
-$gray-100: #f8f9fa;
+$gray-100: #F1F5F7;
 $gray-200: #e9ecef;
 $gray-300: #dee2e6;
 $gray-400: #ced4da;
@@ -12,12 +12,12 @@ $gray-800: #343a40;
 $gray-900: #212529;
 $black: #000;
 
-$primary: #871623;
-$secondary: #00274a;
+$primary: #00CA90;
+$secondary: #024452;
 $tertiary: #6610f2;
 
 $body-bg: #ffffff;
-$body-color: #212529;
+$body-color: $secondary;
 
 $border-radius: 12px;
 $border-radius-lg: 18px;
@@ -55,11 +55,12 @@ $modal-lg: 940px;
 $modal-xl: 1140px;
 
 $btn-line-height: 1;
-$font-family-base: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$font-family-base: "Poppins", sans-serif;
 
-$font-weight-base: 300;
-$font-weight-bold: 800;
-$font-weight-black: 800;
+$font-weight-base: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 600;
+$font-weight-black: 700;
 
 $font-size-xs: 10px;
 $font-size-sm: 14px;
@@ -70,7 +71,7 @@ $font-size-xl: 28px;
 $headings-margin-bottom: $spacer * 0.5;
 $headings-font-family: null;
 $headings-font-style: null;
-$headings-font-weight: 700;
+$headings-font-weight: 600;
 $headings-line-height: 1.2;
 //$headings-color: #4A4643;
 

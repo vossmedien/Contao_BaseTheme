@@ -70,29 +70,30 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                         $boxColor = VSM_HelperFunctions\BasicHelper::cleanColor($slide->box_background_color);
                                         ?>
 
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner {
+
+
+                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-1 .mainimage--content .mainimage--content-inner--wrapper .mainimage--content-inner--holder{
                                             background-color: <?= $altColor ?> !important;
+                                            padding: 40px;
+                                            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+                                            margin-inline: -40px;
                                         }
 
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-1 .mainimage--content .mainimage--content-inner--wrapper:not(.extra) {
-                                            background-color: <?= $altColor ?> !important;
-                                            padding: 20px;
-                                            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
-                                        }
+
 
                                         html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-1 .mainimage--content-inner {
                                             padding-inline: 0;
                                         }
 
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper{
+                                           html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner {
+                                            background-color: <?= $altColor ?> !important;
+                                        }
+
+                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper .mainimage--content-inner--holder{
                                             background-color: <?= $boxColor ?> !important;
                                         }
 
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-1 .mainimage--content .mainimage--content-inner--wrapper.extra {
-                                            background-color: <?= $boxColor ?> !important;
-                                            padding: 20px;
-                                            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
-                                        }
+
                                     </style>
                                 <?php endif; ?>
 
@@ -115,11 +116,10 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 </div>
 
                                 <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1): ?>
-                                    <div data-animation="<?= $slide->animation_type ?>" class="mainimage--content">
-                                        <div class="mainimage--content-inner <?= $slide->textbox_position ?> <?= $slide->text_align ?>"
-                                             style="<?= $slide->text_color ? "color: {$slide->text_color};" : '' ?> <?= $slide->maxWidth ? "width: 100%; max-width: {$slide->maxWidth};" : '' ?>">
-                                            <div class="mainimage--content-inner--wrapper">
-                                                <div class="mainimage--content-inner--holder">
+                                    <div  class="mainimage--content">
+                                        <div class="mainimage--content-inner <?= $slide->textbox_position ?> <?= $slide->text_align ?>">
+                                            <div class="mainimage--content-inner--wrapper container">
+                                                <div class="mainimage--content-inner--holder" data-animation="<?= $slide->animation_type ?>" style="<?= $slide->text_color ? "color: {$slide->text_color};" : '' ?> <?= $slide->maxWidth ? "width: 100%; max-width: {$slide->maxWidth};" : '' ?>">
                                                     <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
                                                         $slide->text_topline,
                                                         $slide->text_firstline,
@@ -136,10 +136,9 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                                             <?= $slide->text_infotext ?>
                                                         </div>
                                                     <?php endif; ?>
-
-                                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($slide->buttons) ?>
                                                 </div>
                                             </div>
+
 
                                             <?php if (($slide->text_infotext || count($slide->buttons) >= 1) && $slide->own_box): ?>
                                                 <div class="mainimage--content-inner--wrapper extra mt-3" data-animation="<?= $slide->animation_type ?>">
@@ -156,6 +155,12 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                             <?php endif; ?>
                                         </div>
                                     </div>
+
+
+
+                                             <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($slide->buttons) ?>
+
+
                                 <?php endif; ?>
                             </div>
                         </div>

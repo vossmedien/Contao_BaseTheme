@@ -1,0 +1,42 @@
+@import "../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "variables";
+@import "map-overwrites";
+
+
+html body .ce_rsce_headimagelogo .mainimage--content .mainimage--content-inner.pos-top-left .mainimage--content-inner--wrapper .mainimage--content-inner--holder {
+  padding-top: 0 !important;
+}
+
+
+html body .ce_rsce_headimagelogo .ce--mainimage.style-1 .ce--buttons {
+  position: absolute;
+  transform: translate(-50%, 50%);
+  left: 50%;
+  bottom: 15%;
+}
+
+
+
+.btn{
+  white-space: nowrap;
+  &.btn-primary{
+    --bs-btn-color: var(--bs-body-color-inverse);
+    --bs-btn-hover-color: var(--bs-body-color-inverse);
+    --bs-btn-active-color: var(--bs-body-color-inverse);
+  }
+
+  &.btn-xl{
+    font-weight: $font-weight-black;
+
+    &:has(i){
+      --bs-btn-padding-left: .5rem;
+    }
+
+    i{
+      font-size: 2.5rem;
+    }
+  }
+}
