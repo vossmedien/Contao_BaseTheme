@@ -141,6 +141,7 @@ $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/
 $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/run.js"></script>';
 $GLOBALS['TL_BODY'][] = '<script async defer type="module" src="/files/base/layout/js/_element-handling.js"></script>';
 $GLOBALS['TL_BODY'][] = '<script async defer type="module" src="/files/base/layout/js/_caeli_uk/theme.js"></script>';
+
 ?>
 
 

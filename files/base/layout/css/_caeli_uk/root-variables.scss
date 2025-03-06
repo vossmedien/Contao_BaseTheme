@@ -46,7 +46,7 @@
   --bs-body-color-inverse: #fff;
 
   --bs-topline-color: var(--bs-primary);
-  --bs-subline-color: var(--bs-primary);
+  --bs-subline-color: currentColor;
 
 
   --bs-h1-font-weight: #{$font-weight-base};

@@ -21,6 +21,14 @@ class VSMSliderMediaLoader {
 
         this.setupMutationObserver();
         this.handleExistingSliders();
+
+        if (window.VSM && window.VSM.lazyLoader) {
+            this.lazyLoader = window.VSM.lazyLoader;
+        } else {
+            document.addEventListener('vsm:lazyLoaderInit', (e) => {
+                this.lazyLoader = e.detail.lazyLoader;
+            });
+        }
     }
 
     handleExistingSliders() {
@@ -32,19 +40,19 @@ class VSMSliderMediaLoader {
 
     extendSwiper() {
         const originalInit = Swiper.prototype.init;
-        Swiper.prototype.init = function(...args) {
+        Swiper.prototype.init = function (...args) {
             const result = originalInit.apply(this, args);
 
             // Event für neuen Slider auslösen
             const event = new CustomEvent('swiper:init', {
-                detail: { swiper: this }
+                detail: {swiper: this}
             });
             document.dispatchEvent(event);
 
             // Slide Change Event registrieren
             this.on('slideChange', () => {
                 const event = new CustomEvent('swiper:slideChange', {
-                    detail: { swiper: this }
+                    detail: {swiper: this}
                 });
                 document.dispatchEvent(event);
             });
@@ -107,14 +115,23 @@ class VSMSliderMediaLoader {
     async preloadInitialSlides(swiperInstance) {
         if (!swiperInstance || !swiperInstance.slides) return;
 
+        // Aktuelle Slide und Nachbarslides identifizieren
         const activeIndex = swiperInstance.activeIndex;
-        const nextIndex = (activeIndex + 1) % swiperInstance.slides.length;
+        const slidesToLoad = [
+            swiperInstance.slides[activeIndex],
+            swiperInstance.slides[(activeIndex + 1) % swiperInstance.slides.length]
+        ];
 
-        // Aktuelle Slide laden
-        await this.loadSlideMedia(swiperInstance.slides[activeIndex]);
+        // Bei Bedarf auch vorherige Slide vorausladen
+        if (swiperInstance.params.loop || activeIndex > 0) {
+            const prevIndex = activeIndex > 0 ?
+                activeIndex - 1 :
+                swiperInstance.slides.length - 1;
+            slidesToLoad.push(swiperInstance.slides[prevIndex]);
+        }
 
-        // Nächste Slide vorladen
-        await this.loadSlideMedia(swiperInstance.slides[nextIndex]);
+        // Lade alle relevanten Slides parallel
+        await Promise.all(slidesToLoad.map(slide => this.loadSlideMedia(slide)));
     }
 
     async loadSlideMedia(slide) {
@@ -142,6 +159,14 @@ class VSMSliderMediaLoader {
     // Hilfsmethode zum Aufräumen
     destroy() {
         this.activeSliders.clear();
+        window.removeEventListener('scroll', this.scrollHandler);
+        document.querySelectorAll('.scroll-wrapper').forEach(wrapper => {
+            wrapper.removeEventListener('scroll', this.debouncedCheck);
+        });
+
+        // Event-Handler-Referenzen freigeben
+        this.scrollHandler = null;
+        this.debouncedCheck = null;
     }
 }
 
