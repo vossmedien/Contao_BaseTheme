@@ -12,6 +12,11 @@ $filled-text: #1B5E20;
 $active-bg: rgba(184, 230, 184, 0.5);
 
 .widget {
+
+  > div{
+    font-size: 1rem;
+  }
+
   &:has(
     input[name*="topline"],
     input[name*="headline"],
@@ -44,6 +49,10 @@ $active-bg: rgba(184, 230, 184, 0.5);
     //margin-top: 0;
     //margin-bottom: .5rem;
   }
+}
+
+.tl_info p:last-child{
+  margin-bottom: 0;
 }
 
 .rsce_list_inner {

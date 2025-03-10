@@ -1,0 +1,76 @@
+<?php $this->extend('be_wildcard'); ?>
+
+<?php $this->block('headline'); ?>
+  <h1><?= $this->headline ?></h1>
+<?php $this->endblock(); ?>
+
+<?php $this->block('wildcard'); ?>
+  <div class="widget">
+    <h3>Generierungs-Einstellungen</h3>
+    <div class="tl_info">
+      <p><strong>Nachrichtenarchiv:</strong> <?= $this->newsArchive ?></p>
+      <p><strong>Inhaltstyp:</strong> <?= $this->contentElement ?></p>
+      <p><strong>Thema:</strong> <?= $this->topic ?></p>
+      <?php if ($this->min_words): ?>
+      <p><strong>Mindestwortzahl:</strong> <?= $this->min_words ?></p>
+      <?php endif; ?>
+    </div>
+  </div>
+
+  <?php if ($this->message): ?>
+    <div class="tl_message">
+      <p class="tl_confirm"><?= $this->message ?></p>
+    </div>
+  <?php endif; ?>
+
+  <form method="post">
+    <div class="tl_formbody_edit">
+      <?php if (!$this->previewExists): ?>
+        <div class="tl_info">
+          <p>Es wurde noch kein Inhalt generiert. Klicken Sie auf "Inhalt generieren", um einen neuen Inhalt zu erstellen.</p>
+        </div>
+      <?php else: ?>
+        <div class="widget">
+          <h3>Vorschau des generierten Inhalts</h3>
+          
+          <div class="preview-container" style="border: 1px solid #ddd; padding: 20px; margin-bottom: 20px;">
+            <h2><?= $this->previewTitle ?></h2>
+            
+            <?php if ($this->previewTeaser): ?>
+              <div class="preview-teaser" style="font-style: italic; margin-bottom: 20px; padding: 10px; background: #f0f0f0;">
+                <?= $this->previewTeaser ?>
+              </div>
+            <?php endif; ?>
+            
+            <div class="preview-content">
+              <?= $this->previewContent ?>
+            </div>
+            
+            <?php if ($this->previewTags): ?>
+              <div class="preview-tags" style="margin-top: 20px; color: #666;">
+                <strong>Tags:</strong> <?= $this->previewTags ?>
+              </div>
+            <?php endif; ?>
+            
+            <?php if (isset($this->debug_info) && $this->debug_info): ?>
+            <div class="debug-info" style="margin-top: 20px; padding: 15px; background: #f8f8f8; border: 1px solid #ccc; font-family: monospace; font-size: 12px;">
+              <h4>Debug-Informationen</h4>
+              <pre><?= $this->debug_info ?></pre>
+            </div>
+            <?php endif; ?>
+          </div>
+        </div>
+      <?php endif; ?>
+    </div>
+    
+    <div class="tl_formbody_submit">
+      <div class="tl_submit_container">
+        <button type="submit" name="generate" value="1" class="tl_submit" style="background-color: #3498db;">Inhalt generieren</button>
+        <?php if ($this->previewExists): ?>
+          <button type="submit" name="publish" value="1" class="tl_submit" style="background-color: #27ae60;">Inhalt veröffentlichen</button>
+        <?php endif; ?>
+        <a href="<?= $this->backUrl ?>" class="tl_submit" style="background-color: #7f8c8d;">Zurück</a>
+      </div>
+    </div>
+  </form>
+<?php $this->endblock(); ?> 

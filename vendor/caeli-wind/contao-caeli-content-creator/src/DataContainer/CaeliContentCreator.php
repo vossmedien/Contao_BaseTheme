@@ -73,10 +73,10 @@ class CaeliContentCreator
             }
             
             try {
-                // KI-Inhalt generieren
+                // Inhalt generieren
                 $generatedContent = $this->generateContent($model);
                 
-                // Vorschaudaten im Modell speichern
+                // Vorschau im Modell speichern
                 $model->previewTitle = $generatedContent['title'];
                 $model->previewTeaser = $generatedContent['teaser'];
                 $model->previewContent = $generatedContent['content'];
@@ -89,7 +89,6 @@ class CaeliContentCreator
             }
         }
         
-        // Prüfen, ob der "Veröffentlichen"-Button geklickt wurde
         if ($inputAdapter->post('publishContent') === '1') {
             // Modell laden
             $model = CaeliContentCreatorModel::findById($dc->id);
@@ -99,11 +98,11 @@ class CaeliContentCreator
             }
             
             try {
-                // Nachrichtenbeitrag und Inhaltselement erstellen
+                // News-Artikel erstellen und veröffentlichen
                 $newsId = $this->newsContentGenerator->createNewsArticle(
-                    $model->newsArchive, 
-                    $model->previewTitle, 
-                    $model->previewTeaser, 
+                    $model->newsArchive,
+                    $model->previewTitle,
+                    $model->previewTeaser,
                     $model->previewContent,
                     $model->previewTags,
                     $model->contentElement
@@ -205,7 +204,7 @@ class CaeliContentCreator
         
         // Standard Contao-Elemente hinzufügen
         $contentElements['text'] = $GLOBALS['TL_LANG']['CTE']['text'][0] ?? 'Text';
-        $contentElements['headline'] = $GLOBALS['TL_LANG']['CTE']['headline'][0] ?? 'Überschrift';
+        //$contentElements['headline'] = $GLOBALS['TL_LANG']['CTE']['headline'][0] ?? 'Überschrift';
         $contentElements['list'] = $GLOBALS['TL_LANG']['CTE']['list'][0] ?? 'Aufzählung';
         
         // RockSolid-Elemente über die Sprache ermitteln, sofern vorhanden
@@ -244,6 +243,21 @@ class CaeliContentCreator
         // Prompt vorbereiten
         $prompt = "Erstelle einen Blog-Artikel zum Thema: " . $model->topic . ".\n\n";
         
+        // Grundlegende Formatierungsanweisungen hinzufügen
+        $prompt .= "=============================================\n";
+        $prompt .= "TECHNISCHE FORMATIERUNGSREGELN (STRENG EINZUHALTEN):\n";
+        $prompt .= "=============================================\n";
+        $prompt .= "- VERWENDE NIEMALS H1-Überschriften! Beginne mit H2 und verwende H3 für Unterabschnitte.\n";
+        $prompt .= "- BUTTONS: Füge MINDESTENS DREI Call-To-Action Buttons hinzu, die im Text VERTEILT sind (genau in dieser Form):\n";
+        $prompt .= "  <a href=\"/kontakt\" class=\"btn btn-primary\">Kontakt aufnehmen</a>\n";
+        $prompt .= "  <a href=\"/grundeigentuemer#pachtrechner\" class=\"btn btn-success\">Jetzt Pachteinnahmen berechnen</a>\n";
+        $prompt .= "  <a href=\"/grundstueck\" class=\"btn btn-info\">Flächencheck starten</a>\n";
+        $prompt .= "- VERBOTEN: Verwende KEINE Bootstrap-Abstandsklassen (mt-, mb-, my-, mx-, py-, px-, etc.)!\n";
+        $prompt .= "- BOOTSTRAP-ELEMENTE: Füge mindestens je ein Card, Alert und Table-Element hinzu.\n";
+        $prompt .= "- QUELLEN: Verlinke komplette URLs, nicht nur das Wort 'Link'.\n";
+        $prompt .= "=============================================\n\n";
+        
+        // Zielgruppe und Betonung
         if (!empty($model->targetAudience)) {
             $prompt .= "Zielgruppe: " . $model->targetAudience . "\n";
         }
@@ -252,10 +266,68 @@ class CaeliContentCreator
             $prompt .= "Besondere Betonung auf: " . $model->emphasis . "\n";
         }
         
-        if (!empty($model->additionalInstructions)) {
-            $prompt .= "Weitere Anweisungen: " . $model->additionalInstructions . "\n";
+        // Mindestwortzahl explizit hervorheben
+        if (!empty($model->min_words)) {
+            // Setze Zielwortzahl 50% über der Mindestwortzahl
+            $targetWords = (int)$model->min_words * 1.5;
+            $prompt .= "=============================================\n";
+            $prompt .= "WICHTIG ZUR LÄNGE - STRENG EINZUHALTEN:\n";
+            $prompt .= "=============================================\n";
+            $prompt .= "- Der Artikel MUSS MINDESTENS " . $model->min_words . " Wörter umfassen. Dies ist eine VERPFLICHTENDE Anforderung.\n";
+            $prompt .= "- Ziele auf " . $targetWords . " Wörter oder mehr.\n";
+            $prompt .= "=============================================\n\n";
+        } else {
+            // Standardmäßig mindestens 1000 Wörter
+            $prompt .= "=============================================\n";
+            $prompt .= "WICHTIG ZUR LÄNGE - STRENG EINZUHALTEN:\n";
+            $prompt .= "=============================================\n";
+            $prompt .= "- Der Artikel MUSS MINDESTENS 1000 Wörter umfassen. Dies ist eine VERPFLICHTENDE Anforderung.\n";
+            $prompt .= "- Ziele auf 1500 Wörter oder mehr.\n";
+            $prompt .= "=============================================\n\n";
         }
         
+        // Quellenangaben und Links
+        if ($model->include_sources) {
+            $prompt .= "Füge am Ende des Artikels relevante Quellenangaben hinzu.\n";
+        }
+        
+        if ($model->add_target_blank) {
+            $prompt .= "Alle externen Links sollen mit target=\"_blank\" versehen werden, damit sie in einem neuen Tab geöffnet werden.\n";
+        }
+        
+        // WICHTIG: Zusätzliche Anweisungen aus Backend einfügen
+        if (!empty($model->additionalInstructions)) {
+            $prompt .= "\n=============================================\n";
+            $prompt .= "ZUSÄTZLICHE INHALTLICHE ANWEISUNGEN:\n";
+            $prompt .= "=============================================\n";
+            $prompt .= $model->additionalInstructions . "\n";
+            $prompt .= "=============================================\n\n";
+        }
+        
+        // Detaillierte technische Formatierungsanweisungen hinzufügen
+        $prompt .= "\nWICHTIGE DETAILLIERTE FORMATIERUNGSANWEISUNGEN:\n";
+        
+        // HTML-Formatierung
+        $prompt .= "- Verwende h2 und h3 für Überschriften und Zwischenüberschriften (KEINE h1!).\n";
+        $prompt .= "- Nutze p-Tags für Absätze, strong für Hervorhebungen, ul und li für Listen.\n";
+        $prompt .= "- Strukturbezeichnungen wie 'Einleitung:', 'Fazit:' etc. NICHT in Überschriften verwenden.\n";
+        
+        // Bootstrap-Elemente im Detail
+        $prompt .= "\nBOOTSTRAP-ELEMENTE (MINDESTENS JE EINS VON JEDEM):\n";
+        
+        // Cards richtig formatieren
+        $prompt .= "- Card für wichtige Informationen (ohne mb-Klassen):\n";
+        $prompt .= "  <div class=\"card\"><div class=\"card-body\"><h5 class=\"card-title\">Wichtige Information</h5><p class=\"card-text\">Inhalt...</p></div></div>\n";
+        
+        // Alerts richtig formatieren
+        $prompt .= "- Alert für Hinweise (ohne mb-Klassen):\n";
+        $prompt .= "  <div class=\"alert alert-info\">Wichtiger Hinweis...</div>\n";
+        
+        // Tabellen richtig formatieren
+        $prompt .= "- Tabelle für Datenvergleiche (ohne mb-Klassen):\n";
+        $prompt .= "  <table class=\"table table-striped\"><thead><tr><th>Kategorie</th><th>Wert</th></tr></thead><tbody><tr><td>Beispiel</td><td>Daten</td></tr></tbody></table>\n";
+        
+        $prompt .= "\nFür das JSON-Format verwende folgendes Schema:\n";
         $prompt .= "\nBitte generiere im folgenden JSON-Format:
         {
             \"title\": \"Titel des Artikels\",
@@ -263,6 +335,18 @@ class CaeliContentCreator
             \"content\": \"Der vollständige Artikel mit HTML-Formatierung\",
             \"tags\": \"Kommagetrennte Liste von Tags für den Artikel\"
         }";
+        
+        // Hinweise zu zusätzlichen Formatierungsmöglichkeiten
+        $prompt .= "\nSTRUKTURELLE VORGABEN FÜR MEHR UMFANG:\n";
+        $prompt .= "- Unterteile den Hauptteil in mindestens 5-7 verschiedene Abschnitte mit eigenen H2-Überschriften\n";
+        $prompt .= "- Füge unter jeder H2-Überschrift mindestens 2-3 Unterabschnitte mit H3-Überschriften ein\n";
+        $prompt .= "- Jeder Unterabschnitt sollte 3-5 Absätze umfassen\n";
+        $prompt .= "- Integriere mindestens 3 Listen (mit jeweils mindestens 5 Punkten)\n";
+        $prompt .= "- Füge nach jedem Hauptabschnitt eine zusammenfassende Schlussfolgerung ein\n";
+        $prompt .= "- Ergänze einen ausführlichen FAQ-Bereich am Ende mit mindestens 5 Fragen und Antworten\n";
+        $prompt .= "- Schließe mit einer umfassenden Zusammenfassung und einem Ausblick ab\n\n";
+        
+        $prompt .= "Fülle jede dieser strukturellen Vorgaben mit relevanten, gehaltvollem Inhalt. Die Struktur dient dazu, die erforderliche Mindestwortzahl zu erreichen und einen umfassenden Artikel zu erstellen.\n\n";
         
         // API aufrufen und Antwort parsen
         $response = $this->grokApiService->callApi(
@@ -274,20 +358,174 @@ class CaeliContentCreator
         // JSON extrahieren und parsen
         if (preg_match('/\{[\s\S]*\}/m', $response, $matches)) {
             $json = $matches[0];
-            $data = json_decode($json, true);
             
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \RuntimeException('Fehler beim Parsen der API-Antwort: ' . json_last_error_msg());
+            // Debug-Log für die JSON-Antwort
+            $logDir = $this->framework->getAdapter(System::class)->getContainer()->getParameter('kernel.logs_dir');
+            file_put_contents($logDir . '/api-json-debug.log', "Erhaltenes JSON: " . $json . "\n", FILE_APPEND);
+            
+            // Versuchen, das JSON zu bereinigen und zu parsen
+            try {
+                // Versuche 1: Normales json_decode
+                $data = json_decode($json, true);
+                
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    // Versuche 2: Bereinigen der Steuerzeichen und erneut versuchen
+                    $cleanJson = preg_replace('/[\x00-\x1F\x7F]/', '', $json);
+                    $data = json_decode($cleanJson, true);
+                    
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        // Versuche 3: Alle Anführungszeichen innerhalb von Werten escapen
+                        $cleanerJson = preg_replace('/"([^"]+)":/m', '"$1":', $cleanJson); // Schlüssel schützen
+                        $cleanerJson = preg_replace('/:[ ]*"(.+)"([,}])/m', ': "'.addslashes('$1').'"$2', $cleanerJson);
+                        $data = json_decode($cleanerJson, true);
+                        
+                        if (json_last_error() !== JSON_ERROR_NONE) {
+                            // Letzte Chance: Manuelles Parsen durch Regex
+                            preg_match('/"title"\s*:\s*"([^"]+)"/', $json, $titleMatch);
+                            preg_match('/"teaser"\s*:\s*"([^"]*)"/', $json, $teaserMatch);
+                            preg_match('/"content"\s*:\s*"([^"]*)"/', $json, $contentMatch);
+                            preg_match('/"tags"\s*:\s*"([^"]*)"/', $json, $tagsMatch);
+                            
+                            $data = [
+                                'title' => isset($titleMatch[1]) ? $titleMatch[1] : 'Kein Titel',
+                                'teaser' => isset($teaserMatch[1]) ? $teaserMatch[1] : '',
+                                'content' => isset($contentMatch[1]) ? $contentMatch[1] : 'Kein Inhalt',
+                                'tags' => isset($tagsMatch[1]) ? $tagsMatch[1] : ''
+                            ];
+                            
+                            // Log für manuelles Parsen
+                            file_put_contents($logDir . '/api-json-debug.log', "Manuelles Parsen verwendet\n", FILE_APPEND);
+                        }
+                    }
+                }
+                
+                // Bereinigung der Daten
+                if (isset($data['content']) && is_string($data['content'])) {
+                    // HTML-Tags für die Anzeige sichern
+                    $data['content'] = str_replace('\\', '', $data['content']);
+                    
+                    // Entfernen aller zusätzlichen Escaping für HTML-Tags
+                    $data['content'] = str_replace('&lt;', '<', $data['content']);
+                    $data['content'] = str_replace('&gt;', '>', $data['content']);
+                    $data['content'] = str_replace('&quot;', '"', $data['content']);
+                    $data['content'] = str_replace('&#039;', "'", $data['content']);
+                    
+                    // Entfernen von doppelten Anführungszeichen-Escapes
+                    $data['content'] = str_replace('\"', '"', $data['content']);
+                    
+                    // Entfernen von Unicode-Escapes
+                    $data['content'] = preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
+                        return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+                    }, $data['content']);
+                    
+                    // H1-Überschriften durch H2 ersetzen
+                    $data['content'] = preg_replace('/<h1([^>]*)>(.*?)<\/h1>/i', '<h2$1>$2</h2>', $data['content']);
+                    
+                    // Entfernen unerwünschter Bootstrap-Abstandsklassen
+                    $data['content'] = preg_replace('/(class="[^"]*)(m[tbxy]-\d+|p[tbxy]-\d+)([^"]*)/', '$1$3', $data['content']);
+                    
+                    // Entfernen von "d-grid" Klassen bei Buttons
+                    $data['content'] = preg_replace('/<div class="[^"]*d-grid[^"]*">(\s*)<a/', '<a', $data['content']);
+                    $data['content'] = preg_replace('/<\/a>(\s*)<\/div>/', '</a>', $data['content']);
+                    
+                    // Entfernen struktureller Bezeichnungen wie "Einleitung:" in Überschriften
+                    $data['content'] = preg_replace('/<h[23][^>]*>(Einleitung|Fazit|Schluss|Zusammenfassung):\s*/', '<h$1>', $data['content']);
+                    
+                    // Prüfen auf falsche Quellenlinks (nur das Wort "Link" verlinkt)
+                    if (preg_match('/<a[^>]*>Link<\/a>/', $data['content'])) {
+                        file_put_contents($logDir . '/api-json-debug.log', "WARNUNG: Falsche Quellenlinks gefunden ('Link' statt vollständiger URL)\n", FILE_APPEND);
+                    }
+                    
+                    // Prüfen auf Bootstrap-Elemente
+                    $buttonMatches = [];
+                    $bootstrapCheck = [
+                        'buttons' => preg_match_all('/class="[^"]*btn[^"]*"/', $data['content'], $buttonMatches),
+                        'cards' => preg_match('/class="[^"]*card[^"]*"/', $data['content']),
+                        'alerts' => preg_match('/class="[^"]*alert[^"]*"/', $data['content']),
+                        'tables' => preg_match('/class="[^"]*table[^"]*"/', $data['content'])
+                    ];
+                    
+                    // Prüfen auf Button-Verteilung (Buttons sollten nicht alle am Ende stehen)
+                    if ($bootstrapCheck['buttons'] >= 3) {
+                        // Position des letzten Paragraphen
+                        preg_match_all('/<p[^>]*>.*?<\/p>/s', $data['content'], $paragraphMatches, PREG_OFFSET_CAPTURE);
+                        $lastParagraphPos = end($paragraphMatches[0])[1] ?? 0;
+                        
+                        // Position der Buttons
+                        $buttonPositions = [];
+                        preg_match_all('/<a[^>]*class="[^"]*btn[^"]*"[^>]*>.*?<\/a>/s', $data['content'], $buttonMatches, PREG_OFFSET_CAPTURE);
+                        foreach ($buttonMatches[0] as $match) {
+                            $buttonPositions[] = $match[1];
+                        }
+                        
+                        // Prüfen, ob alle Buttons nach dem letzten Paragraphen stehen
+                        $buttonsAtEnd = true;
+                        foreach ($buttonPositions as $pos) {
+                            if ($pos < $lastParagraphPos) {
+                                $buttonsAtEnd = false;
+                                break;
+                            }
+                        }
+                        
+                        if ($buttonsAtEnd) {
+                            file_put_contents($logDir . '/api-json-debug.log', "WARNUNG: Alle Buttons stehen am Ende des Textes statt verteilt\n", FILE_APPEND);
+                        }
+                    }
+                    
+                    // Prüfen, ob der Teaser identisch mit dem Titel ist
+                    if (isset($data['title']) && isset($data['teaser']) && trim($data['title']) === trim($data['teaser'])) {
+                        // Teaser anpassen, damit er nicht identisch ist
+                        $data['teaser'] = 'Erfahren Sie mehr über ' . $data['teaser'];
+                    }
+                    
+                    // Debug-Log
+                    file_put_contents($logDir . '/api-json-debug.log', "Bereinigter Content: " . substr($data['content'], 0, 500) . "...\n", FILE_APPEND);
+                    file_put_contents($logDir . '/api-json-debug.log', "Bootstrap-Elemente gefunden: " . json_encode($bootstrapCheck) . "\n", FILE_APPEND);
+                    if ($bootstrapCheck['buttons'] < 3) {
+                        file_put_contents($logDir . '/api-json-debug.log', "WARNUNG: Weniger als 3 Buttons gefunden!\n", FILE_APPEND);
+                    }
+                    
+                    // Wörter zählen
+                    $wordCount = str_word_count(strip_tags($data['content']));
+                    file_put_contents($logDir . '/api-json-debug.log', "Wortanzahl: " . $wordCount . "\n", FILE_APPEND);
+                }
+                
+                return [
+                    'title' => isset($data['title']) ? $data['title'] : 'Kein Titel',
+                    'teaser' => isset($data['teaser']) ? $data['teaser'] : '',
+                    'content' => isset($data['content']) ? $data['content'] : 'Kein Inhalt',
+                    'tags' => isset($data['tags']) ? $data['tags'] : ''
+                ];
+            } catch (\Exception $e) {
+                file_put_contents($logDir . '/api-json-debug.log', "JSON-Parsing-Fehler: " . $e->getMessage() . "\n", FILE_APPEND);
+                throw new \RuntimeException('Fehler beim Parsen der API-Antwort: ' . $e->getMessage());
             }
-            
-            return [
-                'title' => $data['title'] ?? 'Kein Titel',
-                'teaser' => $data['teaser'] ?? '',
-                'content' => $data['content'] ?? 'Kein Inhalt',
-                'tags' => $data['tags'] ?? ''
-            ];
         }
         
         throw new \RuntimeException('Konnte keine gültige JSON-Antwort von der API erhalten.');
+    }
+
+    /**
+     * Callback für das Inhaltsgenerierungs-Button-Feld
+     */
+    public function generateContentButtonCallback(DataContainer $dc): string
+    {
+        $html = '<div class="widget">';
+        $html .= '<h3><label>'.$GLOBALS['TL_LANG']['tl_caeli_content_creator']['generateButton'][0].'</label></h3>';
+        $html .= '<div class="tl_info">';
+        $html .= '<p>'.$GLOBALS['TL_LANG']['tl_caeli_content_creator']['generateButton'][1].'</p>';
+        $html .= '</div>';
+        
+        // "Inhalt generieren"-Button
+        $html .= '<div class="tl_submit_container" style="margin-top:10px;">';
+        $html .= '<input type="hidden" name="generateContent" id="generateContent" value="0">';
+        $html .= '<button type="button" class="tl_submit" style="background-color: #3498db;" 
+                  onclick="document.getElementById(\'generateContent\').value=\'1\';document.getElementById(\'tl_caeli_content_creator\').submit();">' 
+                  . ($GLOBALS['TL_LANG']['tl_caeli_content_creator']['generateButton'][0] ?? 'Inhalt generieren') . '</button>';
+        $html .= '</div>';
+        
+        $html .= '</div>';
+        
+        return $html;
     }
 }

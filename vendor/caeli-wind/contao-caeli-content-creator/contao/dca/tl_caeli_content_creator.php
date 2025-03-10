@@ -19,7 +19,7 @@ use Contao\Input;
 use Contao\System;
 
 /**
- * Table tl_caeli_content_creator
+ * DCA für die Caeli Content Creator Tabelle
  */
 $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
     'config'      => array(
@@ -27,13 +27,13 @@ $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
         'enableVersioning' => true,
         'onsubmit_callback' => [
             // Hier rufen wir den Callback für die Inhaltsgenerierung auf, wenn der Button geklickt wurde
-            ['CaeliWind\ContaoCaeliContentCreator\DataContainer\CaeliContentCreator', 'onSubmitGenerateContent']
+            [CaeliWind\ContaoCaeliContentCreator\DataContainer\CaeliContentCreator::class, 'onSubmitGenerateContent']
         ],
-        'sql'              => array(
+        'sql' => array(
             'keys' => array(
                 'id' => 'primary'
             )
-        ),
+        )
     ),
     'list'        => array(
         'sorting'           => array(
@@ -43,171 +43,175 @@ $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
             'panelLayout' => 'filter;sort,search,limit'
         ),
         'label'             => array(
-            'fields' => array('title'),
-            'format' => '%s',
+            'fields'      => array('title', 'topic'),
+            'showColumns' => true
         ),
         'global_operations' => array(
             'all' => array(
+                'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href'       => 'act=select',
                 'class'      => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
             )
         ),
-        'operations'        => array(
-            'edit'   => array(
+        'operations' => array(
+            'edit' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['edit'],
                 'href'  => 'act=edit',
                 'icon'  => 'edit.svg'
             ),
-            'copy'   => array(
-                'href'  => 'act=copy',
-                'icon'  => 'copy.svg'
-            ),
             'delete' => array(
+                'label'      => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
+                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
             ),
-            'show'   => array(
+            'show' => array(
+                'label'      => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['show'],
                 'href'       => 'act=show',
-                'icon'       => 'show.svg',
-                'attributes' => 'style="margin-right:3px"'
-            ),
+                'icon'       => 'show.svg'
+            )
         )
     ),
-    'palettes'    => array(
-        '__selector__' => array('addSubpalette'),
-        'default'      => '{api_legend},title,grokApiKey,grokApiEndpoint;{content_generation_legend},newsArchive,contentElement,topic,targetAudience,emphasis,tags;{preview_legend},generateButton,previewView;{advanced_settings_legend},addSubpalette'
+    'palettes' => array(
+        '__selector__' => [],
+        'default'      => '{title_legend},title,topic,targetAudience,emphasis,min_words,add_target_blank,include_sources,additionalInstructions;{content_legend},newsArchive,contentElement,grokApiKey,grokApiEndpoint;{preview_legend},generateButton,previewView;'
     ),
-    'subpalettes' => array(
-        'addSubpalette' => 'additionalInstructions',
-    ),
+    'subpalettes' => array(),
     'fields'      => array(
-        'id'             => array(
+        'id' => array(
             'sql' => "int(10) unsigned NOT NULL auto_increment"
         ),
-        'tstamp'         => array(
+        'tstamp' => array(
             'sql' => "int(10) unsigned NOT NULL default '0'"
         ),
-        'title'          => array(
-            'inputType' => 'text',
+        'title' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['title'],
             'exclude'   => true,
             'search'    => true,
-            'filter'    => true,
-            'sorting'   => true,
-            'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
+            'inputType' => 'text',
             'eval'      => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
-        'grokApiKey'     => array(
-            'inputType' => 'text',
-            'exclude'   => true,
-            'eval'      => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50', 'decodeEntities' => true),
-            'sql'       => "varchar(255) NOT NULL default ''"
-        ),
-        'grokApiEndpoint' => array(
-            'inputType' => 'text',
-            'exclude'   => true,
-            'eval'      => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50', 'decodeEntities' => true),
-            'sql'       => "varchar(255) NOT NULL default 'https://api.x.ai/v1'"
-        ),
-        'newsArchive'    => array(
-            'inputType'        => 'select',
-            'exclude'          => true,
-            'foreignKey'       => 'tl_news_archive.title',
-            'eval'             => array('mandatory' => true, 'chosen' => true, 'tl_class' => 'w50'),
-            'sql'              => "int(10) unsigned NOT NULL default '0'",
-            'relation'         => array('type' => 'hasOne', 'load' => 'lazy')
-        ),
-        'contentElement' => array(
-            'inputType'        => 'select',
-            'exclude'          => true,
-            'options_callback' => array('CaeliWind\ContaoCaeliContentCreator\DataContainer\CaeliContentCreator', 'getContentElements'),
-            'eval'             => array('mandatory' => true, 'chosen' => true, 'tl_class' => 'w50'),
-            'sql'              => "varchar(255) NOT NULL default ''"
-        ),
-        'topic'          => array(
-            'inputType' => 'text',
+        'topic' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['topic'],
             'exclude'   => true,
             'search'    => true,
+            'inputType' => 'text',
             'eval'      => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
         'targetAudience' => array(
-            'inputType' => 'text',
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['targetAudience'],
             'exclude'   => true,
             'search'    => true,
-            'eval'      => array('mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'),
+            'inputType' => 'text',
+            'eval'      => array('maxlength' => 255, 'tl_class' => 'w50'),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
-        'emphasis'       => array(
-            'inputType' => 'text',
+        'emphasis' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['emphasis'],
             'exclude'   => true,
             'search'    => true,
-            'eval'      => array('mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'),
+            'inputType' => 'text',
+            'eval'      => array('maxlength' => 255, 'tl_class' => 'w50'),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
-        'tags'           => array(
-            'inputType' => 'text',
+        'min_words' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['min_words'],
             'exclude'   => true,
-            'search'    => true,
-            'eval'      => array('mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'),
-            'sql'       => "varchar(255) NOT NULL default ''"
-        ),
-        'min_words'      => array(
             'inputType' => 'text',
-            'exclude'   => true,
-            'default'   => 300,
             'eval'      => array('rgxp' => 'natural', 'tl_class' => 'w50'),
-            'sql'       => "int(10) unsigned NOT NULL default '300'"
+            'sql'       => "int(10) unsigned NOT NULL default '0'"
         ),
         'include_sources' => array(
-            'inputType' => 'checkbox',
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['include_sources'],
             'exclude'   => true,
+            'inputType' => 'checkbox',
             'eval'      => array('tl_class' => 'w50 m12'),
-            'sql'       => "char(1) NOT NULL default '1'"
+            'sql'       => "char(1) NOT NULL default ''"
         ),
         'add_target_blank' => array(
-            'inputType' => 'checkbox',
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['add_target_blank'],
             'exclude'   => true,
+            'inputType' => 'checkbox',
             'eval'      => array('tl_class' => 'w50 m12'),
-            'sql'       => "char(1) NOT NULL default '1'"
-        ),
-        'addSubpalette'  => array(
-            'exclude'   => true,
-            'inputType' => 'checkbox',
-            'eval'      => array('submitOnChange' => true, 'tl_class' => 'w50 clr'),
             'sql'       => "char(1) NOT NULL default ''"
         ),
         'additionalInstructions' => array(
-            'inputType' => 'textarea',
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['additionalInstructions'],
             'exclude'   => true,
             'search'    => true,
-            'eval'      => array('tl_class' => 'clr', 'rows' => 8),
-            'sql'       => 'text NULL'
+            'inputType' => 'textarea',
+            'eval'      => array('tl_class' => 'clr'),
+            'sql'       => "text NULL"
         ),
-        // Der "Generate"-Button - tatsächlich ein verstecktes Feld mit Submit-Button
+        'newsArchive' => array(
+            'label'      => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['newsArchive'],
+            'exclude'    => true,
+            'filter'     => true,
+            'inputType'  => 'select',
+            'foreignKey' => 'tl_news_archive.title',
+            'eval'       => array('mandatory' => true, 'chosen' => true, 'tl_class' => 'w50'),
+            'sql'        => "int(10) unsigned NOT NULL default '0'",
+            'relation'   => array('type' => 'hasOne', 'load' => 'eager')
+        ),
+        'contentElement' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['contentElement'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'select',
+            'options_callback' => [CaeliWind\ContaoCaeliContentCreator\DataContainer\CaeliContentCreator::class, 'getContentElements'],
+            'eval'      => array('mandatory' => true, 'chosen' => true, 'tl_class' => 'w50'),
+            'sql'       => "varchar(64) NOT NULL default ''"
+        ),
+        'grokApiKey' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['grokApiKey'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
+            'sql'       => "varchar(255) NOT NULL default ''"
+        ),
+        'grokApiEndpoint' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['grokApiEndpoint'],
+            'exclude'   => true,
+            'inputType' => 'select',
+            'options'   => [
+                'https://api.x.ai/v1' => 'X.AI API (Grok)'
+            ],
+            'default'   => 'https://api.x.ai/v1',
+            'eval'      => array('mandatory' => true, 'tl_class' => 'w50'),
+            'sql'       => "varchar(255) NOT NULL default 'https://api.x.ai/v1'"
+        ),
         'generateButton' => array(
-            'input_field_callback' => array('CaeliWind\ContaoCaeliContentCreator\DataContainer\CaeliContentCreator', 'generateButtonCallback'),
-            'eval'      => array('tl_class' => 'clr'),
-            'exclude'   => true
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['generateButton'],
+            'exclude'   => true,
+            'input_field_callback' => [CaeliWind\ContaoCaeliContentCreator\DataContainer\CaeliContentCreator::class, 'generateContentButtonCallback'],
+            'eval'      => array('doNotShow' => true),
+            'sql'       => null
         ),
-        // Vorschau-Anzeige - tatsächlich ein verstecktes Feld mit Anzeige
         'previewView' => array(
-            'input_field_callback' => array('CaeliWind\ContaoCaeliContentCreator\DataContainer\CaeliContentCreator', 'previewViewCallback'),
-            'eval'      => array('tl_class' => 'clr'),
-            'exclude'   => true
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['previewView'],
+            'exclude'   => true,
+            'input_field_callback' => [CaeliWind\ContaoCaeliContentCreator\DataContainer\CaeliContentCreator::class, 'previewViewCallback'],
+            'eval'      => array('doNotShow' => true),
+            'sql'       => null
         ),
-        // Speicherfelder für die Vorschau
-        'previewTitle'  => array(
+        // Felder für die Vorschau (werden im Frontend nicht angezeigt)
+        'previewTitle' => array(
+            'eval'      => array('doNotShow' => true),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
         'previewTeaser' => array(
-            'sql'       => 'text NULL'
+            'eval'      => array('doNotShow' => true),
+            'sql'       => "text NULL"
         ),
         'previewContent' => array(
-            'sql'       => 'text NULL'
+            'eval'      => array('doNotShow' => true),
+            'sql'       => "text NULL"
         ),
-        'previewTags'   => array(
+        'previewTags' => array(
+            'eval'      => array('doNotShow' => true),
             'sql'       => "varchar(255) NOT NULL default ''"
         )
     )
