@@ -1,0 +1,56 @@
+{
+    "name": "caeli-wind/contao-caeli-content-creator",
+    "description": "Generiere Blog-Beiträge via GROK API",
+    "keywords": [
+        "contao",
+        "bundle",
+        "ai",
+        "content",
+        "creator"
+    ],
+    "type": "contao-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Caeli Wind - Christian Voss",
+            "email": "christian.voss@caeli-wind.de",
+            "homepage": "https://www.caeli-wind.de",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/caeli-wind/contao-caeli-content-creator/issues",
+        "source": "https://github.com/caeli-wind/contao-caeli-content-creator"
+    },
+    "require": {
+        "php": "^8.1",
+        "contao/core-bundle": "^5.0",
+        "symfony/http-client": "^6.0",
+        "symfony/http-foundation": "^6.0",
+        "symfony/routing": "^6.0",
+        "symfony/security-bundle": "^6.0"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "CaeliWind\\ContaoCaeliContentCreator\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": false,
+            "contao/manager-plugin": true,
+            "contao-community-alliance/composer-plugin": true
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "CaeliWind\\ContaoCaeliContentCreator\\ContaoManager\\Plugin"
+    },
+    "scripts": {
+        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ templates/ tests/ --config tools/ecs/config.php --fix --ansi",
+        "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist"
+    },
+    "version": "0.1"
+}

@@ -33,21 +33,6 @@ return array(
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
-        'contact_text' => array(
-            'label' => array('Kontakttext', 'Text neben den Ansprechpartnern'),
-            'inputType' => 'textarea',
-            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
-        ),
-        'buttons' => array(
-            'label' => array('Buttons', ''),
-            'elementLabel' => '%s. Button',
-            'inputType' => 'list',
-            'minItems' => 1,
-            'maxItems' => 20,
-            'eval' => array('tl_class' => 'clr'),
-            'fields' => ButtonHelper::getButtonConfig(),
-        ),
-
         'size' => array(
             'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
             'inputType' => 'imageSize',
@@ -60,23 +45,20 @@ return array(
             ),
         ),
 
-        'partners' => array(
-            'label' => array('Ansprechpartner', ''),
-            'elementLabel' => '%s. Ansprechpartner',
+        'contacts' => array(
+            'label' => array('Kontakte', ''),
+            'elementLabel' => '%s. Kontakt',
             'inputType' => 'list',
             'minItems' => 1,
-            'maxItems' => 3,
+            'maxItems' => 10,
             'fields' => array(
-                'animation_type' => array(
-                    'label' => array(
-                        'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
-                    ),
-                    'inputType' => 'select',
-                    'options' => GlobalElementConfig::getAnimations(),
-                    'eval' => array('chosen' => 'true')
+                'title' => array(
+                    'label' => array('Titel', 'z.B. "Landowners" oder "Project Developers"'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50', 'mandatory' => true),
                 ),
                 'image' => array(
-                    'label' => array('Bild', ''),
+                    'label' => array('Profilbild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'filesOnly' => true,
@@ -88,12 +70,12 @@ return array(
                 'name' => array(
                     'label' => array('Name', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'mandatory' => true),
                 ),
-                'position' => array(
-                    'label' => array('Position', ''),
+                'email_link' => array(
+                    'label' => array('E-Mail-Link', 'Link zum Kontaktformular oder mailto: Link'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'rgxp' => 'url'),
                 ),
                 'phone' => array(
                     'label' => array('Telefonnummer', ''),

@@ -380,13 +380,16 @@ class VSMLazyLoader {
     }
 
     handleSpinner(element) {
-        if ((element.classList.contains('cms-html-video-container') ||
-                element.classList.contains('content-media') ||
-                element.tagName.toLowerCase() === 'video' ||
-                element.parentElement.classList.contains('video-wrapper')) &&
-            !element.querySelector('.lazy-loader-spinner')) {
-            this.addSpinner(element);
+        if (element.parentElement) {
+            if ((element.classList.contains('cms-html-video-container') ||
+                    element.classList.contains('content-media') ||
+                    element.tagName.toLowerCase() === 'video' ||
+                    element.parentElement.classList.contains('video-wrapper')) &&
+                !element.querySelector('.lazy-loader-spinner')) {
+                this.addSpinner(element);
+            }
         }
+
     }
 
     addSpinner(target) {

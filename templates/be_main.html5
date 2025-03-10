@@ -32,8 +32,10 @@
     <script><?= $this->getDateString() ?></script>
     <?= $this->javascripts ?>
 
+
     <script src="/files/base/layout/js/vsmLazyload.js"></script>
     <script src="/files/base/layout/js/vsmLazyloadSlider.js"></script>
+
     <script src="/files/base/layout/_vendor/node_modules/venobox/dist/venobox.min.js"></script>
 
     <link rel="stylesheet" href="/files/base/backend/custom_backend.min.css">
@@ -113,6 +115,5 @@
 <?php endif; ?>
 
 <?= $this->mootools ?>
-
 </body>
 </html>

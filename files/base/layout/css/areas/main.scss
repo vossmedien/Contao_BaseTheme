@@ -1,14 +1,16 @@
-html, body, #wrapper{
+html, body, #wrapper {
   min-height: 100dvh;
 }
 
 
 #wrapper {
-  overflow: clip;
-  display: flex;
-  flex-flow: column nowrap;
   background-color: var(--bs-body-bg);
-
+  @include media-breakpoint-up(md) {
+    overflow: clip;
+    display: flex;
+    flex-flow: column nowrap;
+  }
+  
   #container {
     @include media-breakpoint-up(md) {
       &.with--left-col:not(.with--right-col) {
@@ -46,8 +48,8 @@ html, body, #wrapper{
       .content--element {
         z-index: 3;
 
-        &[class*="bg-"]{
-          > .ce--inner{
+        &[class*="bg-"] {
+          > .ce--inner {
             @extend .container;
           }
         }
@@ -78,5 +80,5 @@ html, body, #wrapper{
 
 
 .mod_article[class*="bg-"] + .mod_article:not([class*="bg-"]) {
-  padding-top: var(--main-gap)
+  padding-block: var(--main-gap)
 }

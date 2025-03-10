@@ -30,6 +30,7 @@ $link-decoration: none;
 $link-shade-percentage: 20%;
 $link-hover-decoration: null;
 
+$border-color: var(--bs-body-color);
 $input-focus-border-color: var(--bs-primary-rgb);
 $input-placeholder-color: var(--bs-placeholder-color);
 
@@ -84,9 +85,9 @@ $link-hover-color:mix(black, $link-color, 25%);
 $container-max-widths: (
         sm: 100%,
         md: 100%,
-        lg: 100%,
+        lg: 992px,
         xl: 1140px,
-        xxl: 1600px
+        xxl: 1280px
 );
 
 
@@ -94,9 +95,9 @@ $grid-breakpoints: (
         xs: 0,
         sm: 576px,
         md: 768px,
-        lg: 992px,
+        lg: 1040px,
         xl: 1200px,
-        xxl: 1640px,
+        xxl: 1340px,
 );
 
 

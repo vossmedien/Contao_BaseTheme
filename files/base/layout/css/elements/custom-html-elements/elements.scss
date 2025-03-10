@@ -6,7 +6,7 @@
 
 
 .mod_article:has(.article-content[class*="bg-"]) + .mod_article {
-  padding-top: var(--main-gap);
+  //padding-top: var(--main-gap);
 }
 
 .BodyScrollToTop {
@@ -65,7 +65,11 @@
 
 
 .mod_article .article-content[class*="bg-"] {
-  padding-top: var(--main-gap);
+  padding-block: var(--main-gap);
+
+  .content--element:last-child{
+    margin-bottom: 0 !important;
+  }
 }
 
 .content--element {
@@ -79,3 +83,4 @@
     padding-bottom: var(--main-gap);
   }
 }
+

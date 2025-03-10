@@ -1,4 +1,4 @@
-// Map für feste Gap-Werte
+
 
 @mixin responsive-font-size($heading) {
   $desktop-size: map-get(map-get($headings-font-sizes, $heading), 'desktop');
@@ -11,14 +11,6 @@
   }
 }
 
-
-
-// Funktion zur Berechnung des Abstands basierend auf der Schriftgröße
-@function calculate-headline-spacing($heading) {
-  $desktop-size: map-get(map-get($headings-font-sizes, $heading), 'desktop');
-  @return calc(#{$desktop-size} * 0.7);
-}
-
 // Globale Überschriften-Stile
 @each $heading, $sizes in $headings-font-sizes {
   #{$heading}, .#{$heading} {
@@ -28,7 +20,13 @@
       font-weight: var(--bs-#{$heading}-font-weight, $headings-font-weight);
 
       &:not(.ce--headline *) {
-        margin-bottom: calculate-headline-spacing($heading);
+        // Verwende jetzt die margin-Map statt der Berechnung
+        margin-bottom: map-get($headline-margins, $heading);
+
+        @include media-breakpoint-down(md) {
+          margin-bottom: map-get($mobile-headline-margins, $heading);
+        }
+
         display: block;
       }
     }
@@ -48,7 +46,13 @@
   @each $heading in map-keys($headings-font-sizes) {
     &.hl-#{$heading} {
       gap: map-get($headline-gaps, $heading);
-      margin-bottom: calculate-headline-spacing($heading);
+      // Verwende jetzt die margin-Map statt der Berechnung
+      margin-bottom: map-get($headline-margins, $heading);
+
+      @include media-breakpoint-down(md) {
+        gap: map-get($mobile-headline-gaps, $heading);
+        margin-bottom: map-get($mobile-headline-margins, $heading);
+      }
 
       @if $heading != 'h6' {
         $next-heading: nth(map-keys($headings-font-sizes), index(map-keys($headings-font-sizes), $heading) + 1);
@@ -89,17 +93,8 @@
 // Anwendung des Mixins
 @include headline-weights;
 
-// Responsive Anpassungen
-@include media-breakpoint-down(md) {
-  .ce--headline {
-    @each $heading in map-keys($headings-font-sizes) {
-      &.hl-#{$heading} {
-        gap: map-get($mobile-headline-gaps, $heading);
-        margin-bottom: calc(#{calculate-headline-spacing($heading)} * 0.8);
-      }
-    }
-  }
-}
+// Entferne den redundanten media-query-Block, da wir die responsiven
+// Anpassungen jetzt direkt in die anderen Blöcke integriert haben
 
 .ce--subline {
   color: var(--bs-subline-color);

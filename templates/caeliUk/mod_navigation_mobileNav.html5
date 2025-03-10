@@ -14,8 +14,8 @@ $this->wrapperAttributes = $this
 <nav<?= $this->wrapperAttributes ?>>
 
     <div class="logo">
-        <a title="B-MOS" href="/">
-                 <?= VSM_HelperFunctions\ImageHelper::generateImageHTML("files/base/layout/img/logo.png", "BÜRGERBÜRO E. V.", null, null, null, false); ?>
+        <a title="Caeli Wind" href="/">
+            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML("files/base/layout/img/logo.svg", "Caeli Wind", null, null, null, false); ?>
         </a>
     </div>
 
@@ -23,8 +23,8 @@ $this->wrapperAttributes = $this
     <?= $this->items ?>
 
 
-    <div class="extra-content mt-auto mobileNav_footer" data-bs-theme="dark">
-        {{insert_module::17}}
+    <div class="extra-content mt-auto mobileNav_footer">
+        {{insert_module::5}}
     </div>
 </nav>
 <!-- indexer::continue -->

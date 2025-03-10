@@ -13,7 +13,7 @@ html body {
       @include media-breakpoint-down(lg) {
         .image--col{
           order: 1;
-          margin-top: var(--main-gap);
+          //margin-top: var(--main-gap);
         }
 
         .content--col{

@@ -50,14 +50,68 @@ function startCounter(element) {
     }
     element.classList.add("doneCounting");
 
-    const fullText = element.textContent;
-    const matches = fullText.match(/(\d+([.,]\d+)?)([^\d]*)/);
-    if (!matches) return;
+    // Finde alle Textknoten innerhalb des Elements
+    const textNodes = [];
+    function getTextNodes(node) {
+        if (node.nodeType === 3) { // Textknoten
+            textNodes.push(node);
+        } else {
+            for (let i = 0; i < node.childNodes.length; i++) {
+                getTextNodes(node.childNodes[i]);
+            }
+        }
+    }
+    getTextNodes(element);
 
-    const originalNumber = matches[1].replace(",", ".");
-    const decimalPlaces = (originalNumber.split(".")[1] || []).length;
-    const targetNumber = parseFloat(originalNumber);
-    const text = matches[3];
+    // Verarbeite jeden Textknoten
+    textNodes.forEach(textNode => {
+        const fullText = textNode.nodeValue;
+        const regex = /(\d+([.,]\d+)?)([^\d]*)/g;
+        let matches;
+        let lastIndex = 0;
+        const fragments = [];
+
+        while ((matches = regex.exec(fullText)) !== null) {
+            // Text vor der Zahl hinzufügen
+            if (matches.index > lastIndex) {
+                fragments.push(document.createTextNode(fullText.substring(lastIndex, matches.index)));
+            }
+
+            // Zahl und nachfolgenden Text extrahieren
+            const originalNumber = matches[1].replace(",", ".");
+            const decimalPlaces = (originalNumber.split(".")[1] || []).length;
+            const targetNumber = parseFloat(originalNumber);
+            const text = matches[3];
+
+            // Span für die Zahl erstellen
+            const numberSpan = document.createElement("span");
+            numberSpan.className = "number-counter";
+            numberSpan.textContent = originalNumber + text;
+            fragments.push(numberSpan);
+
+            // Counter für dieses Span starten
+            animateCounter(numberSpan, targetNumber, decimalPlaces, text);
+
+            lastIndex = regex.lastIndex;
+        }
+
+        // Rest des Textes hinzufügen
+        if (lastIndex < fullText.length) {
+            fragments.push(document.createTextNode(fullText.substring(lastIndex)));
+        }
+
+        // Original-Textknoten ersetzen
+        if (fragments.length > 0) {
+            const parent = textNode.parentNode;
+            fragments.forEach(fragment => {
+                parent.insertBefore(fragment, textNode);
+            });
+            parent.removeChild(textNode);
+        }
+    });
+}
+
+function animateCounter(element, targetNumber, decimalPlaces, text) {
     const duration = 2000;
     let startTime = null;
 
@@ -97,7 +151,6 @@ const observer = new IntersectionObserver(
 document.querySelectorAll(".count").forEach((el) => {
     observer.observe(el);
 });
-
 
 
 
