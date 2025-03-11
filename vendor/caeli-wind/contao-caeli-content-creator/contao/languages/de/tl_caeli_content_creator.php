@@ -30,8 +30,8 @@ $GLOBALS['TL_LANG']['tl_caeli_content_creator']['preview_legend'] = 'Vorschau un
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['title'] = ['Titel', 'Titel des Content-Creator-Eintrags.'];
-$GLOBALS['TL_LANG']['tl_caeli_content_creator']['grokApiKey'] = ['Grok API-Schlüssel', 'Geben Sie Ihren Grok API-Schlüssel ein.'];
-$GLOBALS['TL_LANG']['tl_caeli_content_creator']['grokApiEndpoint'] = ['Grok API-Endpunkt', 'Geben Sie den Endpunkt der Grok API ein.'];
+$GLOBALS['TL_LANG']['tl_caeli_content_creator']['grokApiKey'] = ['KI API-Schlüssel', 'Geben Sie Ihren API-Schlüssel für die KI-Service-Integration ein.'];
+$GLOBALS['TL_LANG']['tl_caeli_content_creator']['grokApiEndpoint'] = ['KI API-Endpunkt', 'Geben Sie den Endpunkt des KI-Services ein (z.B. https://api.groq.com/openai/v1).'];
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['newsArchive'] = ['Nachrichtenarchiv', 'Das Nachrichtenarchiv, in dem der generierte Inhalt gespeichert werden soll.'];
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['contentElement'] = ['Inhaltselement', 'Der Typ des Inhaltselements, der für den generierten Inhalt verwendet werden soll.'];
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['topic'] = ['Thema', 'Das Thema des zu generierenden Inhalts.'];

@@ -17,6 +17,8 @@ namespace CaeliWind\ContaoCaeliContentCreator\Controller;
 use CaeliWind\ContaoCaeliContentCreator\Model\ContentCreatorModel;
 use CaeliWind\ContaoCaeliContentCreator\Service\GrokApiService;
 use CaeliWind\ContaoCaeliContentCreator\Service\NewsContentGenerator;
+use CaeliWind\ContaoCaeliContentCreator\Service\DuplicateChecker;
+use CaeliWind\ContaoCaeliContentCreator\Service\PromptBuilder;
 use Contao\BackendTemplate;
 use Contao\ContentModel;
 use Contao\Controller;
@@ -42,7 +44,9 @@ class ContentCreatorController extends AbstractBackendController
         private readonly ContaoFramework $framework,
         private readonly GrokApiService $grokApiService,
         private readonly NewsContentGenerator $newsContentGenerator,
-        private readonly AuthorizationCheckerInterface $authorizationChecker
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly PromptBuilder $promptBuilder,
+        private readonly DuplicateChecker $duplicateChecker
     ) {
         // Kein parent::__construct() mehr in Contao 5.5 / Symfony 6
     }
@@ -294,47 +298,11 @@ class ContentCreatorController extends AbstractBackendController
         // Debug-Ausgabe
         $logFile = $this->framework->getAdapter(System::class)->getContainer()->getParameter('kernel.logs_dir') . '/api-debug.log';
         file_put_contents($logFile, "Starte Inhaltsgenerierung für Thema: {$model->topic}\n", FILE_APPEND);
-
-        // Prompt vorbereiten
-        $prompt = "Erstelle einen Blog-Artikel zum Thema: " . $model->topic . ".\n\n";
-
-        if (!empty($model->targetAudience)) {
-            $prompt .= "Zielgruppe: " . $model->targetAudience . "\n";
-        }
-
-        if (!empty($model->emphasis)) {
-            $prompt .= "Besondere Betonung auf: " . $model->emphasis . "\n";
-        }
-
-        // Minimale Wortzahl hinzufügen, falls angegeben
-        if (!empty($model->min_words)) {
-            $prompt .= "Der Artikel sollte mindestens {$model->min_words} Wörter umfassen.\n";
-        }
-
-        // Quellenangaben anfordern, falls gewünscht
-        if (!empty($model->include_sources)) {
-            $prompt .= "Bitte füge am Ende des Artikels einige zitierbare Quellen ein.\n";
-        }
-
-        // Links in neuem Tab öffnen, falls gewünscht
-        if (!empty($model->add_target_blank)) {
-            $prompt .= "Alle Links im Artikel sollten in einem neuen Tab geöffnet werden (target=\"_blank\" Attribut).\n";
-        }
-
-        if (!empty($model->additionalInstructions)) {
-            $prompt .= "Weitere Anweisungen: " . $model->additionalInstructions . "\n";
-        }
-
-        $prompt .= "\nBitte generiere im folgenden JSON-Format:
-        {
-            \"title\": \"Titel des Artikels\",
-            \"teaser\": \"Kurze Zusammenfassung des Inhalts (2-3 Sätze)\",
-            \"content\": \"Der vollständige Artikel mit HTML-Formatierung\",
-            \"tags\": \"Kommagetrennte Liste von Tags für den Artikel\"
-        }";
-
+        
+        // Zentralen PromptBuilder nutzen
+        $prompt = $this->promptBuilder->buildPrompt($model, true);
         file_put_contents($logFile, "Prompt erstellt, rufe API auf\n", FILE_APPEND);
-
+        
         try {
             // API aufrufen und Antwort parsen
             $response = $this->grokApiService->callApi(
@@ -348,6 +316,8 @@ class ContentCreatorController extends AbstractBackendController
             // JSON extrahieren und parsen
             if (preg_match('/\{[\s\S]*\}/m', $response, $matches)) {
                 $json = $matches[0];
+                file_put_contents($logFile, "JSON erkannt, versuche zu parsen\n", FILE_APPEND);
+                
                 $data = json_decode($json, true);
 
                 if (json_last_error() !== JSON_ERROR_NONE) {
@@ -357,11 +327,22 @@ class ContentCreatorController extends AbstractBackendController
 
                 file_put_contents($logFile, "Inhalt erfolgreich generiert\n", FILE_APPEND);
 
+                // Auf mögliche Duplikate prüfen
+                $duplicates = $this->duplicateChecker->checkForDuplicates(
+                    $model->newsArchive,
+                    $data['title'],
+                    $data['teaser']
+                );
+                
+                file_put_contents($logFile, "Duplikat-Prüfung: " . count($duplicates) . " potenzielle Duplikate gefunden\n", FILE_APPEND);
+                
+                // Rückgabedaten inklusive Duplikaten
                 return [
-                    'title' => $data['title'] ?? 'Kein Titel',
+                    'title' => $data['title'],
                     'teaser' => $data['teaser'] ?? '',
-                    'content' => $data['content'] ?? 'Kein Inhalt',
-                    'tags' => $data['tags'] ?? ''
+                    'content' => $data['content'],
+                    'tags' => $data['tags'] ?? '',
+                    'duplicates' => $duplicates
                 ];
             }
 

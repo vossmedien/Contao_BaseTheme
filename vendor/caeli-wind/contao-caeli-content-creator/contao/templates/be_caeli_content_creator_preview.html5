@@ -23,7 +23,7 @@
     </div>
   <?php endif; ?>
 
-  <form method="post">
+  <form method="post" id="contentGeneratorForm">
     <div class="tl_formbody_edit">
       <?php if (!$this->previewExists): ?>
         <div class="tl_info">
@@ -52,6 +52,22 @@
               </div>
             <?php endif; ?>
             
+            <?php if (isset($this->duplicates) && !empty($this->duplicates)): ?>
+            <div class="duplicate-warning" style="margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeeba; color: #856404;">
+              <h4>Mögliche Duplikate gefunden</h4>
+              <ul>
+                <?php foreach ($this->duplicates as $duplicate): ?>
+                <li>
+                  <strong><?= $duplicate['headline'] ?></strong> 
+                  (<?= $duplicate['date'] ?>) - 
+                  Ähnlichkeit: Titel <?= $duplicate['titleSimilarity'] ?>%, 
+                  Teaser <?= $duplicate['teaserSimilarity'] ?>%
+                </li>
+                <?php endforeach; ?>
+              </ul>
+            </div>
+            <?php endif; ?>
+            
             <?php if (isset($this->debug_info) && $this->debug_info): ?>
             <div class="debug-info" style="margin-top: 20px; padding: 15px; background: #f8f8f8; border: 1px solid #ccc; font-family: monospace; font-size: 12px;">
               <h4>Debug-Informationen</h4>
@@ -61,16 +77,101 @@
           </div>
         </div>
       <?php endif; ?>
+      
+      <!-- Ladebalken, standardmäßig ausgeblendet -->
+      <div id="loadingIndicator" style="display: none; margin: 20px 0;">
+        <div style="background-color: #f3f3f3; border-radius: 4px; padding: 2px; margin-bottom: 10px;">
+          <div id="progressBar" style="width: 0%; height: 20px; background-color: #3498db; border-radius: 4px; transition: width 0.5s;"></div>
+        </div>
+        <p id="loadingMessage" style="text-align: center;">Inhalt wird generiert... Dies kann einige Sekunden dauern.</p>
+      </div>
+      
+      <!-- Mögliche Duplikate-Anzeige, wird via JavaScript befüllt -->
+      <div id="duplicateContainer" style="display: none; margin: 20px 0; padding: 15px; background: #fff3cd; border: 1px solid #ffeeba; color: #856404;">
+        <h4>Mögliche Duplikate</h4>
+        <div id="duplicateContent"></div>
+      </div>
     </div>
     
     <div class="tl_formbody_submit">
       <div class="tl_submit_container">
-        <button type="submit" name="generate" value="1" class="tl_submit" style="background-color: #3498db;">Inhalt generieren</button>
+        <button type="submit" name="generate" value="1" id="generateButton" class="tl_submit" style="background-color: #3498db;">Inhalt generieren</button>
         <?php if ($this->previewExists): ?>
-          <button type="submit" name="publish" value="1" class="tl_submit" style="background-color: #27ae60;">Inhalt veröffentlichen</button>
+          <button type="submit" name="publish" value="1" id="publishButton" class="tl_submit" style="background-color: #27ae60;">Inhalt veröffentlichen</button>
         <?php endif; ?>
         <a href="<?= $this->backUrl ?>" class="tl_submit" style="background-color: #7f8c8d;">Zurück</a>
       </div>
     </div>
   </form>
+  
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('contentGeneratorForm');
+    const generateButton = document.getElementById('generateButton');
+    const publishButton = document.getElementById('publishButton');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const progressBar = document.getElementById('progressBar');
+    const loadingMessage = document.getElementById('loadingMessage');
+    
+    let progressValue = 0;
+    let progressInterval;
+    
+    // Funktion zum Starten des Ladebalkens
+    function startProgressBar() {
+      loadingIndicator.style.display = 'block';
+      
+      // Simuliere Fortschritt von 0% bis 95% (der Rest nach erfolgreichem Abschluss)
+      progressValue = 0;
+      updateProgressBar();
+      
+      progressInterval = setInterval(function() {
+        // Langsamer Fortschritt zu Beginn, schneller in der Mitte
+        if (progressValue < 30) {
+          progressValue += 0.5;
+        } else if (progressValue < 70) {
+          progressValue += 0.3;
+        } else if (progressValue < 95) {
+          progressValue += 0.1;
+        }
+        
+        // Maximum 95% - die restlichen 5% nach Abschluss
+        if (progressValue > 95) {
+          progressValue = 95;
+          clearInterval(progressInterval);
+        }
+        
+        updateProgressBar();
+      }, 100);
+    }
+    
+    // Funktion zum Aktualisieren des Ladebalkens
+    function updateProgressBar() {
+      progressBar.style.width = progressValue + '%';
+      
+      // Ändere Nachricht je nach Fortschritt
+      if (progressValue > 10 && progressValue < 40) {
+        loadingMessage.textContent = "AI analysiert das Thema...";
+      } else if (progressValue >= 40 && progressValue < 70) {
+        loadingMessage.textContent = "Inhalte werden erstellt...";
+      } else if (progressValue >= 70) {
+        loadingMessage.textContent = "Formatierung wird angewendet...";
+      }
+    }
+    
+    // Event-Listener für Form-Submit
+    form.addEventListener('submit', function(e) {
+      // Nur für den "Inhalt generieren" Button
+      if (e.submitter === generateButton) {
+        // Starte den Ladebalken
+        startProgressBar();
+        
+        // Deaktiviere den Button während der Generierung
+        generateButton.disabled = true;
+        generateButton.textContent = 'Wird generiert...';
+        if (publishButton) publishButton.disabled = true;
+      }
+      // Für den "Veröffentlichen" Button keine Animation nötig
+    });
+  });
+  </script>
 <?php $this->endblock(); ?> 

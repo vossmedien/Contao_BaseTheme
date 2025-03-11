@@ -21,3 +21,9 @@ services:
 
     CaeliWind\ContaoCaeliContentCreator\Service\NewsContentGenerator:
         public: true
+
+    CaeliWind\ContaoCaeliContentCreator\Service\DuplicateChecker:
+        public: true
+
+    CaeliWind\ContaoCaeliContentCreator\Service\PromptBuilder:
+        public: true
