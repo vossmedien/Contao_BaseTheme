@@ -29,7 +29,7 @@ class GrokApiService
     /**
      * Ruft die Grok API auf und gibt die Antwort zurück
      */
-    public function callApi(string $apiKey, string $apiEndpoint, string $prompt): string
+    public function callApi(string $apiKey, string $apiEndpoint, string $prompt, float $temperature = 0.7, int $maxTokens = 8000, float $topP = 0.95): string
     {
         try {
             // Stellen Sie sicher, dass der Endpunkt richtig formatiert ist
@@ -47,30 +47,16 @@ class GrokApiService
                     'messages' => [
                         [
                             'role' => 'system',
-                            'content' => 'Du bist ein professioneller Content-Writer für Blogs im Bereich Windenergie und erneuerbare Energien. Du erstellst hochwertige Inhalte unter strikter Einhaltung folgender Regeln:
-
-1) TECHNISCHE FORMATIERUNG (OBERSTE PRIORITÄT):
-- Verwende NIEMALS h1-Überschriften. Beginne direkt mit h2 und h3 für Unterabschnitte.
-- Verwende NIEMALS Bezeichnungen wie "Einleitung", "Fazit", "Zusammenfassung" in Überschriften.
-- Schreibe echte, aussagekräftige Überschriften, die den Inhalt beschreiben.
-- Verwende KEINE Bootstrap-Abstandsklassen (mt-, mb-, etc.).
-- Verteile die Call-To-Action Buttons gleichmäßig im gesamten Text (nicht geballt).
-
-2) INHALTLICHE GESTALTUNG:
-- Setze alle thematischen Richtlinien aus den Anweisungen präzise um.
-- Achte besonders auf Tonalität, SEO-Optimierung und inhaltliche Ausrichtung.
-- Erzeuge einen umfangreichen, detaillierten Text mit der vorgegebenen Mindestwortzahl.
-
-Erzeuge stets ein valides JSON mit den Feldern title, teaser, content und tags. Der Teaser darf NICHT mit dem Titel identisch sein.'
+                            'content' => 'Du bist ein professioneller Content-Writer für Blogs im Bereich Windenergie und erneuerbare Energien. Erzeuge stets ein valides JSON mit den Feldern title, teaser, content und tags. Folge exakt den Formatierungsanweisungen im Benutzer-Prompt.'
                         ],
                         [
                             'role' => 'user',
                             'content' => $prompt
                         ]
                     ],
-                    'temperature' => 0.7,
-                    'max_tokens' => 8000,
-                    'top_p' => 0.95,
+                    'temperature' => $temperature,
+                    'max_tokens' => $maxTokens,
+                    'top_p' => $topP,
                 ],
                 'timeout' => 60,
                 // TLS/SSL-Optionen

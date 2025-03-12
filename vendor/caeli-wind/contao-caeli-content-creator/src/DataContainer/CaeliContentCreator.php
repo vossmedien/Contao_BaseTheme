@@ -247,9 +247,12 @@ class CaeliContentCreator
         
         // API aufrufen und Antwort parsen
         $response = $this->grokApiService->callApi(
-            $model->grokApiKey,
-            $model->grokApiEndpoint,
-            $prompt
+            $model->apiKey,
+            $model->apiEndpoint,
+            $prompt,
+            (float)$model->temperature,
+            (int)$model->maxTokens,
+            (float)$model->topP
         );
         
         // JSON extrahieren und parsen

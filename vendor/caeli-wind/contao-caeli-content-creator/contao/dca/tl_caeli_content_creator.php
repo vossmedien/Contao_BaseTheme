@@ -75,7 +75,7 @@ $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
     ),
     'palettes' => array(
         '__selector__' => [],
-        'default'      => '{title_legend},title,topic,targetAudience,emphasis,min_words,add_target_blank,include_sources,additionalInstructions;{content_legend},newsArchive,contentElement,grokApiKey,grokApiEndpoint;{preview_legend},generateButton,previewView;'
+        'default'      => '{title_legend},title,topic,targetAudience,emphasis,add_target_blank,include_sources,additionalInstructions;{content_legend},newsArchive,contentElement,apiKey,apiEndpoint;{ai_params_legend},temperature,maxTokens,topP,min_words;{preview_legend},generateButton,previewView;'
     ),
     'subpalettes' => array(),
     'fields'      => array(
@@ -165,15 +165,15 @@ $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
             'eval'      => array('mandatory' => true, 'chosen' => true, 'tl_class' => 'w50'),
             'sql'       => "varchar(64) NOT NULL default ''"
         ),
-        'grokApiKey' => array(
-            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['grokApiKey'],
+        'apiKey' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['apiKey'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
-        'grokApiEndpoint' => array(
-            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['grokApiEndpoint'],
+        'apiEndpoint' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['apiEndpoint'],
             'exclude'   => true,
             'inputType' => 'select',
             'options'   => [
@@ -182,6 +182,30 @@ $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
             'default'   => 'https://api.x.ai/v1',
             'eval'      => array('mandatory' => true, 'tl_class' => 'w50'),
             'sql'       => "varchar(255) NOT NULL default 'https://api.x.ai/v1'"
+        ),
+        'temperature' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['temperature'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'default'   => 0.7,
+            'eval'      => array('rgxp' => 'digit', 'tl_class' => 'w50', 'minval' => 0, 'maxval' => 1),
+            'sql'       => "decimal(3,2) NOT NULL default '0.70'"
+        ),
+        'maxTokens' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['maxTokens'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'default'   => 8000,
+            'eval'      => array('rgxp' => 'natural', 'tl_class' => 'w50'),
+            'sql'       => "int(10) unsigned NOT NULL default '8000'"
+        ),
+        'topP' => array(
+            'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['topP'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'default'   => 0.95,
+            'eval'      => array('rgxp' => 'digit', 'tl_class' => 'w50', 'minval' => 0, 'maxval' => 1),
+            'sql'       => "decimal(3,2) NOT NULL default '0.95'"
         ),
         'generateButton' => array(
             'label'     => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['generateButton'],

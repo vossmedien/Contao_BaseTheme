@@ -47,12 +47,12 @@ class PromptBuilder
         $prompt .= "=============================================\n";
         $prompt .= "- VERWENDE NIEMALS H1-Überschriften! Beginne mit H2 und verwende H3 für Unterabschnitte.\n";
         $prompt .= "- NIEMALS Überschriften wie 'Einleitung', 'Fazit', etc. verwenden! Stattdessen thematische Überschriften.\n";
-        $prompt .= "- BUTTONS: Füge MINDESTENS DREI Call-To-Action Buttons hinzu, die im Text VERTEILT sind (genau in dieser Form):\n";
-        $prompt .= "  <a href=\"/kontakt\" class=\"btn btn-primary\">Kontakt aufnehmen</a>\n";
-        $prompt .= "  <a href=\"/grundeigentuemer#pachtrechner\" class=\"btn btn-success\">Jetzt Pachteinnahmen berechnen</a>\n";
-        $prompt .= "  <a href=\"/grundstueck\" class=\"btn btn-info\">Flächencheck starten</a>\n";
+        $prompt .= "- BUTTONS: Füge nur dann Call-To-Action Buttons hinzu, wenn sie THEMATISCH ZUM INHALT PASSEN! Maximal 3 Buttons, UNGLEICHMÄSSIG im Text VERTEILEN. Verwende NUR Buttons, die zum Kontext des Artikels passen:\n";
+        $prompt .= "  <a href=\"/kontakt\" class=\"btn btn-primary\">Kontakt aufnehmen</a> - nur wenn im Artikel Beratung oder persönlicher Austausch sinnvoll ist\n";
+        $prompt .= "  <a href=\"/grundeigentuemer#pachtrechner\" class=\"btn btn-success\">Jetzt Pachteinnahmen berechnen</a> - nur bei Themen zu Grundstücken, Pachtverträgen oder Einnahmen durch Windenergie\n";
+        $prompt .= "  <a href=\"/grundstueck\" class=\"btn btn-info\">Flächencheck starten</a> - nur bei Themen zur Flächeneignung oder Standortsuche\n";
+        $prompt .= "  WICHTIG: Setze Buttons nur ein, wenn sie INHALTLICH PASSEN! Es müssen NICHT alle oder überhaupt Buttons verwendet werden.\n";
         $prompt .= "- VERBOTEN: Verwende KEINE Bootstrap-Abstandsklassen (mt-, mb-, my-, mx-, py-, px-, etc.)!\n";
-        $prompt .= "- BOOTSTRAP-ELEMENTE: Füge mindestens je ein Card, Alert und Table-Element hinzu.\n";
         $prompt .= "- QUELLEN: Verlinke komplette URLs, nicht nur das Wort 'Link'.\n";
         $prompt .= "=============================================\n\n";
         
@@ -103,28 +103,54 @@ class PromptBuilder
             $prompt .= "=============================================\n\n";
         }
         
-        // Detaillierte technische Formatierungsanweisungen hinzufügen
-        $prompt .= "\nWICHTIGE DETAILLIERTE FORMATIERUNGSANWEISUNGEN:\n";
+        // Anweisungen für mehr Variation und inhaltliche Tiefe
+        $prompt .= "\n=============================================\n";
+        $prompt .= "ANWEISUNGEN FÜR INHALTLICHE TIEFE UND VARIATION:\n";
+        $prompt .= "=============================================\n";
+        $prompt .= "- ABSATZLÄNGE: Schreibe SUBSTANTIELLE Absätze mit 5-8 Sätzen. Vermeide zu kurze, oberflächliche Absätze. \n";
+        $prompt .= "- ARGUMENTATION: Entwickle Gedanken vollständig mit Begründungen, Beispielen und Daten.\n";
+        $prompt .= "- INHALTSDICHTE: Jeder Abschnitt sollte konkrete Fakten, Zahlen oder Beispiele enthalten.\n";
+        $prompt .= "- VARIIERE DIE STRUKTUR: Der Aufbau soll NICHT standardisiert sein. Vermeide das Muster 'Einleitung-Hauptteil-Schluss'.\n";
+        $prompt .= "=============================================\n\n";
         
-        // HTML-Formatierung
-        $prompt .= "- Verwende h2 und h3 für Überschriften und Zwischenüberschriften (KEINE h1!).\n";
-        $prompt .= "- Nutze p-Tags für Absätze, strong für Hervorhebungen, ul und li für Listen.\n";
-        $prompt .= "- Strukturbezeichnungen wie 'Einleitung:', 'Fazit:' etc. NICHT in Überschriften verwenden.\n";
+        // Anweisungen für Bootstrap-Elemente mit mehr Variation
+        $prompt .= "\n=============================================\n";
+        $prompt .= "BOOTSTRAP-ELEMENTE MIT VARIATION (WÄHLE MINDESTENS ZWEI):\n";
+        $prompt .= "=============================================\n";
+        $prompt .= "Wähle aus den folgenden Optionen, aber VERWENDE NICHT ALLE, sondern NUR DIE, DIE INHALTLICH SINNVOLL sind:\n\n";
         
-        // Bootstrap-Elemente im Detail
-        $prompt .= "\nBOOTSTRAP-ELEMENTE (MINDESTENS JE EINS VON JEDEM):\n";
+        // Cards mit Variationen
+        $prompt .= "OPTION 1 - CARDS (VARIATIONEN):\n";
+        $prompt .= "- Einfache Info-Card: <div class=\"card\"><div class=\"card-body\"><h5 class=\"card-title\">Titel</h5><p class=\"card-text\">Inhalt...</p></div></div>\n";
+        $prompt .= "- Feature-Card mit Icon: <div class=\"card\"><div class=\"card-body\"><i class=\"fas fa-wind\"></i><h5 class=\"card-title\">Titel</h5><p class=\"card-text\">Inhalt...</p></div></div>\n";
+        $prompt .= "- Statistik-Card: <div class=\"card\"><div class=\"card-body\"><h5 class=\"card-title\">Titel</h5><p class=\"display-4\">Zahl</p><p class=\"card-text\">Erklärung...</p></div></div>\n\n";
         
-        // Cards richtig formatieren
-        $prompt .= "- Card für wichtige Informationen (ohne mb-Klassen):\n";
-        $prompt .= "  <div class=\"card\"><div class=\"card-body\"><h5 class=\"card-title\">Wichtige Information</h5><p class=\"card-text\">Inhalt...</p></div></div>\n";
+        // Alerts mit Variationen
+        $prompt .= "OPTION 2 - ALERTS (VARIATIONEN):\n";
+        $prompt .= "- Info-Alert: <div class=\"alert alert-info\">Information...</div>\n";
+        $prompt .= "- Success-Alert: <div class=\"alert alert-success\">Erfolg/Tipp...</div>\n";
+        $prompt .= "- Warning-Alert: <div class=\"alert alert-warning\">Wichtiger Hinweis...</div>\n\n";
         
-        // Alerts richtig formatieren
-        $prompt .= "- Alert für Hinweise (ohne mb-Klassen):\n";
-        $prompt .= "  <div class=\"alert alert-info\">Wichtiger Hinweis...</div>\n";
+        // Tabellen mit Variationen
+        $prompt .= "OPTION 3 - TABELLEN (VARIATIONEN):\n";
+        $prompt .= "- Vergleichstabelle: <table class=\"table\"><thead><tr><th>Option A</th><th>Option B</th></tr></thead><tbody>...</tbody></table>\n";
+        $prompt .= "- Datentabelle: <table class=\"table table-striped\"><thead><tr><th>Kategorie</th><th>Wert</th><th>Veränderung</th></tr></thead><tbody>...</tbody></table>\n";
+        $prompt .= "- Timeline-Tabelle: <table class=\"table\"><thead><tr><th>Jahr</th><th>Entwicklung</th></tr></thead><tbody>...</tbody></table>\n\n";
         
-        // Tabellen richtig formatieren
-        $prompt .= "- Tabelle für Datenvergleiche (ohne mb-Klassen):\n";
-        $prompt .= "  <table class=\"table table-striped\"><thead><tr><th>Kategorie</th><th>Wert</th></tr></thead><tbody><tr><td>Beispiel</td><td>Daten</td></tr></tbody></table>\n";
+        // Weitere Optionen
+        $prompt .= "OPTION 4 - WEITERE ELEMENTE (WENN PASSEND):\n";
+        $prompt .= "- Zitatblock: <blockquote class=\"blockquote\"><p>Zitat...</p><footer class=\"blockquote-footer\">Quelle</footer></blockquote>\n";
+        $prompt .= "- Fortschrittsbalken: <div class=\"progress\"><div class=\"progress-bar\" style=\"width: 75%\">75%</div></div>\n";
+        $prompt .= "- Akkordeon (für FAQs): <div class=\"accordion\">...</div>\n";
+        $prompt .= "=============================================\n\n";
+        
+        // Strukturelle Variationen
+        $prompt .= "STRUKTURELLE VARIATION (NICHT ALLES VERWENDEN):\n";
+        $prompt .= "- Der Artikel kann mit einer Frage, einem Zitat, einer überraschenden Statistik ODER einer konkreten Situation beginnen\n";
+        $prompt .= "- Verwende UNTERSCHIEDLICHE strukturelle Elemente: Argumentationsketten, Fallbeispiele, Pro/Contra-Analysen, Checklisten\n";
+        $prompt .= "- Schreibe Zwischenüberschriften, die spezifisch und interessant sind (keine generischen Bezeichnungen)\n";
+        $prompt .= "- Verwende ungewöhnliche, aber sinnvolle Strukturen wie: historische Entwicklung, geographische Perspektiven, oder Stakeholder-Analysen\n";
+        $prompt .= "- Der Artikel kann mit einem Aufruf zum Handeln, einer Zukunftsperspektive ODER einer Reflexionsfrage enden\n\n";
         
         $prompt .= "\nFür das JSON-Format verwende folgendes Schema:\n";
         $prompt .= "\nBitte generiere im folgenden JSON-Format:
@@ -134,18 +160,6 @@ class PromptBuilder
             \"content\": \"Der vollständige Artikel mit HTML-Formatierung\",
             \"tags\": \"Kommagetrennte Liste von Tags für den Artikel\"
         }";
-        
-        // Hinweise zu zusätzlichen Formatierungsmöglichkeiten
-        $prompt .= "\nSTRUKTURELLE VORGABEN FÜR MEHR UMFANG:\n";
-        $prompt .= "- Unterteile den Hauptteil in mindestens 5-7 verschiedene Abschnitte mit eigenen H2-Überschriften\n";
-        $prompt .= "- Füge unter jeder H2-Überschrift mindestens 2-3 Unterabschnitte mit H3-Überschriften ein\n";
-        $prompt .= "- Jeder Unterabschnitt sollte 3-5 Absätze umfassen\n";
-        $prompt .= "- Integriere mindestens 3 Listen (mit jeweils mindestens 5 Punkten)\n";
-        $prompt .= "- Füge nach jedem Hauptabschnitt eine zusammenfassende Schlussfolgerung ein\n";
-        $prompt .= "- Ergänze einen ausführlichen FAQ-Bereich am Ende mit mindestens 5 Fragen und Antworten\n";
-        $prompt .= "- Schließe mit einer umfassenden Zusammenfassung und einem Ausblick ab\n\n";
-        
-        $prompt .= "Fülle jede dieser strukturellen Vorgaben mit relevanten, gehaltvollem Inhalt. Die Struktur dient dazu, die erforderliche Mindestwortzahl zu erreichen und einen umfassenden Artikel zu erstellen.\n\n";
         
         return $prompt;
     }

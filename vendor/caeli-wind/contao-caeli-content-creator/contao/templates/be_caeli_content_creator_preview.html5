@@ -78,14 +78,6 @@
         </div>
       <?php endif; ?>
       
-      <!-- Ladebalken, standardmäßig ausgeblendet -->
-      <div id="loadingIndicator" style="display: none; margin: 20px 0;">
-        <div style="background-color: #f3f3f3; border-radius: 4px; padding: 2px; margin-bottom: 10px;">
-          <div id="progressBar" style="width: 0%; height: 20px; background-color: #3498db; border-radius: 4px; transition: width 0.5s;"></div>
-        </div>
-        <p id="loadingMessage" style="text-align: center;">Inhalt wird generiert... Dies kann einige Sekunden dauern.</p>
-      </div>
-      
       <!-- Mögliche Duplikate-Anzeige, wird via JavaScript befüllt -->
       <div id="duplicateContainer" style="display: none; margin: 20px 0; padding: 15px; background: #fff3cd; border: 1px solid #ffeeba; color: #856404;">
         <h4>Mögliche Duplikate</h4>
@@ -103,75 +95,4 @@
       </div>
     </div>
   </form>
-  
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('contentGeneratorForm');
-    const generateButton = document.getElementById('generateButton');
-    const publishButton = document.getElementById('publishButton');
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    const progressBar = document.getElementById('progressBar');
-    const loadingMessage = document.getElementById('loadingMessage');
-    
-    let progressValue = 0;
-    let progressInterval;
-    
-    // Funktion zum Starten des Ladebalkens
-    function startProgressBar() {
-      loadingIndicator.style.display = 'block';
-      
-      // Simuliere Fortschritt von 0% bis 95% (der Rest nach erfolgreichem Abschluss)
-      progressValue = 0;
-      updateProgressBar();
-      
-      progressInterval = setInterval(function() {
-        // Langsamer Fortschritt zu Beginn, schneller in der Mitte
-        if (progressValue < 30) {
-          progressValue += 0.5;
-        } else if (progressValue < 70) {
-          progressValue += 0.3;
-        } else if (progressValue < 95) {
-          progressValue += 0.1;
-        }
-        
-        // Maximum 95% - die restlichen 5% nach Abschluss
-        if (progressValue > 95) {
-          progressValue = 95;
-          clearInterval(progressInterval);
-        }
-        
-        updateProgressBar();
-      }, 100);
-    }
-    
-    // Funktion zum Aktualisieren des Ladebalkens
-    function updateProgressBar() {
-      progressBar.style.width = progressValue + '%';
-      
-      // Ändere Nachricht je nach Fortschritt
-      if (progressValue > 10 && progressValue < 40) {
-        loadingMessage.textContent = "AI analysiert das Thema...";
-      } else if (progressValue >= 40 && progressValue < 70) {
-        loadingMessage.textContent = "Inhalte werden erstellt...";
-      } else if (progressValue >= 70) {
-        loadingMessage.textContent = "Formatierung wird angewendet...";
-      }
-    }
-    
-    // Event-Listener für Form-Submit
-    form.addEventListener('submit', function(e) {
-      // Nur für den "Inhalt generieren" Button
-      if (e.submitter === generateButton) {
-        // Starte den Ladebalken
-        startProgressBar();
-        
-        // Deaktiviere den Button während der Generierung
-        generateButton.disabled = true;
-        generateButton.textContent = 'Wird generiert...';
-        if (publishButton) publishButton.disabled = true;
-      }
-      // Für den "Veröffentlichen" Button keine Animation nötig
-    });
-  });
-  </script>
 <?php $this->endblock(); ?> 

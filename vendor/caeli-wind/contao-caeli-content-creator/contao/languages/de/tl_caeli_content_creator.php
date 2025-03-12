@@ -24,14 +24,15 @@ $GLOBALS['TL_LANG']['tl_caeli_content_creator']['advanced_settings_legend'] = 'E
  */
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['title_legend'] = 'Titel und Inhalt';
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['content_legend'] = 'Content-Einstellungen';
+$GLOBALS['TL_LANG']['tl_caeli_content_creator']['ai_params_legend'] = 'KI-Parameter';
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['preview_legend'] = 'Vorschau und Generierung';
 
 /**
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['title'] = ['Titel', 'Titel des Content-Creator-Eintrags.'];
-$GLOBALS['TL_LANG']['tl_caeli_content_creator']['grokApiKey'] = ['KI API-Schlüssel', 'Geben Sie Ihren API-Schlüssel für die KI-Service-Integration ein.'];
-$GLOBALS['TL_LANG']['tl_caeli_content_creator']['grokApiEndpoint'] = ['KI API-Endpunkt', 'Geben Sie den Endpunkt des KI-Services ein (z.B. https://api.groq.com/openai/v1).'];
+$GLOBALS['TL_LANG']['tl_caeli_content_creator']['apiKey'] = ['KI API-Schlüssel', 'Geben Sie Ihren API-Schlüssel für die KI-Service-Integration ein.'];
+$GLOBALS['TL_LANG']['tl_caeli_content_creator']['apiEndpoint'] = ['KI API-Endpunkt', 'Wählen Sie den API-Endpunkt des KI-Services aus.'];
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['newsArchive'] = ['Nachrichtenarchiv', 'Das Nachrichtenarchiv, in dem der generierte Inhalt gespeichert werden soll.'];
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['contentElement'] = ['Inhaltselement', 'Der Typ des Inhaltselements, der für den generierten Inhalt verwendet werden soll.'];
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['topic'] = ['Thema', 'Das Thema des zu generierenden Inhalts.'];
@@ -43,6 +44,11 @@ $GLOBALS['TL_LANG']['tl_caeli_content_creator']['add_target_blank'] = ['Links in
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['tags'] = ['Tags', 'Geben Sie Tags für den Beitrag ein (kommagetrennt).'];
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['addSubpalette'] = ['Erweiterte Anweisungen hinzufügen', 'Fügen Sie erweiterte Anweisungen für die KI hinzu.'];
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['additionalInstructions'] = ['Zusätzliche Anweisungen', 'Zusätzliche Anweisungen für die KI.'];
+
+// KI-Parameter
+$GLOBALS['TL_LANG']['tl_caeli_content_creator']['temperature'] = ['Kreativität (0.0-1.0)', 'Steuert die "Kreativität" der Antworten. Niedrige Werte (0.1-0.3): Sehr konsistente Antworten. Hohe Werte (0.8-1.0): Sehr kreative Antworten.'];
+$GLOBALS['TL_LANG']['tl_caeli_content_creator']['maxTokens'] = ['Max. Textlänge', 'Begrenzt die maximale Länge der Antwort. 8000 Tokens entsprechen etwa 6000 Wörtern (ein längerer Blogartikel).'];
+$GLOBALS['TL_LANG']['tl_caeli_content_creator']['topP'] = ['Wortvielfalt (0.0-1.0)', 'Alternative zu Kreativität (Nucleus Sampling). Niedrige Werte: Vorhersehbarere Wortwahl. Hohe Werte: Vielfältigere Wortwahl.'];
 
 /**
  * Buttons

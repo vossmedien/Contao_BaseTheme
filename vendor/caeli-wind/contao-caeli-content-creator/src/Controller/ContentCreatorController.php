@@ -291,7 +291,7 @@ class ContentCreatorController extends AbstractBackendController
     }
 
     /**
-     * Generiert den Inhalt mit der Grok-API
+     * Generiert den Inhalt mit der KI-API
      */
     private function generateContent(ContentCreatorModel $model): array
     {
@@ -300,54 +300,217 @@ class ContentCreatorController extends AbstractBackendController
         file_put_contents($logFile, "Starte Inhaltsgenerierung für Thema: {$model->topic}\n", FILE_APPEND);
         
         // Zentralen PromptBuilder nutzen
-        $prompt = $this->promptBuilder->buildPrompt($model, true);
-        file_put_contents($logFile, "Prompt erstellt, rufe API auf\n", FILE_APPEND);
+        $basePrompt = $this->promptBuilder->buildPrompt($model, true);
+        $prompt = $basePrompt;
+        file_put_contents($logFile, "Basis-Prompt erstellt, rufe API auf\n", FILE_APPEND);
         
         try {
-            // API aufrufen und Antwort parsen
-            $response = $this->grokApiService->callApi(
-                $model->grokApiKey,
-                $model->grokApiEndpoint,
-                $prompt
-            );
-
-            file_put_contents($logFile, "API-Antwort erhalten, extrahiere JSON\n", FILE_APPEND);
-
-            // JSON extrahieren und parsen
-            if (preg_match('/\{[\s\S]*\}/m', $response, $matches)) {
-                $json = $matches[0];
-                file_put_contents($logFile, "JSON erkannt, versuche zu parsen\n", FILE_APPEND);
+            // Maximale Anzahl an Versuchen, um ein Nicht-Duplikat zu finden
+            $maxAttempts = 5; // Erhöht von 3 auf 5
+            $attempt = 0;
+            $generatedContent = null;
+            $hasDuplicates = true;
+            $previousDuplicateTypes = []; // Speichert die Duplikattypen früherer Versuche
+            $generatedTitles = []; // Speichert alle bisher generierten Titel
+            
+            // Themenvariationen für unterschiedliche Ansätze
+            $thematicVariations = [
+                'historischer Kontext',
+                'wirtschaftliche Analyse',
+                'technologische Innovation',
+                'Fallstudien und Best Practices',
+                'persönliche Erfahrungen',
+                'wissenschaftliche Perspektive',
+                'Zukunftsausblick',
+                'globale Entwicklungen',
+                'regionale Besonderheiten',
+                'juristische Rahmenbedingungen'
+            ];
+            
+            // Strukturvariationen für unterschiedliche Textformen
+            $structuralVariations = [
+                'Listenform mit detaillierten Beispielen',
+                'Frage-Antwort-Format',
+                'Chronologische Darstellung',
+                'Vergleichende Analyse',
+                'Problemlösungsstruktur',
+                'Experteninterview-Stil',
+                'Reportage-Format',
+                'These-Antithese-Synthese',
+                'Storytelling mit konkreten Fallbeispielen',
+                'Praxisleitfaden mit konkreten Handlungsempfehlungen'
+            ];
+            
+            // So lange versuchen, bis ein eindeutiger Inhalt gefunden wird oder die maximalen Versuche erreicht sind
+            while ($hasDuplicates && $attempt < $maxAttempts) {
+                $attempt++;
+                file_put_contents($logFile, "Generierungsversuch #{$attempt}/{$maxAttempts}\n", FILE_APPEND);
                 
-                $data = json_decode($json, true);
-
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    file_put_contents($logFile, "JSON-Parsing-Fehler: " . json_last_error_msg() . "\n", FILE_APPEND);
-                    throw new \RuntimeException('Fehler beim Parsen der API-Antwort: ' . json_last_error_msg());
+                // Bei weiteren Versuchen den Prompt gezielt variieren
+                if ($attempt > 1) {
+                    // Thematische und strukturelle Variation auswählen
+                    $themeVariation = $thematicVariations[array_rand($thematicVariations)];
+                    $structureVariation = $structuralVariations[array_rand($structuralVariations)];
+                    
+                    // Nachdrückliche Anweisung zur Einzigartigkeit hinzufügen
+                    $prompt = $basePrompt . "\n\n";
+                    $prompt .= "WICHTIG: ABSOLUTE EINZIGARTIGKEIT ERFORDERLICH!\n";
+                    $prompt .= "===========================================\n";
+                    $prompt .= "Für diesen Artikel MUSST du folgende Punkte STRIKT einhalten:\n";
+                    $prompt .= "1. Vermeide KOMPLETT folgende bereits erstellte Titel:\n";
+                    
+                    // Alle bisher generierten Titel aufführen
+                    foreach ($generatedTitles as $title) {
+                        $prompt .= "   - \"$title\"\n";
+                    }
+                    
+                    $prompt .= "2. Verwende einen völlig UNKONVENTIONELLEN Ansatz zum Thema, z.B. als '$themeVariation'\n";
+                    $prompt .= "3. Strukturiere den Text in einem besonderen Format: '$structureVariation'\n";
+                    $prompt .= "4. Wähle ANDERE ÜBERSCHRIFTEN, BEISPIELE und KERNARGUMENTE als die bisherigen Versuche\n";
+                    
+                    // Bei späteren Versuchen immer radikalere Änderungen verlangen
+                    if ($attempt > 2) {
+                        $prompt .= "5. VERMEIDE, mit 'Windenergie und die globale Energiewende' oder ähnlichen Formulierungen zu beginnen\n";
+                        $prompt .= "6. ERFINDE neue Wortschöpfungen und kreative Überschriften, die besonders auffällig und einzigartig sind\n";
+                        $prompt .= "7. PRÄSENTIERE das Thema aus einem KONTRÄREN oder UNERWARTETEN BLICKWINKEL\n";
+                    }
+                    
+                    $prompt .= "===========================================\n\n";
                 }
-
-                file_put_contents($logFile, "Inhalt erfolgreich generiert\n", FILE_APPEND);
-
-                // Auf mögliche Duplikate prüfen
-                $duplicates = $this->duplicateChecker->checkForDuplicates(
-                    $model->newsArchive,
-                    $data['title'],
-                    $data['teaser']
+                
+                // API aufrufen
+                $response = $this->grokApiService->callApi(
+                    $model->apiKey,
+                    $model->apiEndpoint,
+                    $prompt,
+                    (float)($attempt > 1 ? min($model->temperature + 0.1 * $attempt, 1.0) : $model->temperature), // Erhöhe die Temperatur mit jedem Versuch
+                    (int)$model->maxTokens,
+                    (float)($attempt > 1 ? min($model->topP + 0.05 * $attempt, 0.99) : $model->topP) // Erhöhe auch top_p für mehr Variation
                 );
                 
-                file_put_contents($logFile, "Duplikat-Prüfung: " . count($duplicates) . " potenzielle Duplikate gefunden\n", FILE_APPEND);
+                // JSON extrahieren und parsen
+                $json = $response;
                 
-                // Rückgabedaten inklusive Duplikaten
-                return [
-                    'title' => $data['title'],
-                    'teaser' => $data['teaser'] ?? '',
-                    'content' => $data['content'],
-                    'tags' => $data['tags'] ?? '',
-                    'duplicates' => $duplicates
-                ];
+                try {
+                    // Debug-Log für die JSON-Antwort
+                    $logDir = $this->framework->getAdapter(System::class)->getContainer()->getParameter('kernel.logs_dir');
+                    file_put_contents($logDir . '/api-json-debug.log', "Erhaltenes JSON (Versuch #{$attempt}): " . $json . "\n", FILE_APPEND);
+                    
+                    // Versuchen, das JSON zu bereinigen und zu parsen
+                    $json = preg_replace('/```json\s*(.*?)\s*```/s', '$1', $json);
+                    $json = preg_replace('/```\s*(.*?)\s*```/s', '$1', $json);
+                    
+                    // Extrahiere nur den JSON-Teil, falls die API zusätzlichen Text zurückgibt
+                    if (preg_match('/{.*}/s', $json, $matches)) {
+                        $json = $matches[0];
+                    }
+                    
+                    $data = json_decode($json, true);
+                    
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        file_put_contents($logFile, "JSON-Fehler: " . json_last_error_msg() . "\n", FILE_APPEND);
+                        
+                        // Neuer Versuch mit einer strukturierteren Regex, um das JSON zu extrahieren
+                        preg_match('/{[\s\S]*"title"[\s\S]*"teaser"[\s\S]*"content"[\s\S]*}/m', $response, $matches);
+                        if (!empty($matches[0])) {
+                            $json = $matches[0];
+                            $data = json_decode($json, true);
+                            if (json_last_error() !== JSON_ERROR_NONE) {
+                                throw new \RuntimeException('JSON konnte nicht dekodiert werden: ' . json_last_error_msg());
+                            }
+                        } else {
+                            throw new \RuntimeException('Kein gültiges JSON-Format in der Antwort gefunden.');
+                        }
+                    }
+                    
+                    // Erfolgreiche Extraktion
+                    file_put_contents($logFile, "JSON erfolgreich extrahiert\n", FILE_APPEND);
+                    
+                    // Prüfe, ob das wichtigste vorhanden ist
+                    if (!isset($data['title']) || !isset($data['content'])) {
+                        throw new \RuntimeException('JSON unvollständig - Titel oder Inhalt fehlt.');
+                    }
+                    
+                    // Speichere den generierten Titel für spätere Vergleiche
+                    $generatedTitles[] = $data['title'];
+                    
+                    // Auf Duplikate prüfen
+                    $duplicates = $this->duplicateChecker->checkForDuplicates(
+                        $model->newsArchive,
+                        $data['title'],
+                        $data['teaser'] ?? ''
+                    );
+                    
+                    $duplicateCount = count($duplicates);
+                    file_put_contents($logFile, "Duplikat-Prüfung: {$duplicateCount} potenzielle Duplikate gefunden\n", FILE_APPEND);
+                    
+                    // Aktuelle Duplikattypen speichern
+                    $currentDuplicateTypes = [];
+                    foreach ($duplicates as $duplicate) {
+                        if (isset($duplicate['duplicateType'])) {
+                            $currentDuplicateTypes[] = $duplicate['duplicateType'];
+                        }
+                    }
+                    $previousDuplicateTypes[] = $currentDuplicateTypes;
+                    
+                    // Prüfen, ob es ernsthafte Duplikate gibt (exakt oder thematisch)
+                    $seriousDuplicates = array_filter($duplicates, function($dup) {
+                        return (isset($dup['duplicateType']) && in_array($dup['duplicateType'], ['exact_match', 'partial_match', 'theme_match'])) 
+                            || (isset($dup['exactMatch']) && $dup['exactMatch'] === true);
+                    });
+                    
+                    // Wenn keine ernsthaften Duplikate gefunden wurden oder wir schon beim letzten Versuch sind
+                    if (empty($seriousDuplicates) || $attempt >= $maxAttempts) {
+                        // Wenn nur leichte Ähnlichkeiten gefunden wurden und wir nicht im ersten Versuch sind, akzeptieren wir das
+                        $acceptableDuplication = empty($seriousDuplicates) && $duplicateCount <= 2;
+                        
+                        // Bei letztem Versuch akzeptieren wir auch einen Artikel mit geringeren Ähnlichkeiten
+                        if ($acceptableDuplication || $attempt >= $maxAttempts) {
+                            $hasDuplicates = false; // Schleife beenden
+                            $generatedContent = [
+                                'title' => $data['title'],
+                                'teaser' => $data['teaser'] ?? '',
+                                'content' => $data['content'],
+                                'tags' => $data['tags'] ?? '',
+                                'duplicates' => $duplicates, // Für optionale Anzeige im Backend
+                                'attempt' => $attempt,     // Speichern, im wievielten Versuch dieser Inhalt generiert wurde
+                                'message' => $acceptableDuplication ? 
+                                    'Inhalt mit akzeptablen Unterschieden generiert' : 
+                                    'Maximale Anzahl an Versuchen erreicht, Inhalt könnte Ähnlichkeiten aufweisen'
+                            ];
+                            
+                            if (empty($duplicates)) {
+                                file_put_contents($logFile, "Eindeutiger Inhalt gefunden, Generierung erfolgreich (Versuch #{$attempt})\n", FILE_APPEND);
+                            } else {
+                                file_put_contents($logFile, "Inhalt mit akzeptablen Ähnlichkeiten generiert oder maximale Versuche erreicht (Versuch #{$attempt})\n", FILE_APPEND);
+                            }
+                        }
+                    } else {
+                        // Bei Duplikaten, detaillierte Analyse der Gründe für die Ähnlichkeit
+                        file_put_contents($logFile, "Zu starke Ähnlichkeit zu existierenden Inhalten, versuche es erneut (Versuch #{$attempt})\n", FILE_APPEND);
+                        
+                        // Detaillierte Gründe für Ähnlichkeiten protokollieren
+                        foreach ($seriousDuplicates as $idx => $duplicate) {
+                            $reason = isset($duplicate['reason']) ? $duplicate['reason'] : "Hohe Ähnlichkeit";
+                            file_put_contents($logFile, "Ähnlichkeit mit \"{$duplicate['headline']}\": {$reason}\n", FILE_APPEND);
+                        }
+                        
+                        // Bereite einen radikal anderen Ansatz basierend auf den erkannten Ähnlichkeiten vor
+                        // Prompt wird bereits am Anfang der nächsten Schleife angepasst
+                    }
+                } catch (\Exception $e) {
+                    file_put_contents($logFile, "Fehler beim Parsen der API-Antwort: " . $e->getMessage() . "\n", FILE_APPEND);
+                    throw $e;
+                }
             }
-
-            file_put_contents($logFile, "Keine gültige JSON-Antwort gefunden\n", FILE_APPEND);
-            throw new \RuntimeException('Konnte keine gültige JSON-Antwort von der API erhalten.');
+            
+            if ($generatedContent === null) {
+                throw new \RuntimeException('Konnte keinen eindeutigen Inhalt nach ' . $maxAttempts . ' Versuchen generieren.');
+            }
+            
+            file_put_contents($logFile, "Inhalt erfolgreich generiert (Versuch #{$attempt})\n", FILE_APPEND);
+            return $generatedContent;
+            
         } catch (\Exception $e) {
             file_put_contents($logFile, "Fehler bei API-Aufruf: " . $e->getMessage() . "\n", FILE_APPEND);
             throw $e;
