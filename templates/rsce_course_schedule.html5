@@ -18,10 +18,10 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
             null
         ); ?>
 
-        <div class="filter-bar mb-4 d-none d-md-block">
+        <div class="filter-bar mb-4 ">
             <div class=" " data-animation="<?php echo $this->animation_type; ?>">
 
-                <div class="btn-group flex-wrap" role="group">
+                <div class="btn-group flex-wrap" style="--bs-border-radius: 0px; " role="group">
                     <button type="button" class="btn btn-outline-primary active" data-filter="all">Alle Kurse
                     </button>
                     <button type="button" class="btn btn-outline-primary" data-filter="minis">Minis (3-5)</button>
@@ -37,7 +37,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
         </div>
 
-        <div class="row" >
+        <div class="row g-1" >
             <?php
             $weekdays = ['monday' => 'Montag', 'tuesday' => 'Dienstag', 'wednesday' => 'Mittwoch',
                 'thursday' => 'Donnerstag', 'friday' => 'Freitag', 'saturday' => 'Samstag',
@@ -287,6 +287,10 @@ if (window.location.pathname === '/probetraining') {
         opacity: 0.3;
         pointer-events: none;
         transform: scale(0.98);
+
+        @media (max-width: 767px) {
+            display: none;
+        }
     }
 
     /* Hover-Effekte */
@@ -316,6 +320,18 @@ if (window.location.pathname === '/probetraining') {
         opacity: 1;
         right: 1.5rem;
     }
+
+        @media (max-width: 767px) {
+              .card{
+        display: none;
+    }
+
+    .card:has(.course-item:not(.filtered)){
+        display: block;
+    }
+        }
+
+
 
     /* Subtle highlight effect */
     .course-schedule .course-item::before {

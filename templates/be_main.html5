@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= $this->language ?>" data-controller="contao--scroll-offset" data-action="store-scroll-offset@window->contao--scroll-offset#store contao--tinymce:editor-loaded->contao--scroll-offset#scrollToWidgetError turbo:render@document->contao--scroll-offset#restore">
+<html lang="<?= $this->language ?>" data-controller="contao--scroll-offset" data-action="store-scroll-offset@window->contao--scroll-offset#store contao--tinymce:editor-loaded->contao--scroll-offset#scrollToWidgetError">
 <head>
 
     <?php $this->block('head'); ?>
@@ -12,16 +12,17 @@
     <meta name="referrer" content="origin">
     <?php $this->endblock(); ?>
 
-    <link rel="stylesheet" href="<?= $this->asset('css/choices.min.css', 'contao-components/choices') ?>">
+    <link rel="stylesheet" href="<?= $this->asset('css/mooRainbow.min.css', 'contao-components/colorpicker') ?>">
+    <link rel="stylesheet" href="<?= $this->asset('css/chosen.min.css', 'contao-components/chosen') ?>">
     <link rel="stylesheet" href="<?= $this->asset('css/simplemodal.min.css', 'contao-components/simplemodal') ?>">
     <link rel="stylesheet" href="<?= $this->asset('css/datepicker.min.css', 'contao-components/datepicker') ?>">
     <link rel="stylesheet" href="<?= $this->asset('backend.css', 'system/themes/' . $this->theme) ?>">
-    <link rel="stylesheet" href="<?= $this->asset('backend.css', 'contao_core') ?>">
     <?= $this->stylesheets ?>
 
     <script><?= $this->getLocaleString() ?></script>
     <script src="<?= $this->asset('js/mootools.min.js', 'contao-components/mootools') ?>"></script>
-    <script src="<?= $this->asset('js/choices.min.js', 'contao-components/choices') ?>"></script>
+    <script src="<?= $this->asset('js/mooRainbow.min.js', 'contao-components/colorpicker') ?>"></script>
+    <script src="<?= $this->asset('js/chosen.min.js', 'contao-components/chosen') ?>"></script>
     <script src="<?= $this->asset('js/simplemodal.min.js', 'contao-components/simplemodal') ?>"></script>
     <script src="<?= $this->asset('js/datepicker.min.js', 'contao-components/datepicker') ?>"></script>
     <script src="<?= $this->asset('js/tinymce.min.js', 'contao-components/tinymce4') ?>"></script>
@@ -38,13 +39,13 @@
 
     <link rel="stylesheet" href="/files/base/backend/custom_backend.min.css">
     <script src="/files/base/backend/custom_backend.js"></script>
-
     <?php $this->endblock(); ?>
+
 
     <?php /* If the following hash changes, Turbo will reload the entire page instead of merging contents. */ ?>
     <meta data-turbo-track="reload" content="<?= md5($this->stylesheets . "\0" . $this->javascripts); ?>">
 </head>
-<body id="top" class="be_main<?php if ($this->isPopup): ?> popup<?php endif; ?>"<?= $this->attributes ?> data-controller="contao--tooltips" data-action="touchstart@document->contao--tooltips#touchStart">
+<body id="top" class="be_main<?php if ($this->isPopup): ?> popup<?php endif; ?>"<?= $this->attributes ?> data-controller="contao--tooltips">
 
 <?php $this->block('header'); ?>
 <?php if (!$this->isPopup): ?>
@@ -101,7 +102,6 @@
 
 </div>
 <?php $this->endblock(); ?>
-
 <?php if ($this->isPopup): ?>
     <script>
         if (!document.location.search.test('act=select') && $$('.tl_tree_checkbox,.tl_tree_radio').length > 0) {
@@ -113,6 +113,41 @@
 <?php endif; ?>
 
 <?= $this->mootools ?>
+
+
+<script>
+    document.addEventListener('load', () => {
+        window.VSM = window.VSM || {};
+
+        // Haupt-Instanz erstellen
+        if (!window.VSM.lazyLoader) {
+            window.VSM.lazyLoader = new VSMLazyLoader({
+                excludeSelectors: ['.swiper-slide']
+            });
+        }
+
+        // Slider-Instanz erstellen
+        if (!window.VSM.sliderMediaLoader) {
+            window.VSM.sliderMediaLoader = new VSMSliderMediaLoader();
+        }
+
+        // Legacy compatibility
+        window.VSM.lazyMediaLoader = window.VSM.lazyLoader;
+        window.VSM.lazyLoadInstance = {
+            update: () => {
+            }
+        };
+
+        // Alias für Abwärtskompatibilität
+        window.VSM.lazyMediaLoader = window.VSM.lazyLoader;
+
+        // LazyLoadInstance für alte API-Kompatibilität
+        window.VSM.lazyLoadInstance = {
+            update: () => {
+            }
+        };
+    });
+</script>
 
 </body>
 </html>
