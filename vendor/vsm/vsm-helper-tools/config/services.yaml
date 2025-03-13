@@ -1,0 +1,37 @@
+# config/services.yaml
+services:
+    _defaults:
+        autowire: true          # Automatically injects dependencies in your services.
+        autoconfigure: true     # Automatically registers your services as commands, event subscribers, etc.
+        public: false           # Allows optimizing the container by removing unused services; this also means
+                                # fetching services directly from the container via $container->get() won't work.
+                                # The best practice is to be explicit about your dependencies anyway.
+        bind:
+            #$projectDir: '%kernel.project_dir%'
+
+    # Automatisches Laden aller Services im Bundle
+    Vsm\VsmHelperTools\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Resources/'
+            - '../src/ContaoManager/'
+
+    # Spezifische Service-Konfigurationen
+    Vsm\VsmHelperTools\Service\PlunkService:
+        arguments:
+            $publicKey: '%env(PLUNK_PUBLIC_KEY)%'
+            $secretKey: '%env(PLUNK_SECRET_KEY)%'
+            $client: '@http_client'
+            $logger: '@logger'
+
+    Vsm\VsmHelperTools\Controller\StripeWebhookController:
+        arguments:
+            $container: '@service_container'
+            $webhookSecret: '%env(STRIPE_WEBHOOK_SECRET)%'
+            $stripeSecretKey: '%env(STRIPE_SECRET_KEY)%'
+            $framework: '@contao.framework'
+            $plunkService: '@Vsm\VsmHelperTools\Service\PlunkService'
+            $logger: '@monolog.logger.contao'
+        tags: ['controller.service_arguments']
+

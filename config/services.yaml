@@ -4,26 +4,29 @@ services:
         autoconfigure: true
         public: false
 
-    App\:
-        resource: '../src/'
-        exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+    #App\:
+    #    resource: '../src/'
+    #    exclude:
+    #        - '../src/DependencyInjection/'
+   #         - '../src/Entity/'
+   #         - '../src/Kernel.php'
 
-    App\Service\PlunkService:
-        arguments:
-            $publicKey: '%env(PLUNK_PUBLIC_KEY)%'
-            $secretKey: '%env(PLUNK_SECRET_KEY)%'
-            $client: '@http_client'
-            $logger: '@logger'
+    # Die folgenden Services wurden in das vsm-helper-tools Bundle verschoben
+    # und werden nur zur Dokumentation beibehalten
 
-    App\Controller\StripeWebhookController:
-        arguments:
-            $container: '@service_container'
-            $webhookSecret: '%env(STRIPE_WEBHOOK_SECRET)%'
-            $stripeSecretKey: '%env(STRIPE_SECRET_KEY)%'
-            $framework: '@contao.framework'
-            $plunkService: '@App\Service\PlunkService'
-            $logger: '@monolog.logger.contao'
-        tags: ['controller.service_arguments']
+    # App\Service\PlunkService:
+    #     arguments:
+    #         $publicKey: '%env(PLUNK_PUBLIC_KEY)%'
+    #         $secretKey: '%env(PLUNK_SECRET_KEY)%'
+    #         $client: '@http_client'
+    #         $logger: '@logger'
+
+    # App\Controller\StripeWebhookController:
+    #     arguments:
+    #         $container: '@service_container'
+    #         $webhookSecret: '%env(STRIPE_WEBHOOK_SECRET)%'
+    #         $stripeSecretKey: '%env(STRIPE_SECRET_KEY)%'
+    #         $framework: '@contao.framework'
+    #         $plunkService: '@App\Service\PlunkService'
+    #         $logger: '@monolog.logger.contao'
+    #     tags: ['controller.service_arguments']
