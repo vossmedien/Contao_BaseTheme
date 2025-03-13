@@ -5,36 +5,10 @@
     {% set parentBlock = parent() %}
     {% set lazyVideoTag = parentBlock|replace({
         '<video': '<video class="lazy"',
-        ' src=': ' data-src='
+        ' src=': ' data-src=',
+        ' poster=': ' data-poster='
     }) %}
     <div class="video-wrapper">
         {{ lazyVideoTag|raw }}
     </div>
-
-    {# Metadaten und Quelldatei initialisieren #}
-    {% set meta = null %}
-    {% set sourceFile = null %}
-    {% set currentLanguage = app.request.locale %}
-
-    {# Suche nach dem ersten Video mit gültigen Metadaten #}
-    {% for i in 0..2 %}
-        {% if meta is null and source_files[i] is defined %}
-            {% set currentFile = source_files[i] %}
-            {% if currentFile.extraMetadata is defined and currentFile.extraMetadata.metadata is defined %}
-                {% set metadataBag = currentFile.extraMetadata.metadata %}
-
-                {# Versuche, Metadaten für die aktuelle Sprache zu erhalten #}
-                {% if metadataBag.getForLanguage is defined %}
-                    {% set potentialMeta = metadataBag.getForLanguage(currentLanguage) %}
-                {% elseif metadataBag.get is defined %}
-                    {% set potentialMeta = metadataBag.get(currentLanguage) %}
-                {% endif %}
-
-                {% if potentialMeta is defined and potentialMeta is not null %}
-                    {% set meta = potentialMeta %}
-                    {% set sourceFile = currentFile %}
-                {% endif %}
-            {% endif %}
-        {% endif %}
-    {% endfor %}
 {% endblock %}

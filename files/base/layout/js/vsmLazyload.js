@@ -98,7 +98,7 @@ class VSMLazyLoader {
 
 
     checkUnobservedVideos() {
-        const videos = document.querySelectorAll('video.lazy');
+        const videos = document.querySelectorAll('video.lazy, video[data-poster]');
         videos.forEach(video => {
             if (!this.loadedElements.has(video) &&
                 !this.loadingVideos.has(video) &&
@@ -201,6 +201,12 @@ class VSMLazyLoader {
         video.removeAttribute('src');
         video.load();
 
+        // Speichere das poster-Attribut als data-poster
+        if (video.hasAttribute('poster')) {
+            video.setAttribute('data-poster', video.getAttribute('poster'));
+            video.removeAttribute('poster');
+        }
+
         video.querySelectorAll('source').forEach(source => {
             const currentSrc = source.getAttribute('src');
             if (currentSrc) {
@@ -292,7 +298,7 @@ class VSMLazyLoader {
     checkLostElements() {
         if (this.isMobile) return;
 
-        document.querySelectorAll('[data-src]:not(.loaded), [data-bg]:not(.loaded), video.lazy:not(.loaded)').forEach(element => {
+        document.querySelectorAll('[data-src]:not(.loaded), [data-bg]:not(.loaded), video.lazy:not(.loaded), video[data-poster]:not(.loaded)').forEach(element => {
             if (!this.loadedElements.has(element) && this.isInViewport(element)) {
                 if (element.hasAttribute('data-bg')) {
                     this.loadBackgroundImage(element);
@@ -345,6 +351,7 @@ class VSMLazyLoader {
         } else if (element.tagName.toLowerCase() === 'video') {
             if (element.classList.contains('lazy') ||
                 element.hasAttribute('data-src') ||
+                element.hasAttribute('data-poster') ||
                 element.querySelectorAll('source[data-src]').length > 0) {
                 // Verwende nur den Observer, wenn er existiert
                 if (this.videoObserver) {
@@ -533,6 +540,12 @@ class VSMLazyLoader {
             video.setAttribute('playsinline', '');
             video.muted = true;
 
+            // Verarbeite das data-poster-Attribut
+            if (video.hasAttribute('data-poster')) {
+                video.poster = video.getAttribute('data-poster');
+                video.removeAttribute('data-poster');
+            }
+
             const sources = video.querySelectorAll('source[data-src]');
             let hasLoadedSources = false;
 
@@ -645,7 +658,7 @@ class VSMLazyLoader {
     }
 
     observeElements() {
-        document.querySelectorAll('[data-src], [data-bg], video.lazy').forEach(element => {
+        document.querySelectorAll('[data-src], [data-bg], video.lazy, video[data-poster]').forEach(element => {
             if (!this.loadedElements.has(element) && this.shouldHandleElement(element)) {
                 if (this.options.spinnerEnabled) {
                     this.handleSpinner(element);
@@ -660,7 +673,7 @@ class VSMLazyLoader {
     }
 
     loadAllMediaDirectly() {
-        document.querySelectorAll('[data-src], [data-bg], video.lazy').forEach(element => {
+        document.querySelectorAll('[data-src], [data-bg], video.lazy, video[data-poster]').forEach(element => {
             if (this.shouldHandleElement(element)) {
                 if (element.hasAttribute('data-bg')) {
                     this.loadBackgroundImage(element);
