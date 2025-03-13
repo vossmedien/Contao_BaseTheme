@@ -18,7 +18,7 @@ use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\DelegatingParser;
 use Contao\TestCase\ContaoTestCase;
 use Vsm\VsmHelperTools\ContaoManager\Plugin;
-use Vsm\VsmHelperTools\VsmVsmHelperTools;
+use Vsm\VsmHelperTools\VsmHelperTools;
 
 /**
  * @package Vsm\VsmHelperTools\Tests\ContaoManager
@@ -45,7 +45,7 @@ class PluginTest extends ContaoTestCase
 
         $this->assertCount(1, $bundles);
         $this->assertInstanceOf(BundleConfig::class, $bundles[0]);
-        $this->assertSame(VsmVsmHelperTools::class, $bundles[0]->getName());
+        $this->assertSame(VsmHelperTools::class, $bundles[0]->getName());
         $this->assertSame([ContaoCoreBundle::class], $bundles[0]->getLoadAfter());
     }
 

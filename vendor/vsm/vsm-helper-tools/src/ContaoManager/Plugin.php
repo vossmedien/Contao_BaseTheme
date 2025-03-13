@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Vsm\VsmHelperTools\ContaoManager;
 
-use Vsm\VsmHelperTools\VsmVsmHelperTools;
+use Vsm\VsmHelperTools\VsmHelperTools;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
@@ -28,7 +28,7 @@ class Plugin implements BundlePluginInterface
     public function getBundles(ParserInterface $parser)
     {
         return [
-            BundleConfig::create(VsmVsmHelperTools::class)
+            BundleConfig::create(VsmHelperTools::class)
                 ->setLoadAfter([ContaoCoreBundle::class]),
         ];
     }

@@ -19,7 +19,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public const ROOT_KEY = 'vsm_vsm_helper_tools';
+    public const ROOT_KEY = 'vsm_helper_tools';
 
     public function getConfigTreeBuilder(): TreeBuilder
     {
