@@ -17,14 +17,6 @@ use Symfony\Component\HttpKernel\TerminableInterface;
 // Suppress error messages (see #1422)
 @ini_set('display_errors', '0');
 
-// Custom error handler to suppress specific warning
-set_error_handler(function($errno, $errstr, $errfile, $errline) {
-    if ($errno === E_WARNING && strpos($errstr, 'proc_open(): posix_spawn() failed: Permission denied') !== false) {
-        return true; // Suppress this specific warning
-    }
-    return false; // Use default error handling for everything else
-}, E_WARNING);
-
 // Disable the phar stream wrapper for security reasons (see #105)
 if (in_array('phar', stream_get_wrappers(), true)) {
     stream_wrapper_unregister('phar');
