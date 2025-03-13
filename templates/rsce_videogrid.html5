@@ -1,5 +1,5 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_videogrid.min.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_videogrid.js|static';
 }
@@ -7,7 +7,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner">
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -64,7 +64,7 @@ foreach ($columns as $columnIndex => &$columnVideos) {
                                                              'class' => 'video-preview--player',
                                                              'name' => $video->title,
                                                              'description' => $video->description,
-                                                             'poster' => VSM_HelperFunctions\ImageHelper::generateImageURL($video->poster_image, $this->size),
+                                                             'poster' => Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($video->poster_image, $this->size),
                                                              'attributes' => 'autoplay muted loop playsinline'
                                                          ])) ?>">
 

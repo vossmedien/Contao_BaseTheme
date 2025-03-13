@@ -44,35 +44,5 @@ class VsmHelperTools extends Bundle
     public function boot(): void
     {
         parent::boot();
-        
-        // Unterstützung für alte Namespace
-        $this->registerOldNamespaceAliases();
-    }
-    
-    /**
-     * Registriert Aliases für alte Namespaces.
-     */
-    private function registerOldNamespaceAliases(): void
-    {
-        // Helper-Klassen
-        $helpers = [
-            'HeadlineHelper',
-            'ImageHelper',
-            'VideoHelper',
-            'ButtonHelper',
-            'BasicHelper',
-            'EnvHelper',
-            'PaymentFormHelper',
-            'GlobalElementConfig'
-        ];
-        
-        foreach ($helpers as $helper) {
-            $oldClass = 'VSM_HelperFunctions\\' . $helper;
-            $newClass = 'Vsm\\VsmHelperTools\\Helper\\' . $helper;
-            
-            if (!class_exists($oldClass, false) && class_exists($newClass, false)) {
-                class_alias($newClass, $oldClass);
-            }
-        }
     }
 }

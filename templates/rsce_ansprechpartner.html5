@@ -1,5 +1,5 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     // Frontend logic if needed
 }
 ?>
@@ -13,7 +13,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                     <div class="contact-card d-flex ">
                         <?php if ($contact->image): ?>
                             <div class="contact-image">
-                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($contact->image, null, $contact->name, $this->size, "rounded-circle", false, false); ?>
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($contact->image, null, $contact->name, $this->size, "rounded-circle", false, false); ?>
                             </div>
                         <?php endif; ?>
 

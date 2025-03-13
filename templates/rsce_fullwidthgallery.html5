@@ -1,11 +1,11 @@
-<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+<?php if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_fullwidthgallery.min.css|static';
 } ?>
 
 <div <?php echo $this->cssID; ?> class="content--element <?= $this->class; ?>">
     <div class="ce--inner">
         <?php if ($this->topline || $this->headline || $this->subline): ?>
-            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                 $this->topline,
                 $this->headline,
                 $this->subline,
@@ -168,13 +168,13 @@
                                 <div class="gallery-column gallery-column-<?= $this->id; ?>-<?= $x; ?>">
                                     <div class="gallery-column--inner">
                                         <div class="column--image-holder">
-                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($e->image, null, $e->headline, $this->size, null, false, false); ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($e->image, null, $e->headline, $this->size, null, false, false); ?>
                                         </div>
 
                                         <?php if ($e->box_link_type == '1' && $e->link): ?>
                                             <a href="<?= $e->link; ?>"></a>
                                         <?php elseif ($e->box_link_type == '3'): ?>
-                                            <?php $imageUrl = VSM_HelperFunctions\ImageHelper::generateImageURL($e->image, $this->size); ?>
+                                            <?php $imageUrl = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($e->image, $this->size); ?>
                                             <a href="<?= $imageUrl; ?>" class="lightbox_<?= $rand; ?>" data-gall="gallery_<?= $rand; ?>" title="<?= htmlspecialchars($e->hover_headline ?: $e->headline); ?>"></a>
                                         <?php endif; ?>
 
@@ -182,7 +182,7 @@
                                             <div class="gallery-column--initial-content <?= $e->textalign; ?>" style="
                                             <?php if ($e->background_color): ?>background-color: <?= $e->background_color; ?>;<?php endif; ?>
                                             <?php if ($e->text_color): ?>color: <?= $e->text_color; ?>;<?php endif; ?>">
-                                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                                     $e->topline,
                                                     $e->headline,
                                                     $e->subline,
@@ -207,7 +207,7 @@
                                             <?php if ($e->hover_text_color): ?>color: <?= $e->hover_text_color; ?>;<?php endif; ?>">
                                                 <div class="hover-content--inner">
                                                     <?php if ($e->hover_topline || $e->hover_headline || $e->hover_subline): ?>
-                                                        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                                             $e->hover_topline,
                                                             $e->hover_headline,
                                                             $e->hover_subline,
@@ -253,7 +253,7 @@
                                 <div class="gallery-column gallery-column-<?= $this->id; ?>-<?= $x; ?>">
                                     <div class="gallery-column--inner">
                                         <div class="column--image-holder">
-                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($uuid, null, $file->name, $this->size, null, false, $this->open_lightbox ? $rand : false); ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($uuid, null, $file->name, $this->size, null, false, $this->open_lightbox ? $rand : false); ?>
                                         </div>
                                     </div>
                                 </div>

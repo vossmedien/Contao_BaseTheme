@@ -1,8 +1,8 @@
 <?php
 // rsce_product_payment_config.php
 
-use VSM_HelperFunctions\ButtonHelper;
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 return array(
     'label' => array('Custom | Produkt-Payment (Grid)', ''),

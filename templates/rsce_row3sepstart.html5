@@ -1,5 +1,5 @@
 
-<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()):
+<?php if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()):
 $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row3sepstart.min.css|static';
 endif; ?>
 

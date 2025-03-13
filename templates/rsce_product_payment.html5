@@ -6,7 +6,7 @@ use Contao\Input;
 use Contao\Controller;
 use Contao\StringUtil;
 
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/validation-handler.js|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/stripe-element-handler.js|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/ui-handler.js|static';
@@ -61,7 +61,7 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
 ></div>
 
 
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -85,7 +85,7 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
                         <div class="card h-100 <?= $product->status === 'sold_out' ? 'product-sold-out' : '' ?>">
                             <?php if ($product->image): ?>
                                 <div class="card-img-top">
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
                                         $product->image,
                                         $product->title,
                                         null,
@@ -167,7 +167,7 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
                                 <?php endif; ?>
 
                                 <?php if ($product->buttons): ?>
-                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($product->buttons); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($product->buttons); ?>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -238,7 +238,7 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
                 </template>
 
                 <!-- Rest des Formulars -->
-                <?= VSM_HelperFunctions\PaymentFormHelper::generatePaymentFormHTML(
+                <?= Vsm\VsmHelperTools\Helper\PaymentFormHelper::generatePaymentFormHTML(
                     $this->personal_data_fields,
                     $this->stripe_public_key,
                     $successUrl,

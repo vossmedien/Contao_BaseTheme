@@ -38,8 +38,8 @@
 <body>
 
 <?php
-use VSM_HelperFunctions\ButtonHelper;
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 //Bestimme die aktuelle Sprache anhand der URL des übergeordneten Dokuments (iframe)
 $url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'];
 $lang = (strpos($url, '/en/') !== false) ? 'en' : 'de';

@@ -1,5 +1,5 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_course_schedule.min.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/elements/rsce/ce_rsce_course_schedule.min.js|static';
 }
@@ -7,7 +7,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
 <div <?php echo $this->cssID; ?> class="content--element course-schedule <?php echo $this->class; ?>">
     <div class="ce--inner ">
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,

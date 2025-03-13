@@ -1,7 +1,7 @@
 <?php
 
-use VSM_HelperFunctions\ButtonHelper;
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 
 // rsce_my_element_config.php

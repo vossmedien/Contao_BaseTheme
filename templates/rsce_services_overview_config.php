@@ -1,6 +1,6 @@
 <?php
 
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 return array(
     'label' => array('Custom | Leistungen im Überblick (services_overview)', ''),

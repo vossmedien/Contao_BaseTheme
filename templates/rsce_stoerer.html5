@@ -1,7 +1,7 @@
 <?php
 
 
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_stoerer.min.css|static';
     $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_stoerer.js"></script>';
 }
@@ -94,16 +94,16 @@ if (!empty($styles)) {
 
       <?php if (isset($stoerer->img) && $stoerer->img): ?>
     <?php
-    $imagePath = VSM_HelperFunctions\ImageHelper::generateImageURL($stoerer->img, $this->size);
+    $imagePath = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($stoerer->img, $this->size);
     if (substr($imagePath, -4) === '.svg') {
-        echo VSM_HelperFunctions\ImageHelper::getSvgCode(
+        echo Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode(
             $stoerer->img,
             strip_tags($stoerer->content),
             $this->size,
             $stoerer->img_mobile ? "d-none d-md-block" : ""
         );
     } else {
-        echo VSM_HelperFunctions\ImageHelper::generateImageHTML(
+        echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
             $stoerer->img,
             strip_tags($stoerer->content),
             null,
@@ -117,16 +117,16 @@ if (!empty($styles)) {
 
 <?php if (isset($stoerer->img_mobile) && $stoerer->img_mobile): ?>
     <?php
-    $imagePathMobile = VSM_HelperFunctions\ImageHelper::generateImageURL($stoerer->img_mobile, $this->size_mobile);
+    $imagePathMobile = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($stoerer->img_mobile, $this->size_mobile);
     if (substr($imagePathMobile, -4) === '.svg') {
-        echo VSM_HelperFunctions\ImageHelper::getSvgCode(
+        echo Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode(
             $stoerer->img_mobile,
             strip_tags($stoerer->content),
             $this->size_mobile,
             "d-md-none"
         );
     } else {
-        echo VSM_HelperFunctions\ImageHelper::generateImageHTML(
+        echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
             $stoerer->img_mobile,
             strip_tags($stoerer->content),
             null,

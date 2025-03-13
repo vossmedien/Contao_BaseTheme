@@ -33,8 +33,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Vsm\\VsmHelperTools\\": "src/",
-            "VSM_HelperFunctions\\": "src/Resources/LegacySupport/VSM_HelperFunctions/"
+            "Vsm\\VsmHelperTools\\": "src/"
         }
     },
     "config": {
