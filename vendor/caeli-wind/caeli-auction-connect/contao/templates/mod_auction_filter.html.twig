@@ -1,0 +1,467 @@
+{# Twig Template für das Auction Filter Modul #}
+<div class="container">
+    <div class="auction-filter-module">
+        {# Filter-Formular #}
+        <div class="filter-container card mb-4">
+            <div class="card-header bg-light">
+                <h3 class="mb-0">{{ 'Filter'|trans }}</h3>
+            </div>
+            <div class="card-body">
+                <form class="auction-filter" method="get">
+                    <div class="row mb-3">
+                        {# Bundesland-Filter #}
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label for="bundesland" class="form-label">{{ 'Bundesland'|trans }}</label>
+                            <select name="bundesland" id="bundesland" class="form-select">
+                                <option value="">{{ 'Alle Bundesländer'|trans }}</option>
+                                {% for bundesland in bundeslaender|default([]) %}
+                                    <option value="{{ bundesland }}" {% if filters.bundesland|default == bundesland %}selected{% endif %}>
+                                        {{ bundesland }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        {# Landkreis-Filter #}
+                        <div class="col-md-6">
+                            <label for="landkreis" class="form-label">{{ 'Landkreis'|trans }}</label>
+                            <select name="landkreis" id="landkreis" class="form-select">
+                                <option value="">{{ 'Alle Landkreise'|trans }}</option>
+                                {% for landkreis in landkreise|default([]) %}
+                                    <option value="{{ landkreis }}" {% if filters.landkreis|default == landkreis %}selected{% endif %}>
+                                        {{ landkreis }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    {# Größenfilter mit Range Slider #}
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <label class="form-label">{{ 'Größe (ha)'|trans }}: <span id="size-range-value">{{ filters.size.min|default('0') }} - {{ filters.size.max|default('500') }}</span></label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range" id="size-range" min="0" max="500" step="10" value="{{ filters.size.min|default('0') }}">
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <input type="hidden" name="size_min" id="size_min" value="{{ filters.size.min|default('') }}">
+                                <input type="hidden" name="size_max" id="size_max" value="{{ filters.size.max|default('') }}">
+                                <small>0</small>
+                                <small>500</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Leistungsfilter mit Range Slider #}
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <label class="form-label">{{ 'Leistung (MW)'|trans }}: <span id="leistung-range-value">{{ filters.leistung.min|default('0') }} - {{ filters.leistung.max|default('250') }}</span></label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range" id="leistung-range" min="0" max="250" step="5" value="{{ filters.leistung.min|default('0') }}">
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <input type="hidden" name="leistung_min" id="leistung_min" value="{{ filters.leistung.min|default('') }}">
+                                <input type="hidden" name="leistung_max" id="leistung_max" value="{{ filters.leistung.max|default('') }}">
+                                <small>0</small>
+                                <small>250</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Volllaststundenfilter mit Range Slider #}
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ 'Volllaststunden'|trans }}: <span id="volllaststunden-range-value">{{ filters.volllaststunden.min|default('0') }} - {{ filters.volllaststunden.max|default('4000') }}</span></label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range" id="volllaststunden-range" min="0" max="4000" step="100" value="{{ filters.volllaststunden.min|default('0') }}">
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <input type="hidden" name="volllaststunden_min" id="volllaststunden_min" value="{{ filters.volllaststunden.min|default('') }}">
+                                <input type="hidden" name="volllaststunden_max" id="volllaststunden_max" value="{{ filters.volllaststunden.max|default('') }}">
+                                <small>0</small>
+                                <small>4000</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        {# Statusfilter mit verbesserten Badges #}
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label for="status" class="form-label">{{ 'Status'|trans }}</label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="">{{ 'Alle Status'|trans }}</option>
+                                <option value="STARTED" {% if filters.status|default == 'STARTED' %}selected{% endif %}>
+                                    {{ 'Gestartet'|trans }}
+                                </option>
+                                <option value="OPEN_FOR_DIRECT_AWARDING" {% if filters.status|default == 'OPEN_FOR_DIRECT_AWARDING' %}selected{% endif %}>
+                                    {{ 'Offen für direkte Vergabe'|trans }}
+                                </option>
+                                <option value="DIRECT_AWARDING" {% if filters.status|default == 'DIRECT_AWARDING' %}selected{% endif %}>
+                                    {{ 'Direkte Vergabe'|trans }}
+                                </option>
+                                <option value="AWARDING" {% if filters.status|default == 'AWARDING' %}selected{% endif %}>
+                                    {{ 'Vergabe'|trans }}
+                                </option>
+                                <option value="PRE_RELEASE" {% if filters.status|default == 'PRE_RELEASE' %}selected{% endif %}>
+                                    {{ 'Vorab-Veröffentlichung'|trans }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel"></i> {{ 'Filtern'|trans }}
+                        </button>
+                        <a href="{{ app.request.pathInfo }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> {{ 'Zurücksetzen'|trans }}
+                        </a>
+                        <button type="submit" name="refresh" value="1" class="btn btn-success">
+                            <i class="bi bi-arrow-clockwise"></i> {{ 'Daten aktualisieren'|trans }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# CSS Styling für Filter #}
+<style>
+/* Filter-Styling */
+.filter-container {
+    margin-bottom: 30px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    gap: 15px;
+}
+
+.filter-item {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-item label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.filter-item select,
+.filter-item input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.filter-range .range-inputs {
+    display: flex;
+    align-items: center;
+}
+
+.filter-range .range-inputs input {
+    width: calc(50% - 10px);
+}
+
+.filter-range .range-inputs span {
+    margin: 0 10px;
+}
+
+.filter-actions {
+    margin-top: 20px;
+    justify-content: flex-start;
+}
+
+.filter-submit {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filter-reset {
+    padding: 8px 15px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+.filter-refresh {
+    padding: 8px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Loading-Overlay */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+.loading-text {
+    font-weight: bold;
+    color: #333;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Relative Position für das Overlay */
+.auction-filter-module {
+    position: relative;
+    min-height: 100px;
+}
+</style>
+
+{# JavaScript für AJAX-Filter #}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filter-Formular finden
+    const filterForm = document.querySelector('.auction-filter');
+    if (!filterForm) return;
+
+    // Referenz auf das Listing-Element (wird über AJAX aktualisiert)
+    const auctionItems = document.querySelector('.auction-items');
+    const noAuctions = document.querySelector('.no-auctions');
+
+    // Range-Slider initialisieren
+    initRangeSliders();
+
+    // Loading-Overlay erstellen
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.className = 'loading-overlay';
+    loadingOverlay.innerHTML = '<div class="spinner"></div><div class="loading-text">Daten werden geladen...</div>';
+    document.querySelector('.auction-filter-module').appendChild(loadingOverlay);
+
+    // FormData in serialisierbares Objekt umwandeln
+    function formDataToObject(formData) {
+        const object = {};
+        formData.forEach((value, key) => {
+            // Wenn der Wert bereits existiert, mache ein Array daraus
+            if (object.hasOwnProperty(key)) {
+                if (!Array.isArray(object[key])) {
+                    object[key] = [object[key]];
+                }
+                object[key].push(value);
+            } else {
+                object[key] = value;
+            }
+        });
+        return object;
+    }
+
+    // AJAX-Filter-Funktion
+    function ajaxFilter(formData, pushState = true) {
+        // Lade-Anzeige einblenden
+        loadingOverlay.style.display = 'flex';
+
+        // URL aus den Formulardaten erstellen
+        const params = new URLSearchParams(formData);
+        const currentPath = window.location.pathname;
+        const queryString = params.toString();
+        const newUrl = currentPath + (queryString ? '?' + queryString : '');
+
+        // Verlauf aktualisieren, wenn gewünscht
+        if (pushState) {
+            // FormData in serialisierbares Objekt umwandeln
+            const formDataObj = formDataToObject(formData);
+            history.pushState({formData: formDataObj}, '', newUrl);
+        }
+
+        // AJAX-Anfrage
+        fetch(window.location.pathname + '?' + queryString)
+            .then(response => response.text())
+            .then(html => {
+                // DOM-Parser für das HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Neue Auktionselemente extrahieren
+                const newAuctionItems = doc.querySelector('.auction-items');
+                const newNoAuctions = doc.querySelector('.no-auctions');
+
+                // Inhalte ersetzen, falls die Elemente existieren
+                if (auctionItems && newAuctionItems) {
+                    auctionItems.innerHTML = newAuctionItems.innerHTML;
+                    auctionItems.style.display = 'flex';
+                    if (noAuctions) noAuctions.style.display = 'none';
+                } else if (noAuctions && newNoAuctions) {
+                    if (auctionItems) auctionItems.style.display = 'none';
+                    noAuctions.innerHTML = newNoAuctions.innerHTML;
+                    noAuctions.style.display = 'block';
+                }
+
+                // Lade-Anzeige ausblenden
+                loadingOverlay.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Filter-Fehler:', error);
+                // Bei Fehler die Seite normal neu laden
+                window.location.href = newUrl;
+            });
+    }
+
+    // Range-Slider initialisieren
+    function initRangeSliders() {
+        // Größe Range-Slider
+        initRangeSlider('size-range', 'size_min', 'size_max', 'size-range-value', 0, 500);
+
+        // Leistung Range-Slider
+        initRangeSlider('leistung-range', 'leistung_min', 'leistung_max', 'leistung-range-value', 0, 250);
+
+        // Volllaststunden Range-Slider
+        initRangeSlider('volllaststunden-range', 'volllaststunden_min', 'volllaststunden_max', 'volllaststunden-range-value', 0, 4000);
+    }
+
+    // Helfer-Funktion für die Initialisierung der Range-Slider
+    function initRangeSlider(sliderId, minInputId, maxInputId, valueDisplayId, min, max) {
+        const slider = document.getElementById(sliderId);
+        const minInput = document.getElementById(minInputId);
+        const maxInput = document.getElementById(maxInputId);
+        const valueDisplay = document.getElementById(valueDisplayId);
+
+        if (!slider || !minInput || !maxInput || !valueDisplay) return;
+
+        // Aktualisiere Slider basierend auf den vorhandenen Werten
+        let currentMin = minInput.value ? parseInt(minInput.value) : min;
+        let currentMax = maxInput.value ? parseInt(maxInput.value) : max;
+
+        // Stelle sicher, dass currentMin und currentMax im gültigen Bereich liegen
+        currentMin = Math.max(min, Math.min(currentMin, max));
+        currentMax = Math.max(min, Math.min(currentMax, max));
+
+        // Slider-Position aktualisieren (wir setzen den Slider direkt auf den Minimalwert)
+        slider.value = min;
+
+        // Display-Wert aktualisieren
+        updateValueDisplay();
+
+        // Event-Listener für den Slider
+        slider.addEventListener('input', function() {
+            // Der Slider-Wert ist der Maximalwert, Minimalwert bleibt 0
+            const sliderValue = parseInt(slider.value);
+
+            currentMin = min; // Immer auf Minimum (0) gesetzt
+            currentMax = sliderValue; // Maximalwert ist die Position des Dots
+
+            // Input-Werte aktualisieren
+            minInput.value = currentMin;
+            maxInput.value = currentMax;
+
+            // Display-Wert aktualisieren
+            updateValueDisplay();
+        });
+
+        function updateValueDisplay() {
+            // Wenn der Schieberegler auf 0 steht, zeige den vollen Bereich an (0 - max)
+            if (slider.value == min) {
+                valueDisplay.textContent = `${min} - ${max}`;
+            } else {
+                valueDisplay.textContent = `${currentMin} - ${currentMax}`;
+            }
+        }
+    }
+
+    // Formular-Submit-Handler
+    filterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(filterForm);
+        ajaxFilter(formData);
+    });
+
+    // Button-Handler für Zurücksetzen
+    const resetButton = filterForm.querySelector('a[href="' + window.location.pathname + '"]');
+    if (resetButton) {
+        resetButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            filterForm.reset();
+
+            // Range-Slider zurücksetzen
+            document.getElementById('size_min').value = '';
+            document.getElementById('size_max').value = '';
+            document.getElementById('leistung_min').value = '';
+            document.getElementById('leistung_max').value = '';
+            document.getElementById('volllaststunden_min').value = '';
+            document.getElementById('volllaststunden_max').value = '';
+
+            // Range-Slider neu initialisieren
+            initRangeSliders();
+
+            // Zum ursprünglichen URL zurückkehren
+            window.history.pushState({}, '', window.location.pathname);
+
+            // AJAX-Anfrage für die ungefilterten Daten
+            ajaxFilter(new FormData(filterForm));
+        });
+    }
+
+    // Popstate-Event-Listener für Browser-Zurück/Vor
+    window.addEventListener('popstate', function(event) {
+        if (event.state && event.state.formData) {
+            // Formular mit gespeicherten Werten ausfüllen
+            const storedFormData = event.state.formData;
+
+            // Felder zurücksetzen
+            filterForm.reset();
+
+            // Felder mit gespeicherten Werten füllen
+            Object.entries(storedFormData).forEach(([key, value]) => {
+                const field = filterForm.querySelector(`[name="${key}"]`);
+                if (field) field.value = value;
+            });
+
+            // Range-Slider neu initialisieren
+            initRangeSliders();
+
+            // Neue FormData erstellen und AJAX-Anfrage senden
+            const newFormData = new FormData(filterForm);
+            ajaxFilter(newFormData, false);
+        } else {
+            // Wenn kein State vorhanden ist, Seite neu laden
+            window.location.reload();
+        }
+    });
+
+    // Beim ersten Laden der Seite den aktuellen Zustand im Verlauf speichern
+    const initialFormData = new FormData(filterForm);
+    const initialFormDataObj = formDataToObject(initialFormData);
+    history.replaceState({formData: initialFormDataObj}, '', window.location.href);
+});
+</script>

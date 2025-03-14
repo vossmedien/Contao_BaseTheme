@@ -24,7 +24,9 @@ $this->bodyAttributes = $this
     <base href="<?= $this->base ?>">
 
     <?php $this->block('meta'); ?>
-    <meta name="robots" content="<?= $this->robots ?>">
+   <!-- <meta name="robots" content="<?= $this->robots ?>"> -->
+<meta name="robots" content="noindex,nofollow" />
+
     <meta name="description" content="<?= Contao\StringUtil::substr($this->description, 320) ?>">
     <meta name="generator" content="Contao Open Source CMS">
     <?php $this->endblock(); ?>
@@ -51,7 +53,6 @@ $this->bodyAttributes = $this
     <?= $this->mooScripts ?>
     <?= $this->head ?>
     <?php $this->endblock(); ?>
-
 </head>
 <body<?= $this->bodyAttributes ?>>
 <div class="BodyScrollToTop"><i class="fasl fa-arrow-up "></i></div>

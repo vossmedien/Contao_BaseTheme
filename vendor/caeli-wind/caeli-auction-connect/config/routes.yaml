@@ -1,0 +1,5 @@
+# Keine manuellen Routen notwendig
+# Contao erkennt die Frontend-Module automatisch anhand der Attribute/Annotations 
+
+# Alle internen Routen überlassen wir besser dem Contao-System
+# und konzentrieren uns auf die Hook-basierte URL-Behandlung 

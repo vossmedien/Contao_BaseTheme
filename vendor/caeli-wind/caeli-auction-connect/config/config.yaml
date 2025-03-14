@@ -1,0 +1,11 @@
+# Contao Configuration
+contao:
+    localconfig:
+        # Die auto_item-Parameter werden hier definiert
+        urlSuffix: ''
+        folderUrl: true
+        useAutoItem: true
+    # Verfügbare Lokalisierungen festlegen
+    locales:
+        - de
+        - en 

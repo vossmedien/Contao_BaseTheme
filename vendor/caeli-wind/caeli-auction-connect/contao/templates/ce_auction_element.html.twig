@@ -1,0 +1,123 @@
+{# Twig Template für das Auction Element Content Element #}
+{% extends '@Contao/content_element/text.html.twig' %}
+
+{% block content %}
+    <div class="container auction-element {{ cssClass }}">
+        {% if headline|default %}
+            <{{ headline.unit|default('h2') }}>{{ headline.value }}</{{ headline.unit|default('h2') }}>
+        {% endif %}
+
+        {% if auctions|default and auctions|length > 0 %}
+            <div class="auction-list row g-2">
+                {% for auction in auctions %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100">
+                            {#
+                                     {% if auction._raw_data.areaPictureFileName|default or auction.picture_filename|default %}
+                                <div class="card-img-top auction-image-container">
+                                    <img src="https://auction.caeli-wind.de/uploads/{{ auction._raw_data.areaPictureFileName|default(auction.picture_filename) }}"
+                                         alt="{{ auction.title }}" class="auction-image">
+                                </div>
+                            {% else %}
+                                <div class="card-img-top auction-image-container bg-light d-flex align-items-center justify-content-center">
+                                    <span class="text-muted">{{ 'Kein Bild verfügbar'|trans }}</span>
+                                </div>
+                            {% endif %}
+
+
+                            #}
+
+
+                            <div class="card-body">
+                                <h3 class="card-title h5">
+                                    {% if auction.title|default %}
+                                        {{ auction.title }}
+                                    {% elseif auction._raw_data.areaName|default %}
+                                        {{ auction._raw_data.areaName }}
+                                    {% elseif auction.id|default %}
+                                        {{ 'Auktion'|trans }} #{{ auction.id }}
+                                    {% else %}
+                                        {{ 'Auktion'|trans }}
+                                    {% endif %}
+                                </h3>
+
+                                <div class="auction-details">
+                                    {% if auction.state|default %}
+                                        <div class="detail-item">
+                                            <strong>{{ 'Bundesland'|trans }}:</strong>
+                                            <span>{{ auction.state }}</span>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if auction.size_ha|default %}
+                                        <div class="detail-item">
+                                            <strong>{{ 'Fläche'|trans }}:</strong>
+                                            <span>{{ auction.size_ha }} ha</span>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if auction.power_mw|default %}
+                                        <div class="detail-item">
+                                            <strong>{{ 'Leistung'|trans }}:</strong>
+                                            <span>{{ auction.power_mw }} MW</span>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if auction.status|default %}
+                                        <div class="detail-item">
+                                            <strong>{{ 'Status'|trans }}:</strong>
+                                            <span class="badge bg-primary">{{ auction.status }}</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                {% if detailPage %}
+                                    <a href="{{ detailPage.getFrontendUrl() }}/{{ auction.id }}" class="btn btn-primary btn-sm">
+                                        {{ 'Details anzeigen'|trans }}
+                                    </a>
+                                {% else %}
+                                    <a href="/auction-listing/detail/{{ auction.id }}" class="btn btn-primary btn-sm">
+                                        {{ 'Details anzeigen'|trans }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% elseif noAuctions|default %}
+            <div class="alert alert-info">
+                <p>{{ 'Keine Auktionen gefunden'|trans }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        .auction-image-container {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .auction-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .auction-details .detail-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .auction-element .card {
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .auction-element .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+    </style>
+{% endblock %}

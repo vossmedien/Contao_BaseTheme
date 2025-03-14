@@ -39,7 +39,7 @@
 //@import "../_vendor/node_modules/bootstrap/scss/accordion";
 //@import "../_vendor/node_modules/bootstrap/scss/breadcrumb";
 //@import "../_vendor/node_modules/bootstrap/scss/pagination";
-//@import "../_vendor/node_modules/bootstrap/scss/badge";
+@import "../_vendor/node_modules/bootstrap/scss/badge";
 @import "../_vendor/node_modules/bootstrap/scss/alert";
 //@import "../_vendor/node_modules/bootstrap/scss/progress";
 //@import "../_vendor/node_modules/bootstrap/scss/list-group";
@@ -109,6 +109,7 @@
 html {
   scroll-behavior: smooth;
   font-size: var(--bs-body-font-size);
+  overflow-x: clip;
 
   body {
     *[id] {

@@ -17,6 +17,13 @@
   <component name="PhpIncludePathManager">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/madeyourday/contao-rocksolid-custom-elements" />
+      <path value="$PROJECT_DIR$/vendor/caeli-wind/contao-caeli-content-creator" />
+      <path value="$PROJECT_DIR$/vendor/vsm/vsm-helper-tools" />
+      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-auction-connect" />
+      <path value="$PROJECT_DIR$/vendor/NEdev/contao-lbd-aiolos-bundle" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/test/testtesttest" />
+      <path value="$PROJECT_DIR$/vendor/contao/news-bundle" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

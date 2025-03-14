@@ -1,0 +1,154 @@
+{% extends "mod_auction_listing.html.twig" %}
+
+{% block content %}
+    {# DEBUG: Dump der ersten Auktion zur Inspektion #}
+    {% if auctions|length > 0 %}
+        {# Kommentar: Dump der Schlüssel der ersten Auktion #}
+        {# Wenn sichtbar in der Produktion, später entfernen #}
+        <div class="auction-debug" style="background: #eee; padding: 10px; margin-bottom: 20px; font-family: monospace;">
+            <h3>Debug Info (erste Auktion)</h3>
+            <pre>ID: {{ auctions[0].id|default('N/A') }}</pre>
+            <pre>Auction ID: {{ auctions[0].auction_id|default('N/A') }}</pre>
+            <pre>Title: {{ auctions[0].title|default('N/A') }}</pre>
+            <pre>Verfügbare Felder: {{ auctions[0]|keys|join(', ') }}</pre>
+        </div>
+    {% endif %}
+    
+    <div class="auction-listing">
+        {% if auctions|length > 0 %}
+            {# Filter-Formular #}
+            <div class="filter-container">
+                <h3>{{ 'Filter'|trans }}</h3>
+                <form class="auction-filter" method="get">
+                    <div class="filter-row">
+                        {# Bundesland-Filter #}
+                        <div class="filter-item">
+                            <label for="bundesland">{{ 'Bundesland'|trans }}</label>
+                            <select name="bundesland" id="bundesland">
+                                <option value="">{{ 'Alle Bundesländer'|trans }}</option>
+                                {% for bundesland in bundeslaender %}
+                                    <option value="{{ bundesland }}" {% if filters.bundesland == bundesland %}selected{% endif %}>
+                                        {{ bundesland }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        {# Landkreis-Filter #}
+                        <div class="filter-item">
+                            <label for="landkreis">{{ 'Landkreis'|trans }}</label>
+                            <select name="landkreis" id="landkreis">
+                                <option value="">{{ 'Alle Landkreise'|trans }}</option>
+                                {% for landkreis in landkreise %}
+                                    <option value="{{ landkreis }}" {% if filters.landkreis == landkreis %}selected{% endif %}>
+                                        {{ landkreis }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-row">
+                        {# Größenfilter #}
+                        <div class="filter-item filter-range">
+                            <label>{{ 'Größe (ha)'|trans }}</label>
+                            <div class="range-inputs">
+                                <input type="number" name="size_min" placeholder="{{ 'Min'|trans }}" value="{{ filters.size.min|default('') }}" min="0">
+                                <span>-</span>
+                                <input type="number" name="size_max" placeholder="{{ 'Max'|trans }}" value="{{ filters.size.max|default('') }}" min="0">
+                            </div>
+                        </div>
+                        
+                        {# Leistungsfilter #}
+                        <div class="filter-item filter-range">
+                            <label>{{ 'Leistung (MW)'|trans }}</label>
+                            <div class="range-inputs">
+                                <input type="number" name="leistung_min" placeholder="{{ 'Min'|trans }}" value="{{ filters.leistung.min|default('') }}" min="0">
+                                <span>-</span>
+                                <input type="number" name="leistung_max" placeholder="{{ 'Max'|trans }}" value="{{ filters.leistung.max|default('') }}" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-row filter-actions">
+                        <button type="submit" class="filter-submit">{{ 'Filtern'|trans }}</button>
+                        <a href="{{ app.request.pathInfo }}" class="filter-reset">{{ 'Zurücksetzen'|trans }}</a>
+                    </div>
+                </form>
+            </div>
+            
+            {# Auktionsliste #}
+            <div class="auction-items">
+                {% for auction in auctions %}
+                    <article class="auction-item">
+                        <div class="auction-header">
+                            <h3 class="auction-title">{{ auction.title|default(auction.auction_id) }}</h3>
+                            <span class="auction-status">{{ auction.status|default('') }}</span>
+                        </div>
+                        
+                        <div class="auction-content">
+                            <div class="auction-details">
+                                {% if auction.bundesland|default %}
+                                    <div class="detail-item">
+                                        <strong>{{ 'Bundesland'|trans }}:</strong> {{ auction.bundesland }}
+                                    </div>
+                                {% endif %}
+                                
+                                {% if auction.landkreis|default %}
+                                    <div class="detail-item">
+                                        <strong>{{ 'Landkreis'|trans }}:</strong> {{ auction.landkreis }}
+                                    </div>
+                                {% endif %}
+                                
+                                {% if auction.flaeche_ha|default %}
+                                    <div class="detail-item">
+                                        <strong>{{ 'Fläche'|trans }}:</strong> {{ auction.flaeche_ha }} ha
+                                    </div>
+                                {% endif %}
+                                
+                                {% if auction.leistung_mw|default %}
+                                    <div class="detail-item">
+                                        <strong>{{ 'Leistung'|trans }}:</strong> {{ auction.leistung_mw }} MW
+                                    </div>
+                                {% endif %}
+                                
+                                {% if auction.anzahl_wea|default %}
+                                    <div class="detail-item">
+                                        <strong>{{ 'Anzahl WEA'|trans }}:</strong> {{ auction.anzahl_wea }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            {% if auction.description|default %}
+                                <div class="auction-description">
+                                    {{ auction.description|raw }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="auction-footer">
+                            {# WICHTIG: Stellen Sie sicher, dass auction.id einen echten Wert hat und nicht {id} #}
+                            {% if auction.id is defined and auction.id is not empty %}
+                                {% set detailUrl = detailPage ? detailPage.getFrontendUrl() ~ '/' ~ auction.id : '#' %}
+                            {% else %}
+                                {% set detailUrl = '#' %}
+                            {% endif %}
+                            
+                            <a href="{{ detailUrl }}" class="auction-detail-link" data-auction-id="{{ auction.id }}">
+                                {{ 'Details anzeigen'|trans }}
+                            </a>
+                            
+                            <div style="font-size: 11px; color: #999; margin-top: 5px;">
+                                Debug: URL = {{ detailUrl }}, ID = {{ auction.id ?? 'nicht vorhanden' }}
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-auctions">
+                <p>{{ 'Keine Auktionen gefunden'|trans }}</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %} 

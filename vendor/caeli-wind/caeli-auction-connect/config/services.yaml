@@ -1,0 +1,74 @@
+# config/services.yaml
+services:
+    _defaults:
+        autowire: true          # Automatically injects dependencies in your services.
+        autoconfigure: true     # Automatically registers your services as commands, event subscribers, etc.
+        public: false           # Allows optimizing the container by removing unused services; this also means
+                                # fetching services directly from the container via $container->get() won't work.
+                                # The best practice is to be explicit about your dependencies anyway.
+        bind:
+            #$projectDir: '%kernel.project_dir%'
+
+    # Registriere alle Dienste, aber schließe Controller aus (werden explizit registriert)
+    CaeliWind\CaeliAuctionConnect\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Resources/'
+            - '../src/Tests/'
+
+    # Registriere nur die FrontendModule-Controller explizit
+    CaeliWind\CaeliAuctionConnect\Controller\FrontendModule\:
+        resource: '../src/Controller/FrontendModule/'
+        tags: ['controller.service_arguments']
+    
+    # AuctionService explizit definieren, um Parameter zugänglich zu machen
+    CaeliWind\CaeliAuctionConnect\Service\AuctionService:
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $params: '@parameter_bag'
+
+    # Routing-Konfiguration
+    CaeliWind\CaeliAuctionConnect\Routing\AuctionResolver:
+        arguments:
+            $framework: '@contao.framework'
+            $auctionService: '@CaeliWind\CaeliAuctionConnect\Service\AuctionService'
+        tags:
+            - { name: 'contao.routing.url_resolver' }
+
+    # Event-Listener für URL-Parameter
+    CaeliWind\CaeliAuctionConnect\EventListener\AuctionItemListener:
+        arguments:
+            $framework: '@contao.framework'
+            $logger: '@monolog.logger.contao'
+            $requestStack: '@request_stack'
+            $scopeMatcher: '@contao.routing.scope_matcher'
+        tags:
+            - { name: 'contao.hook', hook: 'getPageIdFromUrl', priority: 100 }
+
+    # Explizit den AuctionDetailController konfigurieren
+    CaeliWind\CaeliAuctionConnect\Controller\FrontendModule\AuctionDetailController:
+        arguments:
+            $auctionService: '@CaeliWind\CaeliAuctionConnect\Service\AuctionService'
+            $logger: '@monolog.logger.contao'
+
+    # Explizit den AuctionListingController konfigurieren
+    CaeliWind\CaeliAuctionConnect\Controller\FrontendModule\AuctionListingController:
+        arguments:
+            $auctionService: '@CaeliWind\CaeliAuctionConnect\Service\AuctionService'
+            $logger: '@monolog.logger.contao'
+
+    # Add a session bag
+    caeli_wind.caeli_auction_connect.session.factory:
+        class: CaeliWind\CaeliAuctionConnect\Session\SessionFactory
+        decorates: session.factory
+        arguments:
+            - '@caeli_wind.caeli_auction_connect.session.factory.inner'
+            - '@caeli_wind.caeli_auction_connect.session.attribute.array_attribute_bag'
+
+    caeli_wind.caeli_auction_connect.session.attribute.array_attribute_bag:
+        class: CaeliWind\CaeliAuctionConnect\Session\Attribute\ArrayAttributeBag
+        arguments:
+            - _caeli_wind_caeli_auction_connect_attributes
+        calls:
+            - [ setName, [ caeli_wind_caeli_auction_connect ] ]
