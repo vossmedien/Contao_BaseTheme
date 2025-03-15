@@ -1,5 +1,5 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_boxenfeld.min.css|static';
 }
 ?>
@@ -7,7 +7,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
 <div <?php echo $this->cssID; ?> class="content--element  <?php if ($this->without_container != "1"): ?>container<?php endif; ?>  <?php echo $this->class; ?>">
 
-    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+    <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
         $this->topline,
         $this->headline,
         $this->subline,
@@ -28,7 +28,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                     >
                         <?php if ($b->image): ?>
                             <div class="col-12 col-lg text-center" data-animation="<?= $b->animation_type_image; ?>">
-                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($b->image, null, $b->headline, $b->size, "box--image", false, true, true, false, false); ?>
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($b->image, null, $b->headline, $b->size, "box--image", false, true, true, false, false); ?>
                             </div>
                         <?php endif; ?>
                         <?php if ($b->headline || $b->content || $b->button_url): ?>
@@ -53,7 +53,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                          ">
 
 
-                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                     $b->topline,
                                     $b->headline,
                                     $b->subline,
@@ -72,7 +72,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 <?php endif; ?>
 
 
-                                <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($b->buttons); ?>
+                                <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($b->buttons); ?>
 
 
                             </div>

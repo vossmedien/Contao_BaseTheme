@@ -18,30 +18,98 @@ class VSMLazyLoader {
         this.imageObserver = null;
         this.videoObserver = null;
         this.mutationObserver = null;
-        this.init();
+
+        // Verhindere mehrfache Initialisierung
+        if (window.VSM && window.VSM.lazyLoader) {
+            console.warn('VSMLazyLoader bereits initialisiert!');
+            return window.VSM.lazyLoader;
+        }
+
+        // Starte Initialisierung
+        this._initialize();
+
+        const event = new CustomEvent('vsm:lazyLoaderInit', {
+            detail: {lazyLoader: this}
+        });
+        document.dispatchEvent(event);
+    }
+
+    _initialize() {
+        // Initialisierung sofort versuchen
+        if (document.readyState === 'loading') {
+            // Dokument wird noch geladen, warten wir auf DOMContentLoaded
+            window.addEventListener('DOMContentLoaded', () => this.init());
+        } else {
+            // Dokument bereits geladen, sofort initialisieren
+            this.init();
+        }
+
+        // Sicherheitscheck: Falls init() nicht richtig ausgeführt wurde
+        // oder die Observer nicht initialisiert wurden, versuche es nach einer Verzögerung erneut
+        setTimeout(() => {
+            if (!this.videoObserver || !this.imageObserver) {
+                console.warn('Observer nicht initialisiert, versuche erneut...');
+                this.init();
+
+                // Prüfe auf unbeobachtete Videos nach der Re-Initialisierung
+                setTimeout(() => this.checkUnobservedVideos(), 500);
+            }
+        }, 1000);
     }
 
     init() {
         if (!document.body) {
+            console.warn('Document body noch nicht bereit, warte...');
             window.addEventListener('DOMContentLoaded', () => this.init());
             return;
         }
 
-        if ('IntersectionObserver' in window) {
-            this.setupImageObserver();
-            this.setupVideoObserver();
-            this.setupMutationObserver();
-            if (!this.isMobile) {
-                this.setupScrollListeners();
-            }
-            this.observeElements();
+        try {
+            if ('IntersectionObserver' in window) {
+                // Observers in definierter Reihenfolge initialisieren
+                this.setupImageObserver();
+                this.setupVideoObserver();
+                this.setupMutationObserver();
 
-            if (!this.isMobile) {
-                setInterval(() => this.checkLostElements(), 10000);
+                if (!this.isMobile) {
+                    this.setupScrollListeners();
+                }
+
+                // Prüfe, ob die Observer initialisiert wurden
+                if (!this.videoObserver || !this.imageObserver) {
+                    console.error('Observer konnten nicht initialisiert werden');
+                    return;
+                }
+
+                // Nun die DOM-Elemente beobachten
+                this.observeElements();
+
+                if (!this.isMobile) {
+                    setInterval(() => this.checkLostElements(), 10000);
+                }
+            } else {
+                console.warn('IntersectionObserver nicht verfügbar, verwende Fallback');
+                this.loadAllMediaDirectly();
             }
-        } else {
-            this.loadAllMediaDirectly();
+        } catch (e) {
+            console.error('Fehler bei der Initialisierung:', e);
         }
+    }
+
+
+    checkUnobservedVideos() {
+        const videos = document.querySelectorAll('video.lazy, video[data-poster]');
+        videos.forEach(video => {
+            if (!this.loadedElements.has(video) &&
+                !this.loadingVideos.has(video) &&
+                !video.classList.contains('loading') &&
+                !video.classList.contains('loaded')) {
+                this.handleNewElement(video);
+                if (this.isInViewport(video)) {
+                    this.loadVideo(video);
+                }
+            }
+        });
     }
 
     setupImageObserver() {
@@ -63,7 +131,6 @@ class VSMLazyLoader {
             threshold: 0.01
         });
 
-        // Scroll wrapper observer setup bleibt gleich
         document.querySelectorAll('.scroll-wrapper').forEach(scrollWrapper => {
             const scrollObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -122,24 +189,24 @@ class VSMLazyLoader {
     unloadVideo(video) {
         if (!this.isMobile) return;
 
-        // Video stoppen und zurücksetzen
         video.pause();
         video.currentTime = 0;
 
-        // Wenn das Video noch am Laden ist
         if (this.loadingVideos.has(video)) {
             this.loadingVideos.delete(video);
             this.removeSpinner(video);
         }
 
-        // Aus loadedElements entfernen
         this.loadedElements.delete(video);
-
-        // Alle Event-Listener entfernen
         video.removeAttribute('src');
         video.load();
 
-        // Sources wiederherstellen
+        // Speichere das poster-Attribut als data-poster
+        if (video.hasAttribute('poster')) {
+            video.setAttribute('data-poster', video.getAttribute('poster'));
+            video.removeAttribute('poster');
+        }
+
         video.querySelectorAll('source').forEach(source => {
             const currentSrc = source.getAttribute('src');
             if (currentSrc) {
@@ -148,19 +215,17 @@ class VSMLazyLoader {
             }
         });
 
-        // Original data-src wiederherstellen wenn vorhanden
         const originalSrc = video.getAttribute('data-original-src');
         if (originalSrc) {
             video.setAttribute('data-src', originalSrc);
         }
 
-        // Klassen zurücksetzen
         video.classList.remove('loading', 'loaded');
         video.classList.add('lazy');
     }
 
     setupScrollListeners() {
-        if (this.isMobile) return; // Skip auf Mobile
+        if (this.isMobile) return;
 
         let scrollTimeout;
         const scrollHandler = () => {
@@ -189,12 +254,11 @@ class VSMLazyLoader {
                         if (node.nodeType === 1 && this.shouldHandleElement(node)) {
                             this.handleNewElement(node);
                             if (node.querySelectorAll) {
-                                node.querySelectorAll('[data-src], [data-bg]')
-                                    .forEach(element => {
-                                        if (this.shouldHandleElement(element)) {
-                                            this.handleNewElement(element);
-                                        }
-                                    });
+                                node.querySelectorAll('[data-src], [data-bg], video.lazy').forEach(element => {
+                                    if (this.shouldHandleElement(element)) {
+                                        this.handleNewElement(element);
+                                    }
+                                });
                             }
                         }
                     });
@@ -215,9 +279,9 @@ class VSMLazyLoader {
     }
 
     checkVisibleElements(container = document) {
-        if (this.isMobile) return; // Skip auf Mobile
+        if (this.isMobile) return;
 
-        const elements = container.querySelectorAll('[data-src], [data-bg]');
+        const elements = container.querySelectorAll('[data-src], [data-bg], video.lazy');
         elements.forEach(element => {
             if (!this.loadedElements.has(element) && this.isInViewport(element)) {
                 if (element.hasAttribute('data-bg')) {
@@ -232,9 +296,9 @@ class VSMLazyLoader {
     }
 
     checkLostElements() {
-        if (this.isMobile) return; // Skip auf Mobile
+        if (this.isMobile) return;
 
-        document.querySelectorAll('[data-src]:not(.loaded), [data-bg]:not(.loaded)').forEach(element => {
+        document.querySelectorAll('[data-src]:not(.loaded), [data-bg]:not(.loaded), video.lazy:not(.loaded), video[data-poster]:not(.loaded)').forEach(element => {
             if (!this.loadedElements.has(element) && this.isInViewport(element)) {
                 if (element.hasAttribute('data-bg')) {
                     this.loadBackgroundImage(element);
@@ -248,12 +312,17 @@ class VSMLazyLoader {
     }
 
     isInViewport(element) {
+        // Verwende eine einfachere Berechnung für häufige Aufrufe
         const rect = element.getBoundingClientRect();
+        const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+        const viewWidth = window.innerWidth || document.documentElement.clientWidth;
+
+        // Optimierte Berechnung
         return (
-            rect.top >= -rect.height &&
-            rect.left >= -rect.width &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + rect.height &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth) + rect.width
+            rect.bottom > 0 &&
+            rect.right > 0 &&
+            rect.top < viewHeight + rect.height &&
+            rect.left < viewWidth + rect.width
         );
     }
 
@@ -264,13 +333,39 @@ class VSMLazyLoader {
             this.handleSpinner(element);
         }
 
+        // Prüfe, ob die Observer initialisiert wurden
+        if (!this.videoObserver || !this.imageObserver) {
+            // Wenn nicht, initialisiere sie
+            if (!this.videoObserver) this.setupVideoObserver();
+            if (!this.imageObserver) this.setupImageObserver();
+
+            // Falls immer noch nicht initialisiert, logge einen Fehler und kehre zurück
+            if (!this.videoObserver || !this.imageObserver) {
+                console.error('Observer konnte nicht initialisiert werden');
+                return;
+            }
+        }
+
         if (element.hasAttribute('data-bg')) {
             this.imageObserver.observe(element);
-        } else if (element.tagName.toLowerCase() === 'video' ||
-            (element.tagName.toLowerCase() === 'source' && element.parentElement.tagName.toLowerCase() === 'video')) {
-            const videoElement = element.tagName.toLowerCase() === 'source' ? element.parentElement : element;
-            if (videoElement.hasAttribute('data-src')) {
-                this.videoObserver.observe(videoElement);
+        } else if (element.tagName.toLowerCase() === 'video') {
+            if (element.classList.contains('lazy') ||
+                element.hasAttribute('data-src') ||
+                element.hasAttribute('data-poster') ||
+                element.querySelectorAll('source[data-src]').length > 0) {
+                // Verwende nur den Observer, wenn er existiert
+                if (this.videoObserver) {
+                    this.videoObserver.observe(element);
+                } else {
+                    console.warn('Video Observer nicht verfügbar für:', element);
+                }
+            }
+        } else if (element.tagName.toLowerCase() === 'source' && element.parentElement.tagName.toLowerCase() === 'video') {
+            const videoElement = element.parentElement;
+            if (videoElement.classList.contains('lazy') && !this.loadedElements.has(videoElement)) {
+                if (this.videoObserver) {
+                    this.videoObserver.observe(videoElement);
+                }
             }
         } else if (element.tagName.toLowerCase() === 'img') {
             if (element.hasAttribute('data-src')) {
@@ -292,11 +387,16 @@ class VSMLazyLoader {
     }
 
     handleSpinner(element) {
-        if ((element.classList.contains('cms-html-video-container') ||
-                element.classList.contains('content-media')) &&
-            !element.querySelector('.lazy-loader-spinner')) {
-            this.addSpinner(element);
+        if (element.parentElement) {
+            if ((element.classList.contains('cms-html-video-container') ||
+                    element.classList.contains('content-media') ||
+                    element.tagName.toLowerCase() === 'video' ||
+                    element.parentElement.classList.contains('video-wrapper')) &&
+                !element.querySelector('.lazy-loader-spinner')) {
+                this.addSpinner(element);
+            }
         }
+
     }
 
     addSpinner(target) {
@@ -420,7 +520,6 @@ class VSMLazyLoader {
     loadVideo(video) {
         if (this.loadedElements.has(video) || this.loadingVideos.has(video)) return Promise.resolve();
 
-        // Prüfe Anzahl aktuell ladender Videos auf Mobile
         if (this.isMobile) {
             const currentlyLoading = document.querySelectorAll('video.loading').length;
             if (currentlyLoading >= this.options.maxSimultaneousLoads) {
@@ -429,7 +528,6 @@ class VSMLazyLoader {
             }
         }
 
-        // Auf Mobile: Alte src sichern
         if (this.isMobile && video.getAttribute('data-src')) {
             video.setAttribute('data-original-src', video.getAttribute('data-src'));
         }
@@ -442,14 +540,39 @@ class VSMLazyLoader {
             video.setAttribute('playsinline', '');
             video.muted = true;
 
-            video.querySelectorAll('source[data-src]').forEach(source => {
+            // Verarbeite das data-poster-Attribut
+            if (video.hasAttribute('data-poster')) {
+                video.poster = video.getAttribute('data-poster');
+                video.removeAttribute('data-poster');
+            }
+
+            const sources = video.querySelectorAll('source[data-src]');
+            let hasLoadedSources = false;
+
+            sources.forEach(source => {
+                hasLoadedSources = true;
                 source.src = source.dataset.src;
                 source.removeAttribute('data-src');
             });
 
             if (video.dataset.src) {
+                hasLoadedSources = true;
                 video.src = video.dataset.src;
                 video.removeAttribute('data-src');
+            }
+
+            if (!hasLoadedSources && sources.length > 0) {
+                sources.forEach(source => {
+                    if (source.hasAttribute('src')) {
+                        hasLoadedSources = true;
+                    }
+                });
+            }
+
+            if (!hasLoadedSources) {
+                this.loadingVideos.delete(video);
+                video.classList.remove('loading');
+                return resolve();
             }
 
             const cleanup = () => {
@@ -535,7 +658,7 @@ class VSMLazyLoader {
     }
 
     observeElements() {
-        document.querySelectorAll('[data-src], [data-bg]').forEach(element => {
+        document.querySelectorAll('[data-src], [data-bg], video.lazy, video[data-poster]').forEach(element => {
             if (!this.loadedElements.has(element) && this.shouldHandleElement(element)) {
                 if (this.options.spinnerEnabled) {
                     this.handleSpinner(element);
@@ -550,7 +673,7 @@ class VSMLazyLoader {
     }
 
     loadAllMediaDirectly() {
-        document.querySelectorAll('[data-src], [data-bg]').forEach(element => {
+        document.querySelectorAll('[data-src], [data-bg], video.lazy, video[data-poster]').forEach(element => {
             if (this.shouldHandleElement(element)) {
                 if (element.hasAttribute('data-bg')) {
                     this.loadBackgroundImage(element);
@@ -569,6 +692,15 @@ class VSMLazyLoader {
         if (this.imageObserver) this.imageObserver.disconnect();
         if (this.videoObserver) this.videoObserver.disconnect();
         if (this.mutationObserver) this.mutationObserver.disconnect();
+
+        window.removeEventListener('scroll', this.scrollHandler);
+        document.querySelectorAll('.scroll-wrapper').forEach(wrapper => {
+            wrapper.removeEventListener('scroll', this.debouncedCheck);
+        });
+
+        // Event-Handler-Referenzen freigeben
+        this.scrollHandler = null;
+        this.debouncedCheck = null;
     }
 }
 
@@ -578,13 +710,24 @@ window.VSM.lazyLoader = new VSMLazyLoader();
 
 // Abwärtskompatibilität
 window.VSM.lazyLoadInstance = {
-    update: () => {}
+    update: () => {
+    }
 };
 
 // Event-Listener für dynamisch nachgeladene Videos
 document.addEventListener('vsm:videoLoaded', function (e) {
     if (window.VSM.lazyLoader && e.detail.videoElement) {
         window.VSM.lazyLoader.handleNewElement(e.detail.videoElement);
+    }
+});
+
+// Zusätzlicher Event-Listener für die Seiten-Initialisierung
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.VSM && window.VSM.lazyLoader) {
+        window.VSM.lazyLoader.checkUnobservedVideos();
+    } else {
+        window.VSM = window.VSM || {};
+        window.VSM.lazyLoader = new VSMLazyLoader();
     }
 });
 

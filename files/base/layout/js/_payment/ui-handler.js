@@ -98,11 +98,13 @@ class UIHandler {
     calculateExpiryDate(months) {
         const date = new Date();
         date.setMonth(date.getMonth() + parseInt(months));
-        return date.toLocaleDateString('de-DE', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
+        
+        // Formatieren mit führenden Nullen für Tag und Monat
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        
+        return `${day}.${month}.${year}`;
     }
 
     initializePriceDisplays() {

@@ -1,0 +1,24 @@
+vsm_helper_tools:
+    resource: "@VsmHelperTools/config/routes.yaml"
+    type: yaml
+
+vsm_helper_tools_stripe:
+    resource: '../src/Controller/StripeWebhookController.php'
+    type: attribute
+    prefix: /stripe
+    defaults:
+        _format: json
+        _token_check: false
+    options:
+        utf8: true
+
+# Entfernt, da explizit in routes.yaml definiert
+# vsm_helper_tools_stripe_checkout:
+#     resource: '../src/Controller/StripeCheckoutController.php'
+#     type: attribute
+#     prefix: /stripe
+#     defaults:
+#         _format: json
+#         _token_check: false
+#     options:
+#         utf8: true 

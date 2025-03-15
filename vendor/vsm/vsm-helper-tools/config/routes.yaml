@@ -1,0 +1,75 @@
+# Video Render Route
+vsm_helper_tools.video_render:
+    path: /video/render
+    controller: Vsm\VsmHelperTools\Controller\VideoRenderController::renderVideo
+    methods: [ POST ]
+    defaults:
+        _scope: frontend
+        _token_check: false
+
+# Stripe Routes
+# vsm_helper_tools_stripe:
+#     resource: '../src/Controller/StripeWebhookController.php'
+#     type: attribute
+#     prefix: /stripe
+#     name_prefix: 'stripe_'
+
+vsm_helper_tools.stripe_webhook:
+    path: /stripe/webhook
+    controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::handleWebhook
+    methods: [POST]
+    defaults:
+        _scope: frontend
+        _token_check: false
+
+vsm_helper_tools.stripe_create_payment_intent:
+    path: /stripe/create-payment-intent
+    controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::createPaymentIntent
+    methods: [ POST ]
+    defaults:
+        _scope: frontend
+        _token_check: false
+
+vsm_helper_tools.stripe_get_price:
+    path: /stripe/get-price
+    controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::getPrice
+    methods: [ POST ]
+    defaults:
+        _scope: frontend
+        _token_check: false
+
+vsm_helper_tools.stripe_check_user:
+    path: /stripe/check-user
+    controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::checkUser
+    methods: [ POST ]
+    defaults:
+        _scope: frontend
+        _token_check: false
+
+# Checkout Controller Routes - EXPLIZIT DEFINIERT
+vsm_helper_tools.stripe_create_checkout_session:
+    path: /stripe/create-checkout-session
+    controller: Vsm\VsmHelperTools\Controller\StripeCheckoutController::createCheckoutSession
+    methods: [ POST ]
+    defaults:
+        _scope: frontend
+        _token_check: false
+        _format: json
+
+vsm_helper_tools.stripe_checkout_success:
+    path: /stripe/checkout/success
+    controller: Vsm\VsmHelperTools\Controller\StripeCheckoutController::handleSuccess
+    methods: [ GET ]
+    defaults:
+        _scope: frontend
+        _token_check: false
+        _format: json
+
+# Download Route
+vsm_helper_tools.download_file:
+    path: /download/{token}/{fileId}
+    controller: Vsm\VsmHelperTools\Controller\DownloadController::download
+    methods: [GET]
+    requirements:
+        token: '[a-zA-Z0-9]+'
+        fileId: '[a-fA-F0-9-]+' 

@@ -1,7 +1,7 @@
 <?php
 
 
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 //rsce_my_element_config.php
 return array(

@@ -31,7 +31,7 @@
   },
   "autoload": {
     "psr-4": {
-      "VSM_HelperFunctions\\": "system/modules/vsm_custom_helpers/src/"
+      "Vsm\VsmHelperTools\Helper\\": "system/modules/vsm_custom_helpers/src/"
     }
   },
   "extra": {

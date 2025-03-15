@@ -1,12 +1,12 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_teaserstripe.min.css|static';
 }
 ?>
 
 
 <div <?php echo $this->cssID; ?> class="<?php if ($this->image): ?>lazy<?php endif; ?>  content--element <?= $this->class; ?>"
-                                 <?php if ($this->image): ?>data-bg="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($this->image, $this->size); ?>"<?php endif; ?>
+                                 <?php if ($this->image): ?>data-bg="<?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($this->image, $this->size); ?>"<?php endif; ?>
 
 >
     <div class=" ce--inner <?php if ($this->alternate_background_color) : ?>with-bg<?php endif; ?>" style="background-position: center center; background-repeat:no-repeat; background-size: cover;
@@ -19,7 +19,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
              <?php endif; ?>
             ">
 
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -41,7 +41,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                         <?php if ($this->ce_headline || $this->ce_subline || $this->text) : ?>
                             <div class="col-12 <?php if (!$this->nocolumns) : ?><?php echo $this->right_column_image ? 'col-md-8' : 'col-md-10'; ?><?php endif; ?>">
                                 <div class="content-wrapper">
-                                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                    <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                         $this->ce_topline,
                                         $this->ce_headline,
                                         $this->ce_subline,
@@ -60,7 +60,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                                     <?php if ($this->buttons && $this->nocolumns) : ?>
                                         <div class="mt-3">
-                                            <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons); ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons); ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -70,18 +70,18 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                         <?php if ($this->right_column_image): ?>
                             <div class="col-12 <?php if (!$this->nocolumns) : ?>col-md-4<?php endif; ?> mt-4 mt-md-0">
-                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->right_column_image, null, '', $this->size_right_image, null, false, false); ?>
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->right_column_image, null, '', $this->size_right_image, null, false, false); ?>
 
                                 <?php if ($this->buttons && !$this->nocolumns) : ?>
                                     <div class="mt-3">
-                                        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons); ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons); ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
                         <?php elseif ($this->buttons && !$this->nocolumns) : ?>
                             <div class="col-auto">
                                 <div class="content-wrapper">
-                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons, "mt-3"); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons, "mt-3"); ?>
                                 </div>
                             </div>
                         <?php endif; ?>

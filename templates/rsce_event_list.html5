@@ -1,12 +1,12 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_event_list.min.css|static';
 }
 ?>
 
 <div <?php echo $this->cssID; ?> class="content--element event-list  <?php echo $this->class; ?>">
     <div class="ce--inner">
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,

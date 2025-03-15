@@ -1,12 +1,12 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_team_overview.min.css|static';
 }
 ?>
 
 <div <?php echo $this->cssID; ?> class="content--element team-overview <?= $this->class; ?>">
     <div class="ce--inner">
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -22,7 +22,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 <div data-animation="<?php echo $this->animation_type; ?>" class="team-member <?php echo $index % 2 != 0 ? 'even' : 'odd'; ?>">
                     <div class="row g-5 align-items-center gx-md-4 <?php echo $index % 2 != 0 ? 'flex-row-reverse' : ''; ?>">
                         <div class="col-12 col-md-6 member-image">
-                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
                                 $member->image,
                                 null,
                                 $member->name,

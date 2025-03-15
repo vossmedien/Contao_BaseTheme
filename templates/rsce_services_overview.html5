@@ -1,5 +1,5 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_services_overview.min.css|static';
     $GLOBALS['TL_BODY'][] = '<script defer src="/files/base/layout/js/_elements/ce_rsce_services_overview.js"></script>';
 }
@@ -7,7 +7,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
 <div <?php echo $this->cssID; ?> class="content--element services-overview <?= $this->class; ?>">
     <div class="ce--inner">
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -35,7 +35,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                     <div class="service-image-container h-100">
                         <?php foreach ($this->services as $index => $service): ?>
                             <div class="service-image <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
-                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
                                     $service->image,
                                     null,
                                     $service->title,

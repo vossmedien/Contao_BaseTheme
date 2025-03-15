@@ -3,7 +3,7 @@
 use Contao\StringUtil;
 
 
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_twocolimagewall.min.css|static';
     $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_twocolimagewall.js"></script>';
 }
@@ -13,7 +13,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
 
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -28,7 +28,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
         foreach ($this->row as $row) : ?>
 
 
-            <?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+            <?php if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()): ?>
 
             <?php if ($row->open_lightbox): ?>
             <script type="text/javascript" defer>
@@ -179,7 +179,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 <?php if ($row->boxed_headline && $row->reverse) : ?>
                                     <div class="boxed-headline">
                                         <div class="boxed-headline--inner" data-animation="animate__fadeInUp">
-                                            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                            <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                                 $row->boxed_topheadline,
                                                 $row->boxed_headline,
                                                 $row->boxed_subheadline,
@@ -196,7 +196,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                                 <div  data-animation="animate__fadeIn" class="zoom-container" style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
                                     <?php if ($row->image_leftcol) : ?>
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image_leftcol, null, $row->ce_headline, $row->size_left, null, false); ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->image_leftcol, null, $row->ce_headline, $row->size_left, null, false); ?>
                                     <?php endif; ?>
                                     <?php if ($row->kachel_left_text): ?>
                                         <div class="kachel-column-width--indicator <?php if ($row->expand_left_kachel): ?>expandable<?php endif; ?>">
@@ -251,7 +251,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                                 <div style="<?= $row->alternate_textcolor ? 'color:' . $row->alternate_textcolor . ';' : '' ?>"
                                      class="content--inner <?php if ($row->boxed_headline): ?>my-lg-8<?php endif; ?> <?php echo $row->textalign; ?>">
-                                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                    <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                         $row->ce_topline,
                                         $row->ce_headline,
                                         $row->ce_subline,
@@ -269,7 +269,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                         </div>
                                     <?php endif; ?>
 
-                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($row->buttons, "mt-3"); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($row->buttons, "mt-3"); ?>
                                 </div>
                             </div>
                             <?php if (($row->image || $row->alternate_image || $row->content_rightcol || $row->video) && $row->column_width != "col-12 full-width") : ?>
@@ -357,7 +357,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                                     foreach ($row->image as $data) : ?>
                                                         <?php if ($index < $length - 1): ?>
                                                             <div class="swiper-slide">
-                                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($data, null, $row->ce_headline, $row->size_right, null, false, $this->open_lightbox ? $rand : "", false); ?>
+                                                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($data, null, $row->ce_headline, $row->size_right, null, false, $this->open_lightbox ? $rand : "", false); ?>
                                                             </div>
                                                         <?php endif;
                                                         $index++; ?>
@@ -378,13 +378,13 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                         <?php elseif ($row->image): ?>
 
 
-                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image[0], null, $row->ce_headline, $row->size_right, $row->rotate_image ? "rotateImage" : "", false, $row->open_lightbox ? $rand : "", false); ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->image[0], null, $row->ce_headline, $row->size_right, $row->rotate_image ? "rotateImage" : "", false, $row->open_lightbox ? $rand : "", false); ?>
                                         <?php endif; ?>
                                     </div>
                                     <?php if ($row->boxed_headline && !$row->reverse) : ?>
                                         <div class="boxed-headline">
                                             <div class="boxed-headline--inner" data-animation="animate__fadeInUp">
-                                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                                     $row->boxed_topheadline,
                                                     $row->boxed_headline,
                                                     $row->boxed_subheadline,

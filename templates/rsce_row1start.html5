@@ -3,7 +3,7 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row1start.mi
 ?>
 
 
-<?php if ($this->element_type == 'is_slider' && VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+<?php if ($this->element_type == 'is_slider' && Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()): ?>
     <script type="text/javascript" defer>
         window.addEventListener('DOMContentLoaded', function () {
 
@@ -86,16 +86,16 @@ $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_row1start.mi
 <?php endif; ?>
 
 
-<?php if (VSM_HelperFunctions\EnvHelper::isBackend()) {
+<?php if (Vsm\VsmHelperTools\Helper\EnvHelper::isBackend()) {
     echo $this->element_type;
 } ?>
 
 
-<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+<?php if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()): ?>
 
 <div  <?php echo $this->cssID; ?> class="content--element row-wrapper <?php echo $this->class; ?>">
 
-    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+    <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
         $this->topline,
         $this->headline,
         $this->subline,

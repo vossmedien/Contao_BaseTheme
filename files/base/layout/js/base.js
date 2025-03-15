@@ -1,5 +1,8 @@
 import {setupFunctions, resetCookies} from "./cookieManager.js";
 
+
+
+/*
 document.addEventListener('DOMContentLoaded', () => {
     window.VSM = window.VSM || {};
 
@@ -24,6 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
+
+
+
 window.addEventListener("cookiebar_save", setupFunctions);
 const btn = document.querySelector(".reset-cookies");
 if (btn) {
@@ -33,49 +39,9 @@ if (btn) {
     });
 }
 
-
-//window.dispatchEvent(new Event("resize"));
-
-// Clickhandler START
-
-var searchActivator = document.querySelector(".searchActivator");
-
-if (searchActivator) {
-    var searchCol = document.querySelector(".search-col");
-
-    searchActivator.addEventListener("touchstart", function () {
-        if (searchCol) {
-            searchCol.classList.toggle("is-visible");
-        }
-    });
-}
-
-const matrixCells = document.querySelectorAll(".matrix td");
-matrixCells.forEach((cell) => {
-    const input = cell.querySelector("input");
-    if (input) {
-        cell.addEventListener("click", function (e) {
-            if (input.type === "radio") {
-                const radios = cell.parentNode.querySelectorAll("input[type=radio]");
-                radios.forEach((radio) => {
-                    radio.checked = radio === input;
-                });
-            } else if (input.type === "checkbox" && e.target.nodeName === "TD") {
-                input.checked = !input.checked;
-            }
-        });
-    }
-});
+ */
 
 
-const accordionIcons = document.querySelectorAll(".accordion-nav i");
-accordionIcons.forEach((icon) => {
-    icon.addEventListener("click", function () {
-        this.closest("li").classList.toggle("expanded");
-    });
-});
-
-// Clickhandler ENDE
 
 
 function startCounter(element) {
@@ -84,14 +50,68 @@ function startCounter(element) {
     }
     element.classList.add("doneCounting");
 
-    const fullText = element.textContent;
-    const matches = fullText.match(/(\d+([.,]\d+)?)([^\d]*)/);
-    if (!matches) return;
+    // Finde alle Textknoten innerhalb des Elements
+    const textNodes = [];
+    function getTextNodes(node) {
+        if (node.nodeType === 3) { // Textknoten
+            textNodes.push(node);
+        } else {
+            for (let i = 0; i < node.childNodes.length; i++) {
+                getTextNodes(node.childNodes[i]);
+            }
+        }
+    }
+    getTextNodes(element);
 
-    const originalNumber = matches[1].replace(",", ".");
-    const decimalPlaces = (originalNumber.split(".")[1] || []).length;
-    const targetNumber = parseFloat(originalNumber);
-    const text = matches[3];
+    // Verarbeite jeden Textknoten
+    textNodes.forEach(textNode => {
+        const fullText = textNode.nodeValue;
+        const regex = /(\d+([.,]\d+)?)([^\d]*)/g;
+        let matches;
+        let lastIndex = 0;
+        const fragments = [];
+
+        while ((matches = regex.exec(fullText)) !== null) {
+            // Text vor der Zahl hinzufügen
+            if (matches.index > lastIndex) {
+                fragments.push(document.createTextNode(fullText.substring(lastIndex, matches.index)));
+            }
+
+            // Zahl und nachfolgenden Text extrahieren
+            const originalNumber = matches[1].replace(",", ".");
+            const decimalPlaces = (originalNumber.split(".")[1] || []).length;
+            const targetNumber = parseFloat(originalNumber);
+            const text = matches[3];
+
+            // Span für die Zahl erstellen
+            const numberSpan = document.createElement("span");
+            numberSpan.className = "number-counter";
+            numberSpan.textContent = originalNumber + text;
+            fragments.push(numberSpan);
+
+            // Counter für dieses Span starten
+            animateCounter(numberSpan, targetNumber, decimalPlaces, text);
+
+            lastIndex = regex.lastIndex;
+        }
+
+        // Rest des Textes hinzufügen
+        if (lastIndex < fullText.length) {
+            fragments.push(document.createTextNode(fullText.substring(lastIndex)));
+        }
+
+        // Original-Textknoten ersetzen
+        if (fragments.length > 0) {
+            const parent = textNode.parentNode;
+            fragments.forEach(fragment => {
+                parent.insertBefore(fragment, textNode);
+            });
+            parent.removeChild(textNode);
+        }
+    });
+}
+
+function animateCounter(element, targetNumber, decimalPlaces, text) {
     const duration = 2000;
     let startTime = null;
 
@@ -133,6 +153,8 @@ document.querySelectorAll(".count").forEach((el) => {
 });
 
 
+
+/*
 window.pushToDataLayer = function (type, position, element, additional) {
     dataLayer.push({
         "event": "navigationClick",
@@ -156,6 +178,9 @@ trackingLinks.forEach(function (link) {
         window.pushToDataLayer(type, position, element, additional);
     });
 });
+
+
+ */
 
 
 

@@ -1,8 +1,8 @@
 <?php
 // rsce_product_payment_config.php
 
-use VSM_HelperFunctions\ButtonHelper;
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 return array(
     'label' => array('Custom | Produkt-Payment (Grid)', ''),
@@ -242,44 +242,188 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('rgxp' => 'natural', 'tl_class' => 'w50'),
                 ),
-                'plunk_event_name' => array(
-                    'label' => array('Event Name', 'Für Plunk Automation'),
+                'email_settings' => array(
+                    'label' => array('E-Mail-Einstellungen', ''),
+                    'inputType' => 'group',
+                ),
+                'sender_email' => array(
+                    'label' => array('Absender-E-Mail', 'E-Mail-Adresse für den Absender'),
+                    'inputType' => 'text',
+                    'eval' => array('rgxp' => 'email', 'tl_class' => 'w50'),
+                ),
+                'admin_email' => array(
+                    'label' => array('Admin-E-Mail', 'E-Mail-Adresse für Admin-Benachrichtigungen'),
+                    'inputType' => 'text',
+                    'eval' => array('rgxp' => 'email', 'tl_class' => 'w50'),
+                ),
+                'admin_template' => array(
+                    'label' => array('Admin-E-Mail-Template', 'Template für die Admin-Benachrichtigung'),
+                    'inputType' => 'select',
+                    'options_callback' => function() {
+                        // Einfache Verzeichnissuche ohne direkten Service-Zugriff
+                        $templates = [];
+                        $projectDir = \Contao\System::getContainer()->getParameter('kernel.project_dir');
+                        
+                        // Nach .html5 Templates in /templates/emails suchen
+                        $templatesDir = $projectDir . '/templates/emails';
+                        if (is_dir($templatesDir)) {
+                            foreach (scandir($templatesDir) as $file) {
+                                if (strpos($file, 'mail_') === 0 && substr($file, -6) === '.html5') {
+                                    $name = substr($file, 0, -6);
+                                    $templates[$name] = $name;
+                                }
+                            }
+                        }
+                        
+                        // Nach .html.twig Templates in /templates/emails suchen
+                        $twigTemplatesDir = $projectDir . '/templates/emails';
+                        if (is_dir($twigTemplatesDir)) {
+                            foreach (scandir($twigTemplatesDir) as $file) {
+                                if (strpos($file, 'mail_') === 0 && substr($file, -10) === '.html.twig') {
+                                    $name = substr($file, 0, -10);
+                                    $templates[$name] = $name;
+                                }
+                            }
+                        }
+                        
+                        return $templates;
+                    },
+                    'eval' => array('includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'),
+                ),
+                'user_template' => array(
+                    'label' => array('Benutzer-E-Mail-Template', 'Template für die Benutzer-Benachrichtigung'),
+                    'inputType' => 'select',
+                    'options_callback' => function() {
+                        // Einfache Verzeichnissuche ohne direkten Service-Zugriff
+                        $templates = [];
+                        $projectDir = \Contao\System::getContainer()->getParameter('kernel.project_dir');
+                        
+                        // Nach .html5 Templates in /templates/emails suchen
+                        $templatesDir = $projectDir . '/templates/emails';
+                        if (is_dir($templatesDir)) {
+                            foreach (scandir($templatesDir) as $file) {
+                                if (strpos($file, 'mail_') === 0 && substr($file, -6) === '.html5') {
+                                    $name = substr($file, 0, -6);
+                                    $templates[$name] = $name;
+                                }
+                            }
+                        }
+                        
+                        // Nach .html.twig Templates in /templates/emails suchen
+                        $twigTemplatesDir = $projectDir . '/templates/emails';
+                        if (is_dir($twigTemplatesDir)) {
+                            foreach (scandir($twigTemplatesDir) as $file) {
+                                if (strpos($file, 'mail_') === 0 && substr($file, -10) === '.html.twig') {
+                                    $name = substr($file, 0, -10);
+                                    $templates[$name] = $name;
+                                }
+                            }
+                        }
+                        
+                        return $templates;
+                    },
+                    'eval' => array('includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'),
+                ),
+                'file_settings' => array(
+                    'label' => array('Datei-Einstellungen', ''),
+                    'inputType' => 'group',
+                ),
+                'file_sale' => array(
+                    'label' => array('Datei-Verkauf', 'Aktiviert den Verkauf einer digitalen Datei (Download)'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+                'download_file' => array(
+                    'label' => array('Download-Datei', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'mandatory' => true,
+                        'tl_class' => 'clr' 
+                    ),
+                    'dependsOn' => array(
+                        'field' => 'file_sale',
+                    ),
+                ),
+                'download_expires' => array(
+                    'label' => array('Ablauf in Tagen', 'Nach wie vielen Tagen läuft der Download ab?'),
+                    'inputType' => 'text',
+                    'eval' => array('rgxp' => 'natural', 'tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'file_sale',
+                    ),
+                ),
+                'download_limit' => array(
+                    'label' => array('Download-Limit', 'Maximale Anzahl an Downloads'),
+                    'inputType' => 'text',
+                    'eval' => array('rgxp' => 'natural', 'tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'file_sale',
+                    ),
+                ),
+                'button_settings' => array(
+                    'label' => array('Button-Einstellungen', ''),
+                    'inputType' => 'group',
+                ),
+                'button_text' => array(
+                    'label' => array('Button-Text', 'Standard: "Jetzt kaufen"'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
+                'disable_payment' => array(
+                    'label' => array('Bezahlung deaktivieren', 'Versteckt den Bezahl-Button für dieses Produkt'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
+        'buttons' => array(
+            'label' => array('Buttons', ''),
+            'elementLabel' => '%s. Button',
+            'inputType' => 'list',
+            'minItems' => 0,
+            'maxItems' => 20,
+            'eval' => array('tl_class' => 'clr'),
+            'fields' => ButtonHelper::getButtonConfig(),
+        ),
+                'status_settings' => array(
+                    'label' => array('Status-Einstellungen', ''),
+                    'inputType' => 'group',
+                ),
                 'status' => array(
                     'label' => array('Status', ''),
-                    'inputType' => 'radio',
+                    'inputType' => 'select',
                     'options' => array(
-                        'active' => 'Aktiv (kaufbar)',
+                        'active' => 'Aktiv',
                         'sold_out' => 'Ausverkauft',
                         'hidden' => 'Versteckt'
                     ),
-                    'default' => 'active',
-                    'eval' => array('mandatory' => true, 'tl_class' => 'clr')
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'sold_out_text' => array(
-                    'label' => array('Ausverkauft-Text', 'Wird angezeigt wenn Status "Ausverkauft"'),
+                    'label' => array('Ausverkauft-Text', ''),
                     'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
                     'dependsOn' => array(
                         'field' => 'status',
                         'value' => 'sold_out',
                     ),
                 ),
-                'disable_payment' => array(
-                    'label' => array('Zahlung deaktivieren', 'Überschreibt die globale Stripe-Einstellung'),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'w50'),
+                'stripe_invoice' => array(
+                    'label' => array('Stripe-Rechnung', 'Einstellungen für die Rechnungsstellung'),
+                    'inputType' => 'group',
                 ),
-                'buttons' => [
-                    'label' => ['Buttons', ''],
-                    'elementLabel' => '%s. Button',
-                    'inputType' => 'list',
-                    'minItems' => 1,
-                    'maxItems' => 20,
-                    'eval' => ['tl_class' => 'clr'],
-                    'fields' => ButtonHelper::getButtonConfig(),
-                ],
+                'create_invoice' => array(
+                    'label' => array('Stripe-Rechnung aktivieren', 'Erstellt automatisch Rechnungen und sendet diese an Kunden'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr', 'isBoolean' => true),
+                ),
+                'invoice_note' => array(
+                    'label' => array('Hinweis', 'Informationen zur Rechnungsstellung'),
+                    'inputType' => 'explanation',
+                    'eval' => array('text' => 'Stripe erstellt automatisch Rechnungen für jede Zahlung und sendet diese per E-Mail an den Kunden. Hierfür werden die Kundendaten aus dem Zahlungsformular verwendet.', 'tl_class' => 'clr'),
+                ),
             ),
         ),
     ),

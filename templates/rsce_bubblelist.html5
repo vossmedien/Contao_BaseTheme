@@ -1,5 +1,5 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_bubblelist.min.css|static';
 }
 ?>
@@ -8,7 +8,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 <div <?php echo $this->cssID; ?> class=" <?php echo $this->class; ?>content--element">
     <div class="ce--inner">
 
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -44,7 +44,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
 
                                     <?php if (!$item->icon && $item->img): ?>
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($item->img, '', '', $this->size, '', false, false, false, false, false); ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($item->img, '', '', $this->size, '', false, false, false, false, false); ?>
                                     <?php endif; ?>
 
 

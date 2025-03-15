@@ -4,21 +4,54 @@ class StripeElementHandler {
         this.elements = null;
     }
 
-    async initialize(amount, currency) {
-        this.elements = this.stripe.elements(this.createElementOptions(amount, currency));
-        const paymentElement = this.elements.create('payment');
-        this.mountElement(paymentElement);
-        this.initializeListeners(paymentElement);
-        return this.elements;
+    async initialize(amount, currency, errorCallback) {
+        try {
+            // Validiere die Eingabe
+            if (!amount || isNaN(parseFloat(amount))) {
+                throw new Error('Ungültiger Betrag für Stripe Elements: ' + amount);
+            }
+            
+            // Stelle sicher, dass Währung normalisiert ist
+            const normalizedCurrency = (currency || 'eur').toLowerCase();
+            if (!['eur', 'usd', 'gbp'].includes(normalizedCurrency)) {
+                console.warn('Ungewöhnliche Währung für Stripe Elements: ' + normalizedCurrency);
+            }
+            
+            // Erstelle die Stripe Elements Instanz
+            const options = this.createElementOptions(amount, normalizedCurrency);
+            console.log('Initialisiere Stripe Elements mit Optionen:', options);
+            
+            this.elements = this.stripe.elements(options);
+            
+            // Erstelle das Payment Element
+            const paymentElement = this.elements.create('payment');
+            
+            // Element in den DOM einfügen
+            this.mountElement(paymentElement);
+            
+            // Event-Listener hinzufügen
+            this.initializeListeners(paymentElement, errorCallback);
+            
+            console.log('Stripe Elements erfolgreich initialisiert');
+            
+            // Gib die Elements Instanz zurück
+            return this.elements;
+        } catch (error) {
+            console.error('Fehler bei der Initialisierung von Stripe Elements:', error);
+            throw error;
+        }
     }
 
     createElementOptions(amount, currency) {
         return {
             mode: 'payment',
-            amount: Math.round(amount * 100),
+            amount: Math.round(parseFloat(amount)), // Die Beträge sollten bereits in Cent sein
             currency: currency.toLowerCase(),
             locale: 'de',
-            appearance: this.getAppearanceOptions()
+            appearance: this.getAppearanceOptions(),
+            automatic_payment_methods: {
+                enabled: true
+            }
         };
     }
 
@@ -54,20 +87,48 @@ class StripeElementHandler {
 
     mountElement(paymentElement) {
         const container = document.getElementById('payment-element');
+        if (!container) {
+            console.error('Payment Element Container nicht gefunden!');
+            throw new Error('DOM-Element #payment-element nicht gefunden. Bitte überprüfen Sie Ihr HTML.');
+        }
         container.innerHTML = '';
         paymentElement.mount('#payment-element');
     }
 
     initializeListeners(paymentElement, errorCallback) {
+        // Fehler-Element suchen
+        const displayError = document.getElementById('payment-errors');
+        if (!displayError) {
+            console.warn('Payment Error Container (#payment-errors) nicht gefunden!');
+        }
+        
+        // "change" Event-Listener für Validierung
         paymentElement.on('change', (event) => {
-            const displayError = document.getElementById('payment-errors');
+            // Wenn kein Fehler-Container gefunden wurde, nur loggen
+            if (!displayError) {
+                if (event.error) {
+                    console.error('Stripe Element Fehler:', event.error.code, event.error.message);
+                }
+                return;
+            }
+            
             if (event.error) {
-                displayError.textContent = errorCallback(event.error.code);
+                const errorMessage = typeof errorCallback === 'function' ? 
+                    errorCallback(event.error.code) : 
+                    event.error.message;
+                    
+                console.log('Stripe Element Fehler:', errorMessage);
+                displayError.textContent = errorMessage;
                 displayError.style.display = 'block';
             } else {
                 displayError.textContent = '';
                 displayError.style.display = 'none';
             }
+        });
+        
+        // "ready" Event-Listener für Initialisierungsbestätigung
+        paymentElement.on('ready', () => {
+            console.log('Stripe Element ist bereit');
         });
     }
 }

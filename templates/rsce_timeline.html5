@@ -1,5 +1,5 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_timeline.min.css|static';
 }
 ?>
@@ -7,7 +7,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 <div <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?>">
     <div class="ce--inner" >
 
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -36,7 +36,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                         <?php if ($row->icon): ?>
                                             <div class="col-auto">
                                             <span style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" class="step--icon">
-                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->icon, strip_tags($row->description), $row->headline, $row->size, null, false); ?>
+                                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->icon, strip_tags($row->description), $row->headline, $row->size, null, false); ?>
                                             </span>
                                             </div>
                                         <?php endif; ?>
@@ -51,12 +51,12 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 <div class="right-col--inner" style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>">
                                     <?php if ($row->image): ?>
                                         <div class="step--image mb-4">
-                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($row->image, strip_tags($row->description), $row->headline, $row->size, null, false); ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->image, strip_tags($row->description), $row->headline, $row->size, null, false); ?>
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($row->headline): ?>
                                         <div class="step--headline">
-                                            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                            <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                                 $row->topline,
                                                 $row->headline,
                                                 $row->subline,
@@ -75,7 +75,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                         </div>
                                     <?php endif; ?>
 
-                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($row->buttons); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($row->buttons); ?>
                                 </div>
                             </div>
                         </div>

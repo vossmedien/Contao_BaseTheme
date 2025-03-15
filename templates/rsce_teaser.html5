@@ -10,7 +10,7 @@ if ($this->text_color) {
 if ($this->background_type === 'color' && $this->background_color) {
     $inlineStyles[] = "background-color: {$this->background_color};";
 } elseif ($this->background_type === 'image' && $this->background_image) {
-    $backgroundImage = VSM_HelperFunctions\ImageHelper::generateImageURL(
+    $backgroundImage = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL(
         $this->background_image,
         $this->background_image_size
     );
@@ -26,7 +26,7 @@ $inlineStyleString = implode(' ', $inlineStyles);
     <div class="job-teaser_inner offset-margin-sm-x rounded" style="<?= $inlineStyleString ?>">
         <div class="job-teaser__image offset-padding-sm-x offset-margin-sm-top">
             <?php if ($this->image): ?>
-                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
                     $this->image,
                     $this->headline,
                     $this->headline,
@@ -37,7 +37,7 @@ $inlineStyleString = implode(' ', $inlineStyles);
         </div>
 
         <div class="job-teaser__content p-5 p-lg-8 pt-lg-5">
-            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                 $this->topline,
                 $this->headline,
                 $this->subline,
@@ -55,7 +55,7 @@ $inlineStyleString = implode(' ', $inlineStyles);
             <?php endif; ?>
 
             <?php if ($this->buttons): ?>
-                <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons, 'mt-4'); ?>
+                <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons, 'mt-4'); ?>
             <?php endif; ?>
         </div>
     </div>

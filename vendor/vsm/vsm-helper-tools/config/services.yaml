@@ -1,0 +1,92 @@
+# config/services.yaml
+services:
+    _defaults:
+        autowire: true          # Automatically injects dependencies in your services.
+        autoconfigure: true     # Automatically registers your services as commands, event subscribers, etc.
+        public: false           # Allows optimizing the container by removing unused services; this also means
+                                # fetching services directly from the container via $container->get() won't work.
+                                # The best practice is to be explicit about your dependencies anyway.
+        bind:
+            $projectDir: '%kernel.project_dir%'
+            $stripeSecretKey: '%vsm_helper_tools.stripe.secret_key%'
+            $webhookSecret: '%vsm_helper_tools.stripe.webhook_secret%'
+
+    # Automatisches Laden aller Services im Bundle
+    Vsm\VsmHelperTools\:
+        resource: '../src/'
+        exclude: '../src/{DependencyInjection,Model,Resources,ContaoManager,Entity,Migrations,Tests}'
+
+    # Controller registrieren
+    Vsm\VsmHelperTools\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # Service für E-Mail-Funktionen
+    Vsm\VsmHelperTools\Service\EmailHelper:
+        class: Vsm\VsmHelperTools\Service\EmailHelper
+        calls:
+            - [initialize, ['%kernel.project_dir%', '@monolog.logger.contao', '@contao.framework']]
+
+    # Service für Stripe Zahlungen
+    vsm.stripe_payment_service:
+        class: Vsm\VsmHelperTools\Service\StripePaymentService
+        public: true
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $stripeSecretKey: '%vsm_helper_tools.stripe.secret_key%'
+            $webhookSecret: '%vsm_helper_tools.stripe.webhook_secret%'
+
+    # FileDownloadService
+    vsm.file_download_service:
+        class: Vsm\VsmHelperTools\Service\FileDownloadService
+        public: true
+        arguments:
+            $logger: '@monolog.logger.contao'
+            
+    # DownloadController
+    Vsm\VsmHelperTools\Controller\DownloadController:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    # PaymentProcessor
+    vsm.payment_processor_service:
+        class: Vsm\VsmHelperTools\Service\PaymentProcessorService
+        public: true
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $stripeService: '@vsm.stripe_payment_service'
+            $fileDownloadService: '@vsm.file_download_service'
+
+    # Twig-Extension
+    Vsm\VsmHelperTools\Twig\VsmHelperExtension:
+        tags: ['twig.extension']
+        
+    # Migration für File Downloads
+    Vsm\VsmHelperTools\Migration\FileDownloadsMigration:
+        tags:
+            - { name: contao.migration }
+
+    # StripeWebhookController
+    Vsm\VsmHelperTools\Controller\StripeWebhookController:
+        arguments:
+            $webhookSecret: '%vsm_helper_tools.stripe.webhook_secret%'
+            $stripeSecretKey: '%vsm_helper_tools.stripe.secret_key%'
+            $projectDir: '%kernel.project_dir%'
+            $db: '@database_connection'
+
+    Vsm\VsmHelperTools\Controller\StripeCheckoutController:
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $stripeSecretKey: '%vsm_helper_tools.stripe.secret_key%'
+            $paymentProcessorService: '@vsm.payment_processor_service'
+            $stripeService: '@vsm.stripe_payment_service'
+            $fileDownloadService: '@vsm.file_download_service'
+        tags: ['controller.service_arguments']
+
+# Parameter für das Bundle
+parameters:
+    vsm_helper_tools.default_member_group: 1  # Standardgruppe für neue Mitglieder
+    vsm_helper_tools.stripe.public_key: '%env(STRIPE_PUBLIC_KEY)%'
+    vsm_helper_tools.stripe.secret_key: '%env(STRIPE_SECRET_KEY)%'
+    vsm_helper_tools.stripe.webhook_secret: '%env(STRIPE_WEBHOOK_SECRET)%'
+

@@ -1,5 +1,5 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
 }
 ?>
@@ -9,7 +9,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
         <div class="row g-3 flex-md-row-reverse align-items-center">
 
             <div class="col-md-5 text-center text-md-start" data-animation="animate__fadeIn">
-                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                     $this->topline,
                     $this->headline,
                     $this->subline,
@@ -20,7 +20,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                     "mb-3"
                 ); ?>
                 <div class="mb-3"><?= $this->contact_text; ?></div>
-                <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons); ?>
+                <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons); ?>
             </div>
 
             <div class="col-md-7">
@@ -28,7 +28,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                     <?php foreach ($this->partners as $partner): ?>
                         <div class="col-md-6 col-lg-4" data-animation="<?php if ($partner->animation_type) : ?><?php echo $partner->animation_type; ?><?php endif; ?>">
                             <div class="text-center text-base">
-                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($partner->image, null, $partner->name, $this->size, "mb-2 rounded-circle", false, false); ?>
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($partner->image, null, $partner->name, $this->size, "mb-2 rounded-circle", false, false); ?>
                                 <h3 class="mb-0 text-base fw-bold"><?= $partner->name; ?></h3>
                                 <p class="mb-1"><?= $partner->position; ?></p>
                                 <p><a class="text-nowrap" href="tel:<?= $partner->phone; ?>"><i class="fal fa-phone"></i> <?= $partner->phone; ?></a></p>

@@ -19,7 +19,7 @@ $imgSize = unserialize($this->imgSize);
                 <div class="item">
                     <a href="#content-<?= $item['id'] ?>" class="venobox" data-vbtype="inline" data-gall="<?= $uniqueGalleryId ?>" data-maxwidth="1200px">
                         <?php if ($item['media_type'] === 'IMAGE' || $item['media_type'] === 'VIDEO'): ?>
-                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($item['contao']['uuid'], $item['caption'], '', $imgSize, '', false); ?>
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($item['contao']['uuid'], $item['caption'], '', $imgSize, '', false); ?>
                         <?php else: ?>
                             <figure><picture>
                                     <img title="<?= $item['caption']; ?>" alt="<?= $item['caption']; ?>" class="lazy" data-src="<?= $item['media_url']; ?>">
@@ -49,9 +49,9 @@ $imgSize = unserialize($this->imgSize);
                         Auf Instagram ansehen</a>
                 <?php endif; ?>
                 <?php if ($item['media_type'] === 'IMAGE'): ?>
-                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($item['contao']['uuid'], $item['caption'], '', ["1600", "1600", "crop"], '', false, false, false, false, false); ?>
+                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($item['contao']['uuid'], $item['caption'], '', ["1600", "1600", "crop"], '', false, false, false, false, false); ?>
                 <?php elseif ($item['media_type'] === 'VIDEO'): ?>
-                    <?= VSM_HelperFunctions\VideoHelper::renderVideo(
+                    <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo(
                         $item['media_url'],
                         'instagram-video',
                         $item['id'],

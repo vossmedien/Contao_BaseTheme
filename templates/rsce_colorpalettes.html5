@@ -1,5 +1,5 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_colorpalettes.min.css|static';
     $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_colorpalettes.js"></script>';
 }
@@ -8,7 +8,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
 
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -37,7 +37,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                      <?php if ($this->alternate_text_color): ?>color: <?= $this->alternate_text_color; ?>;<?php endif; ?>
                                              ">
 
-                                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                    <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                         $this->basic_topline ? $this->basic_topline : " ",
                                         $this->basic_headline? $this->basic_headline : " ",
                                         $this->basic_subline? $this->basic_subline : " ",
@@ -58,7 +58,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                         <div class="col-12 col-lg-5  <?php if ($this->swap_divs && $this->activate_top): ?>order-1 order-md-2<?php endif;?>">
                             <div class="selected-color-element--outer h-100">
                                 <div class="selected-color--element h-100" data-animation="<?php if ($this->basic_animation_type) : ?><?php echo $this->basic_animation_type; ?><?php endif; ?>">
-                                    <div class="image-holder h-100 w-100" data-animation="animate__fadeIn" style="background: url(<?= VSM_HelperFunctions\ImageHelper::generateImageURL($this->base_img, $this->size); ?>) center center no-repeat; background-size: cover;"></div>
+                                    <div class="image-holder h-100 w-100" data-animation="animate__fadeIn" style="background: url(<?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($this->base_img, $this->size); ?>) center center no-repeat; background-size: cover;"></div>
                                     <span class="selected-color-element--title"><?= $this->basic_img_title; ?></span>
                                 </div>
                             </div>
@@ -78,12 +78,12 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                      data-headline="<?= $e->alternate_headline; ?>"
                                      data-subline="<?= $e->alternate_subline; ?>"
                                      data-desc='<?= $e->desc; ?>'
-                                     data-img="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($e->img, $e->size); ?>"
+                                     data-img="<?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($e->img, $e->size); ?>"
                                      data-title="<?= $e->title; ?>" <?php if ($this->show_tooltip): ?>title="<?= $e->title; ?>"
                                      data-bs-toggle="tooltip"<?php endif; ?>>
 
                                     <div class="color-list-element--image-holder">
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($e->img, null, $e->title, $this->size, null, false, false); ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($e->img, null, $e->title, $this->size, null, false, false); ?>
                                         <?php if (!$this->show_tooltip && $e->title): ?>
                                             <span><?= $e->title; ?></span>
                                         <?php endif; ?>

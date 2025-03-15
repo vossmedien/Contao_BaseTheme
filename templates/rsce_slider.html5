@@ -7,7 +7,7 @@ if (!isset($this->size)) {
     <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
         <div class="ce--inner  ">
 
-            <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+            <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                 $this->topline,
                 $this->headline,
                 $this->subline,
@@ -88,7 +88,7 @@ if (!isset($this->size)) {
                                 <?php $file = \Contao\FilesModel::findByUuid($uuid); ?>
                                 <?php if ($file !== null && $file->type === 'file') : ?>
                                     <div class="swiper-slide text-center" data-animation="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($uuid, null, $this->headline, $this->size, null, false, $this->open_lightbox ? $rand : ""); ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($uuid, null, $this->headline, $this->size, null, false, $this->open_lightbox ? $rand : ""); ?>
                                     </div>
                                     <?php $itemCount++; ?>
                                 <?php endif; ?>
@@ -96,7 +96,7 @@ if (!isset($this->size)) {
                         <?php else : ?>
                             <?php foreach ($this->galery as $slide) : ?>
                                 <div class="swiper-slide text-center" data-animation="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->slide, $this->headline, $slide->slide_text, $slide->size, null, false, $this->open_lightbox ? $rand : ""); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($slide->slide, $this->headline, $slide->slide_text, $slide->size, null, false, $this->open_lightbox ? $rand : ""); ?>
                                 </div>
                                 <?php $itemCount++; ?>
                             <?php endforeach ?>
@@ -131,7 +131,7 @@ if (!isset($this->size)) {
         </div>
     </div>
 
-<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+<?php if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()): ?>
     <script type="text/javascript">
         window.addEventListener('DOMContentLoaded', function () {
             const containerId = '<?= $this->id; ?>';

@@ -29,13 +29,13 @@
   "autoload": {
     "psr-4": {
       "App\\": "src/",
-      "VSM_HelperFunctions\\": "system/modules/vsm_custom_helpers/Helper"
+      "Vsm\VsmHelperTools\Helper\\": "system/modules/vsm_custom_helpers/Helper"
     }
   },
   "extra": {
     "public-dir": "public",
     "contao-component-dir": "assets",
-    "contao-manager-plugin": "VSM_HelperFunctions\\ContaoManager\\Plugin"
+    "contao-manager-plugin": "Vsm\VsmHelperTools\Helper\\ContaoManager\\Plugin"
   },
   "scripts": {
     "post-install-cmd": [

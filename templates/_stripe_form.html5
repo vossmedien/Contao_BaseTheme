@@ -7,6 +7,16 @@
       data-product-data="<?= $this->productData ?>">
 
     <div class="modal-body">
+        <div id="debug-info" class="d-none">
+            <div class="alert alert-info">
+                <strong>Debug-Info:</strong><br>
+                Stripe-Key: <?= substr($this->stripeKey, 0, 8) ?>...<br>
+                Success-URL: <?= $this->successUrl ?><br>
+                Währung: <?= $this->currency ?><br>
+                Element-ID: <?= $this->elementId ?>
+            </div>
+        </div>
+        
         <div data-product-info></div>
         <input type="hidden" id="product-id" name="product-id">
         <input type="hidden" name="element-id" value="<?= $this->elementId ?>">
@@ -171,4 +181,11 @@
             <span>Jetzt kostenpflichtig bestellen</span>
         </button>
     </div>
+    
+    <!-- Verstecktes Debug-Toggle Element -->
+    <?php if ($_ENV['APP_ENV'] === 'dev'): ?>
+    <div class="text-center mt-2">
+        <small><a href="#" onclick="document.getElementById('debug-info').classList.toggle('d-none'); return false;">Debug-Info</a></small>
+    </div>
+    <?php endif; ?>
 </form>

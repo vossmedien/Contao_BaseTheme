@@ -15,7 +15,7 @@ $this->wrapperAttributes = $this
 
     <div class="logo">
         <a title="B-MOS" href="/">
-                 <?= VSM_HelperFunctions\ImageHelper::generateImageHTML("files/base/layout/img/logo.png", "BÜRGERBÜRO E. V.", null, null, null, false); ?>
+                 <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML("files/base/layout/img/logo.png", "BÜRGERBÜRO E. V.", null, null, null, false); ?>
         </a>
     </div>
 

@@ -115,7 +115,7 @@
 
 <?= $this->mootools ?>
 <script>
-    document.addEventListener('load', () => {
+    document.addEventListener('DOMContentLoaded', () => {
         window.VSM = window.VSM || {};
 
         // Haupt-Instanz erstellen
