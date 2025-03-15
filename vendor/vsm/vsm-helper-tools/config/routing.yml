@@ -1,24 +1,73 @@
 vsm_helper_tools:
-    resource: "@VsmHelperTools/config/routes.yaml"
+    resource: "../config/routes.yaml"
     type: yaml
 
 vsm_helper_tools_stripe:
     resource: '../src/Controller/StripeWebhookController.php'
     type: attribute
-    prefix: /stripe
     defaults:
         _format: json
         _token_check: false
     options:
         utf8: true
 
-# Entfernt, da explizit in routes.yaml definiert
-# vsm_helper_tools_stripe_checkout:
-#     resource: '../src/Controller/StripeCheckoutController.php'
-#     type: attribute
-#     prefix: /stripe
-#     defaults:
-#         _format: json
-#         _token_check: false
-#     options:
-#         utf8: true 
+# Explizit den StripeCheckoutController laden
+vsm_helper_tools_stripe_checkout:
+    resource: '../src/Controller/StripeCheckoutController.php'
+    type: attribute
+    defaults:
+        _format: json
+        _token_check: false
+    options:
+        utf8: true
+
+# Video Render Route
+video_render:
+    path: /video/render
+    controller: Vsm\VsmHelperTools\Controller\VideoRenderController::renderVideo
+    methods: [ POST ]
+    defaults:
+        _scope: frontend
+        _token_check: false
+
+# Download Route
+download_file:
+    path: /download/{token}/{fileId}
+    controller: Vsm\VsmHelperTools\Controller\DownloadController::download
+    methods: [GET]
+    requirements:
+        token: '[a-zA-Z0-9]+'
+        fileId: '[a-fA-F0-9-]+'
+
+# Stripe Routes
+stripe_check_user:
+    path: /stripe/check-user
+    controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::checkUser
+    methods: [POST]
+    defaults:
+        _scope: frontend
+        _token_check: false
+
+stripe_webhook:
+    path: /stripe/webhook
+    controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::handleWebhook
+    methods: [POST]
+    defaults:
+        _scope: frontend
+        _token_check: false
+
+stripe_create_payment_intent:
+    path: /stripe/create-payment-intent
+    controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::createPaymentIntent
+    methods: [POST, OPTIONS]
+    defaults:
+        _scope: frontend
+        _token_check: false
+
+stripe_get_price:
+    path: /stripe/get-price
+    controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::getPrice
+    methods: [POST]
+    defaults:
+        _scope: frontend
+        _token_check: false 

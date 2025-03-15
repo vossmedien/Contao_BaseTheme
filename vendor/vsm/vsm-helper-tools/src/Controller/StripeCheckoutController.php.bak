@@ -1,0 +1,1638 @@
+<?php
+
+namespace Vsm\VsmHelperTools\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Routing\Annotation\Route;
+use Psr\Log\LoggerInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Doctrine\DBAL\Connection;
+use Twig\Environment;
+use Vsm\VsmHelperTools\Service\Payment\PaymentSessionManager;
+use Vsm\VsmHelperTools\Service\Stripe\StripePaymentService;
+use Vsm\VsmHelperTools\Service\Email\EmailService;
+use Vsm\VsmHelperTools\Service\Download\DownloadLinkGenerator;
+use Vsm\VsmHelperTools\Service\User\UserCreationService;
+
+#[Route('/stripe', defaults: ['_scope' => 'frontend'])]
+class StripeCheckoutController extends AbstractController
+{
+    private ContaoFramework $framework;
+    private LoggerInterface $logger;
+    private string $projectDir;
+    private Connection $db;
+    private string $stripeSecretKey;
+    private PaymentSessionManager $sessionManager;
+    private StripePaymentService $stripeService;
+    private EmailService $emailService;
+    private DownloadLinkGenerator $downloadService;
+    private UserCreationService $userService;
+    private Environment $twig;
+    
+    public function __construct(
+        ContaoFramework $framework,
+        LoggerInterface $logger,
+        string $projectDir,
+        Connection $db,
+        string $stripeSecretKey,
+        PaymentSessionManager $sessionManager,
+        StripePaymentService $stripeService,
+        EmailService $emailService,
+        DownloadLinkGenerator $downloadService,
+        UserCreationService $userService,
+        Environment $twig
+    ) {
+        $this->framework = $framework;
+        $this->logger = $logger;
+        $this->projectDir = $projectDir;
+        $this->db = $db;
+        $this->stripeSecretKey = $stripeSecretKey;
+        $this->sessionManager = $sessionManager;
+        $this->stripeService = $stripeService;
+        $this->emailService = $emailService;
+        $this->downloadService = $downloadService;
+        $this->userService = $userService;
+        $this->twig = $twig;
+        
+        // Contao Framework initialisieren
+        $this->framework->initialize();
+    }
+    
+    /**
+     * Erstellt eine neue Checkout-Session und gibt die URL zurück
+     */
+    #[Route('/create-checkout-session', name: 'stripe_create_checkout_session', methods: ['POST'])]
+    public function createCheckoutSession(Request $request): Response
+    {
+        try {
+            // Daten aus dem Request extrahieren
+            $customerData = $request->request->all('customer');
+            $productData = $request->request->all('product');
+            
+            // Erfolgs- und Abbruch-URLs setzen
+            $productData['success_url'] = $request->request->get('success_url');
+            $productData['cancel_url'] = $request->request->get('cancel_url');
+            
+            // Stripe-Session erstellen
+            $session = $this->stripeService->createCheckoutSession($customerData, $productData);
+            
+            // Session in der Datenbank speichern
+            $this->sessionManager->createSession($session->id, $customerData, $productData);
+            
+            // Redirect URL zurückgeben
+            return $this->json(['url' => $session->url]);
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Erstellen der Checkout-Session: ' . $e->getMessage());
+            return $this->json(['error' => 'Fehler beim Erstellen der Checkout-Session'], 500);
+        }
+    }
+    
+    /**
+     * Verarbeitet erfolgreiche Zahlungen
+     */
+    #[Route('/checkout/success', name: 'stripe_checkout_success', methods: ['GET'])]
+    public function handleSuccess(Request $request): Response
+    {
+        try {
+            // Session-ID aus dem Request holen
+            $sessionId = $request->query->get('session_id');
+            
+            if (empty($sessionId)) {
+                $this->logger->error('Keine Session-ID in der Success-URL');
+                return $this->redirectToRoute('homepage');
+            }
+            
+            // Stripe-Session abrufen
+            $stripeSession = $this->stripeService->retrieveSession($sessionId);
+            
+            if (!$stripeSession || $stripeSession->payment_status !== 'paid') {
+                $this->logger->error('Zahlung nicht erfolgreich für Session: ' . $sessionId);
+                return $this->redirectToRoute('homepage');
+            }
+            
+            // Session-Daten aus der Datenbank abrufen
+            $sessionData = $this->sessionManager->getSessionData($sessionId);
+            
+            if (!$sessionData) {
+                $this->logger->error('Keine Session-Daten gefunden für ID: ' . $sessionId);
+                return $this->redirectToRoute('homepage');
+            }
+            
+            // Zahlung nur verarbeiten, wenn sie nicht bereits verarbeitet wurde
+            if ($sessionData['status'] !== 'completed') {
+                // Zahlung verarbeiten
+                $this->processPayment($sessionId, $stripeSession, $sessionData);
+            }
+            
+            // Weiterleitung zur Erfolgsseite
+            $successPage = $sessionData['product_data']['success_page'] ?? null;
+            if ($successPage) {
+                return $this->redirect($successPage);
+            }
+            
+            // Fallback zur Startseite
+            return $this->redirectToRoute('homepage');
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler bei der Verarbeitung der erfolgreichen Zahlung: ' . $e->getMessage());
+            return $this->redirectToRoute('homepage');
+        }
+    }
+    
+    /**
+     * Download-Endpunkt für sichere Datei-Downloads
+     */
+    #[Route('/download/{token}', name: 'stripe_download_file', methods: ['GET'])]
+    public function downloadFile(string $token): Response
+    {
+        try {
+            // Session-Daten anhand des Tokens abrufen
+            $result = $this->db->fetchAssociative(
+                'SELECT * FROM tl_stripe_payment_sessions WHERE download_token = :token',
+                ['token' => $token]
+            );
+            
+            if (!$result) {
+                $this->logger->error('Ungültiger Download-Token: ' . $token);
+                throw $this->createNotFoundException('Download-Link ungültig oder abgelaufen');
+            }
+            
+            // Session-Daten aufbereiten
+            $sessionData = $result;
+            if (!empty($sessionData['customer_data'])) {
+                $sessionData['customer_data'] = json_decode($sessionData['customer_data'], true);
+            }
+            if (!empty($sessionData['product_data'])) {
+                $sessionData['product_data'] = json_decode($sessionData['product_data'], true);
+            }
+            
+            // Download-Token validieren und Dateipfad abrufen
+            $filePath = $this->downloadService->validateDownloadToken($token, $sessionData);
+            
+            if (!$filePath) {
+                throw $this->createNotFoundException('Download-Link ungültig oder abgelaufen');
+            }
+            
+            // Download-Zähler erhöhen
+            $this->sessionManager->incrementDownloadCount($sessionData['session_id']);
+            
+            // Datei zum Download anbieten
+            $response = new BinaryFileResponse($filePath);
+            $response->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                basename($filePath)
+            );
+            
+            return $response;
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Datei-Download: ' . $e->getMessage());
+            throw $this->createNotFoundException('Download-Link ungültig oder abgelaufen');
+        }
+    }
+    
+    /**
+     * Verarbeitet die Zahlung nach erfolgreicher Bestätigung
+     */
+    private function processPayment(string $sessionId, \Stripe\Checkout\Session $stripeSession, array $sessionData): void
+    {
+        // Zahlungsdaten extrahieren und in der Session speichern
+        $paymentData = $this->stripeService->extractPaymentData($stripeSession);
+        $this->sessionManager->updateSessionAfterPayment($sessionId, $paymentData);
+        
+        // Benutzer erstellen, falls konfiguriert
+        if (!empty($sessionData['product_data']['create_user'])) {
+            $userId = $this->userService->createUser(
+                $sessionData['customer_data'],
+                $sessionData['product_data']
+            );
+            
+            if ($userId) {
+                $this->sessionManager->updateUserId($sessionId, $userId);
+                
+                // Abonnement-Dauer setzen, falls vorhanden
+                if (!empty($sessionData['product_data']['subscription_duration'])) {
+                    $this->sessionManager->updateSubscriptionDuration(
+                        $sessionId,
+                        (int) $sessionData['product_data']['subscription_duration']
+                    );
+                }
+            }
+        }
+        
+        // Download-Link generieren, falls es sich um einen Dateiverkauf handelt
+        if (!empty($sessionData['product_data']['file_sale'])) {
+            $downloadInfo = $this->downloadService->generateDownloadLink(
+                $sessionData['customer_data'],
+                $sessionData['product_data'],
+                $sessionId
+            );
+            
+            if (!empty($downloadInfo['token'])) {
+                $this->sessionManager->setDownloadInfo(
+                    $sessionId,
+                    $downloadInfo['link'],
+                    $downloadInfo['token'],
+                    $downloadInfo['expires'],
+                    $downloadInfo['limit']
+                );
+            }
+        }
+        
+        // Aktualisierte Daten abrufen
+        $updatedSessionData = $this->sessionManager->getSessionData($sessionId);
+        
+        // E-Mails senden
+        $this->emailService->sendPaymentConfirmation($updatedSessionData);
+        $this->sessionManager->markEmailsAsSent($sessionId);
+    }
+}
+    public function handleSuccess(Request $request): Response
+    {
+        try {
+            // Session-ID aus dem Request holen
+            $sessionId = $request->query->get('session_id');
+            
+            if (empty($sessionId)) {
+                $this->logger->error('Keine Session-ID in der Success-URL');
+                return $this->redirectToRoute('homepage');
+            }
+            
+            // Stripe-Session abrufen
+            $stripeSession = $this->stripeService->retrieveSession($sessionId);
+            
+            if (!$stripeSession || $stripeSession->payment_status !== 'paid') {
+                $this->logger->error('Zahlung nicht erfolgreich für Session: ' . $sessionId);
+                return $this->redirectToRoute('homepage');
+            }
+            
+            // Session-Daten aus der Datenbank abrufen
+            $sessionData = $this->sessionManager->getSessionData($sessionId);
+            
+            if (!$sessionData) {
+                $this->logger->error('Keine Session-Daten gefunden für ID: ' . $sessionId);
+                return $this->redirectToRoute('homepage');
+            }
+            
+            // Zahlung nur verarbeiten, wenn sie nicht bereits verarbeitet wurde
+            if ($sessionData['status'] !== 'completed') {
+                // Zahlung verarbeiten
+                $this->processPayment($sessionId, $stripeSession, $sessionData);
+            }
+            
+            // Weiterleitung zur Erfolgsseite
+            $successPage = $sessionData['product_data']['success_page'] ?? null;
+            if ($successPage) {
+                return $this->redirect($successPage);
+            }
+            
+            // Fallback zur Startseite
+            return $this->redirectToRoute('homepage');
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler bei der Verarbeitung der erfolgreichen Zahlung: ' . $e->getMessage());
+            return $this->redirectToRoute('homepage');
+        }
+    }
+    
+    /**
+     * Download-Endpunkt für sichere Datei-Downloads
+     */
+    #[Route('/download/{token}', name: 'stripe_download_file', methods: ['GET'])]
+    public function downloadFile(string $token): Response
+    {
+        try {
+            // Session-Daten anhand des Tokens abrufen
+            $result = $this->db->fetchAssociative(
+                'SELECT * FROM tl_stripe_payment_sessions WHERE download_token = :token',
+                ['token' => $token]
+            );
+            
+            if (!$result) {
+                $this->logger->error('Ungültiger Download-Token: ' . $token);
+                throw $this->createNotFoundException('Download-Link ungültig oder abgelaufen');
+            }
+            
+            // Session-Daten aufbereiten
+            $sessionData = $result;
+            if (!empty($sessionData['customer_data'])) {
+                $sessionData['customer_data'] = json_decode($sessionData['customer_data'], true);
+            }
+            if (!empty($sessionData['product_data'])) {
+                $sessionData['product_data'] = json_decode($sessionData['product_data'], true);
+            }
+            
+            // Download-Token validieren und Dateipfad abrufen
+            $filePath = $this->downloadService->validateDownloadToken($token, $sessionData);
+            
+            if (!$filePath) {
+                throw $this->createNotFoundException('Download-Link ungültig oder abgelaufen');
+            }
+            
+            // Download-Zähler erhöhen
+            $this->sessionManager->incrementDownloadCount($sessionData['session_id']);
+            
+            // Datei zum Download anbieten
+            $response = new BinaryFileResponse($filePath);
+            $response->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                basename($filePath)
+            );
+            
+            return $response;
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Datei-Download: ' . $e->getMessage());
+            throw $this->createNotFoundException('Download-Link ungültig oder abgelaufen');
+        }
+    }
+    
+    /**
+     * Verarbeitet die Zahlung nach erfolgreicher Bestätigung
+     */
+    private function processPayment(string $sessionId, \Stripe\Checkout\Session $stripeSession, array $sessionData): void
+    {
+        // Zahlungsdaten extrahieren und in der Session speichern
+        $paymentData = $this->stripeService->extractPaymentData($stripeSession);
+        $this->sessionManager->updateSessionAfterPayment($sessionId, $paymentData);
+        
+        // Benutzer erstellen, falls konfiguriert
+        if (!empty($sessionData['product_data']['create_user'])) {
+            $userId = $this->userService->createUser(
+                $sessionData['customer_data'],
+                $sessionData['product_data']
+            );
+            
+            if ($userId) {
+                $this->sessionManager->updateUserId($sessionId, $userId);
+                
+                // Abonnement-Dauer setzen, falls vorhanden
+                if (!empty($sessionData['product_data']['subscription_duration'])) {
+                    $this->sessionManager->updateSubscriptionDuration(
+                        $sessionId,
+                        (int) $sessionData['product_data']['subscription_duration']
+                    );
+                }
+            }
+        }
+        
+        // Download-Link generieren, falls es sich um einen Dateiverkauf handelt
+        if (!empty($sessionData['product_data']['file_sale'])) {
+            $downloadInfo = $this->downloadService->generateDownloadLink(
+                $sessionData['customer_data'],
+                $sessionData['product_data'],
+                $sessionId
+            );
+            
+            if (!empty($downloadInfo['token'])) {
+                $this->sessionManager->setDownloadInfo(
+                    $sessionId,
+                    $downloadInfo['link'],
+                    $downloadInfo['token'],
+                    $downloadInfo['expires'],
+                    $downloadInfo['limit']
+                );
+            }
+        }
+        
+        // Aktualisierte Daten abrufen
+        $updatedSessionData = $this->sessionManager->getSessionData($sessionId);
+        
+        // E-Mails senden
+        $this->emailService->sendPaymentConfirmation($updatedSessionData);
+        $this->sessionManager->markEmailsAsSent($sessionId);
+    }
+}
+SQL;
+                $this->db->executeStatement($sql);
+                
+                $this->logger->info('Tabelle tl_stripe_sessions erstellt');
+            } else {
+                $this->logger->debug('Tabelle tl_stripe_sessions existiert bereits');
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Erstellen der Tabelle tl_stripe_sessions: ' . $e->getMessage(), [
+                'context' => ContaoContext::ERROR,
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+    
+    /**
+     * Verarbeitet eine erfolgreiche Zahlung
+     */
+    private function processSuccessfulPayment(\Stripe\Checkout\Session $session, array $sessionData): array
+    {
+        $result = [
+            'success' => true,
+            'transaction_id' => $session->id,
+            'payment_intent' => $session->payment_intent
+        ];
+        
+        $this->logger->info('Verarbeite erfolgreiche Zahlung', [
+            'context' => ContaoContext::GENERAL,
+            'session_id' => $session->id,
+            'payment_intent' => $session->payment_intent,
+            'has_product_data' => isset($sessionData['productData']),
+            'has_personal_data' => isset($sessionData['personalData']),
+            'product_name' => $sessionData['productData']['title'] ?? 'Unbekannt',
+            'customer_email' => $sessionData['personalData']['email'] ?? 'Unbekannt'
+        ]);
+        
+        try {
+            // Detaillierte Prüfung der Sessiondaten
+            $productData = $sessionData['productData'] ?? [];
+            $personalData = $sessionData['personalData'] ?? [];
+            
+            $this->logger->debug('Produktdaten aus Session:', [
+                'context' => ContaoContext::GENERAL,
+                'title' => $productData['title'] ?? 'Unbekannt',
+                'price' => $productData['price'] ?? 0,
+                'email_templates' => [
+                    'admin_template' => $productData['admin_template'] ?? null,
+                    'user_template' => $productData['user_template'] ?? null,
+                    'sender_email' => $productData['sender_email'] ?? null,
+                    'admin_email' => $productData['admin_email'] ?? null
+                ]
+            ]);
+            
+            // Da wir über die Success-URL weiterleiten, müssen wir prüfen ob es sich
+            // um einen Dateikauf handelt und einen Download-Link generieren
+            $downloadLink = null;
+            if (isset($sessionData['fileSale']) && $sessionData['fileSale'] === true) {
+                $this->logger->info('Dateiverkauf erkannt, generiere Download-Link');
+                $downloadLink = $this->createDownloadLink($personalData, $sessionData, $session->id);
+                $result['has_download'] = true;
+                $result['download_link'] = $downloadLink;
+            } else if (isset($productData['fileUuid']) && !empty($productData['fileUuid'])) {
+                $this->logger->info('Dateiverkauf über Produkt-Daten erkannt, generiere Download-Link');
+                $downloadLink = $this->createDownloadLink($personalData, $productData, $session->id);
+                $result['has_download'] = true;
+                $result['download_link'] = $downloadLink;
+            }
+            
+            // Wenn der Nutzer einen Account haben möchte, automatisch anlegen
+            if (isset($sessionData['createUser']) && $sessionData['createUser'] === true) {
+                $this->logger->info('Automatische Benutzerregistrierung aktiviert');
+                // Benutzer erstellen und zum Ergebnis hinzufügen
+                $user = $this->createUser($personalData);
+                if ($user !== null) {
+                    $result['user_created'] = true;
+                    $result['username'] = $user->username;
+                    
+                    // Benutzerdaten für die E-Mail-Benachrichtigung ergänzen
+                    $personalData['username'] = $user->username;
+                } else {
+                    $result['user_created'] = false;
+                    $this->logger->error('Fehler beim Erstellen des Benutzers');
+                }
+            }
+            
+            // E-Mail-Benachrichtigung senden
+            $emailSent = $this->sendEmailNotification($personalData, $session, $productData, $downloadLink);
+            $result['email_sent'] = $emailSent;
+            
+            return $result;
+            
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler bei der Verarbeitung der erfolgreichen Zahlung: ' . $e->getMessage(), [
+                'context' => ContaoContext::ERROR,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Erstellt einen Benutzer
+     */
+    private function createUser(array $personalData): ?MemberModel
+    {
+        try {
+            $this->logger->info('Erstelle Benutzer', [
+                'context' => ContaoContext::GENERAL,
+                'email' => $personalData['email'] ?? 'Unbekannt'
+            ]);
+            
+            // Prüfen, ob Benutzer bereits existiert
+            $existingMember = MemberModel::findByEmail($personalData['email']);
+            
+            if ($existingMember) {
+                $this->logger->info('Benutzer existiert bereits', [
+                    'context' => ContaoContext::GENERAL,
+                    'email' => $personalData['email'],
+                    'member_id' => $existingMember->id
+                ]);
+                
+                return $existingMember;
+            }
+            
+            // Neuen Benutzer anlegen
+            $member = new MemberModel();
+            $member->tstamp = time();
+            $member->dateAdded = time();
+            $member->firstname = $personalData['firstname'] ?? '';
+            $member->lastname = $personalData['lastname'] ?? '';
+            $member->email = $personalData['email'] ?? '';
+            $member->username = $personalData['username'] ?? $personalData['email'] ?? '';
+            
+            // Passwort nur setzen, wenn vorhanden
+            if (!empty($personalData['password'])) {
+                $password = base64_decode($personalData['password']);
+                $member->password = password_hash($password, PASSWORD_DEFAULT);
+            }
+            
+            $member->street = $personalData['street'] ?? '';
+            $member->postal = $personalData['postal'] ?? '';
+            $member->city = $personalData['city'] ?? '';
+            $member->country = $personalData['country'] ?? 'DE';
+            $member->phone = $personalData['phone'] ?? '';
+            $member->company = $personalData['company'] ?? '';
+            $member->login = '1';
+            $member->disable = '';
+            $member->start = '';
+            $member->stop = '';
+            
+            $member->save();
+            
+            $this->logger->info('Benutzer erstellt', [
+                'context' => ContaoContext::GENERAL,
+                'email' => $personalData['email'],
+                'member_id' => $member->id
+            ]);
+            
+            // E-Mail mit Zugangsdaten senden
+            $this->sendRegistrationEmail($member);
+            
+            return $member;
+            
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Erstellen des Benutzers: ' . $e->getMessage(), [
+                'context' => ContaoContext::ERROR,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return null;
+        }
+    }
+    
+    /**
+     * Erstellt einen Download-Link für eine gekaufte Datei
+     */
+    private function createDownloadLink(array $personalData, array $productData, string $sessionId): ?string
+    {
+        try {
+            $this->logger->info('Erstelle Download-Link', [
+                'context' => ContaoContext::GENERAL,
+                'product_title' => $productData['title'] ?? 'Unbekannt',
+                'file_path' => $productData['file_path'] ?? 'Nicht angegeben',
+                'session_id' => $sessionId
+            ]);
+            
+            // Prüfen, ob alle erforderlichen Daten vorhanden sind
+            if (empty($personalData['email'])) {
+                $this->logger->error('Download-Link kann nicht erstellt werden: Fehlende E-Mail-Adresse');
+                return null;
+            }
+            
+            if (empty($productData['file_path'])) {
+                $this->logger->error('Download-Link kann nicht erstellt werden: Fehlender Datei-Pfad');
+                return null;
+            }
+            
+            // Überprüfe, ob die Datei existiert
+            $filePath = $productData['file_path'];
+            if (!file_exists($this->projectDir.'/'.$filePath)) {
+                $this->logger->error('Download-Link kann nicht erstellt werden: Datei existiert nicht', [
+                    'file_path' => $filePath,
+                    'project_dir' => $this->projectDir
+                ]);
+                return null;
+            }
+            
+            // Prüfen, ob der FileDownloadService verfügbar ist
+            if (!$this->fileDownloadService) {
+                $this->logger->error('Download-Link kann nicht erstellt werden: FileDownloadService nicht verfügbar');
+                return null;
+            }
+            
+            // Download-Eintrag erstellen
+            $downloadExpires = intval($productData['download_expires'] ?? 7);
+            $downloadLimit = intval($productData['download_limit'] ?? 3);
+            
+            // Download-Token generieren und im Log speichern
+            $downloadToken = uniqid('dl_'.substr(md5($sessionId.$personalData['email']), 0, 8).'_');
+            $this->logger->debug('Download-Token generiert', [
+                'token' => $downloadToken,
+                'expires' => $downloadExpires,
+                'limit' => $downloadLimit,
+                'file_path' => $filePath
+            ]);
+            
+            try {
+            $token = $this->fileDownloadService->createDownloadEntry(
+                $productData['file_path'],
+                    $downloadToken,
+                $downloadExpires,
+                $downloadLimit,
+                    $sessionId,
+                    $personalData['email']
+            );
+            
+            if (!$token) {
+                    $this->logger->error('Fehler beim Erstellen des Download-Eintrags');
+                    return null;
+                }
+            } catch (\Exception $e) {
+                $this->logger->error('Exception beim Erstellen des Download-Eintrags: ' . $e->getMessage(), [
+                    'exception' => get_class($e),
+                    'message' => $e->getMessage(),
+                    'file_path' => $filePath
+                ]);
+                return null;
+            }
+            
+            try {
+            // Download-Link generieren
+            $downloadLink = $this->fileDownloadService->generateDownloadLink($token);
+            
+                if (!$downloadLink) {
+                    $this->logger->error('Fehler beim Generieren des Download-Links');
+                    return null;
+                }
+            } catch (\Exception $e) {
+                $this->logger->error('Exception beim Generieren des Download-Links: ' . $e->getMessage(), [
+                    'exception' => get_class($e),
+                    'message' => $e->getMessage(),
+                    'token' => $token
+                ]);
+                return null;
+            }
+            
+            $this->logger->info('Download-Link erfolgreich erstellt', [
+                'context' => ContaoContext::GENERAL,
+                'token' => $token,
+                'download_link' => $downloadLink,
+                'expires_in_days' => $downloadExpires,
+                'download_limit' => $downloadLimit
+            ]);
+            
+            return $downloadLink;
+            
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Erstellen des Download-Links: ' . $e->getMessage(), [
+                'context' => ContaoContext::ERROR,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return null;
+        }
+    }
+    
+    /**
+     * Sendet eine E-Mail-Benachrichtigung für eine erfolgreiche Zahlung
+     */
+    private function sendEmailNotification(array $personalData, \Stripe\Checkout\Session $session, array $productData, ?string $downloadLink = null): bool
+    {
+        try {
+            // Erweitertes Logging für die Fehlersuche
+            $this->logger->debug('sendEmailNotification gestartet', [
+                'context' => ContaoContext::GENERAL,
+                'has_personal_data' => !empty($personalData),
+                'has_product_data' => !empty($productData),
+                'has_download_link' => !empty($downloadLink),
+                'admin_template' => $productData['admin_template'] ?? 'nicht gesetzt',
+                'user_template' => $productData['user_template'] ?? 'nicht gesetzt',
+                'tax_rate' => $productData['tax_rate'] ?? '19',
+                'create_invoice' => isset($productData['create_invoice']) ? ($productData['create_invoice'] ? 'Ja' : 'Nein') : 'Ja (Standard)',
+                'personal_data' => json_encode($personalData), // Loggen der kompletten persönlichen Daten
+                'product_data' => json_encode($productData), // Loggen der kompletten Produktdaten
+            ]);
+
+            // 1. Eingabevalidierung - wichtige Daten prüfen
+            if (empty($personalData['email'])) {
+                $this->logger->error('E-Mail-Benachrichtigung kann nicht gesendet werden: Keine E-Mail-Adresse vorhanden');
+                return false;
+            }
+
+            // 2. Preisdaten aus der Session extrahieren
+            if (is_object($session)) {
+                $amount = $session->amount_total / 100;
+                $currency = strtoupper($session->currency);
+                $orderId = $session->payment_intent ?? $session->id;
+                $this->logger->debug('Preisdaten aus Session extrahiert', [
+                    'amount' => $amount,
+                    'currency' => $currency,
+                    'order_id' => $orderId,
+                    'session_id' => $session->id
+                ]);
+            } else {
+                // Fallback auf Produktdaten, falls keine Session vorhanden
+                $amount = ($productData['price'] ?? 0) / 100;
+                $currency = strtoupper($productData['currency'] ?? 'EUR');
+                $orderId = uniqid('order_');
+                $this->logger->debug('Preisdaten aus Produktdaten verwendet (Fallback)', [
+                    'amount' => $amount,
+                    'currency' => $currency,
+                    'order_id' => $orderId
+                ]);
+            }
+            
+            // 3. Steuerberechnungen für die E-Mail
+            $tax_rate = $productData['tax_rate'] ?? 19;
+            $tax_included = isset($productData['tax_included']) ? (bool)$productData['tax_included'] : true;
+            
+            // Brutto/Netto-Berechnung
+            if ($tax_included && $tax_rate > 0) {
+                $netAmount = round($amount / (1 + ($tax_rate / 100)), 2);
+                $taxAmount = round($amount - $netAmount, 2);
+            } else {
+                $netAmount = $amount;
+                $taxAmount = round($amount * ($tax_rate / 100), 2);
+                $grossAmount = $netAmount + $taxAmount;
+            }
+            
+            // 4. Rechnungserstellung-Option auslesen
+            $createInvoice = isset($productData['create_invoice']) ? (bool)$productData['create_invoice'] : true;
+            
+            // 5. Rechnungsdaten für die E-Mail-Benachrichtigung vorbereiten
+            $invoiceData = null;
+            if (isset($session->invoice) && is_string($session->invoice)) {
+                // Wenn eine Rechnungs-ID in der Session vorhanden ist, versuche die Rechnung zu laden
+                try {
+                    $invoice = \Stripe\Invoice::retrieve($session->invoice);
+                    $invoiceData = [
+                        'invoice_id' => $invoice->id,
+                        'invoice_number' => $invoice->number,
+                        'invoice_url' => $invoice->hosted_invoice_url,
+                        'invoice_pdf' => $invoice->invoice_pdf,
+                        'invoice_date' => date('d.m.Y', $invoice->created),
+                        'invoice_total' => $invoice->total / 100,
+                        'invoice_currency' => strtoupper($invoice->currency)
+                    ];
+                    $this->logger->info('Rechnungsdaten für E-Mail geladen', [
+                        'invoice_id' => $invoice->id,
+                        'invoice_url' => $invoice->hosted_invoice_url
+                    ]);
+                } catch (\Exception $e) {
+                    $this->logger->warning('Fehler beim Laden der Rechnungsdaten für E-Mail: ' . $e->getMessage());
+                }
+            }
+            
+            // 6. Download-Informationen vorbereiten
+            $downloadData = null;
+            if ($downloadLink) {
+                $expiryDate = new \DateTime();
+                $expiryDate->add(new \DateInterval('P' . ($productData['download_expires'] ?? 7) . 'D'));
+                
+                $downloadData = [
+                    'download_url' => $downloadLink,
+                    'expires_date' => $expiryDate->format('d.m.Y'),
+                    'download_limit' => $productData['download_limit'] ?? 3
+                ];
+                
+                $this->logger->info('Download-Informationen für E-Mail vorbereitet', [
+                    'download_url' => $downloadLink,
+                    'expires_date' => $expiryDate->format('d.m.Y'),
+                    'download_limit' => $productData['download_limit'] ?? 3
+                ]);
+            }
+            
+            // 7. Kundennamen korrekt zusammensetzen
+            $firstname = $personalData['firstname'] ?? '';
+            $lastname = $personalData['lastname'] ?? '';
+            $customerName = trim($firstname . ' ' . $lastname);
+            
+            // 7. E-Mail-Daten vorbereiten
+            $emailData = [
+                'order_id' => $orderId,
+                'product_name' => $productData['title'] ?? 'Unbekannt',
+                'product_price' => $amount . ' ' . $currency,
+                'customer_name' => $customerName ?: 'Unbekannt',
+                'customer_email' => $personalData['email'] ?? 'Unbekannt',
+                'create_invoice' => $createInvoice ? 'ja' : 'nein',
+                'tax_rate' => $tax_rate,
+                'net_price' => $netAmount . ' ' . $currency,
+                'tax_amount' => $taxAmount . ' ' . $currency,
+                'gross_price' => $amount . ' ' . $currency,
+                // Zusätzliche persönliche Daten für die E-Mail
+                'customer_salutation' => $personalData['salutation'] ?? '',
+                'customer_firstname' => $firstname,
+                'customer_lastname' => $lastname,
+                'customer_street' => $personalData['street'] ?? '',
+                'customer_postal' => $personalData['postal'] ?? '',
+                'customer_city' => $personalData['city'] ?? '',
+                'customer_country' => $personalData['country'] ?? '',
+                'customer_phone' => $personalData['phone'] ?? '',
+                'customer_company' => $personalData['company'] ?? '',
+                // Zusätzlich die Rohdaten für Debugging
+                'debug_personal_data' => json_encode($personalData),
+                'debug_product_data' => json_encode($productData),
+            ];
+            
+            // Download-Informationen
+            if ($downloadData) {
+                $emailData['download_link'] = $downloadData['download_url'];
+                $emailData['download_expires'] = $productData['download_expires'] ?? 7;
+                $emailData['download_expires_date'] = $downloadData['expires_date'];
+                $emailData['download_limit'] = $downloadData['download_limit'];
+                $emailData['has_download'] = 'true';
+                
+                // Zusätzlich strukturierte Daten für das Template
+                $download = [
+                    'download_url' => $downloadData['download_url'],
+                    'expires_date' => $downloadData['expires_date'],
+                    'download_limit' => $downloadData['download_limit'],
+                    'download_expires' => $productData['download_expires'] ?? 7
+                ];
+                $emailData['download'] = $download;
+                
+                $this->logger->info('Download-Informationen zur E-Mail hinzugefügt', [
+                    'download_url' => $downloadData['download_url'],
+                    'expires_date' => $downloadData['expires_date']
+                ]);
+            } else {
+                $emailData['has_download'] = 'false';
+                $emailData['download'] = [];
+            }
+            
+            // Rechnungsdaten 
+            if ($invoiceData) {
+                $emailData['invoice_id'] = $invoiceData['invoice_id'];
+                $emailData['invoice_number'] = $invoiceData['invoice_number'];
+                $emailData['invoice_url'] = $invoiceData['invoice_url'];
+                $emailData['invoice_pdf'] = $invoiceData['invoice_pdf'];
+                $emailData['invoice_date'] = $invoiceData['invoice_date'];
+                $emailData['has_invoice'] = 'true';
+                
+                // Strukturierte Daten für das Template
+                $invoice = [
+                    'invoice_id' => $invoiceData['invoice_id'],
+                    'invoice_number' => $invoiceData['invoice_number'],
+                    'invoice_url' => $invoiceData['invoice_url'],
+                    'invoice_pdf' => $invoiceData['invoice_pdf'],
+                    'invoice_date' => $invoiceData['invoice_date']
+                ];
+                $emailData['invoice'] = $invoice;
+                
+                $this->logger->info('Rechnungsdaten zu E-Mail-Benachrichtigung hinzugefügt', [
+                    'invoice_id' => $invoiceData['invoice_id'],
+                    'invoice_url' => $invoiceData['invoice_url']
+                ]);
+            } else {
+                $emailData['has_invoice'] = 'false';
+                $emailData['invoice'] = [];
+                $this->logger->info('Keine Rechnungsdaten für E-Mail-Benachrichtigung verfügbar, Stripe sendet direkt');
+            }
+            
+            $this->logger->info('E-Mail-Daten vorbereitet', [
+                'customer_email' => $personalData['email'],
+                'product_name' => $emailData['product_name'],
+                'has_download_link' => !empty($downloadLink),
+                'has_invoice' => $emailData['has_invoice'],
+                'steuer' => $tax_rate . '% (' . $taxAmount . ' ' . $currency . ')'
+            ]);
+            
+            // 8. E-Mail-Template-Informationen extrahieren
+            $adminTemplate = $productData['admin_template'] ?? null;
+            $userTemplate = $productData['user_template'] ?? null;
+            $senderEmail = $productData['sender_email'] ?? 'shop@vossmedien.de';
+            $adminEmail = $productData['admin_email'] ?? 'info@vossmedien.de';
+            
+            // Prüfen, ob die Templates korrekt formatiert sind
+            if ($adminTemplate) {
+                // Stellen Sie sicher, dass das Präfix 'emails/' vorhanden ist
+                if (!str_starts_with($adminTemplate, 'emails/')) {
+                    $adminTemplate = 'emails/' . $adminTemplate;
+                }
+                
+                // Stellen Sie sicher, dass das Template existiert
+                if (!$this->templateExists($adminTemplate)) {
+                    $this->logger->warning('Admin-Template nicht gefunden: ' . $adminTemplate);
+                    // Versuche alternative Schreibweisen
+                    $alternativeTemplate = 'emails/' . basename($adminTemplate);
+                    if ($this->templateExists($alternativeTemplate)) {
+                        $adminTemplate = $alternativeTemplate;
+                        $this->logger->info('Alternative Admin-Template gefunden: ' . $adminTemplate);
+                    }
+                } else {
+                    $this->logger->info('Admin-Template gefunden: ' . $adminTemplate);
+                }
+            }
+            
+            if ($userTemplate) {
+                // Stellen Sie sicher, dass das Präfix 'emails/' vorhanden ist
+                if (!str_starts_with($userTemplate, 'emails/')) {
+                    $userTemplate = 'emails/' . $userTemplate;
+                }
+                
+                // Stellen Sie sicher, dass das Template existiert
+                if (!$this->templateExists($userTemplate)) {
+                    $this->logger->warning('Benutzer-Template nicht gefunden: ' . $userTemplate);
+                    // Versuche alternative Schreibweisen
+                    $alternativeTemplate = 'emails/' . basename($userTemplate);
+                    if ($this->templateExists($alternativeTemplate)) {
+                        $userTemplate = $alternativeTemplate;
+                        $this->logger->info('Alternative Benutzer-Template gefunden: ' . $userTemplate);
+                    }
+                } else {
+                    $this->logger->info('Benutzer-Template gefunden: ' . $userTemplate);
+                }
+            }
+            
+            $this->logger->info('E-Mail-Templates für Versand:', [
+                'admin_template' => $adminTemplate,
+                'user_template' => $userTemplate,
+                'sender_email' => $senderEmail,
+                'admin_email' => $adminEmail
+            ]);
+            
+            // 9. Kunden-E-Mail senden
+            $customerEmailResult = false;
+            if ($userTemplate) {
+                $this->logger->info('Sende Kunden-E-Mail mit Template: ' . $userTemplate);
+                $customerEmailResult = $this->sendTemplateEmail(
+                    $personalData['email'],
+                    'Bestellbestätigung: ' . $productData['title'],
+                    $userTemplate,
+                    $emailData,
+                    $senderEmail,
+                    'Vossmedien Shop'
+                );
+                
+                if (!$customerEmailResult) {
+                    $this->logger->error('Fehler beim Senden der Kunden-E-Mail mit Template: ' . $userTemplate);
+                                    } else {
+                    $this->logger->info('Kunden-E-Mail erfolgreich gesendet an: ' . $personalData['email']);
+                                    }
+                                } else {
+                $this->logger->error('Kein Kunden-E-Mail-Template angegeben. E-Mail wird nicht gesendet!');
+            }
+            
+            // 10. Admin-E-Mail senden
+            $adminEmailResult = false;
+            if ($adminTemplate && $adminEmail) {
+                $this->logger->info('Sende Admin-E-Mail mit Template: ' . $adminTemplate);
+                $adminEmailResult = $this->sendTemplateEmail(
+                    $adminEmail,
+                    'Neue Bestellung: ' . $productData['title'],
+                    $adminTemplate,
+                    $emailData,
+                    $senderEmail,
+                    'Vossmedien Shop'
+                );
+                
+                if (!$adminEmailResult) {
+                    $this->logger->error('Fehler beim Senden der Admin-E-Mail mit Template: ' . $adminTemplate);
+                            } else {
+                    $this->logger->info('Admin-E-Mail erfolgreich gesendet an: ' . $adminEmail);
+                            }
+            } else if ($adminEmail) {
+                $this->logger->error('Kein Admin-E-Mail-Template angegeben. Admin-E-Mail wird nicht gesendet!');
+            }
+            
+            return $customerEmailResult || $adminEmailResult;
+                        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Senden der E-Mail-Benachrichtigungen: ' . $e->getMessage(), [
+                                'trace' => $e->getTraceAsString()
+                            ]);
+            return false;
+        }
+    }
+    
+    /**
+     * Sendet eine E-Mail mit einem bestimmten Template
+     */
+    private function sendTemplateEmail(string $to, string $subject, string $template, array $data, string $from = 'shop@vossmedien.de', string $fromName = 'Shop'): bool
+    {
+        try {
+            $this->logger->info('Bereite Template-E-Mail vor', [
+                'to' => $to,
+                'subject' => $subject,
+                'template' => $template
+            ]);
+            
+            // Stelle sicher, dass Template-Pfad korrekt ist
+            $templatePath = $template;
+            
+            // Prüfe, ob das Template bereits den emails/ Präfix hat
+            if (!str_starts_with($templatePath, 'emails/')) {
+                // Prüfe, ob der Pfad generell relativ ist
+                if (!str_contains($templatePath, '/')) {
+                    $templatePath = 'emails/' . $templatePath;
+                    $this->logger->info('Template-Pfad mit emails/ Präfix ergänzt: ' . $templatePath);
+                }
+            }
+            
+            // Stelle sicher, dass die Dateiendung korrekt ist
+            if (!str_ends_with($templatePath, '.html5') && !str_ends_with($templatePath, '.html.twig')) {
+                $templatePath .= '.html5';
+            }
+            
+            $config = \Contao\System::getContainer()->getParameter('kernel.project_dir');
+            
+            // Mögliche Pfade für das Template - Priorität auf /templates/emails/
+            $templatePaths = [
+                $config . '/templates/' . $templatePath,
+                // Fallbacks, nur wenn unbedingt nötig
+                $config . '/templates/' . basename($templatePath),
+                $config . '/vendor/vsm/vsm-helper-tools/templates/' . $templatePath
+            ];
+            
+            // Debug-Ausgabe
+            $this->logger->debug('Suche Template in folgenden Pfaden:', [
+                'template_name' => $template,
+                'template_path' => $templatePath,
+                'search_paths' => $templatePaths
+            ]);
+            
+            $foundPath = null;
+            
+            // Template-Datei finden
+            foreach ($templatePaths as $path) {
+                if (file_exists($path)) {
+                    $foundPath = $path;
+                    $this->logger->info('Template gefunden: ' . $path);
+                    break;
+                }
+            }
+            
+            if (!$foundPath) {
+                $this->logger->error('E-Mail-Template konnte nicht gefunden werden', [
+                    'template' => $template,
+                    'template_path' => $templatePath,
+                    'gesuchte_pfade' => $templatePaths
+                ]);
+                
+                // Keine Fallbacks mehr verwenden, stattdessen einen klaren Fehler zurückgeben
+                return false;
+            }
+            
+            $this->logger->info('E-Mail-Template erfolgreich geladen: ' . $foundPath);
+            
+            // Strukturierte Daten für Template vorbereiten
+            $preparedData = $this->prepareTemplateData($data);
+            
+            // E-Mail-Inhalt durch Template-Engine rendern
+            $emailContent = $this->renderEmailContent($foundPath, $preparedData);
+            
+            // E-Mail senden
+            $email = new \Contao\Email();
+            $email->from = $from;
+            $email->fromName = $fromName;
+            $email->subject = $subject;
+            $email->html = $emailContent;
+            $email->text = strip_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", $emailContent));
+            
+            $email->sendTo($to);
+            
+            $this->logger->info('E-Mail erfolgreich gesendet', [
+                'to' => $to,
+                'subject' => $subject,
+                'template' => $foundPath
+            ]);
+            
+            return true;
+                        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Senden der Template-E-Mail: ' . $e->getMessage(), [
+                                'trace' => $e->getTraceAsString()
+                            ]);
+            
+            return false;
+        }
+    }
+    
+    /**
+     * Bereitet die Daten für das E-Mail-Template vor
+     */
+    private function prepareTemplateData(array $data): array
+    {
+        // Preisformatierung korrigieren: Stellen sicher, dass alle Preise korrekt formatiert sind
+        $priceRaw = str_replace(',', '.', preg_replace('/[^0-9,.]/', '', $data['product_price'] ?? '0'));
+        $priceFloat = (float)$priceRaw;
+        $formattedPrice = number_format($priceFloat, 2, ',', '.');
+        $currency = preg_replace('/[0-9,. ]/', '', $data['product_price'] ?? 'EUR');
+        $currency = trim($currency) ?: 'EUR';
+        
+        // Organisiere die Daten in die Struktur, die das Template erwartet
+        $order = [
+            'id' => $data['order_id'] ?? 'Unbekannt',
+            'product_id' => $data['order_id'] ?? 'Unbekannt',
+            'product_title' => $data['product_name'] ?? 'Unbekannt',
+            'price' => $priceFloat, // Numerischer Preis für Berechnungen
+            'price_formatted' => $formattedPrice . ' ' . $currency, // Formatierter Preis für die Anzeige
+            'currency' => $currency,
+        ];
+        
+        // Verbesserte Extraktion der Kundendaten
+        $customerName = $data['customer_name'] ?? '';
+        $nameParts = explode(' ', $customerName);
+        $firstname = $data['customer_firstname'] ?? $nameParts[0] ?? '';
+        // Nachname aus allen verbleibenden Teilen zusammensetzen
+        $lastname = $data['customer_lastname'] ?? '';
+        if (empty($lastname) && count($nameParts) > 1) {
+            $lastname = implode(' ', array_slice($nameParts, 1));
+        }
+        
+        $customer = [
+            'name' => $customerName ?: ($firstname . ' ' . $lastname),
+            'email' => $data['customer_email'] ?? 'Unbekannt',
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+            'salutation' => $data['customer_salutation'] ?? '',
+            'street' => $data['customer_street'] ?? '',
+            'postal' => $data['customer_postal'] ?? '',
+            'city' => $data['customer_city'] ?? '',
+            'country' => $data['customer_country'] ?? '',
+            'phone' => $data['customer_phone'] ?? '',
+            'company' => $data['customer_company'] ?? '',
+        ];
+        
+        $payment = [
+            'transaction_id' => $data['order_id'] ?? 'Unbekannt',
+            'status' => 'paid',
+            'payment_method' => 'card',
+            'date' => date('d.m.Y H:i'),
+        ];
+        
+        $download = [];
+        if (isset($data['has_download']) && $data['has_download'] === 'true') {
+            $download = [
+                'download_url' => $data['download_link'] ?? '',
+                'expires_date' => $data['download_expires_date'] ?? '',
+                'download_limit' => $data['download_limit'] ?? '3',
+                'download_expires' => $data['download_expires'] ?? '7',
+            ];
+        }
+        
+        $invoice = [];
+        if (isset($data['has_invoice']) && $data['has_invoice'] === 'true') {
+            $invoice = [
+                'invoice_url' => $data['invoice_url'] ?? '',
+                'invoice_number' => $data['invoice_number'] ?? '',
+                'invoice_date' => $data['invoice_date'] ?? date('d.m.Y'),
+                'invoice_pdf' => $data['invoice_pdf'] ?? '',
+            ];
+        }
+        
+        // Auch die ursprünglichen Daten als Tokens zur Verfügung stellen
+        // für ältere Templates, die noch Token-Syntax verwenden
+        $tokens = [];
+        foreach ($data as $key => $value) {
+            $tokens['##' . $key . '##'] = is_scalar($value) ? (string)$value : json_encode($value);
+        }
+        
+        // Debug-Ausgabe
+        $this->logger->debug('Vorbereitete E-Mail-Template-Daten:', [
+            'order' => $order,
+            'customer' => $customer,
+            'payment' => $payment,
+            'has_download' => isset($data['has_download']) && $data['has_download'] === 'true',
+            'has_invoice' => isset($data['has_invoice']) && $data['has_invoice'] === 'true',
+        ]);
+        
+        return [
+            'order' => $order,
+            'customer' => $customer,
+            'payment' => $payment,
+            'download' => $download,
+            'invoice' => $invoice,
+            'tokens' => $tokens,
+            'has_download' => isset($data['has_download']) && $data['has_download'] === 'true',
+            'has_invoice' => isset($data['has_invoice']) && $data['has_invoice'] === 'true',
+            // Die Originaldaten noch direkt zur Verfügung stellen
+            'data' => $data,
+        ];
+    }
+    
+    /**
+     * Rendert den E-Mail-Inhalt mittels Template-Engine
+     */
+    private function renderEmailContent(string $templatePath, array $data): string
+    {
+        try {
+            // Umfangreiches Debugging der Eingabedaten
+            $this->logger->debug('renderEmailContent gestartet mit folgenden Daten:', [
+                'template_path' => $templatePath,
+                'order' => isset($data['order']) ? array_keys($data['order']) : [],
+                'customer' => isset($data['customer']) ? array_keys($data['customer']) : [],
+                'order_id' => $data['order']['id'] ?? $data['order']['product_id'] ?? 'Nicht gefunden',
+                'customer_name' => $data['customer']['name'] ?? 'Nicht gefunden',
+                'customer_email' => $data['customer']['email'] ?? 'Nicht gefunden'
+            ]);
+            
+            // Contao Framework initialisieren falls nötig
+            if (!$this->framework->isInitialized()) {
+                $this->framework->initialize();
+            }
+            
+            // Alternative 1: Direkte Extraktion der Template-Variablen
+            // Alle benötigten Variablen direkt extrahieren
+            $order = $data['order'] ?? [];
+            $customer = $data['customer'] ?? [];
+            $payment = $data['payment'] ?? [];
+            $download = $data['download'] ?? [];
+            $invoice = $data['invoice'] ?? [];
+            $has_download = $data['has_download'] ?? false;
+            $has_invoice = $data['has_invoice'] ?? false;
+            $tokens = $data['tokens'] ?? [];
+            $template_data = (object)$data;
+            
+            // Detailliertes Logging der extrahierten Variablen
+            $this->logger->debug('Extrahierte Template-Variablen:', [
+                'order' => $order,
+                'customer' => $customer,
+                'payment' => $payment,
+                'has_download' => $has_download,
+                'has_invoice' => $has_invoice
+            ]);
+            
+            // Mit einem Output-Buffer arbeiten und alle Variablen direkt verfügbar machen
+            ob_start();
+            
+            // Alle Variablen in den Scope extrahieren
+            extract($data);
+            
+            // Zusätzlich die Hauptobjekte direkt verfügbar machen
+            include $templatePath;
+            $content = ob_get_clean();
+            
+            if (!empty($content)) {
+                $this->logger->debug('Template erfolgreich gerendert mit direkter Extraktion', [
+                    'content_length' => strlen($content),
+                    'template_path' => $templatePath
+                ]);
+                return $content;
+            }
+            
+            // Alternative 2: Contao-Template-Mechanismus verwenden
+            try {
+                // Template-Instanz erstellen
+                $templateName = pathinfo($templatePath, PATHINFO_FILENAME);
+                $template = new \Contao\FrontendTemplate($templateName);
+                
+                // Daten an Template übergeben
+                foreach ($data as $key => $value) {
+                    $template->$key = $value;
+                }
+                
+                // Template parsen
+                $content = $template->parse();
+                $this->logger->debug('Template mit Contao-Mechanismus gerendert', [
+                    'content_length' => strlen($content),
+                    'template_name' => $templateName
+                ]);
+                return $content;
+            } catch (\Exception $templateEx) {
+                $this->logger->warning('Contao-Template konnte nicht gerendert werden: ' . $templateEx->getMessage(), [
+                    'template_path' => $templatePath,
+                    'template_name' => $templateName ?? 'unknown',
+                    'exception' => $templateEx->getMessage()
+                ]);
+                
+                // Alternative 3: Token-Ersetzung als letzte Möglichkeit
+                $content = file_get_contents($templatePath);
+                
+                if (!empty($data['tokens']) && is_array($data['tokens'])) {
+                    foreach ($data['tokens'] as $token => $value) {
+                        $content = str_replace($token, $value, $content);
+                    }
+                }
+                
+                $this->logger->debug('Template mit Token-Ersetzung gerendert', [
+                    'content_length' => strlen($content),
+                    'token_count' => count($data['tokens'] ?? [])
+                ]);
+                
+                return $content;
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Rendern des E-Mail-Templates: ' . $e->getMessage(), [
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'templatePath' => $templatePath
+            ]);
+            
+            // Fallback: Rendere ein einfaches Template mit den wichtigsten Daten
+            return $this->renderFallbackEmailContent($data);
+        }
+    }
+    
+    /**
+     * Extrahiert die Template-Daten in den globalen Scope, damit sie in eingebundenen PHP-Files verfügbar sind
+     */
+    private function extractToGlobalScope(array $data): void
+    {
+        // Sicherstellen, dass die gesamte Datenstruktur für PHP-Templates verfügbar ist
+        foreach ($data as $key => $value) {
+            $GLOBALS[$key] = $value;
+            // Zusätzlich als globale Variable für direkten PHP-Zugriff
+            global $$key;
+            $$key = $value;
+        }
+        
+        // NICHT $this verwenden, da dies nicht neu zugewiesen werden kann
+        // Stattdessen ein anderes Objekt mit einem eindeutigen Namen erstellen
+        $GLOBALS['template_data'] = new \stdClass();
+        foreach ($data as $key => $value) {
+            $GLOBALS['template_data']->$key = $value;
+        }
+        
+        // Debugging-Informationen
+        $this->logger->debug('Daten in globalen Scope extrahiert', [
+            'keys' => array_keys($data)
+        ]);
+    }
+    
+    /**
+     * Erstellt ein einfaches Fallback-Template, falls das eigentliche Template nicht geladen werden kann
+     */
+    private function renderFallbackEmailContent(array $data): string
+    {
+        $order = $data['order'] ?? [];
+        $customer = $data['customer'] ?? [];
+        $download = $data['download'] ?? [];
+        $invoice = $data['invoice'] ?? [];
+        
+        $orderId = $order['id'] ?? $order['product_id'] ?? 'Unbekannt';
+        $productTitle = $order['product_title'] ?? 'Unbekannt';
+        $price = $order['price'] ?? '0,00';
+        $customerName = $customer['name'] ?? 'Unbekannt';
+        $customerEmail = $customer['email'] ?? 'Unbekannt';
+        
+        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bestellbestätigung</title></head><body>';
+        $html .= '<h1>Bestellbestätigung</h1>';
+        $html .= '<p>Hallo ' . ($customer['firstname'] ?? '') . ',</p>';
+        $html .= '<p>vielen Dank für Ihre Bestellung. Ihre Zahlung wurde erfolgreich verarbeitet.</p>';
+        
+        $html .= '<h2>Bestelldetails</h2>';
+        $html .= '<p><strong>Bestellnummer:</strong> ' . $orderId . '</p>';
+        $html .= '<p><strong>Produkt:</strong> ' . $productTitle . '</p>';
+        $html .= '<p><strong>Preis:</strong> ' . $price . '</p>';
+        
+        if ($data['has_download'] ?? false) {
+            $html .= '<h2>Ihr Download</h2>';
+            $html .= '<p>Sie können Ihre gekaufte Datei hier herunterladen:</p>';
+            $html .= '<p><a href="' . ($download['download_url'] ?? '#') . '">Download starten</a></p>';
+            $html .= '<p>Der Download-Link ist ' . ($download['download_expires'] ?? '7') . ' Tage gültig (bis ' . ($download['expires_date'] ?? '') . ') ';
+            $html .= 'und kann maximal ' . ($download['download_limit'] ?? '3') . ' Mal verwendet werden.</p>';
+        }
+        
+        if ($data['has_invoice'] ?? false) {
+            $html .= '<h2>Ihre Rechnung</h2>';
+            if (!empty($invoice['invoice_url'])) {
+                $html .= '<p>Sie können Ihre Rechnung hier einsehen: <a href="' . $invoice['invoice_url'] . '">Rechnung ansehen</a></p>';
+            }
+            if (!empty($invoice['invoice_pdf'])) {
+                $html .= '<p>Oder Sie laden die Rechnung als PDF herunter: <a href="' . $invoice['invoice_pdf'] . '">PDF-Rechnung</a></p>';
+            }
+        } else {
+            $html .= '<h2>Ihre Rechnung</h2>';
+            $html .= '<p>Ihre Rechnung wurde automatisch erstellt und wird Ihnen in Kürze separat per E-Mail zugesendet.</p>';
+        }
+        
+        $html .= '<p>Sollten Sie Fragen zu Ihrer Bestellung haben, können Sie uns gerne kontaktieren.</p>';
+        $html .= '<p>Mit freundlichen Grüßen,<br>Ihr Vossmedien Team</p>';
+        $html .= '<p style="margin-top: 30px; font-size: 12px; color: #777;">© ' . date('Y') . ' Vossmedien GmbH</p>';
+        $html .= '</body></html>';
+        
+        $this->logger->info('Fallback-E-Mail-Inhalt generiert');
+        
+        return $html;
+    }
+    
+    /**
+     * Fügt fehlende Spalten zur Session-Tabelle hinzu (für Updates)
+     */
+    private function addMissingSessionColumns(): void
+    {
+        try {
+            $schemaManager = $this->db->createSchemaManager();
+            
+            if ($schemaManager->tablesExist(['tl_stripe_sessions'])) {
+                $columns = $schemaManager->listTableColumns('tl_stripe_sessions');
+                
+                // Spalten für E-Mail-Templates und Rechnungsstellung
+                $this->addColumnIfNotExists('tl_stripe_sessions', 'admin_template', 'varchar(255) DEFAULT NULL');
+                $this->addColumnIfNotExists('tl_stripe_sessions', 'user_template', 'varchar(255) DEFAULT NULL');
+                $this->addColumnIfNotExists('tl_stripe_sessions', 'sender_email', 'varchar(255) DEFAULT NULL');
+                $this->addColumnIfNotExists('tl_stripe_sessions', 'admin_email', 'varchar(255) DEFAULT NULL');
+                
+                // Spalten für Download-Dateien
+                $this->addColumnIfNotExists('tl_stripe_sessions', 'file_sale', 'tinyint(1) unsigned DEFAULT 0');
+                $this->addColumnIfNotExists('tl_stripe_sessions', 'file_path', 'varchar(255) DEFAULT NULL');
+                $this->addColumnIfNotExists('tl_stripe_sessions', 'file_uuid', 'varchar(36) DEFAULT NULL');
+                $this->addColumnIfNotExists('tl_stripe_sessions', 'download_expires', 'int(10) unsigned DEFAULT 7');
+                $this->addColumnIfNotExists('tl_stripe_sessions', 'download_limit', 'int(10) unsigned DEFAULT 3');
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Hinzufügen fehlender Spalten: ' . $e->getMessage(), [
+                'context' => ContaoContext::ERROR,
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+    
+    /**
+     * Fügt eine Spalte zur Tabelle hinzu, wenn sie nicht existiert
+     */
+    private function addColumnIfNotExists(string $table, string $column, string $definition): void
+    {
+        try {
+            $columnsResult = $this->db->fetchAllAssociative("SHOW COLUMNS FROM `{$table}` LIKE '{$column}'");
+            
+            if (empty($columnsResult)) {
+                $this->db->executeStatement("ALTER TABLE `{$table}` ADD COLUMN `{$column}` {$definition}");
+                $this->logger->info("Spalte {$column} zur Tabelle {$table} hinzugefügt");
+            } else {
+                $this->logger->info("Spalte {$column} existiert bereits in Tabelle {$table}");
+                }
+            } catch (\Exception $e) {
+            $this->logger->error("Fehler beim Hinzufügen der Spalte {$column}: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Findet oder erstellt einen Steuersatz in Stripe
+     */
+    private function getOrCreateTaxRate(float $taxRate): string
+    {
+        // Sicherstellen, dass der Steuersatz gültig ist
+        if ($taxRate < 0 || $taxRate > 100) {
+            $this->logger->warning('Ungültiger Steuersatz: ' . $taxRate . '%. Verwende Standardwert 19%.');
+            $taxRate = 19.0;
+        }
+        
+        $taxRateName = "MwSt. " . number_format($taxRate, 2) . "%";
+        $taxRateId = null;
+        
+        try {
+            // Versuche, einen vorhandenen Steuersatz zu finden
+            $taxRates = $this->stripe->taxRates->all(['limit' => 100]);
+            
+            foreach ($taxRates->data as $rate) {
+                if (abs($rate->percentage - $taxRate) < 0.01 && $rate->active) {
+                    // Wenn der Steuersatz bereits existiert und aktiv ist, verwenden wir diesen
+                    $taxRateId = $rate->id;
+                    $this->logger->info('Vorhandenen Steuersatz gefunden: ' . $taxRateId, [
+                        'rate_name' => $rate->display_name,
+                        'percentage' => $rate->percentage,
+                        'active' => $rate->active ? 'Ja' : 'Nein',
+                        'inclusive' => $rate->inclusive ? 'Ja' : 'Nein'
+                    ]);
+                                break;
+                            }
+            }
+            
+            // Wenn kein passender Steuersatz gefunden wurde, erstelle einen neuen
+            if (!$taxRateId) {
+                // Aktuelle Steuerparameter für 2025
+                $newTaxRate = $this->stripe->taxRates->create([
+                    'display_name' => $taxRateName,
+                    'description' => 'Mehrwertsteuer ' . number_format($taxRate, 2) . '%',
+                    'percentage' => floatval($taxRate),
+                    'inclusive' => false, // Exklusiv, da wir die Steuer separat berechnen
+                    'country' => 'DE',
+                    'jurisdiction' => 'DE',
+                    'tax_type' => 'vat',
+                    'active' => true
+                ]);
+                
+                $taxRateId = $newTaxRate->id;
+                $this->logger->info('Neuen Steuersatz erstellt: ' . $taxRateId, [
+                    'rate_name' => $newTaxRate->display_name,
+                    'percentage' => $newTaxRate->percentage,
+                    'inclusive' => $newTaxRate->inclusive ? 'Ja' : 'Nein',
+                    'active' => $newTaxRate->active ? 'Ja' : 'Nein'
+                ]);
+            }
+            
+            return $taxRateId;
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Verarbeiten des Steuersatzes: ' . $e->getMessage(), [
+                'error' => $e->getMessage(),
+                'tax_rate' => $taxRate
+            ]);
+            
+            // Im Fehlerfall versuchen wir einen Default-Steuersatz zu erstellen
+            try {
+                $defaultRate = $this->stripe->taxRates->create([
+                    'display_name' => 'MwSt. 19.00%',
+                    'description' => 'Mehrwertsteuer 19%',
+                    'percentage' => 19.0,
+                    'inclusive' => false,
+                    'country' => 'DE', 
+                    'tax_type' => 'vat',
+                    'active' => true
+                ]);
+                
+                $this->logger->info('Default-Steuersatz erstellt: ' . $defaultRate->id);
+                return $defaultRate->id;
+            } catch (\Exception $innerEx) {
+                $this->logger->critical('Fehler beim Erstellen des Default-Steuersatzes: ' . $innerEx->getMessage());
+                return ''; // Leerer String bedeutet keine Steuer
+            }
+        }
+    }
+    
+    /**
+     * Findet oder erstellt einen Kunden in Stripe
+     */
+    private function findOrCreateStripeCustomer(array $personalData): ?\Stripe\Customer
+    {
+        if (empty($personalData['email'])) {
+            return null;
+        }
+        
+        try {
+            // Suche nach vorhandenem Kunden mit dieser E-Mail
+            $customers = $this->stripe->customers->all([
+                'email' => $personalData['email'],
+                'limit' => 1
+            ]);
+            
+            if (!empty($customers->data)) {
+                $customer = $customers->data[0];
+                $this->logger->info('Vorhandenen Stripe-Kunden gefunden: ' . $customer->id);
+                
+                // Aktualisiere den Kunden mit neuen Daten
+                $customerData = [
+                    'name' => trim(($personalData['firstname'] ?? '') . ' ' . ($personalData['lastname'] ?? '')),
+                    'phone' => $personalData['phone'] ?? null
+                ];
+                
+                // Adressdaten hinzufügen, wenn vorhanden
+                // Für Steuerberechnung und Rechnungserstellung besonders wichtig
+                if (!empty($personalData['street'])) {
+                    $customerData['address'] = [
+                        'line1' => $personalData['street'],
+                        'postal_code' => $personalData['postal'] ?? '',
+                        'city' => $personalData['city'] ?? '',
+                        'country' => $personalData['country'] ?? 'DE'
+                    ];
+                    
+                    // Für korrekte Steuerberechnung ist besonders die Angabe des Landes wichtig
+                    $this->logger->info('Adressdaten für Steuerberechnung aktualisiert', [
+                        'country' => $personalData['country'] ?? 'DE'
+                    ]);
+                }
+                
+                $customer = $this->stripe->customers->update($customer->id, $customerData);
+                return $customer;
+            }
+            
+            // Erstelle einen neuen Kunden
+            $customerData = [
+                'email' => $personalData['email'],
+                'name' => trim(($personalData['firstname'] ?? '') . ' ' . ($personalData['lastname'] ?? '')),
+                'phone' => $personalData['phone'] ?? null
+            ];
+            
+            // Adressdaten hinzufügen, wenn vorhanden
+            if (!empty($personalData['street'])) {
+                $customerData['address'] = [
+                    'line1' => $personalData['street'],
+                    'postal_code' => $personalData['postal'] ?? '',
+                    'city' => $personalData['city'] ?? '',
+                    'country' => $personalData['country'] ?? 'DE'
+                ];
+                
+                // Für korrekte Steuerberechnung ist besonders die Angabe des Landes wichtig
+                $this->logger->info('Adressdaten für Steuerberechnung hinzugefügt', [
+                    'country' => $personalData['country'] ?? 'DE'
+                ]);
+            }
+            
+            $customer = $this->stripe->customers->create($customerData);
+            
+            $this->logger->info('Neuen Stripe-Kunden erstellt: ' . $customer->id);
+            return $customer;
+            
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Finden/Erstellen des Stripe-Kunden: ' . $e->getMessage(), [
+                'context' => ContaoContext::ERROR
+            ]);
+            
+            return null;
+        }
+    }
+
+    private function templateExists(string $templatePath): bool
+    {
+        $config = \Contao\System::getContainer()->getParameter('kernel.project_dir');
+        $templatePaths = [
+            $config . '/templates/' . $templatePath,
+            $config . '/templates/' . basename($templatePath),
+            $config . '/vendor/vsm/vsm-helper-tools/templates/' . $templatePath
+        ];
+
+        foreach ($templatePaths as $path) {
+            if (file_exists($path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+} 

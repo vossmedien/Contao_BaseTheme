@@ -44,6 +44,27 @@ CREATE TABLE IF NOT EXISTS `tl_stripe_downloads` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Tabelle für Download-Tokens (neu)
+--
+CREATE TABLE IF NOT EXISTS `tl_download_tokens` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `tstamp` int(10) unsigned NOT NULL default '0',
+  `token` varchar(255) NOT NULL default '',
+  `file_id` binary(16) NULL,
+  `file_uuid` varchar(255) NOT NULL default '',
+  `file_path` varchar(255) NOT NULL default '',
+  `expires` int(10) unsigned NOT NULL default '0',
+  `expires_at` int(10) unsigned NOT NULL default '0',
+  `download_limit` int(10) unsigned NOT NULL default '3',
+  `download_count` int(10) unsigned NOT NULL default '0',
+  `order_id` varchar(255) NOT NULL default '',
+  `customer_email` varchar(255) NOT NULL default '',
+  `created_at` int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `token` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
 -- Tabelle für temporäre Session-Daten
 --
 CREATE TABLE IF NOT EXISTS `tl_stripe_session_data` (

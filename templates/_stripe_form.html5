@@ -1,5 +1,5 @@
-<form id="payment-form"
-      data-stripe-payment
+<form id="customerDataForm"
+      data-customer-form
       data-stripe-key="<?= $this->stripeKey ?>"
       data-create-user="<?= $this->createUser ?>"
       data-success-url="<?= $this->successUrl ?>"
@@ -151,11 +151,14 @@
             </div>
         <?php endif; ?>
 
+        <!-- Die Zahlungsmethode-Auswahl wird bei Stripe Checkout direkt von Stripe gehandhabt -->
+        <?php if (false && $this->useStripeElements): ?>
         <div class="my-3">
             <label class="form-label">Zahlungsmethode *</label>
             <div id="payment-element"></div>
             <div id="payment-errors" class="invalid-feedback d-block" role="alert"></div>
         </div>
+        <?php endif; ?>
 
         <?php if ($this->showPrivacyNotice): ?>
             <div class="form-check mb-3">
@@ -171,13 +174,13 @@
             </div>
         <?php endif; ?>
 
-        <div data-payment-error class="alert alert-danger d-none"></div>
+        <div data-form-error class="alert alert-danger d-none"></div>
     </div>
 
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-        <button type="submit" class="btn btn-primary" data-payment-submit>
-            <span class="spinner-border spinner-border-sm d-none" data-payment-spinner role="status"></span>
+        <button type="submit" class="btn btn-primary">
+            <span class="spinner-border spinner-border-sm d-none" data-form-spinner role="status"></span>
             <span>Jetzt kostenpflichtig bestellen</span>
         </button>
     </div>

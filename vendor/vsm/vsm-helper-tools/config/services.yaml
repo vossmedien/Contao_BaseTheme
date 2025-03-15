@@ -29,7 +29,7 @@ services:
 
     # Service für Stripe Zahlungen
     vsm.stripe_payment_service:
-        class: Vsm\VsmHelperTools\Service\StripePaymentService
+        class: Vsm\VsmHelperTools\Service\Stripe\StripePaymentService
         public: true
         arguments:
             $logger: '@monolog.logger.contao'
@@ -61,27 +61,86 @@ services:
     Vsm\VsmHelperTools\Twig\VsmHelperExtension:
         tags: ['twig.extension']
         
-    # Migration für File Downloads
-    Vsm\VsmHelperTools\Migration\FileDownloadsMigration:
-        tags:
-            - { name: contao.migration }
-
     # StripeWebhookController
     Vsm\VsmHelperTools\Controller\StripeWebhookController:
+        public: true
+        autowire: true
+        autoconfigure: true
         arguments:
+            $framework: '@contao.framework'
+            $logger: '@monolog.logger.contao'
             $webhookSecret: '%vsm_helper_tools.stripe.webhook_secret%'
             $stripeSecretKey: '%vsm_helper_tools.stripe.secret_key%'
             $projectDir: '%kernel.project_dir%'
             $db: '@database_connection'
-
+            $stripeService: '@vsm.stripe_payment_service'
+            $userService: '@vsm.user_creation_service'
+            $paymentProcessorService: '@vsm.payment_session_manager'
+            $emailService: '@vsm.email_service'
+            $downloadService: '@vsm.download_link_generator'
+        tags: ['controller.service_arguments']
+        
+    # StripeCheckoutController explizit als PUBLIC service definieren
     Vsm\VsmHelperTools\Controller\StripeCheckoutController:
+        public: true
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $framework: '@contao.framework'
+            $logger: '@monolog.logger.contao'
+            $projectDir: '%kernel.project_dir%'
+            $db: '@database_connection'
+            $stripeSecretKey: '%vsm_helper_tools.stripe.secret_key%'
+            $sessionManager: '@vsm.payment_session_manager'
+            $stripeService: '@vsm.stripe_payment_service'
+            $emailService: '@vsm.email_service'
+            $downloadService: '@vsm.download_link_generator'
+            $userService: '@vsm.user_creation_service'
+            $twig: '@twig'
+        tags: ['controller.service_arguments']
+        
+    # Neue Services für verbesserte Zahlungsabwicklung
+    
+    # DownloadLinkGenerator
+    vsm.download_link_generator:
+        class: Vsm\VsmHelperTools\Service\Download\DownloadLinkGenerator
+        public: true
         arguments:
             $logger: '@monolog.logger.contao'
-            $stripeSecretKey: '%vsm_helper_tools.stripe.secret_key%'
-            $paymentProcessorService: '@vsm.payment_processor_service'
-            $stripeService: '@vsm.stripe_payment_service'
-            $fileDownloadService: '@vsm.file_download_service'
-        tags: ['controller.service_arguments']
+            $projectDir: '%kernel.project_dir%'
+            $db: '@database_connection'
+            $framework: '@contao.framework'
+            
+    # EmailService
+    vsm.email_service:
+        class: Vsm\VsmHelperTools\Service\Email\EmailService
+        public: true
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $projectDir: '%kernel.project_dir%'
+            $framework: '@contao.framework'
+            
+    # UserCreationService
+    vsm.user_creation_service:
+        class: Vsm\VsmHelperTools\Service\User\UserCreationService
+        public: true
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $db: '@database_connection'
+            $framework: '@contao.framework'
+            $emailService: '@vsm.email_service'
+            
+    # PaymentSessionManager
+    vsm.payment_session_manager:
+        class: Vsm\VsmHelperTools\Service\Payment\PaymentSessionManager
+        public: true
+        arguments:
+            $connection: '@database_connection'
+            $csrfTokenManager: '@contao.csrf.token_manager'
+            $logger: '@monolog.logger.contao'
+            $emailService: '@vsm.email_service'
+            $userService: '@vsm.user_creation_service'
+            $downloadService: '@vsm.download_link_generator'
 
 # Parameter für das Bundle
 parameters:

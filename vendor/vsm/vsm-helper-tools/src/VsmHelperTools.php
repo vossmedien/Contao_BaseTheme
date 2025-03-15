@@ -33,6 +33,14 @@ class VsmHelperTools extends Bundle
     /**
      * {@inheritdoc}
      */
+    public function getContainerExtensionName(): string
+    {
+        return 'vsm_helper_tools';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);

@@ -11,26 +11,31 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     // Stripe.js Script laden
     $GLOBALS['TL_HEAD'][] = '<script src="https://js.stripe.com/v3/"></script>';
     
-    // Neue Checkout-Handler.js laden
-    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/stripe-checkout-handler.js|static';
+    // JS-Dateien aus dem Bundle laden
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/stripe-checkout-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/stripe-element-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/ui-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/validation-handler.js|static';
     
     // CSS laden
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce_product_payment.min.css|static';
-}
+} 
 
 // Generische Produktdaten-Aufbereitung
-$productData = array_map(function ($item, $index) {
+$productData = array_map(function ($item, $index) { 
     // Basis-Daten
     $data = [
         'id' => $index,
         'title' => $item->title,
         'price' => $item->price,
+        'tax_rate' => $item->tax_rate ?? 19, // Steuersatz mit Standardwert 19%
         'duration' => intval($item->subscription_duration ?? 0),
         'status' => $item->status ?? 'active',
         'sender_email' => $item->sender_email ?? null,
         'admin_email' => $item->admin_email ?? null,
         'admin_template' => $item->admin_template ?? null,
         'user_template' => $item->user_template ?? null,
+        'create_invoice' => (bool)($item->create_invoice ?? true), // Standardmäßig Rechnungen erstellen
     ];
     
     // Download-Datei hinzufügen, wenn aktiviert
@@ -194,6 +199,8 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                 <?php endif; ?>
                             </div>
 
+
+                  
                             <div class="card-footer d-flex flex-row gap-1 bg-transparent">
                                 <?php if ($product->status === 'sold_out'): ?>
                                     <!-- Keine Aktion für ausverkaufte Produkte -->
@@ -207,6 +214,7 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                         // Datei-Verkauf
                                         $fileSale = !empty($product->file_sale);
                                         $filePath = '';
+                                        $fileUuid = '';
                                         $downloadExpires = $product->download_expires ?: '7';
                                         $downloadLimit = $product->download_limit ?: '3';
                                         
@@ -214,14 +222,26 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                             $fileObj = FilesModel::findByUuid($product->download_file);
                                             if ($fileObj) {
                                                 $filePath = $fileObj->path;
+                                                // Binäre UUID base64-kodiert übergeben (JSON-sicher)
+                                                $fileUuid = $product->download_file;
                                             }
                                         }
                                         
                                         // E-Mail-Templates
                                         $senderEmail = $product->sender_email ?: '';
                                         $adminEmail = $product->admin_email ?: '';
+                                        
+                                        // Stelle sicher, dass Templates mit "emails/" beginnen
                                         $adminTemplate = $product->admin_template ?: '';
                                         $userTemplate = $product->user_template ?: '';
+                                        
+                                        if ($adminTemplate && !str_starts_with($adminTemplate, 'emails/')) {
+                                            $adminTemplate = 'emails/' . $adminTemplate;
+                                        }
+                                        
+                                        if ($userTemplate && !str_starts_with($userTemplate, 'emails/')) {
+                                            $userTemplate = 'emails/' . $userTemplate;
+                                        }
                                         ?>
                                         
                                         <button type="button" 
@@ -232,9 +252,18 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                             data-product-title="<?= StringUtil::specialchars($product->title) ?>"
                                             data-price="<?= $product->price ?>"
                                             data-currency="<?= $this->stripe_currency ?>"
+                                            data-tax-rate="<?= $product->tax_rate ?>"
+                                            <?php if (isset($product->create_invoice)): ?>
+                                            data-create-invoice="<?= $product->create_invoice ? 'true' : 'false' ?>"
+                                            <?php else: ?>
+                                            data-create-invoice="true"
+                                            <?php endif; ?>
                                             <?php if ($fileSale): ?>
                                             data-file-sale="true"
-                                            data-file-path="<?= $filePath ?>"
+                                            data-file-uuid="<?= $fileUuid ?>"
+                                            <?php if ($_ENV['APP_ENV'] === 'dev'): ?>
+                                            data-debug-file-path="<?= htmlspecialchars($filePath) ?>"
+                                            <?php endif; ?>
                                             data-download-expires="<?= $downloadExpires ?>"
                                             data-download-limit="<?= $downloadLimit ?>"
                                             <?php endif; ?>
@@ -249,8 +278,7 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                             <?php endif; ?>
                                             <?php if ($userTemplate): ?>
                                             data-user-template="<?= $userTemplate ?>"
-                                            <?php endif; ?>
-                                            >
+                                            <?php endif; ?>>
                                             <?= $buttonText ?>
                                         </button>
                                         
@@ -270,202 +298,77 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
 </div>
 
 <?php if ($this->stripe_enabled): ?>
-    <!-- Kundendaten Modal -->
-    <div class="modal fade" id="customerDataModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <!-- Payment Modal -->
+    <div class="modal fade" id="customerDataModal" tabindex="-1" aria-hidden="true"
+         aria-labelledby="paymentModalTitle"
+         aria-describedby="paymentModalDescription">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Ihre Daten</h5>
+                    <h5 class="modal-title" id="paymentModalTitle">Produkt bestellen</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
                 </div>
-                <form id="customerDataForm" data-customer-form method="post" onsubmit="return false;">
-                    <div class="modal-body">
-                        <input type="hidden" id="product-id" name="product-id">
-                        <input type="hidden" id="element-id" name="element-id" value="<?= $this->id ?>">
-                        
-                        <?php if ($this->create_user): ?>
-                            <div class="user-data mb-4 bg-light p-2">
-                                <div class="alert alert-info mt-0 mb-2">
-                                    <strong>Hinweis:</strong> Mit dieser Bestellung wird automatisch ein Benutzerkonto für Sie erstellt.
-                                </div>
-                                <div class="row g-1">
-                                    <div class="col-md-6 widget">
-                                        <label for="username" class="form-label">Benutzername *</label>
-                                        <input type="text" class="form-control" id="username" name="username" required>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                    <div class="col-md-6 widget">
-                                        <label for="password" class="form-label">Passwort *</label>
-                                        <input type="password" class="form-control" id="password" name="password" required>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endif; ?>
+                <div id="paymentModalDescription" class="visually-hidden">
+                    Formular zur Eingabe Ihrer Bestell- und Zahlungsdaten
+                </div>
 
-                        <?php if (is_array($this->personal_data_fields)): ?>
-                            <div class="personal-data">
-                                <div class="row g-2">
-                                    <?php if (in_array('salutation', $this->personal_data_fields)): ?>
-                                        <div class="col-lg-4 widget widget-select">
-                                            <label for="salutation" class="form-label">Anrede *</label>
-                                            <select class="form-select" id="salutation" name="salutation" required>
-                                                <option value="">Bitte wählen</option>
-                                                <option value="Herr">Herr</option>
-                                                <option value="Frau">Frau</option>
-                                                <option value="Divers">Divers</option>
-                                            </select>
-                                            <div class="invalid-feedback">Bitte wählen Sie eine Anrede.</div>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if (in_array('firstname', $this->personal_data_fields)): ?>
-                                        <div class="col-lg-4 widget">
-                                            <label for="firstname" class="form-label">Vorname *</label>
-                                            <input type="text" class="form-control" id="firstname" name="firstname" required>
-                                            <div class="invalid-feedback">Bitte geben Sie Ihren Vornamen ein.</div>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if (in_array('lastname', $this->personal_data_fields)): ?>
-                                        <div class="col-lg-4 widget">
-                                            <label for="lastname" class="form-label">Nachname *</label>
-                                            <input type="text" class="form-control" id="lastname" name="lastname" required>
-                                            <div class="invalid-feedback">Bitte geben Sie Ihren Nachnamen ein.</div>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if (in_array('email', $this->personal_data_fields)): ?>
-                                        <div class="col-lg-6 widget">
-                                            <label for="email" class="form-label">E-Mail *</label>
-                                            <input type="email" class="form-control" id="email" name="email" required>
-                                            <div class="invalid-feedback">Bitte geben Sie eine gültige E-Mail-Adresse ein.</div>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if (in_array('phone', $this->personal_data_fields)): ?>
-                                        <div class="col-lg-6 widget">
-                                            <label for="phone" class="form-label">Telefon <?= in_array('phone_required', $this->personal_data_fields) ? '*' : '' ?></label>
-                                            <input type="tel" class="form-control" id="phone" name="phone" <?= in_array('phone_required', $this->personal_data_fields) ? 'required' : '' ?>>
-                                            <div class="invalid-feedback">Bitte geben Sie eine Telefonnummer ein.</div>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if (in_array('company', $this->personal_data_fields)): ?>
-                                        <div class="col-12 widget">
-                                            <label for="company" class="form-label">Firma</label>
-                                            <input type="text" class="form-control" id="company" name="company">
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if (in_array('street', $this->personal_data_fields)): ?>
-                                        <div class="col-12 widget">
-                                            <label for="street" class="form-label">Straße & Hausnummer *</label>
-                                            <input type="text" class="form-control" id="street" name="street" required>
-                                            <div class="invalid-feedback">Bitte geben Sie eine Straße ein.</div>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if (in_array('postal', $this->personal_data_fields) && in_array('city', $this->personal_data_fields)): ?>
-                                        <div class="row g-2">
-                                            <div class="col-lg-4 widget">
-                                                <label for="postal" class="form-label">PLZ *</label>
-                                                <input type="text" class="form-control" id="postal" name="postal" required>
-                                                <div class="invalid-feedback">Bitte geben Sie eine PLZ ein.</div>
-                                            </div>
-                                            <div class="col-lg-8 widget">
-                                                <label for="city" class="form-label">Ort *</label>
-                                                <input type="text" class="form-control" id="city" name="city" required>
-                                                <div class="invalid-feedback">Bitte geben Sie einen Ort ein.</div>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if (in_array('country', $this->personal_data_fields)): ?>
-                                        <div class="col-12 widget widget-select">
-                                            <label for="country" class="form-label">Land *</label>
-                                            <select class="form-select" id="country" name="country" required>
-                                                <option value="">Bitte wählen</option>
-                                                <option value="DE" selected>Deutschland</option>
-                                                <option value="AT">Österreich</option>
-                                                <option value="CH">Schweiz</option>
-                                            </select>
-                                            <div class="invalid-feedback">Bitte wählen Sie ein Land.</div>
-                                        </div>
-                                    <?php endif; ?>
-                                    
-                                    <!-- USt-ID hinzugefügt für Geschäftskunden -->
-                                    <?php if (in_array('vat_id', $this->personal_data_fields)): ?>
-                                        <div class="col-12 widget">
-                                            <label for="vat_id" class="form-label">USt-ID <?= in_array('vat_id_required', $this->personal_data_fields) ? '*' : '' ?></label>
-                                            <input type="text" class="form-control" id="vat_id" name="vat_id" <?= in_array('vat_id_required', $this->personal_data_fields) ? 'required' : '' ?>>
-                                            <div class="invalid-feedback">Bitte geben Sie Ihre USt-ID ein.</div>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php if ($this->show_privacy_notice): ?>
-                            <div class="form-check mb-3 mt-3">
-                                <input class="form-check-input" type="checkbox" id="privacy" name="privacy" required>
-                                <label class="form-check-label" for="privacy">
-                                    Ich habe die
-                                    <a href="{{link_url::<?= $this->privacy_page ?>}}" target="_blank">Datenschutzerklärung</a> gelesen
-                                    und akzeptiere diese. *
-                                </label>
-                                <div class="invalid-feedback">
-                                    Bitte akzeptieren Sie die Datenschutzerklärung.
-                                </div>
-                            </div>
-                        <?php endif; ?>
-
-                        <div data-form-error class="alert alert-danger d-none"></div>
+                <!-- Produkt Info Template -->
+                <template id="product-info-template"
+                          data-template-heading="Ihre Bestellung"
+                          data-template-product-label="Produkt:"
+                          data-template-price-label="Preis:"
+                          data-template-price-badge="inkl. MwSt."
+                          data-template-duration-label="Laufzeit:"
+                          data-template-expiry-label="Gültig bis:">
+                    <div class="product-info mb-3">
+                        <h5 data-template-heading>Ihre Bestellung</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th data-template-product-label>Produkt</th>
+                                        <td data-product-title></td>
+                                    </tr>
+                                    <tr>
+                                        <th data-template-price-label>Preis</th>
+                                        <td>
+                                            <strong data-product-price></strong>
+                                            <span data-template-price-badge class="badge bg-primary ms-2">inkl. MwSt.</span>
+                                        </td>
+                                    </tr>
+                                    <tr data-tax-row>
+                                        <th>enthaltene MwSt.</th>
+                                        <td data-tax-amount></td>
+                                    </tr>
+                                    <tr data-duration-row class="d-none">
+                                        <th data-template-duration-label>Laufzeit</th>
+                                        <td data-product-duration></td>
+                                    </tr>
+                                    <tr data-expiry-row class="d-none">
+                                        <th data-template-expiry-label>Gültig bis</th>
+                                        <td data-product-expiry></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                </template>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                        <button type="submit" class="btn btn-primary">
-                            <span class="spinner-border spinner-border-sm d-none" data-form-spinner role="status"></span>
-                            <span>Weiter zur Zahlung</span>
-                        </button>
-                    </div>
-                </form>
+                <!-- Rest des Formulars -->
+                <?= $this->insert('_stripe_form', [
+                    'stripeKey' => $stripeKey,
+                    'successUrl' => $successUrl,
+                    'currency' => $this->stripe_currency,
+                    'productData' => json_encode($productData),
+                    'elementId' => $this->id,
+                    'createUser' => $this->create_user,
+                    'personalDataFields' => $this->personal_data_fields,
+                    'showPrivacyNotice' => $this->show_privacy_notice,
+                    'privacyPage' => $this->privacy_page
+                ]); ?>
             </div>
         </div>
     </div>
-
-    <!-- Produktinfo-Template für JavaScript -->
-    <template id="product-info-template">
-        <div class="product-info mb-3">
-            <h5 data-template-heading>Ihre Bestellung</h5>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th data-template-product-label>Produkt</th>
-                            <td data-product-title></td>
-                        </tr>
-                        <tr>
-                            <th data-template-price-label>Preis</th>
-                            <td>
-                                <strong data-product-price></strong>
-                                <span data-template-price-badge class="badge bg-primary ms-2">inkl. MwSt.</span>
-                            </td>
-                        </tr>
-                        <tr data-duration-row class="d-none">
-                            <th data-template-duration-label>Laufzeit</th>
-                            <td data-product-duration></td>
-                        </tr>
-                        <tr data-expiry-row class="d-none">
-                            <th data-template-expiry-label>Gültig bis</th>
-                            <td data-product-expiry></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </template>
     
     <?php if ($isDebug): ?>
     <!-- Debug-Informationen für Entwickler -->

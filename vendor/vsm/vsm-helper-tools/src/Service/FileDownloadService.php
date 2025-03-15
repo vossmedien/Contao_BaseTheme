@@ -160,12 +160,12 @@ class FileDownloadService
         $this->framework->initialize();
         
         try {
-            $database = Database::getInstance();
-            $database->prepare("
-                UPDATE tl_file_downloads 
+            $this->db->executeStatement(
+                'UPDATE tl_download_tokens 
                 SET download_count = download_count + 1, last_download = ?
-                WHERE id = ?
-            ")->execute(time(), $downloadId);
+                WHERE id = ?',
+                [time(), $downloadId]
+            );
             
             $this->logger->info('Download-Zähler erhöht', [
                 'context' => ContaoContext::GENERAL,

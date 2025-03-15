@@ -28,12 +28,19 @@ class VsmHelperToolsExtension extends Extension implements PrependExtensionInter
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
+        // Lade die Services-Konfiguration aus dem Resources-Verzeichnis
         $loader = new YamlFileLoader(
             $container,
+            new FileLocator(__DIR__.'/../Resources/config')
+        );
+        $loader->load('services.yml');
+        
+        // Lade die Hauptkonfiguration aus dem config-Verzeichnis
+        $mainLoader = new YamlFileLoader(
+            $container, 
             new FileLocator(__DIR__.'/../../config')
         );
-
-        $loader->load('services.yaml');
+        $mainLoader->load('services.yaml');
 
         // Stripe-Konfiguration laden wenn gesetzt
         $configuration = new Configuration();
@@ -53,7 +60,7 @@ class VsmHelperToolsExtension extends Extension implements PrependExtensionInter
     {
         // Framework-Konfiguration für Routing
         $frameworkConfig = [];
-        $frameworkConfig['router']['resource'] = '@VsmHelperTools/config/routing.yml';
+        $frameworkConfig['router']['resource'] = __DIR__ . '/../../config/routing.yml';
         $frameworkConfig['router']['type'] = 'yaml';
         $frameworkConfig['router']['utf8'] = true;
 

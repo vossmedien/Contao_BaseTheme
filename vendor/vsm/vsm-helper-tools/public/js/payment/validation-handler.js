@@ -2,8 +2,8 @@ class ValidationHandler {
     constructor(form, texts) {
         this.form = form;
         this.texts = texts;
-        this.submitButton = form.querySelector('[data-payment-submit]');
-        this.spinner = form.querySelector('[data-payment-spinner]');
+        this.submitButton = form.querySelector('button[type="submit"]');
+        this.spinner = form.querySelector('[data-form-spinner]');
         this._validateEmail = null;
         this._validateUsername = null;
         this._validatePassword = null;

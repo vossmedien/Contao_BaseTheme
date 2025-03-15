@@ -82,9 +82,13 @@ class DownloadController extends AbstractController
 
     private function updateDownloadStats(int $tokenId): void
     {
+        // Debug-Ausgabe oder Logging
+        error_log('Aktualisiere Download-Statistik: ID=' . $tokenId);
+        
+        // Aktualisiere den Download-Counter nur einmal mit der ID
         $this->db->executeStatement(
-            'UPDATE tl_download_tokens SET download_count = download_count + 1 WHERE id = ?',
-            [$tokenId]
+            'UPDATE tl_download_tokens SET download_count = download_count + 1, last_download = ? WHERE id = ?',
+            [time(), $tokenId]
         );
     }
 } 

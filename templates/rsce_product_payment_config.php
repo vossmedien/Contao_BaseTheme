@@ -237,6 +237,12 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'clr'),
                 ),
+                'tax_rate' => array(
+                    'label' => array('Steuersatz in %', 'Standard: 19% MwSt.'),
+                    'inputType' => 'text',
+                    'eval' => array('rgxp' => 'digit', 'tl_class' => 'w50'),
+                    'default' => 19
+                ),
                 'subscription_duration' => array(
                     'label' => array('Laufzeit in Monaten', 'Optional für zeitlich begrenzte Mitgliedschaften'),
                     'inputType' => 'text',

@@ -1,0 +1,18 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    # Registriere den öffentlichen Ordner für Assets
+    vsm.vsm_helper_tools.asset_provider:
+        class: Contao\CoreBundle\Asset\ContaoContext
+        arguments:
+            - "bundles/vsmhelpertools"
+            - "%%s"
+            - "@request_stack"
+        tags:
+            - { name: "contao.asset", files: "js/payment/stripe-checkout-handler.js", dependencies: [], priority: 20 }
+            - { name: "contao.asset", files: "js/payment/stripe-element-handler.js", dependencies: [], priority: 20 }
+            - { name: "contao.asset", files: "js/payment/ui-handler.js", dependencies: [], priority: 20 }
+            - { name: "contao.asset", files: "js/payment/validation-handler.js", dependencies: [], priority: 20 } 
