@@ -1,0 +1,173 @@
+<?php
+/**
+ * E-Mail-Template für Kunden-Benachrichtigungen bei neuen Zahlungen
+ * 
+ * Verfügbare Variablen:
+ * $order - Bestelldaten mit:
+ *   - product_title: Produkttitel
+ *   - product_id: Produkt-ID
+ *   - price: Preis
+ *   - currency: Währung
+ * $customer - Kundendaten mit allen Formularfeldern (z.B. firstname, lastname, email usw.)
+ * $payment - Zahlungsdaten mit:
+ *   - transaction_id: Transaktions-ID
+ *   - status: Zahlungsstatus
+ *   - payment_method: Zahlungsmethode
+ * $download - Download-Informationen (falls vorhanden):
+ *   - download_url: URL zum Download der Datei
+ *   - expires_date: Ablaufdatum des Downloads
+ *   - download_limit: Maximale Anzahl an Downloads
+ * $invoice - Rechnungsdaten (falls vorhanden):
+ *   - invoice_url: URL zur Rechnung (falls über Stripe erstellt)
+ *   - invoice_number: Rechnungsnummer
+ *   - invoice_date: Rechnungsdatum
+ */
+
+// Sicherstellen, dass die Variablen existieren
+$order = $this->order ?? [];
+$customer = $this->customer ?? [];
+$payment = $this->payment ?? [];
+$download = $this->download ?? [];
+$invoice = $this->invoice ?? [];
+
+// Kundennamen ermitteln für persönliche Anrede
+$customerName = '';
+if (!empty($customer['firstname'])) {
+    $customerName = $customer['firstname'];
+    if (!empty($customer['lastname'])) {
+        $customerName .= ' ' . $customer['lastname'];
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Ihre Bestellbestätigung</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2a5885; }
+        .highlight { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f5f5f5; }
+        .download-button, .invoice-button { display: inline-block; padding: 10px 20px; background-color: #2a5885; color: white; text-decoration: none; border-radius: 4px; margin-top: 10px; }
+        .invoice-button { background-color: #4a9946; }
+        .footer { margin-top: 30px; font-size: 12px; color: #999; border-top: 1px solid #ddd; padding-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vielen Dank für Ihre Bestellung!</h1>
+        
+        <?php if ($customerName): ?>
+        <p>Hallo <?= $customerName ?>,</p>
+        <?php endif; ?>
+        
+        <p>vielen Dank für Ihre Bestellung. Diese E-Mail dient als Bestätigung für Ihren Kauf.</p>
+        
+        <div class="highlight">
+            <h2>Bestellübersicht</h2>
+            <table>
+                <tr>
+                    <th>Produkt</th>
+                    <td><?= $order['product_title'] ?? 'Unbekannt' ?></td>
+                </tr>
+                <tr>
+                    <th>Preis</th>
+                    <td><strong><?= number_format(($order['price'] ?? 0) / 100, 2, ',', '.') ?> <?= strtoupper($order['currency'] ?? 'EUR') ?></strong></td>
+                </tr>
+                <tr>
+                    <th>Bestelldatum</th>
+                    <td><?= date('d.m.Y H:i') ?></td>
+                </tr>
+                <tr>
+                    <th>Zahlungsmethode</th>
+                    <td><?= $payment['payment_method'] ?? 'Kreditkarte' ?></td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td>Bezahlt</td>
+                </tr>
+            </table>
+        </div>
+        
+        <?php if (!empty($invoice) && !empty($invoice['invoice_url'])): ?>
+        <div class="highlight">
+            <h2>Ihre Rechnung</h2>
+            <p>Sie können Ihre Rechnung hier herunterladen oder einsehen:</p>
+            <p><a href="<?= $invoice['invoice_url'] ?>" class="invoice-button" target="_blank">Rechnung ansehen</a></p>
+            
+            <?php if (!empty($invoice['invoice_number'])): ?>
+            <p>Rechnungsnummer: <?= $invoice['invoice_number'] ?></p>
+            <?php endif; ?>
+            
+            <?php if (!empty($invoice['invoice_date'])): ?>
+            <p>Rechnungsdatum: <?= $invoice['invoice_date'] ?></p>
+            <?php endif; ?>
+        </div>
+        <?php else: ?>
+        <div class="highlight">
+            <h2>Ihre Rechnung</h2>
+            <p>Sie erhalten Ihre Rechnung in Kürze per E-Mail direkt von Stripe. Diese wird automatisch nach Abschluss Ihrer Zahlung erstellt und an Ihre E-Mail-Adresse gesendet.</p>
+        </div>
+        <?php endif; ?>
+        
+        <?php if (!empty($download) && !empty($download['download_url'])): ?>
+        <div class="highlight">
+            <h2>Ihr Download</h2>
+            <p>Sie können Ihre gekaufte Datei hier herunterladen:</p>
+            <p><a href="<?= $download['download_url'] ?>" class="download-button">Jetzt herunterladen</a></p>
+            
+            <?php if (!empty($download['expires_date'])): ?>
+            <p><strong>Hinweis:</strong> Dieser Download ist verfügbar bis zum <?= $download['expires_date'] ?>.</p>
+            <?php endif; ?>
+            
+            <?php if (!empty($download['download_limit']) && $download['download_limit'] > 0): ?>
+            <p>Maximale Anzahl an Downloads: <?= $download['download_limit'] ?></p>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+        
+        <h2>Ihre Daten</h2>
+        <table>
+            <?php if (isset($customer['email'])): ?>
+            <tr>
+                <th>E-Mail</th>
+                <td><?= $customer['email'] ?></td>
+            </tr>
+            <?php endif; ?>
+            
+            <?php if (isset($customer['salutation']) || isset($customer['firstname']) || isset($customer['lastname'])): ?>
+            <tr>
+                <th>Name</th>
+                <td>
+                    <?php if (isset($customer['salutation'])): ?><?= $customer['salutation'] ?> <?php endif; ?>
+                    <?php if (isset($customer['firstname'])): ?><?= $customer['firstname'] ?> <?php endif; ?>
+                    <?php if (isset($customer['lastname'])): ?><?= $customer['lastname'] ?><?php endif; ?>
+                </td>
+            </tr>
+            <?php endif; ?>
+            
+            <?php if (isset($customer['street']) || isset($customer['postal']) || isset($customer['city'])): ?>
+            <tr>
+                <th>Adresse</th>
+                <td>
+                    <?php if (isset($customer['street'])): ?><?= $customer['street'] ?><br><?php endif; ?>
+                    <?php if (isset($customer['postal'])): ?><?= $customer['postal'] ?> <?php endif; ?>
+                    <?php if (isset($customer['city'])): ?><?= $customer['city'] ?><?php endif; ?>
+                    <?php if (isset($customer['country'])): ?><br><?= $customer['country'] ?><?php endif; ?>
+                </td>
+            </tr>
+            <?php endif; ?>
+        </table>
+        
+        <div class="footer">
+            <p>Bei Fragen zu Ihrer Bestellung können Sie gerne auf diese E-Mail antworten.</p>
+            <p>Mit freundlichen Grüßen<br>Ihr Team</p>
+        </div>
+    </div>
+</body>
+</html> 
