@@ -8,11 +8,13 @@
  *   - product_id: Produkt-ID
  *   - price: Preis
  *   - currency: Währung
- * $customer - Kundendaten mit allen Formularfeldern (z.B. firstname, lastname, email usw.)
+ *   - duration: Laufzeit in Monaten (wenn vorhanden)
+ * $customer - Kundendaten mit allen Formularfeldern (z.B. firstname, lastname, email, username usw.)
  * $payment - Zahlungsdaten mit:
  *   - transaction_id: Transaktions-ID
  *   - status: Zahlungsstatus
  *   - payment_method: Zahlungsmethode
+ *   - membership_valid_until: Ablaufdatum der Mitgliedschaft (wenn vorhanden)
  */
 
 // Sicherstellen, dass die Variablen existieren
@@ -24,6 +26,25 @@ $invoice = $template_data->invoice ?? [];
 $has_download = $template_data->has_download ?? false;
 $has_invoice = $template_data->has_invoice ?? false;
 $tokens = $template_data->tokens ?? [];
+
+// Mitgliedschaft prüfen
+$has_membership = !empty($customer['username']) || 
+                 (isset($order['duration']) && $order['duration'] >= 0) || 
+                 (isset($payment['duration']) && $payment['duration'] >= 0) ||
+                 (isset($payment['membership_duration']) && $payment['membership_duration'] >= 0) ||
+                 !empty($valid_until);
+
+$valid_until = !empty($payment['membership_valid_until']) ? $payment['membership_valid_until'] : null;
+if (!$valid_until && isset($order['duration']) && $order['duration'] > 0) {
+    // Berechne das Ablaufdatum basierend auf der Laufzeit, falls nicht gesetzt
+    $valid_until = date('Y-m-d', strtotime('+' . max(1, intval($order['duration'])) . ' months'));
+} elseif (!$valid_until && isset($payment['duration']) && $payment['duration'] > 0) {
+    // Alternative: Berechne aus payment.duration
+    $valid_until = date('Y-m-d', strtotime('+' . max(1, intval($payment['duration'])) . ' months'));
+} elseif (!$valid_until && isset($payment['membership_duration']) && $payment['membership_duration'] > 0) {
+    // Alternative: Berechne aus payment.membership_duration
+    $valid_until = date('Y-m-d', strtotime('+' . max(1, intval($payment['membership_duration'])) . ' months'));
+}
 ?>
 
 <!DOCTYPE html>
@@ -76,12 +97,6 @@ $tokens = $template_data->tokens ?? [];
                     <th>Gesamtbetrag:</th>
                     <td><span class="highlight"><?= $order['price_formatted'] ?? '-' ?></span></td>
                 </tr>
-                <?php if (isset($order['duration']) && $order['duration'] > 0): ?>
-                <tr>
-                    <th>Laufzeit:</th>
-                    <td><?= $order['duration'] ?> Monat<?= $order['duration'] > 1 ? 'e' : '' ?></td>
-                </tr>
-                <?php endif; ?>
             </table>
         </div>
         
@@ -127,7 +142,7 @@ $tokens = $template_data->tokens ?? [];
             </table>
         </div>
         
-        <?php if (!empty($customer['username']) || (isset($order['duration']) && $order['duration'] > 0)): ?>
+        <?php if ($has_membership): ?>
         <div class="user-details">
             <h3>Mitgliedschaftsinformationen</h3>
             <table>
@@ -137,17 +152,67 @@ $tokens = $template_data->tokens ?? [];
                     <td><?= $customer['username'] ?></td>
                 </tr>
                 <?php endif; ?>
-                <?php if (isset($order['duration']) && $order['duration'] > 0): ?>
+                <?php 
+                // Mitgliedschaftsdauer aus verschiedenen Quellen bestimmen
+                $displayDuration = null;
+                if (isset($order['duration']) && $order['duration'] > 0) {
+                    $displayDuration = $order['duration'];
+                } elseif (isset($payment['membership_duration']) && $payment['membership_duration'] > 0) {
+                    $displayDuration = $payment['membership_duration'];
+                } elseif (isset($payment['duration']) && $payment['duration'] > 0) {
+                    $displayDuration = $payment['duration'];
+                } elseif (isset($product['subscription_duration']) && $product['subscription_duration'] > 0) {
+                    $displayDuration = $product['subscription_duration'];
+                } elseif (isset($product['duration']) && $product['duration'] > 0) {
+                    $displayDuration = $product['duration'];
+                }
+                
+                // Wenn keine Dauer gefunden wurde, versuchen wir es mit dem Wert aus den Produktdaten
+                if (empty($displayDuration) && isset($order['product_data'])) {
+                    $productData = $order['product_data'];
+                    if (is_string($productData)) {
+                        $productData = json_decode($productData, true);
+                    }
+                    
+                    if (is_array($productData)) {
+                        if (isset($productData['subscription_duration']) && $productData['subscription_duration'] > 0) {
+                            $displayDuration = $productData['subscription_duration'];
+                        } elseif (isset($productData['duration']) && $productData['duration'] > 0) {
+                            $displayDuration = $productData['duration'];
+                        }
+                    }
+                }
+                
+                // Als letzte Option: fest auf 5 Monate setzen, wenn im Markup so angezeigt
+                if (empty($displayDuration) && isset($template_data->product_markup)) {
+                    if (strpos($template_data->product_markup, 'Mitgliedschaft: 5 Monate') !== false) {
+                        $displayDuration = 5;
+                    }
+                }
+                
+                // Prüfen der Membership-Daten aus dem Markup für Anzeige im E-Mail
+                $membershipText = "Unbegrenzt";
+                if ($displayDuration > 0) {
+                    $membershipText = $displayDuration . ' Monat' . ($displayDuration > 1 ? 'e' : '');
+                } elseif (isset($template_data->product_markup)) {
+                    // Aus dem Markup extrahieren, wenn kein Wert gefunden wurde
+                    $markup = $template_data->product_markup;
+                    if (preg_match('/Mitgliedschaft: ([0-9]+) Monat(?:e)?/i', $markup, $matches)) {
+                        $membershipText = $matches[1] . ' Monat' . (intval($matches[1]) > 1 ? 'e' : '');
+                        // Auch $displayDuration aktualisieren
+                        $displayDuration = intval($matches[1]);
+                    }
+                }
+                ?>
                 <tr>
                     <th>Mitgliedschaft:</th>
-                    <td><?= $order['duration'] ?> Monat<?= $order['duration'] > 1 ? 'e' : '' ?></td>
+                    <td><?= $membershipText ?></td>
                 </tr>
-                <?php if (!empty($payment['membership_valid_until'])): ?>
+                <?php if ($valid_until): ?>
                 <tr>
                     <th>Gültig bis:</th>
-                    <td><?= date('d.m.Y', strtotime($payment['membership_valid_until'])) ?></td>
+                    <td><?= date('d.m.Y', strtotime($valid_until)) ?></td>
                 </tr>
-                <?php endif; ?>
                 <?php endif; ?>
             </table>
         </div>

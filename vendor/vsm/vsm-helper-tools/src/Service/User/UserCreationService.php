@@ -40,6 +40,14 @@ class UserCreationService
                 $this->framework->initialize();
             }
             
+            // Detailliertes Logging für Debugging
+            $this->logger->info('createOrUpdateUser aufgerufen mit Daten:', [
+                'email' => $userData['email'] ?? 'nicht gesetzt',
+                'groups' => isset($userData['groups']) ? json_encode($userData['groups']) : 'nicht gesetzt',
+                'subscription_duration' => $userData['subscription_duration'] ?? 'nicht gesetzt',
+                'available_keys' => array_keys($userData)
+            ]);
+            
             // Überprüfen, ob die erforderlichen Daten vorhanden sind
             if (empty($userData['email'])) {
                 $this->logger->error('Keine E-Mail-Adresse für die Benutzer-Erstellung vorhanden');
@@ -163,17 +171,30 @@ class UserCreationService
             // Login aktivieren
             $member->login = true;
             $member->start = $startTime;
-            $member->stop = $endTime;
+            
+            // Stop-Zeit nur setzen, wenn sie größer als 0 ist
+            if ($endTime > 0) {
+                $member->stop = $endTime;
+                $this->logger->info('Mitgliedschaft endet am: ' . date('Y-m-d H:i:s', $endTime));
+            } else {
+                // Sicherstellen, dass stop nicht auf 0 gesetzt wird (01.01.1970)
+                $member->stop = ''; // Leerer String = kein Enddatum in Contao
+                $this->logger->info('Unbegrenzte Mitgliedschaft (kein Enddatum gesetzt)');
+            }
             
             // Mitgliedsgruppen setzen
             if (!empty($groups)) {
                 $member->groups = serialize($groups);
+                $this->logger->info('Mitgliedsgruppen gesetzt: ' . json_encode($groups));
             }
             
             // Mitgliedschaft-Ende Feld setzen
             $this->ensureMembershipExpiresField();
             if ($endTime > 0) {
                 $member->membership_expires = date('Y-m-d', $endTime);
+                $this->logger->info('Membership-expires Feld gesetzt auf: ' . $member->membership_expires);
+            } else {
+                $member->membership_expires = ''; // Leerer String = kein Enddatum
             }
             
             $member->save();
@@ -372,29 +393,46 @@ class UserCreationService
      */
     private function updateExistingMember(MemberModel $member, array $userData): int
     {
+        // Detailliertes Logging für Debugging
+        $this->logger->info('updateExistingMember aufgerufen für: ' . $member->username, [
+            'subscription_duration' => $userData['subscription_duration'] ?? 'nicht gesetzt',
+            'current_stop' => $member->stop ? date('Y-m-d H:i:s', $member->stop) : 'nicht gesetzt',
+            'has_groups' => !empty($userData['groups'])
+        ]);
+        
         // Prüfen, ob ein Aktualisierungszeitraum angegeben wurde
         if (!empty($userData['subscription_duration']) && is_numeric($userData['subscription_duration'])) {
             $duration = (int)$userData['subscription_duration'];
             
-            // Wenn das Mitglied bereits ein Ablaufdatum hat, dieses als Basis verwenden
-            $startTime = time();
-            if ($member->stop && $member->stop > time()) {
-                $startTime = $member->stop;
+            if ($duration <= 0) {
+                $this->logger->warning('Ungültige Mitgliedschaftsdauer für update: ' . $duration);
+                // Keine Änderung am Ablaufdatum
+            } else {
+                // Wenn das Mitglied bereits ein Ablaufdatum hat, dieses als Basis verwenden
+                $startTime = time();
+                if ($member->stop && $member->stop > time()) {
+                    $startTime = $member->stop;
+                    $this->logger->info('Verwende bestehendes Ablaufdatum als Startpunkt: ' . date('Y-m-d H:i:s', $startTime));
+                } else {
+                    $this->logger->info('Verwende aktuelles Datum als Startpunkt: ' . date('Y-m-d H:i:s', $startTime));
+                }
+                
+                // Neues Ablaufdatum berechnen
+                $endTime = strtotime('+' . $duration . ' months', $startTime);
+                
+                // Mitglied aktualisieren
+                $member->stop = $endTime;
+                
+                // Mitgliedschaft-Ende Feld aktualisieren
+                $this->ensureMembershipExpiresField();
+                $member->membership_expires = date('Y-m-d', $endTime);
+                
+                $this->logger->info('Mitgliedschaft für Benutzer ' . $member->username . ' verlängert', [
+                    'duration' => $duration,
+                    'startTime' => date('Y-m-d H:i:s', $startTime),
+                    'new_expiry' => date('Y-m-d H:i:s', $endTime)
+                ]);
             }
-            
-            // Neues Ablaufdatum berechnen
-            $endTime = strtotime('+' . $duration . ' months', $startTime);
-            
-            // Mitglied aktualisieren
-            $member->stop = $endTime;
-            
-            // Mitgliedschaft-Ende Feld aktualisieren
-            $this->ensureMembershipExpiresField();
-            $member->membership_expires = date('Y-m-d', $endTime);
-            
-            $this->logger->info('Mitgliedschaft für Benutzer ' . $member->username . ' verlängert', [
-                'new_expiry' => date('Y-m-d', $endTime)
-            ]);
         }
         
         // Gruppen aktualisieren, falls angegeben
@@ -402,9 +440,27 @@ class UserCreationService
             $groups = $userData['groups'];
             if (is_array($groups)) {
                 $member->groups = serialize(array_map('intval', $groups));
+                $this->logger->info('Gruppen aktualisiert: ' . json_encode(array_map('intval', $groups)));
+            } else if (is_string($groups) && strpos($groups, ',') !== false) {
+                $groupArray = explode(',', $groups);
+                $member->groups = serialize(array_map('intval', $groupArray));
+                $this->logger->info('Gruppen aus String aktualisiert: ' . json_encode(array_map('intval', $groupArray)));
+            } else {
+                $member->groups = serialize([intval($groups)]);
+                $this->logger->info('Einzelne Gruppe gesetzt: ' . intval($groups));
             }
         }
         
+        // Aktualisiere andere Felder, falls vorhanden
+        if (!empty($userData['firstname'])) $member->firstname = $userData['firstname'];
+        if (!empty($userData['lastname'])) $member->lastname = $userData['lastname'];
+        if (!empty($userData['street'])) $member->street = $userData['street'];
+        if (!empty($userData['postal'])) $member->postal = $userData['postal'];
+        if (!empty($userData['city'])) $member->city = $userData['city'];
+        if (!empty($userData['phone'])) $member->phone = $userData['phone'];
+        if (!empty($userData['company'])) $member->company = $userData['company'];
+        
+        $member->tstamp = time();
         $member->save();
         
         return $member->id;
@@ -413,86 +469,162 @@ class UserCreationService
     /**
      * Erstellt einen neuen Benutzer
      */
-    private function createNewMember(array $userData): int
+    private function createNewMember(array $userData): ?int
     {
-        // Benutzername generieren
-        $username = $userData['email'];
-        if (!empty($userData['username'])) {
-            $username = $userData['username'];
-        }
-        
-        // Passwort generieren oder verwenden
-        $password = $this->generatePassword();
-        if (!empty($userData['password'])) {
-            // Wenn das Passwort Base64-codiert ist, decodieren
-            if (preg_match('/^[a-zA-Z0-9+\/=]+$/', $userData['password'])) {
-                try {
-                    $decodedPassword = base64_decode($userData['password'], true);
-                    if ($decodedPassword !== false) {
-                        $password = $decodedPassword;
+        try {
+            $this->framework->initialize();
+            
+            // Username ist entweder direkt gesetzt oder wird aus der E-Mail-Adresse generiert
+            $username = $userData['username'] ?? $userData['email'];
+            
+            // Persönliche Daten extrahieren
+            $personalData = $userData;
+            
+            // Produktdaten auslesen, falls separat übergeben
+            $productData = $userData['product_data'] ?? [];
+            
+            // Passwort entweder aus den Daten nehmen oder generieren
+            $password = '';
+            if (!empty($userData['password'])) {
+                $password = $userData['password'];
+                
+                // Wenn das Passwort Base64-codiert ist, decodieren
+                if (preg_match('/^[a-zA-Z0-9+\/=]+$/', $password)) {
+                    try {
+                        $decodedPassword = base64_decode($password, true);
+                        if ($decodedPassword !== false) {
+                            $password = $decodedPassword;
+                            $plainPassword = $decodedPassword;
+                        }
+                    } catch (\Exception $e) {
+                        // Ignorieren, falls es nicht decodiert werden kann
                     }
-                } catch (\Exception $e) {
-                    // Ignorieren, falls es nicht decodiert werden kann
                 }
             } else {
-                $password = $userData['password'];
+                // Generiere ein zufälliges Passwort
+                $password = $this->generatePassword();
+                $plainPassword = $password;
             }
-        }
-        
-        // Start und Ende der Mitgliedschaft berechnen
-        $startTime = time();
-        $endTime = 0;
-        
-        if (!empty($userData['subscription_duration']) && is_numeric($userData['subscription_duration'])) {
-            $endTime = strtotime('+' . $userData['subscription_duration'] . ' months', $startTime);
-        }
-        
-        // Benutzer erstellen
-        $member = new MemberModel();
-        $member->tstamp = time();
-        $member->dateAdded = time();
-        $member->username = $username;
-        $member->password = password_hash($password, PASSWORD_DEFAULT);
-        $member->email = $userData['email'];
-        $member->firstname = $userData['firstname'] ?? '';
-        $member->lastname = $userData['lastname'] ?? '';
-        $member->gender = $this->mapSalutation($userData['salutation'] ?? '');
-        $member->street = $userData['street'] ?? '';
-        $member->postal = $userData['postal'] ?? '';
-        $member->city = $userData['city'] ?? '';
-        $member->country = $userData['country'] ?? 'de';
-        $member->phone = $userData['phone'] ?? '';
-        $member->company = $userData['company'] ?? '';
-        
-        // Login aktivieren
-        $member->login = true;
-        $member->start = $startTime;
-        $member->stop = $endTime;
-        
-        // Mitgliedsgruppen setzen
-        if (!empty($userData['groups'])) {
-            $groups = $userData['groups'];
-            if (is_array($groups)) {
-                $member->groups = serialize(array_map('intval', $groups));
+            
+            // Detailliertes Logging der Gruppen für Debugging
+            $this->logger->info('Mitgliedergruppen in createNewMember:', [
+                'groups_from_userData' => isset($userData['groups']) ? json_encode($userData['groups']) : 'nicht gesetzt'
+            ]);
+            
+            // Start und Ende der Mitgliedschaft berechnen
+            $startTime = time();
+            $endTime = 0;
+            
+            if (!empty($userData['subscription_duration']) && is_numeric($userData['subscription_duration'])) {
+                // Stelle sicher, dass subscription_duration größer als 0 ist
+                $duration = intval($userData['subscription_duration']);
+                if ($duration > 0) {
+                    $endTime = strtotime('+' . $duration . ' months', $startTime);
+                    $this->logger->info('Mitgliedschaft-Ende berechnet:', [
+                        'duration' => $duration,
+                        'startTime' => date('Y-m-d H:i:s', $startTime),
+                        'endTime' => date('Y-m-d H:i:s', $endTime),
+                        'endTime_timestamp' => $endTime
+                    ]);
+                } else {
+                    $this->logger->warning('Ungültige Mitgliedschaftsdauer: ' . $duration);
+                }
+            } else {
+                $this->logger->info('Keine Mitgliedschaftsdauer gesetzt, verwende unbegrenzte Mitgliedschaft');
             }
+            
+            // Member-Gruppen aus userData['groups'] verwenden
+            $groups = [];
+            
+            if (!empty($userData['groups'])) {
+                if (is_array($userData['groups'])) {
+                    $groups = array_map('intval', $userData['groups']);
+                    $this->logger->info('Gruppen aus Array übernommen: ' . json_encode($groups));
+                } else if (is_string($userData['groups']) && strpos($userData['groups'], ',') !== false) {
+                    $groups = array_map('intval', explode(',', $userData['groups']));
+                    $this->logger->info('Gruppen aus komma-getrenntem String übernommen: ' . json_encode($groups));
+                } else {
+                    $groups = [intval($userData['groups'])];
+                    $this->logger->info('Gruppe als Einzelwert übernommen: ' . json_encode($groups));
+                }
+            } else {
+                // Standardgruppe verwenden, falls verfügbar
+                $container = System::getContainer();
+                if ($container && $container->hasParameter('vsm_helper_tools.default_member_group')) {
+                    $defaultGroup = $container->getParameter('vsm_helper_tools.default_member_group');
+                    if ($defaultGroup) {
+                        $groups = [intval($defaultGroup)];
+                        $this->logger->info('Standardgruppe verwendet: ' . json_encode($groups));
+                    }
+                }
+            }
+            
+            if (empty($groups)) {
+                $this->logger->warning('Keine Mitgliedergruppe gefunden und keine Standardgruppe konfiguriert');
+            }
+            
+            // Benutzer erstellen
+            $member = new MemberModel();
+            $member->tstamp = time();
+            $member->dateAdded = time();
+            $member->username = $username;
+            $member->password = password_hash($password, PASSWORD_DEFAULT);
+            $member->email = $personalData['email'];
+            $member->firstname = $personalData['firstname'] ?? '';
+            $member->lastname = $personalData['lastname'] ?? '';
+            $member->gender = $this->mapSalutation($personalData['salutation'] ?? '');
+            $member->street = $personalData['street'] ?? '';
+            $member->postal = $personalData['postal'] ?? '';
+            $member->city = $personalData['city'] ?? '';
+            $member->country = $personalData['country'] ?? 'de';
+            $member->phone = $personalData['phone'] ?? '';
+            $member->company = $personalData['company'] ?? '';
+            
+            // Login aktivieren
+            $member->login = true;
+            $member->start = $startTime;
+            
+            // Stop-Zeit nur setzen, wenn sie größer als 0 ist
+            if ($endTime > 0) {
+                $member->stop = $endTime;
+                $this->logger->info('Mitgliedschaft endet am: ' . date('Y-m-d H:i:s', $endTime));
+            } else {
+                // Sicherstellen, dass stop nicht auf 0 gesetzt wird (01.01.1970)
+                $member->stop = ''; // Leerer String = kein Enddatum in Contao
+                $this->logger->info('Unbegrenzte Mitgliedschaft (kein Enddatum gesetzt)');
+            }
+            
+            // Mitgliedsgruppen setzen
+            if (!empty($groups)) {
+                $member->groups = serialize($groups);
+                $this->logger->info('Mitgliedsgruppen gesetzt: ' . json_encode($groups));
+            }
+            
+            // Mitgliedschaft-Ende Feld setzen
+            $this->ensureMembershipExpiresField();
+            if ($endTime > 0) {
+                $member->membership_expires = date('Y-m-d', $endTime);
+                $this->logger->info('Membership-expires Feld gesetzt auf: ' . $member->membership_expires);
+            } else {
+                $member->membership_expires = ''; // Leerer String = kein Enddatum
+            }
+            
+            $member->save();
+            
+            $this->logger->info('Neuer Benutzer erstellt: ' . $username);
+            
+            // Wenn ein E-Mail-Service verfügbar ist, sende Registrierungs-E-Mail
+            if ($this->emailService) {
+                $this->emailService->sendRegistrationEmail($member);
+            }
+            
+            return $member->id;
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler bei der Benutzer-Erstellung: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            return null;
         }
-        
-        // Mitgliedschaft-Ende Feld setzen
-        $this->ensureMembershipExpiresField();
-        if ($endTime > 0) {
-            $member->membership_expires = date('Y-m-d', $endTime);
-        }
-        
-        $member->save();
-        
-        $this->logger->info('Neuer Benutzer erstellt: ' . $username);
-        
-        // Wenn ein E-Mail-Service verfügbar ist, sende Registrierungs-E-Mail
-        if ($this->emailService) {
-            $this->emailService->sendRegistrationEmail($member);
-        }
-        
-        return $member->id;
     }
     
     /**

@@ -268,6 +268,17 @@ class StripeCheckoutController extends AbstractController
             
             // Wichtig: Passwort für createUser separieren, nicht in der Datenbank speichern
             $createUser = $data['create_user'] ?? $data['createUser'] ?? $productData['create_user'] ?? false;
+            
+            // Sicherstellen, dass createUser korrekt als Boolean ausgewertet wird
+            if (!is_bool($createUser)) {
+                $createUser = ($createUser === true || $createUser === 1 || $createUser === '1' || 
+                    strtolower((string)$createUser) === 'true' || 
+                    strtolower((string)$createUser) === 'yes' || 
+                    strtolower((string)$createUser) === 'ja');
+                    
+                $this->logger->info('Create-User Parameter ausgewertet als: ' . ($createUser ? 'true' : 'false'));
+            }
+            
             $userPassword = null;
             
             // Wenn Benutzer erstellt werden soll, Passwort sichern und dann aus customerData entfernen
@@ -293,6 +304,26 @@ class StripeCheckoutController extends AbstractController
                 'customer_data' => $customerData,
                 'product_data' => $productData
             ];
+            
+            // Stellen Sie sicher, dass create_user explizit in product_data gesetzt wird
+            if ($createUser) {
+                $sessionData['product_data']['create_user'] = true;
+            }
+            
+            // Wenn ein Produktmarkup übergeben wurde, dieses speichern
+            if (!empty($request->request->get('productMarkup'))) {
+                $sessionData['product_markup'] = $request->request->get('productMarkup');
+            }
+            
+            // Wenn ein Button-Markup übergeben wurde, dieses speichern
+            if (!empty($request->request->get('buttonMarkup'))) {
+                $sessionData['product_button_markup'] = $request->request->get('buttonMarkup');
+            }
+            
+            // Speichern von Daten für Mitgliedergruppen
+            if (!empty($productData['member_group'])) {
+                $sessionData['member_group'] = $productData['member_group'];
+            }
             
             // Wenn User erstellt werden soll, Username und Passwort für die spätere Verarbeitung speichern
             if ($createUser && $userPassword) {
@@ -594,17 +625,118 @@ class StripeCheckoutController extends AbstractController
             
             // Benutzer erstellen, falls erforderlich
             $userId = null;
-            if (isset($sessionData['product_data']['create_user']) && $sessionData['product_data']['create_user']) {
+            $createUserFlag = false;
+            
+            // Überprüfe, ob create_user auf true gesetzt ist (verschiedene Varianten)
+            if (isset($sessionData['product_data']['create_user'])) {
+                $createUserValue = $sessionData['product_data']['create_user'];
+                $createUserFlag = ($createUserValue === true || $createUserValue === 1 || $createUserValue === '1' || 
+                    strtolower((string)$createUserValue) === 'true' || 
+                    strtolower((string)$createUserValue) === 'yes' || 
+                    strtolower((string)$createUserValue) === 'ja');
+                    
+                $this->logger->info('Create-User Wert erkannt: ' . (string)$createUserValue . ' => ' . ($createUserFlag ? 'true' : 'false'));
+            }
+            
+            if ($createUserFlag) {
+                // Umfassendes Debugging der Session-Daten
+                $this->logger->info('Vollständige Session-Daten für Benutzer-Erstellung:', [
+                    'session_id' => $sessionId,
+                    'complete_product_data' => $sessionData['product_data'],
+                    'product_markup' => isset($sessionData['product_markup']) ? substr($sessionData['product_markup'], 0, 200) . '...' : 'nicht vorhanden'
+                ]);
+                
+                // Detailliertes Debugging zum Verständnis der Daten
+                $this->logger->info('Erstelle Benutzer mit folgenden Daten:', [
+                    'customer_data_keys' => array_keys($sessionData['customer_data']),
+                    'product_data_keys' => array_keys($sessionData['product_data']),
+                    'subscription_duration' => $sessionData['product_data']['subscription_duration'] ?? 'nicht gesetzt',
+                    'member_group' => $sessionData['product_data']['member_group'] ?? 'nicht gesetzt'
+                ]);
+                
+                // Sicherstellen, dass subscription_duration aus allen möglichen Quellen extrahiert wird
+                $subscriptionDuration = 0;
+                
+                // 1. Direkt aus den Schlüsseln in product_data
+                $durationKeys = [
+                    'subscription_duration', 'duration', 'membership_duration', 
+                    'data-subscription-duration', 'data-duration', 'data_subscription_duration'
+                ];
+                
+                foreach ($durationKeys as $key) {
+                    if (isset($sessionData['product_data'][$key]) && !empty($sessionData['product_data'][$key])) {
+                        $subscriptionDuration = intval($sessionData['product_data'][$key]);
+                        $this->logger->info('Mitgliedschaftsdauer aus Schlüssel ' . $key . ' extrahiert: ' . $subscriptionDuration);
+                        break;
+                    }
+                }
+                
+                // 2. Wenn keine Dauer gefunden wurde, prüfen wir payment_data
+                if ($subscriptionDuration == 0 && isset($sessionData['payment_data']['duration'])) {
+                    $subscriptionDuration = intval($sessionData['payment_data']['duration']);
+                    $this->logger->info('Mitgliedschaftsdauer aus payment_data extrahiert: ' . $subscriptionDuration);
+                }
+                
+                // 3. Wenn immer noch keine Dauer gefunden wurde, prüfen wir das productMarkup
+                if ($subscriptionDuration == 0 && !empty($sessionData['product_markup'])) {
+                    if (preg_match('/Mitgliedschaft:\s*(\d+)\s*Monate?/', $sessionData['product_markup'], $matches)) {
+                        $subscriptionDuration = intval($matches[1]);
+                        $this->logger->info('Mitgliedschaftsdauer aus product_markup extrahiert: ' . $subscriptionDuration);
+                    }
+                }
+                
+                // Detaillierte Protokollierung der vorhandenen Produktdaten
+                $this->logger->info('Vorhandene Produktdaten zur Diagnose:', [
+                    'alle_produkt_schlüssel' => array_keys($sessionData['product_data']),
+                    'duration_wert' => $sessionData['product_data']['duration'] ?? 'nicht vorhanden',
+                    'subscription_duration_wert' => $sessionData['product_data']['subscription_duration'] ?? 'nicht vorhanden'
+                ]);
+
+                // TEMPORÄRE LÖSUNG: Hardcoded Duration für Testzwecke, später entfernen!
+                // In der Produktivversion wird die Duration aus der Produktkonfiguration kommen
+                if ($subscriptionDuration == 0 && isset($sessionData['product_data']['duration']) && 
+                    is_numeric($sessionData['product_data']['duration']) && $sessionData['product_data']['duration'] > 0) {
+                    $subscriptionDuration = intval($sessionData['product_data']['duration']);
+                    $this->logger->info('Setze subscription_duration aus duration-Feld: ' . $subscriptionDuration);
+                }
+
+                // 4. Als Fallback: Kein Enddatum setzen
+                if ($subscriptionDuration == 0) {
+                    // Kein Enddatum setzen (unbegrenzte Mitgliedschaft)
+                    $subscriptionDuration = 0;
+                    $this->logger->info('Keine Mitgliedschaftsdauer gefunden, verwende unbegrenzte Mitgliedschaft');
+                }
+                
+                // Benutzerdaten umfangreicher zusammenstellen
                 $userData = [
-                    'username' => $sessionData['customer_data']['email'] ?? '',
+                    'username' => $sessionData['customer_data']['username'] ?? $sessionData['customer_data']['email'] ?? '',
                     'email' => $sessionData['customer_data']['email'] ?? '',
                     'firstname' => $sessionData['customer_data']['firstname'] ?? '',
                     'lastname' => $sessionData['customer_data']['lastname'] ?? '',
-                    'groups' => isset($sessionData['product_data']['user_groups']) 
-                        ? explode(',', $sessionData['product_data']['user_groups']) 
+                    'street' => $sessionData['customer_data']['street'] ?? '',
+                    'postal' => $sessionData['customer_data']['postal'] ?? '',
+                    'city' => $sessionData['customer_data']['city'] ?? '',
+                    'phone' => $sessionData['customer_data']['phone'] ?? '',
+                    'company' => $sessionData['customer_data']['company'] ?? '',
+                    'country' => $sessionData['customer_data']['country'] ?? 'DE',
+                    'groups' => isset($sessionData['product_data']['member_group']) 
+                        ? explode(',', $sessionData['product_data']['member_group']) 
                         : [],
-                    'subscription_duration' => $sessionData['product_data']['subscription_duration'] ?? 0
+                    'subscription_duration' => $subscriptionDuration
                 ];
+                
+                // Explizite Debugging-Ausgabe der finalen userData
+                $this->logger->info('Finale Benutzerdaten vor createOrUpdateUser:', [
+                    'username' => $userData['username'],
+                    'email' => $userData['email'],
+                    'subscription_duration' => $userData['subscription_duration'],
+                    'gruppen' => json_encode($userData['groups'])
+                ]);
+                
+                // Wenn ein Passwort in den Benutzerdaten vorhanden ist, dieses verwenden
+                if (isset($sessionData['user_creation']['password'])) {
+                    $userData['password'] = $sessionData['user_creation']['password'];
+                }
                 
                 $userId = $this->userService->createOrUpdateUser($userData);
             

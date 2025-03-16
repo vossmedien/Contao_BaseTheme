@@ -217,6 +217,9 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                         $buttonClass = 'btn btn-primary product-checkout-button';
                                         $buttonText = $product->button_text ?: 'Jetzt kaufen';
                                         
+                                        // Mitgliedschaftsdauer explizit für bessere Sichtbarkeit
+                                        $subscriptionDuration = intval($product->subscription_duration ?: 0);
+                                        
                                         // Datei-Verkauf
                                         $fileSale = !empty($product->file_sale);
                                         $filePath = '';
@@ -263,6 +266,14 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                             data-create-invoice="<?= ($product->create_invoice == 1 || $product->create_invoice === true) ? 'true' : 'false' ?>"
                                             <?php else: ?>
                                             data-create-invoice="1"
+                                            <?php endif; ?>
+                                            <?php if ($this->create_user): ?>
+                                            data-create-user="true"
+                                            data-member-group="<?= $this->member_group ?>"
+                                            <?php endif; ?>
+                                            <?php if (!empty($product->subscription_duration)): ?>
+                                            data-subscription-duration="<?= $subscriptionDuration ?>"
+                                            data-duration="<?= $subscriptionDuration ?>"
                                             <?php endif; ?>
                                             <?php if ($fileSale): ?>
                                             data-file-sale="true"

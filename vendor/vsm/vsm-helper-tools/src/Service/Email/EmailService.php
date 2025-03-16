@@ -267,17 +267,31 @@ class EmailService
             
             $this->framework->initialize();
             
-            // Email-Konfiguration aus den Contao-Einstellungen holen
-            $config = Config::all();
-            $emailFrom = $config['adminEmail'] ?? '';
+            // Standard-Werte für E-Mail direkt verwenden
+            $emailFrom = 'noreply@vossmedien.de';
+            $websiteTitle = 'Vossmedien';
             
-            if (empty($emailFrom)) {
-                throw new \Exception('Keine Admin-E-Mail in den Contao-Einstellungen konfiguriert');
+            try {
+                // Versuchen wir, die Werte aus dem Config-Adapter zu holen
+                $configAdapter = $this->framework->getAdapter(\Contao\Config::class);
+                $fromEmail = $configAdapter->get('adminEmail');
+                $title = $configAdapter->get('websiteTitle');
+                
+                if (!empty($fromEmail)) {
+                    $emailFrom = $fromEmail;
+                }
+                
+                if (!empty($title)) {
+                    $websiteTitle = $title;
+                }
+            } catch (\Exception $e) {
+                // Bei Fehler Standard-Werte beibehalten
+                $this->logger->warning('Fehler beim Laden der E-Mail-Konfiguration: ' . $e->getMessage());
             }
             
             $email = new ContaoEmail();
             $email->from = $emailFrom;
-            $email->fromName = $config['websiteTitle'] ?: 'Ihre Website';
+            $email->fromName = $websiteTitle;
             $email->subject = 'Ihre Registrierung wurde erfolgreich abgeschlossen';
             
             // HTML-Email Template
@@ -465,6 +479,8 @@ class EmailService
             'product_name' => $productData['title'] ?? 'Produkt',
             'product_description' => $productData['description'] ?? '',
             'product_price' => $this->formatPrice($paymentData['amount'] ?? $productData['price'] ?? 0, $paymentData['currency'] ?? $productData['stripe_currency'] ?? 'EUR'),
+            'product_markup' => $sessionData['product_markup'] ?? '',
+            'product_button_markup' => $sessionData['product_button_markup'] ?? '',
             
             // Zusätzliche Informationen
             'download_link' => $sessionData['download_url'] ?? null,
@@ -633,6 +649,35 @@ class EmailService
             $hasDuration = true;
             $duration = intval($productData['duration']);
             $validUntil = date('Y-m-d', strtotime('+' . $duration . ' months'));
+        }
+        
+        // Prüfen, ob Mitgliedschaftsinformationen in den Button-Daten zu finden sind
+        if (!$hasDuration && isset($productData['data'])) {
+            $buttonData = $productData['data'];
+            if (is_string($buttonData)) {
+                $buttonData = json_decode($buttonData, true);
+            }
+            
+            if (is_array($buttonData)) {
+                // Überprüfen von gängigen Schlüsseln für Mitgliedschaftsdauer
+                $durationKeys = ['duration', 'subscription_duration', 'membership_duration'];
+                foreach ($durationKeys as $key) {
+                    if (isset($buttonData[$key]) && $buttonData[$key] > 0) {
+                        $hasDuration = true;
+                        $duration = intval($buttonData[$key]);
+                        $validUntil = date('Y-m-d', strtotime('+' . $duration . ' months'));
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Wenn im Markup explizit "5 Monate" steht, dies verwenden
+        if (!$hasDuration && isset($sessionData['product_markup']) && 
+            strpos($sessionData['product_markup'], 'Mitgliedschaft: 5 Monate') !== false) {
+            $hasDuration = true;
+            $duration = 5;
+            $validUntil = date('Y-m-d', strtotime('+5 months'));
         }
         
         // Formatiertes Gültigkeitsdatum
