@@ -11,11 +11,18 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     // Stripe.js Script laden
     $GLOBALS['TL_HEAD'][] = '<script src="https://js.stripe.com/v3/"></script>';
     
-    // JS-Dateien aus dem Bundle laden
-    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/stripe-checkout-handler.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/stripe-element-handler.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/ui-handler.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/validation-handler.js|static';
+    // Gebündeltes JS laden
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/components/bundle.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/stripe-elements-init.js|static';
+    
+    /*
+    // Oder als ES6-Module laden (Option 2)
+    $GLOBALS['TL_HEAD'][] = '<script type="module" src="bundles/vsmhelpertools/js/payment/components/StripeBase.js"></script>';
+    $GLOBALS['TL_HEAD'][] = '<script type="module" src="bundles/vsmhelpertools/js/payment/components/UIHandler.js"></script>';
+    $GLOBALS['TL_HEAD'][] = '<script type="module" src="bundles/vsmhelpertools/js/payment/components/FormValidator.js"></script>';
+    $GLOBALS['TL_HEAD'][] = '<script type="module" src="bundles/vsmhelpertools/js/payment/components/StripeElementsForm.js"></script>';
+    $GLOBALS['TL_HEAD'][] = '<script type="module" src="bundles/vsmhelpertools/js/payment/stripe-elements-init.js"></script>';
+    */
     
     // CSS laden
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce_product_payment.min.css|static';
@@ -85,7 +92,12 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
     "cancelUrl": "<?= $this->alias ? Controller::generateFrontendUrl($this->row()) : '/' ?>",
     "createUserAccount": <?= $this->create_user ? 'true' : 'false' ?>,
     "currency": "<?= $this->stripe_currency ?>",
-    "debug": <?= $isDebug ? 'true' : 'false' ?>
+    "debug": <?= $isDebug ? 'true' : 'false' ?>,
+    "formSelector": "#customerDataForm",
+    "paymentElementSelector": "#payment-element",
+    "cardErrorSelector": "#card-errors",
+    "useElements": true,
+    "usePaymentElement": true
 }
 </script>
 
@@ -255,7 +267,7 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                         
                                         <button type="button" 
                                             class="<?= $buttonClass ?>"
-                                            data-checkout="true"
+                                            data-checkout-button
                                             data-product-id="<?= $index ?>" 
                                             data-element-id="<?= $this->id ?>"
                                             data-product-title="<?= StringUtil::specialchars($product->title) ?>"
@@ -376,7 +388,7 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                     'stripeKey' => $stripeKey,
                     'successUrl' => $successUrl,
                     'currency' => $this->stripe_currency,
-                    'productData' => json_encode($productData),
+                    'productData' => htmlspecialchars(json_encode($productData), ENT_QUOTES, 'UTF-8'),
                     'elementId' => $this->id,
                     'createUser' => $this->create_user,
                     'personalDataFields' => $this->personal_data_fields,
@@ -405,7 +417,7 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
         console.log('Checkout Handler initialisiert:', typeof window.stripeCheckout !== 'undefined' ? 'Ja' : 'Nein');
         console.log('Bootstrap Modal verfügbar:', typeof bootstrap !== 'undefined' && typeof bootstrap.Modal !== 'undefined' ? 'Ja' : 'Nein');
         
-        const buttons = document.querySelectorAll('[data-checkout]');
+        const buttons = document.querySelectorAll('[data-checkout-button]');
         console.log(`${buttons.length} Checkout-Buttons gefunden`);
         
         const forms = document.querySelectorAll('form[data-customer-form]');

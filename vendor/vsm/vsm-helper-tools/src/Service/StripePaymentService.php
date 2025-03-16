@@ -451,4 +451,113 @@ class StripePaymentService
             throw new \Exception('Fehler beim Abrufen des Payment Intent: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Erstellt einen Payment Intent für die direkte Kartenerfassung mit Stripe Elements
+     */
+    public function createElementsPaymentIntent(array $data): PaymentIntent
+    {
+        try {
+            if (empty($data['amount']) || !is_numeric($data['amount']) || $data['amount'] <= 0) {
+                throw new \Exception('Ungültiger Betrag: muss eine positive Zahl sein');
+            }
+
+            if (empty($data['currency']) || !in_array(strtolower($data['currency']), ['eur', 'usd', 'gbp'])) {
+                throw new \Exception('Ungültige Währung: nur EUR, USD und GBP werden unterstützt');
+            }
+
+            // Metadaten für Payment Intent
+            $metadata = $data['metadata'] ?? [];
+            
+            // Grundlegende Payment Intent Daten
+            $paymentIntentData = [
+                'amount' => (int)$data['amount'],
+                'currency' => strtolower($data['currency']),
+                'automatic_payment_methods' => [
+                    'enabled' => true
+                ],
+                'metadata' => $metadata,
+                'description' => $data['description'] ?? 'Zahlung mit Stripe Elements'
+            ];
+            
+            // Kunden-Email für Quittung hinzufügen, falls vorhanden
+            if (!empty($data['customer_email'])) {
+                $paymentIntentData['receipt_email'] = $data['customer_email'];
+            }
+            
+            // Kunden-ID hinzufügen, falls vorhanden
+            if (!empty($data['customer_id'])) {
+                $paymentIntentData['customer'] = $data['customer_id'];
+            } elseif (!empty($data['customer_data']) && !empty($data['customer_data']['email'])) {
+                // Automatisch Kunden erstellen, wenn Kundendaten vorhanden sind
+                $customer = $this->getOrCreateCustomer($data['customer_data']);
+                $paymentIntentData['customer'] = $customer->id;
+            }
+
+            $paymentIntent = PaymentIntent::create($paymentIntentData);
+
+            $this->logger->info('Payment Intent für Stripe Elements erstellt', [
+                'payment_intent_id' => $paymentIntent->id,
+                'amount' => $paymentIntent->amount / 100 . ' ' . strtoupper($paymentIntent->currency),
+                'description' => $data['description'] ?? 'Zahlung mit Stripe Elements'
+            ]);
+
+            return $paymentIntent;
+            
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Stripe API Fehler beim Erstellen des Payment Intents', [
+                'error' => $e->getMessage(),
+                'code' => $e->getHttpStatus()
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Bestätigt einen Payment Intent mit den gegebenen Zahlungsdetails
+     */
+    public function confirmPaymentIntent(string $paymentIntentId, array $paymentDetails): PaymentIntent
+    {
+        try {
+            $paymentIntent = PaymentIntent::retrieve($paymentIntentId);
+            
+            // Überprüfen, ob der Payment Intent bereits bestätigt wurde
+            if ($paymentIntent->status === 'succeeded') {
+                $this->logger->info('Payment Intent wurde bereits erfolgreich bestätigt', [
+                    'payment_intent_id' => $paymentIntentId
+                ]);
+                return $paymentIntent;
+            }
+            
+            // Payment Intent bestätigen
+            $confirmData = [];
+            
+            // Zahlungsmethode hinzufügen, falls vorhanden
+            if (!empty($paymentDetails['payment_method'])) {
+                $confirmData['payment_method'] = $paymentDetails['payment_method'];
+            }
+            
+            // Return URL für 3D Secure Bestätigung
+            if (!empty($paymentDetails['return_url'])) {
+                $confirmData['return_url'] = $paymentDetails['return_url'];
+            }
+            
+            $confirmedIntent = $paymentIntent->confirm($confirmData);
+            
+            $this->logger->info('Payment Intent bestätigt', [
+                'payment_intent_id' => $confirmedIntent->id,
+                'status' => $confirmedIntent->status
+            ]);
+            
+            return $confirmedIntent;
+            
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Stripe API Fehler bei der Bestätigung des Payment Intents', [
+                'error' => $e->getMessage(),
+                'code' => $e->getHttpStatus(),
+                'payment_intent_id' => $paymentIntentId
+            ]);
+            throw $e;
+        }
+    }
 } 

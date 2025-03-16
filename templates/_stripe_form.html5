@@ -151,14 +151,16 @@
             </div>
         <?php endif; ?>
 
-        <!-- Die Zahlungsmethode-Auswahl wird bei Stripe Checkout direkt von Stripe gehandhabt -->
-        <?php if (false && $this->useStripeElements): ?>
-        <div class="my-3">
-            <label class="form-label">Zahlungsmethode *</label>
-            <div id="payment-element"></div>
-            <div id="payment-errors" class="invalid-feedback d-block" role="alert"></div>
+        <!-- Stripe Elements Zahlungsformular -->
+        <div class="payment-section mt-4 mb-3">
+            <h5>Zahlungsinformationen</h5>
+            <div class="mb-3">
+                <div id="payment-element" class="form-control">
+                    <!-- Stripe Payment Element wird hier eingebunden -->
+                </div>
+                <div id="card-errors" class="invalid-feedback d-block" role="alert"></div>
+            </div>
         </div>
-        <?php endif; ?>
 
         <?php if ($this->showPrivacyNotice): ?>
             <div class="form-check mb-3">
