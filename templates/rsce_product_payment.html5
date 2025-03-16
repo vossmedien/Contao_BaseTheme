@@ -194,6 +194,12 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                             <?php if ($product->price_info): ?>
                                                 <small class="d-block text-muted"><?= $product->price_info ?></small>
                                             <?php endif; ?>
+                                            <?php if ($product->subscription_duration): ?>
+                                                <small class="d-block text-primary">
+                                                    <i class="bi bi-calendar-check"></i> 
+                                                    Mitgliedschaft: <?= intval($product->subscription_duration) ?> Monat<?= intval($product->subscription_duration) > 1 ? 'e' : '' ?>
+                                                </small>
+                                            <?php endif; ?>
                                         </strong>
                                     </div>
                                 <?php endif; ?>
@@ -254,9 +260,9 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                             data-currency="<?= $this->stripe_currency ?>"
                                             data-tax-rate="<?= $product->tax_rate ?>"
                                             <?php if (isset($product->create_invoice)): ?>
-                                            data-create-invoice="<?= $product->create_invoice ? 'true' : 'false' ?>"
+                                            data-create-invoice="<?= ($product->create_invoice == 1 || $product->create_invoice === true) ? 'true' : 'false' ?>"
                                             <?php else: ?>
-                                            data-create-invoice="true"
+                                            data-create-invoice="1"
                                             <?php endif; ?>
                                             <?php if ($fileSale): ?>
                                             data-file-sale="true"

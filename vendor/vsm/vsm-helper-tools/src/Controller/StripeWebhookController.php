@@ -73,6 +73,37 @@ class StripeWebhookController extends AbstractController
         
         // Webhook-Secret für den StripePaymentService setzen
         $this->stripeService->setWebhookSecret($webhookSecret);
+        
+        // Stellen Sie sicher, dass die Sperrentabelle existiert
+        $this->ensureLockTableExists();
+    }
+
+    /**
+     * Stellt sicher, dass die Tabelle für Sperren existiert
+     */
+    private function ensureLockTableExists(): void
+    {
+        try {
+            // Prüfe, ob die Tabelle bereits existiert
+            $tableExists = $this->db->executeQuery("SHOW TABLES LIKE 'tl_stripe_locks'")->rowCount() > 0;
+            
+            if (!$tableExists) {
+                // Tabelle erstellen, wenn sie nicht existiert
+                $this->db->executeStatement("
+                    CREATE TABLE IF NOT EXISTS tl_stripe_locks (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        lock_key VARCHAR(255) NOT NULL,
+                        lock_value VARCHAR(255) NOT NULL,
+                        lock_time INT NOT NULL,
+                        UNIQUE KEY lock_key (lock_key)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                ");
+                
+                $this->logger->info('Tabelle tl_stripe_locks wurde erstellt');
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Erstellen der Sperrentabelle: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -176,6 +207,30 @@ class StripeWebhookController extends AbstractController
             if ($event->type === 'payment_intent.succeeded') {
                 $paymentIntent = $event->data->object;
                 $result = $this->handlePaymentIntentSuccess($paymentIntent);
+            } else if ($event->type === 'charge.updated' || $event->type === 'charge.succeeded') {
+                // Bei charge.updated/succeeded prüfen, ob eine Rechnung erstellt werden soll
+                $charge = $event->data->object;
+                
+                // Prüfen, ob ein payment_intent existiert
+                if (!empty($charge->payment_intent)) {
+                    // PaymentIntent abrufen
+                    $paymentIntent = \Stripe\PaymentIntent::retrieve($charge->payment_intent);
+                    
+                    // Wenn der PaymentIntent existiert, wie einen erfolgreichen PaymentIntent behandeln
+                    if ($paymentIntent) {
+                        $this->logger->info('Charge-Event mit PaymentIntent erkannt', [
+                            'event_type' => $event->type,
+                            'charge_id' => $charge->id,
+                            'payment_intent_id' => $paymentIntent->id
+                        ]);
+                        
+                        $result = $this->handlePaymentIntentSuccess($paymentIntent);
+                    } else {
+                        $result = ['status' => 'success', 'message' => 'Charge verarbeitet, aber PaymentIntent nicht gefunden'];
+                    }
+                } else {
+                    $result = ['status' => 'success', 'message' => 'Charge ohne PaymentIntent verarbeitet'];
+                }
             } else {
                 // Andere Event-Typen an den StripePaymentService delegieren
                 $result = $this->stripeService->processWebhookEvent($event);
@@ -209,6 +264,318 @@ class StripeWebhookController extends AbstractController
             'currency' => $paymentIntent->currency,
             'has_metadata' => !empty($paymentIntent->metadata) ? 'ja' : 'nein'
         ]);
+        
+        // Prüfe, ob eine Rechnung existiert oder erstellt werden soll
+        // Standard: Rechnung erstellen, wenn nicht explizit deaktiviert
+        $shouldCreateInvoice = true;
+        
+        // Prüfe verschiedene mögliche Metadata-Formate
+        if (!empty($paymentIntent->metadata)) {
+            if (isset($paymentIntent->metadata->generate_invoice)) {
+                $shouldCreateInvoice = filter_var($paymentIntent->metadata->generate_invoice, FILTER_VALIDATE_BOOLEAN);
+            } else if (isset($paymentIntent->metadata->create_invoice)) {
+                $shouldCreateInvoice = filter_var($paymentIntent->metadata->create_invoice, FILTER_VALIDATE_BOOLEAN);
+            } else if (isset($paymentIntent->metadata->invoice)) {
+                $shouldCreateInvoice = filter_var($paymentIntent->metadata->invoice, FILTER_VALIDATE_BOOLEAN);
+            }
+        }
+        
+        $this->logger->info('Rechnungserstellung: ' . ($shouldCreateInvoice ? 'aktiviert' : 'deaktiviert'));
+        
+        // Nur fortfahren, wenn eine Rechnung erstellt werden soll
+        if ($shouldCreateInvoice) {
+            $this->logger->info('Prüfe auf existierende Rechnung oder erstelle eine neue');
+            
+            // Prüfe, ob eine vorhandene Rechnung existiert
+            $invoiceExists = false;
+            
+            try {
+                // Suche zuerst nach kürzlich erstellten Rechnungen für diesen Kunden
+                $customerInvoices = \Stripe\Invoice::all([
+                    'customer' => $paymentIntent->customer,
+                    'limit' => 5,
+                    'created' => [
+                        'gte' => time() - 3600 // letzte Stunde
+                    ]
+                ]);
+                
+                // Prüfe, ob eine der Rechnungen diese Payment Intent in den Metadaten hat
+                $invoiceFound = false;
+                if (!empty($customerInvoices->data)) {
+                    foreach ($customerInvoices->data as $invoice) {
+                        if (isset($invoice->metadata->related_to_payment) && 
+                            $invoice->metadata->related_to_payment === $paymentIntent->id) {
+                            $invoiceExists = true;
+                            $this->logger->info('Rechnung basierend auf Metadaten gefunden', [
+                                'invoice_id' => $invoice->id,
+                                'invoice_number' => $invoice->number
+                            ]);
+                            $invoiceFound = true;
+                            break;
+                        }
+                    }
+                }
+                
+                // Prüfen, ob in den Metadaten des PaymentIntent eine Rechnungs-ID gespeichert ist
+                if (!$invoiceFound && !empty($paymentIntent->metadata->invoice_id)) {
+                    $invoiceExists = true;
+                    $this->logger->info('Rechnung in PaymentIntent-Metadaten gefunden', [
+                        'invoice_id' => $paymentIntent->metadata->invoice_id
+                    ]);
+                    $invoiceFound = true;
+                }
+                
+                // Wenn keine Rechnung gefunden wurde, erstelle eine
+                if (!$invoiceFound && !empty($paymentIntent->customer)) {
+                    // Eine Sperre in der Datenbank setzen, um doppelte Rechnungen zu vermeiden
+                    $lockKey = 'invoice_creation_' . $paymentIntent->id;
+                    $lockValue = uniqid('lock_', true);
+                    $isLocked = false;
+                    
+                    try {
+                        // Versuche, einen Lock in der Datenbank zu setzen
+                        $this->db->beginTransaction();
+                        
+                        // Prüfe, ob bereits ein Lock existiert
+                        $existingLock = $this->db->fetchAssociative(
+                            "SELECT * FROM tl_stripe_locks WHERE lock_key = ?",
+                            [$lockKey]
+                        );
+                        
+                        if ($existingLock) {
+                            // Wenn der Lock älter als 5 Minuten ist, übernehmen wir ihn
+                            $lockTime = $existingLock['lock_time'] ?? 0;
+                            if (time() - $lockTime > 300) { // 5 Minuten
+                                $this->db->executeStatement(
+                                    "UPDATE tl_stripe_locks SET lock_value = ?, lock_time = ? WHERE lock_key = ?",
+                                    [$lockValue, time(), $lockKey]
+                                );
+                                $isLocked = true;
+                            } else {
+                                $this->logger->info('Rechnung wird bereits von einem anderen Prozess erstellt', [
+                                    'lock_key' => $lockKey,
+                                    'lock_time' => date('Y-m-d H:i:s', $lockTime)
+                                ]);
+                                $this->db->commit();
+                                return [
+                                    'success' => true,
+                                    'message' => 'Payment Intent wird bereits verarbeitet',
+                                    'payment_intent_id' => $paymentIntent->id
+                                ];
+                            }
+                        } else {
+                            // Setze einen neuen Lock
+                            $this->db->executeStatement(
+                                "INSERT INTO tl_stripe_locks (lock_key, lock_value, lock_time) VALUES (?, ?, ?)",
+                                [$lockKey, $lockValue, time()]
+                            );
+                            $isLocked = true;
+                        }
+                        
+                        $this->db->commit();
+                    } catch (\Exception $e) {
+                        $this->db->rollBack();
+                        $this->logger->error('Fehler beim Setzen des Locks: ' . $e->getMessage());
+                        // Wir fahren trotzdem fort, da das nur ein zusätzlicher Schutz ist
+                    }
+                    
+                    // Fahre mit der Rechnungserstellung fort
+                    $this->logger->info('Keine Rechnung gefunden, erstelle eine neue', [
+                        'is_locked' => $isLocked ? 'ja' : 'nein',
+                        'lock_key' => $lockKey
+                    ]);
+                    
+                    // Produktbeschreibung zusammenstellen
+                    $description = 'Bestellung: ';
+                    if (!empty($paymentIntent->metadata->product_title)) {
+                        $description .= $paymentIntent->metadata->product_title;
+                    } else {
+                        $description .= 'Produkt';
+                    }
+                    
+                    if (!empty($paymentIntent->metadata->product_id)) {
+                        $description .= ' (ID: ' . $paymentIntent->metadata->product_id . ')';
+                    }
+                    
+                    // Bereite Stripe für API-Aufrufe vor
+                    $stripe = new \Stripe\StripeClient($this->stripeSecretKey);
+                    
+                    // Logging für Debugging
+                    $this->logger->info('PaymentIntent Details für Rechnungserstellung', [
+                        'payment_intent_id' => $paymentIntent->id,
+                        'amount' => $paymentIntent->amount,
+                        'amount_as_decimal' => $paymentIntent->amount/100,
+                        'currency' => $paymentIntent->currency,
+                        'payment_status' => $paymentIntent->status
+                    ]);
+                    
+                    // Berechne den Betrag für die Rechnung
+                    // Prüfe, ob ein Steuersatz in den Metadaten angegeben ist
+                    $taxRate = 19.0; // Standardsteuersatz
+                    $taxIncluded = true; // Standardmäßig Bruttopreise
+                    
+                    if (isset($paymentIntent->metadata->tax_rate)) {
+                        $taxRate = (float)$paymentIntent->metadata->tax_rate;
+                    }
+                    
+                    if (isset($paymentIntent->metadata->tax_included)) {
+                        $taxIncluded = filter_var($paymentIntent->metadata->tax_included, FILTER_VALIDATE_BOOLEAN);
+                    }
+                    
+                    // Betrag für die Rechnung (in Cent)
+                    $invoiceAmount = $paymentIntent->amount;
+                    
+                    // Detailliertes Logging des Betrags
+                    $this->logger->info('Betragsberechnung für Rechnung', [
+                        'original_amount' => $paymentIntent->amount,
+                        'amount_decimal' => $paymentIntent->amount / 100,
+                        'tax_rate' => $taxRate,
+                        'tax_included' => $taxIncluded ? 'ja' : 'nein',
+                        'invoice_amount' => $invoiceAmount,
+                        'invoice_amount_decimal' => $invoiceAmount / 100
+                    ]);
+                    
+                    try {
+                        // Neue Methode zur Rechnungserstellung ohne InvoiceItems
+                        $this->logger->info('Verwende neue direkte Methode zur Rechnungserstellung', [
+                            'amount' => $invoiceAmount,
+                            'currency' => $paymentIntent->currency
+                        ]);
+                        
+                        // 1. Erstelle ein Produkt
+                        $product = $stripe->products->create([
+                            'name' => $description,
+                            'metadata' => [
+                                'created_by' => 'webhook_handler',
+                                'related_to_payment' => $paymentIntent->id
+                            ]
+                        ]);
+                        
+                        // 2. Erstelle einen Preis für das Produkt
+                        $price = $stripe->prices->create([
+                            'product' => $product->id,
+                            'unit_amount' => $invoiceAmount,
+                            'currency' => $paymentIntent->currency,
+                        ]);
+                        
+                        $this->logger->info('Preis erstellt', [
+                            'price_id' => $price->id,
+                            'unit_amount' => $price->unit_amount,
+                            'currency' => $price->currency
+                        ]);
+                        
+                        // 3. Erstelle eine Rechnung direkt mit einem Einzelposten
+                        $invoice = $stripe->invoices->create([
+                            'customer' => $paymentIntent->customer,
+                            'collection_method' => 'charge_automatically',
+                            'description' => 'Rechnung für ' . $description,
+                            'metadata' => [
+                                'created_by' => 'direct_invoice_creation',
+                                'related_to_payment' => $paymentIntent->id,
+                                'amount' => $invoiceAmount
+                            ]
+                        ]);
+                        
+                        // 4. Füge eine Rechnungsposition hinzu
+                        $invoiceItem = $stripe->invoiceItems->create([
+                            'customer' => $paymentIntent->customer,
+                            'price' => $price->id,
+                            'invoice' => $invoice->id
+                        ]);
+                        
+                        $this->logger->info('Rechnungsposition hinzugefügt', [
+                            'invoice_item_id' => $invoiceItem->id,
+                            'price_id' => $price->id,
+                            'invoice_id' => $invoice->id
+                        ]);
+                        
+                        // 5. Rechnung finalisieren
+                        $finalizedInvoice = $stripe->invoices->finalizeInvoice($invoice->id);
+                        
+                        $this->logger->info('Rechnung finalisiert mit neuem Verfahren', [
+                            'invoice_id' => $finalizedInvoice->id,
+                            'invoice_number' => $finalizedInvoice->number,
+                            'invoice_total' => $finalizedInvoice->total,
+                            'invoice_subtotal' => $finalizedInvoice->subtotal
+                        ]);
+                        
+                        // 6. Markiere die Rechnung als bezahlt
+                        $paidInvoice = $stripe->invoices->pay($finalizedInvoice->id, [
+                            'paid_out_of_band' => true
+                        ]);
+                        
+                        $this->logger->info('Rechnung als bezahlt markiert', [
+                            'invoice_id' => $paidInvoice->id,
+                            'status' => $paidInvoice->status,
+                            'total' => $paidInvoice->total,
+                            'total_decimal' => $paidInvoice->total / 100
+                        ]);
+                        
+                        // 5. PaymentIntent mit der Rechnungs-ID aktualisieren
+                        $metadataUpdate = [
+                            'invoice_id' => $paidInvoice->id,
+                        ];
+                        
+                        // Wenn die Rechnung eine Nummer hat, auch diese speichern
+                        if (!empty($paidInvoice->number)) {
+                            $metadataUpdate['invoice_number'] = $paidInvoice->number;
+                        }
+                        
+                        // Speichere den tatsächlichen Rechnungsbetrag
+                        $metadataUpdate['invoice_amount'] = $paidInvoice->total;
+                        $metadataUpdate['invoice_amount_decimal'] = $paidInvoice->total / 100;
+                        
+                        // Überprüfung des Rechnungsbetrags
+                        $this->logger->info('Rechnungsbetrag vor dem Aktualisieren des PaymentIntent', [
+                            'invoice_id' => $paidInvoice->id,
+                            'total' => $paidInvoice->total,
+                            'total_decimal' => $paidInvoice->total / 100,
+                            'original_amount' => $invoiceAmount,
+                            'original_amount_decimal' => $invoiceAmount / 100
+                        ]);
+                        
+                        // Wenn der Rechnungsbetrag 0 ist, setze ihn manuell auf den ursprünglichen Betrag
+                        if ($paidInvoice->total == 0) {
+                            $this->logger->warning('Rechnungsbetrag ist 0, setze manuell auf ursprünglichen Betrag', [
+                                'invoice_id' => $paidInvoice->id, 
+                                'original_amount' => $invoiceAmount
+                            ]);
+                            
+                            $metadataUpdate['invoice_amount'] = $invoiceAmount;
+                            $metadataUpdate['invoice_amount_decimal'] = $invoiceAmount / 100;
+                            $metadataUpdate['manual_amount_correction'] = 'true';
+                        }
+                        
+                        $stripe->paymentIntents->update($paymentIntent->id, [
+                            'metadata' => $metadataUpdate
+                        ]);
+                        
+                        $this->logger->info('Rechnung erfolgreich erstellt und mit PaymentIntent verknüpft', [
+                            'invoice_id' => $paidInvoice->id,
+                            'invoice_number' => $paidInvoice->number ?? 'nicht verfügbar',
+                            'payment_intent_id' => $paymentIntent->id,
+                            'amount' => $invoiceAmount / 100,
+                            'invoice_total' => $paidInvoice->total / 100,
+                            'invoice_subtotal' => $paidInvoice->subtotal / 100,
+                        ]);
+                        
+                        $invoiceExists = true;
+                    
+                    } catch (\Exception $e) {
+                        $this->logger->error('Fehler bei der direkten Rechnungserstellung: ' . $e->getMessage(), [
+                            'error_code' => $e->getCode(),
+                            'payment_intent_id' => $paymentIntent->id,
+                            'amount' => $invoiceAmount
+                        ]);
+                    }
+                }
+            } catch (\Exception $e) {
+                $this->logger->error('Fehler bei der Rechnungserstellung im Webhook: ' . $e->getMessage(), [
+                    'payment_intent' => $paymentIntent->id,
+                    'error_code' => $e->getCode()
+                ]);
+            }
+        }
         
         // Nach dem Umstieg auf JavaScript API wird das E-Mail-Template aus den Metadaten ausgelesen
         if (!empty($paymentIntent->metadata->personal_data)) {

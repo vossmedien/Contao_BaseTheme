@@ -9,6 +9,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\System;
 use Vsm\VsmHelperTools\Service\Email\EmailService;
 use Contao\CoreBundle\Monolog\ContaoContext;
+use Contao\CoreBundle\Monolog\CoreLogger;
 
 class UserCreationService
 {
@@ -198,52 +199,54 @@ class UserCreationService
      */
     public function createContaoUser(array $metadata): ?int
     {
+        if (empty($metadata['personalData'])) {
+            $this->logger->error('Keine persönlichen Daten für die Benutzer-Erstellung gefunden');
+            return null;
+        }
+        
+        $this->framework->initialize();
+        
+        $contaoLogger = $this->framework->createInstance(CoreLogger::class);
+        $contaoLogger->setContext(ContaoContext::GENERAL);
+        
+        $personalData = json_decode($metadata['personalData'], true);
+        
+        // Fehlerbehandlung für JSON-Decode
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->logger->error('Fehler beim Decodieren der persönlichen Daten: ' . json_last_error_msg());
+            return null;
+        }
+        
         try {
-            if ($this->framework) {
-                $this->framework->initialize();
+            // Sicherstellen, dass ein Benutzername vorhanden ist
+            if (empty($personalData['username'])) {
+                if (!empty($personalData['email'])) {
+                    $personalData['username'] = $personalData['email'];
+                } else {
+                    throw new \Exception('Kein Benutzername oder E-Mail für die Benutzer-Erstellung angegeben');
+                }
             }
             
-            // Logger aus dem Container holen (für die Contao-Context Integration)
-            $container = System::getContainer();
-            $contaoLogger = $container ? $container->get('monolog.logger.contao') : $this->logger;
-
-            // Validierung der Eingabedaten
-            if (empty($metadata['personalData'])) {
-                throw new \Exception('Keine persönlichen Daten übermittelt');
-            }
-
-            $personalData = json_decode($metadata['personalData'], true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \Exception('Ungültiges JSON in personalData: ' . json_last_error_msg());
-            }
-
-            // Pflichtfelder überprüfen
-            $requiredFields = ['username', 'email'];
-            foreach ($requiredFields as $field) {
-                if (empty($personalData[$field])) {
-                    throw new \Exception("Pflichtfeld fehlt: $field");
-            }
-            }
-
-            // E-Mail-Format prüfen
-            if (!filter_var($personalData['email'], FILTER_VALIDATE_EMAIL)) {
-                throw new \Exception('Ungültiges E-Mail-Format');
-            }
-
-            // Überprüfe, ob Benutzer bereits existiert
-            $existingUser = MemberModel::findByEmail($personalData['email']);
-            if ($existingUser) {
-                $contaoLogger->info('Benutzer mit dieser E-Mail existiert bereits', [
+            // Überprüfen, ob bereits ein Benutzer mit diesem Benutzernamen oder dieser E-Mail existiert
+            $existingMember = $this->framework->createInstance(MemberModel::class);
+            $existingByUsername = $existingMember->findByUsername($personalData['username']);
+            $existingByEmail = $existingMember->findByEmail($personalData['email']);
+            
+            // Wenn ein Benutzer bereits existiert, aktualisieren statt neu erstellen
+            if ($existingByUsername !== null || $existingByEmail !== null) {
+                $member = $existingByUsername ?: $existingByEmail;
+                
+                $contaoLogger->info('Aktualisiere vorhandenen Benutzer: ' . $member->username, [
                     'context' => ContaoContext::GENERAL
                 ]);
-                return $existingUser->id;
-            }
-
-            $existingUsername = MemberModel::findByUsername($personalData['username']);
-            if ($existingUsername) {
-                throw new \Exception('Benutzer mit diesem Benutzernamen existiert bereits');
+                
+                // Aktualisiere Benutzer mit neuen Daten
+                $this->updateMember($member, $personalData, $metadata);
+                
+                return $member->id;
             }
             
+            // Produktdaten extrahieren
             $productData = [];
             if (!empty($metadata['productData'])) {
                 $productData = json_decode($metadata['productData'], true);
@@ -277,9 +280,18 @@ class UserCreationService
                 'duration' => $duration
             ]);
 
+            // Passwort für die Benutzeranmeldung wird hier temporär aus den personalData entnommen,
+            // jedoch nicht in der Datenbank gespeichert - es wird lediglich gehasht
+            $password = !empty($personalData['password']) ? base64_decode($personalData['password']) : $this->generatePassword();
+
+            // Stelle sicher, dass das Passwort nicht in den Metadaten gespeichert wird
+            if (isset($personalData['password'])) {
+                unset($personalData['password']);
+            }
+
             // Sicheres Passwort-Hashing
             $passwordHash = password_hash(
-                !empty($personalData['password']) ? base64_decode($personalData['password']) : $this->generatePassword(),
+                $password,
                 PASSWORD_DEFAULT,
                 ['cost' => 12]
             );

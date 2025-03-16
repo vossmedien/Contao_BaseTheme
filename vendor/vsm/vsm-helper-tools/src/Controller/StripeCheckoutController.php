@@ -18,6 +18,11 @@ use Vsm\VsmHelperTools\Service\Stripe\StripePaymentService;
 use Vsm\VsmHelperTools\Service\Email\EmailService;
 use Vsm\VsmHelperTools\Service\Download\DownloadLinkGenerator;
 use Vsm\VsmHelperTools\Service\User\UserCreationService;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Contao\PageModel;
+use Contao\StringUtil;
+use Stripe\Exception\ApiErrorException;
+use Vsm\VsmHelperTools\Service\MemberService;
 
 #[Route('/stripe', defaults: ['_scope' => 'frontend'])]
 #[AutoconfigureTag('controller.service_arguments')]
@@ -34,6 +39,7 @@ class StripeCheckoutController extends AbstractController
     private DownloadLinkGenerator $downloadService;
     private UserCreationService $userService;
     private Environment $twig;
+    private bool $isDebug = false;
     
     public function __construct(
         ContaoFramework $framework,
@@ -79,90 +85,246 @@ class StripeCheckoutController extends AbstractController
     }
     
     /**
-     * Erstellt eine Checkout-Session für Stripe
+     * Erstellt eine neue Checkout-Session für Stripe
      */
-    #[Route('/create-checkout-session', name: 'stripe_create_checkout_session', methods: ['POST'], defaults: ['_scope' => 'frontend', '_token_check' => false])]
+    #[Route('/create-checkout-session', name: 'stripe_create_checkout_session', methods: ['POST'])]
     public function createCheckoutSession(Request $request): Response
     {
         try {
-            // Debug: Alle Request-Daten loggen
-            $this->logger->info('Incoming request data: ' . json_encode($request->request->all()));
+            // CORS-Header für lokale Entwicklung
+            $origin = $request->headers->get('Origin');
             
-            // JSON-Inhaltstyp erkennen
-            $isJsonRequest = $request->headers->get('Content-Type') === 'application/json';
+            // Response vorbereiten
+            $responseData = [];
+            $statusCode = 200;
             
-            if ($isJsonRequest) {
-                // Bei JSON-Anfragen den Inhalt direkt auslesen
-                $data = json_decode($request->getContent(), true);
-                $this->logger->info('JSON-Request erkannt. JSON-Daten: ' . json_encode($data));
-                
-                // Verarbeiten der JSON-Daten mit der richtigen Struktur
-                if (isset($data['personalData'])) {
-                    $customerData = $data['personalData'];
-                } elseif (isset($data['customer'])) {
-                    $customerData = $data['customer'];
-                } else {
-                    $customerData = [];
-                }
-                
-                if (isset($data['productData'])) {
-                    $productData = $data['productData'];
-                } elseif (isset($data['product'])) {
-                    $productData = $data['product'];
-                } else {
-                    $productData = [];
-                }
-                
-                // Erfolgs- und Abbruch-URLs setzen
-                $productData['success_url'] = $data['successUrl'] ?? $request->request->get('success_url');
-                $productData['cancel_url'] = $data['cancelUrl'] ?? $request->request->get('cancel_url');
+            if ($origin && $this->isDebug) {
+                $headers = [
+                    'Access-Control-Allow-Origin' => $origin,
+                    'Access-Control-Allow-Credentials' => 'true',
+                    'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS',
+                    'Access-Control-Allow-Headers' => 'Origin, Content-Type, X-Auth-Token, X-Requested-With'
+                ];
             } else {
-                // Formular-Daten aus dem Request extrahieren (alter Code)
-                $customerData = $request->request->all('customer');
-                $this->logger->info('Customer data: ' . json_encode($customerData));
-                
-                $productData = $request->request->all('product');
-                $this->logger->info('Product data: ' . json_encode($productData));
-                
-                // Erfolgs- und Abbruch-URLs setzen
-                $productData['success_url'] = $request->request->get('success_url');
-                $productData['cancel_url'] = $request->request->get('cancel_url');
+                $headers = [];
             }
             
-            $this->logger->info('Verarbeitete Daten: Customer: ' . json_encode($customerData) . ', Product: ' . json_encode($productData));
+            // Stripe-Client initialisieren
+            $this->initStripeClient();
             
-            // Fallback für leere Kundendaten
-            if (empty($customerData) || empty($customerData['email'])) {
-                // Versuchen, die E-Mail aus den allgemeinen Request-Daten zu extrahieren
-                if ($request->request->has('email')) {
-                    $customerData['email'] = $request->request->get('email');
-                } elseif (isset($data['email'])) {
-                    $customerData['email'] = $data['email'];
-                } else {
-                    throw new \InvalidArgumentException('E-Mail-Adresse ist erforderlich');
+            // Daten aus dem Request extrahieren
+            $data = json_decode($request->getContent(), true);
+            
+            if (empty($data)) {
+                // Fallback für form-data
+                $customerData = [];
+                $productData = [];
+                
+                // Erforderliche Felder
+                $requiredFields = ['email', 'product-id', 'element-id'];
+                foreach ($requiredFields as $field) {
+                    if (!$request->request->has($field)) {
+                        return new JsonResponse(['error' => 'Erforderliches Feld fehlt: ' . $field], 400, $headers);
+                    }
+                }
+                
+                // Produkt- und Kundendaten sammeln
+                foreach ($request->request->all() as $key => $value) {
+                    if (in_array($key, ['product-id', 'element-id', 'stripe_currency', 'success_url', 'cancel_url'])) {
+                        $productData[$key] = $value;
+                    } else {
+                        $customerData[$key] = $value;
+                    }
+                }
+                
+                // Währung und Produkt-ID standardmäßig auf EUR und 1 setzen
+                $productData['stripe_currency'] = $productData['stripe_currency'] ?? 'eur';
+                
+                // Element-ID in product_data umwandeln
+                $productData['element_id'] = $productData['element-id'] ?? 0;
+                
+                // Alle anderen Formulardaten in customerData ablegen
+                $this->logger->info('Formular-Daten: ' . json_encode($customerData));
+                
+                // Prüfe auf HTML data-attribute im Request und übernehme sie in productData
+                foreach ($request->request->all() as $key => $value) {
+                    // Behandle data-attribute im Format data-xyz
+                    if (strpos($key, 'data-') === 0) {
+                        $normalizedKey = $this->normalizeParameterName($key);
+                        $productData[$normalizedKey] = $value;
+                        
+                        // Original-Key immer auch beibehalten für Kompatibilität
+                        $productData[$key] = $value;
+                        
+                        $this->logger->info('Data-Attribut gefunden und normalisiert: ' . $key . ' → ' . $normalizedKey . ' = ' . $value);
+                    }
+                }
+                
+                // Standardmäßig Rechnungserstellung aktivieren, wenn nicht explizit deaktiviert
+                if (!isset($productData['create_invoice'])) {
+                    $productData['create_invoice'] = 1;
+                    $this->logger->info('Standardmäßig Rechnungserstellung aktiviert');
+                }
+                
+                // Besondere Behandlung für data-create-invoice
+                if (isset($request->request->all()['data-create-invoice'])) {
+                    $createInvoiceValue = $request->request->all()['data-create-invoice'];
+                    
+                    // Detailliertes Logging für Debugging
+                    $this->logger->info('Rechnungserstellung-Parameter gefunden', [
+                        'raw_value' => $createInvoiceValue,
+                        'type' => gettype($createInvoiceValue),
+                        'as_string' => (string)$createInvoiceValue
+                    ]);
+                    
+                    // Überprüfen, ob der Wert als true ausgewertet werden sollte
+                    // Explizite Überprüfung aller möglichen Formate
+                    $isTrue = false;
+                    if ($createInvoiceValue === true || $createInvoiceValue === 1 || $createInvoiceValue === '1' || 
+                        strtolower((string)$createInvoiceValue) === 'true' || 
+                        strtolower((string)$createInvoiceValue) === 'yes' || 
+                        strtolower((string)$createInvoiceValue) === 'ja') {
+                        $isTrue = true;
+                    }
+                    
+                    // Als String 'true' oder 'false' speichern
+                    $productData['create_invoice'] = $isTrue ? 'true' : 'false';
+                    
+                    $this->logger->info('Rechnungserstellung Parameter gesetzt auf: ' . $productData['create_invoice']);
+                }
+            } else {
+                // JSON-Daten verarbeiten
+                $customerData = $data['customer_data'] ?? $data['personalData'] ?? $data['customer'] ?? [];
+                $productData = $data['product_data'] ?? $data['productData'] ?? $data['product'] ?? [];
+                
+                // Besonderer Fall: customer und product wurden mit Javascript separat definiert
+                if (empty($customerData) && !empty($data['customer']) && is_array($data['customer'])) {
+                    $customerData = $data['customer'];
+                }
+                
+                if (empty($productData) && !empty($data['product']) && is_array($data['product'])) {
+                    $productData = $data['product'];
+                }
+                
+                // success_url und cancel_url aus dem Request auslesen
+                $productData['success_url'] = $data['success_url'] ?? $data['successUrl'] ?? $productData['success_url'] ?? '';
+                $productData['cancel_url'] = $data['cancel_url'] ?? $data['cancelUrl'] ?? $productData['cancel_url'] ?? '';
+                
+                // Erforderliche Felder
+                if (empty($customerData['email'])) {
+                    return new JsonResponse(['error' => 'Customer email is required'], 400, $headers);
+                }
+                
+                if (empty($productData['title'])) {
+                    $productData['title'] = 'Produkt';
+                }
+                
+                // Standardwerte für Produkt-Daten
+                $productData['stripe_currency'] = $productData['stripe_currency'] ?? 'eur';
+                
+                // Normalisierung der Parameter für JSON-Requests
+                foreach ($productData as $key => $value) {
+                    // Normalisiere auch die JSON-Keys für eine einheitliche Behandlung
+                    $normalizedKey = $this->normalizeParameterName($key);
+                    if ($normalizedKey !== $key) {
+                        $productData[$normalizedKey] = $value;
+                        $this->logger->debug("Parameter normalisiert: $key → $normalizedKey");
+                    }
+                }
+                
+                // Standardmäßig Rechnungserstellung aktivieren, wenn nicht explizit deaktiviert
+                if (!isset($productData['create_invoice'])) {
+                    $productData['create_invoice'] = 1;
+                    $this->logger->info('Standardmäßig Rechnungserstellung für JSON-Request aktiviert');
+                }
+                
+                // Stelle sicher, dass create_invoice als String-Wert gespeichert wird
+                if (isset($productData['create_invoice'])) {
+                    $createInvoiceValue = $productData['create_invoice'];
+                    
+                    // Detailliertes Logging für Debugging
+                    $this->logger->info('Rechnungserstellung-Parameter in JSON gefunden', [
+                        'raw_value' => $createInvoiceValue,
+                        'type' => gettype($createInvoiceValue),
+                        'as_string' => (string)$createInvoiceValue
+                    ]);
+                    
+                    // Überprüfen, ob der Wert als true ausgewertet werden sollte
+                    // Explizite Überprüfung aller möglichen Formate
+                    $isTrue = false;
+                    if ($createInvoiceValue === true || $createInvoiceValue === 1 || $createInvoiceValue === '1' || 
+                        strtolower((string)$createInvoiceValue) === 'true' || 
+                        strtolower((string)$createInvoiceValue) === 'yes' || 
+                        strtolower((string)$createInvoiceValue) === 'ja') {
+                        $isTrue = true;
+                    }
+                    
+                    // Als String 'true' oder 'false' speichern
+                    $productData['create_invoice'] = $isTrue ? 'true' : 'false';
+                    
+                    $this->logger->info('Rechnungserstellung Parameter für JSON gesetzt auf: ' . $productData['create_invoice']);
                 }
             }
+            
+            // Wichtig: Passwort für createUser separieren, nicht in der Datenbank speichern
+            $createUser = $data['create_user'] ?? $data['createUser'] ?? $productData['create_user'] ?? false;
+            $userPassword = null;
+            
+            // Wenn Benutzer erstellt werden soll, Passwort sichern und dann aus customerData entfernen
+            if ($createUser && isset($customerData['password'])) {
+                $userPassword = $customerData['password'];
+                // Passwort aus den customerData entfernen, damit es nicht in der DB gespeichert wird
+                unset($customerData['password']);
+            }
+            
+            $this->logger->info('Daten für Checkout-Session: ' . json_encode([
+                'customer_keys' => array_keys($customerData),
+                'product_keys' => array_keys($productData),
+                'create_user' => $createUser
+            ]));
             
             // Stripe-Session erstellen
             $session = $this->stripeService->createCheckoutSession($customerData, $productData);
             
-            // Session in der Datenbank speichern
-            $this->sessionManager->createSession([
+            // Session-Daten speichern
+            $sessionData = [
                 'session_id' => $session->id,
                 'stripe_session_id' => $session->id,
                 'customer_data' => $customerData,
                 'product_data' => $productData
+            ];
+            
+            // Wenn User erstellt werden soll, Username und Passwort für die spätere Verarbeitung speichern
+            if ($createUser && $userPassword) {
+                // Passwort hinzufügen, aber nur für die Verarbeitung im UserCreationService
+                $sessionData['user_creation'] = [
+                    'username' => $customerData['username'] ?? null,
+                    'password' => $userPassword
+                ];
+            }
+            
+            $this->sessionManager->createSession($sessionData);
+            
+            // Umfangreiches Logging der Session-Daten für Problemdiagnose
+            $this->logger->info('Checkout-Session finalisiert und an Client gesendet', [
+                'session_id' => $session->id,
+                'customer_email' => $customerData['email'] ?? 'nicht gesetzt',
+                'product_title' => $productData['title'] ?? 'nicht gesetzt',
+                'create_invoice' => isset($productData['create_invoice']) ? ($productData['create_invoice'] ? 'ja' : 'nein') : 'nicht gesetzt',
+                'data-create-invoice' => isset($productData['data-create-invoice']) ? ($productData['data-create-invoice'] ? 'ja' : 'nein') : 'nicht gesetzt',
+                'product_data_keys' => array_keys($productData)
             ]);
             
             // Redirect URL zurückgeben - formatiert für den JavaScript-Handler
-            return $this->json([
-                'session_url' => $session->url,
+            $responseData = [
                 'url' => $session->url,
                 'id' => $session->id
-            ]);
+            ];
+            
+            return new JsonResponse($responseData, $statusCode, $headers);
         } catch (\Exception $e) {
             $this->logger->error('Fehler beim Erstellen der Checkout-Session: ' . $e->getMessage());
-            return $this->json(['error' => 'Fehler beim Erstellen der Checkout-Session: ' . $e->getMessage()], 500);
+            return new JsonResponse(['error' => 'Fehler beim Erstellen der Checkout-Session: ' . $e->getMessage()], 500);
         }
     }
     
@@ -215,8 +377,52 @@ class StripeCheckoutController extends AbstractController
             // Aktualisierte Produktdaten in der Sitzung speichern
             $sessionData['product_data'] = $productData;
             
+            // Mitgliedschaftsdaten in die Sessions-Daten übernehmen
+            if (isset($productData['subscription_duration']) && !empty($productData['subscription_duration'])) {
+                $this->logger->info('Mitgliedschaftsdauer gefunden: ' . $productData['subscription_duration'] . ' Monate');
+                $paymentData['duration'] = intval($productData['subscription_duration']);
+                
+                // Ablaufdatum berechnen und in die Payment-Daten einfügen
+                $validUntil = date('Y-m-d', strtotime('+' . $paymentData['duration'] . ' months'));
+                $paymentData['membership_valid_until'] = $validUntil;
+                
+                $this->logger->info('Mitgliedschaftsdaten für E-Mail vorbereitet', [
+                    'duration' => $paymentData['duration'],
+                    'valid_until' => $paymentData['membership_valid_until']
+                ]);
+            } else {
+                // Direkt aus product_data holen, wenn keine subscription_duration existiert
+                if (isset($productData['duration']) && !empty($productData['duration'])) {
+                    $this->logger->info('Alternative Mitgliedschaftsdauer gefunden: ' . $productData['duration'] . ' Monate');
+                    $paymentData['duration'] = intval($productData['duration']);
+                    
+                    // Ablaufdatum berechnen und in die Payment-Daten einfügen
+                    $validUntil = date('Y-m-d', strtotime('+' . $paymentData['duration'] . ' months'));
+                    $paymentData['membership_valid_until'] = $validUntil;
+                } else {
+                    // Als letzter Versuch: prüfe, ob es in den Button-Daten vorhanden ist
+                    $buttonDuration = $this->extractDurationFromProductData($productData);
+                    if ($buttonDuration > 0) {
+                        $this->logger->info('Mitgliedschaftsdauer aus Button-Daten extrahiert: ' . $buttonDuration . ' Monate');
+                        $paymentData['duration'] = $buttonDuration;
+                        
+                        // Ablaufdatum berechnen und in die Payment-Daten einfügen
+                        $validUntil = date('Y-m-d', strtotime('+' . $buttonDuration . ' months'));
+                        $paymentData['membership_valid_until'] = $validUntil;
+                        
+                        // Auch in die Produktdaten schreiben
+                        $productData['duration'] = $buttonDuration;
+                        $productData['subscription_duration'] = $buttonDuration;
+                    }
+                }
+            }
+            
+            // Stelle sicher, dass die Zahlungsdaten in die Sitzungsdaten aufgenommen werden
+            $sessionData['payment_data'] = $paymentData;
+            
             // Session in der Datenbank aktualisieren
             $this->sessionManager->updateSessionAfterPayment($sessionId, $paymentData);
+            $this->logger->info('Session nach Zahlung aktualisiert');
             
             // Download-Link generieren, falls erforderlich
             $downloadToken = null;
@@ -402,32 +608,61 @@ class StripeCheckoutController extends AbstractController
                 
                 $userId = $this->userService->createOrUpdateUser($userData);
             
-            if ($userId) {
+                if ($userId) {
                     // Benutzer-ID in der Session speichern
-                $this->sessionManager->updateUserId($sessionId, $userId);
+                    $this->sessionManager->updateUserId($sessionId, $userId);
+                    
+                    // Speichern des Benutzernamens für die E-Mail-Templates
+                    $sessionData['customer_data']['username'] = $userData['username'];
+                    
+                    // Benutzerinformationen in user_creation speichern
+                    $sessionData['user_creation'] = [
+                        'user_id' => $userId,
+                        'username' => $userData['username'],
+                        'email' => $userData['email'],
+                        'created_at' => time()
+                    ];
+                    
+                    // Aktualisierte Kundendaten speichern
+                    $this->sessionManager->updateSessionData($sessionId, [
+                        'customer_data' => $sessionData['customer_data'],
+                        'user_creation' => $sessionData['user_creation']
+                    ]);
+                    
+                    $this->logger->info('Benutzer erstellt und Daten in der Session aktualisiert', [
+                        'user_id' => $userId,
+                        'username' => $userData['username']
+                    ]);
                 }
             }
         
-        // E-Mails senden - immer senden, wenn E-Mail-Adresse vorhanden ist
-        if (!empty($sessionData['customer_data']['email'])) {
-            $emailData = [
-                'customer' => $sessionData['customer_data'],
-                'product' => $sessionData['product_data'],
-                'payment' => $paymentData,
-                'download_url' => $downloadUrl ?? null,
-                'download_token' => $downloadToken ?? null,
-                'download_expires' => $sessionData['product_data']['download_expires'] ?? 7,
-                'download_limit' => $sessionData['product_data']['download_limit'] ?? 3
-            ];
-            
-            // E-Mail-Benachrichtigung über den EmailService senden
-            $this->emailService->sendPaymentConfirmation($sessionData);
-            
-            // E-Mails als gesendet markieren
-            $this->sessionManager->markEmailsAsSent($sessionId);
-        } else {
-            $this->logger->warning('Keine E-Mail-Adresse für den Kunden vorhanden, keine E-Mails versendet.');
-        }
+            // Debug-Logging der Daten, die für E-Mail-Templates verwendet werden
+            $this->logger->info('E-Mail-Templatedaten - Übersicht', [
+                'has_customer_data' => !empty($sessionData['customer_data']),
+                'has_product_data' => !empty($sessionData['product_data']),
+                'has_payment_data' => !empty($sessionData['payment_data']),
+                'username' => $sessionData['customer_data']['username'] ?? 'nicht gesetzt',
+                'product_title' => $sessionData['product_data']['title'] ?? 'nicht gesetzt',
+                'duration' => $sessionData['product_data']['subscription_duration'] ?? 'nicht gesetzt',
+                'has_invoice' => !empty($paymentData['invoice_id']) ? 'ja' : 'nein',
+                'invoice_url' => $paymentData['invoice_url'] ?? 'nicht gesetzt'
+            ]);
+        
+            // E-Mails senden - immer senden, wenn E-Mail-Adresse vorhanden ist
+            if (!empty($sessionData['customer_data']['email'])) {
+                // E-Mail-Benachrichtigung über den EmailService senden
+                $emailSent = $this->emailService->sendPaymentConfirmation($sessionData);
+                
+                if ($emailSent) {
+                    $this->logger->info('E-Mails erfolgreich gesendet');
+                    // E-Mails als gesendet markieren
+                    $this->sessionManager->markEmailsAsSent($sessionId);
+                } else {
+                    $this->logger->error('Fehler beim Senden der E-Mails');
+                }
+            } else {
+                $this->logger->warning('Keine E-Mail-Adresse für den Kunden vorhanden, keine E-Mails versendet.');
+            }
             
             // Erfolgs-URL mit optionalen Parametern
             $successUrl = $targetUrl ?? $sessionData['product_data']['success_url'] ?? '/';
@@ -438,7 +673,7 @@ class StripeCheckoutController extends AbstractController
             
             // Auf Erfolgsseite umleiten
             return $this->redirect($successUrl);
-                        } catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->error('Fehler bei der Verarbeitung der erfolgreichen Zahlung: ' . $e->getMessage());
             return $this->json(['error' => 'Fehler bei der Verarbeitung der Zahlung'], 500);
         }
@@ -863,5 +1098,77 @@ class StripeCheckoutController extends AbstractController
     private function findPdfFiles(string $directory, array &$results, int $maxDepth = 2, int $currentDepth = 0)
     {
         // Diese Methode wird nicht mehr benötigt
+    }
+    
+    /**
+     * Extrahiert die Mitgliedschaftsdauer aus den Produktdaten
+     * Diese Methode versucht die Dauer aus verschiedenen Attributen zu extrahieren
+     */
+    private function extractDurationFromProductData(array $productData): int
+    {
+        $possibleKeys = [
+            'subscription_duration',
+            'duration',
+            'membership_duration',
+            'data-duration',
+            'data-subscription-duration'
+        ];
+        
+        foreach ($possibleKeys as $key) {
+            if (isset($productData[$key]) && !empty($productData[$key])) {
+                $duration = intval($productData[$key]);
+                if ($duration > 0) {
+                    $this->logger->info('Mitgliedschaftsdauer aus ' . $key . ' extrahiert: ' . $duration);
+                    return $duration;
+                }
+            }
+        }
+        
+        // Versuche, aus data-Attributen zu extrahieren, die als JSON gespeichert sein könnten
+        if (isset($productData['data']) && is_string($productData['data'])) {
+            try {
+                $decodedData = json_decode($productData['data'], true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decodedData)) {
+                    foreach ($possibleKeys as $key) {
+                        if (isset($decodedData[$key]) && !empty($decodedData[$key])) {
+                            $duration = intval($decodedData[$key]);
+                            if ($duration > 0) {
+                                $this->logger->info('Mitgliedschaftsdauer aus JSON-Daten (data.' . $key . ') extrahiert: ' . $duration);
+                                return $duration;
+                            }
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                $this->logger->warning('Fehler beim Dekodieren von JSON-Daten: ' . $e->getMessage());
+            }
+        }
+        
+        // Nichts gefunden
+        return 0;
+    }
+    
+    /**
+     * Normalisiert Parameter-Namen für eine einheitliche Verwendung
+     * Konvertiert z.B. 'data-create-invoice' zu 'create_invoice'
+     */
+    private function normalizeParameterName(string $paramName): string
+    {
+        // Data-Attribute (data-xyz) normalisieren zu xyz
+        if (strpos($paramName, 'data-') === 0) {
+            $normalizedName = substr($paramName, 5); // Entferne 'data-'
+            $normalizedName = str_replace('-', '_', $normalizedName); // Ersetze Bindestriche durch Unterstriche
+            
+            return $normalizedName;
+        }
+        
+        // camelCase zu snake_case konvertieren
+        if (preg_match('/[A-Z]/', $paramName)) {
+            $normalizedName = preg_replace('/([a-z])([A-Z])/', '$1_$2', $paramName);
+            return strtolower($normalizedName);
+        }
+        
+        // Bindestriche durch Unterstriche ersetzen
+        return str_replace('-', '_', $paramName);
     }
 } 

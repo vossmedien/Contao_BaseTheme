@@ -152,10 +152,6 @@ class StripePaymentService
                 'cancel_url' => $cancelUrl . (strpos($cancelUrl, '?') !== false ? '&' : '?') . 'session_id={CHECKOUT_SESSION_ID}',
                 // Billing-Adressfeld aktivieren
                 'billing_address_collection' => 'required',
-                // Automatische Rechnungserstellung aktivieren, wenn gewünscht
-                'invoice_creation' => [
-                    'enabled' => isset($productData['create_invoice']) ? (bool)$productData['create_invoice'] : true,
-                ],
                 // Anzeige der steuerlichen Details im Checkout-Fenster aktivieren
                 'tax_id_collection' => [
                     'enabled' => true,
@@ -166,6 +162,26 @@ class StripePaymentService
                     'name' => 'auto',
                 ],
             ];
+            
+            // Automatische Rechnungserstellung basierend auf den Produktdaten konfigurieren
+            $createInvoice = $this->shouldCreateInvoice($productData); 
+            
+            $this->logger->info('Rechnungserstellung: ' . ($createInvoice ? 'aktiviert' : 'deaktiviert'), [
+                'erkannte_parameter' => $this->getInvoiceParameters($productData),
+            ]);
+            
+            // Diese Parameter haben keinen Effekt im payment-Mode, werden aber für Kompatibilität beibehalten
+            // Die tatsächliche Rechnungserstellung erfolgt manuell nach der Session-Erstellung
+            if ($createInvoice) {
+                $sessionParams['payment_intent_data'] = [
+                    'metadata' => [
+                        'generate_invoice' => 'true',
+                        'create_invoice' => 'true',
+                        'created_by' => 'vsm-helper-tools'
+                    ]
+                ];
+                $this->logger->info('Metadaten für Rechnungserstellung zu PaymentIntent hinzugefügt');
+            }
             
             // Beschreibung nur hinzufügen, wenn sie nicht leer ist
             if (!empty($productData['description'])) {
@@ -178,6 +194,12 @@ class StripePaymentService
                 'product_id' => $productData['id'] ?? '',
                 'product_title' => $productData['title'] ?? '',
             ];
+            
+            // WICHTIG: Rechnungsmetadaten auch in die Session-Metadaten übernehmen
+            if ($createInvoice) {
+                $metadata['generate_invoice'] = 'true';
+                $metadata['create_invoice'] = 'true';
+            }
             
             // Zusätzliche Metadaten für Downloads, falls vorhanden
             if (!empty($productData['download_file'])) {
@@ -201,6 +223,18 @@ class StripePaymentService
                 'customer_id' => $customer->id,
                 'product_title' => $productData['title'],
             ]);
+            
+            // Wenn Rechnungserstellung aktiviert ist, versuche direkt eine Rechnung zu erstellen
+            // nach erfolgreicher Session-Erstellung (im payment-Modus kein invoice_creation)
+            if ($createInvoice) {
+                $this->logger->info('Versuche, eine Rechnung für die Session zu erstellen');
+                try {
+                    $this->createInvoiceForSession($session, $customer, $price, $productData, $sessionParams);
+                } catch (\Exception $e) {
+                    $this->logger->error('Fehler bei der manuellen Rechnungserstellung: ' . $e->getMessage());
+                    // Fehler bei der Rechnungserstellung soll den Prozess nicht abbrechen
+                }
+            }
             
             return $session;
         } catch (ApiErrorException $e) {
@@ -250,27 +284,40 @@ class StripePaymentService
         $paymentData['amount_formatted'] = $formattedAmount . ' ' . strtoupper($session->currency ?? 'EUR');
         
         // Rechnungsinformationen hinzufügen, falls vorhanden
-        if (isset($session->invoice) && !empty($session->invoice) && $this->stripe !== null) {
+        $hasInvoice = false;
+        $invoiceId = $this->findInvoiceId($session);
+        
+        if ($invoiceId) {
+            $this->logger->info('Rechnung gefunden: ' . $invoiceId);
+            $hasInvoice = true;
+            
+            // Stripe-Client initialisieren falls noch nicht geschehen
+            if ($this->stripe === null) {
+                $this->stripe = new StripeClient($this->stripeSecretKey);
+            }
+            
             try {
-                $invoice = $this->stripe->invoices->retrieve($session->invoice);
+                // Rechnung abrufen
+                $invoice = $this->stripe->invoices->retrieve($invoiceId);
                 
-                $paymentData['invoice_id'] = $invoice->id;
+                // Rechnungsinformationen zum Payment hinzufügen
+                $paymentData['invoice_id'] = $invoiceId;
                 $paymentData['invoice_number'] = $invoice->number;
                 $paymentData['invoice_url'] = $invoice->hosted_invoice_url;
                 $paymentData['invoice_pdf'] = $invoice->invoice_pdf;
-                $paymentData['invoice_date'] = $invoice->created;
-                $paymentData['has_invoice'] = true;
+                $paymentData['invoice_status'] = $invoice->status;
                 
-                $this->logger->info('Rechnungsdaten extrahiert', [
-                    'invoice_id' => $invoice->id,
-                    'invoice_url' => $invoice->hosted_invoice_url
-                ]);
+                // Rechnungsdatum formatieren
+                if (isset($invoice->created)) {
+                    $paymentData['invoice_date'] = date('d.m.Y', $invoice->created);
+                }
+                
+                $this->logger->info('Rechnungsdaten hinzugefügt: ' . $invoice->number);
             } catch (\Exception $e) {
-                $this->logger->warning('Fehler beim Laden der Rechnungsdaten: ' . $e->getMessage());
-                // Trotz Fehler fortfahren, da dies nicht kritisch ist
+                $this->logger->error('Fehler beim Abrufen der Rechnungsdaten: ' . $e->getMessage());
             }
-        } else if (isset($session->invoice) && !empty($session->invoice)) {
-            $this->logger->warning('Rechnung vorhanden, aber Stripe-Client nicht initialisiert');
+        } else {
+            $this->logger->info('Keine Rechnung für diese Zahlung gefunden');
         }
         
         $this->logger->info('Zahlungsdaten aus Stripe-Session extrahiert', [
@@ -597,6 +644,304 @@ class StripePaymentService
         } catch (\Exception $e) {
             $this->logger->error('Fehler beim Erstellen des Steuersatzes: ' . $e->getMessage());
             return ''; // Leerer String im Fehlerfall
+        }
+    }
+    
+    /**
+     * Prüft, ob für ein Produkt eine Rechnung erstellt werden soll
+     * Diese Methode prüft verschiedene Parameter, die in unterschiedlichen Formaten vorliegen können
+     */
+    private function shouldCreateInvoice(array $productData): bool
+    {
+        // Standardmäßig Rechnungen aktivieren - die meisten Kunden wollen Rechnungen
+        $defaultValue = true;
+        
+        // Mögliche Namen für den Parameter "Rechnung erstellen"
+        $invoiceParameters = $this->getInvoiceParameters($productData);
+        
+        // Wenn mindestens ein Parameter gefunden wurde, diesen auswerten
+        if (!empty($invoiceParameters)) {
+            foreach ($invoiceParameters as $key => $value) {
+                // Konvertiere den Wert zu einem booleschen Wert
+                $boolValue = $this->convertToBool($value);
+                
+                // Für Debugging-Zwecke loggen
+                $this->logger->debug("Parameter für Rechnungserstellung gefunden: $key = " . (is_bool($boolValue) ? ($boolValue ? 'true' : 'false') : $value));
+                
+                // Der erste gefundene Parameter entscheidet
+                return $boolValue;
+            }
+        }
+        
+        // Fallback auf Standardwert
+        $this->logger->debug("Kein Rechnungsparameter gefunden, verwende Standard: " . ($defaultValue ? 'true' : 'false'));
+        return $defaultValue;
+    }
+    
+    /**
+     * Extrahiert alle möglichen Parameter für die Rechnungserstellung aus den Produktdaten
+     */
+    private function getInvoiceParameters(array $productData): array
+    {
+        $result = [];
+        
+        // Alle möglichen Parameternamen für "Rechnung erstellen"
+        $possibleKeys = [
+            'create_invoice',
+            'data-create-invoice',
+            'createInvoice',
+            'invoice',
+            'data-invoice',
+            'invoice_enabled',
+            'generate_invoice'
+        ];
+        
+        // Suche nach allen möglichen Parameter-Namen
+        foreach ($possibleKeys as $key) {
+            if (isset($productData[$key])) {
+                $result[$key] = $productData[$key];
+            }
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Konvertiert verschiedene Werttypen in einen booleschen Wert
+     */
+    private function convertToBool($value): bool
+    {
+        // Bereits boolscher Wert
+        if (is_bool($value)) {
+            return $value;
+        }
+        
+        // Numerische Werte: alles > 0 ist true
+        if (is_numeric($value)) {
+            return (int)$value > 0;
+        }
+        
+        // String-Werte
+        if (is_string($value)) {
+            $value = strtolower(trim($value));
+            
+            // Bekannte "true"-Strings
+            $truthy = ['1', 'true', 'yes', 'ja', 'wahr', 'on', 'aktiviert', 'enabled'];
+            
+            // Bekannte "false"-Strings
+            $falsy = ['0', 'false', 'no', 'nein', 'falsch', 'off', 'deaktiviert', 'disabled'];
+            
+            if (in_array($value, $truthy, true)) {
+                return true;
+            }
+            
+            if (in_array($value, $falsy, true)) {
+                return false;
+            }
+            
+            // Default: Nicht-leere Strings sind true
+            return !empty($value);
+        }
+        
+        // Arrays oder Objekte sind true, wenn sie nicht leer sind
+        if (is_array($value) || is_object($value)) {
+            return !empty($value);
+        }
+        
+        // NULL oder andere Werte sind false
+        return false;
+    }
+    
+    /**
+     * Findet die Rechnungs-ID aus der Session
+     */
+    private function findInvoiceId($session): ?string
+    {
+        // Direkt aus der Session-Objekt auf invoice prüfen
+        if (isset($session->invoice) && !empty($session->invoice)) {
+            $this->logger->info('Rechnung direkt in Session gefunden');
+            return $session->invoice;
+        } 
+        
+        // Stripe-Client initialisieren falls noch nicht geschehen
+        if ($this->stripe === null) {
+            $this->stripe = new StripeClient($this->stripeSecretKey);
+        }
+        
+        // Prüfe, ob ein payment_intent existiert, der eine Rechnung haben könnte
+        if (isset($session->payment_intent) && !empty($session->payment_intent)) {
+            try {
+                // PaymentIntent abrufen
+                $paymentIntent = \Stripe\PaymentIntent::retrieve($session->payment_intent);
+                
+                // Prüfen, ob dieser einen Verweis auf eine Rechnung enthält
+                if (isset($paymentIntent->invoice) && !empty($paymentIntent->invoice)) {
+                    $this->logger->info('Rechnung in PaymentIntent gefunden');
+                    return $paymentIntent->invoice;
+                }
+                
+                // Prüfen, ob in den Metadaten eine Rechnungs-ID gespeichert ist
+                if (isset($paymentIntent->metadata->invoice_id) && !empty($paymentIntent->metadata->invoice_id)) {
+                    $this->logger->info('Rechnung in PaymentIntent-Metadaten gefunden');
+                    return $paymentIntent->metadata->invoice_id;
+                }
+                
+                // Nach Rechnungen suchen, die mit diesem PaymentIntent verknüpft sind
+                $this->logger->info('Suche nach Rechnungen für PaymentIntent: ' . $paymentIntent->id);
+                
+                // Nach Rechnungen für den Kunden suchen, die kürzlich erstellt wurden
+                $customerInvoices = $this->stripe->invoices->all([
+                    'customer' => $paymentIntent->customer,
+                    'limit' => 5,
+                    'created' => [
+                        'gte' => time() - 3600 // letzte Stunde
+                    ]
+                ]);
+                
+                if (!empty($customerInvoices->data)) {
+                    // Nach Rechnungen suchen, die in den Metadaten den PaymentIntent enthalten
+                    foreach ($customerInvoices->data as $invoice) {
+                        if (isset($invoice->metadata->related_to_payment) && 
+                            $invoice->metadata->related_to_payment === $paymentIntent->id) {
+                            $this->logger->info('Rechnung über Metadaten mit PaymentIntent verknüpft gefunden');
+                            return $invoice->id;
+                        }
+                    }
+                    
+                    // Die neueste Rechnung für den Kunden verwenden
+                    $newestInvoice = $customerInvoices->data[0];
+                    $newestTimestamp = $newestInvoice->created;
+                    
+                    foreach ($customerInvoices->data as $invoice) {
+                        if ($invoice->created > $newestTimestamp) {
+                            $newestInvoice = $invoice;
+                            $newestTimestamp = $invoice->created;
+                        }
+                    }
+                    
+                    $this->logger->info('Neueste Rechnung für Kunden gefunden: ' . $newestInvoice->id);
+                    return $newestInvoice->id;
+                }
+                
+                // Versuchen, eine manuelle Rechnung zu erstellen, falls bisher keine gefunden wurde
+                // Dies wird jetzt direkt nach der Session-Erstellung gemacht
+            } catch (\Exception $e) {
+                $this->logger->warning('Fehler bei der Rechnungssuche: ' . $e->getMessage());
+            }
+        }
+        
+        $this->logger->info('Keine Rechnung gefunden');
+        return null;
+    }
+    
+    /**
+     * Erstellt eine Rechnung für eine Checkout-Session
+     * 
+     * Diese Methode wird verwendet, wenn wir im payment-Modus sind, wo Stripe keine
+     * automatische Rechnungserstellung unterstützt
+     * 
+     * @param Session $session Die Stripe Checkout-Session
+     * @param Customer $customer Der Stripe-Kunde
+     * @param int $amount Der Betrag in Cent
+     * @param array $productData Die Produktdaten
+     * @param array $sessionParams Die Session-Parameter
+     * @return string|null Die Rechnungs-ID oder null im Fehlerfall
+     */
+    private function createInvoiceForSession(
+        Session $session, 
+        Customer $customer, 
+        int $amount, 
+        array $productData, 
+        array $sessionParams
+    ): ?string {
+        // Stripe-Client initialisieren falls noch nicht geschehen
+        if ($this->stripe === null) {
+            $this->stripe = new StripeClient($this->stripeSecretKey);
+        }
+        
+        try {
+            // Beschreibung für die Position
+            $description = $productData['title'] ?? 'Produkt';
+            if (!empty($productData['description'])) {
+                $description .= ': ' . $productData['description'];
+            }
+            
+            // 1. InvoiceItem erstellen
+            $invoiceItem = $this->stripe->invoiceItems->create([
+                'customer' => $customer->id,
+                'amount' => $amount, // Betrag in Cent
+                'currency' => strtolower($productData['stripe_currency'] ?? 'eur'),
+                'description' => $description,
+                // Steuersatz hinzufügen, wenn vorhanden
+                'tax_rates' => isset($sessionParams['line_items'][0]['tax_rates']) ? 
+                    $sessionParams['line_items'][0]['tax_rates'] : [],
+                'metadata' => [
+                    'session_id' => $session->id,
+                    'created_by' => 'vsm-helper-tools',
+                    'related_to_payment' => $session->payment_intent ?? ''
+                ]
+            ]);
+            
+            $this->logger->info('InvoiceItem für Rechnung erstellt', [
+                'invoice_item_id' => $invoiceItem->id,
+                'amount' => $amount / 100, // In Euro für bessere Lesbarkeit
+                'currency' => strtoupper($productData['stripe_currency'] ?? 'EUR'),
+            ]);
+            
+            // 2. Invoice erstellen
+            $invoice = $this->stripe->invoices->create([
+                'customer' => $customer->id,
+                'auto_advance' => true, // Automatisch finalisieren und an Kunden senden
+                'collection_method' => 'charge_automatically',
+                'metadata' => [
+                    'session_id' => $session->id,
+                    'created_by' => 'vsm-helper-tools',
+                ]
+            ]);
+            
+            // 3. Rechnung finalisieren
+            $finalizedInvoice = $this->stripe->invoices->finalizeInvoice($invoice->id, [
+                'auto_advance' => true // Sofort senden
+            ]);
+            
+            // 4. Rechnung mit dem PaymentIntent verknüpfen, falls vorhanden
+            if (!empty($session->payment_intent)) {
+                try {
+                    // PaymentIntent aktualisieren
+                    $this->stripe->paymentIntents->update($session->payment_intent, [
+                        'metadata' => [
+                            'invoice_id' => $finalizedInvoice->id,
+                            'invoice_number' => $finalizedInvoice->number,
+                        ]
+                    ]);
+                    
+                    $this->logger->info('PaymentIntent mit Rechnung verknüpft', [
+                        'payment_intent_id' => $session->payment_intent,
+                        'invoice_id' => $finalizedInvoice->id
+                    ]);
+                } catch (\Exception $e) {
+                    $this->logger->warning('Fehler beim Verknüpfen des PaymentIntent mit der Rechnung: ' . $e->getMessage());
+                }
+            }
+            
+            $this->logger->info('Rechnung erfolgreich erstellt und finalisiert', [
+                'invoice_id' => $finalizedInvoice->id,
+                'invoice_number' => $finalizedInvoice->number,
+                'invoice_status' => $finalizedInvoice->status,
+                'invoice_url' => $finalizedInvoice->hosted_invoice_url,
+                'customer_id' => $customer->id
+            ]);
+            
+            return $finalizedInvoice->id;
+            
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler bei der manuellen Rechnungserstellung: ' . $e->getMessage(), [
+                'error_code' => $e->getCode(),
+                'customer_id' => $customer->id,
+                'session_id' => $session->id
+            ]);
+            
+            return null;
         }
     }
 } 

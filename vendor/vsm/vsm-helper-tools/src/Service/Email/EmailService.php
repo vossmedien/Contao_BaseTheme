@@ -51,8 +51,47 @@ class EmailService
         $customerData = $sessionData['customer_data'];
         $productData = $sessionData['product_data'];
         
+        // Debug-Informationen über die verfügbaren Session-Daten
+        $this->logger->info('Session-Daten vor E-Mail-Versand', [
+            'session_id' => $sessionData['session_id'] ?? 'nicht verfügbar',
+            'hat_customer_data' => !empty($customerData) ? 'ja' : 'nein',
+            'hat_product_data' => !empty($productData) ? 'ja' : 'nein',
+            'hat_payment_data' => isset($sessionData['payment_data']) ? 'ja' : 'nein',
+            'username' => $customerData['username'] ?? 'nicht verfügbar',
+            'mitgliedschaft_duration' => $productData['subscription_duration'] ?? 'nicht verfügbar',
+            'hat_invoice' => isset($sessionData['payment_data']['invoice_id']) ? 'ja' : 'nein'
+        ]);
+        
+        // Wenn Zahlungsdaten vorhanden, Rechnungsinformationen prüfen
+        if (isset($sessionData['payment_data'])) {
+            $this->logger->info('Zahlungsdaten-Details', [
+                'payment_id' => $sessionData['payment_data']['payment_id'] ?? 'nicht verfügbar',
+                'invoice_id' => $sessionData['payment_data']['invoice_id'] ?? 'nicht verfügbar',
+                'invoice_url' => $sessionData['payment_data']['invoice_url'] ?? 'nicht verfügbar',
+                'invoice_status' => $sessionData['payment_data']['invoice_status'] ?? 'nicht verfügbar',
+            ]);
+            
+            // Prüfen ob create_invoice in Produktdaten gesetzt ist
+            $this->logger->info('Rechnungserstellung in Produktdaten', [
+                'create_invoice' => $productData['create_invoice'] ?? 'nicht verfügbar', 
+                'data-create-invoice' => $productData['data-create-invoice'] ?? 'nicht verfügbar',
+                'createInvoice' => $productData['createInvoice'] ?? 'nicht verfügbar',
+            ]);
+        }
+        
         // Daten für die Templates vorbereiten
         $templateData = $this->prepareTemplateData($sessionData);
+        
+        // Nach Vorbereitung überprüfen, welche wichtigen Daten im Template verfügbar sind
+        $this->logger->info('Template-Daten nach Vorbereitung', [
+            'hat_username' => isset($templateData['customer']['username']) ? 'ja' : 'nein',
+            'username' => $templateData['customer']['username'] ?? 'nicht verfügbar',
+            'hat_subscription_duration' => isset($templateData['order']['duration']) ? 'ja' : 'nein',
+            'duration' => $templateData['order']['duration'] ?? 'nicht verfügbar',
+            'valid_until' => $templateData['order']['valid_until'] ?? 'nicht verfügbar',
+            'hat_invoice' => $templateData['has_invoice'] ? 'ja' : 'nein',
+            'invoice_url' => $templateData['invoice']['invoice_url'] ?? 'nicht verfügbar',
+        ]);
         
         $success = true;
         
@@ -469,6 +508,37 @@ class EmailService
         
         $templateData['has_invoice'] = !empty($paymentData['invoice_id']);
         
+        // Mitgliedschafts-Daten hinzufügen
+        $hasMembership = false;
+        $membershipDuration = 0;
+        
+        // Mitgliedschaftsdauer aus Produktdaten extrahieren
+        if (isset($productData['subscription_duration']) && !empty($productData['subscription_duration'])) {
+            $membershipDuration = intval($productData['subscription_duration']);
+            $hasMembership = true;
+        } elseif (isset($productData['duration']) && !empty($productData['duration'])) {
+            $membershipDuration = intval($productData['duration']);
+            $hasMembership = true;
+        } elseif (isset($paymentData['duration']) && !empty($paymentData['duration'])) {
+            $membershipDuration = intval($paymentData['duration']);
+            $hasMembership = true;
+        }
+        
+        // Ablaufdatum für Mitgliedschaft berechnen, wenn Dauer vorhanden
+        $membershipValidUntil = null;
+        if ($hasMembership && $membershipDuration > 0) {
+            $membershipValidUntil = date('Y-m-d', strtotime('+' . $membershipDuration . ' months'));
+            
+            // Informationen zum Ablauf und Mitgliedschaft in payment-Daten setzen
+            $templateData['payment']['membership_duration'] = $membershipDuration;
+            $templateData['payment']['membership_valid_until'] = $membershipValidUntil;
+            
+            $this->logger->info('Mitgliedschaftsdaten vorbereitet', [
+                'duration' => $membershipDuration,
+                'valid_until' => $membershipValidUntil
+            ]);
+        }
+        
         // "order" Objekt für bessere Template-Kompatibilität
         $templateData['order'] = [
             'id' => $sessionData['session_id'],
@@ -478,8 +548,17 @@ class EmailService
             'price_formatted' => $templateData['product_price'],
             'currency' => $paymentData['currency'] ?? $productData['stripe_currency'] ?? 'EUR',
             'status' => $sessionData['status'],
-            'created_at' => date('d.m.Y H:i', $sessionData['created_at'])
+            'created_at' => date('d.m.Y H:i', $sessionData['created_at']),
+            'duration' => $membershipDuration, // Mitgliedschaftsdauer hinzufügen
+            'valid_until' => $membershipValidUntil // Ablaufdatum hinzufügen
         ];
+        
+        // Stelle sicher, dass der Benutzername im customer-Objekt enthalten ist
+        if (isset($customerData['username']) && !empty($customerData['username'])) {
+            $templateData['customer']['username'] = $customerData['username'];
+        } elseif (isset($sessionData['user_creation']['username']) && !empty($sessionData['user_creation']['username'])) {
+            $templateData['customer']['username'] = $sessionData['user_creation']['username'];
+        }
         
         // Download-Informationen als strukturiertes Objekt
         if ($templateData['has_download']) {
@@ -504,7 +583,7 @@ class EmailService
                 'invoice_number' => $paymentData['invoice_number'] ?? '',
                 'invoice_url' => $paymentData['invoice_url'] ?? '',
                 'invoice_pdf' => $paymentData['invoice_pdf'] ?? '',
-                'invoice_date' => date('d.m.Y', $paymentData['invoice_date'] ?? time()),
+                'invoice_date' => date('d.m.Y', isset($paymentData['invoice_date']) && is_numeric($paymentData['invoice_date']) ? (int)$paymentData['invoice_date'] : time()),
             ];
         }
         
@@ -529,6 +608,74 @@ class EmailService
             'has_invoice' => $templateData['has_invoice'] ? 'ja' : 'nein',
             'order_keys' => array_keys($templateData['order'])
         ]);
+        
+        // Mitgliedschaftsinformationen, falls vorhanden
+        $templateData['has_username'] = !empty($sessionData['customer_data']['username']);
+        $templateData['username'] = $sessionData['customer_data']['username'] ?? '';
+        
+        // Mitgliedschaftsdauer und Ablaufdatum
+        $hasDuration = false;
+        $duration = 0;
+        $validUntil = null;
+        
+        // Prüfe verschiedene Quellen für Mitgliedschaftsdaten
+        if (isset($paymentData['duration'])) {
+            $hasDuration = true;
+            $duration = $paymentData['duration'];
+            $validUntil = $paymentData['membership_valid_until'] ?? date('Y-m-d', strtotime('+' . $duration . ' months'));
+        } 
+        else if (isset($productData['subscription_duration'])) {
+            $hasDuration = true;
+            $duration = intval($productData['subscription_duration']);
+            $validUntil = date('Y-m-d', strtotime('+' . $duration . ' months'));
+        } 
+        else if (isset($productData['duration'])) {
+            $hasDuration = true;
+            $duration = intval($productData['duration']);
+            $validUntil = date('Y-m-d', strtotime('+' . $duration . ' months'));
+        }
+        
+        // Formatiertes Gültigkeitsdatum
+        $formattedValidUntil = '';
+        if ($validUntil) {
+            $date = \DateTime::createFromFormat('Y-m-d', $validUntil);
+            if ($date) {
+                $formattedValidUntil = $date->format('d.m.Y');
+            } else {
+                $formattedValidUntil = $validUntil;
+            }
+        }
+        
+        $templateData['has_subscription_duration'] = $hasDuration;
+        $templateData['duration'] = $duration;
+        $templateData['valid_until'] = $formattedValidUntil;
+        
+        // Umfangreiche Debug-Informationen für die Template-Daten
+        $this->logger->info('Template-Daten nach Vorbereitung', [
+            'hat_username' => $templateData['has_username'] ? 'ja' : 'nein',
+            'username' => $templateData['username'] ?: 'nicht verfügbar',
+            'hat_subscription_duration' => $templateData['has_subscription_duration'] ? 'ja' : 'nein',
+            'duration' => $templateData['duration'],
+            'valid_until' => $templateData['valid_until'] ?: 'nicht verfügbar'
+        ]);
+        
+        // Rechnungsinformationen
+        if (!empty($paymentData['invoice_id'])) {
+            $templateData['has_invoice'] = true;
+            $templateData['invoice_id'] = $paymentData['invoice_id'];
+            $templateData['invoice_number'] = $paymentData['invoice_number'] ?? '';
+            $templateData['invoice_url'] = $paymentData['invoice_url'] ?? '';
+            $templateData['invoice_pdf'] = $paymentData['invoice_pdf'] ?? '';
+            $templateData['invoice_date'] = date('d.m.Y', isset($paymentData['invoice_date']) && is_numeric($paymentData['invoice_date']) ? (int)$paymentData['invoice_date'] : time());
+            
+            $this->logger->info('Rechnungsdaten für E-Mail hinzugefügt', [
+                'invoice_id' => $templateData['invoice_id'],
+                'invoice_url' => $templateData['invoice_url'] ?: 'nicht verfügbar'
+            ]);
+        } else {
+            $templateData['has_invoice'] = false;
+            $this->logger->info('Keine Rechnungsdaten verfügbar für E-Mail');
+        }
         
         return $templateData;
     }

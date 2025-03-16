@@ -59,6 +59,7 @@ if (!empty($customer['firstname'])) {
         .order-details { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
         .download-box { background-color: #e8f4fc; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #007bff; }
         .invoice-box { background-color: #e8fcec; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #28a745; }
+        .membership-box { background-color: #f2e6ff; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #9932cc; }
         .btn { display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
@@ -95,12 +96,47 @@ if (!empty($customer['firstname'])) {
                     <th>Gesamtbetrag:</th>
                     <td><strong><?= $order['price_formatted'] ?? '-' ?></strong></td>
                 </tr>
+                <?php if (isset($order['duration']) && $order['duration'] > 0): ?>
+                <tr>
+                    <th>Laufzeit:</th>
+                    <td><?= $order['duration'] ?> Monat<?= $order['duration'] > 1 ? 'e' : '' ?></td>
+                </tr>
+                <?php endif; ?>
                 <tr>
                     <th>Zahlungsmethode:</th>
                     <td>Kreditkarte (Stripe)</td>
                 </tr>
             </table>
         </div>
+        
+        <?php if (!empty($customer['username']) || (isset($order['duration']) && $order['duration'] > 0)): ?>
+        <div class="membership-box">
+            <h3>Ihre Mitgliedschaft</h3>
+            <table>
+                <?php if (!empty($customer['username'])): ?>
+                <tr>
+                    <th>Ihr Benutzername:</th>
+                    <td><strong><?= $customer['username'] ?></strong></td>
+                </tr>
+                <?php endif; ?>
+                <?php if (isset($order['duration']) && $order['duration'] > 0): ?>
+                <tr>
+                    <th>Laufzeit:</th>
+                    <td><?= $order['duration'] ?> Monat<?= $order['duration'] > 1 ? 'e' : '' ?></td>
+                </tr>
+                <?php if (!empty($payment['membership_valid_until'])): ?>
+                <tr>
+                    <th>Gültig bis:</th>
+                    <td><strong><?= date('d.m.Y', strtotime($payment['membership_valid_until'])) ?></strong></td>
+                </tr>
+                <?php endif; ?>
+                <?php endif; ?>
+            </table>
+            <?php if (!empty($customer['username'])): ?>
+            <p>Sie können sich jetzt mit Ihrem Benutzernamen und Passwort auf unserer Website anmelden.</p>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
         
         <?php if ($has_download && !empty($download['download_url'])): ?>
         <div class="download-box">

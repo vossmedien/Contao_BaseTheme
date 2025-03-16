@@ -1,11 +1,161 @@
 class UIHandler {
-    constructor(form) {
-        if (!form || !(form instanceof HTMLFormElement)) {
-            console.error('UIHandler: Ungültiges Formular-Element übergeben', form);
+    constructor(formElement) {
+        if (!formElement || !(formElement instanceof HTMLFormElement)) {
+            console.error('UIHandler: Ungültiges Formular-Element übergeben', formElement);
             throw new Error('UIHandler erfordert ein gültiges HTML-Formular-Element');
         }
-        this.form = form;
-        console.log('UIHandler initialisiert für Formular:', form.id || '(ohne ID)');
+        this.form = formElement;
+        this.spinner = this.form.querySelector('[data-form-spinner]');
+        this.errorElement = this.form.querySelector('[data-form-error]');
+        this.productInfo = this.form.querySelector('[data-product-info]');
+        this.productTemplate = document.getElementById('product-info-template');
+        
+        // Elemente initialisieren
+        this.init();
+    }
+    
+    init() {
+        console.log('UIHandler initialisiert für Formular:', this.form.id || '(ohne ID)');
+    }
+    
+    /**
+     * Setzt den Ladezustand des Formulars
+     * @param {boolean} isLoading - true, wenn das Formular lädt, sonst false
+     */
+    setLoading(isLoading) {
+        const submitButton = this.form.querySelector('button[type="submit"]');
+        
+        if (isLoading) {
+            submitButton.disabled = true;
+            this.spinner.classList.remove('d-none');
+        } else {
+            submitButton.disabled = false;
+            this.spinner.classList.add('d-none');
+        }
+    }
+    
+    /**
+     * Alias für setLoading für Abwärtskompatibilität
+     * @param {boolean} isLoading - true, wenn das Formular lädt, sonst false
+     */
+    toggleLoadingState(isLoading) {
+        this.setLoading(isLoading);
+    }
+    
+    /**
+     * Zeigt eine Fehlermeldung an
+     * @param {string} message - Die anzuzeigende Fehlermeldung
+     */
+    showError(message) {
+        if (this.errorElement) {
+            this.errorElement.textContent = message;
+            this.errorElement.classList.remove('d-none');
+        } else {
+            console.error('Fehler:', message);
+        }
+    }
+    
+    /**
+     * Verbirgt die Fehlermeldung
+     */
+    hideError() {
+        if (this.errorElement) {
+            this.errorElement.classList.add('d-none');
+        }
+    }
+    
+    /**
+     * Aktualisiert die Produktinformationen im Formular
+     * @param {Object} productData - Die Produktdaten
+     * @param {string} currency - Die Währung
+     */
+    updateProductInfo(productData, currency = 'EUR') {
+        if (!this.productInfo || !this.productTemplate) return;
+        
+        // Produktinfos aus dem Template klonen
+        const productInfoContent = this.productTemplate.content.cloneNode(true);
+        
+        // Produkttitel aktualisieren
+        const titleElement = productInfoContent.querySelector('[data-product-title]');
+        if (titleElement) {
+            titleElement.textContent = productData.title || 'Produkt';
+        }
+        
+        // Preis formatieren und aktualisieren
+        const priceElement = productInfoContent.querySelector('[data-product-price]');
+        if (priceElement) {
+            const formattedPrice = this.formatPrice(productData.price, currency);
+            priceElement.textContent = formattedPrice;
+        }
+        
+        // Steuer berechnen und anzeigen
+        const taxRow = productInfoContent.querySelector('[data-tax-row]');
+        const taxElement = productInfoContent.querySelector('[data-tax-amount]');
+        if (taxRow && taxElement && productData.price) {
+            const taxRate = productData.tax_rate || 19; // Standard: 19% MwSt.
+            const priceInCents = parseFloat(productData.price);
+            // Berechnung der MwSt. aus dem Bruttopreis
+            const taxAmount = priceInCents * (taxRate / (100 + taxRate));
+            taxElement.textContent = this.formatPrice(taxAmount, currency);
+        }
+        
+        // Mitgliedschaftsdauer anzeigen, wenn verfügbar
+        const durationRow = productInfoContent.querySelector('[data-duration-row]');
+        const durationElement = productInfoContent.querySelector('[data-product-duration]');
+        if (durationRow && durationElement && productData.duration) {
+            const duration = parseInt(productData.duration, 10);
+            if (duration > 0) {
+                durationRow.classList.remove('d-none');
+                durationElement.textContent = duration + (duration === 1 ? ' Monat' : ' Monate');
+                
+                // Ablaufdatum berechnen und anzeigen
+                const expiryRow = productInfoContent.querySelector('[data-expiry-row]');
+                const expiryElement = productInfoContent.querySelector('[data-product-expiry]');
+                if (expiryRow && expiryElement) {
+                    const today = new Date();
+                    const expiryDate = new Date(today.setMonth(today.getMonth() + duration));
+                    expiryRow.classList.remove('d-none');
+                    expiryElement.textContent = expiryDate.toLocaleDateString('de-DE');
+                }
+            }
+        }
+        
+        // Inhalt ins DOM einfügen
+        this.productInfo.innerHTML = '';
+        this.productInfo.appendChild(productInfoContent);
+    }
+    
+    /**
+     * Formatiert einen Preis für die Anzeige
+     * @param {number} price - Der Preis in der kleinsten Einheit (z.B. Cent)
+     * @param {string} currency - Die Währung
+     * @returns {string} - Der formatierte Preis
+     */
+    formatPrice(price, currency = 'EUR') {
+        let amount = parseFloat(price);
+        
+        // Wenn der Preis in Cent ist und über 1000, dann ist es wahrscheinlich in der kleinsten Einheit
+        if (amount > 1000 && !isNaN(amount)) {
+            amount = amount / 100;
+        }
+        
+        return new Intl.NumberFormat('de-DE', {
+            style: 'currency',
+            currency: currency.toUpperCase()
+        }).format(amount);
+    }
+    
+    /**
+     * Schließt das Modal, falls vorhanden
+     */
+    closeModal() {
+        const modalElement = this.form.closest('.modal');
+        if (modalElement && window.bootstrap && window.bootstrap.Modal) {
+            const modal = window.bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+        }
     }
 
     updateModal(productData, currency) {
@@ -43,98 +193,6 @@ class UIHandler {
         }
     }
 
-    updateProductInfo(productData, currency) {
-        const priceInfo = this.form.querySelector('[data-product-info]');
-        if (!priceInfo) {
-            console.warn('Element [data-product-info] nicht gefunden');
-            return;
-        }
-        
-        const template = document.getElementById('product-info-template');
-        if (!template) {
-            console.warn('Template #product-info-template nicht gefunden');
-            return;
-        }
-        
-        const clone = this.createTemplateClone(template, productData, currency);
-        priceInfo.innerHTML = '';
-        priceInfo.appendChild(clone);
-    }
-
-    createTemplateClone(template, productData, currency) {
-        const clone = template.content.cloneNode(true);
-
-        // Template Labels
-        this.setTemplateLabels(clone, template.dataset);
-
-        // Product Data
-        this.setProductData(clone, productData, currency);
-
-        return clone;
-    }
-
-    setTemplateLabels(clone, dataset) {
-        const labels = {
-            heading: '[data-template-heading]',
-            productLabel: '[data-template-product-label]',
-            priceLabel: '[data-template-price-label]',
-            priceBadge: '[data-template-price-badge]',
-            durationLabel: '[data-template-duration-label]',
-            expiryLabel: '[data-template-expiry-label]'
-        };
-
-        Object.entries(labels).forEach(([key, selector]) => {
-            const element = clone.querySelector(selector);
-            if (element && dataset[key]) {
-                element.textContent = dataset[key];
-            }
-        });
-    }
-
-    setProductData(clone, productData, currency) {
-        try {
-            // Produkttitel setzen
-            const titleElement = clone.querySelector('[data-product-title]');
-            if (titleElement) {
-                titleElement.textContent = productData.title;
-            }
-            
-            // Preis setzen
-            const priceElement = clone.querySelector('[data-product-price]');
-            if (priceElement) {
-                priceElement.textContent = this.formatCurrency(productData.price, currency);
-            }
-
-            // Steuerberechnung und -anzeige
-            const taxRate = productData.tax_rate || 19;
-            const priceValue = parseFloat(productData.price);
-            const netPrice = priceValue / (1 + (taxRate / 100));
-            const taxAmount = priceValue - netPrice;
-            
-            // Steuerzeile anzeigen
-            const taxRow = clone.querySelector('[data-tax-row]');
-            if (taxRow) {
-                // Ändere die Beschriftung, um den Steuersatz anzuzeigen
-                const taxLabel = taxRow.querySelector('th');
-                if (taxLabel) {
-                    taxLabel.textContent = `enthaltene MwSt. (${taxRate}%)`;
-                }
-                
-                // Zeige den Steuerbetrag an
-                const taxAmountElement = taxRow.querySelector('[data-tax-amount]');
-                if (taxAmountElement) {
-                    taxAmountElement.textContent = this.formatCurrency(taxAmount, currency);
-                }
-            }
-
-            if (productData.duration > 0) {
-                this.setDurationInfo(clone, productData.duration);
-            }
-        } catch (error) {
-            console.error('Fehler beim Setzen der Produktdaten:', error);
-        }
-    }
-
     setDurationInfo(clone, duration) {
         try {
             const durationRow = clone.querySelector('[data-duration-row]');
@@ -161,40 +219,6 @@ class UIHandler {
             }
         } catch (error) {
             console.error('Fehler beim Setzen der Laufzeitinformationen:', error);
-        }
-    }
-
-    showError(message) {
-        try {
-            const errorElement = this.form.querySelector('[data-form-error]');
-            if (errorElement) {
-                errorElement.textContent = message;
-                errorElement.classList.remove('d-none');
-            } else {
-                // Fallback: Alert anzeigen, wenn kein Error-Element gefunden wird
-                console.warn('Kein Element mit data-form-error gefunden, zeige Fehler als Alert:', message);
-                alert('Fehler: ' + message);
-            }
-        } catch (error) {
-            console.error('Fehler beim Anzeigen der Fehlermeldung:', error);
-            alert('Fehler: ' + message);
-        }
-    }
-
-    toggleLoadingState(isLoading) {
-        try {
-            const submitButton = this.form.querySelector('button[type="submit"]');
-            const spinner = this.form.querySelector('[data-form-spinner]');
-
-            if (submitButton) {
-                submitButton.disabled = isLoading;
-            }
-            
-            if (spinner) {
-                spinner.classList.toggle('d-none', !isLoading);
-            }
-        } catch (error) {
-            console.error('Fehler beim Umschalten des Ladezustands:', error);
         }
     }
 

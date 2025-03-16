@@ -191,4 +191,46 @@
         <small><a href="#" onclick="document.getElementById('debug-info').classList.toggle('d-none'); return false;">Debug-Info</a></small>
     </div>
     <?php endif; ?>
+
+    <!-- Produkt Info Template -->
+    <template id="product-info-template"
+              data-template-heading="Ihre Bestellung"
+              data-template-product-label="Produkt:"
+              data-template-price-label="Preis:"
+              data-template-price-badge="inkl. MwSt."
+              data-template-duration-label="Laufzeit:"
+              data-template-expiry-label="Gültig bis:">
+        <div class="product-info mb-3">
+            <h5 data-template-heading>Ihre Bestellung</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th data-template-product-label>Produkt</th>
+                            <td data-product-title></td>
+                        </tr>
+                        <tr>
+                            <th data-template-price-label>Preis</th>
+                            <td>
+                                <strong data-product-price></strong>
+                                <span data-template-price-badge class="badge bg-primary ms-2">inkl. MwSt.</span>
+                            </td>
+                        </tr>
+                        <tr data-tax-row>
+                            <th>enthaltene MwSt.</th>
+                            <td data-tax-amount></td>
+                        </tr>
+                        <tr data-duration-row class="d-none">
+                            <th data-template-duration-label>Laufzeit</th>
+                            <td data-product-duration></td>
+                        </tr>
+                        <tr data-expiry-row class="d-none">
+                            <th data-template-expiry-label>Gültig bis</th>
+                            <td data-product-expiry></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
 </form>

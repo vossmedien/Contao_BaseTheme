@@ -41,6 +41,7 @@ $tokens = $template_data->tokens ?? [];
         .order-details { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
         .customer-details { background-color: #f0f5ff; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #007bff; }
         .payment-details { background-color: #f0fff5; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #28a745; }
+        .user-details { background-color: #fff0f5; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #9932cc; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background-color: #f2f2f2; width: 30%; }
@@ -75,6 +76,12 @@ $tokens = $template_data->tokens ?? [];
                     <th>Gesamtbetrag:</th>
                     <td><span class="highlight"><?= $order['price_formatted'] ?? '-' ?></span></td>
                 </tr>
+                <?php if (isset($order['duration']) && $order['duration'] > 0): ?>
+                <tr>
+                    <th>Laufzeit:</th>
+                    <td><?= $order['duration'] ?> Monat<?= $order['duration'] > 1 ? 'e' : '' ?></td>
+                </tr>
+                <?php endif; ?>
             </table>
         </div>
         
@@ -119,6 +126,32 @@ $tokens = $template_data->tokens ?? [];
                 <?php endif; ?>
             </table>
         </div>
+        
+        <?php if (!empty($customer['username']) || (isset($order['duration']) && $order['duration'] > 0)): ?>
+        <div class="user-details">
+            <h3>Mitgliedschaftsinformationen</h3>
+            <table>
+                <?php if (!empty($customer['username'])): ?>
+                <tr>
+                    <th>Benutzername:</th>
+                    <td><?= $customer['username'] ?></td>
+                </tr>
+                <?php endif; ?>
+                <?php if (isset($order['duration']) && $order['duration'] > 0): ?>
+                <tr>
+                    <th>Mitgliedschaft:</th>
+                    <td><?= $order['duration'] ?> Monat<?= $order['duration'] > 1 ? 'e' : '' ?></td>
+                </tr>
+                <?php if (!empty($payment['membership_valid_until'])): ?>
+                <tr>
+                    <th>Gültig bis:</th>
+                    <td><?= date('d.m.Y', strtotime($payment['membership_valid_until'])) ?></td>
+                </tr>
+                <?php endif; ?>
+                <?php endif; ?>
+            </table>
+        </div>
+        <?php endif; ?>
         
         <div class="payment-details">
             <h3>Zahlungsinformationen</h3>
