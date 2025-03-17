@@ -46,7 +46,7 @@ html, body, #wrapper{
       .content--element {
         z-index: 3;
 
-        &[class*="bg-"]{
+        &[class*="bg-"]:not(.is-fullwidth){
           > .ce--inner{
             @extend .container;
           }

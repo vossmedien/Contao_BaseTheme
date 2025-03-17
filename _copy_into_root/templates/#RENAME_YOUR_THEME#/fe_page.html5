@@ -38,16 +38,16 @@ $this->bodyAttributes = $this
     <?= $this->stylesheets ?>
 
     <link rel="preload" href="files/base/layout/_vendor/node_modules/animate.css/animate.min.css" as="style">
-    <link rel="preload" href="files/base/layout/css/style.css" as="style">
-    <link rel="preload" href="files/base/layout/css/_theme/styles.css" as="style">
-    <link rel="preload" href="files/base/layout/css/_theme/root-variables.css" as="style">
+    <link rel="preload" href="files/base/layout/css/style.min.css" as="style">
+    <link rel="preload" href="files/base/layout/css/_theme/styles.min.css" as="style">
+    <link rel="preload" href="files/base/layout/css/_theme/root-variables.min.css" as="style">
 
 
     <?php
     $GLOBALS['TL_CSS'][] = 'files/base/layout/_vendor/node_modules/animate.css/animate.min.css|static';
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/style.css|static';
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/_theme/styles.css|static';
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/_theme/root-variables.css|static';
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/style.min.css|static';
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/_theme/styles.min.css|static';
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/_theme/root-variables.min.css|static';
     ?>
 
 
@@ -117,7 +117,7 @@ $this->bodyAttributes = $this
     <?php $this->block('footer'); ?>
     <?php if ($this->footer): ?>
         <!-- indexer::stop -->
-        <footer id="footer">
+        <footer id="footer" itemscope itemtype="http://schema.org/WPFooter">
             <?= $this->footer ?>
         </footer>
         <!-- indexer::continue -->
