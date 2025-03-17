@@ -149,18 +149,45 @@ class StripeCheckoutHandler {
 
                 // Extrahiere Daten aus einzelnen Attributen mit Fallback-Werten
                 productData = {
-                    id: button.dataset.productId || 'default-product',
+                    id: button.dataset.productId,
                     title: button.dataset.productTitle || 'Produkt',
                     price: button.dataset.price ? parseFloat(button.dataset.price.replace(',', '.')) : 0,
                     tax_rate: button.dataset.taxRate ? parseFloat(button.dataset.taxRate) : 19, // Steuersatz mit Fallback auf 19%
-                    create_invoice: button.dataset.createInvoice === 'true', // Rechnungserstellung aktivieren/deaktivieren
+                    
+                    // Verbesserte Erkennung für create_invoice 
+                    create_invoice: 'true', // Immer auf true setzen für alle Produkttypen
+                    
                     notification_id: button.dataset.notificationId,
                     element_id: button.dataset.elementId,
-                    // E-Mail-Einstellungen hinzufügen
-                    sender_email: button.dataset.senderEmail,
-                    admin_email: button.dataset.adminEmail,
-                    admin_template: button.dataset.adminTemplate,
-                    user_template: button.dataset.userTemplate
+                    currency: button.dataset.currency || 'eur',
+                    
+                    // Absender-E-Mail für Benachrichtigungen
+                    sender_email: button.dataset.senderEmail || '',
+                    admin_email: button.dataset.adminEmail || '',
+                    
+                    // Neue Parameter für E-Mail-Templates
+                    admin_template: button.dataset.adminTemplate || '',
+                    user_template: button.dataset.userTemplate || '',
+                    
+                    // Metadaten für den Dateiverkauf
+                    file_sale: button.dataset.fileSale === 'true',
+                    file_uuid: button.dataset.fileUuid || '',
+                    download_expires: button.dataset.downloadExpires ? parseInt(button.dataset.downloadExpires) : 7,
+                    download_limit: button.dataset.downloadLimit ? parseInt(button.dataset.downloadLimit) : 3,
+                    
+                    // Erfolgs- und Abbruch-URLs für den Checkout-Prozess
+                    success_url: button.dataset.successUrl || window.location.origin,
+                    cancel_url: button.dataset.cancelUrl || window.location.href,
+                    
+                    // Abonnement-Parameter
+                    is_subscription: button.dataset.isSubscription === 'true',
+                    stripe_product_id: button.dataset.stripeProductId || '',
+                    
+                    // Währung explizit setzen
+                    stripe_currency: button.dataset.currency || 'eur',
+                    
+                    // HTML-Attribute im Original-Format ebenfalls übertragen
+                    'data-create-invoice': 'true' // Immer auf true setzen
                 };
 
                 // Sicherstellen, dass der Preis eine gültige Zahl ist
@@ -233,6 +260,26 @@ class StripeCheckoutHandler {
             // Produktdaten im Modal speichern
             customerDataModal.setAttribute('data-product', JSON.stringify(productData));
 
+            // Formular im Modal finden
+            const form = customerDataModal.querySelector('form[data-customer-form]') ||
+                        customerDataModal.querySelector('form#customerDataForm') ||
+                        customerDataModal.querySelector('form');
+
+            // UI-Handler immer neu initialisieren oder aktualisieren
+            if (typeof UIHandler !== 'undefined') {
+                // Wenn bereits ein UI-Handler existiert, diesen verwenden, sonst neu erstellen
+                if (!this.uiHandler && form) {
+                    this.uiHandler = new UIHandler(form);
+                }
+                
+                // Produktinfo und Preis im Formular aktualisieren
+                if (this.uiHandler && productData && productData.price) {
+                    console.log('Aktualisiere Modal-Inhalt mit neuen Produktdaten:', productData.title);
+                    this.uiHandler.updateModal(productData, this.currency);
+                    this.uiHandler.initializePriceDisplays();
+                }
+            }
+
             // Modal öffnen
             const modalInstance = new bootstrap.Modal(customerDataModal);
             modalInstance.show();
@@ -240,11 +287,6 @@ class StripeCheckoutHandler {
             // Handler initialisieren, wenn noch nicht geschehen
             if (customerDataModal.getAttribute('data-handler-registered') !== 'true') {
                 console.log('Initialisiere Handler für das Formular');
-
-                // Formular im Modal finden
-                const form = customerDataModal.querySelector('form[data-customer-form]') ||
-                            customerDataModal.querySelector('form#customerDataForm') ||
-                            customerDataModal.querySelector('form');
 
                 if (!form) {
                     console.error('Kein Formular im Modal gefunden. Bitte stellen Sie sicher, dass das Formular mit data-customer-form markiert ist.');
@@ -254,19 +296,10 @@ class StripeCheckoutHandler {
 
                 console.log('Formular gefunden:', form.id || '(ohne ID)', form.getAttribute('data-customer-form') ? 'mit data-customer-form' : 'ohne data-customer-form');
 
-                // UI-Handler initialisieren
-                if (typeof UIHandler !== 'undefined') {
+                // UI-Handler bereits oben initialisiert
+                if (typeof UIHandler !== 'undefined' && !this.uiHandler) {
                     this.uiHandler = new UIHandler(form);
-
-                    // Produktinfo und Preis im Formular aktualisieren
-                    if (productData && productData.price) {
-                        this.uiHandler.updateModal(productData, this.currency);
-                        this.uiHandler.initializePriceDisplays();
-                    }
-
                     console.log('UI-Handler erfolgreich initialisiert');
-                } else {
-                    console.warn('UIHandler-Klasse nicht gefunden - UI-Funktionen deaktiviert');
                 }
 
                 // Validierungs-Handler initialisieren
@@ -419,7 +452,10 @@ class StripeCheckoutHandler {
                     sender_email: productData.sender_email,
                     admin_email: productData.admin_email,
                     admin_template: productData.admin_template,
-                    user_template: productData.user_template
+                    user_template: productData.user_template,
+                    // Abonnement-Parameter hinzufügen
+                    is_subscription: productData.is_subscription || false,
+                    stripe_product_id: productData.stripe_product_id || ''
                 },
                 personalData: customerData || {},
                 successUrl: successUrl,
@@ -602,7 +638,10 @@ class StripeCheckoutHandler {
                     sender_email: checkoutData.sender_email,
                     admin_email: checkoutData.admin_email,
                     admin_template: checkoutData.admin_template,
-                    user_template: checkoutData.user_template
+                    user_template: checkoutData.user_template,
+                    // Abonnement-Parameter hinzufügen
+                    is_subscription: checkoutData.is_subscription || false,
+                    stripe_product_id: checkoutData.stripe_product_id || ''
                 },
                 personalData: customerData || {},
                 successUrl: successUrl,
@@ -999,6 +1038,23 @@ class StripeCheckoutHandler {
 
         // Fallback: Legacy-Methode verwenden
         this.hideLoadingIndicator();
+    }
+
+    // Neue Hilfsfunktion für die Konvertierung von String-Werten in Boolean
+    convertToBoolean(value) {
+        if (!value) {
+            return false;
+        }
+        
+        if (typeof value === 'boolean') {
+            return value;
+        }
+        
+        if (typeof value === 'string') {
+            return value.toLowerCase() === 'true' || value === '1';
+        }
+        
+        return Boolean(value);
     }
 }
 

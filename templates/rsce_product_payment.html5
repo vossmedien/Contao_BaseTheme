@@ -284,6 +284,12 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                             <?php endif; ?>
                                             <?php if ($userTemplate): ?>
                                             data-user-template="<?= $userTemplate ?>"
+                                            <?php endif; ?>
+                                            <?php if (isset($product->is_subscription) && $product->is_subscription): ?>
+                                            data-is-subscription="true"
+                                            <?php if ($product->stripe_product_id): ?>
+                                            data-stripe-product-id="<?= $product->stripe_product_id ?>"
+                                            <?php endif; ?>
                                             <?php endif; ?>>
                                             <?= $buttonText ?>
                                         </button>

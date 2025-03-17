@@ -177,18 +177,21 @@ class StripeCheckoutController extends AbstractController
                         'as_string' => (string)$createInvoiceValue
                     ]);
                     
-                    // Überprüfen, ob der Wert als true ausgewertet werden sollte
-                    // Explizite Überprüfung aller möglichen Formate
+                    // Vereinfachte Prüfung: Wenn der Wert "true" enthält, ist er true
                     $isTrue = false;
-                    if ($createInvoiceValue === true || $createInvoiceValue === 1 || $createInvoiceValue === '1' || 
-                        strtolower((string)$createInvoiceValue) === 'true' || 
-                        strtolower((string)$createInvoiceValue) === 'yes' || 
-                        strtolower((string)$createInvoiceValue) === 'ja') {
+                    if (is_bool($createInvoiceValue)) {
+                        $isTrue = $createInvoiceValue;
+                    } else if (is_string($createInvoiceValue) && strtolower($createInvoiceValue) === 'true') {
+                        $isTrue = true;
+                    } else if ($createInvoiceValue === 1 || $createInvoiceValue === '1') {
                         $isTrue = true;
                     }
                     
                     // Als String 'true' oder 'false' speichern
                     $productData['create_invoice'] = $isTrue ? 'true' : 'false';
+                    
+                    // Wichtig: Auch data-create-invoice immer mit dem gleichen Wert setzen
+                    $productData['data-create-invoice'] = $isTrue ? 'true' : 'false';
                     
                     $this->logger->info('Rechnungserstellung Parameter gesetzt auf: ' . $productData['create_invoice']);
                 }
@@ -249,20 +252,53 @@ class StripeCheckoutController extends AbstractController
                         'as_string' => (string)$createInvoiceValue
                     ]);
                     
-                    // Überprüfen, ob der Wert als true ausgewertet werden sollte
-                    // Explizite Überprüfung aller möglichen Formate
+                    // Vereinfachte Prüfung: Wenn der Wert "true" enthält, ist er true
                     $isTrue = false;
-                    if ($createInvoiceValue === true || $createInvoiceValue === 1 || $createInvoiceValue === '1' || 
-                        strtolower((string)$createInvoiceValue) === 'true' || 
-                        strtolower((string)$createInvoiceValue) === 'yes' || 
-                        strtolower((string)$createInvoiceValue) === 'ja') {
+                    if (is_bool($createInvoiceValue)) {
+                        $isTrue = $createInvoiceValue;
+                    } else if (is_string($createInvoiceValue) && strtolower($createInvoiceValue) === 'true') {
+                        $isTrue = true;
+                    } else if ($createInvoiceValue === 1 || $createInvoiceValue === '1') {
                         $isTrue = true;
                     }
                     
                     // Als String 'true' oder 'false' speichern
                     $productData['create_invoice'] = $isTrue ? 'true' : 'false';
                     
+                    // Wichtig: Auch data-create-invoice immer mit dem gleichen Wert setzen
+                    $productData['data-create-invoice'] = $isTrue ? 'true' : 'false';
+                    
                     $this->logger->info('Rechnungserstellung Parameter für JSON gesetzt auf: ' . $productData['create_invoice']);
+                }
+                
+                // Abonnement-Parameter verarbeiten
+                if (isset($productData['is_subscription'])) {
+                    $isSubscriptionValue = $productData['is_subscription'];
+                    
+                    // Detailliertes Logging
+                    $this->logger->info('Abonnement-Parameter gefunden', [
+                        'raw_value' => $isSubscriptionValue,
+                        'type' => gettype($isSubscriptionValue),
+                        'as_string' => (string)$isSubscriptionValue
+                    ]);
+                    
+                    // Überprüfen, ob der Wert als true ausgewertet werden sollte
+                    $isTrue = false;
+                    if ($isSubscriptionValue === true || $isSubscriptionValue === 1 || $isSubscriptionValue === '1' || 
+                        strtolower((string)$isSubscriptionValue) === 'true' || 
+                        strtolower((string)$isSubscriptionValue) === 'yes' || 
+                        strtolower((string)$isSubscriptionValue) === 'ja') {
+                        $isTrue = true;
+                    }
+                    
+                    // Als Boolean speichern
+                    $productData['is_subscription'] = $isTrue;
+                    
+                    // Prüfen, ob Stripe-Produkt-ID vorhanden ist (erforderlich für Abonnements)
+                    if ($isTrue && empty($productData['stripe_product_id'])) {
+                        $this->logger->error('Abonnement ohne Stripe-Produkt-ID angefordert');
+                        return new JsonResponse(['error' => 'Für Abonnements ist eine Stripe-Produkt-ID erforderlich'], 400, $headers);
+                    }
                 }
             }
             
