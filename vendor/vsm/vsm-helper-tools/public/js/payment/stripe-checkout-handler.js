@@ -149,32 +149,46 @@ class StripeCheckoutHandler {
 
                 // Extrahiere Daten aus einzelnen Attributen mit Fallback-Werten
                 productData = {
-                    id: button.dataset.productId || 'default-product',
+                    id: button.dataset.productId,
                     title: button.dataset.productTitle || 'Produkt',
                     price: button.dataset.price ? parseFloat(button.dataset.price.replace(',', '.')) : 0,
                     tax_rate: button.dataset.taxRate ? parseFloat(button.dataset.taxRate) : 19, // Steuersatz mit Fallback auf 19%
-                    create_invoice: button.dataset.createInvoice === 'true', // Rechnungserstellung aktivieren/deaktivieren
+                    
+                    // Verbesserte Erkennung für create_invoice 
+                    create_invoice: 'true', // Immer auf true setzen für alle Produkttypen
+                    
                     notification_id: button.dataset.notificationId,
                     element_id: button.dataset.elementId,
-                    // Mitgliedschaftsdauer und Gruppen
-                    subscription_duration: button.dataset.subscriptionDuration ? parseInt(button.dataset.subscriptionDuration) : 0,
-                    duration: button.dataset.duration ? parseInt(button.dataset.duration) : 0,
-                    member_group: button.dataset.memberGroup || null,
-                    create_user: button.dataset.createUser === 'true' || false,
-                    // E-Mail-Einstellungen hinzufügen
-                    sender_email: button.dataset.senderEmail,
-                    admin_email: button.dataset.adminEmail,
-                    admin_template: button.dataset.adminTemplate,
-                    user_template: button.dataset.userTemplate
+                    currency: button.dataset.currency || 'eur',
+                    
+                    // Absender-E-Mail für Benachrichtigungen
+                    sender_email: button.dataset.senderEmail || '',
+                    admin_email: button.dataset.adminEmail || '',
+                    
+                    // Neue Parameter für E-Mail-Templates
+                    admin_template: button.dataset.adminTemplate || '',
+                    user_template: button.dataset.userTemplate || '',
+                    
+                    // Metadaten für den Dateiverkauf
+                    file_sale: button.dataset.fileSale === 'true',
+                    file_uuid: button.dataset.fileUuid || '',
+                    download_expires: button.dataset.downloadExpires ? parseInt(button.dataset.downloadExpires) : 7,
+                    download_limit: button.dataset.downloadLimit ? parseInt(button.dataset.downloadLimit) : 3,
+                    
+                    // Erfolgs- und Abbruch-URLs für den Checkout-Prozess
+                    success_url: button.dataset.successUrl || window.location.origin,
+                    cancel_url: button.dataset.cancelUrl || window.location.href,
+                    
+                    // Abonnement-Parameter
+                    is_subscription: button.dataset.isSubscription === 'true',
+                    stripe_product_id: button.dataset.stripeProductId || '',
+                    
+                    // Währung explizit setzen
+                    stripe_currency: button.dataset.currency || 'eur',
+                    
+                    // HTML-Attribute im Original-Format ebenfalls übertragen
+                    'data-create-invoice': 'true' // Immer auf true setzen
                 };
-
-                // Detailliertes Log für die Mitgliedschaftsdaten
-                console.log('Mitgliedschaftsdaten aus Button extrahiert:', {
-                    subscription_duration: productData.subscription_duration,
-                    duration: productData.duration,
-                    member_group: productData.member_group,
-                    create_user: productData.create_user
-                });
 
                 // Sicherstellen, dass der Preis eine gültige Zahl ist
                 if (isNaN(productData.price)) {
@@ -246,6 +260,26 @@ class StripeCheckoutHandler {
             // Produktdaten im Modal speichern
             customerDataModal.setAttribute('data-product', JSON.stringify(productData));
 
+            // Formular im Modal finden
+            const form = customerDataModal.querySelector('form[data-customer-form]') ||
+                        customerDataModal.querySelector('form#customerDataForm') ||
+                        customerDataModal.querySelector('form');
+
+            // UI-Handler immer neu initialisieren oder aktualisieren
+            if (typeof UIHandler !== 'undefined') {
+                // Wenn bereits ein UI-Handler existiert, diesen verwenden, sonst neu erstellen
+                if (!this.uiHandler && form) {
+                    this.uiHandler = new UIHandler(form);
+                }
+                
+                // Produktinfo und Preis im Formular aktualisieren
+                if (this.uiHandler && productData && productData.price) {
+                    console.log('Aktualisiere Modal-Inhalt mit neuen Produktdaten:', productData.title);
+                    this.uiHandler.updateModal(productData, this.currency);
+                    this.uiHandler.initializePriceDisplays();
+                }
+            }
+
             // Modal öffnen
             const modalInstance = new bootstrap.Modal(customerDataModal);
             modalInstance.show();
@@ -253,11 +287,6 @@ class StripeCheckoutHandler {
             // Handler initialisieren, wenn noch nicht geschehen
             if (customerDataModal.getAttribute('data-handler-registered') !== 'true') {
                 console.log('Initialisiere Handler für das Formular');
-
-                // Formular im Modal finden
-                const form = customerDataModal.querySelector('form[data-customer-form]') ||
-                            customerDataModal.querySelector('form#customerDataForm') ||
-                            customerDataModal.querySelector('form');
 
                 if (!form) {
                     console.error('Kein Formular im Modal gefunden. Bitte stellen Sie sicher, dass das Formular mit data-customer-form markiert ist.');
@@ -267,19 +296,10 @@ class StripeCheckoutHandler {
 
                 console.log('Formular gefunden:', form.id || '(ohne ID)', form.getAttribute('data-customer-form') ? 'mit data-customer-form' : 'ohne data-customer-form');
 
-                // UI-Handler initialisieren
-                if (typeof UIHandler !== 'undefined') {
+                // UI-Handler bereits oben initialisiert
+                if (typeof UIHandler !== 'undefined' && !this.uiHandler) {
                     this.uiHandler = new UIHandler(form);
-
-                    // Produktinfo und Preis im Formular aktualisieren
-                    if (productData && productData.price) {
-                        this.uiHandler.updateModal(productData, this.currency);
-                        this.uiHandler.initializePriceDisplays();
-                    }
-
                     console.log('UI-Handler erfolgreich initialisiert');
-                } else {
-                    console.warn('UIHandler-Klasse nicht gefunden - UI-Funktionen deaktiviert');
                 }
 
                 // Validierungs-Handler initialisieren
@@ -330,21 +350,9 @@ class StripeCheckoutHandler {
                         .then(session => {
                             // Weiterleitung zur Stripe Checkout-Seite
                             if (session && session.url) {
-                                // Entferne den Ladeindikator vor der Weiterleitung
-                                this.hideLoadingIndicator();
-                                const loader = document.getElementById('stripe-checkout-loader');
-                                if (loader) {
-                                    loader.remove();
-                                }
-                                // Zur Stripe-Seite weiterleiten
                                 window.location.href = session.url;
                             } else {
                                 this.hideLoading();
-                                // Entferne den globalen Ladeindikator
-                                const loader = document.getElementById('stripe-checkout-loader');
-                                if (loader) {
-                                    loader.remove();
-                                }
                                 console.error('Keine gültige Checkout-URL erhalten');
 
                                 // Falls UI-Handler vorhanden, Fehlermeldung anzeigen
@@ -355,11 +363,6 @@ class StripeCheckoutHandler {
                         })
                         .catch(error => {
                             this.hideLoading();
-                            // Entferne den globalen Ladeindikator
-                            const loader = document.getElementById('stripe-checkout-loader');
-                            if (loader) {
-                                loader.remove();
-                            }
                             console.error('Fehler beim Starten des Checkouts:', error);
 
                             // Falls UI-Handler vorhanden, Fehlermeldung anzeigen
@@ -402,28 +405,6 @@ class StripeCheckoutHandler {
             console.log('Preis (Original):', productData.price);
             console.log('Preis-Typ:', typeof productData.price);
 
-            // Markup des Produkts für E-Mail-Templates speichern (falls vorhanden)
-            let productMarkup = '';
-            let buttonMarkup = '';
-            
-            if (productData.elementId) {
-                // Produktelement finden
-                const productElement = document.querySelector(`[data-element-id="${productData.elementId}"]`);
-                if (productElement) {
-                    // Das nächste .card-body Element erfassen
-                    const productCardBody = productElement.closest('.card').querySelector('.card-body');
-                    if (productCardBody) {
-                        productMarkup = productCardBody.innerHTML;
-                    }
-                    
-                    // Den Button-Bereich erfassen
-                    const productButton = productElement.closest('.card').querySelector('.card-footer');
-                    if (productButton) {
-                        buttonMarkup = productButton.innerHTML;
-                    }
-                }
-            }
-
             // Preis in Cent umrechnen für Stripe
             let priceCents = 0;
 
@@ -465,23 +446,21 @@ class StripeCheckoutHandler {
                     tax_rate: productData.tax_rate || 19, // Standardmäßig 19% Mehrwertsteuer
                     tax_included: true, // Der angegebene Preis enthält bereits die Steuer (Brutto)
                     create_invoice: productData.create_invoice, // Rechnungserstellung berücksichtigen
-                    create_user: productData.create_user || this.createUserAccount || false, // Benutzer erstellen
-                    member_group: productData.member_group || null, // Mitgliedergruppe
                     notification_id: productData.notification_id,
-                    duration: productData.duration || 0, // Mitgliedsdauer in Monaten
-                    subscription_duration: productData.subscription_duration || 0, // Alternative Mitgliedschaftsdauer
+                    duration: productData.duration || 0, // Mitgliedsdauer in Monaten hinzufügen
                     // E-Mail-Templates und Adressen hinzufügen
                     sender_email: productData.sender_email,
                     admin_email: productData.admin_email,
                     admin_template: productData.admin_template,
-                    user_template: productData.user_template
+                    user_template: productData.user_template,
+                    // Abonnement-Parameter hinzufügen
+                    is_subscription: productData.is_subscription || false,
+                    stripe_product_id: productData.stripe_product_id || ''
                 },
                 personalData: customerData || {},
                 successUrl: successUrl,
                 cancelUrl: cancelUrl,
-                createUser: this.createUserAccount || productData.create_user || false,
-                productMarkup: productMarkup,
-                buttonMarkup: buttonMarkup
+                createUser: this.createUserAccount || false
             };
 
             // Elementdaten hinzufügen
@@ -506,8 +485,8 @@ class StripeCheckoutHandler {
                 }
 
                 // Download-Einstellungen
-                checkoutData.productData.download_expires = productData.download_expires;
-                checkoutData.productData.download_limit = productData.download_limit;
+                checkoutData.productData.download_expires = productData.download_expires || 7;
+                checkoutData.productData.download_limit = productData.download_limit || 3;
             }
 
             console.log('Sende Checkout-Anfrage mit folgenden Daten:', checkoutData);
@@ -555,12 +534,6 @@ class StripeCheckoutHandler {
 
                 if (redirectUrl) {
                     console.log('Leite zum Stripe Checkout weiter:', redirectUrl);
-                    // Ladeindikator entfernen vor der Weiterleitung
-                    this.hideLoadingIndicator();
-                    const loader = document.getElementById('stripe-checkout-loader');
-                    if (loader) {
-                        loader.remove();
-                    }
                     window.location.href = redirectUrl;
                 } else if (data.id) {
                     // Fallback: Wenn eine Session-ID, aber keine URL zurückkommt
@@ -569,13 +542,6 @@ class StripeCheckoutHandler {
                     // Prüfen, ob Stripe geladen ist
                     if (typeof Stripe === 'undefined') {
                         throw new Error('Stripe ist nicht geladen');
-                    }
-
-                    // Ladeindikator entfernen vor der Weiterleitung
-                    this.hideLoadingIndicator();
-                    const loader = document.getElementById('stripe-checkout-loader');
-                    if (loader) {
-                        loader.remove();
                     }
 
                     // Hole Stripe-Key aus der Konfiguration
@@ -594,12 +560,6 @@ class StripeCheckoutHandler {
                 }
             })
             .catch(error => {
-                // Ladeindikator im Fehlerfall entfernen
-                this.hideLoadingIndicator();
-                const loader = document.getElementById('stripe-checkout-loader');
-                if (loader) {
-                    loader.remove();
-                }
                 console.error('Fehler beim Erstellen der Checkout-Session:', error);
                 alert(this.texts.error || 'Ein Fehler ist aufgetreten: ' + error.message);
             });
@@ -678,7 +638,10 @@ class StripeCheckoutHandler {
                     sender_email: checkoutData.sender_email,
                     admin_email: checkoutData.admin_email,
                     admin_template: checkoutData.admin_template,
-                    user_template: checkoutData.user_template
+                    user_template: checkoutData.user_template,
+                    // Abonnement-Parameter hinzufügen
+                    is_subscription: checkoutData.is_subscription || false,
+                    stripe_product_id: checkoutData.stripe_product_id || ''
                 },
                 personalData: customerData || {},
                 successUrl: successUrl,
@@ -713,11 +676,7 @@ class StripeCheckoutHandler {
 
             console.log('Sende Checkout-Anfrage mit Daten:', stripeData);
 
-            // Hinzufügen eines Ladevorgangs, um zu verhindern, dass das Modal geschlossen wird
-            this.showLoadingIndicator();
-
-            console.log('Sende Anfrage an Server...');
-            
+            // POST-Request zum Erstellen einer Checkout-Session
             const response = await fetch('/stripe/create-checkout-session', {
                 method: 'POST',
                 headers: {
@@ -731,9 +690,9 @@ class StripeCheckoutHandler {
                 const errorData = await response.json().catch(() => ({ error: 'HTTP-Fehler: ' + response.status }));
                 throw new Error(errorData.error || 'Serverfehler: ' + response.status);
             }
-            
+
             const data = await response.json();
-            
+
             if (data.error) {
                 throw new Error(data.error);
             }
@@ -741,38 +700,15 @@ class StripeCheckoutHandler {
             if (!data.id && !data.session_url) {
                 throw new Error('Keine gültige Session-Daten erhalten');
             }
-            
-            // Schließe das Modal und entferne den Ladeindikator bevor zur Stripe-Checkout-Seite weitergeleitet wird
-            if (this.uiHandler) {
-                this.uiHandler.closeModal();
-            }
-            
-            // Ladeindikator explizit entfernen
-            this.hideLoadingIndicator();
-            
-            // Entferne auch den globalen Ladeindikator
-            const loader = document.getElementById('stripe-checkout-loader');
-            if (loader) {
-                loader.remove();
-            }
 
             // Session-URL zurückgeben
             return {
                 url: data.session_url || data.url,
                 id: data.id
             };
+
         } catch (error) {
             console.error('Fehler beim Checkout-Prozess:', error);
-            
-            // Im Fehlerfall auch den Ladeindikator entfernen
-            this.hideLoadingIndicator();
-            
-            // Entferne auch den globalen Ladeindikator
-            const loader = document.getElementById('stripe-checkout-loader');
-            if (loader) {
-                loader.remove();
-            }
-            
             throw error;
         }
     }
@@ -960,16 +896,8 @@ class StripeCheckoutHandler {
 
             // Antwort verarbeiten
             if (!response.ok) {
-                // Fehlerbehandlung bei HTTP-Fehler
                 const errorText = await response.text();
                 console.error('Server-Fehler bei direktem Checkout:', response.status, errorText);
-
-                // Ladeindikator entfernen
-                this.hideLoadingIndicator();
-                const loader = document.getElementById('stripe-checkout-loader');
-                if (loader) {
-                    loader.remove();
-                }
 
                 let errorMessage;
                 try {
@@ -979,85 +907,40 @@ class StripeCheckoutHandler {
                     errorMessage = 'Fehler bei der Verbindung zum Zahlungsserver. Status: ' + response.status;
                 }
 
-                if (statusElement) {
-                    statusElement.classList.add('error');
-                    statusElement.textContent = errorMessage;
-                } else {
-                    alert(errorMessage);
-                }
-                return;
+                throw new Error(errorMessage);
             }
 
-            // Daten aus der Antwort extrahieren
             const data = await response.json();
 
-            if (statusElement) {
-                statusElement.textContent = 'Leite weiter zu Stripe...';
+            if (!data.id) {
+                throw new Error('Keine Session-ID vom Server erhalten');
             }
 
-            // Prüfen, ob eine Session-URL zurückkommt
-            if (data.session_url || data.url) {
-                // Direktes Weiterleiten zum Stripe Checkout
-                console.log('Leite weiter zum Stripe Checkout...');
-                
-                // Ladeindikator entfernen
-                this.hideLoadingIndicator();
-                const loader = document.getElementById('stripe-checkout-loader');
-                if (loader) {
-                    loader.remove();
-                }
-                
-                window.location.href = data.session_url || data.url;
-            } else if (data.id) {
-                // Fallback für ältere API-Version ohne direkte URL
-                console.log('Verwende redirectToCheckout mit Session-ID');
-                
-                // Ladeindikator entfernen
-                this.hideLoadingIndicator();
-                const loader = document.getElementById('stripe-checkout-loader');
-                if (loader) {
-                    loader.remove();
-                }
-                
-                await this.stripe.redirectToCheckout({
-                    sessionId: data.id
-                });
-            } else {
-                // Fehlerfall: Weder URL noch ID erhalten
-                console.error('Keine Session-URL oder ID erhalten:', data);
-                
-                // Ladeindikator entfernen
-                this.hideLoadingIndicator();
-                const loader = document.getElementById('stripe-checkout-loader');
-                if (loader) {
-                    loader.remove();
-                }
-                
-                const errorMessage = 'Fehler bei der Kommunikation mit dem Zahlungsdienst.';
-                if (statusElement) {
-                    statusElement.classList.add('error');
-                    statusElement.textContent = errorMessage;
-                } else {
-                    alert(errorMessage);
-                }
+            console.log('Checkout-Session erstellt, leite weiter zu Stripe Checkout');
+
+            // Status-Update (optional)
+            if (statusElement) {
+                statusElement.textContent = 'Weiterleitung zum Zahlungsformular...';
             }
+
+            // Zu Stripe Checkout weiterleiten
+            const { error } = await this.stripe.redirectToCheckout({
+                sessionId: data.id
+            });
+
+            if (error) {
+                throw new Error(error.message || 'Fehler bei der Weiterleitung zum Zahlungsformular.');
+            }
+
         } catch (error) {
-            console.error('Fehler bei redirectToCheckout:', error);
-            
-            // Ladeindikator entfernen
-            this.hideLoadingIndicator();
-            const loader = document.getElementById('stripe-checkout-loader');
-            if (loader) {
-                loader.remove();
-            }
-            
-            const errorMessage = error.message || 'Fehler bei der Verbindung zum Zahlungsdienst.';
+            console.error('Fehler beim direkten Checkout:', error);
+            alert('Fehler beim Zahlungsvorgang: ' + (error.message || this.texts.errorGeneral));
+
+            // Status-Anzeige zurücksetzen (optional)
             const statusElement = document.getElementById('checkout-status');
             if (statusElement) {
-                statusElement.classList.add('error');
-                statusElement.textContent = errorMessage;
-            } else {
-                alert(errorMessage);
+                statusElement.textContent = 'Fehler: ' + error.message;
+                statusElement.style.color = 'red';
             }
         }
     }
@@ -1155,6 +1038,23 @@ class StripeCheckoutHandler {
 
         // Fallback: Legacy-Methode verwenden
         this.hideLoadingIndicator();
+    }
+
+    // Neue Hilfsfunktion für die Konvertierung von String-Werten in Boolean
+    convertToBoolean(value) {
+        if (!value) {
+            return false;
+        }
+        
+        if (typeof value === 'boolean') {
+            return value;
+        }
+        
+        if (typeof value === 'string') {
+            return value.toLowerCase() === 'true' || value === '1';
+        }
+        
+        return Boolean(value);
     }
 }
 

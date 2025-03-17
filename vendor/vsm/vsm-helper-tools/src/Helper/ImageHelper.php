@@ -11,6 +11,7 @@ declare(strict_types=1);
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/vsm/vsm-helper-tools
  */
+
 namespace Vsm\VsmHelperTools\Helper;
 
 use Contao\FilesModel;
@@ -223,9 +224,10 @@ class ImageHelper
 
     private static function cleanAttribute($str): string
     {
-        if (empty($str)) {
+        if (empty($str) || is_int($str)) {
             return '';
         }
+
 
         // Explizit <wbr> in allen Varianten entfernen (vor strip_tags)
         $str = preg_replace('/<wbr\s*\/?>/i', '', $str);
@@ -592,8 +594,8 @@ class ImageHelper
             : ($class ? ' class="lazy ' . htmlspecialchars($class) . '"' : ' class="lazy"');
 
         // Attribute vorbereiten
-$alt = self::cleanAttribute($altText ?: (!empty($meta['alt']) ? $meta['alt'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : ''))));
-$title = self::cleanAttribute(!empty($meta['title']) ? $meta['title'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : (!empty($alt) ? $alt : ''))));
+        $alt = self::cleanAttribute($altText ?: (!empty($meta['alt']) ? $meta['alt'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : ''))));
+        $title = self::cleanAttribute(!empty($meta['title']) ? $meta['title'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : (!empty($alt) ? $alt : ''))));
         $finalCaption = self::cleanAttribute($caption ?: (!empty($meta['caption']) ? $meta['caption'] : ''));
         $finalLink = self::cleanAttribute($imageUrl ?: (!empty($meta['link']) ? $meta['link'] : ''));
 

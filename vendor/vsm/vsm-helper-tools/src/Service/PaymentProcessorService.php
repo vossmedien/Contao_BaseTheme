@@ -177,16 +177,9 @@ class PaymentProcessorService
             ]);
         }
 
-        // Eine Rechnung für den Kauf erstellen
-        try {
-            $invoice = $this->stripeService->createInvoiceForPayment($payment);
-            $result['invoice_id'] = $invoice->id;
-            $this->logger->info('Rechnung erstellt: ' . $invoice->id);
-        } catch (\Exception $e) {
-            $this->logger->error('Fehler beim Erstellen der Rechnung: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
-            ]);
-        }
+        // Rechnungen werden jetzt automatisch von Stripe erstellt
+        // Die manuelle Rechnungserstellung wird nicht mehr benötigt
+        $this->logger->info('Rechnungen werden automatisch von Stripe erstellt');
 
         // Benachrichtigungen über Contao NotificationCenter senden
         try {

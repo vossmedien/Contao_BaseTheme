@@ -47,14 +47,7 @@ return array(
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
-        'stripe_public_key' => array(
-            'label' => array('Stripe Public Key', ''),
-            'inputType' => 'text',
-            'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
-            'dependsOn' => array(
-                'field' => 'stripe_enabled',
-            ),
-        ),
+
         'stripe_currency' => array(
             'label' => array('Währung', ''),
             'inputType' => 'select',
@@ -247,6 +240,20 @@ return array(
                     'label' => array('Laufzeit in Monaten', 'Optional für zeitlich begrenzte Mitgliedschaften'),
                     'inputType' => 'text',
                     'eval' => array('rgxp' => 'natural', 'tl_class' => 'w50'),
+                ),
+                'is_subscription' => array(
+                    'label' => array('Ist Abo-Produkt', 'Aktivieren, wenn es sich um ein Abonnement handelt'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50 clr'),
+                ),
+                'stripe_product_id' => array(
+                    'label' => array('Stripe Produkt-ID', 'Die ID des bei Stripe erstellten Produkts'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50', 'mandatory' => true),
+                    'dependsOn' => array(
+                        'field' => 'is_subscription',
+                        'value' => true,
+                    ),
                 ),
                 'email_settings' => array(
                     'label' => array('E-Mail-Einstellungen', ''),
