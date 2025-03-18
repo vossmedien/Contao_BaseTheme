@@ -15,7 +15,6 @@ $helpers = [
     'ButtonHelper',
     'BasicHelper',
     'EnvHelper',
-    'PaymentFormHelper',
     'GlobalElementConfig'
 ];
 

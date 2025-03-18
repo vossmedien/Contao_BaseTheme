@@ -12,10 +12,10 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_HEAD'][] = '<script src="https://js.stripe.com/v3/"></script>';
     
     // JS-Dateien aus dem Bundle laden
-    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/stripe-checkout-handler.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/stripe-element-handler.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/ui-handler.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmhelpertools/js/payment/validation-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmstripeconnect/js/payment/stripe-checkout-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmstripeconnect/js/payment/stripe-element-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmstripeconnect/js/payment/ui-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmstripeconnect/js/payment/validation-handler.js|static';
     
     // CSS laden
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce_product_payment.min.css|static';
@@ -72,7 +72,7 @@ $targetUrl = $successPage ? $successPage->getFrontendUrl() : '/';
 $successUrl = '/stripe/checkout/success?session_id={CHECKOUT_SESSION_ID}&target=' . urlencode($targetUrl);
 
 // Stripe-Konfiguration
-$stripeKey = $_ENV['STRIPE_PUBLIC_KEY'] ?? \Contao\System::getContainer()->getParameter('vsm_helper_tools.stripe.public_key') ?? $this->stripe_public_key;
+$stripeKey = $_ENV['STRIPE_PUBLIC_KEY'] ?? \Contao\System::getContainer()->getParameter('vsm_stripe_connect.stripe.public_key') ?? $this->stripe_public_key;
 $isDebug = $_ENV['APP_ENV'] === 'dev';
 ?>
 

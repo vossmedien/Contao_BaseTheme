@@ -7,16 +7,7 @@
       data-product-data="<?= $this->productData ?>">
 
     <div class="modal-body">
-        <div id="debug-info" class="d-none">
-            <div class="alert alert-info">
-                <strong>Debug-Info:</strong><br>
-                Stripe-Key: <?= substr($this->stripeKey, 0, 8) ?>...<br>
-                Success-URL: <?= $this->successUrl ?><br>
-                Währung: <?= $this->currency ?><br>
-                Element-ID: <?= $this->elementId ?>
-            </div>
-        </div>
-        
+
         <div data-product-info></div>
         <input type="hidden" id="product-id" name="product-id">
         <input type="hidden" name="element-id" value="<?= $this->elementId ?>">

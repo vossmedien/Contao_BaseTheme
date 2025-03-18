@@ -6,10 +6,6 @@ services:
         public: false           # Allows optimizing the container by removing unused services; this also means
                                 # fetching services directly from the container via $container->get() won't work.
                                 # The best practice is to be explicit about your dependencies anyway.
-        bind:
-            $projectDir: '%kernel.project_dir%'
-            $stripeSecretKey: '%vsm_helper_tools.stripe.secret_key%'
-            $webhookSecret: '%vsm_helper_tools.stripe.webhook_secret%'
 
     # Automatisches Laden aller Services im Bundle
     Vsm\VsmHelperTools\:
@@ -21,131 +17,12 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # Service für E-Mail-Funktionen
-    Vsm\VsmHelperTools\Service\EmailHelper:
-        class: Vsm\VsmHelperTools\Service\EmailHelper
-        calls:
-            - [initialize, ['%kernel.project_dir%', '@monolog.logger.contao', '@contao.framework']]
-
-    # Service für Stripe Zahlungen
-    vsm.stripe_payment_service:
-        class: Vsm\VsmHelperTools\Service\Stripe\StripePaymentService
-        public: true
-        arguments:
-            $logger: '@monolog.logger.contao'
-            $stripeSecretKey: '%vsm_helper_tools.stripe.secret_key%'
-            $webhookSecret: '%vsm_helper_tools.stripe.webhook_secret%'
-
-    # FileDownloadService
-    vsm.file_download_service:
-        class: Vsm\VsmHelperTools\Service\FileDownloadService
-        public: true
-        arguments:
-            $logger: '@monolog.logger.contao'
-            
-    # DownloadController
-    Vsm\VsmHelperTools\Controller\DownloadController:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    # PaymentProcessor
-    vsm.payment_processor_service:
-        class: Vsm\VsmHelperTools\Service\PaymentProcessorService
-        public: true
-        arguments:
-            $logger: '@monolog.logger.contao'
-            $stripeService: '@vsm.stripe_payment_service'
-            $fileDownloadService: '@vsm.file_download_service'
-
     # Twig-Extension
     Vsm\VsmHelperTools\Twig\VsmHelperExtension:
         tags: ['twig.extension']
-        
-    # StripeWebhookController
-    Vsm\VsmHelperTools\Controller\StripeWebhookController:
-        public: true
-        autowire: true
-        autoconfigure: true
-        arguments:
-            $framework: '@contao.framework'
-            $logger: '@monolog.logger.contao'
-            $webhookSecret: '%vsm_helper_tools.stripe.webhook_secret%'
-            $stripeSecretKey: '%vsm_helper_tools.stripe.secret_key%'
-            $projectDir: '%kernel.project_dir%'
-            $db: '@database_connection'
-            $stripeService: '@vsm.stripe_payment_service'
-            $userService: '@vsm.user_creation_service'
-            $paymentProcessorService: '@vsm.payment_session_manager'
-            $emailService: '@vsm.email_service'
-            $downloadService: '@vsm.download_link_generator'
-        tags: ['controller.service_arguments']
-        
-    # StripeCheckoutController explizit als PUBLIC service definieren
-    Vsm\VsmHelperTools\Controller\StripeCheckoutController:
-        public: true
-        autowire: true
-        autoconfigure: true
-        arguments:
-            $framework: '@contao.framework'
-            $logger: '@monolog.logger.contao'
-            $projectDir: '%kernel.project_dir%'
-            $db: '@database_connection'
-            $stripeSecretKey: '%vsm_helper_tools.stripe.secret_key%'
-            $sessionManager: '@vsm.payment_session_manager'
-            $stripeService: '@vsm.stripe_payment_service'
-            $emailService: '@vsm.email_service'
-            $downloadService: '@vsm.download_link_generator'
-            $userService: '@vsm.user_creation_service'
-            $twig: '@twig'
-        tags: ['controller.service_arguments']
-        
-    # Neue Services für verbesserte Zahlungsabwicklung
-    
-    # DownloadLinkGenerator
-    vsm.download_link_generator:
-        class: Vsm\VsmHelperTools\Service\Download\DownloadLinkGenerator
-        public: true
-        arguments:
-            $logger: '@monolog.logger.contao'
-            $projectDir: '%kernel.project_dir%'
-            $db: '@database_connection'
-            $framework: '@contao.framework'
-            
-    # EmailService
-    vsm.email_service:
-        class: Vsm\VsmHelperTools\Service\Email\EmailService
-        public: true
-        arguments:
-            $logger: '@monolog.logger.contao'
-            $projectDir: '%kernel.project_dir%'
-            $framework: '@contao.framework'
-            
-    # UserCreationService
-    vsm.user_creation_service:
-        class: Vsm\VsmHelperTools\Service\User\UserCreationService
-        public: true
-        arguments:
-            $logger: '@monolog.logger.contao'
-            $db: '@database_connection'
-            $framework: '@contao.framework'
-            $emailService: '@vsm.email_service'
-            
-    # PaymentSessionManager
-    vsm.payment_session_manager:
-        class: Vsm\VsmHelperTools\Service\Payment\PaymentSessionManager
-        public: true
-        arguments:
-            $connection: '@database_connection'
-            $csrfTokenManager: '@contao.csrf.token_manager'
-            $logger: '@monolog.logger.contao'
-            $emailService: '@vsm.email_service'
-            $userService: '@vsm.user_creation_service'
-            $downloadService: '@vsm.download_link_generator'
 
 # Parameter für das Bundle
 parameters:
     vsm_helper_tools.default_member_group: 1  # Standardgruppe für neue Mitglieder
-    vsm_helper_tools.stripe.public_key: '%env(STRIPE_PUBLIC_KEY)%'
-    vsm_helper_tools.stripe.secret_key: '%env(STRIPE_SECRET_KEY)%'
-    vsm_helper_tools.stripe.webhook_secret: '%env(STRIPE_WEBHOOK_SECRET)%'
+    # Stripe-Parameter wurden zu vsm-stripe-connect migriert
 

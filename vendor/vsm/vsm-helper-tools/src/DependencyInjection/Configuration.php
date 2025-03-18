@@ -27,23 +27,7 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
-                ->arrayNode('stripe')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode('public_key')
-                            ->info('Stripe Public API Key')
-                            ->defaultValue('%env(STRIPE_PUBLIC_KEY)%')
-                        ->end()
-                        ->scalarNode('secret_key')
-                            ->info('Stripe Secret API Key')
-                            ->defaultValue('%env(STRIPE_SECRET_KEY)%')
-                        ->end()
-                        ->scalarNode('webhook_secret')
-                            ->info('Stripe Webhook Secret')
-                            ->defaultValue('%env(STRIPE_WEBHOOK_SECRET)%')
-                        ->end()
-                    ->end()
-                ->end() // end stripe
+                // Stripe-Konfiguration wurde zu vsm-stripe-connect migriert
             ->end()
         ;
 

@@ -22,7 +22,6 @@ use Vsm\VsmHelperTools\Helper\EnvHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 use Vsm\VsmHelperTools\Helper\HeadlineHelper;
 use Vsm\VsmHelperTools\Helper\ImageHelper;
-use Vsm\VsmHelperTools\Helper\PaymentFormHelper;
 use Vsm\VsmHelperTools\Helper\VideoHelper;
 
 class VsmHelperExtension extends AbstractExtension
@@ -54,9 +53,6 @@ class VsmHelperExtension extends AbstractExtension
             
             // Global Element Config
             new TwigFunction('vsm_element_config', [GlobalElementConfig::class, 'getGlobalConfig']),
-            
-            // PaymentFormHelper
-            new TwigFunction('vsm_payment_form', [PaymentFormHelper::class, 'generatePaymentForm']),
             
             // Weitere Funktionen können hier hinzugefügt werden
             // ...

@@ -42,15 +42,11 @@ class VsmHelperToolsExtension extends Extension implements PrependExtensionInter
         );
         $mainLoader->load('services.yaml');
 
-        // Stripe-Konfiguration laden wenn gesetzt
+        // Konfiguration verarbeiten
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-
-        if (isset($config['stripe'])) {
-            $container->setParameter('vsm_helper_tools.stripe.public_key', $config['stripe']['public_key'] ?? null);
-            $container->setParameter('vsm_helper_tools.stripe.secret_key', $config['stripe']['secret_key'] ?? null);
-            $container->setParameter('vsm_helper_tools.stripe.webhook_secret', $config['stripe']['webhook_secret'] ?? null);
-        }
+        
+        // Hinweis: Stripe-Konfiguration wurde zu vsm-stripe-connect migriert
     }
 
     /**

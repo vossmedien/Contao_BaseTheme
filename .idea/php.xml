@@ -19,6 +19,7 @@
       <path value="$PROJECT_DIR$/vendor/vsm/vsm-helper-tools" />
       <path value="$PROJECT_DIR$/vendor/contao/calendar-bundle" />
       <path value="$PROJECT_DIR$/vendor/terminal42/notification_center" />
+      <path value="$PROJECT_DIR$/vendor/vsm/vsm-stripe-connect" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

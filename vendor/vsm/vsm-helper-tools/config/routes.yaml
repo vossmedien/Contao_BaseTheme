@@ -7,15 +7,6 @@ vsm_helper_tools.video_render:
         _scope: frontend
         _token_check: false
 
-# Stripe Controller Resources - Attributbasierte Routen
-vsm_helper_tools_webhook_routes:
-    resource: '../src/Controller/StripeWebhookController.php'
-    type: attribute
-
-vsm_helper_tools_checkout_routes:
-    resource: '../src/Controller/StripeCheckoutController.php'
-    type: attribute
-
 # Download Route
 vsm_helper_tools.download_file:
     path: /download/{token}/{fileId}
