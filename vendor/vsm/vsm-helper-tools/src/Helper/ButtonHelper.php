@@ -44,6 +44,7 @@ class ButtonHelper
 
                 switch ($linkTarget) {
                     case 'new_tab':
+                    case '1':
                         $additionalAttributes[] = 'target="_blank"';
                         break;
                     case 'lightbox':
