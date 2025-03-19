@@ -1,0 +1,42 @@
+# config/services.yaml
+services:
+    _defaults:
+        autowire: true          # Automatically injects dependencies in your services.
+        autoconfigure: true     # Automatically registers your services as commands, event subscribers, etc.
+        public: false           # Allows optimizing the container by removing unused services; this also means
+                                # fetching services directly from the container via $container->get() won't work.
+                                # The best practice is to be explicit about your dependencies anyway.
+        bind:
+            #$projectDir: '%kernel.project_dir%'
+
+    CaeliWind\CaeliPinLogin\:
+        resource: ../src/
+        exclude: ../src/{DependencyInjection}
+
+    # Session Manager separat registrieren
+    CaeliWind\CaeliPinLogin\Session\PinLoginSessionManager:
+        autowire: true
+        autoconfigure: true
+        public: true  # Wichtig, damit der Service über den Container abgerufen werden kann
+
+    # EventListener explizit registrieren und tief priorisieren, damit er nach anderen Listeners ausgeführt wird
+    CaeliWind\CaeliPinLogin\EventListener\PinLoginCheckListener:
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: 'contao.hook', hook: 'generatePage', priority: -128 }
+
+    # Add a session bag
+    caeli_wind.caeli_pin_login.session.factory:
+        class: CaeliWind\CaeliPinLogin\Session\SessionFactory
+        decorates: session.factory
+        arguments:
+            - '@caeli_wind.caeli_pin_login.session.factory.inner'
+            - '@caeli_wind.caeli_pin_login.session.attribute.array_attribute_bag'
+
+    caeli_wind.caeli_pin_login.session.attribute.array_attribute_bag:
+        class: CaeliWind\CaeliPinLogin\Session\Attribute\ArrayAttributeBag
+        arguments:
+            - _caeli_wind_caeli_pin_login_attributes
+        calls:
+            - [ setName, [ caeli_wind_caeli_pin_login ] ]

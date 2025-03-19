@@ -21,7 +21,6 @@
       <path value="$PROJECT_DIR$/vendor/vsm/vsm-helper-tools" />
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-auction-connect" />
       <path value="$PROJECT_DIR$/vendor/NEdev/contao-lbd-aiolos-bundle" />
-      <path value="$PROJECT_DIR$/vendor/composer" />
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-pin-login" />
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-pin-login_backup" />
       <path value="$PROJECT_DIR$/vendor/vsm/vsm-stripe-connect" />

@@ -1,0 +1,64 @@
+{# Twig Template für das PIN-Login Modul #}
+<div class="{{ class }} block"{{ cssID|default() }}>
+  {% if headline %}
+    <{{ hl|default('h1') }}>{{ headline }}</{{ hl|default('h1') }}>
+  {% endif %}
+
+  <div class="pin-login-form-container">
+    <h2>{{ formTitle }}</h2>
+    
+    {% if hasError %}
+      <div class="error-message">
+        {{ errorMessage }}
+      </div>
+    {% endif %}
+    
+    {% if successMessage %}
+      <div class="success-message">
+        {{ successMessage }}
+      </div>
+    {% endif %}
+    
+    {% if not successMessage %}
+      <form method="post">
+        <div class="formbody">
+          <input type="hidden" name="FORM_SUBMIT" value="pin_login_form">
+          <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
+          
+          <div class="widget widget-text mandatory">
+            <label for="pin">{{ pinLabel }}</label>
+            <input type="text" name="pin" id="pin" class="text" required>
+          </div>
+          
+          {% if requireEmail %}
+          <div class="widget widget-text mandatory">
+            <label for="email">{{ emailLabel }}</label>
+            <input type="email" name="email" id="email" class="text" required>
+          </div>
+          {% endif %}
+          
+          {% if extraDataField %}
+            <div class="widget widget-textarea">
+              <label for="extra_data">{{ extraDataLabel }}</label>
+              <textarea name="extra_data" id="extra_data" class="textarea" rows="4"></textarea>
+            </div>
+          {% endif %}
+          
+          <div class="widget widget-submit">
+            <button type="submit" class="submit">{{ submitButton }}</button>
+          </div>
+        </div>
+      </form>
+    {% endif %}
+    
+    {% if isDevMode %}
+      <div class="dev-info">
+        <h3>Debug Information (nur im Dev-Modus sichtbar)</h3>
+        <ul>
+          <li>Target Page ID: {{ targetPageId }}</li>
+          <li>Expected PIN: {{ expectedPin }}</li>
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+</div> 
