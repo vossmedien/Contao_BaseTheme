@@ -101,9 +101,18 @@ class MemberService
             }
             
             $member->disable = 0;
-            $member->start = time();
+            // Start-Datum nur setzen, wenn es noch nicht gesetzt ist oder in der Vergangenheit liegt
+            if (empty($member->start) || $member->start < time()) {
+                $member->start = time();
+            }
             $member->stop = $newEnd;
             $member->dateEnd = date('Y-m-d', $newEnd);
+            
+            // Auch das membership_expires Feld aktualisieren für Kompatibilität
+            $member->membership_expires = date('Y-m-d', $newEnd);
+            $this->logger->info('Membership-expires Feld gesetzt auf: ' . date('Y-m-d', $newEnd), [
+                'context' => ContaoContext::GENERAL
+            ]);
         }
 
         // Mitgliedsgruppen aktualisieren, wenn angegeben
@@ -192,6 +201,16 @@ class MemberService
         $member->start = $startTime;
         $member->stop = $stopTime;
         $member->dateEnd = $stopTime ? date('Y-m-d', $stopTime) : null; // Für die E-Mail
+        
+        // Auch das membership_expires Feld setzen
+        if ($stopTime) {
+            $member->membership_expires = date('Y-m-d', $stopTime);
+            $this->logger->info('Membership-expires Feld für neuen Benutzer gesetzt auf: ' . date('Y-m-d', $stopTime), [
+                'context' => ContaoContext::GENERAL
+            ]);
+        } else {
+            $member->membership_expires = ''; // Leerer String = kein Enddatum
+        }
         
         // Sichere Behandlung der Benutzergruppen
         if (!empty($metadata['memberGroup']) && is_numeric($metadata['memberGroup'])) {

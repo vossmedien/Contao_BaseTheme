@@ -69,7 +69,7 @@ class ImageHelper
                 'type' => 'svg',
                 'path' => $imagePath
             ];
-            
+
             self::addToImageFormatCache($cacheKey, $result);
             return $result;
         }
@@ -79,18 +79,18 @@ class ImageHelper
                 'type' => 'webp',
                 'path' => $imagePath
             ];
-            
+
             self::addToImageFormatCache($cacheKey, $result);
             return $result;
         }
 
-        if (in_array($extension, $standardFormats) || 
+        if (in_array($extension, $standardFormats) ||
             ($mimeType && in_array($mimeType, ['image/jpeg', 'image/png', 'image/gif']))) {
             $result = [
                 'type' => 'standard',
                 'path' => $imagePath
             ];
-            
+
             self::addToImageFormatCache($cacheKey, $result);
             return $result;
         }
@@ -102,7 +102,7 @@ class ImageHelper
                 'type' => 'converted',
                 'path' => $converted['path']
             ];
-            
+
             self::addToImageFormatCache($cacheKey, $result);
             return $result;
         }
@@ -112,11 +112,11 @@ class ImageHelper
             'type' => 'unknown',
             'path' => $imagePath
         ];
-        
+
         self::addToImageFormatCache($cacheKey, $result);
         return $result;
     }
-    
+
     /**
      * Hilfsmethode zum Hinzufügen zum Format-Cache mit Größenbeschränkung
      */
@@ -127,7 +127,7 @@ class ImageHelper
             self::$imageFormatCache = [];
             self::$imageFormatCacheSize = 0;
         }
-        
+
         self::$imageFormatCache[$key] = $value;
         self::$imageFormatCacheSize++;
     }
@@ -288,7 +288,7 @@ class ImageHelper
 
     private static function cleanAttribute($str): string
     {
-        if (empty($str) || is_int($str)) {
+        if (empty($str) || is_int($str) || is_bool($str)) {
             return '';
         }
 
@@ -313,12 +313,12 @@ class ImageHelper
     {
         // Cache-Schlüssel erstellen
         $cacheKey = md5($path . '_' . serialize($config) . '_' . serialize($options->getImagineOptions()));
-        
+
         // Aus Cache laden, wenn vorhanden
         if (isset(self::$processedImagesCache[$cacheKey])) {
             return self::$processedImagesCache[$cacheKey];
         }
-        
+
         $imageFactory = System::getContainer()->get('contao.image.factory');
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
 
@@ -344,17 +344,17 @@ class ImageHelper
             'path' => $processedPath,
             'src' => $encodedPath
         ];
-        
+
         // Im Cache speichern unter Berücksichtigung der maximalen Cache-Größe
         if (self::$processedImagesCacheSize >= self::$maxCacheSize) {
             // Bei Überschreitung den Cache leeren
             self::$processedImagesCache = [];
             self::$processedImagesCacheSize = 0;
         }
-        
+
         self::$processedImagesCache[$cacheKey] = $result;
         self::$processedImagesCacheSize++;
-        
+
         return $result;
     }
 
@@ -451,7 +451,7 @@ class ImageHelper
                     // Bei Fehlern auf JPEG zurückfallen
                     $logger = System::getContainer()->get('monolog.logger.contao');
                     $logger->notice('Fehlerhaftes WebP-Bild gefunden: ' . $baseImagePath . ' - ' . $e->getMessage());
-                    
+
                     $converted = self::convertToJpeg($baseImagePath);
                     if ($converted) {
                         $isWebp = false;
@@ -586,7 +586,7 @@ class ImageHelper
                 }
 
                 $imageSrc = self::encodePath($processedImage['src']);
-                
+
                 $srcset[] = $imageSrc . ' ' . $width . 'w';
                 $webpSrcset[] = $webpSrc . ' ' . $width . 'w';
 
@@ -605,7 +605,7 @@ class ImageHelper
                             $retinaConfig,
                             self::getResizeOptions()
                         );
-                        
+
                         if (!isset($isWebp) || !$isWebp) {
                             $retina2xWebp = self::processImage(
                                 $absoluteImagePath,
@@ -629,14 +629,14 @@ class ImageHelper
                     // Optimierung: Bei sehr kleinen Bildern keine 3x-Retina-Versionen erzeugen
                     // Weniger sinnvoll bei Bildern unter 150px
                     $createRetina3x = $width >= 150;
-                    
+
                     if ($createRetina3x && $retinaConfig = self::getRetinaConfig($config, $width, $originalWidth, 3)) {
                         $retina3xImage = self::processImage(
                             $absoluteImagePath,
                             $retinaConfig,
                             self::getResizeOptions()
                         );
-                        
+
                         if (!isset($isWebp) || !$isWebp) {
                             $retina3xWebp = self::processImage(
                                 $absoluteImagePath,
@@ -675,7 +675,7 @@ class ImageHelper
                             $has3x ? $retina3xWebpSrc : null,
                             $mediaQuery
                         );
-                        
+
                         // Bei WebP-Bildern keine JPEG-Quelle hinzufügen
                         if (!isset($isWebp) || !$isWebp) {
                             $sources[] = self::generateSource(
@@ -696,7 +696,7 @@ class ImageHelper
                             null,
                             $mediaQuery
                         );
-                        
+
                         // Bei WebP-Bildern keine JPEG-Quelle hinzufügen
                         if (!isset($isWebp) || !$isWebp) {
                             $sources[] = self::generateSource(
@@ -717,7 +717,7 @@ class ImageHelper
                         $webpSrc,
                         $has2x ? $retinaWebpSrc : null
                     );
-                    
+
                     // Bei WebP-Bildern keine JPEG-Quelle hinzufügen
                     if (!isset($isWebp) || !$isWebp) {
                         $sources[] = self::generateSource(
@@ -739,8 +739,8 @@ class ImageHelper
             try {
                 // Bei WebP-Bildern das WebP-Format für das Lightbox-Bild beibehalten
                 $lightboxImage = self::processImage(
-                    $absoluteImagePath, 
-                    $lightboxConfig, 
+                    $absoluteImagePath,
+                    $lightboxConfig,
                     self::getResizeOptions(isset($isWebp) && $isWebp ? 'webp' : null)
                 );
                 $lightboxImageSrc = $lightboxImage['src'];
@@ -762,10 +762,10 @@ class ImageHelper
 
         // Picture Tag zusammenbauen
         $imgTag = '<picture>' . implode("\n", $sources);
-        
+
         // Für WebP-Bilder den korrekten MIME-Typ im imgTag verwenden
         $imgType = isset($isWebp) && $isWebp ? "image/webp" : "image/jpeg";
-        
+
         $imgTag .= sprintf(
             '<img %s data-src="%s" data-srcset="%s" sizes="%s" alt="%s" %s loading="lazy" type="%s">',
             $classAttribute,
