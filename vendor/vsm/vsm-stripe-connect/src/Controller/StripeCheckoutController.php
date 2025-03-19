@@ -233,41 +233,10 @@ class StripeCheckoutController extends AbstractController
                 // Alle anderen Formulardaten in customerData ablegen
                 $this->logger->info('Formular-Daten: ' . json_encode($customerData));
                 
-                // Standardmäßig Rechnungserstellung aktivieren, wenn nicht explizit deaktiviert
-                if (!isset($productData['create_invoice'])) {
-                    $productData['create_invoice'] = 1;
-                    $this->logger->info('Standardmäßig Rechnungserstellung aktiviert');
-                }
-                
-                // Besondere Behandlung für data-create-invoice
-                if (isset($normalizedRequestData['data-create-invoice'])) {
-                    $createInvoiceValue = $normalizedRequestData['data-create-invoice'];
-                    
-                    // Detailliertes Logging für Debugging
-                    $this->logger->info('Rechnungserstellung-Parameter gefunden', [
-                        'raw_value' => $createInvoiceValue,
-                        'type' => gettype($createInvoiceValue),
-                        'as_string' => (string)$createInvoiceValue
-                    ]);
-                    
-                    // Vereinfachte Prüfung: Wenn der Wert "true" enthält, ist er true
-                    $isTrue = false;
-                    if (is_bool($createInvoiceValue)) {
-                        $isTrue = $createInvoiceValue;
-                    } else if (is_string($createInvoiceValue) && strtolower($createInvoiceValue) === 'true') {
-                        $isTrue = true;
-                    } else if ($createInvoiceValue === 1 || $createInvoiceValue === '1') {
-                        $isTrue = true;
-                    }
-                    
-                    // Als String 'true' oder 'false' speichern
-                    $productData['create_invoice'] = $isTrue ? 'true' : 'false';
-                    
-                    // Wichtig: Auch data-create-invoice immer mit dem gleichen Wert setzen
-                    $productData['data-create-invoice'] = $isTrue ? 'true' : 'false';
-                    
-                    $this->logger->info('Rechnungserstellung Parameter gesetzt auf: ' . $productData['create_invoice']);
-                }
+                // Rechnungserstellung ist immer aktiviert
+                $productData['create_invoice'] = 'true';
+                $productData['data-create-invoice'] = 'true';
+                $this->logger->info('Rechnungserstellung ist standardmäßig aktiviert (Immer aktiviert)');
             } else {
                 // JSON-Daten verarbeiten
                 $customerData = $data['customer_data'] ?? $data['personalData'] ?? $data['customer'] ?? [];
@@ -308,41 +277,10 @@ class StripeCheckoutController extends AbstractController
                     }
                 }
                 
-                // Standardmäßig Rechnungserstellung aktivieren, wenn nicht explizit deaktiviert
-                if (!isset($productData['create_invoice'])) {
-                    $productData['create_invoice'] = 1;
-                    $this->logger->info('Standardmäßig Rechnungserstellung für JSON-Request aktiviert');
-                }
-                
-                // Stelle sicher, dass create_invoice als String-Wert gespeichert wird
-                if (isset($productData['create_invoice'])) {
-                    $createInvoiceValue = $productData['create_invoice'];
-                    
-                    // Detailliertes Logging für Debugging
-                    $this->logger->info('Rechnungserstellung-Parameter in JSON gefunden', [
-                        'raw_value' => $createInvoiceValue,
-                        'type' => gettype($createInvoiceValue),
-                        'as_string' => (string)$createInvoiceValue
-                    ]);
-                    
-                    // Vereinfachte Prüfung: Wenn der Wert "true" enthält, ist er true
-                    $isTrue = false;
-                    if (is_bool($createInvoiceValue)) {
-                        $isTrue = $createInvoiceValue;
-                    } else if (is_string($createInvoiceValue) && strtolower($createInvoiceValue) === 'true') {
-                        $isTrue = true;
-                    } else if ($createInvoiceValue === 1 || $createInvoiceValue === '1') {
-                        $isTrue = true;
-                    }
-                    
-                    // Als String 'true' oder 'false' speichern
-                    $productData['create_invoice'] = $isTrue ? 'true' : 'false';
-                    
-                    // Wichtig: Auch data-create-invoice immer mit dem gleichen Wert setzen
-                    $productData['data-create-invoice'] = $isTrue ? 'true' : 'false';
-                    
-                    $this->logger->info('Rechnungserstellung Parameter für JSON gesetzt auf: ' . $productData['create_invoice']);
-                }
+                // Rechnungserstellung ist immer aktiviert
+                $productData['create_invoice'] = 'true';
+                $productData['data-create-invoice'] = 'true';
+                $this->logger->info('Rechnungserstellung ist standardmäßig aktiviert (Immer aktiviert)');
                 
                 // Abonnement-Parameter verarbeiten
                 if (isset($productData['is_subscription'])) {
