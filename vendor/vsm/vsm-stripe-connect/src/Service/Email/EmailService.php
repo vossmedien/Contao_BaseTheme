@@ -542,10 +542,31 @@ class EmailService
         
         // Ablaufdatum für Mitgliedschaft berechnen, wenn Dauer vorhanden
         $membershipValidUntil = null;
-        if ($hasMembership && $membershipDuration > 0) {
+        
+        // Zuerst prüfen, ob wir bereits einen gültigen Wert aus dem Member-Modell haben
+        if (!empty($sessionData['member_expires'])) {
+            $membershipValidUntil = $sessionData['member_expires'];
+            $this->logger->info('Verwende formatiertes Mitglied-Ablaufdatum aus session_data', [
+                'formatted_expires' => $membershipValidUntil
+            ]);
+        } 
+        else if (!empty($sessionData['member_stop'])) {
+            $membershipValidUntil = date('Y-m-d', $sessionData['member_stop']);
+            $this->logger->info('Verwende tatsächliches Mitglied-Stopp-Datum für E-Mail', [
+                'stop_date' => $membershipValidUntil
+            ]);
+        } 
+        // Als letzte Option: Berechnen basierend auf der Dauer
+        else if ($hasMembership && $membershipDuration > 0) {
             $membershipValidUntil = date('Y-m-d', strtotime('+' . $membershipDuration . ' months'));
-            
-            // Informationen zum Ablauf und Mitgliedschaft in payment-Daten setzen
+            $this->logger->info('Berechne Ablaufdatum basierend auf Dauer', [
+                'duration' => $membershipDuration,
+                'valid_until' => $membershipValidUntil
+            ]);
+        }
+        
+        // Informationen zum Ablauf und Mitgliedschaft in payment-Daten setzen, falls vorhanden
+        if ($membershipValidUntil) {
             $templateData['payment']['membership_duration'] = $membershipDuration;
             $templateData['payment']['membership_valid_until'] = $membershipValidUntil;
             
@@ -634,50 +655,66 @@ class EmailService
         $duration = 0;
         $validUntil = null;
         
-        // Prüfe verschiedene Quellen für Mitgliedschaftsdaten
-        if (isset($paymentData['duration'])) {
-            $hasDuration = true;
-            $duration = $paymentData['duration'];
-            $validUntil = $paymentData['membership_valid_until'] ?? date('Y-m-d', strtotime('+' . $duration . ' months'));
+        // Zuerst prüfen, ob wir bereits einen gültigen Wert aus dem Member-Modell haben
+        if (!empty($sessionData['member_expires'])) {
+            $validUntil = $sessionData['member_expires'];
+            $this->logger->info('Verwende formatiertes Mitglied-Ablaufdatum aus session_data', [
+                'formatted_expires' => $validUntil
+            ]);
         } 
-        else if (isset($productData['subscription_duration'])) {
-            $hasDuration = true;
-            $duration = intval($productData['subscription_duration']);
-            $validUntil = date('Y-m-d', strtotime('+' . $duration . ' months'));
-        } 
-        else if (isset($productData['duration'])) {
-            $hasDuration = true;
-            $duration = intval($productData['duration']);
-            $validUntil = date('Y-m-d', strtotime('+' . $duration . ' months'));
+        else if (!empty($sessionData['member_stop'])) {
+            $validUntil = date('Y-m-d', $sessionData['member_stop']);
+            $this->logger->info('Verwende Mitglied-Stop-Timestamp aus session_data', [
+                'stop_date' => $validUntil
+            ]);
         }
-        
-        // Prüfen, ob Mitgliedschaftsinformationen in den Button-Daten zu finden sind
-        if (!$hasDuration && isset($productData['data'])) {
-            $buttonData = $productData['data'];
-            if (is_string($buttonData)) {
-                $buttonData = json_decode($buttonData, true);
+        // Nur wenn keine Member-Daten vorhanden sind, aus anderen Quellen berechnen
+        else {
+            // Prüfe verschiedene Quellen für Mitgliedschaftsdaten
+            if (isset($paymentData['duration'])) {
+                $hasDuration = true;
+                $duration = $paymentData['duration'];
+                $validUntil = $paymentData['membership_valid_until'] ?? date('Y-m-d', strtotime('+' . $duration . ' months'));
+            } 
+            else if (isset($productData['subscription_duration'])) {
+                $hasDuration = true;
+                $duration = intval($productData['subscription_duration']);
+                $validUntil = date('Y-m-d', strtotime('+' . $duration . ' months'));
+            } 
+            else if (isset($productData['duration'])) {
+                $hasDuration = true;
+                $duration = intval($productData['duration']);
+                $validUntil = date('Y-m-d', strtotime('+' . $duration . ' months'));
             }
             
-            if (is_array($buttonData)) {
-                // Überprüfen von gängigen Schlüsseln für Mitgliedschaftsdauer
-                $durationKeys = ['duration', 'subscription_duration', 'membership_duration'];
-                foreach ($durationKeys as $key) {
-                    if (isset($buttonData[$key]) && $buttonData[$key] > 0) {
-                        $hasDuration = true;
-                        $duration = intval($buttonData[$key]);
-                        $validUntil = date('Y-m-d', strtotime('+' . $duration . ' months'));
-                        break;
+            // Prüfen, ob Mitgliedschaftsinformationen in den Button-Daten zu finden sind
+            if (!$validUntil && isset($productData['data'])) {
+                $buttonData = $productData['data'];
+                if (is_string($buttonData)) {
+                    $buttonData = json_decode($buttonData, true);
+                }
+                
+                if (is_array($buttonData)) {
+                    // Überprüfen von gängigen Schlüsseln für Mitgliedschaftsdauer
+                    $durationKeys = ['duration', 'subscription_duration', 'membership_duration'];
+                    foreach ($durationKeys as $key) {
+                        if (isset($buttonData[$key]) && $buttonData[$key] > 0) {
+                            $hasDuration = true;
+                            $duration = intval($buttonData[$key]);
+                            $validUntil = date('Y-m-d', strtotime('+' . $duration . ' months'));
+                            break;
+                        }
                     }
                 }
             }
-        }
-        
-        // Wenn im Markup explizit "5 Monate" steht, dies verwenden
-        if (!$hasDuration && isset($sessionData['product_markup']) && 
-            strpos($sessionData['product_markup'], 'Mitgliedschaft: 5 Monate') !== false) {
-            $hasDuration = true;
-            $duration = 5;
-            $validUntil = date('Y-m-d', strtotime('+5 months'));
+            
+            // Wenn im Markup explizit "5 Monate" steht, dies verwenden
+            if (!$validUntil && isset($sessionData['product_markup']) && 
+                strpos($sessionData['product_markup'], 'Mitgliedschaft: 5 Monate') !== false) {
+                $hasDuration = true;
+                $duration = 5;
+                $validUntil = date('Y-m-d', strtotime('+5 months'));
+            }
         }
         
         // Formatiertes Gültigkeitsdatum

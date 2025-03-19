@@ -51,7 +51,15 @@ $has_membership = !empty($customer['username']) ||
                  (isset($payment['membership_duration']) && $payment['membership_duration'] >= 0) ||
                  !empty($valid_until);
 
-$valid_until = !empty($payment['membership_valid_until']) ? $payment['membership_valid_until'] : null;
+// Bevorzugt order.valid_until verwenden, der direkt aus dem MemberModel kommt
+$valid_until = !empty($order['valid_until']) ? $order['valid_until'] : null;
+
+// Fallback auf payment.membership_valid_until
+if (!$valid_until && !empty($payment['membership_valid_until'])) {
+    $valid_until = $payment['membership_valid_until'];
+}
+
+// Nur wenn beide nicht gesetzt sind, berechnen wir das Datum neu
 if (!$valid_until && isset($order['duration']) && $order['duration'] > 0) {
     // Berechne das Ablaufdatum basierend auf der Laufzeit, falls nicht gesetzt
     $valid_until = date('Y-m-d', strtotime('+' . max(1, intval($order['duration'])) . ' months'));

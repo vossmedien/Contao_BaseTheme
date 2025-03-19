@@ -23,6 +23,7 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Stripe\Exception\ApiErrorException;
 use Vsm\VsmStripeConnect\Service\MemberService;
+use Contao\MemberModel;
 
 #[Route('/stripe', defaults: ['_scope' => 'frontend'])]
 #[AutoconfigureTag('controller.service_arguments')]
@@ -864,10 +865,32 @@ class StripeCheckoutController extends AbstractController
                         'created_at' => time()
                     ];
                     
+                    // Den tatsächlichen Mitgliedsstop-Wert aus dem MemberModel holen
+                    try {
+                        $memberModel = MemberModel::findById($userId);
+                        if ($memberModel && $memberModel->stop) {
+                            $sessionData['member_stop'] = $memberModel->stop;
+                            // Auch das formatierte Datum speichern
+                            $sessionData['member_expires'] = $memberModel->membership_expires ?: 
+                                                           ($memberModel->dateEnd ?: 
+                                                           ($memberModel->stop ? date('Y-m-d', $memberModel->stop) : null));
+                            
+                            $this->logger->info('Tatsächliche Mitglied-Ablaufdaten für E-Mail gespeichert', [
+                                'stop_date' => date('Y-m-d', $memberModel->stop),
+                                'membership_expires' => $memberModel->membership_expires,
+                                'dateEnd' => $memberModel->dateEnd
+                            ]);
+                        }
+                    } catch (\Exception $e) {
+                        $this->logger->error('Fehler beim Abrufen des Mitglied-Stop-Werts: ' . $e->getMessage());
+                    }
+                    
                     // Aktualisierte Kundendaten speichern
                     $this->sessionManager->updateSessionData($sessionId, [
                         'customer_data' => $sessionData['customer_data'],
-                        'user_creation' => $sessionData['user_creation']
+                        'user_creation' => $sessionData['user_creation'],
+                        'member_stop' => $sessionData['member_stop'] ?? null,
+                        'member_expires' => $sessionData['member_expires'] ?? null
                     ]);
                     
                     $this->logger->info('Benutzer erstellt und Daten in der Session aktualisiert', [
