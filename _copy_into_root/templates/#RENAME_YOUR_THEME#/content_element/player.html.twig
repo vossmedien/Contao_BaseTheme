@@ -5,89 +5,10 @@
     {% set parentBlock = parent() %}
     {% set lazyVideoTag = parentBlock|replace({
         '<video': '<video class="lazy"',
-        ' src=': ' data-src='
+        ' src=': ' data-src=',
+        ' poster=': ' data-poster='
     }) %}
     <div class="video-wrapper">
         {{ lazyVideoTag|raw }}
     </div>
-
-    {# Metadaten und Quelldatei initialisieren #}
-    {% set meta = null %}
-    {% set sourceFile = null %}
-    {% set currentLanguage = app.request.locale %}
-
-    {# Suche nach dem ersten Video mit gültigen Metadaten #}
-    {% for i in 0..2 %}
-        {% if meta is null and source_files[i] is defined %}
-            {% set currentFile = source_files[i] %}
-            {% if currentFile.extraMetadata is defined and currentFile.extraMetadata.metadata is defined %}
-                {% set metadataBag = currentFile.extraMetadata.metadata %}
-
-                {# Versuche, Metadaten für die aktuelle Sprache zu erhalten #}
-                {% if metadataBag.getForLanguage is defined %}
-                    {% set potentialMeta = metadataBag.getForLanguage(currentLanguage) %}
-                {% elseif metadataBag.get is defined %}
-                    {% set potentialMeta = metadataBag.get(currentLanguage) %}
-                {% endif %}
-
-                {% if potentialMeta is defined and potentialMeta is not null %}
-                    {% set meta = potentialMeta %}
-                    {% set sourceFile = currentFile %}
-                {% endif %}
-            {% endif %}
-        {% endif %}
-    {% endfor %}
-
-    {# Strukturierte Daten erstellen, wenn Metadaten gefunden wurden #}
-    {% if meta is not null and sourceFile is not null %}
-        {% set structuredData = {
-            '@context': 'https://schema.org',
-            '@type': 'VideoObject'
-        } %}
-
-        {# Titel hinzufügen #}
-        {% if meta.title is defined and meta.title %}
-            {% set structuredData = structuredData|merge({'name': meta.title|striptags}) %}
-        {% endif %}
-
-        {# Beschreibung hinzufügen #}
-        {% if meta.alt is defined and meta.alt %}
-            {% set structuredData = structuredData|merge({'description': meta.alt|striptags}) %}
-        {% endif %}
-
-        {# Upload-Datum hinzufügen #}
-        {% if sourceFile.lastModified is defined %}
-            {% set structuredData = structuredData|merge({'uploadDate': sourceFile.lastModified()|date('c')}) %}
-        {% endif %}
-
-        {# Thumbnail-URL hinzufügen #}
-        {% if figure.src is defined %}
-            {% set structuredData = structuredData|merge({
-                'thumbnailUrl': app.request.schemeAndHttpHost ~ '/' ~ figure.src
-            }) %}
-        {% endif %}
-
-        {# Content-URL hinzufügen #}
-        {% if sourceFile.path is defined %}
-            {% set structuredData = structuredData|merge({
-                'contentUrl': app.request.schemeAndHttpHost ~ '/' ~ sourceFile.path
-            }) %}
-        {% endif %}
-
-        {# Lizenz hinzufügen #}
-        {% if meta.license is defined and meta.license %}
-            {% set structuredData = structuredData|merge({'license': meta.license}) %}
-        {% endif %}
-
-        {# Strukturierte Daten ausgeben, wenn mehr als Kontext und Typ vorhanden sind #}
-        {% if structuredData|length > 2 %}
-            <script type="application/ld+json">
-                {{ structuredData|json_encode(constant('JSON_PRETTY_PRINT'))|raw }}
-            </script>
-        {% endif %}
-    {% endif %}
-{% endblock %}
-
-{% block media_link %}
-    {{ parent() }}
 {% endblock %}
