@@ -98,19 +98,19 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
                                 <div class="plain-image-holder <?= !$this->not_as_bg ? 'is-bg' : '' ?>">
                                     <?php if ($isMainVideo): ?>
-                                        <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo($slide->image, $mainImageInfo['ext'], $isMobileVideo ? 'd-none d-sm-block' : '') ?>
+                                        <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo($slide->image, $mainImageInfo['ext'], $isMobileVideo ? 'd-none d-md-block' : '') ?>
                                     <?php endif; ?>
 
                                     <?php if ($isMobileVideo): ?>
-                                        <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo($slide->mobile_image, $mobileImageInfo['ext'], 'd-sm-none') ?>
+                                        <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo($slide->mobile_image, $mobileImageInfo['ext'], 'd-md-none') ?>
                                     <?php endif; ?>
 
                                     <?php if (!$isMainVideo): ?>
-                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, ($isMobileVideo ? 'd-none d-sm-inline-block' : ''), false, false, true) ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, ($isMobileVideo ? 'd-none d-md-inline-block' : ''), false, false, true) ?>
                                     <?php endif; ?>
 
                                     <?php if ($slide->mobile_image && !$isMobileVideo): ?>
-                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, 'd-sm-none', false, false, true) ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, 'd-md-none', false, false, true) ?>
                                     <?php endif; ?>
                                 </div>
 
