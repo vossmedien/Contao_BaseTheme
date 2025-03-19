@@ -23,17 +23,23 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                             <?php if ($contact->email_link): ?>
                                 <p class="contact-email mb-1">
                                     <a href="<?= $contact->email_link; ?>" class="text-nowrap">
-                                        <i style="width: 25px;" class="fass fa-envelope"></i> <span class="text-body text-decoration-underline">Write a message</span>
+                                        <i style="width: 25px;" class="fass fa-envelope"></i>
+                                        <span class="text-body text-decoration-underline">Write a message</span>
                                     </a>
                                 </p>
                             <?php endif; ?>
                             <?php if ($contact->phone): ?>
                                 <p class="contact-phone mb-0">
                                     <a href="tel:<?= $contact->phone; ?>" class="text-nowrap">
-                                        <i style="width: 25px;" class="fass fa-phone"></i> <span class="text-body"><?= $contact->phone; ?></span>
+                                        <i style="width: 25px;" class="fass fa-phone"></i>
+                                        <span class="text-body"><?= $contact->phone; ?></span>
                                     </a>
                                 </p>
                             <?php endif; ?>
+
+                            <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($contact->buttons, "mt-3"); ?>
+
+
                         </div>
                     </div>
                 </div>

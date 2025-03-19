@@ -121,3 +121,15 @@ document.addEventListener('click', function (event) {
 
  */
 
+// Funktion zum Verschieben des Submit-Bereichs
+function moveSubmitElement() {
+    const submitElement = document.querySelector('.tl_formbody_submit');
+    const contentElement = document.querySelector('#tl_content');
+
+    if (submitElement && contentElement) {
+        contentElement.appendChild(submitElement);
+    }
+}
+
+// Für Turbo-spezifische Events
+document.addEventListener('turbo:load', moveSubmitElement);
