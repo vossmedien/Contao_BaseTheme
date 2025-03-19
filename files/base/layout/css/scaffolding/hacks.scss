@@ -102,3 +102,11 @@ div:has([class*="text-"]):has([class*="-center"]) {
   }
 }
 
+
+.container-wide {
+
+  @include media-breakpoint-up(xxl) {
+    max-width: 85vw;
+    margin-inline: auto;
+  }
+}

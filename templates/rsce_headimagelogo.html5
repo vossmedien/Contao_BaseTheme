@@ -117,7 +117,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                 <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1): ?>
                                     <div data-animation="<?= $slide->animation_type ?>" class="mainimage--content">
                                         <div class="mainimage--content-inner <?= $slide->textbox_position ?> <?= $slide->text_align ?>"
-                                             style="<?= $slide->text_color ? "color: {$slide->text_color};" : '' ?> <?= $slide->maxWidth ? "width: 100%; max-width: {$slide->maxWidth};" : '' ?>">
+                                             style="<?= $slide->text_color ? "color: {$slide->text_color};" : '' ?> <?= $slide->maxWidth ? "width: auto; max-width: {$slide->maxWidth};" : '' ?>">
                                             <div class="mainimage--content-inner--wrapper">
                                                 <div class="mainimage--content-inner--holder">
                                                     <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
