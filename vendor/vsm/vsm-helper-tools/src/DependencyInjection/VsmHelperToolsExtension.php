@@ -17,38 +17,54 @@ namespace Vsm\VsmHelperTools\DependencyInjection;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Routing\RouteCollection;
 
-class VsmHelperToolsExtension extends Extension
+class VsmHelperToolsExtension extends Extension implements PrependExtensionInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getAlias(): string
-    {
-        return Configuration::ROOT_KEY;
-    }
-
     /**
      * @throws \Exception
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $configuration = new Configuration();
-
-        $config = $this->processConfiguration($configuration, $configs);
-
+        // Lade die Services-Konfiguration aus dem Resources-Verzeichnis
         $loader = new YamlFileLoader(
             $container,
+            new FileLocator(__DIR__.'/../Resources/config')
+        );
+        $loader->load('services.yml');
+        
+        // Lade die Hauptkonfiguration aus dem config-Verzeichnis
+        $mainLoader = new YamlFileLoader(
+            $container, 
             new FileLocator(__DIR__.'/../../config')
         );
+        $mainLoader->load('services.yaml');
 
-        $loader->load('parameters.yaml');
-        $loader->load('services.yaml');
-        $loader->load('listener.yaml');
+        // Konfiguration verarbeiten
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+        
+        // Hinweis: Stripe-Konfiguration wurde zu vsm-stripe-connect migriert
+    }
 
-        $rootKey = $this->getAlias();
+    /**
+     * Lädt die Routing-Konfiguration
+     */
+    public function prepend(ContainerBuilder $container): void
+    {
+        // Framework-Konfiguration für Routing
+        $frameworkConfig = [];
+        $frameworkConfig['router']['resource'] = __DIR__ . '/../../config/routing.yml';
+        $frameworkConfig['router']['type'] = 'yaml';
+        $frameworkConfig['router']['utf8'] = true;
 
-        $container->setParameter($rootKey.'.foo.bar', $config['foo']['bar']);
+        $container->prependExtensionConfig('framework', $frameworkConfig);
+    }
+
+    public function getAlias(): string
+    {
+        return 'vsm_helper_tools';
     }
 } 

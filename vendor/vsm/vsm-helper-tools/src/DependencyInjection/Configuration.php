@@ -27,15 +27,7 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
-                ->arrayNode('foo')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode('bar')
-                            ->cannotBeEmpty()
-                            ->defaultValue('***')
-                        ->end()
-                    ->end()
-                ->end() // end foo
+                // Stripe-Konfiguration wurde zu vsm-stripe-connect migriert
             ->end()
         ;
 

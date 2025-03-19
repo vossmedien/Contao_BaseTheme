@@ -1,0 +1,13 @@
+# Routes für das Helper-Tools-Bundle
+vsm_helper_tools:
+    resource: '../src/Controller/'
+    type: attribute
+
+# Video Render Route
+video_render:
+    path: /video/render
+    controller: Vsm\VsmHelperTools\Controller\VideoRenderController::renderVideo
+    methods: [ POST ]
+    defaults:
+        _scope: frontend
+        _token_check: false 

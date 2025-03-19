@@ -32,6 +32,7 @@
     <script><?= $this->getDateString() ?></script>
     <?= $this->javascripts ?>
 
+
     <script src="/files/base/layout/js/vsmLazyload.js"></script>
     <script src="/files/base/layout/js/vsmLazyloadSlider.js"></script>
     <script src="/files/base/layout/_vendor/node_modules/venobox/dist/venobox.min.js"></script>
@@ -114,7 +115,7 @@
 
 <?= $this->mootools ?>
 <script>
-    document.addEventListener('load', () => {
+    document.addEventListener('DOMContentLoaded', () => {
         window.VSM = window.VSM || {};
 
         // Haupt-Instanz erstellen

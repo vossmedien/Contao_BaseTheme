@@ -1,0 +1,281 @@
+<?php
+/**
+ * E-Mail-Template für Admin-Benachrichtigungen bei neuen Zahlungen
+ * 
+ * Verfügbare Variablen:
+ * $order - Bestelldaten mit:
+ *   - product_title: Produkttitel
+ *   - product_id: Produkt-ID
+ *   - price: Preis
+ *   - currency: Währung
+ *   - duration: Laufzeit in Monaten (wenn vorhanden)
+ * $customer - Kundendaten mit allen Formularfeldern (z.B. firstname, lastname, email, username usw.)
+ * $payment - Zahlungsdaten mit:
+ *   - transaction_id: Transaktions-ID
+ *   - status: Zahlungsstatus
+ *   - payment_method: Zahlungsmethode
+ *   - membership_valid_until: Ablaufdatum der Mitgliedschaft (wenn vorhanden)
+ */
+
+// Sicherstellen, dass die Variablen existieren
+$order = $template_data->order ?? [];
+$customer = $template_data->customer ?? [];
+$payment = $template_data->payment ?? [];
+$download = $template_data->download ?? [];
+$invoice = $template_data->invoice ?? [];
+$has_download = $template_data->has_download ?? false;
+$has_invoice = $template_data->has_invoice ?? false;
+$tokens = $template_data->tokens ?? [];
+
+// Mitgliedschaft prüfen
+$has_membership = !empty($customer['username']) || 
+                 (isset($order['duration']) && $order['duration'] >= 0) || 
+                 (isset($payment['duration']) && $payment['duration'] >= 0) ||
+                 (isset($payment['membership_duration']) && $payment['membership_duration'] >= 0) ||
+                 !empty($valid_until);
+
+$valid_until = !empty($payment['membership_valid_until']) ? $payment['membership_valid_until'] : null;
+if (!$valid_until && isset($order['duration']) && $order['duration'] > 0) {
+    // Berechne das Ablaufdatum basierend auf der Laufzeit, falls nicht gesetzt
+    $valid_until = date('Y-m-d', strtotime('+' . max(1, intval($order['duration'])) . ' months'));
+} elseif (!$valid_until && isset($payment['duration']) && $payment['duration'] > 0) {
+    // Alternative: Berechne aus payment.duration
+    $valid_until = date('Y-m-d', strtotime('+' . max(1, intval($payment['duration'])) . ' months'));
+} elseif (!$valid_until && isset($payment['membership_duration']) && $payment['membership_duration'] > 0) {
+    // Alternative: Berechne aus payment.membership_duration
+    $valid_until = date('Y-m-d', strtotime('+' . max(1, intval($payment['membership_duration'])) . ' months'));
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Neue Bestellung eingegangen</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f0f3f6; padding: 20px; text-align: center; margin-bottom: 20px; border-left: 4px solid #007bff; }
+        .footer { background-color: #f0f3f6; padding: 15px; text-align: center; font-size: 12px; margin-top: 30px; }
+        .content { padding: 20px; }
+        h1 { color: #007bff; }
+        .order-details { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .customer-details { background-color: #f0f5ff; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #007bff; }
+        .payment-details { background-color: #f0fff5; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #28a745; }
+        .user-details { background-color: #fff0f5; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #9932cc; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; width: 30%; }
+        .highlight { color: #007bff; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Neue Zahlung eingegangen</h1>
+    </div>
+    
+    <div class="content">
+        <p>Es ist eine neue Zahlung in Ihrem Online-Shop eingegangen.</p>
+        
+        <div class="order-details">
+            <h3>Bestelldetails</h3>
+            <table>
+                <tr>
+                    <th>Bestellnummer:</th>
+                    <td><?= $order['id'] ?? $payment['transaction_id'] ?? '-' ?></td>
+                </tr>
+                <tr>
+                    <th>Datum:</th>
+                    <td><?= date('d.m.Y H:i') ?></td>
+                </tr>
+                <tr>
+                    <th>Produkt:</th>
+                    <td><?= $order['product_title'] ?? '-' ?></td>
+                </tr>
+                <tr>
+                    <th>Gesamtbetrag:</th>
+                    <td><span class="highlight"><?= $order['price_formatted'] ?? '-' ?></span></td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="customer-details">
+            <h3>Kundendaten</h3>
+            <table>
+                <tr>
+                    <th>Name:</th>
+                    <td><?= $customer['name'] ?? (($customer['firstname'] ?? '') . ' ' . ($customer['lastname'] ?? '')) ?></td>
+                </tr>
+                <tr>
+                    <th>E-Mail:</th>
+                    <td><?= $customer['email'] ?? '-' ?></td>
+                </tr>
+                <?php if (!empty($customer['street'])): ?>
+                <tr>
+                    <th>Adresse:</th>
+                    <td>
+                        <?= $customer['street'] ?? '' ?><br>
+                        <?= ($customer['postal'] ?? '') . ' ' . ($customer['city'] ?? '') ?><br>
+                        <?= $customer['country'] ?? 'DE' ?>
+                    </td>
+                </tr>
+                <?php endif; ?>
+                <?php if (!empty($customer['phone'])): ?>
+                <tr>
+                    <th>Telefon:</th>
+                    <td><?= $customer['phone'] ?></td>
+                </tr>
+                <?php endif; ?>
+                <?php if (!empty($customer['company'])): ?>
+                <tr>
+                    <th>Firma:</th>
+                    <td><?= $customer['company'] ?></td>
+                </tr>
+                <?php endif; ?>
+                <?php if (!empty($customer['vat_id'])): ?>
+                <tr>
+                    <th>USt-ID:</th>
+                    <td><?= $customer['vat_id'] ?></td>
+                </tr>
+                <?php endif; ?>
+            </table>
+        </div>
+        
+        <?php if ($has_membership): ?>
+        <div class="user-details">
+            <h3>Mitgliedschaftsinformationen</h3>
+            <table>
+                <?php if (!empty($customer['username'])): ?>
+                <tr>
+                    <th>Benutzername:</th>
+                    <td><?= $customer['username'] ?></td>
+                </tr>
+                <?php endif; ?>
+                <?php 
+                // Mitgliedschaftsdauer aus verschiedenen Quellen bestimmen
+                $displayDuration = null;
+                if (isset($order['duration']) && $order['duration'] > 0) {
+                    $displayDuration = $order['duration'];
+                } elseif (isset($payment['membership_duration']) && $payment['membership_duration'] > 0) {
+                    $displayDuration = $payment['membership_duration'];
+                } elseif (isset($payment['duration']) && $payment['duration'] > 0) {
+                    $displayDuration = $payment['duration'];
+                } elseif (isset($product['subscription_duration']) && $product['subscription_duration'] > 0) {
+                    $displayDuration = $product['subscription_duration'];
+                } elseif (isset($product['duration']) && $product['duration'] > 0) {
+                    $displayDuration = $product['duration'];
+                }
+                
+                // Wenn keine Dauer gefunden wurde, versuchen wir es mit dem Wert aus den Produktdaten
+                if (empty($displayDuration) && isset($order['product_data'])) {
+                    $productData = $order['product_data'];
+                    if (is_string($productData)) {
+                        $productData = json_decode($productData, true);
+                    }
+                    
+                    if (is_array($productData)) {
+                        if (isset($productData['subscription_duration']) && $productData['subscription_duration'] > 0) {
+                            $displayDuration = $productData['subscription_duration'];
+                        } elseif (isset($productData['duration']) && $productData['duration'] > 0) {
+                            $displayDuration = $productData['duration'];
+                        }
+                    }
+                }
+                
+                // Als letzte Option: fest auf 5 Monate setzen, wenn im Markup so angezeigt
+                if (empty($displayDuration) && isset($template_data->product_markup)) {
+                    if (strpos($template_data->product_markup, 'Mitgliedschaft: 5 Monate') !== false) {
+                        $displayDuration = 5;
+                    }
+                }
+                
+                // Prüfen der Membership-Daten aus dem Markup für Anzeige im E-Mail
+                $membershipText = "Unbegrenzt";
+                if ($displayDuration > 0) {
+                    $membershipText = $displayDuration . ' Monat' . ($displayDuration > 1 ? 'e' : '');
+                } elseif (isset($template_data->product_markup)) {
+                    // Aus dem Markup extrahieren, wenn kein Wert gefunden wurde
+                    $markup = $template_data->product_markup;
+                    if (preg_match('/Mitgliedschaft: ([0-9]+) Monat(?:e)?/i', $markup, $matches)) {
+                        $membershipText = $matches[1] . ' Monat' . (intval($matches[1]) > 1 ? 'e' : '');
+                        // Auch $displayDuration aktualisieren
+                        $displayDuration = intval($matches[1]);
+                    }
+                }
+                ?>
+                <tr>
+                    <th>Mitgliedschaft:</th>
+                    <td><?= $membershipText ?></td>
+                </tr>
+                <?php if ($valid_until): ?>
+                <tr>
+                    <th>Gültig bis:</th>
+                    <td><?= date('d.m.Y', strtotime($valid_until)) ?></td>
+                </tr>
+                <?php endif; ?>
+            </table>
+        </div>
+        <?php endif; ?>
+        
+        <div class="payment-details">
+            <h3>Zahlungsinformationen</h3>
+            <table>
+                <tr>
+                    <th>Zahlungsmethode:</th>
+                    <td>Kreditkarte (Stripe)</td>
+                </tr>
+                <tr>
+                    <th>Transaktions-ID:</th>
+                    <td><?= $payment['transaction_id'] ?? '-' ?></td>
+                </tr>
+                <tr>
+                    <th>Status:</th>
+                    <td><?= $payment['status'] ?? 'Erfolgreich' ?></td>
+                </tr>
+                <?php if (!empty($payment['stripe_customer_id'])): ?>
+                <tr>
+                    <th>Stripe Kunden-ID:</th>
+                    <td><?= $payment['stripe_customer_id'] ?></td>
+                </tr>
+                <?php endif; ?>
+                <?php if (!empty($payment['payment_method'])): ?>
+                <tr>
+                    <th>Zahlungsmethode:</th>
+                    <td><?= $payment['payment_method'] ?></td>
+                </tr>
+                <?php endif; ?>
+            </table>
+        </div>
+        
+        <?php if (!empty($invoice) && is_array($invoice)): ?>
+        <p>
+            <strong>Rechnung:</strong>
+            <?php if (!empty($invoice['invoice_url'])): ?>
+            <a href="<?= $invoice['invoice_url'] ?>">Rechnung ansehen</a>
+            <?php else: ?>
+            Wird von Stripe direkt an den Kunden gesendet
+            <?php endif; ?>
+            <?php if (!empty($invoice['invoice_number'])): ?>
+            | Rechnungsnummer: <?= $invoice['invoice_number'] ?>
+            <?php endif; ?>
+        </p>
+        <?php endif; ?>
+        
+        <?php if ($has_download && !empty($download['download_url'])): ?>
+        <p>
+            <strong>Download:</strong> 
+            <a href="<?= $download['download_url'] ?>">Download-Link</a> 
+            (Gültig bis: <?= $download['expires_date'] ?? date('d.m.Y', strtotime('+7 days')) ?>, 
+            Limit: <?= $download['download_limit'] ?? '3' ?> Downloads)
+        </p>
+        <?php endif; ?>
+    </div>
+    
+    <div class="footer">
+        <p>Diese E-Mail wurde automatisch vom System gesendet.</p>
+        <p>&copy; <?= date('Y') ?> Vossmedien</p>
+    </div>
+</div>
+</body>
+</html> 

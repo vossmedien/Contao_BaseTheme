@@ -6,32 +6,23 @@ services:
         public: false           # Allows optimizing the container by removing unused services; this also means
                                 # fetching services directly from the container via $container->get() won't work.
                                 # The best practice is to be explicit about your dependencies anyway.
-        bind:
-            #$projectDir: '%kernel.project_dir%'
 
     # Automatisches Laden aller Services im Bundle
     Vsm\VsmHelperTools\:
         resource: '../src/'
-        exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Resources/'
-            - '../src/ContaoManager/'
+        exclude: '../src/{DependencyInjection,Model,Resources,ContaoManager,Entity,Migrations,Tests}'
 
-    # Spezifische Service-Konfigurationen
-    Vsm\VsmHelperTools\Service\PlunkService:
-        arguments:
-            $publicKey: '%env(PLUNK_PUBLIC_KEY)%'
-            $secretKey: '%env(PLUNK_SECRET_KEY)%'
-            $client: '@http_client'
-            $logger: '@logger'
-
-    Vsm\VsmHelperTools\Controller\StripeWebhookController:
-        arguments:
-            $container: '@service_container'
-            $webhookSecret: '%env(STRIPE_WEBHOOK_SECRET)%'
-            $stripeSecretKey: '%env(STRIPE_SECRET_KEY)%'
-            $framework: '@contao.framework'
-            $plunkService: '@Vsm\VsmHelperTools\Service\PlunkService'
-            $logger: '@monolog.logger.contao'
+    # Controller registrieren
+    Vsm\VsmHelperTools\Controller\:
+        resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    # Twig-Extension
+    Vsm\VsmHelperTools\Twig\VsmHelperExtension:
+        tags: ['twig.extension']
+
+# Parameter für das Bundle
+parameters:
+    vsm_helper_tools.default_member_group: 1  # Standardgruppe für neue Mitglieder
+    # Stripe-Parameter wurden zu vsm-stripe-connect migriert
 

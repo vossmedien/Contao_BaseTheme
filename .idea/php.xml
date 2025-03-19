@@ -22,8 +22,9 @@
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-auction-connect" />
       <path value="$PROJECT_DIR$/vendor/NEdev/contao-lbd-aiolos-bundle" />
       <path value="$PROJECT_DIR$/vendor/composer" />
-      <path value="$PROJECT_DIR$/vendor/test/testtesttest" />
-      <path value="$PROJECT_DIR$/vendor/contao/news-bundle" />
+      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-pin-login" />
+      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-pin-login_backup" />
+      <path value="$PROJECT_DIR$/vendor/vsm/vsm-stripe-connect" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

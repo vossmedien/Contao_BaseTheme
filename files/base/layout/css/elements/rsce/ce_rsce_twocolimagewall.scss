@@ -9,6 +9,16 @@ html body {
     position: relative;
 
 
+    [class*=swiper-button-].swiper-button-prev{
+      left: 1rem;
+    }
+
+    [class*=swiper-button-].swiper-button-next{
+      right: 1rem;
+    }
+
+
+
     .content-holder {
       @include media-breakpoint-down(lg) {
         .image--col{

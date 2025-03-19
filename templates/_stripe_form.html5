@@ -1,5 +1,5 @@
-<form id="payment-form"
-      data-stripe-payment
+<form id="customerDataForm"
+      data-customer-form
       data-stripe-key="<?= $this->stripeKey ?>"
       data-create-user="<?= $this->createUser ?>"
       data-success-url="<?= $this->successUrl ?>"
@@ -7,6 +7,7 @@
       data-product-data="<?= $this->productData ?>">
 
     <div class="modal-body">
+
         <div data-product-info></div>
         <input type="hidden" id="product-id" name="product-id">
         <input type="hidden" name="element-id" value="<?= $this->elementId ?>">
@@ -141,11 +142,14 @@
             </div>
         <?php endif; ?>
 
+        <!-- Die Zahlungsmethode-Auswahl wird bei Stripe Checkout direkt von Stripe gehandhabt -->
+        <?php if (false && $this->useStripeElements): ?>
         <div class="my-3">
             <label class="form-label">Zahlungsmethode *</label>
             <div id="payment-element"></div>
             <div id="payment-errors" class="invalid-feedback d-block" role="alert"></div>
         </div>
+        <?php endif; ?>
 
         <?php if ($this->showPrivacyNotice): ?>
             <div class="form-check mb-3">
@@ -161,14 +165,63 @@
             </div>
         <?php endif; ?>
 
-        <div data-payment-error class="alert alert-danger d-none"></div>
+        <div data-form-error class="alert alert-danger d-none"></div>
     </div>
 
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-        <button type="submit" class="btn btn-primary" data-payment-submit>
-            <span class="spinner-border spinner-border-sm d-none" data-payment-spinner role="status"></span>
+        <button type="submit" class="btn btn-primary">
+            <span class="spinner-border spinner-border-sm d-none" data-form-spinner role="status"></span>
             <span>Jetzt kostenpflichtig bestellen</span>
         </button>
     </div>
+    
+    <!-- Verstecktes Debug-Toggle Element -->
+    <?php if ($_ENV['APP_ENV'] === 'dev'): ?>
+    <div class="text-center mt-2">
+        <small><a href="#" onclick="document.getElementById('debug-info').classList.toggle('d-none'); return false;">Debug-Info</a></small>
+    </div>
+    <?php endif; ?>
+
+    <!-- Produkt Info Template -->
+    <template id="product-info-template"
+              data-template-heading="Ihre Bestellung"
+              data-template-product-label="Produkt:"
+              data-template-price-label="Preis:"
+              data-template-price-badge="inkl. MwSt."
+              data-template-duration-label="Laufzeit:"
+              data-template-expiry-label="Gültig bis:">
+        <div class="product-info mb-3">
+            <h5 data-template-heading>Ihre Bestellung</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th data-template-product-label>Produkt</th>
+                            <td data-product-title></td>
+                        </tr>
+                        <tr>
+                            <th data-template-price-label>Preis</th>
+                            <td>
+                                <strong data-product-price></strong>
+                                <span data-template-price-badge class="badge bg-primary ms-2">inkl. MwSt.</span>
+                            </td>
+                        </tr>
+                        <tr data-tax-row>
+                            <th>enthaltene MwSt.</th>
+                            <td data-tax-amount></td>
+                        </tr>
+                        <tr data-duration-row class="d-none">
+                            <th data-template-duration-label>Laufzeit</th>
+                            <td data-product-duration></td>
+                        </tr>
+                        <tr data-expiry-row class="d-none">
+                            <th data-template-expiry-label>Gültig bis</th>
+                            <td data-product-expiry></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
 </form>

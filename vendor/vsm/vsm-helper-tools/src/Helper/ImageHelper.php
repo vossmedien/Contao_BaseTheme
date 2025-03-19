@@ -11,6 +11,7 @@ declare(strict_types=1);
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/vsm/vsm-helper-tools
  */
+
 namespace Vsm\VsmHelperTools\Helper;
 
 use Contao\FilesModel;
@@ -31,40 +32,104 @@ class ImageHelper
         ['maxWidth' => 1600, 'width' => 1600]
     ];
 
+    // Cache für verarbeitete Bilder
+    private static $processedImagesCache = [];
+    private static $processedImagesCacheSize = 0;
+    private static $maxCacheSize = 100; // Maximale Anzahl von Bildern im Cache
+
+    // Cache für Bildformate
+    private static $imageFormatCache = [];
+    private static $imageFormatCacheSize = 0;
+    private static $maxFormatCacheSize = 100; // Maximale Anzahl von Formaten im Cache
 
     private static function handleImageFormat(string $imagePath): array
     {
-        $extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
-        $standardFormats = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        // Aus Cache laden, wenn vorhanden
+        $cacheKey = md5($imagePath);
+        if (isset(self::$imageFormatCache[$cacheKey])) {
+            return self::$imageFormatCache[$cacheKey];
+        }
 
-        if ($extension === 'svg') {
-            return [
+        $extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+        $standardFormats = ['jpg', 'jpeg', 'png', 'gif'];
+
+        // MIME-Type überprüfen, wenn möglich
+        $mimeType = null;
+        if (function_exists('mime_content_type') && file_exists($imagePath)) {
+            $mimeType = mime_content_type($imagePath);
+        } elseif (function_exists('finfo_open') && file_exists($imagePath)) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $imagePath);
+            finfo_close($finfo);
+        }
+
+        // Überprüfung anhand MIME-Type und Dateiendung
+        if ($extension === 'svg' || ($mimeType && strpos($mimeType, 'image/svg') !== false)) {
+            $result = [
                 'type' => 'svg',
                 'path' => $imagePath
             ];
+            
+            self::addToImageFormatCache($cacheKey, $result);
+            return $result;
         }
 
-        if (in_array($extension, $standardFormats)) {
-            return [
+        if ($extension === 'webp' || ($mimeType && $mimeType === 'image/webp')) {
+            $result = [
+                'type' => 'webp',
+                'path' => $imagePath
+            ];
+            
+            self::addToImageFormatCache($cacheKey, $result);
+            return $result;
+        }
+
+        if (in_array($extension, $standardFormats) || 
+            ($mimeType && in_array($mimeType, ['image/jpeg', 'image/png', 'image/gif']))) {
+            $result = [
                 'type' => 'standard',
                 'path' => $imagePath
             ];
+            
+            self::addToImageFormatCache($cacheKey, $result);
+            return $result;
         }
 
         // Versuche Konvertierung für unbekannte Formate
         $converted = self::convertToJpeg($imagePath);
         if ($converted) {
-            return [
+            $result = [
                 'type' => 'converted',
                 'path' => $converted['path']
             ];
+            
+            self::addToImageFormatCache($cacheKey, $result);
+            return $result;
         }
 
         // Wenn Konvertierung fehlschlägt, als unknown markieren
-        return [
+        $result = [
             'type' => 'unknown',
             'path' => $imagePath
         ];
+        
+        self::addToImageFormatCache($cacheKey, $result);
+        return $result;
+    }
+    
+    /**
+     * Hilfsmethode zum Hinzufügen zum Format-Cache mit Größenbeschränkung
+     */
+    private static function addToImageFormatCache($key, $value): void
+    {
+        if (self::$imageFormatCacheSize >= self::$maxFormatCacheSize) {
+            // Bei Überschreitung den Cache leeren
+            self::$imageFormatCache = [];
+            self::$imageFormatCacheSize = 0;
+        }
+        
+        self::$imageFormatCache[$key] = $value;
+        self::$imageFormatCacheSize++;
     }
 
     private static function handleUnknownFormat($imagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy): string
@@ -223,9 +288,10 @@ class ImageHelper
 
     private static function cleanAttribute($str): string
     {
-        if (empty($str)) {
+        if (empty($str) || is_int($str)) {
             return '';
         }
+
 
         // Explizit <wbr> in allen Varianten entfernen (vor strip_tags)
         $str = preg_replace('/<wbr\s*\/?>/i', '', $str);
@@ -245,6 +311,14 @@ class ImageHelper
 
     private static function processImage(string $path, ResizeConfiguration $config, ResizeOptions $options): array
     {
+        // Cache-Schlüssel erstellen
+        $cacheKey = md5($path . '_' . serialize($config) . '_' . serialize($options->getImagineOptions()));
+        
+        // Aus Cache laden, wenn vorhanden
+        if (isset(self::$processedImagesCache[$cacheKey])) {
+            return self::$processedImagesCache[$cacheKey];
+        }
+        
         $imageFactory = System::getContainer()->get('contao.image.factory');
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
 
@@ -256,7 +330,9 @@ class ImageHelper
 
         // Sicherstellen, dass der Pfad mit .jpg, .png etc. endet
         if (!preg_match('/\.(jpg|jpeg|png|gif|webp|heic)$/i', $relativePath)) {
-            return ['path' => $processedPath, 'src' => ''];
+            $result = ['path' => $processedPath, 'src' => ''];
+            self::$processedImagesCache[$cacheKey] = $result;
+            return $result;
         }
 
         // URL-Encode jedes Verzeichnis-Segment einzeln
@@ -264,10 +340,22 @@ class ImageHelper
         $encodedParts = array_map('rawurlencode', $pathParts);
         $encodedPath = implode('/', $encodedParts);
 
-        return [
+        $result = [
             'path' => $processedPath,
             'src' => $encodedPath
         ];
+        
+        // Im Cache speichern unter Berücksichtigung der maximalen Cache-Größe
+        if (self::$processedImagesCacheSize >= self::$maxCacheSize) {
+            // Bei Überschreitung den Cache leeren
+            self::$processedImagesCache = [];
+            self::$processedImagesCacheSize = 0;
+        }
+        
+        self::$processedImagesCache[$cacheKey] = $result;
+        self::$processedImagesCacheSize++;
+        
+        return $result;
     }
 
     public static function generateImageHTML(
@@ -338,7 +426,44 @@ class ImageHelper
                 return self::handleSvg($baseImagePath, $rootDir, $altText, $meta, $headline, $size, $class);
             case 'unknown':
                 return self::handleUnknownFormat($baseImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
+            case 'webp':
+                // WebP-Dateien speziell verarbeiten
+                // Testen, ob WebP korrekt verarbeitet werden kann
+                try {
+                    // Einfache Größenprüfung
+                    if (!($imageInfo = @getimagesize($baseImagePath)) || !is_array($imageInfo)) {
+                        // WebP scheint beschädigt zu sein, versuche Konvertierung nach JPEG
+                        $converted = self::convertToJpeg($baseImagePath);
+                        if ($converted) {
+                            $isWebp = false;
+                            $baseImagePath = $converted['path'];
+                            $absoluteImagePath = $converted['path'];
+                        } else {
+                            // Wenn Konvertierung fehlschlägt, als unknown behandeln
+                            return self::handleUnknownFormat($baseImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
+                        }
+                    } else {
+                        $isWebp = true;
+                        $baseImagePath = $imageFormat['path'];
+                        $absoluteImagePath = $imageFormat['path'];
+                    }
+                } catch (\Exception $e) {
+                    // Bei Fehlern auf JPEG zurückfallen
+                    $logger = System::getContainer()->get('monolog.logger.contao');
+                    $logger->notice('Fehlerhaftes WebP-Bild gefunden: ' . $baseImagePath . ' - ' . $e->getMessage());
+                    
+                    $converted = self::convertToJpeg($baseImagePath);
+                    if ($converted) {
+                        $isWebp = false;
+                        $baseImagePath = $converted['path'];
+                        $absoluteImagePath = $converted['path'];
+                    } else {
+                        return self::handleUnknownFormat($baseImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
+                    }
+                }
+                break;
             default:
+                $isWebp = false;
                 $baseImagePath = $imageFormat['path'];
                 $absoluteImagePath = $imageFormat['path'];
         }
@@ -448,15 +573,20 @@ class ImageHelper
                 );
 
                 // WebP Version
-                $webpImage = self::processImage(
-                    $absoluteImagePath,
-                    $config,
-                    self::getResizeOptions('webp')
-                );
+                if (!isset($isWebp) || !$isWebp) {
+                    $webpImage = self::processImage(
+                        $absoluteImagePath,
+                        $config,
+                        self::getResizeOptions('webp')
+                    );
+                    $webpSrc = self::encodePath($webpImage['src']);
+                } else {
+                    // Wenn das Originalbild bereits WebP ist, nutzen wir es direkt
+                    $webpSrc = self::encodePath($processedImage['src']);
+                }
 
                 $imageSrc = self::encodePath($processedImage['src']);
-                $webpSrc = self::encodePath($webpImage['src']);
-
+                
                 $srcset[] = $imageSrc . ' ' . $width . 'w';
                 $webpSrcset[] = $webpSrc . ' ' . $width . 'w';
 
@@ -475,14 +605,20 @@ class ImageHelper
                             $retinaConfig,
                             self::getResizeOptions()
                         );
-                        $retina2xWebp = self::processImage(
-                            $absoluteImagePath,
-                            $retinaConfig,
-                            self::getResizeOptions('webp')
-                        );
+                        
+                        if (!isset($isWebp) || !$isWebp) {
+                            $retina2xWebp = self::processImage(
+                                $absoluteImagePath,
+                                $retinaConfig,
+                                self::getResizeOptions('webp')
+                            );
+                            $retinaWebpSrc = $retina2xWebp['src'];
+                        } else {
+                            // Bei WebP-Originalbildern verwenden wir die gleiche Retina-Version
+                            $retinaWebpSrc = $retina2xImage['src'];
+                        }
 
                         $retinaImageSrc = $retina2xImage['src'];
-                        $retinaWebpSrc = $retina2xWebp['src'];
                         $srcset[] = $retinaImageSrc . ' ' . ($width * 2) . 'w';
                         $webpSrcset[] = $retinaWebpSrc . ' ' . ($width * 2) . 'w';
                     }
@@ -490,20 +626,30 @@ class ImageHelper
 
 // 3x Retina für mobile nur wenn das Originalbild mindestens dreimal so groß ist
                 if ($width <= 768 && $width * 3 <= $originalWidth) {
-                    if ($retinaConfig = self::getRetinaConfig($config, $width, $originalWidth, 3)) {
+                    // Optimierung: Bei sehr kleinen Bildern keine 3x-Retina-Versionen erzeugen
+                    // Weniger sinnvoll bei Bildern unter 150px
+                    $createRetina3x = $width >= 150;
+                    
+                    if ($createRetina3x && $retinaConfig = self::getRetinaConfig($config, $width, $originalWidth, 3)) {
                         $retina3xImage = self::processImage(
                             $absoluteImagePath,
                             $retinaConfig,
                             self::getResizeOptions()
                         );
-                        $retina3xWebp = self::processImage(
-                            $absoluteImagePath,
-                            $retinaConfig,
-                            self::getResizeOptions('webp')
-                        );
+                        
+                        if (!isset($isWebp) || !$isWebp) {
+                            $retina3xWebp = self::processImage(
+                                $absoluteImagePath,
+                                $retinaConfig,
+                                self::getResizeOptions('webp')
+                            );
+                            $retina3xWebpSrc = $retina3xWebp['src'];
+                        } else {
+                            // Bei WebP-Originalbildern verwenden wir die gleiche Retina-Version
+                            $retina3xWebpSrc = $retina3xImage['src'];
+                        }
 
                         $retina3xImageSrc = $retina3xImage['src'];
-                        $retina3xWebpSrc = $retina3xWebp['src'];
                         $srcset[] = $retina3xImageSrc . ' ' . ($width * 3) . 'w';
                         $webpSrcset[] = $retina3xWebpSrc . ' ' . ($width * 3) . 'w';
                     }
@@ -529,13 +675,17 @@ class ImageHelper
                             $has3x ? $retina3xWebpSrc : null,
                             $mediaQuery
                         );
-                        $sources[] = self::generateSource(
-                            "image/jpeg",
-                            $imageSrc,
-                            $has2x ? $retinaImageSrc : null,
-                            $has3x ? $retina3xImageSrc : null,
-                            $mediaQuery
-                        );
+                        
+                        // Bei WebP-Bildern keine JPEG-Quelle hinzufügen
+                        if (!isset($isWebp) || !$isWebp) {
+                            $sources[] = self::generateSource(
+                                "image/jpeg",
+                                $imageSrc,
+                                $has2x ? $retinaImageSrc : null,
+                                $has3x ? $retina3xImageSrc : null,
+                                $mediaQuery
+                            );
+                        }
                     } else {
                         $has2x = $width * 2 <= $originalWidth;
 
@@ -546,13 +696,17 @@ class ImageHelper
                             null,
                             $mediaQuery
                         );
-                        $sources[] = self::generateSource(
-                            "image/jpeg",
-                            $imageSrc,
-                            $has2x ? $retinaImageSrc : null,
-                            null,
-                            $mediaQuery
-                        );
+                        
+                        // Bei WebP-Bildern keine JPEG-Quelle hinzufügen
+                        if (!isset($isWebp) || !$isWebp) {
+                            $sources[] = self::generateSource(
+                                "image/jpeg",
+                                $imageSrc,
+                                $has2x ? $retinaImageSrc : null,
+                                null,
+                                $mediaQuery
+                            );
+                        }
                     }
                     $processedSrcsets[] = $imageSrc;
                 } elseif (!$breakpoint['maxWidth']) {
@@ -563,11 +717,15 @@ class ImageHelper
                         $webpSrc,
                         $has2x ? $retinaWebpSrc : null
                     );
-                    $sources[] = self::generateSource(
-                        "image/jpeg",
-                        $imageSrc,
-                        $has2x ? $retinaImageSrc : null
-                    );
+                    
+                    // Bei WebP-Bildern keine JPEG-Quelle hinzufügen
+                    if (!isset($isWebp) || !$isWebp) {
+                        $sources[] = self::generateSource(
+                            "image/jpeg",
+                            $imageSrc,
+                            $has2x ? $retinaImageSrc : null
+                        );
+                    }
                 }
             } catch (\Exception $e) {
                 continue;
@@ -579,7 +737,12 @@ class ImageHelper
             $lightboxConfig = new ResizeConfiguration();
             $lightboxConfig->setWidth(1200)->setHeight(1200)->setMode('box');
             try {
-                $lightboxImage = self::processImage($absoluteImagePath, $lightboxConfig, self::getResizeOptions());
+                // Bei WebP-Bildern das WebP-Format für das Lightbox-Bild beibehalten
+                $lightboxImage = self::processImage(
+                    $absoluteImagePath, 
+                    $lightboxConfig, 
+                    self::getResizeOptions(isset($isWebp) && $isWebp ? 'webp' : null)
+                );
                 $lightboxImageSrc = $lightboxImage['src'];
             } catch (\Exception $e) {
                 // Fallback to original image
@@ -592,21 +755,26 @@ class ImageHelper
             : ($class ? ' class="lazy ' . htmlspecialchars($class) . '"' : ' class="lazy"');
 
         // Attribute vorbereiten
-$alt = self::cleanAttribute($altText ?: (!empty($meta['alt']) ? $meta['alt'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : ''))));
-$title = self::cleanAttribute(!empty($meta['title']) ? $meta['title'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : (!empty($alt) ? $alt : ''))));
+        $alt = self::cleanAttribute($altText ?: (!empty($meta['alt']) ? $meta['alt'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : ''))));
+        $title = self::cleanAttribute(!empty($meta['title']) ? $meta['title'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : (!empty($alt) ? $alt : ''))));
         $finalCaption = self::cleanAttribute($caption ?: (!empty($meta['caption']) ? $meta['caption'] : ''));
         $finalLink = self::cleanAttribute($imageUrl ?: (!empty($meta['link']) ? $meta['link'] : ''));
 
         // Picture Tag zusammenbauen
         $imgTag = '<picture>' . implode("\n", $sources);
+        
+        // Für WebP-Bilder den korrekten MIME-Typ im imgTag verwenden
+        $imgType = isset($isWebp) && $isWebp ? "image/webp" : "image/jpeg";
+        
         $imgTag .= sprintf(
-            '<img %s data-src="%s" data-srcset="%s" sizes="%s" alt="%s" %s loading="lazy">',
+            '<img %s data-src="%s" data-srcset="%s" sizes="%s" alt="%s" %s loading="lazy" type="%s">',
             $classAttribute,
             self::cleanAttribute($imageSrc),
-            self::formatSrcset($srcset), // Neue Hilfsmethode verwenden
+            self::formatSrcset(isset($isWebp) && $isWebp ? $webpSrcset : $srcset), // WebP Srcset für WebP-Bilder
             self::cleanAttribute(implode(', ', $sizes) . ', 100vw'),
             $alt,
-            $title ? ' title="' . $title . '"' : ''
+            $title ? ' title="' . $title . '"' : '',
+            $imgType
         );
         $imgTag .= '</picture>';
 

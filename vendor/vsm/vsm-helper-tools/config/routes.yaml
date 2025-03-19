@@ -1,34 +1,17 @@
-vsm_helper_tools_video_render:
+# Video Render Route
+vsm_helper_tools.video_render:
     path: /video/render
     controller: Vsm\VsmHelperTools\Controller\VideoRenderController::renderVideo
     methods: [ POST ]
     defaults:
-      _scope: frontend
+        _scope: frontend
+        _token_check: false
 
-vsm_helper_tools_stripe_webhook:
-  path: /stripe/webhook
-  controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::webhook
-  methods: [ POST ]
-  defaults:
-    _scope: frontend
-
-vsm_helper_tools_stripe_create_payment_intent:
-  path: /stripe/create-payment-intent
-  controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::createPaymentIntent
-  methods: [ POST ]
-  defaults:
-    _scope: frontend
-
-vsm_helper_tools_stripe_get_price:
-  path: /stripe/get-price
-  controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::getPrice
-  methods: [ POST ]
-  defaults:
-    _scope: frontend
-
-vsm_helper_tools_stripe_check_user:
-  path: /stripe/check-user
-  controller: Vsm\VsmHelperTools\Controller\StripeWebhookController::checkUser
-  methods: [ POST ]
-  defaults:
-    _scope: frontend 
+# Download Route
+vsm_helper_tools.download_file:
+    path: /download/{token}/{fileId}
+    controller: Vsm\VsmHelperTools\Controller\DownloadController::download
+    methods: [GET]
+    requirements:
+        token: '[a-zA-Z0-9]+'
+        fileId: '[a-fA-F0-9-]+'

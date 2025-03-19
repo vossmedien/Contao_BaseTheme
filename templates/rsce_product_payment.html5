@@ -5,61 +5,112 @@ use Contao\System;
 use Contao\Input;
 use Contao\Controller;
 use Contao\StringUtil;
+use Contao\FilesModel;
 
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
-    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/validation-handler.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/stripe-element-handler.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/ui-handler.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_payment/stripe-payment-handler.js|static';
-
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_product_payment.min.css|static';
-}
+    // Stripe.js Script laden
+    $GLOBALS['TL_HEAD'][] = '<script src="https://js.stripe.com/v3/"></script>';
+    
+    // JS-Dateien aus dem Bundle laden
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmstripeconnect/js/payment/stripe-checkout-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmstripeconnect/js/payment/stripe-element-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmstripeconnect/js/payment/ui-handler.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/vsmstripeconnect/js/payment/validation-handler.js|static';
+    
+    // CSS laden
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce_product_payment.min.css|static';
+} 
 
 // Generische Produktdaten-Aufbereitung
-$productData = array_map(function ($item, $index) {
-    return [
+$productData = array_map(function ($item, $index) { 
+    // Basis-Daten
+    $data = [
         'id' => $index,
         'title' => $item->title,
         'price' => $item->price,
+        'tax_rate' => $item->tax_rate ?? 19, // Steuersatz mit Standardwert 19%
         'duration' => intval($item->subscription_duration ?? 0),
         'status' => $item->status ?? 'active',
-        'eventName' => $item->plunk_event_name ?? null,
+        'sender_email' => $item->sender_email ?? null,
+        'admin_email' => $item->admin_email ?? null,
+        'admin_template' => $item->admin_template ?? null,
+        'user_template' => $item->user_template ?? null,
+        'create_invoice' => (bool)($item->create_invoice ?? true), // Standardmäßig Rechnungen erstellen
     ];
+    
+    // Download-Datei hinzufügen, wenn aktiviert
+    if ($item->file_sale && $item->download_file) {
+        $downloadToken = md5($index . '_' . time() . '_' . uniqid());
+        $uuid = StringUtil::binToUuid($item->download_file);
+        
+        $objFile = FilesModel::findByUuid($uuid);
+        
+        if ($objFile !== null) {
+            $data['file_sale'] = true;
+            $data['file_id'] = $uuid;
+            $data['file_path'] = $objFile->path;
+            $data['file_name'] = $objFile->name;
+            $data['download_token'] = $downloadToken;
+            $data['download_expires'] = intval($item->download_expires ?? 7); // Standard: 7 Tage
+            $data['download_limit'] = intval($item->download_limit ?? 3); // Standard: 3 Downloads
+        }
+    }
+    
+    return $data;
 }, $this->products, array_keys($this->products));
 
+// Erfolgsseite für Redirect nach Zahlung
 $pageModel = Controller::getContainer()
     ->get('contao.framework')
     ->getAdapter(PageModel::class);
 
+// Die Zielseite wird weiterhin für die Anzeige verwendet, aber wir leiten über den Handler
 $successPage = $pageModel->findByPk($this->success_page);
-$successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
+$targetUrl = $successPage ? $successPage->getFrontendUrl() : '/';
+
+// WICHTIG: Wir verwenden die definierte Route, die den Session-Handler enthält
+$successUrl = '/stripe/checkout/success?session_id={CHECKOUT_SESSION_ID}&target=' . urlencode($targetUrl);
+
+// Stripe-Konfiguration
+$stripeKey = $_ENV['STRIPE_PUBLIC_KEY'] ?? \Contao\System::getContainer()->getParameter('vsm_stripe_connect.stripe.public_key') ?? $this->stripe_public_key;
+$isDebug = $_ENV['APP_ENV'] === 'dev';
 ?>
 
-
+<!-- Stripe-Konfiguration -->
+<script id="stripe-config" type="application/json">
+{
+    "publicKey": "<?= $stripeKey ?>",
+    "stripeKey": "<?= $stripeKey ?>",
+    "successUrl": "<?= $successUrl ?>",
+    "cancelUrl": "<?= $this->alias ? Controller::generateFrontendUrl($this->row()) : '/' ?>",
+    "createUserAccount": <?= $this->create_user ? 'true' : 'false' ?>,
+    "currency": "<?= $this->stripe_currency ?>",
+    "debug": <?= $isDebug ? 'true' : 'false' ?>
+}
+</script>
 
 <!-- Produkt-Anzeige -->
 <div <?php echo $this->cssID; ?> class="<?= $this->class ?> content--element product-cards">
     <div class="ce--inner">
 
         <!-- Textkonfiguration -->
-<div id="payment-texts"
-     data-error-required="Bitte füllen Sie alle Pflichtfelder aus."
-     data-error-general="Ein Fehler ist aufgetreten"
-     data-error-product-not-found="Produkt nicht gefunden"
-     data-validation-password="Das Passwort muss mindestens 8 Zeichen lang sein und mindestens eine Zahl, einen Groß- und einen Kleinbuchstaben enthalten."
-     data-validation-email="Bitte geben Sie eine gültige E-Mail-Adresse ein."
-     data-validation-username="Der Benutzername muss zwischen 3 und 20 Zeichen lang sein und darf nur Buchstaben, Zahlen, Unterstrich und Bindestrich enthalten."
-     data-stripe-errors='{
-        "incomplete_number": "Die Kartennummer ist unvollständig.",
-        "invalid_number": "Die Kartennummer ist ungültig.",
-        "incomplete_expiry": "Das Ablaufdatum ist unvollständig.",
-        "invalid_expiry": "Das Ablaufdatum ist ungültig.",
-        "incomplete_cvc": "Der Sicherheitscode ist unvollständig.",
-        "invalid_cvc": "Der Sicherheitscode ist ungültig.",
-        "default": "Ein Fehler ist aufgetreten."
-     }'
-></div>
-
+        <div id="payment-texts"
+             data-error-required="Bitte füllen Sie alle Pflichtfelder aus."
+             data-error-general="Ein Fehler ist aufgetreten"
+             data-error-product-not-found="Produkt nicht gefunden"
+             data-validation-password="Das Passwort muss mindestens 8 Zeichen lang sein und mindestens eine Zahl, einen Groß- und einen Kleinbuchstaben enthalten."
+             data-validation-email="Bitte geben Sie eine gültige E-Mail-Adresse ein."
+             data-validation-username="Der Benutzername muss zwischen 3 und 20 Zeichen lang sein und darf nur Buchstaben, Zahlen, Unterstrich und Bindestrich enthalten."
+             data-stripe-errors='{
+                "incomplete_number": "Die Kartennummer ist unvollständig.",
+                "invalid_number": "Die Kartennummer ist ungültig.",
+                "incomplete_expiry": "Das Ablaufdatum ist unvollständig.",
+                "invalid_expiry": "Das Ablaufdatum ist ungültig.",
+                "incomplete_cvc": "Der Sicherheitscode ist unvollständig.",
+                "invalid_cvc": "Der Sicherheitscode ist ungültig.",
+                "default": "Ein Fehler ist aufgetreten."
+             }'
+        ></div>
 
         <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
@@ -143,27 +194,118 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
                                             <?php if ($product->price_info): ?>
                                                 <small class="d-block text-muted"><?= $product->price_info ?></small>
                                             <?php endif; ?>
+                                            <?php if ($product->subscription_duration): ?>
+                                                <small class="d-block text-primary">
+                                                    <i class="bi bi-calendar-check"></i> 
+                                                    Mitgliedschaft: <?= intval($product->subscription_duration) ?> Monat<?= intval($product->subscription_duration) > 1 ? 'e' : '' ?>
+                                                </small>
+                                            <?php endif; ?>
                                         </strong>
                                     </div>
                                 <?php endif; ?>
-
-
-                                <?php if ($product->status === 'sold_out'): ?>
-                                    <div class="alert alert-warning mb-0">
-                                        <?= $product->sold_out_text ?: 'Dieses Produkt ist derzeit nicht verfügbar.' ?>
-                                    </div>
-                                <?php endif; ?>
-
-
                             </div>
 
+
+                  
                             <div class="card-footer d-flex flex-row gap-1 bg-transparent">
                                 <?php if ($product->status === 'sold_out'): ?>
-
+                                    <!-- Keine Aktion für ausverkaufte Produkte -->
                                 <?php elseif ($this->stripe_enabled && !$product->disable_payment): ?>
-                                    <button type="button" class="btn btn-primary" onclick="openPaymentModal(<?= htmlspecialchars(json_encode($productData[$index])) ?>)">
-                                        <?= $product->button_text ?: 'Jetzt kaufen' ?>
-                                    </button>
+                                    <div class="product-button">
+                                        <?php
+                                        // Produkt-Daten für den Button
+                                        $buttonClass = 'btn btn-primary product-checkout-button';
+                                        $buttonText = $product->button_text ?: 'Jetzt kaufen';
+                                        
+                                        // Mitgliedschaftsdauer explizit für bessere Sichtbarkeit
+                                        $subscriptionDuration = intval($product->subscription_duration ?: 0);
+                                        
+                                        // Datei-Verkauf
+                                        $fileSale = !empty($product->file_sale);
+                                        $filePath = '';
+                                        $fileUuid = '';
+                                        $downloadExpires = $product->download_expires ?: '7';
+                                        $downloadLimit = $product->download_limit ?: '3';
+                                        
+                                        if ($fileSale && $product->download_file) {
+                                            $fileObj = FilesModel::findByUuid($product->download_file);
+                                            if ($fileObj) {
+                                                $filePath = $fileObj->path;
+                                                // Binäre UUID base64-kodiert übergeben (JSON-sicher)
+                                                $fileUuid = $product->download_file;
+                                            }
+                                        }
+                                        
+                                        // E-Mail-Templates
+                                        $senderEmail = $product->sender_email ?: '';
+                                        $adminEmail = $product->admin_email ?: '';
+                                        
+                                        // Stelle sicher, dass Templates mit "emails/" beginnen
+                                        $adminTemplate = $product->admin_template ?: '';
+                                        $userTemplate = $product->user_template ?: '';
+                                        
+                                        if ($adminTemplate && !str_starts_with($adminTemplate, 'emails/')) {
+                                            $adminTemplate = 'emails/' . $adminTemplate;
+                                        }
+                                        
+                                        if ($userTemplate && !str_starts_with($userTemplate, 'emails/')) {
+                                            $userTemplate = 'emails/' . $userTemplate;
+                                        }
+                                        ?>
+                                        
+                                        <button type="button" 
+                                            class="<?= $buttonClass ?>"
+                                            data-checkout="true"
+                                            data-product-id="<?= $index ?>" 
+                                            data-element-id="<?= $this->id ?>"
+                                            data-product-title="<?= StringUtil::specialchars($product->title) ?>"
+                                            data-price="<?= $product->price ?>"
+                                            data-currency="<?= $this->stripe_currency ?>"
+                                            data-tax-rate="<?= $product->tax_rate ?>"
+                                            <?php if (isset($product->create_invoice)): ?>
+                                            data-create-invoice="<?= ($product->create_invoice == 1 || $product->create_invoice === true) ? 'true' : 'false' ?>"
+                                            <?php else: ?>
+                                            data-create-invoice="1"
+                                            <?php endif; ?>
+                                            <?php if ($this->create_user): ?>
+                                            data-create-user="true"
+                                            data-member-group="<?= $this->member_group ?>"
+                                            <?php endif; ?>
+                                            <?php if (!empty($product->subscription_duration)): ?>
+                                            data-subscription-duration="<?= $subscriptionDuration ?>"
+                                            data-duration="<?= $subscriptionDuration ?>"
+                                            <?php endif; ?>
+                                            <?php if ($fileSale): ?>
+                                            data-file-sale="true"
+                                            data-file-uuid="<?= $fileUuid ?>"
+                                            <?php if ($_ENV['APP_ENV'] === 'dev'): ?>
+                                            data-debug-file-path="<?= htmlspecialchars($filePath) ?>"
+                                            <?php endif; ?>
+                                            data-download-expires="<?= $downloadExpires ?>"
+                                            data-download-limit="<?= $downloadLimit ?>"
+                                            <?php endif; ?>
+                                            <?php if ($senderEmail): ?>
+                                            data-sender-email="<?= $senderEmail ?>"
+                                            <?php endif; ?>
+                                            <?php if ($adminEmail): ?>
+                                            data-admin-email="<?= $adminEmail ?>"
+                                            <?php endif; ?>
+                                            <?php if ($adminTemplate): ?>
+                                            data-admin-template="<?= $adminTemplate ?>"
+                                            <?php endif; ?>
+                                            <?php if ($userTemplate): ?>
+                                            data-user-template="<?= $userTemplate ?>"
+                                            <?php endif; ?>
+                                            <?php if (isset($product->is_subscription) && $product->is_subscription): ?>
+                                            data-is-subscription="true"
+                                            <?php if ($product->stripe_product_id): ?>
+                                            data-stripe-product-id="<?= $product->stripe_product_id ?>"
+                                            <?php endif; ?>
+                                            <?php endif; ?>>
+                                            <?= $buttonText ?>
+                                        </button>
+                                        
+                                    </div>
                                 <?php endif; ?>
 
                                 <?php if ($product->buttons): ?>
@@ -177,9 +319,10 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
         </div>
     </div>
 </div>
-<?php if ($this->stripe_enabled && !$product->disable_payment): ?>
+
+<?php if ($this->stripe_enabled): ?>
     <!-- Payment Modal -->
-    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true"
+    <div class="modal fade" id="customerDataModal" tabindex="-1" aria-hidden="true"
          aria-labelledby="paymentModalTitle"
          aria-describedby="paymentModalDescription">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -192,64 +335,118 @@ $successUrl = $successPage ? $successPage->getFrontendUrl() : '/';
                     Formular zur Eingabe Ihrer Bestell- und Zahlungsdaten
                 </div>
 
-
                 <!-- Produkt Info Template -->
                 <template id="product-info-template"
-                          data-heading="Ihre Bestellung"
-                          data-product-label="Produkt:"
-                          data-price-label="Preis:"
-                          data-price-badge="einmalig"
-                          data-duration-label="Laufzeit:"
-                          data-expiry-label="Gültig bis:">
-                    <div class="card border-info mb-4">
-                        <div class="card-header bg-info border-info">
-                            <h6 class="card-title mb-0" data-template-heading></h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-1">
-                                <div class="col-sm-6">
-                                    <div class="d-flex align-items-center">
-                                        <span class="text-muted me-2" data-template-product-label></span>
-                                        <strong data-product-title></strong>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="d-flex align-items-center">
-                                        <span class="text-muted me-2" data-template-price-label></span>
-                                        <strong data-product-price></strong>
-                                        <span class="badge bg-primary ms-2" data-template-price-badge></span>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 d-none" data-duration-row>
-                                    <div class="d-flex align-items-center">
-                                        <span class="text-muted me-2" data-template-duration-label></span>
-                                        <strong data-product-duration></strong>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 d-none" data-expiry-row>
-                                    <div class="d-flex align-items-center">
-                                        <span class="text-muted me-2" data-template-expiry-label></span>
-                                        <strong data-product-expiry></strong>
-                                    </div>
-                                </div>
-                            </div>
+                          data-template-heading="Ihre Bestellung"
+                          data-template-product-label="Produkt:"
+                          data-template-price-label="Preis:"
+                          data-template-price-badge="inkl. MwSt."
+                          data-template-duration-label="Laufzeit:"
+                          data-template-expiry-label="Gültig bis:">
+                    <div class="product-info mb-3">
+                        <h5 data-template-heading>Ihre Bestellung</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th data-template-product-label>Produkt</th>
+                                        <td data-product-title></td>
+                                    </tr>
+                                    <tr>
+                                        <th data-template-price-label>Preis</th>
+                                        <td>
+                                            <strong data-product-price></strong>
+                                            <span data-template-price-badge class="badge bg-primary ms-2">inkl. MwSt.</span>
+                                        </td>
+                                    </tr>
+                                    <tr data-tax-row>
+                                        <th>enthaltene MwSt.</th>
+                                        <td data-tax-amount></td>
+                                    </tr>
+                                    <tr data-duration-row class="d-none">
+                                        <th data-template-duration-label>Laufzeit</th>
+                                        <td data-product-duration></td>
+                                    </tr>
+                                    <tr data-expiry-row class="d-none">
+                                        <th data-template-expiry-label>Gültig bis</th>
+                                        <td data-product-expiry></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </template>
 
                 <!-- Rest des Formulars -->
-                <?= Vsm\VsmHelperTools\Helper\PaymentFormHelper::generatePaymentFormHTML(
-                    $this->personal_data_fields,
-                    $this->stripe_public_key,
-                    $successUrl,
-                    $this->stripe_currency,
-                    $productData,
-                    $this->id,
-                    $this->create_user,
-                    $this->show_privacy_notice,
-                    $this->privacy_page
-                ); ?>
+                <?= $this->insert('_stripe_form', [
+                    'stripeKey' => $stripeKey,
+                    'successUrl' => $successUrl,
+                    'currency' => $this->stripe_currency,
+                    'productData' => json_encode($productData),
+                    'elementId' => $this->id,
+                    'createUser' => $this->create_user,
+                    'personalDataFields' => $this->personal_data_fields,
+                    'showPrivacyNotice' => $this->show_privacy_notice,
+                    'privacyPage' => $this->privacy_page
+                ]); ?>
             </div>
         </div>
     </div>
+    
+    <?php if ($isDebug): ?>
+    <!-- Debug-Informationen für Entwickler -->
+    <div style="margin-top: 50px; padding: 15px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 4px;">
+        <h5>Debug-Informationen</h5>
+        <p><strong>Stripe Key:</strong> <?= substr($stripeKey, 0, 5) ?>...<?= substr($stripeKey, -4) ?></p>
+        <p><strong>Success URL:</strong> <?= $successUrl ?></p>
+        <p><strong>Element ID:</strong> <?= $this->id ?></p>
+        <button class="btn btn-sm btn-info" onclick="debugStripeIntegration()">Stripe-Integration testen</button>
+    </div>
+    
+    <script>
+    function debugStripeIntegration() {
+        console.group('Stripe Integration Diagnose');
+        console.log('Stripe geladen:', typeof Stripe !== 'undefined' ? 'Ja' : 'Nein');
+        console.log('Stripe Config Element:', document.getElementById('stripe-config') ? 'Gefunden' : 'Nicht gefunden');
+        console.log('Checkout Handler initialisiert:', typeof window.stripeCheckout !== 'undefined' ? 'Ja' : 'Nein');
+        console.log('Bootstrap Modal verfügbar:', typeof bootstrap !== 'undefined' && typeof bootstrap.Modal !== 'undefined' ? 'Ja' : 'Nein');
+        
+        const buttons = document.querySelectorAll('[data-checkout]');
+        console.log(`${buttons.length} Checkout-Buttons gefunden`);
+        
+        const forms = document.querySelectorAll('form[data-customer-form]');
+        console.log(`${forms.length} Kunden-Formulare gefunden`);
+        
+        if (forms.length > 0) {
+            console.log('Formular-Attribute:', {
+                'id': forms[0].id,
+                'method': forms[0].method,
+                'action': forms[0].action,
+                'onsubmit': forms[0].onsubmit
+            });
+        }
+        
+        const modal = document.getElementById('customerDataModal');
+        if (modal) {
+            console.log('Modal gefunden');
+            
+            // Modal manuell öffnen versuchen
+            try {
+                const modalInstance = new bootstrap.Modal(modal);
+                console.log('Modal Instanz erstellt');
+                modalInstance.show();
+                console.log('Modal sollte sichtbar sein');
+            } catch (e) {
+                console.error('Fehler beim Öffnen des Modals:', e);
+            }
+        } else {
+            console.error('Modal nicht gefunden!');
+        }
+        
+        console.groupEnd();
+        
+        alert('Diagnose in der Konsole ausgegeben (F12)');
+    }
+    </script>
+    <?php endif; ?>
 <?php endif; ?>
