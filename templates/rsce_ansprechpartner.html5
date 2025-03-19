@@ -1,43 +1,43 @@
 <?php
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
-
+    // Frontend logic if needed
 }
 ?>
 
-<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>" data-animation="<?= $this->animation_type; ?>">
-    <div class="ce--inner ">
-        <div class="row g-3 flex-md-row-reverse align-items-center">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner">
 
-            <div class="col-md-5 text-center text-md-start" data-animation="animate__fadeIn">
-                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
-                    $this->topline,
-                    $this->headline,
-                    $this->subline,
-                    $this->hl,
-                     $this->animation_type,
-                    null,
-                    false,
-                    "mb-3"
-                ); ?>
-                <div class="mb-3"><?= $this->contact_text; ?></div>
-                <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons); ?>
-            </div>
-
-            <div class="col-md-7">
-                <div class="row gy-3 justify-content-center g-md-2 ">
-                    <?php foreach ($this->partners as $partner): ?>
-                        <div class="col-md-6 col-lg-4" data-animation="<?php if ($partner->animation_type) : ?><?php echo $partner->animation_type; ?><?php endif; ?>">
-                            <div class="text-center text-base">
-                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($partner->image, null, $partner->name, $this->size, "mb-2 rounded-circle", false, false); ?>
-                                <h3 class="mb-0 text-base fw-bold"><?= $partner->name; ?></h3>
-                                <p class="mb-1"><?= $partner->position; ?></p>
-                                <p><a class="text-nowrap" href="tel:<?= $partner->phone; ?>"><i class="fal fa-phone"></i> <?= $partner->phone; ?></a></p>
+        <div class="row gy-2 gx-5">
+            <?php foreach ($this->contacts as $contact): ?>
+                <div class="col-lg-6 col-xl-auto" data-animation="<?= $this->animation_type; ?>">
+                    <div class="contact-card d-flex ">
+                        <?php if ($contact->image): ?>
+                            <div class="contact-image">
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($contact->image, null, $contact->name, $this->size, "rounded-circle", false, false); ?>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
+                        <?php endif; ?>
 
+                        <div class="contact-info ms-3">
+                            <h3 class="h6 contact-title mb-1"><?= $contact->title; ?>:</h3>
+                            <p class="contact-name mb-1"><?= $contact->name; ?></p>
+                            <?php if ($contact->email_link): ?>
+                                <p class="contact-email mb-1">
+                                    <a href="<?= $contact->email_link; ?>" class="text-nowrap">
+                                        <i style="width: 25px;" class="fass fa-envelope"></i> <span class="text-body text-decoration-underline">Write a message</span>
+                                    </a>
+                                </p>
+                            <?php endif; ?>
+                            <?php if ($contact->phone): ?>
+                                <p class="contact-phone mb-0">
+                                    <a href="tel:<?= $contact->phone; ?>" class="text-nowrap">
+                                        <i style="width: 25px;" class="fass fa-phone"></i> <span class="text-body"><?= $contact->phone; ?></span>
+                                    </a>
+                                </p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>
