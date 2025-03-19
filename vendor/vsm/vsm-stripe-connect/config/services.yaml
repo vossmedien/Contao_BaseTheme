@@ -112,6 +112,17 @@ services:
             $userService: '@vsm.user_creation_service'
             $downloadService: '@vsm.download_link_generator'
 
+    # Contao Commands
+    Vsm\VsmStripeConnect\Command\CheckSubscriptionsCommand:
+        arguments:
+            - '@contao.framework'
+            - '@database_connection'
+            - '@monolog.logger.contao'
+            - '@Vsm\VsmStripeConnect\Service\MemberService'
+            - '@Vsm\VsmStripeConnect\Service\StripePaymentService'
+        tags:
+            - { name: 'console.command' }
+
 # Parameter für das Bundle
 parameters:
     vsm_stripe_connect.default_member_group: 1  # Standardgruppe für neue Mitglieder
