@@ -1,25 +1,26 @@
 vsm_stripe_connect:
-    resource: "../config/routes.yaml"
+    resource: "%kernel.project_dir%/vendor/vsm/vsm-stripe-connect/config/routes.yaml"
     type: yaml
+    defaults:
+        _scope: frontend
 
+# Explizit die Controller laden
 vsm_stripe_connect_webhook:
-    resource: '../src/Controller/StripeWebhookController.php'
+    resource: '%kernel.project_dir%/vendor/vsm/vsm-stripe-connect/src/Controller/StripeWebhookController.php'
     type: attribute
     defaults:
         _format: json
         _token_check: false
-    options:
-        utf8: true
+        _scope: frontend
 
 # Explizit den StripeCheckoutController laden
 vsm_stripe_connect_checkout:
-    resource: '../src/Controller/StripeCheckoutController.php'
+    resource: '%kernel.project_dir%/vendor/vsm/vsm-stripe-connect/src/Controller/StripeCheckoutController.php'
     type: attribute
     defaults:
         _format: json
         _token_check: false
-    options:
-        utf8: true
+        _scope: frontend
 
 
 # Download Route
