@@ -351,7 +351,7 @@ class ImageHelper
             self::$processedImagesCache = [];
             self::$processedImagesCacheSize = 0;
         }
-
+ 
         self::$processedImagesCache[$cacheKey] = $result;
         self::$processedImagesCacheSize++;
 
