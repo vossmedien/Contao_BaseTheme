@@ -24,106 +24,74 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
             "container"
         ); ?>
 
-        <?php $rand = rand(1, 100);
-        foreach ($this->row as $row) : ?>
+        <?php 
+        $element_rand = rand(1000, 9999);
+        foreach ($this->row as $row_index => $row) : 
+            $row_id = $element_rand . '_' . $row_index; // Eindeutige ID für jede Zeile
+        ?>
 
 
             <?php if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()): ?>
 
-            <?php if ($row->open_lightbox): ?>
+            <?php if ($row->open_lightbox || $this->open_lightbox): ?>
             <script type="text/javascript" defer>
                 document.addEventListener('DOMContentLoaded', function () {
                     new VenoBox({
-                        selector: ".lightbox_single_<?= $rand;?>", //Items selector
-                        infinigall: true, // Ermöglicht eine endlose Navigation durch die Galerie. Standardwert: false
-                        maxWidth: '95%', // Maximale Breite des Lightbox-Fensters. Standardwert: '100%'
-                        numeration: true, // Zeigt Nummerierung der aktuellen und Gesamtanzahl der Elemente in der Galerie an. Standardwert: false
-                        spinner: 'flow', //  'plane' | 'chase' | 'bounce' | 'wave' | 'pulse' | 'flow' | 'swing' | 'circle' | 'circle-fade' | 'grid' | 'fold | 'wander'
-                        initialScale: 0.9, // Anfangsgröße der Skalierungstransformation für Elemente. Standardwert: 0.9
-                        transitionSpeed: 200, // Übergangsgeschwindigkeit für eingehende Elemente in Millisekunden. Standardwert: 500
-                        fitView: true, // Passt Bilder an, um innerhalb der Höhe des Viewports zu passen. Standardwert: true
+                        selector: ".lightbox_<?= $row_id;?>", //Items selector
+                        infinigall: true, // Ermöglicht eine endlose Navigation durch die Galerie
+                        maxWidth: '95%', // Maximale Breite des Lightbox-Fensters
+                        numeration: true, // Zeigt Nummerierung der Elemente an
+                        spinner: 'flow', // Ladeanimation
+                        initialScale: 0.9, // Anfangsskalierung
+                        transitionSpeed: 200, // Übergangsgeschwindigkeit
+                        fitView: true, // Passt Bilder an Viewport an
                     });
                 });
             </script>
-        <?php endif; ?>
+            <?php endif; ?>
 
-
-        <?php if ($this->open_lightbox): ?>
-            <script type="text/javascript" defer>
-                document.addEventListener('DOMContentLoaded', function () {
-                    new VenoBox({
-                        selector: ".lightbox_<?= $rand;?>", //Items selector
-                        infinigall: true, // Ermöglicht eine endlose Navigation durch die Galerie. Standardwert: false
-                        maxWidth: '95%', // Maximale Breite des Lightbox-Fensters. Standardwert: '100%'
-                        numeration: true, // Zeigt Nummerierung der aktuellen und Gesamtanzahl der Elemente in der Galerie an. Standardwert: false
-                        spinner: 'flow', //  'plane' | 'chase' | 'bounce' | 'wave' | 'pulse' | 'flow' | 'swing' | 'circle' | 'circle-fade' | 'grid' | 'fold | 'wander'
-                        initialScale: 0.9, // Anfangsgröße der Skalierungstransformation für Elemente. Standardwert: 0.9
-                        transitionSpeed: 200, // Übergangsgeschwindigkeit für eingehende Elemente in Millisekunden. Standardwert: 500
-                        fitView: true, // Passt Bilder an, um innerhalb der Höhe des Viewports zu passen. Standardwert: true
-                    });
-                });
-            </script>
-        <?php endif; ?>
-
-        <?php if (is_array($row->image) && count($row->image) > 1) : ?>
+            <?php if (is_array($row->image) && count($row->image) > 1) : ?>
             <script type="text/javascript" defer>
                 window.addEventListener('DOMContentLoaded', function () {
-                    let swiperElementCheck_<?= $rand; ?> = document.querySelector('.swiper.content-slider_<?= $rand; ?>');
-                    if (swiperElementCheck_<?= $rand; ?>) {
-                        swiperElementCheck_<?= $this->id; ?> = new Swiper('.swiper.content-slider_<?php echo $rand; ?>', {
-
+                    const swiperElementCheck_<?= $row_id; ?> = document.querySelector('.swiper.content-slider_<?= $row_id; ?>');
+                    if (swiperElementCheck_<?= $row_id; ?>) {
+                        const swiper_<?= $row_id; ?> = new Swiper('.swiper.content-slider_<?php echo $row_id; ?>', {
                             direction: 'horizontal',
-
                             loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
-                            //loopedSlides: 1,
-
                             preloadImages: false,
                             lazy: true,
-
                             spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
-                            //centeredSlides: <?php if ($this->centered_slides) : ?>true<?php else:?>false<?php endif;?>,
-                            //slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>1<?php endif;?>,
-
                             speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
-                            effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>
-                            'slide'<?php endif;?>,
-
+                            effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>'slide'<?php endif;?>,
                             <?php if ($this->autoplay) : ?>
                             autoplay: {
                                 delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
                             },
                             <?php endif; ?>
                             autoHeight: false,
-
                             <?php if ($this->slide_effect == "coverflow") : ?>
                             coverflowEffect: {
-                                rotate: 50, // Slide rotate in degrees
-                                stretch: 0, // Stretch space between slides (in px)
-                                depth: 100, // Depth offset in px (slides translate in Z axis)
-                                modifier: 1, // Effect multipler
-                                slideShadows: true, // Enables slides shadows
+                                rotate: 50,
+                                stretch: 0,
+                                depth: 100, 
+                                modifier: 1,
+                                slideShadows: true,
                             },
                             <?php endif;?>
-
                             <?php if ($this->slide_effect == "fade") : ?>
                             fadeEffect: {
                                 crossFade: true
                             },
                             <?php endif;?>
-
-
                             navigation: {
-                                nextEl: '.content-slider_<?= $rand;?>.swiper-button-next',
-                                prevEl: '.content-slider_<?= $rand;?>.swiper-button-prev',
+                                nextEl: '.content-slider_<?= $row_id;?>.swiper-button-next',
+                                prevEl: '.content-slider_<?= $row_id;?>.swiper-button-prev',
                             },
-
                             pagination: {
-                                el: '.content-slider_<?php echo $rand; ?>.swiper-pagination',
+                                el: '.content-slider_<?php echo $row_id; ?>.swiper-pagination',
                                 clickable: true,
                             },
-
                             <?php if ($this->slides_per_view) : ?>
-
                             <?php if ($this->slides_per_view > 1) : ?>
                             slidesPerView: 1.5,
                             breakpoints: {
@@ -139,19 +107,17 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                             <?php else:?>
                             slidesPerView: 'auto',
                             <?php endif;?>
-
                         });
                     }
                 }, {passive: true})
             </script>
-        <?php endif; ?>
-        <?php endif; ?>
+            <?php endif; ?>
+            <?php endif; ?>
 
 
-            <div <?php if($row->row_id):?>id="<?= $row->row_id;?>"<?php endif;?>  class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> ">
+            <div <?php if($row->row_id):?>id="<?= $row->row_id;?>"<?php endif;?> class="ce--imagetextwall--outer <?php if ($row->bottom_spacing) : ?>with-spacing<?php endif; ?> ">
                 <?php
                 $classes = ['ce--imagetextwall'];
-
 
                 if ($row->boxed_headline) {
                     $classes[] = 'with-boxed-image';
@@ -170,9 +136,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                 }
                 ?>
 
-                <div style="<?php if ($row->alternate_background_row) : ?>background-color:<?php echo $row->alternate_background_row; ?><?php endif; ?>" class="<?= implode(' ', $classes); ?>">
-
-
+                <div style="<?php if ($row->alternate_background_row) : ?>background-color:<?= $row->alternate_background_row; ?><?php endif; ?>" class="<?= implode(' ', $classes); ?>">
                     <div class="px-0 container content-holder ">
                         <div style="<?php if ($row->min_height): ?>min-height: <?= $row->min_height; ?>;<?php endif; ?>" class="align-items-center g-0 row <?php if ($row->reverse) : ?>flex-row-reverse<?php endif; ?>">
                             <div class="content--col <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>">
@@ -190,58 +154,48 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                                 "m-0 headline--wrapper"
                                             ); ?>
                                         </div>
-
                                     </div>
                                 <?php endif; ?>
 
-                                <div  data-animation="animate__fadeIn" class="zoom-container" style="<?php if ($row->alternate_background) : ?>background-color:<?php echo $row->alternate_background; ?><?php endif; ?>">
+                                <div data-animation="animate__fadeIn" class="zoom-container" style="<?php if ($row->alternate_background) : ?>background-color:<?= $row->alternate_background; ?><?php endif; ?>">
                                     <?php if ($row->image_leftcol) : ?>
                                         <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->image_leftcol, null, $row->ce_headline, $row->size_left, null, false); ?>
                                     <?php endif; ?>
                                     <?php if ($row->kachel_left_text): ?>
                                         <div class="kachel-column-width--indicator <?php if ($row->expand_left_kachel): ?>expandable<?php endif; ?>">
-                                            <div class="column-kachel--wrapper  <?php if ($row->kachel_left_url): ?> with-url<?php endif; ?> <?php echo $row->kachel_left_position; ?>">
+                                            <div class="column-kachel--wrapper  <?php if ($row->kachel_left_button_url): ?> with-url<?php endif; ?> <?php echo $row->kachel_left_position; ?>">
                                                 <div class="column--kachel <?php echo $row->kachel_left_text_position; ?>"
-                                                     data-animation="<?php if ($row->animation_type_left_kachel) : ?><?php echo $row->animation_type_left_kachel; ?><?php endif; ?>"
+                                                     data-animation="<?php if ($row->animation_type_left_kachel) : ?><?= $row->animation_type_left_kachel; ?><?php endif; ?>"
                                                      style="
-                                                     <?php if ($row->kachel_left_background_color): ?>
-                                                             background-color: <?= $row->kachel_left_background_color;?>;
-                            <?php endif; ?>
-
-                                                     <?php if ($row->kachel_left_text_color): ?>
-                                                             color: <?= $row->kachel_left_text_color;?>;
-                            <?php endif; ?>
-                                                             ">
+                                                     <?php if ($row->kachel_left_background_color): ?>background-color: <?= $row->kachel_left_background_color;?>;<?php endif; ?>
+                                                     <?php if ($row->kachel_left_text_color): ?>color: <?= $row->kachel_left_text_color;?>;<?php endif; ?>">
 
                                                     <?php if ($row->kachel_left_button_url): ?>
-                                                        <a href="<?= $row->kachel_left_url; ?>"></a>
+                                                        <a href="<?= $row->kachel_left_button_url; ?>"></a>
                                                     <?php endif; ?>
 
-                                                    <div class="column-kachel--inner <?php if ($row->kachel_left_hover_text || $row->kachel_left_url): ?>with-hover-content<?php endif; ?>">
+                                                    <div class="column-kachel--inner <?php if ($row->kachel_left_hover_text || $row->kachel_left_button_url): ?>with-hover-content<?php endif; ?>">
                                                     <span>
-                                                        <?php echo $row->kachel_left_text; ?>
+                                                        <?= $row->kachel_left_text; ?>
                                                     </span>
 
-                                                        <?php if ($row->kachel_left_hover_text || $row->kachel_left_url): ?>
+                                                        <?php if ($row->kachel_left_hover_text || $row->kachel_left_button_url): ?>
                                                             <div class="kachel-hover--content">
                                                                 <?php if ($row->kachel_left_hover_text): ?>
                                                                     <div class="kachel--long-text">
-                                                                        <?php echo $row->kachel_left_hover_text; ?>
+                                                                        <?= $row->kachel_left_hover_text; ?>
                                                                     </div>
                                                                 <?php endif; ?>
 
                                                                 <?php if ($row->kachel_left_button_text): ?>
                                                                     <div class="kachel--more-button">
-
-                                                                        <a <?php if ($row->new_tab): ?>target="_blank"<?php endif; ?>
-                                                                           class="d-inline-block btn <?php if ($row->kachel_left_button_size) : ?><?php echo $row->kachel_left_button_size; ?><?php endif; ?> <?php echo $row->kachel_left_button_type; ?>"
-                                                                           href="<?php echo $row->kachel_left_button_url; ?><?php if ($row->kachel_left_button_betreff) : ?>?subject=<?php echo $row->kachel_left_button_betreff; ?><?php endif; ?>"><?php echo $row->kachel_left_button_text; ?> </a>
-
+                                                                        <a <?php if ($row->kachel_left_button_new_tab): ?>target="_blank"<?php endif; ?>
+                                                                           class="d-inline-block btn <?php if ($row->kachel_left_button_size) : ?><?= $row->kachel_left_button_size; ?><?php endif; ?> <?= $row->kachel_left_button_type; ?>"
+                                                                           href="<?= $row->kachel_left_button_url; ?><?php if ($row->kachel_left_button_betreff) : ?>?subject=<?= $row->kachel_left_button_betreff; ?><?php endif; ?>"><?= $row->kachel_left_button_text; ?></a>
                                                                     </div>
                                                                 <?php endif; ?>
                                                             </div>
                                                         <?php endif; ?>
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -250,7 +204,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                 </div>
 
                                 <div style="<?= $row->alternate_textcolor ? 'color:' . $row->alternate_textcolor . ';' : '' ?>"
-                                     class="content--inner <?php if ($row->boxed_headline): ?>my-lg-8<?php endif; ?> <?php echo $row->textalign; ?>">
+                                     class="content--inner <?php if ($row->boxed_headline): ?>my-lg-8<?php endif; ?> <?= $row->textalign; ?>">
                                     <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                         $row->ce_topline,
                                         $row->ce_headline,
@@ -265,7 +219,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                     <?php if ($row->content) : ?>
                                         <div class="content--text"
                                              data-animation="<?= $row->animation_type ? $row->animation_type : '' ?>">
-                                            <?php echo $row->content; ?>
+                                            <?= $row->content; ?>
                                         </div>
                                     <?php endif; ?>
 
@@ -287,47 +241,38 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                             <?php endif; ?>
                                     ">
 
-
-                                    <div  data-animation="<?= $row->animation_type_image_col;?>" class="<?php if ($row->image_both): ?>is-row-bg<?php endif; ?>   <?php if ($row->dont_stretch_bg): ?> no-stretch <?php endif; ?>    <?php if (!$row->not_as_bg): ?>zoom-container <?php else: ?>position-relative text-center<?php endif; ?>">
+                                    <div data-animation="<?= $row->animation_type_image_col;?>" class="<?php if ($row->image_both): ?>is-row-bg<?php endif; ?> <?php if ($row->dont_stretch_bg): ?> no-stretch <?php endif; ?> <?php if (!$row->not_as_bg): ?>zoom-container <?php else: ?>position-relative text-center<?php endif; ?>">
                                         <?php if ($row->kachel_right_text): ?>
                                             <div class="kachel-column-width--indicator <?php if ($row->reverse) : ?>start-0<?php else: ?>end-0<?php endif; ?> <?php if ($row->expand_right_kachel): ?>expandable<?php endif; ?>">
-                                                <div class="column-kachel--wrapper <?php echo $row->kachel_right_position; ?>  <?php if ($row->kachel_right_url): ?> with-url<?php endif; ?>">
-                                                    <div class="column--kachel  <?php echo $row->kachel_right_text_position; ?>"
-                                                         data-animation="<?php if ($row->animation_type_right_kachel) : ?><?php echo $row->animation_type_right_kachel; ?><?php endif; ?>"
+                                                <div class="column-kachel--wrapper <?= $row->kachel_right_position; ?> <?php if ($row->kachel_right_button_url): ?> with-url<?php endif; ?>">
+                                                    <div class="column--kachel <?= $row->kachel_right_text_position; ?>"
+                                                         data-animation="<?php if ($row->animation_type_right_kachel) : ?><?= $row->animation_type_right_kachel; ?><?php endif; ?>"
                                                          style="
-                                                         <?php if ($row->kachel_right_background_color): ?>
-                                                                 background-color: <?= $row->kachel_right_background_color;?>;
-                            <?php endif; ?>
-
-                                                         <?php if ($row->kachel_right_text_color): ?>
-                                                                 color: <?= $row->kachel_right_text_color;?>;
-                            <?php endif; ?>
-                                                                 ">
+                                                         <?php if ($row->kachel_right_background_color): ?>background-color: <?= $row->kachel_right_background_color;?>;<?php endif; ?>
+                                                         <?php if ($row->kachel_right_text_color): ?>color: <?= $row->kachel_right_text_color;?>;<?php endif; ?>">
 
                                                         <?php if ($row->kachel_right_button_url): ?>
-                                                            <a href="<?= $row->kachel_button_right_url; ?>"></a>
+                                                            <a href="<?= $row->kachel_right_button_url; ?>"></a>
                                                         <?php endif; ?>
 
-                                                        <div class="column-kachel--inner <?php if ($row->kachel_right_hover_text || $row->kachel_right_url): ?>with-hover-content<?php endif; ?>">
+                                                        <div class="column-kachel--inner <?php if ($row->kachel_right_hover_text || $row->kachel_right_button_url): ?>with-hover-content<?php endif; ?>">
                                                         <span>
-                                                            <?php echo $row->kachel_right_text; ?>
+                                                            <?= $row->kachel_right_text; ?>
                                                         </span>
 
-                                                            <?php if ($row->kachel_right_hover_text || $row->kachel_right_url): ?>
+                                                            <?php if ($row->kachel_right_hover_text || $row->kachel_right_button_url): ?>
                                                                 <div class="kachel-hover--content">
                                                                     <?php if ($row->kachel_right_hover_text): ?>
                                                                         <div class="kachel--long-text">
-                                                                            <?php echo $row->kachel_right_hover_text; ?>
+                                                                            <?= $row->kachel_right_hover_text; ?>
                                                                         </div>
                                                                     <?php endif; ?>
 
                                                                     <?php if ($row->kachel_right_button_text): ?>
                                                                         <div class="kachel--more-button">
-
-                                                                            <a <?php if ($row->new_tab): ?>target="_blank"<?php endif; ?>
-                                                                               class="d-inline-block btn <?php if ($row->kachel_right_button_size) : ?><?php echo $row->kachel_right_button_size; ?><?php endif; ?> <?php echo $row->kachel_right_button_type; ?>"
-                                                                               href="<?php echo $row->kachel_right_button_url; ?><?php if ($row->kachel_right_button_betreff) : ?>?subject=<?php echo $row->kachel_right_button_betreff; ?><?php endif; ?>"><?php echo $row->kachel_right_button_text; ?> </a>
-
+                                                                            <a <?php if ($row->kachel_right_button_new_tab): ?>target="_blank"<?php endif; ?>
+                                                                               class="d-inline-block btn <?php if ($row->kachel_right_button_size) : ?><?= $row->kachel_right_button_size; ?><?php endif; ?> <?= $row->kachel_right_button_type; ?>"
+                                                                               href="<?= $row->kachel_right_button_url; ?><?php if ($row->kachel_right_button_betreff) : ?>?subject=<?= $row->kachel_right_button_betreff; ?><?php endif; ?>"><?= $row->kachel_right_button_text; ?></a>
                                                                         </div>
                                                                     <?php endif; ?>
                                                                 </div>
@@ -339,7 +284,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                         <?php endif; ?>
 
                                         <?php if ($row->alternate_image) : ?>
-                                            <?php echo str_replace("https:", "", str_replace(" src=", " data-source=", html_entity_decode($row->alternate_image))); ?>
+                                            <?= str_replace("https:", "", str_replace(" src=", " data-source=", html_entity_decode($row->alternate_image))); ?>
                                         <?php endif; ?>
 
                                         <?php if ($row->video) : ?>
@@ -349,36 +294,28 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                         <?php endif; ?>
 
                                         <?php if (is_array($row->image) && count($row->image) > 1) : ?>
-                                            <div class="<?php if ($row->dont_stretch_bg && !$row->reverse): ?>ms-lg-auto me-lg-0<?php endif; ?> swiper content-slider_<?= $rand; ?>">
-                                                <div class="swiper-wrapper ">
-                                                    <?php
-                                                    $length = count($row->image); // Anzahl der Elemente im Array
-                                                    $index = 0;
-                                                    foreach ($row->image as $data) : ?>
-                                                        <?php if ($index < $length - 1): ?>
-                                                            <div class="swiper-slide">
-                                                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($data, null, $row->ce_headline, $row->size_right, null, false, $this->open_lightbox ? $rand : "", false); ?>
-                                                            </div>
-                                                        <?php endif;
-                                                        $index++; ?>
-                                                    <?php endforeach ?>
+                                            <div class="<?php if ($row->dont_stretch_bg && !$row->reverse): ?>ms-lg-auto me-lg-0<?php endif; ?> swiper content-slider_<?= $row_id; ?>">
+                                                <div class="swiper-wrapper">
+                                                    <?php foreach ($row->image as $data) : ?>
+                                                        <div class="swiper-slide">
+                                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($data, null, $row->ce_headline, $row->size_right, null, false, ($row->open_lightbox || $this->open_lightbox) ? $row_id : null, false); ?>
+                                                        </div>
+                                                    <?php endforeach; ?>
                                                 </div>
                                             </div>
 
                                             <?php if (count($row->image) > 1) : ?>
                                                 <?php if ($this->show_pagination): ?>
-                                                    <div class="mb-2 content-slider_<?= $rand ?> swiper-pagination"></div>
+                                                    <div class="mb-2 content-slider_<?= $row_id ?> swiper-pagination"></div>
                                                 <?php endif; ?>
                                                 <?php if ($this->show_arrows): ?>
-                                                    <div class="content-slider_<?= $rand; ?> swiper-button-prev"></div>
-                                                    <div class="content-slider_<?= $rand; ?> swiper-button-next"></div>
+                                                    <div class="content-slider_<?= $row_id; ?> swiper-button-prev"></div>
+                                                    <div class="content-slider_<?= $row_id; ?> swiper-button-next"></div>
                                                 <?php endif; ?>
                                             <?php endif; ?>
 
                                         <?php elseif ($row->image): ?>
-
-
-                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->image[0], null, $row->ce_headline, $row->size_right, $row->rotate_image ? "rotateImage" : "", false, $row->open_lightbox ? $rand : "", false); ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->image[0], null, $row->ce_headline, $row->size_right, $row->rotate_image ? "rotateImage" : "", false, ($row->open_lightbox || $this->open_lightbox) ? $row_id : null, false); ?>
                                         <?php endif; ?>
                                     </div>
                                     <?php if ($row->boxed_headline && !$row->reverse) : ?>
@@ -395,14 +332,13 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                                     "m-0 headline--wrapper"
                                                 ); ?>
                                             </div>
-
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($row->content_rightcol) : ?>
-                                        <div data-animation="<?php if ($row->animation_type_image_col) : ?><?php echo $row->animation_type_image_col; ?><?php endif; ?>" class="image--inner">
+                                        <div data-animation="<?php if ($row->animation_type_image_col) : ?><?= $row->animation_type_image_col; ?><?php endif; ?>" class="image--inner">
                                             <div class="image-col--extra-text"
                                                  data-animation="<?= $row->animation_type ? $row->animation_type : '' ?>">
-                                                <?php echo $row->content_rightcol; ?>
+                                                <?= $row->content_rightcol; ?>
                                             </div>
                                         </div>
                                     <?php endif; ?>
