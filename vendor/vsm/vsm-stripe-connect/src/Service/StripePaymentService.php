@@ -435,20 +435,25 @@ class StripePaymentService
     public function retrievePaymentIntent(string $paymentIntentId): PaymentIntent
     {
         try {
-            $paymentIntent = PaymentIntent::retrieve($paymentIntentId);
-
-            $this->logger->info('Payment Intent abgerufen', [
-                'payment_intent_id' => $paymentIntentId
-            ]);
-
-            return $paymentIntent;
+            return \Stripe\PaymentIntent::retrieve($paymentIntentId);
         } catch (ApiErrorException $e) {
-            $this->logger->error('Fehler beim Abrufen des Payment Intent', [
-                'payment_intent_id' => $paymentIntentId,
-                'error' => $e->getMessage()
+            $this->logger->error('Fehler beim Abrufen des PaymentIntent: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Ruft ein Stripe-Produkt anhand seiner ID ab
+     */
+    public function getProduct(string $productId): ?\Stripe\Product
+    {
+        try {
+            return \Stripe\Product::retrieve($productId);
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Fehler beim Abrufen des Stripe-Produkts: ' . $e->getMessage(), [
+                'product_id' => $productId
             ]);
-            
-            throw new \Exception('Fehler beim Abrufen des Payment Intent: ' . $e->getMessage());
+            return null;
         }
     }
 } 

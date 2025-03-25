@@ -112,6 +112,7 @@ html {
   overflow-x: clip;
 
   body {
+    overflow-x: clip;
     *[id] {
       scroll-behavior: smooth;
       scroll-margin-top: var(--bs-scrolloffset);

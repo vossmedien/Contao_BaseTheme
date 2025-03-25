@@ -35,6 +35,19 @@ return array(
             'eval' => array('chosen' => 'true', 'tl_class' => 'w50')
         ),
 
+         'size' => array(
+            'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
+            'inputType' => 'imageSize',
+            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => ' clr'
+            ),
+        ),
+
+
         // Slider settings
         'slider_settings' => array(
             'label' => array('Slider-Einstellungen', ''),

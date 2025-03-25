@@ -4,7 +4,7 @@ class VSMLazyLoader {
 
         this.options = {
             root: null,
-            rootMargin: this.isMobile ? '50px 0px' : '250px 0px',
+            rootMargin: this.isMobile ? '20px 0px' : '50px 0px',
             threshold: 0.01,
             excludeSelectors: [],
             spinnerEnabled: true,
@@ -18,6 +18,9 @@ class VSMLazyLoader {
         this.imageObserver = null;
         this.videoObserver = null;
         this.mutationObserver = null;
+
+        // Debug-Flag
+        this.debug = false;
 
         // Verhindere mehrfache Initialisierung
         if (window.VSM && window.VSM.lazyLoader) {
@@ -96,10 +99,23 @@ class VSMLazyLoader {
         }
     }
 
-
     checkUnobservedVideos() {
         const videos = document.querySelectorAll('video.lazy, video[data-poster]');
         videos.forEach(video => {
+            // Prüfe, ob das Video bereits direkt HTML-seitig geladen wurde (ohne src als data-src)
+            const hasDirectSources = Array.from(video.querySelectorAll('source')).some(source =>
+                source.hasAttribute('src') && !source.hasAttribute('data-src'));
+
+            // Wenn das Video bereits direkt Quellen hat, markiere es als geladen und nicht erneut beobachten
+            if (hasDirectSources) {
+                if (!video.classList.contains('loaded')) {
+                    video.classList.add('loaded');
+                    this.loadedElements.add(video);
+                }
+                return;
+            }
+
+            // Normaler Lazy-Load-Prozess für nicht geladene Videos
             if (!this.loadedElements.has(video) &&
                 !this.loadingVideos.has(video) &&
                 !video.classList.contains('loading') &&
@@ -163,26 +179,43 @@ class VSMLazyLoader {
             entries.forEach(entry => {
                 const video = entry.target;
 
-                if (this.isMobile) {
-                    if (entry.isIntersecting) {
-                        if (!video.classList.contains('loaded')) {
-                            this.loadVideo(video);
-                        } else if (video.paused && video.hasAttribute('autoplay')) {
-                            video.play().catch(console.warn);
+                // Prüfe, ob das Video bereits geladen wurde
+                if (this.loadedElements.has(video) || video.classList.contains('loaded')) {
+                    // Video ist bereits geladen, nur wiedergeben wenn nötig
+                    if (entry.isIntersecting && video.paused && video.hasAttribute('autoplay')) {
+                        video.play().catch(err => this.log('Autoplay error:', err));
+                    } else if (!entry.isIntersecting && video.hasAttribute('autoplay')) {
+                        // Beim Verlassen des Viewports pausieren
+                        video.pause();
+                        // Auf Mobile komplett entladen
+                        if (this.isMobile) {
+                            this.unloadVideo(video);
                         }
-                    } else {
-                        this.unloadVideo(video);
                     }
-                } else if (entry.isIntersecting && !this.loadedElements.has(video) &&
-                    this.shouldHandleElement(video)) {
-                    this.loadVideo(video);
-                    this.videoObserver.unobserve(video);
+                    return;
+                }
+
+                if (entry.isIntersecting) {
+                    // Nur laden, wenn ein signifikanter Teil sichtbar ist
+                    if (entry.intersectionRatio >= 0.25 &&
+                        !video.classList.contains('loaded') &&
+                        !video.classList.contains('loading')) {
+                        this.loadVideo(video);
+                    } else if (video.paused && video.hasAttribute('autoplay')) {
+                        video.play().catch(err => this.log('Autoplay error:', err));
+                    }
+                } else if (this.loadingVideos.has(video)) {
+                    // Wenn das Video noch am Laden ist und aus dem Viewport rollt
+                    this.log('Video rolled out of viewport, cancelling load:', video);
+                    this.cancelVideoLoad(video);
+                } else if (this.isMobile && video.classList.contains('loaded')) {
+                    this.unloadVideo(video);
                 }
             });
         }, {
             root: null,
-            rootMargin: this.isMobile ? '50px 0px' : this.options.rootMargin,
-            threshold: 0.01
+            rootMargin: this.isMobile ? '20px 0px' : this.options.rootMargin,
+            threshold: [0, 0.25, 0.5, 0.75, 1.0]
         });
     }
 
@@ -196,6 +229,13 @@ class VSMLazyLoader {
             this.loadingVideos.delete(video);
             this.removeSpinner(video);
         }
+
+        // Alle Event-Listener entfernen
+        const clonedVideo = video.cloneNode(true);
+        if (video.parentNode) {
+            video.parentNode.replaceChild(clonedVideo, video);
+        }
+        video = clonedVideo;
 
         this.loadedElements.delete(video);
         video.removeAttribute('src');
@@ -312,22 +352,36 @@ class VSMLazyLoader {
     }
 
     isInViewport(element) {
-        // Verwende eine einfachere Berechnung für häufige Aufrufe
+        // Strenge Viewport-Erkennung
         const rect = element.getBoundingClientRect();
         const viewHeight = window.innerHeight || document.documentElement.clientHeight;
         const viewWidth = window.innerWidth || document.documentElement.clientWidth;
 
-        // Optimierte Berechnung
-        return (
-            rect.bottom > 0 &&
-            rect.right > 0 &&
-            rect.top < viewHeight + rect.height &&
-            rect.left < viewWidth + rect.width
-        );
+        // Berechne den sichtbaren Bereich
+        const visibleHeight = Math.min(rect.bottom, viewHeight) - Math.max(rect.top, 0);
+        const visibleWidth = Math.min(rect.right, viewWidth) - Math.max(rect.left, 0);
+
+        if (visibleHeight <= 0 || visibleWidth <= 0) {
+            return false;
+        }
+
+        const visibleArea = visibleHeight * visibleWidth;
+        const elementArea = rect.height * rect.width;
+
+        // Mindestens 30% des Elements müssen sichtbar sein
+        const visiblePercentage = elementArea > 0 ? (visibleArea / elementArea) * 100 : 0;
+        return visiblePercentage >= 30;
     }
 
     handleNewElement(element) {
         if (!this.shouldHandleElement(element)) return;
+
+        // Wenn das Element bereits geladen ist, nicht erneut verarbeiten
+        if (this.loadedElements.has(element) ||
+            element.classList.contains('loaded') ||
+            element.classList.contains('loading')) {
+            return;
+        }
 
         if (this.options.spinnerEnabled) {
             this.handleSpinner(element);
@@ -349,6 +403,27 @@ class VSMLazyLoader {
         if (element.hasAttribute('data-bg')) {
             this.imageObserver.observe(element);
         } else if (element.tagName.toLowerCase() === 'video') {
+            // Prüfe, ob das Video bereits direkt HTML-seitig geladen wurde
+            const hasDirectSources = Array.from(element.querySelectorAll('source')).some(source =>
+                source.hasAttribute('src') && !source.hasAttribute('data-src'));
+
+            // Wenn absolut Pfad erkannt und keine data-src Attribute
+            if (hasDirectSources) {
+                if (!element.classList.contains('loaded')) {
+                    element.classList.add('loaded');
+                    this.loadedElements.add(element);
+                }
+
+                // Wenn das Video autoplay haben sollte und im Viewport ist, abspielen
+                if (element.hasAttribute('autoplay') && this.isInViewport(element)) {
+                    element.play().catch(() => {
+                        element.muted = true;
+                        element.play().catch(console.warn);
+                    });
+                }
+                return;
+            }
+
             if (element.classList.contains('lazy') ||
                 element.hasAttribute('data-src') ||
                 element.hasAttribute('data-poster') ||
@@ -518,7 +593,15 @@ class VSMLazyLoader {
     }
 
     loadVideo(video) {
-        if (this.loadedElements.has(video) || this.loadingVideos.has(video)) return Promise.resolve();
+        if (this.loadedElements.has(video) || this.loadingVideos.has(video)) {
+            return Promise.resolve();
+        }
+
+        // Stelle sicher, dass das Video wirklich im Viewport ist
+        if (!this.isInViewport(video)) {
+            this.log('Video nicht im Viewport, lade nicht:', video);
+            return Promise.resolve();
+        }
 
         if (this.isMobile) {
             const currentlyLoading = document.querySelectorAll('video.loading').length;
@@ -528,13 +611,29 @@ class VSMLazyLoader {
             }
         }
 
-        if (this.isMobile && video.getAttribute('data-src')) {
+        // Originale Quellen vor dem Laden erfassen und speichern
+        const originalSources = [];
+        video.querySelectorAll('source[data-src]').forEach(source => {
+            originalSources.push({
+                type: source.getAttribute('type'),
+                src: source.getAttribute('data-src')
+            });
+        });
+
+        // Originale src speichern, falls vorhanden
+        if (video.getAttribute('data-src')) {
             video.setAttribute('data-original-src', video.getAttribute('data-src'));
         }
 
         const videoId = Math.random().toString(36).substr(2, 9);
-        this.loadingVideos.set(video, {id: videoId, startTime: Date.now()});
+        this.loadingVideos.set(video, {
+            id: videoId,
+            startTime: Date.now(),
+            originalSources: originalSources
+        });
+
         video.classList.add('loading');
+        this.log('Video wird geladen:', video);
 
         return new Promise((resolve, reject) => {
             video.setAttribute('playsinline', '');
@@ -546,119 +645,265 @@ class VSMLazyLoader {
                 video.removeAttribute('data-poster');
             }
 
-            const sources = video.querySelectorAll('source[data-src]');
-            let hasLoadedSources = false;
-
-            sources.forEach(source => {
-                hasLoadedSources = true;
-                source.src = source.dataset.src;
-                source.removeAttribute('data-src');
-            });
-
-            if (video.dataset.src) {
-                hasLoadedSources = true;
-                video.src = video.dataset.src;
-                video.removeAttribute('data-src');
+            // RADIKALER ANSATZ: Entferne ALLE source-Elemente
+            while (video.firstChild) {
+                video.removeChild(video.firstChild);
             }
 
-            if (!hasLoadedSources && sources.length > 0) {
-                sources.forEach(source => {
-                    if (source.hasAttribute('src')) {
-                        hasLoadedSources = true;
+            // Bestimme das beste Format
+            const bestFormat = this.determineBestVideoFormat();
+            this.log('Bestes Videoformat:', bestFormat);
+
+            // Finde die passende Quelle
+            let bestSource = null;
+            for (const source of originalSources) {
+                const type = source.type || '';
+                if (type.includes(bestFormat)) {
+                    bestSource = source;
+                    break;
+                }
+            }
+
+            // Fallback, wenn keine passende Quelle gefunden wurde
+            if (!bestSource && originalSources.length > 0) {
+                bestSource = originalSources[0];
+            }
+
+            if (bestSource) {
+                // Erstelle nur EINEN source-Element mit dem besten Format
+                const newSource = document.createElement('source');
+                newSource.src = bestSource.src;
+                newSource.type = bestSource.type;
+                video.appendChild(newSource);
+
+                this.log(`Lade AUSSCHLIESSLICH ${bestSource.type} Format:`, bestSource.src);
+
+                const cleanup = () => {
+                    this.removeSpinner(video);
+                    this.loadingVideos.delete(video);
+                    video.classList.remove('loading');
+                };
+
+                const success = () => {
+                    video.classList.add('loaded');
+                    this.loadedElements.add(video);
+                    cleanup();
+
+                    if (video.hasAttribute('autoplay') && this.isInViewport(video)) {
+                        video.play().catch(err => {
+                            video.muted = true;
+                            video.play().catch(e => this.log('Autoplay error:', e));
+                        });
                     }
-                });
-            }
 
-            if (!hasLoadedSources) {
-                this.loadingVideos.delete(video);
-                video.classList.remove('loading');
-                return resolve();
-            }
+                    resolve();
+                };
 
-            const cleanup = () => {
-                this.removeSpinner(video);
-                this.loadingVideos.delete(video);
-                video.classList.remove('loading');
-            };
+                const error = (e) => {
+                    this.log('Video load error:', e);
+                    cleanup();
 
-            const success = () => {
-                video.classList.add('loaded');
-                this.loadedElements.add(video);
-                cleanup();
+                    // Bei Fehler: Versuche ein anderes Format, falls verfügbar
+                    const remainingSources = originalSources.filter(s => s !== bestSource);
+                    if (remainingSources.length > 0 && video.parentNode) {
+                        this.log('Versuche alternatives Format nach Fehler');
+                        // Entferne das fehlerhafte source-Element
+                        video.innerHTML = '';
 
-                if (!this.isMobile) {
-                    this.videoObserver.unobserve(video);
-                }
+                        // Erstelle ein neues source-Element mit der nächsten verfügbaren Quelle
+                        const alternativeSource = document.createElement('source');
+                        alternativeSource.src = remainingSources[0].src;
+                        alternativeSource.type = remainingSources[0].type;
+                        video.appendChild(alternativeSource);
 
-                if (video.hasAttribute('autoplay') && this.isInViewport(video)) {
-                    video.play().catch(() => {
-                        video.muted = true;
-                        video.play().catch(console.warn);
-                    });
-                }
-                resolve();
-            };
-
-            const error = (e) => {
-                console.error('Video load error:', e);
-                cleanup();
-                if (this.isMobile) {
-                    this.unloadVideo(video);
-                } else {
-                    this.showVideoFallback(video);
-                }
-                reject(e);
-            };
-
-            video.addEventListener('loadeddata', success, {once: true});
-            video.addEventListener('error', error, {once: true});
-
-            const timeoutId = setTimeout(() => {
-                if (this.loadingVideos.has(video)) {
-                    if (this.isMobile) {
-                        this.unloadVideo(video);
+                        // Lade das Video erneut
+                        video.load();
                     } else {
-                        cleanup();
-                        this.showVideoFallback(video);
+                        reject(e);
                     }
-                }
-            }, this.options.timeout);
+                };
 
-            video.addEventListener('loadeddata', () => clearTimeout(timeoutId), {once: true});
+                // Event-Listener für erfolgreiche Ladung
+                video.addEventListener('loadeddata', success, {once: true});
+                video.addEventListener('error', error, {once: true});
 
-            video.load();
+                // Timeout für Ladevorgang
+                const timeoutId = setTimeout(() => {
+                    if (this.loadingVideos.has(video)) {
+                        this.log('Video-Ladevorgang Timeout erreicht');
+                        cleanup();
+                    }
+                }, this.options.timeout);
+
+                // Überwachung: Bleibt Video im Viewport?
+                const checkVisibilityInterval = setInterval(() => {
+                    if (!this.loadingVideos.has(video)) {
+                        clearInterval(checkVisibilityInterval);
+                        return;
+                    }
+
+                    if (!this.isInViewport(video)) {
+                        this.log('Video nicht mehr im Viewport während des Ladens, breche ab');
+                        clearInterval(checkVisibilityInterval);
+                        this.cancelVideoLoad(video);
+                    }
+                }, 300); // Häufigere Prüfung
+
+                // Aufräumen der Intervalle und Timeouts
+                video.addEventListener('loadeddata', () => {
+                    clearTimeout(timeoutId);
+                    clearInterval(checkVisibilityInterval);
+                }, {once: true});
+
+                video.addEventListener('error', () => {
+                    clearTimeout(timeoutId);
+                    clearInterval(checkVisibilityInterval);
+                }, {once: true});
+
+                // Starte den Ladevorgang
+                video.load();
+            } else {
+                // Keine Quelle gefunden
+                this.loadingVideos.delete(video);
+                video.classList.remove('loading');
+                this.log('Keine Videoquelle gefunden');
+                resolve();
+            }
         });
     }
 
-    showVideoFallback(video) {
+    // Ermittelt das beste Videoformat für den aktuellen Browser
+    determineBestVideoFormat() {
+        // Test-Video-Element erstellen
+        const testVideo = document.createElement('video');
+
+        // Formate nach Priorität
+        const formats = [
+            {
+                name: 'webm',
+                type: 'video/webm; codecs="vp9, opus"', // Moderne WebM-Variante
+                fallback: 'video/webm; codecs="vp8, vorbis"' // Ältere WebM-Variante
+            },
+            {
+                name: 'mp4',
+                type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"', // H.264 High Profile
+                fallback: 'video/mp4; codecs="avc1.4D401E, mp4a.40.2"' // H.264 Baseline
+            },
+            {
+                name: 'ogg',
+                type: 'video/ogg; codecs="theora, vorbis"'
+            }
+        ];
+
+        // Teste Format-Unterstützung
+        for (const format of formats) {
+            // Prüfe zuerst die primäre Codec-Variante
+            const mainSupport = testVideo.canPlayType(format.type);
+            if (mainSupport === 'probably') {
+                return format.name;
+            }
+
+            // Prüfe dann die Fallback-Variante, falls vorhanden
+            if (format.fallback) {
+                const fallbackSupport = testVideo.canPlayType(format.fallback);
+                if (fallbackSupport === 'probably') {
+                    return format.name;
+                }
+            }
+        }
+
+        // Zweiter Durchlauf für 'maybe' Support
+        for (const format of formats) {
+            const mainSupport = testVideo.canPlayType(format.type);
+            if (mainSupport === 'maybe') {
+                return format.name;
+            }
+
+            if (format.fallback) {
+                const fallbackSupport = testVideo.canPlayType(format.fallback);
+                if (fallbackSupport === 'maybe') {
+                    return format.name;
+                }
+            }
+        }
+
+        // Fallback auf MP4, wenn nichts anderes unterstützt wird
+        return 'mp4';
+    }
+
+    cancelVideoLoad(video) {
+        if (!this.loadingVideos.has(video)) return;
+
+        this.log('Breche Videoladen ab für:', video);
+
+        // Speichere die Original-Quellen
+        const loadingInfo = this.loadingVideos.get(video);
+        const originalSources = loadingInfo.originalSources || [];
+
+        // Aus Tracking entfernen
+        this.loadingVideos.delete(video);
+
+        // Video stoppen und zurücksetzen
+        video.pause();
+        video.removeAttribute('src');
+
+        // VOLLSTÄNDIGES Zurücksetzen: Entferne alle Kinder
+        while (video.firstChild) {
+            video.removeChild(video.firstChild);
+        }
+
+        // Stelle die originalen source-Elemente mit data-src wieder her
+        originalSources.forEach(sourceInfo => {
+            const source = document.createElement('source');
+            source.setAttribute('data-src', sourceInfo.src);
+            if (sourceInfo.type) {
+                source.setAttribute('type', sourceInfo.type);
+            }
+            video.appendChild(source);
+        });
+
+        // Video komplett neu laden, um den Download zu stoppen
+        video.load();
+
+        // Entferne Statusklassen
+        video.classList.remove('loading', 'loaded');
+        if (!video.classList.contains('lazy')) {
+            video.classList.add('lazy');
+        }
+
         this.removeSpinner(video);
-        const container = video.closest('.content-media') || video.parentNode;
+    }
 
-        const fallback = document.createElement('div');
-        fallback.className = 'video-fallback';
-        fallback.innerHTML = `
-            <div class="video-error-message">
-                <p>Video konnte nicht geladen werden</p>
-                <button class="btn btn-primary btn-sm retry-video-btn">Video erneut laden</button>
-                <button class="btn btn-outline-primary btn-sm reload-page-btn">Seite neu laden</button>
-            </div>
-        `;
-
-        fallback.querySelector('.retry-video-btn').addEventListener('click', (e) => {
-            e.preventDefault();
-            fallback.remove();
-            this.loadVideo(video);
-        });
-
-        fallback.querySelector('.reload-page-btn').addEventListener('click', () => {
-            location.reload();
-        });
-
-        container.appendChild(fallback);
+    showVideoFallback(video) {
+        // Fallback entfernt, stattdessen nur sauberes Aufräumen
+        this.removeSpinner(video);
+        console.warn('Video konnte nicht geladen werden:', video);
     }
 
     observeElements() {
         document.querySelectorAll('[data-src], [data-bg], video.lazy, video[data-poster]').forEach(element => {
+            // Prüfe, ob das Element bereits verarbeitet wurde oder direkte src-Attribute hat
+            if (element.tagName.toLowerCase() === 'video') {
+                const hasDirectSources = Array.from(element.querySelectorAll('source')).some(source =>
+                    source.hasAttribute('src') && !source.hasAttribute('data-src'));
+
+                if (hasDirectSources) {
+                    if (!element.classList.contains('loaded')) {
+                        element.classList.add('loaded');
+                        this.loadedElements.add(element);
+                    }
+
+                    // Autoplay für Videos im Viewport aktivieren
+                    if (element.hasAttribute('autoplay') && this.isInViewport(element)) {
+                        element.play().catch(() => {
+                            element.muted = true;
+                            element.play().catch(console.warn);
+                        });
+                    }
+                    return;
+                }
+            }
+
             if (!this.loadedElements.has(element) && this.shouldHandleElement(element)) {
                 if (this.options.spinnerEnabled) {
                     this.handleSpinner(element);
@@ -701,6 +946,13 @@ class VSMLazyLoader {
         // Event-Handler-Referenzen freigeben
         this.scrollHandler = null;
         this.debouncedCheck = null;
+    }
+
+    // Hilfsfunktion zum Loggen, nur wenn Debug aktiv ist
+    log(...args) {
+        if (this.debug) {
+            console.log(...args);
+        }
     }
 }
 

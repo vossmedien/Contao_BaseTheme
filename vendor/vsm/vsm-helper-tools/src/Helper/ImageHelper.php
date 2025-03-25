@@ -351,7 +351,7 @@ class ImageHelper
             self::$processedImagesCache = [];
             self::$processedImagesCacheSize = 0;
         }
-
+ 
         self::$processedImagesCache[$cacheKey] = $result;
         self::$processedImagesCacheSize++;
 
@@ -587,9 +587,13 @@ class ImageHelper
 
                 $imageSrc = self::encodePath($processedImage['src']);
 
-                $srcset[] = $imageSrc . ' ' . $width . 'w';
-                $webpSrcset[] = $webpSrc . ' ' . $width . 'w';
-
+                // Nur WebP-Quellen hinzufügen, wenn WebP erfolgreich generiert wurde
+                if (isset($webpSrc) && $webpSrc) {
+                    $webpSrcset[] = $webpSrc . ' ' . $width . 'w';
+                } else {
+                    // Fallback auf Original-Format wenn WebP fehlschlägt
+                    $srcset[] = $imageSrc . ' ' . $width . 'w';
+                }
 
                 // Retina Versionen
                 $retinaImageSrc = $imageSrc;
@@ -619,12 +623,15 @@ class ImageHelper
                         }
 
                         $retinaImageSrc = $retina2xImage['src'];
-                        $srcset[] = $retinaImageSrc . ' ' . ($width * 2) . 'w';
-                        $webpSrcset[] = $retinaWebpSrc . ' ' . ($width * 2) . 'w';
+                        if (isset($retinaWebpSrc) && $retinaWebpSrc) {
+                            $webpSrcset[] = $retinaWebpSrc . ' ' . ($width * 2) . 'w';
+                        } else {
+                            $srcset[] = $retinaImageSrc . ' ' . ($width * 2) . 'w';
+                        }
                     }
                 }
 
-// 3x Retina für mobile nur wenn das Originalbild mindestens dreimal so groß ist
+                // 3x Retina für mobile nur wenn das Originalbild mindestens dreimal so groß ist
                 if ($width <= 768 && $width * 3 <= $originalWidth) {
                     // Optimierung: Bei sehr kleinen Bildern keine 3x-Retina-Versionen erzeugen
                     // Weniger sinnvoll bei Bildern unter 150px
@@ -650,8 +657,11 @@ class ImageHelper
                         }
 
                         $retina3xImageSrc = $retina3xImage['src'];
-                        $srcset[] = $retina3xImageSrc . ' ' . ($width * 3) . 'w';
-                        $webpSrcset[] = $retina3xWebpSrc . ' ' . ($width * 3) . 'w';
+                        if (isset($retina3xWebpSrc) && $retina3xWebpSrc) {
+                            $webpSrcset[] = $retina3xWebpSrc . ' ' . ($width * 3) . 'w';
+                        } else {
+                            $srcset[] = $retina3xImageSrc . ' ' . ($width * 3) . 'w';
+                        }
                     }
                 }
 
@@ -668,16 +678,17 @@ class ImageHelper
                         $has3x = $width * 3 <= $originalWidth;
                         $has2x = $width * 2 <= $originalWidth;
 
-                        $sources[] = self::generateSource(
-                            "image/webp",
-                            $webpSrc,
-                            $has2x ? $retinaWebpSrc : null,
-                            $has3x ? $retina3xWebpSrc : null,
-                            $mediaQuery
-                        );
-
-                        // Bei WebP-Bildern keine JPEG-Quelle hinzufügen
-                        if (!isset($isWebp) || !$isWebp) {
+                        // Nur WebP-Quellen hinzufügen, wenn WebP erfolgreich generiert wurde
+                        if (isset($webpSrc) && $webpSrc) {
+                            $sources[] = self::generateSource(
+                                "image/webp",
+                                $webpSrc,
+                                $has2x ? $retinaWebpSrc : null,
+                                $has3x ? $retina3xWebpSrc : null,
+                                $mediaQuery
+                            );
+                        } else {
+                            // Fallback auf Original-Format
                             $sources[] = self::generateSource(
                                 "image/jpeg",
                                 $imageSrc,
@@ -689,16 +700,17 @@ class ImageHelper
                     } else {
                         $has2x = $width * 2 <= $originalWidth;
 
-                        $sources[] = self::generateSource(
-                            "image/webp",
-                            $webpSrc,
-                            $has2x ? $retinaWebpSrc : null,
-                            null,
-                            $mediaQuery
-                        );
-
-                        // Bei WebP-Bildern keine JPEG-Quelle hinzufügen
-                        if (!isset($isWebp) || !$isWebp) {
+                        // Nur WebP-Quellen hinzufügen, wenn WebP erfolgreich generiert wurde
+                        if (isset($webpSrc) && $webpSrc) {
+                            $sources[] = self::generateSource(
+                                "image/webp",
+                                $webpSrc,
+                                $has2x ? $retinaWebpSrc : null,
+                                null,
+                                $mediaQuery
+                            );
+                        } else {
+                            // Fallback auf Original-Format
                             $sources[] = self::generateSource(
                                 "image/jpeg",
                                 $imageSrc,
@@ -712,14 +724,15 @@ class ImageHelper
                 } elseif (!$breakpoint['maxWidth']) {
                     $has2x = $width * 2 <= $originalWidth;
 
-                    $sources[] = self::generateSource(
-                        "image/webp",
-                        $webpSrc,
-                        $has2x ? $retinaWebpSrc : null
-                    );
-
-                    // Bei WebP-Bildern keine JPEG-Quelle hinzufügen
-                    if (!isset($isWebp) || !$isWebp) {
+                    // Nur WebP-Quellen hinzufügen, wenn WebP erfolgreich generiert wurde
+                    if (isset($webpSrc) && $webpSrc) {
+                        $sources[] = self::generateSource(
+                            "image/webp",
+                            $webpSrc,
+                            $has2x ? $retinaWebpSrc : null
+                        );
+                    } else {
+                        // Fallback auf Original-Format
                         $sources[] = self::generateSource(
                             "image/jpeg",
                             $imageSrc,

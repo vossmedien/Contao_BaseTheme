@@ -423,20 +423,6 @@ return array(
                         'value' => 'sold_out',
                     ),
                 ),
-                'stripe_invoice' => array(
-                    'label' => array('Stripe-Rechnung', 'Einstellungen für die Rechnungsstellung'),
-                    'inputType' => 'group',
-                ),
-                'create_invoice' => array(
-                    'label' => array('Stripe-Rechnung aktivieren', 'Erstellt automatisch Rechnungen und sendet diese an Kunden'),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr', 'isBoolean' => true),
-                ),
-                'invoice_note' => array(
-                    'label' => array('Hinweis', 'Informationen zur Rechnungsstellung'),
-                    'inputType' => 'explanation',
-                    'eval' => array('text' => 'Stripe erstellt automatisch Rechnungen für jede Zahlung und sendet diese per E-Mail an den Kunden. Hierfür werden die Kundendaten aus dem Zahlungsformular verwendet.', 'tl_class' => 'clr'),
-                ),
             ),
         ),
     ),
