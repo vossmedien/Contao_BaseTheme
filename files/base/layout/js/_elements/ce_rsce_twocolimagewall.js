@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const container = mainContainer.closest('.container') || document.querySelector('.container');
             const containerLeft = container.getBoundingClientRect().left;
 
-            // Den vollen Container-Gutter für die Korrektur erhalten
+            // Den vollen Container-Gutter für di   e Korrektur erhalten
             const gutter = parseFloat(getComputedStyle(document.documentElement)
                 .getPropertyValue('--bs-container-gutter').trim());
 
