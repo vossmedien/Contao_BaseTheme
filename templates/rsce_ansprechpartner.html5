@@ -22,7 +22,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                             <p class="contact-name mb-1"><?= $contact->name; ?></p>
                             <?php if ($contact->email_link): ?>
                                 <p class="contact-email mb-1">
-                                    <a href="<?= $contact->email_link; ?>" class="text-nowrap">
+                                    <a href="mailto:<?= $contact->email_link; ?>" class="text-nowrap">
                                         <i style="width: 25px;" class="fass fa-envelope"></i>
                                         <span class="text-body text-decoration-underline">Write a message</span>
                                     </a>

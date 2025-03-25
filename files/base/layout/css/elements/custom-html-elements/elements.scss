@@ -40,8 +40,8 @@
   }
 
   &:hover {
+    background-color: transparent;
     color: var(--bs-primary);
-    background-color: var(--bs-white);
   }
 }
 .video_container, .content-youtube {

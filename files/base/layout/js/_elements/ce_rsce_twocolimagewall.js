@@ -12,10 +12,6 @@ document.addEventListener("DOMContentLoaded", function() {
             const container = mainContainer.closest('.container') || document.querySelector('.container');
             const containerLeft = container.getBoundingClientRect().left;
 
-            // Den vollen Container-Gutter für di   e Korrektur erhalten
-            const gutter = parseFloat(getComputedStyle(document.documentElement)
-                .getPropertyValue('--bs-container-gutter').trim());
-
             // Nur innerhalb des aktuellen mainContainer suchen
             mainContainer.querySelectorAll('.ce--imagetextwall--outer .row').forEach(row => {
                 const contentCol = row.querySelector('.content--col');
@@ -31,14 +27,14 @@ document.addEventListener("DOMContentLoaded", function() {
                             : contentCol.getBoundingClientRect().right;
 
                         contentZoom.style.width = `${contentWidth}px`;
-                        // contentZoom.style.marginLeft = isReverse ? '' : `${-containerLeft}px`;
+                       // contentZoom.style.marginLeft = isReverse ? '' : `${-containerLeft}px`;
                     }
 
                     if (imageZoom && imageCol) {
                         imageZoom.style.width = isReverse
-                            ? `${imageCol.getBoundingClientRect().right - gutter}px`
-                            : `${window.innerWidth - imageCol.getBoundingClientRect().left - gutter}px`;
-                        // imageZoom.style.marginLeft = isReverse ? `${-containerLeft}px` : '';
+                            ? `${imageCol.getBoundingClientRect().right}px`
+                            : `${window.innerWidth - imageCol.getBoundingClientRect().left}px`;
+                       // imageZoom.style.marginLeft = isReverse ? `${-containerLeft}px` : '';
                     }
                 } else {
                     [contentZoom, imageZoom].forEach(zoom => {
