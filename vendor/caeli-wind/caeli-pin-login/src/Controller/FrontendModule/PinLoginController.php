@@ -26,7 +26,7 @@ use CaeliWind\CaeliPinLogin\Session\PinLoginSessionManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Psr\Log\LoggerInterface;
 
@@ -78,7 +78,7 @@ class PinLoginController extends AbstractFrontendModuleController
 
         $services['contao.framework'] = ContaoFramework::class;
         $services['contao.routing.scope_matcher'] = ScopeMatcher::class;
-        $services['security.helper'] = Security::class;
+        $services['security.helper'] = AuthorizationCheckerInterface::class;
         $services['translator'] = TranslatorInterface::class;
 
         return $services;

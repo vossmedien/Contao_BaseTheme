@@ -32,7 +32,8 @@ class NewsContentGenerator
     }
 
     /**
-     * Erstellt einen neuen Nachrichtenbeitrag mit dem generierten Inhalt.
+     * Erstellt einen neuen Nachrichtenbeitrag mit dem generierten Inhalt 
+     * mittels direkter SQL-Abfragen statt dem NewsModel
      */
     public function createNewsArticle(
         int $archiveId,
@@ -43,71 +44,83 @@ class NewsContentGenerator
         string $elementType
     ): int {
         $this->framework->initialize();
-
-        // Adapter für die verschiedenen Contao-Klassen
-        $controllerAdapter = $this->framework->getAdapter(Controller::class);
-        $newsAdapter = $this->framework->getAdapter(NewsModel::class);
+        
+        // Adapter für Contao-Klassen (nur für ContentModel noch nötig)
         $contentModelAdapter = $this->framework->getAdapter(ContentModel::class);
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
+        $systemAdapter = $this->framework->getAdapter(System::class);
         
-        // 1. Erstelle den Nachrichten-Eintrag
-        $news = new NewsModel();
-        $news->pid = $archiveId;
-        $news->tstamp = time();
-        $news->date = time();
-        $news->time = time();
-        $news->headline = $title;
-        $news->alias = $this->generateAlias($title);
-        $news->teaser = $teaser;
-        $news->published = 1;
+        // Fester Timestamp als Integer
+        $timestamp = 1704110400;
         
-        // Tags hinzufügen, falls vorhanden
-        if (!empty($tags)) {
-            $news->tags = $tags;
+        // Alias generieren
+        $alias = $stringUtilAdapter->standardize($title);
+        
+        // Eindeutigkeit des Alias prüfen
+        $aliasExists = $this->connection->fetchOne(
+            'SELECT id FROM tl_news WHERE alias = ?',
+            [$alias]
+        );
+        
+        if ($aliasExists) {
+            $alias .= '-' . rand(1000, 9999);
         }
         
-        $news->save();
-        $newsId = $news->id;
-
-        // 3. Inhaltselement basierend auf dem ausgewählten Typ erstellen
-        $contentElement = new ContentModel();
-        $contentElement->pid = $newsId;
-        $contentElement->ptable = 'tl_news';
-        $contentElement->tstamp = time();
-        $contentElement->type = $elementType;
+        // News-Eintrag direkt in die Datenbank schreiben ohne das Model zu verwenden
+        $this->connection->executeStatement(
+            'INSERT INTO tl_news (pid, headline, alias, teaser, published, tags) VALUES (?, ?, ?, ?, ?, ?)',
+            [
+                $archiveId,           // pid
+                $title,               // headline
+                $alias,               // alias
+                $teaser,              // teaser
+                1,                    // published
+                $tags                 // tags
+            ]
+        );
         
-        // Wenn es sich um einen Text/HTML-Inhalt handelt
+        // ID des neu erstellten Eintrags abrufen
+        $newsId = (int)$this->connection->lastInsertId();
+        
+        // Log zur Fehlerbehebung
+        $logDir = $systemAdapter->getContainer()->getParameter('kernel.logs_dir');
+        file_put_contents($logDir . '/content-creator-debug.log', date('Y-m-d H:i:s') . " - News erstellt mit ID: $newsId\n", FILE_APPEND);
+        
+        // Inhaltselement erstellen
         if ($elementType === 'text' || $elementType === 'html') {
-            $contentElement->headline = ['value' => $title, 'unit' => 'h1'];
-            $contentElement->text = $content;
-            $contentElement->save();
+            // Direkte SQL für das Inhaltselement
+            $headline = serialize(['value' => $title, 'unit' => 'h1']);
+            
+            $this->connection->executeStatement(
+                'INSERT INTO tl_content (pid, ptable, type, headline, text) VALUES (?, ?, ?, ?, ?)',
+                [
+                    $newsId,           // pid
+                    'tl_news',         // ptable
+                    $elementType,      // type
+                    $headline,         // headline
+                    $content           // text
+                ]
+            );
+            
+            $contentId = (int)$this->connection->lastInsertId();
+            file_put_contents($logDir . '/content-creator-debug.log', date('Y-m-d H:i:s') . " - Content erstellt mit ID: $contentId\n", FILE_APPEND);
         } 
-        // Wenn es sich um ein RockSolid Custom Element handelt
+        // RockSolid Custom Element-Verarbeitung
         elseif (strpos($elementType, 'rsce_') === 0) {
+            // Erstelle ein ContentModel für RockSolid
+            $contentElement = new ContentModel();
+            $contentElement->pid = $newsId;
+            $contentElement->ptable = 'tl_news';
+            $contentElement->type = $elementType;
+            
+            // Verwende die bestehende Methode für komplexe RockSolid-Elemente
             $this->fillRockSolidElement($contentElement, $elementType, $title, $content);
             $contentElement->save();
+            
+            file_put_contents($logDir . '/content-creator-debug.log', date('Y-m-d H:i:s') . " - RockSolid Content erstellt mit ID: {$contentElement->id}\n", FILE_APPEND);
         }
-
+        
         return $newsId;
-    }
-
-    /**
-     * Generiert einen eindeutigen Alias für den Nachrichten-Eintrag
-     */
-    private function generateAlias(string $title): string
-    {
-        $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
-        $alias = $stringUtilAdapter->standardize($title);
-
-        // Eindeutigkeit prüfen und sicherstellen
-        $newsAdapter = $this->framework->getAdapter(NewsModel::class);
-        $existingNews = $newsAdapter->findByAlias($alias);
-
-        if (null !== $existingNews) {
-            $alias .= '-' . time();
-        }
-
-        return $alias;
     }
 
     /**

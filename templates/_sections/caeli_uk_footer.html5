@@ -1,26 +1,30 @@
 <div class="container">
-   <div class="row gy-2" style="--bs-link-color-rgb: var(--bs-body-color-inverse)">
-       <div class="col-md-6">
-           <strong class="d-block mb-1 mb-md-3">© 2025 Caeli</strong>
-           <ul class="list-inline mb-0">
-               <li class="list-inline-item">
-                   <a href="/imprint" title="Imprint">Imprint</a>
-               </li>
-                 <li class="ms-2 list-inline-item">
-                   <a href="/privacy-policy" title="Imprint">Privacy Policy</a>
-               </li>
-                  <li class="ms-2 list-inline-item">
-                   <a href="https://de.linkedin.com/company/caeli-wind" target="_blank" title="Imprint"><img alt="LinkedIn Logo" src="files/base/layout/img/logo_linkedIn.svg"> LinkedIn</a>
-               </li>
-           </ul>
-       </div>
-       <div class="col-md-6">
-           <strong class="d-block mb-1 mb-md-2">Member of:</strong>
+    <div class="row gy-2" style="--bs-link-color-rgb: var(--bs-body-color-inverse)">
+        <div class="col-md-6">
+            <strong class="d-block mb-1 mb-md-3">© 2025 Caeli</strong>
             <ul class="list-inline mb-0">
-               <li class="list-inline-item">
-                   <a href="" title="RenewableUk"><img alt="RenewableUK Logo"  src="files/base/layout/img/logo_renewableUk.svg"></a>
-               </li>
-           </ul>
-       </div>
-   </div>
+                <li class="list-inline-item">
+                    <a href="/imprint" title="Imprint">Imprint</a>
+                </li>
+                <li class="ms-2 list-inline-item">
+                    <a href="/privacy-policy" title="Imprint">Privacy Policy</a>
+                </li>
+                <li class="ms-2 list-inline-item">
+                    <a href="https://de.linkedin.com/company/caeli-wind" target="_blank" title="Imprint"><img alt="LinkedIn Logo" src="files/base/layout/img/logo_linkedIn.svg">
+                        LinkedIn</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <strong class="d-block mb-1 mb-md-2">Member of:</strong>
+            <ul class="list-inline mb-0">
+                <li class="list-inline-item">
+                    <a target="_blank" href="https://www.renewableuk.com/" title="RenewableUk"><img alt="RenewableUK Logo" src="files/base/layout/img/logo_renewableUk.svg"></a>
+                </li>
+                <li class="list-inline-item">
+                    <a target="_blank" href="https://www.cla.org.uk/" title="CLA Logo"><img style="max-height: 65px;" alt="CLA Logo" src="files/base/layout/img/cla-logo.jpeg"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>

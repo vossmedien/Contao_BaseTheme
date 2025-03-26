@@ -1,0 +1,7 @@
+# Routes für Caeli Content Creator
+caeli_content_creator:
+    resource: ../src/Controller/
+    type: attribute
+    defaults:
+        _scope: backend
+        _token_check: true 

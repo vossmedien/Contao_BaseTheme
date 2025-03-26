@@ -1,0 +1,84 @@
+<?php $this->extend($this->isAjax ? 'block_unsearchable' : 'be_wildcard'); ?>
+
+<?php if (!$this->isAjax): ?>
+<?php $this->block('headline'); ?>
+  <h1><?= $this->trans('MSC.googleNewsFetcherPreview') ?></h1>
+<?php $this->endblock(); ?> 
+<?php endif; ?>
+
+<?php $this->block($this->isAjax ? 'content' : 'wildcard'); ?>
+
+  <div class="tl_listing_container">
+    <?php if (!$this->isAjax): ?>
+    <div class="tl_header">
+      <h2><?= $this->trans('MSC.googleNewsPreview', [], 'contao_default') ?: 'Google News Vorschau' ?></h2>
+      <a href="<?= $this->backUrl ?>" class="header_back" title="<?= $this->trans('MSC.backBT', [], 'contao_default') ?>"><?= $this->trans('MSC.backBT', [], 'contao_default') ?></a>
+    </div>
+    <?php endif; ?>
+
+    <?php if (empty($this->newsItems)): ?>
+      <p class="tl_empty"><?= $this->trans('MSC.noNewsItemsFound', [], 'contao_default') ?: 'Keine News-Artikel gefunden. Überprüfen Sie Ihre Keywords und versuchen Sie es erneut.' ?></p>
+    <?php else: ?>
+      <div class="tl_listing_container">
+        <form action="<?= $this->route('caeli_googlenews_import') ?>" method="post" class="ajax-form">
+          <div class="formbody">
+            <input type="hidden" name="FORM_SUBMIT" value="caeli_googlenews_import">
+            <input type="hidden" name="REQUEST_TOKEN" value="<?= $this->requestToken ?>">
+            <input type="hidden" name="configId" value="<?= $this->configId ?>">
+            <input type="hidden" name="newsArchiveId" value="<?= $this->newsArchiveId ?>">
+
+            <div class="tl_header">
+              <div class="tl_submit_container">
+                <button type="submit" class="tl_submit"><?= $this->trans('MSC.importSelectedNews', [], 'contao_default') ?: 'Ausgewählte News veröffentlichen' ?></button>
+              </div>
+            </div>
+
+            <div class="tl_listing">
+              <div class="tl_content_header">
+                <div class="w20 tl_checkbox_container">
+                  <input type="checkbox" id="check_all" class="tl_checkbox" onclick="Backend.toggleCheckboxes(this, 'items')">
+                  <label for="check_all"><?= $this->trans('MSC.selectAll', [], 'contao_default') ?: 'Alle auswählen' ?></label>
+                </div>
+                <div class="w20"><?= $this->trans('MSC.date', [], 'contao_default') ?: 'Datum' ?></div>
+                <div class="w20"><?= $this->trans('MSC.source', [], 'contao_default') ?: 'Quelle' ?></div>
+                <div class="w40"><?= $this->trans('MSC.title', [], 'contao_default') ?: 'Titel' ?></div>
+              </div>
+
+              <?php foreach ($this->newsItems as $key => $item): ?>
+                <div class="tl_content">
+                  <div class="w20 tl_checkbox_container">
+                    <input type="checkbox" id="item_<?= $key ?>" name="items[]" value="<?= $key ?>" class="tl_checkbox">
+                    <label for="item_<?= $key ?>"></label>
+                  </div>
+                  <div class="w20"><?= $item['pubDate'] ?></div>
+                  <div class="w20">
+                    <?= $item['source'] ?? preg_replace('/^https?:\/\/(www\.)?/', '', parse_url($item['link'], PHP_URL_HOST)) ?>
+                  </div>
+                  <div class="w40">
+                    <a href="<?= $item['link'] ?>" target="_blank" rel="noopener"><?= $item['title'] ?></a>
+                    <?php if (!empty($item['description'])): ?>
+                      <div class="tl_gray"><?= strip_tags($item['description']) ?></div>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            </div>
+
+            <div class="tl_submit_container">
+              <button type="submit" class="tl_submit"><?= $this->trans('MSC.importSelectedNews', [], 'contao_default') ?: 'Ausgewählte News veröffentlichen' ?></button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <?php if ($this->hasProcessedItems): ?>
+        <div class="tl_info">
+          <p><?= $this->trans('MSC.processedArticlesInfo', [], 'contao_default') ?: 'Es gibt Artikel, die bereits verarbeitet wurden.' ?>
+            <a href="<?= $this->route('caeli_googlenews_processed', ['id' => $this->configId]) ?>"><?= $this->trans('MSC.viewProcessed', [], 'contao_default') ?: 'Verarbeitete Artikel anzeigen' ?></a>
+          </p>
+        </div>
+      <?php endif; ?>
+    <?php endif; ?>
+  </div>
+
+<?php $this->endblock(); ?>

@@ -1,0 +1,68 @@
+# config/services.yaml
+services:
+    _defaults:
+        autowire: true          # Automatically injects dependencies in your services.
+        autoconfigure: true     # Automatically registers your services as commands, event subscribers, etc.
+        public: false           # Allows optimizing the container by removing unused services; this also means
+                                # fetching services directly from the container via $container->get() won't work.
+                                # The best practice is to be explicit about your dependencies anyway.
+        bind:
+            #$projectDir: '%kernel.project_dir%'
+
+    CaeliWind\CaeliGoogleNewsFetch\:
+        resource: '../src/'
+        exclude: '../src/{Model,DependencyInjection}'
+
+    # Controller für Google News Fetcher
+    CaeliWind\CaeliGoogleNewsFetch\Controller\GoogleNewsFetchController:
+        public: true
+        arguments:
+            - '@contao.framework'
+            - '@database_connection'
+            - '@CaeliWind\CaeliGoogleNewsFetch\Service\GoogleNewsFeedService'
+            - '@translator'
+            - '@request_stack'
+            - '@security.csrf.token_manager'
+            - '@http_client'
+            - '@logger'
+        tags:
+            - { name: 'controller.service_arguments' }
+
+    # Service zum Abrufen von Google News
+    CaeliWind\CaeliGoogleNewsFetch\Service\GoogleNewsFeedService:
+        public: true
+        arguments:
+            $httpClient: '@http_client'
+            $logger: '@monolog.logger.contao'
+            
+    # DataContainer-Klasse für die News-Archive-Auswahl
+    CaeliWind\CaeliGoogleNewsFetch\DataContainer\GoogleNewsFetcher:
+        public: true
+        arguments:
+            - '@contao.framework'
+            - '@translator'
+            - '@CaeliWind\CaeliGoogleNewsFetch\Controller\GoogleNewsFetchController'
+
+    # Add a session bag
+    caeli_wind.caeli_google_news_fetch.session.factory:
+        class: CaeliWind\CaeliGoogleNewsFetch\Session\SessionFactory
+        decorates: session.factory
+        arguments:
+            - '@caeli_wind.caeli_google_news_fetch.session.factory.inner'
+            - '@caeli_wind.caeli_google_news_fetch.session.attribute.array_attribute_bag'
+
+    caeli_wind.caeli_google_news_fetch.session.attribute.array_attribute_bag:
+        class: CaeliWind\CaeliGoogleNewsFetch\Session\Attribute\ArrayAttributeBag
+        arguments:
+            - _caeli_wind_caeli_google_news_fetch_attributes
+        calls:
+            - [ setName, [ caeli_wind_caeli_google_news_fetch ] ]
+
+    # Cronjob für automatische Aktualisierung von Google News
+    CaeliWind\CaeliGoogleNewsFetch\Cronjob\GoogleNewsCronjob:
+        arguments:
+            $framework: '@contao.framework'
+            $newsFeedService: '@CaeliWind\CaeliGoogleNewsFetch\Service\GoogleNewsFeedService'
+            $logger: '@monolog.logger.contao'
+        tags:
+            - { name: 'contao.cronjob', interval: 'daily' }

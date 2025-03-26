@@ -1,0 +1,7 @@
+# Routes für Caeli PIN-Login
+caeli_pin_login:
+    resource: ../src/Controller/
+    type: attribute
+    defaults:
+        _scope: frontend
+        _token_check: true

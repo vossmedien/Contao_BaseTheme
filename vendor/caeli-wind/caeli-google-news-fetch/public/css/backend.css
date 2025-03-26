@@ -1,0 +1,177 @@
+/**
+ * CSS für den Google News Fetcher
+ *
+ * @author Christian Voss <christian.voss@caeli-wind.de>
+ */
+
+/* Button und Status-Container */
+.caeli_googlenews_container {
+    margin-bottom: 20px;
+}
+
+.caeli_googlenews_button {
+    margin-bottom: 10px;
+}
+
+.caeli_googlenews_status {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+/* Preview Container mit Tabellen */
+.caeli_googlenews_preview_container {
+    margin-top: 20px;
+}
+
+/* News-Sektionen (Aktuelle & Archivierte) */
+.caeli_news_section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #ccc;
+}
+
+.caeli_news_section h3 {
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #eee;
+    font-size: 16px;
+    color: #333;
+}
+
+/* News-Tabellen */
+.caeli_news_table .tl_listing {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.caeli_news_table .tl_listing th {
+    text-align: left;
+    background-color: #f0f0f0;
+    padding: 8px;
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+}
+
+.caeli_news_table .tl_listing td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+}
+
+.caeli_news_table .tl_listing tr.even {
+    background-color: #f9f9f9;
+}
+
+.caeli_news_table .tl_listing tr.odd {
+    background-color: #fff;
+}
+
+/* News-Titel und Teaser */
+.news-title {
+    font-weight: bold;
+    color: #1a568f;
+    text-decoration: none;
+}
+
+.news-title:hover {
+    text-decoration: underline;
+}
+
+.news-teaser {
+    margin-top: 5px;
+    padding: 3px 5px;
+    color: #333;
+    border-left: 3px solid #28a745;
+    background-color: #f9f9f9;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+/* Buttons */
+.caeli_publish_button {
+    padding: 3px 8px;
+    font-size: 0.9em;
+}
+
+.caeli_archive_actions {
+    margin-top: 10px;
+    text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .caeli_news_table .tl_listing th:first-child,
+    .caeli_news_table .tl_listing td:first-child {
+        width: 100px;
+    }
+    
+    .caeli_news_table .tl_listing th:nth-child(2),
+    .caeli_news_table .tl_listing td:nth-child(2) {
+        width: 100px;
+    }
+}
+
+/* Container für die Google News Vorschau */
+.tl_caeli_googlenews_result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+/* Tabelle für die News-Items */
+.tl_caeli_googlenews_preview .tl_listing {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.tl_caeli_googlenews_preview .tl_content {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+}
+
+.tl_caeli_googlenews_preview .tl_content:nth-child(odd) {
+    background-color: #f5f5f5;
+}
+
+.tl_caeli_googlenews_preview .tl_content_header {
+    font-weight: bold;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-bottom: 2px solid #ddd;
+    display: flex;
+}
+
+/* Spaltenbreiten */
+.tl_caeli_googlenews_preview .w20 {
+    width: 20%;
+    padding-right: 10px;
+}
+
+.tl_caeli_googlenews_preview .w40 {
+    width: 40%;
+}
+
+/* Buttons */
+.caeli_googlenews_fetch_button {
+    margin-right: 10px;
+}
+
+/* Nachrichten */
+.caeli_fetch_message {
+    margin-bottom: 15px;
+}
+
+/* Graue Beschreibungstexte */
+.tl_gray {
+    color: #999;
+    margin-top: 5px;
+    font-size: 0.9em;
+} 

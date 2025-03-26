@@ -1,0 +1,87 @@
+<?php $this->extend('be_wildcard'); ?>
+
+<?php $this->block('headline'); ?>
+  <h1><?= $this->trans('MSC.googleNewsFetcherProcessed') ?></h1>
+<?php $this->endblock(); ?>
+
+<?php $this->block('wildcard'); ?>
+
+  <?php if (empty($this->processedArticles)): ?>
+    <div class="tl_info">
+      <p><?= $this->trans('MSC.noProcessedNewsItemsFound') ?></p>
+      <p><a href="<?= $this->backUrl ?>" class="tl_submit"><?= $this->trans('MSC.back') ?></a></p>
+    </div>
+  <?php else: ?>
+    <div class="tl_listing_container">
+      <div class="tl_header">
+        <div class="tl_content_header">
+          <?= $this->trans('MSC.processedNewsItems') ?>
+        </div>
+      </div>
+
+      <div class="tl_listing">
+        <?php foreach ($this->processedArticles as $article): ?>
+          <div class="tl_content">
+            <div class="widget">
+              <div class="processed_article">
+                <div class="content">
+                  <div class="guid"><?= $article['guid'] ?></div>
+                  <div class="status
+                    <?= $article['status'] === 'accepted' ? 'accepted' : 'rejected' ?>">
+                    <?= $article['status'] === 'accepted' ? $this->trans('MSC.accepted') : $this->trans('MSC.rejected') ?>
+                  </div>
+                  <div class="date"><?= //date('d.m.Y H:i', $article['tstamp']) ?></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
+
+      <div class="tl_submit_container">
+        <form action="<?= $this->route('caeli_googlenews_reset', ['id' => $this->configId]) ?>" method="post" class="reset_form">
+          <input type="hidden" name="REQUEST_TOKEN" value="<?= $this->requestToken ?>">
+          <button type="submit" class="tl_submit" onclick="return confirm('<?= $this->trans('MSC.resetProcessedConfirm') ?>')">
+            <?= $this->trans('MSC.resetProcessed') ?>
+          </button>
+        </form>
+        <a href="<?= $this->backUrl ?>" class="tl_submit"><?= $this->trans('MSC.back') ?></a>
+      </div>
+    </div>
+
+    <style>
+      .processed_article {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+        padding: 10px;
+        background: #f9f9f9;
+        border-radius: 3px;
+      }
+      .processed_article .content {
+        flex: 1;
+      }
+      .processed_article .guid {
+        font-family: monospace;
+        margin-bottom: 5px;
+      }
+      .processed_article .status {
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      .processed_article .status.accepted {
+        color: #4d9e4a;
+      }
+      .processed_article .status.rejected {
+        color: #c33;
+      }
+      .processed_article .date {
+        color: #999;
+      }
+      .reset_form {
+        display: inline-block;
+      }
+    </style>
+  <?php endif; ?>
+
+<?php $this->endblock(); ?>

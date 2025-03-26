@@ -28,7 +28,7 @@ use Doctrine\DBAL\Result;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use CaeliWind\CaeliAuctionConnect\Service\AuctionService;
 use Psr\Log\LoggerInterface;
@@ -74,7 +74,7 @@ class AuctionListingController extends AbstractFrontendModuleController
         $services['contao.framework'] = ContaoFramework::class;
         $services['database_connection'] = Connection::class;
         $services['contao.routing.scope_matcher'] = ScopeMatcher::class;
-        $services['security.helper'] = Security::class;
+        $services['security.helper'] = AuthorizationCheckerInterface::class;
         $services['translator'] = TranslatorInterface::class;
 
         return $services;

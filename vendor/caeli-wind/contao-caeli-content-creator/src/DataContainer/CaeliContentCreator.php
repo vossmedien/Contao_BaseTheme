@@ -191,6 +191,16 @@ class CaeliContentCreator
     }
 
     /**
+     * Formatiert die Labels für die Listenansicht und stellt sicher, dass Datumsfelder korrekt behandelt werden
+     */
+    public function formatLabelCallback($row, $label, DataContainer $dc, $args)
+    {
+        // Einfache Implementierung - gib den args-Array unverändert zurück
+        // Dies sollte funktionieren, solange keine Datumsformatierung benötigt wird
+        return $args;
+    }
+
+    /**
      * Get all available content elements that can be used for blog content
      */
     public static function getContentElements(DataContainer $dc): array

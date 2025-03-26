@@ -1,0 +1,7 @@
+caeli_googlenews_controller:
+    resource: ../src/Controller/GoogleNewsFetchController.php
+    type: attribute
+    prefix: /contao
+    defaults:
+        _scope: backend
+        _token_check: true 
