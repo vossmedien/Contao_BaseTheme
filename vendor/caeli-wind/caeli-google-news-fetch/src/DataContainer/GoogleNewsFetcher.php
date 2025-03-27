@@ -86,8 +86,12 @@ class GoogleNewsFetcher
             // HTML für den Button erstellen - nur noch den "Google News abrufen"-Button, kein "Custom Routine starten" mehr
             $token = System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue();
             
-            // Direkter Link mit korrektem Token-Parameter
-            $button = '<a href="' . Environment::get('base') . 'contao/caeli_googlenews/fetch/' . $dc->id . '?_token=' . $token . '" class="tl_submit">Google News abrufen</a>';
+            // Direkter Link mit JavaScript-Reload für harten Neulade-Effekt
+            $button = '<a href="' . Environment::get('base') . 'contao/caeli_googlenews/fetch/' . $dc->id . '?_token=' . $token . '" 
+                class="tl_submit" 
+                onclick="setTimeout(function() { window.location.reload(true); }, 2000);">
+                Google News abrufen
+            </a>';
 
             // Container für Statusmeldungen
             $button .= '<div id="caeli_googlenews_status" class="caeli_googlenews_status"></div>';
@@ -136,10 +140,19 @@ class GoogleNewsFetcher
         } else {
             $html .= $this->generateNewsTable($archivedNews, $model->id, true);
             
-            // Button zum Zurücksetzen des Archivs mit Symfony 7 Form
+            // Nur einen Button zum Zurücksetzen des Archivs mit JavaScript-Reload
             $token = System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue();
             $html .= '<div class="caeli_archive_actions">';
-            $html .= '<a href="' . Environment::get('base') . 'contao/caeli_googlenews/reset/' . $model->id . '?_token=' . $token . '" class="tl_submit" onclick="return confirm(\'Möchten Sie wirklich das Archiv zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.\');">Archiv zurücksetzen</a>';
+            $html .= '<a href="' . Environment::get('base') . 'contao/caeli_googlenews/reset/' . $model->id . '?_token=' . $token . '" 
+                class="tl_submit" 
+                onclick="if(confirm(\'Möchten Sie wirklich das Archiv zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.\')) { 
+                    setTimeout(function() { window.location.reload(true); }, 2000); 
+                    return true;
+                } else {
+                    return false;
+                }">
+                Archiv zurücksetzen
+            </a>';
             $html .= '</div>';
         }
         
@@ -255,9 +268,13 @@ class GoogleNewsFetcher
         // HTML für die Benutzeroberfläche
         $html = '<div class="caeli_googlenews_container">';
         
-        // Link-Button statt JavaScript-Button - korrigierter Link mit korrektem Format und Token-Parameter
+        // Link-Button mit JavaScript-Reload für harten Neulade-Effekt
         $html .= '<div class="caeli_googlenews_button">';
-        $html .= '<a href="' . Environment::get('base') . 'contao/caeli_googlenews/fetch/' . $id . '?_token=' . $token . '" class="tl_submit">Google News abrufen</a>';
+        $html .= '<a href="' . Environment::get('base') . 'contao/caeli_googlenews/fetch/' . $id . '?_token=' . $token . '" 
+            class="tl_submit" 
+            onclick="setTimeout(function() { window.location.reload(true); }, 2000);">
+            Google News abrufen
+        </a>';
         $html .= '</div>';
 
         // Status wird über Contao-Message-System ausgegeben
@@ -276,6 +293,21 @@ class GoogleNewsFetcher
         // Lade aktuelle und archivierte News-Artikel
         $currentNewsItems = $this->loadNewsFromJsonFile((int)$dc->id, 'current');
         $archivedNewsItems = $this->loadNewsFromJsonFile((int)$dc->id, 'archived');
+        
+        // Sortiere die Artikel nach Datum in absteigender Reihenfolge (neuste zuerst)
+        $sortByDateDesc = function ($a, $b) {
+            $dateA = $this->getTimestampFromItem($a);
+            $dateB = $this->getTimestampFromItem($b);
+            return $dateB - $dateA; // Absteigend sortieren
+        };
+        
+        if (!empty($currentNewsItems)) {
+            usort($currentNewsItems, $sortByDateDesc);
+        }
+        
+        if (!empty($archivedNewsItems)) {
+            usort($archivedNewsItems, $sortByDateDesc);
+        }
         
         // Wenn keine aktuellen News vorhanden sind, Hinweis anzeigen
         if (empty($currentNewsItems) && empty($archivedNewsItems)) {
@@ -432,7 +464,8 @@ class GoogleNewsFetcher
             
             // Aktionen (rechts)
             $output .= '<div class="caeli-news-actions">';
-            $output .= '<button type="button" id="import-selected-current" class="tl_submit">Ausgewählte importieren</button>';
+            $output .= '<button type="button" id="import-selected-current" class="tl_submit">Ausgewählte importieren</button> ';
+            $output .= '<a href="' . Environment::get('base') . 'contao/caeli_googlenews/reset/' . $dc->id . '?_token=' . $token . '" class="tl_submit" onclick="return confirm(\'Möchten Sie wirklich alle News zurücksetzen?\');">News zurücksetzen</a>';
             $output .= '</div>';
             
             $output .= '</div>'; // Ende controls
@@ -478,7 +511,7 @@ class GoogleNewsFetcher
                 $keyword = $item['keyword'] ?? '';
                 $imageUrl = $item['imageUrl'] ?? '';
                 
-                // Prüfen, ob bereits importiert - auch für aktuelle News!
+                // Prüfen, ob bereits importiert
                 $isImported = $this->isNewsImported($item, $importedNewsIds);
                 
                 // Publish-Link mit CSRF-Token, jetzt nur für das Modal
@@ -492,7 +525,6 @@ class GoogleNewsFetcher
                 
                 // Checkbox-Spalte
                 $output .= '<td class="tl_file_list">';
-                // Nur nicht importierte Artikel selektierbar machen
                 if (!$isImported) {
                     $output .= '<input type="checkbox" name="currentItems[]" id="current_' . $index . '" class="tl_checkbox" value="' . $index . '">';
                 }
@@ -510,7 +542,22 @@ class GoogleNewsFetcher
                 
                 // Bild anzeigen, wenn vorhanden
                 if ($hasImage) {
-                    $output .= '<img src="' . htmlspecialchars($imageUrl) . '" alt="' . htmlspecialchars($title) . '" class="news-image">';
+                    // Prüfen, ob das Bild eine problematische Handelsblatt-URL ist
+                    $handelsblattDetected = false;
+                    if (
+                        stripos($imageUrl, 'handelsblatt.com') !== false || 
+                        stripos($imageUrl, 'channelizer.handelsblatt') !== false ||
+                        stripos($imageUrl, 'opengraph_default_logo') !== false ||
+                        stripos($imageUrl, 'formatOriginal.png') !== false
+                    ) {
+                        $handelsblattDetected = true;
+                        // Wenn Thumbnail verfügbar ist, dieses nutzen
+                        if (!empty($item['thumbnail'])) {
+                            $imageUrl = $item['thumbnail'];
+                        }
+                    }
+                    
+                    $output .= '<img src="' . htmlspecialchars($imageUrl) . '" alt="' . htmlspecialchars($title) . '" class="news-image' . ($handelsblattDetected ? ' handelsblatt-replaced' : '') . '">';
                 }
                 
                 // Titel und Beschreibung
@@ -532,7 +579,6 @@ class GoogleNewsFetcher
                 
                 // Aktionen-Spalte - jetzt mit AJAX-Veröffentlichung
                 $output .= '<td class="tl_file_list tl_right_nowrap">';
-                // Nur nicht importierte Artikel haben den Publish-Button
                 if (!$isImported) {
                     $output .= '<button type="button" class="tl_submit publish-single" data-url="' . $publishUrl . '">Veröffentlichen</button>';
                 } else {
@@ -563,7 +609,7 @@ class GoogleNewsFetcher
             // Aktionen (rechts)
             $output .= '<div class="caeli-news-actions">';
             $output .= '<button type="button" id="import-selected-archive" class="tl_submit">Ausgewählte importieren</button> ';
-            $output .= '<a href="' . Environment::get('base') . 'contao/caeli_googlenews/reset/' . $dc->id . '?_token=' . $token . '" class="tl_submit" onclick="return confirm(\'Möchten Sie wirklich das Archiv zurücksetzen?\');">Archiv zurücksetzen</a>';
+            $output .= '<a href="' . Environment::get('base') . 'contao/caeli_googlenews/reset/' . $dc->id . '?_token=' . $token . '" class="tl_submit" onclick="return confirm(\'Möchten Sie wirklich alle News zurücksetzen?\');">News zurücksetzen</a>';
             $output .= '</div>';
             
             $output .= '</div>'; // Ende controls
@@ -640,7 +686,22 @@ class GoogleNewsFetcher
                 
                 // Bild anzeigen, wenn vorhanden
                 if ($hasImage) {
-                    $output .= '<img src="' . htmlspecialchars($imageUrl) . '" alt="' . htmlspecialchars($title) . '" class="news-image">';
+                    // Prüfen, ob das Bild eine problematische Handelsblatt-URL ist
+                    $handelsblattDetected = false;
+                    if (
+                        stripos($imageUrl, 'handelsblatt.com') !== false || 
+                        stripos($imageUrl, 'channelizer.handelsblatt') !== false ||
+                        stripos($imageUrl, 'opengraph_default_logo') !== false ||
+                        stripos($imageUrl, 'formatOriginal.png') !== false
+                    ) {
+                        $handelsblattDetected = true;
+                        // Wenn Thumbnail verfügbar ist, dieses nutzen
+                        if (!empty($item['thumbnail'])) {
+                            $imageUrl = $item['thumbnail'];
+                        }
+                    }
+                    
+                    $output .= '<img src="' . htmlspecialchars($imageUrl) . '" alt="' . htmlspecialchars($title) . '" class="news-image' . ($handelsblattDetected ? ' handelsblatt-replaced' : '') . '">';
                 }
                 
                 // Titel und Beschreibung
@@ -660,7 +721,7 @@ class GoogleNewsFetcher
                 $output .= '</div>'; // Ende news-content-wrapper
                 $output .= '</td>';
                 
-                // Aktionen-Spalte
+                // Aktionen-Spalte - jetzt mit AJAX-Veröffentlichung
                 $output .= '<td class="tl_file_list tl_right_nowrap">';
                 if (!$isImported) {
                     $output .= '<button type="button" class="tl_submit publish-single" data-url="' . $publishUrl . '">Veröffentlichen</button>';
@@ -757,24 +818,15 @@ class GoogleNewsFetcher
                             setTimeout(function() {
                                 progressBar.style.width = "100%";
                                 
-                                // Zeile als importiert markieren, ohne die Seite neu zu laden
-                                var button = document.querySelector('button[data-url="' + url + '"]');
-                                if (button) {
-                                    var row = button.closest('tr');
-                                    if (row) {
-                                        row.classList.add('news-imported');
-                                        button.parentNode.innerHTML = '<span class="tl_gray">Bereits importiert</span>';
-                                    }
-                                }
-                                
-                                // OK-Button zum Schließen des Overlays hinzufügen
+                                // OK-Button hinzufügen
                                 var okButton = document.createElement("button");
                                 okButton.textContent = "OK";
                                 okButton.className = "tl_submit";
                                 okButton.style.marginTop = "15px";
                                 
                                 okButton.addEventListener("click", function() {
-                                    document.body.removeChild(overlay);
+                                    // Seite neu laden mit Timestamp für Cache-Busting
+                                    location.reload();
                                 });
                                 
                                 importBox.appendChild(okButton);
@@ -878,13 +930,8 @@ class GoogleNewsFetcher
                     
                     // Artikel-Indizes sammeln
                     var articleIndices = [];
-                    var articleCheckboxes = []; // Verknüpfe Indizes mit Checkboxen für DOM-Aktualisierung
                     checkboxes.forEach(function(checkbox) {
                         articleIndices.push(checkbox.value);
-                        articleCheckboxes.push({
-                            index: checkbox.value,
-                            checkbox: checkbox
-                        });
                     });
                     
                     // Variablen für den Import
@@ -918,14 +965,15 @@ class GoogleNewsFetcher
                     function finishImport() {
                         log("Import abgeschlossen!", false);
                         
-                        // Füge einen OK-Button hinzu, der das Overlay schließt statt die Seite neu zu laden
+                        // Füge OK-Button hinzu, um Overlay zu schließen und Seite neu zu laden
                         var okButton = document.createElement("button");
                         okButton.textContent = "OK";
                         okButton.className = "tl_submit";
                         okButton.style.marginTop = "15px";
                         
                         okButton.addEventListener("click", function() {
-                            document.body.removeChild(overlay);
+                            // Seite neu laden mit Timestamp für Cache-Busting
+                            location.reload();
                         });
                         
                         importBox.appendChild(okButton);
@@ -940,7 +988,6 @@ class GoogleNewsFetcher
                             }
                             
                             var index = articleIndices[processed];
-                            var currentArticleInfo = articleCheckboxes[processed];
                             console.log("Importiere Artikel mit Index: " + index);
                             var url = "' . Environment::get('base') . 'contao/caeli_googlenews/publish/' . $dc->id . '/" + index + "?_token=' . $token . '";
                             
@@ -959,23 +1006,6 @@ class GoogleNewsFetcher
                                     if (response.ok) {
                                         successful++;
                                         log("✓ Artikel #" + processed + " erfolgreich importiert", false);
-                                        
-                                        // Checkbox-Zeile als importiert markieren
-                                        if (currentArticleInfo && currentArticleInfo.checkbox) {
-                                            var row = currentArticleInfo.checkbox.closest("tr");
-                                            if (row) {
-                                                row.classList.add("news-imported");
-                                                
-                                                // Button ersetzen, sofern vorhanden
-                                                var buttonCell = row.querySelector("td:last-child");
-                                                if (buttonCell) {
-                                                    buttonCell.innerHTML = '<span class="tl_gray">Bereits importiert</span>';
-                                                }
-                                                
-                                                // Checkbox entfernen
-                                                currentArticleInfo.checkbox.style.display = "none";
-                                            }
-                                        }
                                     } else {
                                         failed++;
                                         log("✗ Fehler beim Importieren von Artikel #" + processed, true);
@@ -1008,104 +1038,6 @@ class GoogleNewsFetcher
                     console.error("Allgemeiner Fehler beim Import-Prozess:", error);
                     alert("Fehler beim Starten des Imports: " + error.message);
                 }
-            }
-            
-            // "Google News abrufen"-Button verarbeiten - AJAX-Anfrage ohne Seitenneuladen
-            var fetchButton = document.querySelector('.caeli_googlenews_button a');
-            if (fetchButton) {
-                fetchButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    var url = this.getAttribute('href');
-                    
-                    // Erstelle Overlay mit Fortschrittsanzeige
-                    var overlay = document.createElement("div");
-                    overlay.className = "import-overlay";
-                    
-                    var importBox = document.createElement("div");
-                    importBox.className = "import-box";
-                    
-                    var title = document.createElement("h3");
-                    title.textContent = "Google News werden abgerufen...";
-                    
-                    var progressContainer = document.createElement("div");
-                    progressContainer.className = "import-progress-container";
-                    
-                    var progressBar = document.createElement("div");
-                    progressBar.className = "import-progress-bar";
-                    progressBar.style.width = "0%";
-                    
-                    var statusText = document.createElement("div");
-                    statusText.id = "ajax-progress-text";
-                    statusText.textContent = "Verarbeitung gestartet...";
-                    
-                    var logContainer = document.createElement("div");
-                    logContainer.className = "import-log";
-                    
-                    progressContainer.appendChild(progressBar);
-                    importBox.appendChild(title);
-                    importBox.appendChild(progressContainer);
-                    importBox.appendChild(statusText);
-                    importBox.appendChild(logContainer);
-                    overlay.appendChild(importBox);
-                    document.body.appendChild(overlay);
-                    
-                    // Fortschritt simulieren
-                    setTimeout(function() {
-                        progressBar.style.width = "30%";
-                        statusText.textContent = "Google News werden abgerufen...";
-                        logContainer.innerHTML += "<div>Anfrage gestartet...</div>";
-                    }, 200);
-                    
-                    // Anfrage an Google News Fetch senden
-                    fetch(url)
-                        .then(function(response) {
-                            if (!response.ok) {
-                                throw new Error("Fehler bei der Anfrage: " + response.status);
-                            }
-                            progressBar.style.width = "60%";
-                            statusText.textContent = "Daten werden verarbeitet...";
-                            logContainer.innerHTML += "<div>Google News erfolgreich abgerufen.</div>";
-                            return response.text();
-                        })
-                        .then(function(data) {
-                            progressBar.style.width = "100%";
-                            statusText.textContent = "Abruf abgeschlossen!";
-                            logContainer.innerHTML += "<div>✓ Google News erfolgreich verarbeitet.</div>";
-                            
-                            // OK-Button zum Schließen des Overlays und Neuladen der Seite
-                            var okButton = document.createElement("button");
-                            okButton.textContent = "OK";
-                            okButton.className = "tl_submit";
-                            okButton.style.marginTop = "15px";
-                            
-                            okButton.addEventListener("click", function() {
-                                document.body.removeChild(overlay);
-                                location.reload(); // Hier laden wir die Seite neu, um die abgerufenen News anzuzeigen
-                            });
-                            
-                            importBox.appendChild(okButton);
-                        })
-                        .catch(function(error) {
-                            console.error("Fehler beim Abrufen der Google News:", error);
-                            progressBar.style.width = "100%";
-                            progressBar.style.background = "#d9534f";
-                            statusText.textContent = "Fehler beim Abruf!";
-                            logContainer.innerHTML += "<div style='color:#d9534f'>✗ Fehler: " + error.message + "</div>";
-                            
-                            // OK-Button zum Schließen hinzufügen
-                            var okButton = document.createElement("button");
-                            okButton.textContent = "OK";
-                            okButton.className = "tl_submit";
-                            okButton.style.marginTop = "15px";
-                            
-                            okButton.addEventListener("click", function() {
-                                document.body.removeChild(overlay);
-                            });
-                            
-                            importBox.appendChild(okButton);
-                        });
-                });
             }
         });
         </script>';
@@ -1310,5 +1242,26 @@ class GoogleNewsFetcher
             'links' => $importedLinks,
             'guids' => $importedGuids
         ];
+    }
+
+    /**
+     * Hilfsfunktion zum Extrahieren des Zeitstempels aus einem News-Item
+     */
+    private function getTimestampFromItem(array $item): int
+    {
+        if (empty($item['pubDate'])) {
+            return time();
+        }
+        
+        if (is_numeric($item['pubDate'])) {
+            return (int)$item['pubDate'];
+        }
+        
+        try {
+            $dateObj = new \DateTime($item['pubDate']);
+            return $dateObj->getTimestamp();
+        } catch (\Exception $e) {
+            return time();
+        }
     }
 }

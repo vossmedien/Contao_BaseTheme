@@ -13,6 +13,21 @@ services:
         resource: '../src/'
         exclude: '../src/{Model,DependencyInjection}'
 
+    # Bild-Service für die einheitliche Bildverarbeitung
+    CaeliWind\CaeliGoogleNewsFetch\Service\ImageService:
+        public: true
+        arguments:
+            $httpClient: '@http_client'
+            $logger: '@monolog.logger.contao'
+
+    # Service zum Abrufen von Google News
+    CaeliWind\CaeliGoogleNewsFetch\Service\GoogleNewsFeedService:
+        public: true
+        arguments:
+            $httpClient: '@http_client'
+            $imageService: '@CaeliWind\CaeliGoogleNewsFetch\Service\ImageService'
+            $logger: '@monolog.logger.contao'
+
     # Controller für Google News Fetcher
     CaeliWind\CaeliGoogleNewsFetch\Controller\GoogleNewsFetchController:
         public: true
@@ -24,17 +39,11 @@ services:
             - '@request_stack'
             - '@security.csrf.token_manager'
             - '@http_client'
+            - '@CaeliWind\CaeliGoogleNewsFetch\Service\ImageService'
             - '@logger'
         tags:
             - { name: 'controller.service_arguments' }
 
-    # Service zum Abrufen von Google News
-    CaeliWind\CaeliGoogleNewsFetch\Service\GoogleNewsFeedService:
-        public: true
-        arguments:
-            $httpClient: '@http_client'
-            $logger: '@monolog.logger.contao'
-            
     # DataContainer-Klasse für die News-Archive-Auswahl
     CaeliWind\CaeliGoogleNewsFetch\DataContainer\GoogleNewsFetcher:
         public: true
