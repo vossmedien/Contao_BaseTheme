@@ -46,6 +46,7 @@
   }
 }
 
+
 //Footer
 #footer {
   background-color: var(--bs-secondary);
@@ -155,20 +156,39 @@ html body .ce_rsce_headimagelogo .ce--mainimage.style-1 .ce--buttons {
 
 @include media-breakpoint-up(lg) {
   .align-buttons-end {
-  .ce--inner {
-    height: 100%;
-    display: flex;
-    flex-flow: column wrap;
-
-    .text{
-      flex: 1;
+    .ce--inner {
+      height: 100%;
       display: flex;
       flex-flow: column wrap;
 
-      p:has(.btn){
-        margin-top: auto;
+      .text {
+        flex: 1;
+        display: flex;
+        flex-flow: column wrap;
+
+        p:has(.btn) {
+          margin-top: auto;
+        }
       }
     }
   }
 }
+
+
+
+.privacy-page{
+  h2,h3{
+    font-size: 1.5rem;
+    margin-bottom: 1rem !important;
+        margin-top: 1.5rem;
+  }
+  div[id] + div[id]{
+
+  }
+
+  ul li{
+    &:not(:last-child){
+      margin-bottom: .5rem;
+    }
+  }
 }

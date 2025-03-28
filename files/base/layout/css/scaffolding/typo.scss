@@ -106,10 +106,13 @@ html body {
     &:last-child {
       margin-bottom: 0px;
     }
+
+    th{
+         white-space: nowrap;
+    }
     tr {
       td {
         width: auto;
-        white-space: nowrap;
         height: auto;
       }
     }
@@ -224,6 +227,10 @@ i:has( + a:hover) {
       }
     }
   }
+}
+
+body{
+  padding: 1000px;
 }
 
 %list-dots {

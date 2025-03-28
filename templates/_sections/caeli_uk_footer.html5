@@ -9,6 +9,9 @@
                 <li class="ms-2 list-inline-item">
                     <a href="/privacy-policy" title="Imprint">Privacy Policy</a>
                 </li>
+                     <li class="ms-2 list-inline-item">
+                    <a href="/cookie-policy" title="Imprint">Cookie Policy</a>
+                </li>
                 <li class="ms-2 list-inline-item">
                     <a href="https://de.linkedin.com/company/caeli-wind" target="_blank" title="Imprint"><img alt="LinkedIn Logo" src="files/base/layout/img/logo_linkedIn.svg">
                         LinkedIn</a>

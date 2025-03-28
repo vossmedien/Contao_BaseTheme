@@ -126,10 +126,26 @@ function moveSubmitElement() {
     const submitElement = document.querySelector('.tl_formbody_submit');
     const contentElement = document.querySelector('#tl_content');
 
-    if (submitElement && contentElement) {
+    if (submitElement && contentElement && submitElement.parentNode !== contentElement) {
         contentElement.appendChild(submitElement);
     }
 }
 
-// Für Turbo-spezifische Events
-document.addEventListener('turbo:load', moveSubmitElement);
+// Initialer Aufruf
+document.addEventListener('turbo:load', function initialSetup() {
+    moveSubmitElement();
+
+    // MutationObserver für dynamische Änderungen
+    const observer = new MutationObserver(function(mutations) {
+        moveSubmitElement();
+    });
+
+    // Beobachte Änderungen im DOM
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    // Event-Listener entfernen nach erstem Aufruf
+    document.removeEventListener('turbo:load', initialSetup);
+});
