@@ -1,0 +1,30 @@
+<?php
+
+$this->wrapperAttributes = $this
+    ->attr($this->cssID)
+    ->addClass([$this->class, 'block'])
+    ->addStyle($this->style ?? '')
+    ->setIfExists('aria-label', $this->ariaLabel)
+    ->mergeWith($this->wrapperAttributes);
+
+?>
+
+
+<!-- indexer::stop -->
+<nav<?= $this->wrapperAttributes ?>>
+
+    <div class="logo">
+        <a title="Caeli Wind" href="/">
+            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML("files/base/layout/img/logo.svg", "Caeli Wind", null, null, null, false); ?>
+        </a>
+    </div>
+
+
+    <?= $this->items ?>
+
+
+    <div class="extra-content mt-auto mobileNav_footer">
+        {{insert_module::5}}
+    </div>
+</nav>
+<!-- indexer::continue -->

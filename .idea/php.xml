@@ -26,6 +26,7 @@
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-google-news-fetch" />
       <path value="$PROJECT_DIR$/vendor/contao/core-bundle" />
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-hubspot-connect" />
+      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-deploy" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

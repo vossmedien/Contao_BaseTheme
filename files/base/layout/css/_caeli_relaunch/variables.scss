@@ -1,0 +1,105 @@
+$white: #fff;
+$gray: var(--bs-gray-300);
+
+$gray-100: #F1F5F7;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #888888;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$black: #000;
+
+$primary: #00CA90;
+$secondary: #024452;
+$tertiary: #6610f2;
+
+$body-bg: #ffffff;
+$body-color: $secondary;
+
+$border-radius: 12px;
+$border-radius-lg: 18px;
+$box-shadow: 0 0 12px rgba(39, 39, 39, 0.15);
+
+$offset-sm: 60px;
+$offset-lg: 240px;
+
+$link-decoration: none;
+$link-shade-percentage: 20%;
+$link-hover-decoration: null;
+
+$border-color: var(--bs-body-color);
+$input-focus-border-color: var(--bs-primary-rgb);
+$input-placeholder-color: var(--bs-placeholder-color);
+
+$fa-font-display: swap;
+
+$fa-font-path: "/files/base/layout/_vendor/node_modules/@awesome.me/kit-c9b4e661cb/icons/webfonts";
+$enable-cssgrid: true;
+$enable-rounded: true;
+$icon-type: ".fasl";
+
+$spacer: 2.5rem;
+$spacer-sm: $spacer/2;
+$spacer-lg: $spacer*2;
+
+$grid-gutter-width: 30px;
+
+$left-col--width: 275px;
+$right-col--width: 250px;
+
+$modal-sm: 520px;
+$modal-md: 760px;
+$modal-lg: 940px;
+$modal-xl: 1140px;
+
+$btn-line-height: 1;
+$font-family-base: "Poppins", sans-serif;
+
+$font-weight-base: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 600;
+$font-weight-black: 700;
+
+$font-size-xs: 10px;
+$font-size-sm: 14px;
+$font-size-base: 16px;
+$font-size-lg: 20px;
+$font-size-xl: 28px;
+
+$headings-margin-bottom: $spacer * 0.5;
+$headings-font-family: null;
+$headings-font-style: null;
+$headings-font-weight: 600;
+$headings-line-height: 1.2;
+//$headings-color: #4A4643;
+
+$link-color: $primary;
+$link-hover-color:mix(black, $link-color, 25%);
+
+
+
+//CSS Variablen beachten
+$container-max-widths: (
+        sm: 100%,
+        md: 100%,
+        lg: 992px,
+        xl: 1140px,
+        xxl: 1280px
+);
+
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 1040px,
+        xl: 1200px,
+        xxl: 1340px,
+);
+
+
+$form-floating-padding-x: .75rem;
+$form-floating-real-padding-x: calc(var(--bs-gutter-x)*.5 + #{$form-floating-padding-x});

@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Contao\Dbafs;
 use Contao\FilesModel;
 use Contao\System;
+use Contao\CoreBundle\Framework\ContaoFramework;
 
 /**
  * Service für die Bildverarbeitung und -extraktion
@@ -29,6 +30,11 @@ class ImageService
     private string $projectDir;
     
     /**
+     * @var ContaoFramework
+     */
+    private ContaoFramework $framework;
+    
+    /**
      * Verschiedene User-Agents für Fallback-Strategien
      * @var array
      */
@@ -44,11 +50,14 @@ class ImageService
      */
     public function __construct(
         HttpClientInterface $httpClient,
+        string $projectDir,
+        ContaoFramework $framework,
         ?LoggerInterface $logger = null
     ) {
         $this->httpClient = $httpClient;
         $this->logger = $logger;
-        $this->projectDir = System::getContainer()->getParameter('kernel.project_dir');
+        $this->projectDir = $projectDir;
+        $this->framework = $framework;
     }
     
     /**
@@ -409,7 +418,7 @@ class ImageService
                 @unlink($tempFilePath);
                 
                 // Datei in die DBAFS eintragen
-                $dbafs = System::getContainer()->get('contao.framework')->getAdapter(Dbafs::class);
+                $dbafs = $this->framework->getAdapter(Dbafs::class);
                 $fileModel = $dbafs->addResource($targetFile);
                 
                 if (!$fileModel) {

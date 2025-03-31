@@ -1,0 +1,127 @@
+<div class="be_deploy_to_live" style="padding:15px">
+    <h2>Diese Version von Contao auf das LIVE-System übertragen.</h2>
+    <br>
+
+
+    <p class="tl_info">
+        Mit der Eingabe <b>"ausrollen"</b> <br>
+        wird auf LIVE ausgerollt.
+    </p>
+    <p class="tl_info">
+        Mit der Eingabe <b>"rollback"</b> <br>
+        wird die ausgewählte Version wieder auf den letzten Stand zurückgerollt.
+    </p>
+    <!--
+    <p class="tl_error">
+        <b>ACHTUNG:</b><br>
+        Es gibt nur <b>EINE</b> letzte Version. <br>Sollte also zweimal hintereinander die eingabe <b>"ausrollen"</b>
+        gemacht werden, sind die Stände im Backup identisch zum LIVE und es kann keine Version mehr zurück gerollt
+        werden.
+    </p>
+-->
+    <div style="margin-top: 10px">
+        <form action="<?= \Contao\Environment::get('requestUri') ?>" method="POST" data-turbo="false">
+            <div style="display: flex; gap: .5rem; flex-flow: row nowrap; align-items: center;">
+                <input style="width: 200px;" type="text" class="tl_text" name="backup_info" placeholder="Info (optional)">
+                <input style="width: 150px;" type="text" class="tl_text " name="ausrollen">
+                <button type="submit" class="tl_submit"><?= $GLOBALS['TL_LANG']['tl_caeli_deploy']['submit'] ?? 'Aktion ausführen' ?></button>
+            </div>
+
+            <input type="hidden" name="TL_SUBMIT" value="deploy">
+            <input type="hidden" name="REQUEST_TOKEN" value="<?= \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() ?>">
+            
+            <!-- Das versteckte Feld für das ausgewählte Backup -->
+            <input type="hidden" id="selected_backup_input" name="selected_backup" value="current">
+
+        </form>
+
+        <?php if (!empty($this->ausgerollt)): ?>
+            <?php if ($this->success): ?>
+                <div class="tl_message">
+                    <div class="tl_confirm">
+                        <span>Vorgang erfolgreich abgeschlossen.</span>
+                    </div>
+                </div>
+            <?php elseif ($this->isError): ?>
+                <div class="tl_message">
+                    <div class="tl_error">
+                        <span>Bei der Ausführung ist ein Fehler aufgetreten.</span>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <div class="log-output" style="margin-top: 20px;  padding: 15px; border: 1px solid #ddd; max-height: 400px; overflow-y: auto; font-family: monospace; white-space: pre-wrap;">
+                <?= $this->ausgerollt ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($this->backups)): ?>
+            <div style="margin-top: 30px;" class="clr tl_listing">
+                <h3 style="margin-bottom: 15px;" class=""><?= $GLOBALS['TL_LANG']['tl_caeli_deploy']['backups'] ?? 'Verfügbare Backups' ?></h3>
+                <table class="tl_listing">
+                    <thead>
+                    <tr>
+                        <th class="tl_folder_tlist" style="width: 30px;"><?= $GLOBALS['TL_LANG']['tl_caeli_deploy']['select'] ?? 'Auswahl' ?></th>
+                        <th class="tl_folder_tlist"><?= $GLOBALS['TL_LANG']['tl_caeli_deploy']['date'] ?? 'Datum' ?></th>
+                        <th class="tl_folder_tlist"><?= $GLOBALS['TL_LANG']['tl_caeli_deploy']['info'] ?? 'Info' ?></th>
+                        <th class="tl_folder_tlist"><?= $GLOBALS['TL_LANG']['tl_caeli_deploy']['files'] ?? 'Dateien' ?></th>
+                        <th class="tl_folder_tlist"><?= $GLOBALS['TL_LANG']['tl_caeli_deploy']['database'] ?? 'Datenbank' ?></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($this->backups as $index => $backup): ?>
+                        <tr class="<?= ($index % 2 == 0) ? 'even' : 'odd' ?><?= $backup['current'] ? ' marked' : '' ?>">
+                            <td class="tl_file_list" style="text-align: center;">
+                                <input type="radio" name="backup_select" value="<?= $backup['id'] ?>" <?= $index === 0 ? 'checked="checked"' : '' ?> id="backup_<?= $backup['id'] ?>">
+                            </td>
+                            <td class="tl_file_list"><?= $backup['current'] ? '<strong>' . $backup['name'] . '</strong>' : $backup['name'] ?></td>
+                            <td class="tl_file_list"><?= $backup['info'] ?? '' ?></td>
+                            <td class="tl_file_list"><?= $backup['files'] ?></td>
+                            <td class="tl_file_list"><?= $backup['db'] ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+                
+                <!-- Backup-Bereinigung Button -->
+                <div style="margin-top: 15px; text-align: right;">
+                    <form action="<?= \Contao\Environment::get('requestUri') ?>" method="POST" data-turbo="false" style="display: inline-block;">
+                        <input type="hidden" name="ausrollen" value="cleanup">
+                        <input type="hidden" name="TL_SUBMIT" value="deploy">
+                        <input type="hidden" name="REQUEST_TOKEN" value="<?= \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() ?>">
+                        <button type="submit" class="tl_submit">Backups bereinigen</button>
+                    </form>
+                </div>
+            </div>
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Radio-Buttons Funktionalität
+                    var radioButtons = document.querySelectorAll('input[name="backup_select"]');
+                    var hiddenInput = document.getElementById('selected_backup_input');
+                    
+                    radioButtons.forEach(function(radio) {
+                        radio.addEventListener('change', function() {
+                            hiddenInput.value = this.value;
+                        });
+                    });
+                    
+                    // Automatisch den ersten Radio-Button auswählen und das versteckte Feld aktualisieren
+                    if (radioButtons.length > 0 && radioButtons[0].checked) {
+                        hiddenInput.value = radioButtons[0].value;
+                    }
+                });
+            </script>
+        <?php else: ?>
+            <div class="tl_message">
+                <p class="tl_info"><?= $GLOBALS['TL_LANG']['tl_caeli_deploy']['noBackups'] ?? 'Keine Backups gefunden.' ?></p>
+                <?php if ($this->debug): ?>
+                    <div class="tl_debug_panel">
+                        <h4><?= $GLOBALS['TL_LANG']['tl_caeli_deploy']['debugInfo'] ?? 'Debug-Informationen:' ?></h4>
+                        <pre><?= $this->debug ?></pre>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+    </div>
+</div>

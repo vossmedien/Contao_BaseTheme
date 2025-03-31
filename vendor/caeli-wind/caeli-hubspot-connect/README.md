@@ -51,26 +51,24 @@ Sie können auch benutzerdefinierte Feldnamen aus Ihrem HubSpot-Formular verwend
 
 ## Funktionsweise
 
-Das Modul verwendet die öffentliche HubSpot Forms API, um Formulardaten direkt an HubSpot zu senden:
+Das Modul verwendet den `processFormData`-Hook von Contao und die öffentliche HubSpot Forms API:
 
-1. In jede Seite wird ein JavaScript eingebettet, das nach aktivierten Formularen sucht
-2. Wenn ein Formular abgesendet wird, werden die Daten parallel an HubSpot übermittelt
+1. Wenn ein Formular abgesendet wird, prüft das Modul, ob die HubSpot-Integration aktiviert ist
+2. Die Formulardaten werden serverseitig an HubSpot übermittelt
 3. Die Feldnamen werden entsprechend der Konfiguration im Backend gemappt
+4. Der Nutzer merkt von der Integration nichts und erhält die normale Formularbestätigung
 
-## Debug-Informationen
+## Sicherheit und Datenschutz
 
-Wenn ein Formular mit aktivierter HubSpot-Integration abgesendet wird, werden in der Browser-Konsole (F12) detaillierte Informationen angezeigt:
-
-- Erkannte Formulare
-- Gelesene Formularfelder und ihre Zuordnung
-- Übermittelte Daten
-- Antwort von HubSpot
+Da die Übermittlung an HubSpot serverseitig stattfindet:
+- Werden keine zusätzlichen Cookies gesetzt
+- Ist kein JavaScript im Browser notwendig
+- Werden nur die Daten übermittelt, die auch im Formular eingegeben wurden
 
 ## Voraussetzungen
 
 - Contao 5.5 oder höher
 - Portal-ID und Formular-ID von HubSpot
-- JavaScript muss im Browser aktiviert sein
 
 ## Kontakt
 

@@ -123,29 +123,31 @@ document.addEventListener('click', function (event) {
 
 // Funktion zum Verschieben des Submit-Bereichs
 function moveSubmitElement() {
-    const submitElement = document.querySelector('.tl_formbody_submit');
-    const contentElement = document.querySelector('#tl_content');
+  const submitElement = document.querySelector('.tl_formbody_submit');
+  const contentElement = document.querySelector('#tl_content');
+  const rsceGroupElement = document.querySelector('.rsce_group');
 
-    if (submitElement && contentElement && submitElement.parentNode !== contentElement) {
-        contentElement.appendChild(submitElement);
-    }
+  // Nur ausführen, wenn .rsce_group existiert
+  if (rsceGroupElement && submitElement && contentElement && submitElement.parentNode !== contentElement) {
+    contentElement.appendChild(submitElement);
+  }
 }
 
 // Initialer Aufruf
 document.addEventListener('turbo:load', function initialSetup() {
+  moveSubmitElement();
+
+  // MutationObserver für dynamische Änderungen
+  const observer = new MutationObserver(function(mutations) {
     moveSubmitElement();
+  });
 
-    // MutationObserver für dynamische Änderungen
-    const observer = new MutationObserver(function(mutations) {
-        moveSubmitElement();
-    });
+  // Beobachte Änderungen im DOM
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
 
-    // Beobachte Änderungen im DOM
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-
-    // Event-Listener entfernen nach erstem Aufruf
-    document.removeEventListener('turbo:load', initialSetup);
+  // Event-Listener entfernen nach erstem Aufruf
+  document.removeEventListener('turbo:load', initialSetup);
 });

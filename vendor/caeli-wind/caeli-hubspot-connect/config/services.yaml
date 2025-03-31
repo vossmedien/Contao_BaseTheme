@@ -17,7 +17,10 @@ services:
             - '../src/Session/'
             - '../src/CaeliWindCaeliHubspotConnect.php'
 
-    # Frontend Integration Subscriber
-    CaeliWind\CaeliHubspotConnect\EventSubscriber\HubspotIntegrationSubscriber:
+    # ProcessFormData Hook Listener
+    CaeliWind\CaeliHubspotConnect\EventListener\ProcessFormDataListener:
+        arguments:
+            $httpClient: '@http_client'
+            $logger: '@monolog.logger.contao'
         tags:
-            - { name: 'kernel.event_subscriber' }
+            - { name: 'contao.hook', hook: 'processFormData' }
