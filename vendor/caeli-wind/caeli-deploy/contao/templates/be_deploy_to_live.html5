@@ -29,7 +29,7 @@
 
             <input type="hidden" name="TL_SUBMIT" value="deploy">
             <input type="hidden" name="REQUEST_TOKEN" value="<?= \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() ?>">
-            
+
             <!-- Das versteckte Feld für das ausgewählte Backup -->
             <input type="hidden" id="selected_backup_input" name="selected_backup" value="current">
 
@@ -81,30 +81,30 @@
                     <?php endforeach; ?>
                     </tbody>
                 </table>
-                
+
                 <!-- Backup-Bereinigung Button -->
                 <div style="margin-top: 15px; text-align: right;">
                     <form action="<?= \Contao\Environment::get('requestUri') ?>" method="POST" data-turbo="false" style="display: inline-block;">
                         <input type="hidden" name="ausrollen" value="cleanup">
                         <input type="hidden" name="TL_SUBMIT" value="deploy">
                         <input type="hidden" name="REQUEST_TOKEN" value="<?= \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue() ?>">
-                        <button type="submit" class="tl_submit">Backups bereinigen</button>
+                        <button type="submit" class="tl_submit">Backups bereinigen (Bis auf die letzten 5)</button>
                     </form>
                 </div>
             </div>
-            
+
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     // Radio-Buttons Funktionalität
                     var radioButtons = document.querySelectorAll('input[name="backup_select"]');
                     var hiddenInput = document.getElementById('selected_backup_input');
-                    
+
                     radioButtons.forEach(function(radio) {
                         radio.addEventListener('change', function() {
                             hiddenInput.value = this.value;
                         });
                     });
-                    
+
                     // Automatisch den ersten Radio-Button auswählen und das versteckte Feld aktualisieren
                     if (radioButtons.length > 0 && radioButtons[0].checked) {
                         hiddenInput.value = radioButtons[0].value;

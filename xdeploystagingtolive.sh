@@ -43,10 +43,28 @@ TIMESTAMP=$(date '+%Y-%m-%d_%H-%M-%S')
 mv ${DEPLOY_STAGING_PATH}/x_live_files.tar.gz ${DEPLOY_BACKUP_PATH}/${TIMESTAMP}_live_files.tar.gz 2> /dev/null || true
 mv ${DEPLOY_STAGING_PATH}/x_live_db.sql ${DEPLOY_BACKUP_PATH}/${TIMESTAMP}_live_db.sql 2> /dev/null || true
 
-# Backup-Info kopieren, wenn vorhanden
+# Backup-Info in zentrale Datei speichern, wenn vorhanden
 if [ -f "${DEPLOY_STAGING_PATH}/backup_info.txt" ]; then
-    cp ${DEPLOY_STAGING_PATH}/backup_info.txt ${DEPLOY_BACKUP_PATH}/${TIMESTAMP}_info.txt 2> /dev/null || true
-    log "Backup-Info wurde gesichert: ${DEPLOY_BACKUP_PATH}/${TIMESTAMP}_info.txt"
+    INFO=$(cat "${DEPLOY_STAGING_PATH}/backup_info.txt")
+    
+    # Zentrale Info-Datei aktualisieren
+    BACKUP_INFOS_FILE="${DEPLOY_BACKUP_PATH}/backup_infos.txt"
+    BACKUP_FILENAME="${TIMESTAMP}_live_files.tar.gz"
+    
+    # Neue Zeile hinzufügen oder bestehende aktualisieren
+    if [ -f "${BACKUP_INFOS_FILE}" ]; then
+        # Temporäre Datei erstellen ohne die zu aktualisierende Zeile
+        grep -v "^${BACKUP_FILENAME}=" "${BACKUP_INFOS_FILE}" > "${BACKUP_INFOS_FILE}.tmp" 2>/dev/null || true
+        # Neue Zeile hinzufügen
+        echo "${BACKUP_FILENAME}=${INFO}" >> "${BACKUP_INFOS_FILE}.tmp"
+        # Ersetzen der ursprünglichen Datei
+        mv "${BACKUP_INFOS_FILE}.tmp" "${BACKUP_INFOS_FILE}"
+    else
+        # Neue Datei erstellen
+        echo "${BACKUP_FILENAME}=${INFO}" > "${BACKUP_INFOS_FILE}"
+    fi
+    
+    log "Backup-Info wurde in zentrale Datei gespeichert: ${BACKUP_INFOS_FILE}"
 fi
 
 # Erstellen eines neuen Backups der Live-Umgebung

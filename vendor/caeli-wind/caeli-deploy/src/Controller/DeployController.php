@@ -43,6 +43,9 @@ class DeployController extends BackendModule
         
         $backups = [];
         
+        // Lade zentrale Backup-Info-Datei
+        $backupInfos = $this->loadBackupInfos($backupPath);
+        
         // Aktuelles Backup - aus dem Staging-Pfad
         $currentBackupFiles = $stagingPath . '/x_live_files.tar.gz';
         $currentBackupDb = $stagingPath . '/x_live_db.sql';
@@ -82,29 +85,8 @@ class DeployController extends BackendModule
                     $basePart = str_replace('_files.tar.gz', '', $basename);
                     $dbFile = $backupPath . '/' . $basePart . '_db.sql';
                     
-                    // Backup-Info zurücksetzen für jedes Backup
-                    $infoFile = null;
-                    $backupInfo = '';
-                    
-                    // Priorität 1: Exakte Übereinstimmung prüfen
-                    $exactInfoFile = $backupPath . '/' . $basePart . '_info.txt';
-                    if (file_exists($exactInfoFile)) {
-                        $infoFile = $exactInfoFile;
-                        $backupInfo = file_get_contents($infoFile);
-                    }
-                    // Priorität 2: Zeitstempelbasierte Suche - nur wenn bisher keine Info gefunden wurde
-                    else {
-                        // Hole den Zeitstempel aus dem Dateinamen (YYYY-MM-DD_HH-MM-SS)
-                        if (preg_match('/^([\d]{4}-[\d]{2}-[\d]{2}_[\d]{2}-[\d]{2}-[\d]{2})/', $basePart, $matches)) {
-                            $timestampPart = $matches[1];
-                            $timeBasedInfoFile = $backupPath . '/' . $timestampPart . '_info.txt';
-                            
-                            if (file_exists($timeBasedInfoFile)) {
-                                $infoFile = $timeBasedInfoFile;
-                                $backupInfo = file_get_contents($infoFile);
-                            }
-                        }
-                    }
+                    // Info aus der zentralen Datei holen
+                    $backupInfo = isset($backupInfos[$basename]) ? $backupInfos[$basename] : '';
                     
                     if (file_exists($dbFile)) {
                         $backupTime = filemtime($file);
@@ -160,16 +142,23 @@ class DeployController extends BackendModule
             
             if ($action === 'ausrollen') {
                 try {
-                    // Backup-Info speichern
-                    if (!empty($backupInfo)) {
-                        file_put_contents($stagingPath . '/backup_info.txt', $backupInfo);
-                    }
-                    
                     // Deployment-Script ausführen - im Projekt-Root-Verzeichnis
                     $process = new Process(['bash', $projectDir . '/xdeploystagingtolive.sh']);
                     $process->setWorkingDirectory($projectDir);
                     $process->setTimeout(600); // Erhöhe Timeout auf 10 Minuten
                     $process->mustRun();
+                    
+                    // Wenn Backup-Info vorhanden, in zentrale Datei speichern
+                    if (!empty($backupInfo)) {
+                        file_put_contents($stagingPath . '/backup_info.txt', $backupInfo);
+                        
+                        // Timestamp für das neue Backup ermitteln
+                        $timestamp = date('Y-m-d_H-i-s');
+                        $backupFilename = $timestamp . '_live_files.tar.gz';
+                        
+                        // In zentrale Info-Datei speichern
+                        $this->saveBackupInfo($backupPath, $backupFilename, $backupInfo);
+                    }
                     
                     // Log-Datei auslesen, falls vorhanden
                     $logFile = $stagingPath . '/deploy_log.txt';
@@ -239,7 +228,7 @@ class DeployController extends BackendModule
                                 "Datenbank: " . $selectedBackupData['db'] . "\n"
                             );
                             
-                            // Wenn das ausgewählte Backup eine Info hat, diese ebenfalls speichern
+                            // Die Info aus dem Backup in die backup_info.txt für das Rollback speichern
                             if (!empty($selectedBackupData['info'])) {
                                 file_put_contents($stagingPath . '/backup_info.txt', $selectedBackupData['info']);
                             }
@@ -255,6 +244,10 @@ class DeployController extends BackendModule
                         // Wenn eine Backup-Info eingegeben wurde, diese speichern
                         if (!empty($backupInfo)) {
                             file_put_contents($stagingPath . '/backup_info.txt', $backupInfo);
+                        }
+                        // Andernfalls verwenden wir die bestehende Info
+                        elseif (file_exists($stagingPath . '/backup_info.txt')) {
+                            // Die vorhandene backup_info.txt Datei bleibt erhalten
                         }
                     }
                 
@@ -485,5 +478,57 @@ class DeployController extends BackendModule
     protected function compile(): void
     {
         // Diese Methode bleibt leer, da wir generate() verwenden
+    }
+    
+    /**
+     * Lädt die zentrale Backup-Info-Datei
+     *
+     * @param string $backupPath
+     * @return array
+     */
+    protected function loadBackupInfos(string $backupPath): array
+    {
+        $infoFile = $backupPath . '/backup_infos.txt';
+        $infos = [];
+        
+        if (file_exists($infoFile)) {
+            $lines = file($infoFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            foreach ($lines as $line) {
+                if (strpos($line, '=') !== false) {
+                    list($filename, $info) = explode('=', $line, 2);
+                    $infos[trim($filename)] = trim($info);
+                }
+            }
+        }
+        
+        return $infos;
+    }
+    
+    /**
+     * Speichert eine Info in die zentrale Backup-Info-Datei
+     *
+     * @param string $backupPath
+     * @param string $filename
+     * @param string $info
+     */
+    protected function saveBackupInfo(string $backupPath, string $filename, string $info): void
+    {
+        if (empty($info)) {
+            return; // Keine Info zu speichern
+        }
+        
+        $infoFile = $backupPath . '/backup_infos.txt';
+        $infos = $this->loadBackupInfos($backupPath);
+        
+        // Info aktualisieren oder hinzufügen
+        $infos[$filename] = $info;
+        
+        // Zurück in die Datei schreiben
+        $content = '';
+        foreach ($infos as $key => $value) {
+            $content .= $key . '=' . $value . PHP_EOL;
+        }
+        
+        file_put_contents($infoFile, $content);
     }
 } 
