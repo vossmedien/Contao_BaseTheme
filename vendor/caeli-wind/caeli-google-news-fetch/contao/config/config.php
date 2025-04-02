@@ -15,7 +15,7 @@ use CaeliWind\CaeliGoogleNewsFetch\Model\CaeliGooglenewsModel;
 /**
  * Backend modules
  */
-$GLOBALS['BE_MOD']['content']['caeli_googlenews'] = [
+$GLOBALS['BE_MOD']['caeli']['caeli_googlenews'] = [
     'tables' => ['tl_caeli_googlenews']
 ];
 

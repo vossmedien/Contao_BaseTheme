@@ -15,7 +15,7 @@ declare(strict_types=1);
 /**
  * Backend modules
  */
-$GLOBALS['BE_MOD']['content']['caeli_content_creator'] = [
+$GLOBALS['BE_MOD']['caeli']['caeli_content_creator'] = [
     'tables' => ['tl_caeli_content_creator'],
     'icon'   => 'bundles/caeliwindcontaocaelicontentcreator/icons/content-creator.svg',
 ];

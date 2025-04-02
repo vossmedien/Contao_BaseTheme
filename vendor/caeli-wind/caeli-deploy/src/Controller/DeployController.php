@@ -20,6 +20,9 @@ class DeployController extends BackendModule
      */
     protected $strTemplate = 'be_deploy_to_live';
     
+    protected const ENV_PREFIX_PATTERN = '/^DEPLOY_(LIVE|STAGING|BACKUP)_PATH_([A-Z0-9_]+)$/';
+    protected const DEFAULT_ENVIRONMENT_KEY = 'default'; // Key für die Standardumgebung
+
     /**
      * Generate the module
      *
@@ -34,12 +37,25 @@ class DeployController extends BackendModule
         $template->showBackups = true;
         $template->success = false;
         
+        // Verfügbare Umgebungen ermitteln
+        $environments = $this->getAvailableEnvironments();
+        $template->environments = $environments;
+
+        // Ausgewählte Umgebung ermitteln (aus POST oder Standard)
+        $selectedEnvironment = Input::post('environment') ?: self::DEFAULT_ENVIRONMENT_KEY;
+        if (!isset($environments[$selectedEnvironment])) {
+            // Fallback auf Default, wenn ungültige Umgebung übergeben wurde
+            $selectedEnvironment = self::DEFAULT_ENVIRONMENT_KEY;
+        }
+        $template->selectedEnvironment = $selectedEnvironment;
+
         $projectDir = System::getContainer()->getParameter('kernel.project_dir');
         
-        // Lade Pfade aus der Umgebungskonfiguration
-        $backupPath = $this->getEnvConfig('DEPLOY_BACKUP_PATH', '/usr/home/caelif/public_html/relaunch_live_autodeploy_versions');
-        $stagingPath = $this->getEnvConfig('DEPLOY_STAGING_PATH', '/usr/home/caelif/public_html/staging.caeli');
-        $livePath = $this->getEnvConfig('DEPLOY_LIVE_PATH', '/usr/home/caelif/public_html/relaunch.caeli');
+        // Lade Pfade aus der Umgebungskonfiguration basierend auf der Auswahl
+        $envSuffix = $selectedEnvironment === self::DEFAULT_ENVIRONMENT_KEY ? '' : '_' . $selectedEnvironment;
+        $backupPath = $this->getEnvConfig('DEPLOY_BACKUP_PATH' . $envSuffix, '/usr/home/caelif/public_html/relaunch_live_autodeploy_versions');
+        $stagingPath = $this->getEnvConfig('DEPLOY_STAGING_PATH' . $envSuffix, '/usr/home/caelif/public_html/staging.caeli');
+        $livePath = $this->getEnvConfig('DEPLOY_LIVE_PATH' . $envSuffix, '/usr/home/caelif/public_html/relaunch.caeli');
         
         $backups = [];
         
@@ -143,7 +159,21 @@ class DeployController extends BackendModule
             if ($action === 'ausrollen') {
                 try {
                     // Deployment-Script ausführen - im Projekt-Root-Verzeichnis
-                    $process = new Process(['bash', $projectDir . '/xdeploystagingtolive.sh']);
+                    $process = new Process([
+                        'bash', 
+                        $projectDir . '/xdeploystagingtolive.sh'
+                    ],
+                    null, // working directory (wird unten gesetzt)
+                    [
+                        // Umgebungsvariablen explizit für den Prozess setzen
+                        'DEPLOY_LIVE_PATH' => $livePath,
+                        'DEPLOY_STAGING_PATH' => $stagingPath,
+                        'DEPLOY_BACKUP_PATH' => $backupPath,
+                        // Bestehende Umgebungsvariablen erben, damit andere Variablen (z.B. PATH) verfügbar sind
+                        // Wichtig: $_ENV und getenv() zusammenführen, um sicherzustellen, dass alle Variablen übergeben werden
+                    ] + $_ENV + $_SERVER // Fügt $_ENV und $_SERVER hinzu, getenv() ist normalerweise darin enthalten
+                    );
+                    
                     $process->setWorkingDirectory($projectDir);
                     $process->setTimeout(600); // Erhöhe Timeout auf 10 Minuten
                     $process->mustRun();
@@ -204,55 +234,27 @@ class DeployController extends BackendModule
                 }
             } elseif ($action === 'rollback') {
                 try {
-                    // Wenn ein spezifisches Backup ausgewählt wurde, kopiere es zuerst in den Staging-Pfad
-                    if ($selectedBackup !== 'current') {
-                        // Finde das ausgewählte Backup
-                        $selectedBackupData = null;
-                        foreach ($backups as $backup) {
-                            if ($backup['id'] === $selectedBackup) {
-                                $selectedBackupData = $backup;
-                                break;
-                            }
-                        }
-                        
-                        if ($selectedBackupData) {
-                            // Kopiere die ausgewählten Backup-Dateien zum Staging-Pfad
-                            copy($selectedBackupData['path_files'], $stagingPath . '/x_live_files.tar.gz');
-                            copy($selectedBackupData['path_db'], $stagingPath . '/x_live_db.sql');
-                            
-                            // Information über das verwendete Backup in einer temporären Datei speichern,
-                            // die vom Rollback-Skript ausgelesen werden kann
-                            file_put_contents($stagingPath . '/rollback_info.txt', 
-                                "Verwendetes Backup: " . $selectedBackupData['name'] . "\n" .
-                                "Dateien: " . $selectedBackupData['files'] . "\n" .
-                                "Datenbank: " . $selectedBackupData['db'] . "\n"
-                            );
-                            
-                            // Die Info aus dem Backup in die backup_info.txt für das Rollback speichern
-                            if (!empty($selectedBackupData['info'])) {
-                                file_put_contents($stagingPath . '/backup_info.txt', $selectedBackupData['info']);
-                            }
-                        }
-                    } else {
-                        // Aktuelles Backup (das bereits im Staging-Pfad liegt) wird verwendet
-                        file_put_contents($stagingPath . '/rollback_info.txt', 
-                            "Verwendetes Backup: Aktuelles Backup\n" .
-                            "Dateien: x_live_files.tar.gz\n" .
-                            "Datenbank: x_live_db.sql\n"
-                        );
-                        
-                        // Wenn eine Backup-Info eingegeben wurde, diese speichern
-                        if (!empty($backupInfo)) {
-                            file_put_contents($stagingPath . '/backup_info.txt', $backupInfo);
-                        }
-                        // Andernfalls verwenden wir die bestehende Info
-                        elseif (file_exists($stagingPath . '/backup_info.txt')) {
-                            // Die vorhandene backup_info.txt Datei bleibt erhalten
+                    // Rollback-Script ausführen - mit ausgewähltem Backup und Pfaden
+                    $selectedBackupData = null;
+                    foreach ($backups as $backup) {
+                        if ($backup['id'] === $selectedBackup) {
+                            $selectedBackupData = $backup;
+                            break;
                         }
                     }
-                
-                    // Rollback-Script ausführen - im Projekt-Root-Verzeichnis
-                    $process = new Process(['bash', $projectDir . '/xrollbacklive.sh']);
+
+                    if (!$selectedBackupData) {
+                         throw new \Exception("Ausgewähltes Backup nicht gefunden.");
+                    }
+
+                    $process = new Process([
+                        'bash',
+                        $projectDir . '/rollbacktolastversion.sh',
+                        $selectedBackupData['path_files'] ?? '',
+                        $selectedBackupData['path_db'] ?? '',
+                        $livePath // Live-Pfad für die Zielumgebung
+                    ]);
+
                     $process->setWorkingDirectory($projectDir);
                     $process->setTimeout(600); // Erhöhe Timeout auf 10 Minuten
                     $process->mustRun();
@@ -294,10 +296,14 @@ class DeployController extends BackendModule
                 }
             } elseif ($action === 'cleanup') {
                 try {
-                    // Backup-Bereinigung ausführen
-                    $process = new Process(['bash', $projectDir . '/xcleanupbackups.sh']);
+                    // Cleanup-Script ausführen
+                    $process = new Process([
+                        'bash',
+                        $projectDir . '/backupcleanup.sh',
+                        $backupPath // Pfad zum Backup-Verzeichnis der Umgebung
+                    ]);
                     $process->setWorkingDirectory($projectDir);
-                    $process->setTimeout(300); // 5 Minuten Timeout
+                    $process->setTimeout(300); // Timeout 5 Minuten
                     $process->mustRun();
                     
                     // Log-Datei auslesen
@@ -329,12 +335,14 @@ class DeployController extends BackendModule
                         return new RedirectResponse($redirectUrl);
                     }
                 } catch (ProcessFailedException $exception) {
-                    $this->handleProcessException($session, $template, $exception, 'Backup-Bereinigung', $isXhr, $redirectUrl);
+                    $this->handleProcessException($session, $template, $exception, 'Cleanup', $isXhr, $redirectUrl);
                     return $isXhr ? $template->parse() : new RedirectResponse($redirectUrl);
                 } catch (\Exception $exception) {
-                    $this->handleGenericException($session, $template, $exception, 'Backup-Bereinigung', $isXhr, $redirectUrl);
+                    $this->handleGenericException($session, $template, $exception, 'Cleanup', $isXhr, $redirectUrl);
                     return $isXhr ? $template->parse() : new RedirectResponse($redirectUrl);
                 }
+            } else {
+                Message::addError('Unbekannte Aktion: ' . $action);
             }
         }
         
@@ -353,30 +361,61 @@ class DeployController extends BackendModule
     }
     
     /**
-     * Liest einen Konfigurationswert aus der .env.local Datei
-     * 
-     * @param string $key
-     * @param string $default
-     * @return string
+     * Liest einen Konfigurationswert aus den Umgebungsvariablen.
+     *
+     * @param string $key     Der Schlüssel der Umgebungsvariable.
+     * @param string $default Der Standardwert, falls die Variable nicht gesetzt ist.
+     *
+     * @return string Der Wert der Umgebungsvariable oder der Standardwert.
      */
     protected function getEnvConfig(string $key, string $default = ''): string
     {
-        $projectDir = System::getContainer()->getParameter('kernel.project_dir');
-        
-        if (file_exists($projectDir . '/.env.local')) {
-            $envContent = file_get_contents($projectDir . '/.env.local');
-            if (preg_match('/' . $key . '\s*=\s*([^\r\n]+)/', $envContent, $matches)) {
-                return trim($matches[1]);
-            }
-            
-            // Alternativ versuchen, parse_ini_file zu nutzen
-            $env = @parse_ini_file($projectDir . '/.env.local');
-            if ($env !== false && isset($env[$key])) {
-                return $env[$key];
+        // Versuche, den Wert aus $_ENV zu lesen (bevorzugt, da von Dotenv geladen)
+        if (isset($_ENV[$key])) {
+            return (string) $_ENV[$key];
+        }
+    
+        // Fallback auf getenv(), falls nicht in $_ENV
+        $value = getenv($key);
+    
+        return $value !== false ? (string) $value : $default;
+    }
+    
+    /**
+     * Ermittelt die verfügbaren Deployment-Umgebungen aus den Umgebungsvariablen.
+     * Sucht nach Variablen wie DEPLOY_LIVE_PATH_XXX, DEPLOY_STAGING_PATH_XXX etc.
+     *
+     * @return array Ein assoziatives Array der Umgebungen [key => name]. 'default' repräsentiert die Standardumgebung.
+     */
+    protected function getAvailableEnvironments(): array
+    {
+        $environments = [self::DEFAULT_ENVIRONMENT_KEY => 'Standard']; // Standardumgebung immer hinzufügen
+        $envVars = $_ENV + getenv(); // Kombiniere $_ENV und getenv()
+
+        foreach ($envVars as $key => $value) {
+            if (preg_match(self::ENV_PREFIX_PATTERN, $key, $matches)) {
+                $envName = $matches[2]; // Der Teil nach dem letzten Unterstrich
+                if (!isset($environments[$envName])) {
+                     // Verwende den Suffix als Namen (könnte man später anpassbar machen)
+                    $environments[$envName] = $envName;
+                }
             }
         }
         
-        return $default;
+        // Prüfen, ob die Standardumgebung tatsächlich konfiguriert ist
+        $hasDefaultLive = !empty($this->getEnvConfig('DEPLOY_LIVE_PATH'));
+        $hasDefaultStaging = !empty($this->getEnvConfig('DEPLOY_STAGING_PATH'));
+        // Wenn keine Standardpfade definiert sind, aber andere Umgebungen existieren,
+        // entfernen wir die Standardoption, es sei denn, sie ist die einzige.
+        if (!$hasDefaultLive && !$hasDefaultStaging && count($environments) > 1) {
+             unset($environments[self::DEFAULT_ENVIRONMENT_KEY]);
+        } elseif (count($environments) === 1 && !$hasDefaultLive && !$hasDefaultStaging) {
+            // Wenn nur Default da ist, aber nicht konfiguriert, leere Liste zurückgeben
+            // oder eine Fehlermeldung anzeigen? Vorerst leere Liste.
+             return [];
+        }
+
+        return $environments;
     }
     
     /**

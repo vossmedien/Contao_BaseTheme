@@ -23,6 +23,21 @@
         <form action="<?= \Contao\Environment::get('requestUri') ?>" method="POST" data-turbo="false">
             <div style="display: flex; gap: .5rem; flex-flow: row nowrap; align-items: center;">
                 <input style="width: 200px;" type="text" class="tl_text" name="backup_info" placeholder="Info (optional)">
+                
+                <?php if (!empty($this->environments) && count($this->environments) > 1): ?>
+                <select name="environment" class="tl_select" style="width: 150px;" onchange="this.form.submit()">
+                    <?php foreach ($this->environments as $key => $name): ?>
+                        <option value="<?= $key ?>"<?= ($key === $this->selectedEnvironment) ? ' selected' : '' ?>><?= $name ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <?php elseif (!empty($this->environments) && count($this->environments) === 1): ?>
+                    <?php // Wenn nur eine Umgebung da ist, Key versteckt senden ?>
+                    <input type="hidden" name="environment" value="<?= array_key_first($this->environments) ?>">
+                    <span class="tl_info" style="margin-right: .5rem;"><?= current($this->environments) ?></span> <?php // Anzeigen, welche Umgebung aktiv ist ?>
+                <?php else: ?>
+                     <span class="tl_error">Keine Umgebungen konfiguriert!</span>
+                <?php endif; ?>
+
                 <input style="width: 150px;" type="text" class="tl_text " name="ausrollen">
                 <button type="submit" class="tl_submit"><?= $GLOBALS['TL_LANG']['tl_caeli_deploy']['submit'] ?? 'Aktion ausführen' ?></button>
             </div>
