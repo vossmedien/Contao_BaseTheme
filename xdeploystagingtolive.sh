@@ -194,9 +194,29 @@ echo "-- Ende der Ausnahmen-Sicherung" >> ${EXCEPTIONS_SQL}
 
 # Synchronisieren der Staging-Umgebung zur Live-Umgebung
 log "Synchronisiere Dateien von Staging zu Live..."
+
+# Setze Standard-Ausnahmen für rsync, falls nicht definiert
+if [ -z "${DEPLOY_EXCLUDES}" ]; then
+    # Standard-Ausschlüsse
+    DEPLOY_EXCLUDES=".env.local public/.htaccess public/.htpasswd xdeploystagingtolive.sh xrollbacklive.sh x_live_db.sql x_live_files.tar.gz deploy_log.txt rollback_log.txt exceptions.sql"
+    log "Verwende Standard-Ausschlüsse für rsync"
+else
+    log "Verwende konfigurierte Ausschlüsse für rsync: ${DEPLOY_EXCLUDES}"
+fi
+
+# Baue rsync-Exclude-Parameter aus der Liste
+RSYNC_EXCLUDES=""
+for exclude in ${DEPLOY_EXCLUDES}; do
+    RSYNC_EXCLUDES="${RSYNC_EXCLUDES} --exclude='${exclude}'"
+done
+
 # Komplett ohne Ausgabe der einzelnen Dateien
-rsync -a --quiet --exclude='.env.local' --exclude='public/.htaccess' --exclude='public/.htpasswd' --exclude='xdeploystagingtolive.sh' --exclude='xrollbacklive.sh' --exclude='x_live_db.sql' --exclude='x_live_files.tar.gz' --exclude='deploy_log.txt' --exclude='rollback_log.txt' --exclude='exceptions.sql' ${DEPLOY_STAGING_PATH}/ ${DEPLOY_LIVE_RSYNC_TARGET}/ > /dev/null 2>&1
-log "Dateisynchronisierung abgeschlossen. $(date)"
+log "Starte rsync mit folgenden Parametern:"
+log "Quelle: ${DEPLOY_STAGING_PATH}/"
+log "Ziel: ${DEPLOY_LIVE_RSYNC_TARGET}/"
+log "Excludes: ${RSYNC_EXCLUDES}"
+eval "rsync -av --itemize-changes ${RSYNC_EXCLUDES} ${DEPLOY_STAGING_PATH}/ ${DEPLOY_LIVE_RSYNC_TARGET}/ >> ${LOG_FILE} 2>&1"
+log "rsync-Befehl ausgeführt. Exit-Code: $?"
 
 # Übertragen der Staging-Datenbank in die Live-Umgebung
 log "Übertrage Datenbank von Staging zu Live..."

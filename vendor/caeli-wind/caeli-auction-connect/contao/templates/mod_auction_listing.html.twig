@@ -12,268 +12,19 @@
                         <article class="auction-item card h-100">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h3 class="card-title h5 mb-0">
-                                    {% if auction.title is defined and auction.title is not empty %}
-                                        {{ auction.title }}
-                                    {% elseif raw_data.areaName is defined and raw_data.areaName is not empty %}
-                                        {{ raw_data.areaName }}
-                                    {% elseif raw_data.auctionId is defined %}
-                                        {{ 'Auktion'|trans }} #{{ raw_data.auctionId }}
-                                    {% else %}
-                                        {{ 'Auktion'|trans }}
-                                    {% endif %}
+                                  {{ 'Auktion'|trans }} #{{ raw_data.auctionId }}
                                 </h3>
-                                {% if raw_data.status is defined and raw_data.status %}
-                                    <span class="badge bg-primary">{{ raw_data.status }}</span>
-                                {% elseif auction.status is defined and auction.status %}
-                                    <span class="badge bg-primary">{{ auction.status }}</span>
-                                {% endif %}
                             </div>
+
 
                             <div class="card-body">
-                                <div class="auction-details">
-                                    <div class="row g-1">
-                                        {# Bundesland #}
-                                        <div class="col-md-6">
-                                            <div class="detail-item">
-                                                <strong>{{ 'Bundesland'|trans }}:</strong>
-                                                <span>
-                                                    {% if raw_data.state is defined and raw_data.state %}
-                                                        {{ raw_data.state }}
-                                                    {% elseif auction.state is defined and auction.state %}
-                                                        {{ auction.state }}
-                                                    {% else %}
-                                                        n/a
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {# Fläche #}
-                                        <div class="col-md-6">
-                                            <div class="detail-item">
-                                                <strong>{{ 'Fläche'|trans }}:</strong>
-                                                <span>
-                                                    {% if raw_data.areaSize is defined and raw_data.areaSize %}
-                                                        {{ raw_data.areaSize }} ha
-                                                    {% elseif auction.size_ha is defined and auction.size_ha %}
-                                                        {{ auction.size_ha }} ha
-                                                    {% else %}
-                                                        n/a ha
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {# Leistung #}
-                                        <div class="col-md-6">
-                                            <div class="detail-item">
-                                                <strong>{{ 'Leistung'|trans }}:</strong>
-                                                <span>
-                                                    {% if raw_data.power is defined and raw_data.power %}
-                                                        {{ raw_data.power }} MW
-                                                    {% elseif auction.power_mw is defined and auction.power_mw %}
-                                                        {{ auction.power_mw }} MW
-                                                    {% else %}
-                                                        n/a MW
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {# Volllaststunden #}
-                                        <div class="col-md-6">
-                                            <div class="detail-item">
-                                                <strong>{{ 'Volllaststunden'|trans }}:</strong>
-                                                <span>
-                                                    {% if raw_data.fullUsageHours is defined and raw_data.fullUsageHours %}
-                                                        {{ raw_data.fullUsageHours }}
-                                                        {% if raw_data.fullUsageHoursSource is defined and raw_data.fullUsageHoursSource %}
-                                                            <small class="text-muted">({{ raw_data.fullUsageHoursSource }})</small>
-                                                        {% endif %}
-                                                    {% elseif auction.full_usage_hours is defined and auction.full_usage_hours %}
-                                                        {{ auction.full_usage_hours }}
-                                                        {% if auction.full_usage_hours_source is defined and auction.full_usage_hours_source %}
-                                                            <small class="text-muted">({{ auction.full_usage_hours_source }})</small>
-                                                        {% endif %}
-                                                    {% else %}
-                                                        n/a
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {# Rendite #}
-                                        <div class="col-md-6">
-                                            <div class="detail-item">
-                                                <strong>{{ 'Rendite'|trans }}:</strong>
-                                                <span>
-                                                    {% if raw_data.internalRateOfReturnBeforeRent is defined and raw_data.internalRateOfReturnBeforeRent %}
-                                                        {{ raw_data.internalRateOfReturnBeforeRent }}%
-                                                    {% elseif auction.internal_rate_of_return is defined and auction.internal_rate_of_return %}
-                                                        {{ auction.internal_rate_of_return }}%
-                                                    {% else %}
-                                                        n/a%
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {# Verfügbar ab #}
-                                        <div class="col-md-6">
-                                            <div class="detail-item">
-                                                <strong>{{ 'Verfügbar ab'|trans }}:</strong>
-                                                <span>
-                                                    {% if raw_data.availableFrom is defined and raw_data.availableFrom %}
-                                                        {{ raw_data.availableFrom }}
-                                                    {% elseif auction.available_from is defined and auction.available_from %}
-                                                        {{ auction.available_from }}
-                                                    {% else %}
-                                                        n/a
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {# Eigentumsart #}
-                                        <div class="col-md-6">
-                                            <div class="detail-item">
-                                                <strong>{{ 'Eigentumsart'|trans }}:</strong>
-                                                <span>
-                                                    {% if raw_data.property is defined and raw_data.property %}
-                                                        {{ raw_data.property }}
-                                                    {% elseif auction.property is defined and auction.property %}
-                                                        {{ auction.property }}
-                                                    {% else %}
-                                                        n/a
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {# Interessenten #}
-                                        <div class="col-md-6">
-                                            <div class="detail-item">
-                                                <strong>{{ 'Interessenten'|trans }}:</strong>
-                                                <span>
-                                                    {% if raw_data.interestedCount is defined and raw_data.interestedCount %}
-                                                        {{ raw_data.interestedCount }}
-                                                    {% elseif auction.interested_count is defined and auction.interested_count %}
-                                                        {{ auction.interested_count }}
-                                                    {% else %}
-                                                        n/a
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {# CountDown #}
-                                        {% if raw_data.countDown is defined and raw_data.countDown %}
-                                        <div class="col-md-6">
-                                            <div class="detail-item">
-                                                <strong>{{ 'Countdown'|trans }}:</strong>
-                                                <span>
-                                                    {% set days = (raw_data.countDown / (60 * 60 * 24)) %}
-                                                    {% if days < 1 %}
-                                                        {{ 'weniger als 1 Tag'|trans }}
-                                                    {% else %}
-                                                        {{ days|round }} {{ 'Tage'|trans }}
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        {% endif %}
-
-                                        {# isAuctionInFocus #}
-                                        {% if raw_data.isAuctionInFocus is defined %}
-                                        <div class="col-md-6">
-                                            <div class="detail-item">
-                                                <strong>{{ 'Im Fokus'|trans }}:</strong>
-                                                <span>
-                                                    {% if raw_data.isAuctionInFocus %}
-                                                        <span class="badge bg-success">{{ 'Ja'|trans }}</span>
-                                                    {% else %}
-                                                        <span class="badge bg-secondary">{{ 'Nein'|trans }}</span>
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        {% endif %}
-                                    </div>
+                                <div class="auction-raw-data">
+                                    <pre class="bg-light p-3 border rounded" style="max-height: 500px; overflow: auto;">
+                            {{ raw_data|json_encode(constant('JSON_PRETTY_PRINT')) }}
+                        </pre>
                                 </div>
-
-                                {# Planungsrecht #}
-                                {% if raw_data.planningLaw is defined and raw_data.planningLaw is not empty %}
-                                    <div class="auction-description mt-3">
-                                        <h4 class="h6">{{ 'Planungsrecht'|trans }}:</h4>
-                                        <p class="mb-0">{{ raw_data.planningLaw|nl2br }}</p>
-                                    </div>
-                                {% elseif auction.planning_law is defined and auction.planning_law %}
-                                    <div class="auction-description mt-3">
-                                        <h4 class="h6">{{ 'Planungsrecht'|trans }}:</h4>
-                                        <p class="mb-0">{{ auction.planning_law|nl2br }}</p>
-                                    </div>
-                                {% endif %}
-
-                                {# Projektfortschritt #}
-                                {% set progress = raw_data.areaProgress|default(auction.area_progress|default()) %}
-                                {% if progress %}
-                                    <div class="auction-progress mt-3">
-                                        <h4 class="h6">{{ 'Projektfortschritt'|trans }}:</h4>
-                                        <div class="progress-items d-flex flex-wrap gap-2">
-                                            {% if progress.planningLawCheck|default %}
-                                                <span class="badge {% if progress.planningLawCheck == 'OK' %}bg-success{% elseif progress.planningLawCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                                    {{ 'Planungsrecht'|trans }}: {{ progress.planningLawCheck }}
-                                                </span>
-                                            {% endif %}
-                                            {% if progress.restrictionsCheck|default %}
-                                                <span class="badge {% if progress.restrictionsCheck == 'OK' %}bg-success{% elseif progress.restrictionsCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                                    {{ 'Einschränkungen'|trans }}: {{ progress.restrictionsCheck }}
-                                                </span>
-                                            {% endif %}
-                                            {% if progress.faunisticsCheck|default %}
-                                                <span class="badge {% if progress.faunisticsCheck == 'OK' %}bg-success{% elseif progress.faunisticsCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                                    {{ 'Fauna'|trans }}: {{ progress.faunisticsCheck }}
-                                                </span>
-                                            {% endif %}
-                                            {% if progress.armedForcesCheck|default %}
-                                                <span class="badge {% if progress.armedForcesCheck == 'OK' %}bg-success{% elseif progress.armedForcesCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                                    {{ 'Bundeswehr'|trans }}: {{ progress.armedForcesCheck }}
-                                                </span>
-                                            {% endif %}
-                                            {% if progress.airTrafficCheck|default %}
-                                                <span class="badge {% if progress.airTrafficCheck == 'OK' %}bg-success{% elseif progress.airTrafficCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                                    {{ 'Luftverkehr'|trans }}: {{ progress.airTrafficCheck }}
-                                                </span>
-                                            {% endif %}
-                                            {% if progress.powerConnectionCheck|default %}
-                                                <span class="badge {% if progress.powerConnectionCheck == 'OK' %}bg-success{% elseif progress.powerConnectionCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                                    {{ 'Netzanschluss'|trans }}: {{ progress.powerConnectionCheck }}
-                                                </span>
-                                            {% endif %}
-                                            {% if progress.inspectionCheck|default %}
-                                                <span class="badge {% if progress.inspectionCheck == 'OK' %}bg-success{% elseif progress.inspectionCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                                    {{ 'Inspektion'|trans }}: {{ progress.inspectionCheck }}
-                                                </span>
-                                            {% endif %}
-                                            {% if progress.parkPlanningCheck|default %}
-                                                <span class="badge {% if progress.parkPlanningCheck == 'OK' %}bg-success{% elseif progress.parkPlanningCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                                    {{ 'Parkplanung'|trans }}: {{ progress.parkPlanningCheck }}
-                                                </span>
-                                            {% endif %}
-                                            {% if progress.documentationCheck|default %}
-                                                <span class="badge {% if progress.documentationCheck == 'OK' %}bg-success{% elseif progress.documentationCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                                    {{ 'Dokumentation'|trans }}: {{ progress.documentationCheck }}
-                                                </span>
-                                            {% endif %}
-                                            {% if progress.preparationCheck|default %}
-                                                <span class="badge {% if progress.preparationCheck == 'OK' %}bg-success{% elseif progress.preparationCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                                    {{ 'Vorbereitung'|trans }}: {{ progress.preparationCheck }}
-                                                </span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                {% endif %}
                             </div>
+
 
                             <div class="card-footer">
                                 <a href="{{ detailPage ? detailPage.getFrontendUrl() ~ '/' ~ raw_data.auctionId : '#' }}" class="btn btn-primary">
@@ -294,323 +45,332 @@
 
 {# CSS Styling für Fortschrittsanzeigen und Filter #}
 <style>
-.auction-progress {
-    margin-top: 15px;
-}
-.progress-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 5px;
-}
-.progress-item {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.85em;
-}
-.progress-item.OK {
-    background-color: #d4edda;
-    color: #155724;
-}
-.progress-item.REQUESTED {
-    background-color: #fff3cd;
-    color: #856404;
-}
-.progress-item.PENDING {
-    background-color: #cce5ff;
-    color: #004085;
-}
+    .auction-progress {
+        margin-top: 15px;
+    }
 
-/* Filter-Styling */
-.filter-container {
-    margin-bottom: 30px;
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 5px;
-}
+    .progress-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 5px;
+    }
 
-.filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 15px;
-    gap: 15px;
-}
+    .progress-item {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85em;
+    }
 
-.filter-item {
-    flex: 1;
-    min-width: 200px;
-}
+    .progress-item.OK {
+        background-color: #d4edda;
+        color: #155724;
+    }
 
-.filter-item label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
+    .progress-item.REQUESTED {
+        background-color: #fff3cd;
+        color: #856404;
+    }
 
-.filter-item select,
-.filter-item input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-}
+    .progress-item.PENDING {
+        background-color: #cce5ff;
+        color: #004085;
+    }
 
-.filter-range .range-inputs {
-    display: flex;
-    align-items: center;
-}
+    /* Filter-Styling */
+    .filter-container {
+        margin-bottom: 30px;
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+    }
 
-.filter-range .range-inputs input {
-    width: calc(50% - 10px);
-}
+    .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+        gap: 15px;
+    }
 
-.filter-range .range-inputs span {
-    margin: 0 10px;
-}
+    .filter-item {
+        flex: 1;
+        min-width: 200px;
+    }
 
-.filter-actions {
-    margin-top: 20px;
-    justify-content: flex-start;
-}
+    .filter-item label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
 
-.filter-submit {
-    padding: 8px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
+    .filter-item select,
+    .filter-item input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
 
-.filter-reset {
-    padding: 8px 15px;
-    background-color: #6c757d;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    margin-left: 10px;
-}
+    .filter-range .range-inputs {
+        display: flex;
+        align-items: center;
+    }
 
-.filter-refresh {
-    padding: 8px 15px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
-}
+    .filter-range .range-inputs input {
+        width: calc(50% - 10px);
+    }
 
-/* Verbesserte Dual-Range-Slider Styling */
-.dual-range-slider-container {
-    position: relative;
-    padding: 10px 0;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
+    .filter-range .range-inputs span {
+        margin: 0 10px;
+    }
 
-.dual-range-slider {
-    position: relative;
-    width: 100%;
-    height: 40px;
-}
+    .filter-actions {
+        margin-top: 20px;
+        justify-content: flex-start;
+    }
 
-.slider-track {
-    position: absolute;
-    width: 100%;
-    height: 5px;
-    top: 18px;
-    background: #ddd;
-    border-radius: 2.5px;
-    z-index: 1;
-}
+    .filter-submit {
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 
-.slider-range {
-    position: absolute;
-    height: 5px;
-    top: 18px;
-    background: #3498db;
-    border-radius: 2.5px;
-    z-index: 2;
-}
+    .filter-reset {
+        padding: 8px 15px;
+        background-color: #6c757d;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-left: 10px;
+    }
 
-.dual-range-slider input[type="range"] {
-    position: absolute;
-    width: 100%;
-    height: 5px;
-    margin: 0;
-    padding: 0;
-    outline: none;
-    -webkit-appearance: none;
-    pointer-events: none;
-    z-index: 3;
-    opacity: 0;
-}
+    .filter-refresh {
+        padding: 8px 15px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
 
-.dual-range-slider .slider-thumb {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #3498db;
-    border-radius: 50%;
-    top: 10px;
-    z-index: 4;
-    cursor: pointer;
-    box-shadow: 0 0 5px rgba(0,0,0,0.2);
-}
+    /* Verbesserte Dual-Range-Slider Styling */
+    .dual-range-slider-container {
+        position: relative;
+        padding: 10px 0;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
 
-.dual-range-slider .slider-thumb.min {
-    left: 0%;
-    transform: translateX(-10px);
-}
+    .dual-range-slider {
+        position: relative;
+        width: 100%;
+        height: 40px;
+    }
 
-.dual-range-slider .slider-thumb.max {
-    right: 0%;
-    transform: translateX(10px);
-}
+    .slider-track {
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        top: 18px;
+        background: #ddd;
+        border-radius: 2.5px;
+        z-index: 1;
+    }
 
-.dual-range-slider input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    background: transparent;
-    cursor: pointer;
-    pointer-events: auto;
-    z-index: 5;
-}
+    .slider-range {
+        position: absolute;
+        height: 5px;
+        top: 18px;
+        background: #3498db;
+        border-radius: 2.5px;
+        z-index: 2;
+    }
 
-.dual-range-slider input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: transparent;
-    cursor: pointer;
-    pointer-events: auto;
-    z-index: 5;
-}
+    .dual-range-slider input[type="range"] {
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        margin: 0;
+        padding: 0;
+        outline: none;
+        -webkit-appearance: none;
+        pointer-events: none;
+        z-index: 3;
+        opacity: 0;
+    }
 
-.range-values {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 5px;
-}
+    .dual-range-slider .slider-thumb {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #3498db;
+        border-radius: 50%;
+        top: 10px;
+        z-index: 4;
+        cursor: pointer;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
 
-.range-values .min-value,
-.range-values .max-value {
-    font-size: 14px;
-    color: #666;
-}
+    .dual-range-slider .slider-thumb.min {
+        left: 0%;
+        transform: translateX(-10px);
+    }
 
-.range-current-values {
-    text-align: center;
-    margin-top: -5px;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #3498db;
-}
+    .dual-range-slider .slider-thumb.max {
+        right: 0%;
+        transform: translateX(10px);
+    }
+
+    .dual-range-slider input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        background: transparent;
+        cursor: pointer;
+        pointer-events: auto;
+        z-index: 5;
+    }
+
+    .dual-range-slider input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        background: transparent;
+        cursor: pointer;
+        pointer-events: auto;
+        z-index: 5;
+    }
+
+    .range-values {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+    }
+
+    .range-values .min-value,
+    .range-values .max-value {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .range-current-values {
+        text-align: center;
+        margin-top: -5px;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #3498db;
+    }
 </style>
 
 {# CSS für Loading-Overlay #}
 <style>
-.loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.7);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 1000;
-}
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 1000;
+    }
 
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 10px;
-}
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 10px;
+    }
 
-.loading-text {
-    font-weight: bold;
-    color: #333;
-}
+    .loading-text {
+        font-weight: bold;
+        color: #333;
+    }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 
-/* Relative Position für das Overlay */
-.auction-listing {
-    position: relative;
-    min-height: 200px;
-}
+    /* Relative Position für das Overlay */
+    .auction-listing {
+        position: relative;
+        min-height: 200px;
+    }
 
-/* Dual-Range-Slider Styling */
-.dual-range-slider-container {
-    position: relative;
-    padding: 10px 0;
-}
+    /* Dual-Range-Slider Styling */
+    .dual-range-slider-container {
+        position: relative;
+        padding: 10px 0;
+    }
 
-.dual-range-slider {
-    position: relative;
-    width: 100%;
-    height: 20px;
-}
+    .dual-range-slider {
+        position: relative;
+        width: 100%;
+        height: 20px;
+    }
 
-.dual-range-slider input[type="range"] {
-    position: absolute;
-    width: 100%;
-    height: 5px;
-    margin: 0;
-    padding: 0;
-    outline: none;
-    pointer-events: none;
-    -webkit-appearance: none;
-    z-index: 3;
-    background: transparent;
-}
+    .dual-range-slider input[type="range"] {
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        margin: 0;
+        padding: 0;
+        outline: none;
+        pointer-events: none;
+        -webkit-appearance: none;
+        z-index: 3;
+        background: transparent;
+    }
 
-.dual-range-slider input[type="range"]::-webkit-slider-thumb {
-    position: relative;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #3498db;
-    cursor: pointer;
-    pointer-events: auto;
-    z-index: 4;
-}
+    .dual-range-slider input[type="range"]::-webkit-slider-thumb {
+        position: relative;
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #3498db;
+        cursor: pointer;
+        pointer-events: auto;
+        z-index: 4;
+    }
 
-.dual-range-slider input[type="range"]::-moz-range-thumb {
-    position: relative;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #3498db;
-    cursor: pointer;
-    pointer-events: auto;
-    z-index: 4;
-}
+    .dual-range-slider input[type="range"]::-moz-range-thumb {
+        position: relative;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #3498db;
+        cursor: pointer;
+        pointer-events: auto;
+        z-index: 4;
+    }
 
-.slider-track {
-    position: absolute;
-    width: 100%;
-    height: 5px;
-    top: 7.5px;
-    background: #ddd;
-    z-index: 1;
-    border-radius: 2.5px;
-}
+    .slider-track {
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        top: 7.5px;
+        background: #ddd;
+        z-index: 1;
+        border-radius: 2.5px;
+    }
 
-.dual-range-slider .min-range {
-    z-index: 2;
-}
+    .dual-range-slider .min-range {
+        z-index: 2;
+    }
 </style>

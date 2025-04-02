@@ -17,6 +17,7 @@ namespace CaeliWind\CaeliAuctionConnect\Controller\ContentElement;
 use Contao\ContentModel;
 use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
+use Contao\PageModel;
 use Contao\Template;
 use CaeliWind\CaeliAuctionConnect\Service\AuctionService;
 use Psr\Log\LoggerInterface;
@@ -36,34 +37,16 @@ class AuctionElementController extends AbstractContentElementController
 
     protected function getResponse(Template $template, ContentModel $model, Request $request): Response
     {
-        // Debug-Info
-        $this->logger->debug('AuctionElementController aufgerufen', [
-            'id' => $model->id,
-            'auction_ids' => $model->auction_ids,
-            'jumpTo' => $model->jumpTo
-        ]);
-
-        // Kommagetrennte IDs in ein Array umwandeln
-        $auctionIds = array_map('trim', explode(',', $model->auction_ids));
+        // Kommagetrennte IDs in ein Array umwandeln und leere Einträge entfernen
+        $auctionIds = array_filter(array_map('trim', explode(',', $model->auction_ids)));
         $auctions = [];
 
-        // Für jede ID die entsprechende Auktion abrufen
-        foreach ($auctionIds as $id) {
-            if (!empty($id)) {
-                $auction = $this->auctionService->getAuctionById($id);
-                if ($auction) {
-                    $auctions[] = $auction;
-                    $this->logger->debug('Auktion gefunden', ['id' => $id]);
-                } else {
-                    $this->logger->warning('Auktion nicht gefunden', ['id' => $id]);
-                }
-            }
-        }
-
-        // Wenn keine Auktionen gefunden wurden, Debug-Info anzeigen
-        if (empty($auctions)) {
-            $this->logger->warning('Keine Auktionen gefunden für IDs', ['ids' => $model->auction_ids]);
-            $template->noAuctions = true;
+        if (!empty($auctionIds)) {
+             // Alle benötigten Auktionen auf einmal abrufen
+             $auctions = $this->auctionService->getAuctionsByIds($auctionIds);
+             $this->logger->debug('Auktionen für IDs abgerufen', ['ids' => $auctionIds, 'count' => count($auctions)]);
+        } else {
+             $this->logger->debug('Keine Auktions-IDs im Inhaltselement angegeben.');
         }
 
         // Weiterleitungsseite hinzufügen, falls angegeben
@@ -76,8 +59,32 @@ class AuctionElementController extends AbstractContentElementController
             ]);
         }
 
+        // Detailseiten-URL für Links setzen
+        $template->detailPageUrl = null;
+        if ($template->detailPage) {
+            $template->detailPageUrl = $template->detailPage->getFrontendUrl();
+        }
+
+        // Template-Variablen je nach Anzahl der Auktionen setzen
+        if (count($auctions) === 1) {
+            // Wenn nur eine Auktion gefunden wurde, setze sie als einzelne Auktion
+            $template->auction = $auctions[0];
+            $template->auctions = null;
+            $template->multipleAuctions = false;
+        } elseif (count($auctions) > 1) {
+            // Wenn mehrere Auktionen gefunden wurden, setze das Array
+            $template->auctions = $auctions;
+            $template->auction = null;
+            $template->multipleAuctions = true;
+        } else {
+            // Wenn keine Auktionen gefunden wurden
+            $template->auction = null;
+            $template->auctions = null;
+            $template->multipleAuctions = false;
+            $this->logger->warning('Keine Auktionen gefunden für IDs', ['ids' => $model->auction_ids]);
+        }
+
         // Template-Variablen setzen
-        $template->auctions = $auctions;
         $template->headline = $model->headline;
         $template->cssClass = $model->cssID[1] ?? '';
 

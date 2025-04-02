@@ -3,16 +3,16 @@
         <div class="col-md-6">
             <strong class="d-block mb-1 mb-md-3">© 2025 Caeli</strong>
             <ul class="list-inline mb-0">
-                <li class="list-inline-item">
+                <li class="mb-1 list-inline-item">
                     <a href="/imprint" title="Imprint">Imprint</a>
                 </li>
-                <li class="ms-2 list-inline-item">
+                <li class="mb-1  list-inline-item">
                     <a href="/privacy-policy" title="Imprint">Privacy Policy</a>
                 </li>
-                     <li class="ms-2 list-inline-item">
+                     <li class="mb-1  list-inline-item">
                     <a href="/cookie-policy" title="Imprint">Cookie Policy</a>
                 </li>
-                <li class="ms-2 list-inline-item">
+                <li class="mb-1  list-inline-item">
                     <a href="https://de.linkedin.com/company/caeli-wind" target="_blank" title="Imprint"><img alt="LinkedIn Logo" src="files/base/layout/img/logo_linkedIn.svg">
                         LinkedIn</a>
                 </li>

@@ -1,123 +1,118 @@
 {# Twig Template für das Auction Element Content Element #}
 {% extends '@Contao/content_element/text.html.twig' %}
 
-{% block content %}
-    <div class="container auction-element {{ cssClass }}">
-        {% if headline|default %}
-            <{{ headline.unit|default('h2') }}>{{ headline.value }}</{{ headline.unit|default('h2') }}>
-        {% endif %}
+{% block text %}
+    <div class="auction-element-container container">
+        {% if auction %}
+            {# Einheitliche Datenstruktur erstellen für eine einzelne Auktion #}
+            {# {% set raw_data = auction._raw_data|default({}) %} #} {# Nicht mehr nötig, da wir gemappte Daten haben #}
 
-        {% if auctions|default and auctions|length > 0 %}
-            <div class="auction-list row g-2">
-                {% for auction in auctions %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100">
-                            {#
-                                     {% if auction._raw_data.areaPictureFileName|default or auction.picture_filename|default %}
-                                <div class="card-img-top auction-image-container">
-                                    <img src="https://auction.caeli-wind.de/uploads/{{ auction._raw_data.areaPictureFileName|default(auction.picture_filename) }}"
-                                         alt="{{ auction.title }}" class="auction-image">
-                                </div>
-                            {% else %}
-                                <div class="card-img-top auction-image-container bg-light d-flex align-items-center justify-content-center">
-                                    <span class="text-muted">{{ 'Kein Bild verfügbar'|trans }}</span>
-                                </div>
-                            {% endif %}
-
-
-                            #}
-
-
-                            <div class="card-body">
-                                <h3 class="card-title h5">
-                                    {% if auction.title|default %}
-                                        {{ auction.title }}
-                                    {% elseif auction._raw_data.areaName|default %}
-                                        {{ auction._raw_data.areaName }}
-                                    {% elseif auction.id|default %}
-                                        {{ 'Auktion'|trans }} #{{ auction.id }}
-                                    {% else %}
-                                        {{ 'Auktion'|trans }}
-                                    {% endif %}
+            {# Einzelne Auktion anzeigen #}
+            <div class="card auction-card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                   <h3 class="card-title h5 mb-0">
+                                  {# {{ 'Auktion'|trans }} #{{ raw_data.auctionId }} #}
+                                  {{ auction.title|default('Auktion #' ~ auction.id) }}
                                 </h3>
+                </div>
 
-                                <div class="auction-details">
-                                    {% if auction.state|default %}
-                                        <div class="detail-item">
-                                            <strong>{{ 'Bundesland'|trans }}:</strong>
-                                            <span>{{ auction.state }}</span>
-                                        </div>
-                                    {% endif %}
+                {# Bild anzeigen, falls Pfad vorhanden #}
+                {% if auction.picture_path %}
+                    <div class="card-img-top auction-image-container">
+                        {# Pfad direkt aus auction.picture_path verwenden #}
+                        <img src="{{ auction.picture_path }}"
+                             alt="{{ auction.title|default('Bild für Auktion ' ~ auction.id) }}" class="auction-image img-fluid">
+                    </div>
+                {% else %}
+                    {# Fallback-Platzhalter #}
+                    <div class="card-img-top auction-image-container bg-light d-flex align-items-center justify-content-center" style="min-height: 150px;">
+                        <i class="fas fa-wind fa-3x text-muted"></i>
+                    </div>
+                {% endif %}
 
-                                    {% if auction.size_ha|default %}
-                                        <div class="detail-item">
-                                            <strong>{{ 'Fläche'|trans }}:</strong>
-                                            <span>{{ auction.size_ha }} ha</span>
-                                        </div>
-                                    {% endif %}
+               <div class="card-body">
+                    <p><strong>{{ 'ID'|trans }}:</strong> {{ auction.id }}</p>
+                    <p><strong>{{ 'Status'|trans }}:</strong> {{ auction.status|default('N/A') }}</p>
+                    <p><strong>{{ 'Bundesland'|trans }}:</strong> {{ auction.bundesland|default('N/A') }}</p>
+                    {# Weitere gemappte Felder hier anzeigen #}
+                    {#
+                    <div class="auction-raw-data mt-3">
+                        <small>Rohdaten:</small>
+                        <pre class="bg-light p-2 border rounded small" style="max-height: 200px; overflow: auto;">
+                            {{ auction._raw_data|json_encode(constant('JSON_PRETTY_PRINT')) }}
+                        </pre>
+                    </div>
+                    #}
+                </div>
+            </div>
 
-                                    {% if auction.power_mw|default %}
-                                        <div class="detail-item">
-                                            <strong>{{ 'Leistung'|trans }}:</strong>
-                                            <span>{{ auction.power_mw }} MW</span>
-                                        </div>
-                                    {% endif %}
+        {% elseif auctions|default and auctions|length > 0 %}
+            {# Mehrere Auktionen anzeigen #}
+            <div class="auction-card-grid">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+                    {% for auction_item in auctions %}
+                        {# {% set raw_data = auction_item._raw_data|default({}) %} #} {# Nicht mehr nötig #}
 
-                                    {% if auction.status|default %}
-                                        <div class="detail-item">
-                                            <strong>{{ 'Status'|trans }}:</strong>
-                                            <span class="badge bg-primary">{{ auction.status }}</span>
-                                        </div>
-                                    {% endif %}
+                        <div class="col">
+                            <div class="card auction-card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                  <h3 class="card-title h5 mb-0">
+                                      {# {{ 'Auktion'|trans }} #{{ raw_data.auctionId }} #}
+                                      {{ auction_item.title|default('Auktion #' ~ auction_item.id) }}
+                                  </h3>
                                 </div>
-                            </div>
 
-                            <div class="card-footer">
-                                {% if detailPage %}
-                                    <a href="{{ detailPage.getFrontendUrl() }}/{{ auction.id }}" class="btn btn-primary btn-sm">
-                                        {{ 'Details anzeigen'|trans }}
-                                    </a>
+                                {# Bild anzeigen, falls Pfad vorhanden #}
+                                {% if auction_item.picture_path %}
+                                    <div class="card-img-top auction-image-container">
+                                        <img src="{{ auction_item.picture_path }}"
+                                             alt="{{ auction_item.title|default('Bild für Auktion ' ~ auction_item.id) }}" class="auction-image img-fluid">
+                                    </div>
                                 {% else %}
-                                    <a href="/auction-listing/detail/{{ auction.id }}" class="btn btn-primary btn-sm">
-                                        {{ 'Details anzeigen'|trans }}
-                                    </a>
+                                    {# Fallback-Platzhalter #}
+                                    <div class="card-img-top auction-image-container bg-light d-flex align-items-center justify-content-center" style="min-height: 150px;">
+                                        <i class="fas fa-wind fa-3x text-muted"></i>
+                                    </div>
                                 {% endif %}
+
+                               <div class="card-body">
+                                    <p><strong>{{ 'ID'|trans }}:</strong> {{ auction_item.id }}</p>
+                                    <p><strong>{{ 'Status'|trans }}:</strong> {{ auction_item.status|default('N/A') }}</p>
+                                    <p><strong>{{ 'Bundesland'|trans }}:</strong> {{ auction_item.bundesland|default('N/A') }}</p>
+                                    {# Weitere gemappte Felder hier anzeigen #}
+                                    {#
+                                    <div class="auction-raw-data mt-3">
+                                         <small>Rohdaten:</small>
+                                        <pre class="bg-light p-2 border rounded small" style="max-height: 150px; overflow: auto;">
+                                            {{ auction_item._raw_data|json_encode(constant('JSON_PRETTY_PRINT')) }}
+                                        </pre>
+                                    </div>
+                                    #}
+                                </div>
+
+                                <div class="card-footer">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        {# Detailseiten-Link (prüfen, ob detailPageUrl existiert) #}
+                                        {% if detailPageUrl %}
+                                            <a href="{{ detailPageUrl }}/{{ auction_item.id }}" class="btn btn-primary btn-sm">{{ 'Details anzeigen'|trans }}</a>
+                                        {% else %}
+                                            <span><!-- Kein Detail-Link --></span>
+                                        {% endif %}
+
+                                        {# Fokus-Badge (prüfen, ob Feld existiert) #}
+                                        {# {% if auction_item.is_in_focus %} #} {# Feld muss erst gemappt werden #}
+                                        {#    <span class="badge bg-warning text-dark">{{ 'Im Fokus'|trans }}</span> #}
+                                        {# {% endif %} #}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
-        {% elseif noAuctions|default %}
-            <div class="alert alert-info">
-                <p>{{ 'Keine Auktionen gefunden'|trans }}</p>
-            </div>
+        {% else %}
+            <div class="alert alert-warning">{{ 'Keine Auktionen für die angegebenen IDs gefunden.'|trans }}</div>
         {% endif %}
     </div>
 
-    <style>
-        .auction-image-container {
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .auction-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .auction-details .detail-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .auction-element .card {
-            transition: transform 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .auction-element .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-    </style>
 {% endblock %}

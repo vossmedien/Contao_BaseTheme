@@ -76,79 +76,93 @@ class AuctionListingController extends AbstractFrontendModuleController
         $services['contao.routing.scope_matcher'] = ScopeMatcher::class;
         $services['security.helper'] = AuthorizationCheckerInterface::class;
         $services['translator'] = TranslatorInterface::class;
+        $services['logger'] = LoggerInterface::class;
 
         return $services;
     }
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
+        $this->logger->debug('[AuctionListingController] getResponse gestartet.');
         // Filter aus Request oder ModuleModel extrahieren
         $filters = [];
         
         // Beispiel: Größenfilter
-        if ($request->query->has('size_min') && $request->query->has('size_max')) {
+        if ($request->query->has('size_min') || $request->query->has('size_max')) {
             $filters['size'] = [
-                'min' => (int) $request->query->get('size_min'),
-                'max' => (int) $request->query->get('size_max')
+                'min' => $request->query->get('size_min'),
+                'max' => $request->query->get('size_max')
             ];
+             $this->logger->debug('[AuctionListingController] Größenfilter aus Request erkannt', $filters['size']);
         }
         
         // Beispiel: Bundesland-Filter
         if ($request->query->has('bundesland')) {
             $filters['bundesland'] = $request->query->get('bundesland');
+             $this->logger->debug('[AuctionListingController] Bundeslandfilter aus Request erkannt', ['bundesland' => $filters['bundesland']]);
         }
         
         // Beispiel: Landkreis-Filter
         if ($request->query->has('landkreis')) {
             $filters['landkreis'] = $request->query->get('landkreis');
+             $this->logger->debug('[AuctionListingController] Landkreisfilter aus Request erkannt', ['landkreis' => $filters['landkreis']]);
         }
         
         // Beispiel: Status-Filter
         if ($request->query->has('status')) {
             $filters['status'] = $request->query->get('status');
+             $this->logger->debug('[AuctionListingController] Statusfilter aus Request erkannt', ['status' => $filters['status']]);
         }
         
         // Beispiel: Leistungs-Filter
-        if ($request->query->has('leistung_min') && $request->query->has('leistung_max')) {
+        if ($request->query->has('leistung_min') || $request->query->has('leistung_max')) {
             $filters['leistung'] = [
-                'min' => (int) $request->query->get('leistung_min'),
-                'max' => (int) $request->query->get('leistung_max')
+                'min' => $request->query->get('leistung_min'),
+                'max' => $request->query->get('leistung_max')
             ];
+             $this->logger->debug('[AuctionListingController] Leistungsfilter aus Request erkannt', $filters['leistung']);
         }
         
         // Volllaststunden-Filter
-        if ($request->query->has('volllaststunden_min') && $request->query->has('volllaststunden_max')) {
+        if ($request->query->has('volllaststunden_min') || $request->query->has('volllaststunden_max')) {
             $filters['volllaststunden'] = [
-                'min' => (int) $request->query->get('volllaststunden_min'),
-                'max' => (int) $request->query->get('volllaststunden_max')
+                'min' => $request->query->get('volllaststunden_min'),
+                'max' => $request->query->get('volllaststunden_max')
             ];
+             $this->logger->debug('[AuctionListingController] Volllaststundenfilter aus Request erkannt', $filters['volllaststunden']);
         }
         
         // Auktionen abrufen (gefiltert oder alle)
         // Prüfen, ob Daten neu geladen werden sollen
         $forceRefresh = $request->query->has('refresh') && $request->query->get('refresh') === '1';
+        $this->logger->debug('[AuctionListingController] Rufe auctionService->getAuctions auf', ['filters' => $filters, 'forceRefresh' => $forceRefresh]);
         $auctions = $this->auctionService->getAuctions($filters, $forceRefresh);
-        
-        // DEBUG: Erste Auktion überprüfen
-        if (!empty($auctions)) {
-            $firstAuction = reset($auctions);
-            $this->logger->debug('Erste Auktion ID: ' . ($firstAuction['id'] ?? 'nicht vorhanden'), [
-                'auction_keys' => array_keys($firstAuction),
-                'auction_id' => $firstAuction['id'] ?? 'nicht vorhanden',
-                'auction_auction_id' => $firstAuction['auction_id'] ?? 'nicht vorhanden',
-                'complete_auction' => $firstAuction
-            ]);
-        }
+        $this->logger->info('[AuctionListingController] ' . count($auctions) . ' Auktionen vom Service erhalten.');
         
         // Template-Variablen setzen
         $template->auctions = $auctions;
         $template->filters = $filters;
-        $template->bundeslaender = $this->auctionService->getAllBundeslaender();
-        $template->landkreise = $this->auctionService->getAllLandkreise(false, $filters['bundesland'] ?? null);
+        $this->logger->debug('[AuctionListingController] Setze Template-Variablen.');
         
         // Detailseite für Links einrichten
-        $template->detailPage = $model->jumpTo ? PageModel::findById($model->jumpTo) : null;
-        
+        $template->detailPage = null;
+        if ($model->jumpTo) {
+            // Framework nutzen, um PageModel zu holen
+            $framework = $this->container->get('contao.framework');
+            $framework->initialize();
+            $template->detailPage = $framework->getAdapter(PageModel::class)->findById($model->jumpTo);
+            if ($template->detailPage) {
+                $this->logger->debug('[AuctionListingController] Detailseite gefunden', ['id' => $model->jumpTo, 'alias' => $template->detailPage->alias]);
+                $template->detailPageUrl = $template->detailPage->getFrontendUrl();
+            } else {
+                $this->logger->warning('[AuctionListingController] Detailseite NICHT gefunden', ['id' => $model->jumpTo]);
+                $template->detailPageUrl = null;
+            }
+        } else {
+            $template->detailPageUrl = null;
+        }
+
+        $this->logger->debug('[AuctionListingController] Gebe Response zurück.');
         return $template->getResponse();
     }
 }

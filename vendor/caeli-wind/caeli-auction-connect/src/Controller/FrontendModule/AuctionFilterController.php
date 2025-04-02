@@ -36,7 +36,8 @@ class AuctionFilterController extends AbstractFrontendModuleController
     protected ?PageModel $page;
 
     public function __construct(
-        private readonly AuctionService $auctionService
+        private readonly AuctionService $auctionService,
+        private readonly TranslatorInterface $translator
     ) {
     }
 
@@ -76,63 +77,101 @@ class AuctionFilterController extends AbstractFrontendModuleController
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
-        // Abrufen der Filter-Parameter aus der Anfrage
-        $filters = [];
-        
-        // Bundesland-Filter
-        if ($request->query->has('bundesland')) {
-            $filters['bundesland'] = $request->query->get('bundesland');
-        }
-        
-        // Landkreis-Filter
-        if ($request->query->has('landkreis')) {
-            $filters['landkreis'] = $request->query->get('landkreis');
-        }
-        
-        // Größe-Filter
-        if ($request->query->has('size_min') || $request->query->has('size_max')) {
-            $filters['size'] = [
-                'min' => $request->query->get('size_min', ''),
-                'max' => $request->query->get('size_max', ''),
-            ];
-        }
-        
-        // Leistung-Filter
-        if ($request->query->has('leistung_min') || $request->query->has('leistung_max')) {
-            $filters['leistung'] = [
-                'min' => $request->query->get('leistung_min', ''),
-                'max' => $request->query->get('leistung_max', ''),
-            ];
-        }
-        
-        // Volllaststunden-Filter
-        if ($request->query->has('volllaststunden_min') || $request->query->has('volllaststunden_max')) {
-            $filters['volllaststunden'] = [
-                'min' => $request->query->get('volllaststunden_min', ''),
-                'max' => $request->query->get('volllaststunden_max', ''),
-            ];
-        }
-        
-        // Status-Filter
-        if ($request->query->has('status')) {
-            $filters['status'] = $request->query->get('status');
+        // --- Filterkonfiguration definieren ---
+        $filterConfigs = [
+            'bundesland' => [
+                'label' => 'Bundesland',
+                'type' => 'select',
+                'options_key' => 'bundeslaender',
+                'placeholder' => 'Alle Bundesländer',
+            ],
+            'landkreis' => [
+                'label' => 'Landkreis',
+                'type' => 'select',
+                'options_key' => 'landkreise',
+                'placeholder' => 'Alle Landkreise',
+            ],
+            'status' => [
+                'label' => 'Status',
+                'type' => 'select',
+                'options_key' => 'status_values',
+                'placeholder' => 'Alle Status',
+            ],
+            'size' => [
+                'label' => 'Größe (ha)',
+                'type' => 'range_slider',
+                'min' => 0,
+                'max' => 500,
+                'step' => 10,
+            ],
+            'leistung' => [
+                'label' => 'Leistung (MW)',
+                'type' => 'range_slider',
+                'min' => 0,
+                'max' => 250,
+                'step' => 5,
+            ],
+            'volllaststunden' => [
+                'label' => 'Volllaststunden',
+                'type' => 'range_slider',
+                'min' => 0,
+                'max' => 4000,
+                'step' => 100,
+            ],
+        ];
+
+        // --- Optionen für Select-Felder vorbereiten ---
+        $bundeslaender = $this->auctionService->getAllBundeslaender();
+        $selectedBundesland = $request->query->get('bundesland');
+        $landkreise = $this->auctionService->getAllLandkreise(false, $selectedBundesland ?: null);
+
+        // Status-Optionen definieren (mit Übersetzungen)
+        $statusOptions = [
+            'STARTED' => $this->translator->trans('filter.status.started', [], 'messages'),
+            'OPEN_FOR_DIRECT_AWARDING' => $this->translator->trans('filter.status.open_for_direct_awarding', [], 'messages'),
+            'DIRECT_AWARDING' => $this->translator->trans('filter.status.direct_awarding', [], 'messages'),
+            'AWARDING' => $this->translator->trans('filter.status.awarding', [], 'messages'),
+            'PRE_RELEASE' => $this->translator->trans('filter.status.pre_release', [], 'messages'),
+        ];
+
+        $options = [
+            'bundeslaender' => array_combine($bundeslaender, $bundeslaender),
+            'landkreise' => array_combine($landkreise, $landkreise),
+            'status_values' => $statusOptions,
+        ];
+
+        // --- Aktuelle Filterwerte aus der Anfrage extrahieren (für Template) ---
+        $templateFilters = [];
+        foreach ($filterConfigs as $key => $config) {
+            if ($config['type'] === 'select') {
+                if ($request->query->has($key)) {
+                    $templateFilters[$key] = $request->query->get($key);
+                }
+            } elseif ($config['type'] === 'range_slider') {
+                if ($request->query->has($key . '_min')) {
+                    $templateFilters[$key . '_min'] = $request->query->get($key . '_min');
+                }
+                if ($request->query->has($key . '_max')) {
+                    $templateFilters[$key . '_max'] = $request->query->get($key . '_max');
+                }
+            }
         }
 
-        // Aktualisierung der Auktionsdaten bei Bedarf
+        // --- Aktionen durchführen ---
         if ($request->query->has('refresh') && $request->query->get('refresh') === '1') {
-            // Rufe Auktionen ab, was intern den Cache aktualisiert
             $this->auctionService->getAuctions([], true);
         }
 
-        // Abrufen der verfügbaren Bundesländer und Landkreise für die Filter
-        $bundeslaender = $this->auctionService->getAllBundeslaender();
-        $landkreise = $this->auctionService->getAllLandkreise(false, $filters['bundesland'] ?? null);
+        // --- Variablen an das Template übergeben ---
+        $template->filter_configs = $filterConfigs;
+        $template->options = $options;
+        $template->filters = $templateFilters;
 
-        // Variablen an das Template übergeben
-        $template->filters = $filters;
-        $template->bundeslaender = $bundeslaender;
-        $template->landkreise = $landkreise;
+        // --- Antwort generieren ---
+        if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+                return $template->getResponse();
+        }
 
         return $template->getResponse();
     }
-} 
+}

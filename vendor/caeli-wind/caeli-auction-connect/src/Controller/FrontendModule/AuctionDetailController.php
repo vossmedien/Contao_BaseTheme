@@ -77,34 +77,15 @@ class AuctionDetailController extends AbstractFrontendModuleController
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
-        // Explizite Log-Ausgabe, damit wir sehen, wenn der Controller aufgerufen wird
-        $this->logger->info('AuctionDetailController wurde aufgerufen', [
-            'request_uri' => $request->getRequestUri(),
-            'auto_item' => Input::get('auto_item'),
-            'auction_id' => Input::get('auction_id')
-        ]);
-        
-        // Debug-Ausgabe für Entwicklung
-        $template->debug = [
-            'auto_item' => Input::get('auto_item'),
-            'auction_id' => Input::get('auction_id'),
-            'request_uri' => $request->getRequestUri(),
-            'attributes' => $request->attributes->all(),
-        ];
-        
         // Die Auktions-ID aus dem Auto-Item oder dem speziellen Parameter abrufen
         $auctionId = Input::get('auction_id') ?: Input::get('auto_item');
         
-        // Template-Variablen vor dem Laden der Auktion setzen
-        $template->debug['extracted_id'] = $auctionId;
+        // Template-Variablen setzen
         $template->listingPage = $model->jumpTo ? PageModel::findById($model->jumpTo) : null;
         
         if (!$auctionId) {
             $translator = $this->container->get('translator');
             $template->error = $translator->trans('ERR.auctionNotFound', [], 'contao_default');
-            $this->logger->error('Keine Auktions-ID gefunden (weder auto_item noch auction_id)', [
-                'request_uri' => $request->getRequestUri()
-            ]);
             return $template->getResponse();
         }
         
@@ -114,38 +95,19 @@ class AuctionDetailController extends AbstractFrontendModuleController
         if (!$auction) {
             $translator = $this->container->get('translator');
             $template->error = $translator->trans('ERR.auctionNotFound', [], 'contao_default');
-            $this->logger->error('Keine Auktion mit ID ' . $auctionId . ' gefunden', [
-                'request_uri' => $request->getRequestUri()
-            ]);
             
-            // Versuchen Sie noch einmal mit einem Cache-Clear
-            $this->logger->warning('Versuche es erneut mit Cache-Clear');
+            // Versuche es erneut mit Cache-Clear
             $this->auctionService->clearCache();
             $auction = $this->auctionService->getAuctionById($auctionId);
             
             if (!$auction) {
-                // Immer noch nichts gefunden
-                $this->logger->error('Auch nach Cache-Clear keine Auktion mit ID ' . $auctionId . ' gefunden');
                 return $template->getResponse();
-            } else {
-                $this->logger->info('Auktion nach Cache-Clear gefunden!');
             }
         }
         
-        // Template-Variable setzen - WICHTIG: der Template-Name muss mit dem im HTML-Template übereinstimmen
+        // Template-Variable setzen
         $template->auction = $auction;
-        $template->auction_var = $auction; // Alternatives Template-Variable für Kompatibilität
-        
-        // Auch raw_data für das Template bereitstellen
-        if (isset($auction['_raw_data'])) {
-            $template->raw_data = $auction['_raw_data'];
-        }
-        
-        // Log, dass alles erfolgreich war
-        $this->logger->info('Auktion erfolgreich geladen', [
-            'auction_id' => $auctionId,
-            'auction_title' => $auction['title'] ?? 'unbekannt'
-        ]);
+        $template->auction_var = $auction; // Alternative Template-Variable für Kompatibilität
         
         return $template->getResponse();
     }

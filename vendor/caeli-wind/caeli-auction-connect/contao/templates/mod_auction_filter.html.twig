@@ -7,109 +7,68 @@
                 <h3 class="mb-0">{{ 'Filter'|trans }}</h3>
             </div>
             <div class="card-body">
+                {# ACHTUNG: Der Controller muss die Variablen 'filter_configs', 'options' und 'filters' bereitstellen! #}
+                {# 'filter_configs': Array mit Konfiguration für jeden Filter (key, label, type, options_key/min/max/step) #}
+                {# 'options': Array mit den Select-Optionen (Schlüssel entspricht 'options_key' aus filter_configs) #}
+                {# 'filters': Array mit den aktuell angewendeten Filterwerten aus dem Request #}
                 <form class="auction-filter" method="get">
-                    <div class="row mb-3">
-                        {# Bundesland-Filter #}
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            <label for="bundesland" class="form-label">{{ 'Bundesland'|trans }}</label>
-                            <select name="bundesland" id="bundesland" class="form-select">
-                                <option value="">{{ 'Alle Bundesländer'|trans }}</option>
-                                {% for bundesland in bundeslaender|default([]) %}
-                                    <option value="{{ bundesland }}" {% if filters.bundesland|default == bundesland %}selected{% endif %}>
-                                        {{ bundesland }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                    <div class="row mb-3 filter-row"> {# Wrapper-Reihe für Filter #}
+                        {% for key, config in filter_configs|default([]) %}
+                            {% set filter_value = filters[key]|default(null) %}
+                            {% set filter_value_min = filters[key ~ '_min']|default(null) %}
+                            {% set filter_value_max = filters[key ~ '_max']|default(null) %}
 
-                        {# Landkreis-Filter #}
-                        <div class="col-md-6">
-                            <label for="landkreis" class="form-label">{{ 'Landkreis'|trans }}</label>
-                            <select name="landkreis" id="landkreis" class="form-select">
-                                <option value="">{{ 'Alle Landkreise'|trans }}</option>
-                                {% for landkreis in landkreise|default([]) %}
-                                    <option value="{{ landkreis }}" {% if filters.landkreis|default == landkreis %}selected{% endif %}>
-                                        {{ landkreis }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+                            {% if config.type == 'select' %}
+                                <div class="col-md-6 mb-3 filter-item-{{ key }}">
+                                    <label for="{{ key }}" class="form-label">{{ config.label|trans }}</label>
+                                    <select name="{{ key }}" id="{{ key }}" class="form-select">
+                                        <option value="">{{ config.placeholder|trans|default('Alle') }}</option>
+                                        {% set select_options = options[config.options_key]|default([]) %}
+                                        {% for option_value, option_label in select_options %}
+                                            <option value="{{ option_value }}" {% if filter_value == option_value %}selected{% endif %}>
+                                                {{ option_label|trans }} {# Annahme: Labels sind entweder übersetzbar oder bereits übersetzt #}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
 
-                    {# Größenfilter mit Range Slider #}
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <label class="form-label">{{ 'Größe (ha)'|trans }}: <span id="size-range-value">{{ filters.size.min|default('0') }} - {{ filters.size.max|default('500') }}</span></label>
-                            <div class="d-flex align-items-center">
-                                <input type="range" class="form-range" id="size-range" min="0" max="500" step="10" value="{{ filters.size.min|default('0') }}">
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <input type="hidden" name="size_min" id="size_min" value="{{ filters.size.min|default('') }}">
-                                <input type="hidden" name="size_max" id="size_max" value="{{ filters.size.max|default('') }}">
-                                <small>0</small>
-                                <small>500</small>
-                            </div>
-                        </div>
-                    </div>
+                            {% elseif config.type == 'range_slider' %}
+                                {# Alte Methode mit <input type="range"> #}
+                                {% set min_cfg = config.min|default(0) %}
+                                {% set max_cfg = config.max|default(100) %}
+                                {% set step_cfg = config.step|default(1) %} 
+                                {# Der Wert des Sliders repräsentiert hier den Max-Wert, Min ist implizit 0 oder der konfigurierte Min-Wert #}
+                                {# Wenn ein Max-Wert im Filter gesetzt ist, nehmen wir den, sonst den Max-Wert der Config #}
+                                {% set current_slider_value = filter_value_max|default(max_cfg) %}
+                                {# Die Anzeige zeigt Min-Filter bis Max-Filter oder den vollen Bereich #}
+                                {% set display_min = filter_value_min|default(min_cfg) %}
+                                {% set display_max = filter_value_max|default(max_cfg) %}
 
-                    {# Leistungsfilter mit Range Slider #}
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <label class="form-label">{{ 'Leistung (MW)'|trans }}: <span id="leistung-range-value">{{ filters.leistung.min|default('0') }} - {{ filters.leistung.max|default('250') }}</span></label>
-                            <div class="d-flex align-items-center">
-                                <input type="range" class="form-range" id="leistung-range" min="0" max="250" step="5" value="{{ filters.leistung.min|default('0') }}">
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <input type="hidden" name="leistung_min" id="leistung_min" value="{{ filters.leistung.min|default('') }}">
-                                <input type="hidden" name="leistung_max" id="leistung_max" value="{{ filters.leistung.max|default('') }}">
-                                <small>0</small>
-                                <small>250</small>
-                            </div>
-                        </div>
-                    </div>
+                                <div class="col-md-6 mb-4 filter-item-{{ key }}"> {# Use col-md-6 for sliders too for better layout #}
+                                    <label class="form-label">{{ config.label|trans }}: <span id="{{ key }}-range-value">{{ display_min }} - {{ display_max }}</span></label>
+                                    <div class="d-flex align-items-center">
+                                         <input type="range" class="form-range" id="{{ key }}-range"
+                                             min="{{ min_cfg }}"
+                                             max="{{ max_cfg }}"
+                                             step="{{ step_cfg }}"
+                                             value="{{ current_slider_value }}"> {# Der Wert des Sliders ist der Max-Wert #}
+                                    </div>
+                                     <div class="d-flex justify-content-between">
+                                        {# Versteckte Felder für Min/Max-Werte - werden vom JS befüllt #}
+                                        <input type="hidden" name="{{ key }}_min" id="{{ key }}_min" value="{{ filter_value_min|default('') }}">
+                                        <input type="hidden" name="{{ key }}_max" id="{{ key }}_max" value="{{ filter_value_max|default('') }}">
+                                        {# Min/Max Labels anzeigen #}
+                                         <small>{{ min_cfg }}</small>
+                                         <small>{{ max_cfg }}</small>
+                                     </div>
+                                </div>
 
-                    {# Volllaststundenfilter mit Range Slider #}
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label">{{ 'Volllaststunden'|trans }}: <span id="volllaststunden-range-value">{{ filters.volllaststunden.min|default('0') }} - {{ filters.volllaststunden.max|default('4000') }}</span></label>
-                            <div class="d-flex align-items-center">
-                                <input type="range" class="form-range" id="volllaststunden-range" min="0" max="4000" step="100" value="{{ filters.volllaststunden.min|default('0') }}">
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <input type="hidden" name="volllaststunden_min" id="volllaststunden_min" value="{{ filters.volllaststunden.min|default('') }}">
-                                <input type="hidden" name="volllaststunden_max" id="volllaststunden_max" value="{{ filters.volllaststunden.max|default('') }}">
-                                <small>0</small>
-                                <small>4000</small>
-                            </div>
-                        </div>
-                    </div>
+                            {% endif %}
+                         {% endfor %}
+                    </div> {# Ende der .filter-row #}
 
-                    <div class="row mb-3">
-                        {# Statusfilter mit verbesserten Badges #}
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            <label for="status" class="form-label">{{ 'Status'|trans }}</label>
-                            <select name="status" id="status" class="form-select">
-                                <option value="">{{ 'Alle Status'|trans }}</option>
-                                <option value="STARTED" {% if filters.status|default == 'STARTED' %}selected{% endif %}>
-                                    {{ 'Gestartet'|trans }}
-                                </option>
-                                <option value="OPEN_FOR_DIRECT_AWARDING" {% if filters.status|default == 'OPEN_FOR_DIRECT_AWARDING' %}selected{% endif %}>
-                                    {{ 'Offen für direkte Vergabe'|trans }}
-                                </option>
-                                <option value="DIRECT_AWARDING" {% if filters.status|default == 'DIRECT_AWARDING' %}selected{% endif %}>
-                                    {{ 'Direkte Vergabe'|trans }}
-                                </option>
-                                <option value="AWARDING" {% if filters.status|default == 'AWARDING' %}selected{% endif %}>
-                                    {{ 'Vergabe'|trans }}
-                                </option>
-                                <option value="PRE_RELEASE" {% if filters.status|default == 'PRE_RELEASE' %}selected{% endif %}>
-                                    {{ 'Vorab-Veröffentlichung'|trans }}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="d-flex gap-2 flex-wrap">
+                    {# Buttons bleiben statisch #}
+                    <div class="d-flex gap-2 flex-wrap filter-buttons mt-3">
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-funnel"></i> {{ 'Filtern'|trans }}
                         </button>
@@ -126,342 +85,359 @@
     </div>
 </div>
 
-{# CSS Styling für Filter #}
-<style>
-/* Filter-Styling */
-.filter-container {
-    margin-bottom: 30px;
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 5px;
-}
 
-.filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 15px;
-    gap: 15px;
-}
-
-.filter-item {
-    flex: 1;
-    min-width: 200px;
-}
-
-.filter-item label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.filter-item select,
-.filter-item input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-}
-
-.filter-range .range-inputs {
-    display: flex;
-    align-items: center;
-}
-
-.filter-range .range-inputs input {
-    width: calc(50% - 10px);
-}
-
-.filter-range .range-inputs span {
-    margin: 0 10px;
-}
-
-.filter-actions {
-    margin-top: 20px;
-    justify-content: flex-start;
-}
-
-.filter-submit {
-    padding: 8px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.filter-reset {
-    padding: 8px 15px;
-    background-color: #6c757d;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    margin-left: 10px;
-}
-
-.filter-refresh {
-    padding: 8px 15px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-/* Loading-Overlay */
-.loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.7);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 1000;
-}
-
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 10px;
-}
-
-.loading-text {
-    font-weight: bold;
-    color: #333;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Relative Position für das Overlay */
-.auction-filter-module {
-    position: relative;
-    min-height: 100px;
-}
-</style>
-
-{# JavaScript für AJAX-Filter #}
+{# JavaScript für AJAX-Filter und HTML5 Range Slider (alte Methode) #}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Filter-Formular finden
     const filterForm = document.querySelector('.auction-filter');
     if (!filterForm) return;
 
-    // Referenz auf das Listing-Element (wird über AJAX aktualisiert)
-    const auctionItems = document.querySelector('.auction-items');
-    const noAuctions = document.querySelector('.no-auctions');
+    // Referenz auf das Listing-Element und "Keine Auktionen"-Nachricht
+    const auctionItems = document.querySelector('.auction-items'); // Muss im Haupt-Template existieren
+    const noAuctions = document.querySelector('.no-auctions');     // Muss im Haupt-Template existieren
 
-    // Range-Slider initialisieren
+    // Range-Slider initialisieren (alte Methode)
     initRangeSliders();
 
-    // Loading-Overlay erstellen
-    const loadingOverlay = document.createElement('div');
-    loadingOverlay.className = 'loading-overlay';
-    loadingOverlay.innerHTML = '<div class="spinner"></div><div class="loading-text">Daten werden geladen...</div>';
-    document.querySelector('.auction-filter-module').appendChild(loadingOverlay);
+    // Loading-Overlay erstellen (falls noch nicht vorhanden)
+    let loadingOverlay = document.querySelector('.loading-overlay');
+    if (!loadingOverlay) {
+        loadingOverlay = document.createElement('div');
+        loadingOverlay.className = 'loading-overlay';
+        loadingOverlay.innerHTML = '<div class="spinner"></div><div class="loading-text">{{ 'Daten werden geladen...'|trans }}</div>';
+        const filterModule = document.querySelector('.auction-filter-module');
+        if (filterModule) {
+           filterModule.style.position = 'relative';
+           filterModule.appendChild(loadingOverlay);
+        }
+    }
 
-    // FormData in serialisierbares Objekt umwandeln
+    // FormData in serialisierbares Objekt umwandeln (für History API) - Angepasst für alte Slider-Logik
     function formDataToObject(formData) {
         const object = {};
         formData.forEach((value, key) => {
-            // Wenn der Wert bereits existiert, mache ein Array daraus
-            if (object.hasOwnProperty(key)) {
-                if (!Array.isArray(object[key])) {
-                    object[key] = [object[key]];
-                }
-                object[key].push(value);
-            } else {
-                object[key] = value;
+            // Speichere nur, wenn der Wert nicht leer ist
+            if (value !== '') {
+                 // Wenn der Wert bereits existiert, mache ein Array daraus (für Multi-Select etc.)
+                 if (object.hasOwnProperty(key)) {
+                     if (!Array.isArray(object[key])) {
+                         object[key] = [object[key]];
+                     }
+                     object[key].push(value);
+                 } else {
+                     object[key] = value;
+                 }
             }
         });
+
+        // Füge Min/Max-Werte für Range Slider hinzu, basierend auf den hidden Inputs
+        filterForm.querySelectorAll('input[type="range"]').forEach(slider => {
+            const baseKey = slider.id.replace('-range', '');
+            const minInput = document.getElementById(baseKey + '_min');
+            const maxInput = document.getElementById(baseKey + '_max');
+            if (minInput && minInput.value !== '') {
+                if (!object[baseKey]) object[baseKey] = {};
+                object[baseKey].min = minInput.value;
+            }
+            if (maxInput && maxInput.value !== '') {
+                 if (!object[baseKey]) object[baseKey] = {};
+                 object[baseKey].max = maxInput.value;
+            }
+             // Entferne leere Range-Slider Objekte
+             if (object[baseKey] && typeof object[baseKey] === 'object' && Object.keys(object[baseKey]).length === 0) {
+                 delete object[baseKey];
+             }
+        });
+
         return object;
     }
 
-    // AJAX-Filter-Funktion
+    // AJAX-Filter-Funktion (leicht angepasst für alte Slider-Logik)
     function ajaxFilter(formData, pushState = true) {
-        // Lade-Anzeige einblenden
-        loadingOverlay.style.display = 'flex';
+        if(loadingOverlay) loadingOverlay.style.display = 'flex';
 
-        // URL aus den Formulardaten erstellen
-        const params = new URLSearchParams(formData);
+        const cleanedFormData = new FormData();
+        for (const [key, value] of formData.entries()) {
+            if (value !== '') {
+                cleanedFormData.append(key, value);
+            }
+        }
+
+        const params = new URLSearchParams(cleanedFormData);
         const currentPath = window.location.pathname;
         const queryString = params.toString();
         const newUrl = currentPath + (queryString ? '?' + queryString : '');
 
-        // Verlauf aktualisieren, wenn gewünscht
         if (pushState) {
-            // FormData in serialisierbares Objekt umwandeln
-            const formDataObj = formDataToObject(formData);
-            history.pushState({formData: formDataObj}, '', newUrl);
+            const stateObject = formDataToObject(formData); // Nutzt die angepasste Funktion
+            history.pushState({ formData: stateObject }, '', newUrl);
         }
 
-        // AJAX-Anfrage
-        fetch(window.location.pathname + '?' + queryString)
-            .then(response => response.text())
+        fetch(newUrl, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return response.text();
+            })
             .then(html => {
-                // DOM-Parser für das HTML
+                console.log('AJAX success, processing response...'); // Log 1
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
 
-                // Neue Auktionselemente extrahieren
+                // --- Update Filter Area --- Only update the row with filters ---
+                console.log('Updating filter area (row only)...'); // Log 2
+                const newFilterBody = doc.querySelector('.filter-container .card-body'); // Find in response
+                const currentFilterBody = document.querySelector('.filter-container .card-body'); // Find in current DOM
+
+                if (newFilterBody && currentFilterBody) {
+                     const newFilterRow = newFilterBody.querySelector('.filter-row');
+                     const currentFilterRow = currentFilterBody.querySelector('.filter-row');
+                     if (newFilterRow && currentFilterRow) {
+                        currentFilterRow.innerHTML = newFilterRow.innerHTML;
+                        console.log('Filter row HTML replaced. Re-initializing sliders...'); // Log 3
+                        // WICHTIG: HTML5 Range Slider neu initialisieren!
+                        initRangeSliders(); // Form listener should persist
+                        console.log('Sliders re-initialized.'); // Log 4
+                     } else {
+                         console.warn('Could not find new or current filter row.');
+                     }
+                } else {
+                    console.warn('Could not find new or current filter body.');
+                }
+
+                // --- Update Auction Listing Area (remains the same) ---
+                console.log('Updating listing area...'); // Log 5
                 const newAuctionItems = doc.querySelector('.auction-items');
                 const newNoAuctions = doc.querySelector('.no-auctions');
 
-                // Inhalte ersetzen, falls die Elemente existieren
-                if (auctionItems && newAuctionItems) {
+                if (auctionItems && newAuctionItems && newAuctionItems.innerHTML.trim() !== '') {
                     auctionItems.innerHTML = newAuctionItems.innerHTML;
-                    auctionItems.style.display = 'flex';
+                    auctionItems.style.display = newAuctionItems.style.display || 'flex';
                     if (noAuctions) noAuctions.style.display = 'none';
                 } else if (noAuctions && newNoAuctions) {
                     if (auctionItems) auctionItems.style.display = 'none';
                     noAuctions.innerHTML = newNoAuctions.innerHTML;
-                    noAuctions.style.display = 'block';
+                    noAuctions.style.display = newNoAuctions.style.display || 'block';
+                } else {
+                     console.warn("Konnte weder '.auction-items' noch '.no-auctions' im AJAX-Response finden.");
+                     if (auctionItems) auctionItems.innerHTML = '';
+                     if (noAuctions) noAuctions.style.display = 'none';
                 }
+                console.log('Listing area updated.'); // Log 6
 
-                // Lade-Anzeige ausblenden
-                loadingOverlay.style.display = 'none';
+                if(loadingOverlay) loadingOverlay.style.display = 'none';
+                console.log('AJAX processing complete.'); // Log 7
             })
             .catch(error => {
                 console.error('Filter-Fehler:', error);
-                // Bei Fehler die Seite normal neu laden
-                window.location.href = newUrl;
+                if(loadingOverlay) loadingOverlay.style.display = 'none';
+                // window.location.href = newUrl; // Entfernt: Kein automatischer Redirect bei AJAX-Fehler
+                // Optional: Zeige dem Benutzer eine Fehlermeldung an
+                // alert('Beim Laden der Filterergebnisse ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.');
             });
     }
 
-    // Range-Slider initialisieren
-    function initRangeSliders() {
-        // Größe Range-Slider
-        initRangeSlider('size-range', 'size_min', 'size_max', 'size-range-value', 0, 500);
-
-        // Leistung Range-Slider
-        initRangeSlider('leistung-range', 'leistung_min', 'leistung_max', 'leistung-range-value', 0, 250);
-
-        // Volllaststunden Range-Slider
-        initRangeSlider('volllaststunden-range', 'volllaststunden_min', 'volllaststunden_max', 'volllaststunden-range-value', 0, 4000);
-    }
-
-    // Helfer-Funktion für die Initialisierung der Range-Slider
-    function initRangeSlider(sliderId, minInputId, maxInputId, valueDisplayId, min, max) {
-        const slider = document.getElementById(sliderId);
-        const minInput = document.getElementById(minInputId);
-        const maxInput = document.getElementById(maxInputId);
-        const valueDisplay = document.getElementById(valueDisplayId);
-
-        if (!slider || !minInput || !maxInput || !valueDisplay) return;
-
-        // Aktualisiere Slider basierend auf den vorhandenen Werten
-        let currentMin = minInput.value ? parseInt(minInput.value) : min;
-        let currentMax = maxInput.value ? parseInt(maxInput.value) : max;
-
-        // Stelle sicher, dass currentMin und currentMax im gültigen Bereich liegen
-        currentMin = Math.max(min, Math.min(currentMin, max));
-        currentMax = Math.max(min, Math.min(currentMax, max));
-
-        // Slider-Position aktualisieren (wir setzen den Slider direkt auf den Minimalwert)
-        slider.value = min;
-
-        // Display-Wert aktualisieren
-        updateValueDisplay();
-
-        // Event-Listener für den Slider
-        slider.addEventListener('input', function() {
-            // Der Slider-Wert ist der Maximalwert, Minimalwert bleibt 0
-            const sliderValue = parseInt(slider.value);
-
-            currentMin = min; // Immer auf Minimum (0) gesetzt
-            currentMax = sliderValue; // Maximalwert ist die Position des Dots
-
-            // Input-Werte aktualisieren
-            minInput.value = currentMin;
-            maxInput.value = currentMax;
-
-            // Display-Wert aktualisieren
-            updateValueDisplay();
-        });
-
-        function updateValueDisplay() {
-            // Wenn der Schieberegler auf 0 steht, zeige den vollen Bereich an (0 - max)
-            if (slider.value == min) {
-                valueDisplay.textContent = `${min} - ${max}`;
-            } else {
-                valueDisplay.textContent = `${currentMin} - ${currentMax}`;
-            }
-        }
-    }
-
-    // Formular-Submit-Handler
-    filterForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(filterForm);
-        ajaxFilter(formData);
+    // Event Listener für das Absenden des Formulars
+    filterForm.addEventListener('submit', function(event) {
+        const clickedButton = event.submitter;
+         if (!clickedButton || clickedButton.name !== 'refresh') {
+            event.preventDefault();
+            // Sicherstellen, dass Min/Max-Werte der Slider aktuell sind vor dem Senden
+            updateHiddenInputsFromSliders();
+            const formData = new FormData(filterForm);
+            ajaxFilter(formData, true);
+         }
     });
 
-    // Button-Handler für Zurücksetzen
-    const resetButton = filterForm.querySelector('a[href="' + window.location.pathname + '"]');
-    if (resetButton) {
-        resetButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            filterForm.reset();
+    // Event Listener für den Reset-Button (aus altem Code übernommen)
+     const resetButton = filterForm.querySelector('a[href="' + window.location.pathname + '"]');
+     if (resetButton) {
+         resetButton.addEventListener('click', function(e) {
+             e.preventDefault();
+             filterForm.reset(); // Setzt Standard-Formularfelder zurück
 
-            // Range-Slider zurücksetzen
-            document.getElementById('size_min').value = '';
-            document.getElementById('size_max').value = '';
-            document.getElementById('leistung_min').value = '';
-            document.getElementById('leistung_max').value = '';
-            document.getElementById('volllaststunden_min').value = '';
-            document.getElementById('volllaststunden_max').value = '';
+             // Range-Slider auf Config-Max zurücksetzen und Hidden Inputs leeren
+             filterForm.querySelectorAll('input[type="range"]').forEach(slider => {
+                  const max = slider.getAttribute('max') || 0; // Max-Wert holen
+                  slider.value = max; // Slider auf Max setzen (JS-Verhalten anpassen)
 
-            // Range-Slider neu initialisieren
-            initRangeSliders();
+                  const baseKey = slider.id.replace('-range', '');
+                  const minInput = document.getElementById(baseKey + '_min');
+                  const maxInput = document.getElementById(baseKey + '_max');
+                  if(minInput) minInput.value = ''; // Min leeren
+                  if(maxInput) maxInput.value = ''; // Max leeren
 
-            // Zum ursprünglichen URL zurückkehren
-            window.history.pushState({}, '', window.location.pathname);
+                  // Init-Funktion für den einzelnen Slider aufrufen, um Anzeige zu aktualisieren
+                  const configMin = slider.getAttribute('min') || 0;
+                  const configMax = slider.getAttribute('max') || 0;
+                  const valueDisplayId = baseKey + '-range-value';
+                   if (minInput && maxInput && document.getElementById(valueDisplayId)) {
+                       // Rufe Update-Logik direkt auf oder simuliere Event
+                       updateValueDisplay(slider, minInput, maxInput, document.getElementById(valueDisplayId), configMin, configMax);
+                   }
+             });
 
-            // AJAX-Anfrage für die ungefilterten Daten
-            ajaxFilter(new FormData(filterForm));
-        });
-    }
 
-    // Popstate-Event-Listener für Browser-Zurück/Vor
+             // Zum ursprünglichen URL zurückkehren (ohne Parameter)
+             history.pushState({}, '', window.location.pathname);
+
+             // AJAX-Anfrage für die ungefilterten Daten (mit leerer FormData)
+             ajaxFilter(new FormData()); // Leere FormData senden
+         });
+     }
+
+
+    // Zurück/Vorwärts-Navigation im Browser behandeln (angepasst für alte Slider)
     window.addEventListener('popstate', function(event) {
         if (event.state && event.state.formData) {
-            // Formular mit gespeicherten Werten ausfüllen
             const storedFormData = event.state.formData;
 
-            // Felder zurücksetzen
+            // Formular zurücksetzen
             filterForm.reset();
 
-            // Felder mit gespeicherten Werten füllen
-            Object.entries(storedFormData).forEach(([key, value]) => {
-                const field = filterForm.querySelector(`[name="${key}"]`);
-                if (field) field.value = value;
-            });
+             // Standardfelder füllen
+             Object.entries(storedFormData).forEach(([key, value]) => {
+                 // Range Slider Min/Max nicht direkt setzen
+                 if (!key.endsWith('_min') && !key.endsWith('_max')) {
+                     const field = filterForm.querySelector(`[name="${key}"]`);
+                     if (field) field.value = value;
+                 }
+             });
 
-            // Range-Slider neu initialisieren
-            initRangeSliders();
+             // Range Slider und Hidden Inputs aktualisieren
+             filterForm.querySelectorAll('input[type="range"]').forEach(slider => {
+                  const baseKey = slider.id.replace('-range', '');
+                  const minVal = storedFormData[baseKey + '_min'] || '';
+                  const maxVal = storedFormData[baseKey + '_max'] || '';
+                  const configMax = slider.getAttribute('max');
 
-            // Neue FormData erstellen und AJAX-Anfrage senden
-            const newFormData = new FormData(filterForm);
-            ajaxFilter(newFormData, false);
+                  const minInput = document.getElementById(baseKey + '_min');
+                  const maxInput = document.getElementById(baseKey + '_max');
+                  if(minInput) minInput.value = minVal;
+                  if(maxInput) maxInput.value = maxVal;
+
+                  // Slider-Position setzen (auf Max-Wert, wenn vorhanden, sonst Config-Max)
+                  slider.value = maxVal !== '' ? maxVal : configMax;
+
+                  // Anzeige aktualisieren
+                   const configMin = slider.getAttribute('min') || 0;
+                   const valueDisplayId = baseKey + '-range-value';
+                    if (minInput && maxInput && document.getElementById(valueDisplayId)) {
+                        updateValueDisplay(slider, minInput, maxInput, document.getElementById(valueDisplayId), configMin, configMax);
+                    }
+             });
+
+            // AJAX-Anfrage senden (ohne History Push)
+            ajaxFilter(new FormData(filterForm), false);
+
         } else {
-            // Wenn kein State vorhanden ist, Seite neu laden
-            window.location.reload();
+            // Fallback, wenn kein State vorhanden ist (z.B. initiale Seite oder manueller Reset)
+             // Einfach die Seite neu laden oder leere Filter anwenden
+              // window.location.reload();
+               filterForm.reset(); // Formular leeren
+               initRangeSliders(); // Slider auf Default setzen
+               ajaxFilter(new FormData()); // Leere Filter anwenden
         }
     });
 
-    // Beim ersten Laden der Seite den aktuellen Zustand im Verlauf speichern
-    const initialFormData = new FormData(filterForm);
-    const initialFormDataObj = formDataToObject(initialFormData);
-    history.replaceState({formData: initialFormDataObj}, '', window.location.href);
+    // --- Initialisierung und Handling für HTML5 Range Slider (alte Methode) ---
+
+    function initRangeSliders() {
+         filterForm.querySelectorAll('input[type="range"]').forEach(slider => {
+             const baseKey = slider.id.replace('-range', '');
+             const minInput = document.getElementById(baseKey + '_min');
+             const maxInput = document.getElementById(baseKey + '_max');
+             const valueDisplay = document.getElementById(baseKey + '-range-value');
+             const min = parseFloat(slider.getAttribute('min') || 0);
+             const max = parseFloat(slider.getAttribute('max') || 0);
+
+              if (!slider || !minInput || !maxInput || !valueDisplay) {
+                  console.error("Missing elements for HTML5 range slider:", baseKey);
+                  return;
+              }
+
+             // Initiale Anzeige aktualisieren basierend auf hidden inputs
+             updateValueDisplay(slider, minInput, maxInput, valueDisplay, min, max);
+
+              // Slider-Wert beim Laden setzen (auf Max-Wert aus Input, sonst Config-Max)
+              slider.value = maxInput.value !== '' ? maxInput.value : max;
+
+
+              // Event-Listener für den Slider
+              slider.addEventListener('input', function() {
+                  updateHiddenInputsAndDisplay(slider, minInput, maxInput, valueDisplay, min, max);
+              });
+
+              // Optional: AJAX-Filter bei Loslassen des Sliders auslösen
+              slider.addEventListener('change', function() {
+                   updateHiddenInputsFromSliders(); // Sicherstellen, dass Inputs aktuell sind
+                   // const formData = new FormData(filterForm);
+                   // ajaxFilter(formData, true);
+              });
+         });
+    }
+
+    function updateHiddenInputsAndDisplay(slider, minInput, maxInput, valueDisplay, min, max) {
+         const sliderValue = parseFloat(slider.value);
+
+          // Logik der alten Methode: Min ist immer der Config-Min, Max ist der Slider-Wert
+          // Nur wenn Slider NICHT auf Max steht, wird gefiltert
+          if (sliderValue < max) {
+              minInput.value = min; // Min ist der konfigurierte Minimalwert
+              maxInput.value = sliderValue; // Max ist der aktuelle Sliderwert
+          } else {
+              // Wenn Slider auf Max steht, Filter zurücksetzen (leere Inputs)
+              minInput.value = '';
+              maxInput.value = '';
+          }
+
+         // Anzeige aktualisieren
+         updateValueDisplay(slider, minInput, maxInput, valueDisplay, min, max);
+    }
+
+     function updateValueDisplay(slider, minInput, maxInput, valueDisplay, min, max) {
+         let displayMin, displayMax;
+
+         // Logik der alten Methode: Wenn Max-Input leer ist (Slider auf Max), zeige vollen Bereich
+         if (maxInput.value === '') {
+             displayMin = min;
+             displayMax = max;
+         } else {
+             displayMin = minInput.value; // Sollte Config-Min sein
+             displayMax = maxInput.value; // Sollte Slider-Wert sein
+         }
+         valueDisplay.textContent = `${parseFloat(displayMin)} - ${parseFloat(displayMax)}`;
+     }
+
+     // Hilfsfunktion, um alle hidden Inputs basierend auf Slider-Positionen zu aktualisieren
+     function updateHiddenInputsFromSliders() {
+          filterForm.querySelectorAll('input[type="range"]').forEach(slider => {
+              const baseKey = slider.id.replace('-range', '');
+              const minInput = document.getElementById(baseKey + '_min');
+              const maxInput = document.getElementById(baseKey + '_max');
+              const min = parseFloat(slider.getAttribute('min') || 0);
+              const max = parseFloat(slider.getAttribute('max') || 0);
+
+              if (minInput && maxInput) {
+                  const sliderValue = parseFloat(slider.value);
+                  if (sliderValue < max) {
+                      minInput.value = min;
+                      maxInput.value = sliderValue;
+                  } else {
+                      minInput.value = '';
+                      maxInput.value = '';
+                  }
+              }
+          });
+     }
+
+     // Initialen Zustand für History API speichern (nach Initialisierung)
+     updateHiddenInputsFromSliders(); // Sicherstellen, dass Inputs korrekt sind
+     const initialFormData = new FormData(filterForm);
+     const initialFormDataObj = formDataToObject(initialFormData);
+     history.replaceState({ formData: initialFormDataObj }, '', window.location.href);
+
 });
 </script>

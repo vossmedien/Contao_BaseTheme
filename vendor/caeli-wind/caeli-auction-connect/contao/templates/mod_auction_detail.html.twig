@@ -1,201 +1,26 @@
 {# Twig Template für das Auction Detail Modul #}
 
-{# Variablen checken und zurücksetzen wenn not set #}
 {% if auction is not defined %}
     {% set auction = [] %}
 {% endif %}
 
-{# Hinter den Kulissen den Parameter "auction" löschen, um Konflikte zu vermeiden #}
 {% set auction_var = auction %}
 {% set auction = [] %}
 
+{# Einheitliche Datenstruktur erstellen #}
+{% set raw_data = auction_var._raw_data|default({}) %}
 <div class="container">
     <div class="auction-detail">
-
         {% if auction_var|default %}
             <article class="auction-item card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h1 class="auction-title h3 mb-0">
-                        {% if auction_var.title|default %}
-                            {{ auction_var.title }}
-                        {% elseif auction_var._raw_data.areaName|default %}
-                            {{ auction_var._raw_data.areaName }}
-                        {% elseif auction_var.id|default %}
-                            {{ 'Auktion'|trans }} #{{ auction_var.id }}
-                        {% else %}
-                            {{ 'Auktion'|trans }}
-                        {% endif %}
-                    </h1>
-                    {% if auction_var.status|default %}
-                        <span class="auction-status badge bg-primary">{{ auction_var.status }}</span>
-                    {% endif %}
-                </div>
-
+                {# Kompletter Datensatz als JSON #}
                 <div class="card-body">
-                    <div class="auction-details row row-cols-1 row-cols-md-2 g-1">
-                        {# Bundesland #}
-                        {% if auction_var.state|default or auction_var._raw_data.state|default %}
-                            <div class="col">
-                                <div class="detail-item">
-                                    <strong>{{ 'Bundesland'|trans }}:</strong>
-                                    <span>{{ auction_var.state|default(auction_var._raw_data.state|default('n/a')) }}</span>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        {# Landkreis #}
-                        {% if auction_var.district|default or auction_var._raw_data.district|default %}
-                            <div class="col">
-                                <div class="detail-item">
-                                    <strong>{{ 'Landkreis'|trans }}:</strong>
-                                    <span>{{ auction_var.district|default(auction_var._raw_data.district|default('n/a')) }}</span>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        {# Fläche #}
-                        {% if auction_var.size_ha|default or auction_var._raw_data.areaSize|default %}
-                            <div class="col">
-                                <div class="detail-item">
-                                    <strong>{{ 'Fläche'|trans }}:</strong>
-                                    <span>{{ auction_var.size_ha|default(auction_var._raw_data.areaSize|default('n/a')) }} ha</span>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        {# Leistung #}
-                        {% if auction_var.power_mw|default or auction_var._raw_data.power|default %}
-                            <div class="col">
-                                <div class="detail-item">
-                                    <strong>{{ 'Leistung'|trans }}:</strong>
-                                    <span>{{ auction_var.power_mw|default(auction_var._raw_data.power|default('n/a')) }} MW</span>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        {# Volllaststunden #}
-                        {% if auction_var.full_usage_hours|default or auction_var._raw_data.fullUsageHours|default %}
-                            <div class="col">
-                                <div class="detail-item">
-                                    <strong>{{ 'Volllaststunden'|trans }}:</strong>
-                                    <span>
-                                        {{ auction_var.full_usage_hours|default(auction_var._raw_data.fullUsageHours|default('n/a')) }}
-                                        {% if auction_var.full_usage_hours_source|default or auction_var._raw_data.fullUsageHoursSource|default %}
-                                            <small class="text-muted">({{ auction_var.full_usage_hours_source|default(auction_var._raw_data.fullUsageHoursSource) }})</small>
-                                        {% endif %}
-                                    </span>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        {# Rendite #}
-                        {% if auction_var.internal_rate_of_return|default or auction_var._raw_data.internalRateOfReturnBeforeRent|default %}
-                            <div class="col">
-                                <div class="detail-item">
-                                    <strong>{{ 'Rendite'|trans }}:</strong>
-                                    <span>{{ auction_var.internal_rate_of_return|default(auction_var._raw_data.internalRateOfReturnBeforeRent|default('n/a')) }}%</span>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        {# Status #}
-                        {% if auction_var.status|default %}
-                            <div class="col">
-                                <div class="detail-item">
-                                    <strong>{{ 'Status'|trans }}:</strong>
-                                    <span>{{ auction_var.status }}</span>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        {# Countdown #}
-                        {% if auction_var.countDown|default or auction_var._raw_data.countDown|default %}
-                            <div class="col">
-                                <div class="detail-item">
-                                    <strong>{{ 'Countdown'|trans }}:</strong>
-                                    <span>
-                                        {% set countDown = auction_var.countDown|default(auction_var._raw_data.countDown) %}
-                                        {% set days = (countDown / (60 * 60 * 24)) %}
-                                        {% if days < 1 %}
-                                            {{ 'weniger als 1 Tag'|trans }}
-                                        {% else %}
-                                            {{ days|round }} {{ 'Tage'|trans }}
-                                        {% endif %}
-                                    </span>
-                                </div>
-                            </div>
-                        {% endif %}
+                    <div class="auction-raw-data">
+                        <h2 class="h4">{{ 'Rohdaten'|trans }}</h2>
+                        <pre class="bg-light p-3 border rounded" style="max-height: 500px; overflow: auto;">
+                            {{ raw_data|json_encode(constant('JSON_PRETTY_PRINT')) }}
+                        </pre>
                     </div>
-
-                    {# Beschreibung #}
-                    {% if auction_var.description|default or auction_var._raw_data.description|default %}
-                        <div class="auction-description mt-4">
-                            <h2 class="h4">{{ 'Beschreibung'|trans }}</h2>
-                            <div class="description-content">
-                                {{ auction_var.description|default(auction_var._raw_data.description)|raw }}
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {# Planungsrecht #}
-                    {% if auction_var.planning_law|default or auction_var._raw_data.planningLaw|default %}
-                        <div class="auction-description mt-4">
-                            <h2 class="h4">{{ 'Planungsrecht'|trans }}</h2>
-                            <div class="description-content">
-                                {{ auction_var.planning_law|default(auction_var._raw_data.planningLaw)|nl2br }}
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {# Projektfortschritt #}
-                    {% set progress = auction_var._raw_data.areaProgress|default(auction_var.area_progress|default()) %}
-                    {% if progress %}
-                        <div class="auction-progress mt-4">
-                            <h2 class="h4">{{ 'Projektfortschritt'|trans }}</h2>
-                            <div class="progress-items d-flex flex-wrap gap-2 mt-2">
-                                {% if progress.planningLawCheck|default %}
-                                    <span class="badge {% if progress.planningLawCheck == 'OK' %}bg-success{% elseif progress.planningLawCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                        {{ 'Planungsrecht'|trans }}: {{ progress.planningLawCheck }}
-                                    </span>
-                                {% endif %}
-                                {% if progress.restrictionsCheck|default %}
-                                    <span class="badge {% if progress.restrictionsCheck == 'OK' %}bg-success{% elseif progress.restrictionsCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                        {{ 'Einschränkungen'|trans }}: {{ progress.restrictionsCheck }}
-                                    </span>
-                                {% endif %}
-                                {% if progress.faunisticsCheck|default %}
-                                    <span class="badge {% if progress.faunisticsCheck == 'OK' %}bg-success{% elseif progress.faunisticsCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                        {{ 'Fauna'|trans }}: {{ progress.faunisticsCheck }}
-                                    </span>
-                                {% endif %}
-                                {% if progress.armedForcesCheck|default %}
-                                    <span class="badge {% if progress.armedForcesCheck == 'OK' %}bg-success{% elseif progress.armedForcesCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                        {{ 'Bundeswehr'|trans }}: {{ progress.armedForcesCheck }}
-                                    </span>
-                                {% endif %}
-                                {% if progress.airTrafficCheck|default %}
-                                    <span class="badge {% if progress.airTrafficCheck == 'OK' %}bg-success{% elseif progress.airTrafficCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                        {{ 'Luftverkehr'|trans }}: {{ progress.airTrafficCheck }}
-                                    </span>
-                                {% endif %}
-                                {% if progress.powerConnectionCheck|default %}
-                                    <span class="badge {% if progress.powerConnectionCheck == 'OK' %}bg-success{% elseif progress.powerConnectionCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                        {{ 'Netzanschluss'|trans }}: {{ progress.powerConnectionCheck }}
-                                    </span>
-                                {% endif %}
-                                {% if progress.inspectionCheck|default %}
-                                    <span class="badge {% if progress.inspectionCheck == 'OK' %}bg-success{% elseif progress.inspectionCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                        {{ 'Inspektion'|trans }}: {{ progress.inspectionCheck }}
-                                    </span>
-                                {% endif %}
-                                {% if progress.parkPlanningCheck|default %}
-                                    <span class="badge {% if progress.parkPlanningCheck == 'OK' %}bg-success{% elseif progress.parkPlanningCheck == 'REQUESTED' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                                        {{ 'Parkplanung'|trans }}: {{ progress.parkPlanningCheck }}
-                                    </span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endif %}
                 </div>
 
                 <div class="card-footer">
@@ -215,33 +40,3 @@
         {% endif %}
     </div>
 </div>
-
-<style>
-.auction-detail .detail-item {
-    margin-bottom: 0.5rem;
-}
-
-.auction-detail .detail-item strong {
-    font-weight: 600;
-    margin-right: 0.5rem;
-}
-
-.auction-progress {
-    margin-top: 1.5rem;
-}
-
-.progress-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-}
-
-.auction-description {
-    margin-top: 1.5rem;
-}
-
-.auction-description .description-content {
-    line-height: 1.6;
-}
-</style>

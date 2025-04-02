@@ -10,7 +10,7 @@
             </div>
             <div class="d-lg-none">
                 <a class="mobileNav__activator" href="#mobileNav">
-                    <i class="fasl fa-bars"></i><span>Menü</span>
+                    <i class="fasl fa-bars"></i><span>Menu</span>
                 </a>
             </div>
         </div>
