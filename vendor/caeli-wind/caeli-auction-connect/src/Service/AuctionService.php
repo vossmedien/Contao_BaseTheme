@@ -29,7 +29,6 @@ class AuctionService
 
     private ?string $apiToken = null;
     private ?string $csrfToken = null;
-    private HttpClientInterface $httpClient;
     private string $apiUrl;
     private string $apiUsername;
     private string $apiPassword;
@@ -51,6 +50,9 @@ class AuctionService
         'size' => ['field' => 'flaeche_ha', 'type' => 'minmax', 'value_type' => 'float'],
         'leistung' => ['field' => 'leistung_mw', 'type' => 'minmax', 'value_type' => 'float'],
         'volllaststunden' => ['field' => 'volllaststunden', 'type' => 'minmax', 'value_type' => 'int'],
+        'property' => ['field' => 'property', 'type' => 'exact'],
+        'focus' => ['field' => 'isAuctionInFocus', 'type' => 'exact', 'value_type' => 'bool'],
+        'irr' => ['field' => 'internalRateOfReturnBeforeRent', 'type' => 'minmax', 'value_type' => 'float'],
         // Weitere Felder können hier hinzugefügt werden, z.B.:
         // 'some_bool_field' => ['field' => 'is_active', 'type' => 'exact', 'value_type' => 'bool'],
         // 'some_exact_string' => ['field' => 'projekt_name', 'type' => 'exact'],
@@ -63,9 +65,6 @@ class AuctionService
         $this->apiUrl = rtrim($this->params->get('caeli_auction.api_url'), '/');
         $this->apiUsername = $this->params->get('caeli_auction.api_username');
         $this->apiPassword = $this->params->get('caeli_auction.api_password');
-        $this->httpClient = HttpClient::create();
-
-        // Cookie-Datei für die API-Anfragen
         $this->cookieFile = sys_get_temp_dir() . '/caeli_auction_' . md5(session_id() . time()) . '.txt';
 
         // Cache-Verzeichnis
@@ -209,121 +208,6 @@ class AuctionService
 
         } catch (\Exception $e) {
             $this->logger->error('Fehler beim Abrufen der Auktion: ' . $e->getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Methode zum Abrufen aller Auktionen
-     * Ähnlich zu getPlotInfo, aber für alle Auktionen
-     */
-    private function fetchAuctionsRaw(array $filters = []): ?array
-    {
-        try {
-            // Sicherstellen, dass wir eingeloggt sind
-            if (!$this->csrfToken && !$this->login()) {
-                $this->logger->error('Nicht eingeloggt und Login fehlgeschlagen');
-                return null;
-            }
-
-            // Gleiche Struktur wie fetchAuctionRaw, aber anderer Endpunkt
-            $url = $this->apiUrl . '/api/auctions';
-
-            // Filter hinzufügen, falls vorhanden
-            if (!empty($filters)) {
-                $queryParams = [];
-
-                // Bundesland
-                if (!empty($filters['bundesland'])) {
-                    $queryParams[] = 'bundesland=' . urlencode($filters['bundesland']);
-                }
-
-                // Landkreis
-                if (!empty($filters['landkreis'])) {
-                    $queryParams[] = 'landkreis=' . urlencode($filters['landkreis']);
-                }
-
-                // Status
-                if (!empty($filters['status'])) {
-                    $queryParams[] = 'status=' . urlencode($filters['status']);
-                }
-
-                // Flächengröße
-                if (!empty($filters['size'])) {
-                    if (!empty($filters['size']['min'])) {
-                        $queryParams[] = 'flaeche_min=' . (int)$filters['size']['min'];
-                    }
-                    if (!empty($filters['size']['max'])) {
-                        $queryParams[] = 'flaeche_max=' . (int)$filters['size']['max'];
-                    }
-                }
-
-                // Leistung
-                if (!empty($filters['leistung'])) {
-                    if (!empty($filters['leistung']['min'])) {
-                        $queryParams[] = 'leistung_min=' . (int)$filters['leistung']['min'];
-                    }
-                    if (!empty($filters['leistung']['max'])) {
-                        $queryParams[] = 'leistung_max=' . (int)$filters['leistung']['max'];
-                    }
-                }
-
-                if (!empty($queryParams)) {
-                    $url .= '?' . implode('&', $queryParams);
-                }
-            }
-
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
-            curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieFile);
-            curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieFile);
-            curl_setopt($curl, CURLINFO_HEADER_OUT, true);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, [
-                'X-CSRF-Token: ' . $this->csrfToken
-            ]);
-
-            $this->logger->debug('Anfrage nach Auktionen: ' . $url);
-            $result = curl_exec($curl);
-
-            if (curl_error($curl)) {
-                $this->logger->error('API-Anfrage fehlgeschlagen (cURL): ' . curl_error($curl));
-                curl_close($curl);
-                return null;
-            }
-
-            $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            $requestInfo = curl_getinfo($curl);
-            curl_close($curl);
-
-            $this->logger->debug('Auktionen-Antwort: Status ' . $statusCode . ', Request: ' . json_encode($requestInfo));
-
-            if ($statusCode !== 200) {
-                $this->logger->error('API-Anfrage fehlgeschlagen: HTTP-Status ' . $statusCode);
-                $this->logger->debug('Antwort: ' . $result);
-
-                // Bei 401/403 versuchen wir einen erneuten Login
-                if (in_array($statusCode, [401, 403])) {
-                    $this->logger->warning('Versuche erneuten Login nach Authentifizierungsfehler');
-                    $this->csrfToken = null;
-                    $this->login();
-                }
-
-                return null;
-            }
-
-            // Antwort parsen
-            $data = json_decode($result, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->logger->error('API-Antwort konnte nicht geparst werden: ' . json_last_error_msg());
-                return null;
-            }
-
-            return $data;
-
-        } catch (\Exception $e) {
-            $this->logger->error('Fehler beim Abrufen der Auktionen: ' . $e->getMessage());
             return null;
         }
     }
@@ -590,62 +474,94 @@ class AuctionService
 
     /**
      * Konvertiert die öffentlichen Auktionsdaten in das interne Format für die Verwendung in Contao
-     * Korrigiert: Stellt sicher, dass auctionId als String übergeben wird und Bildpfade hinzugefügt werden.
+     * Korrigiert: Übernimmt alle relevanten Felder und benennt sie ggf. um.
      */
     private function mapPublicAuctionToInternalFormat(array $auction): array
     {
         $auctionIdRaw = $auction['auctionId'] ?? null;
         $this->logger->debug('Konvertiere Auktion: ' . $auctionIdRaw);
 
-        // Kernfelder - Stelle sicher, dass die ID als String gespeichert wird
         $auctionIdString = $auctionIdRaw !== null ? (string)$auctionIdRaw : null;
+
+        // Starte mit den Rohdaten und der ID
         $result = [
             '_raw_data' => $auction,
-            'id' => $auctionIdString, // Konsistente String-ID hinzufügen
-            'picture_path' => null,    // Standardmäßig null
-            'picture_filename' => null // Standardmäßig null
+            'id' => $auctionIdString,
         ];
 
-        // Bild herunterladen und Pfade hinzufügen, falls Dateiname und ID vorhanden
+        // Felder mappen (Name im $result => Name im $auction Roh-Array)
+        $fieldMapping = [
+            'bundesland' => 'state',
+            'status' => 'status',
+            'leistung_mw' => 'power',
+            'flaeche_ha' => 'areaSize',
+            'volllaststunden' => 'fullUsageHours',
+            'volllaststunden_quelle' => 'fullUsageHoursSource',
+            'internalRateOfReturnBeforeRent' => 'internalRateOfReturnBeforeRent',
+            'availableFrom' => 'availableFrom',
+            'property' => 'property',
+            'planningLaw' => 'planningLaw',
+            'isAuctionInFocus' => 'isAuctionInFocus',
+            'countDown' => 'countDown',
+            // 'district' fehlt in deinem Beispiel, muss ggf. aus anderer Quelle kommen oder API angepasst werden?
+            // Wenn 'district' doch vorhanden ist, hier hinzufügen: 'district' => 'district',
+            // areaProgress wird nicht direkt gemappt, aber über _raw_data zugänglich
+        ];
+
+        // Übertrage die gemappten Felder
+        foreach ($fieldMapping as $internalKey => $apiKey) {
+             // Verwende null coalescing operator, um sicherzustellen, dass der Schlüssel existiert,
+             // auch wenn der Wert in der API null ist.
+            $result[$internalKey] = $auction[$apiKey] ?? null;
+        }
+
+        // Bildpfade initialisieren
+        $result['picture_path'] = null;
+        $result['picture_filename'] = null;
+        $result['blurred_picture_path'] = null;
+
+        // Bild herunterladen und Pfade hinzufügen
         $pictureFilename = $auction['areaPictureFileName'] ?? null;
         if (!empty($pictureFilename) && $auctionIdString !== null) {
              $this->logger->debug('Versuche Bild herunterzuladen', ['file' => $pictureFilename, 'id' => $auctionIdString]);
-            // Stelle sicher, dass auctionId als String übergeben wird
             $localImagePath = $this->downloadAuctionImage($pictureFilename, $auctionIdString);
 
              if (!empty($localImagePath)) {
                  $this->logger->debug('Bild erfolgreich heruntergeladen/gefunden', ['localPath' => $localImagePath]);
-                 // Erzeuge den relativen Web-Pfad aus dem DOCUMENT_ROOT
-                 // Wichtig: Passe dies an, falls Contao eine andere Methode zur Pfadgenerierung erwartet (z.B. über FilesModel)
                  $webPath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $localImagePath);
-                 $result['picture_path'] = $webPath; // Relativer Pfad für <img src="...">
+                 $result['picture_path'] = $webPath;
                  $result['picture_filename'] = $pictureFilename;
-                 // DEBUGGING: Logge den generierten Web-Pfad
                  $this->logger->debug('[mapPublicAuctionToInternalFormat] Generierter picture_path: ' . $webPath, ['id' => $auctionIdString]);
+
+                 // Pfad zum geblurrten Bild hinzufügen
+                 $targetDir = dirname($localImagePath);
+                 $blurPngFilename = md5($auctionIdString ?? $pictureFilename) . ".png";
+                 $blurPngTargetFile = $targetDir . '/' . $blurPngFilename;
+                 $blurWebpTargetFile = str_replace('.png', '.webp', $blurPngTargetFile);
+
+                 $blurredWebPath = null;
+                 if (file_exists($blurWebpTargetFile)) { // Bevorzuge WebP
+                      $blurredWebPath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $blurWebpTargetFile);
+                 } elseif (file_exists($blurPngTargetFile)) { // Fallback auf PNG
+                      $blurredWebPath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $blurPngTargetFile);
+                 }
+
+                 if ($blurredWebPath) {
+                    $result['blurred_picture_path'] = $blurredWebPath;
+                    $this->logger->debug('[mapPublicAuctionToInternalFormat] Generierter blurred_picture_path: ' . $blurredWebPath, ['id' => $auctionIdString]);
+                 } else {
+                    $this->logger->warning('[mapPublicAuctionToInternalFormat] Geblurrtes Bild (WebP oder PNG) nicht gefunden, obwohl erwartet.', ['id' => $auctionIdString, 'tried_webp' => $blurWebpTargetFile, 'tried_png' => $blurPngTargetFile]);
+                 }
+
              } else {
                   $this->logger->warning('Bild konnte nicht heruntergeladen oder gefunden werden', ['file' => $pictureFilename, 'id' => $auctionIdString]);
-                  // DEBUGGING: Logge, dass kein Pfad gesetzt wurde
                   $this->logger->debug('[mapPublicAuctionToInternalFormat] picture_path bleibt null (Download fehlgeschlagen)', ['id' => $auctionIdString]);
              }
         } else {
              if (empty($pictureFilename)) $this->logger->debug('Kein Bild-Dateiname für Auktion vorhanden', ['id' => $auctionIdString]);
              if ($auctionIdString === null) $this->logger->debug('Keine Auktions-ID für Bild-Download vorhanden', ['file' => $pictureFilename]);
-             // DEBUGGING: Logge, dass kein Pfad gesetzt wurde
              $this->logger->debug('[mapPublicAuctionToInternalFormat] picture_path bleibt null (kein Dateiname oder ID)', ['id' => $auctionIdString]);
         }
-
-
-        // Füge hier weitere Mappings von API-Feldern zu internen Feldern hinzu,
-        // achte dabei auf korrekte Datentypen (string, int, float, bool, array, null)
-        $result['status'] = $auction['status'] ?? null;
-        $result['bundesland'] = $auction['state'] ?? null; // Annahme: API 'state' -> intern 'bundesland'
-        $result['district'] = $auction['district'] ?? null; // Prüfe, ob 'district' im API-Response existiert
-        $result['title'] = $auction['areaName'] ?? 'Unbenannte Auktion ' . $auctionIdString;
-        $result['flaeche_ha'] = isset($auction['areaSize']) ? (float)$auction['areaSize'] : null;
-        $result['leistung_mw'] = isset($auction['power']) ? (float)$auction['power'] : null;
-        $result['volllaststunden'] = isset($auction['fullUsageHours']) ? (int)$auction['fullUsageHours'] : null;
-        // ... weitere Felder hier mappen ...
-
 
         return $result;
     }
@@ -951,90 +867,70 @@ class AuctionService
 
     /**
      * Öffentliche Methode zum Abrufen einer spezifischen Auktion per ID
+     * Optimiert: Versucht zuerst den direkten API-Abruf für die ID.
      */
     public function getAuctionById(string $id): ?array
     {
-        $this->logger->debug('Auktion mit ID wird abgerufen: ' . $id);
+        $this->logger->debug('[getAuctionById] Auktion mit ID wird abgerufen: ' . $id);
 
-        // Alle Auktionen abrufen und Cache-Refresh erzwingen
-        $auctions = $this->getPublicAuctions(false);
+        // 1. Versuch: Direkter API-Abruf der einzelnen Auktion
+        $auctionDataRaw = $this->fetchAuctionRaw($id); // Diese Methode nutzt CSRF-Auth
+
+        if ($auctionDataRaw !== null) {
+            $this->logger->debug('[getAuctionById] Auktion direkt via fetchAuctionRaw gefunden.');
+            // Mappe die Rohdaten in das interne Format
+            $mappedAuction = $this->mapPublicAuctionToInternalFormat($auctionDataRaw);
+            // Prüfe, ob die ID nach dem Mapping noch übereinstimmt (Sicherheitscheck)
+             if ($mappedAuction['id'] === (string)$id) {
+                 return $mappedAuction;
+             } else {
+                  $this->logger->warning('[getAuctionById] ID-Mismatch nach Mapping aus direktem Abruf.', ['requested_id' => $id, 'mapped_id' => $mappedAuction['id']]);
+                  // Fallthrough zum 2. Versuch
+             }
+        }
+
+        // 2. Versuch: Fallback über alle öffentlichen Auktionen (aus Cache oder API)
+        $this->logger->debug('[getAuctionById] Direkter Abruf fehlgeschlagen oder ID-Mismatch, versuche Fallback über getPublicAuctions.');
+        $auctions = $this->getPublicAuctions(); // Nutzt Cache/Basic Auth
 
         if (empty($auctions)) {
-            $this->logger->warning('Keine Auktionen gefunden, daher kann auch keine Auktion mit ID ' . $id . ' gefunden werden.');
+            $this->logger->warning('[getAuctionById] Keine Auktionen im Fallback gefunden, kann ID '.$id.' nicht finden.');
             return null;
         }
 
-        $this->logger->debug('Anzahl gefundener Auktionen: ' . count($auctions));
-
-        // Debug: Alle verfügbaren IDs ausgeben
-        $availableIds = [];
-        foreach ($auctions as $auction) {
-            if (isset($auction['id'])) {
-                $availableIds[] = (string)$auction['id'];
-            }
-            if (isset($auction['_raw_data']) && isset($auction['_raw_data']['auctionId'])) {
-                $availableIds[] = 'raw:' . (string)$auction['_raw_data']['auctionId'];
-            }
-        }
-        $this->logger->debug('Verfügbare Auktions-IDs: ' . implode(', ', $availableIds));
-
-        // Debug: Gesamte Auktionsdaten anzeigen
-        $this->logger->debug('Erste Auktion zum Debuggen: ' . (isset($auctions[0]) ? json_encode($auctions[0]) : 'keine verfügbar'));
-
-        // Normalisierte ID für Vergleiche
+        // Suche in der Gesamtliste (wie vorher, aber jetzt der Fallback)
         $normalizedId = trim((string)$id);
-
-        // Erweiterte Suche mit mehreren Strategien
         foreach ($auctions as $auction) {
-            // 1. Standard-ID-Vergleich (als String)
+            // Nur auf die gemappte 'id' prüfen
             if (isset($auction['id']) && (string)$auction['id'] === $normalizedId) {
-                $this->logger->debug('Auktion mit ID ' . $id . ' wurde gefunden (direkter String-Vergleich)');
+                 $this->logger->debug('[getAuctionById] Auktion mit ID ' . $id . ' im Fallback (getPublicAuctions) gefunden.');
                 return $auction;
             }
-
-            // 2. ID-Vergleich (als Integer)
-            if (isset($auction['id']) && is_numeric($auction['id']) && is_numeric($normalizedId) && (int)$auction['id'] === (int)$normalizedId) {
-                $this->logger->debug('Auktion mit ID ' . $id . ' wurde gefunden (Integer-Vergleich)');
-                return $auction;
-            }
-
-            // 3. Raw-Data-Vergleich (als String)
-            if (isset($auction['_raw_data']) && isset($auction['_raw_data']['auctionId']) && (string)$auction['_raw_data']['auctionId'] === $normalizedId) {
-                $this->logger->debug('Auktion mit ID ' . $id . ' wurde über _raw_data gefunden (String-Vergleich)');
-                return $auction;
-            }
-
-            // 4. Raw-Data-Vergleich (als Integer)
-            if (isset($auction['_raw_data']) && isset($auction['_raw_data']['auctionId']) &&
-                is_numeric($auction['_raw_data']['auctionId']) && is_numeric($normalizedId) &&
-                (int)$auction['_raw_data']['auctionId'] === (int)$normalizedId) {
-                $this->logger->debug('Auktion mit ID ' . $id . ' wurde über _raw_data gefunden (Integer-Vergleich)');
-                return $auction;
-            }
-
-            // 5. Unschärfe Suche mit Contains
-            if (isset($auction['id']) && strpos((string)$auction['id'], $normalizedId) !== false) {
-                $this->logger->debug('Auktion mit ID ' . $id . ' wurde über teilweise Übereinstimmung gefunden');
-                return $auction;
-            }
+             // Optional: Suche auch in _raw_data als weiterer Fallback?
+             /*
+             if (isset($auction['_raw_data']['auctionId']) && (string)$auction['_raw_data']['auctionId'] === $normalizedId) {
+                 $this->logger->debug('Auktion mit ID ' . $id . ' wurde über _raw_data im Fallback gefunden');
+                 return $auction;
+             }
+             */
         }
 
-        // Wenn immer noch nichts gefunden wurde, versuchen wir es mit einem frischen API-Aufruf ohne Cache
-        $this->logger->warning('Keine Auktion mit ID ' . $id . ' gefunden im ersten Durchlauf, versuche ohne Cache');
-        $this->clearCache();
-        $auctions = $this->getPublicAuctions(false);
+         // Optional: Letzter Versuch ohne Cache (wie vorher, aber weniger wahrscheinlich nötig)
+         /*
+         $this->logger->warning('[getAuctionById] Keine Auktion mit ID ' . $id . ' im Fallback gefunden, letzter Versuch ohne Cache.');
+         $this->clearCache();
+         $auctions = $this->getPublicAuctions(false);
+         if (!empty($auctions)) {
+             foreach ($auctions as $auction) {
+                 if (isset($auction['id']) && (string)$auction['id'] === $normalizedId) {
+                     $this->logger->debug('Auktion mit ID ' . $id . ' wurde im zweiten Fallback-Versuch ohne Cache gefunden');
+                     return $auction;
+                 }
+             }
+         }
+         */
 
-        if (!empty($auctions)) {
-            foreach ($auctions as $auction) {
-                if (isset($auction['id']) && ((string)$auction['id'] === $normalizedId || (int)$auction['id'] === (int)$normalizedId)) {
-                    $this->logger->debug('Auktion mit ID ' . $id . ' wurde im zweiten Versuch ohne Cache gefunden');
-                    return $auction;
-                }
-            }
-        }
-
-        $this->logger->warning('Keine Auktion mit ID ' . $id . ' gefunden, auch nicht im zweiten Versuch');
-        $this->logger->warning('Gesuchte ID: ' . $id . ' (normalisiert: ' . $normalizedId . '), Verfügbare IDs: ' . implode(', ', $availableIds));
+        $this->logger->warning('[getAuctionById] Keine Auktion mit ID ' . $id . ' gefunden.');
         return null;
     }
 
@@ -1043,14 +939,24 @@ class AuctionService
      */
     public function getAllBundeslaender(): array
     {
-        // Auktionen abrufen
-        $auctions = $this->getAuctions();
+        // Auktionen abrufen (direkt die öffentliche, potenziell gecachte Liste)
+        $auctions = $this->getPublicAuctions(); // Direkt auf die ungefilterte Liste zugreifen
+
+        if (empty($auctions)) {
+             $this->logger->warning('[getAllBundeslaender] Keine Auktionen von getPublicAuctions erhalten.');
+             return [];
+        }
 
         // Bundesländer extrahieren
         $bundeslaender = [];
         foreach ($auctions as $auction) {
-            if (!empty($auction['bundesland']) && !in_array($auction['bundesland'], $bundeslaender)) {
-                $bundeslaender[] = $auction['bundesland'];
+            // Stelle sicher, dass das Feld existiert und nicht leer ist
+            if (!empty($auction['bundesland'])) {
+                 $bundeslandValue = $auction['bundesland'];
+                 // Füge nur eindeutige Werte hinzu
+                 if (!in_array($bundeslandValue, $bundeslaender)) {
+                    $bundeslaender[] = $bundeslandValue;
+                 }
             }
         }
 
@@ -1063,16 +969,28 @@ class AuctionService
      */
     public function getAllLandkreise(bool $asKeyValuePairs = false, ?string $bundesland = null): array
     {
-        // Auktionen abrufen
-        $auctions = $this->getAuctions();
+        // Auktionen abrufen (direkt die öffentliche, potenziell gecachte Liste)
+        $auctions = $this->getPublicAuctions(); // Sicherstellen, dass von ungefilterter Liste ausgegangen wird
+
+        if (empty($auctions)) {
+             $this->logger->warning('[getAllLandkreise] Keine Auktionen von getPublicAuctions erhalten.');
+             return [];
+        }
 
         // Landkreise extrahieren
         $landkreise = [];
         foreach ($auctions as $auction) {
+            // Stelle sicher, dass district existiert und nicht leer ist
             if (!empty($auction['district']) &&
-                ($bundesland === null || $auction['bundesland'] === $bundesland) &&
-                !in_array($auction['district'], $landkreise)) {
-                $landkreise[] = $auction['district'];
+                // Filter auf Bundesland anwenden, falls gegeben
+                ($bundesland === null || (isset($auction['bundesland']) && $auction['bundesland'] === $bundesland))
+               )
+            {
+                $districtValue = $auction['district'];
+                 // Füge nur eindeutige Werte hinzu
+                 if (!in_array($districtValue, $landkreise)) {
+                     $landkreise[] = $districtValue;
+                 }
             }
         }
 

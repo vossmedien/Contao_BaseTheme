@@ -27,6 +27,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use CaeliWind\CaeliAuctionConnect\Service\AuctionService;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 #[AsFrontendModule(category: 'caeli_wind', template: 'mod_auction_filter', name: 'auction_filter')]
 class AuctionFilterController extends AbstractFrontendModuleController
@@ -97,6 +99,18 @@ class AuctionFilterController extends AbstractFrontendModuleController
                 'options_key' => 'status_values',
                 'placeholder' => 'Alle Status',
             ],
+            'property' => [
+                'label' => 'Eigentum',
+                'type' => 'select',
+                'options_key' => 'property_values',
+                'placeholder' => 'Alle Eigentumsformen',
+            ],
+            'focus' => [
+                'label' => 'Fokus-Auktion',
+                'type' => 'select',
+                'options_key' => 'focus_values',
+                'placeholder' => 'Beliebig',
+            ],
             'size' => [
                 'label' => 'Größe (ha)',
                 'type' => 'range_slider',
@@ -118,6 +132,13 @@ class AuctionFilterController extends AbstractFrontendModuleController
                 'max' => 4000,
                 'step' => 100,
             ],
+            'irr' => [
+                'label' => 'IRR (%)',
+                'type' => 'range_slider',
+                'min' => 0,
+                'max' => 20,
+                'step' => 0.5,
+            ],
         ];
 
         // --- Optionen für Select-Felder vorbereiten ---
@@ -134,10 +155,25 @@ class AuctionFilterController extends AbstractFrontendModuleController
             'PRE_RELEASE' => $this->translator->trans('filter.status.pre_release', [], 'messages'),
         ];
 
+        // Eigentum-Optionen (Annahme: Nur "PRIVATE" bisher bekannt)
+        // TODO: Dynamisch aus verfügbaren Daten ermitteln, falls mehr Werte möglich sind
+        $propertyOptions = [
+            'PRIVATE' => $this->translator->trans('filter.property.private', [], 'messages'),
+            // 'PUBLIC' => $this->translator->trans('filter.property.public', [], 'messages'),
+        ];
+
+        // Fokus-Optionen (Ja/Nein)
+        $focusOptions = [
+            'true' => $this->translator->trans('filter.focus.yes', [], 'messages'),
+            'false' => $this->translator->trans('filter.focus.no', [], 'messages'),
+        ];
+
         $options = [
             'bundeslaender' => array_combine($bundeslaender, $bundeslaender),
             'landkreise' => array_combine($landkreise, $landkreise),
             'status_values' => $statusOptions,
+            'property_values' => $propertyOptions,
+            'focus_values' => $focusOptions,
         ];
 
         // --- Aktuelle Filterwerte aus der Anfrage extrahieren (für Template) ---
@@ -168,10 +204,13 @@ class AuctionFilterController extends AbstractFrontendModuleController
         $template->filters = $templateFilters;
 
         // --- Antwort generieren ---
-        if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
-                return $template->getResponse();
-        }
+        // Die spezielle AJAX-Behandlung wird entfernt.
+        // Das Frontend-JS parst die komplette Antwort und extrahiert die benötigten Teile.
+        // if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+        //     return new Response($template->parse()); // <-- Entfernt
+        // }
 
+        // Immer die Standard-Antwort zurückgeben
         return $template->getResponse();
     }
 }

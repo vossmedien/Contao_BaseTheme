@@ -2,116 +2,104 @@
 {% extends '@Contao/content_element/text.html.twig' %}
 
 {% block text %}
+    {# 1. Variable vorbereiten, die immer eine Liste ist #}
+    {% set auctions_to_display = [] %}
+    {% if auction is defined and auction %}
+        {% set auctions_to_display = [auction] %}
+    {% elseif auctions is defined and auctions %}
+        {% set auctions_to_display = auctions %}
+    {% endif %}
+
+    {# 2. Prüfen, ob überhaupt etwas angezeigt werden soll #}
     <div class="auction-element-container container">
-        {% if auction %}
-            {# Einheitliche Datenstruktur erstellen für eine einzelne Auktion #}
-            {# {% set raw_data = auction._raw_data|default({}) %} #} {# Nicht mehr nötig, da wir gemappte Daten haben #}
+        {% if auctions_to_display|length > 0 %}
 
-            {# Einzelne Auktion anzeigen #}
-            <div class="card auction-card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                   <h3 class="card-title h5 mb-0">
-                                  {# {{ 'Auktion'|trans }} #{{ raw_data.auctionId }} #}
-                                  {{ auction.title|default('Auktion #' ~ auction.id) }}
-                                </h3>
-                </div>
-
-                {# Bild anzeigen, falls Pfad vorhanden #}
-                {% if auction.picture_path %}
-                    <div class="card-img-top auction-image-container">
-                        {# Pfad direkt aus auction.picture_path verwenden #}
-                        <img src="{{ auction.picture_path }}"
-                             alt="{{ auction.title|default('Bild für Auktion ' ~ auction.id) }}" class="auction-image img-fluid">
-                    </div>
-                {% else %}
-                    {# Fallback-Platzhalter #}
-                    <div class="card-img-top auction-image-container bg-light d-flex align-items-center justify-content-center" style="min-height: 150px;">
-                        <i class="fas fa-wind fa-3x text-muted"></i>
-                    </div>
-                {% endif %}
-
-               <div class="card-body">
-                    <p><strong>{{ 'ID'|trans }}:</strong> {{ auction.id }}</p>
-                    <p><strong>{{ 'Status'|trans }}:</strong> {{ auction.status|default('N/A') }}</p>
-                    <p><strong>{{ 'Bundesland'|trans }}:</strong> {{ auction.bundesland|default('N/A') }}</p>
-                    {# Weitere gemappte Felder hier anzeigen #}
-                    {#
-                    <div class="auction-raw-data mt-3">
-                        <small>Rohdaten:</small>
-                        <pre class="bg-light p-2 border rounded small" style="max-height: 200px; overflow: auto;">
-                            {{ auction._raw_data|json_encode(constant('JSON_PRETTY_PRINT')) }}
-                        </pre>
-                    </div>
-                    #}
-                </div>
-            </div>
-
-        {% elseif auctions|default and auctions|length > 0 %}
-            {# Mehrere Auktionen anzeigen #}
+            {# 3. Grid-Struktur IMMER ausgeben (Bootstrap handhabt 1 Element) #}
             <div class="auction-card-grid">
+                {# Verwende g-4 wieder für Abstände im Grid #}
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
-                    {% for auction_item in auctions %}
-                        {# {% set raw_data = auction_item._raw_data|default({}) %} #} {# Nicht mehr nötig #}
+
+                    {# 4. Einheitliche Schleife für alle Auktionen #}
+                    {% for auction_item in auctions_to_display %}
 
                         <div class="col">
+
+                            {# --- START: Einheitliches Karten-Markup --- #}
                             <div class="card auction-card h-100">
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                  <h3 class="card-title h5 mb-0">
-                                      {# {{ 'Auktion'|trans }} #{{ raw_data.auctionId }} #}
-                                      {{ auction_item.title|default('Auktion #' ~ auction_item.id) }}
-                                  </h3>
+                                    <h3 class="card-title h5 mb-0">
+                                        {{ auction_item.title|default('Auktion #' ~ auction_item.id) }}
+                                    </h3>
+                                    {# Optional: Status-Badge etc. #}
                                 </div>
 
-                                {# Bild anzeigen, falls Pfad vorhanden #}
-                                {% if auction_item.picture_path %}
+                                {# Bild #}
+                                {% set image_path = auction_item.blurred_picture_path|default(auction_item.picture_path|default(null)) %}
+                                {% if image_path %}
                                     <div class="card-img-top auction-image-container">
-                                        <img src="{{ auction_item.picture_path }}"
-                                             alt="{{ auction_item.title|default('Bild für Auktion ' ~ auction_item.id) }}" class="auction-image img-fluid">
+                                        {% if detailPageUrl is defined and detailPageUrl %}
+                                            <a href="{{ detailPageUrl }}/{{ auction_item.id }}">
+                                                <img src="{{ image_path }}"
+                                                     alt="{{ auction_item.title|default('Bild für Auktion ' ~ auction_item.id) }}" class="auction-image img-fluid">
+                                            </a>
+                                        {% else %}
+                                            <img src="{{ image_path }}"
+                                                 alt="{{ auction_item.title|default('Bild für Auktion ' ~ auction_item.id) }}" class="auction-image img-fluid">
+                                        {% endif %}
                                     </div>
                                 {% else %}
                                     {# Fallback-Platzhalter #}
                                     <div class="card-img-top auction-image-container bg-light d-flex align-items-center justify-content-center" style="min-height: 150px;">
-                                        <i class="fas fa-wind fa-3x text-muted"></i>
+                                         {% if detailPageUrl is defined and detailPageUrl %}
+                                             <a href="{{ detailPageUrl }}/{{ auction_item.id }}" class="text-muted">
+                                                 <i class="fas fa-wind fa-3x"></i>
+                                             </a>
+                                         {% else %}
+                                             <i class="fas fa-wind fa-3x text-muted"></i>
+                                         {% endif %}
                                     </div>
                                 {% endif %}
 
-                               <div class="card-body">
-                                    <p><strong>{{ 'ID'|trans }}:</strong> {{ auction_item.id }}</p>
-                                    <p><strong>{{ 'Status'|trans }}:</strong> {{ auction_item.status|default('N/A') }}</p>
-                                    <p><strong>{{ 'Bundesland'|trans }}:</strong> {{ auction_item.bundesland|default('N/A') }}</p>
-                                    {# Weitere gemappte Felder hier anzeigen #}
-                                    {#
-                                    <div class="auction-raw-data mt-3">
-                                         <small>Rohdaten:</small>
-                                        <pre class="bg-light p-2 border rounded small" style="max-height: 150px; overflow: auto;">
-                                            {{ auction_item._raw_data|json_encode(constant('JSON_PRETTY_PRINT')) }}
-                                        </pre>
-                                    </div>
-                                    #}
+                                <div class="card-body">
+                                    {# Hier könnten statt Rohdaten die wichtigsten Felder angezeigt werden #}
+                                    {# Beispiel:
+                                    <ul class="list-unstyled mb-0">
+                                        {% if auction_item.bundesland %}<li><strong>{{ 'Bundesland'|trans }}:</strong> {{ auction_item.bundesland }}</li>{% endif %}
+                                        {% if auction_item.leistung_mw %}<li><strong>{{ 'Leistung'|trans }}:</strong> {{ auction_item.leistung_mw }} MW</li>{% endif %}
+                                        {% if auction_item.flaeche_ha %}<li><strong>{{ 'Fläche'|trans }}:</strong> {{ auction_item.flaeche_ha }} ha</li>{% endif %}
+                                    </ul>
+                                     #}
+
+                                    {# DEBUG Rohdaten-Ausgabe (ggf. entfernen) #}
+                                     <div class="auction-raw-data mt-3">
+                                         <pre class="bg-light p-2 border rounded small" style="max-height: 150px; overflow: auto;">
+                                             {{ auction_item|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}
+                                         </pre>
+                                     </div>
                                 </div>
 
+                                {# Footer IMMER anzeigen #}
                                 <div class="card-footer">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        {# Detailseiten-Link (prüfen, ob detailPageUrl existiert) #}
-                                        {% if detailPageUrl %}
-                                            <a href="{{ detailPageUrl }}/{{ auction_item.id }}" class="btn btn-primary btn-sm">{{ 'Details anzeigen'|trans }}</a>
-                                        {% else %}
-                                            <span><!-- Kein Detail-Link --></span>
+                                    <div class="d-flex justify-content-end align-items-center">
+                                        {# Detailseiten-Link, falls URL vorhanden #}
+                                        {% if detailPageUrl is defined and detailPageUrl %}
+                                            <a href="{{ detailPageUrl }}/{{ auction_item.id }}" class="btn btn-primary btn-sm">{{ 'Details'|trans }}</a>
                                         {% endif %}
-
-                                        {# Fokus-Badge (prüfen, ob Feld existiert) #}
-                                        {# {% if auction_item.is_in_focus %} #} {# Feld muss erst gemappt werden #}
-                                        {#    <span class="badge bg-warning text-dark">{{ 'Im Fokus'|trans }}</span> #}
-                                        {# {% endif %} #}
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            {# --- END: Einheitliches Karten-Markup --- #}
+
+                        </div>{# Ende .col #}
+
                     {% endfor %}
-                </div>
-            </div>
+
+                </div>{# Ende .row #}
+            </div>{# Ende .auction-card-grid #}
+
         {% else %}
-            <div class="alert alert-warning">{{ 'Keine Auktionen für die angegebenen IDs gefunden.'|trans }}</div>
+            {# 5. Fallback, wenn keine Auktionen gefunden wurden #}
+            <div class="alert alert-warning">{{ 'Keine Auktionen für die angegebenen Kriterien gefunden.'|trans }}</div>
         {% endif %}
     </div>
 
