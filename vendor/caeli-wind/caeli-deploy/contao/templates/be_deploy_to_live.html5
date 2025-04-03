@@ -25,7 +25,7 @@
                 <input style="width: 200px;" type="text" class="tl_text" name="backup_info" placeholder="Info (optional)">
                 
                 <?php if (!empty($this->environments) && count($this->environments) > 1): ?>
-                <select name="environment" class="tl_select" style="width: 150px;" onchange="this.form.submit()">
+                <select name="environment" class="tl_select" style="width: 150px;">
                     <?php foreach ($this->environments as $key => $name): ?>
                         <option value="<?= $key ?>"<?= ($key === $this->selectedEnvironment) ? ' selected' : '' ?>><?= $name ?></option>
                     <?php endforeach; ?>

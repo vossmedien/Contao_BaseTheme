@@ -1,15 +1,48 @@
 #!/bin/bash
 
-# Laden der Umgebungsvariablen aus .env.local
-if [ -f ".env.local" ]; then
-    export $(grep -v '^#' .env.local | xargs)
-else
-    echo "Fehler: .env.local nicht gefunden!"
+# Setze Standardwerte, falls Variablen vom Controller kommen
+: ${DEPLOY_LIVE_PATH:=""}
+: ${DEPLOY_STAGING_PATH:=""}
+: ${DEPLOY_LIVE_DB_USER:=""}
+: ${DEPLOY_LIVE_DB_PASSWORD:=""}
+: ${DEPLOY_LIVE_DB_HOST:=""}
+: ${DEPLOY_LIVE_DB_NAME:=""}
+
+# Laden der Umgebungsvariablen aus .env.local (ENTFERNT - Variablen kommen vom Controller)
+# if [ -f ".env.local" ]; then
+#     # Sichereres Laden: Nur Zeilen mit '=' exportieren, Kommentare und Leerzeilen ignorieren
+#     set -a # Automatically export all variables subsequently defined
+#     while IFS= read -r line || [ -n "$line" ]; do
+#         # Ignoriere Kommentare und leere Zeilen
+#         [[ "$line" =~ ^# ]] || [[ -z "$line" ]] && continue
+#         # Exportiere nur, wenn ein '=' vorhanden ist
+#         if [[ "$line" == *"="* ]]; then
+#             export "$line"
+#         fi
+#     done < ".env.local"
+#     set +a # Stop automatically exporting
+# else
+#     echo "Fehler: .env.local nicht gefunden!"
+#     exit 1
+# fi
+
+# Stelle sicher, dass wichtige Pfade/Variablen vom Controller übergeben wurden
+if [ -z "${SOURCE_PATH}" ] || [ -z "${TARGET_PATH}" ]; then
+    echo "FEHLER: SOURCE_PATH oder TARGET_PATH ist nicht gesetzt! (Prüfe DEPLOY_CURRENT_PATH, DEPLOY_XXX_PATH in .env.local)" >&2
+    exit 1
+fi
+if [ -z "${TARGET_DB_NAME}" ]; then
+    echo "FEHLER: TARGET_DB_NAME ist nicht gesetzt! (Prüfe DEPLOY_XXX_DB_NAME in .env.local)" >&2
+    exit 1
+fi
+# Prüfe auch die vom Controller übergebenen Rollback-Quellpfade
+if [ -z "${ROLLBACK_FILE_SOURCE}" ] || [ -z "${ROLLBACK_DB_SOURCE}" ]; then
+    echo "FEHLER: ROLLBACK_FILE_SOURCE oder ROLLBACK_DB_SOURCE nicht vom Controller übergeben!" >&2
     exit 1
 fi
 
-# Log-Datei für Feedback im Backend
-LOG_FILE="${DEPLOY_STAGING_PATH}/rollback_log.txt"
+# Log-Datei für Feedback im Backend (im Source/Current-Verzeichnis)
+LOG_FILE="${SOURCE_PATH}/rollback_log.txt"
 # Log-Datei komplett löschen und neu erstellen
 > ${LOG_FILE}
 

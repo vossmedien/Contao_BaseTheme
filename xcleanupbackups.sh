@@ -1,15 +1,31 @@
 #!/bin/bash
 
-# Laden der Umgebungsvariablen aus .env.local
-if [ -f ".env.local" ]; then
-    export $(grep -v '^#' .env.local | xargs)
-else
-    echo "Fehler: .env.local nicht gefunden!"
+# Laden der Umgebungsvariablen aus .env.local (ENTFERNT - Variablen kommen vom Controller)
+# if [ -f ".env.local" ]; then
+#     # Sichereres Laden: Nur Zeilen mit '=' exportieren, Kommentare und Leerzeilen ignorieren
+#     set -a # Automatically export all variables subsequently defined
+#     while IFS= read -r line || [ -n "$line" ]; do
+#         # Ignoriere Kommentare und leere Zeilen
+#         [[ "$line" =~ ^# ]] || [[ -z "$line" ]] && continue
+#         # Exportiere nur, wenn ein '=' vorhanden ist
+#         if [[ "$line" == *"="* ]]; then
+#             export "$line"
+#         fi
+#     done < ".env.local"
+#     set +a # Stop automatically exporting
+# else
+#     echo "Fehler: .env.local nicht gefunden!"
+#     exit 1
+# fi
+
+# Stelle sicher, dass wichtige Pfade vom Controller übergeben wurden
+if [ -z "${SOURCE_PATH}" ] || [ -z "${TARGET_BACKUP_PATH}" ]; then
+    echo "FEHLER: SOURCE_PATH oder TARGET_BACKUP_PATH ist nicht gesetzt! (Prüfe DEPLOY_CURRENT_PATH, DEPLOY_BACKUP_PATH in .env.local)" >&2
     exit 1
 fi
 
-# Log-Datei für Feedback im Backend
-LOG_FILE="${DEPLOY_STAGING_PATH}/cleanup_log.txt"
+# Log-Datei für Feedback im Backend (im Source/Current-Verzeichnis)
+LOG_FILE="${SOURCE_PATH}/cleanup_log.txt"
 > ${LOG_FILE}
 
 echo "===== Backup-Bereinigung gestartet: $(date) =====" >> ${LOG_FILE}
@@ -18,16 +34,16 @@ echo "===== Backup-Bereinigung gestartet: $(date) =====" >> ${LOG_FILE}
 KEEP_BACKUPS=4
 
 # Backup-Verzeichnis prüfen
-if [ ! -d "${DEPLOY_BACKUP_PATH}" ]; then
-    echo "FEHLER: Backup-Verzeichnis nicht gefunden: ${DEPLOY_BACKUP_PATH}" >> ${LOG_FILE}
+if [ ! -d "${TARGET_BACKUP_PATH}" ]; then
+    echo "FEHLER: Backup-Verzeichnis nicht gefunden: ${TARGET_BACKUP_PATH}" >> ${LOG_FILE}
     exit 1
 fi
 
-echo "Durchsuche Backup-Verzeichnis: ${DEPLOY_BACKUP_PATH}" >> ${LOG_FILE}
+echo "Durchsuche Backup-Verzeichnis: ${TARGET_BACKUP_PATH}" >> ${LOG_FILE}
 
 # Dateien nach Typ filtern und nach Datum sortieren
-FILES_BACKUPS=$(ls -t ${DEPLOY_BACKUP_PATH}/*_live_files.tar.gz 2>/dev/null)
-DB_BACKUPS=$(ls -t ${DEPLOY_BACKUP_PATH}/*_live_db.sql 2>/dev/null)
+FILES_BACKUPS=$(ls -t ${TARGET_BACKUP_PATH}/*_live_files.tar.gz 2>/dev/null)
+DB_BACKUPS=$(ls -t ${TARGET_BACKUP_PATH}/*_live_db.sql 2>/dev/null)
 
 # Zähler für gelöschte Dateien
 DELETED_FILES=0

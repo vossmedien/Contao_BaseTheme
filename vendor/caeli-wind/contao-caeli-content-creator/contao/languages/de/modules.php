@@ -15,4 +15,5 @@ declare(strict_types=1);
 /**
  * Backend modules
  */
+$GLOBALS['TL_LANG']['MOD']['caeli'] = 'Caeli Wind';
 $GLOBALS['TL_LANG']['MOD']['caeli_content_creator'] = ['KI Content-Creator', 'Generiere Blog-Beiträge via GROK API']; 

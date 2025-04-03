@@ -13,6 +13,7 @@
 /**
  * Backend modules
  */
+$GLOBALS['TL_LANG']['MOD']['caeli'] = 'Caeli Wind';
 $GLOBALS['TL_LANG']['MOD']['caeli_googlenews'] = ['Google News Fetcher', 'Google News Artikel abrufen und in News-Archive importieren'];
 
 /**

@@ -13,4 +13,4 @@
 /**
  * Backend modules
  */
-$GLOBALS['TL_LANG']['MOD']['deploy_to_live'] = ['Auf LIVE übertragen', 'Contao von Staging auf LIVE übertragen']; 
+$GLOBALS['TL_LANG']['MOD']['deploy_to_live'] = ['Deployment', 'Contao von Staging auf LIVE übertragen'];
