@@ -74,7 +74,7 @@ $GLOBALS['TL_DCA']['tl_caeli_googlenews'] = array(
         )
     ),
     'palettes'    => array(
-        'default'      => '{title_legend},title,newsArchive;{serpapi_legend},serpApiKey,serpApiQuery,serpApiNumResults,serpApiLocation,serpApiLanguage;{filter_legend},dateRestrict,newsSource,newsType,paginationEnabled,maxPages;{keywords_legend},blacklistKeywords;{preview_legend},fetchNewsButton,previewView;'
+        'default'      => '{title_legend},title,newsArchive;{serpapi_legend},serpApiKey,serpApiQuery,serpApiNumResults,serpApiLocation,serpApiLanguage;{filter_legend},dateRestrict,newsSource,paginationEnabled,maxPages;{keywords_legend},blacklistKeywords;{preview_legend},fetchNewsButton,previewView;'
     ),
 
     // Buttons im Bearbeitungsformular
@@ -170,21 +170,6 @@ $GLOBALS['TL_DCA']['tl_caeli_googlenews'] = array(
             'eval'      => array('maxlength' => 255, 'tl_class' => 'w50'),
             'explanation' => 'Filtere nach einer bestimmten Quelle (z.B. "spiegel.de")',
             'sql'       => "varchar(255) NOT NULL default ''"
-        ),
-        'newsType'        => array(
-            'inputType' => 'select',
-            'exclude'   => true,
-            'options'   => array(
-                '' => 'Alle Arten',
-                'blog' => 'Blogs',
-                'press' => 'Pressemitteilungen',
-                'vid' => 'Videos',
-                'img' => 'Bilder'
-            ),
-            'default'   => '',
-            'eval'      => array('tl_class' => 'w50'),
-            'explanation' => 'Art der Nachrichtenartikel',
-            'sql'       => "varchar(10) NOT NULL default ''"
         ),
         // Pagination-Optionen
         'paginationEnabled' => array(

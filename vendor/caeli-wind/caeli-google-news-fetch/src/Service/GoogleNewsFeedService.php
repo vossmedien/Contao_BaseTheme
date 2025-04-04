@@ -93,11 +93,6 @@ class GoogleNewsFeedService
                 $url .= "&tbs=qdr:" . $filters['dateRestrict']; // h (Stunde), d (Tag), w (Woche), m (Monat), y (Jahr)
             }
             
-            // Nachrichtentyp-Filter
-            if (!empty($filters['newsType'])) {
-                $url .= "&tbm=nws&tbs=cdr:1," . $filters['newsType'];
-            }
-            
             // Quellen-Filter
             if (!empty($filters['source'])) {
                 $url .= "&as_sitesearch=" . urlencode($filters['source']);
@@ -166,23 +161,20 @@ class GoogleNewsFeedService
                     $selectedImage = $thumbnail;
                 }
                 
-                // News-Item zum Array hinzufügen
-                $newsItem = [
+                // Grunddaten für das Item
+                $processedItem = [
                     'title' => $item->title,
                     'link' => $item->link,
                     'description' => $description,
                     'pubDate' => $pubDate,
                     'source' => $item->source,
-                    'imageUrl' => $selectedImage,
-                    'thumbnail' => $thumbnail, // Original-Thumbnail für Fallback-Zwecke, immer speichern
-                    'guid' => md5($item->link . '-' . $item->title), // Eigene GUID generieren
                     'keyword' => $searchQuery,
-                    // Zusätzliche Metadaten
-                    'position' => $item->position ?? null,
-                    'date' => $item->date ?? null
+                    'imageUrl' => $selectedImage,
+                    'thumbnail' => $thumbnail ?? null,
+                    'caeli_uniqueid' => md5($item->link . '-' . $item->title), // Eindeutige ID für internen Abgleich
                 ];
                 
-                $formattedNews[] = $newsItem;
+                $formattedNews[] = $processedItem;
             }
             
             return $formattedNews;
@@ -200,23 +192,30 @@ class GoogleNewsFeedService
     }
     
     /**
-     * Schreibt Log-Nachrichten nur bei Fehlern
+     * Schreibt Log-Nachrichten - optimiert für AJAX und normale Anfragen
      */
     private function log(string $message, string $level = 'error'): void 
     {
-        // Nur Fehler und Warnungen loggen
-        if ($level === 'error') {
+        // Bei Fehlern und Warnungen immer ins PHP-Fehlerlog schreiben
+        if ($level === 'error' || $level === 'warning') {
             error_log('CaeliGoogleNewsFetch: ' . $message);
         }
         
+        // An den Logger weiterleiten, wenn verfügbar
         if ($this->logger) {
             switch ($level) {
                 case 'error':
                     $this->logger->error($message);
-                            break;
+                    break;
                 case 'warning':
                     $this->logger->warning($message);
-                            break;
+                    break;
+                case 'info':
+                    $this->logger->info($message);
+                    break;
+                case 'debug':
+                    $this->logger->debug($message);
+                    break;
             }
         }
     }
