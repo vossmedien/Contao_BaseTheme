@@ -26,7 +26,10 @@ class CaeliWindCaeliHubspotConnectExtension extends Extension
      */
     public function getAlias(): string
     {
-        return Configuration::ROOT_KEY;
+        // Wird nicht mehr benötigt, da keine Konfiguration über Configuration.php verarbeitet wird
+        // return Configuration::ROOT_KEY;
+        // Standard Symfony Konvention verwenden
+        return 'caeli_wind_caeli_hubspot_connect';
     }
 
     /**
@@ -34,21 +37,22 @@ class CaeliWindCaeliHubspotConnectExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $configuration = new Configuration();
-
-        $config = $this->processConfiguration($configuration, $configs);
+        // Entferne die Verarbeitung der Konfiguration über Configuration.php
+        // $configuration = new Configuration();
+        // $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new YamlFileLoader(
             $container,
             new FileLocator(__DIR__.'/../../config')
         );
 
-        $loader->load('parameters.yaml');
+        // Entferne das Laden der leeren/unnötigen Dateien
+        // $loader->load('parameters.yaml');
         $loader->load('services.yaml');
-        $loader->load('listener.yaml');
+        // $loader->load('listener.yaml');
 
-        $rootKey = $this->getAlias();
-
-        $container->setParameter($rootKey.'.foo.bar', $config['foo']['bar']);
+        // Entferne das Setzen des nicht mehr existierenden Parameters
+        // $rootKey = $this->getAlias();
+        // $container->setParameter($rootKey.'.foo.bar', $config['foo']['bar']);
     }
 }

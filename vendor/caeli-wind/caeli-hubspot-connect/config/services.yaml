@@ -17,10 +17,12 @@ services:
             - '../src/Session/'
             - '../src/CaeliWindCaeliHubspotConnect.php'
 
+    # Aktiviere die explizite Definition wieder und füge RequestStack hinzu
     # ProcessFormData Hook Listener
     CaeliWind\CaeliHubspotConnect\EventListener\ProcessFormDataListener:
         arguments:
             $httpClient: '@http_client'
             $logger: '@monolog.logger.contao'
+            $requestStack: '@request_stack'
         tags:
             - { name: 'contao.hook', hook: 'processFormData' }

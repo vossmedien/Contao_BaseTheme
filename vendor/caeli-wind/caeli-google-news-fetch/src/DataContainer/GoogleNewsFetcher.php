@@ -988,10 +988,10 @@ class GoogleNewsFetcher
                         okButton.addEventListener("click", function() {
                             // Seite neu laden mit Timestamp für Cache-Busting
                             location.reload();
-                        });
+                        }); 
 
                         importBox.appendChild(okButton);
-                    } 
+                    }
 
                     // Importiere sequentiell
                     function importNextArticle() {

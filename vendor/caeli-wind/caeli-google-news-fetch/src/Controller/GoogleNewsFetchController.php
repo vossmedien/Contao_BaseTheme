@@ -92,7 +92,7 @@ class GoogleNewsFetchController extends AbstractController
                 return false;
             }
         }
-
+ 
         // Dateipfad erstellen
         $filePath = $this->getJsonFilePath($configId, $type);
         $jsonData = json_encode($data, JSON_PRETTY_PRINT);
@@ -104,7 +104,7 @@ class GoogleNewsFetchController extends AbstractController
         }
 
         error_log('CaeliGoogleNewsFetch: Daten erfolgreich in Datei gespeichert: ' . $filePath);
-        return true; 
+        return true;
     }
 
     /**
