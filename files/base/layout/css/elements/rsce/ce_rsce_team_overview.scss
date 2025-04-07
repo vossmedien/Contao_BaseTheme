@@ -8,6 +8,10 @@
     .team-member {
       margin-bottom: 3rem;
 
+        @include media-breakpoint-down(md) {
+          margin-bottom: 5rem;
+        }
+
       .row {
         //align-items: center;
       }
