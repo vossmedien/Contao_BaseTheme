@@ -4,7 +4,7 @@ use VSM_HelperFunctions\ButtonHelper;
 use VSM_HelperFunctions\GlobalElementConfig;
 
 return [
-    'label' => ['Custom | Kopfbereich (headblock)', ''],
+    'label' => ['Custom | Kopfbereich', ''],
     'types' => ['content'],
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
@@ -84,7 +84,7 @@ return [
         'text_color' => [
             'label' => ['Schriftfarbe', ''],
             'inputType' => 'text',
-            'eval' => [ 'tl_class' => 'w50']
+            'eval' => ['maxlength' => 6, 'tl_class' => 'w50']
         ],
         'pull_up_next_element' => [
             'label' => ['Nächstes Element hochziehen', ''],

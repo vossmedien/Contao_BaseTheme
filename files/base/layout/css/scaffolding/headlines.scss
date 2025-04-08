@@ -52,8 +52,6 @@
   flex-flow: column wrap;
   margin-bottom: var(--current-headline-spacing);
 
-  @extend .container;
-
   * {
     margin: 0 !important;
     max-width: 100%;

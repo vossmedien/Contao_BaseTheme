@@ -31,7 +31,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($partner->image, null, $partner->name, $this->size, "mb-2 rounded-circle", false, false); ?>
                                 <h3 class="mb-0 text-base fw-bold"><?= $partner->name; ?></h3>
                                 <p class="mb-1"><?= $partner->position; ?></p>
-                                <p><a class="text-nowrap" href="tel:<?= $partner->phone; ?>"><i class="fal fa-phone"></i> <?= $partner->phone; ?></a></p>
+                                <p><a class="text-nowrap" href="tel:<?= $partner->phone; ?>"
+                                    <?php if ($partner->enable_tracking): ?>
+                                    onclick="window.pushToDataLayer('Telefon', 'Ansprechpartner Box', '<?= $partner->phone; ?>', '<?= $partner->position; ?>');"
+                                    <?php endif; ?>
+                                ><i class="fal fa-phone"></i> <?= $partner->phone; ?></a></p>
                             </div>
                         </div>
                     <?php endforeach; ?>

@@ -8,11 +8,6 @@
   --mm-spn-panel-offset: 30%;
   --mm-spn-active-bg: var(--bs-primary);
   --mm-spn-active-color: var(--bs-body-color-inverse);
-  --mm-spn-color: var(--bs-body-color);
-  --mm-spn-border-color: #{$border-color};
-  --mm-spn-footer-bg: rgba(0, 0, 0, .1);
-  --mm-spn-arrow-color: var(--bs-body-color);
-
 
   background-color: var(--mm-spn-bg);
   text-align: center;
@@ -30,12 +25,9 @@
     box-shadow: $box-shadow-sm;
     width: 35px;
     height: 35px;
-    left: .5rem;
-    top: .5rem;
     line-height: 35px;
-    background-color: rgba(255, 255, 255, .15);
     border-radius: 50%;
-    color: var(--mm-spn-color);
+    color: var(--bs-body-color);
     border: 0;
     transform: rotate(180deg);
     @extend %fa-icon;
@@ -80,7 +72,6 @@
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
-    background-color: inherit;
 
     a {
       padding: 0;
@@ -95,7 +86,7 @@
 
   li:not(.extra-content) {
     // padding: 0 var(--mm-spn-item-indent);
-    border-bottom: 1px solid var(--mm-spn-border-color);
+    border-bottom: 1px solid $border-color;
 
     &:after {
       display: none;
@@ -112,7 +103,7 @@
       height: 35px;
       line-height: 35px;
       border-radius: 50%;
-      color: var(--mm-spn-color);
+      color: var(--bs-body-color);
       transform: none;
       @extend %fa-icon;
       @extend .fasl;
@@ -135,8 +126,8 @@
 
       &:before {
         border-color: var(--mm-spn-active-color);
-        background-color: rgba(255, 255, 255, .15);
-        color: var(--mm-spn-arrow-color);
+        background-color: var(--mm-spn-bg);
+        color: $body-color;
       }
     }
 
@@ -144,8 +135,7 @@
       padding: 0;
       line-height: var(--mm-spn-item-height);
       background-color: transparent;
-      color: var(--mm-spn-color);
-      white-space: nowrap;
+      color: var(--bs-body-color);
 
       &:after {
         height: var(--mm-spn-item-height);
@@ -197,40 +187,3 @@
     font-size: 1.5rem;
   }
 }
-
-#mobileNav {
-  .mobileNav_footer {
-    text-align: center;
-    height: auto;
-    padding: 1rem;
-    background-color: var(--mm-spn-footer-bg);
-
-    ul {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-      position: static;
-      display: block;
-      width: auto;
-
-      > li {
-        display: inline-block;
-        border: 0;
-        padding: 0;
-        margin-inline: 1rem;
-        width: auto;
-
-        > a {
-          width: auto;
-          display: inline-block;
-          line-height: 1.3;
-
-          &:hover {
-            color: $primary;
-          }
-        }
-      }
-    }
-  }
-}
-

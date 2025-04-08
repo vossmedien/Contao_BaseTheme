@@ -64,39 +64,48 @@ const initAnimations = () => {
     const CONFIG = {
         // Mobile-Konfiguration (Bildschirmbreite <= 768px)
         mobile: {
+            // Breakpoint für mobile Geräte in Pixeln
             breakpoint: 768,
+
+            // Verzögerung zwischen Animationen von Geschwisterelementen in Sekunden
+            // Beispiel: Bei 3 Elementen -> 1. Element: sofort, 2. Element: 0.1s, 3. Element: 0.2s
             delay: 0.1,
+
+            // Anpassung des Erkennungsbereichs für Animationen
+            // Format: 'top right bottom left'
+            // -25% bedeutet: Element muss 25% der Viewport-Höhe weiter nach oben gescrollt sein
             rootMargin: '0px 0px -25% 0px',
+
+            // Grundverzögerung für jede Animation in Sekunden
+            // Wird bei allen Elementen angewendet, auch bei einzelnen
             baseDelay: 0.1,
+
+            // Mindestanteil des Elements, der sichtbar sein muss (0.3 = 30%)
+            // Erst wenn dieser Anteil sichtbar ist, startet die Animation
             visibilityThreshold: 0.3
         },
 
         // Desktop-Konfiguration (Bildschirmbreite > 768px)
         desktop: {
+            // Längere Verzögerung zwischen Geschwisterelementen für smoothere Animationen
             delay: 0.1,
+
+            // Größerer Abstand zum Viewport-Ende für frühere Animation
             rootMargin: '0px 0px -35% 0px',
+
+            // Etwas längere Grundverzögerung für smoothere Desktop-Animationen
             baseDelay: 0.15,
+
+            // Gleicher Schwellenwert wie mobile für konsistentes Verhalten
             visibilityThreshold: 0.4
         },
 
+        // CSS-Klasse die für Animationen verwendet wird (animate.css Bibliothek)
         animationClass: 'animate__animated'
     };
 
     let animatedElements = new Set();
     let observer;
-
-    const getElementVisibilityThreshold = (element) => {
-        const viewportHeight = window.innerHeight;
-        const elementHeight = element.offsetHeight;
-        const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
-        const baseThreshold = isMobile ? CONFIG.mobile.visibilityThreshold : CONFIG.desktop.visibilityThreshold;
-
-        if (elementHeight > viewportHeight) {
-            return Math.max(0.1, baseThreshold * (viewportHeight / elementHeight));
-        }
-
-        return baseThreshold;
-    };
 
     const initAnimateElements = () => {
         const animateElements = document.querySelectorAll('[class*="animate__"]');
@@ -117,13 +126,15 @@ const initAnimations = () => {
         const windowHeight = window.innerHeight || document.documentElement.clientHeight;
         const windowWidth = window.innerWidth || document.documentElement.clientWidth;
 
+        // Berechne den sichtbaren Anteil des Elements
         const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
         const totalHeight = rect.bottom - rect.top;
         const visibilityRatio = visibleHeight / totalHeight;
 
-        const threshold = getElementVisibilityThreshold(element);
+        const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
+        const {visibilityThreshold} = isMobile ? CONFIG.mobile : CONFIG.desktop;
 
-        return visibilityRatio >= threshold;
+        return visibilityRatio >= visibilityThreshold;
     };
 
     const getVisibleSiblings = (element) => {
@@ -139,23 +150,18 @@ const initAnimations = () => {
 
         const animateClass = element.getAttribute('data-animation') || element.getAttribute('data-aos');
         if (animateClass) {
-            const hasExistingDelay = element.style.animationDelay ||
-                element.getAttribute('data-animation-delay') ||
-                window.getComputedStyle(element).animationDelay !== '0s';
+            const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
+            const {delay, baseDelay} = isMobile ? CONFIG.mobile : CONFIG.desktop;
 
             requestAnimationFrame(() => {
                 element.classList.add(...animateClass.split(' '), CONFIG.animationClass);
 
-                if (!hasExistingDelay) {
-                    const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
-                    const {delay, baseDelay} = isMobile ? CONFIG.mobile : CONFIG.desktop;
-
-                    if (visibleSiblings.length > 1) {
-                        const elementIndex = visibleSiblings.indexOf(element);
-                        element.style.animationDelay = `${baseDelay + (elementIndex * delay)}s`;
-                    } else {
-                        element.style.animationDelay = `${baseDelay}s`;
-                    }
+                // Basis-Verzögerung plus zusätzliche Verzögerung für Gruppen
+                if (visibleSiblings.length > 1) {
+                    const elementIndex = visibleSiblings.indexOf(element);
+                    element.style.animationDelay = `${baseDelay + (elementIndex * delay)}s`;
+                } else {
+                    element.style.animationDelay = `${baseDelay}s`;
                 }
             });
             animatedElements.add(element);
@@ -166,14 +172,12 @@ const initAnimations = () => {
 
     const setupObserver = () => {
         const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
-        const {rootMargin} = isMobile ? CONFIG.mobile : CONFIG.desktop;
+        const {rootMargin, visibilityThreshold} = isMobile ? CONFIG.mobile : CONFIG.desktop;
 
         observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                const element = entry.target;
-                const threshold = getElementVisibilityThreshold(element);
-
-                if (entry.intersectionRatio >= threshold) {
+                if (entry.intersectionRatio >= visibilityThreshold) {
+                    const element = entry.target;
                     if (!animatedElements.has(element)) {
                         const visibleSiblings = getVisibleSiblings(element);
 
@@ -190,7 +194,7 @@ const initAnimations = () => {
                 }
             });
         }, {
-            threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5],
+            threshold: [0, visibilityThreshold],
             rootMargin
         });
     };
@@ -234,7 +238,6 @@ const initAnimations = () => {
         if (resizeIndex > -1) ResizeFunctions.splice(resizeIndex, 1);
     };
 };
-
 
 const rotateImage = () => {
     const images = document.querySelectorAll('.rotateImage');

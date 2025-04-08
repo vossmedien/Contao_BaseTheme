@@ -65,7 +65,7 @@ return array(
             'elementLabel' => '%s. Ansprechpartner',
             'inputType' => 'list',
             'minItems' => 1,
-            'maxItems' => 3,
+            'maxItems' => 6,
             'fields' => array(
                 'animation_type' => array(
                     'label' => array(
@@ -100,6 +100,14 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
+
+                'enable_tracking' => array(
+                    'label' => array('Klicktracking aktivieren', 'Aktiviert das Tracking für diesen Ansprechpartner'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
+                    'default' => '1',
+                ),
+
             ),
         ),
     ),

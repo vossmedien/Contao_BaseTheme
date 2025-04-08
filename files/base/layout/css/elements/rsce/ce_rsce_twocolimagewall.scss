@@ -9,32 +9,8 @@ html body {
     position: relative;
 
     &.container {
-      .row {
-        align-items: initial !important;
-      }
-
-      .content--col, .image--col {
-        position: relative;
-      }
-
-      .zoom-container {
-        width: 100%;
-        height: 100%;
-        left: 0;
-        top: 0;
-      }
-
-
-      .content--col {
-        .row {
-          .content--inner {
-            padding-left: var(--bs-gutter-x);
-          }
-
-          &.flex-row-reverse {
-            padding-right: var(--bs-gutter-x);
-          }
-        }
+      .ce--imagetextwall:not(:has(.flex-row-reverse)) .content--col .content--inner {
+        padding-left: 0;
       }
     }
 
@@ -44,10 +20,6 @@ html body {
 
       @include media-breakpoint-up(lg) {
         padding-inline: calc(var(--bs-container-gutter) * 3);
-      }
-
-      .ce--headline:last-child {
-        margin-bottom: 0;
       }
     }
 
@@ -276,52 +248,16 @@ html body {
     height: 100%;
   }
 
+
   @include media-breakpoint-up(lg) {
     position: absolute;
-  }
-
-  // Neue Positionierungsregeln
-  .ce--imagetextwall--outer .row & {
-    @include media-breakpoint-up(lg) {
-      width: 100vw;
-    }
-  }
-
-  // Content-Seite
-  .ce--imagetextwall--outer .row .content--col & {
-    @include media-breakpoint-up(lg) {
-      left: 0;
-      right: auto;
-    }
-  }
-
-  // Bild-Seite
-  .ce--imagetextwall--outer .row .image--col & {
-    @include media-breakpoint-up(lg) {
-      left: auto;
-      right: 0;
-    }
-  }
-
-  // Wenn Row umgekehrt ist
-  .ce--imagetextwall--outer .row.flex-row-reverse .content--col & {
-    @include media-breakpoint-up(lg) {
-      left: auto;
-      right: 0;
-    }
-  }
-
-  .ce--imagetextwall--outer .row.flex-row-reverse .image--col & {
-    @include media-breakpoint-up(lg) {
-      left: 0;
-      right: auto;
-    }
   }
 
   &.is-row-bg {
     width: 100% !important;
     left: 0;
   }
+
 
   iframe {
     min-height: 250px;
@@ -334,11 +270,13 @@ html body {
     height: 100%;
     transition: all 0.3s ease-in-out !important;
     @include media-breakpoint-down(lg) {
+      //max-height: 275px;
       bottom: 0;
     }
   }
 
   &:not(.no-stretch) {
+
     img, video {
       object-fit: cover;
       display: block;

@@ -12,8 +12,12 @@ $isTwoColumn = $this->layout === 'two_column';
         <div class="row <?php echo $isTwoColumn ? 'g-0 flex-lg-row-reverse' : 'flex-column'; ?>">
             <?php if ($isTwoColumn && $this->image): ?>
             <div class="col-lg-6" data-aos="animate__fadeIn">
-                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->headline, $this->size, "img-fluid", false, false); ?>
+                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, strip_tags($this->headline), $this->size, "img-fluid", false, false); ?>
             </div>
+
+
+
+
             <?php endif; ?>
 
             <div class="<?php echo $isTwoColumn ? 'col-lg-6 offset-all-margin-sm-bottom' : 'col-12'; ?>">
@@ -26,7 +30,7 @@ $isTwoColumn = $this->layout === 'two_column';
 
                       <?php if (!$isTwoColumn && $this->image): ?>
                         <div class="img-container" data-aos="animate__fadeIn">
-                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->headline, $this->size, "img-fluid", false, false); ?>
+                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null,  str_replace("<wbr>","",$this->headline), $this->size, "img-fluid", false, false); ?>
                         </div>
                         <?php endif; ?>
 

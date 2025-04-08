@@ -1,9 +1,8 @@
 import {setupFunctions, resetCookies} from "./cookieManager.js";
 
-// Namespace erstellen (falls noch nicht vorhanden)
-window.VSM = window.VSM || {};
-// LazyLoad-Instanz dem Namespace hinzufügen
-window.VSM.lazyLoadInstance = new LazyLoad({});
+
+const lazyLoadInstance = new LazyLoad({});
+
 
 window.addEventListener("cookiebar_save", setupFunctions);
 const btn = document.querySelector(".reset-cookies");
@@ -13,6 +12,9 @@ if (btn) {
         resetCookies();
     });
 }
+
+
+
 
 
 //window.dispatchEvent(new Event("resize"));
@@ -114,6 +116,9 @@ document.querySelectorAll(".count").forEach((el) => {
 });
 
 
+
+
+
 window.pushToDataLayer = function (type, position, element, additional) {
     dataLayer.push({
         "event": "navigationClick",
@@ -125,21 +130,17 @@ window.pushToDataLayer = function (type, position, element, additional) {
 };
 
 // Event-Listener hinzufügen
-
 var trackingLinks = document.querySelectorAll('[data-event-type]');
 trackingLinks.forEach(function (link) {
     link.addEventListener('click', function (e) {
-        var type = this.getAttribute('data-event-type');
-        var position = this.getAttribute('data-event-position');
-        var element = this.getAttribute('data-event-element');
-        var additional = this.getAttribute('data-event-additional');
+        var type = this.getAttribute('data-event-type') || '';
+        var position = this.hasAttribute('data-event-position') ? this.getAttribute('data-event-position') : null;
+        var element = this.hasAttribute('data-event-element') ? this.getAttribute('data-event-element') : null;
+        var additional = this.hasAttribute('data-event-additional') ? this.getAttribute('data-event-additional') : null;
 
         window.pushToDataLayer(type, position, element, additional);
     });
 });
 
 
-
-
-
-
+ 

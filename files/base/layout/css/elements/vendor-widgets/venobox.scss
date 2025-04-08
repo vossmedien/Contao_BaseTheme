@@ -10,14 +10,10 @@
 }
 
 /* Anpassung für volle Höhe bei Hochkant-Formaten */
-.vbox-child{
-  //max-height: calc(100vh - 60px);
-  //width: auto;
-
-  img{
-    max-height: calc(100vh - 60px);
-    width: auto;
-  }
+.vbox-fit .vbox-child.venoratio-9x16,
+.vbox-fit .vbox-child.venoratio-3x4 {
+  max-height: calc(100vh - 60px);
+  width: auto;
 }
 
 /* Zusätzliche Flexibilität für ungewöhnliche Formate */
@@ -58,10 +54,10 @@
     }
 
     iframe {
-      height: 615px;
+      min-height: 615px;
 
       @include media-breakpoint-up(md) {
-        height: 1042px;
+        min-height: 844px;
       }
     }
   }

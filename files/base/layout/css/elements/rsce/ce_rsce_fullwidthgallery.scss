@@ -8,17 +8,12 @@
 html body {
   .ce_rsce_fullwidthgallery {
     .row > div {
-      overflow: hidden;
-      position: relative;
+      //overflow: hidden;
     }
 
     .gallery-column {
       min-height: 100%;
       position: relative;
-      z-index: 9;
-      &:hover{
-        z-index: 11;
-      }
 
       .gallery-column--inner {
         height: 100%;
@@ -47,7 +42,6 @@ html body {
         }
 
         &:hover {
-
           .gallery-column--initial-content * {
             opacity: 0;
           }
@@ -57,7 +51,6 @@ html body {
           }
 
           .column--image-holder {
-
             transform: scale(1.035);
           }
         }

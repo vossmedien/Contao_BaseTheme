@@ -21,7 +21,15 @@
 
         <?php if ($this->gallery): ?>
             <div class="ce--fullwidthgallery" data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php endif; ?>">
-                <div class="row g-0 justify-content-center">
+                <div class="row
+
+<?php if ($this->styleManager->get('spaltenabstand', ['spaltenabstaende']) && (!$this->styleManager->get('spaltenabstand', ['spaltenabstaende_x']) && !$this->styleManager->get('spaltenabstand', ['spaltenabstaende_y']))): ?>
+ <?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende']); ?>
+<?php else: ?>
+<?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende_x']); ?> <?= $this->styleManager->get('spaltenabstand', ['spaltenabstaende_y']); ?>
+<?php endif; ?>
+
+">
                     <style>
                         <?php foreach ($this->gallery as $x => $e) : ?>
                         .gallery-column-<?= $this->id; ?>-<?= $x; ?>:hover .gallery-column--hover-content {

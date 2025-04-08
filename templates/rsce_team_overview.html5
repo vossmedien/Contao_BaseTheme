@@ -20,7 +20,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
         <div class="team-members" >
             <?php foreach ($this->team_members as $index => $member): ?>
                 <div data-aos="<?php echo $this->animation_type; ?>" class="team-member <?php echo $index % 2 != 0 ? 'even' : 'odd'; ?>">
-                    <div class="row g-5 align-items-center gx-md-4 <?php echo $index % 2 != 0 ? 'flex-row-reverse' : ''; ?>">
+                    <div class="row  align-items-center gx-md-4 <?php echo $index % 2 != 0 ? 'flex-row-reverse' : ''; ?>">
                         <div class="col-12 col-md-6 member-image">
                             <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
                                 $member->image,
@@ -37,7 +37,12 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                             <p class="member-position"><?php echo $member->position; ?></p>
                             <?php if($member->phone):?>
                             <p class="member-phone">
-                                <i class="fal fa-phone"></i> <a href="tel:+<?php echo preg_replace('/[^0-9]/', '', $member->phone); ?>"><?php echo $member->phone; ?></a>
+                                <i class="fal fa-phone"></i>
+                                <a href="tel:+<?php echo preg_replace('/[^0-9]/', '', $member->phone); ?>"
+                                   <?php if ($this->enable_tracking): ?>
+                                   onclick="window.pushToDataLayer('Telefon', 'Team', '<?php echo $member->phone; ?>', '<?php echo $member->position; ?>');"
+                                   <?php endif; ?>
+                                ><?php echo $member->phone; ?></a>
                             </p>
                             <?php endif;?>
                             <div class="member-description">

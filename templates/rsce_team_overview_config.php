@@ -35,6 +35,14 @@ return array(
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
             'eval' => array('rgxp' => 'digit', 'includeBlankOption' => true, 'tl_class' => 'clr')
         ),
+
+             'enable_tracking' => array(
+                    'label' => array('Klicktracking aktivieren', 'Aktiviert das Klick-Tracking'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+
         'team_members' => array(
             'label' => array('Teammitglieder', ''),
             'elementLabel' => '%s. Teammitglied',
@@ -57,6 +65,7 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
+
                 'description' => array(
                     'label' => array('Beschreibung', ''),
                     'inputType' => 'textarea',

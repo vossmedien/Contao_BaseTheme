@@ -34,7 +34,13 @@ return array(
         'is_faq' => array(
             'label' => array('Ist FAQ-Element', 'Aktivieren Sie diese Option, wenn dies ein FAQ-Element ist'),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'w50 clr'),
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
+        'enable_tracking' => array(
+            'label' => array('Klicktracking aktivieren', 'Aktiviert das Klick-Tracking'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
         ),
 
         'elements' => array(
@@ -48,6 +54,7 @@ return array(
                     'label' => array('Akkordeon anfangs geöffnet anzeigen', ''),
                     'inputType' => 'checkbox',
                 ),
+
 
                 'onlystyle' => array(
                     'label' => array('Text nur als Überschrift darstellen (hat dementsprechend keinen Einfluss auf SEO)', 'macht Sinn wenn man z. B. eine H3 unterhalb einer H1 anzeigen möchte, ohne dass eine H2 existiert'),

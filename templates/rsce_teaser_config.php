@@ -26,7 +26,8 @@ return [
         'text_color' => [
             'label' => ['Schriftfarbe', 'Wählen Sie die Schriftfarbe (Hexadezimalwert oder CSS-Variable)'],
             'inputType' => 'text',
-            'eval' => [// Erhöht, um längere CSS-Variablen zu ermöglichen
+            'eval' => [
+                'maxlength' => 50,  // Erhöht, um längere CSS-Variablen zu ermöglichen
                 'tl_class' => 'w50',
                 'allowHtml' => true,  // Erlaubt die Eingabe von CSS-Variablen
             ],
@@ -72,6 +73,7 @@ return [
             'label' => ['Hintergrundfarbe', 'Wählen Sie die Hintergrundfarbe (Hexadezimalwert oder CSS-Variable)'],
             'inputType' => 'text',
             'eval' => [
+                'maxlength' => 50,
                 'tl_class' => 'w50',
                 'allowHtml' => true,
             ],

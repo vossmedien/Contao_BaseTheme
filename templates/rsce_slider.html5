@@ -139,6 +139,9 @@ if (!isset($this->size)) {
             const macyInstances = {};
             let lastWidth = window.innerWidth;
 
+            var lazyLoadInstance = new LazyLoad({
+                elements_selector: ".lazy"
+            });
 
             function loadMacy(callback) {
                 if (typeof Macy !== 'undefined') {
@@ -247,7 +250,6 @@ if (!isset($this->size)) {
                             img.addEventListener('load', () => {
                                 if (macyInstances[containerId]) {
                                     macyInstances[containerId].recalculate(true);
-                                    window.VSM.lazyLoadInstance.update();
                                 }
                             });
                         });
@@ -324,11 +326,9 @@ if (!isset($this->size)) {
                         on: {
                             init: function () {
                                 updateLazyLoading(this);
-                                window.VSM.lazyLoadInstance.update();
                             },
                             slideChange: function () {
                                 updateLazyLoading(this);
-                                window.VSM.lazyLoadInstance.update();
                             }
                         }
                     });
@@ -357,7 +357,7 @@ if (!isset($this->size)) {
 
                 removeLazyLoading(floorIndex);
                 removeLazyLoading(ceilIndex);
-                window.VSM.lazyLoadInstance.update();
+                lazyLoadInstance.update();
             }
 
             function initShowMoreButton() {
@@ -408,11 +408,13 @@ if (!isset($this->size)) {
                     const className = button.classList.contains('show-more-desktop') ? 'hidden-desktop' : 'hidden-mobile';
 
                     if (isShowingMore) {
+                        // Array aus items erstellen und nach DOM-Reihenfolge sortieren
                         const itemsArray = Array.from(items);
                         itemsArray.sort((a, b) => {
                             return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
                         });
 
+                        // Items mit inkrementellem Delay anzeigen
                         itemsArray.forEach((item, index) => {
                             item.style.animationDelay = `${index * 0.1}s`;
                             item.classList.remove(className);
@@ -433,10 +435,8 @@ if (!isset($this->size)) {
                                 });
                             }
                         });
-
-                        // LazyLoad nach dem Anzeigen neuer Items aktualisieren
-                        window.VSM.lazyLoadInstance.update();
                     } else {
+                        // Beim Ausblenden alle Delays zurücksetzen und Items ausblenden
                         items.forEach(item => {
                             item.style.animationDelay = '0s';
                             item.classList.add(className);
@@ -448,8 +448,6 @@ if (!isset($this->size)) {
 
                     if (macyInstances[containerId]) {
                         macyInstances[containerId].recalculate(true);
-                        // LazyLoad nach Macy-Neuberechnung aktualisieren
-                        setTimeout(() => window.VSM.lazyLoadInstance.update(), 100);
                     }
                 }
 

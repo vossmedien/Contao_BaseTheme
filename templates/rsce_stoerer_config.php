@@ -168,9 +168,19 @@ return array(
                     'eval' => array('rte' => 'tinyMCE'),
                 ),
 
-                'link_url' => array(
-                    'label' => array('Verlinkung', ''),
-                    'inputType' => 'url',
+                'is_phone_number' => array(
+                    'label' => array('Link ist Telefonnummer', 'Aktivieren Sie diese Option, wenn der Link eine Telefonnummer ist.'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+                'enable_tracking' => array(
+                    'label' => array('Tracking aktivieren', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => ' clr'),
+                    'dependsOn' => array(
+                        'field' => 'is_phone_number',
+                    ),
                 ),
 
                 'new_tab' => array(
@@ -178,6 +188,13 @@ return array(
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
+
+                'link_url' => array(
+                    'label' => array('Verlinkung', ''),
+                    'inputType' => 'url',
+                ),
+
+
             ),
         ),
     ),
