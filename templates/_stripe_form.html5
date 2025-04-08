@@ -1,0 +1,227 @@
+<form id="customerDataForm"
+      data-customer-form
+      data-stripe-key="<?= $this->stripeKey ?>"
+      data-create-user="<?= $this->createUser ?>"
+      data-success-url="<?= $this->successUrl ?>"
+      data-currency="<?= $this->currency ?>"
+      data-product-data="<?= $this->productData ?>">
+
+    <div class="modal-body">
+
+        <div data-product-info></div>
+        <input type="hidden" id="product-id" name="product-id">
+        <input type="hidden" name="element-id" value="<?= $this->elementId ?>">
+
+        <?php if ($this->createUser): ?>
+            <div class="user-data mb-4 bg-light p-2">
+                <div class="alert alert-info mt-0 mb-2">
+                    <strong>Hinweis:</strong> Mit dieser Bestellung wird automatisch ein Benutzerkonto für Sie erstellt.
+                </div>
+                <div class="row g-1">
+                    <div class="col-md-6 widget">
+                        <label for="username" class="form-label">Benutzername *</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="col-md-6 widget">
+                        <label for="password" class="form-label">Passwort *</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </div>
+            </div>
+
+
+        <?php endif; ?>
+
+        <?php if (is_array($this->personalDataFields)): ?>
+            <div class="personal-data">
+                <div class="formbody">
+                    <?php if (in_array('salutation', $this->personalDataFields)): ?>
+                        <div class="col-lg-4 widget widget-select">
+                            <label for="salutation" class="form-label">Anrede *</label>
+                            <select class="form-select" id="salutation" name="salutation" required>
+                                <option value="">Bitte wählen</option>
+                                <option value="Herr">Herr</option>
+                                <option value="Frau">Frau</option>
+                                <option value="Divers">Divers</option>
+                            </select>
+                            <div class="invalid-feedback">Bitte wählen Sie eine Anrede.</div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (in_array('firstname', $this->personalDataFields)): ?>
+                        <div class="col-lg-4 widget">
+                            <label for="firstname" class="form-label">Vorname *</label>
+                            <input type="text" class="form-control" id="firstname" name="firstname" required>
+                            <div class="invalid-feedback">Bitte geben Sie Ihren Vornamen ein.</div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (in_array('lastname', $this->personalDataFields)): ?>
+                        <div class="col-lg-4 widget">
+                            <label for="lastname" class="form-label">Nachname *</label>
+                            <input type="text" class="form-control" id="lastname" name="lastname" required>
+                            <div class="invalid-feedback">Bitte geben Sie Ihren Nachnamen ein.</div>
+                        </div>
+                    <?php endif; ?>
+
+
+
+                    <?php if (in_array('email', $this->personalDataFields) || in_array('phone', $this->personalDataFields)): ?>
+
+                        <?php if (in_array('email', $this->personalDataFields)): ?>
+                            <div class="col-lg-6 widget">
+                                <label for="email" class="form-label">E-Mail *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                                <div class="invalid-feedback">Bitte geben Sie eine gültige E-Mail-Adresse ein.</div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (in_array('phone', $this->personalDataFields)): ?>
+                            <div class="col-lg-6 widget">
+                                <label for="phone" class="form-label">Telefon <?= in_array('phone_required', $this->personalDataFields) ? '*' : '' ?></label>
+                                <input type="tel" class="form-control" id="phone" name="phone" <?= in_array('phone_required', $this->personalDataFields) ? 'required' : '' ?>>
+                                <div class="invalid-feedback">Bitte geben Sie eine Telefonnummer ein.</div>
+                            </div>
+                        <?php endif; ?>
+
+                    <?php endif; ?>
+
+                    <?php if (in_array('company', $this->personalDataFields)): ?>
+
+                        <div class="col-12 widget">
+                            <label for="company" class="form-label">Firma</label>
+                            <input type="text" class="form-control" id="company" name="company">
+                        </div>
+
+                    <?php endif; ?>
+
+                    <?php if (in_array('street', $this->personalDataFields)): ?>
+
+                        <div class="col-lg-12 widget">
+                            <label for="street" class="form-label">Straße & Hausnummer *</label>
+                            <input type="text" class="form-control" id="street" name="street" required>
+                            <div class="invalid-feedback">Bitte geben Sie eine Straße ein.</div>
+                        </div>
+
+                    <?php endif; ?>
+
+                    <?php if (in_array('postal', $this->personalDataFields)): ?>
+
+                        <div class="col-lg-4 widget">
+                            <label for="postal" class="form-label">PLZ *</label>
+                            <input type="text" class="form-control" id="postal" name="postal" required>
+                            <div class="invalid-feedback">Bitte geben Sie eine PLZ ein.</div>
+                        </div>
+                        <div class="col-lg-8 widget">
+                            <label for="city" class="form-label">Ort *</label>
+                            <input type="text" class="form-control" id="city" name="city" required>
+                            <div class="invalid-feedback">Bitte geben Sie einen Ort ein.</div>
+                        </div>
+
+                    <?php endif; ?>
+
+                    <?php if (in_array('country', $this->personalDataFields)): ?>
+
+                        <div class="col-12 widget widget-select">
+                            <label for="country" class="form-label">Land *</label>
+                            <select class="form-select" id="country" name="country" required>
+                                <option value="">Bitte wählen</option>
+                                <option value="DE" selected>Deutschland</option>
+                                <option value="AT">Österreich</option>
+                                <option value="CH">Schweiz</option>
+                            </select>
+                            <div class="invalid-feedback">Bitte wählen Sie ein Land.</div>
+                        </div>
+
+                    <?php endif; ?>
+
+
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Die Zahlungsmethode-Auswahl wird bei Stripe Checkout direkt von Stripe gehandhabt -->
+        <?php if (false && $this->useStripeElements): ?>
+        <div class="my-3">
+            <label class="form-label">Zahlungsmethode *</label>
+            <div id="payment-element"></div>
+            <div id="payment-errors" class="invalid-feedback d-block" role="alert"></div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($this->showPrivacyNotice): ?>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="privacy" name="privacy" required>
+                <label class="form-check-label" for="privacy">
+                    Ich habe die
+                    <a href="{{link_url::<?= $this->privacyPage ?>}}" target="_blank">Datenschutzerklärung</a> gelesen
+                    und akzeptiere diese. *
+                </label>
+                <div class="invalid-feedback">
+                    Bitte akzeptieren Sie die Datenschutzerklärung.
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <div data-form-error class="alert alert-danger d-none"></div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+        <button type="submit" class="btn btn-primary">
+            <span class="spinner-border spinner-border-sm d-none" data-form-spinner role="status"></span>
+            <span>Jetzt kostenpflichtig bestellen</span>
+        </button>
+    </div>
+    
+    <!-- Verstecktes Debug-Toggle Element -->
+    <?php if ($_ENV['APP_ENV'] === 'dev'): ?>
+    <div class="text-center mt-2">
+        <small><a href="#" onclick="document.getElementById('debug-info').classList.toggle('d-none'); return false;">Debug-Info</a></small>
+    </div>
+    <?php endif; ?>
+
+    <!-- Produkt Info Template -->
+    <template id="product-info-template"
+              data-template-heading="Ihre Bestellung"
+              data-template-product-label="Produkt:"
+              data-template-price-label="Preis:"
+              data-template-price-badge="inkl. MwSt."
+              data-template-duration-label="Laufzeit:"
+              data-template-expiry-label="Gültig bis:">
+        <div class="product-info mb-3">
+            <h5 data-template-heading>Ihre Bestellung</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th data-template-product-label>Produkt</th>
+                            <td data-product-title></td>
+                        </tr>
+                        <tr>
+                            <th data-template-price-label>Preis</th>
+                            <td>
+                                <strong data-product-price></strong>
+                                <span data-template-price-badge class="badge bg-primary ms-2">inkl. MwSt.</span>
+                            </td>
+                        </tr>
+                        <tr data-tax-row>
+                            <th>enthaltene MwSt.</th>
+                            <td data-tax-amount></td>
+                        </tr>
+                        <tr data-duration-row class="d-none">
+                            <th data-template-duration-label>Laufzeit</th>
+                            <td data-product-duration></td>
+                        </tr>
+                        <tr data-expiry-row class="d-none">
+                            <th data-template-expiry-label>Gültig bis</th>
+                            <td data-product-expiry></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+</form>

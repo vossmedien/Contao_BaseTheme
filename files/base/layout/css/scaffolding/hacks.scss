@@ -3,26 +3,17 @@
 }
 
 
-/* AOS.js */
-
-[data-aos*="animate__"], [class*="animate__"]:not(.animate__animated) {
-  &:not([data-aos="no-animation"]) {
-    visibility: hidden;
+/* AOS */
+[data-animation*="animate__"],
+[data-aos*="animate__"],
+[class*="animate__"] {
+  &:not(.animate__animated):not([data-aos="no-animation"]),
+  &:not([data-aos="no-animation"]):has(.lazy:not(.loaded)) {
+    visibility: hidden !important;
   }
 
   &.animate__animated {
     visibility: visible;
-  }
-}
-
-
-.lazy {
-  opacity: 0;
-  transition: all 0.25s ease-in-out;
-
-  &.loaded,
-  &[loading="eager"] {
-    opacity: 1;
   }
 }
 
@@ -66,30 +57,56 @@ div:has([class*="text-"]):has([class*="-center"]) {
 
 
 @include media-breakpoint-up(lg) {
-  .content--element:has(.pull-bottom) {
-    padding-bottom: 0 !important;
-  }
   .pulled-up-element {
+    > .ce--inner {
+      margin-inline: calc(-1 * (var(--main-gap) / 2));
+      padding: calc(var(--main-gap) / 2);
+      background-color: var(--bs-body-bg);
+    }
+
+
     .row:not(.align-items-center) > div:last-child {
-      padding-top: calc((var(--main-gap)/2) + 150px) !important;
+      padding-top: calc((var(--main-gap) / 2) + 150px) !important;
       //padding-top: 150px !important;
     }
 
     .team-members .team-member:first-child {
-      .row.align-items-center{
+      .row.align-items-center {
         align-items: flex-start !important;
       }
 
       .member-info {
-        padding-top: calc((var(--main-gap)/2) + 150px) !important;
+        padding-top: calc((var(--main-gap) / 2) + 150px) !important;
       }
     }
   }
 }
 
+.moved-content {
+  position: relative;
+  background-color: var(--bs-body-bg);
+  z-index: 4;
+  display: block;
+  //box-shadow: var(--bs-box-shadow-lg);
+  padding-top: var(--main-gap);
+
+  &[style] {
+    opacity: 1;
+  }
+}
+
+
 @include media-breakpoint-down(lg) {
   .pulled-up-element {
-    margin-bottom: 0 !important;
     transform: none !important;
+  }
+}
+
+
+.container-wide {
+
+  @include media-breakpoint-up(xxl) {
+    max-width: 85vw;
+    margin-inline: auto;
   }
 }

@@ -134,17 +134,7 @@ a.disabled-link {
   display: none;
 }
 
-.moved-content {
-  position: relative;
-  background-color: var(--bs-body-bg);
-  z-index: 4;
-  display: block;
-  box-shadow: var(--bs-box-shadow-lg);
 
-  &[style] {
-    opacity: 1;
-  }
-}
 
 .remove-bottom-gutter {
   margin-bottom: calc(-1 * var(--main-gap)) !important;

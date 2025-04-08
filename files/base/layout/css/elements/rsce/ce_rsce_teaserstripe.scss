@@ -5,13 +5,10 @@
 @import "../../_theme/variables";
 
 
-html body .ce_rsce_teaserstripe.with-bg {
-  padding-block: calc(var(--main-gap));
-
-
-  //margin-bottom: var(--main-gap);
-
-  @include media-breakpoint-up(lg) {
-    padding-block: calc(var(--main-gap) / 2);
+html body .ce_rsce_teaserstripe {
+  .ce--inner.with-bg {
+    .content-wrapper{
+      padding-block: var(--main-gap);
+    }
   }
 }

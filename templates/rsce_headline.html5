@@ -1,6 +1,6 @@
 <div id="<?= $this->cssID; ?>" class="content--element <?= $this->class; ?>   ">
     <div class="ce--inner ">
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -13,7 +13,7 @@
 
 
         <?php if ($this->desc): ?>
-            <div data-aos="<?= $this->animation_type;?>" class="text">
+            <div data-animation="<?= $this->animation_type;?>" class="text">
                 <?= $this->desc; ?>
             </div>
         <?php endif; ?>

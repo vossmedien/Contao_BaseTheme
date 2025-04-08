@@ -1,6 +1,6 @@
 
 
-<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()):?>
+<?php if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()):?>
 </div>
 </div>
 </div>

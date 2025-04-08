@@ -1,0 +1,117 @@
+<?php
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_videogrid.min.css|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'files/base/layout/js/_elements/ce_rsce_videogrid.js|static';
+}
+?>
+
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner">
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            "container"
+        ); ?>
+
+<?php
+$gridId = 'video-grid-' . rand(1000, 9999);
+$videos = $this->videos;
+
+// Konfiguration
+$numColumns = 3;
+$minVideosPerColumn = 4; // Reduziert auf 4 als Basis
+
+// Videos in Arrays aufteilen
+$columns = array_fill(0, $numColumns, []);
+
+// Verteilung der Videos auf die Spalten
+foreach ($videos as $index => $video) {
+    $columnIndex = $index % $numColumns;
+    $columns[$columnIndex][] = $video;
+}
+
+// Für jede Spalte: Wenn nötig, Videos duplizieren bis Mindestanzahl erreicht
+foreach ($columns as $columnIndex => &$columnVideos) {
+    while (count($columnVideos) < $minVideosPerColumn) {
+        $columnVideos = array_merge($columnVideos, $columnVideos);
+    }
+    // Optional: Zufällig mischen
+    shuffle($columnVideos);
+}
+?>
+
+
+
+            <div class="video-grid" id="<?= $gridId ?>">
+                <div class="video-columns">
+                    <?php foreach ($columns as $columnIndex => $columnVideos): ?>
+                        <div class="video-column">
+                            <div class="scroll-wrapper">
+                                <div class="scroll-content">
+                                    <?php foreach ($columnVideos as $video): ?>
+                                        <div class="video-item">
+                                            <div class="video-preview" data-video-loaded="false">
+                                                <div class="video-placeholder" data-video-uuid="<?= $video->preview_video ?>">
+
+                                                    <div class="lazy-video-container"
+                                                         data-video-params="<?= htmlspecialchars(json_encode([
+                                                             'uuid' => $video->preview_video,
+                                                             'class' => 'video-preview--player',
+                                                             'name' => $video->title,
+                                                             'description' => $video->description,
+                                                             'poster' => Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($video->poster_image, $this->size),
+                                                             'attributes' => 'autoplay muted loop playsinline'
+                                                         ])) ?>">
+
+                                                    </div>
+                                                </div>
+
+                                                <?php if ($video->title || $video->description): ?>
+                                                    <div class="video-info">
+                                                        <?php if ($video->title): ?>
+                                                            <h3 class="video-title"><?= $video->title ?></h3>
+                                                        <?php endif; ?>
+
+                                                        <?php if ($video->description): ?>
+                                                            <div class="video-description">
+                                                                <?= $video->description ?>
+
+                                                                     <a href="{{file::<?= $video->main_video ?>}}"
+                                                   class="video-lightbox lightbox_<?= $gridId ?>"
+                                                   title="<?= $video->title ?>"
+                                                   data-vbtype="video">
+                                                    <span class="play-button"></span>
+                                                </a>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php endif; ?>
+
+
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+
+        <!-- Mobile View -->
+        <div class="video-list d-lg-none">
+            <?php foreach ($videos as $video): ?>
+                <!-- Gleicher Video-Block wie oben, aber ohne Scroll-Wrapper -->
+                <div class="video-item">
+                    <!-- Video Content -->
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>

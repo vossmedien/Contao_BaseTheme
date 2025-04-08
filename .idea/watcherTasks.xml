@@ -1,10 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ProjectTasksOptions">
+    <TaskOptions isEnabled="false">
+      <option name="arguments" value="-c &quot;sass_file=$FileNameWithoutAllExtensions$.css &amp;&amp; /Users/vossmedien/.nvm/versions/node/v20.9.0/lib/node_modules/sass/sass.js --style=compressed --no-source-map --no-charset --no-error-css --quiet-deps --precision=5 --update $FileName$:$sass_file &amp;&amp; while [ ! -f $sass_file ] || [ $(( $(date +%s) - $(stat -f %m $sass_file) )) -gt 2 ]; do sleep 0.1; done &amp;&amp; /Users/vossmedien/.nvm/versions/node/v20.9.0/bin/postcss $sass_file -o $FileNameWithoutAllExtensions$.min.css --config /Users/vossmedien/.postcss/postcss.config.js --no-map&quot;" />
+      <option name="checkSyntaxErrors" value="true" />
+      <option name="description" />
+      <option name="exitCodeBehavior" value="ERROR" />
+      <option name="fileExtension" value="scss" />
+      <option name="immediateSync" value="false" />
+      <option name="name" value="Kombination" />
+      <option name="output" value="$FileNameWithoutAllExtensions$.css" />
+      <option name="outputFilters">
+        <array />
+      </option>
+      <option name="outputFromStdout" value="false" />
+      <option name="program" value="/bin/bash" />
+      <option name="runOnExternalChanges" value="true" />
+      <option name="scopeName" value="Project Files" />
+      <option name="trackOnlyRoot" value="false" />
+      <option name="workingDir" value="$FileDir$" />
+      <envs />
+    </TaskOptions>
+    <TaskOptions isEnabled="false">
+      <option name="arguments" value="$FileName$:$FileNameWithoutAllExtensions$.css --style=compressed --no-source-map --no-charset --no-error-css --quiet-deps --precision=5 --update --load-path=node_modules" />
+      <option name="checkSyntaxErrors" value="true" />
+      <option name="description" />
+      <option name="exitCodeBehavior" value="ERROR" />
+      <option name="fileExtension" value="scss" />
+      <option name="immediateSync" value="false" />
+      <option name="name" value="SCSS Copy" />
+      <option name="output" value="$FileNameWithoutAllExtensions$.css" />
+      <option name="outputFilters">
+        <array />
+      </option>
+      <option name="outputFromStdout" value="false" />
+      <option name="program" value="$USER_HOME$/.nvm/versions/node/v20.9.0/lib/node_modules/sass/sass.js" />
+      <option name="runOnExternalChanges" value="true" />
+      <option name="scopeName" value="Project Files" />
+      <option name="trackOnlyRoot" value="false" />
+      <option name="workingDir" value="" />
+      <envs />
+    </TaskOptions>
     <enabled-global>
       <option value="SCSS" />
-      <option value="CSS" />
-      <option value="SCSS style.min.css" />
     </enabled-global>
   </component>
 </project>

@@ -1,7 +1,7 @@
 <?php
 
-use VSM_HelperFunctions\ButtonHelper;
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 //rsce_my_element_config.php
 return array(
@@ -125,6 +125,11 @@ return array(
             'fields' => array(
                 'row_name' => array(
                     'label' => array('Zeilen-Bezeichnung', 'dient rein zur Orientierung, hat keinen Einfluss auf Frontend'),
+                    'inputType' => 'text',
+                ),
+
+                'row_id' => array(
+                    'label' => array('ID für Zeile', 'z. B. für Ankernavigation'),
                     'inputType' => 'text',
                 ),
 
@@ -678,7 +683,7 @@ return array(
                     'label' => array('Buttons', ''),
                     'elementLabel' => '%s. Button',
                     'inputType' => 'list',
-                    'minItems' => 1,
+                    'minItems' => 0,
                     'maxItems' => 20,
                     'eval' => array('tl_class' => 'clr'),
                     'dependsOn' => array(

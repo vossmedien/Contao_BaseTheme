@@ -3,7 +3,7 @@ use Contao\FilesModel;
 use Contao\StringUtil;
 
 
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_bodybg.min.css|static';
     $articleSelector = "[data-articleid=\"article-$this->pid\"]";
     $angle = $this->winkel ? (strpos($this->winkel, '-') !== false ? str_replace("-", "", $this->winkel) . "deg" : "-{$this->winkel}deg") : 'calc(-1 * var(--base-skew))';
@@ -24,7 +24,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 }
 ?>
 
-<?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+<?php if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()): ?>
     <?php if ($this->only_article): ?>
         <style>
             <?php echo $articleSelector; ?>

@@ -1,7 +1,8 @@
 <?php
 
-use VSM_HelperFunctions\ButtonHelper;
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
+use Contao\StringUtil;
 
 //rsce_my_element_config.php
 return array(
@@ -33,11 +34,97 @@ return array(
             'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
 
-
         'show_icon' => array(
             'label' => array('Info-Icon oben rechts anzeigen, falls Hover-Inhalte vorhanden sind', 'Um zu symbolisieren, dass hier nach Hover Inhalte existieren'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'gallery_layout' => array(
+            'label' => array('Galerie-Layout', ''),
+            'inputType' => 'select',
+            'options' => array(
+                'flex' => 'Flexbox Layout (Standard)',
+            ),
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'layout_settings' => array(
+            'label' => array('Layout-Einstellungen', ''),
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'columns_xl' => array(
+            'label' => array('Spalten pro Zeile (XL)', 'Ab 1200px Bildschirmbreite'),
+            'inputType' => 'select',
+            'options' => array(1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9', 10 => '10'),
+            'default' => 4,
+            'eval' => array('tl_class' => 'w25'),
+        ),
+
+        'columns_desktop' => array(
+            'label' => array('Spalten pro Zeile (Desktop)', 'Ab 992px Bildschirmbreite'),
+            'inputType' => 'select',
+            'options' => array(1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9', 10 => '10'),
+            'default' => 3,
+            'eval' => array('tl_class' => 'w25'),
+        ),
+
+        'columns_tablet' => array(
+            'label' => array('Spalten pro Zeile (Tablet)', 'Zwischen 768px und 992px Bildschirmbreite'),
+            'inputType' => 'select',
+            'options' => array(1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9', 10 => '10'),
+            'default' => 2,
+            'eval' => array('tl_class' => 'w25'),
+        ),
+
+        'columns_mobile' => array(
+            'label' => array('Spalten pro Zeile (Mobile)', 'Unter 768px Bildschirmbreite'),
+            'inputType' => 'select',
+           'options' => array(1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9', 10 => '10'),
+            'default' => 1,
+            'eval' => array('tl_class' => 'w25'),
+        ),
+
+        'gap' => array(
+            'label' => array('Abstand zwischen den Elementen (px)', 'Beispiel: 10'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50', 'rgxp' => 'natural'),
+            'default' => 0,
+        ),
+
+        'min_height' => array(
+            'label' => array('Mindesthöhe der Elemente (px)', 'Optional: Leer lassen für automatische Höhe'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50', 'rgxp' => 'natural'),
+        ),
+
+        'selecttype' => array(
+            'label' => array('Bilder ', ''),
+            'inputType' => 'radio',
+            'eval' => array('tl_class' => 'clr'),
+            'options' => array(
+                'multiple' => 'Mehrere Bilder oder Ordner auswählen',
+                'single' => 'Bilder einzeln auswählen und optional Bildbeschreibung und Bildtitel hinzufügen',
+            ),
+        ),
+
+        'multiSRC' => array(
+            'inputType' => 'standardField',
+            'eval' => array(
+                'multiple' => true,
+                'fieldType' => 'checkbox',
+                'orderField' => 'orderSRC',
+                'files' => true,
+                'mandatory' => false,
+                'isGallery' => true,
+                'extensions' => 'jpg,jpeg,png,svg,webp',
+            ),
+            'dependsOn' => array(
+                'field' => 'selecttype',
+                'value' => 'multiple',
+            ),
         ),
 
         'size' => array(
@@ -52,12 +139,36 @@ return array(
             ),
         ),
 
+        'open_lightbox' => array(
+            'label' => array('Bilder in Lightbox öffnen', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+            'dependsOn' => array(
+                'field' => 'selecttype',
+                'value' => 'multiple',
+            ),
+        ),
+
+        'custom_column_widths' => array(
+            'label' => array('Spaltenbreite für jedes Bild individuell festlegen', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'selecttype',
+                'value' => 'single',
+            ),
+        ),
+
         'gallery' => array(
             'label' => array('Elemente', ''),
             'elementLabel' => '%s. Element',
             'inputType' => 'list',
             'minItems' => 1,
             'maxItems' => 999,
+            'dependsOn' => array(
+                'field' => 'selecttype',
+                'value' => 'single',
+            ),
             'fields' => array(
 
                 'animation_type' => array(
@@ -71,22 +182,29 @@ return array(
 
                 'column_width' => array(
                     'label' => array(
-                        'de' => array('Spaltenbreite', ''),
+                        'de' => array('Relative Spaltenbreite', 'Wie viel Raum dieses Element im Verhältnis einnehmen soll (1-10)'),
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'col-12 col-md-6 col-lg-3' => '25%',
-                        'col-12 col-md-6 col-lg-4' => '33%',
-                        'col-12 col-md-6' => '50%',
-                        'col-12 col-md-6 col-lg-8' => '66.66%',
-                        'col-12 col-md-6 col-lg-9' => '75%',
-                        'col-12' => 'Volle Breite',
+                        '1' => '1/10 der Zeile (10%)',
+                        '2' => '2/10 der Zeile (20%)',
+                        '3' => '3/10 der Zeile (30%)',
+                        '4' => '4/10 der Zeile (40%)',
+                        '5' => '5/10 der Zeile (50%)',
+                        '6' => '6/10 der Zeile (60%)',
+                        '7' => '7/10 der Zeile (70%)',
+                        '8' => '8/10 der Zeile (80%)',
+                        '9' => '9/10 der Zeile (90%)',
+                        '10' => 'Volle Breite (100%)',
                     ),
+                    'default' => '5',
                     'eval' => array(
                         'tl_class' => 'w50'
                     ),
+                    'dependsOn' => array(
+                        'field' => 'custom_column_widths',
+                    ),
                 ),
-
 
                 'settings_image' => array(
                     'label' => array('Bildeinstellungen', ''),
@@ -232,75 +350,7 @@ return array(
                         'de' => array('Art der Einblendeanimation für Hover-Content', 'Siehe https://animate.style/ für Beispiele'),
                     ),
                     'inputType' => 'select',
-                    'options' => array(
-                        /* Fading entrances  */
-                        'fadeIn' => 'fadeIn (Standard)',
-                        'no-animation' => 'Keine Animation',
-                        'fadeInUp' => 'fadeInUp',
-                        'fadeInDown' => 'fadeInDown',
-                        'fadeInDownBig' => 'fadeInDownBig',
-                        'fadeInLeft' => 'fadeInLeft',
-                        'fadeInLeftBig' => 'fadeInLeftBig',
-                        'fadeInRight' => 'fadeInRight',
-                        'fadeInRightBig' => 'fadeInRightBig',
-                        'fadeInUpBig' => 'fadeInUpBig',
-                        'fadeInTopLeft' => 'fadeInTopLeft',
-                        'fadeInTopRight' => 'fadeInTopRight',
-                        'fadeInBottomLeft' => 'fadeInBottomLeft',
-                        'fadeInBottomRight' => 'fadeInBottomRight',
-                        /* Attention seekers  */
-                        'bounce' => 'bounce',
-                        'flash' => 'flash',
-                        'pulse' => 'pulse',
-                        'rubberBand' => 'rubberBand',
-                        'shakeX' => 'shakeX',
-                        'shakeY' => 'shakeY',
-                        'headShake' => 'headShake',
-                        'swing' => 'swing',
-                        'tada' => 'tada',
-                        'wobble' => 'wobble',
-                        'jello' => 'jello',
-                        'heartBeat' => 'heartBeat',
-                        /* Back entrances */
-                        'backInDown' => 'backInDown',
-                        'backInLeft' => 'backInLeft',
-                        'backInRight' => 'backInRight',
-                        'backInUp' => 'backInUp',
-                        /* Bouncing entrances  */
-                        'bounceIn' => 'bounceIn',
-                        'bounceInDown' => 'bounceInDown',
-                        'bounceInLeft' => 'bounceInLeft',
-                        'bounceInRight' => 'bounceInRight',
-                        'bounceInUp' => 'bounceInUp',
-                        /* Flippers */
-                        'flip' => 'flip',
-                        'flipInX' => 'flipInX',
-                        'flipInY' => 'flipInY',
-                        /* Lightspeed */
-                        'lightSpeedInRight' => 'lightSpeedInRight',
-                        'lightSpeedInLeft' => 'lightSpeedInLeft',
-                        /* Rotating entrances */
-                        'rotateIn' => 'rotateIn',
-                        'rotateInDownLeft' => 'rotateInDownLeft',
-                        'rotateInDownRight' => 'rotateInDownRight',
-                        'rotateInUpLeft' => 'rotateInUpLeft',
-                        'rotateInUpRight' => 'rotateInUpRight',
-                        /* Specials */
-                        'hinge' => 'hinge',
-                        'jackInTheBox' => 'jackInTheBox',
-                        'rollIn' => 'rollIn',
-                        /* Zooming entrances */
-                        'zoomIn' => 'zoomIn',
-                        'zoomInDown' => 'zoomInDown',
-                        'zoomInLeft' => 'zoomInLeft',
-                        'zoomInRight' => 'zoomInRight',
-                        'zoomInUp' => 'zoomInUp',
-                        /* Sliding entrances */
-                        'slideInDown' => 'slideInDown',
-                        'slideInLeft' => 'slideInLeft',
-                        'slideInRight' => 'slideInRight',
-                        'slideInUp' => 'slideInUp',
-                    ),
+                    'options' => GlobalElementConfig::getAnimations(),
                     'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
                 ),
 
@@ -406,8 +456,6 @@ return array(
                         'value' => '2',
                     ),
                 ),
-
-
             ),
         ),
     ),

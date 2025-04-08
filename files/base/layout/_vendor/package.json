@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@awesome.me/kit-c9b4e661cb": "^1.0.211",
+    "@awesome.me/kit-c9b4e661cb": "^1.0.232",
     "@popperjs/core": "*",
     "animate.css": "*",
     "bootstrap": "*",
@@ -12,7 +12,6 @@
     "macy": "^2.5.1",
     "mmenu-light": "^3.2.2",
     "swiper": "*",
-    "vanilla-lazyload": "*",
     "venobox": "*"
   },
   "scripts": {

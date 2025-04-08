@@ -1,0 +1,131 @@
+# config/services.yaml
+services:
+    _defaults:
+        autowire: true          # Automatically injects dependencies in your services.
+        autoconfigure: true     # Automatically registers your services as commands, event subscribers, etc.
+        public: false           # Allows optimizing the container by removing unused services; this also means
+                                # fetching services directly from the container via $container->get() won't work.
+                                # The best practice is to be explicit about your dependencies anyway.
+        bind:
+            $projectDir: '%kernel.project_dir%'
+            $stripeSecretKey: '%vsm_stripe_connect.stripe.secret_key%'
+            $webhookSecret: '%vsm_stripe_connect.stripe.webhook_secret%'
+
+    # Automatisches Laden aller Services im Bundle
+    Vsm\VsmStripeConnect\:
+        resource: '../src/'
+        exclude: '../src/{DependencyInjection,Model,Session,Resources,Resources/contao,Resources/contao/config}'
+
+    # Add a session bag
+    vsm.vsm_stripe_connect.session.factory:
+        class: Vsm\VsmStripeConnect\Session\SessionFactory
+        decorates: session.factory
+        arguments:
+            - '@vsm.vsm_stripe_connect.session.factory.inner'
+            - '@vsm.vsm_stripe_connect.session.attribute.array_attribute_bag'
+
+    vsm.vsm_stripe_connect.session.attribute.array_attribute_bag:
+        class: Vsm\VsmStripeConnect\Session\Attribute\ArrayAttributeBag
+        arguments:
+            - _vsm_stripe_connect_attributes
+        calls:
+            - [ setName, [ vsm_stripe_connect ] ]
+            
+    # Controller registrieren
+    Vsm\VsmStripeConnect\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+        
+    # Twig-Extension für Stripe-Connect
+    Vsm\VsmStripeConnect\Twig\VsmStripeConnectExtension:
+        tags: ['twig.extension']
+        
+    # EmailHelper konfigurieren
+    Vsm\VsmStripeConnect\Service\EmailHelper:
+        class: Vsm\VsmStripeConnect\Service\EmailHelper
+        calls:
+            - [initialize, ['%kernel.project_dir%', '@monolog.logger.contao', '@contao.framework']]
+        
+    # Service für Stripe Zahlungen
+    vsm.stripe_payment_service:
+        class: Vsm\VsmStripeConnect\Service\Stripe\StripePaymentService
+        public: true
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $stripeSecretKey: '%vsm_stripe_connect.stripe.secret_key%'
+            $webhookSecret: '%vsm_stripe_connect.stripe.webhook_secret%'
+            
+    # PaymentProcessor
+    vsm.payment_processor_service:
+        class: Vsm\VsmStripeConnect\Service\PaymentProcessorService
+        public: true
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $stripeService: '@vsm.stripe_payment_service'
+            $fileDownloadService: '@vsm.file_download_service'
+            
+    # FileDownloadService
+    vsm.file_download_service:
+        class: Vsm\VsmStripeConnect\Service\FileDownloadService
+        public: true
+        arguments:
+            $logger: '@monolog.logger.contao'
+            
+    # DownloadLinkGenerator
+    vsm.download_link_generator:
+        class: Vsm\VsmStripeConnect\Service\Download\DownloadLinkGenerator
+        public: true
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $projectDir: '%kernel.project_dir%'
+            $db: '@database_connection'
+            $framework: '@contao.framework'
+            
+    # EmailService
+    vsm.email_service:
+        class: Vsm\VsmStripeConnect\Service\Email\EmailService
+        public: true
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $projectDir: '%kernel.project_dir%'
+            $framework: '@contao.framework'
+            
+    # UserCreationService
+    vsm.user_creation_service:
+        class: Vsm\VsmStripeConnect\Service\User\UserCreationService
+        public: true
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $db: '@database_connection'
+            $framework: '@contao.framework'
+            $emailService: '@vsm.email_service'
+            
+    # PaymentSessionManager
+    vsm.payment_session_manager:
+        class: Vsm\VsmStripeConnect\Service\Payment\PaymentSessionManager
+        public: true
+        arguments:
+            $connection: '@database_connection'
+            $csrfTokenManager: '@contao.csrf.token_manager'
+            $logger: '@monolog.logger.contao'
+            $emailService: '@vsm.email_service'
+            $userService: '@vsm.user_creation_service'
+            $downloadService: '@vsm.download_link_generator'
+
+    # Contao Commands
+    Vsm\VsmStripeConnect\Command\CheckSubscriptionsCommand:
+        arguments:
+            - '@contao.framework'
+            - '@database_connection'
+            - '@monolog.logger.contao'
+            - '@Vsm\VsmStripeConnect\Service\MemberService'
+            - '@Vsm\VsmStripeConnect\Service\StripePaymentService'
+        tags:
+            - { name: 'console.command' }
+
+# Parameter für das Bundle
+parameters:
+    vsm_stripe_connect.default_member_group: 1  # Standardgruppe für neue Mitglieder
+    vsm_stripe_connect.stripe.public_key: '%env(STRIPE_PUBLIC_KEY)%'
+    vsm_stripe_connect.stripe.secret_key: '%env(STRIPE_SECRET_KEY)%'
+    vsm_stripe_connect.stripe.webhook_secret: '%env(STRIPE_WEBHOOK_SECRET)%'

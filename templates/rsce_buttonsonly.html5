@@ -1,8 +1,8 @@
-<div <?php echo $this->cssID; ?> class="content--element">
-    <div class="ce--inner <?php echo $this->class; ?>">
+<div <?php echo $this->cssID; ?> class="<?php echo $this->class; ?> content--element">
+    <div class="ce--inner">
 
 
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -14,6 +14,6 @@
         ); ?>
 
 
-        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($this->buttons); ?>
+        <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons); ?>
     </div>
 </div>

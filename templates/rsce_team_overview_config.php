@@ -1,6 +1,6 @@
 <?php
 
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 return array(
     'label' => array('Custom | Team Übersicht (team_overview)', ''),

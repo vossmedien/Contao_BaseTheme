@@ -1,7 +1,7 @@
 <?php
 
-use VSM_HelperFunctions\ButtonHelper;
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 return [
     'label' => ['Custom | Job Teaser', 'Erstellt einen Teaser für Stellenangebote'],

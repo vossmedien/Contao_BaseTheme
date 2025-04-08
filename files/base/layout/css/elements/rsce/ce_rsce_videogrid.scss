@@ -1,0 +1,394 @@
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+@import "../../_theme/variables";
+
+.filter-bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ce_rsce_videogrid {
+  // Mobile-First Base Styles
+  .video-list {
+    max-height: 600px;
+    overflow: auto;
+    position: relative;
+
+    &:before, &:after {
+      content: '';
+      height: 75px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      pointer-events: none;
+      z-index: 2;
+      transition: all .3s ease-in-out;
+    }
+
+    &::after {
+      bottom: 0;
+      background: linear-gradient(to top,
+              rgba(255, 255, 255, 1) 0%,
+              rgba(255, 255, 255, 0.5) 40%,
+              rgba(255, 255, 255, 0) 100%
+      );
+    }
+  }
+
+  .video-item {
+    padding: 10px 0;
+    height: 100%;
+    transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+    will-change: transform, box-shadow;
+  }
+
+  .video-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--bs-border-radius);
+    background-color: transparent;
+    overflow: hidden;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 1rem;
+    box-shadow: $box-shadow;
+
+    &:after {
+      border-width: 4px;
+      border-radius: var(--bs-border-radius);
+    }
+
+    &:before {
+      width: 80px;
+      height: 15px;
+    }
+
+    .video-placeholder {
+      width: 50%;
+      //height: 175px;
+      transition: opacity 0.5s ease;
+      will-change: opacity;
+
+      img {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .video-box-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      position: absolute;
+      z-index: 4;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: var(--bs-border-radius);
+      object-fit: cover;
+    }
+  }
+
+  .video-info {
+    width: 50%;
+    opacity: 1;
+    background: none;
+    padding: 0;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+    .video-title {
+      font-weight: $font-weight-bold;
+      font-size: 1.25rem;
+      margin-bottom: 0;
+    }
+
+    .video-description {
+      margin-top: .75rem;
+
+      p:last-child {
+        margin-bottom: 0;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 1.25rem 0 0 0;
+        font-size: 1rem;
+
+        > li:not(:last-child) {
+          margin-bottom: .25rem;
+        }
+      }
+    }
+  }
+
+  .video-lightbox {
+    z-index: 8;
+    pointer-events: all;
+    display: inline-block;
+    position: relative;
+
+
+    .play-button {
+      width: 35px;
+      height: 35px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+      position: relative;
+      margin-top: 1rem;
+      display: block;
+
+      &:before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 55%;
+        transform: translate(-50%, -50%);
+        border-style: solid;
+        border-width: 8px 0 8px 12px;
+        border-color: transparent transparent transparent #1a1a1a;
+        pointer-events: none;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+
+  // Tablet and up styles
+  @include media-breakpoint-up(md) {
+    .video-item {
+      padding: 10px;
+      transform-style: preserve-3d;
+      transform: perspective(1000px);
+      will-change: transform;
+
+      &:hover {
+        z-index: 2;
+
+        .glare {
+          opacity: 0.7;
+        }
+
+        .video-preview {
+          position: relative;
+
+          &:after {
+            box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.2);
+          }
+
+          height: 100%;
+
+          video {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+          }
+        }
+
+        img,
+        video {
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          filter: grayscale(100%) contrast(125%) brightness(95%);
+        }
+
+        .video-info {
+          opacity: 1;
+          transform: translateZ(50px);
+        }
+      }
+    }
+
+    .video-preview {
+      background: #1a1a1a;
+      display: block;
+      transform-style: preserve-3d;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      .video-placeholder {
+        width: 100%;
+        height: 100%;
+      }
+
+      .video-lightbox {
+        .play-button {
+          width: 50px;
+          height: 50px;
+
+          &:before {
+            border-width: 12px 0 12px 20px;
+          }
+        }
+      }
+    }
+
+    .video-info {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      padding: 15px;
+      text-align: center;
+      display: flex;
+      flex-flow: column wrap;
+      justify-content: center;
+      align-items: center;
+      background: rgba(var(--bs-primary-rgb), 0.45);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(4px);
+      transform: translateZ(20px);
+      z-index: 4;
+    }
+  }
+
+  // Desktop styles
+  @include media-breakpoint-up(lg) {
+    .video-columns {
+      display: grid;
+      gap: 0;
+      height: 1400px;
+      overflow-y: clip;
+      position: relative;
+
+      &:before, &:after {
+        content: '';
+        height: 150px;
+        position: absolute;
+        transition: all .3s ease-in-out;
+        left: 0;
+        right: 0;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      &::before {
+        top: 0;
+        background: linear-gradient(to bottom,
+                rgba(255, 255, 255, 1) 0%,
+                rgba(255, 255, 255, 0.5) 40%,
+                rgba(255, 255, 255, 0) 100%
+        );
+      }
+
+      &::after {
+        bottom: 0;
+        background: linear-gradient(to top,
+                rgba(255, 255, 255, 1) 0%,
+                rgba(255, 255, 255, 0.5) 40%,
+                rgba(255, 255, 255, 0) 100%
+        );
+      }
+
+      &:hover {
+        &:before, &:after {
+          height: 40px;
+        }
+      }
+    }
+
+    .video-column {
+      position: relative;
+      //overflow: hidden;
+
+      .scroll-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .video-item {
+        position: absolute;
+        width: 100%;
+        will-change: transform;
+      }
+    }
+
+    .video-item {
+      height: 350px !important;
+      transition: opacity .3s ease-in-out;
+
+      &.filtered-hidden {
+        opacity: 0.15;
+      }
+    }
+  }
+
+  @include media-breakpoint-up(xl) {
+
+
+    .video-grid {
+      margin-inline: calc(-1 * (var(--bs-gutter-x) * .5));
+    }
+
+    .video-item {
+      padding: 10px;
+    }
+  }
+}
+
+.lazy-video-container {
+  position: relative;
+  height: 100%;
+  background: #000;
+  border-radius: var(--bs-border-radius);
+}
+
+.video-placeholder {
+  transition: opacity 0.5s ease;
+  will-change: opacity;
+}
+
+// Grid-Spalten Konfiguration
+.ce_rsce_videogrid {
+  .video-columns {
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &.columns-3 {
+    .video-columns {
+      @include media-breakpoint-up(lg) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  }
+
+  &.columns-4 {
+    .video-columns {
+      @include media-breakpoint-up(lg) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      @include media-breakpoint-up(xl) {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  }
+}
+
+// Utility-Klassen für das Scrolling
+.scroll-paused {
+  animation-play-state: paused !important;
+}

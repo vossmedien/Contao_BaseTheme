@@ -50,25 +50,11 @@ html body {
     }
   }
 
-  span:not([data-bs-toggle="dropdown"]) {
-    //line-height: var(--bs-body-line-height);
-  }
+
 
   p {
     line-height: var(--bs-body-line-height-lg);
-    //overflow: auto;
 
-    /*
-    &.error {
-      //@extend .bg-danger;
-      //@extend .alert;
-      color: var(--bs-body-color-inverse);
-      font-size: 1rem;
-      font-weight: $font-weight-normal;
-      width: 100%;
-
-    }
-    */
     > a.alert {
       margin-top: 0px;
       margin-bottom: 0px;

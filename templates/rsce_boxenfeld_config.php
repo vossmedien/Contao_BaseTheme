@@ -1,14 +1,14 @@
 <?php
 
-use VSM_HelperFunctions\ButtonHelper;
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 
 // rsce_my_element_config.php
 return array(
     'label' => array('Custom | Abwechselnde Boxen (boxenfeld)', ''),
     'types' => array('content'),
-    'contentCategory' => 'texts',
+    'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
     'standardFields' => array('headline', 'cssID'),
     'wrapper' => array(
@@ -232,10 +232,6 @@ return array(
                     'minItems' => 1,
                     'maxItems' => 20,
                     'eval' => array('tl_class' => 'clr'),
-                    'dependsOn' => array(
-                        'field' => 'add_items',
-                        'value' => 'buttons',
-                    ),
                     'fields' => ButtonHelper::getButtonConfig(),
                 ),
             ),

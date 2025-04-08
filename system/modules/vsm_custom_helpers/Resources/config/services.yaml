@@ -1,9 +1,0 @@
-services:
-  _defaults:
-    autowire: true
-    autoconfigure: true
-    public: false
-
-  VSM_HelperFunctions\:
-    resource: '../../src/'
-    exclude: '../../src/{Entity,Migrations,Resources,Tests}'

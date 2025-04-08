@@ -1,8 +1,17 @@
-[data-aos*=animate__]:not([data-aos=no-animation]), [class*=animate__]:not(.animate__animated):not([data-aos=no-animation]) {
-  visibility: visible !important;
-}
 
-#tinymce {
+body#tinymce {
+  border: 0;
+  &:before, &:after{
+    display: none;
+  }
+
   padding: 7px 12px;
   opacity: 1;
+
+  [data-aos*=animate__]:not([data-aos=no-animation]), [data-animation],
+  [class*=animate__]:not(.animate__animated):not([data-aos=no-animation]) {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
 }
+

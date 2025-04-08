@@ -1,0 +1,161 @@
+<?php
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_aktionen_slider.min.css|static';
+}
+?>
+
+<?php
+if (!isset($this->size)) {
+    $this->{"size"} = "";
+}
+?>
+
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
+    <div class="ce--inner">
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
+
+        <?php if ($this->actions && count($this->actions) > 0): ?>
+            <div class="ce--content-slider <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> <?php if (count($this->actions) > 1): ?>is-slider<?php endif; ?>">
+                <?php $rand = rand(1, 1000); ?>
+
+                <div class="swiper swiper-actions <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> aktionen-slider_<?= $this->id; ?>">
+                    <div class="swiper-wrapper <?php if ($this->centered_slides): ?>justify-content-md-center<?php endif; ?>">
+                        <?php foreach ($this->actions as $i => $action): ?>
+                            <div class="swiper-slide text-center" data-animation="<?php if ($this->slide_animation_type): ?><?php echo $this->slide_animation_type; ?><?php elseif ($action->animation_type): ?><?php echo $action->animation_type; ?><?php endif; ?>">
+                                <div class="box box-aktionen" style="--box-color: <?= $action->box_color; ?>;">
+                                    <?php if ($action->add_link): ?>
+                                        <a <?php if ($action->image_link_target): ?>target="_blank"<?php endif; ?> <?php if ($action->image_link_title): ?>title="<?= $action->image_link_title; ?>"<?php endif; ?> href="<?= $action->image_link_url; ?>">
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($action->image, null, $action->title, $this->size, null, false, false); ?>
+                                        </a>
+                                    <?php else: ?>
+                                        <span>
+                                           <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($action->image, null, $action->title, $this->size, null, false, false); ?>
+                                        </span>
+                                    <?php endif; ?>
+
+                                    <div class="box--title-bar" <?php if ($action->title_text_color): ?>style="color: <?= $action->title_text_color; ?>;"<?php endif; ?>>
+                                        <?= $action->title; ?>
+                                    </div>
+
+                                    <?php if ($action->partner_url): ?>
+                                        <div class="box--partner-url">
+                                            <a href="<?= $action->partner_url; ?>" <?php if ($action->partner_url_target): ?>target="_blank"<?php endif; ?>>
+                                                <?= $action->partner_url_text ?: $action->partner_url; ?>
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($action->badge_content): ?>
+                                        <div class="box--badge <?php if ($action->badge_type == 'static'): ?>static-box<?php endif; ?>">
+                                            <?php if ($action->add_link && $action->badge_link_to_file): ?>
+                                                <a <?php if ($action->image_link_target): ?>target="_blank"<?php endif; ?> <?php if ($action->image_link_title): ?>title="<?= $action->image_link_title; ?>"<?php endif; ?> href="<?= $action->image_link_url; ?>">
+                                                    <span <?php if ($action->badge_text_color): ?>style="color: <?= $action->badge_text_color; ?>;"<?php endif; ?>>
+                                                        <?= $action->badge_content; ?>
+                                                    </span>
+                                                </a>
+                                            <?php else: ?>
+                                                <span <?php if ($action->badge_text_color): ?>style="color: <?= $action->badge_text_color; ?>;"<?php endif; ?>>
+                                                    <?= $action->badge_content; ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <?php if ($action->buttons && count($action->buttons) > 0): ?>
+                                    <div class="ce--buttons mt-1">
+                                        <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($action->buttons); ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <?php if (count($this->actions) > 1): ?>
+                    <?php if ($this->show_pagination): ?>
+                        <div class="aktionen-slider_<?= $this->id; ?> swiper-pagination"></div>
+                    <?php endif; ?>
+                    <?php if ($this->show_arrows): ?>
+                        <div class="aktionen-slider_<?= $this->id; ?> swiper-button-prev"></div>
+                        <div class="aktionen-slider_<?= $this->id; ?> swiper-button-next"></div>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php if ($this->actions && count($this->actions) > 0 && Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()): ?>
+    <script type="text/javascript" defer>
+        window.addEventListener('DOMContentLoaded', function () {
+            let swiperElementCheck_<?= $this->id; ?> = document.querySelector('.swiper.aktionen-slider_<?= $this->id; ?>');
+            if (swiperElementCheck_<?= $this->id; ?>) {
+                swiperElementCheck_<?= $this->id; ?> = new Swiper('.swiper.aktionen-slider_<?php echo $this->id; ?>', {
+                    direction: 'horizontal',
+                    loop: <?php if ($this->loop) : ?>true<?php else:?>false<?php endif;?>,
+                    preloadImages: false,
+                    lazy: true,
+                    spaceBetween: <?php if ($this->space_between) : ?><?= $this->space_between; ?><?php else:?>30<?php endif;?>,
+                    speed: <?php if ($this->transition_time) : ?><?= $this->transition_time; ?><?php else:?>1500<?php endif;?>,
+                    effect: <?php if ($this->slide_effect) : ?>'<?= $this->slide_effect; ?>'<?php else:?>'slide'<?php endif;?>,
+
+                    <?php if ($this->autoplay) : ?>
+                    autoplay: {
+                        delay: <?php if ($this->autoplay_time) : ?><?= $this->autoplay_time; ?><?php else:?>3000<?php endif;?>,
+                    },
+                    <?php endif; ?>
+
+                    <?php if ($this->slide_effect == "coverflow") : ?>
+                    coverflowEffect: {
+                        rotate: 50,
+                        stretch: 0,
+                        depth: 100,
+                        modifier: 1,
+                        slideShadows: true,
+                    },
+                    <?php endif;?>
+
+                    <?php if ($this->slide_effect == "fade") : ?>
+                    fadeEffect: {
+                        crossFade: true
+                    },
+                    <?php endif;?>
+
+                    <?php if (count($this->actions) > 1) : ?>
+                    navigation: {
+                        nextEl: '.aktionen-slider_<?= $this->id;?>.swiper-button-next',
+                        prevEl: '.aktionen-slider_<?= $this->id;?>.swiper-button-prev',
+                    },
+
+                    pagination: {
+                        el: '.aktionen-slider_<?php echo $this->id; ?>.swiper-pagination',
+                        clickable: true,
+                    },
+                    <?php endif; ?>
+
+                    breakpoints: {
+                        320: {
+                            slidesPerView: <?php if ($this->slides_per_view_mobile) : ?><?= $this->slides_per_view_mobile; ?><?php else:?>1<?php endif;?>,
+                        },
+                        768: {
+                            slidesPerView: <?php if ($this->slides_per_view_tablet) : ?><?= $this->slides_per_view_tablet; ?><?php else:?>2<?php endif;?>,
+                        },
+                        992: {
+                            slidesPerView: <?php if ($this->slides_per_view) : ?><?= $this->slides_per_view; ?><?php else:?>2<?php endif;?>,
+                        }
+                    },
+                });
+            }
+        });
+    </script>
+<?php endif; ?>

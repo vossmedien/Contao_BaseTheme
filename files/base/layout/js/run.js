@@ -1,12 +1,6 @@
-import {setSwitchingcardsHeight} from "./elementHeightAdjustments.js";
-import {initializeSmoothScrolling, scrollToTop} from "./smoothScrolling.js";
+import {scrollToTop} from "./smoothScrolling.js";
 import {setupFunctions} from "./cookieManager.js";
-import {adjustPullElements} from "./marginPaddingAdjustments.js";
-import {
-    addBootstrapClasses,
-    adjustTableResponsive,
-    adjustContentBox
-} from "./classStyleManipulation.js";
+//import {adjustPullElements} from "./marginPaddingAdjustments.js";
 import {addPlaceholders} from "./floatingLabels.js";
 import {
     changeAnchorLinks,
@@ -62,50 +56,36 @@ const initMobileNav = () => {
 
 const initAnimations = () => {
     const CONFIG = {
-        // Mobile-Konfiguration (Bildschirmbreite <= 768px)
         mobile: {
-            // Breakpoint für mobile Geräte in Pixeln
             breakpoint: 768,
-
-            // Verzögerung zwischen Animationen von Geschwisterelementen in Sekunden
-            // Beispiel: Bei 3 Elementen -> 1. Element: sofort, 2. Element: 0.1s, 3. Element: 0.2s
-            delay: 0.1,
-
-            // Anpassung des Erkennungsbereichs für Animationen
-            // Format: 'top right bottom left'
-            // -25% bedeutet: Element muss 25% der Viewport-Höhe weiter nach oben gescrollt sein
             rootMargin: '0px 0px -25% 0px',
-
-            // Grundverzögerung für jede Animation in Sekunden
-            // Wird bei allen Elementen angewendet, auch bei einzelnen
-            baseDelay: 0.1,
-
-            // Mindestanteil des Elements, der sichtbar sein muss (0.3 = 30%)
-            // Erst wenn dieser Anteil sichtbar ist, startet die Animation
-            visibilityThreshold: 0.3
+            visibilityThreshold: 0.1
         },
-
-        // Desktop-Konfiguration (Bildschirmbreite > 768px)
         desktop: {
-            // Längere Verzögerung zwischen Geschwisterelementen für smoothere Animationen
-            delay: 0.1,
-
-            // Größerer Abstand zum Viewport-Ende für frühere Animation
             rootMargin: '0px 0px -35% 0px',
-
-            // Etwas längere Grundverzögerung für smoothere Desktop-Animationen
-            baseDelay: 0.15,
-
-            // Gleicher Schwellenwert wie mobile für konsistentes Verhalten
-            visibilityThreshold: 0.4
+            visibilityThreshold: 0.2
         },
-
-        // CSS-Klasse die für Animationen verwendet wird (animate.css Bibliothek)
-        animationClass: 'animate__animated'
+        animation: {
+            baseDelay: 0.25,    // Basis-Delay für das erste Element in jedem Container
+            increment: 0.2,      // Inkrement für weitere Elemente im selben Container
+            class: 'animate__animated'
+        }
     };
 
     let animatedElements = new Set();
     let observer;
+
+    const getElementVisibilityThreshold = (element) => {
+        const viewportHeight = window.innerHeight;
+        const elementHeight = element.offsetHeight;
+        const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
+        const baseThreshold = isMobile ? CONFIG.mobile.visibilityThreshold : CONFIG.desktop.visibilityThreshold;
+
+        if (elementHeight > viewportHeight) {
+            return Math.max(0.1, baseThreshold * (viewportHeight / elementHeight));
+        }
+        return baseThreshold;
+    };
 
     const initAnimateElements = () => {
         const animateElements = document.querySelectorAll('[class*="animate__"]');
@@ -124,93 +104,80 @@ const initAnimations = () => {
     const isElementInViewport = (element) => {
         const rect = element.getBoundingClientRect();
         const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-        const windowWidth = window.innerWidth || document.documentElement.clientWidth;
 
-        // Berechne den sichtbaren Anteil des Elements
         const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
         const totalHeight = rect.bottom - rect.top;
         const visibilityRatio = visibleHeight / totalHeight;
 
-        const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
-        const {visibilityThreshold} = isMobile ? CONFIG.mobile : CONFIG.desktop;
-
-        return visibilityRatio >= visibilityThreshold;
+        return visibilityRatio >= getElementVisibilityThreshold(element);
     };
 
-    const getVisibleSiblings = (element) => {
-        const container = element.closest('.team-members') || element.parentElement;
-        if (!container) return [];
+const getImmediateAnimatableChildren = (container) => {
+    // Direkt die ce--stoerer Elemente oder ähnliche direkte Kinder finden
+    return Array.from(container.children)
+        .filter(child => {
+            return !animatedElements.has(child) &&
+                   isElementInViewport(child) &&
+                   (child.hasAttribute('data-animation'));
+        });
+};
 
-        return Array.from(container.querySelectorAll('[data-animation], [data-aos]'))
-            .filter(el => !animatedElements.has(el) && isElementInViewport(el));
-    };
+const animateElement = (element, groupElements) => {
+    if (animatedElements.has(element)) return false;
 
-    const animateElement = (element, visibleSiblings) => {
-        if (animatedElements.has(element)) return false;
+    const animateClass = element.getAttribute('data-animation');
+    if (!animateClass) return false;
 
-        const animateClass = element.getAttribute('data-animation') || element.getAttribute('data-aos');
-        if (animateClass) {
-            const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
-            const {delay, baseDelay} = isMobile ? CONFIG.mobile : CONFIG.desktop;
+    const hasExistingDelay = element.hasAttribute('data-animation-delay');
 
-            requestAnimationFrame(() => {
-                element.classList.add(...animateClass.split(' '), CONFIG.animationClass);
+    requestAnimationFrame(() => {
+        element.classList.add(...animateClass.split(' '), CONFIG.animation.class);
 
-                // Basis-Verzögerung plus zusätzliche Verzögerung für Gruppen
-                if (visibleSiblings.length > 1) {
-                    const elementIndex = visibleSiblings.indexOf(element);
-                    element.style.animationDelay = `${baseDelay + (elementIndex * delay)}s`;
-                } else {
-                    element.style.animationDelay = `${baseDelay}s`;
-                }
-            });
-            animatedElements.add(element);
-            return true;
+        if (!hasExistingDelay) {
+            const elementIndex = Array.from(element.parentElement.children).indexOf(element);
+            const newDelay = CONFIG.animation.baseDelay + (elementIndex * CONFIG.animation.increment);
+            element.style.setProperty('animation-delay', `${newDelay}s`, 'important');
         }
-        return false;
-    };
+    });
+
+    animatedElements.add(element);
+    return true;
+};
 
     const setupObserver = () => {
         const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
-        const {rootMargin, visibilityThreshold} = isMobile ? CONFIG.mobile : CONFIG.desktop;
+        const {rootMargin} = isMobile ? CONFIG.mobile : CONFIG.desktop;
 
         observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                if (entry.intersectionRatio >= visibilityThreshold) {
-                    const element = entry.target;
-                    if (!animatedElements.has(element)) {
-                        const visibleSiblings = getVisibleSiblings(element);
+                if (entry.isIntersecting && !animatedElements.has(entry.target)) {
+                    const parent = entry.target.parentElement;
+                    const groupElements = getImmediateAnimatableChildren(parent);
 
-                        if (visibleSiblings.length > 0) {
-                            visibleSiblings.forEach(sibling => {
-                                animateElement(sibling, visibleSiblings);
-                                observer.unobserve(sibling);
-                            });
-                        } else {
-                            animateElement(element, [element]);
-                            observer.unobserve(element);
-                        }
-                    }
+                    groupElements.forEach(element => {
+                        animateElement(element, groupElements);
+                        observer.unobserve(element);
+                    });
                 }
             });
         }, {
-            threshold: [0, visibilityThreshold],
+            threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5],
             rootMargin
         });
     };
 
     const handleElements = () => {
-        const elements = document.querySelectorAll('[data-animation], [data-aos]');
+        const elements = document.querySelectorAll('[data-animation]');
         elements.forEach(element => {
             if (!animatedElements.has(element)) {
                 if (isElementInViewport(element)) {
-                    const visibleSiblings = getVisibleSiblings(element);
-                    if (visibleSiblings.length > 0) {
-                        visibleSiblings.forEach(sibling => {
-                            animateElement(sibling, visibleSiblings);
-                            observer.unobserve(sibling);
-                        });
-                    }
+                    const parent = element.parentElement;
+                    const groupElements = getImmediateAnimatableChildren(parent);
+
+                    groupElements.forEach(groupElement => {
+                        animateElement(groupElement, groupElements);
+                        observer.unobserve(groupElement);
+                    });
                 } else {
                     observer.observe(element);
                 }
@@ -225,7 +192,6 @@ const initAnimations = () => {
 
         scrollFunctions.push(handleElements);
         ResizeFunctions.push(handleElements);
-
     } catch (error) {
         console.error('Animation initialization failed:', error);
     }
@@ -238,6 +204,7 @@ const initAnimations = () => {
         if (resizeIndex > -1) ResizeFunctions.splice(resizeIndex, 1);
     };
 };
+
 
 const rotateImage = () => {
     const images = document.querySelectorAll('.rotateImage');
@@ -323,21 +290,15 @@ DomLoadFunctions.push(
     initVenoBox,
     initVideoLightbox,
     initImageLightbox,
-    setSwitchingcardsHeight,
-    initializeSmoothScrolling,
     changeNavLinksAfterLoad,
     scrollToTop,
     setupFunctions,
-    //initializeMarginAdjustments,
-    adjustPullElements,
-    addBootstrapClasses,
-    adjustTableResponsive,
-    adjustContentBox,
+   //adjustPullElements,
     addPlaceholders
 );
 
 scrollFunctions.push(changeAnchorLinks);
-ResizeFunctions.push(adjustPullElements);
+//ResizeFunctions.push(adjustPullElements);
 
 
 const executeFunctions = (functions) => {

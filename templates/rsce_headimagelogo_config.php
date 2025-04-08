@@ -1,7 +1,7 @@
 <?php
 
-use VSM_HelperFunctions\ButtonHelper;
-use VSM_HelperFunctions\GlobalElementConfig;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 //rsce_my_element_config.php
 return array(
@@ -102,6 +102,13 @@ return array(
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
         ),
+
+             'boxed_image_check' => array(
+            'label' => array('Boxed-Image (z. B. Logo) anzeigen', 'mittig unter dem Slider'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' clr'),
+        ),
+
         'pull_content' => array(
             'label' => array('Inhalt darunter "hochziehen"', ''),
             'inputType' => 'checkbox',
@@ -155,6 +162,9 @@ return array(
             'label' => array('Boxed-Image (z. B. ein Logo)', ''),
             'inputType' => 'group',
             'eval' => array('tl_class' => 'clr', 'collapsible' => true, 'collapsed' => true),
+                'dependsOn' => array(
+                'field' => 'boxed_image_check',
+            ),
         ),
         'boxed_image' => array(
             'label' => array('Bild mittig unten liegend', 'Meistens ein Logo'),

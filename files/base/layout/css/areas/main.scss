@@ -36,7 +36,7 @@ html, body, #wrapper{
       transition: background-position 0s ease-in-out;
 
       &:last-child > div:last-child {
-        padding-bottom: var(--main-gap);
+        margin-bottom: var(--main-gap);
       }
 
       .ce--inner {
@@ -45,13 +45,19 @@ html, body, #wrapper{
 
       .content--element {
         z-index: 3;
+
+        &[class*="bg-"]:not(.is-fullwidth){
+          > .ce--inner{
+            @extend .container;
+          }
+        }
       }
 
       .article-content:not(:has(.moved-content)),
       .article-content > .moved-content {
         > *:not(.body-slider):not(.bgvideo) {
           position: relative;
-          padding-bottom: var(--main-gap);
+          margin-bottom: var(--main-gap);
 
           &:first-child {
             //padding-top: var(--main-gap);

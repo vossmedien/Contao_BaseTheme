@@ -1,101 +1,130 @@
-import {
-    getCSSVariableValue, setActiveLink
-} from "./smoothScrolling.js";
+// navigationHandling.js
+import { getCSSVariableValue } from "./smoothScrolling.js";
 
-const links = Array.from(document.querySelectorAll(
-    '#mainNav a[href*="#"]:not(.invisible), .onepagenavi--wrapper a, #mobileNav a[href*="#"]:not(.invisible)'
-));
+const NAVIGATION_SELECTORS = {
+    MAIN_NAV: '#mainNav',
+    MOBILE_NAV: '#mobileNav',
+    ONEPAGE_NAV: '.onepagenavi--wrapper'
+};
 
-export function changeAnchorLinks() {
-    const scrollPos = window.pageYOffset;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
-    const scrollOffset = getCSSVariableValue('--bs-scrolloffset');
+class NavigationManager {
+    constructor() {
+        this.links = this.initializeLinks();
+        this.currentActive = null;
+    }
 
+    initializeLinks() {
+        const mainNavLinks = Array.from(document.querySelectorAll(`${NAVIGATION_SELECTORS.MAIN_NAV} a[href*="#"]:not(.invisible)`));
+        const mobileNavLinks = Array.from(document.querySelectorAll(`${NAVIGATION_SELECTORS.MOBILE_NAV} a[href*="#"]:not(.invisible)`));
+        const onepageLinks = Array.from(document.querySelectorAll(`${NAVIGATION_SELECTORS.ONEPAGE_NAV} a`));
+        
+        return [...mainNavLinks, ...mobileNavLinks, ...onepageLinks];
+    }
 
-    let activeLink = null;
+    setActiveLink(targetHref) {
+        // Entferne alle aktiven Zustände
+        document.querySelectorAll('li.active, a.active').forEach(el => {
+            el.classList.remove('active');
+            if (el.tagName.toLowerCase() === 'li') {
+                el.classList.add('sibling');
+            }
+        });
 
-    // Überprüfen, ob nahe am unteren Rand gescrollt wurde
-    if (scrollPos + windowHeight > documentHeight - 50) {
-        if (links.length > 0) {
-            const lastLink = links[links.length - 1];
-            if (lastLink && lastLink.getAttribute("href")) {
-                const lastLinkHref = lastLink.getAttribute("href");
-                const lastElementId = lastLinkHref.split('#')[1];
-                const lastElement = document.getElementById(lastElementId);
-
-                if (lastElement) {
-                    activeLink = lastLink;
+        // Setze neue aktive Zustände
+        this.links.forEach(link => {
+            if (link.getAttribute('href').endsWith(targetHref)) {
+                link.classList.remove('sibling');
+                link.classList.add('active');
+                
+                const parentLi = link.closest('li');
+                if (parentLi) {
+                    parentLi.classList.remove('sibling');
+                    parentLi.classList.add('active');
                 }
             }
+        });
+    }
+
+    updateActiveSection() {
+        const scrollPos = window.pageYOffset;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollOffset = getCSSVariableValue('--bs-scrolloffset');
+
+        // Spezialfall: Scroll am Ende der Seite
+        if (scrollPos + windowHeight > documentHeight - 50) {
+            const lastValidLink = this.findLastValidLink();
+            if (lastValidLink) {
+                this.setActiveLink(lastValidLink.getAttribute('href'));
+                return;
+            }
+        }
+
+        // Normale Scroll-Position
+        for (let i = this.links.length - 1; i >= 0; i--) {
+            const link = this.links[i];
+            const href = link.getAttribute('href');
+            const sectionId = href.split('#').pop();
+            const section = document.getElementById(sectionId);
+
+            if (section) {
+                const sectionTop = section.getBoundingClientRect().top + window.pageYOffset - scrollOffset;
+                if (scrollPos >= sectionTop - 5) {
+                    this.setActiveLink(href);
+                    return;
+                }
+            }
+        }
+    }
+
+    findLastValidLink() {
+        for (let i = this.links.length - 1; i >= 0; i--) {
+            const link = this.links[i];
+            const href = link.getAttribute('href');
+            const sectionId = href.split('#').pop();
+            if (document.getElementById(sectionId)) {
+                return link;
+            }
+        }
+        return null;
+    }
+
+   handleInitialState() {
+    const hash = window.location.hash;
+    if (hash) {
+        // Prüfe ob der Anker existiert
+        const sectionId = hash.substring(1); // Entferne das # am Anfang
+        if (document.getElementById(sectionId)) {
+            this.setActiveLink(hash);
         }
     } else {
-        for (let i = links.length - 1; i >= 0; i--) {
-            const currElement = links[i];
-            if (currElement && currElement.getAttribute("href")) {
-                const currLink = currElement.getAttribute("href");
-                const refElementId = currLink.split('#')[1];
-                const refElement = document.getElementById(refElementId);
-
-                if (refElement) {
-                    const refElementPos = refElement.getBoundingClientRect().top + window.pageYOffset - scrollOffset;
-
-                    // Überprüfen, ob der obere Teil des Abschnitts sichtbar ist
-                    if (scrollPos >= refElementPos - 5) {
-                        activeLink = currElement;
-                        break; // Beim ersten sichtbaren Abschnitt abbrechen
-                    }
-                }
+        // Wenn kein Hash, prüfe ob der erste Link einen gültigen Anker hat
+        const firstLink = this.links[0];
+        if (firstLink) {
+            const href = firstLink.getAttribute('href');
+            const sectionId = href.split('#').pop();
+            if (document.getElementById(sectionId)) {
+                this.setActiveLink(href);
             }
         }
     }
+}
+}
 
-    if (activeLink) {
-        setActiveLink(activeLink);
-    }
+// Erstelle eine Instanz
+const navigationManager = new NavigationManager();
+
+// Exportiere die benötigten Funktionen
+export function changeAnchorLinks() {
+    navigationManager.updateActiveSection();
 }
 
 export function changeNavLinksAfterLoad() {
-    let hash = window.location.hash;
-
-    // Extrahiere den reinen Hash ohne Parameter
-    const hashParts = hash.split('?');
-    const pureHash = hashParts[0];
-
-    links.forEach(currElement => {
-        if (currElement.getAttribute("href") === pureHash) {
-            setActiveLink(currElement);
-        } else if (pureHash === '' && currElement.getAttribute("href") === "#top") {
-            setActiveLink(currElement);
-        }
-    });
-
-    // Scroll to the correct position after setting the active link
-    if (pureHash) {
-        setTimeout(() => {
-            const target = document.querySelector(pureHash);
-            if (target) {
-                const scrollOffset = getCSSVariableValue('--bs-scrolloffset');
-                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - scrollOffset;
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        }, 0);
-    }
-
-    // Handle the event parameter if present
-    const params = new URLSearchParams(hashParts[1] || '');
-    const eventName = params.get('event');
-    if (eventName) {
-        const eventField = document.querySelector('input[name="Event"]');
-        if (eventField) {
-            eventField.value = decodeURIComponent(eventName);
-        }
-    }
-
-    changeAnchorLinks();
+    navigationManager.handleInitialState();
 }
 
-
+// Event Listener
+document.addEventListener('DOMContentLoaded', () => {
+    navigationManager.handleInitialState();
+    window.addEventListener('scroll', () => navigationManager.updateActiveSection());
+});

@@ -8,6 +8,31 @@ html body {
   .ce_rsce_twocolimagewall {
     position: relative;
 
+
+    [class*=swiper-button-].swiper-button-prev{
+      left: 1rem;
+    }
+
+    [class*=swiper-button-].swiper-button-next{
+      right: 1rem;
+    }
+
+
+
+    .content-holder {
+      @include media-breakpoint-down(lg) {
+        .image--col{
+          order: 1;
+          margin-top: var(--main-gap);
+        }
+
+        .content--col{
+          order: 2;
+        }
+      }
+    }
+
+
     &.container {
       .ce--imagetextwall:not(:has(.flex-row-reverse)) .content--col .content--inner {
         padding-left: 0;
@@ -70,7 +95,7 @@ html body {
         top: 0;
       }
 
-      .headline--wrapper {
+      .boxed-headline--inner {
         padding: 1.25rem 2rem;
         background-color: $body-bg;
         box-shadow: $box-shadow;
@@ -94,8 +119,8 @@ html body {
             padding-top: var(--main-gap);
             padding-bottom: var(--main-gap);
 
-            @include media-breakpoint-down(lg) {
-              //padding-top: calc(var(--main-gap) * 0.5);
+            @include media-breakpoint-up(lg) {
+              padding-block: calc(var(--main-gap) * 0.5);
             }
 
             a:not(.btn) {
@@ -236,6 +261,7 @@ html body {
   width: 100%;
   top: 0;
   line-height: 0;
+  z-index: 0;
   overflow: hidden;
 
   .swiper {

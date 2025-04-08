@@ -1,12 +1,12 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_actionmodal.min.css|static';
 }
 ?>
     <!-- indexer::stop -->
     <div class="<?php echo $this->cssID; ?> modal <?php echo $this->class; ?> actionModal_<?php echo $this->id; ?>" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog <?php echo $this->modal_size; ?> modal-dialog-centered"
-             data-aos="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+             data-animation="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
             <div class="modal-content"
                  <?php if ($this->modal_backgroundcolor): ?>style="background-color: <?php echo $this->modal_backgroundcolor; ?>"<?php endif; ?>>
 
@@ -14,7 +14,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                     <div class="modal-header">
 
 
-                        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                             $this->modal_topline,
                             $this->modal_headline,
                             $this->modal_subline,
@@ -64,7 +64,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                          data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
                                          style="background-position: center center; background-repeat: no-repeat; background-size: cover; <?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>"></div>
                                 <?php else: ?>
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image, null, $this->modal_headline, null, null, false, true); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image, null, $this->modal_headline, null, null, false, true); ?>
                                 <?php endif; ?>
                             <?php endif; ?>
 
@@ -73,14 +73,14 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 <div class="d-flex gap-4 align-items-center">
                                     <?php if ($this->image_headline_left): ?>
                                         <div class="col-12 left--col <?php if ($this->image_headline_right || $this->image_text_right): ?>col-lg-5<?php endif; ?>">
-                                            <div class="modal-image--big-headline" data-aos="animate__fadeInLeft">
+                                            <div class="modal-image--big-headline" data-animation="animate__fadeInLeft">
                                                 <span><?php echo $this->image_headline_left; ?></span>
                                             </div>
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($this->image_headline_right || $this->image_text_right): ?>
                                         <div class="col-12 d-none d-xl-block right--col <?php if ($this->image_headline_left): ?>col-lg-7<?php endif; ?>">
-                                            <div class="modal-image--text-wrapper" data-aos="animate__fadeInRight"
+                                            <div class="modal-image--text-wrapper" data-animation="animate__fadeInRight"
                                                  style="<?php if ($this->image_right_col_background_color): ?>background-color: <?php echo $this->image_right_col_background_color; ?>;<?php endif; ?> <?php if ($this->image_right_col_text_color): ?>color: <?php echo $this->image_right_col_text_color; ?><?php endif; ?>">
                                                 <?php if ($this->image_headline_right): ?>
                                                     <span><?php echo $this->image_headline_right; ?></span>
@@ -98,13 +98,13 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                         <div class="d-flex gap-4">
                             <?php if ($this->image_left): ?>
                                 <div class="col-12 col-md-5">
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->image_left, null, $this->headline, null, null, false, true); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image_left, null, $this->headline, null, null, false, true); ?>
                                 </div>
                             <?php endif; ?>
 
                             <div class="col">
 
-                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                     $this->topline,
                                     $this->headline,
                                     $this->subline,
@@ -117,11 +117,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
 
                                 <?php if ($this->progress_amount): ?>
-                                    <div class="modal--progress mb-3" data-aos="animate__fadeInUp">
+                                    <div class="modal--progress mb-3" data-animation="animate__fadeInUp">
                                         <?php if ($this->progress_image): ?>
                                             <div class="progressbar--images">
                                                 <?php for ($i = 0; $i <= $this->progress_amount; $i++) : ?>
-                                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->progress_image, null, $this->headline, null, null, false, true); ?>
+                                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->progress_image, null, $this->headline, null, null, false, true); ?>
                                                 <?php endfor; ?>
                                             </div>
                                         <?php else: ?>
@@ -152,7 +152,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                             <div class="ce--buttons">
                                 <?php foreach ($this->buttons as $b) : ?>
                                     <a class="d-inline-block btn me-2 <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
-                                       data-aos="animate__fadeInUp"
+                                       data-animation="animate__fadeInUp"
                                        href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
                                 <?php endforeach ?>
                             </div>
@@ -164,11 +164,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                             </div>
                         <?php endif; ?>
                         <?php if ($this->sponsors): ?>
-                            <div class="text-end" data-aos="animate__fadeIn">
+                            <div class="text-end" data-animation="animate__fadeIn">
                                 <?php foreach ($this->sponsors as $s) : ?><?php if ($s->link): ?>
                                     <a href="<?php echo $s->link; ?>" target="_blank"><?php endif; ?>
 
-                                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML(
+                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
                                         $s->image,
                                         null, // $optionalAltText, // Optionaler Parameter: Eigener Alt-Text
                                         $this->headline, // Optionaler Parameter: Überschrift/Headline, wird als Titel verwendet, falls keine Metadaten vorhanden sind
@@ -185,7 +185,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                 <?php endif; ?>
             </div>
         </div>
-    </div><?php if (VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+    </div><?php if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()): ?>
     <!-- indexer::continue -->
 
     <script type="text/javascript">

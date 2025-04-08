@@ -1,0 +1,28 @@
+# config/services.yaml
+services:
+    _defaults:
+        autowire: true          # Automatically injects dependencies in your services.
+        autoconfigure: true     # Automatically registers your services as commands, event subscribers, etc.
+        public: false           # Allows optimizing the container by removing unused services; this also means
+                                # fetching services directly from the container via $container->get() won't work.
+                                # The best practice is to be explicit about your dependencies anyway.
+
+    # Automatisches Laden aller Services im Bundle
+    Vsm\VsmHelperTools\:
+        resource: '../src/'
+        exclude: '../src/{DependencyInjection,Model,Resources,ContaoManager,Entity,Migrations,Tests}'
+
+    # Controller registrieren
+    Vsm\VsmHelperTools\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # Twig-Extension
+    Vsm\VsmHelperTools\Twig\VsmHelperExtension:
+        tags: ['twig.extension']
+
+# Parameter für das Bundle
+parameters:
+    vsm_helper_tools.default_member_group: 1  # Standardgruppe für neue Mitglieder
+    # Stripe-Parameter wurden zu vsm-stripe-connect migriert
+
