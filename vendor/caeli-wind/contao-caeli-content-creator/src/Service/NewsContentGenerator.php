@@ -22,18 +22,20 @@ use Contao\NewsModel;
 use Contao\StringUtil;
 use Contao\System;
 use Doctrine\DBAL\Connection;
+use Psr\Log\LoggerInterface;
 
 class NewsContentGenerator
 {
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly Connection $connection,
+        private readonly LoggerInterface $logger,
+        private readonly string $projectDir
     ) {
     }
 
     /**
-     * Erstellt einen neuen Nachrichtenbeitrag mit dem generierten Inhalt 
-     * mittels direkter SQL-Abfragen statt dem NewsModel
+     * Creates a new news article using Contao Models.
      */
     public function createNewsArticle(
         int $archiveId,
@@ -44,377 +46,184 @@ class NewsContentGenerator
         string $elementType
     ): int {
         $this->framework->initialize();
-        
-        // Adapter für Contao-Klassen (nur für ContentModel noch nötig)
-        $contentModelAdapter = $this->framework->getAdapter(ContentModel::class);
+
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
-        $systemAdapter = $this->framework->getAdapter(System::class);
-        
-        // Fester Timestamp als Integer
-        $timestamp = 1704110400;
-        
-        // Alias generieren
+        $newsAdapter = $this->framework->getAdapter(NewsModel::class);
+
+        // Generate and ensure unique alias
         $alias = $stringUtilAdapter->standardize($title);
-        
-        // Eindeutigkeit des Alias prüfen
-        $aliasExists = $this->connection->fetchOne(
-            'SELECT id FROM tl_news WHERE alias = ?',
-            [$alias]
-        );
-        
-        if ($aliasExists) {
-            $alias .= '-' . rand(1000, 9999);
+        $originalAlias = $alias;
+        $counter = 1;
+        while ($newsAdapter->countBy(['alias=? AND pid=?'], [$alias, $archiveId]) > 0) {
+            $alias = $originalAlias . '-' . $counter++;
+            $this->logger->debug("Alias conflict for '{$originalAlias}', trying new alias: {$alias}");
         }
-        
-        // News-Eintrag direkt in die Datenbank schreiben ohne das Model zu verwenden
-        $this->connection->executeStatement(
-            'INSERT INTO tl_news (pid, headline, alias, teaser, published, tags) VALUES (?, ?, ?, ?, ?, ?)',
-            [
-                $archiveId,           // pid
-                $title,               // headline
-                $alias,               // alias
-                $teaser,              // teaser
-                1,                    // published
-                $tags                 // tags
-            ]
-        );
-        
-        // ID des neu erstellten Eintrags abrufen
-        $newsId = (int)$this->connection->lastInsertId();
-        
-        // Log zur Fehlerbehebung
-        $logDir = $systemAdapter->getContainer()->getParameter('kernel.logs_dir');
-        file_put_contents($logDir . '/content-creator-debug.log', date('Y-m-d H:i:s') . " - News erstellt mit ID: $newsId\n", FILE_APPEND);
-        
-        // Inhaltselement erstellen
-        if ($elementType === 'text' || $elementType === 'html') {
-            // Direkte SQL für das Inhaltselement
-            $headline = serialize(['value' => $title, 'unit' => 'h1']);
-            
-            $this->connection->executeStatement(
-                'INSERT INTO tl_content (pid, ptable, type, headline, text) VALUES (?, ?, ?, ?, ?)',
-                [
-                    $newsId,           // pid
-                    'tl_news',         // ptable
-                    $elementType,      // type
-                    $headline,         // headline
-                    $content           // text
-                ]
-            );
-            
-            $contentId = (int)$this->connection->lastInsertId();
-            file_put_contents($logDir . '/content-creator-debug.log', date('Y-m-d H:i:s') . " - Content erstellt mit ID: $contentId\n", FILE_APPEND);
-        } 
-        // RockSolid Custom Element-Verarbeitung
-        elseif (strpos($elementType, 'rsce_') === 0) {
-            // Erstelle ein ContentModel für RockSolid
-            $contentElement = new ContentModel();
-            $contentElement->pid = $newsId;
-            $contentElement->ptable = 'tl_news';
-            $contentElement->type = $elementType;
-            
-            // Verwende die bestehende Methode für komplexe RockSolid-Elemente
-            $this->fillRockSolidElement($contentElement, $elementType, $title, $content);
+
+        // Create news article using NewsModel
+        $news = new NewsModel();
+        $news->pid = $archiveId;
+        $news->headline = $title;
+        $news->alias = $alias;
+        $news->teaser = $teaser;
+        $news->published = '1';
+        $news->source = 'default';
+        $news->date = time();
+        $news->time = time();
+        $news->tstamp = time();
+        $news->tags = $tags;
+        $news->save();
+
+        $newsId = (int) $news->id;
+        $this->logger->info("News article created", ['id' => $newsId, 'title' => $title, 'alias' => $alias]);
+
+        // Create content element using ContentModel
+        $contentElement = new ContentModel();
+        $contentElement->pid = $newsId;
+        $contentElement->ptable = 'tl_news';
+        $contentElement->type = $elementType;
+        $contentElement->tstamp = time();
+
+        if ($elementType === 'text') {
+            $contentElement->text = $content;
             $contentElement->save();
-            
-            file_put_contents($logDir . '/content-creator-debug.log', date('Y-m-d H:i:s') . " - RockSolid Content erstellt mit ID: {$contentElement->id}\n", FILE_APPEND);
+            $this->logger->info("Text content element created", ['id' => $contentElement->id, 'news_id' => $newsId]);
+        } elseif ($elementType === 'html') {
+            $contentElement->html = $content;
+            $contentElement->save();
+            $this->logger->info("HTML content element created", ['id' => $contentElement->id, 'news_id' => $newsId]);
+        } elseif (str_starts_with($elementType, 'rsce_')) {
+            $this->fillRockSolidElement($contentElement, $elementType, $title, $content); // Pass the model instance
+            $contentElement->save();
+            $this->logger->info("RSCE content element created", ['id' => $contentElement->id, 'type' => $elementType, 'news_id' => $newsId]);
+        } else {
+            $this->logger->warning("Unsupported element type, no content element created.", ['type' => $elementType, 'news_id' => $newsId]);
         }
-        
+
         return $newsId;
     }
 
     /**
-     * Konvertiert HTML-Inhalt in ein Array von Listenpunkten
+     * Converts HTML content to an array of list items or paragraphs.
      */
     private function convertContentToListItems(string $htmlContent): array
     {
+        if (empty(trim($htmlContent))) {
+            return [];
+        }
+
         $dom = new \DOMDocument();
-        @$dom->loadHTML('<div>' . $htmlContent . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_use_internal_errors(true);
+        $loaded = $dom->loadHTML('<?xml encoding="utf-8" ?><div>' . $htmlContent . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $errors = libxml_get_errors();
+        libxml_clear_errors();
+        libxml_use_internal_errors(false);
+
+        if (!$loaded || !empty($errors)) {
+            $this->logger->warning('Failed to parse HTML in convertContentToListItems.', [
+                'html_snippet' => substr($htmlContent, 0, 100),
+                'errors' => array_map(fn($e) => trim($e->message), $errors)
+            ]);
+            return []; // Return empty on parsing failure
+        }
 
         $items = [];
+        $xpath = new \DOMXPath($dom);
 
-        // Versuche, natürliche Listen zu finden
-        $listElements = $dom->getElementsByTagName('li');
-        if ($listElements->length > 0) {
-            foreach ($listElements as $listItem) {
-                $items[] = $listItem->nodeValue;
+        $listNodes = $xpath->query('.//li');
+        if ($listNodes && $listNodes->length > 0) {
+            foreach ($listNodes as $node) {
+                $items[] = trim($node->nodeValue);
             }
         } else {
-            // Keine Liste gefunden, verwende Absätze
-            $paragraphs = $dom->getElementsByTagName('p');
-            foreach ($paragraphs as $paragraph) {
-                $items[] = $paragraph->nodeValue;
+            $paragraphNodes = $xpath->query('.//p');
+            if ($paragraphNodes && $paragraphNodes->length > 0) {
+                foreach ($paragraphNodes as $node) {
+                    $items[] = trim($node->nodeValue);
+                }
             }
         }
 
-        // Wenn keine Absätze gefunden wurden, teile den Text nach Punkten auf
         if (empty($items)) {
-            $items = array_filter(array_map('trim', explode('.', strip_tags($htmlContent))));
+             $textOnly = strip_tags($htmlContent);
+             $sentences = preg_split('/(?<=[.!?])\\s+/', $textOnly, -1, PREG_SPLIT_NO_EMPTY);
+             $items = array_filter(array_map('trim', $sentences));
         }
 
-        // Serialize für Contao
-        $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
-        return $stringUtilAdapter->deserialize(serialize($items), true);
+        return array_filter($items);
     }
 
     /**
-     * Befüllt ein RockSolid Custom Element dynamisch basierend auf seiner Konfiguration
+     * Fills a RockSolid Custom Element based on its configuration.
      */
     private function fillRockSolidElement(ContentModel $element, string $type, string $title, string $content): void
     {
-        // Extrahiere den tatsächlichen Element-Namen ohne Präfix
         $elementName = substr($type, 5);
+        $this->logger->debug("Attempting to fill RSCE '{$elementName}'");
 
-        // Debug-Info
-        $logDir = System::getContainer()->getParameter('kernel.logs_dir');
-        file_put_contents($logDir . '/rocksolid-debug.log', "Befülle RockSolid Element: $elementName\n", FILE_APPEND);
-
-        // Verschiedene mögliche Konfigurationspfade prüfen
         $configPaths = [
-            // Standard-Pfad in /templates/rsce/
-            System::getContainer()->getParameter('kernel.project_dir') . '/templates/rsce/' . $elementName . '/config.php',
-            // Alternatives Format in /templates/
-            System::getContainer()->getParameter('kernel.project_dir') . '/templates/rsce_' . $elementName . '_config.php',
-            // Direkter Pfad (falls der Elementname bereits mit "rsce_" beginnt)
-            System::getContainer()->getParameter('kernel.project_dir') . '/templates/' . $elementName . '_config.php',
+            $this->projectDir . '/templates/rsce/' . $elementName . '/config.php',
+            $this->projectDir . '/templates/rsce_' . $elementName . '_config.php',
+            $this->projectDir . '/templates/' . $elementName . '_config.php',
         ];
 
         $config = null;
-        $configPath = null;
-
-        // Prüfe alle möglichen Pfade
         foreach ($configPaths as $path) {
             if (file_exists($path)) {
-                file_put_contents($logDir . '/rocksolid-debug.log', "Config gefunden unter: $path\n", FILE_APPEND);
-                $configPath = $path;
                 try {
                     $config = include $path;
-                    break;
-                } catch (\Exception $e) {
-                    file_put_contents($logDir . '/rocksolid-debug.log', "Fehler beim Laden der Config: " . $e->getMessage() . "\n", FILE_APPEND);
+                    if (is_array($config) && isset($config['fields'])) {
+                        $this->logger->info("Loaded RSCE config for '{$elementName}' from: {$path}");
+                        break;
+                    } else {
+                         $this->logger->warning("Invalid RSCE config file (missing 'fields'): {$path}");
+                         $config = null;
+                    }
+                } catch (\Throwable $e) {
+                    $this->logger->error("Error loading RSCE config from '{$path}': " . $e->getMessage(), ['exception' => $e]);
+                    $config = null;
                 }
             }
         }
 
-        // Wenn keine Konfiguration gefunden wurde, Fallback verwenden
         if (!$config) {
-            file_put_contents($logDir . '/rocksolid-debug.log', "Keine Konfiguration gefunden, verwende Fallback\n", FILE_APPEND);
-            $element->text = $content;
+            $this->logger->warning("No valid RSCE config found for '{$elementName}'. Falling back to 'text' field.", ['tried_paths' => $configPaths]);
+            if (isset($element->current()->all()['text'])) {
+                 $element->text = $content;
+            }
             return;
         }
 
-        // Extrahiere und analysiere den Inhalt für besser strukturierte Elemente
-        $dom = new \DOMDocument();
-        @$dom->loadHTML('<div>' . $content . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        $xpath = new \DOMXPath($dom);
-
-        // Felder des Elements extrahieren
+        // --- Basic Field Population ---
         $fields = $config['fields'] ?? [];
-        file_put_contents($logDir . '/rocksolid-debug.log', "Verfügbare Felder: " . implode(", ", array_keys($fields)) . "\n", FILE_APPEND);
+        $this->logger->debug("Available fields in RSCE '{$elementName}': " . implode(", ", array_keys($fields)));
 
-        // Standard-Felder befüllen wenn in standardFields definiert oder direkt als Feld vorhanden
-        $standardFields = $config['standardFields'] ?? [];
-        if (in_array('headline', $standardFields) || isset($fields['headline'])) {
-            file_put_contents($logDir . '/rocksolid-debug.log', "Setze headline: $title\n", FILE_APPEND);
-            $element->headline = $title;
+        // Populate headline if available
+        if (isset($fields['headline']) && isset($element->current()->all()['headline'])) {
+            $element->headline = $title; // Defaulting to news title
+        }
+        if (isset($fields['headline_type']) && isset($element->current()->all()['headline_type'])) {
+             $element->headline_type = 'h2'; // Defaulting to H2
         }
 
-        // Headline-Typ automatisch setzen (h2 als Standard)
-        if (isset($fields['headline_type'])) {
-            file_put_contents($logDir . '/rocksolid-debug.log', "Setze headline_type: h2\n", FILE_APPEND);
-            $element->headline_type = 'h2';  // Standardmäßig H2 verwenden
+        // Populate text field if available
+        if (isset($fields['text']) && isset($element->current()->all()['text'])) {
+             $element->text = $content; // Defaulting to full content
         }
 
-        // Topline befüllen
-        if (isset($fields['topline'])) {
-            // Versuche aus dem DOM zu extrahieren oder generiere
-            $toplineNodes = $xpath->query('//h1/preceding-sibling::*[1] | //h2/preceding-sibling::*[1]');
-            if ($toplineNodes && $toplineNodes->length > 0) {
-                $element->topline = $toplineNodes->item(0)->textContent;
-            } else {
-                // Generiere aus dem Titel eine passende Topline
-                $element->topline = 'Thema: ' . ucfirst($elementName);
-            }
-            file_put_contents($logDir . '/rocksolid-debug.log', "Setze topline: {$element->topline}\n", FILE_APPEND);
+        // Populate list field if available
+        if (isset($fields['items']) && ($fields['items']['inputType'] ?? null) === 'listWizard' && isset($element->current()->all()['items'])) {
+             $listItems = $this->convertContentToListItems($content);
+             if (!empty($listItems)) {
+                 $element->items = serialize($listItems);
+                 $this->logger->debug("Populated 'items' listWizard field.", ['count' => count($listItems)]);
+             }
         }
 
-        // Subline befüllen
-        if (isset($fields['subline'])) {
-            // Versuche aus dem DOM zu extrahieren oder generiere
-            $sublineNodes = $xpath->query('//h1/following-sibling::*[1] | //h2/following-sibling::*[1]');
-            if ($sublineNodes && $sublineNodes->length > 0) {
-                $element->subline = $sublineNodes->item(0)->textContent;
-            } else {
-                // Generiere eine Zusammenfassung
-                $paragraphs = $xpath->query('//p');
-                if ($paragraphs && $paragraphs->length > 0) {
-                    $element->subline = substr($paragraphs->item(0)->textContent, 0, 150) . '...';
-                }
-            }
-            file_put_contents($logDir . '/rocksolid-debug.log', "Setze subline: {$element->subline}\n", FILE_APPEND);
-        }
+        // --- Add more complex/specific field population logic here ---
+        // Example: Image field (requires finding FilesModel by path/URL)
+        // Example: Link field (requires creating internal/external link)
 
-        // Haupttext-Feld befüllen (desc, text, description, content, ...)
-        $mainContentFields = ['desc', 'text', 'description', 'content', 'richtext', 'textarea'];
-        $mainContentSet = false;
-
-        foreach ($mainContentFields as $field) {
-            if (isset($fields[$field])) {
-                $element->$field = $content;
-                file_put_contents($logDir . '/rocksolid-debug.log', "Setze $field mit Hauptinhalt\n", FILE_APPEND);
-                $mainContentSet = true;
-                break;
-            }
-        }
-
-        // Wenn kein Haupttext-Feld gefunden wurde, in fallback_content speichern
-        if (!$mainContentSet) {
-            $element->fallback_content = $content;
-            file_put_contents($logDir . '/rocksolid-debug.log', "Setze fallback_content\n", FILE_APPEND);
-        }
-
-        // Listen und verschachtelte Elemente verarbeiten
-        foreach ($fields as $fieldName => $fieldConfig) {
-            // Listen-Elemente identifizieren
-            if (isset($fieldConfig['inputType']) && $fieldConfig['inputType'] === 'list' && isset($fieldConfig['fields'])) {
-                file_put_contents($logDir . '/rocksolid-debug.log', "Befülle Listen-Element: $fieldName\n", FILE_APPEND);
-                $this->fillListElement($element, $fieldName, $fieldConfig, $content, $xpath);
-            }
-        }
-
-        // Debug: Alle gesetzten Werte loggen
-        $elementVars = get_object_vars($element);
-        file_put_contents($logDir . '/rocksolid-debug.log', "Alle gesetzten Werte:\n", FILE_APPEND);
-        foreach ($elementVars as $key => $value) {
-            if (in_array($key, ['id', 'pid', 'ptable', 'sorting', 'tstamp', 'type'])) {
-                continue;
-            }
-            file_put_contents($logDir . '/rocksolid-debug.log', "- $key: " . (is_string($value) ? substr($value, 0, 50) . (strlen($value) > 50 ? '...' : '') : gettype($value)) . "\n", FILE_APPEND);
-        }
-    }
-
-    /**
-     * Befüllt ein Listen-Element in einem RockSolid-Element
-     */
-    private function fillListElement(ContentModel $element, string $fieldName, array $fieldConfig, string $content, \DOMXPath $xpath): void
-    {
-        $listData = [];
-        $maxItems = $fieldConfig['maxItems'] ?? 3;
-        $minItems = $fieldConfig['minItems'] ?? 1;
-
-        // Identifiziere mögliche Listenelemente aus dem Inhalt
-        $listItems = [];
-
-        // Versuch 1: Suche nach Listen-Tags
-        $ulElements = $xpath->query('//ul/li');
-        if ($ulElements && $ulElements->length > 0) {
-            foreach ($ulElements as $li) {
-                $listItems[] = [
-                    'text' => $li->textContent,
-                    'html' => $li->ownerDocument->saveHTML($li)
-                ];
-            }
-        }
-
-        // Versuch 2: Suche nach Überschriften als Listenitems
-        if (count($listItems) < $minItems) {
-            $headings = $xpath->query('//h2 | //h3');
-            if ($headings && $headings->length > 0) {
-                $listItems = [];
-                foreach ($headings as $heading) {
-                    // Suche nach Inhalt zwischen dieser und der nächsten Überschrift
-                    $currentNode = $heading->nextSibling;
-                    $description = '';
-
-                    while ($currentNode && !in_array(strtolower($currentNode->nodeName), ['h2', 'h3'])) {
-                        if ($currentNode->nodeType === XML_ELEMENT_NODE) {
-                            $description .= $currentNode->ownerDocument->saveHTML($currentNode);
-                        }
-                        $currentNode = $currentNode->nextSibling;
-                    }
-
-                    $listItems[] = [
-                        'title' => $heading->textContent,
-                        'description' => $description
-                    ];
-                }
-            }
-        }
-
-        // Versuch 3: Teile den Inhalt in logische Abschnitte
-        if (count($listItems) < $minItems) {
-            $paragraphs = $xpath->query('//p');
-            if ($paragraphs && $paragraphs->length > 0) {
-                $listItems = [];
-                $itemCount = min($maxItems, max($minItems, intval($paragraphs->length / 2)));
-
-                // Teile die Paragraphen in gleichmäßige Gruppen
-                $paragraphsPerItem = intval($paragraphs->length / $itemCount);
-                for ($i = 0; $i < $itemCount; $i++) {
-                    $title = "Punkt " . ($i + 1);
-                    $description = '';
-
-                    for ($j = 0; $j < $paragraphsPerItem && ($i * $paragraphsPerItem + $j) < $paragraphs->length; $j++) {
-                        $paragraph = $paragraphs->item($i * $paragraphsPerItem + $j);
-                        if ($j === 0) {
-                            // Ersten Absatz als Titel verwenden
-                            $title = $paragraph->textContent;
-                        } else {
-                            $description .= $paragraph->ownerDocument->saveHTML($paragraph);
-                        }
-                    }
-
-                    $listItems[] = [
-                        'title' => $title,
-                        'description' => $description
-                    ];
-                }
-            }
-        }
-
-        // Erzeuge die serialisierten Daten für das Listen-Element
-        $serializedData = [];
-        $subFields = $fieldConfig['fields'] ?? [];
-
-        for ($i = 0; $i < min(count($listItems), $maxItems); $i++) {
-            $item = [];
-
-            // Befülle alle konfigurierten Unterfelder
-            foreach ($subFields as $subFieldName => $subFieldConfig) {
-                $value = null;
-
-                switch ($subFieldName) {
-                    case 'title':
-                        $value = $listItems[$i]['title'] ?? ('Item ' . ($i + 1));
-                        break;
-                    case 'description':
-                    case 'text':
-                    case 'content':
-                        $value = $listItems[$i]['description'] ?? '';
-                        break;
-                    case 'link':
-                        // Fallback-Link zur Hauptseite
-                        $value = '{{link_url::1}}';
-                        break;
-                    case 'image':
-                        // Hier kann kein Bild automatisch generiert werden
-                        // Fallback auf ein Standard-Bild, falls bekannt
-                        $value = null;
-                        break;
-                    default:
-                        $value = null;
-                }
-
-                if ($value !== null) {
-                    $item[$subFieldName] = $value;
-                }
-            }
-
-            $serializedData[] = $item;
-        }
-
-        // Serialisiere die Daten und speichere sie im Element
-        $element->$fieldName = serialize($serializedData);
+        $this->logger->debug("Finished populating RSCE '{$elementName}'");
     }
 
     /**
@@ -442,3 +251,4 @@ class NewsContentGenerator
     }
 
 }
+ 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-/*
+/* 
  * This file is part of Caeli KI Content-Creator.
  *
  * (c) Caeli Wind - Christian Voss 2025 <christian.voss@caeli-wind.de>
@@ -16,4 +16,4 @@ declare(strict_types=1);
  * Backend modules
  */
 $GLOBALS['TL_LANG']['MOD']['caeli'] = 'Caeli Wind';
-$GLOBALS['TL_LANG']['MOD']['caeli_content_creator'] = ['KI Content-Creator', 'Generiere Blog-Beiträge via GROK API']; 
+$GLOBALS['TL_LANG']['MOD']['caeli_content_creator'] = ['KI Content-Creator', 'Generiere Blog-Beiträge via GROK API'];

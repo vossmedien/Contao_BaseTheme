@@ -76,7 +76,7 @@ $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
     ),
     'palettes' => array(
         '__selector__' => [],
-        'default' => '{title_legend},title,topic,targetAudience,emphasis,add_target_blank,include_sources,additionalInstructions;{content_legend},newsArchive,contentElement,apiKey,apiEndpoint;{ai_params_legend},temperature,maxTokens,topP,min_words;{preview_legend},generateButton,previewView;'
+        'default' => '{title_legend},title,topic,year,targetAudience,emphasis,add_target_blank,include_sources,additionalInstructions;{content_legend},newsArchive,contentElement,apiKey,apiEndpoint;{ai_params_legend},temperature,topP,min_words;{preview_legend},generateButton,previewView;'
     ),
     'subpalettes' => array(),
     'fields' => array(
@@ -102,6 +102,14 @@ $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
             'eval' => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
         ),
+        'year' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['year'],
+            'exclude' => true,
+            'search' => true,
+            'inputType' => 'text',
+            'eval' => array('maxlength' => 100, 'tl_class' => 'w50'),
+            'sql' => "varchar(100) NOT NULL default ''"
+        ),
         'targetAudience' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['targetAudience'],
             'exclude' => true,
@@ -114,7 +122,7 @@ $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
             'label' => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['emphasis'],
             'exclude' => true,
             'search' => true,
-            'inputType' => 'text',
+            'inputType' => 'text', 
             'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
         ),
@@ -191,14 +199,6 @@ $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
             'default' => 0.7,
             'eval' => array('rgxp' => 'digit', 'tl_class' => 'w50', 'minval' => 0, 'maxval' => 1),
             'sql' => "decimal(3,2) NOT NULL default '0.70'"
-        ),
-        'maxTokens' => array(
-            'label' => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['maxTokens'],
-            'exclude' => true,
-            'inputType' => 'text',
-            'default' => 8000,
-            'eval' => array('rgxp' => 'natural', 'tl_class' => 'w50'),
-            'sql' => "int(10) unsigned NOT NULL default '8000'"
         ),
         'topP' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['topP'],

@@ -1,5 +1,5 @@
 <?php
-
+ 
 declare(strict_types=1);
 
 /*
@@ -27,7 +27,7 @@ $GLOBALS['TL_LANG']['tl_caeli_content_creator']['content_legend'] = 'Content-Ein
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['ai_params_legend'] = 'KI-Parameter';
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['preview_legend'] = 'Vorschau und Generierung';
 
-/**
+ /**
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['title'] = ['Titel', 'Titel des Content-Creator-Eintrags.'];
@@ -44,6 +44,9 @@ $GLOBALS['TL_LANG']['tl_caeli_content_creator']['add_target_blank'] = ['Links in
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['tags'] = ['Tags', 'Geben Sie Tags für den Beitrag ein (kommagetrennt).'];
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['addSubpalette'] = ['Erweiterte Anweisungen hinzufügen', 'Fügen Sie erweiterte Anweisungen für die KI hinzu.'];
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['additionalInstructions'] = ['Zusätzliche Anweisungen', 'Zusätzliche Anweisungen für die KI.'];
+$GLOBALS['TL_LANG']['tl_caeli_content_creator']['year'] = ['Jahr(e)', 'Geben Sie das Jahr oder die Jahre an, auf die sich der Inhalt beziehen soll (z.B. 2025 oder 2024, 2025).'];
+$GLOBALS['TL_LANG']['tl_caeli_content_creator']['loadingText'] = ['Generiere Inhalt... Bitte warten.', 'Dieser Text wird angezeigt, während der Inhalt generiert wird.'];
+
 
 // KI-Parameter
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['temperature'] = ['Kreativität (0.0-1.0)', 'Steuert die "Kreativität" der Antworten. Niedrige Werte (0.1-0.3): Sehr konsistente Antworten. Hohe Werte (0.8-1.0): Sehr kreative Antworten.'];
@@ -59,4 +62,4 @@ $GLOBALS['TL_LANG']['tl_caeli_content_creator']['previewView'] = ['Vorschau', 'Z
 // Operationsbezeichnungen
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['edit'] = ['Bearbeiten', 'Eintrag ID %s bearbeiten'];
 $GLOBALS['TL_LANG']['tl_caeli_content_creator']['delete'] = ['Löschen', 'Eintrag ID %s löschen'];
-$GLOBALS['TL_LANG']['tl_caeli_content_creator']['show'] = ['Details anzeigen', 'Details des Eintrags ID %s anzeigen']; 
+$GLOBALS['TL_LANG']['tl_caeli_content_creator']['show'] = ['Details anzeigen', 'Details des Eintrags ID %s anzeigen'];

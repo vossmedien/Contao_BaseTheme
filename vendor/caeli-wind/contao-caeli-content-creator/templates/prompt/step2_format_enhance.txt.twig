@@ -1,0 +1,56 @@
+ZIEL: Formatiere und verbessere den folgenden Rohtext zu einem hochwertigen, gut lesbaren und SEO-freundlichen Blog-Artikel. Thema ist: "{{ topic }}"{% if year is not empty %} mit Fokus auf {{ year }}{% endif %}.\
+\
+ROHTEXT (EINGABE):\
+---\
+{{ raw_content }}\
+---\
+\
+{% if targetAudience %}ZIELGRUPPE: {{ targetAudience }}{% endif %}\
+{% if emphasis %}BESONDERER FOKUS BEIM FORMATIEREN: {{ emphasis }}{% endif %}\
+\
+=============================================\
+ANFORDERUNGEN AN DIE FORMATIERUNG & VERBESSERUNG:\
+=============================================\
+{% if additionalInstructions -%}\
+- **ZUSÄTZLICHE PROJEKT-ANWEISUNGEN (WICHTIG):** Die folgenden Anweisungen geben wichtigen Kontext für alle nachfolgenden Punkte, **insbesondere für die Auswahl, Platzierung und inhaltliche Füllung der Bootstrap-Elemente und Buttons**: {{ additionalInstructions }}\
+{% endif -%}\
+- **SEO-KEYWORDS:** Integriere relevante Keywords zum Thema "{{ topic }}"{% if year is not empty %} und dem Jahr(en) {{ year }}{% endif %} (ggf. aus den Zusatz-Anweisungen) natürlich und sinnvoll in die zu erstellenden H2/H3-Überschriften und den Fließtext des Rohtextes. Vermeide Keyword-Stuffing.\
+- **HTML-STRUKTUR & LESBARKEIT:** \
+    - Formatiere den gesamten Rohtext mit validem HTML: `<p>` für Absätze.\
+    - Füge aussagekräftige H2- und H3-Überschriften hinzu, um den Text logisch zu gliedern (WICHTIG: KEINE H1!). Achte auf eine korrekte Hierarchie.\
+    - Optimiere ggf. den Satzbau und die Absatzstruktur aus dem Rohtext für bessere Lesbarkeit (Ziel: siehe Zusatz-Anweisungen oder ca. 5-8 Sätze pro Absatz).\
+- **BOOTSTRAP-ELEMENTE (HTML-Beispiele & Integration - FLEXIBLER):** \
+    - **ANFORDERUNG:** Integriere **1-2 passende** der unten gezeigten Bootstrap-Elemente an **inhaltlich sinnvollen Stellen *innerhalb* des Textes** (Kontext aus Zusatz-Anweisungen beachten). Nutze den Rohtext und die Zusatz-Anweisungen, um die Elemente mit **konkreten, relevanten Inhalten** zu füllen. **Sei kreativ bei der Auswahl und Platzierung.**
+    - **AUSWAHL & HTML (Nur diese verwenden):**\
+        *   Info-Card: `<div class="card"><div class="card-body"><h5 class="card-title">Passender Titel</h5><p class="card-text">Kurze Info/Hervorhebung...</p></div></div>`\
+        *   Statistik-Card: `<div class="card"><div class="card-body"><h5 class="card-title">Statistik</h5><p class="display-4">Zahl</p><p class="card-text">Kurze Erklärung...</p></div></div>`\
+        *   Info-Alert: `<div class="alert alert-info">Wichtige Zusatzinformation...</div>`\
+        *   Success-Alert: `<div class="alert alert-success">Positiver Aspekt/Tipp...</div>`\
+        *   Warning-Alert: `<div class="alert alert-warning">Hinweis auf Risiko/Problem...</div>`\
+        *   Zitatblock: `<blockquote class="blockquote"><p>Passendes Zitat...</p><footer class="blockquote-footer">Quelle des Zitats</footer></blockquote>`\
+        *   Tabelle (ERWÜNSCHT, wenn Daten im Rohtext vorhanden sind!): `<table class="table table-striped">...</table>` (Struktur und Inhalt gemäß Rohtext/Zusatz-Anweisungen)\
+- **LINKS:** Formatiere vorhandene URLs als `<a>` Tags. {% if add_target_blank %}Externe Links MÜSSEN `target="_blank"` haben.{% endif %}\
+- **QUELLEN:** {% if include_sources %}Wenn im Rohtext Fakten genannt wurden, die als Quellen interpretiert werden können, füge diese als Liste am Ende des `content` hinzu.{% endif %}\
+- **VERBOTEN:** KEINE H1-Tags! KEINE Bootstrap-Abstandsklassen (mt-, mb-, my-, mx-, py-, px-, etc.)!\
+- **BUTTONS (HTML & Bedingungen - FLEXIBLER):** Füge **maximal einen** Button hinzu und NUR, wenn es **wirklich zum Kontext passt** (gemäß Zusatz-Anweisungen). Nur diese Optionen & HTML:\
+    `<a href="/kontakt" class="btn btn-primary">Kontakt aufnehmen</a>` (nur bei Beratung)\
+    `<a href="/grundeigentuemer#pachtrechner" class="btn btn-success">Jetzt Pachteinnahmen berechnen</a>` (nur bei Pacht/Grundstück)\
+    `<a href="/grundstueck" class="btn btn-info">Flächencheck starten</a>` (nur bei Flächeneignung)\
+\
+=============================================\
+FINALES AUSGABEFORMAT (SEHR WICHTIG!):
+Gib NUR die Ergebnisse zurück, getrennt durch "|||+++|||", in DIESER REIHENFOLGE:
+1. Titel (reiner Text)
+2. Teaser (reiner Text)
+3. Content (HTML-formatiert, wie oben beschrieben)
+4. Tags (Komma-separierte Liste)
+
+BEISPIEL (Nur dieses Format! Keine Erklärung, kein umschließendes JSON oder Markdown!):
+```
+Mein Blogpost Titel|||+++|||Ein kurzer Teaser für den Artikel.|||+++|||<h2>Abschnitt 1</h2><p>Mein formatierter <strong>HTML</strong>-Inhalt...</p><button class="btn btn-primary">CTA</button>|||+++|||Keyword1, Keyword2, Anderes Thema
+```
+
+
+
+
+
