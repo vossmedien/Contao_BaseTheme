@@ -2,7 +2,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
-@import "../../_theme/variables";
+//@import "../../_theme/variables";
 
 
 html body {
@@ -11,7 +11,7 @@ html body {
     .colorpalettes-wrapper {
       display: flex;
       flex-flow: column wrap;
-      gap: $spacer-sm;
+      gap: var(--spacer-sm);
     }
 
     .colorpalettes-desc {
@@ -83,8 +83,7 @@ html body {
       .color-list--wrapper {
         display: flex;
         flex-flow: row wrap;
-        margin-left: -$spacer-sm/4;
-        margin-right: -$spacer-sm/4;
+        margin-inline:  calc(-1 * var(--spacer-sm)/4);
 
 
         @include media-breakpoint-down(sm) {
@@ -93,8 +92,8 @@ html body {
         }
 
         .color-list-element--outer {
-          padding: 0 $spacer-sm/4;
-          margin-bottom: $spacer-sm/2;
+          padding: 0 calc(var(--spacer-sm)/4);
+          margin-bottom: calc(var(--spacer-sm)/2);
 
 
           &:not(.wider) {

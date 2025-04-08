@@ -2,7 +2,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
-@import "../../_theme/variables";
+//@import "../../_theme/variables";
 
 .ce_rsce_headblock {
 
@@ -37,7 +37,7 @@
           object-fit: cover;
           height: 100%;
           width: 100%;
-          border-radius: 0 0 $border-radius 0;
+          border-radius: 0 0 var(--bs-border-radius) 0;
         }
       }
     }
@@ -59,9 +59,9 @@
       @include media-breakpoint-down(lg) {
         position: relative;
         transform: translate(0, -40%);
-        margin-right: $offset-sm;
-        margin-bottom: -$offset-sm;
-        border-radius: 0 $border-radius $border-radius 0;
+        margin-right: var(--offset-sm);
+        margin-bottom: calc(-1 *  var(--offset-sm));
+        border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0;
       }
     }
   }
@@ -70,7 +70,7 @@
     .col-lg-6 + .col-lg-6 {
       .content-block__text-area {
         min-height: 960px;
-        border-radius: 0 0 $border-radius 0;
+        border-radius: 0 0 var(--bs-border-radius) 0;
 
         .text-inner {
           max-width: 760px;
