@@ -5,9 +5,9 @@ if [ -z "${SOURCE_PATH}" ] || [ -z "${TARGET_PATH}" ] || [ -z "${TARGET_BACKUP_P
     echo "FEHLER: SOURCE_PATH, TARGET_PATH oder TARGET_BACKUP_PATH ist nicht gesetzt! (Prüfe DEPLOY_CURRENT_PATH, DEPLOY_XXX_PATH, DEPLOY_BACKUP_PATH in .env.local)" >&2
     exit 1
 fi
-# Prüfe DB-Credentials
-if [ -z "${TARGET_DB_NAME}" ] || [ -z "${SOURCE_DB_NAME}" ]; then
-    echo "FEHLER: Datenbanknamen (TARGET oder SOURCE) nicht gesetzt! (Prüfe DEPLOY_XXX_DB_NAME, DEPLOY_CURRENT_DB_NAME in .env.local)" >&2
+# Prüfe DB-Credentials für Quelle (Ziel wird aus .env.local gelesen)
+if [ -z "${SOURCE_DB_NAME}" ]; then
+    echo "FEHLER: Datenbankname (SOURCE) nicht gesetzt! (Prüfe DEPLOY_CURRENT_DB_NAME in .env.local)" >&2
     exit 1
 fi
 # Prüfe Timestamp und Zielnamen
@@ -26,19 +26,74 @@ log() {
     echo "$@" >> ${LOG_FILE}
 }
 
+# Funktion zum Parsen der DATABASE_URL aus einer .env-Datei
+# Argument 1: Pfad zur .env-Datei
+# Setzt und exportiert: TARGET_DB_USER, TARGET_DB_PASSWORD, TARGET_DB_HOST, TARGET_DB_NAME, TARGET_DB_PORT
+parse_target_database_url() {
+    local env_file=$1
+    local db_url=""
+    local prefix="TARGET_" # Prefix für die exportierten Variablen
+
+    if [ ! -f "${env_file}" ]; then
+        log "FEHLER: Zieldatei .env.local nicht gefunden: ${env_file}"
+        exit 1
+    fi
+
+    # Suche nach DATABASE_URL in der .env Datei
+    db_url=$(grep -E '^DATABASE_URL=' "${env_file}" | head -n 1 | sed -e 's/^DATABASE_URL=//' -e 's/\"//g' -e "s/'//g")
+
+    if [ -z "${db_url}" ]; then
+        log "FEHLER: DATABASE_URL nicht in ${env_file} gefunden oder ist leer."
+        exit 1
+    fi
+
+    # Parse DATABASE_URL (Format: mysql://user:password@host:port/dbname?...)
+    local clean_url=$(echo "${db_url}" | sed -e 's|^[^:]*://||' -e 's|\?.*$||')
+    local user_pass=$(echo "${clean_url}" | cut -d'@' -f1)
+    local host_port_db=$(echo "${clean_url}" | cut -d'@' -f2)
+    local host_port=$(echo "${host_port_db}" | cut -d'/' -f1)
+
+    export ${prefix}DB_USER=$(echo "${user_pass}" | cut -d':' -f1)
+    export ${prefix}DB_PASSWORD=$(echo "${user_pass}" | cut -d':' -f2-)
+    export ${prefix}DB_NAME=$(echo "${host_port_db}" | cut -d'/' -f2)
+
+    if [[ "${host_port}" == *":"* ]]; then
+        export ${prefix}DB_HOST=$(echo "${host_port}" | cut -d':' -f1)
+        export ${prefix}DB_PORT=$(echo "${host_port}" | cut -d':' -f2)
+    else
+        export ${prefix}DB_HOST="${host_port}"
+        export ${prefix}DB_PORT="3306" # Standard MySQL Port
+    fi
+
+    # Validierung
+    if [ -z "$(eval echo \$${prefix}DB_USER)" ] || [ -z "$(eval echo \$${prefix}DB_HOST)" ] || [ -z "$(eval echo \$${prefix}DB_NAME)" ]; then
+        log "FEHLER: Unvollständige Zieldatenbank-Credentials nach dem Parsen von ${env_file}."
+        log "Geparst: USER=$(eval echo \$${prefix}DB_USER), HOST=$(eval echo \$${prefix}DB_HOST), NAME=$(eval echo \$${prefix}DB_NAME)"
+        exit 1
+    fi
+
+    log "Zieldatenbank-Credentials aus ${env_file} erfolgreich geparst."
+    # Sichereres Logging: Zeige nicht das Passwort
+    log "Geparst: USER=$(eval echo \$${prefix}DB_USER), HOST=$(eval echo \$${prefix}DB_HOST), PORT=$(eval echo \$${prefix}DB_PORT), NAME=$(eval echo \$${prefix}DB_NAME)"
+
+}
+
 # Log-Zeilen ohne führende Leerzeichen schreiben
 log "===== Deployment gestartet: $(date) ====="
 log ""
 log "===== Eingespielte Version ====="
 log "Quelle: Staging-System (${SOURCE_PATH})"
-log "Ziel: Ziel-System (${TARGET_PATH})"
 log "Staging-Datenbank: ${SOURCE_DB_NAME}"
-log "Ziel-Datenbank: ${TARGET_DB_NAME}"
 log "Zeitstempel: $(date '+%Y-%m-%d %H:%M:%S')"
 log "============================="
 log ""
 
-# Log-Zeilen ohne führende Leerzeichen schreiben
+# Parse die Zieldatenbank-URL
+TARGET_ENV_FILE="${TARGET_PATH}/.env.local"
+log "Lese Zieldatenbank-Konfiguration aus ${TARGET_ENV_FILE}..."
+parse_target_database_url "${TARGET_ENV_FILE}"
+# Jetzt kann der volle Log-Header geschrieben werden
+log ""
 log "===== Deployment gestartet: $(date) ====="
 log "Quelle: ${SOURCE_PATH} (${SOURCE_DB_NAME})"
 log "Ziel: ${TARGET_PATH} (${TARGET_DB_NAME}) - Umgebung: ${TARGET_ENV_NAME}"
@@ -59,7 +114,8 @@ tar cfz ${BACKUP_FILE_TARGET} ${TARGET_PATH}/* > /dev/null 2>&1
 log "Zieldateien wurden archiviert: ${BACKUP_FILE_TARGET}"
 
 # Sichere Ziel-Datenbank ohne Ausgabe
-mysqldump -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} ${TARGET_DB_NAME} > ${BACKUP_DB_TARGET} 2> /dev/null
+log "Sichere Zieldatenbank (${TARGET_DB_NAME})..."
+mysqldump -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} --port=${TARGET_DB_PORT} ${TARGET_DB_NAME} > ${BACKUP_DB_TARGET} 2> /dev/null
 log "Zieldatenbank wurde gesichert: ${BACKUP_DB_TARGET}"
 
 # Sichern der Ausnahmen aus der Ziel-DB vor dem Deployment
@@ -134,7 +190,8 @@ for table_exception in "${TABLE_EXCEPTIONS[@]}"; do
     done
     
     # Hole die Daten aus der ZIEL-Datenbank
-    table_data=$(mysql -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} ${TARGET_DB_NAME} -e "SELECT id, ${column_names} FROM \`${TABLE}\` WHERE ${conditions}" --batch --skip-column-names)
+    log "Lese Ausnahmedaten aus ${TARGET_DB_NAME}..."
+    table_data=$(mysql -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} --port=${TARGET_DB_PORT} ${TARGET_DB_NAME} -e "SELECT id, ${column_names} FROM \`${TABLE}\` WHERE ${conditions}" --batch --skip-column-names)
     
     # Prüfe, ob Daten vorhanden sind
     if [ -z "$table_data" ]; then
@@ -199,7 +256,7 @@ log "rsync-Befehl ausgeführt. Exit-Code: $?"
 
 # Übertragen der Staging-Datenbank in die Ziel-Umgebung
 log "Übertrage Datenbank von Staging (${SOURCE_DB_NAME}) zu Ziel (${TARGET_DB_NAME})..."
-mysqldump -u ${SOURCE_DB_USER} -p"${SOURCE_DB_PASSWORD}" -h ${SOURCE_DB_HOST} ${SOURCE_DB_NAME} --ignore-table=${SOURCE_DB_NAME}.tl_user | mysql -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} ${TARGET_DB_NAME} 2> /dev/null
+mysqldump -u ${SOURCE_DB_USER} -p"${SOURCE_DB_PASSWORD}" -h ${SOURCE_DB_HOST} --port=${SOURCE_DB_PORT:-3306} ${SOURCE_DB_NAME} --ignore-table=${SOURCE_DB_NAME}.tl_user | mysql -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} --port=${TARGET_DB_PORT} ${TARGET_DB_NAME} 2> /dev/null
 log "Datenbank-Übertragung abgeschlossen. $(date)"
 
 # Stelle die Ausnahmen wieder her (in die ZIEL-DB)
@@ -208,7 +265,7 @@ log "Stelle Ausnahmen wieder her in ${TARGET_DB_NAME}..."
 # Spiele die Ausnahmen-SQL ein (aus dem Backup-Pfad)
 if [ -f "${EXCEPTIONS_SQL_PATH}" ]; then
     log "Importiere Ausnahmen aus ${EXCEPTIONS_SQL_PATH}..."
-    mysql -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} ${TARGET_DB_NAME} < ${EXCEPTIONS_SQL_PATH} 2> /dev/null
+    mysql -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} --port=${TARGET_DB_PORT} ${TARGET_DB_NAME} < ${EXCEPTIONS_SQL_PATH} 2> /dev/null
     
     if [ $? -eq 0 ]; then
         log "Ausnahmen erfolgreich wiederhergestellt."
@@ -222,7 +279,7 @@ if [ -f "${EXCEPTIONS_SQL_PATH}" ]; then
              log "Überprüfe wiederhergestellte Daten für $TABLE in ${TARGET_DB_NAME}..."
              IFS=',' read -ra COLUMN_LIST <<< "$COLUMNS"
              for column in "${COLUMN_LIST[@]}"; do
-                 count=$(mysql -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} ${TARGET_DB_NAME} -e "SELECT COUNT(*) FROM \`${TABLE}\` WHERE \`${column}\` IS NOT NULL AND \`${column}\` != ''" --skip-column-names)
+                 count=$(mysql -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} --port=${TARGET_DB_PORT} ${TARGET_DB_NAME} -e "SELECT COUNT(*) FROM \`${TABLE}\` WHERE \`${column}\` IS NOT NULL AND \`${column}\` != ''" --skip-column-names)
                  log "Tabelle $TABLE, Spalte $column: $count nicht-leere Werte"
              done
         done

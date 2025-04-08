@@ -106,12 +106,13 @@ class DeployController extends BackendModule
         $currentPath = $envConfigForScript['SOURCE_PATH']; // Für Template/Controller-Logik
 
         if ($selectedEnvironment) {
-            // Zielsystem-Variablen laden (z.B. DEPLOY_DEV_PATH, DEPLOY_DEV_DB_USER)
+            // Zielsystem-Variablen laden (z.B. DEPLOY_DEV_PATH)
             $envConfigForScript['TARGET_PATH'] = $this->getEnvConfig('DEPLOY_' . $selectedEnvironment . '_PATH', '');
-            $envConfigForScript['TARGET_DB_USER'] = $this->getEnvConfig('DEPLOY_' . $selectedEnvironment . '_DB_USER', '');
-            $envConfigForScript['TARGET_DB_PASSWORD'] = $this->getEnvConfig('DEPLOY_' . $selectedEnvironment . '_DB_PASSWORD', '');
-            $envConfigForScript['TARGET_DB_HOST'] = $this->getEnvConfig('DEPLOY_' . $selectedEnvironment . '_DB_HOST', '');
-            $envConfigForScript['TARGET_DB_NAME'] = $this->getEnvConfig('DEPLOY_' . $selectedEnvironment . '_DB_NAME', '');
+            // Ziel-DB-Credentials werden nicht mehr benötigt, da sie aus der .env.local des Ziels gelesen werden
+            // $envConfigForScript['TARGET_DB_USER'] = $this->getEnvConfig('DEPLOY_' . $selectedEnvironment . '_DB_USER', '');
+            // $envConfigForScript['TARGET_DB_PASSWORD'] = $this->getEnvConfig('DEPLOY_' . $selectedEnvironment . '_DB_PASSWORD', '');
+            // $envConfigForScript['TARGET_DB_HOST'] = $this->getEnvConfig('DEPLOY_' . $selectedEnvironment . '_DB_HOST', '');
+            // $envConfigForScript['TARGET_DB_NAME'] = $this->getEnvConfig('DEPLOY_' . $selectedEnvironment . '_DB_NAME', '');
 
             // Lade spezifische Exceptions/Excludes, falle zurück auf globale
             $envConfigForScript['TARGET_EXCEPTIONS'] = $this->getEnvConfig('DEPLOY_' . $selectedEnvironment . '_EXCEPTIONS');
