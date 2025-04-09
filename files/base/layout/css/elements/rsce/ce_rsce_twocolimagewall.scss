@@ -11,27 +11,38 @@ html body {
   .ce_rsce_twocolimagewall {
     position: relative;
 
-    // .container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl, .container-xxl {
-    //    // --container-max-width: #{map-get($container-max-widths, 'xl')};
-    // }
-    // .container-fluid {
-    //   --container-edge-gap: 0px; 
-    // }
 
-    .image--col {
-      position: relative;
+    .darkened-content {
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0, 0.3);
+      z-index: 1;
+      pointer-events: none;
+      transition: opacity 0.3s ease-in-out;
+      left: 0;
+      width: 100%;
+    }
 
-      figure, picture {
+    .image--col .image-col--inner{
+
+      &:not(.is-row-bg){
+         position: relative;
+      }
+
+      figure, picture, iframe {
         height: 100%;
         display: block;
       }
 
-      figure img {
+
+      figure img, video, iframe {
         object-fit: cover;
         height: 100%;
 
         @include media-breakpoint-up(lg) {
-          position: absolute;
+          position: absolute; 
           width: 100%;
           max-width: none;
           left: 0;
@@ -47,7 +58,7 @@ html body {
 
     .flex-row-reverse {
       .image--col {
-        figure img {
+        figure img, video, iframe {
           @include media-breakpoint-up(lg) {
             left: auto;
             right: 0;
@@ -56,10 +67,7 @@ html body {
       }
     }
 
-    // Reset container edge gap calculation if inside a fluid container
-    .container-fluid {
-      --container-edge-gap: 0px;
-    }
+
 
     &.container {
       .ce--imagetextwall:not(:has(.flex-row-reverse)) .content--col .content--inner {
@@ -71,65 +79,39 @@ html body {
       padding-top: var(--main-gap);
       padding-bottom: var(--main-gap);
       padding-inline: var(--bs-container-gutter);
+      position: relative;
 
       @include media-breakpoint-up(lg) {
         padding-inline: calc(var(--bs-container-gutter) * 2);
       }
 
-      a:not(.btn) {
-        //color: currentColor;
-      }
     }
 
     .content--col {
       z-index: 1;
       @include media-breakpoint-down(lg) {
         order: 2;
+        min-height: 300px;
+      }
+      &.content--col, &.image--col {
+        position: relative;
       }
     }
 
     .image--col {
-      // position: relative; // No longer needed for absolute positioning
       @include media-breakpoint-down(lg) {
         order: 1;
         min-height: 300px;
       }
     }
 
-    // .ce--imagetextwall--outer {
-    //     overflow: hidden; // Maybe still useful, but not strictly for the removed effect
-    //      &.with-spacing {
-    //       margin-bottom: calc(var(--main-gap) / 2);
-    //     }
-    // }
-
     .ce--imagetextwall {
       position: relative;
-      // &:has(.flex-row-reverse) {
-      //     .image--col .image-col--inner.as-bg {
-      //         right: 0;
-      //         left: calc(var(--container-edge-gap) * -1);
-      //         width: auto;
-      //     }
-      // }
-
-      // &:not(:has(.flex-row-reverse)) {
-      //   .image--col .image-col--inner.as-bg {
-      //       left: 0;
-      //       right: calc(var(--container-edge-gap) * -1);
-      //       width: auto;
-      //   }
-
-      //    picture {
-      //     //display: flex;
-      //     //justify-content: flex-end; 
-      //   }
-      // }
     }
 
     .ce--imagetextwall--outer {
       position: relative;
-      overflow: hidden; // Prevent scrollbars from absolute positioning bleed
+
       &.with-spacing {
         margin-bottom: calc(var(--main-gap) / 2);
       }
@@ -145,7 +127,7 @@ html body {
         transform: translate(-50%, -50%);
         z-index: 15;
         top: 0;
-        left: 50%;
+        left: 0;
       }
 
       .headline--wrapper {
@@ -158,33 +140,44 @@ html body {
     .image-col--inner {
       height: 100%;
       width: 100%;
+          overflow: hidden;
 
-
-      // Remove absolute positioning and related background styles
-      // &.as-bg { ... }
-
-      // General styles for image/video inside the column
-      > img, > picture, > video, .swiper {
+      img,  video, .swiper, iframe {
         display: block;
         max-width: 100%; // Prevent image from overflowing column by default
-        height: 100%;
-        object-fit: cover; // Cover the calculated area (will be set by JS)
-        // Transition for potential size changes
+        height: auto;
+        object-fit: contain; // Default to contain, cover only if needed and set by JS/other classes
         transition: width 0.3s ease-in-out;
       }
 
-      iframe {
-        width: 100%; // Iframe should likely fill the column width
-        min-height: 250px;
-        @include media-breakpoint-up(lg) {
-          min-height: 400px;
+      // Specific styles when image IS a background (as-bg)
+      &.as-bg {
+        // Image should cover the area
+        img,  video, .swiper, iframe {
+          height: 100%; // Take full height
+          object-fit: cover;
         }
       }
 
-      // &.not-as-bg { ... } // Merge needed styles or remove
+      // Styles when image is NOT a background (placed normally within the column)
+      &.not-as-bg {
+        // Override potential height settings from as-bg or general styles
+        height: auto !important; 
+        line-height: 1.5; // Reset line height for potential text content
+
+        // Image/video behaves like a normal block element
+        img,  video, .swiper, iframe {
+          max-width: 100%;
+          height: auto !important;
+          object-fit: contain !important; // Ensure it fits, doesn't cover
+          position: static !important; // Ensure no absolute positioning is applied
+
+        }
+      }
+
 
       &.no-stretch {
-        img, picture > img {
+        img,  video, .swiper, iframe {
           width: auto;
           object-fit: contain; // If no-stretch means contain within column
         }
@@ -194,18 +187,15 @@ html body {
     .kachel-column-width--indicator {
       height: 100%;
       width: 100%;
+      position: absolute;
       top: 0;
       left: 0; // Default left alignment
-      line-height: 1.25;
+      //line-height: 1.25;
       z-index: 5; // Kachel should be above the background image
 
-      // Kachel within image column needs to respect absolute positioning context
       .image--col & {
         position: absolute;
       }
-
-      // Kachel within content column might need adjustment if content col has bg image now?
-      // .content--col & { ... }
 
       // Adjust Kachel position based on column order
       .ce--imagetextwall:has(.flex-row-reverse) .image--col & {
@@ -215,20 +205,17 @@ html body {
 
       .column-kachel--wrapper {
         transition: all 0.5s ease;
+        position: absolute;
         z-index: 5; // Keep above background
-
-        @include media-breakpoint-up(lg) {
-          width: rfs-value(200px);
+   width: rfs-value(200px);
           height: rfs-value(200px);
           position: absolute;
+        @include media-breakpoint-up(lg) {
+
         }
 
-        @include media-breakpoint-down(lg) {
-          width: 100%;
-          height: 100%;
-          transform: none;
-          position: relative; // Reset position for mobile flow
-        }
+
+        /*
 
         // Kachel positioning classes (pos-*)
         &.pos-centered {
@@ -280,6 +267,8 @@ html body {
           right: 50%;
           transform: translateX(50%);
         }
+         */
+
 
         .column--kachel {
           height: 100%;
@@ -315,17 +304,15 @@ html body {
               @include font-size(22px);
             }
 
-            @include media-breakpoint-down(lg) {
-              text-align: left !important; // Force left align on mobile? Review needed.
-            }
+
 
             .kachel-hover--content {
               transition: all 0.5s ease;
-              @include media-breakpoint-up(lg) {
+
                 opacity: 0;
                 height: 0px;
                 overflow: hidden;
-              }
+
 
               .kachel--long-text {
                 margin-top: 0.5rem;
@@ -343,16 +330,14 @@ html body {
       }
 
       &.expandable .column-kachel--wrapper:hover {
-        @include media-breakpoint-up(lg) {
+
+         // left: 0;
+        //  top: 0;
+         // right: 0;
+        //  bottom: 0;
           width: 100%;
           height: 100%;
-          // Reset transform if position class used it
-          &.pos-centered, &.pos-bottom-center, &.pos-top-center {
-            transform: translate(0, 0);
-          }
-          &.pos-centered-right, &.pos-centered-left {
-            transform: translate(0, 0);
-          }
+       //  transform: translate(0, 0);
 
           .column--kachel {
             width: 100%;
@@ -369,8 +354,10 @@ html body {
               }
             }
           }
-        }
+
       }
     }
+
+    // Content column overlay positioning is handled entirely by JS (left/right props)
   }
 }

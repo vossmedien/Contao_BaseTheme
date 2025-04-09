@@ -101,26 +101,6 @@ document.addEventListener('click', function (event) {
     }
 });
 
-/*
-// Handler für Duplizieren- und Neu-Buttons
-document.addEventListener('click', function (event) {
-    var target = event.target.closest('.rsce_list_toolbar_duplicate, .rsce_list_toolbar_new, .rsce_list_toolbar_delete');
-    if (target) {
-        event.preventDefault();
-
-
-        // Warten Sie kurz, um sicherzustellen, dass die RSCE-Aktion abgeschlossen ist
-        setTimeout(function () {
-            var form = document.querySelector('form#tl_content');
-            if (form) {
-                form.submit();
-            }
-        }, 200);
-    }
-});
-
- */
-
 // Funktion zum Verschieben des Submit-Bereichs
 function moveSubmitElement() {
   const submitElement = document.querySelector('.tl_formbody_submit');
@@ -151,3 +131,10 @@ document.addEventListener('turbo:load', function initialSetup() {
   // Event-Listener entfernen nach erstem Aufruf
   document.removeEventListener('turbo:load', initialSetup);
 });
+
+
+
+// Für Turbo-spezifische Events
+document.addEventListener('turbo:load', moveSubmitElement);
+// Fallback für ältere Turbo/Turbolinks-Versionen
+document.addEventListener('turbolinks:load', moveSubmitElement);
