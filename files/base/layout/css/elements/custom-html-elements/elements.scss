@@ -189,8 +189,8 @@ body:not(.start) {
   }
 
   &:hover {
+    background-color: transparent;
     color: var(--bs-primary);
-    background-color: var(--bs-white);
   }
 }
 

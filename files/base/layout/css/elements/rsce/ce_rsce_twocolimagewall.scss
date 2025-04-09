@@ -2,9 +2,64 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
+// :root {
+//   --container-max-width: #{$container-xxl};
+//   --container-edge-gap: calc((100vw - min(100vw, var(--container-max-width))) / 2);
+// }
+
 html body {
   .ce_rsce_twocolimagewall {
     position: relative;
+
+    // .container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl, .container-xxl {
+    //    // --container-max-width: #{map-get($container-max-widths, 'xl')};
+    // }
+    // .container-fluid {
+    //   --container-edge-gap: 0px;
+    // }
+
+    .image--col {
+      position: relative;
+
+      figure, picture {
+        height: 100%;
+        display: block;
+      }
+
+      figure img {
+        object-fit: cover;
+        height: 100%;
+
+        @include media-breakpoint-up(lg) {
+          position: absolute;
+          width: 100%;
+          max-width: none;
+          left: 0;
+          top: 0;
+          transition: transform .3s ease-in-out;
+
+          &:hover {
+            transform: scale(1.035);
+          }
+        }
+      }
+    }
+
+    .flex-row-reverse {
+      .image--col {
+        figure img {
+          @include media-breakpoint-up(lg) {
+            left: auto;
+            right: 0;
+          }
+        }
+      }
+    }
+
+    // Reset container edge gap calculation if inside a fluid container
+    .container-fluid {
+      --container-edge-gap: 0px;
+    }
 
     &.container {
       .ce--imagetextwall:not(:has(.flex-row-reverse)) .content--col .content--inner {
@@ -12,49 +67,73 @@ html body {
       }
     }
 
-    .content--inner,
-    .image--inner {
+    .content--inner {
+      padding-top: var(--main-gap);
+      padding-bottom: var(--main-gap);
       padding-inline: var(--bs-container-gutter);
 
       @include media-breakpoint-up(lg) {
-        padding-inline: calc(var(--bs-container-gutter) * 3);
+        padding-inline: calc(var(--bs-container-gutter) * 2);
+      }
+
+      a:not(.btn) {
+        //color: currentColor;
       }
     }
-
 
     .content--col {
-      @include media-breakpoint-down(lg) {
-        order: 1;
-      }
-    }
-
-    .image--col {
+      z-index: 1;
       @include media-breakpoint-down(lg) {
         order: 2;
       }
     }
 
-    .ce--imagetextwall {
-      &:has(.flex-row-reverse) {
-        .content--col .content--inner {
-          padding-right: var(--bs-container-gutter);
-        }
-      }
-
-      &:not(:has(.flex-row-reverse)) {
-        picture {
-          display: flex;
-          justify-content: flex-end;
-
-
-        }
-
-        .content--col .content--inner {
-          padding-left: var(--bs-container-gutter);
-        }
+    .image--col {
+      // position: relative; // No longer needed for absolute positioning
+      @include media-breakpoint-down(lg) {
+        order: 1;
+        min-height: 300px;
       }
     }
 
+    // .ce--imagetextwall--outer {
+    //     overflow: hidden; // Maybe still useful, but not strictly for the removed effect
+    //      &.with-spacing {
+    //       margin-bottom: calc(var(--main-gap) / 2);
+    //     }
+    // }
+
+    .ce--imagetextwall {
+      position: relative;
+      // &:has(.flex-row-reverse) {
+      //     .image--col .image-col--inner.as-bg {
+      //         right: 0;
+      //         left: calc(var(--container-edge-gap) * -1);
+      //         width: auto;
+      //     }
+      // }
+
+      // &:not(:has(.flex-row-reverse)) {
+      //   .image--col .image-col--inner.as-bg {
+      //       left: 0;
+      //       right: calc(var(--container-edge-gap) * -1);
+      //       width: auto;
+      //   }
+
+      //    picture {
+      //     //display: flex;
+      //     //justify-content: flex-end;
+      //   }
+      // }
+    }
+
+    .ce--imagetextwall--outer {
+      position: relative;
+      overflow: hidden; // Prevent scrollbars from absolute positioning bleed
+      &.with-spacing {
+        margin-bottom: calc(var(--main-gap) / 2);
+      }
+    }
 
     .boxed-headline {
       text-align: center;
@@ -66,6 +145,7 @@ html body {
         transform: translate(-50%, -50%);
         z-index: 15;
         top: 0;
+        left: 50%;
       }
 
       .headline--wrapper {
@@ -75,344 +155,220 @@ html body {
       }
     }
 
-    .ce--inner {
-      .ce--imagetextwall--outer {
-        .image--col,
-        .content--col {
-
-          &.full-width {
-            .zoom-container {
-              width: 100vw;
-            }
-          }
-
-
-          .image--inner,
-          .content--inner {
-            padding-top: var(--main-gap);
-            padding-bottom: var(--main-gap);
-
-            @include media-breakpoint-down(lg) {
-              //padding-top: calc(var(--main-gap) * 0.5);
-            }
-
-            a:not(.btn) {
-              //color: currentColor;
-            }
-          }
-
-          &:hover {
-            .zoom-container img {
-              transform: scale(1.035);
-            }
-          }
-        }
-
-        &.with-spacing {
-          margin-bottom: calc(var(--main-gap) / 2);
-        }
-
-        .content--inner {
-          position: relative;
-          z-index: 2;
-        }
-
-        .ce--imagetextwall {
-          position: relative;
-
-          .image-container {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            right: 0;
-
-            .row {
-              height: 100%;
-            }
-          }
-
-          > .content-holder {
-            &:not(.force-container) {
-              //background-color: $body-bg;
-            }
-          }
-
-          &.not-as-bg {
-            .image--inner {
-              display: flex;
-              flex-flow: column wrap;
-              justify-content: center;
-              text-align: center;
-
-              .image--wrapper {
-                max-height: 100%;
-
-                img {
-                  max-height: 100%;
-                  width: auto;
-                  max-width: 95%;
-                  height: auto;
-                }
-              }
-            }
-          }
-
-          div.row:not(.formbody) {
-            @include media-breakpoint-down(lg) {
-              &:not(.align-items-center) {
-                flex-flow: column-reverse;
-              }
-            }
-
-            &.flex-row-reverse {
-              @include media-breakpoint-up(lg) {
-                flex-flow: row-reverse;
-
-
-                .content--col {
-                  .content-col--image,
-                  .kachel-column-width--indicator {
-                    left: auto;
-                    right: 0;
-                  }
-
-                  & + .image--col {
-                  }
-                }
-                .image--col {
-                  .image-col--inner {
-                    left: 0;
-                    right: auto;
-                  }
-                }
-              }
-            }
-
-            .image--col {
-              @include media-breakpoint-down(lg) {
-                position: relative;
-              }
-
-              .kachel-column-width--indicator {
-                @include media-breakpoint-down(lg) {
-                  width: 100% !important;
-                }
-              }
-
-              .image-col--inner {
-                z-index: 5;
-
-                .image-container {
-                  width: 100%;
-                  height: 100%;
-                }
-              }
-            }
-
-            .content--col {
-              z-index: 1;
-
-              @include media-breakpoint-down(lg) {
-                position: relative;
-
-                > .zoom-container {
-                  position: absolute;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-
-.zoom-container {
-  height: 100%;
-  width: 100%;
-  top: 0;
-  line-height: 0;
-  overflow: hidden;
-
-  .swiper {
-    height: 100%;
-  }
-
-  picture, figure {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-
-  @include media-breakpoint-up(lg) {
-    position: absolute;
-  }
-
-  &.is-row-bg {
-    width: 100% !important;
-    left: 0;
-  }
-
-
-  iframe {
-    min-height: 250px;
-  }
-
-  img,
-  video,
-  iframe {
-    left: 0;
-    height: 100%;
-    transition: all 0.3s ease-in-out !important;
-    @include media-breakpoint-down(lg) {
-      //max-height: 275px;
-      bottom: 0;
-    }
-  }
-
-  &:not(.no-stretch) {
-
-    img, video {
-      object-fit: cover;
-      display: block;
-    }
-
-    img,
-    video,
-    iframe {
-      width: 100%;
-    }
-  }
-
-  &.no-stretch {
-    img {
-      //flex: 1;
-    }
-
-    @include media-breakpoint-down(lg) {
-      width: 100%;
-
-      picture {
-        display: flex;
-      }
-    }
-  }
-}
-
-
-.kachel-column-width--indicator {
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  line-height: 1.25;
-
-  @include media-breakpoint-up(lg) {
-    position: absolute;
-  }
-
-  .column-kachel--wrapper {
-    transition: all 0.5s ease;
-    z-index: 5;
-
-    @include media-breakpoint-up(lg) {
-      width: rfs-value(200px);
-      height: rfs-value(200px);
-      position: absolute;
-    }
-
-    @include media-breakpoint-down(lg) {
-      width: 100%;
-      height: 100%;
-      transform: none;
-    }
-
-    .column--kachel {
+    .image-col--inner {
       height: 100%;
       width: 100%;
-      display: flex;
-      flex-flow: column wrap;
-      padding: 1.5rem;
-      transition: all 0.5s ease;
-      overflow: hidden;
 
-      @include media-breakpoint-up(lg) {
-        width: rfs-value(200px);
-        height: rfs-value(200px);
-        position: absolute;
-      }
 
-      > a {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
+      // Remove absolute positioning and related background styles
+      // &.as-bg { ... }
+
+      // General styles for image/video inside the column
+      > img, > picture, > video, .swiper {
+        display: block;
+        max-width: 100%; // Prevent image from overflowing column by default
         height: 100%;
-        z-index: 1;
-        cursor: pointer;
+        object-fit: cover; // Cover the calculated area (will be set by JS)
+        // Transition for potential size changes
+        transition: width 0.3s ease-in-out;
       }
 
-      .column-kachel--inner {
+      iframe {
+        width: 100%; // Iframe should likely fill the column width
+        min-height: 250px;
+        @include media-breakpoint-up(lg) {
+          min-height: 400px;
+        }
+      }
+
+      // &.not-as-bg { ... } // Merge needed styles or remove
+
+      &.no-stretch {
+        img, picture > img {
+          width: auto;
+          object-fit: contain; // If no-stretch means contain within column
+        }
+      }
+    }
+
+    .kachel-column-width--indicator {
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0; // Default left alignment
+      line-height: 1.25;
+      z-index: 5; // Kachel should be above the background image
+
+      // Kachel within image column needs to respect absolute positioning context
+      .image--col & {
+        position: absolute;
+      }
+
+      // Kachel within content column might need adjustment if content col has bg image now?
+      // .content--col & { ... }
+
+      // Adjust Kachel position based on column order
+      .ce--imagetextwall:has(.flex-row-reverse) .image--col & {
+        left: auto;
+        right: 0; // Align Kachel to the right if image is on the left
+      }
+
+      .column-kachel--wrapper {
         transition: all 0.5s ease;
+        z-index: 5; // Keep above background
 
         @include media-breakpoint-up(lg) {
-          max-width: rfs-value(600px);
-        }
-
-        > span {
-          display: block;
-          @include font-size(22px);
+          width: rfs-value(200px);
+          height: rfs-value(200px);
+          position: absolute;
         }
 
         @include media-breakpoint-down(lg) {
-          text-align: left !important;
+          width: 100%;
+          height: 100%;
+          transform: none;
+          position: relative; // Reset position for mobile flow
         }
 
-        .kachel-hover--content {
+        // Kachel positioning classes (pos-*)
+        &.pos-centered {
+          bottom: 50%;
+          right: 50%;
+          transform: translate(50%, 50%);
+        }
+
+        &.pos-centered-right {
+          bottom: 50%;
+          right: 0;
+          transform: translateY(50%);
+        }
+
+        &.pos-centered-left {
+          bottom: 50%;
+          left: 0;
+          transform: translateY(50%);
+        }
+
+        &.pos-bottom-right {
+          bottom: 0;
+          right: 0;
+        }
+
+        &.pos-bottom-left {
+          bottom: 0;
+          left: 0;
+        }
+
+        &.pos-bottom-center {
+          bottom: 0;
+          right: 50%;
+          transform: translateX(50%);
+        }
+
+        &.pos-top-right {
+          top: 0;
+          right: 0;
+        }
+
+        &.pos-top-left {
+          top: 0;
+          left: 0;
+        }
+
+        &.pos-top-center {
+          top: 0;
+          right: 50%;
+          transform: translateX(50%);
+        }
+
+        .column--kachel {
+          height: 100%;
+          width: 100%;
+          display: flex;
+          flex-flow: column wrap;
+          padding: 1.5rem;
           transition: all 0.5s ease;
-          @include media-breakpoint-up(lg) {
-            opacity: 0;
-            height: 0px;
-            overflow: hidden;
+          overflow: hidden;
+          position: relative; // Context for link overlay
+
+          > a {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            cursor: pointer;
           }
 
-          .kachel--long-text {
-            margin-top: 0.5rem;
-            margin-bottom: 2rem;
-          }
+          .column-kachel--inner {
+            transition: all 0.5s ease;
+            position: relative; // Ensure content is above link overlay
+            z-index: 2;
 
-          .kachel--more-button {
-            position: relative;
-            z-index: 5;
-            margin-top: 2rem;
+            @include media-breakpoint-up(lg) {
+              max-width: rfs-value(600px);
+            }
+
+            > span {
+              display: block;
+              @include font-size(22px);
+            }
+
+            @include media-breakpoint-down(lg) {
+              text-align: left !important; // Force left align on mobile? Review needed.
+            }
+
+            .kachel-hover--content {
+              transition: all 0.5s ease;
+              @include media-breakpoint-up(lg) {
+                opacity: 0;
+                height: 0px;
+                overflow: hidden;
+              }
+
+              .kachel--long-text {
+                margin-top: 0.5rem;
+                margin-bottom: 2rem;
+              }
+
+              .kachel--more-button {
+                position: relative;
+                z-index: 5; // Ensure button is clickable
+                margin-top: 2rem;
+              }
+            }
           }
         }
       }
-    }
-  }
 
-  &.expandable .column-kachel--wrapper:hover {
-    width: 100%;
-    height: 100%;
-
-    .column--kachel {
-      width: 100%;
-      height: 100%;
-
-      .column-kachel--inner {
-        text-align: left !important;
-
+      &.expandable .column-kachel--wrapper:hover {
         @include media-breakpoint-up(lg) {
-          padding: 2.5rem;
-        }
+          width: 100%;
+          height: 100%;
+          // Reset transform if position class used it
+          &.pos-centered, &.pos-bottom-center, &.pos-top-center {
+            transform: translate(0, 0);
+          }
+          &.pos-centered-right, &.pos-centered-left {
+            transform: translate(0, 0);
+          }
 
-        .kachel-hover--content {
-          opacity: 1;
-          height: auto;
-          overflow: visible;
+          .column--kachel {
+            width: 100%;
+            height: 100%;
+
+            .column-kachel--inner {
+              text-align: left !important;
+              padding: 2.5rem;
+
+              .kachel-hover--content {
+                opacity: 1;
+                height: auto;
+                overflow: visible;
+              }
+            }
+          }
         }
       }
     }
