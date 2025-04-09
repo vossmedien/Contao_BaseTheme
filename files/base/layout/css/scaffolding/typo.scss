@@ -394,3 +394,9 @@ ul[class*="list-"][class*="text-"] {
 .text-xl {
   @include font-size($font-size-xl);
 }
+
+.text-center{
+  ul li::marker{
+    color: transparent;
+  }
+}

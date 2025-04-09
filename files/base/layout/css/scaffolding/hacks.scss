@@ -3,17 +3,17 @@
 }
 
 
-/* AOS */
 [data-animation*="animate__"],
-[data-aos*="animate__"],
 [class*="animate__"] {
-  &:not(.animate__animated):not([data-aos="no-animation"]),
-  &:not([data-aos="no-animation"]):has(.lazy:not(.loaded)) {
+  &:not(.animate__animated):not([data-animation="no-animation"]) {
     visibility: hidden !important;
+    opacity: 0;
   }
 
   &.animate__animated {
     visibility: visible;
+    opacity: 1;
+    animation-duration: var(--animate-duration, 1s);
   }
 }
 
@@ -58,16 +58,8 @@ div:has([class*="text-"]):has([class*="-center"]) {
 
 @include media-breakpoint-up(lg) {
   .pulled-up-element {
-    > .ce--inner {
-      margin-inline: calc(-1 * (var(--main-gap) / 2));
-      padding: calc(var(--main-gap) / 2);
-      background-color: var(--bs-body-bg);
-    }
-
-
     .row:not(.align-items-center) > div:last-child {
-      padding-top: calc((var(--main-gap) / 2) + 150px) !important;
-      //padding-top: 150px !important;
+      padding-top: calc((var(--main-gap) ) + 150px) !important;
     }
 
     .team-members .team-member:first-child {
@@ -87,7 +79,6 @@ div:has([class*="text-"]):has([class*="-center"]) {
   background-color: var(--bs-body-bg);
   z-index: 4;
   display: block;
-  //box-shadow: var(--bs-box-shadow-lg);
   padding-top: var(--main-gap);
 
   &[style] {
@@ -99,6 +90,8 @@ div:has([class*="text-"]):has([class*="-center"]) {
 @include media-breakpoint-down(lg) {
   .pulled-up-element {
     transform: none !important;
+    margin-top: var(--main-gap);
+    margin-bottom: var(--main-gap) !important;
   }
 }
 

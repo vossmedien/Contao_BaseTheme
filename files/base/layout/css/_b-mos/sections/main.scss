@@ -1,0 +1,16 @@
+#wrapper{
+  max-width: $wrapper-max-width;
+  margin: 0 auto;
+  box-shadow: $box-shadow;
+}
+
+
+/*
+main{
+  padding-top: 135px;
+
+  @include media-breakpoint-up(lg) {
+    padding-top: 150px;
+  }
+}
+ */

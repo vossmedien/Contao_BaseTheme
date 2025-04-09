@@ -1,5 +1,5 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_stoerer.min.css|static';
     $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_stoerer.js"></script>';
 }
@@ -80,13 +80,13 @@ if (!empty($styles)) {
 
             <?php if (isset($stoerer->img) && $stoerer->img): ?>
                 <?php
-                echo VSM_HelperFunctions\ImageHelper::generateImageHTML($stoerer->img, strip_tags($stoerer->content), null, $this->size, $stoerer->img_mobile ? "d-none d-md-block" : "", false);
+                echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($stoerer->img, strip_tags($stoerer->content), null, $this->size, $stoerer->img_mobile ? "d-none d-md-block" : "", false);
                 ?>
             <?php endif; ?>
 
             <?php if (isset($stoerer->img_mobile) && $stoerer->img_mobile): ?>
                 <?php
-                echo VSM_HelperFunctions\ImageHelper::generateImageHTML($stoerer->img_mobile, strip_tags($stoerer->content), null, $this->size_mobile, "d-md-none", false);
+                echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($stoerer->img_mobile, strip_tags($stoerer->content), null, $this->size_mobile, "d-md-none", false);
                 ?>
             <?php endif; ?>
 

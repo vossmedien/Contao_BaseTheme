@@ -1,6 +1,6 @@
 <div id="<?= $this->cssID; ?>" class="content--element <?= $this->class; ?>">
     <div class="ce--inner">
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -15,7 +15,7 @@
             <div class="accordion" id="accordion_<?= $this->id ?>">
                 <?php foreach ($this->elements as $index => $element): ?>
                     <?php $isOpen = !empty($element->is_open); ?>
-                    <div data-aos="<?= $this->animation_type;?>" class="accordion-item">
+                    <div data-animation="<?= $this->animation_type;?>" class="accordion-item">
                         <div
                             <?php if ($this->enable_tracking): ?>
                                 onclick="window.pushToDataLayer('FAQ', 'Accordion', <?= htmlspecialchars(json_encode($element->headline), ENT_QUOTES, 'UTF-8'); ?>, 'Click');"
@@ -27,12 +27,12 @@
                                  aria-expanded="<?= $isOpen ? 'true' : 'false' ?>"
                                  aria-controls="collapse<?= $index. $this->id ?>"
                             >
-                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                     $element->topline,
                                     $element->headline,
                                     $element->subline,
                                     $element->headline_type,
-                                    null,
+                                    "no-animation",
                                     null,
                                     $element->onlystyle,
                                     "m-0"
@@ -45,7 +45,7 @@
                                 <?php if ($element->desc): ?>
                                     <?= $element->desc; ?>
                                 <?php endif; ?>
-                                <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($element->buttons); ?>
+                                <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($element->buttons); ?>
                             </div>
                         </div>
                     </div>

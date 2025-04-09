@@ -1,0 +1,35 @@
+<?php
+
+$this->wrapperAttributes = $this
+    ->attr($this->cssID)
+    ->addClass([$this->class, 'block'])
+    ->addStyle($this->style ?? '')
+    ->setIfExists('aria-label', $this->ariaLabel)
+    ->mergeWith($this->wrapperAttributes);
+
+?>
+
+
+<!-- indexer::stop -->
+<nav<?= $this->wrapperAttributes ?>>
+
+<div class="logo">
+    <a title="B-MOS" href="/">
+        <img class="lazy" alt="B-MOS Logo" title="B-MOS" data-src="/files/base/layout/img/logo.png">
+    </a>
+</div>
+
+
+<?= $this->items ?>
+
+
+
+
+
+        <div class="extra-content mt-auto mobileNav_footer" data-bs-theme="dark">
+            {{insert_module::11}}
+        </div>
+
+
+</nav>
+<!-- indexer::continue -->

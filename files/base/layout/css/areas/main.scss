@@ -55,7 +55,7 @@ html, body, #wrapper{
 
       .article-content:not(:has(.moved-content)),
       .article-content > .moved-content {
-        > *:not(.body-slider):not(.bgvideo) {
+        > *:not(.body-slider,.bgvideo, .ce_rsce_headline:not(:has(.text))) {
           position: relative;
           margin-bottom: var(--main-gap);
 
@@ -68,7 +68,7 @@ html, body, #wrapper{
       *[class*="bg-dark"] {
         color: var(--bs-body-color-inverse);
 
-        *:not([class*="swiper-"]) {
+        *:not([class*="swiper-"], [class*="btn-"]) {
           color: inherit;
         }
       }

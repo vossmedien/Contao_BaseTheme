@@ -1,0 +1,47 @@
+
+
+h1, h2 {
+  font-weight: $font-weight-bold;
+}
+
+h3, h4, h5, h6 {
+  font-weight: $font-weight-normal;
+}
+
+
+.btn.btn-primary,
+form .widget:not(.form-floating).widget-submit button:not(.btn){
+  --bs-btn-color: var(--bs-body-color-inverse);
+  --bs-btn-hover-color: var(--bs-btn-color);
+}
+
+.btn.btn-outline-primary {
+  --bs-btn-hover-color: var(--bs-body-color-inverse);
+}
+
+html body main ul:not([class]) {
+  list-style: none;
+  padding-left: 1.25em;
+
+  li {
+    position: relative;
+
+    &:not(:last-child) {
+      margin-bottom: .75rem;
+    }
+
+    &:before {
+      content: '';
+      display: inline-block;
+      width: 1rem;
+      height: .75rem;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6.938' height='11.563' viewBox='0 0 6.938 11.563'%3E%3Cpath id='ios-arrow-right' d='M11.25,7.451,12,6.75l6.19,5.781L12,18.313l-.748-.7,4.3-4.022,1.136-1.062Z' transform='translate(-11.25 -6.75)' fill='%233e4e58'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      position: absolute;
+      left: -1.25em;
+      top: 0.3em;
+    }
+  }
+}
+

@@ -1,0 +1,136 @@
+// Farben
+
+
+
+$white: #fff;
+$gray: var(--bs-gray-300);
+
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #888888;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$black: #000;
+
+$primary: #871623;
+$secondary: #00274a;
+$tertiary: #6610f2;
+
+$body-bg: #ffffff;
+$body-color: #212529;
+
+$border-radius: var(--bs-border-radius);
+$box-shadow: 0 0 12px rgba(39, 39, 39, 0.15);
+
+$offset-sm: 60px;
+$offset-lg: 240px;
+
+$link-decoration: none;
+$link-shade-percentage: 20%;
+$link-hover-decoration: null;
+
+$input-focus-border-color: var(--bs-primary-rgb);
+$input-placeholder-color: var(--bs-placeholder-color);
+
+$fa-font-display: swap;
+
+$fa-font-path: "/files/base/layout/_vendor/node_modules/@awesome.me/kit-c9b4e661cb/icons/webfonts";
+$enable-cssgrid: true;
+$enable-rounded: true;
+$icon-type: ".fasl";
+
+$spacer: 2.5rem;
+$spacer-sm: $spacer/2;
+$spacer-lg: $spacer*2;
+
+$grid-gutter-width: 30px;
+
+$left-col--width: 275px;
+$right-col--width: 250px;
+
+$modal-sm: 520px;
+$modal-md: 760px;
+$modal-lg: 940px;
+$modal-xl: 1140px;
+
+$btn-line-height: 1;
+$font-family-base: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+$font-weight-black: 900;
+
+$font-size-xs: 10px;
+$font-size-sm: 14px;
+$font-size-base: 16px;
+$font-size-lg: 20px;
+$font-size-xl: 28px;
+
+$headings-margin-bottom: $spacer * 0.5;
+$headings-font-family: null;
+$headings-font-style: null;
+$headings-font-weight: 700;
+$headings-line-height: 1.2;
+
+
+$link-color: $body-color;
+$link-hover-color:mix(black, $link-color, 25%);
+
+
+$orange: #EC6707;
+$anthracite: #3E4E58;
+$light-gray: #F5F5F5;
+
+
+$primary: $orange;
+$secondary: $anthracite;
+$light: $light-gray;
+
+$body-color: $secondary;
+$link-color: $body-color;
+$link-hover-color: $primary;
+$font-family-base: 'Inter' ,'Helvetica', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+// Schriftgrößen
+
+$border-color: #DBDBDB;
+
+// Schriftgewichte
+$font-weight-light: 300;
+$font-weight-normal: 300;
+$font-weight-bold: 700;
+
+// Überschriften
+//$headings-font-weight: $font-weight-bold;
+
+// Buttons
+$btn-border-radius: 24px;
+$btn-border-radius-sm: 24px;
+$btn-border-radius-lg: 24px;
+
+
+$box-shadow: 0 0 16px rgba(0, 0, 0, 0.15);
+$box-shadow-sm: 0 0 12px rgba(39, 39, 39, 0.15);
+
+$border-radius: 12px;
+
+
+$wrapper-max-width: 1920px;
+$navigation-max-width: 1640px;
+$headimg-max-width: 1640px;
+$wideimg-max-width: 1220px;
+$widebox-max-width: 1220px;
+
+
+
+
+// Dark
+$link-color-dark: #fff;
+$link-hover-color-dark: $primary;
+$body-color-dark: #fff;
+
+
+
+$spacer: 5rem;
+$spacer-lg: 13rem;

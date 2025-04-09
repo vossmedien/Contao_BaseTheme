@@ -1,0 +1,143 @@
+/*
+#container {
+  &:has( + footer .ce_rsce_ansprechpartner) {
+    padding-bottom: calc(500px + var(--main-gap));
+
+    @include media-breakpoint-up(md) {
+      padding-bottom: 350px;
+    }
+
+        @include media-breakpoint-up(lg) {
+      padding-bottom: 250px;
+    }
+  }
+}
+ */
+
+
+footer {
+  background: url("/files/base/layout/img/bg-pattern.svg") center center / cover repeat;
+  border-top: 3px solid $primary;
+
+  padding-top: var(--main-gap);
+
+  &:has(.ce_rsce_ansprechpartner) {
+    //padding-top: 800px;
+    padding-top: 0;
+
+     @include media-breakpoint-down(md) {
+          .ce_rsce_ansprechpartner {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            margin-bottom: calc(var(--main-gap)/2);
+          }
+     }
+
+
+    @include media-breakpoint-up(md) {
+      margin-top: calc(var(--main-gap) * 2);
+
+      > .mod_article:first-child {
+        margin-bottom: calc(-1 * var(--main-gap) * 1.5);
+      }
+      .ce_rsce_ansprechpartner {
+
+        width: auto;
+        transform: translate(0, -50%);
+        //margin-bottom: -575px;
+        @include media-breakpoint-up(md) {
+          //margin-bottom: -150px;
+        }
+      }
+    }
+  }
+
+  @include media-breakpoint-up(md) {
+    border-top: none;
+  }
+
+
+  div.footer-helix {
+    margin-top: 2.5rem;
+
+    img {
+      height: 250px;
+      width: 100vw;
+      object-fit: cover;
+
+      @include media-breakpoint-up(md) {
+        height: 200px;
+      }
+    }
+
+
+  }
+
+
+  .ce_rsce_headline {
+    margin-block: 3.5rem;
+    @include media-breakpoint-up(md) {
+      text-align: center;
+      margin-block: 5rem;
+    }
+
+
+  }
+
+  #footerNav {
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+
+      @include media-breakpoint-up(md) {
+        text-align: center;
+      }
+
+      > li {
+        display: inline-block;
+        text-align: center;
+        margin-right: 1rem;
+        @include media-breakpoint-up(md) {
+          margin-inline: 1rem;
+        }
+      }
+    }
+  }
+}
+
+
+.social-icons-container {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+
+  @include media-breakpoint-up(md) {
+    justify-content: center;
+  }
+
+  .social-icon {
+    display: inline-block;
+    min-width: 60px;
+
+
+    a {
+      display: block;
+      text-align: center;
+
+      i {
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+
+
+      small {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}

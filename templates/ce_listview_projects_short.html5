@@ -1,0 +1,30 @@
+<?php $this->extend('block_searchable'); ?>
+<?php $this->block('content'); ?>
+
+
+<?php if ($this->entities): ?>
+
+    <div class="detail-list">
+
+
+        <h3>Projekte aus dem Bereich <span class="text-primary">{{page::pageTitle}}</span></h3>
+
+        <?php foreach ($this->entities as $index => $arrEntity): ?>
+            <?php
+            $projectId = 'project-' . $arrEntity['id'];
+            $projectUrl = '/partner-projekte/#' . $projectId;
+            ?>
+            <div class="detail-item-short" data-animation="fade-up">
+                <a href="<?= $projectUrl ?>" class="detail-link">
+                    <h3 class="mb-0 h5">
+                        <i class="fasl fa-long-arrow-right"></i> <?= $arrEntity['projektname'] ?>
+                    </h3>
+
+                </a>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+<?= $this->pagination ?>
+
+<?php $this->endblock(); ?>

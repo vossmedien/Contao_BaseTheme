@@ -1,5 +1,5 @@
 <?php
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_linkboxen.min.css|static';
 }
 ?>
@@ -12,7 +12,7 @@ if (!isset($this->size)) {
 
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?> <?php if ($this->separator_color): ?>with-border<?php endif; ?>" <?php if ($this->separator_color): ?>style="--linkboxes-separator-color: <?= $this->separator_color; ?>"<?php endif; ?>>
     <div class="ce--inner ">
-        <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
@@ -50,7 +50,7 @@ if (!isset($this->size)) {
                 <div class="swiper-wrapper <?php if ($this->centered_slides) : ?>align-items-center<?php endif; ?>">
                     <?php endif; ?>
                     <?php foreach ($this->boxes as $i => $box) : ?>
-                        <div <?php if ($this->is_slider == 1): ?>data-aos="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php endif; ?>"<?php endif; ?> class="
+                        <div <?php if ($this->is_slider == 1): ?>data-animation="<?php if ($box->animation_type) : ?><?php echo $box->animation_type; ?><?php endif; ?>"<?php endif; ?> class="
 
                         <?php if ($this->is_slider == 2): ?>
                         swiper-slide
@@ -162,7 +162,7 @@ if (!isset($this->size)) {
 
                                         <?php if ($ext != "mp4" && !$box->not_as_bg) : ?>
                                             <div class="image--holder lazy <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>"
-                                                 data-bg="<?= VSM_HelperFunctions\ImageHelper::generateImageURL($box->image, $this->size); ?>"
+                                                 data-bg="<?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($box->image, $this->size); ?>"
                                                  style="background-size: cover; background-repeat: no-repeat; background-position: center center ; <?php if ($this->imagearea_height): ?>height: <?= $this->imagearea_height; ?>; <?php endif; ?>
                                                  <?php if ($box->box_style == "style-3"): ?>
                                                          background-color: <?php if ($box->image_grayed): ?>linear-gradient(black, black),<?php endif; ?>;
@@ -171,7 +171,7 @@ if (!isset($this->size)) {
                                         <?php endif; ?>
                                         <?php if ($ext != "mp4" && $box->not_as_bg) : ?>
                                             <div style="height: <?php if ($this->imagearea_height): ?><?= $this->imagearea_height; ?><?php else: ?> auto<?php endif; ?>; text-align: center;" class="image--holder <?php if (!$box->longtext && !$box->text && !$box->expand_image && !$box->expand_image && !$box->modal_longtext && !$box->modal_image) : ?>rounded<?php endif; ?>">
-                                                <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($box->image, null, $box->image_headline, $this->size, null, false); ?>
+                                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($box->image, null, $box->image_headline, $this->size, null, false); ?>
                                             </div>
                                         <?php endif; ?>
 
@@ -199,14 +199,14 @@ if (!isset($this->size)) {
                                         <?php if ($box->box_style == "style-3"): ?>
                                             <?php if ($box->add_items == "buttons") : ?>
                                                 <div class="ce--buttons <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
-                                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($box->buttons); ?>
+                                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($box->buttons); ?>
                                                 </div>
                                             <?php endif; ?>
 
                                             <?php if ($box->add_items == "modal") : ?>
                                                 <div class="ce--buttons  <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
                                                 <span class="d-inline-block btn     <?php if ($box->modal_button_size) : ?><?php echo $box->modal_button_size; ?><?php endif; ?> <?php echo $box->modal_button_type; ?>"
-                                                      data-aos="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php endif; ?>"
+                                                      data-animation="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php endif; ?>"
                                                       data-bs-toggle="modal"
                                                       data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"><?php echo $box->modal_button_text; ?></span>
                                                 </div>
@@ -233,7 +233,7 @@ if (!isset($this->size)) {
                                                  style="
                                                  <?php if ($box->shadowbox_background && $box->as_box) : ?>background-color:<?php echo $box->shadowbox_background; ?><?php endif; ?>
                                                          ">
-                                                <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                                     $box->topline,
                                                     $box->text,
                                                     $box->subline,
@@ -250,7 +250,7 @@ if (!isset($this->size)) {
                                             <div class="box-lower--expand <?php if ($box->is_map == "code") : ?>is-map<?php endif; ?> <?php if ($box->expand_longtext && $box->expand_longtext != "show_all") : ?>expandable<?php endif; ?> <?php if ($box->expand_longtext == "hide_preview") : ?>hide-preview<?php endif; ?>">
                                                 <?php if ($box->expand_image) : ?>
                                                     <div class="box--expand-image text-center">
-                                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($box->expand_image, null, $box->image_headline, $this->size, null, false); ?>
+                                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($box->expand_image, null, $box->image_headline, $this->size, null, false); ?>
                                                     </div>
                                                 <?php endif; ?>
 
@@ -268,12 +268,12 @@ if (!isset($this->size)) {
                                                 <?php if ($box->add_items == "modal" && !$box->linkoverlay) : ?>
                                                     <div class="ce--buttons justify-content-center <?php if ($box->alternate_background == "transparent") : ?>px-0<?php endif; ?>">
                                                          <span class="d-inline-block btn     <?php if ($box->modal_button_size) : ?><?php echo $box->modal_button_size; ?><?php endif; ?> <?php echo $box->modal_button_type; ?>"
-                                                               data-aos="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php endif; ?>"
+                                                               data-animation="<?php if ($box->modal_button_animation) : ?><?php echo $box->modal_button_animation; ?><?php endif; ?>"
                                                                data-bs-toggle="modal"
                                                                data-bs-target="#linkBoxModal_<?php echo $this->id; ?>_<?php echo $i; ?>"><?php echo $box->modal_button_text; ?></span>
                                                     </div>
                                                 <?php elseif (!$box->linkoverlay): ?>
-                                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($box->buttons, "justify-content-center"); ?>
+                                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($box->buttons, "justify-content-center"); ?>
                                                 <?php endif; ?>
                                             </div>
                                         <?php endif; ?>
@@ -312,7 +312,7 @@ if (!isset($this->size)) {
     >
         <div class="modal-dialog">
             <div class="modal-content"
-                 data-aos="<?php if ($box->modal_animation_type) : ?><?php echo $box->modal_animation_type; ?><?php endif; ?>"
+                 data-animation="<?php if ($box->modal_animation_type) : ?><?php echo $box->modal_animation_type; ?><?php endif; ?>"
                  <?php if ($box->modal_backgroundcolor): ?>style="background-color: <?php echo $box->modal_backgroundcolor; ?>"<?php endif; ?>>
                 <div class="modal-body">
 
@@ -326,9 +326,9 @@ if (!isset($this->size)) {
                                 <div class="col-12 mb-1 mb-md-0 <?php if ($box->modal_longtext) : ?>col-md-6<?php endif; ?>">
 
                                     <div class="image--wrapper">
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($box->modal_image, null, $box->image_headline, null, null, false); ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($box->modal_image, null, $box->image_headline, null, null, false); ?>
                                         <?php if ($box->modal_logo) : ?>
-                                            <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($box->modal_logo, null, $box->image_headline, null, "logo", false); ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($box->modal_logo, null, $box->image_headline, null, "logo", false); ?>
                                         <?php endif; ?>
                                     </div>
 
@@ -353,7 +353,7 @@ if (!isset($this->size)) {
 
 <?php endif; ?>
 
-<?php if ($this->is_slider && VSM_HelperFunctions\EnvHelper::isFrontend()): ?>
+<?php if ($this->is_slider && Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()): ?>
     <script type="text/javascript" defer>
 
         window.addEventListener('DOMContentLoaded', function () {

@@ -1,0 +1,202 @@
+@import "../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../_vendor/node_modules/bootstrap/scss/mixins";
+@import "../../_vendor/node_modules/@awesome.me/kit-c9b4e661cb/icons/scss/fontawesome";
+@import "variables";
+@import "map-overwrites";
+
+
+@import "scaffolding/typo";
+@import "scaffolding/helper";
+
+@import "sections/header";
+@import "sections/main";
+@import "sections/footer";
+
+@import "modules/listing";
+@import "modules/navigation";
+
+.ce--stoerer {
+  border: 1px solid white;
+  border-right: 0;
+}
+
+.pulled-up-element:has(.is-slider) > .ce--inner{
+  background-color: transparent;
+  padding: 0;
+}
+
+.ce_rsce_headblock:has(.pull-bottom) {
+  margin-bottom: 0 !important;
+}
+
+
+.content--element.ce_rsce_slider.pulled-up-element .ce--content-slider.is-slider{
+  padding: 4rem 4rem;
+  border-radius: $border-radius;
+  background-color: $body-bg;
+  box-shadow: $box-shadow;
+
+  .swiper-button-prev {
+    left: 0rem;
+  }
+
+  .swiper-button-next {
+    right: 0rem;
+  }
+}
+
+
+[class*=swiper-button-] {
+  --swiper-navigation-size: 50px;
+  box-shadow: none;
+  border-radius: 0;
+  background: transparent;
+
+  &:after {
+    color: $body-color;
+    font-size: 40px;
+  }
+
+}
+
+.accordion {
+  --bs-accordion-btn-padding-y: 1.25rem;
+  --bs-accordion-inner-border-radius: 0;
+  --bs-accordion-border-radius: 0;
+}
+
+.accordion-item {
+  border-radius: 0;
+
+  &:first-child .accordion-header {
+    border-top: 1px solid var(--bs-accordion-color);
+  }
+
+  .accordion-button {
+    &:before {
+      @extend %fa-icon;
+      @extend .fasl;
+      content: fa-content($fa-var-long-arrow-right);
+      margin-right: .75rem;
+      align-self: flex-start;
+    }
+
+    &:after {
+      display: none;
+    }
+  }
+
+}
+
+.accordion .accordion-item:not(:last-child) {
+  margin-bottom: 0;
+}
+
+
+.accordion .accordion-item .accordion-header:has(.collapsed) {
+  border-color: var(--bs-accordion-color);
+}
+
+.accordion .accordion-item .accordion-header {
+  border-color: var(--bs-accordion-active-color);
+}
+
+
+.detail-list {
+  list-style-type: none;
+  padding: 0;
+
+  .detail-item-short {
+    transition: all 0.3s;
+
+    &:first-child {
+      border-top: 1px solid $body-color;
+    }
+
+    &:hover {
+      background-color: $secondary;
+
+
+      a {
+        color: var(--bs-body-color-inverse);
+        padding-left: 1rem;
+      }
+    }
+
+    .detail-link {
+      display: block;
+      padding-block: 1.25rem;
+      text-decoration: none;
+      color: $body-color;
+      transition: all 0.3s;
+      border-bottom: 1px solid $body-color;
+
+      i {
+        margin-right: .5rem;
+      }
+    }
+  }
+}
+
+
+.is-location {
+  position: relative;
+  padding-left: 80px !important;
+
+  figure {
+    margin-bottom: 1rem;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    left: var(--bs-container-gutter);
+    top: -10px;
+    width: 48px;
+    height: 63px;
+    background-image: url("data:image/svg+xml,%3Csvg id='Gruppe_4083' data-name='Gruppe 4083' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='48.056' height='63.821' viewBox='0 0 48.056 63.821'%3E%3Cdefs%3E%3CclipPath id='clip-path'%3E%3Crect id='Rechteck_1427' data-name='Rechteck 1427' width='48.056' height='63.821' fill='%233e4e58'/%3E%3C/clipPath%3E%3C/defs%3E%3Cg id='Gruppe_4082' data-name='Gruppe 4082' clip-path='url(%23clip-path)'%3E%3Cpath id='Pfad_1569' data-name='Pfad 1569' d='M24.028,63.821a2.558,2.558,0,0,1-1.537-.509A67.277,67.277,0,0,1,9.809,50.6a52.251,52.251,0,0,1-6.82-11.8A39.146,39.146,0,0,1,0,24.028,24.028,24.028,0,0,1,41.018,7.038a23.87,23.87,0,0,1,7.038,16.99,39.146,39.146,0,0,1-2.989,14.781,52.248,52.248,0,0,1-6.82,11.8A67.278,67.278,0,0,1,25.565,63.312a2.558,2.558,0,0,1-1.537.509m0-61.07A21.277,21.277,0,0,0,2.751,24.028c0,19.814,17.456,34.108,21.277,37,3.821-2.89,21.277-17.183,21.277-37A21.277,21.277,0,0,0,24.028,2.751' transform='translate(0 0)' fill='%233e4e58'/%3E%3Cpath id='Pfad_1570' data-name='Pfad 1570' d='M105.174,120.487a15.314,15.314,0,1,1,15.314-15.314,15.331,15.331,0,0,1-15.314,15.314m0-27.876a12.563,12.563,0,1,0,12.563,12.563A12.577,12.577,0,0,0,105.174,92.61' transform='translate(-81.146 -81.145)' fill='%233e4e58'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
+}
+
+.row-wrapper .row.gy-3 {
+  --bs-gutter-x: 4rem;
+
+  &:has(> div.content-image:first-child + .content-text) {
+    @include media-breakpoint-down(md) {
+      .content-image {
+        order: 2;
+      }
+
+      .content-text {
+        order: 1;
+      }
+    }
+  }
+}
+
+.content-image, .ce_rsce_image {
+  img {
+    border-radius: $border-radius;
+  }
+}
+
+.ce--headline{
+  > *:has(wbr){
+    hyphens: manual;
+  }
+}
+
+.mm-spn.mod_navigation{
+  --mm-spn-logoHWidth: 75px;
+}
+
+.container-wide{
+    @include media-breakpoint-up(xxl) {
+    max-width: 1260px;
+    margin-inline: auto;
+  }
+}

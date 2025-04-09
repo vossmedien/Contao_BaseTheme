@@ -4,23 +4,27 @@
 
 
 
-
 html body {
   .ce_rsce_fullwidthgallery {
-    .row > div {
-      //overflow: hidden;
+    // Basis-Container-Stile werden jetzt direkt im PHP generiert
+
+    // Gemeinsame Styles für Gallery-Items
+    .gallery-item {
+      // Keine default-Breiten mehr hier, alles kommt aus dem Element-spezifischen CSS
     }
 
     .gallery-column {
-      min-height: 100%;
       position: relative;
+      z-index: 9;
+      &:hover{
+        z-index: 11;
+      }
 
       .gallery-column--inner {
         height: 100%;
-        //min-height: rfs-value(350px);
-        @include media-breakpoint-up(lg) {
-          //min-height: rfs-value(550px);
-        }
+        display: flex;
+        flex-direction: column;
+        position: relative;
 
         > a {
           position: absolute;
@@ -32,13 +36,21 @@ html body {
         }
 
         .column--image-holder {
-          //position: absolute;
-          //left: 0;
-          //top: 0;
+          flex: 1;
+          position: relative;
           transition: all 0.3s ease;
-          //height: 100%;
-          //width: 100%;
-          //background-position: center center;
+          overflow: hidden;
+
+          figure {
+            height: 100%;
+            margin: 0;
+          }
+
+          img, picture {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+          }
         }
 
         &:hover {
@@ -72,7 +84,6 @@ html body {
           font-size: 1.35rem;
         }
 
-
         .gallery-column--initial-content {
           height: 100%;
           width: 100%;
@@ -86,14 +97,9 @@ html body {
           align-items: center;
           position: absolute;
           z-index: 55;
-          //min-height: rfs-value(350px);
 
           @include media-breakpoint-up(md) {
-                 padding: 3rem;
-          }
-
-          @include media-breakpoint-up(lg) {
-            //min-height: rfs-value(550px);
+            padding: 3rem;
           }
 
           @include font-size(22px);
@@ -105,17 +111,14 @@ html body {
           .ce--headline {
             > * {
               max-width: 100%;
-              //padding: 0px;
             }
           }
         }
-
 
         .gallery-column--hover-content {
           height: 100%;
           width: 100%;
           padding: 3rem;
-          //opacity: 0;
           background-color: rgba(0, 0, 0, 0.5);
           display: flex;
           flex-flow: column wrap;
@@ -128,7 +131,6 @@ html body {
           left: 0;
           top: 0;
           z-index: 56;
-          //min-height: rfs-value(350px);
           @include font-size(22px);
 
           .hover-content--inner {
@@ -138,7 +140,6 @@ html body {
           .ce--headline {
             > * {
               max-width: 100%;
-              //padding: 0px;
             }
           }
         }

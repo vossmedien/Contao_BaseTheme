@@ -39,3 +39,5 @@ modalElements.forEach(function (modalElement) {
         document.body.appendChild(modalElement);
     }
 });
+
+

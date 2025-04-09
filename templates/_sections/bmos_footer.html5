@@ -1,0 +1,10 @@
+<div data-bs-theme="dark">
+    {{insert_article::26}}
+</div>
+
+
+<div class="footer-helix">
+    <div data-animation="animate__fadeInUp">
+        <img alt="B-MOS Helix" title="B-MOS Helix" src="/files/base/layout/img/helix-footer.png">
+    </div>
+</div>

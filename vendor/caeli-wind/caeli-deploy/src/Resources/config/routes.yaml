@@ -1,0 +1,3 @@
+caeli_wind_caeli_deploy:
+    resource: '../../Controller/'
+    type: attribute

@@ -1,0 +1,64 @@
+.detail-images {
+  position: relative;
+  @include media-breakpoint-up(lg) {
+    > div {
+      display: grid;
+      gap: .25rem;
+      width: 100%;
+      grid-template-columns: repeat(3, 1fr);
+
+      > div {
+        &:first-child {
+          grid-column: 1 / -1;
+
+          img {
+            height: 400px; // Größeres Bild für das erste Element
+          }
+        }
+
+        &:not(:first-child) {
+          grid-column: span 1;
+
+          img {
+            height: 175px; // Kleinere Bilder für die folgenden Elemente
+          }
+        }
+      }
+    }
+  }
+
+  a {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+
+
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-radius: $border-radius;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover img {
+      //transform: scale(1.025);
+      opacity: .9;
+    }
+  }
+}
+
+
+.detail-video {
+  margin-top: .25rem;
+
+  video {
+    border-radius: $border-radius;
+  }
+}
+
+
+.accordion-body {
+  padding-bottom: 2.25rem;
+}

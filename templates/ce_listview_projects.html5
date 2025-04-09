@@ -1,0 +1,194 @@
+<?php $this->extend('block_searchable'); ?>
+<?php $this->block('content'); ?>
+
+    <div class="accordion" id="accordion_<?= $this->id ?>">
+        <?php foreach ($this->entities as $index => $arrEntity): ?>
+            <?php $projectId = 'project-' . $arrEntity['id']; ?>
+            <div class="accordion-item detail-item" data-animation="fade-up" id="<?= $projectId ?>">
+                <div class="accordion-header" id="heading<?= $index . $this->id ?>">
+                    <div class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse<?= $index . $this->id ?>" aria-expanded="false" aria-controls="collapse<?= $index . $this->id ?>">
+                        <div>
+                            <h3 class="mb-1 h5">
+                                <?= $arrEntity['projektname'] ?>
+                            </h3>
+                            <?php if ($arrEntity['leistungstyp']): ?>
+                                <p class="h6 mb-0">
+                                    <?php
+                                    $leistungstypen = [];
+                                    foreach ($arrEntity['leistungstyp'] as $leistungstyp) {
+                                        if (isset($leistungstyp['label'])) {
+                                            $leistungstypen[] = basename($leistungstyp['label']);
+                                        }
+                                    }
+                                    echo implode(', ', $leistungstypen);
+                                    ?>
+                                </p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="collapse<?= $index . $this->id ?>" class="accordion-collapse collapse" aria-labelledby="heading<?= $index . $this->id ?>" data-bs-parent="#accordion_<?= $this->id ?>">
+                    <div class="accordion-body">
+                        <div class="row gy-2 gx-lg-4">
+                            <div class="col-lg-6">
+                                <?php if ($arrEntity['logo']): ?>
+                                    <div class="detail-logo mb-3">
+                                        <?php
+                                        $logo = \Alnv\ContaoCatalogManagerBundle\Helper\Toolkit::parseImage($arrEntity['logo']);
+                                        if ($logo):
+                                            ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($logo, null, $arrEntity['berufsbezeichnung'], ["240", "120", "proportional"], null, false, false, false); ?>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($arrEntity['projektbeschreibung']): ?>
+                                    <div class="detail-desc">
+                                        <?= $arrEntity['projektbeschreibung'] ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($arrEntity['list']): ?>
+                                <div class="detail-list mt-3">
+                                    <ul>
+                                        <?php
+                                        $listItems = is_array($arrEntity['list']) ? $arrEntity['list'] : json_decode($arrEntity['list'], true);
+                                        if ($listItems):
+                                            foreach ($listItems as $item):
+                                                ?>
+                                                <li><?= $item ?></li>
+                                            <?php
+                                            endforeach;
+                                        endif;
+                                        ?>
+                                    </ul>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="col-lg-6">
+                                <?php if ($arrEntity['bilder']): ?>
+                                    <div class="detail-images swiper-container">
+                                        <div class="swiper-wrapper">
+                                            <?php
+                                            $bilderArray = is_array($arrEntity['bilder']) ? $arrEntity['bilder'] : json_decode($arrEntity['bilder'], true);
+                                            if ($bilderArray):
+                                                foreach ($bilderArray as $bild):
+                                                    $image = \Alnv\ContaoCatalogManagerBundle\Helper\Toolkit::parseImage($bild);
+                                                    if ($image):
+                                                        ?>
+                                                        <div class="swiper-slide">
+                                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($image, null, $arrEntity['projektname'], ["640", "640", "proportional"], null, false, $projectId, true); ?>
+                                                        </div>
+                                                    <?php
+                                                    endif;
+                                                endforeach;
+                                            endif;
+                                            ?>
+                                        </div>
+                                        <div class="swiper-button-prev"></div>
+                                        <div class="swiper-button-next"></div>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($arrEntity['video']): ?>
+                                    <?php
+                                    $videoData = reset($arrEntity['video']);
+                                    if (isset($videoData['urlpath'])):
+                                        ?>
+                                        <div class="detail-video">
+                                            <video controls>
+                                                <source src="<?= $videoData['urlpath'] ?>" type="<?= $videoData['mime'] ?>">
+                                                Ihr Browser unterstützt das Video-Tag nicht.
+                                            </video>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+<?= $this->pagination ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let swipers = [];
+
+            function initSwipers() {
+                document.querySelectorAll('.detail-images').forEach((el, index) => {
+                    if (window.innerWidth < 992) {
+                        if (!el.classList.contains('swiper-container')) {
+                            el.classList.add('swiper-container');
+                            el.querySelector(':scope > div').classList.add('swiper-wrapper');
+                            el.querySelectorAll(':scope > div > div').forEach(slide => {
+                                slide.classList.add('swiper-slide');
+                            });
+
+                            if (!el.querySelector('.swiper-button-next')) {
+                                el.insertAdjacentHTML('beforeend', '<div class="swiper-button-next"></div><div class="swiper-button-prev"></div>');
+                            }
+                        }
+
+                        if (!swipers[index]) {
+                            swipers[index] = new Swiper(el, {
+                                slidesPerView: 1,
+                                spaceBetween: 10,
+                                navigation: {
+                                    nextEl: '.swiper-button-next',
+                                    prevEl: '.swiper-button-prev',
+                                },
+                                effect: 'slide'
+                            });
+                        } else {
+                            swipers[index].update();
+                        }
+                    } else {
+                        if (swipers[index]) {
+                            swipers[index].destroy(true, true);
+                            swipers[index] = null;
+                        }
+
+                        el.classList.remove('swiper-container');
+                        el.querySelector(':scope > div').classList.remove('swiper-wrapper');
+                        el.querySelectorAll(':scope > div > div').forEach(slide => {
+                            slide.classList.remove('swiper-slide');
+                        });
+
+                        const nextButton = el.querySelector('.swiper-button-next');
+                        const prevButton = el.querySelector('.swiper-button-prev');
+                        if (nextButton) nextButton.remove();
+                        if (prevButton) prevButton.remove();
+                    }
+                });
+            }
+
+            initSwipers();
+
+            window.addEventListener('resize', function () {
+                initSwipers();
+            });
+
+            // Überprüfen, ob ein Anker in der URL vorhanden ist
+            if (window.location.hash) {
+                var targetAccordion = document.querySelector(window.location.hash);
+                if (targetAccordion) {
+                    var collapseElement = targetAccordion.querySelector('.accordion-collapse');
+                    if (collapseElement) {
+                        var bsCollapse = new bootstrap.Collapse(collapseElement, {
+                            toggle: false
+                        });
+                        bsCollapse.show();
+
+                        // Scroll zum Element
+                        targetAccordion.scrollIntoView({behavior: 'smooth'});
+                    }
+                }
+            }
+        });
+    </script>
+
+<?php $this->endblock(); ?>

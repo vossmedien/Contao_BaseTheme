@@ -1,0 +1,35 @@
+# config/services.yaml
+services:
+    _defaults:
+        autowire: true          # Automatically injects dependencies in your services.
+        autoconfigure: true     # Automatically registers your services as commands, event subscribers, etc.
+        public: false           # Allows optimizing the container by removing unused services; this also means
+                                # fetching services directly from the container via $container->get() won't work.
+                                # The best practice is to be explicit about your dependencies anyway.
+        bind:
+            #$projectDir: '%kernel.project_dir%'
+
+    CaeliWind\CaeliDeploy\:
+        resource: ../src/
+        exclude:
+            - ../src/{DependencyInjection,Model,Session}
+            - ../src/Resources/contao/
+
+    CaeliWind\CaeliDeploy\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    # Add a session bag
+    caeli_wind.caeli_deploy.session.factory:
+        class: CaeliWind\CaeliDeploy\Session\SessionFactory
+        decorates: session.factory
+        arguments:
+            - '@caeli_wind.caeli_deploy.session.factory.inner'
+            - '@caeli_wind.caeli_deploy.session.attribute.array_attribute_bag'
+
+    caeli_wind.caeli_deploy.session.attribute.array_attribute_bag:
+        class: CaeliWind\CaeliDeploy\Session\Attribute\ArrayAttributeBag
+        arguments:
+            - _caeli_wind_caeli_deploy_attributes
+        calls:
+            - [ setName, [ caeli_wind_caeli_deploy ] ]
