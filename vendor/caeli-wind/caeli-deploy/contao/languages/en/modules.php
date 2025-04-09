@@ -15,6 +15,6 @@ declare(strict_types=1);
 /**
  * Backend modules
  */
-$GLOBALS['TL_LANG']['MOD']['caeli'] = 'Caeli';
-$GLOBALS['TL_LANG']['MOD']['deploy'] = ['Caeli Deploy', 'Deployment von Staging auf LIVE'];
+$GLOBALS['TL_LANG']['MOD']['caeli'] = 'B-MOS';
+$GLOBALS['TL_LANG']['MOD']['deploy'] = ['Deployment', ''];
 
