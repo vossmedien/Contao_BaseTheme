@@ -2,7 +2,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 @import "../../mixins";
-//@import "../../_theme/variables";
+
 
 
 html body {
@@ -66,7 +66,7 @@ html body {
           z-index: 5;
           height: var(--diagonalHeight);
           width: 105vw;
-          background-color: var(--bs-body-bg);
+          background-color: $body-bg;
           transform: rotate(-2.5deg);
         }
       }

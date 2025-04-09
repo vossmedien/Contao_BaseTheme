@@ -2,7 +2,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
-///@import "../../_theme/variables";
+
 
 html body {
   .ce_rsce_row1start {
@@ -18,7 +18,7 @@ html body {
           top: 50%;
           right: 50%;
           transform: translate(50%, -50%);
-          background-color: var(--bs-body-bg);
+          background-color: $body-bg;
           z-index: 1;
         }
       }
@@ -50,7 +50,7 @@ html body {
         color: var(--bs-body-color);
 
         @include media-breakpoint-up(lg) {
-          background-color: var(--bs-body-bg);
+          background-color: $body-bg;
         }
 
         @include media-breakpoint-up(lg) {
