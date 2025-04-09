@@ -1,16 +1,7 @@
 document.addEventListener("DOMContentLoaded", function (event) {
-    // Die Funktion setImageWidth und alle zugehörigen Aufrufe wurden entfernt,
-    // da das Layout jetzt rein über CSS gesteuert wird.
-
-    // Bestehender Code für andere Funktionalitäten (z.B. Swiper, Lightbox Initialisierung,
-    // Animationen) bleibt erhalten oder wird hier hinzugefügt, falls nötig.
-
-    // Beispiel: Initialisierung von Animationen, falls noch verwendet
-    // const observer = new IntersectionObserver(entries => { ... });
-    // document.querySelectorAll('[data-animation]').forEach(el => observer.observe(el));
 
     function adjustImageColumnWidths() {
-        const mainContent = document.querySelector('.main-content'); // Use .main-content selector
+        const mainContent = document.querySelector('.main-content');
         const rows = document.querySelectorAll('.ce_rsce_twocolimagewall .ce--imagetextwall--outer .row');
 
         if (!mainContent) {
@@ -21,57 +12,88 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
         rows.forEach(row => {
             const imageCol = row.querySelector('.image--col');
+            const contentCol = row.querySelector('.content--col');
             const imageInner = imageCol ? imageCol.querySelector('.image-col--inner') : null;
+            const darkenOverlayImage = imageCol ? imageCol.querySelector('.darkened-content') : null;
+            const darkenOverlayContent = contentCol ? contentCol.querySelector('.darkened-content') : null;
 
-            // Select the actual visual element: img (even inside picture), otherwise swiper, then video
-            let imageElement = imageInner ? imageInner.querySelector('picture > img, img:not(picture > img), .swiper, video') : null;
+            const isDesktop = window.innerWidth >= 992;
+            const isRowReverse = row.classList.contains('flex-row-reverse');
+            const notAsBg = imageInner && imageInner.classList.contains('not-as-bg');
+            const isRowBg = imageInner && imageInner.classList.contains('is-row-bg');
 
-            // Only proceed if we have the necessary elements and are on desktop view (e.g., >= 992px)
-            if (!imageCol || !imageElement || window.innerWidth < 992) {
-                if(imageElement) {
-                    imageElement.style.width = '';
-                    imageElement.style.maxWidth = '';
-                     // Reset inner container alignment if needed
-                    if (imageInner) {
-                        imageInner.style.justifyContent = '';
-                    }
-                }
-                return;
-            }
+            // Helper function to reset styles for overlays and column
+            const resetStyles = (el) => {
+                 if (el) {
+                     el.style.width = '';
+                     el.style.maxWidth = '';
+                     el.style.left = '';
+                     el.style.right = '';
+                     if (el === darkenOverlayImage || el === darkenOverlayContent) {
+                         el.style.opacity = '';
+                     }
+                 }
+            };
+
+            // Reset styles first
+            resetStyles(darkenOverlayImage);
+            resetStyles(darkenOverlayContent);
+            resetStyles(imageCol); // Reset imageCol styles
+
+            // Stop adjustments if not on Desktop
+            if (!isDesktop) return;
+            // Stop adjustments if columns not found
+            if (!imageCol || !contentCol) return;
 
             const imageColRect = imageCol.getBoundingClientRect();
-            const isRowReverse = row.classList.contains('flex-row-reverse');
+            const contentColRect = contentCol.getBoundingClientRect();
 
-            let targetWidth = 0;
+            // --- Adjust Image Column Width ---
+            // Apply width adjustment ONLY if image IS acting as background AND is NOT a row background
+            if (!notAsBg && !isRowBg) {
+                let targetWidthCol = 0;
+                if (isRowReverse) { // Image col left
+                    const spaceRightOfImageCol = window.innerWidth - imageColRect.right;
+                    const spaceLeftOfMain = mainRect.left;
+                    targetWidthCol = window.innerWidth - spaceRightOfImageCol - spaceLeftOfMain;
+                } else { // Image col right
+                    const spaceLeftOfImageCol = imageColRect.left;
+                    const spaceRightOfMain = window.innerWidth - mainRect.right;
+                    targetWidthCol = window.innerWidth - spaceLeftOfImageCol - spaceRightOfMain;
+                }
+                targetWidthCol = Math.max(0, Math.min(targetWidthCol, window.innerWidth));
+                imageCol.style.width = `${targetWidthCol}px`;
+                imageCol.style.maxWidth = `${targetWidthCol}px`; // Important to override BS col width
 
-            if (isRowReverse) {
-                // Image is on the left (col-lg-N), should extend to the left edge of .main-content
-                const spaceRightOfImageCol = window.innerWidth - imageColRect.right;
-                const spaceLeftOfMain = mainRect.left;
-                targetWidth = window.innerWidth - spaceRightOfImageCol - spaceLeftOfMain;
-
-            } else {
-                // Image is on the right (col-lg), should extend to the right edge of .main-content
-                const spaceLeftOfImageCol = imageColRect.left;
-                const spaceRightOfMain = window.innerWidth - mainRect.right;
-                targetWidth = window.innerWidth - spaceLeftOfImageCol - spaceRightOfMain;
+                // No need to adjust imageElement or justify-content anymore
             }
 
-            targetWidth = Math.max(0, Math.min(targetWidth, window.innerWidth));
+            // --- Adjust Image Overlay --- (Now only opacity)
+            if (darkenOverlayImage) {
+                // Width/position adjustments removed, CSS handles 100% width of column
+                darkenOverlayImage.style.opacity = '1';
+            }
 
-            // Apply the calculated width specifically to the img/swiper/video element
-            imageElement.style.width = `${targetWidth}px`;
-            imageElement.style.maxWidth = `${targetWidth}px`;
-
-            if (imageInner) {
-                imageInner.style.width = 'auto';
-                if(isRowReverse) {
-                    // Align the inner container's content (the imageElement) to the right edge
-                    imageInner.style.justifyContent = 'flex-end';
-                } else {
-                     // Align the inner container's content (the imageElement) to the left edge
-                    imageInner.style.justifyContent = 'flex-start';
-                }
+            // --- Adjust Content Column Overlay --- (Remains the same)
+            if (darkenOverlayContent) {
+                let targetWidthContentOverlay = 0;
+                 if (isRowReverse) { // Content right
+                    const spaceLeftOfContentCol = contentColRect.left;
+                    const spaceRightOfMain = window.innerWidth - mainRect.right;
+                    targetWidthContentOverlay = window.innerWidth - spaceLeftOfContentCol - spaceRightOfMain;
+                    darkenOverlayContent.style.left = '0';
+                    darkenOverlayContent.style.right = 'auto';
+                 } else { // Content left
+                    const spaceRightOfContentCol = window.innerWidth - contentColRect.right;
+                    const spaceLeftOfMain = mainRect.left;
+                    targetWidthContentOverlay = window.innerWidth - spaceRightOfContentCol - spaceLeftOfMain;
+                    darkenOverlayContent.style.right = '0';
+                    darkenOverlayContent.style.left = 'auto';
+                 }
+                targetWidthContentOverlay = Math.max(0, Math.min(targetWidthContentOverlay, window.innerWidth));
+                darkenOverlayContent.style.width = `${targetWidthContentOverlay}px`;
+                darkenOverlayContent.style.maxWidth = `${targetWidthContentOverlay}px`;
+                darkenOverlayContent.style.opacity = '1';
             }
         });
     }

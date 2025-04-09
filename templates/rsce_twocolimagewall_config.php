@@ -148,6 +148,8 @@ return array(
                     'eval' => array('chosen' => 'true')
                 ),
 
+
+
                 'alternate_background_row' => array(
                     'label' => array('Alternative Hintergrundfarbe für komplette Zeile', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
@@ -391,12 +393,12 @@ return array(
                     'label' => array('Linke Spalte (Inhaltsspalte)', ''),
                     'inputType' => 'group',
                 ),
-                'darken_content' => array(
+
+                        'darken_content_left' => array(
                     'label' => array('Linke Spalte abdunkeln', ''),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
-
 
                 'column_width' => array(
                     'label' => array(
@@ -520,6 +522,13 @@ return array(
                 ),
 
 
+                'darken_content_right' => array(
+                    'label' => array('Rechte Spalte abdunkeln', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+
                 'contentType' => array(
                     'label' => array('Bild oder iFrame einbinden ', ''),
                     'inputType' => 'radio',
@@ -541,38 +550,32 @@ return array(
                     ),
                 ),
 
-                'dont_stretch_bg' => array(
-                    'label' => array('Hintergrundbild nicht auf komplette Breite ziehen', ''),
-                    'inputType' => 'checkbox',
-                ),
-
-                'not_as_bg' => array(
-                    'label' => array('Bild nicht als "Hintergrund" einfügen', 'sondern in die Spalte "legen" damit es proportional mitskaliert. (Innerhalb des Containers)'),
-                    'inputType' => 'checkbox',
-                    'dependsOn' => array(
+                'image_display_mode' => [
+                    'label' => ['Bild-Darstellungsmodus', 'Wie soll das Bild in der rechten Spalte angezeigt werden?'],
+                    'inputType' => 'radio',
+                    'default' => 'standard',
+                    'options' => [
+                        'standard' => 'Standard (Bild füllt Spalte aus, deckt ab - object-fit: cover)',
+                        'contain' => 'Bild nicht strecken (Bild wird vollständig angezeigt, passt sich an - object-fit: contain)',
+                        'inline' => 'Bild nicht als Hintergrund (Normal im Fluss, zentriert)',
+                        'row_bg' => 'Bild als Hintergrund für beide Spalten'
+                    ],
+                    'eval' => ['tl_class' => 'clr'],
+                    'dependsOn' => [
                         'field' => 'contentType',
-                        'value' => '1',
-                    ),
-                ),
+                        'value' => '1' // Nur anzeigen, wenn Bild ausgewählt ist
+                    ]
+                ],
 
                 'rotate_image' => array(
                     'label' => array('Bild bei scrollen rotieren', ''),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => ' clr'),
                     'dependsOn' => array(
-                        'field' => 'not_as_bg',
+                        'field' => 'image_display_mode', // Abhängig vom neuen Radio-Button
+                        'value' => 'inline' // Nur anzeigen, wenn "Nicht als Hintergrund" gewählt ist
                     ),
                 ),
-
-                'image_both' => array(
-                    'label' => array('Bild als Hintergrund für beide Spalten', 'falls ein Bild in der linken Spalte zugeordnet ist, liegt es über diesem Bild'),
-                    'inputType' => 'checkbox',
-                    'dependsOn' => array(
-                        'field' => 'contentType',
-                        'value' => '1',
-                    ),
-                ),
-
 
                 'animation_type_image_col' => array(
                     'label' => array(
