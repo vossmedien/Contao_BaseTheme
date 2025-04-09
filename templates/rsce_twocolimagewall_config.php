@@ -148,6 +148,8 @@ return array(
                     'eval' => array('chosen' => 'true')
                 ),
 
+
+
                 'alternate_background_row' => array(
                     'label' => array('Alternative Hintergrundfarbe für komplette Zeile', 'In HEX oder rgb(a) angeben'),
                     'inputType' => 'text',
@@ -179,13 +181,7 @@ return array(
                     ),
                 ),
 
-                'kachel_left' => array(
-                    'label' => array('Kachel: linke Spalte ', ''),
-                    'inputType' => 'checkbox',
-                    'options' => array(
-                        '1' => 'Kachel für linke Spalte hinzufügen',
-                    ),
-                ),
+
                 'kachel_right' => array(
                     'label' => array('Kachel: rechte Spalte ', ''),
                     'inputType' => 'checkbox',
@@ -239,159 +235,6 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
                 ),
-
-
-                'settings_5' => array(
-                    'label' => array('Kachel linke Spalte', ''),
-                    'inputType' => 'group',
-                    'dependsOn' => array(
-                        'field' => 'kachel_left',
-                        'value' => '1',
-                    ),
-                    'eval' => array('collapsible' => true, 'collapsed' => true),
-                ),
-                'animation_type_left_kachel' => array(
-                    'label' => array(
-                        'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
-                    ),
-                    'inputType' => 'select',
-                    'options' => GlobalElementConfig::getAnimations(),
-                    'eval' => array('chosen' => 'true')
-                ),
-
-                'kachel_left_position' => array(
-                    'label' => array(
-                        'de' => array('Kachel-Position', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'pos-centered' => 'Mittig',
-                        'pos-centered-right' => 'Mittig rechts',
-                        'pos-centered-left' => 'Mittig links',
-                        'pos-bottom-right' => 'Unten rechts',
-                        'pos-bottom-left' => 'Unten links',
-                        'pos-bottom-center' => 'Unten mittig',
-                        'pos-top-right' => 'Oben rechts',
-                        'pos-top-left' => 'Oben links',
-                        'pos-top-center' => 'Oben mittig'
-                    ),
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-
-
-                'kachel_left_text_position' => array(
-                    'label' => array(
-                        'de' => array('Textausrichtung innerhalb der Kachel', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'justify-content-center align-items-center text-center' => 'Mittig',
-                        'justify-content-center align-items-end' => 'Mittig rechts',
-                        'justify-content-center' => 'Mittig links',
-                        'align-items-end' => 'Oben rechts',
-                        'text-center' => 'Oben zentriert',
-                        'justify-content-end align-items-end' => 'Unten rechts',
-                        'justify-content-end' => 'Unten links',
-                        'justify-content-end text-center' => 'Unten zentriert',
-                        '' => 'Oben links'
-                    ),
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-
-                'kachel_left_background_color' => array(
-                    'label' => array('Hintergrundfarbe', 'In HEX oder rgb(a) angeben'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-                'kachel_left_text_color' => array(
-                    'label' => array('Alternative Textfarbe', 'In HEX oder rgb(a) angeben'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-                'kachel_left_text' => array(
-                    'label' => array('Headline für Kachel in linker Spalte', 'HTML ist erlaubt'),
-                    'inputType' => 'text',
-                    'eval' => array('allowHtml' => true, 'tl_class' => 'clr', 'tl_class' => 'w50'),
-                ),
-
-
-                'expand_left_kachel' => array(
-                    'label' => array('Kachel bei Hover vergrößern und Text anzeigen', ''),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr'),
-                    'options' => array(
-                        '1' => 'Kachel bei Hover vergrößern und Text anzeigen',
-                    ),
-                ),
-
-
-                'kachel_left_hover_text' => array(
-                    'label' => array('Text für Kachel', 'HTML ist erlaubt'),
-                    'inputType' => 'textarea',
-                    'eval' => array('rte' => 'tinyMCE'),
-                    'dependsOn' => array(
-                        'field' => 'expand_left_kachel',
-                        'value' => '1',
-                    ),
-                ),
-
-
-                'kachel_left_button_text' => array(
-                    'label' => array('Button-Beschriftung', 'Button ist optional'),
-                    'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
-                ),
-                'kachel_left_button_betreff' => array(
-                    'label' => array('Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-                'kachel_left_button_url' => array(
-                    'label' => array('Verlinkung', ''),
-                    'inputType' => 'url',
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-
-                'kachel_left_button_type' => array(
-                    'label' => array(
-                        'de' => array('Optik des Buttons', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'options' => array(
-                            'btn-primary' => 'Hauptfarbe',
-                            'btn-outline-primary' => 'Hauptfarbe (Outline)',
-                            'btn-secondary' => 'Sekundär-Farbe',
-                            'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
-                            'btn-tertiary' => 'Tertiär-Farbe',
-                            'btn-outline-tertiary' => 'Tertiär-Farbe (Outline)',
-                            'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
-                            'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
-                            'btn-white' => 'Weißer Button mit schwarzer Schrift',
-                        ),
-                    ),
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-                'kachel_left_button_size' => array(
-                    'label' => array(
-                        'de' => array('Größe des Buttons', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        '' => 'Standard',
-                        'btn-sm' => 'Klein',
-                        'btn-lg' => 'Groß',
-                        'btn-xl' => 'Sehr groß',
-                    ),
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-
-                'kachel_left_button_new_tab' => array(
-                    'label' => array('Button-Link in neuen Tab öffnen', ''),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr'),
-                ),
-
 
                 'settings_6' => array(
                     'label' => array('Kachel rechte Spalte', ''),
@@ -550,48 +393,28 @@ return array(
                     'label' => array('Linke Spalte (Inhaltsspalte)', ''),
                     'inputType' => 'group',
                 ),
-                'darken_content' => array(
+
+                        'darken_content_left' => array(
                     'label' => array('Linke Spalte abdunkeln', ''),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'clr'),
                 ),
-                'image_leftcol' => array(
-                    'label' => array('Bild', ''),
-                    'inputType' => 'fileTree',
-                    'eval' => array(
-                        'multiple' => false,
-                        'fieldType' => 'radio',
-                        'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
-                        'tl_class' => 'clr'
-                    ),
-                ),
-
-
-                'size_left' => array(
-                    'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
-                    'inputType' => 'imageSize',
-                    'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
-                    'reference' => &$GLOBALS['TL_LANG']['MSC'],
-                    'eval' => array(
-                        'rgxp' => 'digit',
-                        'includeBlankOption' => true,
-                    ),
-                ),
 
                 'column_width' => array(
                     'label' => array(
-                        'de' => array('Breite der linken Spalte', ''),
+                        'de' => array('Breite der linken Inhaltsspalte', 'Definiert die Breite auf verschiedenen Gerätegrößen. Die rechte Spalte füllt den Rest.'),
                     ),
                     'inputType' => 'select',
                     'options' => array(
-                        'col-12 col-lg-6 col-xxl-4' => '33%',
-                        'col-12 col-lg-6 col-xxl-5' => 'ca. 40%',
-                        'col-12 col-lg-6' => '50%',
-                        'col-12 col-lg-6 col-xxl-8' => '66.66%',
-                        'col-12 col-lg-6 col-xxl-9' => '75%',
-                        'col-12 full-width' => '100% (keine Rechte Spalte!)'
+                        'col-12 col-lg-6 col-xxl-4' => '33% (lg: 50%, xxl: 33%)',
+                        'col-12 col-lg-6 col-xxl-5' => 'ca. 40% (lg: 50%, xxl: 40%)',
+                        'col-12 col-lg-6' => '50% (lg: 50%, xxl: 50%)',
+                        'col-12 col-lg-6 col-xxl-8' => '66.66% (lg: 50%, xxl: 66%)',
+                        'col-12 col-lg-6 col-xxl-9' => '75% (lg: 50%, xxl: 75%)',
+                        'col-12 full-width' => '100% (Keine rechte Spalte)'
                     ),
+                    'eval' => array('includeBlankOption' => false, 'mandatory' => true, 'tl_class' => 'w50'),
+                    'default' => 'col-12 col-lg-6',
                 ),
 
                 'alternate_background' => array(
@@ -699,6 +522,13 @@ return array(
                 ),
 
 
+                'darken_content_right' => array(
+                    'label' => array('Rechte Spalte abdunkeln', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+
+
                 'contentType' => array(
                     'label' => array('Bild oder iFrame einbinden ', ''),
                     'inputType' => 'radio',
@@ -720,38 +550,32 @@ return array(
                     ),
                 ),
 
-                'dont_stretch_bg' => array(
-                    'label' => array('Hintergrundbild nicht auf komplette Breite ziehen', ''),
-                    'inputType' => 'checkbox',
-                ),
-
-                'not_as_bg' => array(
-                    'label' => array('Bild nicht als "Hintergrund" einfügen', 'sondern in die Spalte "legen" damit es proportional mitskaliert. (Innerhalb des Containers)'),
-                    'inputType' => 'checkbox',
-                    'dependsOn' => array(
+                'image_display_mode' => [
+                    'label' => ['Bild-Darstellungsmodus', 'Wie soll das Bild in der rechten Spalte angezeigt werden?'],
+                    'inputType' => 'radio',
+                    'default' => 'standard',
+                    'options' => [
+                        'standard' => 'Standard (Bild füllt Spalte aus, deckt ab - object-fit: cover)',
+                        'contain' => 'Bild nicht strecken (Bild wird vollständig angezeigt, passt sich an - object-fit: contain)',
+                        'inline' => 'Bild nicht als Hintergrund (Normal im Fluss, zentriert)',
+                        'row_bg' => 'Bild als Hintergrund für beide Spalten'
+                    ],
+                    'eval' => ['tl_class' => 'clr'],
+                    'dependsOn' => [
                         'field' => 'contentType',
-                        'value' => '1',
-                    ),
-                ),
+                        'value' => '1' // Nur anzeigen, wenn Bild ausgewählt ist
+                    ]
+                ],
 
                 'rotate_image' => array(
                     'label' => array('Bild bei scrollen rotieren', ''),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => ' clr'),
                     'dependsOn' => array(
-                        'field' => 'not_as_bg',
+                        'field' => 'image_display_mode', // Abhängig vom neuen Radio-Button
+                        'value' => 'inline' // Nur anzeigen, wenn "Nicht als Hintergrund" gewählt ist
                     ),
                 ),
-
-                'image_both' => array(
-                    'label' => array('Bild als Hintergrund für beide Spalten', 'falls ein Bild in der linken Spalte zugeordnet ist, liegt es über diesem Bild'),
-                    'inputType' => 'checkbox',
-                    'dependsOn' => array(
-                        'field' => 'contentType',
-                        'value' => '1',
-                    ),
-                ),
-
 
                 'animation_type_image_col' => array(
                     'label' => array(

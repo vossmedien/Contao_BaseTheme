@@ -1,91 +1,120 @@
 document.addEventListener("DOMContentLoaded", function (event) {
-     function setImageWidth() {
-        const rows = document.querySelectorAll('.ce--imagetextwall--outer .row');
-        const container = document.querySelector('.container');
-        const wrapper = document.querySelector('#wrapper');
-        const viewportWidth = window.innerWidth;
-        const containerWidth = container.offsetWidth;
-        const wrapperWidth = wrapper.offsetWidth;
-        const wrapperMaxWidth = parseInt(window.getComputedStyle(wrapper).maxWidth) || viewportWidth;
 
-        const effectiveWidth = Math.min(viewportWidth, wrapperMaxWidth);
-        const gapToEdge = (effectiveWidth - containerWidth) / 2;
+    function adjustImageColumnWidths() {
+        const mainContent = document.querySelector('.main-content');
+        const rows = document.querySelectorAll('.ce_rsce_twocolimagewall .ce--imagetextwall--outer .row');
 
-        rows.forEach(function (row) {
-            const contentCol = row.querySelector('.content--col');
-            const contentZoomContainer = contentCol ? contentCol.querySelector('.zoom-container') : null;
+        if (!mainContent) {
+            console.warn('.main-content area not found for image width calculation.');
+            return;
+        }
+        const mainRect = mainContent.getBoundingClientRect();
+
+        rows.forEach(row => {
             const imageCol = row.querySelector('.image--col');
-            const imageZoomContainer = imageCol ? imageCol.querySelector('.zoom-container') : null;
+            const contentCol = row.querySelector('.content--col');
+            const imageInner = imageCol ? imageCol.querySelector('.image-col--inner') : null;
+            const darkenOverlayImage = imageCol ? imageCol.querySelector('.darkened-content') : null;
+            const darkenOverlayContent = contentCol ? contentCol.querySelector('.darkened-content') : null;
+
+            const isDesktop = window.innerWidth >= 992;
             const isRowReverse = row.classList.contains('flex-row-reverse');
+            const notAsBg = imageInner && imageInner.classList.contains('not-as-bg');
+            const isRowBg = imageInner && imageInner.classList.contains('is-row-bg');
 
-            if (window.innerWidth >= 992) {
-                if (contentZoomContainer && contentCol) {
-                    const contentColWidth = contentCol.offsetWidth;
-                    const contentZoomWidth = isRowReverse
-                        ? contentColWidth + gapToEdge
-                        : contentColWidth;
+            // Helper function to reset styles for overlays and column
+            const resetStyles = (el) => {
+                 if (el) {
+                     el.style.width = '';
+                     el.style.maxWidth = '';
+                     el.style.left = '';
+                     el.style.right = '';
+                     if (el === darkenOverlayImage || el === darkenOverlayContent) {
+                         el.style.opacity = '';
+                     }
+                 }
+            };
 
-                    contentZoomContainer.style.width = `calc(${contentZoomWidth}px + var(--bs-container-gutter))`;
-                    contentZoomContainer.style.marginLeft = isRowReverse ? '' : '0';
-                    contentZoomContainer.style.marginRight = isRowReverse ? '0' : '';
+            // Reset styles first
+            resetStyles(darkenOverlayImage);
+            resetStyles(darkenOverlayContent);
+            resetStyles(imageCol); // Reset imageCol styles
+
+            // Stop adjustments if not on Desktop
+            if (!isDesktop) return;
+            // Stop adjustments if columns not found
+            if (!imageCol || !contentCol) return;
+
+            const imageColRect = imageCol.getBoundingClientRect();
+            const contentColRect = contentCol.getBoundingClientRect();
+
+            // --- Adjust Image Column Width ---
+            // Apply width adjustment ONLY if image IS acting as background AND is NOT a row background
+            if (!notAsBg && !isRowBg) {
+                let targetWidthCol = 0;
+                if (isRowReverse) { // Image col left
+                    const spaceRightOfImageCol = window.innerWidth - imageColRect.right;
+                    const spaceLeftOfMain = mainRect.left;
+                    targetWidthCol = window.innerWidth - spaceRightOfImageCol - spaceLeftOfMain;
+                } else { // Image col right
+                    const spaceLeftOfImageCol = imageColRect.left;
+                    const spaceRightOfMain = window.innerWidth - mainRect.right;
+                    targetWidthCol = window.innerWidth - spaceLeftOfImageCol - spaceRightOfMain;
                 }
+                targetWidthCol = Math.max(0, Math.min(targetWidthCol, window.innerWidth));
+                imageCol.style.width = `${targetWidthCol}px`;
+                imageCol.style.maxWidth = `${targetWidthCol}px`; // Important to override BS col width
 
-                if (imageZoomContainer && imageCol) {
-                    const imageColWidth = imageCol.offsetWidth;
-                    const imageZoomWidth = imageColWidth + gapToEdge;
-
-                    imageZoomContainer.style.width = `calc(${imageZoomWidth}px + var(--bs-container-gutter))`;
-
-                    if (isRowReverse) {
-                        imageZoomContainer.style.marginLeft = `calc(-${gapToEdge}px - var(--bs-container-gutter))`;
-                        imageZoomContainer.style.marginRight = '';
-                    } else {
-                        imageZoomContainer.style.marginLeft = '';
-                        imageZoomContainer.style.marginRight = `calc(-${gapToEdge}px - var(--bs-container-gutter))`;
-                    }
-                }
-            } else {
-                // Reset styles for mobile view
-                [contentZoomContainer, imageZoomContainer].forEach(container => {
-                    if (container) {
-                        container.style.width = '100%';
-                        container.style.marginLeft = '';
-                        container.style.marginRight = '';
-                    }
-                });
+                // No need to adjust imageElement or justify-content anymore
             }
 
-            // Einblenden der Container nach der Berechnung
-            [contentZoomContainer, imageZoomContainer].forEach(container => {
-                if (container) {
-                    container.style.opacity = '1';
-                }
-            });
+            // --- Adjust Image Overlay --- (Now only opacity)
+            if (darkenOverlayImage) {
+                // Width/position adjustments removed, CSS handles 100% width of column
+                darkenOverlayImage.style.opacity = '1';
+            }
+
+            // --- Adjust Content Column Overlay --- (Remains the same)
+            if (darkenOverlayContent) {
+                let targetWidthContentOverlay = 0;
+                 if (isRowReverse) { // Content right
+                    const spaceLeftOfContentCol = contentColRect.left;
+                    const spaceRightOfMain = window.innerWidth - mainRect.right;
+                    targetWidthContentOverlay = window.innerWidth - spaceLeftOfContentCol - spaceRightOfMain;
+                    darkenOverlayContent.style.left = '0';
+                    darkenOverlayContent.style.right = 'auto';
+                 } else { // Content left
+                    const spaceRightOfContentCol = window.innerWidth - contentColRect.right;
+                    const spaceLeftOfMain = mainRect.left;
+                    targetWidthContentOverlay = window.innerWidth - spaceRightOfContentCol - spaceLeftOfMain;
+                    darkenOverlayContent.style.right = '0';
+                    darkenOverlayContent.style.left = 'auto';
+                 }
+                targetWidthContentOverlay = Math.max(0, Math.min(targetWidthContentOverlay, window.innerWidth));
+                darkenOverlayContent.style.width = `${targetWidthContentOverlay}px`;
+                darkenOverlayContent.style.maxWidth = `${targetWidthContentOverlay}px`;
+                darkenOverlayContent.style.opacity = '1';
+            }
         });
     }
 
-
-    // Initial alle Zoom-Container ausblenden
-    document.querySelectorAll('.zoom-container').forEach(container => {
-        container.style.opacity = '0';
-        container.style.transition = 'opacity 0.3s ease-in-out';
-    });
-
-    // Funktion zum Verzögern der initialen Ausführung
-    function delayedSetImageWidth() {
-        requestAnimationFrame(setImageWidth);
+    // --- Function Execution ---
+    function runAdjustments() {
+        requestAnimationFrame(adjustImageColumnWidths);
     }
 
-    // Initiale Ausführung nach dem Laden aller Ressourcen
-    window.addEventListener('load', delayedSetImageWidth);
+    if (document.readyState === 'complete') {
+        runAdjustments();
+    } else {
+        window.addEventListener('load', runAdjustments);
+    }
 
-    // Ausführung bei Resize
-    var resizeTimer;
-    window.addEventListener("resize", function () {
+    let resizeTimer;
+    window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(setImageWidth, 50);
-    });
+        resizeTimer = setTimeout(runAdjustments, 100);
+    }, { passive: true });
 
-    // Zusätzliche Ausführung nach einem kurzen Timeout
-    setTimeout(setImageWidth, 100);
-}, {passive: true});
+    setTimeout(runAdjustments, 250);
+
+}, { passive: true });

@@ -8,7 +8,7 @@ if (!defined('MAIN_SLIDER_CLASS')) {
 // Verwendung:
 $sliderClass = defined('MAIN_SLIDER_CLASS') ? MAIN_SLIDER_CLASS : $alternativeSliderClass;
 
-if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_headimagelogo.min.css|static';
     $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_headimagelogo.js"></script>';
 }
@@ -17,7 +17,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
 <!-- indexer::stop -->
 <div <?= $this->cssID ?>
-     class="content--element <?= $this->move_content ? 'move-content py-0' : '' ?> <?= $this->class ?> <?= $this->pull_content ? 'pull-bottom' : '' ?>">
+     class="content--element <?= $this->move_content ? 'move-content py-0' : '' ?> <?= $this->class ?> <?= $this->pull_content ? 'pull-bottom mb-0' : '' ?>">
 
     <div class="ce--inner <?= $this->boxed_image ? 'with-boxed-logo' : '' ?>"
          style="--pull-content-amount: -<?= $this->pull_amount ?? '250px' ?>;">
@@ -54,10 +54,10 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
             <div class="swiper-wrapper">
                 <?php foreach ($this->slides as $key => $slide): ?>
                     <?php
-                    $mainImageInfo = VSM_HelperFunctions\BasicHelper::getFileInfo($slide->image);
-                    $mobileImageInfo = VSM_HelperFunctions\BasicHelper::getFileInfo($slide->mobile_image);
-                    $isMainVideo = VSM_HelperFunctions\VideoHelper::isVideoFormat($mainImageInfo['ext']);
-                    $isMobileVideo = !empty($mobileImageInfo['filename']) && VSM_HelperFunctions\VideoHelper::isVideoFormat($mobileImageInfo['ext']);
+                    $mainImageInfo = Vsm\VsmHelperTools\Helper\BasicHelper::getFileInfo($slide->image);
+                    $mobileImageInfo = Vsm\VsmHelperTools\Helper\BasicHelper::getFileInfo($slide->mobile_image);
+                    $isMainVideo = Vsm\VsmHelperTools\Helper\VideoHelper::isVideoFormat($mainImageInfo['ext']);
+                    $isMobileVideo = !empty($mobileImageInfo['filename']) && Vsm\VsmHelperTools\Helper\VideoHelper::isVideoFormat($mobileImageInfo['ext']);
                     ?>
 
                     <div class="swiper-slide">
@@ -66,12 +66,11 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                 <?php if ($slide->alternate_background_color || $slide->box_background_color): ?>
                                     <style>
                                         <?php
-                                        $altColor = VSM_HelperFunctions\BasicHelper::cleanColor($slide->alternate_background_color);
-                                        $boxColor = VSM_HelperFunctions\BasicHelper::cleanColor($slide->box_background_color);
+                                        $altColor = Vsm\VsmHelperTools\Helper\BasicHelper::cleanColor($slide->alternate_background_color);
+                                        $boxColor = Vsm\VsmHelperTools\Helper\BasicHelper::cleanColor($slide->box_background_color);
                                         ?>
 
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner:before,
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner:after {
+                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner {
                                             background-color: <?= $altColor ?> !important;
                                         }
 
@@ -85,8 +84,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                             padding-inline: 0;
                                         }
 
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper.extra:before,
-                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper:after {
+                                        html body .ce_rsce_headimagelogo .<?= MAIN_SLIDER_CLASS . $this->id ?> .slide_<?= $key ?>.style-2 .mainimage--content .mainimage--content-inner--wrapper{
                                             background-color: <?= $boxColor ?> !important;
                                         }
 
@@ -100,29 +98,29 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
                                 <div class="plain-image-holder <?= !$this->not_as_bg ? 'is-bg' : '' ?>">
                                     <?php if ($isMainVideo): ?>
-                                        <?= VSM_HelperFunctions\VideoHelper::renderVideo($slide->image, $mainImageInfo['ext'], $isMobileVideo ? 'd-none d-sm-block' : '') ?>
+                                        <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo($slide->image, $mainImageInfo['ext'], $isMobileVideo ? 'd-none d-md-block' : '') ?>
                                     <?php endif; ?>
 
                                     <?php if ($isMobileVideo): ?>
-                                        <?= VSM_HelperFunctions\VideoHelper::renderVideo($slide->mobile_image, $mobileImageInfo['ext'], 'd-sm-none') ?>
+                                        <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo($slide->mobile_image, $mobileImageInfo['ext'], 'd-md-none') ?>
                                     <?php endif; ?>
 
                                     <?php if (!$isMainVideo): ?>
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->image, null, str_replace("<wbr>","",$slide->text_firstline), $slide->size, ($isMobileVideo ? 'd-none d-sm-inline-block' : ''), false, false, false) ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($slide->image, null, $slide->text_firstline, $slide->size, ($isMobileVideo ? 'd-none d-md-inline-block' : ''), false, false, ($key === 0 ? false : true)) ?>
                                     <?php endif; ?>
 
                                     <?php if ($slide->mobile_image && !$isMobileVideo): ?>
-                                        <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($slide->mobile_image, null, str_replace("<wbr>","",$slide->text_firstline), $slide->size_mobile, 'd-sm-none', false, false, false) ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($slide->mobile_image, null, $slide->text_firstline, $slide->size_mobile, 'd-md-none', false, false, ($key === 0 ? false : true)) ?>
                                     <?php endif; ?>
                                 </div>
 
                                 <?php if ($slide->text_firstline || $slide->text_secondline || count($slide->buttons) >= 1): ?>
-                                    <div data-aos="<?= $slide->animation_type ?>" class="mainimage--content">
+                                    <div data-animation="<?= $slide->animation_type ?>" class="mainimage--content">
                                         <div class="mainimage--content-inner <?= $slide->textbox_position ?> <?= $slide->text_align ?>"
-                                             style="<?= $slide->text_color ? "color: {$slide->text_color};" : '' ?> <?= $slide->maxWidth ? "width: 100%; max-width: {$slide->maxWidth};" : '' ?>">
+                                             style="<?= $slide->text_color ? "color: {$slide->text_color};" : '' ?> <?= $slide->maxWidth ? "width: auto; max-width: {$slide->maxWidth};" : '' ?>">
                                             <div class="mainimage--content-inner--wrapper">
                                                 <div class="mainimage--content-inner--holder">
-                                                    <?= VSM_HelperFunctions\HeadlineHelper::generateHeadlineHTML(
+                                                    <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                                         $slide->text_topline,
                                                         $slide->text_firstline,
                                                         $slide->text_secondline,
@@ -139,12 +137,12 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                                         </div>
                                                     <?php endif; ?>
 
-                                                    <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($slide->buttons) ?>
+                                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($slide->buttons) ?>
                                                 </div>
                                             </div>
 
                                             <?php if (($slide->text_infotext || count($slide->buttons) >= 1) && $slide->own_box): ?>
-                                                <div class="mainimage--content-inner--wrapper extra mt-3" data-aos="<?= $slide->animation_type ?>">
+                                                <div class="mainimage--content-inner--wrapper extra mt-3" data-animation="<?= $slide->animation_type ?>">
                                                     <div class="mainimage--content-inner--holder extra">
                                                         <?php if ($slide->text_infotext): ?>
                                                             <div class="infotext--text mt-0">
@@ -152,7 +150,7 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
                                                             </div>
                                                         <?php endif; ?>
 
-                                                        <?= VSM_HelperFunctions\ButtonHelper::generateButtonHTML($slide->buttons) ?>
+                                                        <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($slide->buttons) ?>
                                                     </div>
                                                 </div>
                                             <?php endif; ?>
@@ -178,14 +176,14 @@ if (VSM_HelperFunctions\EnvHelper::isFrontend()) {
 
         <?php if ($this->boxed_image): ?>
             <div class="boxed-logo">
-                <div class="boxed-logo--inner" data-aos="<?= $this->boxed_image_animation_type ?? '' ?>">
-                    <?= VSM_HelperFunctions\ImageHelper::generateImageHTML($this->boxed_image, null, null, $this->boxed_image_size, "", false, false, true) ?>
+                <div class="boxed-logo--inner" data-animation="<?= $this->boxed_image_animation_type ?? '' ?>">
+                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->boxed_image, null, null, $this->boxed_image_size, "", false, false, true) ?>
                 </div>
             </div>
         <?php endif; ?>
     </div>
 
-<?php if (VSM_HelperFunctions\EnvHelper::isFrontend() && count($this->slides) > 1): ?>
+<?php if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend() && count($this->slides) > 1): ?>
     <script type="text/javascript" defer>
         window.addEventListener('DOMContentLoaded', function() {
             const swiperElement = document.querySelector('.swiper.<?= MAIN_SLIDER_CLASS . $this->id ?>');
