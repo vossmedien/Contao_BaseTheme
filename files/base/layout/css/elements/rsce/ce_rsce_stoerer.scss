@@ -2,8 +2,6 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
-
-
 .content--element.ce_rsce_stoerer {
   --stoerer-padding: .75rem;
   --transition-duration: 0.6s;
@@ -17,22 +15,6 @@
     position: fixed;
 
   }
-
-  &[style*="right: 0px;"] .ce--stoerer {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  &[style*="right:"] .ce--stoerer {
-    margin-left: auto;
-  }
-
-  &[style*="left:"] .ce--stoerer {
-    margin-right: auto;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-
 
   .ce--stoerer {
     position: relative;
@@ -116,6 +98,20 @@
   }
 }
 
+&[style*="right: 0px;"] .ce--stoerer {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+&[style*="right:"] .ce--stoerer {
+  margin-left: auto;
+}
+
+&[style*="left:"] .ce--stoerer {
+  margin-right: auto;
+}
+
+}
 
 // Media Query für mobile Geräte
 @media (max-width: 767px) {

@@ -98,7 +98,9 @@ html body {
       }
     }
 
-    .image--col {
+    .image--col .image-col--inner {
+      animation-delay: 200ms !important;
+
       @include media-breakpoint-down(lg) {
         order: 1;
         min-height: 300px;

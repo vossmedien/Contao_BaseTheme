@@ -17,6 +17,13 @@
     }
   }
 
+  .pull-bottom{
+     @include media-breakpoint-down(lg) {
+        padding-bottom: var(--main-gap) !important;
+     }
+
+  }
+
   .d-flex.flex-column.pull-bottom > .container {
     @include media-breakpoint-up(lg) {
       padding-bottom: 0;
@@ -59,8 +66,8 @@
       @include media-breakpoint-down(lg) {
         position: relative;
         transform: translate(0, -40%);
-        margin-right: var(--offset-sm);
-        margin-bottom: calc(-1 *  var(--offset-sm));
+        margin-right: var(--main-gap);
+        margin-bottom: calc(-1 *  var(--main-gap));
         border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0;
       }
     }
