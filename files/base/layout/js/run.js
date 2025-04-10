@@ -66,12 +66,16 @@ const initAnimations = () => {
             visibilityThreshold: 0.2
         },
         animation: {
-            class: 'animate__animated'
+            class: 'animate__animated',
+            baseDelay: 0.1, // Basis-Delay für das erste Element in einer Gruppe (in Sekunden)
+            increment: 0.15 // Inkrement für nachfolgende Elemente (in Sekunden)
         }
     };
 
     let animatedElements = new Set();
     let observer;
+    // Cache für Parent-Elemente, um doppelte Verarbeitung im selben Observer-Callback zu vermeiden
+    let processedParentsInCallback = new Set();
 
     const getElementVisibilityThreshold = (element) => {
         const viewportHeight = window.innerHeight;
@@ -99,17 +103,6 @@ const initAnimations = () => {
         });
     };
 
-    const isElementInViewport = (element) => {
-        const rect = element.getBoundingClientRect();
-        const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-
-        const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
-        const totalHeight = rect.bottom - rect.top;
-        const visibilityRatio = visibleHeight / totalHeight;
-
-        return visibilityRatio >= getElementVisibilityThreshold(element);
-    };
-
     const getImmediateAnimatableChildren = (container) => {
         // Find direct children that are animatable and not yet animated
         return Array.from(container.children)
@@ -118,11 +111,14 @@ const initAnimations = () => {
             });
     };
 
-    const animateElement = (element) => {
+    const animateElement = (element, indexInGroup) => {
         // Check if element exists, has animation data and hasn't been animated yet
         if (!element || animatedElements.has(element) || !element.hasAttribute('data-animation')) {
             return;
         }
+
+        // Mark as animating immediately
+        animatedElements.add(element);
 
         // Explicitly set animation duration from CSS variable
         try {
@@ -142,151 +138,85 @@ const initAnimations = () => {
             return;
         }
 
-        animatedElements.add(element); // Mark as animating immediately
+        // Calculate and set staggered delay
+        const delay = CONFIG.animation.baseDelay + indexInGroup * CONFIG.animation.increment;
+        element.style.animationDelay = `${delay}s`;
+        // console.log(`Animating ${element.tagName}#${element.id} with delay: ${delay}s`);
+
 
         requestAnimationFrame(() => {
-            // Ensure no fixed delay is applied
-            element.style.removeProperty('animation-delay');
+            // Ensure no fixed delay is applied via attribute if we overwrite it
+            // element.style.removeProperty('animation-delay'); // Already set above
             element.classList.add(...animateClass.split(' '), CONFIG.animation.class);
 
-            // Listen for animation end to trigger the next sibling
-            const animationEndHandler = (event) => {
-                // Ensure the event is for the element itself, not a child animation
-                if (event.target !== element) {
-                    return;
-                }
+            // Optional: Clean up classes after animation finishes
+            element.addEventListener('animationend', () => {
+                 // Example: Remove animation classes to prevent re-triggering issues
+                 // element.classList.remove(CONFIG.animation.class, ...animateClass.split(' '));
+                 // Or set a state like element.dataset.animated = true;
+            }, { once: true });
 
-                let nextSibling = element.nextElementSibling;
-                let foundNextAnimatable = false;
-                // Find the next sibling that should be animated
-                while (nextSibling) {
-                    if (nextSibling.hasAttribute('data-animation')) {
-                        // Directly trigger animation for the next sibling in the sequence
-                        if (isElementInViewport(nextSibling)) {
-                            // Use setTimeout to introduce the desired delay
-                            try {
-                                const delayStr = getComputedStyle(document.documentElement).getPropertyValue('--animate-delay').trim() || '0ms';
-                                const delayMs = parseFloat(delayStr);
-                                if (!isNaN(delayMs) && delayMs > 0) {
-                                    setTimeout(() => {
-                                        animateElement(nextSibling);
-                                    }, delayMs);
-                                } else {
-                                    // If delay is 0 or invalid, run immediately
-                                    animateElement(nextSibling);
-                                }
-                            } catch (e) {
-                                console.warn('Could not apply --animate-delay, running next animation immediately.', e);
-                                animateElement(nextSibling); // Fallback: run immediately
-                            }
-                        } else {
-                            // If the next sibling is not visible, do nothing.
-                            // The observer is already watching it and will trigger
-                            // animateElement when it becomes visible and canStartAnimation is true.
-                        }
-                        foundNextAnimatable = true;
-                        break; // Only trigger the immediate next one in the chain
-                    }
-                    nextSibling = nextSibling.nextElementSibling;
-                }
-
-                // Always unobserve the current element once its animation (and check for next) is done.
-                observer.unobserve(element);
-            };
-
-            element.addEventListener('animationend', animationEndHandler, { once: true });
+            // No longer need to trigger the next sibling here
         });
-    };
-
-    // Helper function to check if an element is the first in its sibling group
-    // that needs to be animated (no preceding siblings waiting for animation)
-    const canStartAnimation = (element) => {
-        if (!element || !element.hasAttribute('data-animation') || animatedElements.has(element)) {
-            return false; // Already animated, not animatable, or doesn't exist
-        }
-
-        // Check previous siblings
-        let prevSibling = element.previousElementSibling;
-        while (prevSibling) {
-            if (prevSibling.hasAttribute('data-animation') && !animatedElements.has(prevSibling)) {
-                // A previous sibling needs to animate first, so this one can't start yet
-                return false;
-            }
-            prevSibling = prevSibling.previousElementSibling;
-        }
-        // No un-animated previous siblings found, this element can start a chain
-        return true;
     };
 
     const setupObserver = () => {
         const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
-
-        // Adjust rootMargin: Use mobile margin always OR make desktop bottom margin less aggressive
-        const desktopRootMargin = '0px 0px -5% 0px'; // Less aggressive bottom margin
-        const { rootMargin: mobileRootMargin } = CONFIG.mobile;
-        const rootMargin = isMobile ? mobileRootMargin : desktopRootMargin;
+        // const { rootMargin: mobileRootMargin } = CONFIG.mobile; // Original mobile margin
+        // const desktopRootMargin = '0px 0px -15% 0px'; // Adjusted desktop margin from previous step
+        // Set bottom margin to 0% for both mobile and desktop to trigger sooner
+        const rootMargin = '0px 0px 0% 0px';
 
         observer = new IntersectionObserver((entries) => {
-            const elementsToPotentiallyAnimate = new Set();
+            // Clear processed parents for this callback cycle
+             processedParentsInCallback.clear();
 
-            // First pass: Identify elements that *could* start based on intersection and not being animated yet
+            // Collect parents of intersecting, non-animated elements
+            const parentsToProcess = new Map();
             entries.forEach(entry => {
                 if (entry.isIntersecting && entry.target.hasAttribute('data-animation') && !animatedElements.has(entry.target)) {
-                    elementsToPotentiallyAnimate.add(entry.target);
+                    const parent = entry.target.parentElement;
+                     // Ensure parent exists before adding
+                     if (parent && !processedParentsInCallback.has(parent)) {
+                         if (!parentsToProcess.has(parent)) {
+                             parentsToProcess.set(parent, []);
+                         }
+                         // We only need to know *which* parents have newly visible children
+                         // The actual children will be gathered later.
+                         // Storing entry.target helps debug but isn't strictly needed for the group logic.
+                         // parentsToProcess.get(parent).push(entry.target);
+                     }
                 }
             });
 
-            if (elementsToPotentiallyAnimate.size === 0) return;
+            if (parentsToProcess.size === 0) return;
 
-            // Group by parent to handle siblings correctly
-            const parentGroups = new Map();
-            elementsToPotentiallyAnimate.forEach(element => {
-                const parent = element.parentElement;
-                if (!parentGroups.has(parent)) {
-                    parentGroups.set(parent, []);
-                }
-                parentGroups.get(parent).push(element);
-            });
+            // Process each parent group
+            parentsToProcess.forEach((_, parent) => {
+                // Mark this parent as processed for this callback instance
+                 processedParentsInCallback.add(parent);
 
-            // Process each parent group to find the first element to animate
-            parentGroups.forEach(targets => {
-                // Sort targets by their DOM order to ensure sequential animation
-                targets.sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1);
+                // Find *all* animatable children of this parent that are not yet animated
+                const animatableSiblings = Array.from(parent.children)
+                    .filter(child => child.hasAttribute('data-animation') && !animatedElements.has(child));
 
-                // Iterate through the sorted, potentially animatable elements in this group
-                for (const target of targets) {
-                    // Check previous animatable sibling *again* right before animating
-                    if (animatedElements.has(target)) continue; // Skip if already processing/animated
+                if (animatableSiblings.length === 0) return;
 
-                    let previousAnimatableSibling = target.previousElementSibling;
-                    while (previousAnimatableSibling && !previousAnimatableSibling.hasAttribute('data-animation')) {
-                        previousAnimatableSibling = previousAnimatableSibling.previousElementSibling;
+                // Sort by DOM order to ensure sequential animation delays
+                animatableSiblings.sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1);
+
+                // Animate all eligible siblings in this group with staggered delay
+                animatableSiblings.forEach((element, index) => {
+                    // Double-check element hasn't been animated by another process/entry
+                    if (!animatedElements.has(element)) {
+                         animateElement(element, index); // Pass index for delay calculation
+                         observer.unobserve(element); // Unobserve once animation starts
                     }
-
-                    let canThisElementStart = false;
-
-                    if (!previousAnimatableSibling || animatedElements.has(previousAnimatableSibling)) {
-                        // Case 1 & 2: No previous, or previous is already animated.
-                        canThisElementStart = true;
-                    } else {
-                        // Case 3: Previous exists but is not animated yet.
-                        // Check if the previous sibling is currently OUTSIDE the viewport.
-                        if (!isElementInViewport(previousAnimatableSibling)) {
-                            // If previous is NOT visible, the current element can start the chain.
-                            canThisElementStart = true;
-                        }
-                        // Else (previous exists, not animated, IS visible): wait for the chain.
-                    }
-
-                    if (canThisElementStart) {
-                        animateElement(target);
-                        break; // Start only the first eligible element in this group and break
-                    }
-                }
+                });
             });
 
         }, {
-            threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5], // Keep multiple thresholds
+            threshold: [0.01, 0.1], // Reduced thresholds slightly, starting near 0
             rootMargin
         });
     };
@@ -294,14 +224,13 @@ const initAnimations = () => {
     const handleElements = () => {
         const elements = document.querySelectorAll('[data-animation]');
         elements.forEach(element => {
-            // Simplified: Always observe non-animated elements.
-            // The observer callback logic now handles when to start animations.
+            // Observe elements that haven't been animated yet.
+            // The observer callback will handle triggering the animation when visible.
             if (!animatedElements.has(element)) {
                 observer.observe(element);
             } else {
-                // Optional: If element IS already animated, we might consider unobserving it
-                // if we are certain it won't need re-animation.
-                // observer.unobserve(element);
+                // If already animated, ensure it's not observed.
+                 observer.unobserve(element);
             }
         });
     };
@@ -315,10 +244,13 @@ const initAnimations = () => {
         const scrollIndexOld = scrollFunctions.findIndex(f => f.name === 'handleElements'); // Find potentially old handleElements
          if (scrollIndexOld > -1) scrollFunctions.splice(scrollIndexOld, 1);
 
-        // Keep handleElements for resize events
-        const resizeIndexOld = ResizeFunctions.findIndex(f => f.name === 'handleElements'); // Find potentially old handleElements
-        if (resizeIndexOld > -1) ResizeFunctions.splice(resizeIndexOld, 1); // Remove if exists
-        ResizeFunctions.push(handleElements); // Add the new version
+        // Keep handleElements for resize events if needed, remove potential old ones first
+        let resizeIndexOld = ResizeFunctions.findIndex(f => f.name === 'handleElements');
+        while(resizeIndexOld > -1) { // Remove all instances if multiple exist
+            ResizeFunctions.splice(resizeIndexOld, 1);
+            resizeIndexOld = ResizeFunctions.findIndex(f => f.name === 'handleElements');
+        }
+        ResizeFunctions.push(handleElements); // Add the new version for resize handling
 
     } catch (error) {
         console.error('Animation initialization failed:', error);
@@ -326,10 +258,10 @@ const initAnimations = () => {
 
     return () => {
         observer?.disconnect();
-        // Ensure the correct handleElements reference is removed on cleanup
-        const resizeIndex = ResizeFunctions.indexOf(handleElements);
+        // Ensure the correct handleElements reference is removed on cleanup from ResizeFunctions
+        const resizeIndex = ResizeFunctions.findIndex(f => f.name === 'handleElements');
         if (resizeIndex > -1) ResizeFunctions.splice(resizeIndex, 1);
-        // Consider clearing animatedElements if dynamic content can reset animations
+        // Clear animated elements set if animations should re-run on dynamic content changes etc.
         // animatedElements.clear();
     };
 };
@@ -428,12 +360,12 @@ DomLoadFunctions.push(
 
 scrollFunctions.push(changeAnchorLinks);
 
-// Keep handleElements in ResizeFunctions
-const resizeIndexOld = ResizeFunctions.findIndex(f => f.name === 'handleElements');
-if (resizeIndexOld === -1) { // Avoid adding duplicates if run multiple times
-    ResizeFunctions.push(adjustPullElements); // Keep original adjustPullElements
+// Ensure adjustPullElements is in ResizeFunctions if not already added by the loop above
+const adjustPullIndex = ResizeFunctions.findIndex(f => f.name === 'adjustPullElements');
+if (adjustPullIndex === -1) {
+    ResizeFunctions.push(adjustPullElements);
 }
-// Note: The push inside initAnimations adds the new handleElements to ResizeFunctions
+// The handleElements function is added to ResizeFunctions within initAnimations itself.
 
 const executeFunctions = (functions) => {
     functions.forEach((func) => {
