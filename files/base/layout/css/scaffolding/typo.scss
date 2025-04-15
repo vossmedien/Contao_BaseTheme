@@ -175,8 +175,8 @@ i:has( + a:hover) {
 
     &:before {
       @extend %fa-icon;
-      @extend #{$icon-type};
-      content: fa-content($fa-var-check);
+      @extend #{$icon-type} !optional;
+      content: "\f00c";
       position: absolute;
       padding-right: rfs-value(10px);
       color: var(--bs-primary);
@@ -207,8 +207,8 @@ i:has( + a:hover) {
 
     &:before {
       @extend %fa-icon;
-      @extend #{$icon-type};
-      content: fa-content($fa-var-download);
+      @extend #{$icon-type} !optional;
+      content: "\f019";
       position: absolute;
       padding-right: rfs-value(10px);
       color: var(--bs-primary);
@@ -245,8 +245,8 @@ i:has( + a:hover) {
 
     &:before {
       @extend %fa-icon;
-      @extend #{$icon-type};
-      content: fa-content($fa-var-circle);
+      @extend #{$icon-type} !optional;
+      content: "\f111";
       position: absolute;
       padding-right: rfs-value(10px);
       color: var(--bs-body-color-inverse);

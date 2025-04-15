@@ -40,34 +40,34 @@ $gutters: (
 
 $headings-font-sizes: (
         'h1': (
-                'mobile': rfs-value(32px),
-                'tablet': rfs-value(46px),
-                'desktop': rfs-value(55px)
+                'mobile': rfs-value(40px),
+                'tablet': rfs-value(60px),
+                'desktop': rfs-value(70px)
         ),
         'h2': (
-                'mobile': rfs-value(29px),
-                'tablet': rfs-value(39px),
-                'desktop': rfs-value(48px)
+                'mobile': rfs-value(30px),
+                'tablet': rfs-value(40px),
+                'desktop': rfs-value(50px)
         ),
         'h3': (
-                'mobile': rfs-value(26px),
-                'tablet': rfs-value(30px),
-                'desktop': rfs-value(30px)
+                'mobile': rfs-value(25px),
+                'tablet': rfs-value(25px),
+                'desktop': rfs-value(25px)
         ),
         'h4': (
-                'mobile': rfs-value(23px),
-                'tablet': rfs-value(27px),
-                'desktop': rfs-value(31px)
+                'mobile': rfs-value(25px),
+                'tablet': rfs-value(25px),
+                'desktop': rfs-value(25px)
         ),
         'h5': (
-                'mobile': rfs-value(20px),
-                'tablet': rfs-value(22px),
+                'mobile': rfs-value(25px),
+                'tablet': rfs-value(25px),
                 'desktop': rfs-value(25px)
         ),
         'h6': (
-                'mobile': rfs-value(18px),
-                'tablet': rfs-value(19px),
-                'desktop': rfs-value(20px)
+                'mobile': rfs-value(25px),
+                'tablet': rfs-value(25px),
+                'desktop': rfs-value(25px)
         )
 );
 

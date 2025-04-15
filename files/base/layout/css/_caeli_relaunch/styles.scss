@@ -5,3 +5,17 @@
 @import "variables";
 @import "map-overwrites";
 
+
+@import "../../_vendor/node_modules/@awesome.me/kit-2504132cb2/icons/scss/fontawesome";
+@import "../../_vendor/node_modules/@awesome.me/kit-2504132cb2/icons/scss/custom-icons";
+
+@import "areas/header";
+@import "areas/main";
+@import "areas/footer";
+
+@import "modules/navigation";
+
+@import "scaffolding/buttons";
+@import "scaffolding/typo";
+@import "scaffolding/hacks";
+

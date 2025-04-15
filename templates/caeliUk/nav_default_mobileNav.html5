@@ -10,7 +10,7 @@
 
     <?php if ($this->level === 'level_1'): ?>
         <div class="extra-content mobileNav_contactBtn py-3">
-            <form action="mailto:deine-email@beispiel.de">
+            <form action="mailto:info@caeli.co.uk">
                 <button type="submit" class="btn btn-primary"><i class="fasl fa-arrow-right-long"></i> Contact</button>
             </form>
         </div>

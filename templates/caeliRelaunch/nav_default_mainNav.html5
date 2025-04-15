@@ -1,0 +1,39 @@
+<ul class="<?= $this->level ?>">
+  <?php foreach ($this->items as $item): ?>
+    <?php if ($item['isActive']): ?>
+      <li class="<?= $item['class'] ?>" <?php if ($this->level === 'level_1'): ?>data-animation="animate__fadeIn"<?php endif; ?>>
+        <strong class="<?= $item['class'] ?>"<?php if (!empty($item['subitems'])): ?> aria-haspopup="true"<?php endif; ?>><?= $item['link'] ?></strong>
+        <?php if (!empty($item['subitems'])): ?>
+          <?php
+            // Prüfen, ob die Subitems ein level_2 Element enthalten
+            $containsLevel2 = strpos($item['subitems'], 'level_2') !== false;
+            if ($containsLevel2):
+          ?>
+            <div class="level_2-wrapper">
+              <?= $item['subitems'] ?? '' ?>
+            </div>
+          <?php else: ?>
+            <?= $item['subitems'] ?? '' ?>
+          <?php endif; ?>
+        <?php endif; ?>
+      </li>
+    <?php else: ?>
+      <li<?php if ($item['class']): ?> class="<?= $item['class'] ?>"<?php endif; ?> <?php if ($this->level === 'level_1'): ?>data-animation="animate__fadeIn"<?php endif; ?>>
+        <a href="<?= $item['href'] ?>" class="<?= $item['class'] ?>" title="<?= $item['link'] ?>"<?php if ('' !== $item['accesskey']): ?> accesskey="<?= $item['accesskey'] ?>"<?php endif; ?><?= $item['target'] ?><?= $item['rel'] ?? '' ?><?php if (!empty($item['subitems'])): ?> aria-haspopup="true"<?php endif; ?>><?= $item['link'] ?></a>
+        <?php if (!empty($item['subitems'])): ?>
+          <?php 
+            // Prüfen, ob die Subitems ein level_2 Element enthalten
+            $containsLevel2 = strpos($item['subitems'], 'level_2') !== false;
+            if ($containsLevel2):
+          ?>
+            <div class="level_2-wrapper">
+              <?= $item['subitems'] ?? '' ?>
+            </div>
+          <?php else: ?>
+            <?= $item['subitems'] ?? '' ?>
+          <?php endif; ?>
+        <?php endif; ?>
+      </li>
+    <?php endif; ?>
+  <?php endforeach; ?>
+</ul>

@@ -50,16 +50,29 @@ $this->bodyAttributes = $this
     //$GLOBALS['TL_HEAD'][] = '<link rel="preload" href="files/base/layout/css/_caeli_relaunch/root-variables.min.css" as="style" crossorigin="anonymous">';
     ?>
 
+    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-300.ttf" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-300.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-300.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-300italic.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-300italic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-600.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-600.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-italic.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-italic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
     <?= $this->mooScripts ?>
     <?= $this->head ?>
     <?php $this->endblock(); ?>
 </head>
-<body<?= $this->bodyAttributes ?>>
-<div class="BodyScrollToTop"><i class="fasl fa-arrow-up "></i></div>
+<body<?= $this->bodyAttributes ?> >
+<div class="body-scroll-top">
+</div>
 <?php $this->block('body'); ?>
 <?php $this->sections('top'); ?>
 
-<div id="wrapper">
+<div id="wrapper" class="page-{{page::alias}}">
 
     <?php $this->block('header'); ?>
     <?php if ($this->header): ?>

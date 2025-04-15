@@ -19,6 +19,8 @@ use Contao\System;
 use Contao\StringUtil;
 use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeOptions;
+use Contao\CoreBundle\Util\StringUtil as ContaoStringUtil;
+use Symfony\Component\Uid\Uuid;
 
 class ImageHelper
 {
@@ -351,7 +353,7 @@ class ImageHelper
             self::$processedImagesCache = [];
             self::$processedImagesCacheSize = 0;
         }
- 
+
         self::$processedImagesCache[$cacheKey] = $result;
         self::$processedImagesCacheSize++;
 
@@ -955,42 +957,139 @@ class ImageHelper
         }
     }
 
-    public static function getSvgCode($uuid, $alt = '', $size = null, $classes = ''): string
+    public static function getSvgCode($source, $alt = '', $size = null, $classes = ''): string
     {
-        if (!$fileModel = FilesModel::findByUuid($uuid)) {
-            return '';
-        }
-
         $projectDir = System::getContainer()->getParameter('kernel.project_dir');
-        $fullPath = $projectDir . '/' . $fileModel->path;
+        $fileModel = null;
+        $fullPath = null;
+        $relativePath = null; // Relative path for FilesModel lookup
+        $meta = [];
+        $finalLink = '';
+        $finalTitle = '';
 
-        if (!file_exists($fullPath)) {
+        // Prüfen, ob $source eine UUID ist und FilesModel laden
+        if (Uuid::isValid($source)) {
+            $fileModel = FilesModel::findByUuid($source);
+            if ($fileModel) {
+                $relativePath = $fileModel->path;
+                $fullPath = $projectDir . '/' . urldecode($relativePath);
+            } else {
+                return ''; // UUID ist gültig, aber kein FileModel gefunden
+            }
+        } // Prüfen, ob $source ein gültiger Pfad ist
+        elseif (is_string($source) && strpos($source, '/') !== false) {
+            $relativePath = ltrim(urldecode($source), '/'); // Store relative path
+            $testPath = $projectDir . '/' . $relativePath;
+            if (file_exists($testPath) && strtolower(pathinfo($testPath, PATHINFO_EXTENSION)) === 'svg') {
+                $fullPath = $testPath;
+                // Versuche, das FilesModel anhand des relativen Pfads zu finden
+                $fileModel = FilesModel::findByPath($relativePath);
+            } else {
+                return ''; // Pfad ungültig oder Datei nicht gefunden/kein SVG
+            }
+        } else {
+            return ''; // Weder gültige UUID noch gültiger Pfad
+        }
+
+        // Wenn kein fullPath gefunden wurde (sollte nicht passieren, aber sicher ist sicher)
+        if (!$fullPath || !file_exists($fullPath)) {
             return '';
         }
+
+
+        // Metadaten laden, wenn ein FilesModel gefunden wurde
+        if ($fileModel) {
+            $imageMeta = StringUtil::deserialize($fileModel->meta, true);
+            $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? System::getContainer()->getParameter('kernel.default_locale');
+
+            if (is_array($imageMeta) && !empty($imageMeta)) {
+                $currentMeta = isset($imageMeta[$currentLanguage]) ? $imageMeta[$currentLanguage] : reset($imageMeta);
+                if (is_array($currentMeta)) {
+                    foreach ($currentMeta as $key => $value) {
+                        // Leere Metadaten-Werte überspringen
+                        if (!empty($value)) {
+                            $meta[$key] = self::cleanAttribute((string)$value);
+                        }
+                    }
+                }
+            }
+            $finalLink = !empty($meta['link']) ? $meta['link'] : '';
+            $finalTitle = !empty($meta['title']) ? $meta['title'] : '';
+        }
+
 
         $svgContent = file_get_contents($fullPath);
         if (!$svgContent) {
             return '';
         }
 
+        // Alt-Text bestimmen: Priorität hat der Parameter, dann Metadaten
+        $finalAlt = self::cleanAttribute($alt ?: (!empty($meta['alt']) ? $meta['alt'] : ''));
+        // Titel bestimmen: Priorität hat Metadaten-Titel, dann $finalAlt
+        $svgTitle = self::cleanAttribute($finalTitle ?: $finalAlt);
+
+
         // Style basierend auf Größe
         $style = '';
-        if (is_array($size) && !empty($size[0])) {
-            $style = 'width: ' . $size[0] . 'px;';
+        if (is_array($size) && count($size) >= 1 && !empty($size[0])) {
+            $style = 'width: ' . (int)$size[0] . 'px;';
+            if (count($size) >= 2 && !empty($size[1])) {
+                $style .= ' height: ' . (int)$size[1] . 'px;';
+            }
         }
 
         // Basis-Klassen für SVG
-        $baseClasses = 'svg-image ' . $classes;
+        $baseClasses = trim('svg-image ' . self::cleanAttribute($classes));
 
-        // SVG modifizieren für bessere Farbsteuerung
-        $svgContent = preg_replace('/<svg /', '<svg class="' . $baseClasses . '" style="' . $style . '" ', $svgContent, 1);
+        // SVG modifizieren
+        // Entferne vorhandene class und style Attribute im svg tag, behalte aber andere Attribute
+        $svgContent = preg_replace('/<svg([^>]*) (class|style)="[^"]*"/i', '<svg$1', $svgContent);
+        // Füge neue class und style Attribute hinzu
+        $svgContent = preg_replace('/<svg /i', '<svg class="' . $baseClasses . '"' . ($style ? ' style="' . $style . '"' : '') . ' ', $svgContent, 1);
 
-        // Entferne eventuell vorhandene fill-Attribute
-        $svgContent = preg_replace('/fill="[^"]*"/', '', $svgContent);
 
-        // Füge title für Barrierefreiheit hinzu, wenn noch nicht vorhanden
-        if (!strpos($svgContent, '<title>') && $alt) {
-            $svgContent = preg_replace('/<svg ([^>]*)>/', '<svg $1><title>' . htmlspecialchars($alt) . '</title>', $svgContent);
+        // Entferne eventuell vorhandene fill-Attribute, um CSS-Steuerung zu ermöglichen (Optional)
+        // $svgContent = preg_replace('/ fill="[^"]*"/', '', $svgContent);
+
+        // Füge title für Barrierefreiheit hinzu oder ersetze bestehenden
+        if ($svgTitle) {
+            $titleId = 'svg-title-' . bin2hex(random_bytes(4)); // Eindeutige ID generieren
+            if (preg_match('/<title[^>]*>.*?<\/title>/i', $svgContent)) {
+                // Ersetze existierenden title und dessen ID, falls vorhanden
+                $svgContent = preg_replace('/<title[^>]*>(.*?)<\/title>/i', '<title id="' . $titleId . '">' . htmlspecialchars($svgTitle) . '</title>', $svgContent, 1);
+            } else {
+                // Füge title hinzu, wenn keiner existiert
+                $svgContent = preg_replace('/(<svg[^>]*>)/i', '$1<title id="' . $titleId . '">' . htmlspecialchars($svgTitle) . '</title>', $svgContent, 1);
+            }
+            // Füge aria-labelledby hinzu oder aktualisiere es
+            if (strpos($svgContent, 'aria-labelledby=') !== false) {
+                $svgContent = preg_replace('/aria-labelledby="[^"]*"/', 'aria-labelledby="' . $titleId . '"', $svgContent, 1);
+            } else {
+                $svgContent = preg_replace('/<svg /i', '<svg aria-labelledby="' . $titleId . '" ', $svgContent, 1);
+            }
+        } else {
+            // Wenn kein Titel vorhanden ist, entferne aria-labelledby
+            $svgContent = preg_replace('/ aria-labelledby="[^"]*"/', '', $svgContent);
+            // Und füge aria-label hinzu, falls ein finalAlt existiert
+            if ($finalAlt && strpos($svgContent, 'aria-label=') === false) {
+                $svgContent = preg_replace('/<svg /i', '<svg aria-label="' . htmlspecialchars($finalAlt) . '" ', $svgContent, 1);
+            }
+        }
+
+        // Füge role="img" hinzu, wenn nicht vorhanden
+        if (strpos($svgContent, 'role=') === false) {
+            $svgContent = preg_replace('/<svg /i', '<svg role="img" ', $svgContent, 1);
+        }
+
+        // Mit Link umschließen, wenn vorhanden
+        if ($finalLink) {
+            $linkTitleAttr = $finalTitle ? ' title="' . htmlspecialchars($finalTitle) . '"' : ($finalAlt ? ' title="' . htmlspecialchars($finalAlt) . '"' : '');
+            // Prüfen, ob der Link extern ist, um target="_blank" hinzuzufügen
+            $targetBlank = (str_starts_with($finalLink, 'http://') || str_starts_with($finalLink, 'https://')) && !str_contains($finalLink, $_SERVER['HTTP_HOST'] ?? '');
+            $targetAttr = $targetBlank ? ' target="_blank"' : '';
+            $relAttr = $targetBlank ? ' rel="noopener noreferrer"' : ''; // Sicherheit für target="_blank"
+
+            $svgContent = '<a href="' . htmlspecialchars($finalLink) . '"' . $linkTitleAttr . $targetAttr . $relAttr . '>' . $svgContent . '</a>';
         }
 
         return $svgContent;

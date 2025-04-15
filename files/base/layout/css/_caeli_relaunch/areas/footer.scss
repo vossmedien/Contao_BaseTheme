@@ -1,0 +1,107 @@
+footer#footer {
+  --bs-link-color-rgb: var(--bs-secondary-rgb);
+  --bs-link-hover-color-rgb: var(--bs-secondary-rgb);
+  padding-block: var(--main-gap) calc(var(--main-gap) * 2);
+  font-size: $font-size-lg;
+  background-color: var(--bs-primary);
+  color: rgb(var(--bs-link-color-rgb));
+
+  .footer-top {
+    margin-bottom: calc(var(--main-gap) / 2);
+
+    .logo {
+      position: relative;
+
+      @include media-breakpoint-up(lg) {
+        left: -25px;
+      }
+
+      svg {
+        max-height: rfs-value(45px);
+      }
+    }
+  }
+
+
+  .footer-bottom {
+    .footer-title {
+      display: block;
+      font-weight: $font-weight-bold;
+
+      @include media-breakpoint-up(sm) {
+        margin-bottom: 1rem;
+
+        &:not(:has(> a)) {
+          pointer-events: none;
+        }
+      }
+
+
+      @include media-breakpoint-down(sm) {
+        & + p {
+          margin-top: .5rem;
+        }
+      }
+
+    }
+
+    .is-bold {
+      font-weight: $font-weight-bold;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      @include media-breakpoint-down(sm) {
+        padding-top: .5rem;
+      }
+
+      li {
+        display: block;
+
+        &:not(:last-child) {
+          margin-bottom: .25rem;
+
+          @include media-breakpoint-up(sm) {
+            margin-bottom: 1rem;
+          }
+        }
+      }
+
+      &.contact-list {
+        li {
+          white-space: nowrap;
+
+          &:not(:last-child) {
+            margin-bottom: .25rem;
+          }
+        }
+      }
+    }
+  }
+
+  .footer-accordion-item {
+    .footer-title {
+      text-decoration: none;
+      color: inherit;
+
+      &:focus {
+        box-shadow: none;
+      }
+
+      .indicator {
+        transition: none;
+      }
+    }
+
+    .collapse {
+      @include media-breakpoint-up(sm) {
+        display: block !important;
+        height: auto !important;
+        visibility: visible !important;
+      }
+    }
+  }
+}

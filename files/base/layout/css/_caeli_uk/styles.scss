@@ -262,3 +262,40 @@ html body .ce_rsce_headimagelogo .ce--mainimage .image--holder .mainimage--conte
      min-width: 700px;
    }
  }
+
+
+ .BodyScrollToTop {
+  width: rfs-value(40px);
+  height: rfs-value(40px);
+  line-height: rfs-value(40px);
+  text-align: center;
+  color: var(--bs-body-color-inverse);
+  border: 2px solid var(--bs-primary);
+  background-color: var(--bs-primary);
+  border-radius: 50%;
+  margin: 1.5rem auto 0 auto;
+  transition: all 0.3s ease;
+  @include font-size(30px);
+  cursor: pointer;
+  bottom: 75px;
+  right: 25px;
+  position: fixed;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: $box-shadow;
+  z-index: 6;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  i {
+    //line-height: 1;
+  }
+
+  &:hover {
+    background-color: transparent;
+    color: var(--bs-primary);
+  }
+}

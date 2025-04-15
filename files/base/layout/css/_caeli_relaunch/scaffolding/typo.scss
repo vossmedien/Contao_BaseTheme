@@ -1,0 +1,24 @@
+
+main, footer {
+  a:not(.btn):not(:has(img)) {
+    position: relative;
+
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      background-color: currentColor;
+      height: 1px;
+      width: 0;
+      transition: width 0.3s;
+    }
+
+    &:hover {
+      &:after {
+        width: 100%;
+      }
+    }
+  }
+}
