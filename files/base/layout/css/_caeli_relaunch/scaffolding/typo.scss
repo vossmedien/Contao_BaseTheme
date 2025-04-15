@@ -22,3 +22,40 @@ main, footer {
     }
   }
 }
+
+p + ul{
+  margin-top: 1rem;
+}
+
+main .content--element {
+  ul {
+    list-style-type: none;
+    padding: 0;
+
+    > li {
+      position: relative;
+      padding-left: 25px;
+
+      &:not(:last-child) {
+        margin-bottom: 1rem
+      }
+
+      &:before {
+        @extend %fa-icon;
+        @extend #{$icon-type} !optional;
+        content: "\e007";
+        position: absolute;
+        color: currentColor;
+        left: 0;
+        top: 4px;
+        font-size: rfs-value(15px);
+      }
+
+      a {
+        text-decoration: none;
+        color: currentColor;
+        display: inline-block;
+      }
+    }
+  }
+}

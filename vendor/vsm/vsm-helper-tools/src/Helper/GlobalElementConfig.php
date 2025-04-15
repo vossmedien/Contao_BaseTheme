@@ -138,17 +138,49 @@ class GlobalElementConfig
     public static function getButtonTypes()
     {
         return [
+            // Hauptfarbe-Buttons
             'btn-primary' => 'Hauptfarbe',
+            'btn-primary with-arrow' => 'Hauptfarbe mit Pfeil',
             'btn-outline-primary' => 'Hauptfarbe (Outline)',
+            'btn-outline-primary with-arrow' => 'Hauptfarbe (Outline) mit Pfeil',
+
+            // Sekundär-Buttons
             'btn-secondary' => 'Sekundär-Farbe',
+            'btn-secondary with-arrow' => 'Sekundär-Farbe mit Pfeil',
             'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
+            'btn-outline-secondary with-arrow' => 'Sekundär-Farbe (Outline) mit Pfeil',
+
+            // Tertiär-Buttons
             'btn-tertiary' => 'Tertiär-Farbe',
+            'btn-tertiary with-arrow' => 'Tertiär-Farbe mit Pfeil',
             'btn-outline-tertiary' => 'Tertiär-Farbe (Outline)',
-            'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
-            'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
-            'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
+            'btn-outline-tertiary with-arrow' => 'Tertiär-Farbe (Outline) mit Pfeil',
+
+            // CurrentColor-Buttons
+            'btn-outline-currentColor' => 'Farbübernahme vom Elternelement (Outline)',
+            'btn-outline-currentColor with-arrow' => 'Farbübernahme vom Elternelement (Outline) mit Pfeil',
+
+            // Weiße Buttons
             'btn-white' => 'Weißer Button mit schwarzer Schrift',
-             'btn-danger' => 'Roter Button',
+            'btn-white with-arrow' => 'Weißer Button mit schwarzer Schrift und Pfeil',
+            'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
+            'btn-outline-white with-arrow' => 'Transparenter Button mit weißer Schrift und Rahmen sowie Pfeil',
+
+            // Schwarze Buttons
+            'btn-black' => 'Schwarzer Button mit weißer Schrift',
+            'btn-black with-arrow' => 'Schwarzer Button mit weißer Schrift und Pfeil',
+            'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
+            'btn-outline-black with-arrow' => 'Transparenter Button mit schwarzer Schrift und Rahmen sowie Pfeil',
+
+            // Rote/Danger Buttons
+            'btn-danger' => 'Roter Button',
+            'btn-danger with-arrow' => 'Roter Button mit Pfeil',
+            'btn-outline-danger' => 'Roter Button (Outline)',
+            'btn-outline-danger with-arrow' => 'Roter Button (Outline) mit Pfeil',
+
+            // Link-Buttons
+            'btn-link' => 'Link-Optik',
+            'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
         ];
     }
 

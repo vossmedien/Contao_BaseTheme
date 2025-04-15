@@ -8,11 +8,7 @@ html body {
   hyphens: auto;
    */
 
-  font-size: clamp(
-          var(--bs-body-font-size),
-          1vw,
-          calc(var(--bs-body-font-size) * 1.2)
-  );
+
 
   *:focus,
   *:active {

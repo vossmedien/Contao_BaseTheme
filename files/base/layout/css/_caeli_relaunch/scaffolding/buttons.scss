@@ -1,0 +1,62 @@
+.btn {
+  --bs-btn-border-radius: 0;
+  --bs-btn-border-width: 3px;
+
+  &:not(.with-arrow) {
+    &.btn-primary {
+      --bs-btn-hover-bg: transparent;
+      --bs-btn-border-color: var(--bs-primary);
+      --bs-btn-hover-color: var(--bs-primary);
+    }
+
+    &.btn-secondary {
+      --bs-btn-hover-bg: transparent;
+      --bs-btn-border-color: var(--bs-secondary);
+      --bs-btn-hover-color: var(--bs-secondary);
+    }
+
+    &.btn-tertiary {
+      --bs-btn-hover-bg: transparent;
+      --bs-btn-border-color: var(--bs-tertiary);
+      --bs-btn-hover-color: var(--bs-tertiary);
+    }
+  }
+
+
+  &.with-arrow {
+    gap: .85rem;
+
+    &:hover {
+      &:after {
+        padding-left: .35rem;
+      }
+    }
+
+    &:after {
+      @extend %fa-icon;
+      @extend #{$icon-type} !optional;
+      content: "\e000";
+      transition: all .3s ease-in-out;
+    }
+  }
+
+  &.btn-link {
+    font-weight: $font-weight-bold;
+  }
+
+
+  &.btn-xl {
+    border-width: 4px;
+    border-radius: 42px;
+    --bs-btn-font-size: 25px;
+
+    &.with-arrow {
+      &:after {
+        @extend %fa-icon;
+        @extend #{$icon-type} !optional;
+        content: "\e001";
+        font-size: 45px;
+      }
+    }
+  }
+}

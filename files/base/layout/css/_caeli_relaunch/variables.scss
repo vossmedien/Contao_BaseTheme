@@ -18,6 +18,11 @@ $tertiary: #92a0ff;
 
 $body-bg: #ffffff;
 $body-color: $primary;
+$font-size-base: clamp(
+          var(--bs-body-font-size),
+          1vw,
+          calc(var(--bs-body-font-size) * 1.2)
+  );
 
 $border-radius: 12px;
 $border-radius-lg: 18px;
@@ -41,7 +46,7 @@ $fa-font-display: swap;
 $fa-font-path: "/files/base/layout/_vendor/node_modules/@awesome.me/kit-2504132cb2/icons/webfonts";
 $enable-cssgrid: true;
 $enable-rounded: true;
-$icon-type: ".fasl";
+$icon-type: ".fak";
 
 $spacer: 2.5rem;
 $spacer-sm: $spacer/2;
