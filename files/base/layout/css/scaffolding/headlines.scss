@@ -1,14 +1,18 @@
-
-
 @mixin responsive-font-size($heading) {
   $desktop-size: map-get(map-get($headings-font-sizes, $heading), 'desktop');
   $mobile-size: map-get(map-get($headings-font-sizes, $heading), 'mobile');
 
-  font-size: $mobile-size;
+  // Berechne einen bevorzugten Wert, der skaliert, z.B. mobile Größe + viewport-Anteil
+  // Die '1.5vw' kann angepasst werden, um die Skalierungsgeschwindigkeit zu steuern.
+  $preferred-value: calc(#{$mobile-size} + 1.5vw);
 
-  @include media-breakpoint-up(md) {
-    font-size: $desktop-size;
-  }
+  // Verwende clamp(MIN, PREFERRED, MAX)
+  font-size: clamp(#{$mobile-size}, #{$preferred-value}, #{$desktop-size});
+
+  // Entferne den alten @include media-breakpoint-up Block
+  // @include media-breakpoint-up(md) {
+  //   font-size: $desktop-size;
+  // }
 }
 
 // Globale Überschriften-Stile
