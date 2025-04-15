@@ -14,7 +14,7 @@ export function addPlaceholders() {
                 if (!inputOrTextareaOrSelect.classList.contains('form-select')) {
                     inputOrTextareaOrSelect.classList.add('form-select');
                 }
-                
+
                 // Wenn das Label vor dem Select liegt, verschiebe es nach unten
                 const existingLabel = widget.querySelector('label');
                 if (existingLabel && existingLabel.compareDocumentPosition(inputOrTextareaOrSelect) === Node.DOCUMENT_POSITION_FOLLOWING) {

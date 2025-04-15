@@ -1,10 +1,13 @@
 html body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  -moz-hyphens: auto;
+  /*
+    -moz-hyphens: auto;
   -ms-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
+   */
+
   font-size: clamp(
           var(--bs-body-font-size),
           1vw,
@@ -104,82 +107,12 @@ html body {
       margin-bottom: 0px;
     }
 
-    &.table-data {
-      @include font-size(14px);
-      margin-top: 0px;
-
-      tr {
-        td {
-          border-bottom: 0px;
-          padding-top: 0.25rem;
-          padding-bottom: 0.25rem;
-
-          &:first-child {
-            color: var(--bs-primary);
-            padding-left: 0px;
-            font-family: var(--bs-font-tertiary);
-          }
-
-          &:last-child {
-            white-space: normal;
-          }
-        }
-      }
+    th{
+         white-space: nowrap;
     }
-
-    &.table-technical-data {
-      border: 0px;
-      width: 100% !important;
-      height: auto !important;
-      //margin-top: 2.5rem;
-
-      > thead {
-        > tr {
-          background-color: var(--bs-blue);
-
-          th {
-            color: var(--bs-body-color-inverse);
-          }
-        }
-      }
-
-      > tbody:first-child {
-        > tr {
-          &:first-child {
-            background-color: var(--bs-blue);
-
-            td {
-              color: var(--bs-body-color-inverse);
-            }
-          }
-        }
-      }
-
-      > tbody {
-        > tr {
-          &:nth-child(even) {
-            background-color: var(--bs-gray-300);
-          }
-
-          &:nth-child(odd) {
-            background-color: var(--bs-gray-400);
-          }
-
-          td {
-            padding: rfs-value(5px 10px);
-            width: auto !important;
-            height: auto !important;
-            border-bottom: 0px;
-            color: var(--bs-gray-700);
-          }
-        }
-      }
-    }
-
     tr {
       td {
         width: auto;
-        white-space: nowrap;
         height: auto;
       }
     }
@@ -212,25 +145,6 @@ i:has( + a:hover) {
   color: $secondary !important;
 }
 
-.dynamic-fontsize-lg {
-  font-size: clamp(3.5rem, 3vw, 9rem);
-  //line-height: var(--bs-body-line-height-xs);
-}
-
-.dynamic-fontsize {
-  font-size: clamp(2.5rem, 3vw, 6rem);
-  //line-height: var(--bs-body-line-height-xs);
-}
-
-.dynamic-fontsize-sm {
-  font-size: clamp(1.5rem, 3vw, 3rem);
-
-  //line-height: var(--bs-body-line-height-xs);
-
-  p {
-    line-height: 1.25;
-  }
-}
 
 .list-inline {
   &.with-separator {
@@ -261,8 +175,8 @@ i:has( + a:hover) {
 
     &:before {
       @extend %fa-icon;
-      @extend #{$icon-type};
-      content: fa-content($fa-var-check);
+      @extend #{$icon-type} !optional;
+      content: "\f00c";
       position: absolute;
       padding-right: rfs-value(10px);
       color: var(--bs-primary);
@@ -293,8 +207,8 @@ i:has( + a:hover) {
 
     &:before {
       @extend %fa-icon;
-      @extend #{$icon-type};
-      content: fa-content($fa-var-download);
+      @extend #{$icon-type} !optional;
+      content: "\f019";
       position: absolute;
       padding-right: rfs-value(10px);
       color: var(--bs-primary);
@@ -315,6 +229,7 @@ i:has( + a:hover) {
   }
 }
 
+
 %list-dots {
   list-style-type: none;
   padding: 0px;
@@ -330,8 +245,8 @@ i:has( + a:hover) {
 
     &:before {
       @extend %fa-icon;
-      @extend #{$icon-type};
-      content: fa-content($fa-var-circle);
+      @extend #{$icon-type} !optional;
+      content: "\f111";
       position: absolute;
       padding-right: rfs-value(10px);
       color: var(--bs-body-color-inverse);
@@ -393,10 +308,4 @@ ul[class*="list-"][class*="text-"] {
 
 .text-xl {
   @include font-size($font-size-xl);
-}
-
-.text-center{
-  ul li::marker{
-    color: transparent;
-  }
 }
