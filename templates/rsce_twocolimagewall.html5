@@ -152,7 +152,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                 ?>
 
                 <div<?php echo $styleAttribute; ?> class="<?= implode(' ', $classes); ?>">
-                    <div class="px-0 container content-holder ">
+                    <div class="px-0 content-holder ">
                         <?php
                         $rowDivClasses = ['g-0', 'row', 'flex-lg-nowrap'];
                         if ($row->reverse) $rowDivClasses[] = 'flex-row-reverse';
@@ -198,7 +198,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                         </div>
                                     <?php endif; ?>
 
-                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($row->buttons, "mt-3"); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($row->buttons); ?>
                                     <?php if ($row->darken_content_left) : ?>
                                         <div class="darkened-content"></div><?php endif; ?>
                                 </div>
@@ -258,7 +258,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                             break;
                                     }
                                     ?>
-                                    <div data-animation="<?= $row->animation_type_image_col;?>" class="<?= implode(' ', $imageInnerClasses); ?>">
+                                    <div data-animation="<?= $row->animation_type_image_col;?>"  class="<?= implode(' ', $imageInnerClasses); ?>">
                                         <?php if ($row->kachel_right_text): ?>
                                             <div class="kachel-column-width--indicator <?php if ($row->reverse) : ?>start-0<?php else: ?>end-0<?php endif; ?> <?php if ($row->expand_right_kachel): ?>expandable<?php endif; ?>">
                                                 <div class="column-kachel--wrapper <?= $row->kachel_right_position; ?> <?php if ($row->kachel_right_button_url): ?> with-url<?php endif; ?>">
