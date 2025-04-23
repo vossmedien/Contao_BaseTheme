@@ -29,7 +29,7 @@
     z-index: 50;
     box-shadow: $box-shadow-sm;
     left: 0;
-    top: 0;
+    top: -2px;
     //border-radius: 40%;
     color: var(--mm-spn-color);
     border: 0;
@@ -37,12 +37,10 @@
     width: 30px;
     height: 30px;
     line-height: 30px;
-
-
     transform: rotate(180deg);
     @extend %fa-icon;
-    @extend .fasl;
-    content: fa-content($fa-var-arrow-right);
+    @extend .fasl !optional;
+    content: "\f061";
   }
 
   > .extra-content {
@@ -83,6 +81,7 @@
     justify-content: center;
     align-items: center;
     background-color: inherit;
+    border-bottom: 1px solid var(--mm-spn-border-color);
 
     a {
       padding: 0;
@@ -117,8 +116,8 @@
       transform: none;
       color: var(--mm-spn-color);
       @extend %fa-icon;
-      @extend .fasl;
-      content: fa-content($fa-var-arrow-right);
+      @extend .fasl !optional;
+      content: "\f061";
     }
 
 

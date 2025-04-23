@@ -26,7 +26,7 @@
     padding-left: #{calc(var(--bs-btn-padding-left) * 0.75)};
     --bs-btn-font-size: .75rem;
     min-height: 30px;
-    
+
     &:has(i) {
       gap: .45rem;
     }
@@ -87,7 +87,7 @@
     --bs-btn-color: var(--bs-white);
     --bs-btn-bg: transparent;
     --bs-btn-hover-bg: var(--bs-white);
-    --bs-btn-hover-color: var(--bs-dark);
+    --bs-btn-hover-color: var(--bs-body-color);
 
     color: var(--bs-btn-color);
 
@@ -96,32 +96,38 @@
     }
   }
 
+  // Einfaches CSS für die Buttons
+ &.btn-outline-currentColor {
+  border: 1px solid var(--btn-context-color, currentColor);
+  background-color: transparent;
+  color: var(--btn-context-color, currentColor);
+
+  &:hover {
+    color: var(--parent-bg-color, white);
+    background-color: var(--btn-context-color, currentColor);
+  }
+}
+
+&.btn-currentColor {
+  border: 1px solid var(--btn-context-color, currentColor);
+  background-color: var(--btn-context-color, currentColor);
+  color: var(--parent-bg-color, white);
+
+  &:hover {
+    color: var(--btn-context-color, currentColor);
+    background-color: transparent;
+  }
+}
+
   &.btn-link {
     padding: 0px;
-    --bs-btn-color: var(--bs-primary);
+    --bs-btn-color: currentColor;
     min-height: 0;
 
     &:hover,
     &:focus {
       outline: none;
       box-shadow: none;
-    }
-
-    &.with-arrow {
-      text-decoration: none;
-      --bs-btn-padding-left: 0;
-
-      &:after {
-        @extend %fa-icon;
-        @extend #{$icon-type};
-        content: fa-content($fa-var-angles-right);
-        display: inline-block;
-        vertical-align: middle;
-        white-space: nowrap;
-        position: relative;
-        top: -2px;
-        @include font-size(20px);
-      }
     }
   }
 
@@ -139,21 +145,3 @@
   }
 }
 
-/*
-//FIX/HACK
-html body {
-  .btn-check:checked + .btn,
-  :not(.btn-check) + .btn:active,
-  .btn:first-child:active,
-  .btn.active,
-  .btn.show {
-    color: var(--bs-btn-active-color);
-    background-color: var(--bs-btn-active-bg);
-    border-color: var(--bs-btn-active-border-color);
-  }
-}
- */
-
-.show-more-btn {
-  //margin-top: 2.5rem;
-}
