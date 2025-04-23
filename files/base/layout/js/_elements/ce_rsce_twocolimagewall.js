@@ -1,14 +1,7 @@
 document.addEventListener("DOMContentLoaded", function (event) {
 
     function adjustImageColumnWidths() {
-        const mainContent = document.querySelector('.main-content');
         const rows = document.querySelectorAll('.ce_rsce_twocolimagewall .ce--imagetextwall--outer .row');
-
-        if (!mainContent) {
-            console.warn('.main-content area not found for image width calculation.');
-            return;
-        }
-        const mainRect = mainContent.getBoundingClientRect();
 
         rows.forEach(row => {
             const imageCol = row.querySelector('.image--col');
@@ -17,12 +10,27 @@ document.addEventListener("DOMContentLoaded", function (event) {
             const darkenOverlayImage = imageCol ? imageCol.querySelector('.darkened-content') : null;
             const darkenOverlayContent = contentCol ? contentCol.querySelector('.darkened-content') : null;
 
+            const containerElement = row.closest('.ce_rsce_twocolimagewall');
+            let refElement = document.querySelector('.main-content');
+
+            if (containerElement) {
+                const hasContainerClass = Array.from(containerElement.classList).some(cls => cls.startsWith('container'));
+                if (hasContainerClass) {
+                    refElement = containerElement;
+                }
+            }
+
+            if (!refElement) {
+                console.warn('Reference area (.main-content or specific .ce_rsce_twocolimagewall.container*) not found for row:', row);
+                return;
+            }
+            const refRect = refElement.getBoundingClientRect();
+
             const isDesktop = window.innerWidth >= 992;
             const isRowReverse = row.classList.contains('flex-row-reverse');
             const notAsBg = imageInner && imageInner.classList.contains('not-as-bg');
             const isRowBg = imageInner && imageInner.classList.contains('is-row-bg');
 
-            // Helper function to reset styles for overlays and column
             const resetStyles = (el) => {
                  if (el) {
                      el.style.width = '';
@@ -35,58 +43,48 @@ document.addEventListener("DOMContentLoaded", function (event) {
                  }
             };
 
-            // Reset styles first
             resetStyles(darkenOverlayImage);
             resetStyles(darkenOverlayContent);
-            resetStyles(imageCol); // Reset imageCol styles
+            resetStyles(imageCol);
 
-            // Stop adjustments if not on Desktop
             if (!isDesktop) return;
-            // Stop adjustments if columns not found
             if (!imageCol || !contentCol) return;
 
             const imageColRect = imageCol.getBoundingClientRect();
             const contentColRect = contentCol.getBoundingClientRect();
 
-            // --- Adjust Image Column Width ---
-            // Apply width adjustment ONLY if image IS acting as background AND is NOT a row background
             if (!notAsBg && !isRowBg) {
                 let targetWidthCol = 0;
-                if (isRowReverse) { // Image col left
+                if (isRowReverse) {
                     const spaceRightOfImageCol = window.innerWidth - imageColRect.right;
-                    const spaceLeftOfMain = mainRect.left;
-                    targetWidthCol = window.innerWidth - spaceRightOfImageCol - spaceLeftOfMain;
-                } else { // Image col right
+                    const spaceLeftOfReference = refRect.left;
+                    targetWidthCol = window.innerWidth - spaceRightOfImageCol - spaceLeftOfReference;
+                } else {
                     const spaceLeftOfImageCol = imageColRect.left;
-                    const spaceRightOfMain = window.innerWidth - mainRect.right;
-                    targetWidthCol = window.innerWidth - spaceLeftOfImageCol - spaceRightOfMain;
+                    const spaceRightOfReference = window.innerWidth - refRect.right;
+                    targetWidthCol = window.innerWidth - spaceLeftOfImageCol - spaceRightOfReference;
                 }
                 targetWidthCol = Math.max(0, Math.min(targetWidthCol, window.innerWidth));
                 imageCol.style.width = `${targetWidthCol}px`;
-                imageCol.style.maxWidth = `${targetWidthCol}px`; // Important to override BS col width
-
-                // No need to adjust imageElement or justify-content anymore
+                imageCol.style.maxWidth = `${targetWidthCol}px`;
             }
 
-            // --- Adjust Image Overlay --- (Now only opacity)
             if (darkenOverlayImage) {
-                // Width/position adjustments removed, CSS handles 100% width of column
                 darkenOverlayImage.style.opacity = '1';
             }
 
-            // --- Adjust Content Column Overlay --- (Remains the same)
             if (darkenOverlayContent) {
                 let targetWidthContentOverlay = 0;
-                 if (isRowReverse) { // Content right
+                 if (isRowReverse) {
                     const spaceLeftOfContentCol = contentColRect.left;
-                    const spaceRightOfMain = window.innerWidth - mainRect.right;
-                    targetWidthContentOverlay = window.innerWidth - spaceLeftOfContentCol - spaceRightOfMain;
+                    const spaceRightOfReference = window.innerWidth - refRect.right;
+                    targetWidthContentOverlay = window.innerWidth - spaceLeftOfContentCol - spaceRightOfReference;
                     darkenOverlayContent.style.left = '0';
                     darkenOverlayContent.style.right = 'auto';
-                 } else { // Content left
+                 } else {
                     const spaceRightOfContentCol = window.innerWidth - contentColRect.right;
-                    const spaceLeftOfMain = mainRect.left;
-                    targetWidthContentOverlay = window.innerWidth - spaceRightOfContentCol - spaceLeftOfMain;
+                    const spaceLeftOfReference = refRect.left;
+                    targetWidthContentOverlay = window.innerWidth - spaceRightOfContentCol - spaceLeftOfReference;
                     darkenOverlayContent.style.right = '0';
                     darkenOverlayContent.style.left = 'auto';
                  }
@@ -98,7 +96,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         });
     }
 
-    // --- Function Execution ---
     function runAdjustments() {
         requestAnimationFrame(adjustImageColumnWidths);
     }
