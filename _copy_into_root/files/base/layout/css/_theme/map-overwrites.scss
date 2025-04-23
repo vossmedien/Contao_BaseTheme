@@ -73,6 +73,28 @@ $headings-font-sizes: (
 );
 
 
+
+// Definieren Sie die Topline Font Sizes abhängig von der Headline-Ebene
+$topline-sizes-by-headline: (
+  'h1': ('mobile': 18px, 'tablet': 20px, 'desktop': 22px),
+  'h2': ('mobile': 16px, 'tablet': 18px, 'desktop': 20px),
+  'h3': ('mobile': 15px, 'tablet': 17px, 'desktop': 19px),
+  'h4': ('mobile': 14px, 'tablet': 16px, 'desktop': 18px),
+  'h5': ('mobile': 13px, 'tablet': 15px, 'desktop': 17px),
+  'h6': ('mobile': 12px, 'tablet': 14px, 'desktop': 16px)
+);
+
+// Definieren Sie die Subline Font Sizes abhängig von der Headline-Ebene
+$subline-sizes-by-headline: (
+  'h1': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px), // Beispiel: Ähnlich H5
+  'h2': ('mobile': 18px, 'tablet': 20px, 'desktop': 22px), // Beispiel: Ähnlich H6
+  'h3': ('mobile': 16px, 'tablet': 18px, 'desktop': 20px), // Beispiel: Ähnlich H6 Desktop
+  'h4': ('mobile': 15px, 'tablet': 17px, 'desktop': 19px),
+  'h5': ('mobile': 14px, 'tablet': 16px, 'desktop': 18px),
+  'h6': ('mobile': 13px, 'tablet': 15px, 'desktop': 17px)
+);
+
+
 // Maps für Headline-Abstände (Gaps)
 $headline-gaps: (
         'h1': 1rem,
