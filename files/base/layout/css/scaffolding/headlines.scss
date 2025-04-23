@@ -43,7 +43,7 @@
   flex-flow: column nowrap;
 
   * {
-    margin: 0 !important;
+    margin: 0;
     max-width: 100%;
   }
 
@@ -101,9 +101,11 @@
 .ce--subline {
   color: var(--bs-subline-color);
   font-weight: var(--bs-subline-font-weight);
+  margin: var(--bs-subline-extra-margin);
 }
 
 .ce--topline {
   color: var(--bs-topline-color);
   font-weight: var(--bs-topline-font-weight);
+  margin: var(--bs-topline-extra-margin);
 }

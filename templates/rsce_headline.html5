@@ -1,21 +1,146 @@
-<div id="<?= $this->cssID; ?>" class="content--element <?= $this->class; ?>   ">
-    <div class="ce--inner ">
-        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+<?php
+// Helfer für die Headline generieren
+// generateHeadlineHTML($topline, $headline, $subline, $headlineType, $animation = null, $headlineClass = null, $onlystyle = false, $additionalAttributes = null)
+
+// Animation für Headline-Element nur setzen, wenn 1-spaltig oder wenn 2-spaltig & Headline oben
+$headlineElementAnimation = null;
+if (!$this->two_columns || $this->headline_above_columns) {
+    $headlineElementAnimation = $this->animation_type_headline;
+}
+
+$headlineHTML = Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+    $this->topline,
+    $this->headline,
+    $this->subline,
+    $this->headline_type,
+    $headlineElementAnimation, // Animation für das Headline-Element selbst (nur wenn relevant)
+    null,
+    (bool)$this->onlystyle,
+    null
+);
+
+// Helfer für die Buttons generieren
+$buttonsHTML = '';
+if (!empty($this->buttons)) {
+    $buttonsHTML = Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons);
+}
+
+// Standardwerte und Berechnungen für zweispaltiges Layout
+$colWidthContent = '50';
+$bsColContent = 6;
+$bsColHeadline = 6;
+$orderContentClass = 'order-1';
+$orderHeadlineClass = 'order-2';
+
+if ($this->two_columns) {
+    $colWidthContent = $this->column_width_content ?? '50'; // Standard 50%
+    $colWidthContentInt = (int)$colWidthContent;
+    $colWidthHeadlineInt = 100 - $colWidthContentInt;
+
+    // Bootstrap Spaltenklassen berechnen (Basis ist 12)
+    $bsColContent = round(12 * ($colWidthContentInt / 100));
+    // Sicherstellen, dass die Summe 12 ergibt und keine Spalte 0 ist
+    $bsColContent = max(1, min(11, $bsColContent));
+    $bsColHeadline = 12 - $bsColContent;
+
+    // Klassen für Spaltenreihenfolge
+    // Desktop: order-md-X; Mobil: order-X
+    // Ziel: Mobil immer Headline (order-1) vor Inhalt (order-2)
+    //       Desktop Standard: Headline (order-md-1) links, Inhalt (order-md-2) rechts
+    //       Desktop Umgekehrt: Inhalt (order-md-1) links, Headline (order-md-2) rechts
+    $orderHeadlineClass = $this->reverse_columns ? 'order-md-2 order-1' : 'order-md-1 order-1';
+    $orderContentClass = $this->reverse_columns ? 'order-md-1 order-2' : 'order-md-2 order-2';
+
+    // Wenn Headline oben, bekommt sie dort die Animation
+    if($this->headline_above_columns) {
+         $headlineHTML = Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
             $this->headline_type,
-            $this->animation_type,
+            $this->animation_type_headline, // Animation hier, wenn Headline oben
             null,
-            false,
+            (bool)$this->onlystyle,
             null
-        ); ?>
+        );
+    }
 
+}
 
-        <?php if ($this->desc): ?>
-            <div data-animation="<?= $this->animation_type;?>" class="text">
-                <?= $this->desc; ?>
+// Container-Klasse
+$containerClass = 'content--element ' . $this->class;
+$containerAttributes = 'id="' . $this->cssID . '"';
+
+?>
+
+<div <?= $containerAttributes; ?> class="<?= $containerClass; ?> <?php if ($this->two_columns): ?>layout-two-columns<?php else: ?>layout-one-column<?php endif; ?>">
+    <div class="ce--inner">
+
+        <?php if ($this->two_columns): ?>
+            <?php // --- ZWEISPALTIG --- ?>
+
+            <?php if ($this->headline_above_columns): ?>
+                 <div class="headline-above-columns">
+                     <?= $headlineHTML; // Headline oberhalb der Spalten (mit Animation) ?>
+                 </div>
+            <?php endif; ?>
+
+            <div class="row">
+
+                <?php // --- Headlinespalte --- ?>
+                <?php
+                    // Animation für die Headlinespalte (wenn 2. Inhalt aktiv UND Headline *in* der Spalte ist)
+                    $headlineColumnAnimation = $this->animation_type_headline_column;
+                ?>
+                <div  class="col-12 col-md-<?= $bsColHeadline; ?> <?= $orderHeadlineClass; ?>">
+                     <div class="headline-column">
+                        <?php if (!$this->headline_above_columns): ?>
+                            <?= $headlineHTML; // Headline in der Spalte (ohne Animation vom Helper) ?>
+                        <?php endif; ?>
+
+                        <?php if ($this->add_second_content && $this->second_content): ?>
+                            <div data-animation="<?= $headlineColumnAnimation; ?>" class="text">
+                                <?= $this->second_content; ?>
+                            </div>
+                        <?php endif; ?>
+                     </div>
+                </div>
+
+                <?php // --- Textspalte --- ?>
+                <div data-animation="<?= $this->animation_type_content; ?>" class="col-12 col-md-<?= $bsColContent; ?> <?= $orderContentClass; ?>">
+                    <div class="content-column">
+                        <?php if ($this->desc): ?>
+                            <div class="text">
+                                <?= $this->desc; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($buttonsHTML): ?>
+                            <div class="buttons mt-3">
+                                <?= $buttonsHTML; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
+
+        <?php else: ?>
+            <?php // --- EINSPALTIG --- ?>
+            <?= $headlineHTML; // Headline mit Animation (kommt vom Helper) ?>
+
+            <?php if ($this->desc): ?>
+                <div data-animation="<?= $this->animation_type_content;?>" class="text">
+                    <?= $this->desc; ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($buttonsHTML): ?>
+                 <div class="buttons mt-3">
+                    <?= $buttonsHTML; ?>
+                 </div>
+            <?php endif; ?>
+
         <?php endif; ?>
+
     </div>
 </div>

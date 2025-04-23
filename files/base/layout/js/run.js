@@ -58,11 +58,11 @@ const initAnimations = () => {
     const CONFIG = {
         mobile: {
             breakpoint: 768,
-            rootMargin: '0px 0px -25% 0px',
+            rootMargin: '0px 0px -5% 0px',
             visibilityThreshold: 0.1
         },
         desktop: {
-            rootMargin: '0px 0px -15% 0px',
+            rootMargin: '0px 0px -2.5% 0px',
             visibilityThreshold: 0.2
         },
         animation: {
