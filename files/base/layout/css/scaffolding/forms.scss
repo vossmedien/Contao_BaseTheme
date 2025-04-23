@@ -284,3 +284,16 @@ form {
     border-color: var(--bs-primary);
   }
 }
+
+.widget:not(.widget-upload):not(.widget-radio):not(.widget-checkbox):not(.widget-captcha) {
+  &:not(.form-floating) {
+    input,textarea{
+      border-top-left-radius: var(--bs-border-radius) !important;
+      border-top-right-radius: var(--bs-border-radius)  !important;
+    }
+    label {
+      display: none;
+    }
+  }
+}
+

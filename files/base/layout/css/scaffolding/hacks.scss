@@ -7,7 +7,7 @@
 [data-animation*="animate__"],
 [class*="animate__"] {
   &:not(.animate__animated):not([data-animation="no-animation"]) {
-    visibility: hidden !important;
+    visibility: hidden;
   }
 
   &.animate__animated {
@@ -106,7 +106,7 @@ div:has([class*="text-"]):has([class*="-center"]) {
 
 .container-wide {
   @include media-breakpoint-up(xxl) {
-    max-width: 85vw;
+    max-width: calc(1300px + (var(--bs-container-gutter)*2));
     margin-inline: auto;
   }
 }
