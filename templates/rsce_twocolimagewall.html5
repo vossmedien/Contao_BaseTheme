@@ -152,7 +152,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                 ?>
 
                 <div<?php echo $styleAttribute; ?> class="<?= implode(' ', $classes); ?>">
-                    <div class="px-0 content-holder ">
+                    <div class="px-0 content-holder container">
                         <?php
                         $rowDivClasses = ['g-0', 'row', 'flex-lg-nowrap'];
                         if ($row->reverse) $rowDivClasses[] = 'flex-row-reverse';
@@ -198,7 +198,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                         </div>
                                     <?php endif; ?>
 
-                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($row->buttons, "mt-3"); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($row->buttons); ?>
                                     <?php if ($row->darken_content_left) : ?>
                                         <div class="darkened-content"></div><?php endif; ?>
                                 </div>
