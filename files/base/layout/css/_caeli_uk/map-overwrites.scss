@@ -82,25 +82,6 @@ $subline-sizes-by-headline: (
 );
 
 
-// Maps für Headline-Abstände (Gaps)
-$headline-gaps: (
-        'h1': 1rem,
-        'h2': 1rem,
-        'h3': 0.25rem,
-        'h4': 0.2rem,
-        'h5': 0.15rem,
-        'h6': 0.1rem
-);
-
-// Kleinere Gap-Werte für mobile Ansicht
-$mobile-headline-gaps: (
-        'h1': 0.5rem,
-        'h2': 0.5rem,
-        'h3': 0.2rem,
-        'h4': 0.16rem,
-        'h5': 0.12rem,
-        'h6': 0.08rem
-);
 
 // NEUE MAP: Abstände nach Überschriften (margin-bottom)
 $headline-margins: (
@@ -122,3 +103,23 @@ $mobile-headline-margins: (
         'h6': 0.6rem
 );
 
+
+// NEUE MAP: Abstände für Toplines (margin)
+$topline-margins: (
+        'h1': 0 0 .4em 0,
+        'h2': 0 0 .6em 0,
+        'h3': 0 0 .2em 0,
+        'h4': 0 0 .2em 0,
+        'h5': 0 0 .2em 0,
+        'h6': 0
+);
+
+// NEUE MAP: Abstände für Sublines (margin)
+$subline-margins: (
+        'h1': .2em 0 0 0,
+        'h2': .2em 0 0 0,
+        'h3': .2em 0 0 0,
+        'h4': .2em 0 0 0,
+        'h5': .2em 0 0 0,
+        'h6': .2em 0 0 0
+);
