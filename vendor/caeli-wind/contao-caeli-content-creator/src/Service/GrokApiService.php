@@ -31,7 +31,7 @@ class GrokApiService
     ) {
         $this->httpClient = $httpClient ?? HttpClient::create();
     }
- 
+
     /**
      * Ruft die Grok API auf und gibt die Antwort zurück
      * Use configured maxTokens if not overridden in call
@@ -53,11 +53,11 @@ class GrokApiService
                     'User-Agent' => 'Caeli-ContentCreator/0.2'
                 ],
                 'json' => [
-                    'model' => 'grok-2-latest',
+                    'model' => 'grok-3-beta',
                     'messages' => [
                         [
                             'role' => 'system',
-                            'content' => 'Du bist ein hilfreiches AI-Assistent. Erzeuge JSON-Antworten gemäß den Anweisungen im User-Prompt.'
+                            'content' => 'Du bist ein hilfreicher AI-Assistent, spezialisiert auf die Erstellung von Blogbeiträgen für Caeli Wind im Bereich Windenergie. Halte dich strikt an die Anweisungen im User-Prompt, insbesondere bezüglich Struktur, Tonalität, SEO-Keywords und Mindestlänge. Erzeuge qualitativ hochwertige, informative und ansprechende Inhalte. Wenn nach Quellen gefragt wird, gib diese bitte an.'
                         ],
                         [
                             'role' => 'user',
@@ -67,6 +67,13 @@ class GrokApiService
                     'temperature' => $temperature,
                     'max_tokens' => $requestMaxTokens,
                     'top_p' => $topP,
+                    'top_k' => 40,
+                    'repetition_penalty' => 1.1,
+                    'reasoning' => [
+                        'effort' => 'medium',
+                        'exclude' => false
+                    ],
+                    'stop' => null
                 ],
                 'timeout' => $this->apiTimeout,
                 'verify_peer' => true,

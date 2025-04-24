@@ -43,7 +43,9 @@ class NewsContentGenerator
         string $teaser,
         string $content,
         string $tags,
-        string $elementType
+        string $elementType,
+        string $pageTitle = '',
+        string $description = ''
     ): int {
         $this->framework->initialize();
 
@@ -71,6 +73,22 @@ class NewsContentGenerator
         $news->time = time();
         $news->tstamp = time();
         $news->tags = $tags;
+
+        // SEO-Daten hinzufügen
+        if (!empty($pageTitle)) {
+            $news->pageTitle = $pageTitle;
+        } else {
+            // Fallback: Haupt-Titel als pageTitle, falls keiner generiert wurde
+            $news->pageTitle = $title;
+        }
+        if (!empty($description)) {
+            $news->description = $description;
+        }
+        // Optional: Wenn description leer ist, Fallback auf Teaser?
+        // elseif (!empty($teaser)) {
+        //    $news->description = $teaser;
+        // }
+
         $news->save();
 
         $newsId = (int) $news->id;
