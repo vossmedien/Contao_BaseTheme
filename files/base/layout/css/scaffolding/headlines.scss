@@ -49,12 +49,9 @@
 
   @each $heading in map-keys($headings-font-sizes) {
     &.hl-#{$heading} {
-      gap: map-get($headline-gaps, $heading);
-      // Verwende jetzt die margin-Map statt der Berechnung
       margin-bottom: map-get($headline-margins, $heading);
 
       @include media-breakpoint-down(md) {
-        gap: map-get($mobile-headline-gaps, $heading);
         margin-bottom: map-get($mobile-headline-margins, $heading);
       }
 
