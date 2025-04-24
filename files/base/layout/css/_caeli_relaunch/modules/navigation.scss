@@ -130,6 +130,12 @@ body:not(.is-home) .level_1 > li {
 }
 
 
+.mm-spn.mod_navigation{
+  --mm-spn-border-color: var(--bs-light);
+}
+
+
+
 .mm-spn.mod_navigation:before {
   @extend %fa-icon, .fak;
   content: '\e005';

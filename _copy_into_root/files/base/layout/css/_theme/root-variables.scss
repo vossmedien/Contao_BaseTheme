@@ -6,7 +6,6 @@
 @import "map-overwrites";
 
 
-
 :root {
   @each $color, $value in $theme-colors {
     --bs-#{$color}-rgb: #{to-rgb($value)};
@@ -15,8 +14,15 @@
     --bs-#{$color}-border-subtle: #{shade-color($value, 40%)};
   }
 
+  --spacer: #{$spacer};
+  --spacer-sm: #{$spacer-sm};
+  --spacer-lg: #{$spacer-lg};
 
   --main-gap: #{clamp($spacer, 5vw, $spacer-lg)};
+
+  --offset-sm: #{$offset-sm};
+  --offset-lg: #{$offset-lg};
+
 
   //--bs-gray: #{$gray};
 
@@ -31,6 +37,12 @@
   --content-box--padding: clamp(2.5rem, 5vw, 3.5rem);
 
   --bs-body-font-weight: var(--bs-font-weight-300);
+  --font-size-base: 1rem;
+  --bs-body-font-size: clamp(
+          var(--font-size-base),
+          1vw,
+          calc(var(--font-size-base) * 1.2)
+  );
 
   --bs-body-line-height-xs: 1.05;
   --bs-body-line-height-sm: 1.15;
@@ -46,6 +58,9 @@
   --bs-topline-font-weight: #{$font-weight-bold};
   --bs-subline-font-weight: #{$font-weight-light};
 
+  --bs-topline-extra-margin: 0 0 .25em 0;
+  --bs-subline-extra-margin: 0;
+
   --bs-box-shadow-inset-lg: inset 0px 25px 40px rgba(0, 0, 0, 0.5);
 
   --bs-border-color: var(--bs-gray-400);
@@ -55,12 +70,16 @@
   --swiper-pagination-bullet-width: var(--swiper-pagination-bullet-height);
   --swiper-navigation-size: 35px;
 
+  --bs-h1-font-weight: #{$font-weight-base};
+  --bs-h2-font-weight: #{$font-weight-bold};
+  --bs-h3-font-weight: #{$font-weight-bold};
+
 
   //Inputs
 
   --bs-input-border-radius: var(--bs-border-radius);
   --bs-input-border: 1px solid var(--bs-border-color);
-    --bs-input-shadow: 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(0, 0, 0, 0.02);
+  --bs-input-shadow: 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(0, 0, 0, 0.02);
   --bs-input-padding-x: 0.75rem;
   --bs-input-padding-y: 1rem;
   --bs-input-color: var(--bs-body-color);
@@ -99,7 +118,7 @@
 
   --bs-scrolloffset: 125px;
 
-  --body-bg-cookies-not-accepted: rgba(0,0,0,.5);
+  --body-bg-cookies-not-accepted: rgba(0, 0, 0, .5);
 
   //MobileNav
   --mm-ocd-min-width: 300px;

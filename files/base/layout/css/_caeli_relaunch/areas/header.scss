@@ -88,14 +88,9 @@ header#header {
 
     .logo {
       svg {
-       width: 200px;
-
-        @include media-breakpoint-up(sm) {
-          width: 250px;
-          height: 52px;
+        @include media-breakpoint-down(sm) {
+          width: 200px;
         }
-
-
       }
     }
 
@@ -114,6 +109,11 @@ header#header {
     transform-box: fill-box;
     transform-origin: center;
     animation: spin 1.8s cubic-bezier(0.25, 0.1, 0.25, 1) 1;
-    animation-fill-mode: forwards;
+    //animation-fill-mode: forwards;
+    backface-visibility: hidden;
+  }
+
+  header#header #logoText {
+    //text-rendering: geometricPrecision;
   }
 }

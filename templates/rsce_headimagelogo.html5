@@ -125,7 +125,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                                         $slide->text_firstline,
                                                         $slide->text_secondline,
                                                         $slide->headline_type,
-                                                        $slide->animation_type,
+                                                        "no-animation",
                                                         $slide->headline_color,
                                                         $slide->onlystyle,
                                                         "mb-0"

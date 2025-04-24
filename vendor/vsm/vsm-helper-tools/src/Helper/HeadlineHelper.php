@@ -31,10 +31,10 @@ class HeadlineHelper
         $headline = $headline ?? '';
         $subline = $subline ?? '';
         $headlineType = $headlineType ?? 'h2';
-        $animationType = $animationType ?? 'animate__fadeInUp';
+        $animationType = $animationType ?? 'animate__fadeIn';
         $textColor = $textColor ?? '';
         $headlineClass = $headlineClass ?? '';
-        
+
         $textColorStyle = $textColor ? "color:{$textColor};" : '';
         $headlineClassAttribute = "class=\"ce--headline hl-{$headlineType}" . ($headlineClass ? " {$headlineClass}" : '') . "\"";
 
@@ -71,3 +71,4 @@ class HeadlineHelper
         return $headlineHTML;
     }
 }
+

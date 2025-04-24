@@ -38,7 +38,7 @@
 
   --bs-body-font-weight: var(--bs-font-weight-300);
   --font-size-base: 1rem;
-    --bs-body-font-size: clamp(
+  --bs-body-font-size: clamp(
           var(--font-size-base),
           1vw,
           calc(var(--font-size-base) * 1.2)
@@ -60,6 +60,10 @@
 
   --bs-topline-font-weight: #{$font-weight-bold};
   --bs-subline-font-weight: #{$font-weight-light};
+
+  --bs-topline-extra-margin: 0 0 .25em 0;
+  --bs-subline-extra-margin: 0;
+
 
   --bs-box-shadow-inset-lg: inset 0px 25px 40px rgba(0, 0, 0, 0.5);
 
@@ -103,7 +107,7 @@
   --bs-container-gutter: 15px;
 
   // Animate on Scroll
-  --animate-duration: 650ms;
+  --animate-duration: 850ms;
   --animate-delay: 15ms;
   //--animate-repeat: 0;
   //--animate-sequence: 1;

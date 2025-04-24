@@ -8,11 +8,17 @@
 [class*="animate__"] {
   &:not(.animate__animated):not([data-animation="no-animation"]) {
     visibility: hidden;
+    opacity: 0;
   }
 
   &.animate__animated {
     visibility: visible;
+    opacity: 1;
   }
+}
+
+[data-animation="no-animation"]{
+  visibility: visible !important;
 }
 
 
