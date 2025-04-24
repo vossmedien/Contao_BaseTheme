@@ -152,7 +152,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                 ?>
 
                 <div<?php echo $styleAttribute; ?> class="<?= implode(' ', $classes); ?>">
-                    <div class="px-0 content-holder ">
+                    <div class="px-0 content-holder container">
                         <?php
                         $rowDivClasses = ['g-0', 'row', 'flex-lg-nowrap'];
                         if ($row->reverse) $rowDivClasses[] = 'flex-row-reverse';

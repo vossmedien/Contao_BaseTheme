@@ -1,19 +1,3 @@
-$theme-colors: (
-        "primary": $primary,
-        "secondary": $secondary,
-        "tertiary": $tertiary,
-        "red": #871623,
-        "blue": #00274a,
-        "purple": #6610f2,
-        "success": #dbe8e2,
-        "info": #d1ecf1,
-        "warning": #ffc107,
-        "danger": #dc3545,
-        "light": $gray-100,
-        "dark": $gray-900,
-);
-
-
 $spacers: (
         0: 0,
         1: 0.5rem,
@@ -38,61 +22,38 @@ $gutters: (
 );
 
 
-
 $headings-font-sizes: (
         'h1': (
-                'mobile': rfs-value(32px),
-                'tablet': rfs-value(46px),
-                'desktop': rfs-value(61px)
+                'mobile': 40px,
+                'tablet': 60px,
+                'desktop': 70px
         ),
         'h2': (
-                'mobile': rfs-value(29px),
-                'tablet': rfs-value(39px),
-                'desktop': rfs-value(49px)
+                'mobile': 30px,
+                'tablet': 40px,
+                'desktop': 50px
         ),
         'h3': (
-                'mobile': rfs-value(26px),
-                'tablet': rfs-value(32px),
-                'desktop': rfs-value(39px)
+                'mobile': 25px,
+                'tablet': 25px,
+                'desktop': 25px
         ),
         'h4': (
-                'mobile': rfs-value(23px),
-                'tablet': rfs-value(27px),
-                'desktop': rfs-value(31px)
+                'mobile': 25px,
+                'tablet': 25px,
+                'desktop': 25px
         ),
         'h5': (
-                'mobile': rfs-value(20px),
-                'tablet': rfs-value(22px),
-                'desktop': rfs-value(25px)
+                'mobile': 25px,
+                'tablet': 25px,
+                'desktop': 25px
         ),
         'h6': (
-                'mobile': rfs-value(18px),
-                'tablet': rfs-value(19px),
-                'desktop': rfs-value(20px)
+                'mobile': 25px,
+                'tablet': 25px,
+                'desktop': 25px
         )
 );
-
-
-// Maps für Headline-Abstände (Gaps)
-$headline-gaps: (
-        'h1': 1rem,
-        'h2': 1rem,
-        'h3': 0.25rem,
-        'h4': 0.2rem,
-        'h5': 0.15rem,
-        'h6': 0.1rem
-);
-
-// Kleinere Gap-Werte für mobile Ansicht
-$mobile-headline-gaps: (
-        'h1': 0.5rem,
-        'h2': 0.5rem,
-        'h3': 0.2rem,
-        'h4': 0.16rem,
-        'h5': 0.12rem,
-        'h6': 0.08rem
-);
-
 
 // NEUE MAP: Abstände nach Überschriften (margin-bottom)
 $headline-margins: (
@@ -112,4 +73,25 @@ $mobile-headline-margins: (
         'h4': 0.9rem,
         'h5': 0.8rem,
         'h6': 0.6rem
+);
+
+
+// NEUE MAP: Abstände für Toplines (margin)
+$topline-margins: (
+        'h1': 0 0 .4em 0,
+        'h2': 0 0 .6em 0,
+        'h3': 0 0 .2em 0,
+        'h4': 0 0 .2em 0,
+        'h5': 0 0 .2em 0,
+        'h6': 0
+);
+
+// NEUE MAP: Abstände für Sublines (margin)
+$subline-margins: (
+        'h1': .2em 0 0 0,
+        'h2': .2em 0 0 0,
+        'h3': .2em 0 0 0,
+        'h4': .2em 0 0 0,
+        'h5': .2em 0 0 0,
+        'h6': .2em 0 0 0
 );

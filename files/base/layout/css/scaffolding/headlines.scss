@@ -43,18 +43,15 @@
   flex-flow: column nowrap;
 
   * {
-    margin: 0 !important;
+    margin: 0;
     max-width: 100%;
   }
 
   @each $heading in map-keys($headings-font-sizes) {
     &.hl-#{$heading} {
-      gap: map-get($headline-gaps, $heading);
-      // Verwende jetzt die margin-Map statt der Berechnung
       margin-bottom: map-get($headline-margins, $heading);
 
       @include media-breakpoint-down(md) {
-        gap: map-get($mobile-headline-gaps, $heading);
         margin-bottom: map-get($mobile-headline-margins, $heading);
       }
 
@@ -69,6 +66,19 @@
         .ce--subline {
           font-size: $font-size-base;
         }
+      }
+
+      // Neue Styles für Topline und Subline basierend auf Maps
+      .ce--topline {
+        color: var(--bs-primary); // Farbe hier direkt setzen
+        font-weight: $font-weight-bold; // Gewicht hier direkt setzen
+        margin: map-get($topline-margins, $heading); // Margin aus Map
+      }
+
+      .ce--subline {
+        color: currentColor; // Farbe hier direkt setzen
+        font-weight: $font-weight-light; // Gewicht hier direkt setzen
+        margin: map-get($subline-margins, $heading); // Margin aus Map
       }
     }
   }
@@ -97,13 +107,3 @@
 
 // Entferne den redundanten media-query-Block, da wir die responsiven
 // Anpassungen jetzt direkt in die anderen Blöcke integriert haben
-
-.ce--subline {
-  color: var(--bs-subline-color);
-  font-weight: var(--bs-subline-font-weight);
-}
-
-.ce--topline {
-  color: var(--bs-topline-color);
-  font-weight: var(--bs-topline-font-weight);
-}
