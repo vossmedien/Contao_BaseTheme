@@ -20,15 +20,37 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         ); ?>
 
         <div class="ce--bubble-list <?php if ($this->hide_circle): ?>no-border<?php endif; ?>"
-             <?php if ($this->backgroundcolor) : ?>style="background-color: <?php echo $this->backgroundcolor; ?>" <?php endif; ?>>
+             style="
+             <?php if ($this->backgroundcolor) : ?>background-color: <?php echo $this->backgroundcolor; ?>;<?php endif; ?>
+             <?php /* CSS variables for columns/hover-scale are no longer needed here with BS classes */
+             $scaleFactor = 1;
+             if (!empty($this->hover_scale_percent) && is_numeric($this->hover_scale_percent) && $this->hover_scale_percent > 0) {
+                 $scaleFactor = $this->hover_scale_percent / 100;
+             }
+             ?>
+             --vsm-hover-scale: <?= $scaleFactor ?>; /* Keep hover scale */
+             ">
             <div class="bl--inner ">
-                <div class="bl--list">
+                <?php
+                    // Determine responsive row-cols classes based on global setting
+                    $rowColsClasses = 'row-cols-1 row-cols-md-2 row-cols-lg-3'; // Default: 1->2->3 cols
+                    switch ($this->columns) {
+                        case '1': $rowColsClasses = 'row-cols-1'; break;
+                        case '2': $rowColsClasses = 'row-cols-1 row-cols-sm-2'; break;
+                        case '3': $rowColsClasses = 'row-cols-1 row-cols-sm-2 row-cols-md-3'; break;
+                        case '4': $rowColsClasses = 'row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4'; break;
+                        case '5': $rowColsClasses = 'row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5'; break;
+                        case '6': $rowColsClasses = 'row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6'; break;
+                    }
+                ?>
+                <div class="bl--list row <?= $rowColsClasses ?> g-2">
                     <?php foreach ($this->galery as $item) : ?>
                         <div
+                                class="bl--item"
                                 style="
-                                        --vsm-bubblecolor: <?php if ($item->color): ?><?= $item->color; ?><?php else: ?>var(--bs-primary)<?php endif; ?>;
+                                        --vsm-bubblecolor: <?php if ($item->color): ?><?= $item->color; ?><?php else: ?>var(--bs-body-color)<?php endif; ?>;
                                         --vsm-bubblecolor-hover: <?php if ($item->hover_color): ?><?= $item->hover_color; ?><?php else: ?>var(--bs-secondary)<?php endif; ?>;
-                                        --vsm-bubble-size: <?php if ($item->size): ?><?= $this->size[0]; ?>px<?php else: ?>100px<?php endif; ?>;
+                                        --vsm-bubble-size: <?php if ($item->size): ?><?= $item->size; ?><?php else: ?>100px<?php endif; ?>;
                                         "
 
                                 data-animation="<?php if ($item->animation_type != "") : ?><?php echo $item->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>"

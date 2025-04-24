@@ -1,0 +1,57 @@
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+.image-info-box {
+
+  .info-box-container {
+    position: relative;
+    transform: translate(0, -50%);
+
+    @include media-breakpoint-up(sm) {
+      margin-bottom: -7rem;
+    }
+  }
+
+  .info-box {
+    text-align: center;
+    border-radius: var(--bs-border-radius);
+
+    @include media-breakpoint-up(sm) {
+      display: inline-block;
+      max-width: 450px;
+    }
+
+    .info-box-col {
+      padding: 1rem .5rem;
+
+      @include media-breakpoint-up(sm) {
+        //aspect-ratio: 1/1;
+        padding: 1.5rem 1rem;
+                display: flex;
+        flex-flow: column wrap;
+        justify-content: center;
+      }
+
+      @include media-breakpoint-up(md) {
+             padding: 1.5rem 2.5rem;
+      }
+    }
+
+    .info-box-col-2 {
+      .info-box-col {
+        @include media-breakpoint-down(sm) {
+          padding-top: 0;
+        }
+
+      }
+    }
+
+
+    .info-label {
+      color: var(--bs-gray-600);
+      white-space: nowrap;
+    }
+  }
+
+}

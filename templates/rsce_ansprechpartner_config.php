@@ -22,6 +22,26 @@ return array(
             'eval' => array('chosen' => 'true')
         ),
 
+        // Steuerung für Bildrundung
+        'round_images' => array(
+            'label' => array('Bilder abrunden', 'Fügt die Klasse .rounded-circle zu den Bildern hinzu.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'default' => false, // Standardmäßig nicht abgerundet
+        ),
+
+        // Steuerung für Textausrichtung
+        'text_alignment' => array(
+            'label' => array('Textausrichtung der Partner-Boxen', ''),
+            'inputType' => 'select',
+            'options' => array(
+                'text-start' => 'Linksbündig',
+                'text-center' => 'Zentriert (Standard)',
+                'text-end' => 'Rechtsbündig',
+            ),
+            'default' => 'text-center',
+            'eval' => array('tl_class' => 'w50'),
+        ),
 
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
@@ -42,7 +62,7 @@ return array(
             'label' => array('Buttons', ''),
             'elementLabel' => '%s. Button',
             'inputType' => 'list',
-            'minItems' => 1,
+            'minItems' => 0,
             'maxItems' => 20,
             'eval' => array('tl_class' => 'clr'),
             'fields' => ButtonHelper::getButtonConfig(),
@@ -65,7 +85,7 @@ return array(
             'elementLabel' => '%s. Ansprechpartner',
             'inputType' => 'list',
             'minItems' => 1,
-            'maxItems' => 3,
+            'maxItems' => 6,
             'fields' => array(
                 'animation_type' => array(
                     'label' => array(
@@ -100,6 +120,13 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
+
+                'enable_tracking' => array(
+                    'label' => array('Klicktracking aktivieren', 'Aktiviert das Tracking für diesen Ansprechpartner'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+
             ),
         ),
     ),

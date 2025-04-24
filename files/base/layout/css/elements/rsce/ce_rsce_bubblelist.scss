@@ -3,7 +3,6 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
 
-
 html body {
   .ce_rsce_bubblelist {
     .ce--bubble-list {
@@ -16,22 +15,22 @@ html body {
 
 
       .bl--list {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 32px;
+        // Layout is now handled by Bootstrap .row and .col-* classes
+        // We might add specific overrides or adjustments here if needed
+        // Ensure items within the columns align correctly if needed
+        justify-content: center;
 
 
         .bl--item {
-          //padding: 0 3vw;
-          //margin: rfs-value(20px 0px 20px 0px);
+          // Remove flex properties, Bootstrap columns handle sizing/basis
+          // Ensure the flex container within the item still works
           position: relative;
-          width: auto;
-          flex-flow: row wrap;
-
-
-          * {
-
-          }
+          //width: auto; // Usually not needed for col-* but keep for safety?
+          display: flex;
+          flex-flow: column wrap;
+          justify-content: center;
+          align-items: center;
+          gap: .5rem;
 
           > a {
             display: block;
@@ -50,6 +49,7 @@ html body {
             }
 
             .bl-i--image {
+              transform: scale(var(--vsm-hover-scale, 1));
               --vsm-bubble-font-size: calc(var(--vsm-bubble-size) / 1.5);
               border-color: var(--vsm-bubblecolor-hover);
 
@@ -102,7 +102,7 @@ html body {
 
             transition: color 0.3s ease-in-out;
 
-            p{
+            p {
               line-height: 1.2;
             }
           }
