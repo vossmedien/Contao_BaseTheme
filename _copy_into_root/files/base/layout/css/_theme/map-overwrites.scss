@@ -38,22 +38,43 @@ $gutters: (
 );
 
 
+//CSS Variablen beachten
+$container-max-widths: (
+        sm: 100%,
+        md: 100%,
+        lg: 992px,
+        xl: 1140px,
+        xxl: 1280px
+);
+
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 1040px,
+        xl: 1200px,
+        xxl: 1340px,
+);
+
+
+
 
 $headings-font-sizes: (
         'h1': (
                 'mobile': rfs-value(32px),
                 'tablet': rfs-value(46px),
-                'desktop': rfs-value(61px)
+                'desktop': rfs-value(55px)
         ),
         'h2': (
                 'mobile': rfs-value(29px),
                 'tablet': rfs-value(39px),
-                'desktop': rfs-value(49px)
+                'desktop': rfs-value(48px)
         ),
         'h3': (
                 'mobile': rfs-value(26px),
-                'tablet': rfs-value(32px),
-                'desktop': rfs-value(39px)
+                'tablet': rfs-value(30px),
+                'desktop': rfs-value(30px)
         ),
         'h4': (
                 'mobile': rfs-value(23px),
@@ -71,3 +92,65 @@ $headings-font-sizes: (
                 'desktop': rfs-value(20px)
         )
 );
+
+// Definieren Sie die Topline Font Sizes abhängig von der Headline-Ebene
+$topline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 39px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
+
+// Definieren Sie die Subline Font Sizes abhängig von der Headline-Ebene
+$subline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 39px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
+
+
+// Maps für Headline-Abstände (Gaps)
+$headline-gaps: (
+        'h1': 1rem,
+        'h2': 1rem,
+        'h3': 0.25rem,
+        'h4': 0.2rem,
+        'h5': 0.15rem,
+        'h6': 0.1rem
+);
+
+// Kleinere Gap-Werte für mobile Ansicht
+$mobile-headline-gaps: (
+        'h1': 0.5rem,
+        'h2': 0.5rem,
+        'h3': 0.2rem,
+        'h4': 0.16rem,
+        'h5': 0.12rem,
+        'h6': 0.08rem
+);
+
+// NEUE MAP: Abstände nach Überschriften (margin-bottom)
+$headline-margins: (
+        'h1': 2rem,
+        'h2': 1.75rem,
+        'h3': 1.5rem,
+        'h4': 1.25rem,
+        'h5': 1rem,
+        'h6': 0.75rem
+);
+
+// NEUE MAP: Mobile Abstände nach Überschriften
+$mobile-headline-margins: (
+        'h1': 1.5rem,
+        'h2': 1.25rem,
+        'h3': 1rem,
+        'h4': 0.9rem,
+        'h5': 0.8rem,
+        'h6': 0.6rem
+);
+

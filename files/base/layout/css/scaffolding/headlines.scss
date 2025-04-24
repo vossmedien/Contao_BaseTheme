@@ -1,30 +1,36 @@
-@mixin responsive-font-size($heading) {
-  $desktop-size: map-get(map-get($headings-font-sizes, $heading), 'desktop');
-  $mobile-size: map-get(map-get($headings-font-sizes, $heading), 'mobile');
+@mixin responsive-font-size-breakpoint($font-map, $key) {
+  @if map-has-key($font-map, $key) {
+    $sizes: map-get($font-map, $key);
+    @if map-has-key($sizes, 'mobile') and map-has-key($sizes, 'tablet') and map-has-key($sizes, 'desktop') {
+      $mobile-size: map-get($sizes, 'mobile');
+      $tablet-size: map-get($sizes, 'tablet');
+      $desktop-size: map-get($sizes, 'desktop');
 
-  // Berechne einen bevorzugten Wert, der skaliert, z.B. mobile Größe + viewport-Anteil
-  // Die '1.5vw' kann angepasst werden, um die Skalierungsgeschwindigkeit zu steuern.
-  $preferred-value: calc(#{$mobile-size} + 1.5vw);
+      font-size: $mobile-size;
 
-  // Verwende clamp(MIN, PREFERRED, MAX)
-  font-size: clamp(#{$mobile-size}, #{$preferred-value}, #{$desktop-size});
+      @include media-breakpoint-up(md) {
+        font-size: $tablet-size;
+      }
 
-  // Entferne den alten @include media-breakpoint-up Block
-  // @include media-breakpoint-up(md) {
-  //   font-size: $desktop-size;
-  // }
+      @include media-breakpoint-up(lg) {
+        font-size: $desktop-size;
+      }
+    } @else {
+      @warn "Map für Key '#{$key}' muss 'mobile', 'tablet' und 'desktop' enthalten. Font-size nicht gesetzt.";
+    }
+  } @else {
+    @warn "Key '#{$key}' nicht in der Font-Map gefunden. Font-size nicht gesetzt.";
+  }
 }
 
-// Globale Überschriften-Stile
 @each $heading, $sizes in $headings-font-sizes {
   #{$heading}, .#{$heading} {
     &:not(:has([class*="h"])) {
-      @include responsive-font-size($heading);
+      @include responsive-font-size-breakpoint($headings-font-sizes, $heading);
       line-height: $headings-line-height;
       font-weight: var(--bs-#{$heading}-font-weight, $headings-font-weight);
 
       &:not(.ce--headline *) {
-        // Verwende jetzt die margin-Map statt der Berechnung
         margin-bottom: map-get($headline-margins, $heading);
 
         @include media-breakpoint-down(md) {
@@ -37,7 +43,6 @@
   }
 }
 
-// Angepasste Headline-Klassen
 .ce--headline {
   display: flex;
   flex-flow: column nowrap;
@@ -50,7 +55,6 @@
   @each $heading in map-keys($headings-font-sizes) {
     &.hl-#{$heading} {
       gap: map-get($headline-gaps, $heading);
-      // Verwende jetzt die margin-Map statt der Berechnung
       margin-bottom: map-get($headline-margins, $heading);
 
       @include media-breakpoint-down(md) {
@@ -58,23 +62,21 @@
         margin-bottom: map-get($mobile-headline-margins, $heading);
       }
 
-      @if $heading != 'h6' {
-        $next-heading: nth(map-keys($headings-font-sizes), index(map-keys($headings-font-sizes), $heading) + 1);
-        .ce--topline,
-        .ce--subline {
-          @include responsive-font-size($next-heading);
-        }
-      } @else {
-        .ce--topline,
-        .ce--subline {
-          font-size: $font-size-base;
-        }
+      .ce--topline {
+        @include responsive-font-size-breakpoint($topline-sizes-by-headline, $heading);
+        color: var(--bs-topline-color);
+        font-weight: var(--bs-topline-font-weight);
+      }
+
+      .ce--subline {
+        @include responsive-font-size-breakpoint($subline-sizes-by-headline, $heading);
+        color: var(--bs-subline-color);
+        font-weight: var(--bs-subline-font-weight);
       }
     }
   }
 }
 
-// Zusätzliche Stile
 .container .ce--headline > .container {
   margin: 0;
 }
@@ -83,7 +85,6 @@
   --#{$prefix}headline-color: var(--#{$prefix}white);
 }
 
-// Mixin für Headline-Gewichte
 @mixin headline-weights {
   @for $i from 1 through 6 {
     h#{$i}, .h#{$i} {
@@ -92,18 +93,4 @@
   }
 }
 
-// Anwendung des Mixins
 @include headline-weights;
-
-// Entferne den redundanten media-query-Block, da wir die responsiven
-// Anpassungen jetzt direkt in die anderen Blöcke integriert haben
-
-.ce--subline {
-  color: var(--bs-subline-color);
-  font-weight: var(--bs-subline-font-weight);
-}
-
-.ce--topline {
-  color: var(--bs-topline-color);
-  font-weight: var(--bs-topline-font-weight);
-}
