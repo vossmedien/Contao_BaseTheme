@@ -37,13 +37,7 @@
   --content-box--padding: clamp(2.5rem, 5vw, 3.5rem);
 
   --bs-body-font-weight: var(--bs-font-weight-300);
-  --font-size-base: 1rem;
-  --bs-body-font-size: clamp(
-          var(--font-size-base),
-          1vw,
-          calc(var(--font-size-base) * 1.2)
-  );
-
+  --bs-body-font-size: clamp(#{$font-size-base}, 5vw, calc(#{$font-size-base} + 4px));
   --bs-body-line-height-xs: 1.05;
   --bs-body-line-height-sm: 1.15;
   --bs-body-line-height: 1.3;

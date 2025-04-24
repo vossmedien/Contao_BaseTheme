@@ -18,11 +18,6 @@ $tertiary: #92a0ff;
 
 $body-bg: #ffffff;
 $body-color: $primary;
-$font-size-base: clamp(
-          var(--bs-body-font-size),
-          1vw,
-          calc(var(--bs-body-font-size) * 1.2)
-  );
 
 $border-radius: 12px;
 $border-radius-lg: 18px;
@@ -86,6 +81,9 @@ $headings-line-height: 1.2;
 
 
 
+$form-floating-padding-x: .75rem;
+$form-floating-real-padding-x: calc(var(--bs-gutter-x)*.5 + #{$form-floating-padding-x});
+
 
 //CSS Variablen beachten
 $container-max-widths: (
@@ -104,6 +102,17 @@ $grid-breakpoints: (
         xl: 1200px
 );
 
-
-$form-floating-padding-x: .75rem;
-$form-floating-real-padding-x: calc(var(--bs-gutter-x)*.5 + #{$form-floating-padding-x});
+$theme-colors: (
+        "primary": $primary,
+        "secondary": $secondary,
+        "tertiary": $tertiary,
+        "red": #871623,
+        "blue": #00274a,
+        "purple": #6610f2,
+        "success": #dbe8e2,
+        "info": #d1ecf1,
+        "warning": #ffc107,
+        "danger": #dc3545,
+        "light": $gray-100,
+        "dark": $gray-900,
+);
