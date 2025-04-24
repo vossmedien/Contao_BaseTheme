@@ -107,9 +107,7 @@ if ($this->two_columns) {
 
 }
 
-// Container-Klasse
-$containerClass = 'content--element ' . $this->class;
-$containerAttributes = 'id="' . $this->cssID . '"';
+
 
 // Kopfbild vorbereiten
 $headerImageHTML = '';
@@ -131,7 +129,7 @@ if ($this->add_header_image && $this->header_image) {
 
 ?>
 
-<div <?= $containerAttributes; ?> class="<?= $containerClass; ?> <?php if ($this->two_columns): ?>layout-two-columns<?php else: ?>layout-one-column<?php endif; ?>">
+<div  <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?> <?php if ($this->two_columns): ?>layout-two-columns<?php else: ?>layout-one-column<?php endif; ?>">
     <div class="ce--inner">
 
         <?php // --- Kopfbild Ausgabe --- ?>

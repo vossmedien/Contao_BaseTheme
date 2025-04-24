@@ -43,7 +43,7 @@ $enable-cssgrid: true;
 $enable-rounded: true;
 $icon-type: ".fak";
 
-$spacer: 2.5rem;
+$spacer: 2rem;
 $spacer-sm: $spacer/2;
 $spacer-lg: $spacer*2;
 
@@ -72,17 +72,34 @@ $font-size-base: 16px;
 $font-size-lg: 18px;
 $font-size-xl: 28px;
 
-$headings-margin-bottom: $spacer * 0.5;
 $headings-font-family: null;
 $headings-font-style: null;
 $headings-font-weight: 400;
-$headings-line-height: 1.2;
+$headings-line-height: 1.1;
 //$headings-color: #4A4643;
+
+
+
+$theme-colors: (
+        "primary": $primary,
+        "secondary": $secondary,
+        "tertiary": $tertiary,
+        "red": #871623,
+        "blue": #00274a,
+        "purple": #6610f2,
+        "success": #dbe8e2,
+        "info": #d1ecf1,
+        "warning": #ffc107,
+        "danger": #dc3545,
+        "light": $gray-100,
+        "dark": $gray-900,
+);
 
 
 
 $form-floating-padding-x: .75rem;
 $form-floating-real-padding-x: calc(var(--bs-gutter-x)*.5 + #{$form-floating-padding-x});
+
 
 
 //CSS Variablen beachten

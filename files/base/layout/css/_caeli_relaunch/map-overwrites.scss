@@ -58,22 +58,22 @@ $headings-font-sizes: (
 
 // Maps für Headline-Abstände (Gaps)
 $headline-gaps: (
-        'h1': 1rem,
-        'h2': 1rem,
-        'h3': 0.25rem,
-        'h4': 0.2rem,
-        'h5': 0.15rem,
-        'h6': 0.1rem
+        'h1': .25rem,
+        'h2': .25rem,
+        'h3': .25rem,
+        'h4': .2rem,
+        'h5': .15rem,
+        'h6': .1rem
 );
 
 // Kleinere Gap-Werte für mobile Ansicht
 $mobile-headline-gaps: (
-        'h1': 0.5rem,
-        'h2': 0.5rem,
-        'h3': 0.2rem,
-        'h4': 0.16rem,
-        'h5': 0.12rem,
-        'h6': 0.08rem
+        'h1': .25rem,
+        'h2': .25rem,
+        'h3': .25rem,
+        'h4': .2rem,
+        'h5': .15rem,
+        'h6': .1rem
 );
 
 // NEUE MAP: Abstände nach Überschriften (margin-bottom)

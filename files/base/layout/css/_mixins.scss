@@ -52,7 +52,7 @@
         @if $dir == top {
           position: relative;
           top: -$value;
-          margin-top: $value*3;
+          //margin-top: $value*3;
           margin-bottom: -$value;
         } @else if $dir == bottom {
           margin-bottom: -$value;
