@@ -20,7 +20,7 @@ $headlineHTML = Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
     $headlineElementAnimation, // Animation für das Headline-Element selbst (nur wenn relevant)
     null,
     (bool)$this->onlystyle,
-    "mb-0"
+    null
 );
 
 // Helfer für die Buttons generieren
