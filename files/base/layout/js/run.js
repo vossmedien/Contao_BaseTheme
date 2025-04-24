@@ -59,11 +59,9 @@ const initAnimations = () => {
         mobile: {
             breakpoint: 768,
             rootMargin: '0px 0px -5% 0px',
-            visibilityThreshold: 0.1
         },
         desktop: {
             rootMargin: '0px 0px -2.5% 0px',
-            visibilityThreshold: 0.2
         },
         animation: {
             class: 'animate__animated',
@@ -74,54 +72,30 @@ const initAnimations = () => {
 
     let animatedElements = new Set();
     let observer;
-    let processedParentsInCallback = new Set(); // Verhindert doppelte Verarbeitung pro Callback
-
-    const getElementVisibilityThreshold = (element) => {
-        const viewportHeight = window.innerHeight;
-        const elementHeight = element.offsetHeight;
-        const isMobile = window.innerWidth <= CONFIG.mobile.breakpoint;
-        const baseThreshold = isMobile ? CONFIG.mobile.visibilityThreshold : CONFIG.desktop.visibilityThreshold;
-
-        if (elementHeight > viewportHeight) {
-            return Math.max(0.1, baseThreshold * (viewportHeight / elementHeight));
-        }
-        return baseThreshold;
-    };
 
     const initAnimateElements = () => {
         document.querySelectorAll('[class*="animate__"]:not([data-animation])').forEach(element => {
-             // Check if the element ALREADY has no-animation set, skip if so
-             if (element.getAttribute('data-animation') === 'no-animation') return;
+            if (element.getAttribute('data-animation') === 'no-animation') return;
 
-             const animateClasses = Array.from(element.classList)
-                 .filter(cls => cls.startsWith('animate__') && cls !== 'animate__animated'); // Exclude base class
+            const animateClasses = Array.from(element.classList)
+                .filter(cls => cls.startsWith('animate__') && cls !== 'animate__animated');
 
-             if (animateClasses.length > 0) {
-                 const animateClassString = animateClasses.join(' ');
-                 element.classList.remove(...animateClasses, 'animate__animated'); // Remove animation and state class
-                 element.setAttribute('data-animation', animateClassString);
-                 element.style.visibility = 'hidden'; // Hide until animated
-             }
-         });
-         // Ensure elements explicitly marked with no-animation are visible
-         document.querySelectorAll('[data-animation="no-animation"]').forEach(el => {
-            el.style.visibility = 'visible';
-         });
+            if (animateClasses.length > 0) {
+                const animateClassString = animateClasses.join(' ');
+                element.classList.remove(...animateClasses, 'animate__animated');
+                element.setAttribute('data-animation', animateClassString);
+            }
+        });
     };
 
     const animateElement = (element, indexInGroup) => {
         const animationValue = element.getAttribute('data-animation');
-        // Exit if no animation defined, already animated, or explicitly set to no-animation
         if (!element || animatedElements.has(element) || !animationValue || animationValue === 'no-animation') {
-            // Ensure visibility is set correctly for no-animation elements even if somehow targeted
-            if (animationValue === 'no-animation') {
-                element.style.visibility = 'visible';
-            }
             return;
         }
 
         animatedElements.add(element);
-        observer?.unobserve(element); // Stop observing
+        observer?.unobserve(element);
 
         try {
             const duration = getComputedStyle(document.documentElement).getPropertyValue('--animate-duration').trim() || '1s';
@@ -131,115 +105,97 @@ const initAnimations = () => {
             element.style.animationDuration = '1s';
         }
 
-        const animateClass = animationValue; // Already checked it's not null/no-animation
-
+        const animateClass = animationValue;
         const delay = CONFIG.animation.baseDelay + indexInGroup * CONFIG.animation.increment;
         element.style.animationDelay = `${delay}s`;
 
         requestAnimationFrame(() => {
-            element.style.visibility = 'visible'; // Make visible before starting animation
             element.classList.add(...animateClass.split(' '), CONFIG.animation.class);
 
             element.addEventListener('animationend', () => {
-                 // Find ALL non-no-animation descendants that need animating AFTER parent finishes
-                 const descendantsToAnimate = Array.from(element.querySelectorAll('[data-animation]:not([data-animation="no-animation"])'))
-                     .filter(descendant => !animatedElements.has(descendant)); // Filter out those already processed
+                const descendantsToAnimate = Array.from(element.querySelectorAll('[data-animation]:not([data-animation="no-animation"])'))
+                    .filter(descendant => !animatedElements.has(descendant));
 
-                 if (descendantsToAnimate.length > 0) {
+                if (descendantsToAnimate.length > 0) {
                     descendantsToAnimate.sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1);
-
                     descendantsToAnimate.forEach((descendant, index) => {
                         animateElement(descendant, index);
                     });
-                 }
+                }
             }, { once: true });
         });
     };
 
-   const setupObserver = () => {
+    const setupObserver = () => {
         const rootMargin = window.innerWidth <= CONFIG.mobile.breakpoint ? CONFIG.mobile.rootMargin : CONFIG.desktop.rootMargin;
 
         observer = new IntersectionObserver((entries) => {
-             processedParentsInCallback.clear();
-             const elementsToPotentiallyAnimate = new Map();
+            const elementsToPotentiallyAnimate = new Map();
 
-             entries.forEach(entry => {
-                  const animationValue = entry.target.getAttribute('data-animation');
-                  if (entry.isIntersecting && animationValue && animationValue !== 'no-animation' && !animatedElements.has(entry.target)) {
-                     const element = entry.target;
-                     // Find closest parent that *can* be animated (not no-animation)
-                     const closestAnimatingParent = element.parentElement?.closest('[data-animation]:not([data-animation="no-animation"])');
+            entries.forEach(entry => {
+                const animationValue = entry.target.getAttribute('data-animation');
+                if (entry.isIntersecting && animationValue && animationValue !== 'no-animation' && !animatedElements.has(entry.target)) {
+                    const element = entry.target;
+                    const closestAnimatingParent = element.parentElement?.closest('[data-animation]:not([data-animation="no-animation"])');
+                    const parentContainer = element.parentElement || document.body;
+                    const animatableSiblings = Array.from(parentContainer.children)
+                        .filter(child => {
+                            const anim = child.getAttribute('data-animation');
+                            return anim && anim !== 'no-animation';
+                        });
+                    const indexInGroup = animatableSiblings.findIndex(el => el === element);
 
-                     const parentContainer = element.parentElement || document.body;
-                     // Filter siblings to exclude no-animation
-                     const animatableSiblings = Array.from(parentContainer.children)
-                         .filter(child => {
-                             const anim = child.getAttribute('data-animation');
-                             return anim && anim !== 'no-animation';
-                         });
-                     const indexInGroup = animatableSiblings.findIndex(el => el === element);
-
-                     if (!closestAnimatingParent || animatedElements.has(closestAnimatingParent)) {
-                         if (!elementsToPotentiallyAnimate.has(element)) {
+                    if (!closestAnimatingParent || animatedElements.has(closestAnimatingParent)) {
+                        if (!elementsToPotentiallyAnimate.has(element)) {
                             elementsToPotentiallyAnimate.set(element, Math.max(0, indexInGroup));
-                         }
-                     } else {
-                         const parentEntry = entries.find(e => e.target === closestAnimatingParent);
-                         if (parentEntry && parentEntry.isIntersecting && !animatedElements.has(closestAnimatingParent)) {
+                        }
+                    } else {
+                        const parentEntry = entries.find(e => e.target === closestAnimatingParent);
+                        if (parentEntry && parentEntry.isIntersecting && !animatedElements.has(closestAnimatingParent)) {
                             const grandParentContainer = closestAnimatingParent.parentElement || document.body;
-                             // Filter parent siblings to exclude no-animation
                             const parentAnimatableSiblings = Array.from(grandParentContainer.children)
                                 .filter(child => {
                                     const anim = child.getAttribute('data-animation');
                                     return anim && anim !== 'no-animation';
                                 });
                             const parentIndexInGroup = parentAnimatableSiblings.findIndex(el => el === closestAnimatingParent);
-
-                            if (!elementsToPotentiallyAnimate.has(closestAnimatingParent)){
+                            if (!elementsToPotentiallyAnimate.has(closestAnimatingParent)) {
                                 elementsToPotentiallyAnimate.set(closestAnimatingParent, Math.max(0, parentIndexInGroup));
                             }
-                         }
-                     }
-                 } else if (entry.target.getAttribute('data-animation') === 'no-animation') {
-                      // Ensure no-animation elements become visible when they intersect, if hidden initially
-                      entry.target.style.visibility = 'visible';
-                      observer?.unobserve(entry.target); // No need to observe further
-                 }
-             });
-
-             if (elementsToPotentiallyAnimate.size === 0) return;
-
-             const sortedElements = Array.from(elementsToPotentiallyAnimate.keys()).sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1);
-
-             sortedElements.forEach(element => {
-                const index = elementsToPotentiallyAnimate.get(element);
-                if (!animatedElements.has(element)){
-                    animateElement(element, index);
+                        }
+                    }
+                } else if (animationValue === 'no-animation') {
+                    observer?.unobserve(entry.target);
                 }
-             });
+            });
 
-         }, {
-             threshold: [0.1, 0.2],
-             rootMargin
-         });
+            if (elementsToPotentiallyAnimate.size === 0) return;
+
+            const sortedElements = Array.from(elementsToPotentiallyAnimate.keys()).sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1);
+
+            sortedElements.forEach(element => {
+                const index = elementsToPotentiallyAnimate.get(element);
+                animateElement(element, index);
+            });
+
+        }, {
+            threshold: 0.01,
+            rootMargin
+        });
     };
 
-
     const handleElements = () => {
-        // Observe only elements that have a data-animation attribute which is not "no-animation"
         const elements = document.querySelectorAll('[data-animation]:not([data-animation="no-animation"])');
         elements.forEach(element => {
             if (!animatedElements.has(element)) {
                 observer.observe(element);
             } else {
-                 observer.unobserve(element);
+                observer.unobserve(element);
             }
         });
-        // Ensure elements marked no-animation that might have been missed are visible
-         document.querySelectorAll('[data-animation="no-animation"]').forEach(el => {
-            el.style.visibility = 'visible';
-            observer?.unobserve(el); // Also unobserve them explicitly
-         });
+        document.querySelectorAll('[data-animation="no-animation"]').forEach(el => {
+            observer?.unobserve(el);
+        });
     };
 
     try {
@@ -247,37 +203,30 @@ const initAnimations = () => {
         setupObserver();
         handleElements();
 
-        // Cleanup potentially old listeners (safer approach)
         const oldResizeHandler = ResizeFunctions.find(f => f.name === 'handleElementsResizeWrapper');
-        if(oldResizeHandler) {
+        if (oldResizeHandler) {
             const index = ResizeFunctions.indexOf(oldResizeHandler);
             if (index > -1) ResizeFunctions.splice(index, 1);
         }
 
-        // Debounced resize handler
         let resizeTimeout;
         const handleElementsResizeWrapper = () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
-                 // Potentially disconnect and reconnect observer if rootMargin needs changing
-                 // observer?.disconnect();
-                 // setupObserver(); // Re-setup observer with potentially new rootMargin
-                 handleElements(); // Re-observe elements (useful for dynamically added content)
-            }, 250); // Debounce resize events
+                handleElements();
+            }, 250);
         };
         ResizeFunctions.push(handleElementsResizeWrapper);
-
 
     } catch (error) {
         console.error('Animation initialization failed:', error);
     }
 
-    // Return a cleanup function
     return () => {
         observer?.disconnect();
         const resizeIndex = ResizeFunctions.findIndex(f => f.name === 'handleElementsResizeWrapper');
         if (resizeIndex > -1) ResizeFunctions.splice(resizeIndex, 1);
-        animatedElements.clear(); // Clear state if needed
+        animatedElements.clear();
     };
 };
 
