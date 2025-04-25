@@ -1,3 +1,20 @@
+$theme-colors: (
+        "primary": $primary,
+        "secondary": $secondary,
+        "tertiary": $tertiary,
+        "red": #871623,
+        "blue": #00274a,
+        "purple": #6610f2,
+        "success": #dbe8e2,
+        "info": #d1ecf1,
+        "warning": #ffc107,
+        "danger": #dc3545,
+        "light": $gray-100,
+        "dark": $gray-900,
+);
+
+
+
 $spacers: (
         0: 0,
         1: 0.5rem,
@@ -95,3 +112,26 @@ $subline-margins: (
         'h5': .2em 0 0 0,
         'h6': .2em 0 0 0
 );
+
+
+
+
+//CSS Variablen beachten
+$container-max-widths: (
+        sm: 100%,
+        md: 100%,
+        lg: 992px,
+        xl: 1140px,
+        xxl: 1280px
+);
+
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 1040px,
+        xl: 1200px,
+        xxl: 1340px,
+);
+
