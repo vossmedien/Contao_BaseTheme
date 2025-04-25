@@ -36,11 +36,11 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                     $rowColsClasses = 'row-cols-1 row-cols-md-2 row-cols-lg-3'; // Default: 1->2->3 cols
                     switch ($this->columns) {
                         case '1': $rowColsClasses = 'row-cols-1'; break;
-                        case '2': $rowColsClasses = 'row-cols-1 row-cols-sm-2'; break;
-                        case '3': $rowColsClasses = 'row-cols-1 row-cols-sm-2 row-cols-md-3'; break;
-                        case '4': $rowColsClasses = 'row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4'; break;
-                        case '5': $rowColsClasses = 'row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5'; break;
-                        case '6': $rowColsClasses = 'row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6'; break;
+                        case '2': $rowColsClasses = 'row-cols-2 row-cols-sm-2'; break;
+                        case '3': $rowColsClasses = 'row-cols-2 row-cols-sm-2 row-cols-md-3'; break;
+                        case '4': $rowColsClasses = 'row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4'; break;
+                        case '5': $rowColsClasses = 'row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5'; break;
+                        case '6': $rowColsClasses = 'row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-6'; break;
                     }
                 ?>
                 <div class="bl--list row <?= $rowColsClasses ?> g-2">

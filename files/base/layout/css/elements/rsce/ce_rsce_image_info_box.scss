@@ -2,14 +2,17 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
+
+
+
 .image-info-box {
 
   .info-box-container {
     position: relative;
     transform: translate(0, -50%);
-
+    margin-bottom: -7rem;
     @include media-breakpoint-up(sm) {
-      margin-bottom: -7rem;
+
     }
   }
 
@@ -28,13 +31,13 @@
       @include media-breakpoint-up(sm) {
         //aspect-ratio: 1/1;
         padding: 1.5rem 1rem;
-                display: flex;
+        display: flex;
         flex-flow: column wrap;
         justify-content: center;
       }
 
       @include media-breakpoint-up(md) {
-             padding: 1.5rem 2.5rem;
+        padding: 1.5rem 2.5rem;
       }
     }
 

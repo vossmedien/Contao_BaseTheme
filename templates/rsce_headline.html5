@@ -134,7 +134,7 @@ if ($this->add_header_image && $this->header_image) {
 
         <?php // --- Kopfbild Ausgabe --- ?>
         <?php if ($headerImageHTML): ?>
-            <div class="header-image mb-3 mb-lg-5">
+            <div class="header-image mb-4 mb-md-gap">
                 <?= $headerImageHTML; ?>
             </div>
         <?php endif; ?>
