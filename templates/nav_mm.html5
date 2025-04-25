@@ -29,8 +29,10 @@
                     <?= $item['link']; ?>
                 </a>
                 <?php if ($item['megamenu']): ?>
-                    <div class="mega-menu" role="menubar">
-                        <?= $item['megamenu_article']; ?>
+                   <div class="mega-menu" role="menubar">
+                        <div class="mega-menu--content">
+                            <?= $item['megamenu_article']; ?>
+                        </div>
                     </div>
                 <?php else: ?>
                     <?= $item['subitems']; ?>

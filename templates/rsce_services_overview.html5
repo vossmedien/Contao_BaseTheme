@@ -20,6 +20,10 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 $rand = random_int(0, 99999); // Für eindeutigen Lightbox-Selektor
 ?>
 
+<style>
+    /* Mobile Navigation Styles - Removed as requested */
+</style>
+
 <div <?php echo $this->cssID; ?> class="content--element services-overview <?= $this->class; ?>" <?php if ($this->disable_hover): ?>data-hover-disabled="true"<?php endif; ?>>
     <div class="ce--inner">
         <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
@@ -34,8 +38,28 @@ $rand = random_int(0, 99999); // Für eindeutigen Lightbox-Selektor
         ); ?>
 
         <div class="mt-md-5">
-            <div class="row g-2 g-md-5" >
-                <div class="col-md-6">
+            <!-- Mobile Navigation (Buttons + Arrows) -->
+            <div class="mobile-services-nav-wrapper d-md-none mb-1">
+                 <button class="mobile-nav-arrow prev disabled" aria-label="Vorherige Leistung">
+                    <i class="fak fa-chevron-left"></i>
+                 </button>
+                 <div class="mobile-services-nav">
+                     <div class="mobile-services-nav-inner">
+                        <?php foreach ($this->services as $index => $service): ?>
+                            <button class="mobile-service-button <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index; ?>">
+                                <?= $service->title; ?>
+                            </button>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                 <button class="mobile-nav-arrow next" aria-label="Nächste Leistung">
+                    <i class="fak fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="row g-0 g-md-5" >
+                <!-- Desktop List (Hidden on Mobile) -->
+                <div class="col-md-6 d-none d-md-block">
                     <ul class="services-list">
                         <?php foreach ($this->services as $index => $service): ?>
                             <?php

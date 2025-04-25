@@ -1,41 +1,126 @@
 <?php
-if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
-}
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+use Vsm\VsmHelperTools\Helper\HeadlineHelper;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\ImageHelper;
+use Contao\StringUtil;
+
+// Prüfen, ob die linke Spalte (Text/Headline/Buttons) Inhalt hat
+$showTextColumn = !empty($this->topline)
+    || (!empty($this->headline) && !empty($this->headline['value']))
+    || !empty($this->subline)
+    || !empty($this->contact_text)
+    || !empty($this->buttons);
+
+// Standard Textausrichtung, falls nichts ausgewählt ist
+$textAlignClass = $this->text_alignment ?: 'text-center';
+
+// Standard Textausrichtung für die Partner-Boxen, falls nichts ausgewählt ist
+$partnerAlignClass = $this->partner_alignment ?: 'text-start'; // Default: linksbündig
+
+// Klasse für Bildrundung
+$imageClass = $this->round_images ? 'rounded-circle' : ''; // Nur die Rundungsklasse selbst
+
+// Klasse für die Spaltenbreite der Partner
+$partnerColClass = $this->two_columns ? 'col-lg-6 col-xl-auto' : 'col-sm-6 col-lg-4'; // Dynamische Spaltenklasse
+
+// NEU: Klasse für die horizontale Ausrichtung der Reihe
+$rowJustifyClass = $this->row_justify_content ?: 'justify-content-center'; // Default: zentriert
+
 ?>
-
-<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>" data-animation="<?= $this->animation_type; ?>">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
-        <div class="row g-3 flex-md-row-reverse align-items-center">
+        <div class="row g-3 <?php if ($showTextColumn): ?>flex-md-row-reverse<?php endif; ?> align-items-center">
 
-            <div class="col-md-5 text-center text-md-start" data-animation="animate__fadeIn">
-                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
-                    $this->topline,
-                    $this->headline,
-                    $this->subline,
-                    $this->hl,
-                     $this->animation_type,
-                    null,
-                    false,
-                    "mb-3"
-                ); ?>
-                <div class="mb-3"><?= $this->contact_text; ?></div>
-                <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons); ?>
-            </div>
+            <?php // --- Linke Spalte (Text/Headline/Buttons) --- ?>
+            <?php if ($showTextColumn): ?>
+                <div class="col-md-5 <?php echo $textAlignClass; ?> text-md-start" data-animation="animate__fadeIn">
+                    <?php
+                    // Generiere Headline HTML ohne eigene Animation
+                    echo HeadlineHelper::generateHeadlineHTML(
+                        $this->topline,
+                        $this->headline,
+                        $this->subline,
+                        $this->hl, // Headline-Typ
+                        $this->animation_type,     // Keine Animation für das Headline-Element selbst
+                        null,     // Keine zusätzliche Klasse
+                        false,    // Nicht nur Style
+                        "mb-3"    // Zusätzliche Attribute (hier als Klasse)
+                    );
+                    ?>
+                    <?php if ($this->contact_text): ?>
+                        <div class="mb-3"><?= $this->contact_text; ?></div>
+                    <?php endif; ?>
 
-            <div class="col-md-7">
-                <div class="row gy-3 justify-content-center g-md-2 ">
-                    <?php foreach ($this->partners as $partner): ?>
-                        <div class="col-md-6 col-lg-4" data-animation="<?php if ($partner->animation_type) : ?><?php echo $partner->animation_type; ?><?php endif; ?>">
-                            <div class="text-center text-base">
-                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($partner->image, null, $partner->name, $this->size, "mb-2 rounded-circle", false, false); ?>
-                                <h3 class="mb-0 text-base fw-bold"><?= $partner->name; ?></h3>
-                                <p class="mb-1"><?= $partner->position; ?></p>
-                                <p><a class="text-nowrap" href="tel:<?= $partner->phone; ?>"
-                                    <?php if ($partner->enable_tracking): ?>
-                                    onclick="window.pushToDataLayer('Telefon', 'Ansprechpartner Box', '<?= $partner->phone; ?>', '<?= $partner->position; ?>');"
+                    <?php if ($this->buttons): ?>
+                         <?= ButtonHelper::generateButtonHTML($this->buttons); ?>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+
+            <?php // --- Rechte Spalte (Partner) --- ?>
+            <div class="<?php echo $showTextColumn ? 'col-md-7' : 'col-12'; ?>">
+                <div class="row gy-3 gx-4 <?php echo $rowJustifyClass; ?>"> <?php // justify-content dynamisch gemacht ?>
+                    <?php foreach ($this->partners as $partner):
+                        // Bestimme die Klassen für die Partner-Karte
+                        $partnerCardClasses = 'contact-card d-flex ' . $partnerAlignClass;
+                        $animation = $partner->animation_type ?: ''; // Animation holen
+                    ?>
+                        <div class="<?php echo $partnerColClass; ?>" data-animation="<?php echo $animation; ?>">
+                            <div class="<?php echo $partnerCardClasses; ?>">
+                                <?php // --- Bild --- ?>
+                                <?php if ($partner->image): ?>
+                                    <div class="contact-image flex-shrink-0"> <?php // flex-shrink-0 verhindert Schrumpfen ?>
+                                        <?=
+                                        ImageHelper::generateImageHTML(
+                                            $partner->image,
+                                            null,           // Kein Alt-Text
+                                            $partner->name, // Name als Title
+                                            $this->size,    // Bildgröße
+                                            $imageClass,    // Dynamische Klasse (nur rund oder nicht)
+                                            false,
+                                            false
+                                        );
+                                        ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php // --- Infos --- ?>
+                                <div class="contact-info ms-3 flex-grow-1"> <?php // ms-3 für Abstand, flex-grow-1 füllt Platz ?>
+                                    <?php // Titel (h6) ?>
+                                    <?php if ($partner->title): ?>
+                                        <h6 class="contact-title mb-1"><?= $partner->title; ?>:</h6>
                                     <?php endif; ?>
-                                ><i class="fal fa-phone"></i> <?= $partner->phone; ?></a></p>
+
+                                    <?php // Name (p) ?>
+                                    <p class="contact-name fw-bold mb-1"><?= $partner->name; ?></p> <?php // fw-bold hinzugefügt ?>
+
+                                    <?php // E-Mail (p) ?>
+                                    <?php if ($partner->email_link): ?>
+                                        <p class="contact-email mb-1">
+                                            <a href="<?= $partner->email_link; ?>" class="text-nowrap">
+                                                <i style="width: 25px;" class="fass fa-envelope"></i> <?php  ?>
+                                                <span class="text-body text-decoration-underline">Write a message</span>
+                                            </a>
+                                        </p>
+                                    <?php endif; ?>
+
+                                    <?php // Telefon (p) ?>
+                                    <?php if ($partner->phone): ?>
+                                        <p class="contact-phone mb-1"> <?php // mb-1 hinzugefügt ?>
+                                            <a href="tel:<?= StringUtil::standardize($partner->phone); ?>" class="text-nowrap">
+                                                <i style="width: 25px;" class="fal fa-phone"></i> <?php  ?>
+                                                <span class="text-body"><?= $partner->phone; ?></span> <?php // Angepasst an Beispiel ?>
+                                            </a>
+                                        </p>
+                                    <?php endif; ?>
+
+                                    <?php // Buttons ?>
+                                    <?php if (!empty($partner->buttons)): ?>
+                                        <?= ButtonHelper::generateButtonHTML($partner->buttons, 'mt-2'); ?> <?php // mt-2 für Abstand ?>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>

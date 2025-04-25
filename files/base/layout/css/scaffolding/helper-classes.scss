@@ -202,3 +202,51 @@ a.disabled-link {
 .offset-all-padding-lg {
   @include padding-styles('lg', $offset-lg);
 }
+
+
+
+$gap-properties: (
+  "p": "padding",
+  "m": "margin"
+);
+
+$gap-sides: (
+  "t": "top",
+  "b": "bottom",
+  "s": "left",  // Maps to start in LTR
+  "e": "right" // Maps to end in LTR
+);
+
+$gap-value: var(--main-gap);
+
+@each $breakpoint, $size in $grid-breakpoints {
+  $infix: if($breakpoint == xs, "", "-#{$breakpoint}");
+
+  @include media-breakpoint-up($breakpoint) {
+    @each $propAbbr, $propName in $gap-properties {
+      // All sides: .m-gap, .p-lg-gap
+      .#{$propAbbr}#{$infix}-gap {
+        #{$propName}: $gap-value !important;
+      }
+
+      // X-axis: .mx-gap, .px-md-gap
+      .#{$propAbbr}x#{$infix}-gap {
+        #{$propName}-left: $gap-value !important;
+        #{$propName}-right: $gap-value !important;
+      }
+
+      // Y-axis: .my-gap, .py-sm-gap
+      .#{$propAbbr}y#{$infix}-gap {
+        #{$propName}-top: $gap-value !important;
+        #{$propName}-bottom: $gap-value !important;
+      }
+
+      // Individual sides: .mt-gap, .mb-xl-gap
+      @each $sideAbbr, $sideName in $gap-sides {
+        .#{$propAbbr}#{$sideAbbr}#{$infix}-gap {
+          #{$propName}-#{$sideName}: $gap-value !important;
+        }
+      }
+    }
+  }
+}

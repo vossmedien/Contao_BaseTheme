@@ -1,0 +1,76 @@
+<?php
+
+use Vsm\VsmHelperTools\Helper\ImageHelper;
+
+
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_image_info_box.min.css|static';
+}
+
+
+// Bild-HTML generieren, falls ein Bild ausgewählt wurde
+$imageHTML = '';
+if ($this->image) {
+    $imageHTML = ImageHelper::generateImageHTML(
+        $this->image,
+        null,                       // Alt-Text entfernt
+        null,                       // Title-Text entfernt
+        $this->image_size ?? null,  // Gewählte Bildgröße
+        null,                       // Keine zusätzlichen CSS-Klassen hier
+        true,                       // Figure/Picture erzwingen
+        false                       // Keine Lightbox per Default
+    );
+}
+
+// Animation für die Box vorbereiten
+$boxAnimation = $this->box_animation ? ' data-animation="' . $this->box_animation . '"' : '';
+
+?>
+
+<div <?php echo $this->cssID; ?> class="content--element image-info-box <?php echo $this->class; ?>">
+    <div class="ce--inner">
+
+        <?php // --- Bild Ausgabe --- ?>
+        <?php if ($imageHTML): ?>
+            <div class="image-container header-image">
+                <?= $imageHTML; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php // --- Info-Box --- ?>
+        <div class="container info-box-container">
+            <div class="info-box <?php echo $this->box_css_class ?? ''; ?>" <?php echo $boxAnimation; ?>>
+                <div class="row gx-1 ">
+                    <?php // Spalte 1 ?>
+                    <?php if ($this->col1_title || $this->col1_label): ?>
+                        <div class="col-12 col-sm-6 info-box-col-1">
+                            <div class="info-box-col">
+                                <?php if ($this->col1_title): ?>
+                                    <div class="info-title mb-0 h1 count fw-bold"><?= $this->col1_title; ?></div>
+                                <?php endif; ?>
+                                <?php if ($this->col1_label): ?>
+                                    <div class="info-label"><?= $this->col1_label; ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php // Spalte 2 ?>
+                    <?php if ($this->col2_title || $this->col2_label): ?>
+                        <div class="col-12 col-sm-6  info-box-col-2">
+                            <div class="info-box-col">
+                                <?php if ($this->col2_title): ?>
+                                    <div class="info-title h1 mb-0 count fw-bold"><?= $this->col2_title; ?></div>
+                                <?php endif; ?>
+                                <?php if ($this->col2_label): ?>
+                                    <div class="info-label"><?= $this->col2_label; ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div> 

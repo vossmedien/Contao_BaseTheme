@@ -134,7 +134,7 @@ if ($this->add_header_image && $this->header_image) {
 
         <?php // --- Kopfbild Ausgabe --- ?>
         <?php if ($headerImageHTML): ?>
-            <div class="header-image mb-3 mb-lg-5">
+            <div class="header-image mb-4 mb-md-gap">
                 <?= $headerImageHTML; ?>
             </div>
         <?php endif; ?>
@@ -249,8 +249,10 @@ if ($this->add_header_image && $this->header_image) {
             <?php // --- EINSPALTIG --- ?>
             <?= $headlineHTML; // Headline mit Animation (kommt vom Helper) ?>
 
+
+
             <?php if ($this->desc): ?>
-                <div data-animation="<?= $this->animation_type_content;?>" class="text">
+                <div <?php if($this->animation_type_content):?>data-animation="<?= $this->animation_type_content;?>"<?php endif;?> class="text">
                     <?= $this->desc; ?>
                 </div>
             <?php endif; ?>
