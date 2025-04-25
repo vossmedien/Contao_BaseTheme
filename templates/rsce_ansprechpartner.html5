@@ -1,49 +1,97 @@
 <?php
-if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
-    // Frontend logic if needed
-}
+
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+use Vsm\VsmHelperTools\Helper\HeadlineHelper;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\ImageHelper;
+use Contao\StringUtil;
+
+// Prüfen, ob die linke Spalte (Text/Headline/Buttons) Inhalt hat
+$showTextColumn = !empty($this->topline)
+    || (!empty($this->headline) && !empty($this->headline['value']))
+    || !empty($this->subline)
+    || !empty($this->contact_text)
+    || !empty($this->buttons);
+
+// Standard Textausrichtung, falls nichts ausgewählt ist
+$textAlignClass = $this->text_alignment ?: 'text-center';
+
+// Klasse für Bildrundung
+$imageClass = $this->round_images ? 'mb-1 rounded-circle' : 'mb-1';
+
 ?>
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>" data-animation="<?= $this->animation_type; ?>">
+    <div class="ce--inner ">
+        <div class="row g-3 <?php if ($showTextColumn): ?>flex-md-row-reverse<?php endif; ?> align-items-center">
 
-<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
-    <div class="ce--inner">
+            <?php // --- Linke Spalte (Text/Headline/Buttons) --- ?>
+            <?php if ($showTextColumn): ?>
+                <div class="col-md-5 <?php echo $textAlignClass; ?> text-md-start" data-animation="animate__fadeIn">
+                    <?php
+                    // Generiere Headline HTML ohne eigene Animation
+                    echo HeadlineHelper::generateHeadlineHTML(
+                        $this->topline,
+                        $this->headline,
+                        $this->subline,
+                        $this->hl, // Headline-Typ
+                        null,     // Keine Animation für das Headline-Element selbst
+                        null,     // Keine zusätzliche Klasse
+                        false,    // Nicht nur Style
+                        "mb-3"    // Zusätzliche Attribute (hier als Klasse)
+                    );
+                    ?>
+                    <?php if ($this->contact_text): ?>
+                        <div class="mb-3"><?= $this->contact_text; ?></div>
+                    <?php endif; ?>
 
-        <div class="row gy-2 gx-5">
-            <?php foreach ($this->contacts as $contact): ?>
-                <div class="col-lg-6 col-xl-auto" data-animation="<?= $this->animation_type; ?>">
-                    <div class="contact-card d-flex ">
-                        <?php if ($contact->image): ?>
-                            <div class="contact-image">
-                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($contact->image, null, $contact->name, $this->size, "rounded-circle", false, false); ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <div class="contact-info ms-3">
-                            <h3 class="h6 contact-title mb-1"><?= $contact->title; ?>:</h3>
-                            <p class="contact-name mb-1"><?= $contact->name; ?></p>
-                            <?php if ($contact->email_link): ?>
-                                <p class="contact-email mb-1">
-                                    <a href="mailto:<?= $contact->email_link; ?>" class="text-nowrap">
-                                        <i style="width: 25px;" class="fass fa-envelope"></i>
-                                        <span class="text-body text-decoration-underline">Write a message</span>
-                                    </a>
-                                </p>
-                            <?php endif; ?>
-                            <?php if ($contact->phone): ?>
-                                <p class="contact-phone mb-0">
-                                    <a href="tel:<?= $contact->phone; ?>" class="text-nowrap">
-                                        <i style="width: 25px;" class="fass fa-phone"></i>
-                                        <span class="text-body"><?= $contact->phone; ?></span>
-                                    </a>
-                                </p>
-                            <?php endif; ?>
-
-                            <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($contact->buttons, "mt-3"); ?>
-
-
-                        </div>
-                    </div>
+                    <?php if ($this->buttons): ?>
+                         <?= ButtonHelper::generateButtonHTML($this->buttons); ?>
+                    <?php endif; ?>
                 </div>
-            <?php endforeach; ?>
+            <?php endif; ?>
+
+            <?php // --- Rechte Spalte (Partner) --- ?>
+            <div class="<?php echo $showTextColumn ? 'col-md-7' : 'col-12'; ?>">
+                <div class="row gy-1 justify-content-center g-md-2 ">
+                    <?php foreach ($this->partners as $partner): ?>
+                        <?php // Verwende die ausgewählte Textausrichtungsklasse ?>
+                        <div class="col-sm-6 col-lg-4 <?php echo $textAlignClass; ?>" data-animation="<?php if ($partner->animation_type) : ?><?php echo $partner->animation_type; ?><?php endif; ?>">
+                            <div class="text-base">
+                                <?php
+                                // Generiere Bild HTML mit dynamischer Rundungsklasse
+                                echo ImageHelper::generateImageHTML(
+                                    $partner->image,
+                                    null,           // Kein Alt-Text
+                                    $partner->name, // Name als Title
+                                    $this->size,    // Bildgröße
+                                    $imageClass,    // Dynamische Klasse (rund oder nicht)
+                                    false,          // Kein Figure/Picture erzwingen (optional, kann auf true)
+                                    false           // Keine Lightbox
+                                );
+                                ?>
+                                <h3 class="mb-0 text-base fw-bold"><?= $partner->name; ?></h3>
+
+                                <?php // Position nur anzeigen, wenn vorhanden ?>
+                                <?php if ($partner->position): ?>
+                                    <p class="mb-1"><?= $partner->position; ?></p>
+                                <?php endif; ?>
+
+                                <?php // Telefon nur anzeigen, wenn vorhanden ?>
+                                <?php if ($partner->phone): ?>
+                                    <p class="mb-0">
+                                        <a class="text-nowrap" href="tel:<?= StringUtil::standardize($partner->phone); ?>"
+                                            <?php if ($partner->enable_tracking): ?>
+                                            onclick="window.pushToDataLayer('Telefon', 'Ansprechpartner Box', '<?= $partner->phone; ?>', '<?= $partner->name; ?>');"
+                                            <?php endif; ?>
+                                        ><i class="fal fa-phone"></i> <?= $partner->phone; ?></a>
+                                    </p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

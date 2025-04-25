@@ -1,0 +1,154 @@
+<?php
+
+use Vsm\VsmHelperTools\Helper\ImageHelper;
+use Contao\Controller;
+use Contao\System;
+use Contao\PageModel;
+
+// Hole Seiten-URLs für die Links und gruppiere Boxen
+$boxLinks = [];
+$groupedBoxes = [];
+$groupData = []; // Zum Speichern von Spaltenklasse und Animation für Gruppen
+
+if (!empty($this->boxes)) {
+    foreach ($this->boxes as $index => $box) {
+        // Link holen
+        $page = PageModel::findByPk($box->link);
+        $boxLinks[$index] = $page ? $page->getFrontendUrl() : '#';
+
+        // Box gruppieren
+        $groupKey = $box->vertical_stack_group ?: 'single_' . $index; // Eindeutiger Schlüssel für einzelne Boxen
+
+        if ($box->vertical_stack_group) {
+            if (!isset($groupedBoxes[$groupKey])) {
+                $groupedBoxes[$groupKey] = [];
+                // Speichere Daten der ersten Box für die Gruppe (Spalte, Animation)
+                $groupData[$groupKey] = [
+                    'column_class' => $box->column_class ?: 'col-md-4',
+                    'animation_type' => $box->animation_type
+                ];
+            }
+            $groupedBoxes[$groupKey][$index] = $box; // Füge Box zur Gruppe hinzu
+        } else {
+            // Einzelne Box direkt hinzufügen
+            $groupedBoxes[$groupKey] = $box;
+        }
+    }
+}
+
+// Standardwerte für Farben und Schriftgröße, falls nicht gesetzt
+$bgColor = $this->background_color ?: 'rgba(236, 240, 242, 0.9)';
+$textColor = $this->text_color ?: 'var(--bs-body-color)';
+$fontSize = $this->font_size ?: '20px';
+
+?>
+<style>
+    /* Hover-Effekt für Menü-Boxen */
+    .rsce-menue-boxen .menu-box {
+        /* Übergang für sanften Effekt */
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        /* Verhindert, dass skalierter Inhalt überläuft (optional, je nach Design) */
+        overflow: hidden;
+        /* Stellt sicher, dass transform korrekt angewendet wird */
+        display: block;
+    }
+
+    .rsce-menue-boxen .menu-box:hover {
+        /* Leichtes Vergrößern der gesamten Box */
+        transform: scale(1.02);
+        /* Optional: Fügt einen leichten Schatten hinzu */
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+        /* Stellt sicher, dass die Box im Vordergrund ist */
+        z-index: 10;
+    }
+</style>
+<div <?php echo $this->cssID; ?> class="content--element rsce-menue-boxen <?php echo $this->class; ?>">
+    <div class="ce--inner">
+
+        <?php if ($this->menu_title): ?>
+            <h2 class="menu-boxen-title mb-3"><?= $this->menu_title; ?></h2>
+        <?php endif; ?>
+
+        <div class="row  justify-content-center">
+            <?php foreach ($groupedBoxes as $groupKey => $item): ?>
+                <?php if (is_array($item)): // Es ist eine Gruppe von Boxen ?>
+                    <?php
+                    $groupColumnClass = $groupData[$groupKey]['column_class'];
+                    $groupAnimation = $groupData[$groupKey]['animation_type'];
+                    ?>
+                    <div class="<?= $groupColumnClass; ?> d-flex flex-column gap-1"
+                         data-animation="<?php if ($groupAnimation): ?><?= $groupAnimation; ?><?php endif; ?>">
+                        <?php
+                        $n = count($item); // Anzahl der Boxen in der Gruppe
+                        $currentSize = $this->image_size; // Standardgröße
+
+                        // Versuche, die Größe für gestapelte Bilder zu berechnen
+                        if ($n > 1 && is_array($this->image_size) && isset($this->image_size[1]) && is_numeric($this->image_size[1])) {
+                            $originalHeight = (int)$this->image_size[1];
+                            $newHeight = floor(($originalHeight - ($n - 1) * 9) / $n);
+
+                            if ($newHeight > 0) {
+                                $calculatedSize = $this->image_size; // Kopiere Original
+                                $calculatedSize[1] = $newHeight; // Setze neue Höhe
+                                $currentSize = $calculatedSize; // Verwende berechnete Größe
+                            }
+                        }
+                        ?>
+                        <?php foreach ($item as $index => $box): // Iteriere durch Boxen in der Gruppe ?>
+                            <a href="<?= $boxLinks[$index] ?>" class="menu-box d-flex flex-column text-decoration-none flex-fill position-relative">
+                                <?php if ($box->image): ?>
+                                    <div class="menu-box--image">
+                                        <?php
+                                        echo ImageHelper::generateImageHTML(
+                                            $box->image,
+                                            $box->title,    // Alt-Text = Titel
+                                            $box->title,    // Title-Attribut = Titel
+                                            $currentSize, // Berechnete oder Originalgröße
+                                            'img-fluid',   // Nur noch img-fluid
+                                            true,           // Figure/Picture erzwingen
+                                            false           // Keine Lightbox
+                                        );
+                                        ?>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="menu-box--content py-2 px-3 position-absolute bottom-0 start-0" style="background-color: <?= $bgColor; ?>; color: <?= $textColor; ?>; font-size: <?= $fontSize; ?>; border-top-right-radius: var(--bs-border-radius);border-bottom-left-radius: var(--bs-border-radius);">
+                                    <span class="menu-box--title"><i class="fasl fa-angle-right me-1"></i><?= $box->title; ?></span>
+                                </div>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: // Es ist eine einzelne Box -> keine Höhenanpassung hier nötig ?>
+                    <?php
+                    $box = $item; // Item ist die einzelne Box
+                    $index = str_replace('single_', '', $groupKey); // Index extrahieren
+                    $columnClass = $box->column_class ?: 'col-md-4';
+                    ?>
+                    <div class="<?= $columnClass; ?> d-flex flex-column"
+                         data-animation="<?php if ($box->animation_type) : ?><?= $box->animation_type; ?><?php endif; ?>">
+                        <a href="<?= $boxLinks[$index] ?>" class="menu-box d-flex flex-column flex-grow-1 text-decoration-none position-relative">
+                            <?php if ($box->image): ?>
+                                <div class="menu-box--image">
+                                    <?php
+                                    echo ImageHelper::generateImageHTML(
+                                        $box->image,
+                                        $box->title,    // Alt-Text = Titel
+                                        $box->title,    // Title-Attribut = Titel
+                                        $this->image_size, // Immer Originalgröße für einzelne Boxen
+                                        'img-fluid',   // Nur noch img-fluid
+                                        true,           // Figure/Picture erzwingen
+                                        false           // Keine Lightbox
+                                    );
+                                    ?>
+                                </div>
+                            <?php endif; ?>
+                            <div class="menu-box--content py-2 px-3 position-absolute bottom-0 start-0" style="background-color: <?= $bgColor; ?>; color: <?= $textColor; ?>; font-size: <?= $fontSize; ?>; border-top-right-radius: var(--bs-border-radius);border-bottom-left-radius: var(--bs-border-radius);">
+                                <span class="menu-box--title"><i class="fasl fa-angle-right me-1"></i><?= $box->title; ?></span>
+                            </div>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+
+    </div>
+</div> 

@@ -392,7 +392,7 @@ return array(
             'inputType' => 'list',
             'minItems' => 0,
             'maxItems' => 20,
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => ' clr'),
             'fields' => ButtonHelper::getButtonConfig(),
             'dependsOn' => array(
                 'field' => 'two_columns',
