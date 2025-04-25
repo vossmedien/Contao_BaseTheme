@@ -6,7 +6,6 @@
 .services-overview {
   .service-content-container {
     position: relative;
-    min-height: 200px;
   }
 
   .service-content {
@@ -82,7 +81,7 @@
     }
 
     .service-text {
-      margin-top: 1rem;
+      //margin-top: 1rem;
     }
 
     .service-buttons {
@@ -127,6 +126,140 @@
       i {
         margin-right: .5rem;
       }
+    }
+  }
+}
+
+// Mobile Specific Styles
+@include media-breakpoint-down(md) {
+  .services-overview {
+    .ce--inner {
+      position: relative;
+    }
+    .mobile-services-nav-wrapper {
+      position: relative;
+      //padding: 0 ($spacer * 2);
+    }
+
+    .mobile-services-nav {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; // Firefox
+      &::-webkit-scrollbar {
+        display: none; // Chrome, Safari, Edge
+      }
+    }
+
+    .mobile-services-nav-inner {
+      white-space: nowrap;
+      padding-left: $spacer * .5;
+      padding-right: $spacer * .5;
+    }
+
+    .mobile-service-button {
+      display: inline-block;
+         padding: .75rem 1.25rem;
+      //margin-right: $spacer * .5;
+      border: none; // Kein Rahmen
+      background-color: transparent;
+      color: $body-color;
+      text-decoration: none;
+      border-radius: 0; // Kein Radius
+      white-space: normal;
+      vertical-align: top;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      text-align: left;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &.active {
+        background-color: var(--bs-tertiary);
+        color: $white;
+      }
+    }
+
+    .mobile-nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      background: none;
+      border: none;
+      padding: $spacer * .5;
+      font-size: 1.2rem;
+      color: var(--bs-tertiary);
+      cursor: pointer;
+      line-height: 1;
+
+      &.prev {
+        left: 0;
+      }
+
+      &.next {
+        right: 0;
+      }
+
+      &.disabled {
+        opacity: 0.3;
+        cursor: default;
+        color: var(--bs-tertiary);
+      }
+    }
+
+    // Content Container - KEIN Grid mehr
+    .service-content-container {
+      position: relative; // Wichtig für absolute Kinder
+      // min-height wird durch JS gesetzt
+      display: flex;
+    }
+
+    .service-content {
+      // Wieder absolute Positionierung für inaktive Elemente
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      transition: none;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    //  transition: opacity 0.5s ease-in-out;
+      padding-inline: $spacer * 2; // Padding für Pfeile beibehalten
+
+      // Flexbox für vertikale Zentrierung des Inhalts bleibt:
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      // min-height: inherit; // Nicht mehr nötig
+
+      &.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        position: relative; // Bleibt relativ im aktiven Zustand
+        z-index: 1;
+        //transition: opacity 0.3s ease-in-out, visibility 0s;
+      }
+
+      // Styles für .no-text müssen ggf. angepasst werden, falls sie auf position:absolute basieren
+       &.no-text {
+         // Hier prüfen, ob absolute Positionierung innen Sinn macht oder entfernt werden kann
+         .service-image {
+           // img { position: absolute; ... }
+           // a { position: absolute; ... }
+         }
+         .service-buttons {
+            // position: absolute; ... // Ggf. anpassen, da Eltern-Context jetzt anders ist
+         }
+       }
+    }
+
+    // Haupt-Headline auf Mobile ausblenden
+    .ce--headline {
+      display: none;
     }
   }
 }

@@ -39,7 +39,7 @@ return array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg,tif',
+                'extensions' => 'jpg,jpeg,png,svg,tif,webp',
             ),
         ),
         'size' => array(
