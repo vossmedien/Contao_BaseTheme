@@ -59,10 +59,10 @@ const initAnimations = () => {
     const CONFIG = {
         mobile: {
             breakpoint: 768,
-            rootMargin: '0px 0px -5% 0px',
+            rootMargin: '0px 0px -15% 0px',
         },
         desktop: {
-            rootMargin: '0px 0px -2.5% 0px',
+            rootMargin: '0px 0px -10% 0px',
         },
         animation: {
             class: 'animate__animated',
