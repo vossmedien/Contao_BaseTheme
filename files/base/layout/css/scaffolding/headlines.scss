@@ -23,6 +23,7 @@
   }
 }
 
+
 @each $heading, $sizes in $headings-font-sizes {
   #{$heading}, .#{$heading} {
     &:not(:has([class*="h"])) {
@@ -48,7 +49,7 @@
   flex-flow: column nowrap;
 
   * {
-    margin: 0 !important;
+    margin: 0;
     max-width: 100%;
   }
 
@@ -64,12 +65,14 @@
         @include responsive-font-size-breakpoint($topline-sizes-by-headline, $heading);
         color: var(--bs-topline-color);
         font-weight: var(--bs-topline-font-weight);
+        margin: map-get($topline-margins, $heading);
       }
 
       .ce--subline {
         @include responsive-font-size-breakpoint($subline-sizes-by-headline, $heading);
         color: var(--bs-subline-color);
         font-weight: var(--bs-subline-font-weight);
+        margin: map-get($subline-margins, $heading);
       }
     }
   }
@@ -96,11 +99,9 @@
 .ce--subline {
   color: var(--bs-subline-color);
   font-weight: var(--bs-subline-font-weight);
-  margin: var(--bs-subline-extra-margin);
 }
 
 .ce--topline {
   color: var(--bs-topline-color);
   font-weight: var(--bs-topline-font-weight);
-  margin: var(--bs-topline-extra-margin);
 }
