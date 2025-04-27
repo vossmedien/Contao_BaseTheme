@@ -1,7 +1,7 @@
 import {scrollToTop} from "./smoothScrolling.js";
 import {setupFunctions} from "./cookieManager.js";
 import {adjustPullElements} from "./marginPaddingAdjustments.js";
-import {addPlaceholders} from "./floatingLabels.js";
+
 import {
     changeAnchorLinks,
     changeNavLinksAfterLoad,
@@ -16,17 +16,12 @@ const ResizeFunctions = [];
 
 // Cache häufig verwendete DOM-Elemente
 const cachedElements = {
-    form: document.querySelector(".ce_form form"),
     mobileNavElement: document.querySelector("#mobileNav"),
     triggerElement: document.querySelector('a[href="#mobileNav"]'),
     body: document.querySelector('body'),
 };
 
-if (cachedElements.form) {
-    cachedElements.form.addEventListener("submit", (e) => {
-        setTimeout(addPlaceholders, 250);
-    });
-}
+
 
 const initMobileNav = () => {
     const {mobileNavElement, triggerElement, body} = cachedElements;
@@ -445,7 +440,7 @@ DomLoadFunctions.push(
     scrollToTop,
     setupFunctions,
     adjustPullElements,
-    addPlaceholders
+    //addPlaceholders
 );
 
 scrollFunctions.push(changeAnchorLinks);

@@ -41,7 +41,7 @@ return array(
 
         // NEU: Checkbox für Zweispaltigkeit
         'two_columns' => array(
-            'label' => array('Ansprechpartner zweispaltig anzeigen', 'Zeigt die Ansprechpartner nebeneinander in zwei Spalten an (auf größeren Bildschirmen).'),
+            'label' => array('Text und Ansprechpartner nebeneinander anzeigen', 'Wenn aktiviert, werden der Textbereich (links) und die Ansprechpartner (rechts) auf größeren Bildschirmen nebeneinander dargestellt. Andernfalls stehen sie untereinander.'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' clr'),
             'default' => false,
@@ -83,12 +83,37 @@ return array(
             'default' => false,
         ),
 
+        // NEU: Steuerung für internes Layout der Partner-Box
+        'partner_layout_horizontal' => array(
+            'label' => array('Bild und Text in Partner-Box nebeneinander', 'Wenn aktiviert, werden Bild und Text innerhalb jeder Partner-Box nebeneinander angezeigt. Andernfalls steht das Bild über dem Text.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+            'default' => true, // Standardmäßig nebeneinander (wie bisher)
+        ),
+
+        // NEU: Position unterhalb des Namens anzeigen
+        'show_position_below_name' => array(
+            'label' => array('Position unterhalb des Namens anzeigen', 'Wenn aktiviert, wird die Position/Abteilung unterhalb des Namens angezeigt (in kleinerer Schrift). Andernfalls steht sie als Titel über dem Namen.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr'),
+            'default' => false,
+        ),
 
         'contact_text' => array(
             'label' => array('Kontakttext', 'Text neben den Ansprechpartnern'),
             'inputType' => 'textarea',
             'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
         ),
+
+           'buttons' => array(
+                    'label' => array('Buttons', ''),
+                    'elementLabel' => '%s. Button',
+                    'inputType' => 'list',
+                    'minItems' => 0,
+                    'maxItems' => 5,
+                    'eval' => array('tl_class' => 'clr'),
+                    'fields' => ButtonHelper::getButtonConfig(),
+                ),
 
         'size' => array(
             'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),

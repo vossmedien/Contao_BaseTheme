@@ -151,7 +151,7 @@ if ($this->add_header_image && $this->header_image) {
             <?php // Container um die Row, falls Checkbox aktiv ?>
             <?php if ($this->wrap_columns_in_container): ?><div class="container"><?php endif; ?>
 
-            <div class="row g-2 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
+            <div class="row g-2 g-lg-4 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
 
                 <?php // --- Headlinespalte --- ?>
                 <?php

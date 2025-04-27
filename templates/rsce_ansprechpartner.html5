@@ -22,8 +22,16 @@ $partnerAlignClass = $this->partner_alignment ?: 'text-start'; // Default: links
 // Klasse für Bildrundung
 $imageClass = $this->round_images ? 'rounded-circle' : ''; // Nur die Rundungsklasse selbst
 
-// Klasse für die Spaltenbreite der Partner
-$partnerColClass = $this->two_columns ? 'col-lg-6 col-xl-auto' : 'col-sm-6 col-lg-4'; // Dynamische Spaltenklasse
+// NEU: Klassen für die Hauptspalten (Text vs. Partner)
+$textColClass = 'col-12';
+$partnerOuterColClass = 'col-12';
+if ($this->two_columns && $showTextColumn) {
+    $textColClass = 'col-md-5';
+    $partnerOuterColClass = 'col-md-7';
+}
+
+// Klasse für die Spaltenbreite der einzelnen Partner-Boxen (unabhängig von two_columns)
+$partnerInnerColClass = 'col-sm-6 col-lg-4 '; // Feste Spaltenbreite für Partner, z.B. 4 pro Reihe auf großen Screens
 
 // NEU: Klasse für die horizontale Ausrichtung der Reihe
 $rowJustifyClass = $this->row_justify_content ?: 'justify-content-center'; // Default: zentriert
@@ -31,11 +39,11 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-center'; // De
 ?>
 <div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
     <div class="ce--inner ">
-        <div class="row g-3 <?php if ($showTextColumn): ?>flex-md-row-reverse<?php endif; ?> align-items-center">
+        <div class="row g-3 align-items-center flex-row-reverse">
 
             <?php // --- Linke Spalte (Text/Headline/Buttons) --- ?>
             <?php if ($showTextColumn): ?>
-                <div class="col-md-5 <?php echo $textAlignClass; ?> text-md-start" data-animation="animate__fadeIn">
+                <div class="<?php echo $textColClass; ?> <?php if ($this->two_columns): echo $textAlignClass . ' text-md-start'; endif; ?>" data-animation="animate__fadeIn">
                     <?php
                     // Generiere Headline HTML ohne eigene Animation
                     echo HeadlineHelper::generateHeadlineHTML(
@@ -60,18 +68,28 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-center'; // De
             <?php endif; ?>
 
             <?php // --- Rechte Spalte (Partner) --- ?>
-            <div class="<?php echo $showTextColumn ? 'col-md-7' : 'col-12'; ?>">
-                <div class="row gy-3 gx-4 <?php echo $rowJustifyClass; ?>"> <?php // justify-content dynamisch gemacht ?>
+            <div class="<?php echo $partnerOuterColClass; ?>">
+                <div class="row gy-1 gx-2 gy-md-2 gx-md-3 <?php echo $rowJustifyClass; ?>"> <?php // justify-content dynamisch gemacht ?>
                     <?php foreach ($this->partners as $partner):
                         // Bestimme die Klassen für die Partner-Karte
-                        $partnerCardClasses = 'contact-card d-flex ' . $partnerAlignClass;
+                        $partnerCardClasses = 'contact-card ' . $partnerAlignClass;
+                        if ($this->partner_layout_horizontal) {
+                            $partnerCardClasses .= ' d-flex'; // Flex nur hinzufügen, wenn Option aktiv
+                        }
                         $animation = $partner->animation_type ?: ''; // Animation holen
                     ?>
-                        <div class="<?php echo $partnerColClass; ?>" data-animation="<?php echo $animation; ?>">
+                        <div class="<?php echo $partnerInnerColClass; ?>" data-animation="<?php echo $animation; ?>">
                             <div class="<?php echo $partnerCardClasses; ?>">
                                 <?php // --- Bild --- ?>
-                                <?php if ($partner->image): ?>
-                                    <div class="contact-image flex-shrink-0"> <?php // flex-shrink-0 verhindert Schrumpfen ?>
+                                <?php if ($partner->image):
+                                    $imageContainerClasses = '';
+                                    if ($this->partner_layout_horizontal) {
+                                        $imageContainerClasses = 'flex-shrink-0'; // Nur bei horizontalem Layout
+                                    } else {
+                                        $imageContainerClasses = 'mb-1'; // Abstand unten bei vertikalem Layout
+                                    }
+                                ?>
+                                    <div class="contact-image <?php echo $imageContainerClasses; ?>">
                                         <?=
                                         ImageHelper::generateImageHTML(
                                             $partner->image,
@@ -87,14 +105,27 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-center'; // De
                                 <?php endif; ?>
 
                                 <?php // --- Infos --- ?>
-                                <div class="contact-info ms-3 flex-grow-1"> <?php // ms-3 für Abstand, flex-grow-1 füllt Platz ?>
-                                    <?php // Titel (h6) ?>
+                                <?php
+                                    $infoContainerClasses = '';
+                                    if ($this->partner_layout_horizontal) {
+                                        $infoContainerClasses = 'ms-3 flex-grow-1'; // Nur bei horizontalem Layout
+                                    }
+                                ?>
+                                <div class="contact-info <?php echo $infoContainerClasses; ?>">
+                                    <?php // Titel/Position (abhängig von show_position_below_name) ?>
                                     <?php if ($partner->title): ?>
-                                        <h6 class="contact-title mb-1"><?= $partner->title; ?>:</h6>
+                                        <?php if (!$this->show_position_below_name): // Standard: Titel über Name ?>
+                                            <h6 class="contact-title mb-0"><?= $partner->title; ?>:</h6>
+                                        <?php endif; ?>
                                     <?php endif; ?>
 
                                     <?php // Name (p) ?>
-                                    <p class="contact-name fw-bold mb-1"><?= $partner->name; ?></p> <?php // fw-bold hinzugefügt ?>
+                                    <p class="contact-name mb-0"><?= $partner->name; ?></p> <?php // fw-bold hinzugefügt ?>
+
+                                    <?php // Position unter Name (wenn Option aktiviert) ?>
+                                    <?php if ($partner->title && $this->show_position_below_name): ?>
+                                        <small class="contact-title d-block mb-1"><?= $partner->title; ?></small>
+                                    <?php endif; ?>
 
                                     <?php // E-Mail (p) ?>
                                     <?php if ($partner->email_link): ?>
@@ -111,7 +142,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-center'; // De
                                         <p class="contact-phone mb-1"> <?php // mb-1 hinzugefügt ?>
                                             <a href="tel:<?= StringUtil::standardize($partner->phone); ?>" class="text-nowrap">
                                                 <i style="width: 25px;" class="fal fa-phone"></i> <?php  ?>
-                                                <span class="text-body"><?= $partner->phone; ?></span> <?php // Angepasst an Beispiel ?>
+                                                <span><?= $partner->phone; ?></span> <?php // Angepasst an Beispiel ?>
                                             </a>
                                         </p>
                                     <?php endif; ?>

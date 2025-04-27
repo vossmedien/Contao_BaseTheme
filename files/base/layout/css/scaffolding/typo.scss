@@ -20,9 +20,14 @@ html body {
   }
 
   img {
-    max-width: 100%;
+
     height: unset;
-    width: unset;
+
+
+    &:not([width]){
+       max-width: 100%;
+          width: unset;
+    }
   }
 
   strong,
@@ -305,3 +310,5 @@ ul[class*="list-"][class*="text-"] {
 .text-xl {
   @include font-size($font-size-xl);
 }
+
+
