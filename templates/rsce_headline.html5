@@ -436,11 +436,11 @@ if ($this->add_header_image && $this->header_image) {
                     fadeEffect: { crossFade: true },
                     <?php endif; ?>
                     navigation: {
-                        nextEl: imageContainerSelector + '.swiper-button-next',
-                        prevEl: imageContainerSelector + '.swiper-button-prev',
+                        nextEl: '.swiper-button-next.content-slider_<?= $this->id; ?>_<?= $rand; ?>',
+                        prevEl: '.swiper-button-prev.content-slider_<?= $this->id; ?>_<?= $rand; ?>',
                     },
                     pagination: {
-                        el: imageContainerSelector + '.swiper-pagination',
+                        el: '.swiper-pagination.content-slider_<?= $this->id; ?>_<?= $rand; ?>',
                         clickable: true,
                     },
                     <?php
