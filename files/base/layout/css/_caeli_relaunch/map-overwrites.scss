@@ -1,3 +1,5 @@
+
+
 $spacers: (
         0: 0,
         1: 0.5rem,
@@ -76,6 +78,7 @@ $mobile-headline-margins: (
         'h6': 0.6rem
 );
 
+
 // NEUE MAP: Abstände für Toplines (margin)
 $topline-margins: (
         'h1': 0 0 .4em 0,
@@ -95,3 +98,45 @@ $subline-margins: (
         'h5': .2em 0 0 0,
         'h6': .2em 0 0 0
 );
+
+// Definieren Sie die Topline Font Sizes abhängig von der Headline-Ebene
+$topline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 39px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
+
+// Definieren Sie die Subline Font Sizes abhängig von der Headline-Ebene
+$subline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 39px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
+
+//CSS Variablen beachten
+$container-max-widths: (
+        sm: 100%,
+        md: 100%,
+        lg: 992px,
+        xl: 1140px,
+        xxl: 1140px
+);
+
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 1040px,
+        xl: 1200px,
+        xxl: 1340px,
+);
+
+
+
