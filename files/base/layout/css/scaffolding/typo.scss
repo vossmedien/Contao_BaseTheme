@@ -1,3 +1,15 @@
+
+  img {
+
+    height: unset;
+
+
+    &:not([width]){
+       max-width: 100%;
+          width: unset;
+    }
+  }
+
 html body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -8,22 +20,18 @@ html body {
   hyphens: auto;
    */
 
-
-
   *:focus,
   *:active {
     outline: 0px;
   }
+}
+
 
   figure {
     margin: 0;
   }
 
-  img {
-    max-width: 100%;
-    height: unset;
-    width: unset;
-  }
+
 
   strong,
   b {
@@ -123,7 +131,8 @@ html body {
       vertical-align: sub;
     }
   }
-}
+
+
 
 i:has( + a){
   transition: color .3s ease-in-out;
@@ -305,3 +314,5 @@ ul[class*="list-"][class*="text-"] {
 .text-xl {
   @include font-size($font-size-xl);
 }
+
+

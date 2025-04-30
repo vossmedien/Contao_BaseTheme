@@ -1,0 +1,333 @@
+<?php
+
+use Vsm\VsmHelperTools\Helper\ImageHelper;
+use Vsm\VsmHelperTools\Helper\HeadlineHelper;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Contao\PageModel;
+
+// --- Datenaufbereitung --- //
+
+// 1. Headlines
+$topHeadlineHTML = HeadlineHelper::generateHeadlineHTML(
+    $this->top_topline,
+    $this->top_headline,
+    $this->top_subline,
+    $this->top_headline_type ?: 'h1',
+    $this->animation_type_top_headline,
+    null,
+    (bool)$this->onlystyle_top_headline,
+    "mb-md-0"
+);
+
+$bottomHeadlineHTML = HeadlineHelper::generateHeadlineHTML(
+    $this->bottom_topline,
+    $this->bottom_headline,
+    $this->bottom_subline,
+    $this->bottom_headline_type ?: 'h2',
+    $this->animation_type_bottom_headline,
+    null,
+    null,
+    "mt-3"
+);
+
+// 2. Linke Box Daten vorbereiten
+$leftBoxData = null;
+$leftBoxLink = '#';
+$leftBoxSize = null; // Größe der linken Box für Höhenberechnung
+if (!empty($this->left_box) && is_array($this->left_box) && isset($this->left_box[0])) {
+    $leftBoxItem = $this->left_box[0];
+    if ($leftBoxItem) {
+        $leftBoxData = $leftBoxItem;
+        $page = PageModel::findByPk($leftBoxData->link);
+        $leftBoxLink = $page ? $page->getFrontendUrl() : '#';
+        $leftBoxSize = $leftBoxData->image_size; // Speichere die Größe
+    }
+}
+$isLeftBoxSizeValid = is_array($leftBoxSize) && count($leftBoxSize) >= 2 && is_numeric($leftBoxSize[1]);
+
+// 3. Rechte Boxen
+$boxLinks = [];
+$groupedBoxes = [];
+$groupData = [];
+
+if (!empty($this->boxes) && is_array($this->boxes)) {
+    foreach ($this->boxes as $index => $box) {
+        $page = PageModel::findByPk($box->link);
+        $boxLinks[$index] = $page ? $page->getFrontendUrl() : '#';
+
+        $groupKey = $box->vertical_stack_group ?: 'single_' . $index;
+
+        if ($box->vertical_stack_group) {
+            if (!isset($groupedBoxes[$groupKey])) {
+                $groupedBoxes[$groupKey] = [];
+                $groupData[$groupKey] = [
+                    'animation_type' => $box->animation_type,
+                    'column_class' => $box->column_class ?: 'col-12',
+                    'css_class' => $box->css_class
+                ];
+            }
+            $groupedBoxes[$groupKey][$index] = $box;
+        } else {
+            $groupedBoxes[$groupKey] = $box;
+        }
+    }
+}
+
+// Standardwerte für Box-Styling
+$bgColor = $this->background_color ?: 'rgba(236, 240, 242, 0.9)';
+$textColor = $this->text_color ?: 'var(--bs-body-color)';
+$fontSize = $this->font_size ?: '20px';
+
+// 4. Unterer Text & Buttons (rechts)
+$bottomTextHTML = $this->bottom_text ?: '';
+$buttonsHTML = ButtonHelper::generateButtonHTML($this->buttons);
+
+// Funktion zum Rendern einer einzelnen Box, mit optionaler berechneter Größe
+function render_box($boxData, $boxLink, $bgColor, $textColor, $fontSize, $defaultAlt = '', $calculatedSize = null)
+{
+    $imageHTML = '';
+    $sizeToUse = $calculatedSize ?: $boxData->image_size;
+    if ($boxData->image) {
+        $imageHTML = ImageHelper::generateImageHTML($boxData->image, $boxData->title ?: $defaultAlt, $boxData->title, $sizeToUse, 'img-fluid', true, false);
+    }
+    ob_start();
+    ?>
+    <a href="<?= $boxLink ?>" class="menu-box d-block text-decoration-none position-relative">
+        <?php if ($imageHTML): ?><div class="menu-box--image"><?= $imageHTML; ?></div><?php endif; ?>
+        <?php if ($boxData->title): ?>
+        <div class="menu-box--content p-1 p-md-2 position-absolute bottom-0 start-0" style="background-color: <?= $bgColor; ?>; color: <?= $textColor; ?>; font-size: <?= $fontSize; ?>; border-top-right-radius: var(--bs-border-radius); border-bottom-left-radius: var(--bs-border-radius);">
+            <span class="menu-box--title"><i class="fasl fa-angle-right me-1"></i><?= $boxData->title; ?></span>
+        </div>
+        <?php endif; ?>
+    </a>
+    <?php
+    return ob_get_clean();
+}
+
+// Eindeutige IDs für JS
+$leftBoxSectionId = 'hero-left-box-' . $this->id;
+$rightBoxesSectionRowId = 'hero-right-boxes-row-' . $this->id; // ID für die innere Row rechts
+
+?>
+<style>
+    /* Keine expliziten Order-Regeln mehr nötig, da wir duplizieren */
+
+    .rsce-hero-split-row {
+        margin-left: -7.5px; /* Gutter Ausgleich */
+        margin-right: -7.5px;
+    }
+    .rsce-hero-split-row > .col-md-6 {
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+    .rsce-hero-split-row > .col-md-6 > * {
+        width: 100%;
+     }
+
+    @media (min-width: 768px) {
+         .rsce-hero-split-row {
+             display: flex;
+             align-items: stretch;
+         }
+         .rsce-hero-split-row > .col-md-6 {
+            display: flex;
+            flex-direction: column;
+         }
+         .right-boxes-section {
+             flex-grow: 1;
+         }
+    }
+
+    .menu-box--title{
+        white-space: nowrap;
+    }
+
+    /* Allgemeine Box-Styles */
+    .rsce-hero-split .menu-box {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        overflow: hidden;
+        display: block;
+        flex: 1;
+        height: 100%;
+    }
+    .rsce-hero-split .menu-box:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+        z-index: 10;
+    }
+    .rsce-hero-split .stacked-group > *:not(:last-child) {
+         margin-bottom: 15px;
+    }
+    .rsce-hero-split .menu-box--image {
+        height: 100%;
+        display: flex;
+        align-items: stretch;
+    }
+    .rsce-hero-split .menu-box--image img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .rsce-hero-split .stacked-group {
+         display: flex;
+         flex-direction: column;
+         flex-grow: 1;
+    }
+    .rsce-hero-split .right-boxes-section .row {
+         height: 100%;
+    }
+</style>
+
+<div <?php echo $this->cssID; ?> class="content--element rsce-hero-split <?php echo $this->class; ?>">
+    <div class="ce--inner">
+
+        <div class="row rsce-hero-split-row g-1">
+
+             <?php // -- Linke Spalte (DOM) -- ?>
+             <div class="col-12 col-md-6">
+
+                 <?php // 1. Obere Headline (Links) - CSS Klasse anwenden ?>
+                 <?php if ($topHeadlineHTML): ?>
+                     <div class="headline-top <?php if ($this->css_class_headline) echo $this->css_class_headline; ?>">
+                         <?= $topHeadlineHTML; ?>
+                     </div>
+                 <?php endif; ?>
+
+                 <?php // 2. Linke Box - CSS Klasse entfernt ?>
+                 <?php if ($leftBoxData): ?>
+                     <div class="left-box-section" data-animation="<?= $leftBoxData->animation_type ?: '' ?>">
+                         <?= render_box($leftBoxData, $leftBoxLink, $bgColor, $textColor, $fontSize, $this->top_headline, null); ?>
+                     </div>
+                 <?php endif; ?>
+
+                 <?php // 4. Untere Headline (Links) - Nur auf Desktop anzeigen (d-none d-md-block) ?>
+                 <?php if ($bottomHeadlineHTML): ?>
+                     <div class="left-bottom-headline-section d-none d-lg-block <?php if ($this->left_bottom_headline_css_class) echo $this->left_bottom_headline_css_class; ?>">
+                         <?= $bottomHeadlineHTML; ?>
+                     </div>
+                 <?php endif; ?>
+
+                 <?php // 5. Optionaler Text (Links) ?>
+                 <?php if ($this->left_text): ?>
+                     <div class="left-bottom-text-section <?php if ($bottomHeadlineHTML): ?>mt-md-2<?php endif; /* Nur Desktop-Margin */ ?>" <?php if ($this->animation_type_left_text): ?>data-animation="<?= $this->animation_type_left_text; ?>"<?php endif; ?>>
+                         <?= $this->left_text; ?>
+                     </div>
+                 <?php endif; ?>
+
+             </div> <?php // Ende linke Spalte (DOM) ?>
+
+            <?php // -- Rechte Spalte (DOM) -- ?>
+            <div class="col-12 col-md-6">
+
+                 <?php // 3. Rechte Boxen Sektion ?>
+                 <?php if(!empty($groupedBoxes)): ?>
+                 <div class="right-boxes-section">
+                     <div class="row g-1">
+                         <?php foreach ($groupedBoxes as $groupKey => $item): ?>
+                             <?php
+                             $columnClass = 'col-12';
+                             $animation = null;
+                             $isGroup = is_array($item);
+                             // $cssClass entfernt
+                             $calculatedGroupSize = null;
+
+                             if ($isGroup) {
+                                 $groupInfo = $groupData[$groupKey];
+                                 $columnClass = $groupInfo['column_class'];
+                                 $animation = $groupInfo['animation_type'];
+                                 // $cssClass = $groupInfo['css_class']; entfernt
+
+                                 $n = count($item);
+                                 if ($n > 1 && $isLeftBoxSizeValid) {
+                                     $originalHeight = (int)$leftBoxSize[1];
+                                     $gapBetweenImages = 15;
+                                     $totalGapHeight = ($n - 1) * $gapBetweenImages;
+                                     $newHeight = floor(($originalHeight - $totalGapHeight) / $n);
+
+                                     if ($newHeight > 0) {
+                                         $calculatedGroupSize = $leftBoxSize;
+                                         $calculatedGroupSize[1] = $newHeight;
+                                     }
+                                 }
+                             } else {
+                                 $box = $item;
+                                 $columnClass = $box->column_class ?: 'col-12';
+                                 $animation = $box->animation_type;
+                                 // $cssClass = $box->css_class; entfernt
+                             }
+                             ?>
+                             <?php // CSS Klasse entfernt ?>
+                             <div class="<?= $columnClass; ?> <?php if ($isGroup): ?>stacked-group<?php endif; ?>" data-animation="<?php if ($animation): ?><?= $animation; ?><?php endif; ?>">
+                                 <?php if ($isGroup): ?>
+                                     <?php foreach ($item as $index => $box): ?>
+                                         <?= render_box($box, $boxLinks[$index], $bgColor, $textColor, $fontSize, '', $calculatedGroupSize); ?>
+                                     <?php endforeach; ?>
+                                 <?php else:
+                                     $index = substr($groupKey, 7);
+                                     ?>
+                                     <?= render_box($box, $boxLinks[$index], $bgColor, $textColor, $fontSize); ?>
+                                 <?php endif; ?>
+                             </div>
+                         <?php endforeach; ?>
+                     </div>
+                 </div>
+                 <?php endif; ?>
+
+                <?php // NEU: 4a. Untere Headline (Links) - Nur auf Mobile anzeigen (d-block d-md-none) ?>
+
+
+                 <?php // 6. Wrapper für unteren Inhalt rechts ?>
+                 <?php if($bottomTextHTML || $buttonsHTML): ?>
+                 <div class="right-bottom-content-wrapper <?php if ($this->right_bottom_content_css_class) echo $this->right_bottom_content_css_class; ?>">
+                     <?php // 6a. Unterer Text (Rechts) ?>
+
+                       <?php if ($bottomHeadlineHTML): ?>
+                     <div class="mobile-bottom-headline d-block d-lg-none">
+                          <?php /* Wende die gleiche optionale CSS-Klasse an wie beim Desktop Pendant */ ?>
+                         <?= $bottomHeadlineHTML; ?>
+                     </div>
+                 <?php endif; ?>
+
+                     <?php if ($bottomTextHTML): ?>
+                         <div class="bottom-text-section" <?php if ($this->animation_type_left_text): ?>data-animation="<?= $this->animation_type_left_text; ?>"<?php endif; ?>>
+                             <?= $bottomTextHTML; ?>
+                         </div>
+                     <?php endif; ?>
+
+                     <?php // 6b. Buttons (Rechts) ?>
+                     <?php if ($buttonsHTML): ?>
+                         <div class="bottom-buttons-section <?php if ($bottomTextHTML): ?>mt-3<?php else: ?> mt-3<?php endif; ?>">
+                             <?= $buttonsHTML; ?>
+                         </div>
+                     <?php endif; ?>
+                </div>
+                <?php endif; ?>
+
+            </div> <?php // Ende rechte Spalte (DOM) ?>
+
+        </div> <?php // Ende .rsce-hero-split-row ?>
+
+    </div> <?php // Ende .ce--inner ?>
+</div> <?php // Ende .rsce-hero-split ?>
+
+<?php // Entfernt: JavaScript für mobile DOM-Manipulation ?>
+
+<?php // JavaScript für Höhenanpassung (Min-Height) ?>
+<?php if ($leftBoxData && !empty($groupedBoxes)): ?>
+<script>
+    window.addEventListener('load', function() {
+        const leftBox = document.getElementById('<?= $leftBoxSectionId ?>');
+        // Ziele auf die innere .row im rechten Bereich
+        const rightBoxesRow = document.getElementById('<?= $rightBoxesSectionRowId ?>');
+
+        if (leftBox && rightBoxesRow) {
+            const leftBoxHeight = leftBox.offsetHeight;
+            // Setze min-height auf die innere Row, um sicherzustellen, dass sie hoch genug ist
+            rightBoxesRow.style.minHeight = leftBoxHeight + 'px';
+        }
+    });
+    // Optional: Resize Listener hinzufügen, falls dynamische Änderungen erwartet werden
+    // window.addEventListener('resize', function() { /* Code hier wiederholen */ });
+</script>
+<?php endif; ?>   

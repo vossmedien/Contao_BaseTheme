@@ -97,27 +97,27 @@
   }
 
   // Einfaches CSS für die Buttons
- &.btn-outline-currentColor {
-  border: 1px solid var(--btn-context-color, currentColor);
-  background-color: transparent;
-  color: var(--btn-context-color, currentColor);
-
-  &:hover {
-    color: var(--parent-bg-color, white);
-    background-color: var(--btn-context-color, currentColor);
-  }
-}
-
-&.btn-currentColor {
-  border: 1px solid var(--btn-context-color, currentColor);
-  background-color: var(--btn-context-color, currentColor);
-  color: var(--parent-bg-color, white);
-
-  &:hover {
-    color: var(--btn-context-color, currentColor);
+  &.btn-outline-currentColor {
+    border: 1px solid var(--btn-context-color, currentColor);
     background-color: transparent;
+    color: var(--btn-context-color, currentColor);
+
+    &:hover {
+      color: var(--parent-bg-color, white);
+      background-color: var(--btn-context-color, currentColor);
+    }
   }
-}
+
+  &.btn-currentColor {
+    border: 1px solid var(--btn-context-color, currentColor);
+    background-color: var(--btn-context-color, currentColor);
+    color: var(--parent-bg-color, white);
+
+    &:hover {
+      color: var(--btn-context-color, currentColor);
+      background-color: transparent;
+    }
+  }
 
   &.btn-link {
     padding: 0px;
@@ -143,5 +143,9 @@
     width: 100%;
     display: block;
   }
+
+
+
+
 }
 
