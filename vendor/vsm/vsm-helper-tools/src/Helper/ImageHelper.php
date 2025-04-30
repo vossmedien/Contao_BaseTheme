@@ -1031,9 +1031,11 @@ class ImageHelper
 
         // Style basierend auf Größe
         $style = '';
-        if (is_array($size) && count($size) >= 1 && !empty($size[0])) {
-            $style = 'width: ' . (int)$size[0] . 'px;';
-            if (count($size) >= 2 && !empty($size[1])) {
+        if (is_array($size)) {
+            if (!empty($size[0])) {
+                $style .= 'width: ' . (int)$size[0] . 'px;';
+            }
+            if (isset($size[1]) && !empty($size[1])) { // Prüfe explizit, ob Index 1 existiert
                 $style .= ' height: ' . (int)$size[1] . 'px;';
             }
         }
