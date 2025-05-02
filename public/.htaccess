@@ -114,6 +114,7 @@
     ExpiresByType image/png "access plus 1 year"
     ExpiresByType image/svg+xml "access plus 1 year"
     ExpiresByType image/tiff "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
     ExpiresByType image/x-icon "access plus 1 year"
     ExpiresByType image/ico "access plus 1 year"
     ExpiresByType image/icon "access plus 1 year"
