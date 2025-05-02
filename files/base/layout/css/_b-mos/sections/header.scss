@@ -91,6 +91,11 @@ header {
     left: 0;
     top: 0;
 
+          @include media-breakpoint-up(lg) {
+          margin-left: -20px;
+        }
+
+
     @include media-breakpoint-down(lg) {
       left: var(--bs-container-gutter);
     }
@@ -186,13 +191,11 @@ li.has-mega-menu {
       }
     }
   }
-
-
 }
 
 #mobileNav {
   .mobileNav_footer {
-    background: url("/files/base/layout/img/bg-pattern-sm.svg") center center / cover repeat;
+    background: url("/files/base/layout/img/bmos/bg-pattern-sm.svg") center center / cover repeat;
     height: 100px;
     text-align: center;
     padding: 1.5rem 1rem 1rem 1rem;
@@ -226,3 +229,10 @@ li.has-mega-menu {
   }
 }
 
+
+
+.mega-menu .mega-menu--content .row figcaption:before{
+      font-size: 1.25rem;
+    vertical-align: text-bottom;
+    font-weight: 300;
+}

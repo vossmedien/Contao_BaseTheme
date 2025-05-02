@@ -17,7 +17,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
             null
         ); ?>
 
-        <div class="row g-2 gy-4 ">
+        <div class="row g-2 gy-3 ">
             <?php foreach ($this->services as $service): ?>
                 <div class="col-12 col-md-6 service-item" data-animation="<?php echo $this->animation_type; ?>">
                     <div class="service-inner">

@@ -33,7 +33,7 @@
     //border-radius: 40%;
     color: var(--mm-spn-color);
     border: 0;
-    background-color: var(--bs-primary-bg-subtle);
+    background-color: rgba(0,0,0,.075);
     width: 30px;
     height: 30px;
     line-height: 30px;
@@ -108,7 +108,7 @@
       right: 0;
       border: 0;
       top: 0;
-      background-color: var(--bs-primary-bg-subtle);
+      background-color:  rgba(0,0,0,.075);
       box-shadow: $box-shadow-sm;
       width: 50px;
       height: calc(var(--mm-spn-item-height));
@@ -218,7 +218,7 @@
         display: inline-block;
         border: 0;
         padding: 0;
-        margin-inline: 1rem;
+        margin-inline: .5rem;
         width: auto;
 
         > a {

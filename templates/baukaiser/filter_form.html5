@@ -1,0 +1,412 @@
+<?php
+
+use Contao\Input;
+
+// Aktuell aktiven Leistungstyp aus GET-Parametern lesen
+$activeLeistungstyp = Input::get('leistungstyp');
+
+// Liste der Filterkategorien (Wert => Anzeigetext)
+$filterCategories = [
+    'bautechnische-beratung' => 'Bautechnische Beratung',
+    'oberflaechensondierung' => 'Oberflächensondierung',
+    'tiefensondierung' => 'Tiefensondierung',
+    'luftbildauswertung' => 'Luftbildauswertung',
+    'baubegleitung' => 'Baubegleitung',
+    'kampfmittelbergung' => 'Kampfmittelbergung',
+    'sicherheitsbelehrung' => 'Sicherheitsbelehrung',
+    'dokumentation' => 'Dokumentation',
+    'stahl-und-metallbau' => 'Stahl- und Metallbau',
+    'schlosserei' => 'Schlosserei',
+    'edelstahlverarbeitung' => 'Edelstahlverarbeitung',
+    'tueren-tore-antriebe' => 'Türen, Tore & Antriebe',
+    'blechverarbeitung' => 'Blechverarbeitung'
+];
+
+// Alle aktuellen GET-Parameter sammeln, um sie zu erhalten
+$currentParams = Input::get(null);
+
+// Den von uns kontrollierten Parameter entfernen
+unset($currentParams['leistungstyp']);
+
+// Contao-spezifische Parameter entfernen, um saubere URLs zu gewährleisten
+// (ggf. weitere hinzufügen, falls nötig)
+unset($currentParams['page']);
+unset($currentParams['language']);
+unset($currentParams['auto_item']);
+unset($currentParams['items']); // Oft bei Pagination
+unset($currentParams['articles']); // Oft bei Artikeln
+
+?>
+<div class="container mb-3">
+<form method="get" action="<?= \Contao\Environment::get('request') ?>" id="leistungstyp-filter-form">
+
+    <?php // Versteckte Felder für alle anderen GET-Parameter ?>
+    <?php foreach ($currentParams as $key => $value): ?>
+        <?php if (is_array($value)): // Unterstützung für Array-Parameter ?>
+            <?php foreach($value as $subValue): ?>
+                <input type="hidden" name="<?= htmlspecialchars($key) ?>[]" value="<?= htmlspecialchars($subValue) ?>">
+            <?php endforeach; ?>
+        <?php else: ?>
+             <input type="hidden" name="<?= htmlspecialchars($key) ?>" value="<?= htmlspecialchars($value) ?>">
+        <?php endif; ?>
+    <?php endforeach; ?>
+
+    <?php // Select-Dropdown für Mobile (unter md) ?>
+    <div class="d-block d-md-none mb-3">
+        <label for="leistungstyp-select" class="form-label visually-hidden">Leistungstyp wählen</label>
+        <select class="form-select" id="leistungstyp-select" name="leistungstyp">
+            <option value="" <?php if (!$activeLeistungstyp) echo 'selected'; ?>>Alle Leistungstypen</option>
+            <?php foreach ($filterCategories as $value => $label): ?>
+                <option value="<?= htmlspecialchars($value) ?>" <?php if ($activeLeistungstyp == $value) echo 'selected'; ?>>
+                    <?= htmlspecialchars($label) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <?php // Button-Gruppe für Desktop (ab md) ?>
+    <div class="d-none d-md-flex flex-wrap align-items-center gap-1">
+        <?php // "Alle" Button ?>
+        <button type="submit"
+                data-value="" <?php // Wert für JS hinzufügen ?>
+                class="btn btn-sm rounded-pill px-3 <?php echo !$activeLeistungstyp ? 'btn-secondary' : 'btn-outline-secondary'; ?>">
+            Alle
+        </button>
+
+        <?php // Buttons für jede Kategorie ?>
+        <?php foreach ($filterCategories as $value => $label): ?>
+            <button type="submit" name="leistungstyp" value="<?= htmlspecialchars($value) ?>"
+                    data-value="<?= htmlspecialchars($value) ?>" <?php // Wert für JS hinzufügen ?>
+                    class="btn btn-sm rounded-pill px-3 <?php echo $activeLeistungstyp == $value ? 'btn-secondary' : 'btn-outline-secondary'; ?>">
+                <?= htmlspecialchars($label) ?>
+            </button>
+        <?php endforeach; ?>
+    </div>
+</form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('leistungstyp-filter-form');
+    const buttons = form.querySelectorAll('.d-none.d-md-flex button[type="submit"]'); // Selektor angepasst
+    const selectElement = form.querySelector('#leistungstyp-select'); // Select Element holen
+    const resultsContainerSelector = '#catalog-results';
+    const resultsContainer = document.querySelector(resultsContainerSelector);
+    // NEU: Ursprüngliche Select-Optionen (ohne "Alle") speichern
+    const originalSelectOptions = Array.from(selectElement.options).slice(1).map(opt => {
+        return { value: opt.value, text: opt.text }; // Wert und Text speichern
+    });
+
+    if (!form || !resultsContainer || !selectElement) { // Select Prüfung hinzugefügt
+        console.error('Filterformular, Ergebnis-Container oder Select-Element nicht gefunden. AJAX-Filter kann nicht initialisiert werden.');
+        return;
+    }
+
+    // --- Anfang: Funktionen zur Re-Initialisierung ---
+    let swiperInstances = {}; // Objekt zum Speichern der Swiper-Instanzen
+
+    function reinitializeSwiper(container) {
+        // Bestehende Instanzen für diesen Container zerstören (falls welche im Objekt gespeichert sind)
+        Object.keys(swiperInstances).forEach(key => {
+             if (container.querySelector(`[data-swiper-id="${key}"]`)) { // Prüfen ob Swiper noch im (neuen) Container ist
+                if (swiperInstances[key]) {
+                    swiperInstances[key].destroy(true, true);
+                }
+                delete swiperInstances[key];
+             }
+        });
+        
+        // Swiper für Elemente im *aktuellen* Container initialisieren
+        container.querySelectorAll('.detail-images').forEach((el, index) => {
+            // Eindeutige ID für die Instanzverwaltung generieren (z.B. aus Accordion-Item ID)
+            const parentAccordionItem = el.closest('.accordion-item');
+            const swiperId = parentAccordionItem ? parentAccordionItem.id + '_swiper' : 'swiper_' + index;
+            el.dataset.swiperId = swiperId; // ID am Element speichern
+
+            if (window.innerWidth < 992) {
+                if (!el.classList.contains('swiper-container')) {
+                    el.classList.add('swiper-container');
+                    const wrapper = el.querySelector(':scope > div'); // Annahme: erstes Div ist wrapper
+                    if (wrapper) wrapper.classList.add('swiper-wrapper');
+                    el.querySelectorAll(':scope > div > div').forEach(slide => { // Annahme: Divs im wrapper sind slides
+                        slide.classList.add('swiper-slide');
+                    });
+                    if (!el.querySelector('.swiper-button-next')) {
+                         el.insertAdjacentHTML('beforeend', '<div class="swiper-button-next"></div><div class="swiper-button-prev"></div>');
+                    }
+                }
+
+                 // Nur initialisieren, wenn noch keine Instanz für diese ID existiert
+                if (!swiperInstances[swiperId]) {
+                     try {
+                        swiperInstances[swiperId] = new Swiper(el, {
+                            slidesPerView: 1,
+                            spaceBetween: 10,
+                            navigation: {
+                                nextEl: el.querySelector('.swiper-button-next'),
+                                prevEl: el.querySelector('.swiper-button-prev'),
+                            },
+                            effect: 'slide'
+                        });
+                    } catch (e) {
+                        console.error("Swiper initialization failed for", el, e);
+                    }
+                }
+            } else {
+                 // Ggf. Desktop-Cleanup (falls Swiper nur mobil aktiv ist)
+                if (swiperInstances[swiperId]) {
+                    swiperInstances[swiperId].destroy(true, true);
+                    delete swiperInstances[swiperId];
+                }
+                 el.classList.remove('swiper-container');
+                 const wrapper = el.querySelector('.swiper-wrapper');
+                 if(wrapper) wrapper.classList.remove('swiper-wrapper');
+                 el.querySelectorAll('.swiper-slide').forEach(slide => slide.classList.remove('swiper-slide'));
+                 const nextButton = el.querySelector('.swiper-button-next');
+                 const prevButton = el.querySelector('.swiper-button-prev');
+                 if(nextButton) nextButton.remove();
+                 if(prevButton) prevButton.remove();
+            }
+        });
+    }
+
+    function reinitializeVenoBox(container) {
+        // Prüfen, ob VenoBox-Funktion existiert
+        if (typeof VenoBox === 'function') {
+            // Erstelle einen spezifischen Selektor für alle Lightbox-Links *innerhalb* des aktualisierten Containers
+            const containerId = container.id; // Hole die ID des Containers (sollte #catalog-results sein)
+            if (!containerId) {
+                console.error('Ergebnis-Container hat keine ID. VenoBox kann nicht spezifisch neu initialisiert werden.');
+                return;
+            }
+            const selector = `#${containerId} a[data-gall][class*="lightbox_"]`; 
+            
+            // Optional: Alte Instanzen zerstören (falls VenoBox eine API dafür hätte - hat es scheinbar nicht standardmäßig)
+            // Normalerweise reicht es, VenoBox neu aufzurufen, es sollte die Events neu binden.
+
+            try {
+                // Initialisiere VenoBox einmal für alle gefundenen Links im Container
+                new VenoBox({
+                    selector: selector,
+                    numeration: true,
+                    infinigall: true, // Ermöglicht Galerie über mehrere Swiper-Slides hinweg
+                    spinner: 'flow'
+                    // share: true // Optional: Share-Buttons hinzufügen
+                });
+                // console.log('VenoBox reinitialized for selector:', selector); // Debugging
+            } catch (e) {
+                console.error("VenoBox initialization failed for selector", selector, e);
+            }
+        } else {
+             console.warn('VenoBox function not found for reinitialization.');
+        }
+    }
+     // --- Ende: Funktionen zur Re-Initialisierung ---
+
+    // --- Anfang: Funktion zur Aktualisierung der Filter-Sichtbarkeit ---
+    function updateFilterVisibility() {
+        const accordion = resultsContainer.querySelector('.accordion[data-available-leistungstypen]'); // Finde das Accordion mit dem Data-Attribut
+        if (!accordion) {
+            console.warn('Accordion mit verfügbaren Leistungstypen nicht im Ergebnis-Container gefunden.');
+            // Optional: Alle Filter anzeigen/Optionen hinzufügen, wenn keine Daten vorhanden sind?
+            // Hier könnten wir alle originalSelectOptions hinzufügen
+            buttons.forEach(btn => btn.style.display = '');
+            // Aktuell: Select bleibt unverändert, wenn Accordion fehlt
+            return;
+        }
+
+        let availableTypes = [];
+        try {
+            availableTypes = JSON.parse(accordion.dataset.availableLeistungstypen);
+        } catch (e) {
+            console.error('Fehler beim Parsen der verfügbaren Leistungstypen:', e);
+            return; // Nicht fortfahren, wenn Daten ungültig sind
+        }
+
+        // Buttons durchgehen (Desktop)
+        buttons.forEach(button => {
+            const value = button.dataset.value;
+            if (value === '') { // "Alle" Button immer anzeigen
+                button.style.display = '';
+            } else {
+                button.style.display = availableTypes.includes(value) ? '' : 'none';
+            }
+        });
+
+        // --- Select Optionen neu aufbauen (Mobile) ---
+        const currentSelectedValue = selectElement.value; // Aktuellen Wert merken
+
+        // Alle Optionen außer der ersten ("Alle") entfernen
+        while (selectElement.options.length > 1) {
+            selectElement.remove(1);
+        }
+
+        // Nur die verfügbaren Optionen aus den ursprünglichen hinzufügen
+        originalSelectOptions.forEach(originalOption => {
+            if (availableTypes.includes(originalOption.value)) {
+                const optionElement = document.createElement('option');
+                optionElement.value = originalOption.value;
+                optionElement.text = originalOption.text;
+                selectElement.appendChild(optionElement);
+            }
+        });
+
+        // Versuchen, den zuvor ausgewählten Wert wiederherzustellen
+        selectElement.value = currentSelectedValue;
+        // Falls der alte Wert nicht mehr verfügbar ist, wird automatisch "Alle" ausgewählt (oder der erste verfügbare)
+        // Das ist meist das gewünschte Verhalten.
+    }
+    // --- Ende: Funktion zur Aktualisierung der Filter-Sichtbarkeit ---
+
+    // --- Anfang: Haupt-AJAX-Logik Funktion ---
+    async function performAjaxFilter(leistungstypValue) {
+        // Aktuelle URL-Parameter holen (ohne Leistungstyp)
+        const currentUrlParams = new URLSearchParams(window.location.search);
+        currentUrlParams.delete('leistungstyp'); // Alten Wert sicher entfernen
+
+        // Neuen Leistungstyp hinzufügen (wenn nicht "Alle" bzw. leer)
+        if (leistungstypValue) {
+            currentUrlParams.set('leistungstyp', leistungstypValue);
+        }
+        // Seitenzahl zurücksetzen
+        currentUrlParams.delete('page');
+
+        const newQueryString = currentUrlParams.toString();
+        const targetUrl = window.location.pathname + (newQueryString ? '?' + newQueryString : '');
+
+        // Visuelles Feedback
+        resultsContainer.style.opacity = '0.5';
+        buttons.forEach(b => b.disabled = true);
+        selectElement.disabled = true;
+
+        // Bestehende Swiper Instanzen zerstören
+        Object.values(swiperInstances).forEach(instance => instance.destroy(true, true));
+        swiperInstances = {};
+
+        try {
+            const response = await fetch(targetUrl, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const html = await response.text();
+            resultsContainer.innerHTML = html;
+
+            // Re-Initialisierung
+            reinitializeSwiper(resultsContainer);
+            reinitializeVenoBox(resultsContainer);
+
+            // URL aktualisieren
+            history.pushState({leistungstyp: leistungstypValue}, '', targetUrl);
+
+            // Aktiven Zustand synchronisieren (Buttons & Select)
+            updateFilterState(leistungstypValue);
+            // NEU: Sichtbarkeit der Filter aktualisieren
+            updateFilterVisibility();
+
+        } catch (error) {
+            console.error('Fehler beim Laden der Filterergebnisse:', error);
+        } finally {
+            // Visuelles Feedback entfernen
+            resultsContainer.style.opacity = '1';
+            buttons.forEach(b => b.disabled = false);
+            selectElement.disabled = false;
+        }
+    }
+    // --- Ende: Haupt-AJAX-Logik Funktion ---
+
+    // --- Anfang: Funktion zum Aktualisieren des Filterzustands (UI) ---
+    function updateFilterState(activeValue) {
+         // Select aktualisieren
+        selectElement.value = activeValue;
+
+        // Buttons aktualisieren
+        buttons.forEach(b => {
+            const buttonValue = b.dataset.value; // data-value Attribut verwenden
+            if (buttonValue === activeValue) {
+                b.classList.remove('btn-outline-secondary');
+                b.classList.add('btn-secondary');
+            } else {
+                b.classList.remove('btn-secondary');
+                b.classList.add('btn-outline-secondary');
+            }
+        });
+    }
+     // --- Ende: Funktion zum Aktualisieren des Filterzustands (UI) ---
+
+    // Initialer Aufruf für den initial geladenen Inhalt
+    reinitializeSwiper(resultsContainer);
+    reinitializeVenoBox(resultsContainer);
+
+    // --- Anfang: Warten auf Accordion und Daten für initiale Sichtbarkeit ---
+    const initialVisibilityCheckInterval = setInterval(() => {
+        const accordionForVisibility = resultsContainer.querySelector('.accordion[data-available-leistungstypen]');
+        // Prüfe, ob das Element existiert UND das Data-Attribut einen Wert hat
+        if (accordionForVisibility && accordionForVisibility.dataset.availableLeistungstypen) { 
+            console.log('Accordion mit data-available-leistungstypen gefunden:', accordionForVisibility.dataset.availableLeistungstypen);
+            clearInterval(initialVisibilityCheckInterval);
+            updateFilterVisibility(); // Jetzt die Sichtbarkeit aktualisieren
+            console.log('Initiale Filter Sichtbarkeit aktualisiert.');
+        } else if (accordionForVisibility) {
+            console.log('Accordion gefunden, aber data-available-leistungstypen fehlt oder ist leer.');
+        } else {
+            // console.log('Warte auf Accordion mit data-available-leistungstypen...'); // Optional: sehr gesprächig
+        }
+    }, 150); // Etwas längeres Intervall (150ms)
+
+    // Timeout, um eine Endlosschleife zu verhindern
+    const visibilityTimeout = setTimeout(() => {
+        // Prüfen ob Interval noch aktiv ist bevor wir es löschen
+        // clearTimeout braucht die ID des Timeouts, clearInterval die des Intervals
+        if (typeof initialVisibilityCheckInterval !== 'undefined') { 
+             clearInterval(initialVisibilityCheckInterval);
+             // Loggen, wenn Element oder Attribut nach Timeout nicht gefunden wurde
+             const finalAccordion = resultsContainer.querySelector('.accordion[data-available-leistungstypen]');
+             if (!finalAccordion) {
+                 console.warn('Accordion für initiale Sichtbarkeitsprüfung nach Timeout (5s) nicht gefunden.');
+             } else if (!finalAccordion.dataset.availableLeistungstypen) {
+                 console.warn('Accordion gefunden, aber data-available-leistungstypen nach Timeout (5s) immer noch leer.');
+             }
+        }
+    }, 5000); // Timeout nach 5 Sekunden
+    // --- Ende: Warten auf Accordion und Daten ---
+
+    // Event Listener für Buttons (Desktop)
+    buttons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const leistungstypValue = event.currentTarget.dataset.value; // data-value verwenden
+            performAjaxFilter(leistungstypValue);
+        });
+    });
+
+     // Event Listener für Select (Mobile)
+    selectElement.addEventListener('change', (event) => {
+        const leistungstypValue = event.target.value;
+        performAjaxFilter(leistungstypValue);
+    });
+
+    // Behandlung für Browser-Navigation (Vor/Zurück-Buttons)
+    window.addEventListener('popstate', (event) => {
+        // Neuen Zustand aus URL lesen und Filter auslösen
+        const params = new URLSearchParams(window.location.search);
+        const leistungstypFromUrl = params.get('leistungstyp') || ''; // Standard ist "Alle"
+        updateFilterState(leistungstypFromUrl); // Nur UI updaten reicht nicht, AJAX muss neu laden!
+        // Einfachste Lösung bleibt Neuladen, um Konsistenz zu wahren
+        window.location.reload();
+        // Alternative (komplexer): performAjaxFilter(leistungstypFromUrl); // löst erneuten Fetch aus
+    });
+
+    // Initialen Filterzustand setzen (falls Seite mit Parameter geladen wird)
+    const initialParams = new URLSearchParams(window.location.search);
+    const initialLeistungstyp = initialParams.get('leistungstyp') || '';
+    updateFilterState(initialLeistungstyp);
+
+});
+</script>

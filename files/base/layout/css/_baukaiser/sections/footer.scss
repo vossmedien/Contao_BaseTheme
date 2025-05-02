@@ -1,0 +1,175 @@
+#container {
+  &:has( + #footer #ansprechpartner) {
+    @include media-breakpoint-up(lg) {
+      padding-bottom: calc(var(--main-gap) * 3);
+    }
+  }
+}
+
+
+footer {
+  background: url("/files/base/layout/img/baukaiser/footer-pattern.svg") center center / cover repeat;
+  //border-top: 3px solid $primary;
+  padding-top: var(--main-gap);
+
+
+  &:has(#ansprechpartner) {
+    padding-top: 0;
+
+    @include media-breakpoint-down(lg) {
+      #ansprechpartner {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        margin-bottom: calc(var(--main-gap) * 1.5);
+      }
+    }
+
+    @include media-breakpoint-up(lg) {
+      //margin-top: calc(var(--main-gap) * 2);
+
+      > .mod_article:first-child {
+        margin-bottom: calc(-1 * var(--main-gap) * 1.5);
+      }
+      #ansprechpartner {
+        width: auto;
+        transform: translate(0, -50%);
+      }
+    }
+  }
+
+
+  div.footer-helix {
+    margin-top: 2.5rem;
+
+    img {
+      height: 250px;
+      width: 100vw;
+      object-fit: cover;
+
+      @include media-breakpoint-up(lg) {
+        height: 200px;
+      }
+    }
+  }
+
+  #footerNav {
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+
+      @include media-breakpoint-up(lg) {
+        text-align: center;
+      }
+
+      > li {
+        display: inline-block;
+        text-align: center;
+        margin-right: 1rem;
+        @include media-breakpoint-up(lg) {
+          margin-inline: 1rem;
+        }
+      }
+    }
+  }
+
+
+  .ce_rsce_row1start {
+    strong.h5 {
+      font-size: rfs-value(20px);
+      font-weight: $font-weight-bold;
+    }
+
+    .content-text {
+      @include media-breakpoint-up(lg) {
+        margin-bottom: 1.5rem;
+      }
+    }
+  }
+
+
+  nav {
+    ul.level_1 {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+
+      > li {
+        &:not(:last-child) {
+          margin-bottom: .75rem;
+        }
+
+        > * {
+          &:before {
+            @extend %fa-icon;
+            @extend .fasl;
+            content: '\f105';
+            margin-right: .5rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+.social-icons-container {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 2rem;
+  justify-content: flex-start;
+
+
+  .social-icon {
+    display: inline-block;
+    min-width: 60px;
+
+
+    a {
+      display: block;
+      text-align: center;
+
+      i {
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+
+
+      small {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
+
+html body footer {
+
+  @include media-breakpoint-down(lg) {
+    margin-top: 120px;
+  }
+
+  #ansprechpartner {
+    background: url("/files/base/layout/img/baukaiser/metall-pattern.svg") center center / cover repeat;
+    border-radius: $border-radius;
+    //border: 1px solid #BFCACE;
+    overflow: hidden;
+
+    @include media-breakpoint-down(lg) {
+      margin-inline: 1rem;
+      margin-top: -100px;
+    }
+
+    .content--inner {
+      padding: calc(var(--main-gap) / 3);
+      hyphens: none;
+
+      @include media-breakpoint-up(lg) {
+        padding: var(--main-gap);
+      }
+    }
+  }
+
+}

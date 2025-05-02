@@ -14,6 +14,7 @@ $theme-colors: (
 );
 
 
+
 $spacers: (
         0: 0,
         1: 0.5rem,
@@ -37,26 +38,6 @@ $gutters: (
         5: $grid-gutter-width * 4,
 );
 
-//CSS Variablen beachten
-$container-max-widths: (
-        sm: 100%,
-        md: 100%,
-        lg: 100%,
-        xl: 1140px,
-        xxl: 1600px
-);
-
-
-$grid-breakpoints: (
-        xs: 0,
-        sm: 576px,
-        md: 768px,
-        lg: 992px,
-        xl: 1200px,
-        xxl: 1640px,
-);
-
-
 
 
 $headings-font-sizes: (
@@ -68,7 +49,7 @@ $headings-font-sizes: (
         'h2': (
                 'mobile': 29px,
                 'tablet': 39px,
-                'desktop': 49px
+                'desktop': 42px
         ),
         'h3': (
                 'mobile': 26px,
@@ -93,17 +74,67 @@ $headings-font-sizes: (
 );
 
 
+// Definieren Sie die Topline Font Sizes abhängig von der Headline-Ebene
+$topline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 39px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
+
+// Definieren Sie die Subline Font Sizes abhängig von der Headline-Ebene
+$subline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 39px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h3': ('mobile': 26px, 'tablet': 30px, 'desktop': 30px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
 
 
-$theme-colors: (
-  "primary":    $primary,
-  "secondary":  $secondary,
-  "success":    $success,
-  "info":       $info,
-  "warning":    $warning,
-  "danger":     $danger,
-  "light":      $light,
-  "dark":       $dark
+// NEUE MAP: Abstände nach Überschriften (margin-bottom)
+$headline-margins: (
+        'h1': 2rem,
+        'h2': 1.75rem,
+        'h3': 1.5rem,
+        'h4': 1.25rem,
+        'h5': 1rem,
+        'h6': 0.75rem
+);
+
+// NEUE MAP: Mobile Abstände nach Überschriften
+$mobile-headline-margins: (
+        'h1': 1rem,
+        'h2': 1rem,
+        'h3': 1rem,
+        'h4': 0.9rem,
+        'h5': 0.8rem,
+        'h6': 0.6rem
+);
+
+
+
+// NEUE MAP: Abstände für Toplines (margin)
+$topline-margins: (
+        'h1': 0 0 .4em 0,
+        'h2': 0 0 .1em 0,
+        'h3': 0 0 .2em 0,
+        'h4': 0 0 .2em 0,
+        'h5': 0 0 .2em 0,
+        'h6': 0
+);
+
+// NEUE MAP: Abstände für Sublines (margin)
+$subline-margins: (
+        'h1': .2em 0 0 0,
+        'h2': .2em 0 0 0,
+        'h3': .2em 0 0 0,
+        'h4': .2em 0 0 0,
+        'h5': .2em 0 0 0,
+        'h6': .2em 0 0 0
 );
 
 
@@ -126,3 +157,7 @@ $container-max-widths: (
         xl: 1140px,
         xxl: 1140px
 );
+
+
+
+

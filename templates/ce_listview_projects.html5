@@ -1,29 +1,71 @@
 <?php $this->extend('block_searchable'); ?>
 <?php $this->block('content'); ?>
+<?php
+// Prüfen, ob es eine AJAX-Anfrage ist
+$isAjaxRequest = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
 
-    <div class="accordion" id="accordion_<?= $this->id ?>">
+// Sammle alle eindeutigen Leistungstyp-Werte (Slugs) aus den Entitäten
+$availableLeistungstypen = [];
+if (!empty($this->entities)) {
+    foreach ($this->entities as $arrEntity) {
+        if (!empty($arrEntity['leistungstyp']) && is_array($arrEntity['leistungstyp'])) {
+            foreach ($arrEntity['leistungstyp'] as $leistungstyp) {
+                // Annahme: Der relevante Wert (Slug) ist im Schlüssel 'value' gespeichert.
+                // Passe dies an, falls die Datenstruktur anders ist.
+                if (isset($leistungstyp['value'])) {
+                    $availableLeistungstypen[] = $leistungstyp['value'];
+                } elseif (is_string($leistungstyp)) { // Fallback falls es nur Strings sind
+                     $availableLeistungstypen[] = $leistungstyp;
+                }
+            }
+        }
+    }
+    $availableLeistungstypen = array_unique($availableLeistungstypen);
+}
+?>
+
+<div class="container">
+    <div class="accordion" id="accordion_<?= $this->id ?>" data-available-leistungstypen="<?= htmlspecialchars(json_encode(array_values($availableLeistungstypen))) ?>">
         <?php foreach ($this->entities as $index => $arrEntity): ?>
             <?php $projectId = 'project-' . $arrEntity['id']; ?>
             <div class="accordion-item detail-item" data-animation="fade-up" id="<?= $projectId ?>">
                 <div class="accordion-header" id="heading<?= $index . $this->id ?>">
-                    <div class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse<?= $index . $this->id ?>" aria-expanded="false" aria-controls="collapse<?= $index . $this->id ?>">
-                        <div>
-                            <h3 class="mb-1 h5">
-                                <?= $arrEntity['projektname'] ?>
-                            </h3>
-                            <?php if ($arrEntity['leistungstyp']): ?>
-                                <p class="h6 mb-0">
-                                    <?php
-                                    $leistungstypen = [];
-                                    foreach ($arrEntity['leistungstyp'] as $leistungstyp) {
-                                        if (isset($leistungstyp['label'])) {
-                                            $leistungstypen[] = basename($leistungstyp['label']);
+                    <?php // Klassen: d-block standard (mobile), d-lg-flex ab 768px für Desktop-Layout ?>
+                    <div class="accordion-button w-auto row gy-2 gx-lg-4 row collapsed d-block d-lg-flex justify-content-lg-between align-items-lg-center" data-bs-toggle="collapse" data-bs-target="#collapse<?= $index . $this->id ?>" aria-expanded="false" aria-controls="collapse<?= $index . $this->id ?>">
+                        
+                        <?php // Bild: Im HTML zuerst für mobile Ansicht oben, auf Desktop via order nach rechts ?>
+                        <?php if ($arrEntity['teaser_image']): ?>
+                            <div class="teaser-image col-lg-6 mb-2 mb-lg-0 text-center order-lg-2"> <?php // Abstand unten mobil, kein Abstand Desktop, Reihenfolge Desktop: 2 ?>
+                                <?php
+                                $teaserImage = \Alnv\ContaoCatalogManagerBundle\Helper\Toolkit::parseImage($arrEntity['teaser_image']);
+                                if ($teaserImage):
+                                    echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($teaserImage, null, '', ["620", "160", "crop"], 'img-fluid', false, false, false);
+                                endif;
+                                ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php // Neuer Wrapper für Pfeil + Text ?>
+                        <div class="accordion-button-content col-lg-6 d-flex order-lg-1">
+                             <?php // ::before Pfeil wird durch SCSS hier eingefügt ?>
+                             <div class="flex-grow-1"> <?php // Text nimmt Restplatz ein ?>
+                                <h3 class="mb-1 h5">
+                                    <?= $arrEntity['projektname'] ?>
+                                </h3>
+                                <?php if ($arrEntity['leistungstyp']): ?>
+                                    <p class="h6 mb-0">
+                                        <?php
+                                        $leistungstypen = [];
+                                        foreach ($arrEntity['leistungstyp'] as $leistungstyp) {
+                                            if (isset($leistungstyp['label'])) {
+                                                $leistungstypen[] = basename($leistungstyp['label']);
+                                            }
                                         }
-                                    }
-                                    echo implode(', ', $leistungstypen);
-                                    ?>
-                                </p>
-                            <?php endif; ?>
+                                        echo implode(', ', $leistungstypen);
+                                        ?>
+                                    </p>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -65,6 +107,13 @@
                                     </ul>
                                     </div>
                                 <?php endif; ?>
+
+                                <?php if ($arrEntity['additional_content']): ?>
+                                    <div class="detail-additional-content mt-3">
+                                        <?= $arrEntity['additional_content'] ?>
+                                    </div>
+                                <?php endif; ?>
+
                             </div>
                             <div class="col-lg-6">
                                 <?php if ($arrEntity['bilder']): ?>
@@ -111,84 +160,9 @@
             </div>
         <?php endforeach; ?>
     </div>
-
+</div>
 <?= $this->pagination ?>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            let swipers = [];
-
-            function initSwipers() {
-                document.querySelectorAll('.detail-images').forEach((el, index) => {
-                    if (window.innerWidth < 992) {
-                        if (!el.classList.contains('swiper-container')) {
-                            el.classList.add('swiper-container');
-                            el.querySelector(':scope > div').classList.add('swiper-wrapper');
-                            el.querySelectorAll(':scope > div > div').forEach(slide => {
-                                slide.classList.add('swiper-slide');
-                            });
-
-                            if (!el.querySelector('.swiper-button-next')) {
-                                el.insertAdjacentHTML('beforeend', '<div class="swiper-button-next"></div><div class="swiper-button-prev"></div>');
-                            }
-                        }
-
-                        if (!swipers[index]) {
-                            swipers[index] = new Swiper(el, {
-                                slidesPerView: 1,
-                                spaceBetween: 10,
-                                navigation: {
-                                    nextEl: '.swiper-button-next',
-                                    prevEl: '.swiper-button-prev',
-                                },
-                                effect: 'slide'
-                            });
-                        } else {
-                            swipers[index].update();
-                        }
-                    } else {
-                        if (swipers[index]) {
-                            swipers[index].destroy(true, true);
-                            swipers[index] = null;
-                        }
-
-                        el.classList.remove('swiper-container');
-                        el.querySelector(':scope > div').classList.remove('swiper-wrapper');
-                        el.querySelectorAll(':scope > div > div').forEach(slide => {
-                            slide.classList.remove('swiper-slide');
-                        });
-
-                        const nextButton = el.querySelector('.swiper-button-next');
-                        const prevButton = el.querySelector('.swiper-button-prev');
-                        if (nextButton) nextButton.remove();
-                        if (prevButton) prevButton.remove();
-                    }
-                });
-            }
-
-            initSwipers();
-
-            window.addEventListener('resize', function () {
-                initSwipers();
-            });
-
-            // Überprüfen, ob ein Anker in der URL vorhanden ist
-            if (window.location.hash) {
-                var targetAccordion = document.querySelector(window.location.hash);
-                if (targetAccordion) {
-                    var collapseElement = targetAccordion.querySelector('.accordion-collapse');
-                    if (collapseElement) {
-                        var bsCollapse = new bootstrap.Collapse(collapseElement, {
-                            toggle: false
-                        });
-                        bsCollapse.show();
-
-                        // Scroll zum Element
-                        targetAccordion.scrollIntoView({behavior: 'smooth'});
-                    }
-                }
-            }
-        });
-    </script>
-
+<?php // WICHTIG: Wenn es eine AJAX-Anfrage ist, hier die Skriptausführung beenden!
+if ($isAjaxRequest) { exit; } ?>
 <?php $this->endblock(); ?>

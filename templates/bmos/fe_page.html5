@@ -45,9 +45,6 @@ $this->bodyAttributes = $this
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/_b-mos/styles.min.css|static';
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/_b-mos/root-variables.min.css|static';
 
-
-    //$GLOBALS['TL_HEAD'][] = '<link rel="preload" href="files/base/layout/css/caeli_relaunch.min.css" as="style" crossorigin="anonymous">';
-    //$GLOBALS['TL_HEAD'][] = '<link rel="preload" href="files/base/layout/css/_caeli_relaunch/root-variables.min.css" as="style" crossorigin="anonymous">';
     ?>
 
     <?= $this->mooScripts ?>
@@ -55,7 +52,8 @@ $this->bodyAttributes = $this
     <?php $this->endblock(); ?>
 
     <meta name="google-site-verification" content="_zW0qsup4ZmfvafaDWCdonOb9osbg8EMKMwWvbO3pqk"/>
-
+  <link rel="preload" href="/files/base/layout/_fonts/Inter/inter-v18-latin-300.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/files/base/layout/_fonts/Inter/inter-v18-latin-700.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <!-- matelso Calltracking -->
     <script>
         (function (m, a, t, e, l, s, o) {
@@ -129,7 +127,7 @@ $this->bodyAttributes = $this
 </script>
 
 
-<div class="BodyScrollToTop"><i class="fa-sharp fa-light fa-arrow-up"></i></div>
+<div class="BodyScrollToTop"><i class="fasl fa-arrow-up"></i></div>
 <?php $this->block('body'); ?>
 <?php $this->sections('top'); ?>
 

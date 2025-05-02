@@ -138,7 +138,11 @@ class ImageHelper
     {
         // SVG direkt ausgeben
         if (strtolower(pathinfo($imagePath, PATHINFO_EXTENSION)) === 'svg') {
-            return self::handleSvg($imagePath, $rootDir, $altText, $meta, $headline, [], $class);
+            // Korrekter Aufruf: SVG in unknown Format soll auch als unknown behandelt werden, oder direkt als SVG-img? Besser unknown.
+            // Die vorherige Version rief handleSvg auf, was aber $caption etc. nicht hatte. Bleiben wir bei unknown für Konsistenz.
+            // Alternative: Wenn SVG hier erkannt wird, könnte man an das *neue* handleSvg weiterleiten:
+            // return self::handleSvg($imagePath, $rootDir, $altText, $meta, $headline, [], $class, $caption, '', false, $lazy);
+            // --> Entscheide mich für die Konsistenz: Wenn es als unknown eingestuft wurde, behandeln wir es so.
         }
 
         $imageSrc = str_replace($rootDir, '', $imagePath);
@@ -425,7 +429,7 @@ class ImageHelper
 
         switch ($imageFormat['type']) {
             case 'svg':
-                return self::handleSvg($baseImagePath, $rootDir, $altText, $meta, $headline, $size, $class);
+                return self::handleSvg($baseImagePath, $rootDir, $altText, $meta, $headline, $size, $class, $caption, $imageUrl, $colorBox, $lazy);
             case 'unknown':
                 return self::handleUnknownFormat($baseImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
             case 'webp':
@@ -874,12 +878,15 @@ class ImageHelper
         return '/' . implode('/', $encodedSegments) . '/' . $encodedFileName;
     }
 
-    private static function handleSvg($baseImagePath, $rootDir, $altText, $meta, $headline, $size, $class): string
+    private static function handleSvg($baseImagePath, $rootDir, $altText, $meta, $headline, $size, $class, $caption, $imageUrl, $colorBox, $lazy): string
     {
         $imageSrc = str_replace($rootDir, '', $baseImagePath);
         $imageSrc = self::encodePath($imageSrc);
 
         $alt = self::cleanAttribute($altText ?: (!empty($meta['alt']) ? $meta['alt'] : (!empty($headline) ? $headline : 'SVG Bild')));
+        $title = self::cleanAttribute(!empty($meta['title']) ? $meta['title'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : (!empty($alt) ? $alt : ''))));
+        $finalCaption = self::cleanAttribute($caption ?: (!empty($meta['caption']) ? $meta['caption'] : ''));
+        $finalLink = self::cleanAttribute($imageUrl ?: (!empty($meta['link']) ? $meta['link'] : ''));
 
         $style = '';
         if ($size && is_array($size)) {
@@ -890,14 +897,67 @@ class ImageHelper
         }
 
         $svgTag = sprintf(
-            '<img data-src="%s" alt="%s" class="lazy %s"%s>',
+            '<img %ssrc="%s" alt="%s" class="%s%s"%s%s%s>',
+            $lazy ? 'data-' : '',
             $imageSrc,
             $alt,
+            $lazy ? 'lazy ' : '',
             htmlspecialchars($class),
-            $style ? ' style="' . htmlspecialchars($style) . '"' : ''
+            $style ? ' style="' . htmlspecialchars($style) . '"' : '',
+            $title ? ' title="' . $title . '"' : '',
+            $lazy ? ' loading="lazy"' : ''
         );
 
-        return '<figure>' . $svgTag . '</figure>';
+        // Figure Tag erstellen
+        $figureOutput = '<figure>' . $svgTag;
+        if ($finalCaption) {
+            $figureOutput .= '<figcaption>' . $finalCaption . '</figcaption>';
+        }
+        $figureOutput .= '</figure>';
+
+        // Link Handling (ähnlich wie in generateImageHTML)
+        // Für SVGs ist der lightboxImageSrc derselbe wie der imageSrc
+        $lightboxImageSrc = $imageSrc;
+
+        if ($finalLink || $colorBox) {
+            $linkAttributes = [
+                // Priorisiere $finalLink (also $imageUrl), falle zurück auf $lightboxImageSrc (nur für colorbox relevant)
+                'href' => self::cleanAttribute($finalLink ?: $lightboxImageSrc),
+                'title' => $title ?: null,
+                'data-gall' => $colorBox ? "group_" . self::cleanAttribute((string)$colorBox) : null,
+                'class' => $colorBox ? "lightbox_" . self::cleanAttribute((string)$colorBox) : null
+            ];
+
+            // target nur, wenn es ein expliziter Link ist, nicht bei Colorbox ohne Link
+            if ($finalLink && !$colorBox) {
+                // Prüfen ob der Link extern ist
+                $isExternal = (str_starts_with($finalLink, 'http://') || str_starts_with($finalLink, 'https://')) && !str_contains($finalLink, $_SERVER['HTTP_HOST'] ?? '');
+                if ($isExternal) {
+                    $linkAttributes['target'] = '_blank';
+                    $linkAttributes['rel'] = 'noopener noreferrer';
+                }
+            }
+
+            $linkAttributesString = implode(' ', array_filter(array_map(
+                function ($key, $value) {
+                    return $value !== null ? $key . '="' . htmlspecialchars((string)$value) . '"' : null; // htmlspecialchars für Werte
+                },
+                array_keys($linkAttributes),
+                $linkAttributes
+            )));
+
+            $figureOutput = "<a {$linkAttributesString}>{$figureOutput}</a>";
+        }
+
+        // Lazy Loading Handling (ersetzen von data-Attributen)
+        if (!$lazy) {
+            $figureOutput = str_replace("data-src", "src", $figureOutput);
+            $figureOutput = preg_replace('/\sclass="lazy(.*?)"/', ' class="$1"', $figureOutput);
+            $figureOutput = str_replace('class=" "', '', $figureOutput);
+            $figureOutput = str_replace(' loading="lazy"', '', $figureOutput); // loading Attribut entfernen
+        }
+
+        return $figureOutput;
     }
 
     public static function generateImageURL($imageSource, array|string|null $size = null): string

@@ -16,7 +16,7 @@
 
 
 footer {
-  background: url("/files/base/layout/img/bg-pattern.svg") center center / cover repeat;
+  background: url("/files/base/layout/img/bmos/bg-pattern.svg") center center / cover repeat;
   border-top: 3px solid $primary;
 
   padding-top: var(--main-gap);
@@ -34,8 +34,10 @@ footer {
      }
 
 
+
+
     @include media-breakpoint-up(md) {
-      margin-top: calc(var(--main-gap) * 2);
+      margin-top: calc(var(--main-gap) * 8);
 
       > .mod_article:first-child {
         margin-bottom: calc(-1 * var(--main-gap) * 1.5);
@@ -50,6 +52,12 @@ footer {
         }
       }
     }
+
+      @include media-breakpoint-up(lg) {
+        margin-top: calc(var(--main-gap) * 3);
+     }
+
+
   }
 
   @include media-breakpoint-up(md) {

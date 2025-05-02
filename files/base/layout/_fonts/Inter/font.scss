@@ -1,18 +1,52 @@
+/* === Fallback Font Face (Arial angepasst an Inter) === */
+/* Diese Regeln versuchen, die Abmessungen von Arial so zu ändern,
+   dass sie denen von Inter entsprechen, um CLS zu minimieren.
+   Die genauen Werte können je nach Schriftversion variieren und
+   sollten idealerweise mit Font-Analyse-Tools ermittelt werden.
+   Die hier verwendeten Werte sind Schätzungen basierend auf üblichen Metriken. */
+@font-face {
+  font-family: 'Inter Fallback';
+  /* Passe die Größe an (Inter ist oft etwas schmaler/kleiner als Arial bei gleicher Schriftgröße) */
+  size-adjust: 95%;
+  /* Passe Auf-/Abstieg an Inter an */
+  ascent-override: 102.5%; /* Schätzung: (Inter Ascent / Arial Ascent) */
+  descent-override: 116.6%;/* Schätzung: (Inter Descent / Arial Descent) */
+  line-gap-override: 0%;   /* Beide haben meist 0 */
+  src: local('Arial'); /* Oder eine andere weit verbreitete Fallback-Schrift */
+}
+
+/* === Original Inter Font Faces === */
 /* inter-300 - latin */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: swap; /* Beibehalten, aber der Swap ist dank Fallback weniger störend */
   font-family: 'Inter';
   font-style: normal;
   font-weight: 300;
-  src: url('/files/base/layout/_fonts/Inter/inter-v18-latin-300.woff2') format('woff2'), /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-       url('/files/base/layout/_fonts/Inter/inter-v18-latin-300.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+  src: url('/files/base/layout/_fonts/Inter/inter-v18-latin-300.woff2') format('woff2'),
+       url('/files/base/layout/_fonts/Inter/inter-v18-latin-300.ttf') format('truetype');
 }
+
 /* inter-700 - latin */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: swap;
   font-family: 'Inter';
   font-style: normal;
   font-weight: 700;
-  src: url('/files/base/layout/_fonts/Inter/inter-v18-latin-700.woff2') format('woff2'), /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-       url('/files/base/layout/_fonts/Inter/inter-v18-latin-700.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+  src: url('/files/base/layout/_fonts/Inter/inter-v18-latin-700.woff2') format('woff2'),
+       url('/files/base/layout/_fonts/Inter/inter-v18-latin-700.ttf') format('truetype');
+}
+
+/* === CSS Anwendung === */
+/* Stelle sicher, dass du die Fallback-Schrift in deiner font-family-Deklaration hinzufügst: */
+/* Beispiel: */
+body {
+  font-family: 'Inter', 'Inter Fallback', Arial, sans-serif;
+}
+
+h1, h2, h3, strong, b {
+  /* Wenn du für fette Schriften eine separate Fallback-Definition brauchst,
+     könntest du eine 'Inter Fallback Bold' erstellen und hier hinzufügen.
+     Oft reicht aber die normale Fallback-Definition. */
+  font-family: 'Inter', 'Inter Fallback', Arial, sans-serif;
+  font-weight: 700; /* Stelle sicher, dass der richtige font-weight gesetzt ist */
 }

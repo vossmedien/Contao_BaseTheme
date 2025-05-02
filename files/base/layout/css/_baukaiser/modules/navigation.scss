@@ -1,0 +1,73 @@
+.header-bar:has(.level_1>li.submenu:hover:last-child) > .nav-bg {
+  border-bottom-right-radius: 0 !important
+}
+
+
+#mainNav ul.level_1 > li {
+    > *{
+        color: $medium-gray;
+    }
+
+  &:first-child {
+    .level_2 {
+      margin-left: 1rem;
+      min-width: calc(100% - 1rem);
+    }
+  }
+}
+
+#mainNav ul.level_2 {
+  max-height: 0;
+  transition: max-height .5s ease-in-out;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  padding: 0;
+  background-color: #fff;
+  border-radius: 0 0 9pt 9pt;
+  box-shadow: 0 0 1pc rgba(0, 0, 0, .15);
+  margin-top: -1px;
+  min-width: 100%;
+
+}
+
+#mainNav ul.level_2 > li {
+  display: block;
+
+  &:first-child {
+    margin-top: .75rem;
+  }
+}
+
+#mainNav ul.level_2 > li > * {
+  padding: .5rem 1rem;
+  display: block;
+  white-space: nowrap;
+}
+
+#mainNav li:has(.level_2) {
+  display: inline-block;
+  position: relative
+}
+
+#mainNav li:has(.level_2):hover ul.level_2 {
+  max-height: 500px
+}
+
+#mainNav li:has(.level_2) a.active, #mainNav li:has(.level_2) a:hover {
+  color: var(--bs-primary)
+}
+
+.mm-spn.mod_navigation li:not(.extra-content) a {
+  white-space: nowrap
+}
+
+
+.mm-spn.mod_navigation div.extra-content ul{
+  white-space: nowrap;
+}
+
+.mm-spn.mod_navigation div.extra-content a {
+  color: var(--bs-body-color-inverse);
+}

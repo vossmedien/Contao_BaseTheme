@@ -41,3 +41,7 @@
 .mm-spn.mod_navigation li:not(.extra-content) a {
     white-space: nowrap
 }
+
+.mm-spn.mod_navigation div.extra-content a{
+    color: var(--bs-body-color-inverse);
+}

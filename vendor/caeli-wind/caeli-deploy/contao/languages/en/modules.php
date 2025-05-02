@@ -15,6 +15,6 @@ declare(strict_types=1);
 /**
  * Backend modules
  */
-$GLOBALS['TL_LANG']['MOD']['caeli'] = 'B-MOS';
+$GLOBALS['TL_LANG']['MOD']['caeli'] = 'Nürnberger Baugruppe';
 $GLOBALS['TL_LANG']['MOD']['deploy'] = ['Deployment', ''];
 

@@ -1,22 +1,27 @@
+<div class="header-bar">
+    <div class="nav-bg d-none d-lg-block"></div>
 
-    <div class="header-bar">
-        <div  class="nav-bg d-none d-lg-block"></div>
+
+    <div class="nav-wrapper">
         <div class="logo" data-animation="animate__fadeInDown">
-            <a title="B-MOS" href="/">
-                <img alt="B-MOS Logo" title="B-MOS" src="/files/base/layout/img/logo.png">
+            <a title="Baukaiser" href="/">
+                <img alt="Baukaiser" title="B-MOS" src="/files/base/layout/img/baukaiser/logo.svg">
             </a>
         </div>
 
-        <div class="d-none d-lg-block">
+        <div class="d-none d-lg-block navigation-holder">
             {{insert_module::10}}
         </div>
 
-
-        <a class="mobileNav__activator d-lg-none" href="#mobileNav">
-            <span>Menu</span>
-            <i class="fa-bars fass"></i>
-        </a>
+            <a class="mobileNav__activator d-lg-none" href="#mobileNav">
+        <span>Menu</span>
+        <i class="fa-bars fass"></i>
+    </a>
     </div>
+
+
+
+</div>
 
 
 {{insert_module::8}}

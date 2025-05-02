@@ -15,7 +15,7 @@ $this->wrapperAttributes = $this
 
 <div class="logo">
     <a title="B-MOS" href="/">
-        <img class="lazy" alt="B-MOS Logo" title="B-MOS" data-src="/files/base/layout/img/logo.png">
+        <img class="lazy" alt="B-MOS Logo" title="B-MOS" data-src="/files/base/layout/img/bmos/logo.png">
     </a>
 </div>
 

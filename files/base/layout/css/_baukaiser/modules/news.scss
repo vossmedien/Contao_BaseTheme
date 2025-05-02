@@ -1,0 +1,132 @@
+#wrapper #main .mod_article .layout_full {
+  @include media-breakpoint-up(xl) {
+    .content--element.content-text {
+      max-width: 75%;
+      margin: 0;
+    }
+  }
+
+  .content--element:not(:last-child) {
+    margin-bottom: var(--main-gap);
+  }
+}
+
+p.back {
+  margin-top: 1rem;
+  text-align: right;
+
+  a {
+    border-bottom: 1px solid currentColor;
+    padding-bottom: .15rem;
+  }
+}
+
+p.more {
+  a {
+    font-weight: $font-weight-bold;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: .15rem;
+  }
+}
+
+.mod_newslist > .container > div{
+  display: flex;
+  flex-flow: row wrap;
+  gap: var(--main-gap);
+  padding-bottom: var(--main-gap);
+
+  .layout_latest{
+    @include media-breakpoint-up(md) {
+      width: calc(50% - var(--main-gap) / 2);
+    }
+  }
+}
+
+// Pagination Styling
+nav.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: var(--main-gap);
+
+  p {
+    display: none; // Verstecke "Seite X von Y"
+  }
+
+  ul {
+    list-style: none;
+    padding: 0 !important;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: .5em; // Ggf. Gap leicht reduziert
+  }
+
+  li {
+    display: inline;
+    margin: 0 !important;
+
+    &:before{
+      display: none !important;
+    }
+
+    // Separator ohne extra Abstand
+    &.separator {
+      margin: 0 -.2em !important; // Negativen Margin, um näher an die Zahlen zu rücken
+    }
+  }
+
+  // Aktive Seite
+  strong.active {
+    text-decoration: underline;
+    text-underline-offset: .2em;
+    font-weight: inherit;
+  }
+
+  // "Zurück"-Link - Bereinigt
+  li.previous a.previous {
+    /* font-size: 0; // Entfernt
+
+    &::before {
+      @extend %fa-icon;
+      @extend .fasl;
+      content: fa-content($fa-var-angle-left);
+      font-size: 1rem;
+      font-weight: $font-weight-bold;
+    } */
+    font-weight: $font-weight-bold;
+    text-decoration: none;
+    color: inherit;
+    padding: 0 .25em; // Etwas Abstand für den Pfeil
+  }
+
+  // Links
+  a.link,
+  a.next {
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: .2em;
+    }
+  }
+
+  // "Vorwärts"-Link - Bereinigt
+  li.next a.next {
+    /* font-size: 0; // Entfernt
+
+    &::before {
+      @extend %fa-icon;
+      @extend .fasl;
+      content: fa-content($fa-var-angle-right);
+      font-size: 1rem;
+      font-weight: $font-weight-bold;
+    } */
+    font-weight: $font-weight-bold;
+    text-decoration: none;
+    color: inherit;
+    padding: 0 .25em; // Etwas Abstand für den Pfeil
+  }
+}

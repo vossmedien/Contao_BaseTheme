@@ -10,13 +10,15 @@
                          data-event-type="Expand Stellenanzeigen"
                          data-event-element="<?= $arrEntity['berufsbezeichnung'] ?>"
                     >
-                        <div>
-                            <h2 class="mb-1 h5">
-                                <?= $arrEntity['berufsbezeichnung'] ?>
-                            </h2>
-                            <?php if ($arrEntity['kurzinformationen']): ?>
-                                <div class="h6 mb-0"><?= $arrEntity['kurzinformationen'] ?></div>
-                            <?php endif; ?>
+                        <div class="accordion-button-content d-flex m-0 order-lg-1">
+                            <div class="flex-grow-1">
+                                <h2 class="mb-1 h5">
+                                    <?= $arrEntity['berufsbezeichnung'] ?>
+                                </h2>
+                                <?php if ($arrEntity['kurzinformationen']): ?>
+                                    <div class="h6 mb-0"><?= $arrEntity['kurzinformationen'] ?></div>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -57,7 +59,7 @@
                                         <a href="<?= $arrEntity['job_url'] ?>" class="btn btn-primary btn-lg" target="_blank"
                                            data-event-type="Bewerbung"
                                            data-event-element="<?= $arrEntity['berufsbezeichnung'] ?>"
-                                        >Jetzt bewerben</a>
+                                        ><i class="fasl fa-angle-right"></i><span>Jetzt bewerben</span></a>
                                     </div>
                                 <?php endif; ?>
                             </div>

@@ -1,0 +1,177 @@
+$theme-colors: (
+        "primary": $primary,
+        "secondary": $secondary,
+        "tertiary": $tertiary,
+        "red": #871623,
+        "blue": #00274a,
+        "purple": #6610f2,
+        "success": #dbe8e2,
+        "info": #d1ecf1,
+        "warning": #fff3cd,
+        "danger": #f8d7da,
+        "light": $gray-100,
+        "dark": $gray-900,
+);
+
+$spacers: (
+        0: 0,
+        1: 0.5rem,
+        2: 1rem,
+        3: 1.5rem,
+        4: 2rem,
+        5: 2.5rem,
+        6: 3rem,
+        7: 3.5rem,
+        8: 4rem,
+        9: 4.5rem,
+        10: 5rem,
+);
+
+$gutters: (
+        0: 0,
+        1: $grid-gutter-width * 0.5,
+        2: $grid-gutter-width,
+        3: $grid-gutter-width * 2,
+        4: $grid-gutter-width * 3,
+        5: $grid-gutter-width * 4,
+);
+
+//CSS Variablen beachten
+$container-max-widths: (
+        sm: 100%,
+        md: 100%,
+        lg: 100%,
+        xl: 1140px,
+        xxl: 1600px
+);
+
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1640px,
+);
+
+
+$headings-font-sizes: (
+        'h1': (
+                'mobile': 32px,
+                'tablet': 46px,
+                'desktop': 61px
+        ),
+        'h2': (
+                   'mobile': 26px,
+                'tablet': 32px,
+                'desktop': 35px
+        ),
+        'h3': (
+                'mobile': 26px,
+                'tablet': 32px,
+                'desktop': 35px
+        ),
+        'h4': (
+                'mobile': 23px,
+                'tablet': 27px,
+                'desktop': 31px
+        ),
+        'h5': (
+                'mobile': 24px,
+                'tablet': 24px,
+                'desktop': 24px
+        ),
+        'h6': (
+                'mobile': 18px,
+                'tablet': 19px,
+                'desktop': 20px
+        )
+);
+
+// Definieren Sie die Topline Font Sizes abhängig von der Headline-Ebene
+$topline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 35px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 35px),
+        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 35px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
+
+// Definieren Sie die Subline Font Sizes abhängig von der Headline-Ebene
+$subline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 35px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 35px),
+        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 35px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
+
+
+
+
+
+// NEUE MAP: Abstände nach Überschriften (margin-bottom)
+$headline-margins: (
+        'h1': 2rem,
+        'h2': 1.75rem,
+        'h3': .5rem,
+        'h4': .5rem,
+        'h5':.5rem,
+        'h6': .5rem,
+);
+
+// NEUE MAP: Mobile Abstände nach Überschriften
+$mobile-headline-margins: (
+        'h1': 1rem,
+        'h2': 1rem,
+        'h3': 1rem,
+        'h4': .5rem,
+        'h5':.5rem,
+        'h6': .5rem,
+);
+
+
+// NEUE MAP: Abstände für Toplines (margin)
+$topline-margins: (
+        'h1': 0 0 .4em 0,
+        'h2': 0 0 .6em 0,
+        'h3': 0 0 .2em 0,
+        'h4': 0 0 .2em 0,
+        'h5': 0 0 .2em 0,
+        'h6': 0
+);
+
+// NEUE MAP: Abstände für Sublines (margin)
+$subline-margins: (
+        'h1': .2em 0 0 0,
+        'h2': .2em 0 0 0,
+        'h3': .2em 0 0 0,
+        'h4': .2em 0 0 0,
+        'h5': .2em 0 0 0,
+        'h6': .2em 0 0 0
+);
+
+
+
+// Definieren Sie die Grid-Breakpoints
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1640px
+);
+
+// Definieren Sie die Container-Max-Widths
+$container-max-widths: (
+        sm: 100%,
+        md: 100%,
+        lg: 100%,
+        xl: 1140px,
+        xxl: 1360px
+);
+

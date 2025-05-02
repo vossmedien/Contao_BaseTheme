@@ -1,5 +1,11 @@
+
+<div class="mod_article">
+    {{insert_article::74}}
+</div>
+
+
 <div data-bs-theme="dark">
-    {{insert_article::26}}
+    {{insert_article::73}}
 </div>
 
 

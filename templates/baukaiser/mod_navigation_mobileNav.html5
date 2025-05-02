@@ -14,8 +14,8 @@ $this->wrapperAttributes = $this
 <nav<?= $this->wrapperAttributes ?>>
 
 <div class="logo">
-    <a title="B-MOS" href="/">
-        <img class="lazy" alt="B-MOS Logo" title="B-MOS" data-src="/files/base/layout/img/logo.png">
+    <a title="Bau Kaiser" href="/">
+        <img class="lazy" alt="Bau Kaiser Logo" title="Bau Kaiser" data-src="/files/base/layout/img/baukaiser/logo.svg">
     </a>
 </div>
 
@@ -27,7 +27,7 @@ $this->wrapperAttributes = $this
 
 
         <div class="extra-content mt-auto mobileNav_footer" data-bs-theme="dark">
-            {{insert_module::11}}
+            {{insert_module::25}}
         </div>
 
 

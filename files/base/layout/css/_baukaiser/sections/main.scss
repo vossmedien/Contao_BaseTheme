@@ -1,0 +1,58 @@
+#wrapper {
+  max-width: $wrapper-max-width;
+  margin: 0 auto;
+  box-shadow: $box-shadow;
+  background: #ECF0F2 url("/files/base/layout/img/baukaiser/top-pattern.svg") center top / contain no-repeat;
+
+
+  #container {
+
+    padding-top: 180px;
+    background: url("/files/base/layout/img/baukaiser/bottom-pattern.svg") center bottom / contain no-repeat;
+
+    @media (min-width: 994px) {
+      padding-top: 180px;
+         min-height: 2000px;
+    }
+
+
+    @include media-breakpoint-up(xl) {
+      padding-top: 120px;
+    }
+
+  }
+
+  #main {
+
+  }
+}
+
+
+.article-content > .content--element:first-child .header-image {
+  @include media-breakpoint-down(lg) {
+    margin-top: -104px;
+
+  }
+}
+
+.header-image {
+  @include media-breakpoint-down(lg) {
+    margin-inline: calc(-1 * var(--bs-container-gutter)) !important;
+    width: auto !important;
+
+    img {
+      border-radius: 0;
+    }
+  }
+}
+
+
+/*
+main{
+  padding-top: 135px;
+
+  @include media-breakpoint-up(lg) {
+    padding-top: 150px;
+  }
+}
+ */

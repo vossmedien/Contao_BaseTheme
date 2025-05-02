@@ -1,7 +1,4 @@
 // Farben
-
-
-
 $white: #fff;
 $gray: var(--bs-gray-300);
 
@@ -43,7 +40,7 @@ $enable-cssgrid: true;
 $enable-rounded: true;
 $icon-type: ".fasl";
 
-$spacer: 2.5rem;
+$spacer: 2rem;
 $spacer-sm: $spacer/2;
 $spacer-lg: $spacer*2;
 
@@ -123,14 +120,9 @@ $wideimg-max-width: 1220px;
 $widebox-max-width: 1220px;
 
 
-
-
 // Dark
 $link-color-dark: #fff;
 $link-hover-color-dark: $primary;
 $body-color-dark: #fff;
 
 
-
-$spacer: 5rem;
-$spacer-lg: 13rem;
