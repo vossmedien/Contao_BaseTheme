@@ -16,7 +16,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         $GLOBALS['TL_CSS'][] = 'files/base/layout/js/venobox/venobox.min.css|static';
         $GLOBALS['TL_BODY'][] = '<script defer src="/files/base/layout/js/venobox/venobox.min.js"></script>';
     }
-}
+} 
 $rand = random_int(0, 99999); // Für eindeutigen Lightbox-Selektor
 ?>
 
