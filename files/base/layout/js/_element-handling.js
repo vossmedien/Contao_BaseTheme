@@ -1,17 +1,31 @@
-var headerContent = document.querySelector(".header-content.fixed");
+document.addEventListener('DOMContentLoaded', function() {
+    const headerContent = document.querySelector(".header-content.fixed");
+    const wrapper = document.querySelector("#wrapper");
 
-if (headerContent) {
-    var paddingTop = window.getComputedStyle(headerContent).height;
-    document.querySelector("#wrapper").style.paddingTop = paddingTop;
-
-    window.addEventListener('scroll', function () {
-        if (window.scrollY > 50) { // Punkt, an dem die Änderung eintritt
-            headerContent.classList.add('is-scrolling');
-        } else {
-            headerContent.classList.remove('is-scrolling');
+    function adjustWrapperPadding() {
+        if (headerContent && wrapper) {
+            const paddingTop = window.getComputedStyle(headerContent).height;
+            wrapper.style.paddingTop = paddingTop;
         }
-    });
-}
+    }
+
+    // Initial adjustment
+    adjustWrapperPadding();
+
+    // Adjust on resize
+    window.addEventListener('resize', adjustWrapperPadding);
+
+    // Handle scroll class
+    if (headerContent) {
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 50) { // Punkt, an dem die Änderung eintritt
+                headerContent.classList.add('is-scrolling');
+            } else {
+                headerContent.classList.remove('is-scrolling');
+            }
+        });
+    }
+});
 
 
 /*
