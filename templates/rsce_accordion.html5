@@ -1,68 +1,172 @@
-<div id="<?= $this->cssID; ?>" class="content--element <?= $this->class; ?>">
-    <div class="ce--inner">
-        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
-            $this->topline,
-            $this->headline,
-            $this->subline,
-            $this->hl,
-            $this->animation_type,
-            null,
-            false,
-            null
-        ); ?>
+<?php
+// Helfer-Variablen für Lesbarkeit
+$addLeftColumn = $this->add_left_column_text;
+$swapColumns = $this->swap_columns;
+$textColWidthClass = $this->column_width ?: 'col-lg-4'; // Standardwert falls nicht gesetzt
+$addShowAllButton = $this->add_show_all_button;
+$initialVisibleItems = (int)($this->initial_visible_items ?: 3); // Standardwert 3
+$showAllText = $this->show_all_button_text ?: 'Alle Fragen anzeigen';
+$showLessText = $this->show_less_button_text ?: 'Weniger Fragen anzeigen';
 
-        <?php if (!empty($this->elements)): ?>
-            <div class="accordion" id="accordion_<?= $this->id ?>">
-                <?php foreach ($this->elements as $index => $element): ?>
-                    <?php $isOpen = !empty($element->is_open); ?>
-                    <div data-animation="<?= $this->animation_type;?>" class="accordion-item">
-                        <div class="accordion-header" id="heading<?= $index. $this->id ?>">
-                            <div class="accordion-button <?= $isOpen ? '' : 'collapsed' ?>" data-bs-toggle="collapse" data-bs-target="#collapse<?= $index. $this->id ?>" aria-expanded="<?= $isOpen ? 'true' : 'false' ?>" aria-controls="collapse<?= $index. $this->id ?>">
-                                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
-                                    $element->topline,
-                                    $element->headline,
-                                    $element->subline,
-                                    $element->headline_type,
-                                    null,
-                                    null,
-                                    $element->onlystyle,
-                                    "mb-0"
-                                ); ?>
-                            </div>
-                        </div>
+// Standardwerte initialisieren
+$textColClass = 'd-none';
+$accordionColClass = 'col-lg-12';
+$textOrderClass = 'order-lg-1';
+$accordionOrderClass = 'order-lg-2';
 
-                        <div id="collapse<?= $index. $this->id ?>" class="accordion-collapse collapse <?= $isOpen ? 'show' : '' ?>" aria-labelledby="heading<?= $index. $this->id ?>" data-bs-parent="#accordion_<?= $this->id ?>">
-                            <div class="accordion-body">
-                                <?php if ($element->desc): ?>
-                                    <?= $element->desc; ?>
-                                <?php endif; ?>
-                                <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($element->buttons); ?>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+// Spaltenklassen und Reihenfolge bestimmen, wenn linke Spalte aktiv
+if ($addLeftColumn) {
+    $textColClass = $textColWidthClass; // Klasse für Textspalte aus Einstellung übernehmen
 
-            <?php if ($this->is_faq): ?>
-                <script type="application/ld+json">
-                {
-                    "@context": "https://schema.org",
-                    "@type": "FAQPage",
-                    "mainEntity": [
-                        <?php foreach ($this->elements as $index => $element): ?>
-                            {
-                                "@type": "Question",
-                                "name": <?= json_encode($element->headline) ?>,
-                                "acceptedAnswer": {
-                                    "@type": "Answer",
-                                    "text": <?= json_encode(strip_tags($element->desc)) ?>
-                                }
-                            }<?= $index < count($this->elements) - 1 ? ',' : '' ?>
-                        <?php endforeach; ?>
-                    ]
-                }
-                </script>
+    // Gegenstück für Akkordeon-Spalte bestimmen
+    $accordionColClass = match ($textColWidthClass) {
+        'col-lg-6' => 'col-lg-6',
+        'col-lg-5' => 'col-lg-7',
+        'col-lg-4' => 'col-lg-8',
+        'col-lg-3' => 'col-lg-9',
+        default => 'col-lg-8', // Fallback, falls unerwarteter Wert (sollte nicht passieren)
+    };
+
+    // Reihenfolge anpassen bei Bedarf
+    if ($swapColumns) {
+        $textOrderClass = 'order-lg-2';
+        $accordionOrderClass = 'order-lg-1';
+    }
+}
+
+?>
+    <div id="<?= $this->cssID ?: ('accordion-section-' . $this->id) ?>" class="content--element <?= $this->class; ?>">
+        <div class="ce--inner">
+            <?php // Globale Überschrift des Elements (aus standardFields)
+            if ($this->headline): ?>
+                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+                    null, // Topline nicht mehr hier
+                    $this->headline,
+                    null, // Subline nicht mehr hier
+                    $this->hl,
+                    null, // Animation hier nicht relevant
+                    null,
+                    false,
+                    null // Abstand unter der Hauptüberschrift
+                ); ?>
             <?php endif; ?>
-        <?php endif; ?>
+
+            <div class="row gx-lg-4">
+                <?php // Linke/Rechte Spalte für Text (falls aktiviert) ?>
+                <?php if ($addLeftColumn): ?>
+                    <div data-animation="<?= $this->animation_type; ?>" class="<?= $textColClass ?> <?= $textOrderClass ?> mb-4 mb-lg-0">
+                        <?= $this->left_column_text; ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php // Linke/Rechte Spalte für Akkordeon ?>
+                <div class="<?= $accordionColClass ?> <?= $accordionOrderClass ?>">
+                    <?php if (!empty($this->elements)): ?>
+                        <div class="accordion" id="accordion_<?= $this->id ?>">
+                            <?php foreach ($this->elements as $index => $element): ?>
+                                <?php
+                                $isOpen = !empty($element->is_open);
+                                // Klasse hinzufügen, wenn das Element initial versteckt werden soll
+                                $hiddenClass = ($addShowAllButton && $index >= $initialVisibleItems) ? 'initially-hidden' : '';
+                                ?>
+                                <div data-animation="<?= $this->animation_type; ?>" class="accordion-item <?= $hiddenClass ?>" <?= ($addShowAllButton && $index >= $initialVisibleItems) ? 'style="display: none;"' : '' ?>>
+                                    <div class="accordion-header" id="heading<?= $index . $this->id ?>">
+                                        <div class="accordion-button <?= $isOpen ? '' : 'collapsed' ?>" data-bs-toggle="collapse" data-bs-target="#collapse<?= $index . $this->id ?>" aria-expanded="<?= $isOpen ? 'true' : 'false' ?>" aria-controls="collapse<?= $index . $this->id ?>">
+                                            <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+                                                $element->topline,
+                                                $element->headline,
+                                                $element->subline,
+                                                $element->headline_type,
+                                                "no-animation",
+                                                null,
+                                                $element->onlystyle,
+                                                "mb-0"
+                                            ); ?>
+                                        </div>
+                                    </div>
+
+                                    <div id="collapse<?= $index . $this->id ?>" class="accordion-collapse collapse <?= $isOpen ? 'show' : '' ?>" aria-labelledby="heading<?= $index . $this->id ?>" data-bs-parent="#accordion_<?= $this->id ?>">
+                                        <div class="accordion-body">
+                                            <?php if ($element->desc): ?>
+                                                <?= $element->desc; ?>
+                                            <?php endif; ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($element->buttons); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                    <?php // "Alle anzeigen" Button ?>
+                    <?php if ($addShowAllButton && count($this->elements) > $initialVisibleItems): ?>
+                        <button data-animation="<?= $this->animation_type; ?>" class="btn btn-outline-primary mt-3 toggle-accordion-items"
+                                data-target-accordion="#accordion_<?= $this->id ?>"
+                                data-visible-items="<?= $initialVisibleItems ?>"
+                                data-show-all-text="<?= $showAllText ?>"
+                                data-show-less-text="<?= $showLessText ?>">
+                            <?= $showAllText ?>
+                        </button>
+                    <?php endif; ?>
+
+                    <?php if ($this->is_faq): ?>
+                        <script type="application/ld+json">
+                            {
+                                "@context": "https://schema.org",
+                                "@type": "FAQPage",
+                                "mainEntity": [
+                            <?php foreach ($this->elements as $index => $element): ?>
+                                    {
+                                        "@type": "Question",
+                                        "name": <?= json_encode($element->headline) ?>,
+                                        "acceptedAnswer": {
+                                            "@type": "Answer",
+                                            "text": <?= json_encode(strip_tags($element->desc)) ?>
+                                        }
+                                    }<?= $index < count($this->elements) - 1 ? ',' : '' ?>
+                            <?php endforeach; ?>
+                            ]
+                        }
+                        </script>
+                    <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+
+<?php // JavaScript für "Alle/Weniger anzeigen" Button (nur einmal pro Seite benötigt)
+if ($addShowAllButton && count($this->elements) > $initialVisibleItems): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Sicherstellen, dass das Skript nur einmal ausgeführt wird
+            if (!window.accordionToggleInitialized) {
+                window.accordionToggleInitialized = true;
+
+                document.body.addEventListener('click', function (event) {
+                    if (event.target.matches('.toggle-accordion-items')) {
+                        const button = event.target;
+                        const accordionId = button.dataset.targetAccordion;
+                        const accordion = document.querySelector(accordionId);
+                        const visibleItemsCount = parseInt(button.dataset.visibleItems, 10);
+                        const showAllText = button.dataset.showAllText;
+                        const showLessText = button.dataset.showLessText;
+                        const items = accordion.querySelectorAll('.accordion-item.initially-hidden');
+                        const isShowingAll = button.classList.contains('showing-all');
+
+                        items.forEach(item => {
+                            item.style.display = isShowingAll ? 'none' : 'block';
+                        });
+
+                        if (isShowingAll) {
+                            button.textContent = showAllText;
+                            button.classList.remove('showing-all');
+                        } else {
+                            button.textContent = showLessText;
+                            button.classList.add('showing-all');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+<?php endif; ?>

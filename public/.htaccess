@@ -114,6 +114,7 @@
     ExpiresByType image/png "access plus 1 year"
     ExpiresByType image/svg+xml "access plus 1 year"
     ExpiresByType image/tiff "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
     ExpiresByType image/x-icon "access plus 1 year"
     ExpiresByType image/ico "access plus 1 year"
     ExpiresByType image/icon "access plus 1 year"
@@ -182,9 +183,10 @@
     RewriteEngine On
 
     # ensure www. only for the main domain, not for subdomains
-    #RewriteCond %{HTTP_HOST} ^[^.]+\.[^.]+$ [NC]
-    #RewriteCond %{HTTP_HOST} !^www\. [NC]
-    #RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    RewriteCond %{HTTP_HOST} ^caeli\.co\.uk$ [NC,OR]
+    RewriteCond %{HTTP_HOST} ^caeli-wind\.de$ [NC]
+    RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 
     # ensure https
     RewriteCond %{HTTP:X-Forwarded-Proto} !https
@@ -239,3 +241,9 @@
         # RedirectTemp cannot be used instead
     </IfModule>
 </IfModule>
+
+
+AuthUserFile "/usr/www/users/caelif/relaunch.caeli/public/.htpasswd"
+AuthName "Caeli LIVE"
+AuthType Basic
+require valid-user

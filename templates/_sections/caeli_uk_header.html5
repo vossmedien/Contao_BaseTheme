@@ -3,7 +3,7 @@
 
         <div class="d-flex justify-content-between gap-3 align-items-center" style="--bs-link-color-rgb: var(--bs-body-color)">
             <div class="logo">
-                <a href="/" title="Caeli Wind"><img alt="Caeli Wind" title="Caeli Wind" src="files/base/layout/img/logo.svg"></a>
+                <a href="/" title="Caeli UK"><img alt="Caeli UK" title="Caeli UK" src="files/base/layout/img/logo.svg"></a>
             </div>
             <div class="d-none d-lg-block">
                  {{insert_module::3}}

@@ -26,7 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const header = document.querySelector('header');
 
   window.addEventListener('scroll', function() {
-    if (window.scrollY > 0) {
+    // Check both window.pageYOffset and document.documentElement.scrollTop
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollTop > 0) {
       header.classList.add('is-scrolling');
     } else {
       header.classList.remove('is-scrolling');

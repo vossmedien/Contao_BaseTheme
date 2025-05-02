@@ -19,7 +19,7 @@ class DeployController extends BackendModule
      * @var string
      */
     protected $strTemplate = 'be_deploy_to_live';
-    
+
     // Angepasstes Muster, um DEPLOY_XXX_PATH zu erkennen
     protected const ENV_PATH_PATTERN = '/^DEPLOY_([A-Z]+)_PATH$/';
     protected const DEFAULT_ENVIRONMENT_KEY = 'default'; // Key für die Standardumgebung
@@ -37,7 +37,7 @@ class DeployController extends BackendModule
         $template->isError = false;
         $template->showBackups = true;
         $template->success = false;
-        
+
         // Verfügbare Umgebungen ermitteln
         $environments = $this->getAvailableEnvironments();
         $template->environments = $environments;
@@ -53,11 +53,11 @@ class DeployController extends BackendModule
              $selectedEnvironment = null; // Keine Umgebungen, keine Auswahl
         }
         // Wenn eine gültige Umgebung gepostet wurde, bleibt $selectedEnvironment so.
-        
+
         $template->selectedEnvironment = $selectedEnvironment;
 
         $projectDir = System::getContainer()->getParameter('kernel.project_dir');
-        
+
         // --- Lade Konfiguration für die ausgewählte Umgebung und Staging ---
         $envConfigForScript = [];
         $backupPath = ''; // Für die Backup-Anzeige im Template
@@ -85,7 +85,7 @@ class DeployController extends BackendModule
                     // Sicherer ist es, den Host ohne Port zu übergeben und den Port separat, falls nötig
                     // Aktuell erwarten die Skripte nur einen Host-Namen.
                     // Wir übergeben nur den Host hier. Port wird ignoriert.
-                     // $sourceDbHost .= ':' . $dbUrlParts['port']; 
+                     // $sourceDbHost .= ':' . $dbUrlParts['port'];
                 }
                 $envConfigForScript['SOURCE_DB_HOST'] = $sourceDbHost;
                 $envConfigForScript['SOURCE_DB_NAME'] = isset($dbUrlParts['path']) ? ltrim($dbUrlParts['path'], '/') : '';
@@ -123,7 +123,7 @@ class DeployController extends BackendModule
             if (empty($envConfigForScript['TARGET_EXCLUDES'])) {
                 $envConfigForScript['TARGET_EXCLUDES'] = $this->getEnvConfig('DEPLOY_EXCLUDES', ''); // Fallback auf global
             }
-            
+
             // Pfade für Controller/Template-Logik holen
             $targetPath = $envConfigForScript['TARGET_PATH'];
 
@@ -150,42 +150,42 @@ class DeployController extends BackendModule
             Message::addError('Fehlende Pfad-Konfiguration in .env.local: ' . implode(', ', $missingPaths));
             $template->isError = true;
         }
-        
+
         $backups = [];
-        
+
         // Lade zentrale Backup-Info-Datei (aus dem globalen Backup Path)
         $backupInfos = [];
         if (!empty($backupPath)) {
             $backupInfos = $this->loadBackupInfos($backupPath);
         }
-        
+
         // Im globalen Backup-Verzeichnis nach weiteren Backups suchen
         if (!empty($backupPath) && is_dir($backupPath)) {
             // Angepasstes glob-Muster, um alle Umgebungen zu finden
-            $fileBackups = glob($backupPath . '/*_*_files.tar.gz'); 
-            
+            $fileBackups = glob($backupPath . '/*_*_files.tar.gz');
+
             // Debug-Log hinzufügen (temporär, kann später entfernt werden)
             if (empty($fileBackups)) {
                  // Hier loggen, wenn glob nichts findet
-                 // Dies erfordert evtl. das Einrichten eines Loggers, 
+                 // Dies erfordert evtl. das Einrichten eines Loggers,
                  // einfacher ist es, eine Warnung über Contao\Message auszugeben.
                  Message::addInfo('Debug: glob() fand keine Dateien mit Muster /*_*_files.tar.gz in ' . $backupPath);
             }
             // Ende Debug-Log
-            
+
             if (!empty($fileBackups)) {
                 foreach ($fileBackups as $file) {
                     $basename = basename($file);
                     $basePart = str_replace('_files.tar.gz', '', $basename);
                     $dbFile = $backupPath . '/' . $basePart . '_db.sql';
-                    
+
                     // Info aus der zentralen Datei holen
                     $backupInfo = isset($backupInfos[$basename]) ? $backupInfos[$basename] : '';
-                    
+
                     if (file_exists($dbFile)) {
                         $backupTime = filemtime($file);
                         $backupId = 'backup_' . $backupTime;
-                        
+
                         $backups[] = [
                             'id' => $backupId,
                             'name' => 'Backup vom ' . date("d.m.Y H:i:s", $backupTime),
@@ -201,39 +201,39 @@ class DeployController extends BackendModule
                 }
             }
         }
-        
+
         // Sortiere Backups nach Zeit absteigend
         if (!empty($backups)) {
             usort($backups, function($a, $b) {
                 return $b['time'] - $a['time'];
             });
         }
-        
+
         $template->backups = $backups;
         $template->backupCount = count($backups);
-        
+
         // Für Contao 5.5 mit Turbo: Prüfen ob Anfrage per XHR (AJAX) kam
         $requestStack = System::getContainer()->get('request_stack');
         $request = $requestStack->getCurrentRequest();
         $isXhr = $request && $request->isXmlHttpRequest();
-        
+
         // Session über RequestStack holen (Contao 5.5)
         $session = $requestStack->getSession();
-        
+
         // Prüfen, ob ein Formular abgesendet wurde
         if (Input::post('FORM_SUBMIT') === 'deploy_to_live_form' || Input::post('TL_SUBMIT') !== null) {
             $action = Input::post('ausrollen') ?: 'ausrollen';  // Standardmäßig ausrollen, wenn kein Wert gesetzt ist
-            
+
             $redirectUrl = System::getContainer()->get('router')->generate('contao_backend', [
                 'do' => 'deploy_to_live'
             ]);
-            
+
             // Ausgewähltes Backup (falls vorhanden)
             $selectedBackup = Input::post('selected_backup') ?: 'current';
-            
+
             // Backup-Info (falls angegeben)
             $backupInfo = Input::post('backup_info') ?: '';
-            
+
             if ($action === 'ausrollen' || $action === 'rollback') {
                 // Deploy und Rollback brauchen eine ausgewählte Zielumgebung und deren Pfad
                 if (!$selectedEnvironment || empty($envConfigForScript['TARGET_PATH'])) {
@@ -263,45 +263,45 @@ class DeployController extends BackendModule
                     null, // working directory
                     $envConfigForScript // Übergibt TARGET_*, SOURCE_*, DEPLOY_TIMESTAMP, TARGET_ENV_NAME
                     );
-                    
+
                     $process->setWorkingDirectory($projectDir);
                     $process->setTimeout(600);
                     $process->mustRun();
-                    
+
                     // Wenn Backup-Info vorhanden, in zentrale Datei speichern (im globalen TARGET_BACKUP_PATH)
                     if (!empty($backupInfo)) {
                         // Korrekten Dateinamen mit übergebenem Timestamp und Zielnamen bilden
                         $backupFilename = $timestamp . '_' . $selectedEnvironment . '_files.tar.gz';
                         $this->saveBackupInfo($envConfigForScript['TARGET_BACKUP_PATH'], $backupFilename, $backupInfo);
                     }
-                    
+
                     // Log-Datei auslesen (aus SOURCE_PATH)
                     $logFile = $envConfigForScript['SOURCE_PATH'] . '/deploy_log.txt';
-                    
+
                     // Lokale Datei prüfen, falls Remote-Pfad nicht funktioniert
                     if (!file_exists($logFile)) {
                         $logFile = $projectDir . '/deploy_log.txt';
                     }
-                    
+
                     if (file_exists($logFile)) {
                         // Nur wichtige Teile des Logs anzeigen
                         $logContent = file_get_contents($logFile);
                         $filteredLog = $this->filterLogContent($logContent);
-                        
+
                         // In Session speichern für nach dem Redirect
                         $session->set('deploy_log', $filteredLog);
                         $session->set('deploy_success', true);
-                        
+
                         // Contao Meldung setzen
                         Message::addConfirmation('Deployment erfolgreich durchgeführt.');
                     } else {
                         // In Session speichern für nach dem Redirect
                         $session->set('deploy_log', "Erfolgreich ausgerollt, aber keine Log-Datei gefunden.");
                         $session->set('deploy_success', true);
-                        
+
                         Message::addConfirmation('Deployment erfolgreich durchgeführt.');
                     }
-                    
+
                     // Für Turbo: Bei AJAX-Anfragen einen JS-Reload zurückgeben, ansonsten umleiten
                     if ($isXhr) {
                         $template->ausgerollt = $session->get('deploy_log');
@@ -327,11 +327,11 @@ class DeployController extends BackendModule
                              break;
                          }
                      }
- 
+
                      if (!$selectedBackupData || empty($selectedBackupData['path_files']) || empty($selectedBackupData['path_db'])) {
                           throw new \Exception("Ausgewähltes Backup ungültig oder Pfade nicht gefunden.");
                      }
- 
+
                      // Füge die spezifischen Backup-Pfade zur Konfiguration hinzu
                      $rollbackEnvConfig = $envConfigForScript;
                      $rollbackEnvConfig['ROLLBACK_FILE_SOURCE'] = $selectedBackupData['path_files'];
@@ -349,11 +349,11 @@ class DeployController extends BackendModule
                      null,
                      $rollbackEnvConfig // Übergibt TARGET_*, SOURCE_*, ROLLBACK_*
                      );
- 
+
                      $process->setWorkingDirectory($projectDir);
-                     $process->setTimeout(600); 
+                     $process->setTimeout(600);
                      $process->mustRun();
-                     
+
                      // Log-Datei auslesen (aus SOURCE_PATH)
                      $logFile = $envConfigForScript['SOURCE_PATH'] . '/rollback_log.txt';
                     // ... (Rest der Erfolgsbehandlung bleibt gleich)
@@ -381,7 +381,7 @@ class DeployController extends BackendModule
                      $process->setWorkingDirectory($projectDir);
                      $process->setTimeout(300);
                      $process->mustRun();
-                     
+
                      // Log-Datei auslesen (aus SOURCE_PATH)
                      $logFile = $envConfigForScript['SOURCE_PATH'] . '/cleanup_log.txt';
                     // ... (Rest der Erfolgsbehandlung bleibt gleich)
@@ -395,13 +395,13 @@ class DeployController extends BackendModule
                 Message::addError('Unbekannte Aktion: ' . $action);
             }
         }
-        
+
         // Wenn aus Session-Daten verfügbar sind, diese ins Template übernehmen
         if ($session->has('deploy_log')) {
             $template->ausgerollt = $session->get('deploy_log');
             $template->success = $session->get('deploy_success', false);
             $template->isError = !$template->success;
-            
+
             // Nach dem Anzeigen aus der Session löschen
             $session->remove('deploy_log');
             $session->remove('deploy_success');
@@ -409,7 +409,7 @@ class DeployController extends BackendModule
 
         return $template->parse();
     }
-    
+
     /**
      * Ermittelt die verfügbaren Umgebungen basierend auf Umgebungsvariablen.
      *
@@ -437,15 +437,15 @@ class DeployController extends BackendModule
         }
 
         // Sortiere die Umgebungen alphabetisch nach dem Schlüssel für Konsistenz
-        ksort($environments);
-        
+        //ksort($environments);
+
         // Entferne explizit BACKUP und CURRENT, da sie keine Ziele für Deployment sind
         unset($environments['BACKUP']);
         unset($environments['CURRENT']); // STAGING durch CURRENT ersetzt
 
         return $environments;
     }
-    
+
     /**
      * Liest einen Konfigurationswert aus den Umgebungsvariablen.
      *
@@ -458,40 +458,40 @@ class DeployController extends BackendModule
         $envValue = $_ENV[$key] ?? getenv($key);
         return $envValue !== false && $envValue !== null ? (string)$envValue : $default;
     }
-    
+
     /**
      * Behandelt einen ProcessFailedException
      */
     protected function handleProcessException($session, $template, ProcessFailedException $exception, string $operation, bool $isXhr, string $redirectUrl): void
     {
         $errorMsg = "Fehler bei $operation: " . $exception->getMessage();
-        
+
         $session->set('deploy_log', $errorMsg);
         $session->set('deploy_success', false);
-        
+
         $template->ausgerollt = $errorMsg;
         $template->isError = true;
         Message::addError("$operation fehlgeschlagen.");
     }
-    
+
     /**
      * Behandelt eine allgemeine Exception
      */
     protected function handleGenericException($session, $template, \Exception $exception, string $operation, bool $isXhr, string $redirectUrl): void
     {
         $errorMsg = "Allgemeiner Fehler: " . $exception->getMessage();
-        
+
         $session->set('deploy_log', $errorMsg);
         $session->set('deploy_success', false);
-        
+
         $template->ausgerollt = $errorMsg;
         $template->isError = true;
         Message::addError("$operation fehlgeschlagen: " . $exception->getMessage());
     }
-    
+
     /**
      * Filtert den Log-Inhalt, um nur wichtige Informationen anzuzeigen
-     * 
+     *
      * @param string $logContent
      * @return string
      */
@@ -499,16 +499,16 @@ class DeployController extends BackendModule
     {
         $lines = explode("\n", $logContent);
         $filteredLines = [];
-        
+
         foreach ($lines as $line) {
             // Leerzeichen am Anfang und Ende der Zeile entfernen
             $line = trim($line);
-            
+
             // Leere Zeilen überspringen
             if ($line === '') {
                 continue;
             }
-            
+
             // Ignoriere unwichtige Zeilen
             if (
                 strpos($line, 'sending incremental file list') !== false ||
@@ -525,7 +525,7 @@ class DeployController extends BackendModule
             ) {
                 continue;
             }
-            
+
             // Nimm wichtige Informationszeilen
             if (
                 strpos($line, '=====') !== false ||
@@ -548,10 +548,10 @@ class DeployController extends BackendModule
                 $filteredLines[] = $line;
             }
         }
-        
+
         return implode("\n", $filteredLines);
     }
-    
+
     /**
      * Compile the current element
      */
@@ -559,7 +559,7 @@ class DeployController extends BackendModule
     {
         // Diese Methode bleibt leer, da wir generate() verwenden
     }
-    
+
     /**
      * Lädt die zentrale Backup-Info-Datei
      *
@@ -570,7 +570,7 @@ class DeployController extends BackendModule
     {
         $infoFile = $backupPath . '/backup_infos.txt';
         $infos = [];
-        
+
         if (file_exists($infoFile)) {
             $lines = file($infoFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             foreach ($lines as $line) {
@@ -580,10 +580,10 @@ class DeployController extends BackendModule
                 }
             }
         }
-        
+
         return $infos;
     }
-    
+
     /**
      * Speichert eine Info in die zentrale Backup-Info-Datei
      *
@@ -596,19 +596,19 @@ class DeployController extends BackendModule
         if (empty($info)) {
             return; // Keine Info zu speichern
         }
-        
+
         $infoFile = $backupPath . '/backup_infos.txt';
         $infos = $this->loadBackupInfos($backupPath);
-        
+
         // Info aktualisieren oder hinzufügen
         $infos[$filename] = $info;
-        
+
         // Zurück in die Datei schreiben
         $content = '';
         foreach ($infos as $key => $value) {
             $content .= $key . '=' . $value . PHP_EOL;
         }
-        
+
         file_put_contents($infoFile, $content);
     }
-} 
+}

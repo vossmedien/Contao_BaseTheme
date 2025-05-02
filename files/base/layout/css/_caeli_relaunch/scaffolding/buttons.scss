@@ -44,10 +44,32 @@
     font-weight: $font-weight-bold;
   }
 
+  &.btn-lg {
+
+    --bs-btn-padding-left: 1rem;
+    --bs-btn-padding-right: 1rem;
+    --bs-btn-font-size: 20px;
+    border-width: 3px;
+    border-radius: 48px;
+
+    &.with-arrow {
+      --bs-btn-padding-top: 0rem;
+      --bs-btn-padding-bottom: 0rem;
+      gap: .5rem;
+    }
+
+    &:after {
+      @extend %fa-icon;
+      @extend #{$icon-type} !optional;
+      content: "\e001";
+      font-size: 32px;
+    }
+  }
+
 
   &.btn-xl {
     border-width: 4px;
-    border-radius: 42px;
+    border-radius: 48px;
     --bs-btn-font-size: 25px;
 
     &.with-arrow {

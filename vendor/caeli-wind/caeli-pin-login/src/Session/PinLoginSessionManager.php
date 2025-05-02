@@ -116,6 +116,16 @@ class PinLoginSessionManager
     }
 
     /**
+     * Gibt die für eine autorisierte Seite gespeicherten Benutzerdaten zurück.
+     * Prüft nicht den Timeout der Autorisierung!
+     */
+    public function getUserData(int $pageId): ?array
+    {
+        $authorizedPages = $this->getAuthorizedPages();
+        return $authorizedPages[$pageId]['data'] ?? null;
+    }
+
+    /**
      * Markiert eine Seite als autorisiert
      */
     public function authorizePageAccess(int $pageId, array $additionalData = []): void

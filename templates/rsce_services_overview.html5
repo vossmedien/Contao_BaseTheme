@@ -1,9 +1,9 @@
 <?php
+$needsLightbox = false; // Initialisiere die Variable hier
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_services_overview.min.css|static';
     $GLOBALS['TL_BODY'][] = '<script defer src="/files/base/layout/js/_elements/ce_rsce_services_overview.js"></script>';
     // Lightbox JS/CSS nur laden, wenn benötigt
-    $needsLightbox = false;
     foreach ($this->services as $service) {
         // Prüfe auf open_lightbox innerhalb der fields_for_subpalettes oder direkt, je nach Implementierung
         $openLightbox = $service->fields_for_subpalettes['open_lightbox'] ?? $service->open_lightbox ?? false;
@@ -16,7 +16,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         $GLOBALS['TL_CSS'][] = 'files/base/layout/js/venobox/venobox.min.css|static';
         $GLOBALS['TL_BODY'][] = '<script defer src="/files/base/layout/js/venobox/venobox.min.js"></script>';
     }
-}
+} 
 $rand = random_int(0, 99999); // Für eindeutigen Lightbox-Selektor
 ?>
 

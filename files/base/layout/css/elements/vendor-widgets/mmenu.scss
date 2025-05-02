@@ -206,6 +206,7 @@
     padding: 1rem;
     background-color: var(--mm-spn-footer-bg);
 
+
     ul {
       list-style-type: none;
       padding: 0;
@@ -213,6 +214,7 @@
       position: static;
       display: block;
       width: auto;
+          overflow: hidden;
 
       > li {
         display: inline-block;

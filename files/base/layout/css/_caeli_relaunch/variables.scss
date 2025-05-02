@@ -78,7 +78,10 @@ $headings-font-weight: 400;
 $headings-line-height: 1.1;
 //$headings-color: #4A4643;
 
-
+$tooltip-font-size:                 12px;
+$tooltip-color:                     var(--bs-body-color-inverse);
+$tooltip-bg:                        var(--bs-primary);
+$tooltip-max-width:                300px;
 
 $form-floating-padding-x: .75rem;
 $form-floating-real-padding-x: calc(var(--bs-gutter-x)*.5 + #{$form-floating-padding-x});

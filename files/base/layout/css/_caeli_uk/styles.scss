@@ -303,3 +303,13 @@ html body .ce_rsce_headimagelogo .ce--mainimage .image--holder .mainimage--conte
     color: var(--bs-primary);
   }
 }
+
+ p{
+   & + ul, & + ol{
+     margin-top: 1rem;
+   }
+ }
+
+ .cmptxt_btn_settings.cmptxt_btn_settings{
+   padding-block: 16px !important;
+ }

@@ -1,0 +1,169 @@
+<?php
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
+    // Optional: CSS auslagern
+    // $GLOBALS['TL_CSS'][] = 'files/path/to/your/css/rsce_process_steps.min.css|static';
+}
+?>
+
+<style>
+    .process-steps-element .ce--process-steps {
+        position: relative;
+    }
+
+    /* Verbindungslinie - Entfernt */
+    /* .process-steps-element .ce--process-steps::before { ... } */
+
+    .process-step {
+        opacity: 0.25;
+        transition: opacity 0.5s ease-in-out;
+        position: relative;
+        padding-left: calc(60px + 2rem); /* Platz für 60px Nummer und Abstand */
+    }
+
+    /* Linie für jeden Schritt (außer dem letzten) */
+    .process-step:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        top: 60px; /* Beginnt unter der 60px Box */
+        left: 30px; /* Zentriert zur Box */
+        width: 2px;
+        height: calc(100% - 69px + 3rem); /* Füllt den Raum bis zum nächsten Step (Höhe 100% + mb-5 = 3rem) */
+        background-color: var(--bs-tertiary);
+        transform: translateX(-50%);
+        z-index: 0; /* Hinter der Box, falls doch mal Überlappung */
+    }
+
+
+    .ce--intro-text {
+        font-size: 25px;
+    }
+
+    .process-step.is-visible {
+        opacity: 1;
+    }
+
+    .step-content-wrapper {
+
+    }
+
+    .step-number {
+        position: absolute;
+        left: 30px; /* Position anpassen, damit es auf der Linie sitzt (Hälfte 60px)*/
+        top: 0;
+        border: 2px solid var(--bs-tertiary); /* Kasten statt Kreis */
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        font-size: 25px;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--bs-tertiary); /* Schriftfarbe der Zahl */
+        transform: translateX(-50%); /* Zentriert die Nummer auf der Linie */
+        z-index: 1; /* Über eventuellen Linien */
+    }
+
+    .step-content-wrapper {
+        /* Kein spezieller Abstand mehr nötig, da padding-left am process-step */
+    }
+</style>
+
+<div <?php echo $this->cssID; ?> class="content--element process-steps-element <?php echo $this->class; ?>">
+    <div class="ce--inner">
+
+        <div class="col-xl-9 mx-0">
+              <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type, // Globale Animation wird über data-animation am Haupt-Div gesteuert
+            null,
+            false,
+            null
+        ); ?>
+
+        <?php if ($this->intro_text): ?>
+            <div class="ce--intro-text mb-4" data-animation="<?= $this->animation_type ?: '' ?>">
+                <?= $this->intro_text; ?>
+            </div>
+        <?php endif; ?>
+
+        </div>
+
+        <?php if ($this->rows) : ?>
+            <div class="ce--process-steps">
+                <?php foreach ($this->rows as $i => $row) : ?>
+                    <div class="process-step mb-5">
+                        <span class="step-number"><?= $i + 1; ?></span>
+                        <div class="step-content-wrapper pt-1 pt-md-0">
+                            <?php if ($row->headline): ?>
+                                <div class="step--headline">
+                                    <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+                                        null, // Keine Topline/Subline pro Schritt
+                                        $row->headline,
+                                        null,
+                                        $row->headline_type ?: 'h3',
+                                        $row->step_animation_type, // Keine individuelle Animation pro Schritt, wird über JS gesteuert
+                                        null,
+                                        $row->onlystyle,
+                                        "mb-md-4" // Kein extra Margin mehr hier
+                                    ); ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="step-desc-wrapper ps-md-gap">
+                                <div class="row gy-2 gx-3 align-items-center">
+                                    <?php if ($row->image): ?>
+                                        <div class="col-md-5" data-animation="<?= $row->step_animation_type ?: '' ?>">
+                                            <div class="step--image text-center text-md-end">
+                                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->image, strip_tags($row->description), $row->headline, $row->size, null, false); ?>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="col-md-7" data-animation="<?= $row->step_animation_type ?: '' ?>">
+                                        <?php if ($row->description): ?>
+                                            <div class="step--description">
+                                                <?= $row->description; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const steps = document.querySelectorAll('.process-step');
+
+        if (steps.length > 0) {
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        // Optional: Beobachtung beenden, nachdem das Element sichtbar wurde
+                        // observer.unobserve(entry.target);
+                    }
+                    // Optional: Ausblenden, wenn es wieder aus dem Viewport verschwindet
+                    // else {
+                    //     entry.target.classList.remove('is-visible');
+                    // }
+                });
+            }, {
+                rootMargin: '0px',
+                threshold: 1 // Startet, wenn 85% des Elements sichtbar sind
+            });
+
+            steps.forEach(step => {
+                observer.observe(step);
+            });
+        }
+    });
+</script> 

@@ -13,7 +13,7 @@
                     <a href="/cookie-policy" title="Imprint">Cookie Policy</a>
                 </li>
                 <li class="mb-1  list-inline-item">
-                    <a href="https://de.linkedin.com/company/caeli-wind" target="_blank" title="Imprint"><img alt="LinkedIn Logo" src="files/base/layout/img/logo_linkedIn.svg">
+                    <a href="https://www.linkedin.com/company/caeli-uk/" target="_blank" title="Imprint"><img alt="LinkedIn Logo" class="lazy" height="16" width="16" data-src="files/base/layout/img/logo_linkedIn.svg">
                         LinkedIn</a>
                 </li>
             </ul>
@@ -22,10 +22,10 @@
             <strong class="d-block mb-1 mb-md-2">Member of:</strong>
             <ul class="list-inline mb-0">
                 <li class="list-inline-item">
-                    <a target="_blank" href="https://www.renewableuk.com/" title="RenewableUk"><img alt="RenewableUK Logo" src="files/base/layout/img/logo_renewableUk.svg"></a>
+                    <a target="_blank" href="https://www.renewableuk.com/" title="RenewableUk"><img height="41" alt="RenewableUK Logo" class="lazy" data-src="files/base/layout/img/logo_renewableUk.svg"></a>
                 </li>
                 <li class="list-inline-item">
-                    <a target="_blank" href="https://www.cla.org.uk/" title="CLA Logo"><img style="max-height: 65px;" alt="CLA Logo" src="files/base/layout/img/cla-logo.jpeg"></a>
+                    <a target="_blank" href="https://www.cla.org.uk/" title="CLA Logo"><img style="max-height: 65px;" alt="CLA Logo" height="65" class="lazy" data-src="files/base/layout/img/cla-logo.jpeg"></a>
                 </li>
             </ul>
         </div>

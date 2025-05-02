@@ -22,7 +22,13 @@ $this->wrapperAttributes = $this
 
 
     <div class="extra-content mt-auto mobileNav_footer">
-       {{insert_module::16}}
+        {{iflng::de}}
+        {{insert_module::16}}
+        {{iflng}}
+
+        {{iflng::en}}
+       <!-- @TODO C.VOSS ENGLISCHES MENÜ -->
+        {{iflng}}
     </div>
 </nav>
 <!-- indexer::continue -->

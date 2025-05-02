@@ -2,7 +2,7 @@ var headerContent = document.querySelector(".header-content.fixed");
 
 if (headerContent) {
     var paddingTop = window.getComputedStyle(headerContent).height;
-    document.body.style.paddingTop = paddingTop;
+    document.querySelector("#wrapper").style.paddingTop = paddingTop;
 
     window.addEventListener('scroll', function () {
         if (window.scrollY > 50) { // Punkt, an dem die Änderung eintritt

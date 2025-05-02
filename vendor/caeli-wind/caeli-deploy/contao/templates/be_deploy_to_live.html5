@@ -23,7 +23,7 @@
         <form action="<?= \Contao\Environment::get('requestUri') ?>" method="POST" data-turbo="false">
             <div style="display: flex; gap: .5rem; flex-flow: row nowrap; align-items: center;">
                 <input style="width: 200px;" type="text" class="tl_text" name="backup_info" placeholder="Info (optional)">
-                
+
                 <?php if (!empty($this->environments) && count($this->environments) > 1): ?>
                 <select name="environment" class="tl_select" style="width: 150px;">
                     <?php foreach ($this->environments as $key => $name): ?>

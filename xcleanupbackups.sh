@@ -1,22 +1,5 @@
 #!/bin/bash
 
-# Laden der Umgebungsvariablen aus .env.local (ENTFERNT - Variablen kommen vom Controller)
-# if [ -f ".env.local" ]; then
-#     # Sichereres Laden: Nur Zeilen mit '=' exportieren, Kommentare und Leerzeilen ignorieren
-#     set -a # Automatically export all variables subsequently defined
-#     while IFS= read -r line || [ -n "$line" ]; do
-#         # Ignoriere Kommentare und leere Zeilen
-#         [[ "$line" =~ ^# ]] || [[ -z "$line" ]] && continue
-#         # Exportiere nur, wenn ein '=' vorhanden ist
-#         if [[ "$line" == *"="* ]]; then
-#             export "$line"
-#         fi
-#     done < ".env.local"
-#     set +a # Stop automatically exporting
-# else
-#     echo "Fehler: .env.local nicht gefunden!"
-#     exit 1
-# fi
 
 # Stelle sicher, dass wichtige Pfade vom Controller übergeben wurden
 if [ -z "${SOURCE_PATH}" ] || [ -z "${TARGET_BACKUP_PATH}" ]; then
@@ -31,7 +14,7 @@ LOG_FILE="${SOURCE_PATH}/cleanup_log.txt"
 echo "===== Backup-Bereinigung gestartet: $(date) =====" >> ${LOG_FILE}
 
 # Anzahl der zu behaltenden Backups
-KEEP_BACKUPS=4
+KEEP_BACKUPS=5
 
 # Backup-Verzeichnis prüfen
 if [ ! -d "${TARGET_BACKUP_PATH}" ]; then
@@ -41,41 +24,64 @@ fi
 
 echo "Durchsuche Backup-Verzeichnis: ${TARGET_BACKUP_PATH}" >> ${LOG_FILE}
 
-# Dateien nach Typ filtern und nach Datum sortieren
-FILES_BACKUPS=$(ls -t ${TARGET_BACKUP_PATH}/*_live_files.tar.gz 2>/dev/null)
-DB_BACKUPS=$(ls -t ${TARGET_BACKUP_PATH}/*_live_db.sql 2>/dev/null)
+# --- NEUE LOGIK: Verarbeite Backup-Sets basierend auf Zeitstempel ---
 
-# Zähler für gelöschte Dateien
-DELETED_FILES=0
-DELETED_DBS=0
+# Ermittle alle *_files.tar.gz Backups, sortiert nach Zeit (neueste zuerst)
+# Korrigiertes Muster: *_*_files.tar.gz, um Umgebungen (LIVE, DEV, etc.) einzuschließen
+# Leite Fehler nicht mehr um, um Probleme zu sehen
+# Wir nutzen bewusst *_files.tar.gz als Anker, da diese für ein vollständiges Backup existieren sollten.
+BACKUP_FILES_LIST=$(ls -t ${TARGET_BACKUP_PATH}/*_*_files.tar.gz 2>/dev/null || true) # Fehler unterdrücken, aber leeren String bei Fehler erlauben
 
-# Behalte die neuesten KEEP_BACKUPS Datei-Backups
-COUNT=0
-for file in ${FILES_BACKUPS}; do
-    COUNT=$((COUNT+1))
-    if [ ${COUNT} -gt ${KEEP_BACKUPS} ]; then
-        echo "Lösche altes Datei-Backup: $(basename ${file})" >> ${LOG_FILE}
-        rm -f "${file}"
-        DELETED_FILES=$((DELETED_FILES+1))
+# Prüfen, ob überhaupt Dateien gefunden wurden
+if [ -z "$BACKUP_FILES_LIST" ]; then
+    echo "Keine *_files.tar.gz Backups im Verzeichnis gefunden. Keine Bereinigung durchgeführt." >> ${LOG_FILE}
+    echo "===== Backup-Bereinigung abgeschlossen: $(date) =====" >> ${LOG_FILE}
+    echo "cleanup_success"
+    exit 0
+fi
+
+# Zähler für behaltene Sets und gelöschte Dateien
+COUNT_SETS=0
+DELETED_FILES_COUNT=0
+
+echo "--- Prüfung der Backup-Sets ---" >> ${LOG_FILE}
+
+# Iteriere durch die nach Zeit sortierte Liste der Datei-Backups
+echo "$BACKUP_FILES_LIST" | while IFS= read -r file_backup_path; do
+    # Extrahiere den Basis-Präfix (Pfad + YYYY-MM-DD_HH-MM-SS_ENV) aus dem .tar.gz Pfad
+    # Beispiel: /path/to/backups/2025-05-02_13-16-03_LIVE
+    prefix_path=$(echo "$file_backup_path" | sed -E 's/(.*)_files\.tar\.gz$/\1/')
+    prefix_basename=$(basename "$prefix_path") # Nur für die Log-Ausgabe YYYY-MM-DD_HH-MM-SS_ENV
+
+    COUNT_SETS=$((COUNT_SETS + 1))
+
+    if [ ${COUNT_SETS} -gt ${KEEP_BACKUPS} ]; then
+        # Dieses Set ist älter als die zu behaltenden -> löschen
+        echo "Lösche altes Backup-Set mit Präfix: ${prefix_basename}" >> ${LOG_FILE}
+
+        # Lösche alle drei zugehörigen Dateien (tar.gz, db.sql, exceptions.sql)
+        # Verwende -f, um Fehler zu unterdrücken, falls eine Datei unerwartet fehlt
+        deleted_count_this_set=0
+        if rm -f "${prefix_path}_files.tar.gz"; then deleted_count_this_set=$((deleted_count_this_set + 1)); fi
+        if rm -f "${prefix_path}_db.sql"; then deleted_count_this_set=$((deleted_count_this_set + 1)); fi
+        if rm -f "${prefix_path}_exceptions.sql"; then deleted_count_this_set=$((deleted_count_this_set + 1)); fi
+
+        DELETED_FILES_COUNT=$((DELETED_FILES_COUNT + deleted_count_this_set))
+        echo "  -> ${deleted_count_this_set} Datei(en) für dieses Set gelöscht." >> ${LOG_FILE}
+
     else
-        echo "Behalte Datei-Backup: $(basename ${file})" >> ${LOG_FILE}
+        # Dieses Set gehört zu den neuesten -> behalten
+        echo "Behalte Backup-Set mit Präfix: ${prefix_basename}" >> ${LOG_FILE}
     fi
 done
 
-# Behalte die neuesten KEEP_BACKUPS Datenbank-Backups
-COUNT=0
-for file in ${DB_BACKUPS}; do
-    COUNT=$((COUNT+1))
-    if [ ${COUNT} -gt ${KEEP_BACKUPS} ]; then
-        echo "Lösche altes Datenbank-Backup: $(basename ${file})" >> ${LOG_FILE}
-        rm -f "${file}"
-        DELETED_DBS=$((DELETED_DBS+1))
-    else
-        echo "Behalte Datenbank-Backup: $(basename ${file})" >> ${LOG_FILE}
-    fi
-done
+# --- ENDE NEUE LOGIK ---
+
+# Die alte Logik zur getrennten Bearbeitung wird nicht mehr benötigt
 
 echo "===== Backup-Bereinigung abgeschlossen: $(date) =====" >> ${LOG_FILE}
-echo "Insgesamt wurden ${DELETED_FILES} Datei-Backups und ${DELETED_DBS} Datenbank-Backups gelöscht." >> ${LOG_FILE}
+# Angepasste Log-Meldung für gelöschte Dateien
+echo "Insgesamt wurden ${DELETED_FILES_COUNT} Backup-Dateien (aus älteren Sets) gelöscht." >> ${LOG_FILE}
 
-echo "cleanup_success" 
+echo "cleanup_success"
+# Der Rest des Skripts nach diesem Punkt wird nicht mehr erreicht, da die alte Logik entfernt wurde.  

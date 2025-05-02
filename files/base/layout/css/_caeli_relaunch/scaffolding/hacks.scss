@@ -28,3 +28,10 @@
     padding-bottom: calc(var(--main-gap) * 3);
   }
 }
+
+
+.ce_rsce_stoerer:hover {
+  .stoerer-trigger > svg {
+   transform: scale(1.2);
+  }
+}
