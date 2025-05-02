@@ -1,4 +1,5 @@
 
+
 .accordion {
   // Akkordeon
 
@@ -50,6 +51,8 @@
 
           > * {
             @extend h5;
+            line-height: 1.2;
+            display: block;
           }
         }
 
