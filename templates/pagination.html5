@@ -1,0 +1,38 @@
+<!-- indexer::stop -->
+<nav class="pagination block" aria-label="<?= $this->trans('MSC.pagination') ?>">
+
+  <ul>
+    <?php if ($this->hasFirst): ?>
+      <li class="first"><a href="<?= $this->first['href'] ?>" class="first" title="<?= $this->first['title'] ?>"><?= $this->first['link'] ?></a></li>
+    <?php endif; ?>
+
+    <?php if ($this->hasPrevious): ?>
+        <li class="previous"><a href="<?= $this->previous['href'] ?>" class="previous" title="<?= $this->previous['title'] ?>"><i class="fasl fa-angle-left"></i></a></li>
+    <?php endif; ?>
+
+    <?php if (isset($this->pages[0])):?>
+        <li class="page-prefix">Seite </li>
+    <?php endif; ?>
+
+    <?php foreach ($this->pages as $index => $page): ?>
+      <?php if (null === $page['href']): ?>
+        <li><strong class="active"><?= $page['page'] ?></strong></li>
+      <?php else: ?>
+        <li><a href="<?= $page['href'] ?>" class="link" title="<?= $page['title'] ?>"><?= $page['page'] ?></a></li>
+      <?php endif; ?>
+      <?php if ($index < (count($this->pages) - 1)): ?>
+        <li class="separator" style="font-size: .65rem;">|</li>
+      <?php endif; ?>
+    <?php endforeach; ?>
+
+    <?php if ($this->hasNext): ?>
+      <li class="next"><a href="<?= $this->next['href'] ?>" class="next" title="<?= $this->next['title'] ?>"><i class="fasl fa-angle-right"></i></a></li>
+    <?php endif; ?>
+
+    <?php if ($this->hasLast): ?>
+      <li class="last"><a href="<?= $this->last['href'] ?>" class="last" title="<?= $this->last['title'] ?>"><?= $this->last['link'] ?></a></li>
+    <?php endif; ?>
+  </ul>
+
+</nav>
+<!-- indexer::continue -->
