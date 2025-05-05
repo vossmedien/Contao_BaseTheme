@@ -14,8 +14,17 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-
-                'topline' => array(
+    // --- 2. Allgemeines Layout & Raster --- //
+        'animation_type' => array(
+            'label' => array(
+                'de' => array('Art der Einblendeanimation (Überschrift)', 'Siehe https://animate.style/ für Beispiele'),
+            ),
+            'inputType' => 'select',
+            'options' => GlobalElementConfig::getAnimations(),
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr') // clr hinzugefügt für eigene Zeile
+        ),
+        // --- 1. Allgemeine Text- & Inhaltselemente --- //
+        'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
@@ -25,31 +34,53 @@ return array(
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
+        'contact_text' => array(
+            'label' => array('Kontakttext', 'Text neben den Ansprechpartnern'),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+        ),
 
 
-
-        'animation_type' => array(
-            'label' => array(
-                'de' => array('Art der Einblendeanimation (Überschrift)', 'Siehe https://animate.style/ für Beispiele'),
-            ),
+        'partner_columns' => array(
+            'label' => array('Anzahl Spalten für Ansprechpartner', 'Bestimmt, wie viele Partner nebeneinander angezeigt werden (Bootstrap Grid).'),
             'inputType' => 'select',
-            'options' => GlobalElementConfig::getAnimations(),
-            'eval' => array('chosen' => 'true')
+            'options' => array(
+                'col-12' => '1 Spalte',
+                'col-md-6' => '2 Spalten',
+                'col-md-6 col-lg-4' => '3 Spalten (Standard)',
+                'col-md-6 col-lg-3' => '4 Spalten',
+                'col-auto' => 'Automatische Spaltenbreite',
+            ),
+            'default' => 'col-md-6 col-lg-4',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'row_justify_content' => array(
+            'label' => array('Horizontale Ausrichtung der Partner-Reihe', 'Bestimmt, wie die Ansprechpartner-Boxen horizontal in der Reihe verteilt werden (justify-content).'),
+            'inputType' => 'select',
+            'options' => array(
+                'justify-content-md-start'   => 'Links',
+                'justify-content-md-center'  => 'Zentriert (Standard)',
+                'justify-content-md-end'     => 'Rechts',
+                'justify-content-md-between' => 'Gleichmäßiger Abstand (zwischen)',
+                'justify-content-md-around'  => 'Gleichmäßiger Abstand (um)',
+            ),
+            'default' => 'justify-content-center',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
-
-
-        // NEU: Checkbox für Zweispaltigkeit
-        'two_columns' => array(
-            'label' => array('Ansprechpartner zweispaltig anzeigen', 'Zeigt die Ansprechpartner nebeneinander in zwei Spalten an (auf größeren Bildschirmen).'),
-            'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr'),
-            'default' => false,
+        // --- 3. Layout & Darstellung der einzelnen Partner-Boxen --- //
+        'partner_layout' => array(
+            'label' => array('Layout der Ansprechpartner-Boxen', 'Bestimmt die Anordnung von Bild und Text.'),
+            'inputType' => 'select',
+            'options' => array(
+                'layout-image-left' => 'Bild links, Text rechts (Standard)',
+                'layout-image-top' => 'Bild oben, Text unten',
+            ),
+            'default' => 'layout-image-left',
+            'eval' => array('tl_class' => 'w50 clr'),
         ),
-
-        // NEU: Select für Ausrichtung der Partner-Boxen
         'partner_alignment' => array(
-            'label' => array('Ausrichtung der Partner-Boxen', 'Bestimmt die Textausrichtung innerhalb jeder einzelnen Ansprechpartner-Box.'),
+            'label' => array('Textausrichtung der Partner-Boxen', 'Bestimmt die Textausrichtung innerhalb jeder einzelnen Ansprechpartner-Box.'),
             'inputType' => 'select',
             'options' => array(
                 'text-start' => 'Linksbündig (Standard)',
@@ -59,37 +90,67 @@ return array(
             'default' => 'text-start',
             'eval' => array('tl_class' => 'w50'),
         ),
-
-        // NEU: Select für horizontale Ausrichtung der Reihe
-        'row_justify_content' => array(
-            'label' => array('Horizontale Ausrichtung der Reihe', 'Bestimmt, wie die Ansprechpartner-Boxen horizontal in der Reihe verteilt werden (justify-content).'),
-            'inputType' => 'select',
-            'options' => array(
-                'justify-content-start'   => 'Links',
-                'justify-content-center'  => 'Zentriert (Standard)',
-                'justify-content-end'     => 'Rechts',
-                'justify-content-between' => 'Gleichmäßiger Abstand (zwischen)',
-                'justify-content-around'  => 'Gleichmäßiger Abstand (um)',
-            ),
-            'default' => 'justify-content-center',
-            'eval' => array('tl_class' => 'w50 '),
+    'email_icon_label' => array(
+            'label' => array('Label für E-Mail-Text', ''),
+            'inputType' => 'text',
+            'default' => 'Nachricht schreiben',
+            'eval' => array('tl_class' => 'w50'), // Neben 'Icons auf Bild'
+        ),
+        'phone_display_label' => array(
+            'label' => array('Anzeigetext / Tooltip für Telefonnummer', ''),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50 '), // Nimmt jetzt eine ganze Zeile ein
         ),
 
-        // Steuerung für Bildrundung
-        'round_images' => array(
-            'label' => array('Bilder abrunden', 'Fügt die Klasse .rounded-circle zu den Bildern hinzu.'),
+              'hide_all_descriptions' => array(
+            'label' => array('Beschreibungen hinter "Mehr erfahren" verstecken', 'Blendet alle Beschreibungen initial aus und zeigt einen "Mehr erfahren"-Link.'),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr'),
+            'default' => false,
+            'eval' => array('tl_class' => 'w50 clr'), // clr für neue Zeile
+        ),
+        'more_info_label' => array(
+            'label' => array('Text für "Mehr erfahren"', 'Text für den Link, der die Beschreibung ein-/ausblendet.'),
+            'inputType' => 'text',
+            'default' => 'Mehr erfahren',
+
+            'eval' => array('tl_class' => 'w50'), // Neben Checkbox
+        ),
+
+        'title_below_name' => array(
+            'label' => array('Titel unterhalb des Namens anzeigen', 'Zeigt den Titel/Abteilung unter dem Namen an (Standard: Titel: Name).'),
+            'inputType' => 'checkbox',
+            'default' => false,
+            'eval' => array('tl_class' => ''), // Nimmt Platz neben Bildrundung ein
+        ),
+        'show_icons_on_image' => array(
+            'label' => array('Kontakt-Icons auf Bild anzeigen', 'Stellt E-Mail und Telefon als Icons auf dem Bild dar.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' '), // clr für neue Zeile
             'default' => false,
         ),
 
 
-        'contact_text' => array(
-            'label' => array('Kontakttext', 'Text neben den Ansprechpartnern'),
-            'inputType' => 'textarea',
-            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+        // --- 4. Funktionale Einstellungen --- //
+
+
+            'round_images' => array(
+            'label' => array('Bilder abrunden', 'Fügt die Klasse .rounded-circle zu den Bildern hinzu.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => ' '), // clr für neue Zeile
+            'default' => false,
+        ),
+                'image_column_width' => array(
+            'label' => array('Bildspaltenbreite (px)', 'Breite für die Bildspalte eingeben (nur bei Layout \"Bild links, Text rechts\").'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50 clr', 'rgxp' => 'digit'),
+            'dependsOn' => array(
+                'field' => 'partner_layout',
+                'value' => 'layout-image-left',
+            ),
         ),
 
+
+        // --- 5. Globale Bildgröße --- //
         'size' => array(
             'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
             'inputType' => 'imageSize',
@@ -98,10 +159,16 @@ return array(
             'eval' => array(
                 'rgxp' => 'digit',
                 'includeBlankOption' => true,
-                'tl_class' => 'clr'
+                'tl_class' => 'w50 clr'
             ),
         ),
-
+    'add_filter_form' => array(
+            'label' => array('Filter-Formular hinzufügen', 'Zeigt Filter-Buttons basierend auf den Tätigkeitsfeldern der Partner an.'),
+            'inputType' => 'checkbox',
+            'default' => false,
+            'eval' => array('tl_class' => 'w50 clr'), // clr für neue Zeile
+        ),
+        // --- 6. Partner-Liste --- //
         'partners' => array(
             'label' => array('Ansprechpartner', ''),
             'elementLabel' => '%s. Ansprechpartner',
@@ -132,12 +199,24 @@ return array(
                 'email_link' => array(
                     'label' => array('E-Mail-Adresse oder Link', 'z.B. mailto:test@example.com oder /kontakt'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50', 'rgxp' => 'url'),
+                    'eval' => array('tl_class' => 'w50', 'rgxp' => 'url'), // URL Validierung hinzugefügt
                 ),
                 'phone' => array(
                     'label' => array('Telefonnummer', ''),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
+                ),
+                // Beschreibung
+                'description' => array(
+                    'label' => array('Beschreibung', 'Detaillierte Informationen zum Ansprechpartner.'),
+                    'inputType' => 'textarea',
+                    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+                ),
+                // NEU: Tätigkeitsfelder/Tags
+                'tags' => array(
+                    'label' => array('Tätigkeitsfelder / Filter-Tags', 'Begriffe eingeben, nach denen gefiltert werden kann.'),
+                    'inputType' => 'listWizard',
+                    'eval' => array('tl_class' => 'clr'),
                 ),
                 'buttons' => array(
                     'label' => array('Buttons', ''),

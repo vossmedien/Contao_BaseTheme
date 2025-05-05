@@ -1,3 +1,5 @@
 #config/parameters.yaml
 parameters:
+    pin_hubspot_portal_id: '%env(PIN_HUBSPOT_PORTALID)%'
+    pin_hubspot_form_id: '%env(PIN_HUBSPOT_FORMID)%'
 

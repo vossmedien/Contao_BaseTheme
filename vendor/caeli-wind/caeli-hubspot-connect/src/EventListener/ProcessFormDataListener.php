@@ -48,6 +48,14 @@ class ProcessFormDataListener
      */
     public function __invoke(array $submittedData, array $formData, ?array $files, array $labels, Form $form): void
     {
+        // Logging: Prüfen auf doppelte Ausführung
+        $timestamp = microtime(true);
+        $this->logger->info(sprintf('[HubSpot Connect] processFormData Hook für Formular ID %d ausgelöst um %.4f', $form->id, $timestamp), [
+            'form_id' => $form->id,
+            'form_title' => $formData['title'] ?? 'Unbekannt',
+            'timestamp' => $timestamp
+        ]);
+
         // Prüfen, ob HubSpot für dieses Formular aktiviert ist
         if (!isset($formData['enableHubspot']) || !$formData['enableHubspot']) {
             return;

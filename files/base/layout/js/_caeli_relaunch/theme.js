@@ -1,3 +1,4 @@
+// Footer Accordion Indicator (+/-)
 document.addEventListener('DOMContentLoaded', function () {
     const footerAccordions = document.querySelectorAll('.footer-accordion-item .collapse');
 
@@ -20,8 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-
-
+// Header Scrolling Class (is-scrolling)
 document.addEventListener('DOMContentLoaded', function() {
   const header = document.querySelector('header');
 
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-
+// Main Nav Level 2 Sizing (Full Width & Alignment)
 document.addEventListener('DOMContentLoaded', function() {
   // MainNav Element finden
   const mainNav = document.getElementById('mainNav');
@@ -99,6 +99,8 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('load', updateSizes);
   document.fonts.ready.then(updateSizes);
 });
+
+// Scroll Progress Bar & Scroll-to-Top Button
 document.addEventListener('DOMContentLoaded', function() {
   // Erstelle Progress-Bar
   const progressBar = document.createElement('div');
@@ -162,4 +164,149 @@ document.addEventListener('DOMContentLoaded', function() {
       scrollTopBtn.style.visibility = 'hidden';
     }
   });
+});
+
+// Consent Management Form Handling (AGB Toggle & HubSpot Submit Trigger)
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.ce_form').forEach(formContainer => {
+        const form = formContainer.querySelector('form');
+        if (!form) return;
+
+        const agbCheckboxContainer = form.querySelector('.agb_checkbox');
+        const agbNotice = form.querySelector('.agb_notice');
+
+        if (!agbCheckboxContainer || !agbNotice) {
+             return;
+        }
+
+        const agbCheckbox = agbCheckboxContainer.querySelector('input[type="checkbox"][name="agb_akzeptiert"]');
+        const agbHiddenInput = agbCheckboxContainer.querySelector('input[type="hidden"][name="agb_akzeptiert"]');
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        agbCheckboxContainer.classList.add('d-none');
+        agbNotice.classList.add('d-none');
+        if (agbCheckbox) {
+            agbCheckbox.required = false;
+            agbCheckbox.disabled = true;
+        }
+        if (agbHiddenInput) {
+            agbHiddenInput.value = '';
+        }
+
+        let initialSetupDone = false;
+        let lastKnownConsentForS10 = null;
+        let cmpCheckInterval = null;
+        let cmpCheckCounter = 0;
+        const MAX_CMP_CHECKS = 50;
+
+        function adjustFormForConsent(hasConsent) {
+            if (!agbCheckboxContainer || !agbNotice) return;
+            const fieldset = agbCheckboxContainer.querySelector('fieldset.checkbox_container');
+
+            if (hasConsent) {
+                agbCheckboxContainer.classList.add('d-none');
+                agbCheckboxContainer.classList.remove('d-block', 'mandatory');
+                if (fieldset) fieldset.classList.remove('mandatory');
+                if (agbCheckbox) {
+                    agbCheckbox.required = false;
+                    agbCheckbox.disabled = true;
+                }
+                if (agbHiddenInput && agbCheckbox) {
+                    agbHiddenInput.value = agbCheckbox.value;
+                }
+                agbNotice.classList.remove('d-none');
+                agbNotice.classList.add('d-block');
+            } else {
+                agbCheckboxContainer.classList.remove('d-none');
+                agbCheckboxContainer.classList.add('d-block', 'mandatory');
+                if (fieldset) fieldset.classList.add('mandatory');
+                if (agbCheckbox) {
+                    agbCheckbox.required = true;
+                    agbCheckbox.disabled = false;
+                }
+                if (agbHiddenInput) {
+                    agbHiddenInput.value = '';
+                }
+                agbNotice.classList.remove('d-block');
+                agbNotice.classList.add('d-none');
+            }
+        }
+
+        function checkConsentAndAdjustForm() {
+            let hasConsent = false;
+            let adjustmentNeeded = false;
+
+            if (typeof __cmp === 'function') {
+                try {
+                    const cmpData = __cmp('getCMPData');
+                    if (cmpData && cmpData.vendorConsents && cmpData.vendorConsents.s10) {
+                        hasConsent = true;
+                    }
+                } catch (e) {
+                    hasConsent = false;
+                }
+           }
+
+            adjustmentNeeded = hasConsent !== lastKnownConsentForS10;
+
+            if (adjustmentNeeded) {
+                adjustFormForConsent(hasConsent);
+                lastKnownConsentForS10 = hasConsent;
+            }
+        }
+
+        function handleConsentChangeEvent() {
+            if (!initialSetupDone) return;
+            checkConsentAndAdjustForm();
+        }
+
+        function handleInitialConsent() {
+            if (initialSetupDone) return;
+            initialSetupDone = true;
+            checkConsentAndAdjustForm();
+            try {
+                 __cmp("addEventListener", ["consent", handleConsentChangeEvent, false], null);
+                 __cmp('addEventListener', ["settings", handleConsentChangeEvent, false], null);
+           } catch (e) {}
+        }
+
+        function setupInitialConsentListener() {
+             if (typeof __cmp === 'function') {
+                 try {
+                     __cmp("addEventListener", ["consent", handleInitialConsent, false], null);
+                     return true;
+                 } catch (e) {}
+             }
+             return false;
+        }
+
+        function initializeConsentHandling() {
+             cmpCheckCounter++;
+             if (typeof __cmp === 'function') {
+                  if (cmpCheckInterval) clearInterval(cmpCheckInterval);
+                  const listenerRegistered = setupInitialConsentListener();
+                  checkConsentAndAdjustForm();
+                  if (!listenerRegistered) {
+                  }
+              } else if (cmpCheckCounter >= MAX_CMP_CHECKS) {
+                  if (cmpCheckInterval) clearInterval(cmpCheckInterval);
+                  if (lastKnownConsentForS10 !== false) {
+                     adjustFormForConsent(false);
+                     lastKnownConsentForS10 = false;
+                  }
+             }
+        }
+
+        cmpCheckInterval = setInterval(initializeConsentHandling, 100);
+
+        if (submitButton) {
+            submitButton.addEventListener('click', function() {
+               if (form.checkValidity() && typeof __cmp === 'function') { 
+                    try {
+                        __cmp('setVendorConsent', ['s10', 1]);
+                   } catch (e) {}
+                }
+            });
+        }
+    });
 });

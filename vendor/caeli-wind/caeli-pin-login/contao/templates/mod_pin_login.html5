@@ -5,51 +5,51 @@
 <!-- indexer::stop -->
 <div class="pin-login-form-container">
   <h2><?= $this->formTitle ?></h2>
-  
+
   <?php if ($this->hasError): ?>
     <div class="error-message">
       <?= $this->errorMessage ?>
     </div>
   <?php endif; ?>
-  
+
   <?php if ($this->successMessage): ?>
     <div class="success-message">
       <?= $this->successMessage ?>
     </div>
   <?php endif; ?>
-  
+
   <?php if (!$this->successMessage): ?>
     <form method="post">
       <div class="formbody">
         <input type="hidden" name="FORM_SUBMIT" value="pin_login_form">
         <input type="hidden" name="REQUEST_TOKEN" value="<?= $this->request_token ?>">
-        
+
         <div class="widget widget-text mandatory">
           <label for="pin"><?= $this->pinLabel ?></label>
           <input type="text" name="pin" id="pin" class="text" required>
         </div>
-        
+
         <?php if ($this->requireEmail): ?>
         <div class="widget widget-text mandatory">
           <label for="email"><?= $this->emailLabel ?></label>
           <input type="email" name="email" id="email" class="text" required>
         </div>
         <?php endif; ?>
-        
+
         <?php if ($this->extraDataField): ?>
           <div class="widget widget-textarea">
             <label for="extra_data"><?= $this->extraDataLabel ?></label>
             <textarea name="extra_data" id="extra_data" class="textarea" rows="4"></textarea>
           </div>
         <?php endif; ?>
-        
+
         <div class="widget widget-submit">
           <button type="submit" class="submit"><?= $this->submitButton ?></button>
         </div>
       </div>
     </form>
   <?php endif; ?>
-  
+
   <?php if ($this->isDevMode): ?>
     <div class="dev-info">
       <h3>Debug Information (nur im Dev-Modus sichtbar)</h3>
@@ -62,4 +62,4 @@
 </div>
 <!-- indexer::continue -->
 
-<?php $this->endblock(); ?> 
+<?php $this->endblock(); ?>

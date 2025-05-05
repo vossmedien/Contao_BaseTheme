@@ -1,7 +1,7 @@
 import {scrollToTop} from "./smoothScrolling.js";
 import {setupFunctions} from "./cookieManager.js";
 import {adjustPullElements} from "./marginPaddingAdjustments.js";
-import {addPlaceholders} from "./floatingLabels.js";
+//import {addPlaceholders} from "./floatingLabels.js";
 import {
     changeAnchorLinks,
     changeNavLinksAfterLoad,
@@ -24,7 +24,7 @@ const cachedElements = {
 
 if (cachedElements.form) {
     cachedElements.form.addEventListener("submit", (e) => {
-        setTimeout(addPlaceholders, 250);
+       // setTimeout(addPlaceholders, 250);
     });
 }
 
@@ -445,7 +445,7 @@ DomLoadFunctions.push(
     scrollToTop,
     setupFunctions,
     adjustPullElements,
-    addPlaceholders
+    //addPlaceholders
 );
 
 scrollFunctions.push(changeAnchorLinks);

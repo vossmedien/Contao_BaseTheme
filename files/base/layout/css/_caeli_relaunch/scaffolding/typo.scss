@@ -1,6 +1,6 @@
 
 main, footer {
-  a:not(.btn):not(:has(img)) {
+  a:not(.btn, .text-decoration-none):not(:has(img)) {
     position: relative;
 
 
@@ -20,6 +20,10 @@ main, footer {
         width: 100%;
       }
     }
+  }
+
+  p a, label a {
+    color: var(--bs-tertiary);
   }
 }
 

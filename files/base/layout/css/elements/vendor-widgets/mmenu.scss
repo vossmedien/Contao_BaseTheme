@@ -2,8 +2,8 @@
   --mm-spn-item-height: 50px;
   --mm-spn-item-indent: 20px;
   --mm-spn-bg: #fff;
-  --mm-spn-logoHeight: 150px;
-  --mm-spn-logoHWidth: 125px;
+  --mm-spn-logoheight: 150px;
+  --mm-spn-logowidth: 125px;
   //--mm-spn-line-height: 24px;
   --mm-spn-panel-offset: 30%;
   --mm-spn-active-bg: var(--bs-primary);
@@ -59,7 +59,7 @@
 
 
   ul {
-    top: calc(var(--mm-spn-logoHeight));
+    top: calc(var(--mm-spn-logoheight));
     //display: flex;
     //flex-flow: column nowrap;
 
@@ -73,7 +73,7 @@
   }
 
   .logo {
-    height: var(--mm-spn-logoHeight);
+    height: var(--mm-spn-logoheight);
     padding: 1.25rem;
     text-align: center;
     display: flex;
@@ -90,7 +90,7 @@
     img {
       display: inline-block;
       max-height: 100%;
-      width: var(--mm-spn-logoHWidth);
+      width: var(--mm-spn-logowidth);
     }
   }
 

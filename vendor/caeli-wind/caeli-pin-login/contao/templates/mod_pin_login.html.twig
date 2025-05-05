@@ -1,56 +1,68 @@
 {# Twig Template für das PIN-Login Modul #}
-<div class="{{ class }} block"{{ cssID|default() }}>
+<div class="{{ class }} block ce_form"{{ cssID|default() }}>
   {% if headline %}
     <{{ hl|default('h1') }}>{{ headline }}</{{ hl|default('h1') }}>
   {% endif %}
 
   <div class="pin-login-form-container">
     <h2>{{ formTitle }}</h2>
-    
+
     {% if hasError %}
       <div class="error-message">
         {{ errorMessage }}
       </div>
     {% endif %}
-    
+
     {% if successMessage %}
       <div class="success-message">
         {{ successMessage }}
       </div>
     {% endif %}
-    
+
     {% if not successMessage %}
       <form method="post">
         <div class="formbody">
           <input type="hidden" name="FORM_SUBMIT" value="pin_login_form">
           <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
-          
+
           <div class="widget widget-text mandatory">
             <label for="pin">{{ pinLabel }}</label>
-            <input type="text" name="pin" id="pin" class="text" required>
+            <input type="text" name="pin" id="pin" class="text" required placeholder="{{ pinLabel }}">
           </div>
-          
+
           {% if requireEmail %}
           <div class="widget widget-text mandatory">
             <label for="email">{{ emailLabel }}</label>
-            <input type="email" name="email" id="email" class="text" required>
+            <input type="email" name="email" id="email" class="text" required placeholder="{{ emailLabel }}">
           </div>
           {% endif %}
-          
+
           {% if extraDataField %}
             <div class="widget widget-textarea">
-              <label for="extra_data">{{ extraDataLabel }}</label>
-              <textarea name="extra_data" id="extra_data" class="textarea" rows="4"></textarea>
+              <label for="message">{{ messageLabel }}</label>
+              <textarea name="message" id="message" class="textarea" rows="4" placeholder="{{ messageLabel }}"></textarea>
             </div>
           {% endif %}
-          
+
+          {# Consent Checkbox und Hinweis, initial versteckt via JS #}
+          <div class="widget widget-checkbox agb_checkbox mandatory d-none">
+            <fieldset id="ctrl_pin_agb" class="checkbox_container agb_checkbox mandatory">
+              <input type="hidden" name="agb_akzeptiert" value="">
+              {# ID und for angepasst, um Kollisionen zu vermeiden #}
+              <span><input type="checkbox" name="agb_akzeptiert" id="opt_pin_agb_0" class="checkbox" value="agb_akzeptiert" required=""> <label id="lbl_pin_agb_0" for="opt_pin_agb_0">{{ 'Ich habe die <a href="/datenschutz">Datenschutzhinweise</a> gelesen und bin mit der Datenspeicherung zwecks interner Verarbeitung und Kontaktaufnahme einverstanden.'|raw }}</label></span>
+            </fieldset>
+          </div>
+          <div class="widget widget-explanation explanation agb_notice d-none">
+            <p>{{ 'Ihre eingegebenen Daten werden zur Bearbeitung Ihrer Anfrage verarbeitet. Weitere Informationen zur Verarbeitung Ihrer Daten finden Sie in unserer Datenschutzerklärung.'|raw }}</p>
+          </div>
+
           <div class="widget widget-submit">
             <button type="submit" class="submit">{{ submitButton }}</button>
           </div>
         </div>
       </form>
     {% endif %}
-    
+
     {% if isDevMode %}
       <div class="dev-info">
         <h3>Debug Information (nur im Dev-Modus sichtbar)</h3>
@@ -61,4 +73,4 @@
       </div>
     {% endif %}
   </div>
-</div> 
+</div>

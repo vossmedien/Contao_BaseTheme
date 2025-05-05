@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('load', function() {
     const headerContent = document.querySelector(".header-content.fixed");
     const wrapper = document.querySelector("#wrapper");
 
