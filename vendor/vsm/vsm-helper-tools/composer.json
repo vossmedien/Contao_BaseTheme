@@ -1,63 +1,63 @@
 {
-    "name": "vsm/vsm-helper-tools",
-    "description": "VSM Helper & Tools &#40;Bildgenerierung, STRIPE-Anbindung, etc.&#41;",
-    "keywords": [
-        "contao",
-        "bundle",
-        "helper",
-        "tools",
-        "vsm"
-    ],
-    "type": "contao-bundle",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Vossmedien - Christian Voss",
-            "email": "christian@vossmedien.de",
-            "homepage": "https://www.vossmedien.de",
-            "role": "Developer"
-        }
-    ],
-    "support": {
-        "issues": "https://github.com/vsm/vsm-helper-tools/issues",
-        "source": "https://github.com/vsm/vsm-helper-tools"
+  "name": "vsm/vsm-helper-tools",
+  "description": "VSM Helper & Tools &#40;Bildgenerierung, STRIPE-Anbindung, etc.&#41;",
+  "keywords": [
+    "contao",
+    "bundle",
+    "helper",
+    "tools",
+    "vsm"
+  ],
+  "type": "contao-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Vossmedien - Christian Voss",
+      "email": "christian@vossmedien.de",
+      "homepage": "https://www.vossmedien.de",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/vsm/vsm-helper-tools/issues",
+    "source": "https://github.com/vsm/vsm-helper-tools"
+  },
+  "require": {
+    "php": "^8.1",
+    "contao/core-bundle": "^5.0",
+    "symfony/http-client": "^7.0"
+  },
+  "require-dev": {
+    "contao/manager-plugin": "^2.12"
+  },
+  "autoload": {
+    "psr-4": {
+      "Vsm\\VsmHelperTools\\": "src/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "contao-components/installer": true,
+      "contao/manager-plugin": true,
+      "contao-community-alliance/composer-plugin": true
+    }
+  },
+  "extra": {
+    "contao-manager-plugin": "Vsm\\VsmHelperTools\\ContaoManager\\Plugin",
+    "public-dir": "src/Resources/public",
+    "contao": {
+      "transifex": {
+        "project": "vsm-helper-tools",
+        "prefix": "vsm-"
+      }
     },
-    "require": {
-        "php": "^8.1",
-        "contao/core-bundle": "^4.13 || ^5.0",
-        "symfony/http-client": "^5.4 || ^6.0"
-    },
-    "require-dev": {
-        "contao/manager-plugin": "^2.12"
-    },
-    "autoload": {
-        "psr-4": {
-            "Vsm\\VsmHelperTools\\": "src/"
-        }
-    },
-    "config": {
-        "allow-plugins": {
-            "contao-components/installer": true,
-            "contao/manager-plugin": true,
-            "contao-community-alliance/composer-plugin": true
-        }
-    },
-    "extra": {
-        "contao-manager-plugin": "Vsm\\VsmHelperTools\\ContaoManager\\Plugin",
-        "public-dir": "src/Resources/public",
-        "contao": {
-            "transifex": {
-                "project": "vsm-helper-tools",
-                "prefix": "vsm-"
-            }
-        },
-        "branch-alias": {
-            "dev-main": "0.1.x-dev"
-        }
-    },
-    "scripts": {
-        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ templates/ tests/ --config tools/ecs/config.php --fix --ansi",
-        "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist"
-    },
-    "version": "0.1"
+    "branch-alias": {
+      "dev-main": "0.1.x-dev"
+    }
+  },
+  "scripts": {
+    "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ templates/ tests/ --config tools/ecs/config.php --fix --ansi",
+    "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist"
+  },
+  "version": "0.1"
 }

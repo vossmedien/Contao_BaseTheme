@@ -5,56 +5,105 @@ use Vsm\VsmHelperTools\Helper\HeadlineHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\ImageHelper;
 use Contao\StringUtil;
+use Contao\Input;
 
-// Prüfen, ob die linke Spalte (Text/Headline/Buttons) Inhalt hat
+// Helper function to create safe CSS class names from tags
+function createTagClass($tag)
+{
+    $tag = strtolower($tag ?? '');
+    $tag = preg_replace('/ä/', 'ae', $tag);
+    $tag = preg_replace('/ö/', 'oe', $tag);
+    $tag = preg_replace('/ü/', 'ue', $tag);
+    $tag = preg_replace('/ß/', 'ss', $tag);
+    $tag = preg_replace('/[^a-z0-9]+/', '-', $tag);
+    $tag = trim($tag, '-');
+    return 'tag-' . ($tag ?: 'uncategorized');
+}
+
+// --- Collect all unique tags for filtering (if enabled) ---
+$allTags = [];
+$initialFilterTagClass = 'all'; // Default filter
+
+if ($this->add_filter_form && !empty($this->partners)) {
+    foreach ($this->partners as $partner) {
+        if (!empty($partner->tags) && is_array($partner->tags)) {
+            foreach ($partner->tags as $tag) {
+                if (!empty(trim($tag))) {
+                    $allTags[trim($tag)] = true;
+                }
+            }
+        }
+    }
+    $allTags = array_keys($allTags);
+    sort($allTags);
+
+    // --- Read GET parameter for initial filter ---
+    // Example: ?filter=YourTag (URL-encoded, e.g., ?filter=Topic%201)
+    $getFilter = \Contao\Input::get('filter');
+    if (!empty($getFilter)) {
+        $potentialTag = trim($getFilter);
+        if (in_array($potentialTag, $allTags, true)) {
+            $initialFilterTagClass = createTagClass($potentialTag);
+        }
+    }
+}
+
+// --- Determine if the left text column should be shown ---
 $showTextColumn = !empty($this->topline)
     || (!empty($this->headline) && !empty($this->headline['value']))
     || !empty($this->subline)
     || !empty($this->contact_text)
     || !empty($this->buttons);
 
-// Standard Textausrichtung, falls nichts ausgewählt ist
+// --- Prepare CSS classes based on configuration ---
 $textAlignClass = $this->text_alignment ?: 'text-center';
-
-// Standard Textausrichtung für die Partner-Boxen, falls nichts ausgewählt ist
-$partnerAlignClass = $this->partner_alignment ?: 'text-start'; // Default: linksbündig
-
-// Klasse für Bildrundung
-$imageClass = $this->round_images ? 'rounded-circle' : ''; // Nur die Rundungsklasse selbst
-
-// NEU: Klassen für die Hauptspalten (Text vs. Partner)
-$textColClass = 'col-12';
-$partnerOuterColClass = 'col-12';
-if ($this->two_columns && $showTextColumn) {
-    $textColClass = 'col-md-5';
-    $partnerOuterColClass = 'col-md-7';
-}
-
-// Klasse für die Spaltenbreite der einzelnen Partner-Boxen (unabhängig von two_columns)
-$partnerInnerColClass = 'col-sm-6 col-lg-4 '; // Feste Spaltenbreite für Partner, z.B. 4 pro Reihe auf großen Screens
-
-// NEU: Klasse für die horizontale Ausrichtung der Reihe
-$rowJustifyClass = $this->row_justify_content ?: 'justify-content-center'; // Default: zentriert
+$partnerAlignClass = $this->partner_alignment ?: 'text-start';
+$imageClass = $this->round_images ? 'rounded-circle' : '';
+$partnerColClass = $this->partner_columns ?: 'col-md-6 col-lg-4';
+$partnerLayoutClass = $this->partner_layout ?: 'layout-image-left';
+$rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
 ?>
-<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?>">
-    <div class="ce--inner ">
-        <div class="row g-3 align-items-center flex-row-reverse">
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?> rsce-ansprechpartner">
 
-            <?php // --- Linke Spalte (Text/Headline/Buttons) --- ?>
+
+    <div class="ce--inner ">
+        <?php
+        // Dynamically determine classes for the outer wrapper
+        $outerWrapperClasses = 'align-items-center';
+        if ($showTextColumn) {
+            $outerWrapperClasses .= ' row g-3 flex-md-row-reverse';
+        }
+        ?>
+        <div class="<?php echo trim($outerWrapperClasses); ?>">
+
+            <?php // --- Filter Buttons (if enabled) --- ?>
+            <?php if ($this->add_filter_form && !empty($allTags)): ?>
+                <div class="filter-buttons mb-4">
+                    <?php // Set initial active state ?>
+                    <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all"><?php echo $GLOBALS['TL_LANG']['MSC']['filter_show_all'] ?? 'Alle'; ?></button>
+                    <?php foreach ($allTags as $tag):
+                        $currentTagClass = createTagClass($tag);
+                        ?>
+                        <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === $currentTagClass) ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="<?= $currentTagClass; ?>"><?= \Contao\StringUtil::specialchars($tag); ?></button>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+
+            <?php // --- Left Column (Text/Headline/Buttons) --- ?>
             <?php if ($showTextColumn): ?>
-                <div class="<?php echo $textColClass; ?> <?php if ($this->two_columns): echo $textAlignClass . ' text-md-start'; endif; ?>" data-animation="animate__fadeIn">
+                <div class="col-md-5 <?php echo $textAlignClass; ?> text-md-start" data-animation="animate__fadeIn">
                     <?php
-                    // Generiere Headline HTML ohne eigene Animation
+                    // Headline Output
                     echo HeadlineHelper::generateHeadlineHTML(
                         $this->topline,
                         $this->headline,
                         $this->subline,
-                        $this->hl, // Headline-Typ
-                        $this->animation_type,     // Keine Animation für das Headline-Element selbst
-                        null,     // Keine zusätzliche Klasse
-                        false,    // Nicht nur Style
-                        "mb-3"    // Zusätzliche Attribute (hier als Klasse)
+                        $this->hl,
+                        $this->animation_type,
+                        null,
+                        false,
+                        "mb-3"
                     );
                     ?>
                     <?php if ($this->contact_text): ?>
@@ -62,94 +111,168 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-center'; // De
                     <?php endif; ?>
 
                     <?php if ($this->buttons): ?>
-                         <?= ButtonHelper::generateButtonHTML($this->buttons); ?>
+                        <?= ButtonHelper::generateButtonHTML($this->buttons); ?>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
 
-            <?php // --- Rechte Spalte (Partner) --- ?>
-            <div class="<?php echo $partnerOuterColClass; ?>">
-                <div class="row gy-1 gx-2 gy-md-2 gx-md-3 <?php echo $rowJustifyClass; ?>"> <?php // justify-content dynamisch gemacht ?>
-                    <?php foreach ($this->partners as $partner):
-                        // Bestimme die Klassen für die Partner-Karte
-                        $partnerCardClasses = 'contact-card ' . $partnerAlignClass;
-                        if ($this->partner_layout_horizontal) {
-                            $partnerCardClasses .= ' d-flex'; // Flex nur hinzufügen, wenn Option aktiv
+            <?php // --- Right Column (Partners) --- ?>
+            <div class="<?php echo $showTextColumn ? 'col-md-7' : 'col-12'; ?>">
+                <div class="row g-2 g-md-3 justify-content-center <?php echo $rowJustifyClass; ?> filter-container">
+                    <?php foreach ($this->partners as $index => $partner):
+                        // Unique ID for collapse element
+                        $collapseId = 'partner-desc-' . $this->id . '-' . $index;
+
+                        // Determine CSS classes for the partner card
+                        $partnerCardClasses = 'contact-card d-flex flex-column h-100 ' . $partnerLayoutClass . ' ' . $partnerAlignClass;
+                        if ($partnerLayoutClass === 'layout-image-left') {
+                            $partnerCardClasses .= ' flex-md-row';
                         }
-                        $animation = $partner->animation_type ?: ''; // Animation holen
-                    ?>
-                        <div class="<?php echo $partnerInnerColClass; ?>" data-animation="<?php echo $animation; ?>">
-                            <div class="<?php echo $partnerCardClasses; ?>">
-                                <?php // --- Bild --- ?>
-                                <?php if ($partner->image):
-                                    $imageContainerClasses = '';
-                                    if ($this->partner_layout_horizontal) {
-                                        $imageContainerClasses = 'flex-shrink-0'; // Nur bei horizontalem Layout
-                                    } else {
-                                        $imageContainerClasses = 'mb-1'; // Abstand unten bei vertikalem Layout
-                                    }
-                                ?>
-                                    <div class="contact-image <?php echo $imageContainerClasses; ?>">
+
+                        $animation = $partner->animation_type ?: '';
+
+                        // Prepare tooltip texts
+                        $phoneLabel = $this->phone_display_label ?: $partner->phone;
+                        $emailLabel = $this->email_icon_label;
+                        if (empty($emailLabel) && str_starts_with($partner->email_link ?? '', 'mailto:')) {
+                            $emailLabel = substr($partner->email_link, 7);
+                        }
+                        if (empty($emailLabel)) {
+                            $emailLabel = 'Nachricht schreiben';
+                        }
+
+                        // Get image column width style if layout is image-left
+                        $imageStyle = '';
+                        if ($partnerLayoutClass === 'layout-image-left' && !empty($this->image_column_width) && is_numeric($this->image_column_width)) {
+                            $imageWidth = (int)$this->image_column_width;
+                            $imageStyle = 'style="min-width: ' . $imageWidth . 'px;" ';
+                        }
+
+                        // Generate tag classes for filtering
+                        $partnerTagClasses = 'filter-item';
+                        if (!empty($partner->tags) && is_array($partner->tags)) {
+                            foreach ($partner->tags as $tag) {
+                                if (!empty(trim($tag))) {
+                                    $partnerTagClasses .= ' ' . createTagClass(trim($tag));
+                                }
+                            }
+                        } else {
+                            $partnerTagClasses .= ' tag-uncategorized';
+                        }
+                        ?>
+                        <div class="<?php echo $partnerColClass; ?> <?php echo $partnerTagClasses; ?>" data-animation="<?php echo $animation; ?>">
+                            <div class="<?php echo $partnerCardClasses; ?> position-relative">
+                                <?php // Partner Image ?>
+                                <?php if ($partner->image): ?>
+                                    <div class="contact-image position-relative" <?php echo $imageStyle; ?>>
                                         <?=
                                         ImageHelper::generateImageHTML(
                                             $partner->image,
-                                            null,           // Kein Alt-Text
-                                            $partner->name, // Name als Title
-                                            $this->size,    // Bildgröße
-                                            $imageClass,    // Dynamische Klasse (nur rund oder nicht)
+                                            null,
+                                            $partner->name,
+                                            $this->size,
+                                            trim($imageClass),
                                             false,
-                                            false
+                                            false,
+                                            true
                                         );
                                         ?>
+                                        <?php // Icons on Image (if enabled) ?>
+                                        <?php if ($this->show_icons_on_image): ?>
+                                            <div class="contact-icons-overlay position-absolute bottom-0 end-0 d-flex flex-column align-items-end">
+                                                <?php // Phone Icon ?>
+                                                <?php if ($partner->phone): ?>
+                                                    <a href="tel:<?= \Contao\StringUtil::standardize($partner->phone); ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $phoneLabel; ?>">
+                                                        <i class="fak fa-calendar"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                                <?php // Email Icon ?>
+                                                <?php if ($partner->email_link): ?>
+                                                    <a href="<?= $partner->email_link; ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $emailLabel; ?>">
+                                                        <i class="fak fa-mail"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
 
-                                <?php // --- Infos --- ?>
-                                <?php
-                                    $infoContainerClasses = '';
-                                    if ($this->partner_layout_horizontal) {
-                                        $infoContainerClasses = 'ms-3 flex-grow-1'; // Nur bei horizontalem Layout
-                                    }
-                                ?>
-                                <div class="contact-info <?php echo $infoContainerClasses; ?>">
-                                    <?php // Titel/Position (abhängig von show_position_below_name) ?>
-                                    <?php if ($partner->title): ?>
-                                        <?php if (!$this->show_position_below_name): // Standard: Titel über Name ?>
-                                            <h6 class="contact-title mb-0"><?= $partner->title; ?>:</h6>
+                                <?php // Partner Info ?>
+                                <div class="contact-info flex-grow-1 <?php if ($partnerLayoutClass === 'layout-image-left'): ?>mt-2 mt-md-0 ms-md-3<?php else: ?>mt-2<?php endif; ?>">
+                                    <?php // Name / Title Output (based on global setting) ?>
+                                    <?php if ($this->title_below_name): ?>
+                                        <?php // Version: Title below name ?>
+                                        <?php if ($partner->name): ?>
+                                            <h6 class="contact-name fw-bold mb-0"><?= $partner->name; ?></h6>
+                                        <?php endif; ?>
+                                        <?php if ($partner->title): ?>
+                                            <p class="contact-title mb-2"><?= $partner->title; ?></p>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <?php // Default version: Title: Name ?>
+                                        <?php if ($partner->title): ?>
+                                            <h6 class="contact-title mb-1"><?= $partner->title; ?></h6>
+                                        <?php endif; ?>
+                                        <?php if ($partner->name): ?>
+                                            <p class="contact-name fw-bold mb-2"><?= $partner->name; ?></p>
                                         <?php endif; ?>
                                     <?php endif; ?>
 
-                                    <?php // Name (p) ?>
-                                    <p class="contact-name mb-0"><?= $partner->name; ?></p> <?php // fw-bold hinzugefügt ?>
+                                    <?php // Email & Phone Text (only if not shown as icons on image) ?>
+                                    <?php if (!$this->show_icons_on_image): ?>
+                                        <?php if ($partner->email_link): ?>
+                                            <p class="contact-email mb-1">
+                                                <a href="<?= $partner->email_link; ?>" class="text-nowrap">
+                                                    <i style="width: 20px;" class="fass fa-envelope me-1"></i>
+                                                    <span class="text-body text-decoration-underline"><?= $this->email_icon_label;?></span>
+                                                </a>
+                                            </p>
+                                        <?php endif; ?>
 
-                                    <?php // Position unter Name (wenn Option aktiviert) ?>
-                                    <?php if ($partner->title && $this->show_position_below_name): ?>
-                                        <small class="contact-title d-block mb-1"><?= $partner->title; ?></small>
+                                        <?php if ($partner->phone): ?>
+                                            <p class="contact-phone mb-2">
+                                                <a href="tel:<?= \Contao\StringUtil::standardize($partner->phone); ?>" class="text-nowrap">
+                                                    <i style="width: 20px;" class="fal fa-phone me-1"></i>
+                                                    <span class="text-body"><?= $this->phone_display_label ?: $partner->phone; ?></span>
+                                                </a>
+                                            </p>
+                                        <?php endif; ?>
                                     <?php endif; ?>
 
-                                    <?php // E-Mail (p) ?>
-                                    <?php if ($partner->email_link): ?>
-                                        <p class="contact-email mb-1">
-                                            <a href="<?= $partner->email_link; ?>" class="text-nowrap">
-                                                <i style="width: 25px;" class="fass fa-envelope"></i> <?php  ?>
-                                                <span class="text-body text-decoration-underline">Write a message</span>
-                                            </a>
-                                        </p>
+                                    <?php // Description (collapsible if enabled) ?>
+                                    <?php if ($partner->description): ?>
+                                        <?php if ($this->hide_all_descriptions): ?>
+                                            <?php // Toggle Button Div (fades out when shown) ?>
+                                            <div class="contact-description-toggle" style="transition: opacity 0.3s ease, visibility 0.3s ease;">
+                                                <button class="btn btn-link toggle-btn-hide " type="button" data-bs-toggle="collapse" data-bs-target="#<?= $collapseId ?>" aria-expanded="false" aria-controls="<?= $collapseId ?>">
+                                                    <span class="toggle-text me-1"><?= \Contao\StringUtil::specialchars($this->more_info_label ?: 'Mehr erfahren') ?></span>
+                                                    <i style="font-size: 14px;" class="fak fa-chevron-down toggle-icon"></i>
+                                                </button>
+                                            </div>
+                                            <div class="collapse" id="<?= $collapseId ?>">
+                                                <?php // Wrapper for hide button and text ?>
+                                                <div class="d-flex align-items-start">
+                                                    <?php // Button to hide (rotated down-chevron) ?>
+                                                    <button class="btn btn-link pt-1 me-1 toggle-btn-hide " type="button" data-bs-toggle="collapse" data-bs-target="#<?= $collapseId ?>" aria-expanded="true" aria-controls="<?= $collapseId ?>">
+                                                        <i style="font-size: 14px; transform: rotate(180deg);" class="fak fa-chevron-down"></i>
+                                                    </button>
+                                                    <?php // Description text ?>
+                                                    <div class="contact-description small">
+                                                        <?= $partner->description; ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php else: ?>
+                                            <?php // Description always visible ?>
+                                            <div class="contact-description">
+                                                <?= $partner->description; ?>
+                                            </div>
+                                        <?php endif; ?>
                                     <?php endif; ?>
 
-                                    <?php // Telefon (p) ?>
-                                    <?php if ($partner->phone): ?>
-                                        <p class="contact-phone mb-1"> <?php // mb-1 hinzugefügt ?>
-                                            <a href="tel:<?= StringUtil::standardize($partner->phone); ?>" class="text-nowrap">
-                                                <i style="width: 25px;" class="fal fa-phone"></i> <?php  ?>
-                                                <span><?= $partner->phone; ?></span> <?php // Angepasst an Beispiel ?>
-                                            </a>
-                                        </p>
-                                    <?php endif; ?>
-
-                                    <?php // Buttons ?>
+                                    <?php // Partner specific buttons ?>
                                     <?php if (!empty($partner->buttons)): ?>
-                                        <?= ButtonHelper::generateButtonHTML($partner->buttons, 'mt-2'); ?> <?php // mt-2 für Abstand ?>
+                                        <?= ButtonHelper::generateButtonHTML($partner->buttons, 'mt-1'); ?>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -159,5 +282,84 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-center'; // De
             </div>
 
         </div>
+
     </div>
+
+
+    <?php // --- JavaScript for Collapse, Tooltips & Filter --- ?>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+ 
+    // Initialize Bootstrap Tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, { placement: 'left' });
+    });
+
+    // Collapse Handling for Descriptions
+    const allCollapseElements = document.querySelectorAll('.collapse[id^="partner-desc-"]');
+    allCollapseElements.forEach(targetCollapse => {
+        const parentWrapper = targetCollapse.closest('.contact-info');
+        if (!parentWrapper) return;
+        const toggleDiv = parentWrapper.querySelector('.contact-description-toggle');
+        if (!toggleDiv) return;
+
+        // Apply negative top offset based on toggle button height
+        const toggleHeight = toggleDiv.offsetHeight;
+        targetCollapse.style.position = 'relative';
+        targetCollapse.style.top = `-${toggleHeight}px`;
+
+        // Fade out toggle button when description shows
+        targetCollapse.addEventListener('show.bs.collapse', () => {
+            if (toggleDiv) {
+                toggleDiv.style.opacity = '0';
+                toggleDiv.style.visibility = 'hidden';
+            }
+        });
+
+        // Fade in toggle button after description is hidden
+        targetCollapse.addEventListener('hidden.bs.collapse', () => {
+            if (toggleDiv) {
+                toggleDiv.style.opacity = '1';
+                toggleDiv.style.visibility = 'visible';
+            }
+        });
+    });
+
+    // Filter Button Logic
+    const filterButtons = document.querySelectorAll('.rsce-ansprechpartner .filter-btn');
+    const partnerContainer = document.querySelector('.rsce-ansprechpartner .filter-container');
+    const partnerItems = partnerContainer ? partnerContainer.querySelectorAll('.filter-item') : [];
+
+    if (filterButtons.length && partnerContainer && partnerItems.length) {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const filterTag = button.getAttribute('data-filter-tag');
+
+                // Update button active states
+                filterButtons.forEach(btn => btn.classList.remove('active', 'btn-primary'));
+                filterButtons.forEach(btn => btn.classList.add('btn-outline-primary'));
+                button.classList.add('active', 'btn-primary');
+                button.classList.remove('btn-outline-primary');
+
+                // Show/hide partner items based on selected tag
+                partnerItems.forEach(item => {
+                    if (filterTag === 'all' || item.classList.contains(filterTag)) {
+                        item.style.display = ''; // Show
+                    } else {
+                        item.style.display = 'none'; // Hide
+                    }
+                });
+            });
+        });
+
+        // Trigger initial filter based on URL param or default
+        const initiallyActiveButton = document.querySelector('.rsce-ansprechpartner .filter-btn.active');
+        if (initiallyActiveButton) {
+            initiallyActiveButton.click(); // Apply filter
+        }
+    }
+});
+</script>
 </div>
