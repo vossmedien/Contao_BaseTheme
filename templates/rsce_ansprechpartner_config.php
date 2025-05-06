@@ -14,7 +14,7 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-    // --- 2. Allgemeines Layout & Raster --- //
+        // --- 2. Allgemeines Layout & Raster --- //
         'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation (Überschrift)', 'Siehe https://animate.style/ für Beispiele'),
@@ -58,11 +58,11 @@ return array(
             'label' => array('Horizontale Ausrichtung der Partner-Reihe', 'Bestimmt, wie die Ansprechpartner-Boxen horizontal in der Reihe verteilt werden (justify-content).'),
             'inputType' => 'select',
             'options' => array(
-                'justify-content-md-start'   => 'Links',
-                'justify-content-md-center'  => 'Zentriert (Standard)',
-                'justify-content-md-end'     => 'Rechts',
+                'justify-content-md-start' => 'Links',
+                'justify-content-md-center' => 'Zentriert (Standard)',
+                'justify-content-md-end' => 'Rechts',
                 'justify-content-md-between' => 'Gleichmäßiger Abstand (zwischen)',
-                'justify-content-md-around'  => 'Gleichmäßiger Abstand (um)',
+                'justify-content-md-around' => 'Gleichmäßiger Abstand (um)',
             ),
             'default' => 'justify-content-center',
             'eval' => array('tl_class' => 'w50'),
@@ -90,7 +90,7 @@ return array(
             'default' => 'text-start',
             'eval' => array('tl_class' => 'w50'),
         ),
-    'email_icon_label' => array(
+        'email_icon_label' => array(
             'label' => array('Label für E-Mail-Text', ''),
             'inputType' => 'text',
             'default' => 'Nachricht schreiben',
@@ -102,7 +102,7 @@ return array(
             'eval' => array('tl_class' => 'w50 '), // Nimmt jetzt eine ganze Zeile ein
         ),
 
-              'hide_all_descriptions' => array(
+        'hide_all_descriptions' => array(
             'label' => array('Beschreibungen hinter "Mehr erfahren" verstecken', 'Blendet alle Beschreibungen initial aus und zeigt einen "Mehr erfahren"-Link.'),
             'inputType' => 'checkbox',
             'default' => false,
@@ -133,13 +133,13 @@ return array(
         // --- 4. Funktionale Einstellungen --- //
 
 
-            'round_images' => array(
+        'round_images' => array(
             'label' => array('Bilder abrunden', 'Fügt die Klasse .rounded-circle zu den Bildern hinzu.'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => ' '), // clr für neue Zeile
             'default' => false,
         ),
-                'image_column_width' => array(
+        'image_column_width' => array(
             'label' => array('Bildspaltenbreite (px)', 'Breite für die Bildspalte eingeben (nur bei Layout \"Bild links, Text rechts\").'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50 clr', 'rgxp' => 'digit'),
@@ -162,11 +162,38 @@ return array(
                 'tl_class' => 'w50 clr'
             ),
         ),
-    'add_filter_form' => array(
+        'add_filter_form' => array(
             'label' => array('Filter-Formular hinzufügen', 'Zeigt Filter-Buttons basierend auf den Tätigkeitsfeldern der Partner an.'),
             'inputType' => 'checkbox',
             'default' => false,
             'eval' => array('tl_class' => 'w50 clr'), // clr für neue Zeile
+        ),
+        // --- NEUE FELDER FÜR TEXT-FILTER ---
+        'add_text_filter_option' => array(
+            'label' => array('Filter-Option mit Text hinzufügen', 'Fügt eine weitere Filter-Schaltfläche hinzu, die einen Text anzeigt.'),
+            'inputType' => 'checkbox',
+            'default' => false,
+            'eval' => array('tl_class' => 'w50 clr m12'), // m12 für etwas Abstand
+            'dependsOn' => array(
+                'field' => 'add_filter_form',
+            ),
+        ),
+        'text_filter_button_label' => array(
+            'label' => array('Button-Label für Text-Filter', 'Beschriftung der Schaltfläche für den Text-Filter.'),
+            'inputType' => 'text',
+            'default' => 'Weitere Informationen',
+            'eval' => array('tl_class' => 'w50', 'mandatory' => true),
+            'dependsOn' => array(
+                'field' => 'add_text_filter_option',
+            ),
+        ),
+        'text_filter_content' => array(
+            'label' => array('Text für Text-Filter', 'Dieser Text wird angezeigt, wenn der Text-Filter aktiv ist.'),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr', 'mandatory' => true),
+            'dependsOn' => array(
+                'field' => 'add_text_filter_option',
+            ),
         ),
         // --- 6. Partner-Liste --- //
         'partners' => array(
@@ -234,8 +261,8 @@ return array(
                     'inputType' => 'select',
                     'options' => GlobalElementConfig::getAnimations(),
                     'eval' => array('chosen' => 'true', 'tl_class' => 'w50 clr')
-                ),
+                )
             ),
         ),
-    ),
+    )
 );

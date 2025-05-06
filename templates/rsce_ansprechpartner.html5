@@ -78,7 +78,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
         <div class="<?php echo trim($outerWrapperClasses); ?>">
 
             <?php // --- Filter Buttons (if enabled) --- ?>
-            <?php if ($this->add_filter_form && !empty($allTags)): ?>
+            <?php if ($this->add_filter_form && (!empty($allTags) || ($this->add_text_filter_option && !empty($this->text_filter_button_label) && !empty($this->text_filter_content)))): ?>
                 <div class="filter-buttons mb-4">
                     <?php // Set initial active state ?>
                     <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all"><?php echo $GLOBALS['TL_LANG']['MSC']['filter_show_all'] ?? 'Alle'; ?></button>
@@ -87,6 +87,11 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         ?>
                         <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === $currentTagClass) ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="<?= $currentTagClass; ?>"><?= \Contao\StringUtil::specialchars($tag); ?></button>
                     <?php endforeach; ?>
+
+                    <?php // --- NEU: Text Filter Button --- ?>
+                    <?php if ($this->add_text_filter_option && !empty($this->text_filter_button_label) && !empty($this->text_filter_content)): ?>
+                        <button class="btn btn-sm filter-btn btn-outline-primary" data-filter-tag="text-filter-content"><?= \Contao\StringUtil::specialchars($this->text_filter_button_label); ?></button>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
 
@@ -279,6 +284,13 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         </div>
                     <?php endforeach; ?>
                 </div>
+
+                <?php // --- NEU: Text Filter Content Wrapper --- ?>
+                <?php if ($this->add_text_filter_option && !empty($this->text_filter_content)): ?>
+                    <div class="text-filter-content-wrapper pt-gap" style="display: none;">
+                        <?= $this->text_filter_content; ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
         </div>
@@ -330,8 +342,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterButtons = document.querySelectorAll('.rsce-ansprechpartner .filter-btn');
     const partnerContainer = document.querySelector('.rsce-ansprechpartner .filter-container');
     const partnerItems = partnerContainer ? partnerContainer.querySelectorAll('.filter-item') : [];
+    const textFilterContentWrapper = document.querySelector('.rsce-ansprechpartner .text-filter-content-wrapper');
 
-    if (filterButtons.length && partnerContainer && partnerItems.length) {
+    if (filterButtons.length && (partnerContainer || textFilterContentWrapper)) {
         filterButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -343,21 +356,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.classList.add('active', 'btn-primary');
                 button.classList.remove('btn-outline-primary');
 
-                // Show/hide partner items based on selected tag
-                partnerItems.forEach(item => {
-                    if (filterTag === 'all' || item.classList.contains(filterTag)) {
-                        item.style.display = ''; // Show
-                    } else {
-                        item.style.display = 'none'; // Hide
+                // Show/hide based on selected tag
+                if (filterTag === 'text-filter-content') {
+                    // Show text content, hide partners
+                    if (partnerItems.length) {
+                        partnerItems.forEach(item => item.style.display = 'none');
                     }
-                });
+                    if (textFilterContentWrapper) {
+                        textFilterContentWrapper.style.display = '';
+                    }
+                } else {
+                    // Show partners, hide text content
+                    if (textFilterContentWrapper) {
+                        textFilterContentWrapper.style.display = 'none';
+                    }
+                    if (partnerItems.length) {
+                        partnerItems.forEach(item => {
+                            if (filterTag === 'all' || item.classList.contains(filterTag)) {
+                                item.style.display = ''; // Show
+                            } else {
+                                item.style.display = 'none'; // Hide
+                            }
+                        });
+                    }
+                }
             });
         });
 
         // Trigger initial filter based on URL param or default
         const initiallyActiveButton = document.querySelector('.rsce-ansprechpartner .filter-btn.active');
         if (initiallyActiveButton) {
-            initiallyActiveButton.click(); // Apply filter
+            // Ensure the click is deferred slightly if the content might not be fully ready
+            setTimeout(() => {
+                initiallyActiveButton.click(); // Apply filter
+            }, 0);
         }
     }
 });

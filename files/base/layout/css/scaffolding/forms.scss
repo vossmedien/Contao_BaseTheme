@@ -228,15 +228,15 @@ form {
     }
 
     &.widget-submit {
-      text-align: center;
-      margin-top: 2rem;
+      //text-align: center;
+      margin-top: 1rem;
 
       button:not(.btn) {
-        @extend .btn, .btn-primary;
+        //@extend .btn, .btn-primary;
       }
 
       button {
-        @extend .btn-lg;
+        //@extend .btn-lg;
       }
     }
   }
