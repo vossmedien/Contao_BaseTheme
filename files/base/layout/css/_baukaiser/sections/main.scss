@@ -28,7 +28,7 @@
 }
 
 
-.article-content > .content--element:first-child .header-image {
+.article-content > .content--element:first-child .ce--inner > .header-image {
   @include media-breakpoint-down(lg) {
     margin-top: -104px;
 
