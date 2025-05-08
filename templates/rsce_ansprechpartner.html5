@@ -79,9 +79,9 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
             <?php // --- Filter Buttons (if enabled) --- ?>
             <?php if ($this->add_filter_form && (!empty($allTags) || ($this->add_text_filter_option && !empty($this->text_filter_button_label) && !empty($this->text_filter_content)))): ?>
-                <div class="filter-buttons mb-4">
+                <div class="filter-buttons mb-4 justify-content-center justify-content-md-start d-flex gap-1 flex-wrap flex-row">
                     <?php // Set initial active state ?>
-                    <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all"><?php echo $GLOBALS['TL_LANG']['MSC']['filter_show_all'] ?? 'Alle'; ?></button>
+                    <button data-animation="animate__fadeIn" class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all"><?php echo $GLOBALS['TL_LANG']['MSC']['filter_show_all'] ?? 'Alle'; ?></button>
                     <?php foreach ($allTags as $tag):
                         $currentTagClass = createTagClass($tag);
                         ?>
@@ -90,7 +90,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
                     <?php // --- NEU: Text Filter Button --- ?>
                     <?php if ($this->add_text_filter_option && !empty($this->text_filter_button_label) && !empty($this->text_filter_content)): ?>
-                        <button class="btn btn-sm filter-btn btn-outline-primary" data-filter-tag="text-filter-content"><?= \Contao\StringUtil::specialchars($this->text_filter_button_label); ?></button>
+                        <button data-animation="animate__fadeIn" class="btn btn-sm filter-btn btn-outline-primary" data-filter-tag="text-filter-content"><?= \Contao\StringUtil::specialchars($this->text_filter_button_label); ?></button>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
@@ -167,7 +167,8 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         ?>
                         <div class="<?php echo $partnerColClass; ?> <?php echo $partnerTagClasses; ?>" data-animation="<?php echo $animation; ?>">
                             <div class="<?php echo $partnerCardClasses; ?> position-relative">
-                                <?php // Partner Image ?>
+                                <?php // Partner Image
+                                ?>
                                 <?php if ($partner->image): ?>
                                     <div class="contact-image position-relative" <?php echo $imageStyle; ?>>
                                         <?=
@@ -188,13 +189,13 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                                 <?php // Phone Icon ?>
                                                 <?php if ($partner->phone): ?>
                                                     <a href="tel:<?= \Contao\StringUtil::standardize($partner->phone); ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $phoneLabel; ?>">
-                                                        <i class="fak fa-calendar"></i>
+                                                        <i class="fak fa-calendar text-body"></i>
                                                     </a>
                                                 <?php endif; ?>
                                                 <?php // Email Icon ?>
                                                 <?php if ($partner->email_link): ?>
                                                     <a href="<?= $partner->email_link; ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $emailLabel; ?>">
-                                                        <i class="fak fa-mail"></i>
+                                                        <i class="fak fa-mail text-body"></i>
                                                     </a>
                                                 <?php endif; ?>
                                             </div>
@@ -202,13 +203,15 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                     </div>
                                 <?php endif; ?>
 
-                                <?php // Partner Info ?>
+                                <?php // Partner Info
+                                ?>
                                 <div class="contact-info flex-grow-1 <?php if ($partnerLayoutClass === 'layout-image-left'): ?>mt-2 mt-md-0 ms-md-3<?php else: ?>mt-2<?php endif; ?>">
-                                    <?php // Name / Title Output (based on global setting) ?>
+                                    <?php // Name / Title Output (based on global setting)
+                                    ?>
                                     <?php if ($this->title_below_name): ?>
                                         <?php // Version: Title below name ?>
                                         <?php if ($partner->name): ?>
-                                            <h6 class="contact-name fw-bold mb-0"><?= $partner->name; ?></h6>
+                                            <h3 class="contact-name h6 fw-bold mb-0"><?= $partner->name; ?></h3>
                                         <?php endif; ?>
                                         <?php if ($partner->title): ?>
                                             <p class="contact-title mb-2"><?= $partner->title; ?></p>
@@ -216,20 +219,21 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                     <?php else: ?>
                                         <?php // Default version: Title: Name ?>
                                         <?php if ($partner->title): ?>
-                                            <h6 class="contact-title mb-1"><?= $partner->title; ?></h6>
+                                            <h3 class="contact-title h6 mb-1"><?= $partner->title; ?></h3>
                                         <?php endif; ?>
                                         <?php if ($partner->name): ?>
                                             <p class="contact-name fw-bold mb-2"><?= $partner->name; ?></p>
                                         <?php endif; ?>
                                     <?php endif; ?>
 
-                                    <?php // Email & Phone Text (only if not shown as icons on image) ?>
+                                    <?php // Email & Phone Text (only if not shown as icons on image)
+                                    ?>
                                     <?php if (!$this->show_icons_on_image): ?>
                                         <?php if ($partner->email_link): ?>
                                             <p class="contact-email mb-1">
                                                 <a href="<?= $partner->email_link; ?>" class="text-nowrap">
                                                     <i style="width: 20px;" class="fass fa-envelope me-1"></i>
-                                                    <span class="text-body text-decoration-underline"><?= $this->email_icon_label;?></span>
+                                                    <span class="text-body text-decoration-underline"><?= $this->email_icon_label; ?></span>
                                                 </a>
                                             </p>
                                         <?php endif; ?>
@@ -244,7 +248,8 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                         <?php endif; ?>
                                     <?php endif; ?>
 
-                                    <?php // Description (collapsible if enabled) ?>
+                                    <?php // Description (collapsible if enabled)
+                                    ?>
                                     <?php if ($partner->description): ?>
                                         <?php if ($this->hide_all_descriptions): ?>
                                             <?php // Toggle Button Div (fades out when shown) ?>
@@ -275,7 +280,8 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                         <?php endif; ?>
                                     <?php endif; ?>
 
-                                    <?php // Partner specific buttons ?>
+                                    <?php // Partner specific buttons
+                                    ?>
                                     <?php if (!empty($partner->buttons)): ?>
                                         <?= ButtonHelper::generateButtonHTML($partner->buttons, 'mt-1'); ?>
                                     <?php endif; ?>
@@ -287,7 +293,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
                 <?php // --- NEU: Text Filter Content Wrapper --- ?>
                 <?php if ($this->add_text_filter_option && !empty($this->text_filter_content)): ?>
-                    <div class="text-filter-content-wrapper pt-gap" style="display: none;">
+                    <div class="text-filter-content-wrapper pt-gap" data-animation="animate__fadeIn" style="display: none;">
                         <?= $this->text_filter_content; ?>
                     </div>
                 <?php endif; ?>
@@ -299,99 +305,99 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
 
     <?php // --- JavaScript for Collapse, Tooltips & Filter --- ?>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
- 
-    // Initialize Bootstrap Tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl, { placement: 'left' });
-    });
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-    // Collapse Handling for Descriptions
-    const allCollapseElements = document.querySelectorAll('.collapse[id^="partner-desc-"]');
-    allCollapseElements.forEach(targetCollapse => {
-        const parentWrapper = targetCollapse.closest('.contact-info');
-        if (!parentWrapper) return;
-        const toggleDiv = parentWrapper.querySelector('.contact-description-toggle');
-        if (!toggleDiv) return;
-
-        // Apply negative top offset based on toggle button height
-        const toggleHeight = toggleDiv.offsetHeight;
-        targetCollapse.style.position = 'relative';
-        targetCollapse.style.top = `-${toggleHeight}px`;
-
-        // Fade out toggle button when description shows
-        targetCollapse.addEventListener('show.bs.collapse', () => {
-            if (toggleDiv) {
-                toggleDiv.style.opacity = '0';
-                toggleDiv.style.visibility = 'hidden';
-            }
-        });
-
-        // Fade in toggle button after description is hidden
-        targetCollapse.addEventListener('hidden.bs.collapse', () => {
-            if (toggleDiv) {
-                toggleDiv.style.opacity = '1';
-                toggleDiv.style.visibility = 'visible';
-            }
-        });
-    });
-
-    // Filter Button Logic
-    const filterButtons = document.querySelectorAll('.rsce-ansprechpartner .filter-btn');
-    const partnerContainer = document.querySelector('.rsce-ansprechpartner .filter-container');
-    const partnerItems = partnerContainer ? partnerContainer.querySelectorAll('.filter-item') : [];
-    const textFilterContentWrapper = document.querySelector('.rsce-ansprechpartner .text-filter-content-wrapper');
-
-    if (filterButtons.length && (partnerContainer || textFilterContentWrapper)) {
-        filterButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                const filterTag = button.getAttribute('data-filter-tag');
-
-                // Update button active states
-                filterButtons.forEach(btn => btn.classList.remove('active', 'btn-primary'));
-                filterButtons.forEach(btn => btn.classList.add('btn-outline-primary'));
-                button.classList.add('active', 'btn-primary');
-                button.classList.remove('btn-outline-primary');
-
-                // Show/hide based on selected tag
-                if (filterTag === 'text-filter-content') {
-                    // Show text content, hide partners
-                    if (partnerItems.length) {
-                        partnerItems.forEach(item => item.style.display = 'none');
-                    }
-                    if (textFilterContentWrapper) {
-                        textFilterContentWrapper.style.display = '';
-                    }
-                } else {
-                    // Show partners, hide text content
-                    if (textFilterContentWrapper) {
-                        textFilterContentWrapper.style.display = 'none';
-                    }
-                    if (partnerItems.length) {
-                        partnerItems.forEach(item => {
-                            if (filterTag === 'all' || item.classList.contains(filterTag)) {
-                                item.style.display = ''; // Show
-                            } else {
-                                item.style.display = 'none'; // Hide
-                            }
-                        });
-                    }
-                }
+            // Initialize Bootstrap Tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl, {placement: 'left'});
             });
-        });
 
-        // Trigger initial filter based on URL param or default
-        const initiallyActiveButton = document.querySelector('.rsce-ansprechpartner .filter-btn.active');
-        if (initiallyActiveButton) {
-            // Ensure the click is deferred slightly if the content might not be fully ready
-            setTimeout(() => {
-                initiallyActiveButton.click(); // Apply filter
-            }, 0);
-        }
-    }
-});
-</script>
+            // Collapse Handling for Descriptions
+            const allCollapseElements = document.querySelectorAll('.collapse[id^="partner-desc-"]');
+            allCollapseElements.forEach(targetCollapse => {
+                const parentWrapper = targetCollapse.closest('.contact-info');
+                if (!parentWrapper) return;
+                const toggleDiv = parentWrapper.querySelector('.contact-description-toggle');
+                if (!toggleDiv) return;
+
+                // Apply negative top offset based on toggle button height
+                const toggleHeight = toggleDiv.offsetHeight;
+                targetCollapse.style.position = 'relative';
+                targetCollapse.style.top = `-${toggleHeight}px`;
+
+                // Fade out toggle button when description shows
+                targetCollapse.addEventListener('show.bs.collapse', () => {
+                    if (toggleDiv) {
+                        toggleDiv.style.opacity = '0';
+                        toggleDiv.style.visibility = 'hidden';
+                    }
+                });
+
+                // Fade in toggle button after description is hidden
+                targetCollapse.addEventListener('hidden.bs.collapse', () => {
+                    if (toggleDiv) {
+                        toggleDiv.style.opacity = '1';
+                        toggleDiv.style.visibility = 'visible';
+                    }
+                });
+            });
+
+            // Filter Button Logic
+            const filterButtons = document.querySelectorAll('.rsce-ansprechpartner .filter-btn');
+            const partnerContainer = document.querySelector('.rsce-ansprechpartner .filter-container');
+            const partnerItems = partnerContainer ? partnerContainer.querySelectorAll('.filter-item') : [];
+            const textFilterContentWrapper = document.querySelector('.rsce-ansprechpartner .text-filter-content-wrapper');
+
+            if (filterButtons.length && (partnerContainer || textFilterContentWrapper)) {
+                filterButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const filterTag = button.getAttribute('data-filter-tag');
+
+                        // Update button active states
+                        filterButtons.forEach(btn => btn.classList.remove('active', 'btn-primary'));
+                        filterButtons.forEach(btn => btn.classList.add('btn-outline-primary'));
+                        button.classList.add('active', 'btn-primary');
+                        button.classList.remove('btn-outline-primary');
+
+                        // Show/hide based on selected tag
+                        if (filterTag === 'text-filter-content') {
+                            // Show text content, hide partners
+                            if (partnerItems.length) {
+                                partnerItems.forEach(item => item.style.display = 'none');
+                            }
+                            if (textFilterContentWrapper) {
+                                textFilterContentWrapper.style.display = '';
+                            }
+                        } else {
+                            // Show partners, hide text content
+                            if (textFilterContentWrapper) {
+                                textFilterContentWrapper.style.display = 'none';
+                            }
+                            if (partnerItems.length) {
+                                partnerItems.forEach(item => {
+                                    if (filterTag === 'all' || item.classList.contains(filterTag)) {
+                                        item.style.display = ''; // Show
+                                    } else {
+                                        item.style.display = 'none'; // Hide
+                                    }
+                                });
+                            }
+                        }
+                    });
+                });
+
+                // Trigger initial filter based on URL param or default
+                const initiallyActiveButton = document.querySelector('.rsce-ansprechpartner .filter-btn.active');
+                if (initiallyActiveButton) {
+                    // Ensure the click is deferred slightly if the content might not be fully ready
+                    setTimeout(() => {
+                        initiallyActiveButton.click(); // Apply filter
+                    }, 0);
+                }
+            }
+        });
+    </script>
 </div>

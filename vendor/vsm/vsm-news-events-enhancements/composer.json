@@ -1,0 +1,51 @@
+{
+    "name": "vsm/vsm-news-events-enhancements",
+    "description": "Anpassungen von News und Events",
+    "keywords": [
+        "contao",
+        "bundle",
+        "tag 3",
+        "tag 4"
+    ],
+    "type": "contao-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vossmedien - Christian Voss",
+            "email": "christian@vossmedien.de",
+            "homepage": "https://www.vossmedien.de",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/vsm/vsm-news-events-enhancements/issues",
+        "source": "https://github.com/vsm/vsm-news-events-enhancements"
+    },
+    "require": {
+        "php": "^8.1",
+        "contao/core-bundle": "^4.13 || ^5.0"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vsm\\VsmNewsEventsEnhancements\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": false,
+            "contao/manager-plugin": false,
+            "contao-community-alliance/composer-plugin": true
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Vsm\\VsmNewsEventsEnhancements\\ContaoManager\\Plugin"
+    },
+    "scripts": {
+        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ templates/ tests/ --config tools/ecs/config.php --fix --ansi",
+        "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist"
+    },
+    "version": "0.1"
+}

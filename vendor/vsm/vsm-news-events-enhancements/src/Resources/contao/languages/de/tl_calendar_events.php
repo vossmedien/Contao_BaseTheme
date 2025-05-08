@@ -8,8 +8,11 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['priceAdvance'] = ['Vorverkaufspreis',
 $GLOBALS['TL_LANG']['tl_calendar_events']['priceEvening'] = ['Abendkassenpreis', 'Preis an der Abendkasse'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['ticketUrl'] = ['Ticket-Link', 'URL zum Ticketverkauf'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['additionalUrls'] = ['Zusätzliche URLs', 'Weitere relevante Links'];
+$GLOBALS['TL_LANG']['tl_calendar_events']['headerImage'] = ['Kopfbild', 'Wählen Sie ein Kopfbild aus.'];
+$GLOBALS['TL_LANG']['tl_calendar_events']['headerImageSize'] = ['Bildgröße Kopfbild', 'Größe des Kopfbildes.'];
+$GLOBALS['TL_LANG']['tl_calendar_events']['longDescription'] = ['Langbeschreibung', 'Ausführliche Beschreibung der Veranstaltung.'];
 
 $GLOBALS['TL_LANG']['tl_calendar_events']['time_legend'] = 'Zeitangaben';
 $GLOBALS['TL_LANG']['tl_calendar_events']['price_legend'] = 'Preise';
 $GLOBALS['TL_LANG']['tl_calendar_events']['link_legend'] = 'Links';
-$GLOBALS['TL_LANG']['tl_calendar_events']['teaser_legend'] = 'Teaser-Text';
+$GLOBALS['TL_LANG']['tl_calendar_events']['teaser_legend'] = 'Teaser-Text'; 

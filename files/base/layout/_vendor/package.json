@@ -15,8 +15,27 @@
     "venobox": "*"
   },
   "scripts": {
+    "build:js": "webpack --config-name \"^.*-app$\" --config-name \"^.*-vendors$\"",
+    "watch:js": "webpack --watch --config-name \"^.*-app$\" --config-name \"^.*-vendors$\"",
+    "build:css": "webpack --config-name \"^.*-css$\"",
+    "watch:css": "webpack --watch --config-name \"^.*-css$\"",
+    "build": "webpack",
+    "watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.2",
+    "expose-loader": "^5.0.1",
+    "glob": "^11.0.2",
+    "mini-css-extract-plugin": "^2.9.2",
+    "sass": "^1.87.0",
+    "sass-loader": "^16.0.5",
+    "terser-webpack-plugin": "^5.3.14",
+    "webpack": "^5.99.8",
+    "webpack-cli": "^6.0.1",
+    "webpack-manifest-plugin": "^5.0.1"
+  }
 }

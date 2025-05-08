@@ -111,7 +111,7 @@ PaletteManipulator::create()
     // Veranstaltungsbeginn zur date_legend hinzufügen
     ->addField('eventTime', 'date_legend', PaletteManipulator::POSITION_APPEND)
 
-    // Neue Legenden und zugehörige Felder
+    // Neue Legenden und zugehörige Felder (ursprüngliche Migration)
     ->addLegend('price_legend', 'details_legend', PaletteManipulator::POSITION_AFTER)
     ->addField(['priceAdvance', 'priceEvening', 'isSoldOut'], 'price_legend', PaletteManipulator::POSITION_APPEND)
     ->addLegend('link_legend', 'price_legend', PaletteManipulator::POSITION_AFTER)
@@ -122,4 +122,5 @@ PaletteManipulator::create()
 
     // Kopfbild
     ->addField(['headerImage', 'headerImageSize'], 'addImage')
-    ->applyToPalette('default', 'tl_calendar_events');
+
+    ->applyToPalette('default', 'tl_calendar_events'); 
