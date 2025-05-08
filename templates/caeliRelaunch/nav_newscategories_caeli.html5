@@ -1,0 +1,37 @@
+<div class="filter-buttons mb-4 justify-content-center justify-content-md-start d-flex gap-1 flex-wrap flex-row<?php if ($this->isActiveCategories): ?> active-categories<?php endif; ?>">
+    <?php foreach ($this->items as $item): ?>
+        <?php 
+            $buttonClass = $item['isActive'] ? 'btn-primary' : 'btn-outline-primary';
+            $hasSubitems = !empty($item['subitems']);
+        ?>
+        <?php if ($hasSubitems): ?>
+            <div class="btn-group">
+                <a data-animation="animate__fadeIn" href="<?= $item['href'] ?>" class="btn btn-sm <?= $buttonClass ?> <?= str_replace('active', '', $item['class']) ?>" title="<?= $item['linkTitle'] ?>" itemprop="url">
+                    <?php if ($item['image']): ?>
+                        <?php $this->insert('picture_default', $item['image']->picture) ?>
+                    <?php endif; ?>
+                    <span class="name" itemprop="name"><?= $item['link'] ?></span>
+                    <?php if ($this->showQuantity): ?>
+                        <span class="quantity">(<?= $item['quantity'] ?>)</span>
+                    <?php endif; ?>
+                </a>
+                <button data-animation="animate__fadeIn" type="button" class="btn btn-sm <?= $buttonClass ?> dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <?= $item['subitems'] // Hier wird erwartet, dass subitems bereits HTML für <li> Elemente enthält ?>
+                </ul>
+            </div>
+        <?php else: ?>
+            <a data-animation="animate__fadeIn" href="<?= $item['href'] ?>" class="btn btn-sm <?= $buttonClass ?> <?= str_replace('active', '', $item['class']) ?>" title="<?= $item['linkTitle'] ?>" itemprop="url">
+                <?php if ($item['image']): ?>
+                    <?php $this->insert('picture_default', $item['image']->picture) ?>
+                <?php endif; ?>
+                <span class="name" itemprop="name"><?= $item['link'] ?></span>
+                <?php if ($this->showQuantity): ?>
+                    <span class="quantity">(<?= $item['quantity'] ?>)</span>
+                <?php endif; ?>
+            </a>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</div>

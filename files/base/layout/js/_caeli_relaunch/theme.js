@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const marginLeft = mainNavLeft - wrapperLeft;
         level2.style.marginLeft = marginLeft + 'px';
 
-        console.log('Wrapper Left:', wrapperLeft, 'Margin applied:', marginLeft);
+        //console.log('Wrapper Left:', wrapperLeft, 'Margin applied:', marginLeft);
       }
     });
   }
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Ring-Container erstellen
     const ringContainer = document.createElement('div');
-    ringContainer.className = 'progress-ring-container';
+    ringContainer.className = 'progress-ring-holder';
 
     // Ring erstellen
     const ring = document.createElement('div');
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Pfeil-Container (wird durch CSS erstellt)
     const arrowContainer = document.createElement('div');
-    arrowContainer.className = 'arrow-container';
+    arrowContainer.className = 'arrow-holder';
 
     // Zusammenbauen
     ringContainer.appendChild(ring);

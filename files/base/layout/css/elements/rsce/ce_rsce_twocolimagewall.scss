@@ -82,8 +82,12 @@ html body {
       position: relative;
 
       @include media-breakpoint-up(lg) {
-        padding-inline: calc(var(--bs-container-gutter) * 2);
+         padding-inline: var(--main-gap);
       }
+
+       @include media-breakpoint-up(xxl) {
+
+       }
 
     }
 

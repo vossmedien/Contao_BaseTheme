@@ -15,6 +15,11 @@
 
   .level_1 {
     > li {
+
+      &:not(:last-child){
+        margin-right: .25rem;
+      }
+
       &.submenu > *:first-child {
         display: flex;
         align-items: center;
@@ -86,6 +91,12 @@
     padding-left: 0;
     padding-top: calc(var(--main-gap) / 2);
 
+    @include media-breakpoint-up(md) {
+      position: relative;
+      left: -.4rem;
+    }
+
+
     &:has(:nth-child(5)) {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -104,7 +115,7 @@
         display: inline-flex;
         align-items: center;
         gap: .75rem;
-        @include font-size(30px);
+        @include font-size(26px);
         padding: .75rem .65rem;
         transition: all .3s ease-in-out;
 

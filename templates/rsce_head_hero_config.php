@@ -90,40 +90,39 @@ return array(
             'inputType' => 'group',
         ),
 
+        'add_list_items' => array(
+            'label' => array('Aufzählungspunkte hinzufügen', 'Zeigt die Eingabemöglichkeit für Aufzählungspunkte an.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
+
         'animation_list' => array(
             'label' => array('Animation: Aufzählung', ''),
             'inputType' => 'select',
             'options' => GlobalElementConfig::getAnimations(),
-            'eval' => array('tl_class' => 'clr w50')
+            'eval' => array('tl_class' => 'clr w50'),
+                 'dependsOn' => array(
+                'field' => 'add_list_items',
+            ),
         ),
-
 
         'list_items' => array(
             'label' => array('Aufzählungspunkte', 'Wird links neben dem Button angezeigt.'),
             'elementLabel' => '%s. Aufzählungspunkt',
             'inputType' => 'listWizard', // Standard Contao List-Widget
             'eval' => array('tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'add_list_items',
+            ),
+            'minItems' => 0, // Erlaube eine leere Liste
             'fields' => array(
                 'item_text' => array(
                     'label' => array('Text', ''),
                     'inputType' => 'text',
                     'eval' => array('allowHtml' => true),
                 ),
-                'item_icon' => array(
-                     'label' => array('Optional: Icon auswählen', 'Standard-Icon wird verwendet, wenn nichts ausgewählt ist.'),
-                     'inputType' => 'fileTree',
-                     'eval' => array(
-                         'multiple' => false,
-                         'fieldType' => 'radio',
-                         'filesOnly' => true,
-                         'extensions' => 'svg,png,jpg,jpeg,gif', // Passende Icon-Formate
-                         'tl_class' => 'clr'
-                     ),
-                ),
             ),
         ),
-
-
 
         'buttons' => array(
             'label' => array('Buttons (rechts)', ''),
@@ -134,8 +133,6 @@ return array(
             'eval' => array('tl_class' => 'clr'),
             'fields' => ButtonHelper::getButtonConfig(), // Standard Button Konfiguration
         ),
-
-
 
         'image_section_start' => array(
             'label' => ['Bild (Unterhalb)'],

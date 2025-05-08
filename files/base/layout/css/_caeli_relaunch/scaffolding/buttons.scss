@@ -1,12 +1,18 @@
 .btn {
   --bs-btn-border-radius: 0;
   --bs-btn-border-width: 3px;
+  border-radius: var(--bs-btn-border-radius);
 
   &:not(.with-arrow) {
     &.btn-primary {
       --bs-btn-hover-bg: transparent;
       --bs-btn-border-color: var(--bs-primary);
       --bs-btn-hover-color: var(--bs-primary);
+      --bs-btn-color: var(--bs-secondary);
+    }
+
+    &.btn-outline-primary {
+      --bs-btn-hover-color: var(--bs-secondary);
     }
 
     &.btn-secondary {
@@ -44,8 +50,11 @@
     font-weight: $font-weight-bold;
   }
 
-  &.btn-lg {
+  &.btn-sm{
+    --bs-btn-padding-bottom: .35rem;
+  }
 
+  &.btn-lg {
     --bs-btn-padding-left: 1rem;
     --bs-btn-padding-right: 1rem;
     --bs-btn-font-size: 20px;

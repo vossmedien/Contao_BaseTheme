@@ -19,7 +19,7 @@ $tertiary: #92a0ff;
 $body-bg: #ffffff;
 $body-color: $primary;
 
-$border-radius: 12px;
+$border-radius: 0;
 $border-radius-lg: 18px;
 $box-shadow: 0 0 12px rgba(39, 39, 39, 0.15);
 
@@ -79,8 +79,8 @@ $headings-line-height: 1.1;
 //$headings-color: #4A4643;
 
 $tooltip-font-size:                 12px;
-$tooltip-color:                     var(--bs-body-color-inverse);
-$tooltip-bg:                        var(--bs-primary);
+$tooltip-color:                     var(--bs-body-color);
+$tooltip-bg:                        var(--bs-secondary);
 $tooltip-max-width:                300px;
 
 $form-floating-padding-x: .75rem;

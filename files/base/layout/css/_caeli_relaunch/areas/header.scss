@@ -8,17 +8,30 @@ header#header {
   transition: padding .3s ease-in-out;
 
   .mobileNav__activator-holder, .navigation .level_1 > li, .logo {
-    padding-bottom: 1.5rem;
     transition: padding .3s ease-in-out;
+
+       @include media-breakpoint-up(lg) {
+             padding-bottom: 1.5rem;
+       }
   }
 
 
   &.is-scrolling {
     padding-block: 1rem 0;
 
-    .mobileNav__activator-holder, .navigation .level_1 > li, .logo {
-      padding-bottom: 1rem;
-      padding-top: .5rem;
+    .mobileNav__activator-holder,
+    .navigation .level_1 > li,
+    .logo {
+      padding-bottom: 0;
+
+      @include media-breakpoint-up(lg) {
+        padding-bottom: .5rem;
+        padding-top: .5rem;
+      }
+
+      @include media-breakpoint-up(xxl) {
+        padding-bottom: 1rem;
+      }
     }
 
     .header-bottom {
@@ -84,7 +97,18 @@ header#header {
   .header-bottom {
     position: relative;
     transition: padding-top .3s ease-in-out;
-    padding-top: 2.5rem;
+    //padding-top: 1.5rem;
+
+
+    @include media-breakpoint-up(lg) {
+      margin-top: -47px;
+      padding-top: 0;
+    }
+
+    @include media-breakpoint-up(xxl) {
+      margin-top: 0;
+      padding-top: 1.5rem;
+    }
 
     .logo {
       svg {
@@ -97,7 +121,7 @@ header#header {
     .nav-wrapper {
       display: flex;
       flex-flow: row wrap;
-      gap: 1rem;
+      gap: 0 1rem;
       justify-content: space-between;
       align-items: center;
     }

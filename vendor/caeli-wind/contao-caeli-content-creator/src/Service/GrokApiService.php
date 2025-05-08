@@ -24,9 +24,9 @@ class GrokApiService
     private HttpClientInterface $httpClient;
 
     public function __construct(
-        ?HttpClientInterface $httpClient = null,
         private readonly LoggerInterface $logger,
         private readonly int $apiTimeout,
+        ?HttpClientInterface $httpClient = null,
         private readonly int $apiMaxTokens = 8000
     ) {
         $this->httpClient = $httpClient ?? HttpClient::create();

@@ -759,5 +759,15 @@ $GLOBALS['TL_BODY'][] = '<script async defer type="module" src="/files/base/layo
 
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>
+
+
+<noscript>
+    <style>
+        [data-animation] {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+    </style>
+</noscript>
 </body>
 </html>

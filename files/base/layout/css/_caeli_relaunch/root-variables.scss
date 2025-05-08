@@ -62,13 +62,13 @@
 
   //Inputs
 
-  --bs-input-border-radius: var(--bs-border-radius);
-  --bs-input-border: 1px solid var(--bs-border-color);
-  --bs-input-shadow: 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(0, 0, 0, 0.02);
+  --bs-input-border-radius: 0;
+  --bs-input-border: 1px solid transparent;
+  --bs-input-shadow: none;
   --bs-input-padding-x: 0.75rem;
-  --bs-input-padding-y: 1rem;
+  --bs-input-padding-y: .5rem;
   --bs-input-color: var(--bs-body-color);
-  --bs-placeholder-color: var(--bs-body-color-rgb), 0.4;
+  --bs-placeholder-color: var(--bs-body-color-rgb), 0.3;
   --bs-input-height: 58px;
 
 

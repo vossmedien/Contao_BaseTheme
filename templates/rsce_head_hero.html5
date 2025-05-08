@@ -160,7 +160,7 @@ $listItems = StringUtil::deserialize($this->list_items, true);
                 ); ?>
 
                 <?php if ($this->text): ?>
-                    <div class="text-section fw-semibold mb-4" <?php if ($this->animation_headline): ?>data-animation="<?= $this->animation_headline ?>"<?php endif; ?>>
+                    <div class="text-section fw-semibold<?php if ($this->add_list_items): ?> mb-4<?php endif; ?>" <?php if ($this->animation_headline): ?>data-animation="<?= $this->animation_headline ?>"<?php endif; ?>>
                         <?= $this->text; ?>
                     </div>
                 <?php endif; ?>
@@ -168,48 +168,31 @@ $listItems = StringUtil::deserialize($this->list_items, true);
         </div>
 
         <?php // --- Aufzählung & Buttons (zweispaltig) --- ?>
-        <?php if (!empty($listItems) || $this->buttons): // Nur Row ausgeben, wenn Inhalt vorhanden ?>
+        <?php if ($this->add_list_items && !empty($listItems) || $this->buttons): // Nur Row ausgeben, wenn Inhalt vorhanden ?>
             <div class="row align-items-center mb-4 g-2">
                 <?php // Spalte für Aufzählung ?>
-                <div class="col-12 col-lg-7" >
-                    <?php if (!empty($listItems)): ?>
+                <?php if ($this->add_list_items && !empty($listItems)): ?>
+                    <div class="col-12 col-lg-7" >
                         <ul class="list-unstyled list-with-icons row g-1">
                             <?php foreach ($listItems as $item): ?>
                                 <li class="d-flex align-items-center col-md-6" <?php if ($this->animation_list): ?>data-animation="<?= $this->animation_list ?>"<?php endif; ?>>
                                     <?php
-                                        $iconHtml = '';
                                         $itemText = '';
                                         $defaultIcon = '<i style="font-size: 36px;" class="fa-kit fa-circle-check text-tertiary me-1 flex-shrink-0"></i>'; // Default Font Awesome Icon
 
                                         if (is_array($item)) {
                                             $itemText = $item['item_text'] ?? '';
-                                            if (!empty($item['item_icon'])) {
-                                                $iconData = StringUtil::deserialize($item['item_icon']);
-                                                $iconUuid = is_array($iconData) ? ($iconData[0] ?? null) : $iconData;
-                                                if ($iconUuid) {
-                                                    // User-defined icon
-                                                    $iconHtml = ImageHelper::generateImageHTML($iconUuid, '', '', null, 'icon me-2 flex-shrink-0', false, false, true);
-                                                } else {
-                                                     // Fallback if item_icon is set but invalid
-                                                     $iconHtml = $defaultIcon;
-                                                }
-                                            } else {
-                                                 // Fallback if item_icon is not set
-                                                $iconHtml = $defaultIcon;
-                                            }
                                         } elseif (is_string($item)) {
                                             $itemText = $item;
-                                            // Default icon for simple text entries
-                                            $iconHtml = $defaultIcon;
                                         }
                                     ?>
-                                    <?= $iconHtml ?>
+                                    <?= $defaultIcon ?>
                                     <span class="text"><?= $itemText; ?></span>
                                 </li>
                             <?php endforeach; ?>
                         </ul>
-                    <?php endif; ?>
-                </div>
+                    </div>
+                <?php endif; ?>
 
                 <?php // Spalte für Buttons ?>
                 <?php if ($this->buttons): ?>
