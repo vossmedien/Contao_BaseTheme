@@ -1,4 +1,12 @@
 <?php
+require_once __DIR__ . '/../theme_asset_loader.php';
+
+// --- Hilfsfunktionen (könnten auch in eine globale Helper-Klasse) ---
+
+// Ermittle den aktuellen Theme-Namen aus dem Verzeichnis dieses Templates (Groß/Kleinschreibung bleibt hier erhalten)
+$currentThemeName = get_theme_name_from_dir(__DIR__);
+// Übergebe den Originalnamen und das Verzeichnis. Die Funktion kümmert sich ums Lowercasing für den Pfad.
+$themeAssets = load_theme_assets_from_manifest($currentThemeName, __DIR__);
 
 $this->rootAttributes = $this
     ->attr()
@@ -48,37 +56,31 @@ $this->bodyAttributes = $this
 
     <?= $this->viewport ?>
     <?= $this->framework ?>
+
+    <?php // --- NEU: CSS einbinden ---
+    if (!empty($themeAssets['css'])) {
+        foreach ($themeAssets['css'] as $cssFile) {
+            $GLOBALS['TL_CSS'][] = $cssFile . '|static';
+        }
+    }
+    ?>
     <?= $this->stylesheets ?>
 
-    <?php
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/_vendor/node_modules/animate.css/animate.min.css|static';
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/caeli_relaunch.min.css|static';
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/_caeli_relaunch/styles.min.css|static';
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/_caeli_relaunch/root-variables.min.css|static';
-
-
-    //$GLOBALS['TL_HEAD'][] = '<link rel="preload" href="files/base/layout/css/caeli_relaunch.min.css" as="style" crossorigin="anonymous">';
-    //$GLOBALS['TL_HEAD'][] = '<link rel="preload" href="files/base/layout/css/_caeli_relaunch/root-variables.min.css" as="style" crossorigin="anonymous">';
+    <?php // --- NEU: Font Preloads ---
+    if (!empty($themeAssets['fonts_preload'])) {
+        foreach ($themeAssets['fonts_preload'] as $font) {
+            echo '<link rel="preload" href="' . $font['href'] . '" as="font" type="' . $font['type'] . '" crossorigin>' . "\n    ";
+        }
+    }
     ?>
-
-    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-300.ttf" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-300.ttf" as="font" type="font/ttf" crossorigin>
-    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-300.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-300italic.ttf" as="font" type="font/ttf" crossorigin>
-    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-300italic.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-600.ttf" as="font" type="font/ttf" crossorigin>
-    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-600.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-italic.ttf" as="font" type="font/ttf" crossorigin>
-    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-italic.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-regular.ttf" as="font" type="font/ttf" crossorigin>
-    <link rel="preload" href="files/base/layout/_fonts/figtree/figtree-v7-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
 
     <?= $this->mooScripts ?>
     <?= $this->head ?>
     <?php $this->endblock(); ?>
 
-
-    <script>if (!("gdprAppliesGlobally" in window)) {
+    <?php /* Consent Manager Script - bleibt unverändert */ ?>
+    <script>
+        if (!("gdprAppliesGlobally" in window)) {
             window.gdprAppliesGlobally = true
         }
         if (!("cmp_id" in window) || window.cmp_id < 1) {
@@ -396,7 +398,7 @@ $this->bodyAttributes = $this
                                 x = 1
                             }
                         }
-                    } catch (B) {
+                    } catch (B) { 
                         x = 0
                     }
                 }
@@ -727,9 +729,28 @@ $this->bodyAttributes = $this
 <?php $this->sections('bottom'); ?>
 <?php $this->endblock(); ?>
 
-<?php
-$GLOBALS['TL_JAVASCRIPT'][] = '/files/base/layout/js/dist/_caeli_relaunch_vendors.bundle.min.js';
-$GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/dist/_caeli_relaunch.bundle.min.js"></script>';
+<?php // --- NEU: JS einbinden ---
+    // Vendor JS zuerst
+    if (!empty($themeAssets['js_vendor'])) {
+        foreach ($themeAssets['js_vendor'] as $js) {
+            $scriptTag = '<script src="' . $js['src'] . '"';
+            if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
+            // type ist null für vendor, also nicht hinzufügen
+            $scriptTag .= '></script>';
+            $GLOBALS['TL_BODY'][] = $scriptTag;
+        }
+    }
+    // Dann App JS
+    if (!empty($themeAssets['js_app'])) {
+        foreach ($themeAssets['js_app'] as $js) {
+            $scriptTag = '<script src="' . $js['src'] . '"';
+            if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
+            if (!empty($js['type'])) $scriptTag .= ' type="' . $js['type'] . '"';
+            $scriptTag .= '></script>';
+            $GLOBALS['TL_BODY'][] = $scriptTag;
+        }
+    }
+// Alte JS $GLOBALS Zuweisungen wurden entfernt/ersetzt.
 ?>
 
 <?= $this->mootools ?>

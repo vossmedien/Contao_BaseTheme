@@ -1,0 +1,66 @@
+
+main, footer {
+  a:not(.btn, .text-decoration-none):not(:has(img)) {
+    position: relative;
+
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      background-color: currentColor;
+      height: 1px;
+      width: 0;
+      transition: width 0.3s;
+    }
+
+    &:hover {
+      &:after {
+        width: 100%;
+      }
+    }
+  }
+
+  p a, label a {
+    color: var(--bs-tertiary);
+  }
+}
+
+p + ul{
+  margin-top: 1rem;
+}
+
+main .content--element {
+  ul:not([class]) {
+    list-style-type: none;
+    padding: 0;
+
+    > li {
+      position: relative;
+      padding-left: 25px;
+
+      &:not(:last-child) {
+        margin-bottom: 1rem
+      }
+
+      &:before {
+        @extend %fa-icon;
+        @extend #{$icon-type} !optional;
+        content: "\e007";
+        position: absolute;
+        color: currentColor;
+        left: 0;
+        top: 4px;
+        font-size: rfs-value(15px);
+      }
+
+      a {
+        text-decoration: none;
+        color: currentColor;
+        display: inline-block;
+      }
+    }
+  }
+}
+

@@ -1,0 +1,37 @@
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+.pull-down {
+  margin-bottom: calc(-1 * (var(--main-gap) * 2)) !important;
+}
+
+.mod_article:has(.pull-down) {
+  & + .mod_article > .article-content {
+    padding-top: calc(var(--main-gap) * 3);
+  }
+}
+
+
+.pull-up {
+  margin-top: calc(-1 * (var(--main-gap) * 3)) !important;
+}
+
+.mod_article:has(+ .mod_article .pull-up) {
+  .article-content {
+    padding-bottom: calc(var(--main-gap) * 3);
+  }
+}
+
+
+.ce--stoerer:hover {
+  .stoerer-trigger > svg {
+   transform: scale(1.2);
+  }
+}

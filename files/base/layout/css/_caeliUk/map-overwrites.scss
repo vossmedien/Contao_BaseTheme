@@ -1,0 +1,125 @@
+
+
+$spacers: (
+        0: 0,
+        1: 0.5rem,
+        2: 1rem,
+        3: 1.5rem,
+        4: 2rem,
+        5: 2.5rem,
+        6: 3rem,
+        7: 3.5rem,
+        8: 4rem,
+        9: 4.5rem,
+        10: 5rem,
+);
+
+$gutters: (
+        0: 0,
+        1: $grid-gutter-width * 0.5,
+        2: $grid-gutter-width,
+        3: $grid-gutter-width * 2,
+        4: $grid-gutter-width * 3,
+        5: $grid-gutter-width * 4,
+);
+
+
+
+
+
+
+$headings-font-sizes: (
+        'h1': (
+                'mobile': rfs-value(32px),
+                'tablet': rfs-value(46px),
+                'desktop': rfs-value(50px)
+        ),
+        'h2': (
+                'mobile': rfs-value(29px),
+                'tablet': rfs-value(39px),
+                'desktop': rfs-value(44px)
+        ),
+        'h3': (
+                'mobile': rfs-value(25px),
+                'tablet': rfs-value(25px),
+                'desktop': rfs-value(25px)
+        ),
+        'h4': (
+                 'mobile': rfs-value(25px),
+                'tablet': rfs-value(25px),
+                'desktop': rfs-value(25px)
+        ),
+        'h5': (
+                'mobile': rfs-value(20px),
+                'tablet': rfs-value(22px),
+                'desktop': rfs-value(25px)
+        ),
+        'h6': (
+                'mobile': rfs-value(18px),
+                'tablet': rfs-value(19px),
+                'desktop': rfs-value(20px)
+        )
+);
+
+// Definieren Sie die Topline Font Sizes abhängig von der Headline-Ebene
+$topline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 39px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
+
+// Definieren Sie die Subline Font Sizes abhängig von der Headline-Ebene
+$subline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 39px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
+
+
+
+// NEUE MAP: Abstände nach Überschriften (margin-bottom)
+$headline-margins: (
+        'h1': 2rem,
+        'h2': 1.75rem,
+        'h3': 1rem,
+        'h4': 1rem,
+        'h5': 1rem,
+        'h6': 0.75rem
+);
+
+// NEUE MAP: Mobile Abstände nach Überschriften
+$mobile-headline-margins: (
+        'h1': 1.5rem,
+        'h2': 1.25rem,
+        'h3': 0.9rem,
+        'h4': 0.9rem,
+        'h5': 0.8rem,
+        'h6': 0.6rem
+);
+
+
+// NEUE MAP: Abstände für Toplines (margin)
+$topline-margins: (
+        'h1': 0 0 .4em 0,
+        'h2': 0 0 .6em 0,
+        'h3': 0 0 .2em 0,
+        'h4': 0 0 .2em 0,
+        'h5': 0 0 .2em 0,
+        'h6': 0
+);
+
+// NEUE MAP: Abstände für Sublines (margin)
+$subline-margins: (
+        'h1': .2em 0 0 0,
+        'h2': .2em 0 0 0,
+        'h3': .2em 0 0 0,
+        'h4': .2em 0 0 0,
+        'h5': .2em 0 0 0,
+        'h6': .2em 0 0 0
+);
