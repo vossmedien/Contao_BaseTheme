@@ -5,20 +5,15 @@
 
 
 
-.image-info-box.ce_rsce_image_info_box {
- @include media-breakpoint-up(md) {
-   margin-bottom: 0 !important;
- }
-
+.image-info-box {
 
   .info-box-container {
     position: relative;
     transform: translate(0, -50%);
- margin-bottom: -5em;
+    margin-bottom: -7rem;
+    @include media-breakpoint-up(sm) {
 
-      @include media-breakpoint-up(md) {
-            margin-bottom: 0rem;
-      }
+    }
   }
 
   .info-box {
