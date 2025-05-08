@@ -1,0 +1,214 @@
+<?php
+// Helfer für die Headline generieren
+// generateHeadlineHTML($topline, $headline, $subline, $headlineType, $animation = null, $headlineClass = null, $onlystyle = false, $additionalAttributes = null)
+
+use Contao\StringUtil;
+
+// Hinzufügen für binToUuid
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+
+// Hinzufügen für Frontend-Check
+use Vsm\VsmHelperTools\Helper\ImageHelper;
+
+// Hinzufügen für Bildgenerierung
+use Vsm\VsmHelperTools\Helper\HeadlineHelper;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+
+// Animation für Headline-Element nur setzen, wenn 1-spaltig oder wenn 2-spaltig & Headline oben
+$headlineElementAnimation = null;
+if (!$this->two_columns || $this->headline_above_columns) {
+    $headlineElementAnimation = $this->animation_type_headline;
+}
+
+
+// Standardwerte und Berechnungen für zweispaltiges Layout
+$colWidthContent = '50';
+$bsColContent = 6;
+$bsColHeadline = 6;
+$orderContentClass = 'order-1';
+$orderHeadlineClass = 'order-2';
+
+// Bilddaten vorbereiten
+$imagesData = [];
+$imageUuids = [];
+if ($this->add_images && !empty($this->multiSRC)) {
+    $unserialized = StringUtil::deserialize($this->multiSRC);
+    if (is_array($unserialized)) {
+        $imageUuids = $unserialized;
+
+        // Filterung bleibt wichtig, falls ungültige Einträge oder Verzeichnisse dabei sind
+        $imageUuids = array_filter($imageUuids, function ($uuid) {
+            if (!is_string($uuid) || strlen($uuid) !== 36) { // Grundlegende UUID-String-Prüfung
+                return false;
+            }
+            $file = \Contao\FilesModel::findByUuid($uuid);
+            return $file !== null && $file->type === 'file';
+        });
+    }
+}
+
+$hasImages = !empty($imageUuids);
+$rand = rand(1, 1000); // Zufällige ID für Lightbox/Slider
+$spacingClass = $this->image_spacing_class ?: 'mb-1'; // Abstandsklasse holen oder Fallback
+$totalImages = count($imageUuids);
+
+if ($this->two_columns) {
+    $colWidthContent = $this->column_width_content ?? '50'; // Standard 50%
+    $colWidthContentInt = (int)$colWidthContent;
+    $colWidthHeadlineInt = 100 - $colWidthContentInt;
+
+    // Bootstrap Spaltenklassen berechnen (Basis ist 12)
+    $bsColContent = round(12 * ($colWidthContentInt / 100));
+    // Sicherstellen, dass die Summe 12 ergibt und keine Spalte 0 ist
+    $bsColContent = max(1, min(11, $bsColContent));
+    $bsColHeadline = 12 - $bsColContent;
+
+    // Klassen für Spaltenreihenfolge basierend auf der Auswahl 'column_order'
+    $orderHeadlineClass = 'order-lg-1 order-1'; // Standard: HL Mobil, HL Desktop
+    $orderContentClass = 'order-lg-2 order-2'; // Standard: CO Mobil, CO Desktop
+
+    switch ($this->column_order) {
+        case 'hl_co': // Mobil: HL, Desktop: CO
+            $orderHeadlineClass = 'order-lg-2 order-1';
+            $orderContentClass = 'order-lg-1 order-2';
+            break;
+        case 'co_hl': // Mobil: CO, Desktop: HL
+            $orderHeadlineClass = 'order-lg-1 order-2';
+            $orderContentClass = 'order-lg-2 order-1';
+            break;
+        case 'co_co': // Mobil: CO, Desktop: CO
+            $orderHeadlineClass = 'order-lg-2 order-2';
+            $orderContentClass = 'order-lg-1 order-1';
+            break;
+        // Fall 'hl_hl' ist der Standard und bereits gesetzt
+    }
+
+    // Wenn Headline oben, bekommt sie dort die Animation
+    if ($this->headline_above_columns) {
+        $headlineHTML = Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->headline_type,
+            $this->animation_type_headline, // Animation hier, wenn Headline oben
+            null,
+            (bool)$this->onlystyle,
+            null
+        );
+    }
+
+}
+
+
+// Kopfbild vorbereiten
+$headerImageHTML = '';
+if ($this->add_header_image && $this->header_image) {
+    // fileTree mit fieldType=radio speichert UUID direkt (nicht serialisiert)
+
+
+    $headerImageHTML = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
+        $this->header_image,
+        null, // Kein Alt-Text aus Headline
+        null, // Keine Beschreibung
+        $this->header_image_size, // Gewählte Bildgröße
+        null, // Keine CSS-Klasse extra
+        false, // Korrektur: Auf true geändert, um Figure/Picture zu erzwingen
+        false // Keine Lightbox per Default (kann man anpassen)
+    );
+
+}
+
+// Bild generieren
+$imageHTML = '';
+if ($this->image_src) {
+    $imageHTML = ImageHelper::generateImageHTML(
+        $this->image_src,
+        $this->headline, // Headline als Alt-Text
+        $this->headline, // Headline als Titel (headline-Parameter)
+        $this->image_size // Gewählte Bildgröße
+    // Standardwerte für class, inSlider, colorBox, lazy, caption, imageUrl werden vom Helper gesetzt
+    );
+}
+
+// Aufzählungspunkte vorbereiten
+$listItems = StringUtil::deserialize($this->list_items, true);
+
+?>
+
+<div <?php echo $this->cssID; ?> class="content--element head-hero  <?php echo $this->class; ?>">
+    <div class="ce--inner">
+
+        <?php // --- Breadcrumb --- ?>
+        <?php if ($this->add_breadcrumb && $this->breadcrumb_module && EnvHelper::isFrontend()): ?>
+            <div class="breadcrumb-container mb-3" data-animation="animate__fadeIn">
+                {{insert_module::<?= $this->breadcrumb_module ?>}}
+            </div>
+        <?php endif; ?>
+
+        <?php // --- Headline & Text (zentriert mit max. Breite) --- ?>
+        <div class="row">
+            <div class="col-12 col-xl-10">
+                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+                    $this->topline,
+                    $this->headline,
+                    $this->subline,
+                    $this->headline_type,
+                    $this->animation_headline,
+                    null,
+                    false,
+                    null
+                ); ?>
+
+                <?php if ($this->text): ?>
+                    <div class="text-section fw-semibold<?php if ($this->add_list_items): ?> mb-4<?php endif; ?>" <?php if ($this->animation_headline): ?>data-animation="<?= $this->animation_headline ?>"<?php endif; ?>>
+                        <?= $this->text; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <?php // --- Aufzählung & Buttons (zweispaltig) --- ?>
+        <?php if ($this->add_list_items && !empty($listItems) || $this->buttons): // Nur Row ausgeben, wenn Inhalt vorhanden ?>
+            <div class="row align-items-center mb-4 g-2">
+                <?php // Spalte für Aufzählung ?>
+                <?php if ($this->add_list_items && !empty($listItems)): ?>
+                    <div class="col-12 col-lg-7" >
+                        <ul class="list-unstyled list-with-icons row g-1">
+                            <?php foreach ($listItems as $item): ?>
+                                <li class="d-flex align-items-center col-md-6" <?php if ($this->animation_list): ?>data-animation="<?= $this->animation_list ?>"<?php endif; ?>>
+                                    <?php
+                                        $itemText = '';
+                                        $defaultIcon = '<i style="font-size: 36px;" class="fa-kit fa-circle-check text-tertiary me-1 flex-shrink-0"></i>'; // Default Font Awesome Icon
+
+                                        if (is_array($item)) {
+                                            $itemText = $item['item_text'] ?? '';
+                                        } elseif (is_string($item)) {
+                                            $itemText = $item;
+                                        }
+                                    ?>
+                                    <?= $defaultIcon ?>
+                                    <span class="text"><?= $itemText; ?></span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+
+                <?php // Spalte für Buttons ?>
+                <?php if ($this->buttons): ?>
+                    <div class="col-12 col-lg-auto ">
+                        <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php // --- Bild (Unterhalb) --- ?>
+        <?php if ($imageHTML): ?>
+            <div class="image-section mt-gap" <?php if ($this->animation_image): ?>data-animation="<?= $this->animation_image ?>"<?php endif; ?>>
+                <?= $imageHTML; ?>
+            </div>
+        <?php endif; ?>
+
+    </div>
+</div>

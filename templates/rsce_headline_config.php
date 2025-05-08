@@ -61,7 +61,7 @@ return array(
         'two_columns' => array(
             'label' => array('Inhalte zwei-spaltig darstellen', ''),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'w50 clr'),
+            'eval' => array('tl_class' => 'w50 clr', 'submitOnChange' => true),
         ),
 
         'wrap_columns_in_container' => array(
