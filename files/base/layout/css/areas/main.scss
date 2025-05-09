@@ -35,7 +35,7 @@ html, body, #wrapper{
     .mod_article {
       transition: background-position 0s ease-in-out;
 
-      &:last-child > div:last-child {
+      &:last-child > > .article-content > div:last-child {
         margin-bottom: var(--main-gap);
       }
 
@@ -48,7 +48,7 @@ html, body, #wrapper{
 
         &[class*="bg-"]:not(.is-fullwidth){
           > .ce--inner{
-            @extend .container;
+            //@extend .container;
           }
         }
       }
