@@ -129,7 +129,7 @@ if ($this->add_header_image && $this->header_image) {
 
 ?>
 
-<div  <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?> <?php if ($this->two_columns): ?>layout-two-columns<?php else: ?>layout-one-column<?php endif; ?>">
+<div <?php if($this->animation_type_element):?>data-animation="<?= $this->animation_type_element;?>"<?php endif;?> <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?> <?php if ($this->two_columns): ?>layout-two-columns<?php else: ?>layout-one-column<?php endif; ?>">
     <div class="ce--inner">
 
         <?php // --- Kopfbild Ausgabe --- ?>

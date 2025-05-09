@@ -3,8 +3,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
 
-html body {
-  .ce_rsce_boxenfeld {
+ .ce_rsce_boxenfeld {
     @include media-breakpoint-down(lg) {
       &:not(.container) {
         padding-inline: var(--bs-gutter-x);
@@ -101,4 +100,3 @@ html body {
       }
     }
   }
-}

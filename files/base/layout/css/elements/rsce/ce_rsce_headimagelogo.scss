@@ -4,196 +4,193 @@
 @import "../../mixins";
 
 
+.ce_rsce_headimagelogo {
+  &.move-content {
+    position: fixed !important;
+    //z-index: -1 !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
 
-html body {
-  .ce_rsce_headimagelogo {
-    &.move-content {
-      position: fixed !important;
-      //z-index: -1 !important;
-      top: 0;
-      left: 0;
-      width: 100%;
+  .plain-image-holder {
+    text-align: center;
+    height: 100%;
+
+    figure {
+      height: 100%;
     }
 
-    .plain-image-holder {
-      text-align: center;
-      height: 100%;
-
-      figure {
+    &.is-bg {
+      img, video {
+        object-fit: cover;
+        width: 100%;
         height: 100%;
       }
-
-      &.is-bg {
-        img, video {
-          object-fit: cover;
-          width: 100%;
-          height: 100%;
-        }
-      }
     }
+  }
 
-    .boxed-logo {
-      display: inline-block;
-      position: absolute;
-      right: 50%;
-      transform: translate(50%, 50%);
-      bottom: 0;
-      text-align: center;
-      z-index: 5;
+  .boxed-logo {
+    display: inline-block;
+    position: absolute;
+    right: 50%;
+    transform: translate(50%, 50%);
+    bottom: 0;
+    text-align: center;
+    z-index: 5;
 
-      .boxed-logo--inner {
-        padding: 12px;
-        background-color: $body-bg;
-        box-shadow: $box-shadow;
+    .boxed-logo--inner {
+      padding: 12px;
+      background-color: $body-bg;
+      box-shadow: $box-shadow;
 
-        img {
-          max-width: calc(300px + 4rem);
-          width: 100%;
-          height: auto;
-        }
-      }
-    }
-
-    .mainslider {
-      &.with-diagonalCut {
-        &:after {
-          --diagonalHeight: 15vh;
-
-          content: "";
-          position: absolute;
-          bottom: calc(-1 * calc(var(--diagonalHeight) / 2));
-          left: 0;
-          z-index: 5;
-          height: var(--diagonalHeight);
-          width: 105vw;
-          background-color: $body-bg;
-          transform: rotate(-2.5deg);
-        }
-      }
-
-      .swiper-button-prev {
-        @include media-breakpoint-up(sm) {
-          left: 2.5vw;
-        }
-      }
-
-      .swiper-button-next {
-        @include media-breakpoint-up(sm) {
-          right: 2.5vw;
-        }
-      }
-    }
-
-    .ce--mainimage {
-      position: relative;
-      @extend %remove-headline-padding;
-
-      .image--holder {
-        position: relative;
+      img {
+        max-width: calc(300px + 4rem);
         width: 100%;
-        overflow: hidden;
-        height: 100vh;
+        height: auto;
+      }
+    }
+  }
 
-        .mainimage--content {
-          height: 100%;
-          width: 100%;
+  .mainslider {
+    &.with-diagonalCut {
+      &:after {
+        --diagonalHeight: 15vh;
+
+        content: "";
+        position: absolute;
+        bottom: calc(-1 * calc(var(--diagonalHeight) / 2));
+        left: 0;
+        z-index: 5;
+        height: var(--diagonalHeight);
+        width: 105vw;
+        background-color: $body-bg;
+        transform: rotate(-2.5deg);
+      }
+    }
+
+    .swiper-button-prev {
+      @include media-breakpoint-up(sm) {
+        left: 2.5vw;
+      }
+    }
+
+    .swiper-button-next {
+      @include media-breakpoint-up(sm) {
+        right: 2.5vw;
+      }
+    }
+  }
+
+  .ce--mainimage {
+    position: relative;
+    @extend %remove-headline-padding;
+
+    .image--holder {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      height: 100vh;
+
+      .mainimage--content {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        max-width: 100%;
+
+
+        .mainimage--content-inner {
+          display: inline-block;
           position: absolute;
-          top: 0;
           max-width: 100%;
+          width: 100%;
+          padding-inline: var(--bs-container-gutter);
+
+          @include media-breakpoint-up(sm) {
+            padding-inline: 50px;
+          }
+
+          &:not([class*="pos-"]) {
+            transform: translate(0%, -50%);
+            top: 50%;
+            left: 0;
+          }
 
 
-          .mainimage--content-inner {
-            display: inline-block;
-            position: absolute;
-            max-width: 100%;
-            width: 100%;
-            padding-inline: var(--bs-container-gutter);
-
-            @include media-breakpoint-up(sm) {
-              padding-inline: 50px;
+          .ce--headline {
+            .ce--subline, .ce--topline {
+              color: currentColor;
             }
-
-            &:not([class*="pos-"]) {
-              transform: translate(0%, -50%);
-              top: 50%;
-              left: 0;
-            }
+          }
 
 
-            .ce--headline {
-              .ce--subline, .ce--topline {
-                color: currentColor;
-              }
-            }
+          &[class*="-bottom"] {
+            bottom: 50px;
+          }
 
+          .infotext--text {
+            margin-top: 1.25rem;
+          }
 
-            &[class*="-bottom"] {
-              bottom: 50px;
-            }
-
-            .infotext--text {
-              margin-top: 1.25rem;
-            }
-
-            .button--wrapper {
-              > .btn:not(:last-child) {
-                margin-bottom: rfs-value(5px);
-              }
+          .button--wrapper {
+            > .btn:not(:last-child) {
+              margin-bottom: rfs-value(5px);
             }
           }
         }
       }
+    }
 
-      &.style-1 {
-        .mainimage--content {
-          .mainimage--content-inner {
+    &.style-1 {
+      .mainimage--content {
+        .mainimage--content-inner {
+          .ce--buttons {
+            margin-top: 1.75rem;
+          }
+        }
+      }
+    }
+
+    &.style-2 {
+      .mainimage--content {
+        .mainimage--content-inner {
+          position: absolute;
+          z-index: 10;
+          min-width: 50vw;
+          padding: 2rem calc(var(--bs-gutter-x) * .5) !important;
+          width: 100%;
+          background-color: var(--bs-white);
+
+          @include media-breakpoint-up(sm) {
+            max-width: 75%;
+            width: auto;
+            clip-path: polygon(
+                            0 0, // links oben
+                            calc(100% - 200px) 0, // oben bis zum Dreieck
+                            100% 0, // rechte obere Ecke
+                            100% 0, // rechte obere Ecke
+                            calc(100% - 200px) 100%, // untere Ecke vorm Dreieck
+                            0 100% // links unten
+            );
+          }
+
+          .mainimage--content-inner--holder {
+            > * {
+              position: relative;
+            }
+
             .ce--buttons {
-              margin-top: 1.75rem;
-            }
-          }
-        }
-      }
-
-      &.style-2 {
-        .mainimage--content {
-          .mainimage--content-inner {
-            position: absolute;
-            z-index: 10;
-            min-width: 50vw;
-            padding: 2rem calc(var(--bs-gutter-x) * .5) !important;
-            width: 100%;
-            background-color: var(--bs-white);
-
-            @include media-breakpoint-up(sm) {
-              max-width: 75%;
-              width: auto;
-              clip-path: polygon(
-                              0 0, // links oben
-                              calc(100% - 200px) 0, // oben bis zum Dreieck
-                              100% 0, // rechte obere Ecke
-                              100% 0, // rechte obere Ecke
-                              calc(100% - 200px) 100%, // untere Ecke vorm Dreieck
-                              0 100% // links unten
-              );
-            }
-
-            .mainimage--content-inner--holder {
-              > * {
-                position: relative;
-              }
-
-              .ce--buttons {
-                margin-top: 1.5rem;
-              }
+              margin-top: 1.5rem;
             }
           }
         }
       }
     }
+  }
 
 
-    .swiper:has(.swiper-button-prev):has(.ce--mainimage.style-2) .ce--mainimage.style-2 .mainimage--content-inner {
-      padding-inline: 85px !important;
-    }
+  .swiper:has(.swiper-button-prev):has(.ce--mainimage.style-2) .ce--mainimage.style-2 .mainimage--content-inner {
+    padding-inline: 85px !important;
   }
 }

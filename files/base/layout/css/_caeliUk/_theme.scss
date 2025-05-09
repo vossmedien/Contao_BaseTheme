@@ -1,3 +1,10 @@
+@use "sass:math";
+@use "sass:color";
+@use "sass:map";
+@use "sass:meta";
+
+@import "functions";
+
 @import "../../_vendor/node_modules/bootstrap/scss/functions";
 @import "../../_vendor/node_modules/bootstrap/scss/variables";
 @import "../../_vendor/node_modules/bootstrap/scss/mixins";
@@ -6,12 +13,22 @@
 @import "map-overwrites";
 
 
+
+
+
+#wrapper[style] {
+  #header {
+    .header-content {
+      position: fixed;
+    }
+  }
+}
+
+
 //Header
 #header {
-
-
   .header-content {
-    position: fixed;
+
     left: 0;
     top: 0;
     width: 100%;
@@ -121,8 +138,9 @@
     li {
       position: relative;
       padding-left: rfs-value(36px);
+
       &:not(:last-child) {
-          margin-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
       }
 
       &:before {
@@ -150,13 +168,12 @@
 }
 
 @include media-breakpoint-down(md) {
-  .logo{
-    img{
+  .logo {
+    img {
       max-height: 40px;
     }
   }
 }
-
 
 
 // Überschreibungen
@@ -164,7 +181,7 @@ html body .ce_rsce_headimagelogo .mainimage--content .mainimage--content-inner.p
   padding-top: 0 !important;
 }
 
-html body .ce_rsce_headline .ce--headline.hl-h1{
+html body .ce_rsce_headline .ce--headline.hl-h1 {
   margin-bottom: 1rem !important;
 }
 
@@ -192,17 +209,17 @@ html body .ce_rsce_headimagelogo .mainslider_1 .slide_0.style-1 .mainimage--cont
     max-width: none;
     box-shadow: none !important;
     margin-inline: 0 !important;
-   //transform: none !important;
+    //transform: none !important;
     animation-name: none;
 
-    .ce--headline > *{
-          animation-name: none;
+    .ce--headline > * {
+      animation-name: none;
     }
   }
 }
 
 @include media-breakpoint-down(md) {
-  p .btn{
+  p .btn {
     margin-top: .5rem;
     width: 100%;
   }
@@ -238,10 +255,10 @@ html body .ce_rsce_headimagelogo .ce--mainimage .image--holder .mainimage--conte
 }
 
 
-.contact-card .contact-image{
-    @include media-breakpoint-down(md) {
-      max-width: 120px;
-    }
+.contact-card .contact-image {
+  @include media-breakpoint-down(md) {
+    max-width: 120px;
+  }
 }
 
 
@@ -263,14 +280,14 @@ html body .ce_rsce_headimagelogo .ce--mainimage .image--holder .mainimage--conte
   }
 }
 
- .table-responsive{
-   table.table{
-     min-width: 700px;
-   }
- }
+.table-responsive {
+  table.table {
+    min-width: 700px;
+  }
+}
 
 
- .BodyScrollToTop {
+.BodyScrollToTop {
   width: rfs-value(40px);
   height: rfs-value(40px);
   line-height: rfs-value(40px);
@@ -306,17 +323,17 @@ html body .ce_rsce_headimagelogo .ce--mainimage .image--holder .mainimage--conte
   }
 }
 
- p{
-   & + ul, & + ol{
-     margin-top: 1rem;
-   }
- }
+p {
+  & + ul, & + ol {
+    margin-top: 1rem;
+  }
+}
 
- .cmptxt_btn_settings.cmptxt_btn_settings{
-   padding-block: 16px !important;
- }
+.cmptxt_btn_settings.cmptxt_btn_settings {
+  padding-block: 16px !important;
+}
 
 
- .ce_rsce_headline{
+.ce_rsce_headline {
 
- }
+}

@@ -5,6 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
 // __dirname ist jetzt /Users/christian.voss/PhpstormProjects/Caeli-Relaunch/files/base/layout/_vendor
 
@@ -213,123 +214,161 @@ const jsWebpackConfigs = themeFolders.flatMap(theme => {
 });
 
 // --- SCSS-Konfigurationen ---
-const mainScssFiles = glob.sync(path.join(cssWorkspaceBase, '*.scss').replace(/\\/g, '/'))
-    .filter(file => !path.basename(file).startsWith('_'));
+// Alte Logik für mainScssFiles wird entfernt.
+// const mainScssFiles = glob.sync(path.join(cssWorkspaceBase, '*.scss').replace(/\\/g, '/'))
+// .filter(file => !path.basename(file).startsWith('_'));
+// console.log('Gefundene Haupt-SCSS-Dateien:', mainScssFiles);
 
-console.log('Gefundene Haupt-SCSS-Dateien:', mainScssFiles);
+const cssThemeFolders = fs.readdirSync(cssWorkspaceBase)
+    .map(item => ({ name: item, path: path.join(cssWorkspaceBase, item) }))
+    .filter(item => {
+        const stat = fs.statSync(item.path);
+        // Nur Ordner, die mit '_' beginnen und nicht '_dist-manifest' sind.
+        // Und stelle sicher, dass es wirklich ein Ordner ist.
+        return stat.isDirectory() && item.name.startsWith('_') && item.name !== '_dist-manifest';
+    });
 
-const cssWebpackConfigs = mainScssFiles.map(scssFile => {
-    const themeNameClean = path.basename(scssFile, '.scss'); // z.B. caeliRelaunch
-    const entryName = themeNameClean;
+console.log('Gefundene CSS-Theme-Ordner:', cssThemeFolders.map(f => f.name));
 
-    const themeCssDir = path.join(cssWorkspaceBase, '_' + themeNameClean);
+const cssWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
+    const themeNameRaw = themeFolder.name; // z.B. _caeliRelaunch
+    const themeNameClean = themeNameRaw.substring(1); // z.B. caeliRelaunch
+    const themeCssDir = themeFolder.path; // z.B. /path/to/files/base/layout/css/_caeliRelaunch
     const themeCssDistDir = path.join(themeCssDir, 'dist');
-    const themePublicPath = `/files/base/layout/css/_${themeNameClean}/dist/`;
-    const themeManifestDir = path.join(manifestBasePath, '_' + themeNameClean);
+    const themePublicPath = `/files/base/layout/css/${themeNameRaw}/dist/`;
+    const themeManifestDir = path.join(manifestBasePath, themeNameRaw); // Manifeste im Ordner _caeliRelaunch etc.
 
-    if (!fs.existsSync(themeCssDir)) {
-        console.warn(`Theme-Verzeichnis ${path.relative(projectRoot, themeCssDir)} nicht gefunden. Erstelle es nicht automatisch.`);
-    }
+    // Sicherstellen, dass die Verzeichnisse existieren
     if (!fs.existsSync(themeCssDistDir)) {
         fs.mkdirSync(themeCssDistDir, { recursive: true });
-        console.log(`   Erstelle themenspezifisches dist-Verzeichnis: ${path.relative(projectRoot, themeCssDistDir)}`);
+        console.log(`   Erstelle themenspezifisches CSS dist-Verzeichnis: ${path.relative(projectRoot, themeCssDistDir)}`);
     }
-
     if (!fs.existsSync(themeManifestDir)) {
         fs.mkdirSync(themeManifestDir, { recursive: true });
+        console.log(`   Erstelle themenspezifisches Manifest-Verzeichnis für CSS: ${path.relative(projectRoot, themeManifestDir)}`);
     }
 
-    console.log(`CSS-Konfig für Theme "${themeNameClean}":`);
-    console.log(`   SCSS-Datei: ${path.relative(projectRoot, scssFile)}`);
-    console.log(`   Ausgabe (output.path): ${path.relative(projectRoot, themeCssDistDir)}`);
-    console.log(`   Public Path (output.publicPath): ${themePublicPath}`);
+    const scssFilesToBundle = [
+        '_vendors.scss',
+        '_base.scss',
+        '_theme.scss',
+        '_root-variables.scss',
+        '_fonts.scss'
+    ];
 
     let themeAliases = {};
-    const themeAliasConfigFile = path.join(themeCssDir, 'theme.fontaliases.js');
-    if (fs.existsSync(themeAliasConfigFile)) {
-        try {
-            const loadedAliasesRelative = require(themeAliasConfigFile);
-            for (const key in loadedAliasesRelative) {
-                themeAliases[key] = path.resolve(nodeModulesPath, loadedAliasesRelative[key]);
-            }
-            console.log(`   Lade Font-Aliase aus ${path.relative(projectRoot, themeAliasConfigFile)}`);
-        } catch (e) {
-            console.error(`   Fehler beim Laden von ${themeAliasConfigFile}:`, e);
-        }
-    } else {
-        console.log(`   Keine theme.fontaliases.js für Theme "${themeNameClean}" gefunden in ${path.relative(projectRoot, themeCssDir)}`);
-    }
+    // const themeAliasConfigFile = path.join(themeCssDir, 'theme.fontaliases.js');
+    // if (fs.existsSync(themeAliasConfigFile)) {
+    //     try {
+    //         const loadedAliasesRelative = require(themeAliasConfigFile);
+    //         for (const key in loadedAliasesRelative) {
+    //             themeAliases[key] = path.resolve(nodeModulesPath, loadedAliasesRelative[key]);
+    //         }
+    //         console.log(`   Lade Font-Aliase aus ${path.relative(projectRoot, themeAliasConfigFile)} für Theme ${themeNameRaw}`);
+    //     } catch (e) {
+    //         console.error(`   Fehler beim Laden von ${themeAliasConfigFile} für Theme ${themeNameRaw}:`, e);
+    //     }
+    // } else {
+    //     console.log(`   Keine theme.fontaliases.js für Theme "${themeNameRaw}" gefunden in ${path.relative(projectRoot, themeCssDir)}`);
+    // }
 
-    return {
-        name: `${themeNameClean}-css`,
-        mode: 'production',
-        entry: {
-            [entryName]: scssFile
-        },
-        output: {
-            path: themeCssDistDir,
-            publicPath: themePublicPath,
-            assetModuleFilename: 'fonts/[hash][ext][query]',
-            clean: false,
-        },
-        module: {
-            rules: [
-                {
-                    test: /\.scss$/,
-                    use: [
-                        {
-                            loader: MiniCssExtractPlugin.loader,
-                            options: {
-                                // publicPath sollte jetzt durch output.publicPath abgedeckt sein
+    return scssFilesToBundle.map(scssFileName => {
+        const scssFilePath = path.join(themeCssDir, scssFileName);
+        if (!fs.existsSync(scssFilePath)) {
+            console.warn(`   SCSS-Datei ${scssFileName} nicht in ${themeNameRaw} gefunden unter ${path.relative(projectRoot, scssFilePath)}. Überspringe.`);
+            return null; // Überspringen, wenn die Datei nicht existiert
+        }
+
+        const entryName = scssFileName.replace('.scss', ''); // z.B. _vendors, _base
+
+        console.log(`CSS-Konfig für Theme "${themeNameRaw}", Datei "${scssFileName}":`);
+        console.log(`   SCSS-Datei: ${path.relative(projectRoot, scssFilePath)}`);
+        console.log(`   Ausgabe (output.path): ${path.relative(projectRoot, themeCssDistDir)}`);
+        console.log(`   Public Path (output.publicPath): ${themePublicPath}`);
+        console.log(`   Bundle-Name (entryName): ${entryName}`);
+
+        return {
+            name: `${themeNameClean}-${entryName}-css`, // Eindeutiger Name für die Webpack-Konfig z.B. caeliRelaunch-_vendors-css
+            mode: 'production',
+            entry: {
+                [entryName]: scssFilePath // Key ist der Bundle-Name, Value der Pfad zur Datei
+            },
+            output: {
+                path: themeCssDistDir,
+                publicPath: themePublicPath,
+                assetModuleFilename: 'fonts/[name].[hash][ext][query]', // Name der Fontdatei beibehalten
+                clean: false, // Wichtig, da wir mehrere Bundles in denselben Ordner schreiben könnten
+            },
+            module: {
+                rules: [
+                    {
+                        test: /\.scss$/,
+                        use: [
+                            {
+                                loader: MiniCssExtractPlugin.loader,
                             },
-                        },
-                        'css-loader',
-                        {
-                            loader: 'sass-loader',
-                            options: {
-                                sassOptions: {
-                                    outputStyle: 'compressed',
+                            {
+                                loader: 'css-loader',
+                                options: {
+                                    sourceMap: true, // Wichtig für resolve-url-loader
+                                }
+                            },
+                            {
+                                loader: 'resolve-url-loader', // NEU
+                                options: {
+                                    sourceMap: true, // Wichtig, benötigt sourcemaps vom vorherigen Loader (sass-loader)
+                                    removeCR: true, // Kann bei Windows-Zeilenumbrüchen helfen
+                                }
+                            },
+                            {
+                                loader: 'sass-loader',
+                                options: {
+                                    sourceMap: true, // Wichtig für resolve-url-loader
+                                    sassOptions: {
+                                        outputStyle: 'compressed',
+                                    },
                                 },
                             },
-                        },
-                    ],
-                },
-                {
-                    test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
-                    type: 'asset/resource',
-                }
-            ],
-        },
-        plugins: [
-            new MiniCssExtractPlugin({
-                filename: '[name].bundle.min.css',
-            }),
-            new WebpackManifestPlugin({
-                fileName: path.join(themeManifestDir, 'css.manifest.json'),
-                publicPath: themePublicPath,
-                filter: (file) => !file.name.endsWith('.js'),
-                map: (file) => ({
-                    name: file.name,
-                    path: file.path,
-                    isInitial: file.isInitial,
-                    isChunk: file.isChunk,
-                    entryPoint: file.chunk?.name
+                        ],
+                    },
+                    {
+                        test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
+                        type: 'asset/resource',
+                    }
+                ],
+            },
+            plugins: [
+                new RemoveEmptyScriptsPlugin(),
+                new MiniCssExtractPlugin({
+                    filename: '[name].bundle.min.css', // Wird zu z.B. _vendors.bundle.min.css
+                }),
+                new WebpackManifestPlugin({
+                    fileName: path.join(themeManifestDir, `${entryName}-css.manifest.json`), // separates Manifest pro Bundle
+                    publicPath: themePublicPath,
+                    filter: (file) => !file.name.endsWith('.js') && file.name.startsWith(entryName) && file.name.endsWith('.css'),
+                    map: (file) => ({
+                        name: file.name,
+                        path: file.path,
+                        isInitial: file.isInitial,
+                        isChunk: file.isChunk,
+                        entryPoint: file.chunk?.name
+                    })
                 })
-            })
-        ],
-        optimization: {
-            minimize: true,
-            minimizer: [
-                new CssMinimizerPlugin(),
             ],
-        },
-        resolve: {
-            alias: themeAliases,
-        },
-        performance: {
-            hints: false
-        }
-    };
+            optimization: {
+                minimize: true,
+                minimizer: [
+                    new CssMinimizerPlugin(),
+                ],
+            },
+            resolve: {
+                alias: themeAliases,
+            },
+            performance: {
+                hints: false
+            }
+        };
+    }).filter(Boolean); // Entferne null-Werte, falls Dateien nicht gefunden wurden
 });
 
 // Kombinieren von JS und CSS Konfigurationen
