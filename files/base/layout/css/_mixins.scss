@@ -2,6 +2,24 @@
 @import "../_vendor/node_modules/bootstrap/scss/variables";
 @import "../_vendor/node_modules/bootstrap/scss/mixins";
 
+@mixin fa-icon {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  line-height: 1;
+}
+%fa-icon {
+  @include fa-icon;
+}
+
+
+.fak, .fa-kit {
+  font-family: 'Font Awesome Kit';
+}
+
 
 @mixin content-box($override-padding: "") {
   border-radius: $border-radius;
@@ -39,7 +57,7 @@
         @if $dir == top {
           position: relative;
           top: -$value;
-          margin-top: $value*3;
+          //margin-top: $value*3;
           margin-bottom: -$value;
         } @else if $dir == bottom {
           margin-bottom: -$value;

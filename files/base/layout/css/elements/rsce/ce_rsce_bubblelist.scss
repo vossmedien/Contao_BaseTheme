@@ -3,8 +3,7 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
 
-html body {
-  .ce_rsce_bubblelist {
+.ce_rsce_bubblelist {
     .ce--bubble-list {
 
       &.no-border {
@@ -110,4 +109,3 @@ html body {
       }
     }
   }
-}

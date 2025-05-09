@@ -26,9 +26,11 @@ $box-shadow: 0 0 12px rgba(39, 39, 39, 0.15);
 $offset-sm: 60px;
 $offset-lg: 240px;
 
+$link-color: $primary;
+$link-hover-color:$tertiary;
 $link-decoration: none;
 $link-shade-percentage: 20%;
-$link-hover-decoration: null;
+$link-hover-decoration: none;
 
 $input-focus-border-color: var(--bs-primary-rgb);
 $input-placeholder-color: var(--bs-placeholder-color);

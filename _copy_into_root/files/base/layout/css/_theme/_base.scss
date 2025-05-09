@@ -1,0 +1,52 @@
+@use "sass:math";
+@use "sass:color";
+@use "sass:map";
+@use "sass:meta";
+
+
+@import "../scaffolding/helper-classes";
+@import "../scaffolding/typo";
+@import "../scaffolding/headlines";
+@import "../scaffolding/forms";
+@import "../scaffolding/buttons";
+@import "../scaffolding/hacks";
+
+
+@import "../areas/header";
+@import "../areas/main";
+@import "../areas/aside";
+@import "../areas/footer";
+
+// Vendor Widgets
+@import "../elements/vendor-widgets/swiper";
+@import "../elements/vendor-widgets/mmenu";
+@import "../elements/vendor-widgets/venobox";
+@import "../elements/vendor-widgets/vsmLazyload";
+
+//Custom HTML
+@import "../elements/custom-html-elements/elements";
+
+//Contao
+@import "../elements/contao-elements/ce_downloads";
+@import "../elements/contao-elements/ce_image";
+@import "../elements/contao-elements/ce_gallery";
+@import "../elements/contao-elements/ce_text";
+@import "../elements/contao-elements/mod_breadcrumb";
+
+
+html {
+  scroll-behavior: smooth;
+  font-size: var(--bs-body-font-size);
+
+  body {
+    overflow-x: clip;
+    *[id] {
+      scroll-behavior: smooth;
+      scroll-margin-top: var(--bs-scrolloffset);
+    }
+  }
+}
+
+[data-bs-theme=dark]{
+  color: var(--bs-body-color);
+}

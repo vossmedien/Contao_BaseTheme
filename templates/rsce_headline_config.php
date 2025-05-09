@@ -15,6 +15,14 @@ return array(
     ),
     'fields' => array(
 
+        'animation_type_element' => array(
+            'label' => array('Animation: Komplettes Element', ''),
+            'inputType' => 'select',
+            'options' => GlobalElementConfig::getAnimations(),
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+
         'header_image_options' => array(
             'label' => ['Kopfbild Optionen'],
             'inputType' => 'group',

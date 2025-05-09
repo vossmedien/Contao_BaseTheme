@@ -40,22 +40,36 @@ if (!function_exists('load_theme_assets_from_manifest')) {
                 return;
             }
 
+            // Stelle sicher, dass $assets['css'] initialisiert ist, falls es vorher noch nicht der Fall war
+            if (!isset($assets['css'])) {
+                $assets['css'] = [];
+            }
+            if (!isset($assets['fonts_preload'])) {
+                $assets['fonts_preload'] = [];
+            }
+
             foreach ($manifestData as $sourceName => $publicPath) {
                 if (!is_string($publicPath) || empty($publicPath)) continue;
 
+                // Der $sourceName aus dem Manifest ist jetzt der direkte Dateiname des Assets, z.B. "_vendors.bundle.min.css" oder "fonts/figtree-v7-latin-300.woff2"
                 $currentFilenameForLogic = $sourceName;
 
                 switch ($assetTypeForProcessing) {
-                    case 'css':
+                    case 'css_bundle': // Geändert von 'css' zu 'css_bundle' für die neue Logik
                         if (str_ends_with(strtolower($currentFilenameForLogic), '.css')) {
-                            $assets['css'][] = substr($publicPath, 1);
+                            // Füge CSS-Datei hinzu, wenn sie nicht bereits vorhanden ist
+                            if (!in_array(substr($publicPath, 1), $assets['css'])) {
+                                $assets['css'][] = substr($publicPath, 1);
+                            }
                         }
-                        else if (str_starts_with(strtolower($currentFilenameForLogic), 'fonts/') && preg_match('/\.(woff2|woff|ttf|otf)$/i', $currentFilenameForLogic)) {
+                        // Die Font-Verarbeitung für CSS-Bundles ist wichtig, da Fonts im CSS-Manifest auftauchen
+                        else if (str_starts_with(strtolower($currentFilenameForLogic), 'fonts/') && preg_match('/\.(woff2|woff|ttf|otf|svg)$/i', $currentFilenameForLogic)) {
                             $fontType = match (strtolower(pathinfo($currentFilenameForLogic, PATHINFO_EXTENSION))) {
                                 'woff2' => 'font/woff2',
                                 'woff'  => 'font/woff',
                                 'ttf'   => 'font/ttf',
                                 'otf'   => 'font/otf',
+                                'svg'   => 'image/svg+xml', // SVG als Font oder Bild
                                 default => '',
                             };
                             if ($fontType) {
@@ -75,16 +89,23 @@ if (!function_exists('load_theme_assets_from_manifest')) {
 
                     case 'js_app':
                         if (str_ends_with(strtolower($currentFilenameForLogic), '.js')) {
+                            // Die Logik hier sollte den $themeNameClean aus der Webpack-Konfig entsprechen
+                            // Für App-JS erwarten wir etwas wie 'caeliRelaunch.bundle.min.js'
                             if (str_contains($publicPath, $themeName . '.bundle.min.js') && !str_contains($publicPath, '_vendors.bundle.min.js')) {
-                                $assets['js_app'][] = ['src' => $publicPath, 'defer' => true, 'type' => 'module'];
+                                if (!in_array(['src' => $publicPath, 'defer' => true, 'type' => 'module'], $assets['js_app'])) {
+                                    $assets['js_app'][] = ['src' => $publicPath, 'defer' => true, 'type' => 'module'];
+                                }
                             }
                         }
                         break;
 
                     case 'js_vendor':
                         if (str_ends_with(strtolower($currentFilenameForLogic), '.js')) {
+                             // Für Vendor-JS erwarten wir etwas wie 'caeliRelaunch_vendors.bundle.min.js'
                             if (str_contains($publicPath, $themeName . '_vendors.bundle.min.js')) {
-                                $assets['js_vendor'][] = ['src' => $publicPath, 'defer' => true, 'type' => null];
+                                if (!in_array(['src' => $publicPath, 'defer' => true, 'type' => null], $assets['js_vendor'])) {
+                                    $assets['js_vendor'][] = ['src' => $publicPath, 'defer' => true, 'type' => null];
+                                }
                             }
                         }
                         break;
@@ -92,7 +113,14 @@ if (!function_exists('load_theme_assets_from_manifest')) {
             }
         };
 
-        $processSingleManifestFile($themeManifestDir . '/css.manifest.json', 'css');
+        // Definierte Reihenfolge der CSS-Bundles
+        $cssBundleOrder = ['_vendors', '_base', '_root-variables', '_theme', '_fonts'];
+
+        foreach ($cssBundleOrder as $bundleName) {
+            $processSingleManifestFile($themeManifestDir . '/' . $bundleName . '-css.manifest.json', 'css_bundle');
+        }
+
+        // JS-Manifeste wie gehabt verarbeiten
         $processSingleManifestFile($themeManifestDir . '/app-js.manifest.json', 'js_app');
         $processSingleManifestFile($themeManifestDir . '/vendor-js.manifest.json', 'js_vendor');
         

@@ -1,4 +1,5 @@
 //Get Bootstrap Stylings if class is not set
+/*
 form .widget:not(.form-floating) {
   input,
   textarea,
@@ -19,6 +20,9 @@ form .widget:not(.form-floating) {
     }
   }
 }
+
+ */
+
 
 .widget {
   *[class*="col"] {
@@ -260,7 +264,6 @@ form {
   .captcha_text {
     margin-bottom: 5px;
     display: block;
-    @extend .alert, .alert-danger;
     --bs-alert-margin-top: .5rem !important;
   }
 
