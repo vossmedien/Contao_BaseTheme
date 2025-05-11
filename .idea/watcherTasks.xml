@@ -21,7 +21,7 @@
       <option name="workingDir" value="$FileDir$" />
       <envs />
     </TaskOptions>
-    <TaskOptions isEnabled="true">
+    <TaskOptions isEnabled="false">
       <option name="arguments" value="$FileName$:$FileNameWithoutAllExtensions$.min.css --style=compressed --no-source-map --no-charset --no-error-css --quiet-deps --precision=5 --update --load-path=node_modules" />
       <option name="checkSyntaxErrors" value="false" />
       <option name="description" />

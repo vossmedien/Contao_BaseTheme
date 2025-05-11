@@ -61,7 +61,7 @@ $this->bodyAttributes = $this
     <?= $this->framework ?>
 
 
-    <?php
+     <?php
     // --- NEU: CSS optimiert einbinden ---
 
     // Gewünschte Ladereihenfolge und spezifische Attribute
@@ -817,31 +817,26 @@ $this->bodyAttributes = $this
 <?php $this->sections('bottom'); ?>
 <?php $this->endblock(); ?>
 
-
 <?php // --- NEU: JS einbinden ---
-// Vendor JS zuerst
-if (!empty($themeAssets['js_vendor'])) {
-    foreach ($themeAssets['js_vendor'] as $js) {
-        $scriptTag = '<script src="' . $js['src'] . '"';
-        if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
-        // type ist null für vendor, also nicht hinzufügen
-        $scriptTag .= '></script>';
-        $GLOBALS['TL_BODY'][] = $scriptTag;
+// Vendor JS zuerst laden (jetzt individuell)
+if (!empty($themeAssets['js_vendor_individual'])) {
+    foreach ($themeAssets['js_vendor_individual'] as $js) {
+        // $js ist nun ein Array mit den Schlüsseln 'src' und 'attributes'
+        // z.B. $js = ['src' => 'files/base/.../script.js', 'attributes' => '|defer|static']
+        $scriptTag =  $js['src'] . $js['attributes'];
+        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag ;
     }
 }
-// Dann App JS
+
+// Dann App JS (aus dem Manifest des App-Bundles)
 if (!empty($themeAssets['js_app'])) {
     foreach ($themeAssets['js_app'] as $js) {
-        $scriptTag = '<script src="' . $js['src'] . '"';
-        if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
-        if (!empty($js['type'])) $scriptTag .= ' type="' . $js['type'] . '"';
-        $scriptTag .= '></script>';
-        $GLOBALS['TL_BODY'][] = $scriptTag;
+        // $js['src'] ist hier der von Webpack generierte Pfad zum App-Bundle
+        $scriptTag =  $js['src'] . '|defer|static'; // Annahme: App-Bundle immer defer|static
+        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag ;
     }
 }
 ?>
-
-
 
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>

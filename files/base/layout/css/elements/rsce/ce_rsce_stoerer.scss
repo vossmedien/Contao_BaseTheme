@@ -3,28 +3,33 @@
 @import "../../../_vendor/node_modules/bootstrap/scss/mixins";
 
 .content--element.ce_rsce_stoerer {
+  // Initial unsichtbar machen, um Aufblitzen zu verhindern
+  opacity: 0;
+  // Weiches Einblenden, wenn die Klasse hinzugefügt wird
+  transition: opacity 0.4s ease-in-out;
+
   --stoerer-padding: .75rem;
-  --stoerer-padding-inner: 1.25rem;
+  --stoerer-padding-inner: .75rem;
   --stoerer-footer-margin: .5rem;
   --transition-duration: 0.6s;
   --transition-color-duration: 0.15s;
-
   display: flex;
   flex-flow: column wrap;
   gap: .25rem;
   align-items: flex-start;
   --stoerer-vertical-gap: .5rem;
   position: relative;
-  // Default fallbacks if JS variables aren't set yet
-  --trigger-width: 50px;
-  --trigger-height: 50px;
+  // Reset base styles that might interfere
+  transform: none; // Explicitly reset potential transforms from parent contexts
 
+  // Wenn der äußere Container .is-fixed ist...
   &.is-fixed {
+    z-index: 1000;
+
     .ce--stoerer {
       position: fixed;
     }
   }
-
 
   svg, svg path {
     transition: fill var(--transition-color-duration) ease-in-out, transform var(--transition-duration) ease-in-out;
@@ -38,74 +43,64 @@
     //box-shadow: none;
     gap: 0;
     position: absolute;
-    transition: transform var(--transition-duration) ease-in-out;
-    z-index: 1000;
-    height: var(--trigger-height); // Use trigger height for min-height
-
-    &[style*="right:"] {
-      transform: translateX(calc(100% - var(--trigger-width)));
-
-      &:hover, &:focus-within {
-        transform: translateX(0);
-      }
-    }
-
-    &[style*="left:"] {
-      transform: translateX(calc(-100% + var(--trigger-width)));
-
-      &:hover, &:focus-within {
-        transform: translateX(0);
-      }
-    }
+    // transition: transform var(--transition-duration) ease-in-out;
 
     &.is-expandable {
+      .stoerer-inner-wrapper {
+        display: flex;
+        align-items: flex-start;
+        overflow: hidden;
+
+        .stoerer--content {
+          overflow: hidden;
+          max-height: 0;
+          white-space: nowrap;
+          pointer-events: none;
+          transition: background-color var(--transition-color-duration) ease-in-out, max-width var(--transition-duration) ease-in-out, max-height calc(var(--transition-duration) * 1.5) ease-in-out;
+          max-width: var(--stoerer-content-max-width, 0px);
+        }
+      }
+
+      &:hover,
+      &:focus-within {
+        .stoerer-inner-wrapper {
+          .stoerer--content {
+            max-width: var(--stoerer-content-max-width, 0px);
+            pointer-events: auto;
+            max-height: 999px;
+          }
+        }
+      }
+
       .stoerer-trigger {
-        flex-shrink: 0;
+        flex-shrink: 0; // Verhindert, dass der Trigger schrumpft
         padding: var(--stoerer-padding);
         background-color: var(--bs-body-bg); // Fallback, wird überschrieben
         //box-shadow: $box-shadow;
         position: relative;
-        //height: var(--trigger-height);
-        //width: var(--trigger-width);
         // Transitions für Trigger
-        transition: background-color var(--transition-color-duration) ease-in-out, color var(--transition-color-duration) ease-in-out;
+        transition: background-color var(--transition-color-duration) ease-in-out,
+        color var(--transition-color-duration) ease-in-out;
 
         img, svg {
           display: block;
           max-width: 100%;
-          height: auto; // Maintain aspect ratio
-          max-height: 100%; // Prevent overflow if image is taller than trigger space allows
-        }
-      }
+          height: auto;
+          transition: fill var(--transition-color-duration) ease-in-out;
 
-      .stoerer--content {
-        flex-shrink: 0;
-        background-color: var(--bs-body-bg); // Fallback, wird überschrieben
-        //box-shadow: $box-shadow;
-        overflow: hidden;
-        white-space: nowrap;
-        pointer-events: none;
-        // Transitions für Inhaltsbereich (Farbe und Ausklappen)
-        transition: background-color var(--transition-color-duration) ease-in-out, color var(--transition-color-duration) ease-in-out;
-
-        // Hover-Effekte nur für den Content-Bereich selbst
-        &:hover {
-          // Beispiel: background-color: var(--content-bg-hover-color, inherit);
-          // Beispiel: color: var(--content-text-hover-color, inherit);
-        }
-      }
-
-      &:hover, &:focus-within {
-        .stoerer--content {
-          pointer-events: auto;
+          path {
+            transition: fill var(--transition-color-duration) ease-in-out;
+          }
         }
       }
     }
   }
 
+
   .stoerer--content {
     position: relative;
     font-size: .75rem;
+
 
     @include media-breakpoint-up(md) {
       font-size: 1.25rem;
@@ -167,8 +162,13 @@
     .footer-element--item {
       img, svg {
         display: block;
-        max-width: 100%; // skaliert mit container
+        //max-width: 100%; // skaliert mit container
         height: auto;
+        transition: fill var(--transition-color-duration) ease-in-out;
+
+        path {
+          transition: fill var(--transition-color-duration) ease-in-out;
+        }
       }
 
       a:not(.btn) {
@@ -185,16 +185,47 @@
   }
 }
 
+// Sichtbar machen, wenn JS bereit ist
+.content--element.ce_rsce_stoerer.js-stoerer-ready {
+  opacity: 1;
+}
+
+// Spezifische Anpassungen für den Nur-Text-Fall
+.ce--stoerer.has-text-only {
+  .stoerer-inner-wrapper {
+    align-items: stretch !important; // Trigger und Content im Inneren strecken
+  }
+
+  .stoerer-trigger {
+    height: 100%;
+    width: auto;
+    display: flex;
+    align-items: center; // Icon vertikal zentrieren
+    justify-content: center; // Icon horizontal zentrieren
+
+    // Bild/SVG anpassen
+    img, svg {
+      height: auto; // Höhe automatisch anpassen
+      width: var(--trigger-width); // Ursprüngliche Breite beibehalten
+      max-height: 100%; // Überlauf verhindern
+    }
+  }
+
+  .stoerer--content {
+    display: flex;
+    align-items: center;
+  }
+}
 
 // Media Query für mobile Geräte
 @media (max-width: 767px) {
-  .content--element.ce_rsce_stoerer .ce--stoerer {
-    &.is-expandable {
-      transition: transform var(--transition-duration) ease-in-out, background-color var(--transition-duration) ease-in-out, color var(--transition-duration) ease-in-out; // Füge Farbtransition hinzu
-
+  .content--element.ce_rsce_stoerer {
+    .ce--stoerer.is-expandable {
       &:hover, &:focus-within {
-        .stoerer--content {
-          max-width: 80vw; // Limit content width on mobile
+        .stoerer-inner-wrapper {
+          .stoerer-content {
+            width: 80vw; // Limit content width on mobile
+          }
         }
       }
     }

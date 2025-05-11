@@ -62,17 +62,17 @@ $this->bodyAttributes = $this
 
     // Gewünschte Ladereihenfolge und spezifische Attribute
     $cssLoadConfig = [
-        '_fonts.bundle.min.css'          => ['preload' => true, 'media' => 'all', 'type' => 'fonts'],
-        '_vendors.bundle.min.css'        => ['media' => 'all', 'type' => 'vendors'],
-        '_base.bundle.min.css'           => ['media' => 'all', 'type' => 'base'], // Kritisch, synchron laden
-        '_theme.bundle.min.css'          => ['media' => 'all', 'type' => 'theme'],
-        '_root-variables.bundle.min.css' => ['media' => 'all', 'type' => 'root-variables'], // Synchron, da ggf. früh benötigt
+        '_fonts.bundle.min.css' => ['preload' => true, 'media' => 'all', 'type' => 'fonts'],
+        '_vendors.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'vendors'],
+        '_base.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'base'],
+        '_theme.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'theme'],
+        '_root-variables.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'root-variables'],
     ];
 
     $outputtedCss = [];
 
     // Hilfsfunktion, um den Pfad einer CSS-Datei anhand des Suffixes zu finden
-    $findAssetPathBySuffix = function($suffix, $assets) {
+    $findAssetPathBySuffix = function ($suffix, $assets) {
         foreach ($assets as $assetPath) {
             if (str_ends_with($assetPath, $suffix)) {
                 return $assetPath;
@@ -95,7 +95,7 @@ $this->bodyAttributes = $this
         if ($path) {
             $orderedCssPathsForOutput[$fileSuffix] = $path;
         }
-    } 
+    }
 
     // Generiere die <link> Tags für die konfigurierten Dateien
     foreach ($cssLoadConfig as $fileSuffix => $config) {
@@ -117,9 +117,9 @@ $this->bodyAttributes = $this
                 echo '<noscript><link rel="stylesheet" href="' . $fullPath . '"></noscript>' . "\n    ";
             }
             $outputtedCss[] = $path; // Markiere als ausgegeben
-        } 
+        }
     }
-    
+
     // Füge alle verbleibenden CSS-Dateien aus $themeAssets['css'] (die nicht in $cssLoadConfig waren)
     // normal zu $GLOBALS['TL_CSS'] hinzu, damit $this->stylesheets sie verarbeiten kann.
     // Dies stellt sicher, dass keine CSS-Datei verloren geht, falls neue Bundles hinzukommen,
@@ -132,7 +132,6 @@ $this->bodyAttributes = $this
         }
     }
     ?>
-    <?= $this->stylesheets ?>
 
     <?php // --- NEU: Font Preloads ---
     if (!empty($themeAssets['fonts_preload'])) {
@@ -141,7 +140,7 @@ $this->bodyAttributes = $this
         }
     }
     ?>
-
+    <?= $this->stylesheets ?>
     <?= $this->mooScripts ?>
     <?= $this->head ?>
     <?php $this->endblock(); ?>
@@ -796,29 +795,25 @@ $this->bodyAttributes = $this
 
 <?php $this->sections('bottom'); ?>
 <?php $this->endblock(); ?>
-
 <?php // --- NEU: JS einbinden ---
-    // Vendor JS zuerst
-    if (!empty($themeAssets['js_vendor'])) {
-        foreach ($themeAssets['js_vendor'] as $js) {
-            $scriptTag = '<script src="' . $js['src'] . '"';
-            if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
-            // type ist null für vendor, also nicht hinzufügen
-            $scriptTag .= '></script>';
-            $GLOBALS['TL_BODY'][] = $scriptTag;
-        }
+// Vendor JS zuerst laden (jetzt individuell)
+if (!empty($themeAssets['js_vendor_individual'])) {
+    foreach ($themeAssets['js_vendor_individual'] as $js) {
+        // $js ist nun ein Array mit den Schlüsseln 'src' und 'attributes'
+        // z.B. $js = ['src' => 'files/base/.../script.js', 'attributes' => '|defer|static']
+        $scriptTag =  $js['src'] . $js['attributes'];
+        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag ;
     }
-    // Dann App JS
-    if (!empty($themeAssets['js_app'])) {
-        foreach ($themeAssets['js_app'] as $js) {
-            $scriptTag = '<script src="' . $js['src'] . '"';
-            if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
-            if (!empty($js['type'])) $scriptTag .= ' type="' . $js['type'] . '"';
-            $scriptTag .= '></script>';
-            $GLOBALS['TL_BODY'][] = $scriptTag;
-        }
+}
+
+// Dann App JS (aus dem Manifest des App-Bundles)
+if (!empty($themeAssets['js_app'])) {
+    foreach ($themeAssets['js_app'] as $js) {
+        // $js['src'] ist hier der von Webpack generierte Pfad zum App-Bundle
+        $scriptTag =  $js['src'] . '|defer|static'; // Annahme: App-Bundle immer defer|static
+        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag ;
     }
-// Alte JS $GLOBALS Zuweisungen wurden entfernt/ersetzt.
+}
 ?>
 
 <?= $this->mootools ?>

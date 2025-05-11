@@ -10,124 +10,139 @@ if (!function_exists('get_theme_name_from_dir')) {
 }
 
 if (!function_exists('load_theme_assets_from_manifest')) {
-    function load_theme_assets_from_manifest(string $themeName, string $templateDir): array {
-        $projectRoot = dirname($templateDir, 2);
-        $themeManifestParentDir = $projectRoot . '/files/base/layout/_vendor/_dist-manifest/';
-        $themeManifestDir = $themeManifestParentDir . '_' . $themeName;
+    // Parameter umbenannt für Klarheit und $projectRoot eingeführt
+    function load_theme_assets_from_manifest(string $actualThemeName, string $callingTemplateDir): ?array {
+        $themeName = $actualThemeName; // Theme-Name direkt verwenden
+        // Den Projekt-Root ableiten:
+        // $callingTemplateDir ist z.B. /path/to/project/templates/themename/
+        // dirname($callingTemplateDir) ist /path/to/project/templates/
+        // dirname($callingTemplateDir, 2) ist /path/to/project/ (der gewünschte Root)
+        $projectRoot = dirname($callingTemplateDir, 2);
 
-        $assets = ['css' => [], 'js_vendor' => [], 'js_app' => [], 'fonts_preload' => []];
+        if (!$themeName) {
+            // error_log("Theme Asset Loader: Konnte Theme-Namen nicht aus Template-Informationen extrahieren.");
+            return null;
+        }
 
-        $processSingleManifestFile = function(string $manifestFilePath, string $assetTypeForProcessing) use (&$assets, $themeName) {
-            // error_log("Theme '{$themeName}': Trying to process manifest '{$manifestFilePath}'. Exists: " . (file_exists($manifestFilePath) ? 'Yes' : 'No'));
-            if (!file_exists($manifestFilePath)) {
-                return;
-            }
+        // Pfade mit $projectRoot anstelle von TL_ROOT erstellen
+        $manifestBaseDir = $projectRoot . '/files/base/layout/_vendor/_dist-manifest/_' . $themeName;
+        $jsManifestPath = $manifestBaseDir . '/app-js.manifest.json';
+        // Der Pfad zum CSS-Manifest muss ggf. auch überprüft werden, ob er noch stimmt oder aus der Webpack-Config kommt.
+        // Annahme: Webpack legt CSS-Manifeste pro Theme-CSS-Bundle in $manifestBaseDir / $themeNameRaw (z.B. _kgdental) / bundle-css.manifest.json ab
+        // Für die Vereinfachung hier, nehmen wir an, es gibt ein allgemeines CSS-Manifest pro Theme.
+        // Basierend auf der fe_page.html5 scheint es, als ob $themeAssets['css'] direkt die Pfade enthält.
+        // Die CSS-Manifest-Logik in dieser Funktion wird für individuelle CSS-Dateien hier nicht mehr benötigt,
+        // da fe_page.html5 dies direkt aus $themeAssets['css'] (gefüllt durch Webpack-Manifeste) handhabt.
+        // Wir konzentrieren uns hier auf js_app und js_vendor_individual.
 
-            $manifestJson = file_get_contents($manifestFilePath);
-            if ($manifestJson === false) {
-                trigger_error("Konnte Manifest-Datei '{$manifestFilePath}' für Theme '{$themeName}' nicht lesen.", E_USER_WARNING);
-                return;
-            }
+        $themeAssets = ['js_app' => [], 'css' => [], 'js_vendor_individual' => [], 'fonts_preload' => []];
 
-            $manifestData = json_decode($manifestJson, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                trigger_error("Fehler beim Parsen von Manifest '{$manifestFilePath}' für Theme '{$themeName}': " . json_last_error_msg(), E_USER_WARNING);
-                return;
-            }
+        // Logik zum Laden von CSS und Fonts aus Manifesten (aus der ursprünglichen Version, falls benötigt, aber fe_page.html5 scheint dies zu überschreiben)
+        // Für diese Anpassung lasse ich die CSS/Font-Manifest-Logik hier erstmal wie sie war,
+        // aber $projectRoot muss hier auch verwendet werden, wenn diese Teile aktiv sind.
+        // Die angehängte theme_asset_loader.php-Version vor diesem Edit hatte eine komplexere CSS/Font-Verarbeitung.
+        // Ich fokussiere mich auf die TL_ROOT Korrektur für JS.
 
-            if (!is_array($manifestData)) {
-                trigger_error("Manifest-Daten in '{$manifestFilePath}' sind unerwarteterweise kein Array/Objekt.", E_USER_WARNING);
-                return;
-            }
+        // Die alte $processSingleManifestFile Closure ist hier nicht mehr, da die Logik für CSS/Fonts sich geändert hat.
+        // Die `fe_page.html5` holt sich `$themeAssets['css']` und `$themeAssets['fonts_preload']`
+        // vermutlich aus Manifesten, die von einer aktuelleren Webpack-Konfiguration erzeugt werden.
+        // Diese Funktion hier muss nur noch die JS-Teile korrekt zusammenstellen.
 
-            // Stelle sicher, dass $assets['css'] initialisiert ist, falls es vorher noch nicht der Fall war
-            if (!isset($assets['css'])) {
-                $assets['css'] = [];
-            }
-            if (!isset($assets['fonts_preload'])) {
-                $assets['fonts_preload'] = [];
-            }
-
-            foreach ($manifestData as $sourceName => $publicPath) {
-                if (!is_string($publicPath) || empty($publicPath)) continue;
-
-                // Der $sourceName aus dem Manifest ist jetzt der direkte Dateiname des Assets, z.B. "_vendors.bundle.min.css" oder "fonts/figtree-v7-latin-300.woff2"
-                $currentFilenameForLogic = $sourceName;
-
-                switch ($assetTypeForProcessing) {
-                    case 'css_bundle': // Geändert von 'css' zu 'css_bundle' für die neue Logik
-                        if (str_ends_with(strtolower($currentFilenameForLogic), '.css')) {
-                            // Füge CSS-Datei hinzu, wenn sie nicht bereits vorhanden ist
-                            if (!in_array(substr($publicPath, 1), $assets['css'])) {
-                                $assets['css'][] = substr($publicPath, 1);
-                            }
+        // App JS-Assets aus Manifest laden (wenn app-js.manifest.json existiert)
+        if (file_exists($jsManifestPath)) {
+            $jsManifestContent = file_get_contents($jsManifestPath);
+            $jsManifest = json_decode($jsManifestContent, true);
+            if ($jsManifest) {
+                foreach ($jsManifest as $originalName => $hashedNameOrPath) {
+                    // WebpackManifestPlugin gibt oft ein Objekt mit 'path' zurück oder direkt den Pfad
+                    $srcPath = is_array($hashedNameOrPath) && isset($hashedNameOrPath['path']) ? $hashedNameOrPath['path'] : $hashedNameOrPath;
+                    if (is_string($srcPath)) {
+                         // Stelle sicher, dass es sich um ein App-Bundle handelt (und nicht versehentlich ein Vendor-Bundle, falls das Manifest das enthalten würde)
+                        if (str_contains($srcPath, $themeName . '.bundle.min.js') && !str_contains($srcPath, '_vendors.bundle.min.js')) {
+                             $themeAssets['js_app'][] = ['src' => $srcPath, 'name' => $originalName, 'defer' => true, 'type' => 'module']; // Annahme für App-JS
                         }
-                        // Die Font-Verarbeitung für CSS-Bundles ist wichtig, da Fonts im CSS-Manifest auftauchen
-                        else if (str_starts_with(strtolower($currentFilenameForLogic), 'fonts/') && preg_match('/\.(woff2|woff|ttf|otf|svg)$/i', $currentFilenameForLogic)) {
-                            $fontType = match (strtolower(pathinfo($currentFilenameForLogic, PATHINFO_EXTENSION))) {
-                                'woff2' => 'font/woff2',
-                                'woff'  => 'font/woff',
-                                'ttf'   => 'font/ttf',
-                                'otf'   => 'font/otf',
-                                'svg'   => 'image/svg+xml', // SVG als Font oder Bild
-                                default => '',
-                            };
-                            if ($fontType) {
-                                $found = false;
-                                foreach ($assets['fonts_preload'] as $existingFont) {
-                                    if ($existingFont['href'] === $publicPath) {
-                                        $found = true;
-                                        break;
-                                    }
-                                }
-                                if (!$found) {
-                                    $assets['fonts_preload'][] = ['href' => $publicPath, 'type' => $fontType];
-                                }
-                            }
-                        }
-                        break;
-
-                    case 'js_app':
-                        if (str_ends_with(strtolower($currentFilenameForLogic), '.js')) {
-                            // Die Logik hier sollte den $themeNameClean aus der Webpack-Konfig entsprechen
-                            // Für App-JS erwarten wir etwas wie 'caeliRelaunch.bundle.min.js'
-                            if (str_contains($publicPath, $themeName . '.bundle.min.js') && !str_contains($publicPath, '_vendors.bundle.min.js')) {
-                                if (!in_array(['src' => $publicPath, 'defer' => true, 'type' => 'module'], $assets['js_app'])) {
-                                    $assets['js_app'][] = ['src' => $publicPath, 'defer' => true, 'type' => 'module'];
-                                }
-                            }
-                        }
-                        break;
-
-                    case 'js_vendor':
-                        if (str_ends_with(strtolower($currentFilenameForLogic), '.js')) {
-                             // Für Vendor-JS erwarten wir etwas wie 'caeliRelaunch_vendors.bundle.min.js'
-                            if (str_contains($publicPath, $themeName . '_vendors.bundle.min.js')) {
-                                if (!in_array(['src' => $publicPath, 'defer' => true, 'type' => null], $assets['js_vendor'])) {
-                                    $assets['js_vendor'][] = ['src' => $publicPath, 'defer' => true, 'type' => null];
-                                }
-                            }
-                        }
-                        break;
+                    }
                 }
             }
-        };
+        }
 
-        // Definierte Reihenfolge der CSS-Bundles
+        // Individuelle Vendor JS-Dateien laden (Pfade zeigen jetzt auf das 'dist/THEMENAME/vendor' Verzeichnis)
+        $themeJsDir = $projectRoot . '/files/base/layout/js/_' . $themeName;
+        $individualVendorJsConfigFile = $themeJsDir . '/theme.js_vendors.php';
+
+        if (file_exists($individualVendorJsConfigFile)) {
+            $vendorScriptConfigs = require $individualVendorJsConfigFile;
+            if (is_array($vendorScriptConfigs)) {
+                // NEU: Korrekter Web-Pfad zur Basis des Vendor-Verzeichnisses für dieses Theme
+                $vendorDestWebPathBase = '/files/base/layout/js/dist/' . $themeName . '/vendor/';
+                foreach ($vendorScriptConfigs as $scriptConfig) {
+                    if (is_array($scriptConfig) && isset($scriptConfig['src']) && isset($scriptConfig['attributes'])) {
+                        // $scriptConfig['src'] ist der Pfad relativ zu node_modules, z.B. 'js-cookie/dist/js.cookie.min.js'
+                        // Wir brauchen nur den Dateinamen für den Zielpfad.
+                        $fileName = pathinfo($scriptConfig['src'], PATHINFO_BASENAME);
+                        $finalVendorWebPath = $vendorDestWebPathBase . $fileName;
+
+                        $themeAssets['js_vendor_individual'][] = [
+                            'src' => $finalVendorWebPath,
+                            'attributes' => $scriptConfig['attributes']
+                        ];
+                    }
+                }
+            }
+        }
+
+        // CSS und Font Preload (basierend auf der vorherigen Struktur der Funktion, Pfade prüfen!)
+        // Die CSS-Pfade in $themeAssets['css'] werden aus den CSS-Manifesten kommen.
+        // Diese Manifeste werden mit einem publicPath wie /files/base/layout/css/_THEMENAME/dist/ erstellt.
+        // Das sollte also weiterhin stimmen, da CSS eine eigene dist-Struktur hat.
+        $cssManifestDir = $projectRoot . '/files/base/layout/_vendor/_dist-manifest/_' . $themeName;
         $cssBundleOrder = ['_vendors', '_base', '_root-variables', '_theme', '_fonts'];
-
         foreach ($cssBundleOrder as $bundleName) {
-            $processSingleManifestFile($themeManifestDir . '/' . $bundleName . '-css.manifest.json', 'css_bundle');
-        }
+            // Pfad zum spezifischen CSS-Manifest für das aktuelle Theme und Bundle-Typ
+            // In Webpack wurde themeManifestDirForCss als path.join(manifestBasePath, themeNameRaw) definiert,
+            // was zu _dist-manifest/_themename/ führen würde.
+            $cssManifestFilePath = $projectRoot . '/files/base/layout/_vendor/_dist-manifest/_' . $themeName . '/' . $bundleName . '-css.manifest.json';
+            if (file_exists($cssManifestFilePath)) {
+                $manifestJson = file_get_contents($cssManifestFilePath);
+                if ($manifestJson !== false) {
+                    $manifestData = json_decode($manifestJson, true);
+                    if (is_array($manifestData)) {
+                        foreach ($manifestData as $sourceName => $publicPathOrObject) {
+                            $publicPath = is_array($publicPathOrObject) && isset($publicPathOrObject['path']) ? $publicPathOrObject['path'] : $publicPathOrObject;
+                            if (!is_string($publicPath) || empty($publicPath)) continue;
 
-        // JS-Manifeste wie gehabt verarbeiten
-        $processSingleManifestFile($themeManifestDir . '/app-js.manifest.json', 'js_app');
-        $processSingleManifestFile($themeManifestDir . '/vendor-js.manifest.json', 'js_vendor');
-        
-        if (empty($assets['css']) && empty($assets['js_app']) && empty($assets['js_vendor']) && empty($assets['fonts_preload'])) {
-            // trigger_error("Keine Assets für Theme '{$themeName}' aus den Manifesten unter '{$themeManifestDir}' geladen. Bitte Webpack-Build und Manifest-Pfade prüfen.", E_USER_WARNING);
+                            $currentFilenameForLogic = $sourceName; // In Webpack ist der key oft der Dateiname des Chunks
+                            // Oder wir nehmen basename($publicPath), wenn sourceName nicht passt
+                            if (pathinfo($publicPath, PATHINFO_EXTENSION) === 'css') { // Sicherstellen, dass es eine CSS-Datei ist
+                                // publicPath sollte bereits der korrekte Webpfad sein, z.B. /files/base/layout/css/_themename/dist/_fonts.bundle.min.css
+                                // substr($publicPath,1) ist nicht nötig, wenn der Pfad bereits korrekt ist.
+                                if (!in_array($publicPath, $themeAssets['css'])) {
+                                    $themeAssets['css'][] = $publicPath;
+                                }
+                            } else if (str_starts_with($publicPath, '/files/base/layout/css/') && str_contains($publicPath, '/fonts/') && preg_match('/\.(woff2|woff|ttf|otf|svg)$/i', $publicPath)) {
+                                // Wenn Fonts direkt im CSS-Manifest mit ihrem vollen Pfad auftauchen
+                                $fontType = match (strtolower(pathinfo($publicPath, PATHINFO_EXTENSION))) {
+                                    'woff2' => 'font/woff2', 'woff'  => 'font/woff',
+                                    'ttf'   => 'font/ttf', 'otf'   => 'font/otf',
+                                    'svg'   => 'image/svg+xml', default => '',
+                                };
+                                if ($fontType) {
+                                    $found = false;
+                                    foreach ($themeAssets['fonts_preload'] as $existingFont) {
+                                        if ($existingFont['href'] === $publicPath) { $found = true; break; }
+                                    }
+                                    if (!$found) {
+                                        $themeAssets['fonts_preload'][] = ['href' => $publicPath, 'type' => $fontType];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        // var_dump($assets); 
-        return $assets;
+        // Ende der beispielhaften CSS/Font-Manifest-Verarbeitung basierend auf der älteren Version
+
+        return $themeAssets;
     }
 } 

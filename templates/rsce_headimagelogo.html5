@@ -10,7 +10,7 @@ $sliderClass = defined('MAIN_SLIDER_CLASS') ? MAIN_SLIDER_CLASS : $alternativeSl
 
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_headimagelogo.min.css|static';
-    $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_headimagelogo.js"></script>';
+    $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_headimagelogo.min.js"></script>';
 }
 
 ?>
@@ -76,7 +76,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                             background-color: <?= $altColor ?> !important;
                                             padding: 40px;
                                             box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
-                                            margin-inline: -40px;
+                                            //margin-inline: -40px;
                                         }
 
 

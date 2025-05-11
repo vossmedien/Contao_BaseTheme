@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@awesome.me/kit-2504132cb2": "^1.0.18",
-    "@awesome.me/kit-c9b4e661cb": "^1.0.241",
+    "@awesome.me/kit-c9b4e661cb": "^1.0.232",
+    "@babel/preset-env": "^7.27.2",
     "@popperjs/core": "*",
     "animate.css": "*",
+    "babel-loader": "^10.0.0",
     "bootstrap": "*",
     "js-cookie": "*",
     "macy": "^2.5.1",
@@ -16,20 +17,20 @@
     "venobox": "*"
   },
   "scripts": {
-    "build:js": "webpack --config-name \"^.*-app$\" --config-name \"^.*-vendors$\"",
-    "watch:js": "webpack --watch --config-name \"^.*-app$\" --config-name \"^.*-vendors$\"",
-    "build:css": "webpack --config-name \"^.*-css$\"",
-    "watch:css": "webpack --watch --config-name \"^.*-css$\"",
+    "build:js": "FILTER_PATTERN='^(app-.*-js|element-.*-js)$' webpack",
+    "watch:js": "FILTER_PATTERN='^(app-.*-js|element-.*-js)$' webpack --watch",
+    "build:css": "FILTER_PATTERN='^(theme-.*-css|rsce-.*-css)$' webpack",
+    "watch:css": "FILTER_PATTERN='^(theme-.*-css|rsce-.*-css)$' webpack --watch",
     "build": "webpack",
-    "watch": "webpack --watch",
+    "watch": "npm-run-all --parallel watch:js watch:css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.2",
-    "expose-loader": "^5.0.1",
     "glob": "^11.0.2",
     "mini-css-extract-plugin": "^2.9.2",
     "resolve-url-loader": "^5.0.0",
@@ -39,6 +40,7 @@
     "webpack": "^5.99.8",
     "webpack-cli": "^6.0.1",
     "webpack-manifest-plugin": "^5.0.1",
-    "webpack-remove-empty-scripts": "^1.0.4"
+    "webpack-remove-empty-scripts": "^1.0.4",
+    "npm-run-all": "^4.1.5"
   }
 }
