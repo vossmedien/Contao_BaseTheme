@@ -15,8 +15,8 @@
       &:not(:last-child) {
         &:after {
           @extend %fa-icon;
-          @extend #{$icon-type};
-          content: fa-content($fa-var-angle-right);
+          @extend #{$icon-type} !optional;
+          content: "\f105";
           display: inline-block;
           color: var(--bs-primary);
           margin: 0 5px 0px 8px;

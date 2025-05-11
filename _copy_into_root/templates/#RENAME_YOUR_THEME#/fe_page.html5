@@ -225,7 +225,7 @@ if (!empty($themeAssets['js_vendor'])) {
         if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
         // type ist null für vendor, also nicht hinzufügen
         $scriptTag .= '></script>';
-        $GLOBALS['TL_BODY'][] = $scriptTag;
+        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag;
     }
 }
 // Dann App JS

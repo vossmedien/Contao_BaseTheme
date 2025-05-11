@@ -1,4 +1,5 @@
 
+
 $spacers: (
         0: 0,
         1: 0.5rem,
@@ -36,8 +37,8 @@ $headings-font-sizes: (
         ),
         'h3': (
                 'mobile': 25px,
-                'tablet': 25px,
-                'desktop': 25px
+                'tablet': 30px,
+                'desktop': 30px
         ),
         'h4': (
                 'mobile': 25px,
@@ -55,6 +56,7 @@ $headings-font-sizes: (
                 'desktop': 25px
         )
 );
+
 
 // NEUE MAP: Abstände nach Überschriften (margin-bottom)
 $headline-margins: (
@@ -79,7 +81,7 @@ $mobile-headline-margins: (
 
 // NEUE MAP: Abstände für Toplines (margin)
 $topline-margins: (
-        'h1': 0 0 .4em 0,
+        'h1': 0 0 .2em 0,
         'h2': 0 0 .6em 0,
         'h3': 0 0 .2em 0,
         'h4': 0 0 .2em 0,
@@ -89,7 +91,7 @@ $topline-margins: (
 
 // NEUE MAP: Abstände für Sublines (margin)
 $subline-margins: (
-        'h1': .2em 0 0 0,
+        'h1': .4em 0 0 0,
         'h2': .2em 0 0 0,
         'h3': .2em 0 0 0,
         'h4': .2em 0 0 0,
@@ -97,8 +99,25 @@ $subline-margins: (
         'h6': .2em 0 0 0
 );
 
+// Definieren Sie die Topline Font Sizes abhängig von der Headline-Ebene
+$topline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 39px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
 
-
+// Definieren Sie die Subline Font Sizes abhängig von der Headline-Ebene
+$subline-sizes-by-headline: (
+        'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 39px),
+        'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
+        'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
+        'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)
+);
 
 //CSS Variablen beachten
 $container-max-widths: (
@@ -106,7 +125,7 @@ $container-max-widths: (
         md: 100%,
         lg: 992px,
         xl: 1140px,
-        xxl: 1280px
+        xxl: 1140px
 );
 
 
@@ -118,4 +137,6 @@ $grid-breakpoints: (
         xl: 1200px,
         xxl: 1340px,
 );
+
+
 

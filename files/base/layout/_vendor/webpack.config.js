@@ -6,6 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // __dirname ist jetzt /Users/christian.voss/PhpstormProjects/Caeli-Relaunch/files/base/layout/_vendor
 
@@ -44,12 +45,15 @@ const jsWebpackConfigs = themeFolders.flatMap(theme => {
     const themeNameClean = themeNameRaw.startsWith('_') ? themeNameRaw.substring(1) : themeNameRaw; // z.B. caeliRelaunch
 
     const themePath = theme.path;
-    const themeJsDistDir = path.resolve(jsWorkspaceBase, 'dist');
-    const themeJsPublicPath = '/files/base/layout/js/dist/';
+    const themeSpecificDistPath = path.resolve(jsWorkspaceBase, 'dist', themeNameClean);
+    const themeSpecificPublicPath = `/files/base/layout/js/dist/${themeNameClean}/`;
     const themeManifestDir = path.join(manifestBasePath, '_' + themeNameClean);
 
     if (!fs.existsSync(themeManifestDir)) {
         fs.mkdirSync(themeManifestDir, { recursive: true });
+    }
+    if (!fs.existsSync(themeSpecificDistPath)) {
+        fs.mkdirSync(themeSpecificDistPath, { recursive: true });
     }
 
     // Alle .js-Dateien im aktuellen Theme-Ordner (und seinen Unterordnern, falls vorhanden)
@@ -64,14 +68,37 @@ const jsWebpackConfigs = themeFolders.flatMap(theme => {
     console.log(`Für Theme "${themeNameClean}" (App JS) werden folgende Dateien gebündelt:`);
     appEntryFiles.forEach(file => console.log(`  - ${path.relative(projectRoot, file)}`));
 
+    // NEU: Vendor-Skripte für CopyWebpackPlugin aus theme.js_vendors.php lesen
+    const vendorCopyPatterns = [];
+    const themeVendorConfigPath = path.join(themePath, 'theme.js_vendors.php');
+    if (fs.existsSync(themeVendorConfigPath)) {
+        try {
+            const phpContent = fs.readFileSync(themeVendorConfigPath, 'utf-8');
+            const srcRegex = /['"]src['"]\s*=>\s*['"]([^'"]+\.js)['"]/g;
+            let match;
+            while ((match = srcRegex.exec(phpContent)) !== null) {
+                const vendorSrc = match[1];
+                vendorCopyPatterns.push({
+                    from: path.resolve(nodeModulesPath, vendorSrc),
+                    to: path.join(themeSpecificDistPath, 'vendor', path.basename(vendorSrc)),
+                });
+            }
+            if (vendorCopyPatterns.length > 0) {
+                console.log(`Für Theme "${themeNameClean}" werden ${vendorCopyPatterns.length} Vendor-Dateien nach ${path.relative(projectRoot, path.join(themeSpecificDistPath, 'vendor'))} kopiert.`);
+            }
+        } catch (e) {
+            console.error(`Fehler beim Lesen oder Verarbeiten von ${themeVendorConfigPath} für Theme ${themeNameClean}:`, e);
+        }
+    }
+
     const appBundleConfig = {
         name: `${themeNameClean}-app`,
         mode: 'production',
         entry: appEntryFiles,
         output: {
             filename: `${themeNameClean}.bundle.min.js`,
-            path: themeJsDistDir,
-            publicPath: themeJsPublicPath,
+            path: themeSpecificDistPath,
+            publicPath: themeSpecificPublicPath,
             clean: false,
         },
         module: {
@@ -108,7 +135,7 @@ const jsWebpackConfigs = themeFolders.flatMap(theme => {
         plugins: [
             new WebpackManifestPlugin({
                 fileName: path.join(themeManifestDir, 'app-js.manifest.json'),
-                publicPath: themeJsPublicPath,
+                publicPath: themeSpecificPublicPath,
                 filter: (file) => file.isInitial && file.name.endsWith('.js'),
                 map: (file) => ({
                     name: file.name,
@@ -117,100 +144,13 @@ const jsWebpackConfigs = themeFolders.flatMap(theme => {
                     isChunk: file.isChunk,
                     entryPoint: file.chunk?.name
                 })
-            })
+            }),
+            new CopyWebpackPlugin({ patterns: vendorCopyPatterns })
         ]
     };
 
-    // --- Vendor Bundle Config (NEU) ---
-    let vendorEntryFiles = [];
-    const themeVendorConfigFileJs = path.join(themePath, 'theme.vendors.js');
-    let vendorBundleConfig = null;
-
-    if (fs.existsSync(themeVendorConfigFileJs)) {
-        try {
-            const themeSpecificVendorPaths = require(themeVendorConfigFileJs);
-            if (Array.isArray(themeSpecificVendorPaths)) {
-                vendorEntryFiles = themeSpecificVendorPaths.map(pkgRelativePath => {
-                    const fullPath = path.join(nodeModulesPath, pkgRelativePath);
-                    if (fs.existsSync(fullPath)) {
-                        return fullPath;
-                    }
-                    console.warn(`Warnung: Vendor-Pfad "${pkgRelativePath}" in ${themeVendorConfigFileJs} nicht gefunden.`);
-                    return null;
-                }).filter(Boolean);
-            } else {
-                console.warn(`Warnung: ${themeVendorConfigFileJs} hat kein Array exportiert.`);
-            }
-        } catch (e) {
-            console.error(`Fehler beim Laden von ${themeVendorConfigFileJs}:`, e);
-        }
-    }
-
-    if (vendorEntryFiles.length > 0) {
-        console.log(`Für Theme "${themeNameClean}" (Vendors JS) werden folgende Dateien gebündelt:`);
-        vendorEntryFiles.forEach(file => console.log(`  - ${path.relative(projectRoot, file)}`));
-
-        vendorBundleConfig = {
-            name: `${themeNameClean}-vendors`,
-            mode: 'production',
-            entry: vendorEntryFiles,
-            output: {
-                filename: `${themeNameClean}_vendors.bundle.min.js`,
-                path: themeJsDistDir,
-                publicPath: themeJsPublicPath,
-                clean: false,
-            },
-            module: {
-                rules: [
-                    {
-                        test: require.resolve('bootstrap/dist/js/bootstrap.bundle.min.js'),
-                        use: [{ loader: 'expose-loader', options: { exposes: ['bootstrap'] } }]
-                    },
-                    {
-                        test: require.resolve('venobox/dist/venobox.min.js'),
-                        use: [{ loader: 'expose-loader', options: { exposes: ['VenoBox'] } }]
-                    }
-                    // Hier könnten weitere expose-loader Regeln für andere globale Bibliotheken folgen
-                ]
-            },
-            optimization: {
-                minimize: true,
-                minimizer: [
-                    new TerserPlugin({
-                        extractComments: false,
-                        terserOptions: {
-                            format: {
-                                comments: false,
-                            },
-                        },
-                    }),
-                ],
-            },
-            performance: {
-                hints: false
-            },
-            resolve: {
-                extensions: ['.js'],
-            },
-            plugins: [
-                new WebpackManifestPlugin({
-                    fileName: path.join(themeManifestDir, 'vendor-js.manifest.json'),
-                    publicPath: themeJsPublicPath,
-                    filter: (file) => file.isInitial && file.name.endsWith('.js'),
-                    map: (file) => ({
-                        name: file.name,
-                        path: file.path,
-                        isInitial: file.isInitial,
-                        isChunk: file.isChunk,
-                        entryPoint: file.chunk?.name
-                    })
-                })
-            ]
-        };
-    }
-
-    // Gebe ein Array von Konfigurationen für dieses Theme zurück
-    return vendorBundleConfig ? [appBundleConfig, vendorBundleConfig] : [appBundleConfig];
+    // Gebe nur die appBundleConfig für dieses Theme zurück
+    return [appBundleConfig]; // Muss immer noch ein Array sein, da flatMap es erwartet
 });
 
 // --- SCSS-Konfigurationen ---

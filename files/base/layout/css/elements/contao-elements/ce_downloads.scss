@@ -35,8 +35,8 @@
 
           &:before {
             @extend %fa-icon;
-            @extend #{$icon-type};
-            content: fa-content($fa-var-download);
+            @extend #{$icon-type} !optional;
+            content: "\f019";
             padding-right: rfs-value(5px);
 
           }
