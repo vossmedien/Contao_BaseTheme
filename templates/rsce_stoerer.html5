@@ -3,7 +3,7 @@
 
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_stoerer.min.css|static';
-    $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_stoerer.js"></script>';
+    $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_stoerer.min.js"></script>';
 }
 
 // Hilfsfunktion zum Decodieren der Farbwerte

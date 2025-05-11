@@ -5,7 +5,7 @@ use Contao\StringUtil;
 
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_twocolimagewall.min.css|static';
-    $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_twocolimagewall.js"></script>';
+    $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_twocolimagewall.min.js"></script>';
 }
 ?>
 

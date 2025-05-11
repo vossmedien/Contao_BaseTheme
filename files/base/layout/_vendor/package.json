@@ -17,12 +17,12 @@
     "venobox": "*"
   },
   "scripts": {
-    "build:js": "webpack --config-name \"^.*-app$\" --config-name \"^.*-vendors$\"",
-    "watch:js": "webpack --watch --config-name \"^.*-app$\" --config-name \"^.*-vendors$\"",
-    "build:css": "webpack --config-name \"^.*-css$\"",
-    "watch:css": "webpack --watch --config-name \"^.*-css$\"",
+    "build:js": "FILTER_PATTERN='^(app-.*-js|element-.*-js)$' webpack",
+    "watch:js": "FILTER_PATTERN='^(app-.*-js|element-.*-js)$' webpack --watch",
+    "build:css": "FILTER_PATTERN='^(theme-.*-css|rsce-.*-css)$' webpack",
+    "watch:css": "FILTER_PATTERN='^(theme-.*-css|rsce-.*-css)$' webpack --watch",
     "build": "webpack",
-    "watch": "webpack --watch",
+    "watch": "npm-run-all --parallel watch:js watch:css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -40,6 +40,7 @@
     "webpack": "^5.99.8",
     "webpack-cli": "^6.0.1",
     "webpack-manifest-plugin": "^5.0.1",
-    "webpack-remove-empty-scripts": "^1.0.4"
+    "webpack-remove-empty-scripts": "^1.0.4",
+    "npm-run-all": "^4.1.5"
   }
 }

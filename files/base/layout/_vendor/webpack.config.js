@@ -26,6 +26,31 @@ const cssWorkspaceBase = path.resolve(__dirname, '../css');
 // NEU: Basispfad für Manifeste
 const manifestBasePath = path.resolve(__dirname, '_dist-manifest');
 
+// --- RSCE SCSS-Dateien Pfad ---
+const rsceCssPath = path.resolve(cssWorkspaceBase, 'elements/rsce'); // NEU
+
+// --- Hilfsfunktion für SCSS-Loader ---
+function getScssLoaders(useResolveUrlLoader = false, sourceMap = false) {
+    const loaders = [
+        MiniCssExtractPlugin.loader,
+        { loader: 'css-loader', options: { sourceMap: sourceMap } },
+    ];
+    if (useResolveUrlLoader) {
+        loaders.push({ loader: 'resolve-url-loader', options: { sourceMap: sourceMap, removeCR: true } });
+    }
+    loaders.push({ 
+        loader: 'sass-loader', 
+        options: { 
+            sourceMap: sourceMap, // sourceMap hier ist wichtig für resolve-url-loader, falls aktiv
+            sassOptions: { 
+                outputStyle: 'compressed',
+                quietDeps: true // NEU: Unterdrückt Warnungen von Abhängigkeiten
+            } 
+        }
+    });
+    return loaders;
+}
+
 // 1. Basis-JavaScript-Dateien (direkt unter /js, nicht in Unterordnern außer _elements und _vendor)
 const baseJsFiles = glob.sync(path.join(jsWorkspaceBase, '*.js').replace(/\\/g, '/'))
     .filter(filePath => {
@@ -40,7 +65,7 @@ const themeFolders = fs.readdirSync(jsWorkspaceBase)
     .filter(item => !['_elements', '_vendor', 'dist'].includes(item.name) && !item.name.startsWith('.')); // Ignoriere .DS_Store etc.
 
 // 3. Webpack-Konfigurationen für jedes Theme-Bundle dynamisch erstellen
-const jsWebpackConfigs = themeFolders.flatMap(theme => {
+const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
     const themeNameRaw = theme.name; // z.B. _caeliRelaunch
     const themeNameClean = themeNameRaw.startsWith('_') ? themeNameRaw.substring(1) : themeNameRaw; // z.B. caeliRelaunch
 
@@ -92,7 +117,7 @@ const jsWebpackConfigs = themeFolders.flatMap(theme => {
     }
 
     const appBundleConfig = {
-        name: `${themeNameClean}-app`,
+        name: `app-${themeNameClean}-js`,
         mode: 'production',
         entry: appEntryFiles,
         output: {
@@ -155,9 +180,6 @@ const jsWebpackConfigs = themeFolders.flatMap(theme => {
 
 // --- SCSS-Konfigurationen ---
 // Alte Logik für mainScssFiles wird entfernt.
-// const mainScssFiles = glob.sync(path.join(cssWorkspaceBase, '*.scss').replace(/\\/g, '/'))
-// .filter(file => !path.basename(file).startsWith('_'));
-// console.log('Gefundene Haupt-SCSS-Dateien:', mainScssFiles);
 
 const cssThemeFolders = fs.readdirSync(cssWorkspaceBase)
     .map(item => ({ name: item, path: path.join(cssWorkspaceBase, item) }))
@@ -170,7 +192,7 @@ const cssThemeFolders = fs.readdirSync(cssWorkspaceBase)
 
 console.log('Gefundene CSS-Theme-Ordner:', cssThemeFolders.map(f => f.name));
 
-const cssWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
+const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
     const themeNameRaw = themeFolder.name; // z.B. _caeliRelaunch
     const themeNameClean = themeNameRaw.substring(1); // z.B. caeliRelaunch
     const themeCssDir = themeFolder.path; // z.B. /path/to/files/base/layout/css/_caeliRelaunch
@@ -197,20 +219,6 @@ const cssWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
     ];
 
     let themeAliases = {};
-    // const themeAliasConfigFile = path.join(themeCssDir, 'theme.fontaliases.js');
-    // if (fs.existsSync(themeAliasConfigFile)) {
-    //     try {
-    //         const loadedAliasesRelative = require(themeAliasConfigFile);
-    //         for (const key in loadedAliasesRelative) {
-    //             themeAliases[key] = path.resolve(nodeModulesPath, loadedAliasesRelative[key]);
-    //         }
-    //         console.log(`   Lade Font-Aliase aus ${path.relative(projectRoot, themeAliasConfigFile)} für Theme ${themeNameRaw}`);
-    //     } catch (e) {
-    //         console.error(`   Fehler beim Laden von ${themeAliasConfigFile} für Theme ${themeNameRaw}:`, e);
-    //     }
-    // } else {
-    //     console.log(`   Keine theme.fontaliases.js für Theme "${themeNameRaw}" gefunden in ${path.relative(projectRoot, themeCssDir)}`);
-    // }
 
     return scssFilesToBundle.map(scssFileName => {
         const scssFilePath = path.join(themeCssDir, scssFileName);
@@ -228,7 +236,7 @@ const cssWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
         console.log(`   Bundle-Name (entryName): ${entryName}`);
 
         return {
-            name: `${themeNameClean}-${entryName}-css`, // Eindeutiger Name für die Webpack-Konfig z.B. caeliRelaunch-_vendors-css
+            name: `theme-${themeNameClean}-${entryName}-css`,
             mode: 'production',
             entry: {
                 [entryName]: scssFilePath // Key ist der Bundle-Name, Value der Pfad zur Datei
@@ -243,33 +251,7 @@ const cssWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
                 rules: [
                     {
                         test: /\.scss$/,
-                        use: [
-                            {
-                                loader: MiniCssExtractPlugin.loader,
-                            },
-                            {
-                                loader: 'css-loader',
-                                options: {
-                                    sourceMap: true, // Wichtig für resolve-url-loader
-                                }
-                            },
-                            {
-                                loader: 'resolve-url-loader', // NEU
-                                options: {
-                                    sourceMap: true, // Wichtig, benötigt sourcemaps vom vorherigen Loader (sass-loader)
-                                    removeCR: true, // Kann bei Windows-Zeilenumbrüchen helfen
-                                }
-                            },
-                            {
-                                loader: 'sass-loader',
-                                options: {
-                                    sourceMap: true, // Wichtig für resolve-url-loader
-                                    sassOptions: {
-                                        outputStyle: 'compressed',
-                                    },
-                                },
-                            },
-                        ],
+                        use: getScssLoaders(true, true),
                     },
                     {
                         test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
@@ -306,25 +288,137 @@ const cssWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
             },
             performance: {
                 hints: false
-            }
-        };
+            },
+            ignoreWarnings: [
+                /Warning/
+            ]
+        }; 
     }).filter(Boolean); // Entferne null-Werte, falls Dateien nicht gefunden wurden
+});
+
+// --- NEU: RSCE SCSS-Konfigurationen ---
+const rsceScssFiles = glob.sync(path.join(rsceCssPath, '*.scss').replace(/\\/g, '/'));
+console.log('Gefundene RSCE SCSS-Dateien:', rsceScssFiles.map(f => path.relative(projectRoot, f)));
+
+const rsceWebpackConfigs = rsceScssFiles.map(scssFile => {
+    const fileNameWithoutExt = path.basename(scssFile, '.scss'); // z.B. ce_rsce_videogrid
+    const outputDir = path.dirname(scssFile); // Das Verzeichnis der Quelldatei, z.B. .../rsce/
+
+    return {
+        name: `rsce-${fileNameWithoutExt}-css`, // Eindeutiger Name, z.B. rsce-ce_rsce_videogrid-css
+        mode: 'production',
+        entry: {
+            // Entry-Key ist der Dateiname ohne .scss, damit [name].min.css den korrekten Namen bekommt
+            [fileNameWithoutExt]: scssFile,
+        },
+        output: {
+            path: outputDir, // Ausgabe ins selbe Verzeichnis wie die Quelldatei
+            // filename ist für JS, wird aber von RemoveEmptyScriptsPlugin entfernt. 
+            // Css wird durch MiniCssExtractPlugin.filename gesteuert.
+            filename: '[name].js', // Platzhalter, wird entfernt
+            publicPath: '', // Nicht relevant, da lokal ausgegeben und nicht über Webpfad geladen (für Manifest)
+            clean: false, // Nicht das Verzeichnis für jede Datei leeren
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.scss$/,
+                    use: getScssLoaders(false, false),
+                },
+            ],
+        },
+        plugins: [
+            new RemoveEmptyScriptsPlugin(), 
+            new MiniCssExtractPlugin({
+                filename: '[name].min.css', // Erzeugt z.B. ce_rsce_videogrid.min.css
+            }),
+        ],
+        optimization: {
+            minimize: true,
+            minimizer: [new CssMinimizerPlugin()],
+        },
+        performance: { hints: false },
+        ignoreWarnings: [
+            /Warning/
+        ]
+    };
+});
+
+// --- NEU: Element JS-Konfigurationen ---
+const elementsJsPath = path.resolve(jsWorkspaceBase, '_elements'); // Korrekt hier oben definiert
+const elementJsFiles = glob.sync(path.join(elementsJsPath, '*.js').replace(/\\/g, '/'))
+    .filter(file => !file.endsWith('.min.js')); // Bereits minifizierte Dateien ignorieren
+console.log('Gefundene Element JS-Dateien:', elementJsFiles.map(f => path.relative(projectRoot, f)));
+
+const jsElementWebpackConfigs = elementJsFiles.map(jsFile => {
+    const fileNameWithoutExt = path.basename(jsFile, '.js');
+    const outputDir = path.dirname(jsFile);
+    return {
+        name: `element-${fileNameWithoutExt}-js`, // Name ist schon passend
+        mode: 'production',
+        entry: {
+            [fileNameWithoutExt]: jsFile,
+        },
+        output: {
+            path: outputDir, 
+            filename: '[name].min.js', // Sollte examplename.min.js erzeugen
+            publicPath: '', 
+            clean: false, 
+        },
+        module: {
+            rules: [
+                { test: /\.js$/, exclude: /node_modules/, use: { loader: 'babel-loader' } }
+            ],
+        },
+        optimization: {
+            minimize: true,
+            minimizer: [new TerserPlugin({ extractComments: false, terserOptions: { format: { comments: false } } })],
+        },
+        performance: { hints: false },
+    };
 });
 
 // Kombinieren von JS und CSS Konfigurationen
 let allConfigs = [];
-if (jsWebpackConfigs && jsWebpackConfigs.length > 0) {
-    allConfigs = allConfigs.concat(jsWebpackConfigs.flat());
+if (jsAppWebpackConfigs && jsAppWebpackConfigs.length > 0) {
+    allConfigs = allConfigs.concat(jsAppWebpackConfigs.flat());
 }
-if (cssWebpackConfigs && cssWebpackConfigs.length > 0) {
-    allConfigs = allConfigs.concat(cssWebpackConfigs.filter(Boolean));
+if (cssThemeWebpackConfigs && cssThemeWebpackConfigs.length > 0) {
+    allConfigs = allConfigs.concat(cssThemeWebpackConfigs.filter(Boolean));
+}
+if (rsceWebpackConfigs && rsceWebpackConfigs.length > 0) {
+    allConfigs = allConfigs.concat(rsceWebpackConfigs.filter(Boolean));
+}
+if (jsElementWebpackConfigs && jsElementWebpackConfigs.length > 0) {
+    allConfigs = allConfigs.concat(jsElementWebpackConfigs.filter(Boolean));
 }
 
-if (allConfigs.length === 0) {
-    console.warn("Keine Konfigurationen (JS oder CSS) zum Erstellen gefunden.");
-    module.exports = {};
+// NEUE FILTERLOGIK BASIEREND AUF process.env.FILTER_PATTERN
+if (process.env.FILTER_PATTERN) {
+    try {
+        const regex = new RegExp(process.env.FILTER_PATTERN);
+        const filteredConfigs = allConfigs.filter(conf => conf.name && regex.test(conf.name));
+
+        if (filteredConfigs.length === 0) {
+            console.warn(`Webpack: Keine Konfigurationen entsprachen dem Filter-Muster: "${process.env.FILTER_PATTERN}". Es wird nichts gebaut.`);
+            module.exports = []; // Leeres Array exportieren, wenn keine Konfigurationen dem Filter entsprechen
+        } else {
+            console.log(`Webpack: ${filteredConfigs.length} von ${allConfigs.length} Konfigurationen entsprechen dem Muster "${process.env.FILTER_PATTERN}".`);
+            filteredConfigs.forEach(conf => console.log(` - Verwendete Konfiguration: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
+            module.exports = filteredConfigs;
+        }
+    } catch (e) {
+        console.error(`Webpack: Ungültiges Regex-Muster im FILTER_PATTERN: "${process.env.FILTER_PATTERN}". Fehler: ${e.message}`);
+        console.warn(`Webpack: Aufgrund des Fehlers im Regex werden alle ${allConfigs.length} Konfigurationen verwendet.`);
+        allConfigs.forEach(conf => console.log(` - Konfigurationsname: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
+        module.exports = allConfigs; // Fallback auf alle Konfigurationen bei Regex-Fehler
+    }
+} else if (allConfigs.length === 0) {
+    console.warn("Keine Webpack-Konfigurationen zum Erstellen gefunden (FILTER_PATTERN nicht gesetzt).");
+    module.exports = []; // Leeres Array exportieren, wenn überhaupt keine Konfigurationen vorhanden sind
 } else {
-    console.log(`Exportiere insgesamt ${allConfigs.length} Webpack-Konfigurationen.`);
+    // Kein Filter, alle exportieren
+    console.log(`Exportiere insgesamt ${allConfigs.length} Webpack-Konfigurationen (FILTER_PATTERN nicht gesetzt).`);
     allConfigs.forEach(conf => console.log(` - Konfigurationsname: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
     module.exports = allConfigs;
 }
