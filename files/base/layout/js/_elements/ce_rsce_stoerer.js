@@ -1,172 +1,146 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const stoerers = document.querySelectorAll('.ce--stoerer.is-expandable');
 
-    // --- START: Dynamic Width Calculation for Expandable Stoerers ---
-    stoerers.forEach(stoerer => {
+    // --- Hilfsfunktion: Event Listener sicher hinzufügen (verhindert Duplikate) ---
+    function addSafeEventListener(element, eventType, handler, options) {
+        const listenerKey = `__${eventType}_handler__`;
+        // Alten Listener entfernen, falls vorhanden
+        if (element[listenerKey]) {
+            element.removeEventListener(eventType, element[listenerKey], options);
+        }
+        // Neuen Listener hinzufügen und speichern
+        element.addEventListener(eventType, handler, options);
+        element[listenerKey] = handler;
+    }
+
+    // --- Hilfsfunktion: Pixelwert aus CSS-Wert berechnen ---
+    function getPixelValue(value, baseElement = document.documentElement) {
+        if (typeof value !== 'string') return parseFloat(value) || 0;
+        const val = parseFloat(value);
+        if (isNaN(val)) return 0;
+
+        if (value.endsWith('px')) return val;
+        if (value.endsWith('rem')) return val * parseFloat(getComputedStyle(document.documentElement).fontSize);
+        if (value.endsWith('em')) return val * parseFloat(getComputedStyle(baseElement).fontSize);
+        if (value.endsWith('vh')) return val * window.innerHeight / 100;
+        if (value.endsWith('vw')) return val * window.innerWidth / 100;
+        // Prozentwerte sind kontextabhängig, hier ignoriert oder Standard-Fallback
+        return val; // Fallback für reine Zahlen oder unbekannte Einheiten
+    }
+
+    // --- START: Neue Hilfsfunktionen für Breitenberechnung ---
+    function applyMaxWidth(stoerer) {
         const content = stoerer.querySelector('.stoerer--content');
         if (!content) return;
 
-        const setMaxWidth = () => {
-            // Temporarily remove transition and set max-width to measure content
-            const originalTransition = content.style.transition;
-            content.style.transition = 'none';
-            content.style.maxWidth = 'max-content'; // Or 'fit-content' could also work
-            const scrollWidth = content.scrollWidth;
-            // Reset temporary styles immediately
-            content.style.maxWidth = '';
-            content.style.transition = originalTransition;
-
-            // Force reflow might be needed in some browsers, uncomment if necessary
-            // void content.offsetWidth;
-
-            // Set the measured width as CSS variable *after* the next frame
-            requestAnimationFrame(() => {
-              content.style.setProperty('--stoerer-content-max-width', scrollWidth + 'px');
-            });
-        };
-
-        const resetMaxWidth = () => {
-            // Remove the CSS variable to allow CSS to collapse it back to 0
-            content.style.removeProperty('--stoerer-content-max-width');
-        };
-
-        // Add listeners for mouse hover
-        stoerer.addEventListener('mouseenter', setMaxWidth);
-        stoerer.addEventListener('mouseleave', resetMaxWidth);
-
-        // Add listeners for focus (for keyboard navigation/accessibility)
-        stoerer.addEventListener('focusin', setMaxWidth);
-        stoerer.addEventListener('focusout', resetMaxWidth);
-    });
-    // --- END: Dynamic Width Calculation ---
-
-    function handleClick(event) {
-        if (window.innerWidth < 768) {
-            const stoerer = event.currentTarget.closest('.ce--stoerer');
-            if (!stoerer.classList.contains('clicked')) {
-                event.preventDefault();
-                removeClickedClass();
-                stoerer.classList.add('clicked');
-            }
-        }
-    }
-
-    function removeClickedClass() {
-        document.querySelectorAll('.ce--stoerer.clicked').forEach(el => el.classList.remove('clicked'));
-    }
-
-    stoerers.forEach(stoerer => {
-        const link = stoerer.querySelector('a');
-        if (link) {
-            link.addEventListener('click', handleClick);
-        }
-    });
-
-    // Klick außerhalb schließt den geöffneten Störer
-    document.addEventListener('click', function (event) {
-        if (!event.target.closest('.ce--stoerer') && window.innerWidth < 768) {
-            removeClickedClass();
-        }
-    });
-
-    // Optional: Recalculate on resize (consider debouncing for performance)
-    let resizeTimer; // Declare resizeTimer once here
-
-    // --- New logic for vertical stacking ---
-    function stackFixedStoerers() {
-        // Select the inner stoerer elements that are fixed and have a top style
-        const fixedStoerers = Array.from(document.querySelectorAll('.ce--stoerer.is-expandable[style*="top:"]'));
-        // Filter only those whose parent is also fixed
-        const trulyFixedStoerers = fixedStoerers.filter(el => el.parentElement.classList.contains('is-fixed'));
-
-        const totalStoerers = trulyFixedStoerers.length; // Gesamtzahl der Störer für z-index Berechnung
-        if (totalStoerers <= 1) return; // No need to stack or set z-index if only one or zero
-
-        // Get the gap from CSS variable or default (read from the parent)
-        const parentContainer = trulyFixedStoerers.length > 0 ? trulyFixedStoerers[0].parentElement : null;
-        let gapValuePx = 0.5 * parseFloat(getComputedStyle(document.documentElement).fontSize); // Default to 0.5rem in px
-
-        if (parentContainer) {
-             const gapStyle = getComputedStyle(parentContainer).getPropertyValue('--stoerer-vertical-gap');
-             if (gapStyle) {
-                 const gapMatch = gapStyle.match(/^(\d*\.?\d+)(px|rem|em|vh|%)?/);
-                 if (gapMatch && gapMatch[1]) {
-                    let value = parseFloat(gapMatch[1]);
-                    const unit = gapMatch[2] || 'px';
-                    // Convert known units to px
-                    if (unit === 'rem') value = value * parseFloat(getComputedStyle(document.documentElement).fontSize);
-                    else if (unit === 'em') value = value * parseFloat(getComputedStyle(parentContainer).fontSize); // Use parent context for em
-                    // Add other unit conversions if needed (vh, %) - though less common for gaps
-                    gapValuePx = value;
-                 }
-             }
-         }
-
-
-        let cumulativeTop = 0;
-        let firstElementTop = 0;
-        let previousElementHeight = 0;
-
-        trulyFixedStoerers.forEach((element, index) => {
-            // --- START: Z-Index Logic ---
-            element.style.zIndex = totalStoerers - index;
-            // --- END: Z-Index Logic ---
-
-            const triggerElement = element.querySelector('.stoerer-trigger');
-            if (!triggerElement) {
-                console.warn('Stoerer trigger not found in:', element);
-                return; // Skip if trigger not found
-            }
-            const currentTriggerHeight = triggerElement.offsetHeight;
-            const currentElementTopStyle = element.style.top;
-            let currentElementTopValue = 0;
-
-            if (currentElementTopStyle) {
-                const match = currentElementTopStyle.match(/^(\d*\.?\d+)(px|vh|%|em|rem)?/);
-                if (match && match[1]) {
-                     let value = parseFloat(match[1]);
-                     const unit = match[2] || 'px';
-                     if (unit === 'vh') value = value * window.innerHeight / 100;
-                     else if (unit === 'rem') value = value * parseFloat(getComputedStyle(document.documentElement).fontSize);
-                     else if (unit === 'em') value = value * parseFloat(getComputedStyle(element).fontSize);
-                    currentElementTopValue = value;
-                 }
-            }
-
-            if (index === 0) {
-                firstElementTop = currentElementTopValue;
-                cumulativeTop = firstElementTop;
-                element.style.top = `${cumulativeTop}px`;
-                previousElementHeight = currentTriggerHeight;
-            } else {
-                const newTop = cumulativeTop + previousElementHeight + gapValuePx;
-                element.style.top = `${newTop}px`;
-                cumulativeTop = newTop;
-                previousElementHeight = currentTriggerHeight;
-            }
+        const originalTransition = content.style.transition;
+        content.style.transition = 'none';
+        content.style.maxWidth = 'max-content';
+        const scrollWidth = content.scrollWidth;
+        content.style.maxWidth = '';
+        content.style.transition = originalTransition;
+        requestAnimationFrame(() => {
+            content.style.setProperty('--stoerer-content-max-width', scrollWidth + 'px');
         });
     }
 
-    // Delay execution slightly to ensure accurate offsetHeight measurements
-    // setTimeout(stackFixedStoerers, 100); // Moved call further down
+    function removeMaxWidth(stoerer) {
+        const content = stoerer.querySelector('.stoerer--content');
+        if (!content) return;
+        content.style.removeProperty('--stoerer-content-max-width');
+    }
+    // --- ENDE: Neue Hilfsfunktionen für Breitenberechnung ---
 
-    // window.addEventListener('resize', () => { // Moved listener further down
-    //     clearTimeout(resizeTimer);
-    //     resizeTimer = setTimeout(stackFixedStoerers, 250);
-    // });
+    // --- Kernfunktionen (vereinfacht) ---
+    // Funktion calculateDynamicWidth und Hover/Focus-Listener entfernt
 
+    function handleMobileClick(event) {
+         if (window.innerWidth < 768) {
+            const stoerer = event.currentTarget.closest('.ce--stoerer');
+            if (stoerer && !stoerer.classList.contains('clicked')) {
+                event.preventDefault(); // Verhindert Link-Navigation nur beim ersten Klick
+                removeAllClickedClasses(); // Schließe andere
+                stoerer.classList.add('clicked');
+            }
+        }
+        // Bei > 768px wird der Link normal verfolgt
+    }
 
-    // --- New logic for border radius on screen edge ---
+    function removeAllClickedClasses() {
+        document.querySelectorAll('.ce--stoerer.clicked').forEach(el => el.classList.remove('clicked'));
+    }
+
+    function stackFixedStoerers() {
+        const fixedStoererWrappers = document.querySelectorAll('.is-fixed.content--element.ce_rsce_stoerer');
+
+        fixedStoererWrappers.forEach(wrapper => {
+            const trulyFixedStoerers = Array.from(wrapper.querySelectorAll(':scope > .ce--stoerer.is-expandable'));
+            const totalStoerers = trulyFixedStoerers.length;
+
+            if (totalStoerers <= 1) {
+                if(trulyFixedStoerers.length === 1) {
+                    trulyFixedStoerers[0].style.zIndex = '';
+                }
+                return;
+            }
+
+            // --- Calculate Gap ---
+            let gapValuePx = getPixelValue('0.75rem');
+            const gapStyle = getComputedStyle(wrapper).getPropertyValue('--stoerer-vertical-gap') || '0.75rem';
+            gapValuePx = getPixelValue(gapStyle.trim(), wrapper);
+
+            // --- Sort Stoerers based on initial intended position ---
+             trulyFixedStoerers.sort((a, b) => {
+                 const getInitialTopPx = (el) => {
+                      // Berechne initialen Top-Wert in Pixel für Sortierung, speichere Original-Style
+                      if (el.dataset.initialTopPx === undefined) {
+                          const styleTop = el.style.top || getComputedStyle(el).top;
+                          if (!el.dataset.originalStyleTop) {
+                              el.dataset.originalStyleTop = styleTop; // Store "25vh" etc.
+                          }
+                          el.dataset.initialTopPx = getPixelValue(styleTop, el);
+                      }
+                      return parseFloat(el.dataset.initialTopPx);
+                  };
+                  return getInitialTopPx(a) - getInitialTopPx(b);
+              });
+
+            // --- Position Stoerers ---
+            let firstStoererOriginalTopStyle = "0px"; // Fallback
+            let firstStoererTriggerHeight = 0;
+
+            trulyFixedStoerers.forEach((element, index) => {
+                element.style.zIndex = totalStoerers - index;
+
+                if (index === 0) {
+                    // FIRST element: Get its original top style (e.g., "25vh") and trigger height.
+                    // Ensure original style is stored and applied.
+                    if (!element.dataset.originalStyleTop) {
+                        element.dataset.originalStyleTop = element.style.top || getComputedStyle(element).top || "0px";
+                    }
+                    firstStoererOriginalTopStyle = element.dataset.originalStyleTop;
+                    element.style.top = firstStoererOriginalTopStyle; // Stelle sicher, dass der Originalwert drin steht
+
+                    const triggerElement = element.querySelector('.stoerer-trigger');
+                    firstStoererTriggerHeight = triggerElement ? triggerElement.offsetHeight : 0;
+
+                } else {
+                    // SUBSEQUENT elements: Set top using calc() based on the FIRST element's original top and trigger height.
+                    element.style.top = `calc(${firstStoererOriginalTopStyle} + ${firstStoererTriggerHeight}px + ${gapValuePx}px)`;
+
+                    // If more than 2 stoerers need stacking relative to each other, this part needs adjustment.
+                    // For now, it positions all subsequent stoerers relative to the first one's trigger.
+                }
+            });
+        });
+    }
+
     function checkEdgePositioning() {
-        const edgeStoerers = document.querySelectorAll('.ce--stoerer[style*="left:"], .ce--stoerer[style*="right:"]');
+        // Selektiere direkt die Elemente, die potenziell am Rand sind
+        const edgeStoerers = document.querySelectorAll('.ce--stoerer[style*="left:"]:not([style*="left: auto"]), .ce--stoerer[style*="right:"]:not([style*="right: auto"])');
         edgeStoerers.forEach(element => {
-            element.classList.remove('is-flush-left', 'is-flush-right'); // Reset classes
-            const computedStyle = getComputedStyle(element);
-             // Check the position relative to the viewport, not just the style property
+            element.classList.remove('is-flush-left', 'is-flush-right');
              const rect = element.getBoundingClientRect();
              const viewportWidth = window.innerWidth;
-
-             // Add a small tolerance for calculations
              const tolerance = 2;
 
             if (rect.left <= tolerance) {
@@ -177,52 +151,91 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Initial check moved down
+    // --- Initialisierungsfunktion ---
+    function initializeAllStoerers() {
+        const allStoerers = document.querySelectorAll('.ce--stoerer.is-expandable');
+        const stoererContainers = document.querySelectorAll('.content--element.ce_rsce_stoerer');
 
-    /*
-    // Entfernt, da die Größenberechnung jetzt rein über CSS/Bildgröße erfolgt
-    function adjustStoererLayout() {
-        const stoererElements = document.querySelectorAll('.ce--stoerer');
-        stoererElements.forEach(element => {
-            console.log("Element in adjustStoererLayout:", element);
-            const triggerElement = element.querySelector('.stoerer-trigger');
-            console.log("TriggerElement:", triggerElement);
-            if (triggerElement && triggerElement.offsetHeight > 0) {
-                const triggerHeight = triggerElement.offsetHeight;
-                const triggerWidth = triggerElement.offsetWidth; // Get width
-                console.log(`Trigger dimensions for ${element.id}: Width=${triggerWidth}, Height=${triggerHeight}`);
-                // Set CSS variables for both height and width
-                element.style.setProperty('--trigger-height', `${triggerHeight}px`);
-                element.style.setProperty('--trigger-width', `${triggerWidth}px`); // Set width variable
-            } else {
-                console.warn('Stoerer trigger not found or has no height in:', element);
-                // Set defaults if trigger not found or has no dimensions yet
-                // element.style.setProperty('--trigger-height', `50px`); // Fallback removed
-                // element.style.setProperty('--trigger-width', `50px`);  // Fallback removed
+        allStoerers.forEach(stoerer => {
+
+            // Event-Listener für Trigger-Klick
+            const trigger = stoerer.querySelector('.stoerer-trigger');
+            if (trigger && !trigger.dataset.stoererClickListenerAttached) {
+                addSafeEventListener(trigger, 'click', (event) => {
+                    // Störer öffnen/aktivieren und Breite setzen
+                    stoerer.classList.add('is-expanded');
+                    stoerer.classList.add('is-clicked-active'); // Markiert als durch Klick aktiviert
+                    applyMaxWidth(stoerer);
+                });
+                trigger.dataset.stoererListenerAttached = 'true';
+            }
+
+            // Event-Listener für Hover auf dem gesamten Störer-Element
+            if (!stoerer.dataset.stoererHoverListenerAttached) {
+                addSafeEventListener(stoerer, 'mouseenter', () => {
+                    stoerer.classList.add('is-expanded');
+                    applyMaxWidth(stoerer);
+                });
+
+                addSafeEventListener(stoerer, 'mouseleave', () => {
+                    // Nur schließen, wenn nicht durch Klick aktiviert
+                    if (!stoerer.classList.contains('is-clicked-active')) {
+                        stoerer.classList.remove('is-expanded');
+                        removeMaxWidth(stoerer);
+                    }
+                });
+                stoerer.dataset.stoererHoverListenerAttached = 'true';
             }
         });
-    }
-    */
 
-    // --- Initial and Resize Calls ----
-    function runLayoutAdjustments() {
-        const stoererContainers = document.querySelectorAll('.content--element.ce_rsce_stoerer'); // Get the outer containers
-        // adjustStoererLayout(); // Removed call
-        stackFixedStoerers(); // Then stack based on dimensions
-        checkEdgePositioning(); // Finally check edge positions
+        stackFixedStoerers();
+        checkEdgePositioning();
 
-        // Add ready class to make them visible AFTER calculations
+        // Ready-Klasse hinzufügen, um sie sichtbar zu machen
         stoererContainers.forEach(container => container.classList.add('js-stoerer-ready'));
     }
 
-    // Initial run after a short delay
-    // setTimeout(runLayoutAdjustments, 50); // Use a minimal timeout if direct call is too early, otherwise remove
-    runLayoutAdjustments(); // Try running directly first
+    // --- Event Listeners ---
+    let resizeTimer;
 
-    // Recalculate on resize (debounced)
+    // Initialer Aufruf
+    initializeAllStoerers();
+
+    // Bei Resize (debounced)
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(runLayoutAdjustments, 250);
+        resizeTimer = setTimeout(initializeAllStoerers, 250);
+    });
+
+    // Bei Klick ausserhalb (für Mobile UND Desktop zum Schließen)
+    addSafeEventListener(document, 'click', function (event) {
+        // Prüfen, ob außerhalb eines Störers geklickt wurde
+        const clickedStoerer = event.target.closest('.ce--stoerer.is-expandable');
+
+        // Alle Störer durchgehen, die aktuell geöffnet sind
+        document.querySelectorAll('.ce--stoerer.is-expandable.is-expanded').forEach(expandedStoerer => {
+            // Wenn der Klick NICHT innerhalb des gerade geprüften, geöffneten Störers war
+            // ODER wenn der Klick auf dem Trigger eines ANDEREN Störers war (optional, kann zu Verwirrung führen)
+            if (!clickedStoerer || clickedStoerer !== expandedStoerer) {
+                expandedStoerer.classList.remove('is-expanded');
+                expandedStoerer.classList.remove('is-clicked-active'); // Klick-Aktivierung aufheben
+                removeMaxWidth(expandedStoerer); // Breite entfernen
+            }
+        });
+
+        // Mobile: .clicked-Klasse entfernen, wenn außerhalb geklickt wird
+        if (window.innerWidth < 768 && !event.target.closest('.ce--stoerer.clicked')) {
+            removeAllClickedClasses();
+        }
+    });
+
+    // Listener für Custom Event -> wenn theme.js einen Störer hinzufügt
+    document.body.addEventListener('stoererAdded', function(e) {
+        console.log('Event stoererAdded empfangen.');
+        // *** NEU: Mit requestAnimationFrame aufrufen ***
+        requestAnimationFrame(() => {
+             initializeAllStoerers(); // Initialisierung neu ausführen
+        });
     });
 
 });

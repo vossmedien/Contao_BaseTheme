@@ -45,51 +45,61 @@
     position: absolute;
     // transition: transform var(--transition-duration) ease-in-out;
 
+
+    .stoerer-inner-wrapper {
+      display: flex;
+      align-items: flex-start;
+      overflow: hidden;
+
+      .stoerer--content {
+        transition: background-color var(--transition-color-duration) ease-in-out, max-width var(--transition-duration) ease-in-out, max-height calc(var(--transition-duration) * 1.5) ease-in-out;
+
+        .btn, .button-label {
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .stoerer-trigger {
+      flex-shrink: 0; // Verhindert, dass der Trigger schrumpft
+      padding: var(--stoerer-padding);
+      background-color: var(--bs-body-bg); // Fallback, wird überschrieben
+      //box-shadow: $box-shadow;
+      position: relative;
+      // Transitions für Trigger
+      transition: background-color var(--transition-color-duration) ease-in-out, color var(--transition-color-duration) ease-in-out;
+
+      img, svg {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        transition: fill var(--transition-color-duration) ease-in-out;
+
+        path {
+          transition: fill var(--transition-color-duration) ease-in-out;
+        }
+      }
+    }
+
     &.is-expandable {
       .stoerer-inner-wrapper {
-        display: flex;
-        align-items: flex-start;
-        overflow: hidden;
-
         .stoerer--content {
+          pointer-events: none;
           overflow: hidden;
           max-height: 0;
-          white-space: nowrap;
-          pointer-events: none;
-          transition: background-color var(--transition-color-duration) ease-in-out, max-width var(--transition-duration) ease-in-out, max-height calc(var(--transition-duration) * 1.5) ease-in-out;
           max-width: var(--stoerer-content-max-width, 0px);
+          //white-space: nowrap;
         }
       }
 
       &:hover,
-      &:focus-within {
+      &:focus-within,
+      &.is-expanded {
         .stoerer-inner-wrapper {
           .stoerer--content {
             max-width: var(--stoerer-content-max-width, 0px);
             pointer-events: auto;
             max-height: 999px;
-          }
-        }
-      }
-
-      .stoerer-trigger {
-        flex-shrink: 0; // Verhindert, dass der Trigger schrumpft
-        padding: var(--stoerer-padding);
-        background-color: var(--bs-body-bg); // Fallback, wird überschrieben
-        //box-shadow: $box-shadow;
-        position: relative;
-        // Transitions für Trigger
-        transition: background-color var(--transition-color-duration) ease-in-out,
-        color var(--transition-color-duration) ease-in-out;
-
-        img, svg {
-          display: block;
-          max-width: 100%;
-          height: auto;
-          transition: fill var(--transition-color-duration) ease-in-out;
-
-          path {
-            transition: fill var(--transition-color-duration) ease-in-out;
           }
         }
       }
