@@ -70,18 +70,31 @@ if (!function_exists('load_theme_assets_from_manifest')) {
         $themeJsDir = $projectRoot . '/files/base/layout/js/_' . $themeName;
         $individualVendorJsConfigFile = $themeJsDir . '/theme.js_vendors.php';
 
+
+
+
+
         if (file_exists($individualVendorJsConfigFile)) {
             $vendorScriptConfigs = require $individualVendorJsConfigFile;
+
+
+
+
             if (is_array($vendorScriptConfigs)) {
                 // NEU: Korrekter Web-Pfad zur Basis des Vendor-Verzeichnisses für dieses Theme
                 $vendorDestWebPathBase = '/files/base/layout/js/dist/' . $themeName . '/vendor/';
+
+
+
+
+
                 foreach ($vendorScriptConfigs as $scriptConfig) {
                     if (is_array($scriptConfig) && isset($scriptConfig['src']) && isset($scriptConfig['attributes'])) {
                         // $scriptConfig['src'] ist der Pfad relativ zu node_modules, z.B. 'js-cookie/dist/js.cookie.min.js'
                         // Wir brauchen nur den Dateinamen für den Zielpfad.
                         $fileName = pathinfo($scriptConfig['src'], PATHINFO_BASENAME);
                         $finalVendorWebPath = $vendorDestWebPathBase . $fileName;
-                        
+
                         $themeAssets['js_vendor_individual'][] = [
                             'src' => $finalVendorWebPath,
                             'attributes' => $scriptConfig['attributes']
@@ -95,7 +108,7 @@ if (!function_exists('load_theme_assets_from_manifest')) {
         // Die CSS-Pfade in $themeAssets['css'] werden aus den CSS-Manifesten kommen.
         // Diese Manifeste werden mit einem publicPath wie /files/base/layout/css/_THEMENAME/dist/ erstellt.
         // Das sollte also weiterhin stimmen, da CSS eine eigene dist-Struktur hat.
-        $cssManifestDir = $projectRoot . '/files/base/layout/_vendor/_dist-manifest/_' . $themeName; 
+        $cssManifestDir = $projectRoot . '/files/base/layout/_vendor/_dist-manifest/_' . $themeName;
         $cssBundleOrder = ['_vendors', '_base', '_root-variables', '_theme', '_fonts'];
         foreach ($cssBundleOrder as $bundleName) {
             // Pfad zum spezifischen CSS-Manifest für das aktuelle Theme und Bundle-Typ
@@ -110,14 +123,14 @@ if (!function_exists('load_theme_assets_from_manifest')) {
                         foreach ($manifestData as $sourceName => $publicPathOrObject) {
                             $publicPath = is_array($publicPathOrObject) && isset($publicPathOrObject['path']) ? $publicPathOrObject['path'] : $publicPathOrObject;
                             if (!is_string($publicPath) || empty($publicPath)) continue;
-                            
+
                             $currentFilenameForLogic = $sourceName; // In Webpack ist der key oft der Dateiname des Chunks
                             // Oder wir nehmen basename($publicPath), wenn sourceName nicht passt
                             if (pathinfo($publicPath, PATHINFO_EXTENSION) === 'css') { // Sicherstellen, dass es eine CSS-Datei ist
                                 // publicPath sollte bereits der korrekte Webpfad sein, z.B. /files/base/layout/css/_themename/dist/_fonts.bundle.min.css
                                 // substr($publicPath,1) ist nicht nötig, wenn der Pfad bereits korrekt ist.
                                 if (!in_array($publicPath, $themeAssets['css'])) {
-                                    $themeAssets['css'][] = $publicPath; 
+                                    $themeAssets['css'][] = $publicPath;
                                 }
                             } else if (str_starts_with($publicPath, '/files/base/layout/css/') && str_contains($publicPath, '/fonts/') && preg_match('/\.(woff2|woff|ttf|otf|svg)$/i', $publicPath)) {
                                 // Wenn Fonts direkt im CSS-Manifest mit ihrem vollen Pfad auftauchen

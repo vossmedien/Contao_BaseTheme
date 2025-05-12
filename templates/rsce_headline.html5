@@ -2,7 +2,7 @@
 // Helfer für die Headline generieren
 // generateHeadlineHTML($topline, $headline, $subline, $headlineType, $animation = null, $headlineClass = null, $onlystyle = false, $additionalAttributes = null)
 
-use Contao\StringUtil; // Hinzufügen für binToUuid
+use Contao\StringUtil;
 use Vsm\VsmHelperTools\Helper\EnvHelper; // Hinzufügen für Frontend-Check
 use Vsm\VsmHelperTools\Helper\ImageHelper; // Hinzufügen für Bildgenerierung
 
@@ -127,6 +127,30 @@ if ($this->add_header_image && $this->header_image) {
 
 }
 
+// Bild für Headline-Spalte vorbereiten
+$headlineColumnImageHTML = '';
+if ($this->two_columns && $this->add_second_content && $this->add_headline_column_image && $this->headline_column_image) {
+    $lightboxIdHeadlineColumn = null;
+    if ($this->headline_column_open_lightbox) {
+        $lightboxIdHeadlineColumn = 'lightbox_hl_col_' . $this->id . '_' . $rand;
+    }
+    $headlineColumnImageHTML = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
+        $this->headline_column_image,
+        null,
+        null,
+        $this->headline_column_image_size,
+        null,
+        false, // Ggf. auf true ändern für figure/picture
+        $lightboxIdHeadlineColumn
+    );
+}
+
+// Helfer für die Buttons der Headlinespalte generieren
+$headlineColumnButtonsHTML = '';
+if ($this->two_columns && $this->add_second_content && !empty($this->headline_column_buttons)) {
+    $headlineColumnButtonsHTML = Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->headline_column_buttons);
+}
+
 ?>
 
 <div <?php if($this->animation_type_element):?>data-animation="<?= $this->animation_type_element;?>"<?php endif;?> <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?> <?php if ($this->two_columns): ?>layout-two-columns<?php else: ?>layout-one-column<?php endif; ?>">
@@ -143,8 +167,10 @@ if ($this->add_header_image && $this->header_image) {
             <?php // --- ZWEISPALTIG --- ?>
 
             <?php if ($this->headline_above_columns): ?>
-                 <div class="headline-above-columns">
+                 <div class="headline-above-columns mb-md-gap">
+                     <div class="container">
                      <?= $headlineHTML; // Headline oberhalb der Spalten (mit Animation) ?>
+                         </div>
                  </div>
             <?php endif; ?>
 
@@ -158,8 +184,8 @@ if ($this->add_header_image && $this->header_image) {
                     // Animation für die Headlinespalte (wenn 2. Inhalt aktiv UND Headline *in* der Spalte ist)
                     $headlineColumnAnimation = $this->animation_type_headline_column;
                 ?>
-                <div  class="col-12 col-lg-<?= $bsColHeadline; ?> <?= $orderHeadlineClass; ?> <?php if ($this->headline_column_css_class): ?><?= $this->headline_column_css_class ?><?php endif; ?>">
-                     <div class="headline-column">
+                <div  class="col-12 col-lg-<?= $bsColHeadline; ?> <?= $orderHeadlineClass; ?> ">
+                     <div class="headline-column <?php if ($this->headline_column_css_class): ?><?= $this->headline_column_css_class ?><?php endif; ?>">
                         <?php if (!$this->headline_above_columns): ?>
                             <?= $headlineHTML; // Headline in der Spalte (ohne Animation vom Helper) ?>
                         <?php endif; ?>
@@ -167,6 +193,23 @@ if ($this->add_header_image && $this->header_image) {
                         <?php if ($this->add_second_content && $this->second_content): ?>
                             <div data-animation="<?= $headlineColumnAnimation; ?>" class="text">
                                 <?= $this->second_content; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php // --- Bild für Headline-Spalte Ausgabe --- ?>
+                        <?php if ($headlineColumnImageHTML): ?>
+                            <div class="headline-column-image mt-3">
+                                <?= $headlineColumnImageHTML; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php // --- Buttons für Headline-Spalte Ausgabe --- ?>
+                        <?php if ($headlineColumnButtonsHTML): ?>
+                            <?php
+                                $headlineColumnButtonAlignmentClass = $this->headline_column_button_alignment ?: 'text-lg-start';
+                            ?>
+                            <div class="buttons <?= $headlineColumnButtonAlignmentClass; ?> mt-3">
+                                <?= $headlineColumnButtonsHTML; ?>
                             </div>
                         <?php endif; ?>
                      </div>
@@ -234,7 +277,10 @@ if ($this->add_header_image && $this->header_image) {
                          <?php // --- Bilder Logik Ende --- ?>
 
                         <?php if ($buttonsHTML): ?>
-                            <div class="buttons mt-3">
+                            <?php
+                                $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-start';
+                            ?>
+                            <div class="buttons <?= $buttonAlignmentClass; ?> <?php if ($this->desc || $hasImages): ?>mt-3<?php endif;?>">
                                 <?= $buttonsHTML; ?>
                             </div>
                         <?php endif; ?>
@@ -310,7 +356,15 @@ if ($this->add_header_image && $this->header_image) {
             <?php // --- Bilder Logik Ende (Einspaltig) --- ?>
 
             <?php if ($buttonsHTML): ?>
-                 <div class="buttons mt-3">
+                 <?php
+                    // Für den einspaltigen Fall verwenden wir hier vorerst eine Standardausrichtung oder die aus dem zweispaltigen Fall,
+                    // falls Buttons im einspaltigen Layout überhaupt eine separate Ausrichtungsoption benötigen.
+                    // Aktuell ist das Feld 'button_group_text_alignment' an 'two_columns' gebunden.
+                    // Wenn Buttons hier immer linksbündig sein sollen (oder eine andere feste Ausrichtung haben):
+                    $oneColumnButtonAlignmentClass = 'text-start'; // Beispiel: Immer linksbündig
+                    // Falls die Logik komplexer werden soll, müsste man ggf. ein separates Feld für einspaltige Button-Ausrichtung einführen.
+                 ?>
+                 <div class="buttons <?= $oneColumnButtonAlignmentClass; ?> mt-3">
                     <?= $buttonsHTML; ?>
                  </div>
             <?php endif; ?>

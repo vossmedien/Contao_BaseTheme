@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!event.target.closest('.ce--stoerer') && window.innerWidth < 768) {
             removeClickedClass();
         }
-    }); 
+    });
 
     // Optional: Recalculate on resize (consider debouncing for performance)
     let resizeTimer; // Declare resizeTimer once here
