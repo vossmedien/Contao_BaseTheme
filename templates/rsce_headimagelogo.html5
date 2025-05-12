@@ -76,7 +76,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                             background-color: <?= $altColor ?> !important;
                                             padding: 40px;
                                             box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
-                                            margin-inline: -40px;
+                                            //margin-inline: -40px;
                                         }
 
 

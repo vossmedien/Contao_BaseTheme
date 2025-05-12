@@ -2,6 +2,12 @@
 
 require_once __DIR__ . '/../theme_asset_loader.php';
 
+// Ermittle den aktuellen Theme-Namen aus dem Verzeichnis dieses Templates (Groß/Kleinschreibung bleibt hier erhalten)
+$currentThemeName = get_theme_name_from_dir(__DIR__);
+// Übergebe den Originalnamen und das Verzeichnis. Die Funktion kümmert sich ums Lowercasing für den Pfad.
+$themeAssets = load_theme_assets_from_manifest($currentThemeName, __DIR__);
+
+
 $this->rootAttributes = $this
     ->attr()
     ->set('lang', $this->language)
@@ -217,28 +223,33 @@ $this->bodyAttributes = $this
 <?php $this->sections('bottom'); ?>
 <?php $this->endblock(); ?>
 
+
+
+
+
 <?php // --- NEU: JS einbinden ---
-// Vendor JS zuerst
-if (!empty($themeAssets['js_vendor'])) {
-    foreach ($themeAssets['js_vendor'] as $js) {
-        $scriptTag = '<script src="' . $js['src'] . '"';
-        if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
-        // type ist null für vendor, also nicht hinzufügen
-        $scriptTag .= '></script>';
-        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag;
+// Vendor JS zuerst laden (jetzt individuell)
+if (!empty($themeAssets['js_vendor_individual'])) {
+    foreach ($themeAssets['js_vendor_individual'] as $js) {
+        // $js ist nun ein Array mit den Schlüsseln 'src' und 'attributes'
+        // z.B. $js = ['src' => 'files/base/.../script.js', 'attributes' => '|defer|static']
+        $scriptTag =  $js['src'] . $js['attributes'];
+        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag ;
     }
 }
-// Dann App JS
+
+// Dann App JS (aus dem Manifest des App-Bundles)
 if (!empty($themeAssets['js_app'])) {
     foreach ($themeAssets['js_app'] as $js) {
-        $scriptTag = '<script src="' . $js['src'] . '"';
-        if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
-        if (!empty($js['type'])) $scriptTag .= ' type="' . $js['type'] . '"';
-        $scriptTag .= '></script>';
-        $GLOBALS['TL_BODY'][] = $scriptTag;
+        // $js['src'] ist hier der von Webpack generierte Pfad zum App-Bundle
+        $scriptTag =  $js['src'] . '|defer|static'; // Annahme: App-Bundle immer defer|static
+        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag ;
     }
 }
 ?>
+
+
+
 
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>
