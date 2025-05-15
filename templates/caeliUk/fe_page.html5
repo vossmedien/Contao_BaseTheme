@@ -61,7 +61,34 @@ $this->bodyAttributes = $this
     <?= $this->framework ?>
 
 
-     <?php
+       <?php
+    // Get the current hostname
+    $hostname = $_SERVER['HTTP_HOST'];
+
+    // Check if the hostname starts with "www."
+    if (strpos($hostname, 'www.') === 0) {
+        // If it starts with "www.", use the original robots tag
+        echo '<meta name="robots" content="' . $this->robots . '">';
+    } else {
+        // If it doesn't start with "www.", use the fallback
+        echo '<meta name="robots" content="noindex,nofollow"/>';
+    }
+    ?>
+
+
+    <meta name="robots" content="<?= $this->robots ?>">
+    <meta name="description" content="<?= Contao\StringUtil::substr($this->description, 320) ?>">
+    <meta name="generator" content="Contao Open Source CMS">
+    <?php $this->endblock(); ?>
+
+    <?php if ($this->canonical): ?>
+        <link rel="canonical" href="<?= $this->canonical ?>">
+    <?php endif; ?>
+
+    <?= $this->viewport ?>
+    <?= $this->framework ?>
+
+    <?php
     // --- NEU: CSS optimiert einbinden ---
 
     // Gewünschte Ladereihenfolge und spezifische Attribute
@@ -827,16 +854,18 @@ if (!empty($themeAssets['js_vendor_individual'])) {
         $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag ;
     }
 }
-
-// Dann App JS (aus dem Manifest des App-Bundles)
+// Dann App JS
 if (!empty($themeAssets['js_app'])) {
     foreach ($themeAssets['js_app'] as $js) {
-        // $js['src'] ist hier der von Webpack generierte Pfad zum App-Bundle
-        $scriptTag =  $js['src'] . '|defer|static'; // Annahme: App-Bundle immer defer|static
-        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag ;
+        $scriptTag = '<script src="' . $js['src'] . '"';
+        if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
+        if (!empty($js['type'])) $scriptTag .= ' type="' . $js['type'] . '"';
+        $scriptTag .= '></script>';
+        $GLOBALS['TL_BODY'][] = $scriptTag;
     }
 }
 ?>
+
 
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>

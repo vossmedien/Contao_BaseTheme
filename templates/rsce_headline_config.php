@@ -2,6 +2,8 @@
 
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
+use Contao\Config;
+use Contao\System;
 
 //rsce_my_element_config.php
 return array(
@@ -93,7 +95,7 @@ return array(
             ),
             'default' => '50',
             'eval' => array('tl_class' => 'w50'),
-            'dependsOn' => array('field' => 'autoplay'),
+            'dependsOn' => array('field' => 'two_columns'),
         ),
 
         'headline_above_columns' => array(
@@ -124,7 +126,7 @@ return array(
         'add_second_content' => array(
             'label' => array('Zweites Inhaltsfeld integrieren', ''),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'w50 clr'),
+            'eval' => array('tl_class' => 'w50 clr', 'submitOnChange' => true),
             'dependsOn' => array(
                 'field' => 'two_columns',
             ),
@@ -194,6 +196,86 @@ return array(
             ),
         ),
 
+        'headline_column_image_options' => array(
+            'label' => ['Bildoptionen (Headline-Spalte)'],
+            'inputType' => 'group',
+            'dependsOn' => array(
+                'field' => 'add_second_content',
+            ),
+        ),
+        'add_headline_column_image' => array(
+            'label' => array('Bild in Headline-Spalte hinzufügen', 'Ein einzelnes Bild, das in der Headline-Spalte unter dem zweiten Inhalt angezeigt wird.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'add_second_content',
+            ),
+        ),
+        'headline_column_image' => array(
+            'label' => array('Bild für Headline-Spalte auswählen', ''),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => \Contao\Config::get('validImageTypes'),
+                'tl_class' => 'clr'
+            ),
+            'dependsOn' => array(
+                'field' => 'add_headline_column_image',
+            ),
+        ),
+        'headline_column_image_size' => array(
+            'label' => array('Bildgröße (Headline-Spalte)', ''),
+            'inputType' => 'imageSize',
+            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => 'w50'
+            ),
+            'dependsOn' => array(
+                'field' => 'add_headline_column_image',
+            ),
+        ),
+        'headline_column_open_lightbox' => array(
+            'label' => array('Bild in Lightbox öffnen (Headline-Spalte)', ''),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'add_headline_column_image',
+            ),
+        ),
+
+        'headline_column_buttons' => array(
+            'label' => array('Buttons (Headline-Spalte)', ''),
+            'elementLabel' => '%s. Button',
+            'inputType' => 'list',
+            'minItems' => 0,
+            'maxItems' => 20,
+            'eval' => array('tl_class' => ' clr'),
+            'fields' => ButtonHelper::getButtonConfig(),
+            'dependsOn' => array(
+                'field' => 'add_second_content',
+            ),
+        ),
+
+        'headline_column_button_alignment' => array(
+            'label' => array('Textausrichtung der Buttons (Headline-Spalte)', ''),
+            'inputType' => 'select',
+            'options' => array(
+                'text-lg-start' => 'Linksbündig (Standard)',
+                'text-lg-center' => 'Zentriert',
+                'text-lg-end' => 'Rechtsbündig',
+            ),
+            'default' => 'text-lg-start',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'add_second_content',
+            ),
+        ),
+
         'column_vertical_alignment' => array(
             'label' => array('Vertikale Ausrichtung der Spalten', 'Gilt nur bei zweispaltiger Ansicht.'),
             'inputType' => 'select',
@@ -220,7 +302,7 @@ return array(
         'content_column_css_class' => array(
             'label' => array('Zusätzliche CSS-Klasse für Inhaltsspalte', ''),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50 clr'),
+            'eval' => array('tl_class' => 'w50 '),
             'dependsOn' => array(
                 'field' => 'two_columns',
             ),
@@ -244,17 +326,22 @@ return array(
             'eval' => array('tl_class' => 'w50 clr')
         ),
 
-        'image_options_group' => array(
-            'label' => ['Bild Optionen (Textspalte)'],
-            'inputType' => 'group',
-            'eval' => array('tl_class' => 'clr'),
-        ),
 
         'add_images' => array(
             'label' => array('Bilder hinzufügen', ''),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'w50 clr'),
         ),
+
+        'image_options_group' => array(
+            'label' => ['Bild Optionen (Textspalte)'],
+            'inputType' => 'group',
+            'eval' => array('tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'add_images',
+            ),
+        ),
+
 
         'deactivate_slider' => array(
             'label' => array('Bildanzeige Modus', 'Wie sollen die Bilder dargestellt werden?'),
@@ -266,9 +353,7 @@ return array(
                 'both' => 'Immer Liste',
             ),
             'eval' => array('tl_class' => ' clr'),
-            'dependsOn' => array(
-                'field' => 'add_images',
-            ),
+
         ),
 
         'headline_image_size' => array(
@@ -281,18 +366,14 @@ return array(
                 'includeBlankOption' => true,
                 'tl_class' => 'clr'
             ),
-            'dependsOn' => array(
-                'field' => 'add_images',
-            ),
+
         ),
 
         'open_lightbox' => array(
             'label' => array('Bilder in Lightbox öffnen', ''),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr'),
-            'dependsOn' => array(
-                'field' => 'add_images',
-            ),
+
         ),
 
         'multiSRC' => [
@@ -307,9 +388,7 @@ return array(
                 'isGallery' => true,
                 'extensions' => 'jpg,jpeg,png,svg,webp',
             ),
-            'dependsOn' => array(
-                'field' => 'add_images',
-            ),
+
         ],
 
         'image_spacing_class' => array(
@@ -404,6 +483,21 @@ return array(
             'fields' => ButtonHelper::getButtonConfig(),
             'dependsOn' => array(
                 'field' => 'two_columns',
+            ),
+        ),
+
+        'button_group_text_alignment' => array(
+            'label' => array('Textausrichtung der Buttons', 'Gilt für die gesamte Button-Gruppe in der Textspalte.'),
+            'inputType' => 'select',
+            'options' => array(
+                'text-lg-start' => 'Linksbündig',
+                'text-lg-center' => 'Zentriert',
+                'text-lg-end' => 'Rechtsbündig (Standard)',
+            ),
+            'default' => 'text-lg-end',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'two_columns', // Nur anzeigen, wenn auch Buttons möglich sind
             ),
         ),
 

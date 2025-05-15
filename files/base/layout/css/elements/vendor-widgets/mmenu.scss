@@ -130,7 +130,7 @@
     &.active, &.trail {
       background-color: var(--mm-spn-active-bg);
 
-      > a.active, > a.trail {
+      > .active, > .trail {
         color: var(--mm-spn-active-color)
       }
 
@@ -141,7 +141,7 @@
       }
     }
 
-    a {
+    a, span {
       padding: 0;
       line-height: var(--mm-spn-item-height);
       background-color: transparent;
@@ -163,6 +163,11 @@
     &:before, &:after {
       display: none;
     }
+  }
+
+  .extra-content{
+    --mm-spn-active-bg: transparent;
+    --mm-spn-active-color: var(--bs-body-color);
   }
 
 

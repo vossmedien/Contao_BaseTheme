@@ -70,11 +70,24 @@ if (!function_exists('load_theme_assets_from_manifest')) {
         $themeJsDir = $projectRoot . '/files/base/layout/js/_' . $themeName;
         $individualVendorJsConfigFile = $themeJsDir . '/theme.js_vendors.php';
 
+
+
+
+
         if (file_exists($individualVendorJsConfigFile)) {
             $vendorScriptConfigs = require $individualVendorJsConfigFile;
+
+
+
+
             if (is_array($vendorScriptConfigs)) {
                 // NEU: Korrekter Web-Pfad zur Basis des Vendor-Verzeichnisses für dieses Theme
                 $vendorDestWebPathBase = '/files/base/layout/js/dist/' . $themeName . '/vendor/';
+
+
+
+
+
                 foreach ($vendorScriptConfigs as $scriptConfig) {
                     if (is_array($scriptConfig) && isset($scriptConfig['src']) && isset($scriptConfig['attributes'])) {
                         // $scriptConfig['src'] ist der Pfad relativ zu node_modules, z.B. 'js-cookie/dist/js.cookie.min.js'

@@ -22,152 +22,370 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Header Scrolling Class (is-scrolling)
-document.addEventListener('DOMContentLoaded', function() {
-  const header = document.querySelector('header');
+document.addEventListener('DOMContentLoaded', function () {
+    const header = document.querySelector('header');
 
-  window.addEventListener('scroll', function() {
-    // Check both window.pageYOffset and document.documentElement.scrollTop
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    if (scrollTop > 0) {
-      header.classList.add('is-scrolling');
-    } else {
-      header.classList.remove('is-scrolling');
+    window.addEventListener('scroll', function () {
+        // Check both window.pageYOffset and document.documentElement.scrollTop
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > 0) {
+            header.classList.add('is-scrolling');
+        } else {
+            header.classList.remove('is-scrolling');
+        }
+    });
+});
+
+// Combined DOMContentLoaded Listener for Article Störer and Navigation
+document.addEventListener('DOMContentLoaded', function () {
+
+    // --- Variables and Functions for Article Navigation ---
+    const articleNavContainer = document.getElementById('articleNav');
+    const articleContent = document.querySelector('.col-12.col-lg-7[data-animation="animate__fadeIn"]');
+    let navList = articleNavContainer ? articleNavContainer.querySelector('.list-arrow') : null;
+    const headings = articleContent ? articleContent.querySelectorAll('h2, h3, h4') : [];
+
+    function scrollToAnchorHandler(e) {
+        e.stopPropagation(); // Verhindert, dass das Event weiter nach oben blubbert (direkt am Anfang)
+        e.preventDefault(); // Standard-Redirect verhindern
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            const headerOffset = document.querySelector('header') ? document.querySelector('header').offsetHeight : 0;
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 20;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth"
+            });
+        }
     }
-  });
+
+    const generateNavList = (listElement) => {
+        if (!listElement || headings.length === 0) {
+             // Hide "Direkt zu:" if no headings or list element
+            if(articleNavContainer) {
+                const direktZuHeading = articleNavContainer.querySelector('strong'); 
+                if(direktZuHeading) direktZuHeading.style.display = 'none';
+            }
+            return;
+        }
+
+        listElement.innerHTML = ''; // Clear list
+        headings.forEach((heading, index) => {
+            const headingText = heading.textContent.trim();
+            const headingId = 'anker-' + index + '-' + headingText.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+            // Ensure heading has an ID for targeting
+             if (!heading.id) {
+                 heading.id = headingId;
+             }
+
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + heading.id; // Use the actual or newly set ID
+            a.textContent = headingText;
+
+            if (heading.tagName === 'H3') {
+                li.classList.add('ms-2');
+            } else if (heading.tagName === 'H4') {
+                li.classList.add('ms-4');
+            }
+
+            li.appendChild(a);
+            listElement.appendChild(li);
+        });
+
+        // Show "Direkt zu:" again
+        if(articleNavContainer) {
+            const direktZuHeading = articleNavContainer.querySelector('strong');
+            if(direktZuHeading) direktZuHeading.style.display = '';
+        }
+
+        // Attach scroll listeners
+        listElement.querySelectorAll('a[href^="#"]').forEach(anchor => {
+             anchor.removeEventListener('click', scrollToAnchorHandler);
+             anchor.addEventListener('click', scrollToAnchorHandler);
+        });
+    };
+
+    // --- Variables and Functions for Article Info Störer ---
+    const articleInfoOriginal = document.querySelector('.col12.col-lg-5[data-animation="animate__fadeIn"] .article-info');
+    const articleNavOriginal = document.getElementById('articleNav'); // Needed for content cloning
+    const existingStoererWrapper = document.querySelector('.is-fixed.content--element.ce_rsce_stoerer.js-stoerer-ready');
+    const existingStoerer130_0 = existingStoererWrapper ? existingStoererWrapper.querySelector('#stoerer-130-0') : null;
+    let stoerer130_1 = null;
+    let isMobileLayoutActive = false;
+
+    function createStoerer130_1() {
+        const newStoerer = document.createElement('div');
+        newStoerer.id = 'stoerer-130-1';
+        newStoerer.className = 'ce--stoerer is-expandable is-flush-right article-info-nav-stoerer';
+        newStoerer.style.right = '0px';
+        newStoerer.style.setProperty('--stoerer-padding', '10px'); 
+        newStoerer.style.zIndex = '1';
+
+        newStoerer.innerHTML = `
+          <div class="stoerer-inner-wrapper animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
+            <div class="stoerer-trigger">
+                 <svg class="svg-image" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  version="1.1" id="Capa_1" width="40px" height="40px" viewBox="0 0 416.979 416.979" xml:space="preserve">
+                     <g>
+                     	<path d="M356.004,61.156c-81.37-81.47-213.377-81.551-294.848-0.182c-81.47,81.371-81.552,213.379-0.181,294.85   c81.369,81.47,213.378,81.551,294.849,0.181C437.293,274.636,437.375,142.626,356.004,61.156z M237.6,340.786   c0,3.217-2.607,5.822-5.822,5.822h-46.576c-3.215,0-5.822-2.605-5.822-5.822V167.885c0-3.217,2.607-5.822,5.822-5.822h46.576   c3.215,0,5.822,2.604,5.822,5.822V340.786z M208.49,137.901c-18.618,0-33.766-15.146-33.766-33.765   c0-18.617,15.147-33.766,33.766-33.766c18.619,0,33.766,15.148,33.766,33.766C242.256,122.755,227.107,137.901,208.49,137.901z"/>
+                     </g>
+                 </svg> <!-- Info-Icon -->
+            </div>
+            <div class="stoerer--content">
+              <div class="stoerer-content--inner">
+                <div class="article-info-content mb-1"> 
+                  <!-- Placeholder for article info -->
+                </div>
+                <div class="article-nav-content">
+                  <!-- Placeholder for article nav -->
+                </div> 
+              </div>
+            </div>
+          </div>
+        `; 
+
+        return newStoerer;
+      }
+
+    function handleResize() {
+        if (!articleInfoOriginal || !existingStoererWrapper) return; // Exit if elements are missing
+
+        const viewportWidth = window.innerWidth;
+
+        if (viewportWidth < 992) {
+          // --- Mobile Ansicht (< 992px) ---
+          if (!isMobileLayoutActive) {
+            articleInfoOriginal.style.display = 'none';
+
+            // 1. Störer #stoerer-130-1 erstellen und einfügen (falls noch nicht da)
+            if (!existingStoererWrapper.querySelector('#stoerer-130-1')) {
+              stoerer130_1 = createStoerer130_1();
+              existingStoererWrapper.appendChild(stoerer130_1);
+              existingStoererWrapper.dispatchEvent(new CustomEvent('stoererAdded', {bubbles: true}));
+            } else {
+                 stoerer130_1 = existingStoererWrapper.querySelector('#stoerer-130-1'); // Ensure we have the reference
+            }
+
+            // 2. Inhalte für #stoerer-130-1 kopieren/generieren
+            if (stoerer130_1) {
+              const infoContentArea = stoerer130_1.querySelector('.article-info-content');
+              const navContentContainer = stoerer130_1.querySelector('.article-nav-content');
+
+              // Artikel-Info (ohne Nav)
+              if (infoContentArea && articleInfoOriginal) {
+                const clonedInfo = articleInfoOriginal.cloneNode(true);
+                const navToRemove = clonedInfo.querySelector('#articleNav');
+                if (navToRemove) navToRemove.remove();
+                infoContentArea.innerHTML = clonedInfo.innerHTML;
+              }
+
+              // Artikel-Nav
+              if (navContentContainer && articleNavOriginal) {
+                    navContentContainer.innerHTML = '';
+                    const originalStrong = articleNavOriginal.querySelector('strong');
+                     if (originalStrong) {
+                        navContentContainer.appendChild(originalStrong.cloneNode(true));
+                     } else {
+                        const strongTag = document.createElement('strong');
+                        strongTag.className = 'd-block mt-2 mb-1';
+                        strongTag.textContent = 'Direkt zu:';
+                        navContentContainer.appendChild(strongTag);
+                     }
+
+                     const mobileNavList = document.createElement('ul');
+                     mobileNavList.className = 'list-arrow';
+                     navContentContainer.appendChild(mobileNavList);
+
+                     // *** HIER ist der Aufruf ***
+                     generateNavList(mobileNavList);
+                     
+                     // --- NEU: Event auslösen, damit navigationHandling.js aktualisiert wird ---
+                     document.dispatchEvent(new CustomEvent('articleNavGenerated'));
+                     // --- ENDE NEU ---
+               }
+            }
+
+            isMobileLayoutActive = true;
+          }
+
+        } else {
+          // --- Desktop Ansicht (>= 992px) ---
+          if (isMobileLayoutActive) {
+            articleInfoOriginal.style.display = '';
+
+            if (stoerer130_1) {
+              stoerer130_1.remove();
+              stoerer130_1 = null;
+            }
+            // Desktop-Liste neu generieren
+            if (navList) generateNavList(navList);
+
+            isMobileLayoutActive = false;
+          }
+        }
+      }
+
+    // --- Initial Setup ---
+    if (articleContent && headings.length > 0) {
+         if(navList) {
+             generateNavList(navList); // Generate initial desktop nav list
+             document.dispatchEvent(new CustomEvent('articleNavGenerated'));
+         }
+    } else if (articleNavContainer) {
+        // Hide "Direkt zu:" if no headings found initially
+        const direktZuHeading = articleNavContainer.querySelector('strong');
+        if(direktZuHeading) direktZuHeading.style.display = 'none';
+    }
+
+    // Add listener for Störer logic if relevant elements exist
+    if (articleInfoOriginal && existingStoererWrapper) {
+         // Initial check
+         handleResize();
+         // Listener for resize
+         let resizeTimerStorer;
+         window.addEventListener('resize', function () {
+             clearTimeout(resizeTimerStorer);
+             resizeTimerStorer = setTimeout(handleResize, 150);
+         });
+    }
+
 });
 
 // Main Nav Level 2 Sizing (Full Width & Alignment)
-document.addEventListener('DOMContentLoaded', function() {
-  // MainNav Element finden
-  const mainNav = document.getElementById('mainNav');
+document.addEventListener('DOMContentLoaded', function () {
+    // MainNav Element finden
+    const mainNav = document.getElementById('mainNav');
 
-  // Hilfsfunktion zur genauen Breitenberechnung
-  function getActualWidth(element) {
-    const styles = window.getComputedStyle(element);
-    const width = element.offsetWidth;
-    return width;
-  }
+    // Hilfsfunktion zur genauen Breitenberechnung
+    function getActualWidth(element) {
+        const styles = window.getComputedStyle(element);
+        const width = element.offsetWidth;
+        return width;
+    }
 
-  // Hilfsfunktion zur Berechnung der genauen Position
-  function getOffset(element) {
-    const rect = element.getBoundingClientRect();
-    return {
-      left: rect.left + window.scrollX,
-      width: rect.width
-    };
-  }
+    // Hilfsfunktion zur Berechnung der genauen Position
+    function getOffset(element) {
+        const rect = element.getBoundingClientRect();
+        return {
+            left: rect.left + window.scrollX,
+            width: rect.width
+        };
+    }
 
-  function updateSizes() {
-    if (!mainNav) return;
+    function updateSizes() {
+        if (!mainNav) return;
 
-    // Genaue Berechnung der mainNav-Größe
-    const mainNavOffset = getOffset(mainNav);
-    const mainNavWidth = getActualWidth(mainNav);
-    const mainNavLeft = mainNavOffset.left;
+        // Genaue Berechnung der mainNav-Größe
+        const mainNavOffset = getOffset(mainNav);
+        const mainNavWidth = getActualWidth(mainNav);
+        const mainNavLeft = mainNavOffset.left;
 
-    // Für jedes .level_2 Element
-    document.querySelectorAll('#mainNav .level_2').forEach(function(level2) {
-      // Setze die Breite des .level_2 Elements
-      level2.style.width = mainNavWidth + 'px';
+        // Für jedes .level_2 Element
+        document.querySelectorAll('#mainNav .level_2').forEach(function (level2) {
+            // Setze die Breite des .level_2 Elements
+            level2.style.width = mainNavWidth + 'px';
 
-      // Berechne, wie weit von links der Wrapper ist
-      const wrapper = level2.closest('.level_2-wrapper');
-      if (wrapper) {
-        const wrapperOffset = getOffset(wrapper);
-        const wrapperLeft = wrapperOffset.left;
+            // Berechne, wie weit von links der Wrapper ist
+            const wrapper = level2.closest('.level_2-wrapper');
+            if (wrapper) {
+                const wrapperOffset = getOffset(wrapper);
+                const wrapperLeft = wrapperOffset.left;
 
-        // Berechne den Unterschied und wende ihn als margin-left an
-        const marginLeft = mainNavLeft - wrapperLeft;
-        level2.style.marginLeft = marginLeft + 'px';
+                // Berechne den Unterschied und wende ihn als margin-left an
+                const marginLeft = mainNavLeft - wrapperLeft;
+                level2.style.marginLeft = marginLeft + 'px';
 
-        //console.log('Wrapper Left:', wrapperLeft, 'Margin applied:', marginLeft);
-      }
+                //console.log('Wrapper Left:', wrapperLeft, 'Margin applied:', marginLeft);
+            }
+        });
+    }
+
+    // Initialisierung ausführen
+    updateSizes();
+
+    // Bei Fenstergrößenänderung aktualisieren (mit Debounce)
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(updateSizes, 100);
     });
-  }
 
-  // Initialisierung ausführen
-  updateSizes();
-
-  // Bei Fenstergrößenänderung aktualisieren (mit Debounce)
-  let resizeTimer;
-  window.addEventListener('resize', function() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(updateSizes, 100);
-  });
-
-  // Bei Laden von Bildern oder Schriften auch aktualisieren
-  window.addEventListener('load', updateSizes);
-  document.fonts.ready.then(updateSizes);
+    // Bei Laden von Bildern oder Schriften auch aktualisieren
+    window.addEventListener('load', updateSizes);
+    document.fonts.ready.then(updateSizes);
 });
 
 // Scroll Progress Bar & Scroll-to-Top Button
-document.addEventListener('DOMContentLoaded', function() {
-  // Erstelle Progress-Bar
-  const progressBar = document.createElement('div');
-  progressBar.className = 'scroll-progress-bar';
-  document.body.appendChild(progressBar);
+document.addEventListener('DOMContentLoaded', function () {
+    // Erstelle Progress-Bar
+    const progressBar = document.createElement('div');
+    progressBar.className = 'scroll-progress-bar';
+    document.body.appendChild(progressBar);
 
-  // Erstelle oder finde den Scroll-to-Top Button
-  let scrollTopBtn = document.querySelector('.BodyScrollToTop');
+    // Erstelle oder finde den Scroll-to-Top Button
+    let scrollTopBtn = document.querySelector('.BodyScrollToTop');
 
-  if (!scrollTopBtn) {
-    // Button erstellen
-    scrollTopBtn = document.createElement('div');
-    scrollTopBtn.className = 'BodyScrollToTop';
+    if (!scrollTopBtn) {
+        // Button erstellen
+        scrollTopBtn = document.createElement('div');
+        scrollTopBtn.className = 'BodyScrollToTop';
 
-    // Ring-Container erstellen
-    const ringContainer = document.createElement('div');
-    ringContainer.className = 'progress-ring-holder';
+        // Ring-Container erstellen
+        const ringContainer = document.createElement('div');
+        ringContainer.className = 'progress-ring-holder';
 
-    // Ring erstellen
-    const ring = document.createElement('div');
-    ring.className = 'progress-ring';
+        // Ring erstellen
+        const ring = document.createElement('div');
+        ring.className = 'progress-ring';
 
-    // Pfeil-Container (wird durch CSS erstellt)
-    const arrowContainer = document.createElement('div');
-    arrowContainer.className = 'arrow-holder';
+        // Pfeil-Container (wird durch CSS erstellt)
+        const arrowContainer = document.createElement('div');
+        arrowContainer.className = 'arrow-holder';
 
-    // Zusammenbauen
-    ringContainer.appendChild(ring);
-    scrollTopBtn.appendChild(ringContainer);
-    scrollTopBtn.appendChild(arrowContainer);
-    document.body.appendChild(scrollTopBtn);
+        // Zusammenbauen
+        ringContainer.appendChild(ring);
+        scrollTopBtn.appendChild(ringContainer);
+        scrollTopBtn.appendChild(arrowContainer);
+        document.body.appendChild(scrollTopBtn);
 
-    // Klick-Ereignis
-    scrollTopBtn.addEventListener('click', function() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-
-  // Update beim Scrollen
-  window.addEventListener('scroll', function() {
-    // Berechne Scroll-Fortschritt
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrollProgress = scrollTop / scrollHeight;
-
-    // Aktualisiere Progressbar oben
-    progressBar.style.width = (scrollProgress * 100) + '%';
-
-    // CSS-Variable für den Fortschritt setzen
-    document.documentElement.style.setProperty('--scroll-progress', scrollProgress);
-
-    // Zeige/verstecke den Button
-    if (scrollTop > 300) {
-      scrollTopBtn.style.opacity = '1';
-      scrollTopBtn.style.visibility = 'visible';
-    } else {
-      scrollTopBtn.style.opacity = '0';
-      scrollTopBtn.style.visibility = 'hidden';
+        // Klick-Ereignis
+        scrollTopBtn.addEventListener('click', function () {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
     }
-  });
+
+    // Update beim Scrollen
+    window.addEventListener('scroll', function () {
+        // Berechne Scroll-Fortschritt
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrollProgress = scrollTop / scrollHeight;
+
+        // Aktualisiere Progressbar oben
+        progressBar.style.width = (scrollProgress * 100) + '%';
+
+        // CSS-Variable für den Fortschritt setzen
+        document.documentElement.style.setProperty('--scroll-progress', scrollProgress);
+
+        // Zeige/verstecke den Button
+        if (scrollTop > 300) {
+            scrollTopBtn.style.opacity = '1';
+            scrollTopBtn.style.visibility = 'visible';
+        } else {
+            scrollTopBtn.style.opacity = '0';
+            scrollTopBtn.style.visibility = 'hidden';
+        }
+    });
 });
 
 // Consent Management Form Handling (AGB Toggle & HubSpot Submit Trigger)
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.ce_form').forEach(formContainer => {
         const form = formContainer.querySelector('form');
         if (!form) return;
@@ -176,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const agbNotice = form.querySelector('.agb_notice');
 
         if (!agbCheckboxContainer || !agbNotice) {
-             return;
+            return;
         }
 
         const agbCheckbox = agbCheckboxContainer.querySelector('input[type="checkbox"][name="agb_akzeptiert"]');
@@ -245,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } catch (e) {
                     hasConsent = false;
                 }
-           }
+            }
 
             adjustmentNeeded = hasConsent !== lastKnownConsentForS10;
 
@@ -265,46 +483,49 @@ document.addEventListener('DOMContentLoaded', function() {
             initialSetupDone = true;
             checkConsentAndAdjustForm();
             try {
-                 __cmp("addEventListener", ["consent", handleConsentChangeEvent, false], null);
-                 __cmp('addEventListener', ["settings", handleConsentChangeEvent, false], null);
-           } catch (e) {}
+                __cmp("addEventListener", ["consent", handleConsentChangeEvent, false], null);
+                __cmp('addEventListener', ["settings", handleConsentChangeEvent, false], null);
+            } catch (e) {
+            }
         }
 
         function setupInitialConsentListener() {
-             if (typeof __cmp === 'function') {
-                 try {
-                     __cmp("addEventListener", ["consent", handleInitialConsent, false], null);
-                     return true;
-                 } catch (e) {}
-             }
-             return false;
+            if (typeof __cmp === 'function') {
+                try {
+                    __cmp("addEventListener", ["consent", handleInitialConsent, false], null);
+                    return true;
+                } catch (e) {
+                }
+            }
+            return false;
         }
 
         function initializeConsentHandling() {
-             cmpCheckCounter++;
-             if (typeof __cmp === 'function') {
-                  if (cmpCheckInterval) clearInterval(cmpCheckInterval);
-                  const listenerRegistered = setupInitialConsentListener();
-                  checkConsentAndAdjustForm();
-                  if (!listenerRegistered) {
-                  }
-              } else if (cmpCheckCounter >= MAX_CMP_CHECKS) {
-                  if (cmpCheckInterval) clearInterval(cmpCheckInterval);
-                  if (lastKnownConsentForS10 !== false) {
-                     adjustFormForConsent(false);
-                     lastKnownConsentForS10 = false;
-                  }
-             }
+            cmpCheckCounter++;
+            if (typeof __cmp === 'function') {
+                if (cmpCheckInterval) clearInterval(cmpCheckInterval);
+                const listenerRegistered = setupInitialConsentListener();
+                checkConsentAndAdjustForm();
+                if (!listenerRegistered) {
+                }
+            } else if (cmpCheckCounter >= MAX_CMP_CHECKS) {
+                if (cmpCheckInterval) clearInterval(cmpCheckInterval);
+                if (lastKnownConsentForS10 !== false) {
+                    adjustFormForConsent(false);
+                    lastKnownConsentForS10 = false;
+                }
+            }
         }
 
         cmpCheckInterval = setInterval(initializeConsentHandling, 100);
 
         if (submitButton) {
-            submitButton.addEventListener('click', function() {
-               if (form.checkValidity() && typeof __cmp === 'function') { 
+            submitButton.addEventListener('click', function () {
+                if (form.checkValidity() && typeof __cmp === 'function') {
                     try {
                         __cmp('setVendorConsent', ['s10', 1]);
-                   } catch (e) {}
+                    } catch (e) {
+                    }
                 }
             });
         }

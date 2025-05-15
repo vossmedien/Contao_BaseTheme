@@ -23,22 +23,20 @@ $GLOBALS['TL_DCA']['tl_form']['palettes']['default'] = str_replace(
 $GLOBALS['TL_DCA']['tl_form']['fields']['enableHubspot'] = [
     'exclude'   => true,
     'inputType' => 'checkbox',
-    'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50 m12'],
+    'eval'      => ['tl_class' => 'w50 m12'],
     'sql'       => "char(1) NOT NULL default ''"
 ];
 
 $GLOBALS['TL_DCA']['tl_form']['fields']['hubspotPortalId'] = [
     'exclude'   => true,
     'inputType' => 'text',
-    'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50', 'doNotCopy' => true],
+    'eval'      => ['mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50', 'doNotCopy' => true],
     'sql'       => "varchar(255) NOT NULL default ''",
-    'dependsOn' => ['enableHubspot' => true]
 ];
 
 $GLOBALS['TL_DCA']['tl_form']['fields']['hubspotFormId'] = [
     'exclude'   => true,
     'inputType' => 'text',
-    'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50', 'doNotCopy' => true],
+    'eval'      => ['mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50', 'doNotCopy' => true],
     'sql'       => "varchar(255) NOT NULL default ''",
-    'dependsOn' => ['enableHubspot' => true]
-]; 
+];

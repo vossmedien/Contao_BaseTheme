@@ -1,0 +1,65 @@
+filter:
+  label:
+    bundesland: "Bundesland"
+    status: "Status"
+    property: "Eigentum"
+    size: "Größe (ha)"
+    leistung: "Leistung (MW)"
+    volllaststunden: "Volllaststunden"
+    irr: "IRR (%)"
+  status:
+    STARTED: "Gestartet"
+    OPEN_FOR_DIRECT_AWARDING: "Freihändige Vergabe möglich"
+    DIRECT_AWARDING: "In freihändiger Vergabe"
+    AWARDING: "In Vergabe"
+    PRE_RELEASE: "Vorankündigung"
+  property:
+    PRIVATE: "Privat"
+    PUBLIC: "Öffentlich" # Beispiel, falls dieser Wert von der API kommt
+  placeholder:
+    bundeslaender: "Alle Bundesländer"
+    status_values: "Alle Status"
+    property_values: "Alle Eigentumsformen"
+  button:
+    filter: "Filtern"
+    reset: "Zurücksetzen"
+    update_data: "Daten aktualisieren"
+  highlights_button: "Highlights"
+  no_options_available: "Keine Optionen verfügbar"
+  range:
+    min: "Min"
+    max: "Max"
+general:
+  no_auctions_for_criteria: "Es wurden keine Auktionen für Ihre Filterkriterien gefunden."
+
+# Hinzugefügte Schlüssel aus CaeliWindCaeliAuctionConnect.de.php
+auction_listing:
+  card:
+    title_prefix: "Fläche in"
+    image_alt_prefix: "Bild für Auktion"
+    countdown_prefix: "Auktionsbeginn in:"
+    countdown_suffix_days: "Tagen"
+    preview_button: "Vorschau"
+    details:
+      power: "Leistung"
+      area_size: "Flächengröße"
+      full_usage_hours: "Volllaststunden"
+      irr_before_rent: "IRR vor Pacht"
+      availability: "Verfügbarkeit"
+      availability_prefix: "ab"
+    footer_notice: "Planungsrechtliche Informationen nach Registrierung"
+    more_button: "Mehr erfahren"
+    unit:
+      mw: "MW"
+      ha: "ha"
+      h_per_a: "h/a"
+      percent: "%"
+  no_auctions_found: "Keine Auktionen gefunden."
+
+content_element:
+  no_auctions_for_criteria: "Keine Auktionen für die angegebenen Kriterien gefunden."
+
+detail:
+  raw_data_headline: "Rohdaten"
+  back_to_overview_button: "Zurück zur Übersicht"
+  auction_not_found: "Auktion nicht gefunden" 

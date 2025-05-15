@@ -27,7 +27,6 @@ class AuctionService
     private const CACHE_LIFETIME = 3600; // 1 Stunde
     private const CACHE_DIR = 'var/caeli-auction-data';
 
-    private ?string $apiToken = null;
     private ?string $csrfToken = null;
     private string $apiUrl;
     private string $apiUsername;
@@ -44,6 +43,8 @@ class AuctionService
      *   - 'value_type' (optional): Erwarteter Datentyp des Wertes ('string', 'int', 'float', 'bool'). Standard: 'string'.
      */
     private array $filterableFields = [
+        'id' => ['field' => 'id', 'type' => 'exact', 'value_type' => 'string'], // Für direkte ID-Filter
+        'auctionId' => ['field' => 'id', 'type' => 'exact', 'value_type' => 'string'], // Alias für ID-Filter, falls Benutzer auctionId schreibt
         'bundesland' => ['field' => 'bundesland', 'type' => 'lowercase_exact'],
         'landkreis' => ['field' => 'district', 'type' => 'lowercase_exact'], // Beachte: Feld heißt 'district' im Mapping
         'status' => ['field' => 'status', 'type' => 'exact'],
@@ -51,7 +52,7 @@ class AuctionService
         'leistung' => ['field' => 'leistung_mw', 'type' => 'minmax', 'value_type' => 'float'],
         'volllaststunden' => ['field' => 'volllaststunden', 'type' => 'minmax', 'value_type' => 'int'],
         'property' => ['field' => 'property', 'type' => 'exact'],
-        'focus' => ['field' => 'isAuctionInFocus', 'type' => 'exact', 'value_type' => 'bool'],
+        'focus' => ['field' => 'isAuctionInFocus', 'type' => 'exact', 'value_type' => 'bool'], // Zurück zu 'focus'
         'irr' => ['field' => 'internalRateOfReturnBeforeRent', 'type' => 'minmax', 'value_type' => 'float'],
         // Weitere Felder können hier hinzugefügt werden, z.B.:
         // 'some_bool_field' => ['field' => 'is_active', 'type' => 'exact', 'value_type' => 'bool'],
@@ -380,30 +381,6 @@ class AuctionService
             $mappedApiCount = count($mappedAuctions);
             $this->logger->info('[getPublicAuctions] Mapping von API-Daten beendet. ' . $mappedApiCount . ' von ' . ($apiRawCount - $filteredOutCount) . ' Auktionen (nach Statusfilter) erfolgreich gemappt (' . $mappingErrorsApi . ' Fehler). ' . $filteredOutCount . ' wurden wegen Status entfernt.');
 
-             // Fallback ohne Statusfilter (wie vorher), falls $mappedAuctions leer ist, aber $auctionsFromApi nicht
-             if ($mappedApiCount === 0 && $apiRawCount > 0 && $filteredOutCount === $apiRawCount) { // Nur wenn *alle* wegen Status gefiltert wurden
-                 $this->logger->warning('[getPublicAuctions] Alle Auktionen wurden durch den Status-Filter entfernt. Versuche Fallback ohne Status-Filter.');
-                 $statuses = array_map(fn($a) => $a['status'] ?? 'kein-status', $auctionsFromApi);
-                 $this->logger->debug('[getPublicAuctions] Verfügbare Status-Werte von API (für Fallback): ' . implode(', ', array_unique($statuses)));
-
-                $mappingErrorsFallback = 0;
-                foreach ($auctionsFromApi as $index => $auctionRaw) { // Erneut über Rohdaten iterieren
-                     try {
-                         $mappedAuction = $this->mapPublicAuctionToInternalFormat($auctionRaw);
-                         $mappedAuctions[] = $mappedAuction; // Füge zum selben Array hinzu
-                     } catch (\Throwable $e) {
-                         $mappingErrorsFallback++;
-                         $this->logger->error('[getPublicAuctions] FEHLER beim Mappen von API (Fallback, Index: ' . $index . '): ' . $e->getMessage(), [
-                             'auctionId_raw' => $auctionRaw['auctionId'] ?? 'unbekannt',
-                             'exception_trace' => $e->getTraceAsString()
-                         ]);
-                     }
-                 }
-                 $finalMappedCountFallback = count($mappedAuctions); // Endgültige Zahl nach Fallback
-                 $this->logger->info('[getPublicAuctions] Mapping von API-Daten (Fallback) beendet. Insgesamt ' . $finalMappedCountFallback . ' Auktionen gemappt (' . $mappingErrorsFallback . ' Fehler im Fallback).');
-             }
-
-
             $this->logger->info('[getPublicAuctions] Gebe ' . count($mappedAuctions) . ' gemappte Auktionen von API zurück.');
             return $mappedAuctions;
 
@@ -438,7 +415,7 @@ class AuctionService
         foreach ($allAuctions as $auction) {
             // DEBUGGING: Logge die ID jeder geprüften Auktion
             $currentAuctionIdForLog = $auction['id'] ?? ($auction['_raw_data']['auctionId'] ?? 'KEINE_ID_GEFUNDEN');
-            $this->logger->debug('[getAuctionsByIds] Prüfe Auktion mit ID: ' . $currentAuctionIdForLog);
+            // $this->logger->debug('[getAuctionsByIds] Prüfe Auktion mit ID: ' . $currentAuctionIdForLog);
 
             // Prüfe, ob die 'id' (die in mapPublicAuctionToInternalFormat als String gesetzt wird) existiert und im Array der gesuchten IDs ist
             if (isset($auction['id']) && in_array($auction['id'], $normalizedIds, true)) {
@@ -501,7 +478,7 @@ class AuctionService
             'availableFrom' => 'availableFrom',
             'property' => 'property',
             'planningLaw' => 'planningLaw',
-            'isAuctionInFocus' => 'isAuctionInFocus',
+            'focus' => 'isAuctionInFocus',
             'countDown' => 'countDown',
             // 'district' fehlt in deinem Beispiel, muss ggf. aus anderer Quelle kommen oder API angepasst werden?
             // Wenn 'district' doch vorhanden ist, hier hinzufügen: 'district' => 'district',
@@ -710,157 +687,378 @@ class AuctionService
     }
 
     /**
-     * Öffentliche Methode zum Abrufen von Auktionen
+     * Methode zum Abrufen der Auktionen mit Filterung und Sortierung.
+     * Kombiniert aus getMarketplaceList() und sortMarketplaceList() aus Cronjobs.php
      *
-     * @param array $filters Filter für die Auktionen
-     * @param bool $forceRefresh Erzwingt eine Aktualisierung der Daten (kein Cache)
-     * @return array
+     * @param array $filters Filter für die Auktionen im Format ['fieldKey' => 'wert'] oder für minmax-Felder: ['fieldKey' => ['min' => x, 'max' => y]]
+     * @param bool $forceRefresh Gibt an, ob der Cache ignoriert werden soll
+     * @param string|null $sortBy Das Feld, nach dem sortiert werden soll (für Abwärtskompatibilität)
+     * @param string $sortDirection Die Sortierrichtung ('asc' oder 'desc') (für Abwärtskompatibilität)
+     * @param array $sortRules Array von Sortierregeln im Format [['field' => 'feldname', 'direction' => 'asc'], ...]
+     * @return array Die gefilterten und sortierten Auktionen
      */
-    public function getAuctions(array $filters = [], bool $forceRefresh = false): array
+    public function getAuctions(array $filters = [], bool $forceRefresh = false, ?string $sortBy = null, string $sortDirection = 'asc', array $sortRules = []): array
     {
-        $this->logger->debug('[getAuctions] Auktionen werden abgerufen mit Filtern: ' . json_encode($filters));
+        $this->logger->debug('[getAuctions] Auktionen werden abgerufen', [ // War [TESTLOG-ERROR]
+            'raw_filters' => $filters,
+            'forceRefresh' => $forceRefresh,
+            'sortBy' => $sortBy,
+            'sortDirection' => $sortDirection,
+            'sortRules' => $sortRules,
+        ]);
 
-        // Auktionen abrufen (ggf. aus dem Cache)
         $auctions = $this->getPublicAuctions(!$forceRefresh);
-
         if ($auctions === null) {
-            $this->logger->error('[getAuctions] Keine Auktionsdaten von getPublicAuctions erhalten.');
+            $this->logger->debug('[getAuctions] Keine Auktionsdaten von getPublicAuctions erhalten.'); // War [TESTLOG-ERROR]
             return [];
         }
         $initialCount = count($auctions);
-        $this->logger->info('[getAuctions] ' . $initialCount . ' gemapte Auktionen von getPublicAuctions erhalten.');
+        $this->logger->info('[getAuctions] ' . $initialCount . ' gemapte Auktionen von getPublicAuctions erhalten.'); // Bleibt info
 
+        $structuredFilters = [];
+        foreach ($filters as $key => $value) {
+            if ($value === null || (is_string($value) && $value === '')) continue;
 
-        // Filter anwenden (auf die *gemappten* Daten)
-        if (!empty($filters)) {
-            $this->logger->debug('[getAuctions] Wende Filter an: ' . json_encode($filters));
+            if (str_ends_with($key, '_min')) {
+                $baseKey = substr($key, 0, -4);
+                if (!isset($this->filterableFields[$baseKey]) || $this->filterableFields[$baseKey]['type'] !== 'minmax') {
+                    $this->logger->warning("[getAuctions] Ungültiger _min Suffix für nicht-minmax Feld: {$baseKey}. Filter '$key' wird ignoriert.");
+                    continue;
+                }
+                $structuredFilters[$baseKey]['min'] = $value;
+            } elseif (str_ends_with($key, '_max')) {
+                $baseKey = substr($key, 0, -4);
+                if (!isset($this->filterableFields[$baseKey]) || $this->filterableFields[$baseKey]['type'] !== 'minmax') {
+                    $this->logger->warning("[getAuctions] Ungültiger _max Suffix für nicht-minmax Feld: {$baseKey}. Filter '$key' wird ignoriert.");
+                    continue;
+                }
+                $structuredFilters[$baseKey]['max'] = $value;
+            } else {
+                $structuredFilters[$key] = $value;
+            }
+        }
+        $this->logger->debug('[getAuctions] Strukturierte Filter für Verarbeitung:', $structuredFilters);
+
+        if (!empty($structuredFilters)) {
+            $this->logger->debug('[getAuctions] Wende strukturierte Filter an: ' . json_encode($structuredFilters));
             $filteredAuctions = [];
 
             foreach ($auctions as $auction) {
                 $include = true;
-                $auctionIdForLog = $auction['id'] ?? 'unbekannte_ID'; // Für Logging
+                $auctionIdForLog = $auction['id'] ?? 'unbekannte_ID';
 
-                foreach ($filters as $filterKey => $filterValue) {
-                    // Überspringe leere Filterwerte (außer bei boolschen Filtern, falls implementiert)
-                    if (empty($filterValue) && !is_bool($filterValue)) {
-                         // Optional: Loggen, dass Filter wegen leerem Wert übersprungen wird
-                         // $this->logger->debug("[getAuctions] Filter '$filterKey' übersprungen (leerer Wert).", ['auction_id' => $auctionIdForLog]);
+                foreach ($structuredFilters as $filterKeyWithPotentialSuffix => $filterValue) {
+                    if ($filterValue === null || (is_string($filterValue) && $filterValue === '' && !is_bool($filterValue)) || (is_array($filterValue) && empty($filterValue) && $filterKeyWithPotentialSuffix !== 'focus')) {
                         continue;
                     }
 
-                    // Prüfe, ob der Filter konfiguriert ist
-                    if (!isset($this->filterableFields[$filterKey])) {
-                        $this->logger->warning("[getAuctions] Unbekannter Filter '$filterKey' wurde ignoriert.", ['auction_id' => $auctionIdForLog]);
+                    $baseFilterKey = $filterKeyWithPotentialSuffix;
+                    $operatorSuffix = '';
+
+                    // Suffix-Extraktion für Operatoren wie __in, __ne, etc.
+                    if (str_ends_with($filterKeyWithPotentialSuffix, '__in')) {
+                        $operatorSuffix = '__in';
+                        $baseFilterKey = substr($filterKeyWithPotentialSuffix, 0, -4);
+                    } elseif (str_ends_with($filterKeyWithPotentialSuffix, '__not_in')) {
+                        $operatorSuffix = '__not_in';
+                        $baseFilterKey = substr($filterKeyWithPotentialSuffix, 0, -8);
+                    } elseif (str_ends_with($filterKeyWithPotentialSuffix, '__contains')) {
+                        $operatorSuffix = '__contains';
+                        $baseFilterKey = substr($filterKeyWithPotentialSuffix, 0, -10);
+                    } elseif (str_ends_with($filterKeyWithPotentialSuffix, '__ne')) {
+                        $operatorSuffix = '__ne';
+                        $baseFilterKey = substr($filterKeyWithPotentialSuffix, 0, -4);
+                    }
+                    // Hinweis: _min und _max Suffixe wurden bereits oben zu strukturierten Filtern verarbeitet.
+                    // $baseFilterKey ist hier der Schlüssel, wie er in $filterableFields definiert ist (z.B. 'status', 'size')
+
+                    if (!isset($this->filterableFields[$baseFilterKey])) {
+                        $this->logger->warning("[getAuctions] Unbekannter Basis-Filter-Schlüssel '$baseFilterKey' (abgeleitet von '$filterKeyWithPotentialSuffix') wurde ignoriert.");
                         continue;
                     }
 
-                    $config = $this->filterableFields[$filterKey];
+                    $config = $this->filterableFields[$baseFilterKey];
                     $auctionField = $config['field'];
-                    $filterType = $config['type'];
-                    $valueType = $config['value_type'] ?? 'string'; // Standard: string
+                    $configFilterType = $config['type'];
+                    $valueType = $config['value_type'] ?? 'string';
 
-                    // Hole den Wert aus der Auktion, prüfe auf Existenz
-                    if (!isset($auction[$auctionField])) {
-                        $this->logger->debug("[getAuctions] Filter '$filterKey' übersprungen (Feld '$auctionField' nicht in Auktion vorhanden).", ['auction_id' => $auctionIdForLog]);
-                         $include = false; // Auktionen ohne das Feld ausschließen
-                        break; // Zum nächsten Auktions-Datensatz gehen
+                    if (!array_key_exists($auctionField, $auction) && $configFilterType !== 'minmax') { // Bei minmax könnte das Feld fehlen, aber trotzdem gefiltert werden (z.B. Auktion hat keine Leistung angegeben)
+                        $this->logger->debug("[getAuctions] Filter '$filterKeyWithPotentialSuffix' übersprungen (Feld '$auctionField' nicht in Auktion vorhanden).", ['auction_id' => $auctionIdForLog, 'available_keys' => array_keys($auction)]);
+                        $include = false;
+                        break;
                     }
-                    $auctionValue = $auction[$auctionField];
+                    $auctionValue = $auction[$auctionField] ?? null; // null, wenn Feld nicht existiert (relevant für minmax)
 
-                    // --- Filterlogik basierend auf dem Typ ---
-                    switch ($filterType) {
+                    $actualFilterType = $configFilterType;
+                    if ($operatorSuffix === '__in' || $operatorSuffix === '__not_in') {
+                        $actualFilterType = 'in_or_not_in';
+                    } elseif ($operatorSuffix === '__contains') {
+                        $actualFilterType = 'contains';
+                    } elseif ($operatorSuffix === '__ne') {
+                        $actualFilterType = 'not_equal';
+                    }
+
+                    $this->logger->debug("[FilterLoop] Auktion: {$auctionIdForLog}, FilterKey: '$filterKeyWithPotentialSuffix', BaseKey: '$baseFilterKey', AuctionField: '$auctionField', AuctionValue: '" . (is_array($auctionValue) ? json_encode($auctionValue) : $auctionValue) . "' (Typ: " . gettype($auctionValue) . "), FilterValue: '" . (is_array($filterValue) ? json_encode($filterValue) : $filterValue) . "' (Typ: " . gettype($filterValue) . "), ActualType: '$actualFilterType'");
+
+                    switch ($actualFilterType) {
                         case 'exact':
-                            // Typumwandlung falls nötig
-                            if ($valueType === 'bool' && !is_bool($filterValue)) {
-                                $filterValue = filter_var($filterValue, FILTER_VALIDATE_BOOLEAN);
-                            } elseif ($valueType === 'int' && !is_int($filterValue)) {
-                                $filterValue = (int)$filterValue;
-                            } elseif ($valueType === 'float' && !is_float($filterValue)) {
-                                $filterValue = (float)$filterValue;
+                        case 'lowercase_exact':
+                            $isLowercase = ($actualFilterType === 'lowercase_exact');
+                            $compareAuctionValue = $isLowercase && is_string($auctionValue) ? strtolower($auctionValue) : $auctionValue;
+
+                            $valuesToCompareAgainst = [];
+                            if (is_string($filterValue) && str_contains($filterValue, ',')) {
+                                $valuesToCompareAgainst = explode(',', $filterValue);
+                            } elseif (is_array($filterValue)) {
+                                $valuesToCompareAgainst = $filterValue;
+                            } else {
+                                $valuesToCompareAgainst = [$filterValue];
                             }
-                             // Null-Prüfung für Status
-                             if ($auctionField === 'status' && ($auctionValue ?? null) !== $filterValue) {
-                                $this->logger->debug("[getAuctions] Filter '$filterKey' (exact) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_value' => $auctionValue ?? '?', 'filter_value' => $filterValue]);
+
+                            $matchFound = false;
+                            foreach ($valuesToCompareAgainst as $singleValue) {
+                                $currentCompareVal = trim((string)$singleValue);
+                                if ($isLowercase) {
+                                    $currentCompareVal = strtolower($currentCompareVal);
+                                }
+
+                                $typedSingleValue = null;
+                                if ($valueType === 'bool') {
+                                    if ($baseFilterKey === 'focus') {
+                                        $typedSingleValue = filter_var($filterValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                                        $this->logger->debug("[FilterDetail][{$baseFilterKey}] Focus Compare: AuctionVal='" . ($auctionValue ? 'TRUE' : 'FALSE') . "' (Type: " . gettype($auctionValue) . "), TypedFilterVal='" . ($typedSingleValue ? 'TRUE' : 'FALSE') . "' (Type: " . gettype($typedSingleValue) . ") from FilterInput '{$filterValue}'");
+                                        if ($auctionValue === $typedSingleValue) {
+                                            $matchFound = true;
+                                        }
+                                        break;
+                                    } else {
+                                        $typedSingleValue = filter_var($currentCompareVal, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                                    }
+                                    if ($typedSingleValue === null && $currentCompareVal !== '') {
+                                        $this->logger->debug("[FilterDetail][{$baseFilterKey}] Invalid boolean value '$currentCompareVal' for auction {$auctionIdForLog}");
+                                        continue;
+                                    }
+                                } elseif ($valueType === 'int') {
+                                    $typedSingleValue = (int)$currentCompareVal;
+                                } elseif ($valueType === 'float') {
+                                    $typedSingleValue = (float)$currentCompareVal;
+                                } else {
+                                    $typedSingleValue = $currentCompareVal;
+                                }
+                                $this->logger->debug("[FilterDetail][{$baseFilterKey}] Comparing: AuctionCompVal='{$compareAuctionValue}' (Type: " . gettype($compareAuctionValue) . ") WITH TypedFilterSingleVal='{$typedSingleValue}' (Type: " . gettype($typedSingleValue) . ")");
+                                if ($compareAuctionValue == $typedSingleValue) {
+                                    $matchFound = true;
+                                    $this->logger->debug("[FilterDetail][{$baseFilterKey}] Match found.");
+                                    break;
+                                }
+                            }
+
+                            if (!$matchFound) {
+                                $this->logger->debug("[FilterResult][{$baseFilterKey}] NO MATCH for auction {$auctionIdForLog}. AuctionVal='{$compareAuctionValue}', FilterValues='" . json_encode($valuesToCompareAgainst) . "'. Setting include=false.");
                                 $include = false;
-                             } elseif ($auctionField !== 'status' && $auctionValue != $filterValue) { // != für Typ-unsensiblen Vergleich, außer bei Status
-                                 $this->logger->debug("[getAuctions] Filter '$filterKey' (exact) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_value' => $auctionValue ?? '?', 'filter_value' => $filterValue]);
-                                 $include = false;
-                             }
+                            } else {
+                                $this->logger->debug("[FilterResult][{$baseFilterKey}] MATCH FOUND for auction {$auctionIdForLog}.");
+                            }
                             break;
 
-                        case 'lowercase_exact':
-                            if (strtolower((string)$auctionValue ?? '') !== strtolower((string)$filterValue)) {
-                                $this->logger->debug("[getAuctions] Filter '$filterKey' (lowercase_exact) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_value' => $auctionValue ?? '?', 'filter_value' => $filterValue]);
+                        case 'not_equal':
+                            $compareValueNE = $filterValue;
+                            if ($valueType === 'bool' && !is_bool($compareValueNE)) {
+                                $compareValueNE = filter_var($compareValueNE, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                            } elseif ($valueType === 'int' && !is_int($compareValueNE)) {
+                                $compareValueNE = (int)$compareValueNE;
+                            } elseif ($valueType === 'float' && !is_float($compareValueNE)) {
+                                $compareValueNE = (float)$compareValueNE;
+                            }
+                            if ($auctionValue == $compareValueNE) {
+                                $this->logger->debug("[getAuctions] Filter '$filterKeyWithPotentialSuffix' (not_equal) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_value' => $auctionValue, 'filter_value' => $compareValueNE]);
                                 $include = false;
                             }
                             break;
 
                         case 'minmax':
-                            if (!is_array($filterValue)) {
-                                $this->logger->warning("[getAuctions] Filter '$filterKey' (minmax) erfordert ein Array als Wert (gegeben: " . gettype($filterValue) . "). Filter ignoriert.", ['auction_id' => $auctionIdForLog]);
-                                break; // Ignoriere diesen spezifischen Filter für diese Auktion
+                            if (!is_array($filterValue) || (!isset($filterValue['min']) && !isset($filterValue['max']))) {
+                                $this->logger->warning("[FilterDetail][{$baseFilterKey}] Invalid minmax filter structure for auction {$auctionIdForLog}: " . json_encode($filterValue));
+                                break;
                             }
-                             if ($auctionValue === null) {
-                                 $this->logger->debug("[getAuctions] Filter '$filterKey' (minmax) übersprungen (kein Wert in Auktion).", ['auction_id' => $auctionIdForLog]);
-                                 $include = false; // Annahme: Auktionen ohne Wert rausfiltern
-                                 break; // Breche die Filterprüfung für DIESE Auktion ab, da min/max nicht anwendbar
-                             }
-
+                            if ($auctionValue === null) {
+                                $this->logger->debug("[FilterDetail][{$baseFilterKey}] Skipped minmax for auction {$auctionIdForLog} as auction value for '$auctionField' is null. Setting include=false.");
+                                $include = false;
+                                break;
+                            }
                             $numericAuctionValue = 0;
                             if ($valueType === 'int') {
                                 $numericAuctionValue = (int)$auctionValue;
                             } elseif ($valueType === 'float') {
                                 $numericAuctionValue = (float)$auctionValue;
                             } else {
-                                 $this->logger->warning("[getAuctions] Filter '$filterKey' (minmax) erfordert value_type 'int' oder 'float'. Aktuell: '$valueType'.", ['auction_id' => $auctionIdForLog]);
-                                 break;
+                                $this->logger->warning("[FilterDetail][{$baseFilterKey}] Minmax for auction {$auctionIdForLog} requires value_type 'int' or 'float'. Found '$valueType' for auction value '$auctionValue'. Setting include=false.");
+                                $include = false;
+                                break;
                             }
 
+                            $minValueFromFilter = $filterValue['min'] ?? null;
+                            $maxValueFromFilter = $filterValue['max'] ?? null;
 
-                            // Min-Prüfung
-                            if (!empty($filterValue['min'])) {
-                                $minFilter = ($valueType === 'int') ? (int)$filterValue['min'] : (float)$filterValue['min'];
+                            $this->logger->debug("[FilterDetail][{$baseFilterKey}] MinMax Check for auction {$auctionIdForLog}, Field '$auctionField': AuctionVal='{$numericAuctionValue}' (Type: {$valueType}), FilterMin='{$minValueFromFilter}', FilterMax='{$maxValueFromFilter}'");
+
+                            if ($minValueFromFilter !== null) {
+                                $minFilter = ($valueType === 'int') ? (int)$minValueFromFilter : (float)$minValueFromFilter;
                                 if ($numericAuctionValue < $minFilter) {
-                                    $this->logger->debug("[getAuctions] Filter '$filterKey' (min) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_value' => $numericAuctionValue, 'filter_min' => $minFilter]);
+                                    $this->logger->debug("[FilterResult][{$baseFilterKey}] Min condition NOT MET for auction {$auctionIdForLog}: Val '{$numericAuctionValue}' < Min '{$minFilter}'. Setting include=false.");
                                     $include = false;
+                                } else {
+                                    $this->logger->debug("[FilterResult][{$baseFilterKey}] Min condition MET for auction {$auctionIdForLog}: Val '{$numericAuctionValue}' >= Min '{$minFilter}'.");
                                 }
                             }
-
-                            // Max-Prüfung (nur wenn Min-Prüfung bestanden oder nicht vorhanden)
-                            if ($include && !empty($filterValue['max'])) {
-                                $maxFilter = ($valueType === 'int') ? (int)$filterValue['max'] : (float)$filterValue['max'];
+                            if ($include && $maxValueFromFilter !== null) {
+                                $maxFilter = ($valueType === 'int') ? (int)$maxValueFromFilter : (float)$maxValueFromFilter;
                                 if ($numericAuctionValue > $maxFilter) {
-                                    $this->logger->debug("[getAuctions] Filter '$filterKey' (max) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_value' => $numericAuctionValue, 'filter_max' => $maxFilter]);
+                                    $this->logger->debug("[FilterResult][{$baseFilterKey}] Max condition NOT MET for auction {$auctionIdForLog}: Val '{$numericAuctionValue}' > Max '{$maxFilter}'. Setting include=false.");
                                     $include = false;
+                                } else {
+                                    $this->logger->debug("[FilterResult][{$baseFilterKey}] Max condition MET for auction {$auctionIdForLog}: Val '{$numericAuctionValue}' <= Max '{$maxFilter}'.");
                                 }
+                            }
+                            if($include) { // Log if it passed overall
+                                $this->logger->debug("[FilterResult][{$baseFilterKey}] MinMax conditions OVERALL MET for auction {$auctionIdForLog}.");
                             }
                             break;
 
-                        // Füge hier weitere Filtertypen hinzu, falls benötigt (z.B. 'contains', 'date_range', etc.)
+                        case 'in_or_not_in':
+                            $listValues = is_array($filterValue) ? $filterValue : array_map('trim', explode(',', (string)$filterValue));
+                            $foundInList = false;
+                            // $isLowercase muss hier basierend auf dem configFilterType des baseFilterKey bestimmt werden
+                            $isLowercase = ($config['type'] === 'lowercase_exact'); 
+
+                            foreach ($listValues as $lv) {
+                                $compareLv = $lv;
+                                if ($valueType === 'bool') {
+                                    $compareLv = filter_var($lv, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                                } elseif ($valueType === 'int') {
+                                    $compareLv = (int)$lv;
+                                } elseif ($valueType === 'float') {
+                                    $compareLv = (float)$lv;
+                                } elseif ($isLowercase) { // Annahme: lowercase_exact + __in
+                                    $compareLv = strtolower((string)$lv);
+                                }
+                                $compareAuctionValForIn = ($isLowercase && is_string($auctionValue)) ? strtolower($auctionValue) : $auctionValue;
+
+                                if ($compareAuctionValForIn == $compareLv) {
+                                    $foundInList = true;
+                                    break;
+                                }
+                            }
+
+                            if ($operatorSuffix === '__in' && !$foundInList) {
+                                $this->logger->debug("[getAuctions] Filter '$filterKeyWithPotentialSuffix' (__in) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_val' => $auctionValue, 'list' => $listValues]);
+                                $include = false;
+                            } elseif ($operatorSuffix === '__not_in' && $foundInList) {
+                                $this->logger->debug("[getAuctions] Filter '$filterKeyWithPotentialSuffix' (__not_in) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_val' => $auctionValue, 'list' => $listValues]);
+                                $include = false;
+                            }
+                            break;
+
+                        case 'contains': // Annahme: $filterValue ist hier der Suchstring
+                            if (!is_string($auctionValue) || stripos((string)$auctionValue, (string)$filterValue) === false) {
+                                $this->logger->debug("[getAuctions] Filter '$filterKeyWithPotentialSuffix' (__contains) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_val' => $auctionValue, 'needle' => $filterValue]);
+                                $include = false;
+                            }
+                            break;
 
                         default:
-                            $this->logger->warning("[getAuctions] Unbekannter Filtertyp '$filterType' für Filter '$filterKey'. Filter ignoriert.", ['auction_id' => $auctionIdForLog]);
+                            $this->logger->warning("[getAuctions] Unbekannter Filtertyp '$actualFilterType' für Filter '$filterKeyWithPotentialSuffix'. Filter ignoriert.");
                             break;
                     }
 
-                    // Wenn ein Filter nicht erfüllt ist, brauchen wir nicht weiter zu prüfen für diese Auktion
                     if (!$include) {
-                        break; // Bricht die innere foreach ($filters as ...) Schleife ab
+                        break;
                     }
-                } // Ende Filter-Schleife
+                }
 
                 if ($include) {
-                    // $this->logger->debug('[getAuctions] Auktion erfüllt alle Filter', ['auction_id' => $auctionIdForLog]);
                     $filteredAuctions[] = $auction;
                 }
-            } // Ende Auktions-Schleife
+            }
 
             $auctions = $filteredAuctions;
             $this->logger->info('[getAuctions] Nach Filterung verbleiben ' . count($auctions) . ' Auktionen.');
         } else {
-             $this->logger->info('[getAuctions] Keine Filter angewendet, ' . $initialCount . ' Auktionen werden zurückgegeben.');
+            $this->logger->info('[getAuctions] Keine Filter angewendet, ' . $initialCount . ' Auktionen werden zurückgegeben.');
         }
 
+        // Mehrstufige Sortierung anwenden, falls sortRules vorhanden
+        if (!empty($sortRules)) {
+            $this->logger->info("[getAuctions] Wende mehrstufige Sortierung an mit " . count($sortRules) . " Regeln");
+            
+            usort($auctions, function ($a, $b) use ($sortRules) {
+                foreach ($sortRules as $rule) {
+                    $field = $rule['field'];
+                    $direction = $rule['direction'];
+                    $valueType = $rule['value_type'];
+                    
+                    $valA = $a[$field] ?? null;
+                    $valB = $b[$field] ?? null;
+                    
+                    // Behandlung für numerische und String-Werte
+                    if ($valueType === 'int' || $valueType === 'float') {
+                        $valA = ($valueType === 'int') ? (int)$valA : (float)$valA;
+                        $valB = ($valueType === 'int') ? (int)$valB : (float)$valB;
+                    } else {
+                        $valA = strtolower((string)$valA);
+                        $valB = strtolower((string)$valB);
+                    }
+                    
+                    if ($valA == $valB) {
+                        continue; // Gleiche Werte, zur nächsten Sortierregel gehen
+                    }
+                    
+                    // Rückgabe des Sortiervergleichs basierend auf der aktuellen Regel
+                    if ($direction === 'asc') {
+                        return ($valA < $valB) ? -1 : 1;
+                    } else {
+                        return ($valA > $valB) ? -1 : 1;
+                    }
+                }
+                
+                // Wenn alle Regeln gleiche Werte ergeben haben, sind die Elemente als gleich zu betrachten
+                return 0;
+            });
+            
+            $this->logger->debug("[getAuctions] Mehrstufige Sortierung abgeschlossen.");
+        }
+        // Einfache Sortierung für Abwärtskompatibilität, falls keine sortRules aber sortBy vorhanden
+        elseif ($sortBy && isset($this->filterableFields[$sortBy])) {
+            $sortFieldKey = $this->filterableFields[$sortBy]['field'];
+            $valueType = $this->filterableFields[$sortBy]['value_type'] ?? 'string';
+            $this->logger->info("[getAuctions] Sortiere Auktionen nach Feld: {$sortFieldKey} ({$valueType}), Richtung: {$sortDirection}");
+
+            usort($auctions, function ($a, $b) use ($sortFieldKey, $sortDirection, $valueType) {
+                $valA = $a[$sortFieldKey] ?? null;
+                $valB = $b[$sortFieldKey] ?? null;
+
+                // Behandlung für numerische und String-Werte
+                if ($valueType === 'int' || $valueType === 'float') {
+                    $valA = ($valueType === 'int') ? (int)$valA : (float)$valA;
+                    $valB = ($valueType === 'int') ? (int)$valB : (float)$valB;
+                } else {
+                    $valA = strtolower((string)$valA);
+                    $valB = strtolower((string)$valB);
+                }
+
+                if ($valA == $valB) {
+                    return 0;
+                }
+
+                if ($sortDirection === 'asc') {
+                    return ($valA < $valB) ? -1 : 1;
+                }
+                
+                return ($valA > $valB) ? -1 : 1;
+            });
+        } elseif ($sortBy) {
+            $this->logger->warning("[getAuctions] Sortierfeld '{$sortBy}' ist nicht in filterableFields konfiguriert oder Feld-Key fehlt. Sortierung übersprungen.");
+        }
 
         return array_values($auctions); // Indizes zurücksetzen
     }
@@ -1008,17 +1206,6 @@ class AuctionService
     }
 
     /**
-     * Methode für Controller-Kompatibilität - delegiert an getAuctions
-     *
-     * @param array $filters Filter für die Auktionen
-     * @return array
-     */
-    public function filterAuctions(array $filters = []): array
-    {
-        return $this->getAuctions($filters);
-    }
-
-    /**
      * Beim Beenden der PHP-Ausführung aufräumen
      */
     public function __destruct()
@@ -1027,5 +1214,225 @@ class AuctionService
         if (file_exists($this->cookieFile)) {
             @unlink($this->cookieFile);
         }
+    }
+
+    /**
+     * Holt die Rohdaten einer einzelnen Beispielauktion.
+     * Ideal für die Anzeige im Backend, um verfügbare Felder zu sehen.
+     *
+     * @return array|null Die Rohdaten der ersten gefundenen Auktion oder null.
+     */
+    public function getSampleAuctionRawData(): ?array
+    {
+        $this->logger->debug('[AuctionService] getSampleAuctionRawData() aufgerufen.');
+        // ForceRefresh auf false setzen, um nicht bei jedem Backend-Aufruf die API neu zu belasten
+        // getAuctions sollte idealerweise intern den Cache von getPublicAuctions nutzen.
+        $allAuctions = $this->getAuctions([], false); 
+
+        if (empty($allAuctions)) {
+            $this->logger->warning('[AuctionService] Keine Auktionen für Sample Raw Data gefunden.');
+            return null;
+        }
+
+        $sampleAuction = reset($allAuctions); 
+
+        if (isset($sampleAuction['_raw_data']) && is_array($sampleAuction['_raw_data'])) {
+            $this->logger->debug('[AuctionService] Sample Raw Data (aus _raw_data) gefunden.');
+            return $sampleAuction['_raw_data'];
+        }
+        
+        $this->logger->debug('[AuctionService] Sample Raw Data (aus gemapptem Array als Fallback) gefunden, da \'_raw_data\' nicht gesetzt war.', ['sampleAuctionKeys' => array_keys($sampleAuction)]);
+        return $sampleAuction; 
+    }
+
+    /**
+     * Parst einen Filter-String (eine Regel pro Zeile) in ein Array,
+     * das von der getAuctions Methode verwendet werden kann.
+     *
+     * Beispiel String-Format:
+     * bundesland = Bayern
+     * leistung_mw > 10
+     * status IN STARTED,FIRST_ROUND
+     *
+     * @param string $filterString Der zu parsende String.
+     * @return array Die geparsten Filter im Format ['filterKey' => 'value'] oder ['filterKey' => ['min' => x, 'max' => y]]
+     */
+    public function parseFiltersFromString(string $filterString): array
+    {
+        $parsedFilters = [];
+        if (empty(trim($filterString))) {
+            return $parsedFilters;
+        }
+
+        $lines = preg_split('/\r\n|\r|\n/', $filterString);
+        $supportedOperators = ['=', '!=', '<', '>', '<=', '>=', 'IN', 'NOT IN', 'CONTAINS'];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line)) {
+                continue;
+            }
+
+            // Versuche, Feld, Operator und Wert zu extrahieren
+            // Regex, um Feld, Operator und den Rest als Wert zu erfassen
+            if (preg_match('/^(\w+)\s*(' . implode('|', array_map('preg_quote', $supportedOperators)) . ')\s*(.+)$/i', $line, $matches)) {
+                $fieldKey = trim($matches[1]);
+                $operator = strtoupper(trim($matches[2]));
+                $value = trim($matches[3]);
+
+                if (!isset($this->filterableFields[$fieldKey])) {
+                    $this->logger->warning("[parseFiltersFromString] Unbekanntes Filterfeld '{$fieldKey}' in Zeile: '{$line}'. Wird ignoriert.");
+                    continue;
+                }
+
+                $config = $this->filterableFields[$fieldKey];
+                $filterType = $config['type'];
+                $valueType = $config['value_type'] ?? 'string';
+
+                // Spezifische Behandlung für minmax-Filter, wenn Operatoren <, >, <=, >= verwendet werden
+                if ($filterType === 'minmax') {
+                    if (!isset($parsedFilters[$fieldKey])) {
+                        $parsedFilters[$fieldKey] = ['min' => null, 'max' => null];
+                    }
+                    if (in_array($operator, ['>', '>='])) {
+                        $parsedFilters[$fieldKey]['min'] = ($operator === '>') ? $value + 0.00001 : $value; // Kleine Anpassung für exklusives >
+                    } elseif (in_array($operator, ['<', '<='])) {
+                        $parsedFilters[$fieldKey]['max'] = ($operator === '<') ? $value - 0.00001 : $value; // Kleine Anpassung für exklusives <
+                    }
+                    // Sicherstellen, dass Werte korrekt typisiert sind
+                    if (isset($parsedFilters[$fieldKey]['min'])) {
+                        $parsedFilters[$fieldKey]['min'] = ($valueType === 'int') ? (int)$parsedFilters[$fieldKey]['min'] : (float)$parsedFilters[$fieldKey]['min'];
+                    }
+                    if (isset($parsedFilters[$fieldKey]['max'])) {
+                        $parsedFilters[$fieldKey]['max'] = ($valueType === 'int') ? (int)$parsedFilters[$fieldKey]['max'] : (float)$parsedFilters[$fieldKey]['max'];
+                    }
+                     // Entferne null-Werte, falls nur ein Teil des minmax gesetzt wurde
+                    if ($parsedFilters[$fieldKey]['min'] === null) unset($parsedFilters[$fieldKey]['min']);
+                    if ($parsedFilters[$fieldKey]['max'] === null) unset($parsedFilters[$fieldKey]['max']);
+                    if (empty($parsedFilters[$fieldKey])) unset($parsedFilters[$fieldKey]);
+
+                } elseif ($operator === 'IN' || $operator === 'NOT IN') {
+                    // Für IN und NOT IN erwarten wir eine kommaseparierte Liste
+                    // Die getAuctions-Methode muss dies intern behandeln oder wir passen das hier an.
+                    // Aktuell unterstützt getAuctions direkt Array-Werte für IN-Filter nicht.
+                    // Wir müssen das Format anpassen oder getAuctions erweitern.
+                    // Vorerst belassen wir es dabei, dass getAuctions dies handhaben muss, wenn wir einen Filter für 'IN' definieren.
+                    // Für diese Demo: Wir gehen davon aus, dass 'getAuctions' einen einzelnen Wert oder ein Array für 'IN' verarbeiten kann.
+                    // Wichtig: Der 'IN' Operator im String wird hier nicht direkt in ein Array umgewandelt,
+                    // sondern der Wert bleibt ein String. getAuctions muss das bei der Verarbeitung des 'IN' Operators berücksichtigen.
+                    $parsedFilters[$fieldKey . ($operator === 'NOT IN' ? '__not_in' : '__in')] = $value; // Spezialschlüssel für IN/NOT IN
+                                    } elseif ($operator === 'CONTAINS') {
+                    $parsedFilters[$fieldKey . '__contains'] = $value; // Spezialschlüssel für CONTAINS
+
+                } elseif (in_array($operator, ['=', '!='])) {
+                     $finalValue = $value;
+                     if ($valueType === 'bool') {
+                         $finalValue = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                         if ($finalValue === null) {
+                            $this->logger->warning("[parseFiltersFromString] Ungültiger boolescher Wert '{$value}' für Feld '{$fieldKey}'. Filter ignoriert.");
+                            continue;
+                         }
+                     } elseif ($valueType === 'int') {
+                        $finalValue = (int)$value;
+                     } elseif ($valueType === 'float') {
+                        $finalValue = (float)$value;
+                     }
+                    $parsedFilters[$fieldKey . ($operator === '!=' ? '__ne' : '')] = $finalValue; // Spezialschlüssel für != oder Standard
+                } else {
+                    $this->logger->warning("[parseFiltersFromString] Nicht unterstützter Operator '{$operator}' für Feld '{$fieldKey}' in Zeile: '{$line}'. Wird ignoriert.");
+                }
+            } else {
+                $this->logger->warning("[parseFiltersFromString] Ungültiges Filterformat in Zeile: '{$line}'. Wird ignoriert.");
+            }
+        }
+        $this->logger->debug("[parseFiltersFromString] Geparste Filter aus String: ", $parsedFilters);
+        return $parsedFilters;
+    }
+
+    /**
+     * Parst einen Sortierregeln-String (eine Regel pro Zeile) in ein Array,
+     * das von der getAuctions Methode verwendet werden kann.
+     *
+     * Beispiel String-Format:
+     * leistung_mw asc
+     * countDown desc
+     * flaeche_ha asc
+     *
+     * @param string $sortRulesString Der zu parsende String.
+     * @return array Die geparsten Sortierregeln im Format [['field' => 'feldname', 'direction' => 'asc|desc'], ...]
+     */
+    public function parseSortRulesFromString(string $sortRulesString): array
+    {
+        $parsedRules = [];
+        if (empty(trim($sortRulesString))) {
+            return $parsedRules;
+        }
+
+        $lines = preg_split('/\r\n|\r|\n/', $sortRulesString);
+        
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line)) {
+                continue;
+            }
+
+            // Regex, um Feldname und Sortierrichtung zu erfassen
+            // Erwartet Format: "feldname richtung" oder nur "feldname" (Default: asc)
+            if (preg_match('/^(\w+)(?:\s+(asc|desc))?$/i', $line, $matches)) {
+                $fieldKey = trim($matches[1]);
+                $direction = isset($matches[2]) ? strtolower(trim($matches[2])) : 'asc';
+
+                if (!isset($this->filterableFields[$fieldKey])) {
+                    $this->logger->warning("[parseSortRulesFromString] Unbekanntes Sortierfeld '{$fieldKey}' in Zeile: '{$line}'. Wird ignoriert.");
+                    continue;
+                }
+
+                $config = $this->filterableFields[$fieldKey];
+                $fieldName = $config['field'];
+
+                $parsedRules[] = [
+                    'field' => $fieldName,
+                    'key' => $fieldKey, // Original-Schlüssel für Logging
+                    'direction' => $direction,
+                    'value_type' => $config['value_type'] ?? 'string'
+                ];
+            } else {
+                $this->logger->warning("[parseSortRulesFromString] Ungültiges Sortierformat in Zeile: '{$line}'. Wird ignoriert.");
+            }
+        }
+        
+        $this->logger->debug("[parseSortRulesFromString] Geparste Sortierregeln aus String: ", $parsedRules);
+        return $parsedRules;
+    }
+
+    /**
+     * Ruft alle eindeutigen Werte für "Eigenschaft/Objektart" (property) aus den Auktionen ab.
+     *
+     * @return array Eine sortierte Liste eindeutiger Property-Werte.
+     */
+    public function getUniquePropertyValues(): array
+    {
+        $this->logger->debug('[getUniquePropertyValues] Rufe eindeutige Property-Werte ab.');
+        $auctions = $this->getPublicAuctions(); // Ruft gemappte Auktionen ab (aus Cache oder API)
+
+        if (empty($auctions)) {
+            $this->logger->warning('[getUniquePropertyValues] Keine Auktionen von getPublicAuctions erhalten.');
+            return [];
+        }
+
+        $propertyValues = [];
+        foreach ($auctions as $auction) {
+            // Greife auf das gemappte Feld 'property' zu
+            if (isset($auction['property']) && $auction['property'] !== null && $auction['property'] !== '') {
+                $propertyValue = $auction['property'];
+                if (!in_array($propertyValue, $propertyValues, true)) {
+                    $propertyValues[] = $propertyValue;
+                }
+            }
+        }
+
+        sort($propertyValues); // Sortiere die Werte alphabetisch
+        $this->logger->info('[getUniquePropertyValues] Eindeutige Property-Werte gefunden: ' . implode(', ', $propertyValues));
+        return $propertyValues;
     }
 }

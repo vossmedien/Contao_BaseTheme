@@ -16,7 +16,7 @@
   .level_1 {
     > li {
 
-      &:not(:last-child){
+      &:not(:last-child) {
         margin-right: .25rem;
       }
 
@@ -33,14 +33,15 @@
         }
       }
 
-      > a, > strong {
+
+      > *:first-child {
         padding: .65rem .25rem;
         font-weight: $font-weight-normal;
         transition: all .15s ease-in-out;
       }
 
       &:hover, &.active, &.trail {
-        > a, strong {
+        > *:first-child {
           color: $primary;
           -webkit-text-stroke: 0.3px currentColor;
           text-stroke: 0.3px currentColor;
@@ -111,7 +112,7 @@
         grid-column: 2 / 3;
       }
 
-      > a, > strong {
+      > *:first-child {
         display: inline-flex;
         align-items: center;
         gap: .75rem;
@@ -159,7 +160,7 @@ body:not(.is-home) .level_1 > li {
 }
 
 
-html body main#main .mod_breadcrumb {
+html body main#main .content--element .mod_breadcrumb {
   font-size: rfs-value(12px);
 
   ul {
@@ -169,7 +170,6 @@ html body main#main .mod_breadcrumb {
       margin-bottom: 0;
 
       &:first-child {
-
         &:before {
           display: none;
         }
@@ -187,6 +187,30 @@ html body main#main .mod_breadcrumb {
         color: currentColor;
 
       }
+    }
+  }
+}
+
+.pagination {
+  text-align: center;
+  margin-top: var(--main-gap);
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    display: inline-flex;
+    flex-flow: row nowrap;
+    gap: .75rem;
+    align-items: center;
+
+    a:after{
+      display: none;
+    }
+
+    .active, a:hover {
+      color: $primary;
+      -webkit-text-stroke: 0.3px currentColor;
+      text-stroke: 0.3px currentColor;
     }
   }
 }

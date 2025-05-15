@@ -11,66 +11,73 @@
         <div class="row g-1 g-sm-3 row-cols-1 row-cols-sm-2 row-cols-lg-5">
             <div class="col">
             <span class="footer-title">
-                Kontakt
+                <?= $GLOBALS['TL_LANG']['MSC']['footerContact'] ?>
             </span>
                 <p>
-                    Caeli Wind GmbH<br>
-                    Mollstr. 32<br>
-                    10249 Berlin
+                    <?= $GLOBALS['TL_LANG']['MSC']['footerCompanyName'] ?><br>
+                    <?= $GLOBALS['TL_LANG']['MSC']['footerStreet'] ?><br>
+                    <?= $GLOBALS['TL_LANG']['MSC']['footerCity'] ?>
                 </p>
 
                 <ul class="mt-2 list-unstyled contact-list">
-                    <li>Tel.: <a title="Telefonisch Kontakt aufnehmen" href="tel:+49 30 688 302 300">+49 30 688 302
-                            300</a></li>
-                    <li>Fax.: <a title="Via FAX Kontakt aufnehmen" href="tel:+49 30 617 85 330">+49 30 617 85 330</a>
+                    <li><?= $GLOBALS['TL_LANG']['MSC']['footerTelLabel'] ?> <a title="<?= $GLOBALS['TL_LANG']['MSC']['footerPhoneTitle'] ?>" href="tel:<?= $GLOBALS['TL_LANG']['MSC']['footerPhoneNumber'] ?>"><?= $GLOBALS['TL_LANG']['MSC']['footerPhoneNumber'] ?></a></li>
+                    <li><?= $GLOBALS['TL_LANG']['MSC']['footerFaxLabel'] ?> <a title="<?= $GLOBALS['TL_LANG']['MSC']['footerFaxTitle'] ?>" href="tel:<?= $GLOBALS['TL_LANG']['MSC']['footerFaxNumber'] ?>"><?= $GLOBALS['TL_LANG']['MSC']['footerFaxNumber'] ?></a>
                     </li>
-                    <li>E-Mail: {{email::info@caeli-wind.de}}</li>
+                    <li><?= $GLOBALS['TL_LANG']['MSC']['footerEmailLabel'] ?> {{email::info@caeli-wind.de}}</li>
                 </ul>
             </div>
             <div class="col">
                 <div class="ps-lg-3 footer-accordion-item">
                     <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerRechtliches" aria-expanded="false" aria-controls="footerRechtliches">
-                        Rechtliches <span class="indicator d-sm-none float-end">+</span>
+                        <?= $GLOBALS['TL_LANG']['MSC']['footerLegal'] ?> <span class="indicator d-sm-none float-end">+</span>
                     </span>
                     <div class="collapse" id="footerRechtliches">
                         {{insert_module::16}}
                     </div>
                 </div>
             </div>
-            <div class="col footer-accordion-item">
-                 <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerSoziales" aria-expanded="false" aria-controls="footerSoziales">
-                    Soziale Netzwerke <span class="indicator d-sm-none float-end">+</span>
+
+               <div class="col footer-accordion-item">
+                 <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerCaeli" aria-expanded="false" aria-controls="footerCaeli">
+                    <?= $GLOBALS['TL_LANG']['MSC']['footerInsights'] ?> <span class="indicator d-sm-none float-end">+</span>
                  </span>
-                 <div class="collapse" id="footerSoziales">
+                <div class="collapse" id="footerCaeli">
+                    {{insert_module::36}}
+                </div>
+            </div>
+
+            <div class="col footer-accordion-item ps-lg-5 pe-lg-0">
+                 <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerSoziales" aria-expanded="false" aria-controls="footerSoziales">
+                    <?= $GLOBALS['TL_LANG']['MSC']['footerSocialMedia'] ?> <span class="indicator d-sm-none float-end">+</span>
+                 </span>
+                <div class="collapse" id="footerSoziales">
                     {{insert_module::15}}
-                 </div>
+                </div>
             </div>
-            <div class="col footer-title">
-                {{link::56}}
-            </div>
+
             <div class="col footer-accordion-item">
                  <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerKoop" aria-expanded="false" aria-controls="footerKoop">
-                     Kooperationen <span class="indicator d-sm-none float-end">+</span>
+                     <?= $GLOBALS['TL_LANG']['MSC']['footerCooperations'] ?> <span class="indicator d-sm-none float-end">+</span>
                  </span>
-                 <div class="collapse" id="footerKoop">
+                <div class="collapse" id="footerKoop">
                     <ul class="list-unstyled partner-list">
                         <li class="mb-2">
-                            {{figure::files/base/layout/img/caeli_de/partner/logoipsum.svg}}
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/partner/logoipsum.svg", null), null, null; ?>
                         </li>
                         <li class="mb-2">
-                            {{figure::files/base/layout/img/caeli_de/partner/logoipsum.svg}}
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/partner/logoipsum.svg", null), null, null; ?>
                         </li>
                         <li class="mb-2">
-                            {{figure::files/base/layout/img/caeli_de/partner/logoipsum.svg}}
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/partner/logoipsum.svg", null), null, null; ?>
                         </li>
                         <li class="mb-2">
-                            {{figure::files/base/layout/img/caeli_de/partner/logoipsum.svg}}
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/partner/logoipsum.svg", null), null, null; ?>
                         </li>
                         <li class="">
-                            {{figure::files/base/layout/img/caeli_de/partner/logoipsum.svg}}
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/partner/logoipsum.svg", null), null, null; ?>
                         </li>
                     </ul>
-                 </div>
+                </div>
             </div>
         </div>
     </div>

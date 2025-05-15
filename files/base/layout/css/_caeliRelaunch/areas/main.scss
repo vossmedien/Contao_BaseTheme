@@ -5,6 +5,13 @@ main#main {
 }
 
 
+.headline-above-columns {
+  @include media-breakpoint-up(lg) {
+    max-width: 60%;
+  }
+}
+
+
 // Progress-Bar am oberen Bildschirmrand
 .scroll-progress-bar {
   position: fixed;

@@ -1,12 +1,12 @@
 <div class="filter-buttons mb-4 justify-content-center justify-content-md-start d-flex gap-1 flex-wrap flex-row<?php if ($this->isActiveCategories): ?> active-categories<?php endif; ?>">
     <?php foreach ($this->items as $item): ?>
-        <?php 
+        <?php
             $buttonClass = $item['isActive'] ? 'btn-primary' : 'btn-outline-primary';
             $hasSubitems = !empty($item['subitems']);
         ?>
         <?php if ($hasSubitems): ?>
             <div class="btn-group">
-                <a data-animation="animate__fadeIn" href="<?= $item['href'] ?>" class="btn btn-sm <?= $buttonClass ?> <?= str_replace('active', '', $item['class']) ?>" title="<?= $item['linkTitle'] ?>" itemprop="url">
+                <a data-animation="animate__fadeIn" href="<?= $item['href'] ?>" class="btn btn-sm <?= $buttonClass ?> <?= str_replace('active', 'btn-primary', $item['class']) ?>" title="<?= $item['linkTitle'] ?>" itemprop="url">
                     <?php if ($item['image']): ?>
                         <?php $this->insert('picture_default', $item['image']->picture) ?>
                     <?php endif; ?>
@@ -23,7 +23,7 @@
                 </ul>
             </div>
         <?php else: ?>
-            <a data-animation="animate__fadeIn" href="<?= $item['href'] ?>" class="btn btn-sm <?= $buttonClass ?> <?= str_replace('active', '', $item['class']) ?>" title="<?= $item['linkTitle'] ?>" itemprop="url">
+            <a data-animation="animate__fadeIn" href="<?= $item['href'] ?>" class="btn btn-sm <?= $buttonClass ?> <?= str_replace('active', 'btn-primary', $item['class']) ?>" title="<?= $item['linkTitle'] ?>" itemprop="url">
                 <?php if ($item['image']): ?>
                     <?php $this->insert('picture_default', $item['image']->picture) ?>
                 <?php endif; ?>

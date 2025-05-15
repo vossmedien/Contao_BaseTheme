@@ -19,9 +19,10 @@ use CaeliWind\CaeliAuctionConnect\Controller\ContentElement\AuctionElementContro
  */
 $GLOBALS['TL_DCA']['tl_content']['palettes'][AuctionElementController::TYPE] = '
     {type_legend},type,headline;
-    {auction_legend},auction_ids;
+    {auction_legend},auctionElementFilters,auctionRawDataPreview;
+    {sort_legend_ce},auctionSortRulesCE;
     {link_legend:hide},jumpTo;
-    {template_legend:hide},customTpl;
+    {template_legend:hide},customTpl,auctionItemTemplateCE;
     {protected_legend:hide},protected;
     {expert_legend:hide},guests,cssID;
     {invisible_legend:hide},invisible,start,stop
@@ -30,11 +31,44 @@ $GLOBALS['TL_DCA']['tl_content']['palettes'][AuctionElementController::TYPE] = '
 /**
  * Felder
  */
-$GLOBALS['TL_DCA']['tl_content']['fields']['auction_ids'] = [
+// Das Feld auction_ids wurde entfernt. Die Auswahl erfolgt nun über auctionElementFilters.
+// $GLOBALS['TL_DCA']['tl_content']['fields']['auction_ids'] = [
+//     'exclude'                 => true,
+//     'inputType'               => 'text',
+//     'eval'                    => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'clr'],
+//     'sql'                     => "varchar(255) NOT NULL default ''"
+// ];
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['auctionElementFilters'] = [
     'exclude'                 => true,
-    'inputType'               => 'text',
-    'eval'                    => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'clr'],
-    'sql'                     => "varchar(255) NOT NULL default ''"
+    'inputType'               => 'textarea',
+    'eval'                    => ['style' => 'height:60px', 'preserveTags' => true, 'rte' => false, 'tl_class' => 'clr'],
+    'sql'                     => "text NULL"
+];
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['auctionRawDataPreview'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_content']['auctionRawDataPreview_label'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => ['tl_class' => 'clr w50', 'allowHtml' => true, 'doNotSave' => true],
+    'input_field_callback' => ['CaeliWind\CaeliAuctionConnect\Dca\ContentDcaHelper', 'displayAuctionRawDataPreview'],
+];
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['auctionSortRulesCE'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_content']['auctionSortRulesCE'],
+    'exclude'   => true,
+    'inputType' => 'textarea',
+    'eval'      => ['style' => 'height:60px', 'preserveTags' => true, 'rte' => false, 'tl_class' => 'clr'],
+    'sql'       => "text NULL"
+];
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['auctionItemTemplateCE'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_content']['auctionItemTemplateCE'],
+    'exclude'   => true,
+    'inputType' => 'select',
+    'options_callback' => ['CaeliWind\CaeliAuctionConnect\Dca\ModuleDcaHelper', 'getAuctionItemTemplates'],
+    'eval'      => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true],
+    'sql'       => "varchar(255) NOT NULL default ''"
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['jumpTo'] = [

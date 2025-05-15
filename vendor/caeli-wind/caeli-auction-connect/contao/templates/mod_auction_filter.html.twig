@@ -1,444 +1,744 @@
 {# Twig Template für das Auction Filter Modul #}
-<div class="container">
-    <div class="auction-filter-module">
+<div class="container position-static">
+    <div class="auction-filter-module" data-no-results-text="{{ 'general.no_auctions_for_criteria'|trans|escape('html_attr') }}">
         {# Filter-Formular #}
-        <div class="filter-container card mb-4">
-            <div class="card-header bg-light py-3">
-                <h5 class="mb-0">{{ 'Filter'|trans }}</h5> {# Kleinere Überschrift h5 für bessere Hierarchie #}
+        <div class="filter-container mb-4">
+               <form class="auction-filter" method="get">
+                    <div class="row g-1 mb-3"> {# g-2 für kleinen Abstand zwischen den Filter-Buttons #}
+
+                        {# Neuer "Highlights"-Filter-Button (einfacher Toggle) #}
+                        <div class="col-auto filter-item-highlights">
+                            {# Hidden Input, um den Wert von 'focus' zu senden, gesteuert durch Klick auf den Button #}
+                            <input type="hidden" name="focus" id="focus_hidden_input" value="{{ filters.focus is defined and (filters.focus == 'true' or filters.focus == true) ? 'true' : 'false' }}">
+                            <button class="btn {{ filters.focus is defined and (filters.focus == 'true' or filters.focus == true) ? 'btn-white' : 'btn-outline-white' }} btn-sm" type="button" id="filterHighlightsButton">
+                                {{ 'filter.highlights_button'|trans }}
+                            </button>
             </div>
-            <div class="card-body">
-                {# ACHTUNG: Der Controller muss die Variablen 'filter_configs', 'options' und 'filters' bereitstellen! #}
-                {# 'filter_configs': Array mit Konfiguration für jeden Filter (key, label, type, options_key/min/max/step) #}
-                {# 'options': Array mit den Select-Optionen (Schlüssel entspricht 'options_key' aus filter_configs) #}
-                {# 'filters': Array mit den aktuell angewendeten Filterwerten aus dem Request #}
-                <form class="auction-filter" method="get">
-                    <div class="row filter-row"> {# g-3 für konsistenten Abstand zwischen Spalten/Zeilen #}
+
+                        {# Bestehende Filter als Dropdowns #}
                         {% for key, config in filter_configs|default([]) %}
                             {% set filter_value = filters[key]|default(null) %}
                             {% set filter_value_min = filters[key ~ '_min']|default(null) %}
                             {% set filter_value_max = filters[key ~ '_max']|default(null) %}
 
+                            <div class="col-auto filter-item-{{ key }}">
+                                <div class="dropdown">
+                                    {% set is_filter_active = false %}
+                                    {% if config.type == 'select' %}
+                                        {# Für Selects prüfen wir, ob filter_value (jetzt ein String oder null) nicht leer ist #}
+                                        {% if filter_value is not null and filter_value != '' %}
+                                            {% set is_filter_active = true %}
+                                        {% endif %}
+                                    {% elseif config.type == 'range_slider' %}
+                                        {% if (filters[key ~ '_min'] is not null and filters[key ~ '_min'] != config.min|default(0)) or
+                                              (filters[key ~ '_max'] is not null and filters[key ~ '_max'] != config.max|default(100)) %}
+                                            {% set is_filter_active = true %}
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {# Button ist jetzt btn-primary, ggf. mit Indikator für Aktivität #}
+                                    <button class="btn btn-white {{ is_filter_active ? 'active' : '' }} dropdown-toggle btn-sm" type="button" id="filterDropdown{{ key|capitalize }}" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+                                        {{ config.label|trans }}
+                                        {% if is_filter_active %}
+                                            <span class="badge bg-white text-dark ms-1 rounded-pill">
+                                                {% if config.type == 'select' %}
+                                                    {# Zähle die Anzahl der ausgewählten Optionen im Kommaseparierten String #}
+                                                    {{ filter_value|split(',')|length }}
+                                                {% else %}
+                                                    !
+                                                {% endif %}
+                                            </span>
+                                        {% endif %}
+                                    </button>
+                                    {# Dropdown-Menü mit bg-primary text-white #}
+                                    <ul class="dropdown-menu bg-primary text-white p-2" aria-labelledby="filterDropdown{{ key|capitalize }}" style="min-width: 310px;">
+                                        <li>
                             {% if config.type == 'select' %}
-                                <div class="col-md-6 col-lg-4 col-xl-3 filter-item-{{ key }}"> {# Mehr Spalten auf größeren Screens #}
-                                    <label for="{{ key }}" class="form-label">{{ config.label|trans }}</label>
-                                    <select name="{{ key }}" id="{{ key }}" class="form-select form-select-sm"> {# Kleinere Selects für Kompaktheit #}
-                                        <option value="">{{ config.placeholder|trans|default('Alle') }}</option>
                                         {% set select_options = options[config.options_key]|default([]) %}
+                                                {% set current_values = filter_value is not null ? filter_value|split(',') : [] %}
+                                                {% if select_options is not empty %}
                                         {% for option_value, option_label in select_options %}
-                                            <option value="{{ option_value }}" {% if filter_value == option_value %}selected{% endif %}>
-                                                {{ option_label|trans }}
-                                            </option>
+                                                        <div class="form-check">
+                                                            {# Name ist jetzt ohne [], Wert wird via JS als kommaseparierter String gesammelt #}
+                                                            <input class="form-check-input" type="checkbox" name="{{ key }}" value="{{ option_value }}" id="filter_{{ key }}_{{ loop.index }}"
+                                                                   {% if option_value in current_values %}checked{% endif %}>
+                                                            {# Label-Textfarbe muss ggf. angepasst werden, wenn text-white global ist #}
+                                                            <label class="form-check-label small" for="filter_{{ key }}_{{ loop.index }}">
+                                                {{ option_label }}
+                                                            </label>
+                                                        </div>
                                         {% endfor %}
-                                    </select>
-                                </div>
+                                                {% else %}
+                                                    <small class="d-block">{{ 'filter.no_options_available'|trans }}</small> {# text-white greift hier #}
+                                                {% endif %}
 
                             {% elseif config.type == 'range_slider' %}
-                                {# Alte Methode mit <input type="range"> - Optimierte Darstellung #}
                                 {% set min_cfg = config.min|default(0) %}
                                 {% set max_cfg = config.max|default(100) %}
                                 {% set step_cfg = config.step|default(1) %}
-                                {% set current_slider_value = filter_value_max|default(max_cfg) %}
-                                {% set display_min = filter_value_min|default(min_cfg) %}
-                                {% set display_max = filter_value_max|default(max_cfg) %}
+                                                {% set current_min_val = filter_value_min|default(min_cfg) %}
+                                                {% set current_max_val = filter_value_max|default(max_cfg) %}
 
-                                <div class="col-md-6 col-lg-4 col-xl-3 filter-item-{{ key }}"> {# Mehr Spalten auf größeren Screens #}
-                                     {# Label und Wertanzeige nebeneinander für Klarheit #}
+                                                <div class="mb-2">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                         <label for="{{ key }}-range" class="form-label mb-0">{{ config.label|trans }}</label>
-                                         <span id="{{ key }}-range-value" class="badge bg-secondary fw-normal">{{ display_min }} - {{ display_max }}</span> {# Badge für Wert #}
+                                                        {# Label-Textfarbe #}
+                                                        <label class="form-label mb-0 small">{{ config.label|trans }}</label>
+                                                        {# Badge-Farbe anpassen #}
+                                                        <span id="{{ key }}-range-value" class="badge bg-secondary text-body fw-normal small">{{ current_min_val }} - {{ current_max_val }}</span>
+                                                    </div>
+                                                    {# Range Slider selbst - das Aussehen wird durch Browser/Bootstrap bestimmt #}
+                                                    <div class="mb-1">
+                                                        <label for="{{ key }}_min_slider" class="form-label small visually-hidden">{{ 'filter.range.min'|trans }}</label>
+                                                        <input type="range" class="form-range form-range-sm" id="{{ key }}_min_slider"
+                                                               name="{{ key }}_min"
+                                                               min="{{ min_cfg }}"
+                                                               max="{{ max_cfg }}"
+                                                               step="{{ step_cfg }}"
+                                                               value="{{ current_min_val }}">
                                     </div>
-                                    <div class="d-flex align-items-center">
-                                         <input type="range" class="form-range" id="{{ key }}-range"
-                                             min="{{ min_cfg }}"
-                                             max="{{ max_cfg }}"
-                                             step="{{ step_cfg }}"
-                                             value="{{ current_slider_value }}">
+                                                    <div>
+                                                        <label for="{{ key }}_max_slider" class="form-label small visually-hidden">{{ 'filter.range.max'|trans }}</label>
+                                                        <input type="range" class="form-range form-range-sm" id="{{ key }}_max_slider"
+                                                               name="{{ key }}_max"
+                                               min="{{ min_cfg }}"
+                                               max="{{ max_cfg }}"
+                                               step="{{ step_cfg }}"
+                                                               value="{{ current_max_val }}">
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mt-1 small">
+                                                        {# Textfarbe für Min/Max Labels #}
+                                                        <small class="text-white-50">{{ min_cfg }}</small>
+                                                        <small class="text-white-50">{{ max_cfg }}</small>
                                     </div>
-                                     {# Min/Max Labels direkt unter Slider #}
-                                     <div class="d-flex justify-content-between mt-1">
-                                        <small class="text-muted">{{ min_cfg }}</small>
-                                        <small class="text-muted">{{ max_cfg }}</small>
-                                     </div>
-                                        {# Versteckte Felder bleiben unverändert #}
-                                        <input type="hidden" name="{{ key }}_min" id="{{ key }}_min" value="{{ filter_value_min|default('') }}">
-                                        <input type="hidden" name="{{ key }}_max" id="{{ key }}_max" value="{{ filter_value_max|default('') }}">
+                                    </div>
+                                            {% endif %}
+                                        </li>
+                                    </ul>
                                 </div>
-
-                            {% endif %}
-                         {% endfor %}
-                    </div> {# Ende der .filter-row #}
+                            </div>
+                        {% endfor %}
+                    </div> {# Ende der .row für Filter-Buttons #}
 
                     {# Buttons mit etwas mehr Abstand oben #}
                     <div class="d-flex gap-2 flex-wrap filter-buttons mt-4">
-                        <button type="submit" class="btn btn-primary btn-sm"> {# Kleinere Buttons #}
-                            <i class="bi bi-funnel"></i> {{ 'Filtern'|trans }}
+                        <button type="submit" class="btn btn-white btn-sm">
+                            {{ 'filter.button.filter'|trans }}
                         </button>
-                        <a href="{{ app.request.pathInfo }}" class="btn btn-secondary btn-sm">
-                            <i class="bi bi-x-circle"></i> {{ 'Zurücksetzen'|trans }}
+                        <a href="{{ app.request.pathInfo }}" class="btn btn-white btn-sm">
+                            {{ 'filter.button.reset'|trans }}
                         </a>
-                        <button type="submit" name="refresh" value="1" class="btn btn-success btn-sm">
-                            <i class="bi bi-arrow-clockwise"></i> {{ 'Daten aktualisieren'|trans }}
+                        <button type="submit" name="refresh" value="1" class="btn btn-danger btn-sm"> {# Versteckt, da AJAX #}
+                            {{ 'filter.button.update_data'|trans }}
                         </button>
                     </div>
                 </form>
             </div>
+
+        {# SPINNER Container wird zum Overlay #}
+        <div id="filterSpinnerContainer" class="filter-loading-overlay" style="display: none;">
+            {# Das SVG selbst behält seine Klasse für Styling und Animation #}
+            <svg class="filter-spinner" style="width: 50px; height: 50px;" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+                <g id="spinner">
+                    <path d="M24.4874 0.755859H20.9375V18.3459H24.4874V0.755859Z" fill="#113534"/>
+                    <path d="M24.4874 37.0078H20.9375V44.268H24.4874V37.0078Z" fill="#113534"/>
+                    <path d="M8.15787 20.7324H0.862305V24.265H8.15787V20.7324Z" fill="#113534"/>
+                    <path d="M44.5866 20.7324H37.291V24.265H44.5866V20.7324Z" fill="#113534"/>
+                    <path d="M40.7669 10.0828L34.4487 13.7129L36.2237 16.7722L42.5418 13.1422L40.7669 10.0828Z" fill="#113534"/>
+                    <path d="M31.5313 34.1673L28.457 35.9336L32.1048 42.2211L35.1791 40.4548L31.5313 34.1673Z" fill="#113534"/>
+                    <path d="M13.3335 2.80009L10.2593 4.56641L13.9071 10.8539L16.9813 9.08757L13.3335 2.80009Z" fill="#113534"/>
+                    <path d="M32.1082 2.76721L28.4604 9.05469L31.5347 10.821L35.1825 4.53352L32.1082 2.76721Z" fill="#113534"/>
+                    <path d="M13.9007 34.1676L10.2529 40.4551L13.3272 42.2214L16.975 35.9339L13.9007 34.1676Z" fill="#113534"/>
+                    <path d="M4.66946 10.091L2.89453 13.1504L9.21268 16.7805L10.9876 13.7211L4.66946 10.091Z" fill="#113534"/>
+                    <path d="M27.2046 23.0488L25.4419 26.1186L34.4512 31.2835L40.743 34.9136L42.5302 31.8438L27.2046 23.0488Z" fill="#113534"/>
+                    <path d="M9.21034 28.2381L2.89404 31.8438L4.68121 34.9136L19.9823 26.1186L18.1951 23.0488L9.21034 28.2381Z" fill="#113534"/>
+                </g>
+            </svg>
         </div>
+
+        <div class="auction-items-placeholder mt-3">
     </div>
 </div>
 
-
-{# JavaScript für AJAX-Filter und HTML5 Range Slider (alte Methode) #}
+{# JavaScript für AJAX-Filter und HTML5 Range Slider #}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Filter-Formular finden
-    const filterForm = document.querySelector('.auction-filter');
-    if (!filterForm) return;
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterForm = document.querySelector('.auction-filter');
+        if (!filterForm) return;
 
-    // Referenz auf das Listing-Element und "Keine Auktionen"-Nachricht
-    const auctionItems = document.querySelector('.auction-items'); // Muss im Haupt-Template existieren
-    const noAuctions = document.querySelector('.no-auctions');     // Muss im Haupt-Template existieren
+        const filterModuleElement = document.querySelector('.auction-filter-module');
+        const noResultsText = filterModuleElement ? filterModuleElement.dataset.noResultsText : 'Es wurden keine Auktionen für Ihre Filterkriterien gefunden.'; // Fallback-Text
 
-    // Range-Slider initialisieren (alte Methode)
-    initRangeSliders();
+        // Die Erstellung des alten loadingOverlay wird entfernt.
+        // let loadingOverlay = document.querySelector('.loading-overlay');
+        // if (!loadingOverlay) {
+        //     loadingOverlay = document.createElement('div');
+        //     loadingOverlay.className = 'loading-overlay';
+        //     loadingOverlay.innerHTML = '<div class="spinner"></div><div class="loading-text"></div>';
+        //     const filterModule = document.querySelector('.auction-filter-module');
+        //     if (filterModule) {
+        //         filterModule.appendChild(loadingOverlay);
+        //     }
+        // }
 
-    // Loading-Overlay erstellen (falls noch nicht vorhanden)
-    let loadingOverlay = document.querySelector('.loading-overlay');
-    if (!loadingOverlay) {
-        loadingOverlay = document.createElement('div');
-        loadingOverlay.className = 'loading-overlay';
-        loadingOverlay.innerHTML = '<div class="spinner"></div><div class="loading-text">{{ 'Daten werden geladen...'|trans }}</div>';
-        const filterModule = document.querySelector('.auction-filter-module');
-        if (filterModule) {
-           filterModule.style.position = 'relative';
-           filterModule.appendChild(loadingOverlay);
-        }
-    }
-
-    // FormData in serialisierbares Objekt umwandeln (für History API) - Angepasst für alte Slider-Logik
-    function formDataToObject(formData) {
-        const object = {};
-        formData.forEach((value, key) => {
-            // Speichere nur, wenn der Wert nicht leer ist
-            if (value !== '') {
-                 // Wenn der Wert bereits existiert, mache ein Array daraus (für Multi-Select etc.)
-                 if (object.hasOwnProperty(key)) {
-                     if (!Array.isArray(object[key])) {
-                         object[key] = [object[key]];
-                     }
-                     object[key].push(value);
-                 } else {
-                     object[key] = value;
-                 }
+    // Verhindert das Schließen des Dropdowns beim Klicken auf interaktive Elemente im Menü
+    document.querySelectorAll('.auction-filter .dropdown-menu').forEach(function(menu) {
+        menu.addEventListener('click', function (e) {
+            if (e.target.closest('.form-check-input') || e.target.closest('.form-range')) {
+                 e.stopPropagation();
             }
         });
-
-        // Füge Min/Max-Werte für Range Slider hinzu, basierend auf den hidden Inputs
-        filterForm.querySelectorAll('input[type="range"]').forEach(slider => {
-            const baseKey = slider.id.replace('-range', '');
-            const minInput = document.getElementById(baseKey + '_min');
-            const maxInput = document.getElementById(baseKey + '_max');
-            if (minInput && minInput.value !== '') {
-                if (!object[baseKey]) object[baseKey] = {};
-                object[baseKey].min = minInput.value;
-            }
-            if (maxInput && maxInput.value !== '') {
-                 if (!object[baseKey]) object[baseKey] = {};
-                 object[baseKey].max = maxInput.value;
-            }
-             // Entferne leere Range-Slider Objekte
-             if (object[baseKey] && typeof object[baseKey] === 'object' && Object.keys(object[baseKey]).length === 0) {
-                 delete object[baseKey];
-             }
-        });
-
-        return object;
-    }
-
-    // AJAX-Filter-Funktion (leicht angepasst für alte Slider-Logik)
-    function ajaxFilter(formData, pushState = true) {
-        if(loadingOverlay) loadingOverlay.style.display = 'flex';
-
-        const cleanedFormData = new FormData();
-        for (const [key, value] of formData.entries()) {
-            if (value !== '') {
-                cleanedFormData.append(key, value);
-            }
-        }
-
-        const params = new URLSearchParams(cleanedFormData);
-        const currentPath = window.location.pathname;
-        const queryString = params.toString();
-        const newUrl = currentPath + (queryString ? '?' + queryString : '');
-
-        if (pushState) {
-            const stateObject = formDataToObject(formData); // Nutzt die angepasste Funktion
-            history.pushState({ formData: stateObject }, '', newUrl);
-        }
-
-        fetch(newUrl, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-            .then(response => {
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                return response.text();
-            })
-            .then(html => {
-                console.log('AJAX success, processing response...'); // Log 1
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-
-                // --- Update Filter Area --- Only update the row with filters ---
-                console.log('Updating filter area (row only)...'); // Log 2
-                const newFilterBody = doc.querySelector('.filter-container .card-body'); // Find in response
-                const currentFilterBody = document.querySelector('.filter-container .card-body'); // Find in current DOM
-
-                if (newFilterBody && currentFilterBody) {
-                     const newFilterRow = newFilterBody.querySelector('.filter-row');
-                     const currentFilterRow = currentFilterBody.querySelector('.filter-row');
-                     if (newFilterRow && currentFilterRow) {
-                        currentFilterRow.innerHTML = newFilterRow.innerHTML;
-                        console.log('Filter row HTML replaced. Re-initializing sliders...'); // Log 3
-                        // WICHTIG: HTML5 Range Slider neu initialisieren!
-                        initRangeSliders(); // Form listener should persist
-                        console.log('Sliders re-initialized.'); // Log 4
-                     } else {
-                         console.warn('Could not find new or current filter row.');
-                     }
-                } else {
-                    console.warn('Could not find new or current filter body.');
-                }
-
-                // --- Update Auction Listing Area (remains the same) ---
-                console.log('Updating listing area...'); // Log 5
-                const newAuctionItems = doc.querySelector('.auction-items');
-                const newNoAuctions = doc.querySelector('.no-auctions');
-
-                if (auctionItems && newAuctionItems && newAuctionItems.innerHTML.trim() !== '') {
-                    auctionItems.innerHTML = newAuctionItems.innerHTML;
-                    auctionItems.style.display = newAuctionItems.style.display || 'flex';
-                    if (noAuctions) noAuctions.style.display = 'none';
-                } else if (noAuctions && newNoAuctions) {
-                    if (auctionItems) auctionItems.style.display = 'none';
-                    noAuctions.innerHTML = newNoAuctions.innerHTML;
-                    noAuctions.style.display = newNoAuctions.style.display || 'block';
-                } else {
-                     console.warn("Konnte weder '.auction-items' noch '.no-auctions' im AJAX-Response finden.");
-                     if (auctionItems) auctionItems.innerHTML = '';
-                     if (noAuctions) noAuctions.style.display = 'none';
-                }
-                console.log('Listing area updated.'); // Log 6
-
-                if(loadingOverlay) loadingOverlay.style.display = 'none';
-                console.log('AJAX processing complete.'); // Log 7
-            })
-            .catch(error => {
-                console.error('Filter-Fehler:', error);
-                if(loadingOverlay) loadingOverlay.style.display = 'none';
-                // window.location.href = newUrl; // Entfernt: Kein automatischer Redirect bei AJAX-Fehler
-                // Optional: Zeige dem Benutzer eine Fehlermeldung an
-                // alert('Beim Laden der Filterergebnisse ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.');
-            });
-    }
-
-    // Event Listener für das Absenden des Formulars
-    filterForm.addEventListener('submit', function(event) {
-        const clickedButton = event.submitter;
-         if (!clickedButton || clickedButton.name !== 'refresh') {
-            event.preventDefault();
-            // Sicherstellen, dass Min/Max-Werte der Slider aktuell sind vor dem Senden
-            updateHiddenInputsFromSliders();
-            const formData = new FormData(filterForm);
-            ajaxFilter(formData, true);
-         }
     });
 
-    // Event Listener für den Reset-Button (aus altem Code übernommen)
-     const resetButton = filterForm.querySelector('a[href="' + window.location.pathname + '"]');
-     if (resetButton) {
-         resetButton.addEventListener('click', function(e) {
-             e.preventDefault();
-             filterForm.reset(); // Setzt Standard-Formularfelder zurück
+    // Funktion zur Initialisierung der Range Slider (angepasst für zwei Slider pro Filter)
+    function initRangeSlidersNew() {
+        // console.log('[DEBUG] initRangeSlidersNew: Initializing new range sliders...'); // DEBUG
+        filterForm.querySelectorAll('div[class*="filter-item-"]').forEach(filterItem => {
+            // console.log('[DEBUG] initRangeSlidersNew: Processing filter item:', filterItem); // DEBUG
+            const minSlider = filterItem.querySelector('input[type="range"][id$="_min_slider"]');
+            const maxSlider = filterItem.querySelector('input[type="range"][id$="_max_slider"]');
+            const rangeValueDisplay = filterItem.querySelector('[id$="-range-value"]');
 
-             // Range-Slider auf Config-Max zurücksetzen und Hidden Inputs leeren
-             filterForm.querySelectorAll('input[type="range"]').forEach(slider => {
-                  const max = slider.getAttribute('max') || 0; // Max-Wert holen
-                  slider.value = max; // Slider auf Max setzen (JS-Verhalten anpassen)
+            if (minSlider && maxSlider && rangeValueDisplay) {
+                const updateDisplay = () => {
+                    const minValue = parseInt(minSlider.value);
+                    const maxValue = parseInt(maxSlider.value);
+                    rangeValueDisplay.textContent = `${minValue} - ${maxValue}`;
+                };
 
-                  const baseKey = slider.id.replace('-range', '');
-                  const minInput = document.getElementById(baseKey + '_min');
-                  const maxInput = document.getElementById(baseKey + '_max');
-                  if(minInput) minInput.value = ''; // Min leeren
-                  if(maxInput) maxInput.value = ''; // Max leeren
-
-                  // Init-Funktion für den einzelnen Slider aufrufen, um Anzeige zu aktualisieren
-                  const configMin = slider.getAttribute('min') || 0;
-                  const configMax = slider.getAttribute('max') || 0;
-                  const valueDisplayId = baseKey + '-range-value';
-                   if (minInput && maxInput && document.getElementById(valueDisplayId)) {
-                       // Rufe Update-Logik direkt auf oder simuliere Event
-                       updateValueDisplay(slider, minInput, maxInput, document.getElementById(valueDisplayId), configMin, configMax);
-                   }
-             });
-
-
-             // Zum ursprünglichen URL zurückkehren (ohne Parameter)
-             history.pushState({}, '', window.location.pathname);
-
-             // AJAX-Anfrage für die ungefilterten Daten (mit leerer FormData)
-             ajaxFilter(new FormData()); // Leere FormData senden
-         });
-     }
-
-
-    // Zurück/Vorwärts-Navigation im Browser behandeln (angepasst für alte Slider)
-    window.addEventListener('popstate', function(event) {
-        if (event.state && event.state.formData) {
-            const storedFormData = event.state.formData;
-
-            // Formular zurücksetzen
-            filterForm.reset();
-
-             // Standardfelder füllen
-             Object.entries(storedFormData).forEach(([key, value]) => {
-                 // Range Slider Min/Max nicht direkt setzen
-                 if (!key.endsWith('_min') && !key.endsWith('_max')) {
-                     const field = filterForm.querySelector(`[name="${key}"]`);
-                     if (field) field.value = value;
-                 }
-             });
-
-             // Range Slider und Hidden Inputs aktualisieren
-             filterForm.querySelectorAll('input[type="range"]').forEach(slider => {
-                  const baseKey = slider.id.replace('-range', '');
-                  const minVal = storedFormData[baseKey + '_min'] || '';
-                  const maxVal = storedFormData[baseKey + '_max'] || '';
-                  const configMax = slider.getAttribute('max');
-
-                  const minInput = document.getElementById(baseKey + '_min');
-                  const maxInput = document.getElementById(baseKey + '_max');
-                  if(minInput) minInput.value = minVal;
-                  if(maxInput) maxInput.value = maxVal;
-
-                  // Slider-Position setzen (auf Max-Wert, wenn vorhanden, sonst Config-Max)
-                  slider.value = maxVal !== '' ? maxVal : configMax;
-
-                  // Anzeige aktualisieren
-                   const configMin = slider.getAttribute('min') || 0;
-                   const valueDisplayId = baseKey + '-range-value';
-                    if (minInput && maxInput && document.getElementById(valueDisplayId)) {
-                        updateValueDisplay(slider, minInput, maxInput, document.getElementById(valueDisplayId), configMin, configMax);
+                minSlider.addEventListener('input', () => {
+                    // console.log('[DEBUG] initRangeSlidersNew: minSlider input event. Value:', minSlider.value, 'for item:', filterItem.className); // DEBUG
+                    if (parseInt(minSlider.value) > parseInt(maxSlider.value)) {
+                        maxSlider.value = minSlider.value;
                     }
-             });
+                    updateDisplay();
+                });
 
-            // AJAX-Anfrage senden (ohne History Push)
-            ajaxFilter(new FormData(filterForm), false);
+                maxSlider.addEventListener('input', () => {
+                    // console.log('[DEBUG] initRangeSlidersNew: maxSlider input event. Value:', maxSlider.value, 'for item:', filterItem.className); // DEBUG
+                    if (parseInt(maxSlider.value) < parseInt(minSlider.value)) {
+                        minSlider.value = maxSlider.value;
+                    }
+                    updateDisplay();
+                });
+                updateDisplay(); // Initial display
+            }
+        });
+    }
 
-        } else {
-            // Fallback, wenn kein State vorhanden ist (z.B. initiale Seite oder manueller Reset)
-             // Einfach die Seite neu laden oder leere Filter anwenden
-              // window.location.reload();
-               filterForm.reset(); // Formular leeren
-               initRangeSliders(); // Slider auf Default setzen
-               ajaxFilter(new FormData()); // Leere Filter anwenden
+    initRangeSlidersNew(); // Neue Funktion aufrufen
+
+    // Event Listener für den Highlights-Button
+    const highlightsButton = document.getElementById('filterHighlightsButton');
+    const highlightsHiddenInput = document.getElementById('focus_hidden_input');
+
+    function bindHighlightButtonListener() {
+        const button = document.getElementById('filterHighlightsButton');
+        const hiddenInput = document.getElementById('focus_hidden_input');
+        if (button && hiddenInput) {
+            // Entferne ggf. alte Listener, um Doppelbindung zu vermeiden
+            // Einfachste Methode: Klonen und Ersetzen des Knotens (verliert alle Listener)
+            // Alternative: explizites removeEventListener, wenn Referenz vorhanden
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+
+            newButton.addEventListener('click', function() {
+                const isActive = hiddenInput.value === 'true';
+                hiddenInput.value = isActive ? 'false' : 'true';
+                this.classList.toggle('btn-white', !isActive);
+                this.classList.toggle('btn-outline-white', isActive);
+                // Debugging Log direkt nach dem Klick
+                // console.log('[Highlight Button Click] Neuer Hidden-Input Wert:', hiddenInput.value, 'Klassen:', this.className);
+                const formData = new FormData(filterForm);
+                ajaxFilter(formData, true);
+            });
+        }
+    }
+    bindHighlightButtonListener(); // Initial binden
+
+    // Klicks innerhalb des Dropdown-Menüs (auf bestimmte Elemente) sollen es nicht schließen
+    document.querySelectorAll('.auction-filter .dropdown-menu').forEach(function(menu) {
+        menu.addEventListener('click', function (e) {
+            if (e.target.closest('.form-check-input') ||
+                e.target.closest('.form-range') ||
+                e.target.closest('label') || // Klick auf Label
+                e.target.closest('.dropdown-header')) { // Klick auf Header im Dropdown
+                 e.stopPropagation();
+            }
+        });
+    });
+
+    const allFilterDropdownToggles = document.querySelectorAll('.auction-filter .col-auto[class*="filter-item-"] .dropdown-toggle');
+
+    allFilterDropdownToggles.forEach(function(toggle) {
+        toggle.addEventListener('show.bs.dropdown', function (event) {
+            allFilterDropdownToggles.forEach(function(otherToggle) {
+                if (otherToggle !== event.target) {
+                    const dropdownInstance = bootstrap.Dropdown.getInstance(otherToggle);
+                    if (dropdownInstance) {
+                        dropdownInstance.hide();
+                    }
+                }
+            });
+        });
+    });
+
+    // Globaler Klick-Listener, um Dropdowns zu schließen, wenn außerhalb geklickt wird
+    document.addEventListener('click', function(event) {
+        const openDropdown = document.querySelector('.auction-filter .dropdown-menu.show');
+        if (openDropdown) {
+            const toggleButton = openDropdown.previousElementSibling;
+            // Prüfen, ob der Klick außerhalb des geöffneten Menüs UND außerhalb seines Toggle-Buttons war
+            if (!openDropdown.contains(event.target) && toggleButton && !toggleButton.contains(event.target)) {
+                const dropdownInstance = bootstrap.Dropdown.getInstance(toggleButton);
+                if (dropdownInstance) {
+                    dropdownInstance.hide();
+                }
+            }
         }
     });
 
-    // --- Initialisierung und Handling für HTML5 Range Slider (alte Methode) ---
+        function formDataToObject(formData) {
+            const object = {};
+        const multiSelectValues = {};
 
-    function initRangeSliders() {
-         filterForm.querySelectorAll('input[type="range"]').forEach(slider => {
-             const baseKey = slider.id.replace('-range', '');
-             const minInput = document.getElementById(baseKey + '_min');
-             const maxInput = document.getElementById(baseKey + '_max');
-             const valueDisplay = document.getElementById(baseKey + '-range-value');
-             const min = parseFloat(slider.getAttribute('min') || 0);
-             const max = parseFloat(slider.getAttribute('max') || 0);
+        // Manuell den Wert des Hidden Inputs für 'focus' hinzufügen, falls vorhanden
+        if (highlightsHiddenInput) {
+            object['focus'] = highlightsHiddenInput.value;
+        } else {
+            // Fallback, falls das Element nicht gefunden wird, oder um sicherzustellen, dass es nicht fehlt, wenn es nicht aktiv ist.
+            // Normalerweise sollte FormData dies korrekt handhaben, wenn der Input im Formular ist.
+            // Aber da wir es separat togglen, ist es gut, es explizit zu setzen.
+            const focusValFromFormData = formData.get('focus');
+            if (focusValFromFormData !== null) { // Nur wenn es im FormData war (z.B. durch initialen serverseitigen Render)
+                 object['focus'] = focusValFromFormData;
+            } else {
+                 object['focus'] = 'false'; // Standardwert, wenn gar nicht vorhanden
+            }
+        }
 
-              if (!slider || !minInput || !maxInput || !valueDisplay) {
-                  console.error("Missing elements for HTML5 range slider:", baseKey);
-                  return;
-              }
+            formData.forEach((value, key) => {
+            if (key === 'focus') return; // Bereits oben behandelt
 
-             // Initiale Anzeige aktualisieren basierend auf hidden inputs
-             updateValueDisplay(slider, minInput, maxInput, valueDisplay, min, max);
+                if (value !== '') {
+                const formElement = filterForm.elements[key];
+                let isMultiCheckbox = false;
+                if (formElement instanceof NodeList) { // Mehrere Elemente mit gleichem Namen (Checkboxen)
+                    isMultiCheckbox = Array.from(formElement).every(el => el.type === 'checkbox');
+                } else if (formElement instanceof HTMLInputElement && formElement.type === 'checkbox') {
+                    // Nur eine Checkbox mit diesem Namen, aber könnte Teil einer Gruppe sein, die wir separat behandeln
+                    // Dies ist eher für den "focus"-Filter relevant, der nicht gesammelt wird.
+                    // Normale einzelne Checkboxen (nicht für Mehrfachauswahl) werden direkt behandelt.
+                    if (key !== 'focus') { // Annahme: 'focus' ist die einzige einzelne Checkbox
+                       // Wenn es weitere einzelne Checkboxen gäbe, müsste man sie hier ggf. anders kennzeichnen
+                    }
+                }
 
-              // Slider-Wert beim Laden setzen (auf Max-Wert aus Input, sonst Config-Max)
-              slider.value = maxInput.value !== '' ? maxInput.value : max;
+                if (key !== 'focus' && formElement && (formElement instanceof NodeList || formElement.type === 'checkbox')) {
+                     // Potenzielle Mehrfachauswahl-Checkbox (außer 'focus')
+                    if (!multiSelectValues[key]) {
+                        multiSelectValues[key] = [];
+                    }
+                    if (formElement.checked || (formElement instanceof NodeList && Array.from(formElement).find(cb => cb.value === value && cb.checked))) {
+                       // Nur hinzufügen, wenn die spezifische Checkbox auch gecheckt ist (relevant bei NodeList)
+                       // FormData enthält alle, auch ungecheckte, wenn sie einen `value` haben.
+                       // Wir wollen aber nur die gecheckten sammeln für kommaseparierten String.
+                        const actualFormElement = formElement instanceof NodeList ? Array.from(formElement).find(cb => cb.value === value) : formElement;
+                        if (actualFormElement && actualFormElement.checked) {
+                            if (!multiSelectValues[key].includes(value)) { // Nur einmal hinzufügen
+                                multiSelectValues[key].push(value);
+                            }
+                        }
+                    }
+                } else { // Normale Felder oder 'focus'
+                    if (object.hasOwnProperty(key)) {
+                        if (!Array.isArray(object[key])) {
+                            object[key] = [object[key]];
+                        }
+                        object[key].push(value);
+                    } else {
+                        object[key] = value;
+                    }
+                }
+                }
+            });
 
-
-              // Event-Listener für den Slider
-              slider.addEventListener('input', function() {
-                  updateHiddenInputsAndDisplay(slider, minInput, maxInput, valueDisplay, min, max);
-              });
-
-              // Optional: AJAX-Filter bei Loslassen des Sliders auslösen
-              slider.addEventListener('change', function() {
-                   updateHiddenInputsFromSliders(); // Sicherstellen, dass Inputs aktuell sind
-                   // const formData = new FormData(filterForm);
-                   // ajaxFilter(formData, true);
-              });
-         });
+        // Gesammelte Multi-Select-Werte als kommaseparierte Strings in das Objekt einfügen
+        for (const [name, values] of Object.entries(multiSelectValues)) {
+            if (values.length > 0) {
+                object[name] = values.join(',');
+            }
+        }
+            return object;
     }
 
-    function updateHiddenInputsAndDisplay(slider, minInput, maxInput, valueDisplay, min, max) {
-         const sliderValue = parseFloat(slider.value);
+    const auctionListContainerId = 'auctionListContainer'; // ID des Containers, der die Auktionsliste enthält
+    const filterControlsContainerId = 'auctionFilterControls'; // ID des Containers, der die Filter-Steuerelemente enthält
+    let openDropdownId = null; // Variable, um die ID des geöffneten Dropdowns zu speichern
+    const spinnerContainer = document.getElementById('filterSpinnerContainer');
 
-          // Logik der alten Methode: Min ist immer der Config-Min, Max ist der Slider-Wert
-          // Nur wenn Slider NICHT auf Max steht, wird gefiltert
-          if (sliderValue < max) {
-              minInput.value = min; // Min ist der konfigurierte Minimalwert
-              maxInput.value = sliderValue; // Max ist der aktuelle Sliderwert
-          } else {
-              // Wenn Slider auf Max steht, Filter zurücksetzen (leere Inputs)
-              minInput.value = '';
-              maxInput.value = '';
-          }
+    function ajaxFilter(formData, updateUrl = true) {
+        // Geöffnetes Dropdown merken
+        const openDropdownElement = document.querySelector('.auction-filter .dropdown-menu.show');
+        if (openDropdownElement) {
+            const button = openDropdownElement.previousElementSibling;
+            if (button) {
+                openDropdownId = button.id;
+            }
+        }
 
-         // Anzeige aktualisieren
-         updateValueDisplay(slider, minInput, maxInput, valueDisplay, min, max);
+        if (spinnerContainer) {
+            spinnerContainer.style.display = 'flex';
+        }
+
+        // Entferne leere Parameter, außer 'focus', da 'focus=false' gesendet werden muss
+        const processedFormData = new FormData();
+        const multiSelectTemp = {};
+
+        // Wert für 'focus' vom Hidden Input holen und zu processedFormData hinzufügen
+        if (highlightsHiddenInput) {
+            if (highlightsHiddenInput.value === 'true') { // Nur senden, wenn aktiv
+                processedFormData.append('focus', 'true');
+            }
+        } else {
+            // Fallback oder wenn der Button nicht da ist, auf FormData verlassen
+            const focusVal = formData.get('focus');
+            if (focusVal === 'true') {
+                 processedFormData.append('focus', 'true');
+            }
+        }
+
+            for (const [key, value] of formData.entries()) {
+            if (key === 'focus') continue; // Bereits oben behandelt
+
+            const formElement = filterForm.elements[key];
+            let isMultiCheckboxSource = false;
+            if (formElement instanceof NodeList) {
+                isMultiCheckboxSource = Array.from(formElement).every(el => el.type === 'checkbox');
+            } else if (formElement instanceof HTMLInputElement && formElement.type === 'checkbox') {
+                // Check, ob es eine Gruppe von Checkboxen mit diesem Namen gibt (mehr als eine)
+                if (filterForm.querySelectorAll(`input[type="checkbox"][name="${key}"]`).length > 1) {
+                    isMultiCheckboxSource = true;
+                }
+            }
+
+            if (key !== 'focus' && isMultiCheckboxSource) {
+                if (!multiSelectTemp[key]) {
+                    multiSelectTemp[key] = [];
+                }
+                // Nur gecheckte Werte berücksichtigen, formData enthält sie, wenn sie einen value haben
+                const checkboxElement = formElement instanceof NodeList ? Array.from(formElement).find(cb => cb.value === value) : formElement;
+                if (checkboxElement && checkboxElement.checked) {
+                     if (!multiSelectTemp[key].includes(value)) {
+                        multiSelectTemp[key].push(value);
+                    }
+                }
+            } else {
+                // Für alle anderen Felder direkt übernehmen oder wenn es ein einzelner Wert ist (z.B. focus, _min, _max)
+                processedFormData.append(key, value);
+            }
+        }
+
+        // Die gesammelten Multi-Select-Werte als kommaseparierte Strings hinzufügen
+        for (const [name, values] of Object.entries(multiSelectTemp)) {
+            if (values.length > 0) {
+                processedFormData.append(name, values.join(','));
+            }
+        }
+
+        // Sicherstellen, dass 'focus' nicht gesendet wird, wenn die Checkbox nicht aktiv war
+        // Die FormData `formDataToProcess` enthält `focus` nur, wenn die Checkbox gecheckt war.
+        if (!formData.has('focus')) {
+            processedFormData.delete('focus'); // Falls es vorher durch irgendeine Logik reingerutscht wäre
+        }
+
+        const params = new URLSearchParams(processedFormData);
+            const currentPath = window.location.pathname;
+            const queryString = params.toString();
+        // console.log('[DEBUG] ajaxFilter: Sending AJAX request with query string:', queryString); // DEBUG
+            const newUrl = currentPath + (queryString ? '?' + queryString : '');
+
+            if (updateUrl) {
+            // Für den State verwenden wir das Ergebnis von formDataToObject, das die korrekte Struktur hat
+            const stateObject = formDataToObject(new FormData(filterForm)); // Immer frische Daten vom Formular für den State nehmen
+                history.pushState({formData: stateObject}, '', newUrl);
+            }
+
+            fetch(newUrl, {
+            method: 'GET', // Sicherstellen, dass es GET ist, falls das Formular anders konfiguriert war
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            })
+                .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}, message: ${response.statusText}`);
+                    return response.text();
+                })
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    // ZUERST ALLE alten "Keine Ergebnisse"-Alerts entfernen, egal wo sie sind
+                    document.querySelectorAll('.alert-no-results').forEach(alert => alert.remove());
+
+                    // Update Filter Area (die Filter-Buttons und deren Dropdown-Inhalte)
+                    const newFilterControls = doc.querySelector('.auction-filter .row.g-1.mb-3');
+                    const currentFilterControls = filterForm.querySelector('.row.g-1.mb-3');
+
+                    if (newFilterControls && currentFilterControls) {
+                        currentFilterControls.innerHTML = newFilterControls.innerHTML;
+                        // Wichtig: Bootstrap Dropdown JS neu initialisieren, falls nötig, oder Event Listener neu binden
+                        // Für Standard-Bootstrap 5 sollten die data-bs-toggle Attribute ausreichen.
+                        initRangeSlidersNew(); // Range Slider neu initialisieren
+                        bindHighlightButtonListener(); // Highlights Button Listener neu binden
+
+                        // Event Listener für Dropdown-Menüs neu binden
+                        document.querySelectorAll('.auction-filter .dropdown-menu').forEach(function(menu) {
+                            menu.addEventListener('click', function (e) {
+                                 if (e.target.closest('.form-check-input') || e.target.closest('.form-range')) {
+                                     e.stopPropagation();
+                                }
+                            });
+                        });
+                        // Bootstrap Dropdowns manuell neu initialisieren, wenn sie dynamisch geladen werden
+                        var dropdownElementList = [].slice.call(document.querySelectorAll('.auction-filter .dropdown-toggle'))
+                        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                          return new bootstrap.Dropdown(dropdownToggleEl)
+                        })
+
+                        // Sicherstellen, dass immer nur ein Filter-Dropdown gleichzeitig geöffnet ist
+                        const allFilterDropdownTogglesAfterAjax = document.querySelectorAll('.auction-filter .col-auto[class*="filter-item-"] .dropdown-toggle');
+
+                        allFilterDropdownTogglesAfterAjax.forEach(function(toggle) {
+                            toggle.addEventListener('show.bs.dropdown', function (event) {
+                                // Alle anderen Dropdowns im Filterbereich schließen
+                                allFilterDropdownTogglesAfterAjax.forEach(function(otherToggle) {
+                                    if (otherToggle !== event.target) {
+                                        const dropdownInstance = bootstrap.Dropdown.getInstance(otherToggle);
+                                        if (dropdownInstance) {
+                                            dropdownInstance.hide();
+                                        }
+                                    }
+                                });
+                            });
+                        });
+
+                        // Klicks innerhalb des Dropdown-Menüs (auf bestimmte Elemente) sollen es nicht schließen - neu binden
+                        document.querySelectorAll('.auction-filter .dropdown-menu').forEach(function(menu) {
+                            menu.addEventListener('click', function (e) {
+                                if (e.target.closest('.form-check-input') ||
+                                    e.target.closest('.form-range') ||
+                                    e.target.closest('label') ||
+                                    e.target.closest('.dropdown-header')) {
+                                     e.stopPropagation();
+                                }
+                            });
+                        });
+
+                        // Zuvor geöffnetes Dropdown wieder öffnen
+                        if (openDropdownId) {
+                            const dropdownToReopen = document.getElementById(openDropdownId);
+                            if (dropdownToReopen) {
+                                const bsDropdownInstance = bootstrap.Dropdown.getInstance(dropdownToReopen);
+                                if (bsDropdownInstance) {
+                                    bsDropdownInstance.show();
+                        } else {
+                                    // Fallback, falls die Instanz nach Neuladen nicht sofort da ist
+                                    new bootstrap.Dropdown(dropdownToReopen).show();
+                                }
+                            }
+                        }
+
+                    } else {
+                        // console.warn('Could not find new or current filter controls row for button dropdowns.');
+                    }
+
+                    // Update Active State of Highlight Button
+                    const currentHighlightButton = document.getElementById('filterHighlightsButton'); // ID des Buttons
+                    const focusHidden = document.getElementById('focus_hidden_input'); // ID des Hidden Inputs
+
+                    if (currentHighlightButton && focusHidden) {
+                        // Wert aus processedFormData nehmen, da dieser den gesendeten Zustand reflektiert
+                        const isFocusActiveFromServer = processedFormData.get('focus') === 'true';
+                        focusHidden.value = isFocusActiveFromServer ? 'true' : 'false';
+                        currentHighlightButton.classList.toggle('btn-white', isFocusActiveFromServer);
+                        currentHighlightButton.classList.toggle('btn-outline-white', !isFocusActiveFromServer);
+                    }
+
+                    // Update der "active" Klasse und des Badges für die Hauptfilter-Buttons
+                    doc.querySelectorAll('.auction-filter .col-auto[class*="filter-item-"]').forEach(newFilterItem => {
+                        const key = newFilterItem.className.match(/filter-item-([^ ]+)/)[1];
+                        if (key === 'highlights') return;
+
+                        const currentFilterButton = document.getElementById(`filterDropdown${key.charAt(0).toUpperCase() + key.slice(1)}`);
+                        const newFilterButton = newFilterItem.querySelector('.dropdown-toggle'); // Der neue Button aus der Antwort
+
+                        if (currentFilterButton && newFilterButton) {
+                            // Klassen für Aktiv/Inaktiv übernehmen
+                            currentFilterButton.className = newFilterButton.className;
+                            // Badge aktualisieren (innerHTML des Buttons)
+                            currentFilterButton.innerHTML = newFilterButton.innerHTML;
+                        }
+                    });
+
+
+                    // --- Update Auction Listing Area ---
+                    const newAuctionListingContainer = doc.querySelector('#auction_listing_container');
+                    const currentAuctionListingContainer = document.querySelector('#auction_listing_container');
+
+                    let resultsFound = false;
+
+                    if (newAuctionListingContainer && currentAuctionListingContainer) {
+                        currentAuctionListingContainer.innerHTML = newAuctionListingContainer.innerHTML;
+                        currentAuctionListingContainer.querySelectorAll('[data-animation]').forEach(item => {
+                            item.removeAttribute('data-animation');
+                        });
+                        // Prüfen, ob der aktualisierte Container Inhalt hat (außer vielleicht Whitespace oder leere Strukturelemente)
+                        if (currentAuctionListingContainer.querySelector('.auction-item')) { // Annahme: .auction-item existiert pro Ergebnis
+                            resultsFound = true;
+                        }
+                    } else if (doc.querySelector('.auction-items') || doc.querySelector('.no-auctions')) {
+                        const newItems = doc.querySelector('.auction-items');
+                        const newNoItems = doc.querySelector('.no-auctions');
+                        const currentItems = document.querySelector('.auction-items');
+                        const currentNoItems = document.querySelector('.no-auctions');
+
+                        if (currentItems && newItems && newItems.innerHTML.trim() !== '') {
+                            currentItems.innerHTML = newItems.innerHTML;
+                            currentItems.style.display = '';
+                            if (currentNoItems) currentNoItems.style.display = 'none';
+                            currentItems.querySelectorAll('[data-animation]').forEach(item => {
+                                item.removeAttribute('data-animation');
+                            });
+                            if (currentItems.querySelector('.auction-item')) { // Annahme
+                                resultsFound = true;
+                            }
+                        } else if (currentNoItems && newNoItems) {
+                            if (currentItems) currentItems.style.display = 'none';
+                            currentNoItems.innerHTML = newNoItems.innerHTML;
+                            currentNoItems.style.display = newNoItems.style.display || 'block';
+                            // resultsFound bleibt false, da .no-auctions angezeigt wird
+                        } else {
+                             // console.warn("Konnte weder Auktionsitems noch 'Keine Auktionen'-Nachricht im AJAX-Response finden oder der Inhalt war leer.");
+                             if (currentItems) currentItems.innerHTML = '';
+                             if (currentNoItems) {
+                                currentNoItems.style.display = 'block';
+                                currentNoItems.innerHTML = 'Fehler beim Laden der Auktionen.'; // Dies ist keine "keine Ergebnisse" Meldung
+                             }
+                        }
+                    } else {
+                        // console.warn('Weder #auction_listing_container noch .auction-items/.no-auctions im AJAX-Response gefunden.');
+                    }
+
+                    // Alert anzeigen, wenn keine Ergebnisse gefunden wurden
+                    if (!resultsFound && currentAuctionListingContainer) { // Zeige Alert nur, wenn der Container existiert
+                        const noResultsAlert = document.createElement('div');
+                        noResultsAlert.className = 'alert alert-primary alert-no-results mt-3'; // Eigene Klasse zum einfachen Entfernen
+                        noResultsAlert.setAttribute('role', 'alert');
+                        noResultsAlert.textContent = noResultsText; // Twig-Translation im JS-String
+                        // Füge den Alert am Anfang des Auktions-Containers ein
+                        currentAuctionListingContainer.prepend(noResultsAlert);
+                    } else if (!resultsFound && document.querySelector('.auction-filter-module')) {
+                         // Fallback: Wenn currentAuctionListingContainer nicht da ist, versuche es oberhalb des Listing-Bereichs, falls .auction-filter-module da ist
+                         const filterModule = document.querySelector('.auction-filter-module');
+                         const noResultsAlert = document.createElement('div');
+                         noResultsAlert.className = 'alert alert-primary alert-no-results mt-3';
+                         noResultsAlert.setAttribute('role', 'alert');
+                         noResultsAlert.textContent = noResultsText;
+                         // Hier entscheiden, wo genau der Alert hin soll, z.B. nach dem Filter-Container
+                         const filterContainer = filterModule.querySelector('.filter-container');
+                         if (filterContainer) {
+                            filterContainer.parentNode.insertBefore(noResultsAlert, filterContainer.nextSibling);
+                         } else {
+                            filterModule.appendChild(noResultsAlert); // Letzter Ausweg
+                         }
+                    }
+
+                    // Das Ausblenden des alten loadingOverlay wird entfernt.
+                    // if (loadingOverlay) loadingOverlay.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Filter-Fehler:', error);
+                    // Hier ggf. eine Fehlermeldung für den Benutzer anzeigen
+                })
+                .finally(() => {
+                    if (spinnerContainer) {
+                        spinnerContainer.style.display = 'none';
+                    }
+                    // Dropdown wieder öffnen, falls eines offen war
+                    if (openDropdownId) {
+                        const dropdownButton = document.getElementById(openDropdownId);
+                        if (dropdownButton) {
+                            const bsDropdown = bootstrap.Dropdown.getInstance(dropdownButton) || new bootstrap.Dropdown(dropdownButton);
+                            bsDropdown.show();
+                        }
+                        openDropdownId = null; // Zurücksetzen für den nächsten Lauf
+                    }
+                });
     }
 
-     function updateValueDisplay(slider, minInput, maxInput, valueDisplay, min, max) {
-         let displayMin, displayMax;
+        filterForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+        const formData = new FormData(filterForm);
+        ajaxFilter(formData);
+    });
 
-         // Logik der alten Methode: Wenn Max-Input leer ist (Slider auf Max), zeige vollen Bereich
-         if (maxInput.value === '') {
-             displayMin = min;
-             displayMax = max;
-         } else {
-             displayMin = minInput.value; // Sollte Config-Min sein
-             displayMax = maxInput.value; // Sollte Slider-Wert sein
-         }
-         valueDisplay.textContent = `${parseFloat(displayMin)} - ${parseFloat(displayMax)}`;
-     }
+    // Event Listener für Änderungen an den Filter-Elementen für "live" Filterung WIEDER AKTIVIERT
+    filterForm.addEventListener('change', function(event) {
+        // Prüfen, ob die Änderung von einem relevanten Filterelement stammt
+        // (nicht der Highlights-Button, der seinen eigenen Listener hat)
+        if (event.target.id !== 'filterHighlightsButton' &&
+            (event.target.matches('.form-check-input') || event.target.matches('input[type="range"]'))) {
+                const formData = new FormData(filterForm);
+                ajaxFilter(formData, true);
+            }
+        });
 
-     // Hilfsfunktion, um alle hidden Inputs basierend auf Slider-Positionen zu aktualisieren
-     function updateHiddenInputsFromSliders() {
-          filterForm.querySelectorAll('input[type="range"]').forEach(slider => {
-              const baseKey = slider.id.replace('-range', '');
-              const minInput = document.getElementById(baseKey + '_min');
-              const maxInput = document.getElementById(baseKey + '_max');
-              const min = parseFloat(slider.getAttribute('min') || 0);
-              const max = parseFloat(slider.getAttribute('max') || 0);
+        window.addEventListener('popstate', function (event) {
+            if (event.state && event.state.formData) {
+            const formDataFromState = event.state.formData; // Enthält 'focus', und kommaseparierte Strings für Multi-Selects
 
-              if (minInput && maxInput) {
-                  const sliderValue = parseFloat(slider.value);
-                  if (sliderValue < max) {
-                      minInput.value = min;
-                      maxInput.value = sliderValue;
-                  } else {
-                      minInput.value = '';
-                      maxInput.value = '';
-                  }
-              }
-          });
-     }
+            filterForm.querySelectorAll('input, select').forEach(el => {
+                const nameInState = el.name;
+                const stateValue = formDataFromState[nameInState];
 
-     // Initialen Zustand für History API speichern (nach Initialisierung)
-     updateHiddenInputsFromSliders(); // Sicherstellen, dass Inputs korrekt sind
-     const initialFormData = new FormData(filterForm);
-     const initialFormDataObj = formDataToObject(initialFormData);
-     history.replaceState({ formData: initialFormDataObj }, '', window.location.href);
+                if (el.type === 'checkbox') {
+                    if (el.name === 'focus') {
+                        el.checked = stateValue === 'true';
+                    } else { // Andere Checkboxen (potenziell Multi-Select)
+                        if (typeof stateValue === 'string') { // Wert ist kommaseparierter String
+                            el.checked = stateValue.split(',').includes(el.value);
+                        } else { // Kein Wert im State oder unerwarteter Typ
+                            el.checked = false;
+                        }
+                    }
+                } else if (el.type === 'radio') {
+                    el.checked = stateValue === el.value;
+                } else if (el.type === 'range') {
+                    if (el.name.endsWith('_min') && formDataFromState[el.name] !== undefined) {
+                        el.value = formDataFromState[el.name];
+                    } else if (el.name.endsWith('_max') && formDataFromState[el.name] !== undefined) {
+                        el.value = formDataFromState[el.name];
+                    }
+                } else if (el.type === 'hidden' && el.name === 'focus') { // Hidden Input für Focus
+                     el.value = formDataFromState.focus === 'true' ? 'true' : 'false';
+            } else {
+                    if (stateValue !== undefined) {
+                        el.value = stateValue;
+                    } else {
+                        el.value = '';
+                    }
+                }
+            });
+            initRangeSlidersNew();
 
-});
+            // AJAX-Filterung auslösen, ohne neuen History-Eintrag
+            const currentFormData = new FormData(filterForm);
+            ajaxFilter(currentFormData, false);
+        } else {
+            // Fallback, wenn kein State vorhanden ist (z.B. initiale Seite nach Zurück-Navigation)
+             // Leere FormData erstellen, um Filter zurückzusetzen und die initiale Ansicht zu laden
+            const initialFormData = new FormData();
+            ajaxFilter(initialFormData, false);
+        }
+    });
+    });
 </script>
+

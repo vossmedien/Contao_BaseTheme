@@ -1,44 +1,124 @@
-
 <div class="layout_full block<?= $this->class ?>">
 
-  <h1><?= $this->newsHeadline ?></h1>
-
-  <?php $this->block('info'); ?>
-    <p class="info"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?></p>
-  <?php $this->endblock(); ?>
-
-  <?php if ($this->hasSubHeadline): ?>
-    <h2><?= $this->subHeadline ?></h2>
-  <?php endif; ?>
-
-  <?php if ($this->hasText): ?>
-    <?= $this->text ?>
-  <?php else: ?>
-    <div class="ce_text block">
-      <?php if (!$this->addBefore): ?>
-        <?= $this->cspInlineStyles($this->teaser) ?>
-      <?php endif; ?>
-
-      <?php if ($this->addImage): ?>
-        <?php $this->insert('image', $this->arrData); ?>
-      <?php endif; ?>
-
-      <?php if ($this->addBefore): ?>
-        <?= $this->cspInlineStyles($this->teaser) ?>
-      <?php endif; ?>
+    <div class="content--element head-hero ce_rsce_head_hero container-wide">
+        <div class="ce--inner">
+            <div class="breadcrumb-container mb-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
+                <!-- indexer::stop -->
+                {{insert_module::20}}
+                <!-- indexer::continue -->
+            </div>
+            <div class="row">
+                <div class="col-12 col-xl-9">
+                    <div class="ce--headline hl-h1">
+                        <h1 data-animation="animate__fadeIn">
+                            <?= $this->headline ?>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="image-section mt-gap" data-animation="animate__fadeIn">
+                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, strip_tags($this->teaser), $this->headline, ["1300", "590", "crop"], null, false); ?>
+            </div>
+        </div>
     </div>
-  <?php endif; ?>
 
-  <?php if ($this->enclosure): ?>
-    <ul class="enclosure">
-      <?php foreach ($this->enclosure as $enclosure): ?>
-        <li class="download-element ext-<?= $enclosure['extension'] ?>">
-          <a href="<?= $enclosure['href'] ?>" title="<?= $enclosure['title'] ?>"><?= $enclosure['link'] ?> <span class="size">(<?= $enclosure['filesize'] ?>)</span></a>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-  <?php endif; ?>
 
+    <div class="container-wide">
+
+        <div class="row g-3 gx-md-5">
+            <div class="col-12 <?php if ($this->multiSRC): ?>col-md-8 <?php endif; ?>">
+                <div class="ps-md-gap">
+                <?php if ($this->hasSubHeadline): ?>
+                    <h2 class="mb-4"><?= $this->subHeadline ?></h2>
+                <?php endif; ?>
+
+                <!--
+                  <?php $this->block('info'); ?>
+                    <p class="info"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?></p>
+                  <?php $this->endblock(); ?>
+                -->
+
+                <?php if ($this->hasText): ?>
+                    <?= $this->text ?>
+                <?php else: ?>
+                    <div class="ce_text block">
+                        <?php if (!$this->addBefore): ?>
+                            <?= $this->cspInlineStyles($this->teaser) ?>
+                        <?php endif; ?>
+
+                        <?php if ($this->addImage): ?>
+                            <?php $this->insert('image', $this->arrData); ?>
+                        <?php endif; ?>
+
+                        <?php if ($this->addBefore): ?>
+                            <?= $this->cspInlineStyles($this->teaser) ?>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($this->pdfDownload || $this->infographicDownload): ?>
+
+                    <div class="attachments mt-5">
+                        <ul class="list-inline">
+                            <?php 
+                            if ($this->pdfDownload): 
+                                $pdfFile = \Contao\FilesModel::findByUuid($this->pdfDownload);
+                                if ($pdfFile): 
+                            ?>
+                                <li class="list-inline-item">
+                                    <a href="<?= $pdfFile->path; ?>" target="_blank" class="btn btn-primary" style="--bs-btn-color: var(--bs-body-color-inverse);">PDF-Download</a>
+                                </li>
+                            <?php 
+                                endif;
+                            endif; 
+                            ?>
+                            <?php 
+                            if ($this->infographicDownload): 
+                                $infographicFile = \Contao\FilesModel::findByUuid($this->infographicDownload);
+                                if ($infographicFile): 
+                            ?>
+                                <li class="list-inline-item">
+                                    <a href="<?= $infographicFile->path; ?>" target="_blank" class="btn btn-primary" style="--bs-btn-color: var(--bs-body-color-inverse);">Infografik-Download</a>
+                                </li>
+                            <?php 
+                                endif;
+                            endif; 
+                            ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+                    </div>
+            </div>
+
+            <?php if ($this->multiSRC): ?>
+                <div class="col-12 col-md-4">
+                    <div class="article-gallery">
+                        <div class="row g-1 g-md-2">
+                            <?php
+                            $galleryImagesUuids = [];
+                            if (!empty($this->multiSRC)) {
+                                // Sicherstellen, dass es sich um einen String handelt, bevor deserialisiert wird
+                                $multiSRCDaten = $this->multiSRC;
+                                if (is_string($multiSRCDaten)) {
+                                    $galleryImagesUuids = Contao\StringUtil::deserialize($multiSRCDaten, true);
+                                }
+                            }
+                            ?>
+                            <?php if (!empty($galleryImagesUuids) && is_array($galleryImagesUuids)): ?>
+                                <?php foreach ($galleryImagesUuids as $imageUuid): ?>
+                                    <div class="col-6 col-md-12">
+                                        <figure class="image_container">
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($imageUuid, null, $this->headline, ["500", "500", "crop"], '', false, true); ?>
+                                        </figure>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
 </div>
 
 <?php

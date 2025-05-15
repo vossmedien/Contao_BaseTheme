@@ -16,10 +16,13 @@
 @import "modules/navigation";
 @import "modules/services-overview";
 @import "modules/form";
+@import "modules/events";
+@import "modules/news";
+@import "modules/auction";
+
 
 @import "scaffolding/buttons";
 @import "scaffolding/typo";
 @import "scaffolding/hacks";
-
 @import "scaffolding/scopes";
-
+@import "scaffolding/alert";

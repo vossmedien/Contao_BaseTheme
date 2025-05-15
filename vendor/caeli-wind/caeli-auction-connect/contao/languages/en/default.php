@@ -40,11 +40,13 @@ $GLOBALS['TL_LANG']['tl_content']['link_legend'] = 'Link Settings';
  */
 $GLOBALS['TL_LANG']['tl_content']['auction_ids'] = ['Auction IDs', 'Enter the IDs of auctions to display, separated by commas (e.g. "123,456,789")'];
 $GLOBALS['TL_LANG']['tl_content']['jumpTo'] = ['Redirect page', 'Select the page where the detail module is included'];
+$GLOBALS['TL_LANG']['tl_content']['auctionElementFilters'] = ['Additional Raw Data Filters', 'Enter raw data filters here (one filter per line). Format: fieldname operator value (e.g., weaCount = 5 or status IN STARTED,UPCOMING). See raw data preview below for available fields and values (once implemented).'];
 $GLOBALS['TL_LANG']['tl_module']['filter_enabled'] = ['Enable filters', 'Enables filtering functionality for auctions'];
 $GLOBALS['TL_LANG']['tl_module']['filter_bundesland'] = ['Filter by state', 'Shows a filter for states'];
 $GLOBALS['TL_LANG']['tl_module']['filter_landkreis'] = ['Filter by district', 'Shows a filter for districts'];
 $GLOBALS['TL_LANG']['tl_module']['filter_size'] = ['Filter by area size', 'Shows a filter for area size'];
 $GLOBALS['TL_LANG']['tl_module']['filter_leistung'] = ['Filter by power', 'Shows a filter for power'];
+$GLOBALS['TL_LANG']['tl_module']['auctionItemTemplate'] = ['Auction Item Template', 'Select the template to be used for rendering each individual auction item in the list.'];
 
 /**
  * Miscellaneous

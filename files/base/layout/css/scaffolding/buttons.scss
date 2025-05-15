@@ -52,14 +52,18 @@
 
 
   &.btn-white {
-    --bs-btn-hover-border-color: var(--bs-body-color);
+    //--bs-btn-hover-border-color: var(--bs-body-color);
     --bs-btn-border-color: var(--bs-white);
     --bs-btn-color: var(--bs-body-color);
     --bs-btn-bg: var(--bs-white);
+    --bs-btn-hover-border-color: var(--bs-white);
     --bs-btn-hover-bg: var(--bs-body-color);
     --bs-btn-hover-color: var(--bs-white);
+    --bs-btn-active-color: var(--bs-white);
+    --bs-btn-active-bg: transparent;
+    --bs-btn-active-border-color: var(--bs-white);
 
-    color: var(--bs-btn-color);
+    //color: var(--bs-btn-color);
 
     &:hover {
       color: var(--bs-btn-hover-color);
@@ -97,27 +101,27 @@
   }
 
   // Einfaches CSS für die Buttons
- &.btn-outline-currentColor {
-  border: 1px solid var(--btn-context-color, currentColor);
-  background-color: transparent;
-  color: var(--btn-context-color, currentColor);
-
-  &:hover {
-    color: var(--parent-bg-color, white);
-    background-color: var(--btn-context-color, currentColor);
-  }
-}
-
-&.btn-currentColor {
-  border: 1px solid var(--btn-context-color, currentColor);
-  background-color: var(--btn-context-color, currentColor);
-  color: var(--parent-bg-color, white);
-
-  &:hover {
-    color: var(--btn-context-color, currentColor);
+  &.btn-outline-currentColor {
+    border: 1px solid var(--btn-context-color, currentColor);
     background-color: transparent;
+    color: var(--btn-context-color, currentColor);
+
+    &:hover {
+      color: var(--parent-bg-color, white);
+      background-color: var(--btn-context-color, currentColor);
+    }
   }
-}
+
+  &.btn-currentColor {
+    border: 1px solid var(--btn-context-color, currentColor);
+    background-color: var(--btn-context-color, currentColor);
+    color: var(--parent-bg-color, white);
+
+    &:hover {
+      color: var(--btn-context-color, currentColor);
+      background-color: transparent;
+    }
+  }
 
   &.btn-link {
     padding: 0px;
@@ -143,6 +147,11 @@
   &.btn-block {
     width: 100%;
     display: block;
+  }
+
+  &.no-button{
+    pointer-events: none;
+    cursor: default;
   }
 }
 

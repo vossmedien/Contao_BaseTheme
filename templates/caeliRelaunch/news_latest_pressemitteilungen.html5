@@ -1,24 +1,158 @@
+<div data-animation="animate__fadeIn" class="pressespiegel layout_latest arc_<?= $this->archive->id ?> block<?= $this->class ?> mb-2">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <?php
+            if (!function_exists('getActualImageWidthFromSrc')) {
+                function getActualImageWidthFromSrc(string $imageSrcIdentifier): int
+                {
+                    if (empty($imageSrcIdentifier)) {
+                        return 0;
+                    }
 
-<div class="layout_latest arc_<?= $this->archive->id ?> block<?= $this->class ?>">
+                    try {
+                        $projectDir = \Contao\System::getContainer()->get('kernel')->getProjectDir();
+                        $finalPath = null;
 
-  <?php $this->block('info'); ?>
-    <p class="info"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?></p>
-  <?php $this->endblock(); ?>
+                        if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $imageSrcIdentifier)) {
+                            $fileModel = \Contao\FilesModel::findByUuid($imageSrcIdentifier);
+                            if ($fileModel !== null && !empty($fileModel->path)) {
+                                $finalPath = $projectDir . '/' . $fileModel->path;
+                            }
+                        } else {
+                            if (strpos($imageSrcIdentifier, '') === 0) {
+                                $finalPath = $projectDir . '/' . $imageSrcIdentifier;
+                            } else {
+                                $finalPath = $projectDir . '' . $imageSrcIdentifier;
+                            }
+                        }
+                        
+                        if ($finalPath && file_exists($finalPath)) {
+                            $size = @getimagesize($finalPath);
+                            if ($size && isset($size[0]) && $size[0] > 0) {
+                                return (int)$size[0];
+                            }
+                        }
+                    } catch (\Throwable $e) {
+                        // Optional: Log error, e.g., \Contao\System::log($e->getMessage(), __FUNCTION__, TL_ERROR);
+                    }
+                    return 0;
+                }
+            }
 
-  <?php if ($this->addImage): ?>
-    <?php $this->insert('image', $this->arrData); ?>
-  <?php endif; ?>
+            $showActualImage = false;
+            if ($this->addImage && $this->src) {
+                $actualWidth = getActualImageWidthFromSrc($this->src);
+                if ($actualWidth >= 400) {
+                    $showActualImage = true;
+                }
+            }
+            ?>
 
-  <h2><?= $this->linkHeadline ?></h2>
+            <?php if ($showActualImage): ?>
+             <a href="<?= $this->link ?>">
+                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, $this->headline, '', ["450px", "280px", "crop"], 'img-fluid w-100 h-100 object-fit-cover', false, true); ?>
+             </a>
+            <?php else: ?>
+                <div class="d-flex justify-content-center align-items-center bg-light h-100" style="min-height: 250px;">
+                    <svg width="87" height="86" viewBox="0 0 87 86" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0.804688 10.1598C0.804688 7.67138 1.80539 5.28493 3.58666 3.52539C5.36792 1.76584 7.78384 0.777344 10.3029 0.777344H76.7906C79.3097 0.777344 81.7256 1.76584 83.5069 3.52539C85.2882 5.28493 86.2889 7.67138 86.2889 10.1598V75.8366C86.2889 78.325 85.2882 80.7115 83.5069 82.471C81.7256 84.2305 79.3097 85.219 76.7906 85.219H10.3029C7.78384 85.219 5.36792 84.2305 3.58666 82.471C1.80539 80.7115 0.804688 78.325 0.804688 75.8366V10.1598ZM76.7906 10.1598H10.3029V47.3141L26.3312 34.6479C27.1735 33.9817 28.2204 33.6187 29.2994 33.6187C30.3784 33.6187 31.4253 33.9817 32.2676 34.6479L52.6888 50.7856L59.1856 44.3727C60.0762 43.4933 61.284 42.9992 62.5433 42.9992C63.8026 42.9992 65.0103 43.4933 65.9009 44.3727L76.7906 55.1297V10.1598ZM10.3029 75.8366H76.7906V68.3964L62.5433 54.3228L56.4026 60.3885C55.5763 61.2052 54.4741 61.6923 53.3069 61.7563C52.1397 61.8204 50.9897 61.457 50.0768 60.7356L29.2994 44.3117L10.3029 59.3236V75.8366Z" fill="#113534"/>
+                    </svg>
+                </div>
+            <?php endif; ?>
+        </div>
+        <div class="col-md-8 bg-primary text-secondary p-4 d-flex flex-column ps-md-gap">
+            <?php
+            if (!function_exists('formatNewsDateSource')) {
+                function formatNewsDateSource(string $dateTimeStr, string $sourceUrl, string $pageLanguage = 'de'): array
+                {
+                    $dateOutput = '';
+                    $sourceShort = '';
+                    $datetimeAttr = '';
 
-  <div class="ce_text block">
-    <?= $this->cspInlineStyles($this->teaser) ?>
-  </div>
+                    try {
+                        $newsDate = new DateTimeImmutable($dateTimeStr);
+                        $datetimeAttr = $newsDate->format('Y-m-d'); // Standard datetime-Attribut auf Datum setzen
 
-  <?php if ($this->hasText || $this->hasTeaser): ?>
-    <p class="more"><?= $this->more ?></p>
-  <?php endif; ?>
+                        $now = new DateTimeImmutable('now');
 
+                        // Source URL Shortening
+                        $host = parse_url($sourceUrl, PHP_URL_HOST);
+                        if ($host) {
+                            $sourceShort = str_replace('www.', '', $host);
+                        }
+
+                        // Date Formatting
+                        $oneMonthAgoMarker = $now->sub(new DateInterval('P1M'));
+
+                        if ($newsDate <= $oneMonthAgoMarker) {
+                            $interval = $now->diff($newsDate);
+                            $totalMonthsPassed = $interval->y * 12 + $interval->m;
+                            if ($totalMonthsPassed == 0 && $newsDate <= $oneMonthAgoMarker) {
+                                $totalMonthsPassed = 1;
+                            }
+
+                            if ($pageLanguage === 'de') {
+                                $monthStr = ($totalMonthsPassed > 1) ? 'Monaten' : 'Monat';
+                                $dateOutput = "vor " . $totalMonthsPassed . " " . $monthStr;
+                            } else { // Basic English fallback
+                                $monthStr = ($totalMonthsPassed > 1) ? 'months' : 'month';
+                                $dateOutput = $totalMonthsPassed . " " . $monthStr . " ago";
+                            }
+                            // Bei relativen Angaben ist das datetimeAttr das exakte Datum des Artikels
+                        } else {
+                            // Younger than 1 month - Format without time
+                            $formatter = null;
+                            if (class_exists('IntlDateFormatter')) {
+                                // Pattern für Datum ohne Zeit, z.B. "06. Mai 2025"
+                                $pattern = 'dd. MMMM yyyy';
+                                $formatter = new IntlDateFormatter($pageLanguage, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, $pattern);
+                            }
+                            if ($formatter) {
+                                $dateOutput = $formatter->format($newsDate);
+                            } else { // Fallback if IntlDateFormatter is not available or fails
+                                $dateOutput = $newsDate->format('d.m.Y'); // Format ohne Zeit
+                            }
+                        }
+                    } catch (Exception $e) {
+                        // Fallback for date processing errors
+                        if (isset($newsDate) && $newsDate instanceof DateTimeInterface) {
+                             $dateOutput = $newsDate->format('d.m.Y'); // Show basic date on error
+                             $datetimeAttr = $newsDate->format('Y-m-d');
+                        } else {
+                            // Wenn $newsDate nicht initialisiert werden konnte
+                            $dateOutput = $dateTimeStr; // Original-String als letzte Rettung
+                            $datetimeAttr = ''; // Kein gültiges Datum für Attribut
+                        }
+
+                        if (empty($sourceShort) && $sourceUrl) {
+                            $host = parse_url($sourceUrl, PHP_URL_HOST);
+                            if ($host) $sourceShort = str_replace('www.', '', $host);
+                        }
+                    }
+
+                    return [
+                        'display' => trim($dateOutput . ($sourceShort ? ' – ' . $sourceShort : '')),
+                        'datetime' => $datetimeAttr
+                    ];
+                }
+            }
+            ?>
+            <?php $formattedNewsDate = formatNewsDateSource($this->datetime, $this->link, $this->language ?? 'de'); ?>
+            <p class="small mb-2">
+                <time datetime="<?= $formattedNewsDate['datetime'] ?>"><?= $formattedNewsDate['display'] ?></time>
+            </p>
+
+            <h3 class="mb-3"><?= $this->headline ?></h3>
+
+            <div class="mt-auto">
+                <?php if ($this->hasText || $this->hasTeaser): ?>
+                    <a class="btn btn-link with-arrow" href="<?= $this->link ?>" target="_blank">
+                        <?= $GLOBALS['TL_LANG']['MSC']['read_more']; ?>
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php

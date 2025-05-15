@@ -1,0 +1,78 @@
+<div class="col" data-animation="animate__fadeIn">
+    <article class="auction-item">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title h5 mb-0  fw-bold">
+                    <span class="d-block">{{ 'auction_listing.card.title_prefix'|trans }}</span>
+                    <span>{{ raw_data.state }}</span>
+                </h3>
+            </div>
+            <div class="card-img">
+                {# Bild #}
+                {% set image_path = auction.blurred_picture_path|default(auction.picture_path|default(null)) %}
+                {% if image_path %}
+                    <div class="card-img-top auction-image-container">
+                        <a href="{{ detailPageUrl }}/{{ auction.id }}">
+                            <img src="{{ image_path }}"
+                                 alt="{{ 'auction_listing.card.image_alt_prefix'|trans }} {{ auction.id }}" class="auction-image img-fluid">
+
+                            {% if raw_data.countDown is defined %}
+                                {% set days_countdown = (raw_data.countDown / 86400)|round(0, 'floor') %}
+                                {% if days_countdown > 0 %}
+                                    <span class="badge bg-primary text-secondary countdown-badge">{{ 'auction_listing.card.countdown_prefix'|trans }} {{ days_countdown }} {{ 'auction_listing.card.countdown_suffix_days'|trans }}</span>
+                                {% endif %}
+                            {% endif %}
+                            <span class="btn btn-tertiary no-button btn-sm preview-btn">{{ 'auction_listing.card.preview_button'|trans }}</span>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="card-body small">
+                <div class="auction-details-section">
+                    <span class="auction-detail-label">
+                        {{ 'auction_listing.card.details.power'|trans }}
+                    </span>
+                    <strong class="auction-detail-value">
+                        {{ raw_data.power }} {{ 'auction_listing.card.unit.mw'|trans }}
+                    </strong>
+
+                    <span class="auction-detail-label">
+                        {{ 'auction_listing.card.details.area_size'|trans }}
+                    </span>
+                    <strong class="auction-detail-value">
+                        {{ raw_data.areaSize }} {{ 'auction_listing.card.unit.ha'|trans }}
+                    </strong>
+
+                    <span class="auction-detail-label">
+                        {{ 'auction_listing.card.details.full_usage_hours'|trans }}
+                    </span>
+                    <strong class="auction-detail-value">
+                        {{ raw_data.fullUsageHours }} {{ 'auction_listing.card.unit.h_per_a'|trans }}
+                    </strong>
+
+                    <span class="auction-detail-label">
+                        {{ 'auction_listing.card.details.irr_before_rent'|trans }}
+                    </span>
+                    <strong class="auction-detail-value">
+                        {{ raw_data.internalRateOfReturnBeforeRent }} {{ 'auction_listing.card.unit.percent'|trans }}
+                    </strong>
+
+                    <span class="auction-detail-label">
+                        {{ 'auction_listing.card.details.availability'|trans }}
+                    </span>
+                    <strong class="auction-detail-value">
+                        {{ 'auction_listing.card.details.availability_prefix'|trans }} {{ raw_data.availableFrom }}
+                    </strong>
+                </div>
+            </div>
+            <div class="card-footer bg-secondary text-primary small">
+                {{ 'auction_listing.card.footer_notice'|trans }}
+            </div>
+        </div>
+        <div class="more-btn text-end">
+            <a href="{{ detailPageUrl }}/{{ auction.id }}" class="btn btn-outline-secondary btn-sm with-arrow">
+                {{ 'auction_listing.card.more_button'|trans }}
+            </a>
+        </div>
+    </article>
+</div>

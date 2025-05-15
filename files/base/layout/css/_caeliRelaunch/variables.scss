@@ -27,7 +27,7 @@ $offset-sm: 60px;
 $offset-lg: 240px;
 
 $link-color: $primary;
-$link-hover-color:$tertiary;
+$link-hover-color: $tertiary;
 $link-decoration: none;
 $link-shade-percentage: 20%;
 $link-hover-decoration: none;
@@ -43,7 +43,7 @@ $enable-cssgrid: true;
 $enable-rounded: true;
 $icon-type: ".fak";
 
-$spacer: 2rem;
+$spacer: 1.5rem;
 $spacer-sm: $spacer/2;
 $spacer-lg: $spacer*2;
 
@@ -69,8 +69,8 @@ $font-weight-black: 600;
 $font-size-xs: 10px;
 $font-size-sm: 14px;
 $font-size-base: 16px;
-$font-size-lg: 18px;
-$font-size-xl: 28px;
+$font-size-lg: clamp(25px, 1.5vw, 30px);
+$font-size-xl: clamp(30px, 1.5vw, 50px);
 
 $headings-font-family: null;
 $headings-font-style: null;
@@ -78,13 +78,13 @@ $headings-font-weight: 400;
 $headings-line-height: 1.1;
 //$headings-color: #4A4643;
 
-$tooltip-font-size:                 12px;
-$tooltip-color:                     var(--bs-body-color);
-$tooltip-bg:                        var(--bs-secondary);
-$tooltip-max-width:                300px;
+$tooltip-font-size: 12px;
+$tooltip-color: var(--bs-body-color);
+$tooltip-bg: var(--bs-secondary);
+$tooltip-max-width: 300px;
 
 $form-floating-padding-x: .75rem;
-$form-floating-real-padding-x: calc(var(--bs-gutter-x)*.5 + #{$form-floating-padding-x});
+$form-floating-real-padding-x: calc(var(--bs-gutter-x) * .5 + #{$form-floating-padding-x});
 
 
 $theme-colors: (

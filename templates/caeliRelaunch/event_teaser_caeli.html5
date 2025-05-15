@@ -1,43 +1,132 @@
+<div data-animation="animate__fadeIn" class="event layout_teaser<?= $this->classList ?>">
+    <div class="row g-0 align-items-end">
+        <div class="col-md">
+            <div class="d-flex flex-column gap-1">
+                <?php if ($this->hasDetails): ?>
+                    <h3 class="m-0">
+                        <a href="<?= $this->href ?>" title="<?= $this->title ?> (<?php if ($this->day): ?><?= $this->day ?>, <?php endif; ?><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?>)"<?= $this->target ?>><?= $this->link ?></a>
+                    </h3>
+                <?php else: ?>
+                    <h3 class="m-0"><?= $this->title ?></h3>
+                <?php endif; ?>
 
-<?php if ($this->header): ?>
-  <div class="header">
-    <?php if ($this->firstDay): ?><span class="day"><?= $this->firstDay ?>, </span><?php endif; ?><span class="date"><?= $this->firstDate ?></span>
-  </div>
-<?php endif; ?>
+                <?php
+                // Locale korrekt aus dem Request Stack holen
+                $currentRequest = \Contao\System::getContainer()->get('request_stack')->getCurrentRequest();
+                $locale = 'de_DE'; // Standard-Fallback
+                if ($currentRequest) {
+                    $requestLocale = $currentRequest->getLocale();
+                    if (!empty($requestLocale)) {
+                        $locale = str_replace('-', '_', $requestLocale); // z.B. de_DE aus de-CH wird de_CH
+                    }
+                }
 
-<div class="event layout_teaser<?= $this->classList ?>">
+                $dateInput = (string)$this->date; // Sicherstellen, dass es ein String ist
+                $formattedDateOutput = ''; // Variable für die finale Ausgabe
 
-  <?php if ($this->hasDetails): ?>
-    <h2><a href="<?= $this->href ?>" title="<?= $this->title ?> (<?php if ($this->day): ?><?= $this->day ?>, <?php endif; ?><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?>)"<?= $this->target ?>><?= $this->link ?></a></h2>
-  <?php else: ?>
-    <h2><?= $this->title ?></h2>
-  <?php endif; ?>
+                // Prüfen, ob IntlDateFormatter verfügbar ist
+                if (!class_exists('IntlDateFormatter')) {
+                    $formattedDateOutput = $dateInput; // Fallback, wenn intl Extension nicht geladen ist
+                } else {
+                    try {
+                        if (str_contains($dateInput, '–')) {
+                            // Datumsbereich
+                            list($startDateStr, $endDateStr) = explode('–', $dateInput, 2);
 
-  <p class="time"><time datetime="<?= $this->datetime ?>"><?= $this->date ?><?php if ($this->time):?> <?= $this->time ?><?php endif; ?></time></p>
+                            $parseFormat = 'd.m.Y'; // Annahme des Eingabeformats
+                            $startDateTime = \DateTimeImmutable::createFromFormat($parseFormat, trim($startDateStr));
+                            $endDateTime = \DateTimeImmutable::createFromFormat($parseFormat, trim($endDateStr));
 
-  <?php if ($this->location): ?>
-    <p class="location"><?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></p>
-  <?php endif; ?>
+                            if ($startDateTime && $endDateTime) {
+                                // Prüfen ob gleicher Monat und gleiches Jahr
+                                if ($startDateTime->format('m.Y') === $endDateTime->format('m.Y')) {
+                                    // Format: 27. - 28. August 2025
+                                    $fmtDay = new \IntlDateFormatter($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, null, null, 'dd');
+                                    $fmtMonthYear = new \IntlDateFormatter($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, null, null, 'MMMM yyyy');
 
-  <div class="ce_text block">
-    <?php if (!$this->addBefore): ?>
-      <?= $this->cspInlineStyles($this->teaser) ?>
-    <?php endif; ?>
+                                    $startDayFormatted = $fmtDay->format($startDateTime);
+                                    $endDayFormatted = $fmtDay->format($endDateTime);
+                                    $monthYearFormatted = $fmtMonthYear->format($endDateTime); // Monat und Jahr vom Enddatum
 
-    <?php if ($this->addImage): ?>
-      <?php $this->insert('image', $this->arrData); ?>
-    <?php endif; ?>
+                                    $formattedDateOutput = $startDayFormatted . '. - ' . $endDayFormatted . '. ' . $monthYearFormatted;
+                                } else {
+                                    // Unterschiedlicher Monat oder Jahr: z.B. 01. Januar 2025 – 02. Februar 2025
+                                    $fmtFull = new \IntlDateFormatter($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, null, null, 'dd. MMMM yyyy');
+                                    $formattedDateOutput = $fmtFull->format($startDateTime) . ' – ' . $fmtFull->format($endDateTime);
+                                }
+                            } else {
+                                $formattedDateOutput = $dateInput; // Fallback, wenn Parsen des Datums fehlschlägt
+                            }
+                        } else {
+                            // Einzelnes Datum: 02. Oktober 2025
+                            $dateTime = \DateTimeImmutable::createFromFormat('d.m.Y', $dateInput);
+                            if ($dateTime) {
+                                $fmt = new \IntlDateFormatter($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, null, null, 'dd. MMMM yyyy');
+                                $formattedDateOutput = $fmt->format($dateTime);
+                            } else {
+                                $formattedDateOutput = $dateInput; // Fallback, wenn Parsen fehlschlägt
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        // Im Fehlerfall das ursprüngliche Datum ausgeben
+                        $formattedDateOutput = $dateInput;
+                        // Optional: Fehler loggen für Debugging
+                        // \Contao\System::getContainer()->get('monolog.logger.contao')->error('Fehler bei der Datumsformatierung in event_teaser_caeli: ' . $e->getMessage());
+                    }
+                }
 
-    <?php if ($this->addBefore): ?>
-      <?= $this->cspInlineStyles($this->teaser) ?>
-    <?php endif; ?>
-  </div>
+                // Sicherstellen, dass $formattedDateOutput immer einen Wert hat
+                if (empty($formattedDateOutput) && isset($this->date)) {
+                    $formattedDateOutput = $this->date; // Letzter Fallback
+                }
 
-  <?php if ($this->hasDetails): ?>
-    <p class="more"><a href="<?= $this->href ?>" title="<?= $this->readMore ?>"<?= $this->target ?>><?= $this->more ?><span class="invisible"> <?= $this->link ?></span></a></p>
-  <?php endif; ?>
+                // datetime Attribut für <time> Tag generieren
+                $timeTagDatetimeAttribute = '';
+                if (isset($this->startDateTimeObject) && $this->startDateTimeObject instanceof \DateTimeInterface) {
+                    $timeTagDatetimeAttribute = $this->startDateTimeObject->format('c');
+                } elseif (!empty($this->startTime)) { // Fallback auf startTime (Unix Timestamp)
+                    $timeTagDatetimeAttribute = date('c', (int)$this->startTime);
+                } elseif (!empty($this->startDate)) { // Fallback auf startDate (Unix Timestamp, nur Datum)
+                    $timeTagDatetimeAttribute = date('Y-m-d', (int)$this->startDate);
+                }
 
+                ?>
+                <p class="h3 fw-normal date m-0">
+                    <time datetime="<?= $timeTagDatetimeAttribute ?>">
+                        <?= $formattedDateOutput ?><?php if ($this->time && strpos($formattedDateOutput, (string)$this->time) === false): ?> <?= $this->time ?><?php endif; ?>
+                    </time>
+                </p>
+
+                <?php if ($this->location): ?>
+                    <p class="h3 location fw-normal m-0"><?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></p>
+                <?php endif; ?>
+            </div>
+        </div>
+        <div class="col-md-auto">
+            <div class="d-flex justify-content-end flex-row gap-1">
+                <?php if ($this->onSiteAppointmentLink ?? null):
+                    // Der Null-Koaleszenz-Operator stellt sicher, dass $this->onSiteAppointmentLink existiert.
+                    // Die Sprachvariable wird nur verwendet, wenn der Link tatsächlich vorhanden ist.
+                    ?>
+                    <div>
+                        <a href="<?= $this->onSiteAppointmentLink ?>" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <?= $GLOBALS['TL_LANG']['MSC']['onSiteAppointment'] ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+                <?php if ($this->hasDetails): ?>
+                    <div>
+                        <a href="<?= $this->href ?>" title="<?= $this->readMore ?>" class="btn btn-sm btn-outline-primary">
+                            <?= $this->more ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+        </div>
+    </div>
 </div>
+
 
 <?php
 

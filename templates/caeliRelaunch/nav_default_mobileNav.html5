@@ -1,9 +1,15 @@
 <ul class="<?= $this->level ?>">
     <?php foreach ($this->items as $item): ?>
         <li class="<?= $item['class'] ?>">
-            <a href="<?= $item['href'] ?>" title="<?= $item['pageTitle'] ?: $item['title'] ?>" class="<?= $item['class'] ?>"<?php if (!empty($item['subitems'])): ?> aria-haspopup="true"<?php endif; ?><?php if ($item['accesskey'] !== ''): ?> accesskey="<?= $item['accesskey'] ?>"<?php endif; ?><?= $item['target'] ?><?= $item['rel'] ?? '' ?>>
-                <?= $item['link'] ?>
-            </a>
+            <?php if ($this->level === 'level_1' && !empty($item['subitems'])): ?>
+                <span title="<?= $item['pageTitle'] ?: $item['title'] ?>" class="<?= $item['class'] ?>" aria-haspopup="true"<?php if ($item['accesskey'] !== ''): ?> accesskey="<?= $item['accesskey'] ?>"<?php endif; ?>>
+                    <?= $item['link'] ?>
+                </span>
+            <?php else: ?>
+                <a href="<?= $item['href'] ?>" title="<?= $item['pageTitle'] ?: $item['title'] ?>" class="<?= $item['class'] ?>"<?php if (!empty($item['subitems'])): ?> aria-haspopup="true"<?php endif; ?><?php if ($item['accesskey'] !== ''): ?> accesskey="<?= $item['accesskey'] ?>"<?php endif; ?><?= $item['target'] ?><?= $item['rel'] ?? '' ?>>
+                    <?= $item['link'] ?>
+                </a>
+            <?php endif; ?>
             <?= $item['subitems'] ?? '' ?>
         </li>
     <?php endforeach; ?>
@@ -12,13 +18,13 @@
         <div class="extra-content mobileNav_contactBtn py-3">
             {{iflng::de}}
             <form action="/kontakt">
-                <button type="submit" class="btn btn-primary"><i class="fasl fa-arrow-right-long"></i> Kontakt</button>
+                <button type="submit" class="btn btn-outline-primary with-arrow btn-xl"><i class="fasl fa-arrow-right-long"></i> Kontakt</button>
             </form>
             {{iflng}}
 
             {{iflng::en}}
             <form action="/contact">
-                <button type="submit" class="btn btn-primary"><i class="fasl fa-arrow-right-long"></i> Contact</button>
+                <button type="submit" class="btn btn-outline-primary with-arrow btn-xl"><i class="fasl fa-arrow-right-long"></i> Contact</button>
             </form>
             {{iflng}}
         </div>

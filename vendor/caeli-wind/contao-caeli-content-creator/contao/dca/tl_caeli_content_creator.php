@@ -49,7 +49,7 @@ $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
         ),
         'global_operations' => array(
             'all' => array(
-                'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
+                'label' => &$GLOBALS['TL_LANG']['MSC']['all_entrys'],
                 'href' => 'act=select',
                 'class' => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
@@ -122,7 +122,7 @@ $GLOBALS['TL_DCA']['tl_caeli_content_creator'] = array(
             'label' => &$GLOBALS['TL_LANG']['tl_caeli_content_creator']['emphasis'],
             'exclude' => true,
             'search' => true,
-            'inputType' => 'text', 
+            'inputType' => 'text',
             'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
         ),

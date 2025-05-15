@@ -1,23 +1,115 @@
-form .formbody{
-      --bs-gutter-x: 10px;
-    --bs-gutter-y: 10px;
+form .formbody {
+  --bs-gutter-x: 10px;
+  --bs-gutter-y: 10px;
 }
 
 
 .form-check-input[type=checkbox],
-form .widget:not(.form-floating).widget-radio fieldset>span input[type=checkbox],
-form .widget:not(.form-floating).widget-checkbox fieldset>span input[type=checkbox]{
+form .widget:not(.form-floating).widget-radio fieldset > span input[type=checkbox],
+form .widget:not(.form-floating).widget-checkbox fieldset > span input[type=checkbox] {
   border-radius: 0;
-  border: none;
+  border: 1px solid transparent;
   width: 20px;
   height: 20px;
+  margin-top: 4px;
 }
 
-.checkbox_container label{
+
+form .form-check-input:checked, form .form-check-input:focus, form .form-check-input:focus-visible {
+  border-color: rgba(255, 255, 255, .1);
+}
+
+
+.checkbox_container label {
   padding-left: 10px;
 }
 
-.agb_checkbox label, .agb_notice p{
+.agb_checkbox label,
+.agb_notice p {
   font-size: clamp(14px, 1.2vw, 16px);
 }
 
+
+.dropdown-menu {
+  --bs-border-color-translucent: rgba(255, 255, 255, .175);
+  border-top: 0;
+}
+
+.dropdown-toggle {
+  padding-right: .25rem;
+
+  &:after {
+    @extend %fa-icon;
+    @extend #{$icon-type} !optional;
+    content: "\e003";
+    border: 0;
+    font-size: 7px;
+    margin-left: .5rem;
+  }
+}
+
+/********** Range Input Styles **********/
+/*Range Reset*/
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 15rem;
+}
+
+/* Removes default focus */
+input[type="range"]:focus {
+  outline: none;
+}
+
+/***** Chrome, Safari, Opera and Edge Chromium styles *****/
+/* slider track */
+input[type="range"]::-webkit-slider-runnable-track {
+  background-color: var(--bs-secondary);
+  border-radius: 0.5rem;
+  height: 0.5rem;
+}
+
+/* slider thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  margin-top: -12px; /* Centers thumb on the track */ 
+
+  /*custom styles*/
+  background-color: var(--bs-tertiary);
+  height: 2rem;
+  width: 1rem;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+  border: 1px solid var(--bs-tertiary);
+  outline: 3px solid var(--bs-tertiary);
+  outline-offset: 0.125rem;
+}
+
+/******** Firefox styles ********/
+/* slider track */
+input[type="range"]::-moz-range-track {
+  background-color: var(--bs-tertiary);
+  border-radius: 0.5rem;
+  height: 0.5rem;
+}
+
+/* slider thumb */
+input[type="range"]::-moz-range-thumb {
+  border: none; /*Removes extra border that FF applies*/
+  border-radius: 0; /*Removes default border-radius that FF applies*/
+
+  /*custom styles*/
+  background-color: var(--bs-secondary);
+  height: 2rem;
+  width: 1rem;
+}
+
+input[type="range"]:focus::-moz-range-thumb {
+  border: 1px solid var(--bs-tertiary);
+  outline: 3px solid var(--bs-tertiary);
+  outline-offset: 0.125rem;
+}

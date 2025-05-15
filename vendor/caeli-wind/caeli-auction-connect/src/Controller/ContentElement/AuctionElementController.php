@@ -37,54 +37,83 @@ class AuctionElementController extends AbstractContentElementController
 
     protected function getResponse(Template $template, ContentModel $model, Request $request): Response
     {
-        // Kommagetrennte IDs in ein Array umwandeln und leere Einträge entfernen
-        $auctionIds = array_filter(array_map('trim', explode(',', $model->auction_ids)));
-        $auctions = [];
+        $this->logger->debug('[AuctionElementController] getResponse gestartet für CE ID ' . $model->id);
 
-        if (!empty($auctionIds)) {
-             // Alle benötigten Auktionen auf einmal abrufen
-             $auctions = $this->auctionService->getAuctionsByIds($auctionIds);
-             $this->logger->debug('Auktionen für IDs abgerufen', ['ids' => $auctionIds, 'count' => count($auctions)]);
-        } else {
-             $this->logger->debug('Keine Auktions-IDs im Inhaltselement angegeben.');
+        $filters = [];
+        if ($model->auctionElementFilters) {
+            $filters = $this->auctionService->parseFiltersFromString((string)$model->auctionElementFilters);
+            $this->logger->debug('[AuctionElementController] Filter aus auctionElementFilters geparst', ['parsedFilters' => $filters]);
         }
 
-        // Weiterleitungsseite hinzufügen, falls angegeben
+        // Sortieroptionen aus dem Content Element Model lesen
+        $sortBy = $model->auctionSortByCE ?: null;
+        $sortDirection = $model->auctionSortDirectionCE ?: 'asc';
+        $this->logger->debug('[AuctionElementController] Alte Sortieroptionen aus CE', ['sortBy' => $sortBy, 'sortDirection' => $sortDirection]);
+
+        // Neue mehrstufige Sortierregeln aus dem Content Element Model lesen
+        $sortRules = [];
+        if ($model->auctionSortRulesCE) {
+            $sortRules = $this->auctionService->parseSortRulesFromString((string)$model->auctionSortRulesCE);
+            $this->logger->debug('[AuctionElementController] Neue Sortierregeln aus auctionSortRulesCE geparst', ['sortRules' => $sortRules]);
+        }
+
+        // Behandlung von auction_ids (für Abwärtskompatibilität, bis das Feld entfernt wird)
+        $targetAuctionIds = array_filter(array_map('trim', explode(',', (string)($model->auction_ids ?? ''))));
+
+        if (!empty($targetAuctionIds)) {
+            $this->logger->debug('[AuctionElementController] Spezifische auction_ids gefunden. Diese werden priorisiert und zusätzlich gefiltert.', ['ids' => $targetAuctionIds]);
+            
+            if (!empty($filters) && isset($filters['id__in'])) {
+                 $existingIdFilter = array_map('trim', explode(',', $filters['id__in']));
+                 $targetAuctionIds = array_unique(array_merge($targetAuctionIds, $existingIdFilter));
+            }
+            $filters['id__in'] = implode(',', $targetAuctionIds);
+            $this->logger->debug('[AuctionElementController] Kombinierte Filter mit id__in', $filters);
+            
+            $auctions = $this->auctionService->getAuctions($filters, false, $sortBy, $sortDirection, $sortRules);
+
+        } else {
+            $this->logger->debug('[AuctionElementController] Keine spezifischen auction_ids. Verwende Filter aus Textarea.');
+            $auctions = $this->auctionService->getAuctions($filters, false, $sortBy, $sortDirection, $sortRules);
+        }
+
+        $this->logger->info('[AuctionElementController] ' . count($auctions) . ' Auktionen nach Filterung und Sortierung erhalten.');
+
         $template->detailPage = null;
         if ($model->jumpTo) {
-            $template->detailPage = \Contao\PageModel::findById($model->jumpTo);
-            $this->logger->debug('Weiterleitungsseite gefunden', [
-                'id' => $model->jumpTo,
-                'alias' => $template->detailPage ? $template->detailPage->alias : 'nicht gefunden'
-            ]);
+            $pageModel = PageModel::findById($model->jumpTo);
+            if ($pageModel instanceof PageModel) {
+                $template->detailPage = $pageModel;
+                $template->detailPageUrl = $pageModel->getFrontendUrl();
+                $this->logger->debug('Weiterleitungsseite gefunden', ['id' => $model->jumpTo, 'alias' => $pageModel->alias]);
+            } else {
+                $this->logger->warning('Weiterleitungsseite NICHT gefunden', ['id' => $model->jumpTo]);
+                $template->detailPageUrl = null;
+            }
+        } else {
+            $template->detailPageUrl = null;
         }
 
-        // Detailseiten-URL für Links setzen
-        $template->detailPageUrl = null;
-        if ($template->detailPage) {
-            $template->detailPageUrl = $template->detailPage->getFrontendUrl();
-        }
-
-        // Template-Variablen je nach Anzahl der Auktionen setzen
         if (count($auctions) === 1) {
-            // Wenn nur eine Auktion gefunden wurde, setze sie als einzelne Auktion
             $template->auction = $auctions[0];
             $template->auctions = null;
             $template->multipleAuctions = false;
         } elseif (count($auctions) > 1) {
-            // Wenn mehrere Auktionen gefunden wurden, setze das Array
             $template->auctions = $auctions;
             $template->auction = null;
             $template->multipleAuctions = true;
         } else {
-            // Wenn keine Auktionen gefunden wurden
             $template->auction = null;
             $template->auctions = null;
             $template->multipleAuctions = false;
-            $this->logger->warning('Keine Auktionen gefunden für IDs', ['ids' => $model->auction_ids]);
+            $this->logger->warning('Keine Auktionen gefunden.', ['filters' => $filters, 'target_ids' => $targetAuctionIds]);
         }
 
-        // Template-Variablen setzen
+        // Ausgewähltes Item-Template aus dem CE-Modell holen oder Default setzen
+        $itemTemplateName = $model->auctionItemTemplateCE ?: 'auction_item.html.twig'; // Default, falls nichts ausgewählt
+        $template->auctionItemTemplate = '@CaeliWindCaeliAuctionConnect/' . $itemTemplateName;
+        $this->logger->debug('[AuctionElementController] Item-Template für CE gesetzt auf: ' . $template->auctionItemTemplate);
+
         $template->headline = $model->headline;
         $template->cssClass = $model->cssID[1] ?? '';
 

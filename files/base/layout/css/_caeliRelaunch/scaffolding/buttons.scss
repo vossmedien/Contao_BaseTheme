@@ -1,9 +1,10 @@
 .btn {
   --bs-btn-border-radius: 0;
   --bs-btn-border-width: 3px;
+  --bs-btn-disabled-color: var(--bs-btn-color);
   border-radius: var(--bs-btn-border-radius);
 
-  &:not(.with-arrow) {
+  //&:not(.with-arrow) { ??
     &.btn-primary {
       --bs-btn-hover-bg: transparent;
       --bs-btn-border-color: var(--bs-primary);
@@ -26,7 +27,7 @@
       --bs-btn-border-color: var(--bs-tertiary);
       --bs-btn-hover-color: var(--bs-tertiary);
     }
-  }
+  //}
 
 
   &.with-arrow {

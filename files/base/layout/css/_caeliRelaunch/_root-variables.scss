@@ -63,7 +63,7 @@
   //Inputs
 
   --bs-input-border-radius: 0;
-  --bs-input-border: 1px solid transparent;
+  --bs-input-border: 1px solid var(--bs-primary);
   --bs-input-shadow: none;
   --bs-input-padding-x: 0.75rem;
   --bs-input-padding-y: .5rem;
@@ -101,12 +101,12 @@
   --base-skew: -2.5deg;
 
 
-  --bs-scrolloffset: 125px;
+  --bs-scrolloffset: 160px;
 
   --body-bg-cookies-not-accepted: rgba(0, 0, 0, .5);
 
   //MobileNav
-  --mm-ocd-min-width: 300px;
+  --mm-ocd-min-width: 350px;
   --mm-ocd-max-width: 400px;
 
   --mm-ocd-width: var(--mm-ocd-min-width);

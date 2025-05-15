@@ -50,7 +50,7 @@ return array(
         'topline' => array(
             'label' => array('Topline', ''),
             'inputType' => 'text',
-            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+              'eval' => array('tl_class' => ' clr', 'allowHtml' => true),
         ),
 
         'headline' => array(
@@ -154,7 +154,7 @@ return array(
                 'fieldType' => 'radio',
                 'filesOnly' => true,
                 'extensions' => \Contao\Config::get('validImageTypes'),
-                'mandatory' => true,
+                'mandatory' => false,
                 'tl_class' => 'clr'
             ),
         ),

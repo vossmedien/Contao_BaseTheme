@@ -10,6 +10,7 @@ use Contao\PageModel;
 use Contao\LayoutModel;
 use Contao\PageRegular;
 use CaeliWind\CaeliPinLogin\Session\PinLoginSessionManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -23,19 +24,22 @@ class PinLoginCheckListener
     private RouterInterface $router;
     private ContaoFramework $framework;
     private PageFinder $pageFinder;
+    private LoggerInterface $logger;
 
     public function __construct(
         RequestStack $requestStack,
         PinLoginSessionManager $sessionManager,
         RouterInterface $router,
         ContaoFramework $framework,
-        PageFinder $pageFinder
+        PageFinder $pageFinder,
+        LoggerInterface $logger
     ) {
         $this->requestStack = $requestStack;
         $this->sessionManager = $sessionManager;
         $this->router = $router;
         $this->framework = $framework;
         $this->pageFinder = $pageFinder;
+        $this->logger = $logger;
     }
 
     /**
@@ -45,17 +49,19 @@ class PinLoginCheckListener
     {
         // Debug-Ausgabe
         if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'dev') {
-            // Debug im Frontend einbauen
-            echo "<!-- PIN-Login Debug:\n";
-            echo "PageId: " . $pageModel->id . "\n";
-            echo "PIN Protected: " . ($pageModel->pin_protected ? 'Ja' : 'Nein') . "\n";
+            $debugMessages = [
+                "PIN-Login Debug for PageId: " . $pageModel->id,
+                "PIN Protected: " . ($pageModel->pin_protected ? 'Ja' : 'Nein'),
+            ];
             if ($pageModel->pin_protected) {
-                echo "PIN Value: " . $pageModel->pin_value . "\n";
-                echo "PIN Login Page: " . $pageModel->pin_login_page . "\n";
-                echo "isPageAuthorized: " . ($this->sessionManager->isPageAuthorized($pageModel->id, (int) $pageModel->pin_timeout) ? 'Ja' : 'Nein') . "\n";
-                echo "AuthorizedPages: " . print_r($this->sessionManager->getDebugAuthorizedPages(), true) . "\n";
+                $debugMessages[] = "PIN Value: " . $pageModel->pin_value;
+                $debugMessages[] = "PIN Login Page: " . $pageModel->pin_login_page;
+                $debugMessages[] = "isPageAuthorized: " . ($this->sessionManager->isPageAuthorized($pageModel->id, (int) $pageModel->pin_timeout) ? 'Ja' : 'Nein');
+                $debugMessages[] = "AuthorizedPages: " . print_r($this->sessionManager->getDebugAuthorizedPages(), true);
             }
-            echo "-->\n";
+            foreach ($debugMessages as $message) {
+                $this->logger->debug($message);
+            }
         }
 
         $this->framework->initialize();
@@ -131,6 +137,10 @@ class PinLoginCheckListener
                     if (!headers_sent()) {
                         header('Location: ' . $url);
                         exit;
+                    } else {
+                        // Wenn Header bereits gesendet wurden, logge einen Fehler.
+                        // Dies sollte nach Entfernung der Echos nicht mehr passieren.
+                        $this->logger->error("PinLoginCheckListener: Konnte nicht weiterleiten, da Header bereits gesendet wurden. Ausgabe startete bei: " . headers_sent($file, $line) ? $file.':'.$line : 'unbekannt');
                     }
                 }
             } else {

@@ -83,65 +83,65 @@ class AuctionListingController extends AbstractFrontendModuleController
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
-        $this->logger->debug('[AuctionListingController] getResponse gestartet.');
-        // Filter aus Request oder ModuleModel extrahieren
-        $filters = [];
-        
-        // Beispiel: Größenfilter
-        if ($request->query->has('size_min') || $request->query->has('size_max')) {
-            $filters['size'] = [
-                'min' => $request->query->get('size_min'),
-                'max' => $request->query->get('size_max')
-            ];
-             $this->logger->debug('[AuctionListingController] Größenfilter aus Request erkannt', $filters['size']);
+        $this->logger->debug('[AuctionListingController] getResponse gestartet für Modul ID ' . $model->id);
+
+        // 1. Filter aus dem Request lesen (für z.B. externes Filter-Modul)
+        // Alle Query-Parameter als Basis für Request-Filter nehmen
+        $requestFilters = $request->query->all();
+
+        // Entferne Parameter, die keine direkten Filter für den AuctionService sind oder separat behandelt werden
+        unset($requestFilters['refresh']); // Der 'refresh' Parameter wird für $forceRefresh genutzt
+        // unset($requestFilters['page']); // Beispiel: Falls Paginierung anders gehandhabt wird
+
+        // Die _min/_max und kommaseparierten Strings werden direkt vom AuctionService verarbeitet.
+        // Eine manuelle Umstrukturierung wie zuvor für 'size' ist hier nicht mehr nötig.
+
+        if (!empty($requestFilters)){
+            $this->logger->debug('[AuctionListingController] Filter aus Request (query->all()) verwendet', $requestFilters);
         }
-        
-        // Beispiel: Bundesland-Filter
-        if ($request->query->has('bundesland')) {
-            $filters['bundesland'] = $request->query->get('bundesland');
-             $this->logger->debug('[AuctionListingController] Bundeslandfilter aus Request erkannt', ['bundesland' => $filters['bundesland']]);
+
+        // 2. Filter aus den Moduleinstellungen lesen und parsen
+        $moduleFilters = [];
+        if ($model->auctionListingFilters) {
+            $moduleFilters = $this->auctionService->parseFiltersFromString((string)$model->auctionListingFilters);
+            $this->logger->debug('[AuctionListingController] Filter aus Moduleinstellungen geparst', $moduleFilters);
         }
-        
-        // Beispiel: Landkreis-Filter
-        if ($request->query->has('landkreis')) {
-            $filters['landkreis'] = $request->query->get('landkreis');
-             $this->logger->debug('[AuctionListingController] Landkreisfilter aus Request erkannt', ['landkreis' => $filters['landkreis']]);
+
+        // 3. Filter zusammenführen (Request-Filter überschreiben Modul-Filter bei gleichen Schlüsseln)
+        $finalFilters = array_merge($moduleFilters, $requestFilters);
+        if (!empty($finalFilters)){
+             $this->logger->info('[AuctionListingController] Finale Filter nach Merge', $finalFilters);
         }
-        
-        // Beispiel: Status-Filter
-        if ($request->query->has('status')) {
-            $filters['status'] = $request->query->get('status');
-             $this->logger->debug('[AuctionListingController] Statusfilter aus Request erkannt', ['status' => $filters['status']]);
+
+        // 4. Sortieroptionen aus dem Modul lesen
+        $sortBy = $model->auctionSortBy ?: null;
+        $sortDirection = $model->auctionSortDirection ?: 'asc';
+        $this->logger->debug('[AuctionListingController] Alte Sortieroptionen', ['sortBy' => $sortBy, 'sortDirection' => $sortDirection]);
+
+        // 4.1 Neue mehrstufige Sortierregeln aus dem Modul lesen
+        $sortRules = [];
+        if ($model->auctionSortRules) {
+            $sortRules = $this->auctionService->parseSortRulesFromString((string)$model->auctionSortRules);
+            $this->logger->debug('[AuctionListingController] Neue Sortierregeln aus auctionSortRules geparst', ['sortRules' => $sortRules]);
         }
-        
-        // Beispiel: Leistungs-Filter
-        if ($request->query->has('leistung_min') || $request->query->has('leistung_max')) {
-            $filters['leistung'] = [
-                'min' => $request->query->get('leistung_min'),
-                'max' => $request->query->get('leistung_max')
-            ];
-             $this->logger->debug('[AuctionListingController] Leistungsfilter aus Request erkannt', $filters['leistung']);
-        }
-        
-        // Volllaststunden-Filter
-        if ($request->query->has('volllaststunden_min') || $request->query->has('volllaststunden_max')) {
-            $filters['volllaststunden'] = [
-                'min' => $request->query->get('volllaststunden_min'),
-                'max' => $request->query->get('volllaststunden_max')
-            ];
-             $this->logger->debug('[AuctionListingController] Volllaststundenfilter aus Request erkannt', $filters['volllaststunden']);
-        }
-        
-        // Auktionen abrufen (gefiltert oder alle)
-        // Prüfen, ob Daten neu geladen werden sollen
+
+        // Prüfen, ob Daten neu geladen werden sollen (aus Request)
         $forceRefresh = $request->query->has('refresh') && $request->query->get('refresh') === '1';
-        $this->logger->debug('[AuctionListingController] Rufe auctionService->getAuctions auf', ['filters' => $filters, 'forceRefresh' => $forceRefresh]);
-        $auctions = $this->auctionService->getAuctions($filters, $forceRefresh);
+
+        // 5. Auktionen mit finalen Filtern und Sortierung abrufen
+        $auctions = $this->auctionService->getAuctions($finalFilters, $forceRefresh, $sortBy, $sortDirection, $sortRules);
         $this->logger->info('[AuctionListingController] ' . count($auctions) . ' Auktionen vom Service erhalten.');
         
         // Template-Variablen setzen
         $template->auctions = $auctions;
-        $template->filters = $filters;
+        $template->filters = $finalFilters;
+
+        // Ausgewähltes Item-Template aus dem Modul-Modell holen oder Default setzen
+        $itemTemplateName = $model->auctionItemTemplate ?: 'auction_item.html.twig'; // Default, falls nichts ausgewählt
+        // Wichtig: Hier muss der Twig-Namespace vorangestellt werden!
+        $template->auctionItemTemplate = '@CaeliWindCaeliAuctionConnect/' . $itemTemplateName;
+        $this->logger->debug('[AuctionListingController] Item-Template gesetzt auf: ' . $template->auctionItemTemplate);
+
         $this->logger->debug('[AuctionListingController] Setze Template-Variablen.');
         
         // Detailseite für Links einrichten

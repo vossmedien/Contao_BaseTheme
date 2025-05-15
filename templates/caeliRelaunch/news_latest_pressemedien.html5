@@ -1,24 +1,65 @@
+<div data-animation="animate__fadeInUp" class="presse-medien layout_latest arc_<?= $this->archive->id ?> block<?= $this->class ?>">
 
-<div class="layout_latest arc_<?= $this->archive->id ?> block<?= $this->class ?>">
 
-  <?php $this->block('info'); ?>
-    <p class="info"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?></p>
-  <?php $this->endblock(); ?>
+    <div class="d-flex flex-column gap-1  ps-md-gap">
+        <?php $this->block('info'); ?>
+        <?php
+        // Sichtbares Datum anpassen (Uhrzeit entfernen)
+        $displayDate = $this->date;
+        $datetimeAttribute = $this->datetime; // Standardmäßig den vollen ISO-String nehmen
 
-  <?php if ($this->addImage): ?>
-    <?php $this->insert('image', $this->arrData); ?>
-  <?php endif; ?>
+        if (!empty($this->timestamp)) {
+            // Wenn ein Unix-Timestamp vorhanden ist, diesen für die Anzeige nutzen (formatiert nach Contao-Einstellung)
+            $displayDate = \Contao\Date::parse($GLOBALS['TL_CONFIG']['dateFormat'], $this->timestamp);
+            // Für das datetime-Attribut nur das Datum vom Timestamp nehmen
+            $datetimeAttribute = date('Y-m-d', $this->timestamp);
+        } elseif (!empty($this->datetime)) {
+            // Wenn $this->datetime vorhanden ist (ISO-String), versuche, daraus das Datum zu formatieren
+            try {
+                $dateObject = new \DateTimeImmutable($this->datetime);
+                $displayDate = $dateObject->format($GLOBALS['TL_CONFIG']['dateFormat']);
+                $datetimeAttribute = $dateObject->format('Y-m-d'); // Nur Datum für das Attribut
+            } catch (\Exception $e) {
+                // Fallback: Versuche, die Uhrzeit manuell aus $this->date zu entfernen, wenn es ein String ist
+                if (is_string($this->date) && str_contains($this->date, ' ')) {
+                    $parts = explode(' ', $this->date, 2);
+                    $displayDate = $parts[0];
+                }
+                // $datetimeAttribute bleibt $this->datetime oder wird gekürzt, wenn $this->date keinen Zeit-Teil hatte
+                if (is_string($this->datetime) && strlen($this->datetime) > 10) {
+                     // Prüfen, ob es ein valider ISO-String mit Zeit ist, dann kürzen, sonst so lassen
+                    if (preg_match('/^(\d{4}-\d{2}-\d{2})T\d{2}:\d{2}:\d{2}/_u', $this->datetime, $matches)) {
+                        $datetimeAttribute = $matches[1];
+                    }
+                }
+            }
+        } // Wenn weder timestamp noch datetime, bleibt $displayDate = $this->date;
+        ?>
+        <span class="h3 fw-normal info m-0">
+            <time datetime="<?= $datetimeAttribute ?>"><?= $displayDate ?></time>
+        </span>
+        <?php $this->endblock(); ?>
 
-  <h2><?= $this->linkHeadline ?></h2>
+        <?php if ($this->addImage): ?>
+         <a href="<?= $this->link ?>">
+             <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, $this->headline, '', ["380px", "270px", "crop"], '', false); ?>
+         </a>
+        <?php endif; ?>
 
-  <div class="ce_text block">
-    <?= $this->cspInlineStyles($this->teaser) ?>
-  </div>
+        <h3 class="m-0"><?= $this->linkHeadline ?></h3>
 
-  <?php if ($this->hasText || $this->hasTeaser): ?>
-    <p class="more"><?= $this->more ?></p>
-  <?php endif; ?>
+        <div class="ce_text my-2 block">
+            <?= $this->cspInlineStyles($this->teaser) ?>
+        </div>
 
+        <?php if ($this->hasText || $this->hasTeaser): ?>
+            <p class="more">
+                <a class="btn btn-link with-arrow" href="<?= $this->link ?>">
+                    <?= $GLOBALS['TL_LANG']['MSC']['read_more']; ?>
+                </a>
+            </p>
+        <?php endif; ?>
+    </div>
 </div>
 
 <?php

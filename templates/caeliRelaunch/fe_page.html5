@@ -57,7 +57,7 @@ $this->bodyAttributes = $this
     <?= $this->viewport ?>
     <?= $this->framework ?>
 
-    <?php
+     <?php
     // --- NEU: CSS optimiert einbinden ---
 
     // Gewünschte Ladereihenfolge und spezifische Attribute
@@ -84,7 +84,8 @@ $this->bodyAttributes = $this
     // 1. Preload für _fonts.bundle.min.css (wenn vorhanden)
     $fontsCssPath = $findAssetPathBySuffix('_fonts.bundle.min.css', $themeAssets['css'] ?? []);
     if ($fontsCssPath) {
-        echo '<link rel="preload" href="' . $this->base . $fontsCssPath . '" as="style">' . "\n    ";
+        echo '<link rel="preload" href="' . rtrim($this->base, '/') . '/' . ltrim($fontsCssPath, '/') . '" as="style">' . "
+    ";
     }
 
     // 2. Stylesheets in definierter Reihenfolge ausgeben
@@ -101,7 +102,7 @@ $this->bodyAttributes = $this
     foreach ($cssLoadConfig as $fileSuffix => $config) {
         if (isset($orderedCssPathsForOutput[$fileSuffix])) {
             $path = $orderedCssPathsForOutput[$fileSuffix];
-            $fullPath = $this->base . $path; // Annahme: $this->base ist korrekt und $path ist relativ dazu oder ein Webpfad
+            $fullPath = rtrim($this->base, '/') . '/' . ltrim($path, '/');
 
             echo '<link rel="stylesheet" href="' . $fullPath . '"';
             if (isset($config['media'])) {
@@ -132,6 +133,7 @@ $this->bodyAttributes = $this
         }
     }
     ?>
+
 
     <?php // --- NEU: Font Preloads ---
     if (!empty($themeAssets['fonts_preload'])) {
@@ -796,25 +798,53 @@ $this->bodyAttributes = $this
 <?php $this->sections('bottom'); ?>
 <?php $this->endblock(); ?>
 <?php // --- NEU: JS einbinden ---
-// Vendor JS zuerst laden (jetzt individuell)
+// Vendor JS zuerst direkt in TL_BODY
 if (!empty($themeAssets['js_vendor_individual'])) {
     foreach ($themeAssets['js_vendor_individual'] as $js) {
         // $js ist nun ein Array mit den Schlüsseln 'src' und 'attributes'
-        // z.B. $js = ['src' => 'files/base/.../script.js', 'attributes' => '|defer|static']
-        $scriptTag =  $js['src'] . $js['attributes'];
-        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag ;
+        // z.B. $js = ['src' => '/files/base/.../script.js', 'attributes' => '|defer|static']
+
+        $attributesString = '';
+        if (str_contains($js['attributes'], '|defer|')) {
+            $attributesString .= ' defer';
+        }
+        // Weitere Attribute wie 'async' könnten hier bei Bedarf behandelt werden.
+        // Das '|static' Attribut von Contao wird hier nicht direkt übersetzt,
+        // da es eine Anweisung für Contaos Asset Pipeline ist.
+
+        $srcPath = $js['src'];
+        // Sicherstellen, dass der Pfad server-relativ ist (beginnt mit /) und keine doppelten Slashes am Anfang hat
+        if (str_starts_with($srcPath, '//')) {
+            $srcPath = substr($srcPath, 1); // Macht aus //files -> /files
+        } elseif (!str_starts_with($srcPath, '/')) {
+            $srcPath = '/' . $srcPath; // Stellt sicher, dass es mit / beginnt
+        }
+
+        $scriptTag = '<script src="' . $srcPath . '"' . $attributesString . '></script>';
+        $GLOBALS['TL_BODY'][] = $scriptTag;
     }
 }
 
-// Dann App JS (aus dem Manifest des App-Bundles)
+// Dann App JS
 if (!empty($themeAssets['js_app'])) {
     foreach ($themeAssets['js_app'] as $js) {
-        // $js['src'] ist hier der von Webpack generierte Pfad zum App-Bundle
-        $scriptTag =  $js['src'] . '|defer|static'; // Annahme: App-Bundle immer defer|static
-        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag ;
+        // Stelle auch hier sicher, dass $js['src'] korrekt ist (server-relativ)
+        $srcPath = $js['src'];
+        if (str_starts_with($srcPath, '//')) {
+            $srcPath = substr($srcPath, 1);
+        } elseif (!str_starts_with($srcPath, '/')) {
+            $srcPath = '/' . $srcPath;
+        }
+
+        $scriptTag = '<script src="' . $srcPath . '"';
+        if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
+        if (!empty($js['type'])) $scriptTag .= ' type="' . $js['type'] . '"';
+        $scriptTag .= '></script>';
+        $GLOBALS['TL_BODY'][] = $scriptTag;
     }
 }
 ?>
+
 
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>

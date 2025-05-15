@@ -1,46 +1,168 @@
-
 <div class="layout_full block<?= $this->class ?>">
 
-  <h1><?= $this->newsHeadline ?></h1>
 
-  <?php $this->block('info'); ?>
-    <p class="info"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?></p>
-  <?php $this->endblock(); ?>
-
-  <?php if ($this->hasSubHeadline): ?>
-    <h2><?= $this->subHeadline ?></h2>
-  <?php endif; ?>
-
-  <?php if ($this->hasText): ?>
-    <?= $this->text ?>
-  <?php else: ?>
-    <div class="ce_text block">
-      <?php if (!$this->addBefore): ?>
-        <?= $this->cspInlineStyles($this->teaser) ?>
-      <?php endif; ?>
-
-      <?php if ($this->addImage): ?>
-        <?php $this->insert('image', $this->arrData); ?>
-      <?php endif; ?>
-
-      <?php if ($this->addBefore): ?>
-        <?= $this->cspInlineStyles($this->teaser) ?>
-      <?php endif; ?>
+    <div class="content--element head-hero ce_rsce_head_hero container-wide">
+        <div class="ce--inner">
+            <div class="breadcrumb-container mb-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
+                <!-- indexer::stop -->
+                {{insert_module::20}}
+                <!-- indexer::continue -->
+            </div>
+            <div class="row">
+                <div class="col-12 col-xl-9">
+                    <div class="ce--headline hl-h1">
+                        <h1 data-animation="animate__fadeIn">
+                            <?= $this->headline ?>
+                        </h1>
+                    </div>
+                    <div class="text-section fw-semibold" data-animation="animate__fadeIn">
+                        <?= $this->cspInlineStyles($this->teaser) ?>
+                    </div>
+                </div>
+            </div>
+            <div class="image-section mt-gap" data-animation="animate__fadeIn">
+                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, strip_tags($this->teaser), $this->headline, ["1300", "590", "crop"], null, false); ?>
+            </div>
+        </div>
     </div>
-  <?php endif; ?>
 
-  <?php if ($this->enclosure): ?>
-    <ul class="enclosure">
-      <?php foreach ($this->enclosure as $enclosure): ?>
-        <li class="download-element ext-<?= $enclosure['extension'] ?>">
-          <a href="<?= $enclosure['href'] ?>" title="<?= $enclosure['title'] ?>"><?= $enclosure['link'] ?> <span class="size">(<?= $enclosure['filesize'] ?>)</span></a>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-  <?php endif; ?>
+    <div class="mt-gap container">
+        <div class="row gx-4">
+            <div class="col-12 col-lg-7" data-animation="animate__fadeIn">
+                  <?php if ($this->hasSubHeadline): ?>
+                    <h2 class="mb-4"><?= $this->subHeadline ?></h2>
+                <?php endif; ?>
+                <?= $this->text ?>
+            </div>
+            <div class="col12 col-lg-5" data-animation="animate__fadeIn">
 
+                <div class="article-info <?php if (!$this->authorImage): ?>pt-1<?php endif;?>">
+                    <?php $this->block('info'); ?>
+
+                    <?php if ($this->authorImage): ?>
+                        <div class="author-img">
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->authorImage, strip_tags($this->authorTitle), $this->postAuthor, ["350", "170", "crop"], null, false); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($this->postAuthor || $this->authorTitle): ?>
+                        <div class="author-info">
+                            <?php if ($this->postAuthor): ?>
+                                <strong class="d-block"><?= $this->postAuthor; ?></strong>
+                            <?php endif; ?>
+                            <?php if ($this->authorTitle): ?>
+                                <span class="d-block"><?= $this->authorTitle; ?></span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($this->articleStatus || $this->readingTime): ?>
+                        <div class="article-meta">
+                            <?php if ($this->readingTime): ?>
+                                <span class="d-block"><?= $GLOBALS['TL_LANG']['MSC']['readingTimeLabel'] ?> <?= $this->readingTime; ?></span>
+                            <?php endif; ?>
+                            <?php if ($this->articleStatus): ?>
+                                <span class="d-block"><?= $GLOBALS['TL_LANG']['MSC']['articleStatusLabel'] ?> <?= $this->articleStatus; ?></span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php $this->endblock(); ?>
+                    <div id="articleNav">
+                        <strong class="d-block mt-2 mb-1"><?= $GLOBALS['TL_LANG']['MSC']['jumpToLabel'] ?></strong>
+                        <ul class="list-arrow">
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<style>#stoerer-130-1 .stoerer-inner-wrapper .stoerer-trigger {
+        color: var(--bs-body-color) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .stoerer-trigger .svg-image {
+        fill: var(--bs-body-color) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .stoerer-trigger .svg-image path {
+        fill: var(--bs-body-color) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .stoerer-trigger {
+        background-color: var(--bs-secondary) !important
+    }
+
+    #stoerer-130-1:hover .stoerer-inner-wrapper .stoerer-trigger {
+        color: var(--bs-secondary) !important
+    }
+
+    #stoerer-130-1:hover .stoerer-inner-wrapper .stoerer-trigger .svg-image {
+        fill: var(--bs-secondary) !important
+    }
+
+    #stoerer-130-1:hover .stoerer-inner-wrapper .stoerer-trigger .svg-image path {
+        fill: var(--bs-secondary) !important
+    }
+
+    #stoerer-130-1:hover .stoerer-inner-wrapper .stoerer-trigger {
+        background-color: var(--bs-primary) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .stoerer--content .stoerer-content--inner {
+        color: var(--bs-body-color) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .stoerer-footer--elements {
+        border-top-color: var(--bs-body-color) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .stoerer--content {
+        background-color: var(--bs-secondary) !important
+    }
+
+    #stoerer-130-1:hover .stoerer-inner-wrapper .stoerer--content .stoerer-content--inner {
+        color: var(--bs-body-color) !important
+    }
+
+    #stoerer-130-1:hover .stoerer-inner-wrapper .stoerer--content {
+        background-color: var(--bs-secondary) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .stoerer-footer--elements {
+        background-color: var(--bs-secondary) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .footer-element--item a:not(.btn) {
+        color: var(--bs-body-color) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .footer-element--item svg {
+        fill: var(--bs-body-color) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .footer-element--item svg path {
+        fill: var(--bs-body-color) !important
+    }
+
+    #stoerer-130-1:hover .stoerer-inner-wrapper .stoerer-footer--elements {
+        background-color: var(--bs-secondary) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .footer-element--item:hover a:not(.btn) {
+        color: var(--bs-body-color-inverse) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .footer-element--item:hover svg {
+        fill: var(--bs-body-color-inverse) !important
+    }
+
+    #stoerer-130-1 .stoerer-inner-wrapper .footer-element--item:hover svg path {
+        fill: var(--bs-body-color-inverse) !important
+    }</style>
 <?php
 
 $schemaOrg = $this->getSchemaOrgData();

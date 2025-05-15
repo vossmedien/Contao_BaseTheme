@@ -27,7 +27,7 @@ main, footer {
   }
 }
 
-p + ul{
+p + ul {
   margin-top: 1rem;
 }
 
@@ -64,3 +64,48 @@ main .content--element {
   }
 }
 
+
+ul.list-arrow {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+
+  > li {
+    position: relative;
+    padding-left: 28px;
+
+    &:not(:last-child) {
+      margin-bottom: 8px;
+    }
+
+    &:before {
+      @extend %fa-icon;
+      @extend #{$icon-type} !optional;
+      content: "\e00e";
+      position: absolute;
+      padding-right: rfs-value(8px);
+      color: currentColor;
+      left: 0;
+      top: 5px;
+      font-size: 16px;
+    }
+
+    a {
+      text-decoration: none;
+      color: currentColor;
+      display: inline;
+    }
+  }
+}
+
+
+li.active {
+  a:after {
+    width: 100% !important;
+  }
+}
+
+figcaption{
+  padding-top: .5rem;
+  font-size: $font-size-base;
+}

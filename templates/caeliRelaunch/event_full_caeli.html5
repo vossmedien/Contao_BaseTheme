@@ -1,46 +1,259 @@
-
 <div class="event layout_full block<?= $this->class ?>">
 
-  <h1><?= $this->title ?></h1>
 
-  <?php if ($this->recurring): ?>
-    <p class="info recurring"><?= $this->recurring ?></p>
-  <?php else: ?>
-    <p class="info"><time datetime="<?= $this->datetime ?>"><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?></time></p>
-  <?php endif; ?>
+    <?php
+    $categoriesRaw = $this->categories;
+    $mainCategory = null; // Initialisieren mit null
 
-  <?php if ($this->location): ?>
-    <p class="location"><?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></p>
-  <?php endif; ?>
+    if (!empty($categoriesRaw) && is_string($categoriesRaw)) {
+        // Fehlerbehandlung für unserialize, falls der String nicht valide ist
+        $unserializedCategories = @unserialize($categoriesRaw);
 
-  <?php if ($this->details): ?>
-    <?= $this->details ?>
-  <?php else: ?>
-    <div class="ce_text block">
-      <?php if (!$this->addBefore): ?>
-        <?= $this->cspInlineStyles($this->teaser) ?>
-      <?php endif; ?>
+        if (is_array($unserializedCategories) && isset($unserializedCategories[0])) {
+            // Die relevante Kategorie-ID ist oft das erste Element.
+            // Wir stellen sicher, dass es als String behandelt wird für den Vergleich.
+            $mainCategory = (string)$unserializedCategories[0];
+        }
+    }
 
-      <?php if ($this->addImage): ?>
-        <?php $this->insert('image', $this->arrData); ?>
-      <?php endif; ?>
 
-      <?php if ($this->addBefore): ?>
-        <?= $this->cspInlineStyles($this->teaser) ?>
-      <?php endif; ?>
+    //Messe = 1
+    //Webinar = 2
+    ?>
+
+
+    <div class="content--element head-hero ce_rsce_head_hero container-wide">
+        <div class="ce--inner">
+            <div class="breadcrumb-container mb-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
+                <!-- indexer::stop -->
+                {{insert_module::20}}
+                <!-- indexer::continue -->
+            </div>
+            <div class="row">
+                <div class="col-12 col-xl-9">
+                    <div class="ce--headline hl-h1">
+                        <?php if (!empty($this->detailTitleEvents)): ?>
+                        <h1 data-animation="animate__fadeIn">
+                            <?= $this->detailTitleEvents ?>
+                        </h1>
+                        <?php endif; ?>
+                    </div>
+                    <?php if (!empty($this->teaser)): ?>
+                    <div class="text-section fw-semibold" data-animation="animate__fadeIn">
+                        <?= $this->cspInlineStyles($this->teaser) ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php if (!empty($this->src)): ?>
+            <div class="image-section mt-gap" data-animation="animate__fadeIn">
+                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, strip_tags((string)$this->teaser), (string)$this->headline, ["1300", "590", "crop"], null, false); ?>
+            </div>
+            <?php endif; ?>
+        </div>
     </div>
-  <?php endif; ?>
 
-  <?php if ($this->enclosure): ?>
-    <ul class="enclosure">
-      <?php foreach ($this->enclosure as $enclosure): ?>
-        <li class="download-element ext-<?= $enclosure['extension'] ?>">
-           <a href="<?= $enclosure['href'] ?>" title="<?= $enclosure['title'] ?>"><?= $enclosure['link'] ?> <span class="size">(<?= $enclosure['filesize'] ?>)</span></a>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-  <?php endif; ?>
 
+    <?php if ($mainCategory === '1'): ?>
+        <?php
+        // Locale korrekt aus dem Request Stack holen
+        $currentRequest = \Contao\System::getContainer()->get('request_stack')->getCurrentRequest();
+        $locale = 'de_DE'; // Standard-Fallback
+        if ($currentRequest) {
+            $requestLocale = $currentRequest->getLocale();
+            if (!empty($requestLocale)) {
+                $locale = str_replace('-', '_', $requestLocale);
+            }
+        }
+
+        $dateInput = (string)$this->date;
+        $formattedDateOutput = '';
+
+        if (!class_exists('IntlDateFormatter')) {
+            $formattedDateOutput = $dateInput;
+        } else {
+            try {
+                if (str_contains($dateInput, '–')) {
+                    list($startDateStr, $endDateStr) = explode('–', $dateInput, 2);
+                    $parseFormat = 'd.m.Y';
+                    $startDateTime = \DateTimeImmutable::createFromFormat($parseFormat, trim($startDateStr));
+                    $endDateTime = \DateTimeImmutable::createFromFormat($parseFormat, trim($endDateStr));
+
+                    if ($startDateTime && $endDateTime) {
+                        if ($startDateTime->format('m.Y') === $endDateTime->format('m.Y')) {
+                            $fmtDay = new \IntlDateFormatter($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, null, null, 'dd');
+                            $fmtMonthYear = new \IntlDateFormatter($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, null, null, 'MMMM yyyy');
+                            $startDayFormatted = $fmtDay->format($startDateTime);
+                            $endDayFormatted = $fmtDay->format($endDateTime);
+                            $monthYearFormatted = $fmtMonthYear->format($endDateTime);
+                            $formattedDateOutput = $startDayFormatted . '. - ' . $endDayFormatted . '. ' . $monthYearFormatted;
+                        } else {
+                            $fmtFull = new \IntlDateFormatter($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, null, null, 'dd. MMMM yyyy');
+                            $formattedDateOutput = $fmtFull->format($startDateTime) . ' – ' . $fmtFull->format($endDateTime);
+                        }
+                    } else {
+                        $formattedDateOutput = $dateInput;
+                    }
+                } else {
+                    $dateTime = \DateTimeImmutable::createFromFormat('d.m.Y', $dateInput);
+                    if ($dateTime) {
+                        $fmt = new \IntlDateFormatter($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, null, null, 'dd. MMMM yyyy');
+                        $formattedDateOutput = $fmt->format($dateTime);
+                    } else {
+                        $formattedDateOutput = $dateInput;
+                    }
+                }
+            } catch (\Exception $e) {
+                $formattedDateOutput = $dateInput;
+            }
+        }
+        if (empty($formattedDateOutput) && isset($this->date)) {
+            $formattedDateOutput = $this->date;
+        }
+
+        // datetime Attribut für <time> Tag generieren (Kategorie 1)
+        $timeTagDatetimeAttributeKat1 = '';
+        if (isset($this->startDateTimeObject) && $this->startDateTimeObject instanceof \DateTimeInterface) {
+            $timeTagDatetimeAttributeKat1 = $this->startDateTimeObject->format('c');
+        } elseif (!empty($this->startTime)) {
+             $timeTagDatetimeAttributeKat1 = date('c', (int)$this->startTime);
+        } elseif (!empty($this->startDate)) {
+             $timeTagDatetimeAttributeKat1 = date('Y-m-d', (int)$this->startDate);
+        }
+        ?>
+
+        <div data-animation="animate__fadeIn" class="container-wide mt-gap">
+            <div class="p-gap bg-primary text-secondary">
+                <?php if (!empty($this->title)): ?>
+                    <h2><?= $this->title ?></h2>
+                <?php endif; ?>
+
+                <div class="event-details-section mt-3">
+                    <?php if (!empty($this->targetAudience)): ?>
+                        <strong class="event-detail-label"><?= $GLOBALS['TL_LANG']['MSC']['targetAudienceLabel'] ?></strong>
+                        <div class="event-detail-value"><?= $this->targetAudience; ?></div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($formattedDateOutput) || !empty($this->time)): ?>
+                        <strong class="event-detail-label"><?= $GLOBALS['TL_LANG']['MSC']['dateLabel'] ?></strong>
+                        <div class="event-detail-value">
+                            <time datetime="<?= $timeTagDatetimeAttributeKat1 ?>">
+                                <?php if(!empty($formattedDateOutput)): ?><?= $formattedDateOutput ?><?php endif; ?>
+                                <?php if (!empty($this->time) && strpos($formattedDateOutput, (string)$this->time) === false): ?> <?= $this->time ?><?php endif; ?>
+                            </time>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($this->location) || !empty($this->address)): ?>
+                        <strong class="event-detail-label"><?= $GLOBALS['TL_LANG']['MSC']['locationLabel'] ?></strong>
+                        <div class="event-detail-value">
+                            <?php if(!empty($this->location)): ?><?= $this->location ?><?php endif; ?>
+                            <?php if (!empty($this->address)): ?> (<?= $this->address ?>)<?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($this->eventStatus)): ?>
+                        <strong class="event-detail-label"><?= $GLOBALS['TL_LANG']['MSC']['eventStatusLabel'] ?></strong>
+                        <div class="event-detail-value"><?= $this->eventStatus; ?></div>
+                    <?php endif; ?>
+                </div>
+
+                <ul class="list-inline mt-4">
+                    <?php if (!empty($this->onSiteAppointmentLink)): ?>
+                    <li class="list-inline-item mb-2">
+                        <a target="_blank" href="<?= $this->onSiteAppointmentLink;?>" class="btn btn-outline-secondary btn-sm"><?= $GLOBALS['TL_LANG']['MSC']['onSiteAppointment'] ?></a>
+                    </li>
+                    <?php endif; ?>
+                    <?php if (!empty($this->workshopBookingLink)): ?>
+                    <li class="list-inline-item mb-2">
+                        <a target="_blank" href="<?= $this->workshopBookingLink;?>" class="btn btn-outline-secondary btn-sm"><?= $GLOBALS['TL_LANG']['MSC']['bookWorkshop'] ?></a>
+                    </li>
+                    <?php endif; ?>
+                    <?php if (!empty($this->learnMoreLink)): ?>
+                    <li class="list-inline-item mb-2">
+                        <a target="_blank" href="<?= $this->learnMoreLink;?>" class="btn btn-outline-secondary btn-sm"><?= $GLOBALS['TL_LANG']['MSC']['more'] ?></a>
+                    </li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        </div>
+
+        <?php if (!empty($this->details)): ?>
+            <div class="container mt-gap">
+                <?= $this->details ?>
+            </div>
+        <?php endif; ?>
+
+    <?php elseif ($mainCategory === '2'): ?>
+        <?php /* Kategorie 2 (Webinar) spezifische Ausgabe */ ?>
+        <div class="mt-gap py-gap text-secondary bg-primary">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <?php if (!empty($this->title)): ?>
+                            <h2><?= $this->title ?></h2>
+                        <?php endif; ?>
+
+                        <?php if (!empty($this->webinarShortDescription)): ?>
+                            <?= $this->webinarShortDescription; ?>
+                        <?php endif; ?>
+
+                        <div class="my-3 my-md-4">
+                            <?php if (!empty($this->eventDates)): ?>
+                                <?php
+                                // datetime Attribut für <time> Tag generieren (Kategorie 2)
+                                $timeTagDatetimeAttributeKat2 = '';
+                                if (isset($this->startDateTimeObject) && $this->startDateTimeObject instanceof \DateTimeInterface) {
+                                    $timeTagDatetimeAttributeKat2 = $this->startDateTimeObject->format('c');
+                                } elseif (!empty($this->startTime)) {
+                                     $timeTagDatetimeAttributeKat2 = date('c', (int)$this->startTime);
+                                } elseif (!empty($this->startDate)) {
+                                     $timeTagDatetimeAttributeKat2 = date('Y-m-d', (int)$this->startDate);
+                                }
+                                ?>
+                                <strong><?= $GLOBALS['TL_LANG']['MSC']['datesLabel'] ?></strong>
+                                <time datetime="<?= $timeTagDatetimeAttributeKat2 ?>"><?= $this->eventDates; ?></time>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if (!empty($this->webinarRegistrationLink)): ?>
+                        <a target="_blank" class="btn btn-xl btn-outline-currentColor with-arrow" href="<?= $this->webinarRegistrationLink ?>">
+                            <?= $GLOBALS['TL_LANG']['MSC']['webinarRegistration'] ?>
+                        </a>
+                        <?php endif; ?>
+
+                    </div>
+                    <div class="col-12 col-md-6 mt-4 mt-md-0">
+                        <?php if (!empty($this->webinarContactImage) || !empty($this->webinarContactTitle) || !empty($this->webinarContactName)): ?>
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->webinarContactImage, (string)$this->webinarContactTitle, (string)$this->webinarContactName, ["560", "290", "crop"], "mb-2", false); ?>
+                        <?php endif; ?>
+                        <?php if (!empty($this->webinarContactName)): ?>
+                            <strong class="d-block"><?= $this->webinarContactName; ?></strong>
+                        <?php endif; ?>
+                        <?php if (!empty($this->webinarContactTitle)): ?>
+                            <span class="d-block"><?= $this->webinarContactTitle; ?></span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php if (!empty($this->details)): ?>
+            <div class="container my-gap">
+                <?= $this->details ?>
+            </div>
+        <?php endif; ?>
+    <?php else: ?>
+        <?php /* Fallback, falls keine Kategorie oder eine andere Kategorie */ ?>
+        <?php if (!empty($this->details)): ?>
+        <div class="container my-gap">
+            <?= $this->details ?>
+        </div>
+        <?php else: ?>
+        <div class="container my-gap">
+            <p><?= $GLOBALS['TL_LANG']['MSC']['noEventDetails'] ?></p>
+        </div>
+        <?php endif; ?>
+    <?php endif; ?>
 </div>
 
 <?php
@@ -61,3 +274,25 @@ if ($this->figure) {
 
     $this->addSchemaOrg($primaryImage);
 }
+?>
+
+<style>
+.event-details-section {
+    display: grid;
+    grid-template-columns: auto 1fr; /* Erste Spalte passt sich dem Inhalt an, zweite nimmt Restplatz */
+    gap: 0.5rem 1rem; /* Abstand: Zeilen Spalten */
+    align-items: baseline;
+}
+
+@media (max-width: 767.98px) { /* Bootstrap md breakpoint */
+    .event-details-section {
+        grid-template-columns: 1fr; /* Eine Spalte für mobile Ansicht */
+        gap: 0.25rem 0;
+    }
+    /* Optional: Leichter Abstand nach dem Label auf Mobile, falls gewünscht */
+    .event-details-section strong.event-detail-label {
+        margin-bottom: 0.1rem; 
+    }
+}
+</style>
+

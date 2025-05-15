@@ -82,58 +82,46 @@ class AuctionFilterController extends AbstractFrontendModuleController
         // --- Filterkonfiguration definieren ---
         $filterConfigs = [
             'bundesland' => [
-                'label' => 'Bundesland',
+                'label' => 'filter.label.bundesland',
                 'type' => 'select',
                 'options_key' => 'bundeslaender',
-                'placeholder' => 'Alle Bundesländer',
-            ],
-            'landkreis' => [
-                'label' => 'Landkreis',
-                'type' => 'select',
-                'options_key' => 'landkreise',
-                'placeholder' => 'Alle Landkreise',
+                'placeholder' => 'filter.placeholder.bundeslaender',
             ],
             'status' => [
-                'label' => 'Status',
+                'label' => 'filter.label.status',
                 'type' => 'select',
                 'options_key' => 'status_values',
-                'placeholder' => 'Alle Status',
+                'placeholder' => 'filter.placeholder.status_values',
             ],
             'property' => [
-                'label' => 'Eigentum',
+                'label' => 'filter.label.property',
                 'type' => 'select',
                 'options_key' => 'property_values',
-                'placeholder' => 'Alle Eigentumsformen',
-            ],
-            'focus' => [
-                'label' => 'Fokus-Auktion',
-                'type' => 'select',
-                'options_key' => 'focus_values',
-                'placeholder' => 'Beliebig',
+                'placeholder' => 'filter.placeholder.property_values',
             ],
             'size' => [
-                'label' => 'Größe (ha)',
+                'label' => 'filter.label.size',
                 'type' => 'range_slider',
                 'min' => 0,
                 'max' => 500,
                 'step' => 10,
             ],
             'leistung' => [
-                'label' => 'Leistung (MW)',
+                'label' => 'filter.label.leistung',
                 'type' => 'range_slider',
                 'min' => 0,
                 'max' => 250,
                 'step' => 5,
             ],
             'volllaststunden' => [
-                'label' => 'Volllaststunden',
+                'label' => 'filter.label.volllaststunden',
                 'type' => 'range_slider',
                 'min' => 0,
                 'max' => 4000,
                 'step' => 100,
             ],
             'irr' => [
-                'label' => 'IRR (%)',
+                'label' => 'filter.label.irr',
                 'type' => 'range_slider',
                 'min' => 0,
                 'max' => 20,
@@ -144,36 +132,31 @@ class AuctionFilterController extends AbstractFrontendModuleController
         // --- Optionen für Select-Felder vorbereiten ---
         $bundeslaender = $this->auctionService->getAllBundeslaender();
         $selectedBundesland = $request->query->get('bundesland');
-        $landkreise = $this->auctionService->getAllLandkreise(false, $selectedBundesland ?: null);
 
         // Status-Optionen definieren (mit Übersetzungen)
         $statusOptions = [
-            'STARTED' => $this->translator->trans('filter.status.started', [], 'messages'),
-            'OPEN_FOR_DIRECT_AWARDING' => $this->translator->trans('filter.status.open_for_direct_awarding', [], 'messages'),
-            'DIRECT_AWARDING' => $this->translator->trans('filter.status.direct_awarding', [], 'messages'),
-            'AWARDING' => $this->translator->trans('filter.status.awarding', [], 'messages'),
-            'PRE_RELEASE' => $this->translator->trans('filter.status.pre_release', [], 'messages'),
+            'STARTED' => $this->translator->trans('filter.status.STARTED', [], 'messages'),
+            'OPEN_FOR_DIRECT_AWARDING' => $this->translator->trans('filter.status.OPEN_FOR_DIRECT_AWARDING', [], 'messages'),
+            'DIRECT_AWARDING' => $this->translator->trans('filter.status.DIRECT_AWARDING', [], 'messages'),
+            'AWARDING' => $this->translator->trans('filter.status.AWARDING', [], 'messages'),
+            'PRE_RELEASE' => $this->translator->trans('filter.status.PRE_RELEASE', [], 'messages'),
         ];
 
-        // Eigentum-Optionen (Annahme: Nur "PRIVATE" bisher bekannt)
-        // TODO: Dynamisch aus verfügbaren Daten ermitteln, falls mehr Werte möglich sind
-        $propertyOptions = [
-            'PRIVATE' => $this->translator->trans('filter.property.private', [], 'messages'),
-            // 'PUBLIC' => $this->translator->trans('filter.property.public', [], 'messages'),
-        ];
-
-        // Fokus-Optionen (Ja/Nein)
-        $focusOptions = [
-            'true' => $this->translator->trans('filter.focus.yes', [], 'messages'),
-            'false' => $this->translator->trans('filter.focus.no', [], 'messages'),
-        ];
+        // Eigentum-Optionen dynamisch abrufen und übersetzen
+        $propertyValues = $this->auctionService->getUniquePropertyValues();
+        $propertyOptions = [];
+        foreach ($propertyValues as $value) {
+            // Erstelle einen Übersetzungsschlüssel, z.B. filter.property.PRIVATE
+            // Stelle sicher, dass die Werte aus der API (z.B. 'PRIVATE') hier korrekt als Key verwendet werden.
+            // Die Übersetzung muss dann in der messages.de.yaml etc. existieren.
+            $translationKey = 'filter.property.' . strtoupper($value);
+            $propertyOptions[$value] = $this->translator->trans($translationKey, [], 'messages');
+        }
 
         $options = [
             'bundeslaender' => array_combine($bundeslaender, $bundeslaender),
-            'landkreise' => array_combine($landkreise, $landkreise),
             'status_values' => $statusOptions,
             'property_values' => $propertyOptions,
-            'focus_values' => $focusOptions,
         ];
 
         // --- Aktuelle Filterwerte aus der Anfrage extrahieren (für Template) ---
@@ -182,15 +165,31 @@ class AuctionFilterController extends AbstractFrontendModuleController
             if ($config['type'] === 'select') {
                 if ($request->query->has($key)) {
                     $templateFilters[$key] = $request->query->get($key);
+                } else {
+                    $templateFilters[$key] = null; // Explizit null setzen, wenn nicht im Request, um sicherzustellen, dass der Key existiert
                 }
             } elseif ($config['type'] === 'range_slider') {
-                if ($request->query->has($key . '_min')) {
-                    $templateFilters[$key . '_min'] = $request->query->get($key . '_min');
+                $minKey = $key . '_min';
+                $maxKey = $key . '_max';
+
+                if ($request->query->has($minKey)) {
+                    $templateFilters[$minKey] = $request->query->get($minKey);
+                } else {
+                    // Default auf den konfigurierten Minimalwert des Sliders setzen
+                    $templateFilters[$minKey] = $config['min'] ?? null;
                 }
-                if ($request->query->has($key . '_max')) {
-                    $templateFilters[$key . '_max'] = $request->query->get($key . '_max');
+
+                if ($request->query->has($maxKey)) {
+                    $templateFilters[$maxKey] = $request->query->get($maxKey);
+                } else {
+                    // Default auf den konfigurierten Maximalwert des Sliders setzen
+                    $templateFilters[$maxKey] = $config['max'] ?? null;
                 }
             }
+        }
+        // Explizit den 'focus'-Parameter hinzufügen, falls vorhanden
+        if ($request->query->has('focus')) {
+            $templateFilters['focus'] = $request->query->get('focus');
         }
 
         // --- Aktionen durchführen ---

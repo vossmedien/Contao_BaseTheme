@@ -24,6 +24,7 @@ services:
     
     # AuctionService explizit definieren, um Parameter zugänglich zu machen
     CaeliWind\CaeliAuctionConnect\Service\AuctionService:
+        public: true
         arguments:
             $logger: '@monolog.logger.contao'
             $params: '@parameter_bag'

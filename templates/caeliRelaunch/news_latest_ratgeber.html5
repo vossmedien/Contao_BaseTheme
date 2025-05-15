@@ -8,7 +8,9 @@
     -->
 
     <?php if ($this->addImage): ?>
-        <?php $this->insert('image', $this->arrData); ?>
+        <a href="<?= $this->link ?>">
+            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->listImage, strip_tags($this->teaser), $this->headline, ["360", "265", "crop"], null, false); ?>
+        </a>
     <?php endif; ?>
 
     <div class="p-2 d-flex flex-column flex-grow-1">
@@ -23,6 +25,8 @@
         <?php endif; ?>
     </div>
 </div>
+
+
 
 <?php
 

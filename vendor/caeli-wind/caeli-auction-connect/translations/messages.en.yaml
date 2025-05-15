@@ -1,0 +1,65 @@
+filter:
+  label:
+    bundesland: "State"
+    status: "Status"
+    property: "Property"
+    size: "Size (ha)"
+    leistung: "Power (MW)"
+    volllaststunden: "Full Load Hours"
+    irr: "IRR (%)"
+  status:
+    STARTED: "Started"
+    OPEN_FOR_DIRECT_AWARDING: "Open for Direct Awarding"
+    DIRECT_AWARDING: "Direct Awarding"
+    AWARDING: "Awarding"
+    PRE_RELEASE: "Pre-Release"
+  property:
+    PRIVATE: "Private"
+    PUBLIC: "Public" # Example if this value comes from API
+  placeholder:
+    bundeslaender: "All States"
+    status_values: "All Statuses"
+    property_values: "All Property Types"
+  button:
+    filter: "Filter"
+    reset: "Reset"
+    update_data: "Update Data"
+  highlights_button: "Highlights"
+  no_options_available: "No options available"
+  range:
+    min: "Min"
+    max: "Max"
+general:
+  no_auctions_for_criteria: "No auctions were found for your filter criteria."
+
+# Added keys from CaeliWindCaeliAuctionConnect.en.php
+auction_listing:
+  card:
+    title_prefix: "AREA IN"
+    image_alt_prefix: "Image for auction"
+    countdown_prefix: "Auction starts in:"
+    countdown_suffix_days: "days"
+    preview_button: "Preview"
+    details:
+      power: "Power"
+      area_size: "Area size"
+      full_usage_hours: "Full load hours"
+      irr_before_rent: "IRR before rent"
+      availability: "Availability"
+      availability_prefix: "from"
+    footer_notice: "Planning law information after registration"
+    more_button: "Learn more"
+    unit:
+      mw: "MW"
+      ha: "ha"
+      h_per_a: "h/a"
+      percent: "%"
+  no_auctions_found: "No auctions found."
+
+content_element:
+  no_auctions_for_criteria: "No auctions found for the specified criteria."
+
+detail:
+  raw_data_headline: "Raw Data"
+  back_to_overview_button: "Back to Overview"
+  auction_not_found: "Auction not found" 

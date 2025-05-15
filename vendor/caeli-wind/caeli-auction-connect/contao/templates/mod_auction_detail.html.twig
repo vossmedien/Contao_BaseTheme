@@ -16,7 +16,7 @@
                 {# Kompletter Datensatz als JSON #}
                 <div class="card-body">
                     <div class="auction-raw-data">
-                        <h2 class="h4">{{ 'Rohdaten'|trans }}</h2>
+                        <h2 class="h4">{{ 'detail.raw_data_headline'|trans }}</h2>
                         <pre class="bg-light p-3 border rounded" style="max-height: 500px; overflow: auto;">
                             {{ raw_data|json_encode(constant('JSON_PRETTY_PRINT')) }}
                         </pre>
@@ -25,7 +25,7 @@
 
                 <div class="card-footer">
                     <a href="{{ listingPage ? listingPage.getFrontendUrl() : '#' }}" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> {{ 'Zurück zur Übersicht'|trans }}
+                        <i class="bi bi-arrow-left"></i> {{ 'detail.back_to_overview_button'|trans }}
                     </a>
                 </div>
             </article>
@@ -35,7 +35,7 @@
             </div>
         {% else %}
             <div class="alert alert-info">
-                <p>{{ 'Auktion nicht gefunden'|trans }}</p>
+                <p>{{ 'detail.auction_not_found'|trans }}</p>
             </div>
         {% endif %}
     </div>

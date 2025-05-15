@@ -36,5 +36,13 @@ class CaeliWindCaeliAuctionConnect extends Bundle
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
+
+        if ($container->hasExtension('twig')) {
+            $container->prependExtensionConfig('twig', [
+                'paths' => [
+                    $this->getPath().'/contao/templates' => 'CaeliWindCaeliAuctionConnect',
+                ]
+            ]);
+        }
     }
 }

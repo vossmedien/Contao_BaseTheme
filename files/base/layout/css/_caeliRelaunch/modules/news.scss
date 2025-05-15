@@ -1,0 +1,136 @@
+.presse-medien.layout_latest:not(:last-of-type) {
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 3px solid var(--bs-primary);
+}
+
+.pressespiegel.layout_latest {
+  figure, picture {
+    height: 100%;
+  }
+}
+
+.mod_newsarchive > h2 {
+  display: none !important;
+}
+
+
+html body main .mod_newsreader {
+  h2, h3, h4,
+  .h2, .h3, .h4 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+  }
+
+  *:not(.ce--headline) {
+    > h2, > h3, > h4,
+    > .h2, > .h3, > .h4 {
+      margin-bottom: 1rem;
+    }
+  }
+
+  * {
+    & + h2,
+    & + h3,
+    & + h4,
+    & + .h2,
+    & + .h3,
+    & + .h4 {
+      margin-top: 2rem;
+    }
+  }
+
+  p.back {
+    display: none;
+  }
+
+  .alert, .card {
+    margin-block: 2rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .content--element {
+    margin-block: 2rem;
+  }
+
+  .ce_rsce_teaserstripe .ce--inner.with-bg .ce--teaser-stripe {
+    .content-wrapper {
+      padding: 1rem var(--main-gap);
+    }
+  }
+}
+
+.article-gallery {
+  position: sticky;
+  top: 175px;
+}
+
+.article-info {
+  background-color: var(--bs-primary);
+  color: var(--bs-secondary);
+  padding: 100px 2rem 1.5rem 2rem;
+  position: sticky;
+  top: 250px;
+  margin-top: var(--main-gap);
+
+  .author-img {
+    position: relative;
+    margin-top: calc(-1 * (100px + 50px));
+    margin-bottom: 1.25rem;
+  }
+
+  .author-info {
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--bs-secondary);
+    margin-bottom: .75rem;
+  }
+
+  .article-meta {
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--bs-secondary);
+  }
+}
+
+#articleNav {
+  font-size: 16px;
+}
+
+
+.article-nav-content,
+.article-info-content {
+  width: 300px;
+  @include media-breakpoint-down(lg) {
+    font-size: 16px;
+  }
+}
+
+.article-info-content {
+  display: flex;
+  flex-flow: row wrap;
+  gap: .5rem;
+  align-items: center;
+
+  .author-img {
+    width: calc(50% - .5rem);
+  }
+
+  .author-info {
+    width: calc(50% - .5rem);
+  }
+
+  .article-meta {
+    width: 100%;
+    padding-block: .35rem;
+    border-top: 2px solid var(--bs-primary);
+    border-bottom: 2px solid var(--bs-primary);
+  }
+}
+
+.content--element.ce_rsce_stoerer .stoerer--content .stoerer-content--inner a:not(.btn) {
+  @include media-breakpoint-down(lg) {
+    display: inline !important;
+  }
+}

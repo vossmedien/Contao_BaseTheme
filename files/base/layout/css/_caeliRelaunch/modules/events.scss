@@ -1,0 +1,28 @@
+
+.event.layout_teaser {
+  padding: .75rem;
+  transition: all .3s ease-in-out;
+
+  &:hover {
+    background-color: var(--bs-secondary);
+  }
+
+  &:not(:last-of-type) {
+    border-bottom: 3px solid var(--bs-primary);
+  }
+
+  &:not(:first-child) {
+
+  }
+}
+
+.mod_eventreader {
+  p.back {
+    display: none;
+  }
+
+  .container .container {
+    padding-inline: 0;
+  }
+}
+
