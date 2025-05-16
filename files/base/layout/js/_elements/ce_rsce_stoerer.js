@@ -162,10 +162,23 @@ document.addEventListener('DOMContentLoaded', function () {
             const trigger = stoerer.querySelector('.stoerer-trigger');
             if (trigger && !trigger.dataset.stoererClickListenerAttached) {
                 addSafeEventListener(trigger, 'click', (event) => {
-                    // Störer öffnen/aktivieren und Breite setzen
-                    stoerer.classList.add('is-expanded');
-                    stoerer.classList.add('is-clicked-active'); // Markiert als durch Klick aktiviert
-                    applyMaxWidth(stoerer);
+                    stoerer.classList.add('is-interacting'); // Set temporary interaction flag
+
+                    // Störer öffnen/schließen Logik
+                    if (stoerer.classList.contains('is-expanded')) {
+                        stoerer.classList.remove('is-expanded');
+                        stoerer.classList.remove('is-clicked-active');
+                        removeMaxWidth(stoerer);
+                    } else {
+                        stoerer.classList.add('is-expanded');
+                        stoerer.classList.add('is-clicked-active'); // Markiert als durch Klick aktiviert
+                        applyMaxWidth(stoerer);
+                    }
+
+                    // Remove interaction flag after a short delay
+                    setTimeout(() => {
+                        stoerer.classList.remove('is-interacting');
+                    }, 50); // 50ms delay
                 });
                 trigger.dataset.stoererListenerAttached = 'true';
             }
@@ -173,11 +186,16 @@ document.addEventListener('DOMContentLoaded', function () {
             // Event-Listener für Hover auf dem gesamten Störer-Element
             if (!stoerer.dataset.stoererHoverListenerAttached) {
                 addSafeEventListener(stoerer, 'mouseenter', () => {
-                    stoerer.classList.add('is-expanded');
-                    applyMaxWidth(stoerer);
+                    if (stoerer.classList.contains('is-interacting')) return; // Ignore if interacting
+                    // Nur öffnen, wenn nicht durch Klick bereits aktiv
+                    if (!stoerer.classList.contains('is-clicked-active')) {
+                        stoerer.classList.add('is-expanded');
+                        applyMaxWidth(stoerer);
+                    }
                 });
 
                 addSafeEventListener(stoerer, 'mouseleave', () => {
+                    if (stoerer.classList.contains('is-interacting')) return; // Ignore if interacting
                     // Nur schließen, wenn nicht durch Klick aktiviert
                     if (!stoerer.classList.contains('is-clicked-active')) {
                         stoerer.classList.remove('is-expanded');

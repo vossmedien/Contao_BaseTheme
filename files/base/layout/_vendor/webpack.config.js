@@ -38,14 +38,14 @@ function getScssLoaders(useResolveUrlLoader = false, sourceMap = false) {
     if (useResolveUrlLoader) {
         loaders.push({ loader: 'resolve-url-loader', options: { sourceMap: sourceMap, removeCR: true } });
     }
-    loaders.push({ 
-        loader: 'sass-loader', 
-        options: { 
+    loaders.push({
+        loader: 'sass-loader',
+        options: {
             sourceMap: sourceMap, // sourceMap hier ist wichtig für resolve-url-loader, falls aktiv
-            sassOptions: { 
+            sassOptions: {
                 outputStyle: 'compressed',
                 quietDeps: true // NEU: Unterdrückt Warnungen von Abhängigkeiten
-            } 
+            }
         }
     });
     return loaders;
@@ -121,7 +121,7 @@ const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
         mode: 'production',
         entry: appEntryFiles,
         output: {
-            filename: `${themeNameClean}.bundle.min.js`,
+            filename: `${themeNameClean}.[contenthash].bundle.min.js`,
             path: themeSpecificDistPath,
             publicPath: themeSpecificPublicPath,
             clean: false,
@@ -262,12 +262,12 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
             plugins: [
                 new RemoveEmptyScriptsPlugin(),
                 new MiniCssExtractPlugin({
-                    filename: '[name].bundle.min.css', // Wird zu z.B. _vendors.bundle.min.css
+                    filename: '[name].[contenthash].bundle.min.css', // Wird zu z.B. _vendors.contenthash.bundle.min.css
                 }),
                 new WebpackManifestPlugin({
                     fileName: path.join(themeManifestDir, `${entryName}-css.manifest.json`), // separates Manifest pro Bundle
                     publicPath: themePublicPath,
-                    filter: (file) => !file.name.endsWith('.js') && file.name.startsWith(entryName) && file.name.endsWith('.css'),
+                    filter: (file) => file.chunk?.name === entryName && file.name.endsWith('.css'),
                     map: (file) => ({
                         name: file.name,
                         path: file.path,
@@ -292,7 +292,7 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
             ignoreWarnings: [
                 /Warning/
             ]
-        }; 
+        };
     }).filter(Boolean); // Entferne null-Werte, falls Dateien nicht gefunden wurden
 });
 
@@ -313,7 +313,7 @@ const rsceWebpackConfigs = rsceScssFiles.map(scssFile => {
         },
         output: {
             path: outputDir, // Ausgabe ins selbe Verzeichnis wie die Quelldatei
-            // filename ist für JS, wird aber von RemoveEmptyScriptsPlugin entfernt. 
+            // filename ist für JS, wird aber von RemoveEmptyScriptsPlugin entfernt.
             // Css wird durch MiniCssExtractPlugin.filename gesteuert.
             filename: '[name].js', // Platzhalter, wird entfernt
             publicPath: '', // Nicht relevant, da lokal ausgegeben und nicht über Webpfad geladen (für Manifest)
@@ -328,7 +328,7 @@ const rsceWebpackConfigs = rsceScssFiles.map(scssFile => {
             ],
         },
         plugins: [
-            new RemoveEmptyScriptsPlugin(), 
+            new RemoveEmptyScriptsPlugin(),
             new MiniCssExtractPlugin({
                 filename: '[name].min.css', // Erzeugt z.B. ce_rsce_videogrid.min.css
             }),
@@ -360,10 +360,10 @@ const jsElementWebpackConfigs = elementJsFiles.map(jsFile => {
             [fileNameWithoutExt]: jsFile,
         },
         output: {
-            path: outputDir, 
+            path: outputDir,
             filename: '[name].min.js', // Sollte examplename.min.js erzeugen
-            publicPath: '', 
-            clean: false, 
+            publicPath: '',
+            clean: false,
         },
         module: {
             rules: [

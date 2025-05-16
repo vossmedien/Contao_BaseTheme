@@ -147,7 +147,7 @@ $listItems = StringUtil::deserialize($this->list_items, true);
 
         <?php // --- Headline & Text (zentriert mit max. Breite) --- ?>
         <div class="row">
-            <div class="col-12 col-xl-10">
+            <div class="col-12 col-xl-9">
                 <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                     $this->topline,
                     $this->headline,
@@ -172,7 +172,7 @@ $listItems = StringUtil::deserialize($this->list_items, true);
             <div class="row align-items-center mb-4 g-2">
                 <?php // Spalte für Aufzählung ?>
                 <?php if ($this->add_list_items && !empty($listItems)): ?>
-                    <div class="col-12 col-lg-7" >
+                    <div class="col-12 col-lg-8" >
                         <ul class="list-unstyled list-with-icons row g-1">
                             <?php foreach ($listItems as $item): ?>
                                 <li class="d-flex align-items-center col-md-6" <?php if ($this->animation_list): ?>data-animation="<?= $this->animation_list ?>"<?php endif; ?>>

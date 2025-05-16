@@ -17,9 +17,11 @@ class NavigationManager {
         const mainNavLinks = Array.from(document.querySelectorAll(`${NAVIGATION_SELECTORS.MAIN_NAV} a[href*="#"]:not(.invisible)`));
         const mobileNavLinks = Array.from(document.querySelectorAll(`${NAVIGATION_SELECTORS.MOBILE_NAV} a[href*="#"]:not(.invisible)`));
         const onepageLinks = Array.from(document.querySelectorAll(`${NAVIGATION_SELECTORS.ONEPAGE_NAV} a`));
-        const articleLinks = Array.from(document.querySelectorAll('#articleNav a'));
+        const articleLinksDesktop = Array.from(document.querySelectorAll('#articleNav a[href^="#"]')); // Nur Ankerlinks
+        const articleLinksMobileStoerer = Array.from(document.querySelectorAll('#stoerer-130-1 .article-nav-content a[href^="#"]')); // Nur Ankerlinks im mobilen Störer
 
-        return [...mainNavLinks, ...mobileNavLinks, ...onepageLinks, ...articleLinks];
+        // Kombiniere alle relevanten Links
+        return [...mainNavLinks, ...mobileNavLinks, ...onepageLinks, ...articleLinksDesktop, ...articleLinksMobileStoerer];
     }
 
     setActiveLink(targetHref) {

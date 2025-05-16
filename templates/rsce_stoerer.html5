@@ -49,13 +49,13 @@ foreach ($this->stoerer as $stoererElement) {
     }
     if (!empty($stoererElement->trigger_text_hover_color)) {
         $triggerHoverTextColor = decodeColor($stoererElement->trigger_text_hover_color);
-        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer-trigger { color: $triggerHoverTextColor !important; }";
-        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer-trigger .svg-image { fill: $triggerHoverTextColor !important; }";
-        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer-trigger .svg-image path { fill: $triggerHoverTextColor !important; }";
+        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer-trigger, #$uniqueId.is-active .stoerer-inner-wrapper .stoerer-trigger { color: $triggerHoverTextColor !important; }";
+        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer-trigger .svg-image, #$uniqueId.is-active .stoerer-inner-wrapper .stoerer-trigger .svg-image { fill: $triggerHoverTextColor !important; }";
+        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer-trigger .svg-image path, #$uniqueId.is-active .stoerer-inner-wrapper .stoerer-trigger .svg-image path { fill: $triggerHoverTextColor !important; }";
     }
     if (!empty($stoererElement->trigger_bg_hover_color)) {
         $triggerHoverBgColor = decodeColor($stoererElement->trigger_bg_hover_color);
-        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer-trigger { background-color: $triggerHoverBgColor !important; }";
+        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer-trigger, #$uniqueId.is-active .stoerer-inner-wrapper .stoerer-trigger { background-color: $triggerHoverBgColor !important; }";
     }
 
     // Inhaltsfarben
@@ -71,11 +71,11 @@ foreach ($this->stoerer as $stoererElement) {
     }
     if (!empty($stoererElement->content_text_hover_color)) {
         $contentHoverTextColor = decodeColor($stoererElement->content_text_hover_color);
-        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer--content .stoerer-content--inner { color: $contentHoverTextColor !important; }";
+        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer--content .stoerer-content--inner, #$uniqueId.is-active .stoerer-inner-wrapper .stoerer--content .stoerer-content--inner { color: $contentHoverTextColor !important; }";
     }
     if (!empty($stoererElement->content_bg_hover_color)) {
         $contentHoverBgColor = decodeColor($stoererElement->content_bg_hover_color);
-        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer--content { background-color: $contentHoverBgColor !important; }";
+        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer--content, #$uniqueId.is-active .stoerer-inner-wrapper .stoerer--content { background-color: $contentHoverBgColor !important; }";
     }
 
     // Footer Hintergrundfarbe
@@ -92,15 +92,15 @@ foreach ($this->stoerer as $stoererElement) {
         $styles .= "#$uniqueId .stoerer-inner-wrapper .footer-element--item svg path { fill: $footerInitial !important; }";
     }
 
-    // Footer Hintergrund Hover Farbe
+    // Footer Hintergrund Hover/Active Farbe
     if (!empty($this->footer_bg_hover_color)) { // Beachte $this->
         $footerBgHover = decodeColor($this->footer_bg_hover_color);
-        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer-footer--elements { background-color: $footerBgHover !important; }";
+        $styles .= "#$uniqueId:hover .stoerer-inner-wrapper .stoerer-footer--elements, #$uniqueId.is-active .stoerer-inner-wrapper .stoerer-footer--elements { background-color: $footerBgHover !important; }";
         // Alternativ: Hover direkt auf Footer löst aus:
         // $styles .= "#$uniqueId .stoerer-footer--elements:hover { background-color: $footerBgHover !important; }";
     }
 
-    // Footer Hover Farbe (Schrift & SVG) (mit Fallback auf Footer Hintergrundfarbe)
+    // Footer Hover/Active Farbe (Schrift & SVG) (mit Fallback auf Footer Hintergrundfarbe)
     $footerHoverColorValue = '';
     if (!empty($this->footer_svg_hover_color)) { // Dieses Feld nutzen
         $footerHoverColorValue = decodeColor($this->footer_svg_hover_color);
@@ -109,10 +109,10 @@ foreach ($this->stoerer as $stoererElement) {
     }
 
     if (!empty($footerHoverColorValue)) {
-        // Wende auf Text und SVG/Path an
-        $styles .= "#$uniqueId .stoerer-inner-wrapper .footer-element--item:hover a:not(.btn) { color: $footerHoverColorValue !important; }";
-        $styles .= "#$uniqueId .stoerer-inner-wrapper .footer-element--item:hover svg { fill: $footerHoverColorValue !important; }";
-        $styles .= "#$uniqueId .stoerer-inner-wrapper .footer-element--item:hover svg path { fill: $footerHoverColorValue !important; }";
+        // Wende auf Text und SVG/Path an (für :hover auf item und .is-active auf Störer)
+        $styles .= "#$uniqueId .stoerer-inner-wrapper .footer-element--item:hover a:not(.btn), #$uniqueId.is-active .stoerer-inner-wrapper .footer-element--item a:not(.btn) { color: $footerHoverColorValue !important; }";
+        $styles .= "#$uniqueId .stoerer-inner-wrapper .footer-element--item:hover svg, #$uniqueId.is-active .stoerer-inner-wrapper .footer-element--item svg { fill: $footerHoverColorValue !important; }";
+        $styles .= "#$uniqueId .stoerer-inner-wrapper .footer-element--item:hover svg path, #$uniqueId.is-active .stoerer-inner-wrapper .footer-element--item svg path { fill: $footerHoverColorValue !important; }";
     }
 
     $counterElements++;

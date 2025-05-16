@@ -53,6 +53,7 @@ return array(
                 'fieldType' => 'radio',
                 'filesOnly' => true,
                 'extensions' => 'jpg,jpeg,png',
+                'tl_class' => 'clr'
             ),
         ),
 
@@ -64,6 +65,7 @@ return array(
             'eval' => array(
                 'rgxp' => 'digit',
                 'includeBlankOption' => true,
+                'tl_class' => 'clr'
             ),
         ),
 
@@ -138,14 +140,28 @@ return array(
             ),
         ),
 
-        'right_column_image' => array(
-            'label' => array('Bild: Rechte Spalte', 'Wird in der rechten Spalte angezeigt'),
+        'image_position' => array(
+            'label' => array('Bildposition', 'Nur relevant, wenn "Text & Button untereinander anzeigen" aktiv ist.'),
+            'inputType' => 'select',
+            'options' => array(
+                'above' => 'Bild oberhalb des Teasers anzeigen',
+                'below' => 'Bild unterhalb des Teasers anzeigen',
+            ),
+            'default' => 'above',
+            'eval' => array('tl_class' => 'w50', 'submitOnChange' => true),
+            'dependsOn' => array(
+                'field' => 'nocolumns',
+            ),
+        ),
+
+        'image_content' => array(
+            'label' => array('Bild', ''),
             'inputType' => 'fileTree',
             'eval' => array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png',
+                'extensions' => 'jpg,jpeg,png,webp,svg',
                 'tl_class' => 'clr'
             ),
         ),
@@ -158,6 +174,7 @@ return array(
             'eval' => array(
                 'rgxp' => 'digit',
                 'includeBlankOption' => true,
+                'tl_class' => 'clr'
             ),
         ),
 
@@ -167,6 +184,11 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
+        'content_css_class' => array(
+            'label' => array('CSS-Klasse: Inhalt', 'Zusätzliche CSS-Klasse für den Inhaltscontainer'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
 
         'buttons' => array(
             'label' => array('Buttons', ''),
