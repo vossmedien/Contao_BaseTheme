@@ -177,7 +177,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
             <?php // Container um die Row, falls Checkbox aktiv ?>
             <?php if ($this->wrap_columns_in_container): ?><div class="container"><?php endif; ?>
 
-            <div class="row g-md-2 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
+            <div class="row g-md-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
 
                 <?php // --- Headlinespalte --- ?>
                 <?php
@@ -280,7 +280,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
                             <?php
                                 $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-start';
                             ?>
-                            <div class="buttons <?= $buttonAlignmentClass; ?> <?php if ($this->desc || $hasImages): ?>mt-3<?php endif;?>">
+                            <div class="buttons <?= $buttonAlignmentClass; ?> mt-3">
                                 <?= $buttonsHTML; ?>
                             </div>
                         <?php endif; ?>

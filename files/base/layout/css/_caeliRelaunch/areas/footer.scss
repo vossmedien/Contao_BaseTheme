@@ -49,10 +49,10 @@ footer#footer {
       font-weight: $font-weight-bold;
     }
 
-    .is-nowrap{
+    .is-nowrap {
       white-space: nowrap;
     }
- 
+
     ul {
       list-style: none;
       padding: 0;
@@ -111,16 +111,25 @@ footer#footer {
 }
 
 
-#wrapper:has(main .article-content > div:last-child[class*="bg-"]),
+#wrapper:has(main .article-content > div:last-child[class*="bg-"]:not([class*="container"])),
 #wrapper:has(main .mod_article:last-child > .article-content[class*="bg-"]),
-body.footer-white{
+body.footer-white {
   footer#footer {
     --bs-link-color-rgb: var(--bs-primary-rgb);
     --bs-link-hover-color-rgb: var(--bs-primary-rgb);
     background-color: var(--bs-body-bg);
 
-    svg path{
+    svg path {
       fill: var(--bs-body-color);
     }
   }
+}
+
+.market-detail footer#footer {
+  --bs-link-color-rgb: var(--bs-white-rgb);
+  --bs-link-hover-color-rgb: var(--bs-white-rgb);
+
+    svg path {
+      fill: var(--bs-body-color-inverse);
+    }
 }

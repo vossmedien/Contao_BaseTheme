@@ -2,9 +2,9 @@
     <article class="auction-item">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title h5 mb-0  fw-bold">
+                <h3 class="card-title h5 mb-0">
                     <span class="d-block">{{ 'auction_listing.card.title_prefix'|trans }}</span>
-                    <span>{{ raw_data.state }}</span>
+                    <span class="fw-bold">{{ raw_data.state }}</span>
                 </h3>
             </div>
             <div class="card-img">
@@ -17,12 +17,12 @@
                                  alt="{{ 'auction_listing.card.image_alt_prefix'|trans }} {{ auction.id }}" class="auction-image img-fluid">
 
                             {% if raw_data.countDown is defined %}
-                                {% set days_countdown = (raw_data.countDown / 86400)|round(0, 'floor') %}
+                                {% set days_countdown = (raw_data.countDown / 86400)|round(0, 'ceil') %}
                                 {% if days_countdown > 0 %}
                                     <span class="badge bg-primary text-secondary countdown-badge">{{ 'auction_listing.card.countdown_prefix'|trans }} {{ days_countdown }} {{ 'auction_listing.card.countdown_suffix_days'|trans }}</span>
                                 {% endif %}
                             {% endif %}
-                            <span class="btn btn-tertiary no-button btn-sm preview-btn">{{ 'auction_listing.card.preview_button'|trans }}</span>
+                            <span class="btn btn-secondary no-button btn-sm preview-btn">{{ 'auction_listing.card.preview_button'|trans }}</span>
                         </a>
                     </div>
                 {% endif %}

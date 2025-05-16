@@ -57,10 +57,11 @@ if (!function_exists('load_theme_assets_from_manifest')) {
                     // WebpackManifestPlugin gibt oft ein Objekt mit 'path' zurück oder direkt den Pfad
                     $srcPath = is_array($hashedNameOrPath) && isset($hashedNameOrPath['path']) ? $hashedNameOrPath['path'] : $hashedNameOrPath;
                     if (is_string($srcPath)) {
-                         // Stelle sicher, dass es sich um ein App-Bundle handelt (und nicht versehentlich ein Vendor-Bundle, falls das Manifest das enthalten würde)
-                        if (str_contains($srcPath, $themeName . '.bundle.min.js') && !str_contains($srcPath, '_vendors.bundle.min.js')) {
-                             $themeAssets['js_app'][] = ['src' => $srcPath, 'name' => $originalName, 'defer' => true, 'type' => 'module']; // Annahme für App-JS
-                        }
+                         // Die Filterung in der WebpackManifestPlugin-Konfiguration sollte bereits sicherstellen,
+                         // dass hier nur das gewünschte App-JS-Bundle ankommt.
+                         // Die vorherige Bedingung (str_contains($srcPath, $themeName . '.bundle.min.js') ...)
+                         // würde mit dem [contenthash] im Dateinamen nicht mehr zuverlässig funktionieren.
+                         $themeAssets['js_app'][] = ['src' => $srcPath, 'name' => $originalName, 'defer' => true, 'type' => 'module'];
                     }
                 }
             }

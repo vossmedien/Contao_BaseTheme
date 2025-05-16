@@ -9,23 +9,23 @@
 
 
 .pull-down {
-  margin-bottom: calc(-1 * (var(--main-gap) * 2)) !important;
+  margin-bottom: calc(-1 * (var(--main-gap) * 3)) !important;
 }
 
 .mod_article:has(.pull-down) {
   & + .mod_article > .article-content {
-    padding-top: calc(var(--main-gap) * 3);
+    padding-top: calc(var(--main-gap) * 4);
   }
 }
 
 
 .pull-up {
-  margin-top: calc(-1 * (var(--main-gap) * 3)) !important;
+  margin-top: calc(-1 * (var(--main-gap) * 4)) !important;
 }
 
 .mod_article:has(+ .mod_article .pull-up) {
   .article-content {
-    padding-bottom: calc(var(--main-gap) * 3);
+    padding-bottom: calc(var(--main-gap) * 4);
   }
 }
 
