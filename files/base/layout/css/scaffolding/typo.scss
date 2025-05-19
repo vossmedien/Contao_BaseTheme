@@ -45,7 +45,7 @@ html body {
     transition: color 0.3s ease;
 
     figcaption {
-      color: $body-color;
+      color: currentColor;
     }
   }
 
@@ -304,4 +304,30 @@ ul[class*="list-"][class*="text-"] {
 
 .text-xl {
   @include font-size($font-size-xl);
+}
+
+
+
+a:has(figure) {
+  display: block;
+  height: inherit;
+  color: currentColor;
+
+  figure {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  figure, picture {
+    height: inherit;
+  }
+
+  picture {
+    display: block;
+  }
+}
+
+
+.figcaption{
+  @extend figcaption;
 }

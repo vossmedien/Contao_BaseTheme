@@ -4,6 +4,11 @@
 @use "sass:meta";
 
 @import "functions";
+
+// Utilities
+@import "../../_vendor/node_modules/bootstrap/scss/utilities";
+@import "../../_vendor/node_modules/bootstrap/scss/utilities/api";
+
 //@import "_theme/root-variables";
 
 @import "../scaffolding/helper-classes";
@@ -28,14 +33,18 @@
 @import "../elements/custom-html-elements/elements";
 
 
-
 html {
   scroll-behavior: smooth;
   font-size: var(--bs-body-font-size);
 
 
+  // Bootstrap-Utilities  -> Gefällt mir nicht so die Position
+  @import "../../_vendor/node_modules/bootstrap/scss/utilities";
+  @import "../../_vendor/node_modules/bootstrap/scss/utilities/api";
+
   body {
     overflow-x: clip;
+
 
     *[id] {
       scroll-behavior: smooth;

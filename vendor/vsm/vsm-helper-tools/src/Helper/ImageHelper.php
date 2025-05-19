@@ -796,14 +796,16 @@ class ImageHelper
         // Figure Tag erstellen
         $finalOutput = '<figure>' . $imgTag;
         if ($inSlider) {
-            $finalOutput .= '';
-            if ($finalCaption) {
-                $finalOutput .= '<div class="slider-caption">' . $finalCaption . '</div>';
-            }
-            $finalOutput = str_replace(["data-src", "data-srcset"], ["src", "srcset"], $finalOutput);
+           // $finalOutput .= '';
+           // if ($finalCaption) {
+           //     $finalOutput .= '<div class="slider-caption figcaption">' . $finalCaption . '</div>';
+          //  }
+           // $finalOutput = str_replace(["data-src", "data-srcset"], ["src", "srcset"], $finalOutput);
         } elseif ($finalCaption) {
-            $finalOutput .= '<figcaption>' . $finalCaption . '</figcaption>';
+           //$finalOutput .= '<figcaption>' . $finalCaption . '</figcaption>';
         }
+        $finalOutput .= '<figcaption>' . $finalCaption . '</figcaption>';
+
         $finalOutput .= '</figure>';
 
         // Link Handling

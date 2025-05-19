@@ -32,6 +32,41 @@
 
 .ce--stoerer:hover {
   .stoerer-trigger > svg {
-   transform: scale(1.2);
+    transform: scale(1.2);
   }
 }
+
+
+.ce_rsce_hero_complex {
+  @include media-breakpoint-down(lg) {
+    margin-top: calc(-1 * var(--main-gap));
+  }
+}
+
+
+@each $breakpoint, $size in $grid-breakpoints {
+  $infix: "-#{$breakpoint}";
+
+  @media (min-width: #{$size}) {
+    .pull-down#{$infix} {
+      margin-bottom: calc(-1 * (var(--main-gap) * 3)) !important;
+    }
+
+    .mod_article:has(.pull-down#{$infix}) {
+      & + .mod_article > .article-content {
+        padding-top: calc(var(--main-gap) * 4);
+      }
+    }
+
+    .pull-up#{$infix} {
+      margin-top: calc(-1 * (var(--main-gap) * 4)) !important;
+    }
+
+    .mod_article:has(+ .mod_article .pull-up#{$infix}) {
+      .article-content {
+        padding-bottom: calc(var(--main-gap) * 4);
+      }
+    }
+  }
+}
+

@@ -1,0 +1,53 @@
+.ce_rsce_content_slider {
+
+
+  .content-slider-content-col{
+    display: flex;
+    flex-flow: column nowrap;
+
+    .text-center{
+      margin-top: auto;
+      padding-top: 2rem;
+    }
+  }
+
+
+  .slider-controls {
+    display: inline-flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
+    .slider-pagination {
+      line-height: 0;
+
+      .swiper-pagination-bullet {
+        width: 40px;
+        height: 8px;
+        background-color: transparent;
+        border: 1px solid currentColor;
+        border-radius: 0;
+        transition: .15s ease-in-out;
+
+        &.swiper-pagination-bullet-active {
+          background-color: currentColor;
+        }
+      }
+    }
+
+
+    button {
+      background-color: transparent;
+      padding: 0;
+      border: 0;
+      color: currentColor;
+      font-size: 1.5rem;
+      transition: .15s ease-in-out;
+
+      &:hover {
+        color: var(--bs-link-hover-color)
+      }
+    }
+  }
+}

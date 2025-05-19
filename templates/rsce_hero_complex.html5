@@ -1,0 +1,194 @@
+<?php
+
+use Vsm\VsmHelperTools\Helper\ImageHelper;
+use Vsm\VsmHelperTools\Helper\VideoHelper;
+use Vsm\VsmHelperTools\Helper\HeadlineHelper;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\BasicHelper;
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+
+$uniqueId = $this->id . '_' . uniqid();
+
+// Styles für die Box
+$boxStyles = '';
+if ($this->activate_box_slider) {
+    if (!empty($this->box_background_color)) {
+        $bgColor = BasicHelper::cleanColor($this->box_background_color);
+        $boxStyles .= 'background-color: ' . $bgColor . ' !important;';
+    }
+    if (!empty($this->box_font_color)) {
+        $fontColor = BasicHelper::cleanColor($this->box_font_color);
+        $boxStyles .= 'color: ' . $fontColor . ' !important;';
+    }
+}
+
+// Haupt-Medien
+$mainMediaHTML = '';
+$mainImageInfo = null;
+if ($this->media_type === 'image' && $this->main_image) {
+    $mainMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media', false, false, true);
+} elseif ($this->media_type === 'video' && $this->main_video) {
+    $mainImageInfo = BasicHelper::getFileInfo($this->main_video);
+    if ($mainImageInfo && isset($mainImageInfo['ext'])) {
+        $isMainVideo = VideoHelper::isVideoFormat($mainImageInfo['ext']);
+        if ($isMainVideo) {
+            $mainMediaHTML = VideoHelper::renderVideo(
+                $this->main_video,
+                'w-100 h-100 object-fit-cover hero-complex-main-media',
+                $this->main_headline, null, null, null,
+                'autoplay muted loop playsinline', true
+            );
+        }
+    } else {
+        $mainMediaHTML = '<p>Fehler beim Laden des Videos.</p>';
+    }
+}
+
+//$GLOBALS['TL_BODY'][] = '<script defer type="module">import "/files/base/layout/js/_elements/ce_rsce_hero_complex.js";</script>';
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/rsce_hero_complex.min.css|static';
+}
+
+?>
+
+<div <?= $this->cssID ?> class="content--element <?= $this->class ?>">
+    <div class="ce--inner hero-complex-inner_<?= $uniqueId ?> position-relative d-flex flex-column">
+
+        <!-- Haupt-Medienbereich (Mobile: order-1 / Desktop: order-lg-2, wird dann via CSS zum Hintergrund) -->
+        <div class="hero-complex-media-col mb-gap mb-lg-0 order-1 order-lg-2"
+             <?php if ($this->animation_type_media): ?>data-animation="<?= $this->animation_type_media ?>"<?php endif; ?>>
+            <div class="main-media-wrapper" style="--image-min-height: <?= $this->image_minheight ?: '700px' ?>; --image-mobile-min-height: <?= $this->image_mobile_minheight ?: 'auto' ?>;">
+                <?php if ($mainMediaHTML): ?>
+                    <?= $mainMediaHTML ?>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Inhalt Wrapper (Texte und Box) (Mobile: order-2 / Desktop: order-lg-1) -->
+        <div class="hero-complex-content-overlay-wrapper order-2 order-lg-1">
+            <div class="<?= $this->container_class ?: 'container-wide' ?>">
+                <div class="row align-items-center">
+                    <!-- Linke Headline (Mobile: order-2) -->
+                    <div class="col-lg-6 hero-complex-headline-col order-2 pb-md-gap"
+                         <?php if ($this->animation_type_headline): ?>data-animation="<?= $this->animation_type_headline ?>"<?php endif; ?>>
+                        <div class="main-headline-col-inner pe-lg-gap">
+                            <?= HeadlineHelper::generateHeadlineHTML(
+                                null, $this->main_headline, null, $this->main_headline_type ?: 'h1',
+                                "no-animation", null, "", "mb-3 mb-md-0"
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <!-- Rechte Spalte: Text & Box (Mobile: order-3) -->
+                    <div class="col-lg-6 hero-complex-text-and-box-col order-3">
+                        <div class="main-text-col-inner">
+                            <?php if ($this->main_text): ?>
+                                 <div class="main-text-content fw-bold pb-gap" <?php if ($this->animation_type_text): ?>data-animation="<?= $this->animation_type_text ?>"<?php endif; ?>>
+                                    <?= $this->main_text ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($this->activate_box_slider && !empty($this->box_slides)): ?>
+                                 <!-- Box-Slider Bereich (Mobile: order-4 innerhalb dieser Spalte) -->
+                                 <div class="hero-complex-box-slider-wrapper pull-down-lg"
+                                       <?php if ($this->animation_type_box): ?>data-animation="<?= $this->animation_type_box ?>"<?php endif; ?>>
+                                     <div class="box-slider-anchor" style="<?= $boxStyles ?>">
+                                         <div class="box-slider-container swiper rsce-hero-box-slider-<?= $uniqueId ?>"  data-uid="<?= $uniqueId ?>">
+                                             <div class="swiper-wrapper">
+                                                 <?php foreach ($this->box_slides as $slide): ?>
+                                                     <div class="swiper-slide">
+                                                         <div class="box-slide-inner p-4 p-md-5">
+                                                             <?php if ($slide->slide_headline): ?>
+                                                                 <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, "", "mb-4") ?>
+                                                             <?php endif; ?>
+
+                                                             <?php if ($slide->slide_content): ?>
+                                                                 <div class="box-slide-content rte">
+                                                                     <?= $slide->slide_content ?>
+                                                                 </div>
+                                                             <?php endif; ?>
+
+                                                             <?php if (!empty($slide->buttons)): ?>
+                                                                 <div class="buttons pt-4">
+                                                                     <?= ButtonHelper::generateButtonHTML($slide->buttons) ?>
+                                                                 </div>
+                                                             <?php endif; ?>
+                                                         </div>
+                                                     </div>
+                                                 <?php endforeach; ?>
+                                             </div>
+                                             <?php /* Swiper Controls kommen hier nicht mehr hin, sondern in box-slider-anchor */ ?>
+                                         </div>
+                                         <?php if (count($this->box_slides) > 1): ?>
+                                             <div class="box-paginator rsce-hero-box-slider-pagination-<?= $uniqueId ?>"></div>
+                                             <div class="hero-complex-swiper-nav">
+                                                 <button type="button" class="hc-button-prev rsce-hero-box-slider-prev-<?= $uniqueId ?>">
+                                                     <i class="fak fa-chevron-left"></i>
+                                                 </button>
+                                                 <div class="button-separator"></div>
+                                                 <button type="button" class="hc-button-next rsce-hero-box-slider-next-<?= $uniqueId ?>">
+                                                     <i class="fak fa-chevron-right"></i>
+                                                 </button>
+                                             </div>
+                                         <?php endif; ?>
+                                     </div>
+                                 </div>
+                             <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php if ($this->activate_box_slider && !empty($this->box_slides) && EnvHelper::isFrontend()): ?>
+<script type="text/javascript" defer>
+    window.addEventListener('DOMContentLoaded', () => {
+        const sliderSelector = '.rsce-hero-box-slider-<?= $uniqueId ?>';
+        const boxSliderEl_<?= $uniqueId ?> = document.querySelector(sliderSelector);
+
+        if (boxSliderEl_<?= $uniqueId ?> && !boxSliderEl_<?= $uniqueId ?>.swiper) {
+            const config = {
+                loop: <?= $this->box_slider_loop ? 'true' : 'false' ?>,
+                speed: <?= (int)($this->box_slider_transition_time ?: 1000) ?>,
+                watchOverflow: true,
+                effect: 'fade',
+                fadeEffect: {
+                    crossFade: true
+                },
+                pagination: {
+                    el: '.box-paginator.rsce-hero-box-slider-pagination-<?= $uniqueId ?>',
+                    type: 'custom',
+                    renderCustom: function (swiper, current, total) {
+                        return '<span class="current-slide">' + current + '</span>' +
+                               ' / ' +
+                               '<span class="total-slides">' + total + '</span>';
+                    }
+                },
+                navigation: {
+                    nextEl: '.rsce-hero-box-slider-next-<?= $uniqueId ?>.hc-button-next',
+                    prevEl: '.rsce-hero-box-slider-prev-<?= $uniqueId ?>.hc-button-prev',
+                }
+            };
+
+            <?php if ($this->box_slider_autoplay): ?>
+            config.autoplay = {
+                delay: <?= (int)($this->box_slider_autoplay_time ?: 5000) ?>,
+                disableOnInteraction: false,
+            };
+            <?php endif; ?>
+
+            new Swiper(boxSliderEl_<?= $uniqueId ?>, config);
+        }
+    });
+</script>
+<?php endif; ?>
+
+<?php if ($this->activate_box_slider && !empty($this->box_font_color) && EnvHelper::isFrontend()): ?>
+<style>
+.hero-complex-inner_<?= $uniqueId ?> .button-separator {
+    background-color: <?= BasicHelper::cleanColor($this->box_font_color) ?> !important;
+}
+</style>
+<?php endif; ?>
