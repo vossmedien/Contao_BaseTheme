@@ -1,0 +1,200 @@
+<?php
+
+use Vsm\VsmHelperTools\Helper\ImageHelper;
+use Vsm\VsmHelperTools\Helper\HeadlineHelper;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+use Contao\FilesModel;
+
+if (!defined('CONTENT_SLIDER_CLASS')) {
+    define('CONTENT_SLIDER_CLASS', 'contentslider_');
+}
+if (!defined('CONTENT_IMAGE_SLIDER_CLASS')) { // Neu für den Bilder-Slider
+    define('CONTENT_IMAGE_SLIDER_CLASS', 'contentimageslider_');
+}
+
+$uniqueId = CONTENT_SLIDER_CLASS . $this->id;
+$uniqueImageSliderId = CONTENT_IMAGE_SLIDER_CLASS . $this->id; // Neu
+
+$innerContainerClass = $this->content_container_class ?: '';
+
+$contentColInnerClass = '';
+if ($this->content_container_class === 'container-wide') {
+    $contentColInnerClass = 'ps-lg-gap';
+}
+
+$contentColClass = 'col-12';
+$imageColClass = '';
+$showImageColumn = false;
+
+if ($this->image_mode === 'fixed' && $this->fixed_image_src) {
+    $contentColClass = 'col-lg-6';
+    $imageColClass = 'col-lg-6 content-slider-image-col';
+    $showImageColumn = true;
+} elseif ($this->image_mode === 'slide' && !empty($this->slides)) {
+    foreach ($this->slides as $slide) {
+        if (!empty($slide->slide_image_src)) {
+            $contentColClass = 'col-lg-6';
+            $imageColClass = 'col-lg-6 content-slider-image-col';
+            $showImageColumn = true;
+            break;
+        }
+    }
+}
+
+if (EnvHelper::isFrontend()) {
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/rsce_content_slider.min.css|static';
+}
+
+?>
+
+<div <?= $this->cssID ?> class="content--element content-slider-element <?= $this->class ?>">
+    <div class="<?= $innerContainerClass ?>">
+        <div class="row">
+            <div class="<?= $contentColClass ?> content-slider-content-col order-lg-1 order-2">
+                <div>
+                    <?php if ($this->headline): ?>
+                    <div class="<?= $contentColInnerClass ?>">
+                        <?= HeadlineHelper::generateHeadlineHTML(null, $this->headline, null, $this->headline_type ?: 'h2', "no-animation", null, "", "") ?>
+                    </div>
+                    <?php endif; ?>
+
+                    <div class="swiper-container-outer position-relative">
+                        <div class="swiper <?= $uniqueId ?>" data-uid="<?= $this->id ?>">
+                            <div class="swiper-wrapper">
+                                <?php foreach ($this->slides as $index => $slide): ?>
+                                    <div class="swiper-slide">
+                                        <div class="slide-inner <?= $contentColInnerClass ?>">
+                                            <?php if ($slide->slide_headline): ?>
+                                                <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, "", "") ?>
+                                            <?php endif; ?>
+                                            <?php if ($slide->slide_content): ?>
+                                                <div class="slide-content rte mb-4">
+                                                    <?= $slide->slide_content ?>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (!empty($slide->buttons)): ?>
+                                                <div class="buttons">
+                                                    <?= ButtonHelper::generateButtonHTML($slide->buttons) ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <?php if (count($this->slides) > 1): ?>
+                    <div class="text-center">
+                        <div class="slider-controls">
+                            <button class="btn-prev <?= $uniqueId ?>_prev"><i class="fak fa-chevron-left"></i></button>
+                            <div class="slider-pagination <?= $uniqueId ?>_pagination"></div>
+                            <button class="btn-next <?= $uniqueId ?>_next"><i class="fak fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <?php if ($showImageColumn): ?>
+                <div class="<?= $imageColClass ?> order-lg-2 order-1 mb-4 mb-lg-0">
+                    <?php if ($this->image_mode === 'fixed' && $this->fixed_image_src): ?>
+                        <div class="fixed-image-container">
+                            <?= ImageHelper::generateImageHTML($this->fixed_image_src, null, $this->headline, $this->fixed_image_size, 'w-100 h-auto object-fit-cover', false, true, true) ?>
+                        </div>
+                    <?php elseif ($this->image_mode === 'slide'): ?>
+                        <div class="swiper h-100 <?= $uniqueImageSliderId ?>">
+                            <div class="swiper-wrapper">
+                                <?php foreach ($this->slides as $slide): ?>
+                                    <?php if (!empty($slide->slide_image_src)): ?>
+                                        <div class="swiper-slide image-slide">
+                                            <?= ImageHelper::generateImageHTML($slide->slide_image_src, null, null, $slide->slide_image_size, 'w-100 h-100 object-fit-cover', true, true, true) ?>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<?php if (EnvHelper::isFrontend() && !empty($this->slides)): ?>
+    <script type="text/javascript" defer>
+        window.addEventListener('DOMContentLoaded', () => {
+            const contentSliderSelector = '.swiper.<?= $uniqueId ?>';
+            const contentSliderEl = document.querySelector(contentSliderSelector);
+            let imageSliderEl = null; // Initialisieren
+
+            <?php if ($this->image_mode === 'slide' && $showImageColumn): ?>
+            const imageSliderSelector = '.swiper.<?= $uniqueImageSliderId ?>';
+            imageSliderEl = document.querySelector(imageSliderSelector);
+            <?php endif; ?>
+
+            if (contentSliderEl && !contentSliderEl.swiper) {
+                let contentSwiperInstance, imageSwiperInstance;
+
+                const commonSwiperConfig = {
+                    loop: <?= $this->loop ? 'true' : 'false' ?>,
+                    speed: <?= (int)($this->transition_time ?: 1000) ?>,
+                    watchOverflow: <?= $this->loop ? 'false' : 'true' ?>,
+                    effect: 'fade',
+                    fadeEffect: {
+                        crossFade: true
+                    },
+                };
+
+                let contentSwiperConfig = {
+                    ...commonSwiperConfig,
+                    grabCursor: true,
+                    pagination: {
+                        el: '.slider-pagination.<?= $uniqueId ?>_pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.btn-next.<?= $uniqueId ?>_next',
+                        prevEl: '.btn-prev.<?= $uniqueId ?>_prev',
+                    }
+                };
+
+                <?php if ($this->autoplay): ?>
+                contentSwiperConfig.autoplay = {
+                    delay: <?= (int)($this->autoplay_time ?: 5000) ?>,
+                    disableOnInteraction: true
+                };
+                <?php endif; ?>
+
+                contentSwiperInstance = new Swiper(contentSliderEl, contentSwiperConfig);
+
+                <?php if ($this->image_mode === 'slide' && $showImageColumn): ?>
+                if (imageSliderEl && !imageSliderEl.swiper) {
+                    imageSwiperInstance = new Swiper(imageSliderEl, {
+                        ...commonSwiperConfig,
+                        // Keine eigene Navigation/Pagination für den Bilder-Slider nötig
+                        // allowTouchMove: false, // Verhindert direktes Swipen auf Bildern, wenn nur durch Text gesteuert
+                    });
+
+                    // Controller-Synchronisation
+                    if (contentSwiperInstance && imageSwiperInstance) {
+                        contentSwiperInstance.controller.control = imageSwiperInstance;
+                        imageSwiperInstance.controller.control = contentSwiperInstance;
+                    }
+                }
+                <?php endif; ?>
+            }
+        });
+    </script>
+<?php endif; ?>
+
+<style>
+
+    .content-slider-element .content-slider-image-col img {
+        /* max-height: 500px; wurde durch .dynamic-image-container img ersetzt/übersteuert */
+        /* object-fit: contain; wurde durch .dynamic-image-container img ersetzt/übersteuert */
+        /* Diese generische Regel ist nun weniger relevant, wenn dynamic-image-container aktiv ist */
+    }
+
+</style> 

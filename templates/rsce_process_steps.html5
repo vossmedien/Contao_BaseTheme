@@ -27,7 +27,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         top: 60px; /* Beginnt unter der 60px Box */
         left: 30px; /* Zentriert zur Box */
         width: 2px;
-        height: calc(100% - 69px + 3rem); /* Füllt den Raum bis zum nächsten Step (Höhe 100% + mb-5 = 3rem) */
+        height: calc(100% - var(--main-gap) + 3rem); /* Füllt den Raum bis zum nächsten Step (Höhe 100% + mb-5 = 3rem) */
         background-color: var(--bs-tertiary);
         transform: translateX(-50%);
         z-index: 0; /* Hinter der Box, falls doch mal Überlappung */
@@ -84,7 +84,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         ); ?>
 
         <?php if ($this->intro_text): ?>
-            <div class="ce--intro-text mb-4" data-animation="<?= $this->animation_type ?: '' ?>">
+            <div class="ce--intro-text mb-gap" data-animation="<?= $this->animation_type ?: '' ?>">
                 <?= $this->intro_text; ?>
             </div>
         <?php endif; ?>
@@ -94,7 +94,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         <?php if ($this->rows) : ?>
             <div class="ce--process-steps">
                 <?php foreach ($this->rows as $i => $row) : ?>
-                    <div class="process-step mb-5">
+                    <div class="process-step mb-gap">
                         <span class="step-number"><?= $i + 1; ?></span>
                         <div class="step-content-wrapper pt-1 pt-md-0">
                             <?php if ($row->headline): ?>
@@ -112,7 +112,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                 </div>
                             <?php endif; ?>
 
-                            <div class="step-desc-wrapper ps-md-gap">
+                            <div class="step-desc-wrapper ps-md-gap ms-md-gap mt-gap">
                                 <div class="row gy-2 gx-3 align-items-center">
                                     <?php if ($row->image): ?>
                                         <div class="col-md-5" data-animation="<?= $row->step_animation_type ?: '' ?>">
