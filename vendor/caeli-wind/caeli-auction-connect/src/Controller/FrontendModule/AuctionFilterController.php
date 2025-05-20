@@ -161,6 +161,12 @@ class AuctionFilterController extends AbstractFrontendModuleController
 
         // --- Aktuelle Filterwerte aus der Anfrage extrahieren (für Template) ---
         $templateFilters = [];
+
+        // Explizit den 'focus'-Parameter hinzufügen, Default auf 'false' wenn nicht im Request.
+        // Der Wert aus dem Request ist ein String ('true' oder 'false') oder null, wenn er fehlt.
+        // get('focus', 'false') stellt sicher, dass es immer 'true' oder 'false' als String ist.
+        $templateFilters['focus'] = $request->query->get('focus', 'false');
+
         foreach ($filterConfigs as $key => $config) {
             if ($config['type'] === 'select') {
                 if ($request->query->has($key)) {
@@ -186,10 +192,6 @@ class AuctionFilterController extends AbstractFrontendModuleController
                     $templateFilters[$maxKey] = $config['max'] ?? null;
                 }
             }
-        }
-        // Explizit den 'focus'-Parameter hinzufügen, falls vorhanden
-        if ($request->query->has('focus')) {
-            $templateFilters['focus'] = $request->query->get('focus');
         }
 
         // --- Aktionen durchführen ---

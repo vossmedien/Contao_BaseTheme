@@ -36,17 +36,17 @@ general:
 auction_listing:
   card:
     title_prefix: "Fläche in"
-    image_alt_prefix: "Bild für Auktion"
-    countdown_prefix: "Auktionsbeginn in:"
-    countdown_suffix_days: "Tagen"
+    image_alt_prefix: "Vorschaubild der Auktion"
+    countdown_prefix: "Auktionsbeginn in"
+    countdown_suffix_days: "Tage"
     preview_button: "Vorschau"
     details:
       power: "Leistung"
       area_size: "Flächengröße"
-      full_usage_hours: "Volllaststunden"
+      full_usage_hours: "Vollaststunden"
       irr_before_rent: "IRR vor Pacht"
       availability: "Verfügbarkeit"
-      availability_prefix: "ab"
+      availability_prefix: "Ab"
     footer_notice: "Planungsrechtliche Informationen nach Registrierung"
     more_button: "Mehr erfahren"
     unit:
@@ -54,12 +54,33 @@ auction_listing:
       ha: "ha"
       h_per_a: "h/a"
       percent: "%"
+      m: "m"
+      m_per_s: "m/s"
   no_auctions_found: "Keine Auktionen gefunden."
 
 content_element:
   no_auctions_for_criteria: "Keine Auktionen für die angegebenen Kriterien gefunden."
 
 detail:
-  raw_data_headline: "Rohdaten"
   back_to_overview_button: "Zurück zur Übersicht"
-  auction_not_found: "Auktion nicht gefunden" 
+  auction_not_found: "Auktion nicht gefunden oder nicht verfügbar."
+  hub_height: "Nabenhöhe"
+  wea_count: "Anzahl WEA"
+  avg_wind_speed: "Ø Windgeschwindigkeit:"
+  planning_law_headline: "Planungsrecht"
+  area_status_headline: "Flächenstatus"
+  area_progress:
+    planning_law: "Planungsrecht"
+    faunistics: "Faunistik"
+    air_traffic: "Flugsicherung"
+    park_planning: "Abschl. Parkplanung"
+    documentation: "Dokumentation"
+    restrictions: "Restriktionsprüfung"
+    armed_forces: "Bundeswehr"
+    inspection: "Begehung"
+    power_connection: "Netzanschluss"
+    preparation: "Auktionsvorbereitung"
+  new_customer_headline: "Ich bin Neukunde"
+  new_customer_button: "Jetzt Freischalten"
+  existing_customer_headline: "Ich bin Bestandskunde"
+  existing_customer_button: "Zum Login"

@@ -35,9 +35,9 @@ general:
 # Added keys from CaeliWindCaeliAuctionConnect.en.php
 auction_listing:
   card:
-    title_prefix: "AREA IN"
-    image_alt_prefix: "Image for auction"
-    countdown_prefix: "Auction starts in:"
+    title_prefix: "Area in"
+    image_alt_prefix: "Preview image of auction"
+    countdown_prefix: "Auction starts in"
     countdown_suffix_days: "days"
     preview_button: "Preview"
     details:
@@ -46,7 +46,7 @@ auction_listing:
       full_usage_hours: "Full load hours"
       irr_before_rent: "IRR before rent"
       availability: "Availability"
-      availability_prefix: "from"
+      availability_prefix: "From"
     footer_notice: "Planning law information after registration"
     more_button: "Learn more"
     unit:
@@ -54,12 +54,35 @@ auction_listing:
       ha: "ha"
       h_per_a: "h/a"
       percent: "%"
+      m: "m"
+      m_per_s: "m/s"
   no_auctions_found: "No auctions found."
 
 content_element:
   no_auctions_for_criteria: "No auctions found for the specified criteria."
 
 detail:
-  raw_data_headline: "Raw Data"
+  raw_data_headline: "Raw Data of the Auction"
   back_to_overview_button: "Back to Overview"
-  auction_not_found: "Auction not found" 
+  auction_not_found: "Auction not found or not available."
+  hub_height: "Hub height"
+  wea_count: "Number of WTG"
+  avg_wind_speed: "Avg. wind speed:"
+  planning_law_headline: "Planning Law"
+  planning_law_text_placeholder: "According to the planning reference map of Baden-Württemberg, the planning of 2 WTG is possible immediately. ##PLACEHOLDER_TEXT##" # Please review/adapt this text
+  area_status_headline: "Area Status"
+  area_progress:
+    planning_law: "Planning Law"
+    faunistics: "Faunistics"
+    air_traffic: "Air Traffic Control"
+    park_planning: "Final Park Planning"
+    documentation: "Documentation"
+    restrictions: "Restrictions Check"
+    armed_forces: "Armed Forces"
+    inspection: "Site Inspection"
+    power_connection: "Grid Connection"
+    preparation: "Auction Preparation"
+  new_customer_headline: "I am a new customer"
+  new_customer_button: "Register now"
+  existing_customer_headline: "I am an existing customer"
+  existing_customer_button: "Login"

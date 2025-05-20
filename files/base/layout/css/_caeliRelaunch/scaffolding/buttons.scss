@@ -5,28 +5,29 @@
   border-radius: var(--bs-btn-border-radius);
 
   //&:not(.with-arrow) { ??
-    &.btn-primary {
-      --bs-btn-hover-bg: transparent;
-      --bs-btn-border-color: var(--bs-primary);
-      --bs-btn-hover-color: var(--bs-primary);
-      --bs-btn-color: var(--bs-secondary);
-    }
+  &.btn-primary {
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-color: var(--bs-primary);
+    --bs-btn-color: var(--bs-secondary);
+  }
 
-    &.btn-outline-primary {
-      --bs-btn-hover-color: var(--bs-secondary);
-    }
+  &.btn-outline-primary {
+    --bs-btn-hover-color: var(--bs-secondary);
+  }
 
-    &.btn-secondary {
-      --bs-btn-hover-bg: transparent;
-      --bs-btn-border-color: var(--bs-secondary);
-      --bs-btn-hover-color: var(--bs-secondary);
-    }
+  &.btn-secondary {
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-border-color: var(--bs-secondary);
+    --bs-btn-hover-color: var(--bs-secondary);
+  }
 
-    &.btn-tertiary {
-      --bs-btn-hover-bg: transparent;
-      --bs-btn-border-color: var(--bs-tertiary);
-      --bs-btn-hover-color: var(--bs-tertiary);
-    }
+  &.btn-tertiary {
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-border-color: var(--bs-tertiary);
+    --bs-btn-hover-color: var(--bs-tertiary);
+  }
+
   //}
 
 
@@ -51,7 +52,7 @@
     font-weight: $font-weight-bold;
   }
 
-  &.btn-sm{
+  &.btn-sm {
     --bs-btn-padding-bottom: .35rem;
   }
 
@@ -78,16 +79,29 @@
 
 
   &.btn-xl {
-    border-width: 4px;
+    --bs-btn-padding-left: 1rem;
+    --bs-btn-padding-right: 1rem;
+    --bs-btn-font-size: 20px;
+    border-width: 3px;
     border-radius: 48px;
-    --bs-btn-font-size: 25px;
+
+
+    @include media-breakpoint-up(md) {
+      border-width: 4px;
+      border-radius: 48px;
+      --bs-btn-font-size: 25px;
+    }
 
     &.with-arrow {
       &:after {
         @extend %fa-icon;
         @extend #{$icon-type} !optional;
         content: "\e001";
-        font-size: 45px;
+        font-size: 32px;
+
+        @include media-breakpoint-up(md) {
+          font-size: 45px;
+        }
       }
     }
   }

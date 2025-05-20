@@ -1,6 +1,10 @@
 main#main {
-  .main-content > .mod_article:first-child {
-    padding-top: var(--main-gap);
+  .main-content > .mod_article:first-child:not(:has( > .article-content:not([class*="bg-"]) > *[class*="bg-"]:first-child)) {
+    padding-top: calc(var(--main-gap));
+  }
+
+  .main-content > .mod_article:first-child:has(>.article-content[class*="bg-"]) {
+    padding-top: 0 !important;
   }
 }
 

@@ -1,0 +1,76 @@
+.ce_rsce_hero_complex {
+  .hero-complex-media-col {
+    line-height: 0;
+  }
+
+  .box-slider-anchor {
+    position: relative;
+
+
+    .swiper-slide {
+      height: auto;
+      min-height: 100%;
+
+      .box-slide-inner {
+        display: flex;
+        flex-flow: column wrap;
+        height: 100%;
+
+        .buttons {
+          margin-top: auto;
+        }
+      }
+    }
+
+
+    .ce--headline {
+      > * {
+        font-size: var(--bs-body-font-size);
+      }
+    }
+
+    .box-paginator {
+      position: absolute;
+      right: 3rem;
+      top: 2rem;
+      font-size: 16px;
+      z-index: 2;
+      left: auto;
+      width: auto;
+    }
+
+    .hero-complex-swiper-nav {
+      position: absolute;
+      right: 2rem;
+      bottom: 2rem;
+      z-index: 2;
+    }
+
+
+    .hero-complex-swiper-nav {
+      button {
+        background-color: transparent;
+        padding: 0;
+        border: 0;
+        color: currentColor;
+        font-size: 1.5rem;
+        transition: .15s ease-in-out;
+
+        &:hover {
+          color: var(--bs-link-hover-color)
+        }
+      }
+
+      .button-separator {
+        content: '';
+        height: 45px;
+        margin: 0 .5rem;
+        width: 1px;
+        display: inline-block;
+        position: relative;
+        top: 10px;
+        background-color: transparent;
+      }
+    }
+  }
+}

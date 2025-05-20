@@ -121,7 +121,7 @@ const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
         mode: 'production',
         entry: appEntryFiles,
         output: {
-            filename: `${themeNameClean}.bundle.min.js`,
+            filename: `${themeNameClean}.[contenthash].bundle.min.js`,
             path: themeSpecificDistPath,
             publicPath: themeSpecificPublicPath,
             clean: false,
@@ -262,12 +262,12 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
             plugins: [
                 new RemoveEmptyScriptsPlugin(),
                 new MiniCssExtractPlugin({
-                    filename: '[name].bundle.min.css', // Wird zu z.B. _vendors.bundle.min.css
+                    filename: '[name].[contenthash].bundle.min.css', // Wird zu z.B. _vendors.contenthash.bundle.min.css
                 }),
                 new WebpackManifestPlugin({
                     fileName: path.join(themeManifestDir, `${entryName}-css.manifest.json`), // separates Manifest pro Bundle
                     publicPath: themePublicPath,
-                    filter: (file) => !file.name.endsWith('.js') && file.name.startsWith(entryName) && file.name.endsWith('.css'),
+                    filter: (file) => file.chunk?.name === entryName && file.name.endsWith('.css'),
                     map: (file) => ({
                         name: file.name,
                         path: file.path,

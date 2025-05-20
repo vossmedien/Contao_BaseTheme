@@ -1,6 +1,5 @@
 <div class="layout_full block<?= $this->class ?>">
 
-
     <div class="content--element head-hero ce_rsce_head_hero container-wide">
         <div class="ce--inner">
             <div class="breadcrumb-container mb-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
