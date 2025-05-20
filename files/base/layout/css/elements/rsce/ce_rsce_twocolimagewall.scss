@@ -7,297 +7,299 @@
 //   --container-edge-gap: calc((100vw - min(100vw, var(--container-max-width))) / 2);
 // }
 
-  .ce_rsce_twocolimagewall {
-    position: relative;
+.ce_rsce_twocolimagewall {
+  position: relative;
 
 
-    .darkened-content {
-      position: absolute;
-      opacity: 0;
-      top: 0;
-      bottom: 0;
-      background-color: rgba(0,0,0, 0.3);
-      z-index: 1;
-      pointer-events: none;
-      transition: opacity 0.3s ease-in-out;
-      left: 0;
-      width: 100%;
-    }
+  .darkened-content {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+    left: 0;
+    width: 100%;
+  }
 
-    .image--col .image-col--inner{
+  .image--col .image-col--inner {
 
-      &:not(.is-row-bg){
-         position: relative;
-      }
-
-      figure, picture, iframe {
-        height: 100%;
-        display: block;
-      }
-
-
-      figure img, video, iframe {
-        object-fit: cover;
-        height: 100%;
-
-        @include media-breakpoint-up(lg) {
-          position: absolute;
-          width: 100%;
-          max-width: none;
-          left: 0;
-          top: 0;
-          transition: transform .3s ease-in-out;
-
-          &:hover {
-            transform: scale(1.035);
-          }
-        }
-      }
-    }
-
-    .flex-row-reverse {
-      .image--col {
-        figure img, video, iframe {
-          @include media-breakpoint-up(lg) {
-            left: auto;
-            right: 0;
-          }
-        }
-      }
-    }
-
-
-
-    &.container {
-      .ce--imagetextwall:not(:has(.flex-row-reverse)) .content--col .content--inner {
-        padding-left: 0;
-      }
-    }
-
-    .content--inner {
-      padding-top: var(--main-gap);
-      padding-bottom: var(--main-gap);
-      padding-inline: var(--bs-container-gutter);
+    &:not(.is-row-bg) {
       position: relative;
+    }
+
+    figure, picture, iframe {
+      height: 100%;
+      display: block;
+    }
+
+
+    figure img, video, iframe {
+      object-fit: cover;
+      height: 100%;
 
       @include media-breakpoint-up(lg) {
-         padding-inline: var(--main-gap);
-      }
-
-       @include media-breakpoint-up(xxl) {
-
-       }
-
-    }
-
-    .content--col {
-      z-index: 1;
-      @include media-breakpoint-down(lg) {
-        order: 2;
-        //min-height: 300px;
-      }
-      &.content--col, &.image--col {
-        position: relative;
-      }
-    }
-
-    .image--col .image-col--inner {
-      animation-delay: 200ms !important;
-
-      @include media-breakpoint-down(lg) {
-        order: 1;
-        //min-height: 300px;
-      }
-    }
-
-    .ce--imagetextwall {
-      position: relative;
-    }
-
-    .ce--imagetextwall--outer {
-      position: relative;
-
-      &.with-spacing {
-        margin-bottom: calc(var(--main-gap) / 2);
-      }
-    }
-
-    .boxed-headline {
-      text-align: center;
-
-      @include media-breakpoint-up(lg) {
-        white-space: nowrap;
-        margin-top: 0rem;
         position: absolute;
-        transform: translate(-50%, -50%);
-        z-index: 15;
-        top: 0;
+        width: 100%;
+        max-width: none;
         left: 0;
-      }
+        top: 0;
+        transition: transform .3s ease-in-out;
 
-      .headline--wrapper {
-        padding: 1.25rem 2rem;
-        background-color: $body-bg;
-        box-shadow: $box-shadow;
-      }
-    }
-
-    .image-col--inner {
-      height: 100%;
-      width: 100%;
-          overflow: hidden;
-
-      img,  video, .swiper, iframe {
-        display: block;
-        max-width: 100%; // Prevent image from overflowing column by default
-        height: auto;
-        object-fit: contain; // Default to contain, cover only if needed and set by JS/other classes
-        transition: width 0.3s ease-in-out;
-      }
-
-      // Specific styles when image IS a background (as-bg)
-      &.as-bg {
-        // Image should cover the area
-        img,  video, .swiper, iframe {
-          height: 100%; // Take full height
-          object-fit: cover;
+        &:hover {
+          transform: scale(1.035);
         }
-      }
-
-      // Styles when image is NOT a background (placed normally within the column)
-      &.not-as-bg {
-        // Override potential height settings from as-bg or general styles
-        height: auto !important;
-        line-height: 1.5; // Reset line height for potential text content
-
-        // Image/video behaves like a normal block element
-        img,  video, .swiper, iframe {
-          max-width: 100%;
-          height: auto !important;
-          object-fit: contain !important; // Ensure it fits, doesn't cover
-          position: static !important; // Ensure no absolute positioning is applied
-
-        }
-      }
-
-
-      &.no-stretch {
-        img,  video, .swiper, iframe {
-          width: auto;
-          object-fit: contain; // If no-stretch means contain within column
-        }
-      }
-    }
-
-    .kachel-column-width--indicator {
-      height: 100%;
-      width: 100%;
-      position: absolute;
-      top: 0;
-      left: 0; // Default left alignment
-      //line-height: 1.25;
-      z-index: 5; // Kachel should be above the background image
-
-      .image--col & {
-        position: absolute;
-      }
-
-      // Adjust Kachel position based on column order
-      .ce--imagetextwall:has(.flex-row-reverse) .image--col & {
-        left: auto;
-        right: 0; // Align Kachel to the right if image is on the left
-      }
-
-      .column-kachel--wrapper {
-        transition: all 0.5s ease;
-        position: absolute;
-        z-index: 5; // Keep above background
-   width: rfs-value(200px);
-          height: rfs-value(200px);
-          position: absolute;
-        @include media-breakpoint-up(lg) {
-
-        }
-
-        .column--kachel {
-          height: 100%;
-          width: 100%;
-          display: flex;
-          flex-flow: column wrap;
-          padding: 1.5rem;
-          transition: all 0.5s ease;
-          overflow: hidden;
-          position: relative; // Context for link overlay
-
-          > a {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            cursor: pointer;
-          }
-
-          .column-kachel--inner {
-            transition: all 0.5s ease;
-            position: relative; // Ensure content is above link overlay
-            z-index: 2;
-
-            @include media-breakpoint-up(lg) {
-              max-width: rfs-value(600px);
-            }
-
-            > span {
-              display: block;
-              @include font-size(22px);
-            }
-
-
-
-            .kachel-hover--content {
-              transition: all 0.5s ease;
-
-                opacity: 0;
-                height: 0px;
-                overflow: hidden;
-
-
-              .kachel--long-text {
-                margin-top: 0.5rem;
-                margin-bottom: 2rem;
-              }
-
-              .kachel--more-button {
-                position: relative;
-                z-index: 5; // Ensure button is clickable
-                margin-top: 2rem;
-              }
-            }
-          }
-        }
-      }
-
-      &.expandable .column-kachel--wrapper:hover {
-          width: 100%;
-          height: 100%;
-
-          .column--kachel {
-            width: 100%;
-            height: 100%;
-
-            .column-kachel--inner {
-              text-align: left !important;
-              padding: 2.5rem;
-
-              .kachel-hover--content {
-                opacity: 1;
-                height: auto;
-                overflow: visible;
-              }
-            }
-          }
-
       }
     }
   }
+
+  .flex-row-reverse {
+    @include media-breakpoint-up(lg) {
+      .content--inner{
+        padding-left: var(--main-gap);
+      }
+    }
+
+    .image--col {
+      figure img, video, iframe {
+        @include media-breakpoint-up(lg) {
+          left: auto;
+          right: 0;
+        }
+      }
+    }
+  }
+
+
+  &.container {
+    .ce--imagetextwall:not(:has(.flex-row-reverse)) .content--col .content--inner {
+      padding-left: 0;
+    }
+  }
+
+  .content--inner {
+    padding-top: var(--main-gap);
+    padding-bottom: var(--main-gap);
+    padding-inline: var(--bs-container-gutter);
+    position: relative;
+
+
+    @include media-breakpoint-up(xxl) {
+
+    }
+
+  }
+
+  .content--col {
+    z-index: 1;
+    @include media-breakpoint-down(lg) {
+      order: 2;
+      //min-height: 300px;
+    }
+
+    &.content--col, &.image--col {
+      position: relative;
+    }
+  }
+
+  .image--col .image-col--inner {
+    animation-delay: 200ms !important;
+
+    @include media-breakpoint-down(lg) {
+      order: 1;
+      //min-height: 300px;
+    }
+  }
+
+  .ce--imagetextwall {
+    position: relative;
+  }
+
+  .ce--imagetextwall--outer {
+    position: relative;
+
+    &.with-spacing {
+      margin-bottom: calc(var(--main-gap) / 2);
+    }
+  }
+
+  .boxed-headline {
+    text-align: center;
+
+    @include media-breakpoint-up(lg) {
+      white-space: nowrap;
+      margin-top: 0rem;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      z-index: 15;
+      top: 0;
+      left: 0;
+    }
+
+    .headline--wrapper {
+      padding: 1.25rem 2rem;
+      background-color: $body-bg;
+      box-shadow: $box-shadow;
+    }
+  }
+
+  .image-col--inner {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    img, video, .swiper, iframe {
+      display: block;
+      max-width: 100%; // Prevent image from overflowing column by default
+      height: auto;
+      object-fit: contain; // Default to contain, cover only if needed and set by JS/other classes
+      transition: width 0.3s ease-in-out;
+    }
+
+    // Specific styles when image IS a background (as-bg)
+    &.as-bg {
+      // Image should cover the area
+      img, video, .swiper, iframe {
+        height: 100%; // Take full height
+        object-fit: cover;
+      }
+    }
+
+    // Styles when image is NOT a background (placed normally within the column)
+    &.not-as-bg {
+      // Override potential height settings from as-bg or general styles
+      height: auto !important;
+      line-height: 1.5; // Reset line height for potential text content
+
+      // Image/video behaves like a normal block element
+      img, video, .swiper, iframe {
+        max-width: 100%;
+        height: auto !important;
+        object-fit: contain !important; // Ensure it fits, doesn't cover
+        position: static !important; // Ensure no absolute positioning is applied
+
+      }
+    }
+
+
+    &.no-stretch {
+      img, video, .swiper, iframe {
+        width: auto;
+        object-fit: contain; // If no-stretch means contain within column
+      }
+    }
+  }
+
+  .kachel-column-width--indicator {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0; // Default left alignment
+    //line-height: 1.25;
+    z-index: 5; // Kachel should be above the background image
+
+    .image--col & {
+      position: absolute;
+    }
+
+    // Adjust Kachel position based on column order
+    .ce--imagetextwall:has(.flex-row-reverse) .image--col & {
+      left: auto;
+      right: 0; // Align Kachel to the right if image is on the left
+    }
+
+    .column-kachel--wrapper {
+      transition: all 0.5s ease;
+      position: absolute;
+      z-index: 5; // Keep above background
+      width: rfs-value(200px);
+      height: rfs-value(200px);
+      position: absolute;
+      @include media-breakpoint-up(lg) {
+
+      }
+
+      .column--kachel {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-flow: column wrap;
+        padding: 1.5rem;
+        transition: all 0.5s ease;
+        overflow: hidden;
+        position: relative; // Context for link overlay
+
+        > a {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 1;
+          cursor: pointer;
+        }
+
+        .column-kachel--inner {
+          transition: all 0.5s ease;
+          position: relative; // Ensure content is above link overlay
+          z-index: 2;
+
+          @include media-breakpoint-up(lg) {
+            max-width: rfs-value(600px);
+          }
+
+          > span {
+            display: block;
+            @include font-size(22px);
+          }
+
+
+          .kachel-hover--content {
+            transition: all 0.5s ease;
+
+            opacity: 0;
+            height: 0px;
+            overflow: hidden;
+
+
+            .kachel--long-text {
+              margin-top: 0.5rem;
+              margin-bottom: 2rem;
+            }
+
+            .kachel--more-button {
+              position: relative;
+              z-index: 5; // Ensure button is clickable
+              margin-top: 2rem;
+            }
+          }
+        }
+      }
+    }
+
+    &.expandable .column-kachel--wrapper:hover {
+      width: 100%;
+      height: 100%;
+
+      .column--kachel {
+        width: 100%;
+        height: 100%;
+
+        .column-kachel--inner {
+          text-align: left !important;
+          padding: 2.5rem;
+
+          .kachel-hover--content {
+            opacity: 1;
+            height: auto;
+            overflow: visible;
+          }
+        }
+      }
+
+    }
+  }
+}

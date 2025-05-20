@@ -481,9 +481,6 @@ return array(
             'maxItems' => 20,
             'eval' => array('tl_class' => ' clr'),
             'fields' => ButtonHelper::getButtonConfig(),
-            'dependsOn' => array(
-                'field' => 'two_columns',
-            ),
         ),
 
         'button_group_text_alignment' => array(

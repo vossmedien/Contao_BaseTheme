@@ -86,7 +86,8 @@
             }
         ';
 
-        // Individuelle Spaltenbreiten mit präziserer Berechnung
+        // Individuelle Spaltenbreiten mit präziserer Berechnung -> Diese Logik wird entfernt und durch flex-grow ersetzt.
+        /*
         if ($this->selecttype == "single" && $this->custom_column_widths) {
             foreach ($this->gallery as $x => $e) {
                 if (!empty($e->column_width)) {
@@ -110,6 +111,17 @@
                 }
             }
         }
+        */
+
+        // Neue Regel für custom-widths: Setzt flex-basis auf 0, damit flex-grow die Größe bestimmt.
+        if ($this->selecttype == "single" && $this->custom_column_widths) {
+            $customCSS .= '
+            #gallery-'.$this->id.'.custom-widths > .gallery-item {
+                flex-basis: 0 !important; /* Erlaubt flex-grow, die Größe proportional zu steuern */
+                /* Die Standard `width` Kalkulationen von oben (Zeile 49-67) dienen als Fallback oder für Browser, die flex-basis nicht ideal unterstützen,
+                   aber flex-basis: 0 sollte Vorrang haben für die proportionale Größenverteilung. */
+            }';
+        }
 
         // Mindesthöhe setzen, falls angegeben
         if ($minHeight) {
@@ -124,25 +136,12 @@
             foreach ($this->gallery as $x => $e) {
                 if ($e->show_effect) {
                     $customCSS .= '
-                    .gallery-column-'.$this->id.'-'.$x.':hover .gallery-column--hover-content {
+                    /* Korrigierter Selektor für Animationen */
+                    #gallery-'.$this->id.' > .gallery-item-'.$this->id.'-'.$x.'.has-hovercontent:hover .gallery-column--hover-content {
                         animation-name: '.$e->show_effect.';
+                        animation-duration: 0.5s; /* Beibehaltung der expliziten Dauer */
+                        animation-fill-mode: both; /* Beibehaltung für korrekte Darstellung */
                     }';
-
-                    $reverseEffect = $e->show_effect;
-                    if (strpos($reverseEffect, 'Down') !== false || strpos($reverseEffect, 'Up') !== false ||
-                        strpos($reverseEffect, 'Left') !== false || strpos($reverseEffect, 'Right') !== false ||
-                        strpos($reverseEffect, 'In') !== false) {
-                        $reverseEffect = str_replace('Down', 'Up', $reverseEffect);
-                        $reverseEffect = str_replace('Up', 'Down', $reverseEffect);
-                        $reverseEffect = str_replace('Left', 'Right', $reverseEffect);
-                        $reverseEffect = str_replace('Right', 'Left', $reverseEffect);
-                        $reverseEffect = str_replace('In', 'Out', $reverseEffect);
-
-                        $customCSS .= '
-                        .gallery-column-'.$this->id.'-'.$x.' .gallery-column--hover-content {
-                            animation-name: '.$reverseEffect.';
-                        }';
-                    }
                 }
             }
         }
@@ -153,18 +152,31 @@
 
         <?php if (($this->selecttype == "single" && $this->gallery) || ($this->selecttype == "multiple" && count($dataSorted) > 0)): ?>
             <div class="ce--fullwidthgallery" data-animation="<?= $this->animation_type; ?>">
-                <div class="justify-content-center gallery-container" id="gallery-<?= $this->id; ?>">
+                <div class="justify-content-center gallery-container <?php if ($this->selecttype == "single" && $this->custom_column_widths): ?>custom-widths<?php endif; ?>" id="gallery-<?= $this->id; ?>">
 
                     <?php if ($this->selecttype == "single" && $this->gallery): ?>
                         <?php foreach ($this->gallery as $x => $e): ?>
                             <?php
                             $itemClass = 'gallery-item gallery-item-'.$this->id.'-'.$x;
-                            if ($e->show_contents) {
+                            if ($e->show_contents && ($e->desc || $e->hover_topline || $e->hover_headline || $e->hover_subline || ($e->box_link_type == '2' && $e->buttons))) {
                                 $itemClass .= ' has-hovercontent';
+                            }
+
+                            $itemSpecificStyles = [];
+                            if ($this->selecttype == "single" && $this->custom_column_widths) {
+                                $flexGrowValue = 1; // Standard-Gewicht
+                                if ($e->column_width !== '' && is_numeric($e->column_width)) {
+                                    $parsedValue = intval($e->column_width);
+                                    if ($parsedValue > 0) {
+                                        $flexGrowValue = $parsedValue;
+                                    }
+                                }
+                                $itemSpecificStyles[] = 'flex-grow: ' . $flexGrowValue;
+                                // flex-basis wird durch CSS-Regel für .custom-widths > .gallery-item gesetzt
                             }
                             ?>
 
-                            <div class="<?= $itemClass; ?>" data-animation="<?php if ($e->animation_type) : ?><?php echo $e->animation_type; ?><?php endif; ?>">
+                            <div class="<?= $itemClass; ?>" <?php if (!empty($itemSpecificStyles)): ?>style="<?= implode(';', $itemSpecificStyles); ?>"<?php endif; ?> data-animation="<?php if ($e->animation_type) : ?><?php echo $e->animation_type; ?><?php endif; ?>">
                                 <div class="gallery-column gallery-column-<?= $this->id; ?>-<?= $x; ?>">
                                     <div class="gallery-column--inner">
                                         <div class="column--image-holder">
@@ -195,7 +207,7 @@
                                             </div>
                                         <?php endif; ?>
 
-                                        <?php if ($e->desc || $e->hover_topline || $e->hover_headline || $e->hover_subline || ($e->box_link_type == '2' && $e->buttons)): ?>
+                                        <?php if ($e->show_contents && ($e->desc || $e->hover_topline || $e->hover_headline || $e->hover_subline || ($e->box_link_type == '2' && $e->buttons))): ?>
                                             <?php if ($this->show_icon): ?>
                                                 <div class="hover-content--info-icon">
                                                     <i class="fa-sharp fa-light fa-info"></i>

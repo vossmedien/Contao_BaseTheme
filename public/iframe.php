@@ -17,7 +17,6 @@
             min-height: 100%;
             min-width: 100%;
             background-color: #eee;
-            border: 5px solid red;
             display: flex;
             flex-flow: row wrap;
             justify-content: space-around;

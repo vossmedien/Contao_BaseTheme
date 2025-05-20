@@ -116,7 +116,7 @@ return [
                 'link' => [
                     'label' => ['Verlinkung', 'Interne Seite auswählen'],
                     'inputType' => 'pageTree',
-                    'eval' => ['mandatory' => true, 'fieldType' => 'radio', 'tl_class' => 'w50'],
+                    'eval' => ['fieldType' => 'radio', 'tl_class' => 'w50'],
                 ],
             ],
         ],
@@ -152,6 +152,11 @@ return [
             'label' => ['Untere Subline', ''],
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50', 'allowHtml' => true],
+        ],
+        'mobile_bottom_headline_on_top' => [
+            'label' => ['Auf Mobile: Untere Headline direkt unter oberer Headline', 'Zeigt die untere Headline auf Mobilgeräten direkt unter der oberen Headline (linke Spalte) an.'],
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50 clr m12'],
         ],
         'animation_type_bottom_headline' => [
             'label' => ['Animation: Untere Headline', ''],
@@ -244,7 +249,7 @@ return [
                 'link' => [
                     'label' => ['Verlinkung', 'Interne Seite auswählen'],
                     'inputType' => 'pageTree',
-                    'eval' => ['mandatory' => true, 'fieldType' => 'radio', 'tl_class' => 'w50'],
+                    'eval' => ['fieldType' => 'radio', 'tl_class' => 'w50'],
                 ],
                 'column_class' => [
                     'label' => ['Breite der Box/Gruppe (Bootstrap Grid)', 'Wählen Sie die Spaltenbreite für diese Box oder Gruppe.'],
@@ -293,4 +298,4 @@ return [
             'eval' => ['tl_class' => 'w50']
         ],
     ],
-]; 
+];

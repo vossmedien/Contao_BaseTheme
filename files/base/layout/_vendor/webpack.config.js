@@ -7,6 +7,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 
 // __dirname ist jetzt /Users/christian.voss/PhpstormProjects/Caeli-Relaunch/files/base/layout/_vendor
 
@@ -124,7 +125,7 @@ const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
             filename: `${themeNameClean}.[contenthash].bundle.min.js`,
             path: themeSpecificDistPath,
             publicPath: themeSpecificPublicPath,
-            clean: false,
+            clean: true,
         },
         module: {
             rules: [
@@ -245,7 +246,7 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
                 path: themeCssDistDir,
                 publicPath: themePublicPath,
                 assetModuleFilename: 'fonts/[name].[hash][ext][query]', // Name der Fontdatei beibehalten
-                clean: false, // Wichtig, da wir mehrere Bundles in denselben Ordner schreiben könnten
+                clean: true, // Alte Dateien im themeCssDistDir vor dem Schreiben neuer Dateien entfernen
             },
             module: {
                 rules: [
@@ -275,6 +276,13 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
                         isChunk: file.isChunk,
                         entryPoint: file.chunk?.name
                     })
+                }),
+                new WebpackShellPluginNext({
+                    onBuildEnd: {
+                        scripts: [`sleep 0.5 && touch "${path.join(themeCssDistDir, '[name].[contenthash].bundle.min.css').replace('[name]', entryName).replace('[contenthash]', '*')}"`], // Wildcard für contenthash
+                        blocking: false,
+                        parallel: true
+                    }
                 })
             ],
             optimization: {
@@ -303,6 +311,7 @@ console.log('Gefundene RSCE SCSS-Dateien:', rsceScssFiles.map(f => path.relative
 const rsceWebpackConfigs = rsceScssFiles.map(scssFile => {
     const fileNameWithoutExt = path.basename(scssFile, '.scss'); // z.B. ce_rsce_videogrid
     const outputDir = path.dirname(scssFile); // Das Verzeichnis der Quelldatei, z.B. .../rsce/
+    const outputCssFilePath = path.join(outputDir, `${fileNameWithoutExt}.min.css`);
 
     return {
         name: `rsce-${fileNameWithoutExt}-css`, // Eindeutiger Name, z.B. rsce-ce_rsce_videogrid-css
@@ -332,6 +341,13 @@ const rsceWebpackConfigs = rsceScssFiles.map(scssFile => {
             new MiniCssExtractPlugin({
                 filename: '[name].min.css', // Erzeugt z.B. ce_rsce_videogrid.min.css
             }),
+            new WebpackShellPluginNext({
+                onBuildEnd: {
+                    scripts: [`sleep 0.5 && touch "${outputCssFilePath}"`],
+                    blocking: false,
+                    parallel: true
+                }
+            })
         ],
         optimization: {
             minimize: true,

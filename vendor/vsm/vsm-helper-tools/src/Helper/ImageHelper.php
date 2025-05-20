@@ -804,7 +804,12 @@ class ImageHelper
         } elseif ($finalCaption) {
            //$finalOutput .= '<figcaption>' . $finalCaption . '</figcaption>';
         }
-        $finalOutput .= '<figcaption>' . $finalCaption . '</figcaption>';
+
+        if ($finalCaption) {
+            $finalOutput .= '<figcaption>' . $finalCaption . '</figcaption>';
+        }
+
+
 
         $finalOutput .= '</figure>';
 

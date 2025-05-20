@@ -152,7 +152,7 @@ $this->bodyAttributes = $this
 
 </head>
 <body<?= $this->bodyAttributes ?>>
-<div class="BodyScrollToTop"><i class="fasl fa-arrow-up "></i></div>
+<div class="BodyScrollToTop"></div>
 <?php $this->block('body'); ?>
 <?php $this->sections('top'); ?>
 

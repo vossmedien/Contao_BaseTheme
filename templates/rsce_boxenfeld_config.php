@@ -229,7 +229,7 @@ return array(
                     'label' => array('Buttons', ''),
                     'elementLabel' => '%s. Button',
                     'inputType' => 'list',
-                    'minItems' => 1,
+                    'minItems' => 0,
                     'maxItems' => 20,
                     'eval' => array('tl_class' => 'clr'),
                     'fields' => ButtonHelper::getButtonConfig(),

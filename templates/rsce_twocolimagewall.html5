@@ -176,8 +176,11 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                         if ($row->reverse) $rowDivClasses[] = 'flex-row-reverse';
                         // Add alignment class only when image is NOT background
                         if ($row->not_as_bg) $rowDivClasses[] = 'align-items-center';
+
+                        // Set min-height style, defaulting to 500px if not specified
+                        $minHeightStyle = 'min-height: ' . ($row->min_height ?: '500px') . ';';
                         ?>
-                        <div style="<?php if ($row->min_height): ?>min-height: <?= $row->min_height; ?>;<?php endif; ?>" class="<?= implode(' ', $rowDivClasses); ?>">
+                        <div style="<?= $minHeightStyle ?>" class="<?= implode(' ', $rowDivClasses); ?>">
                             <div style="<?php if ($row->alternate_background): ?>background-color: <?= $row->alternate_background; ?>;<?php endif; ?>" class="content--col align-self-center col-12 <?php echo $row->column_width; ?> <?php if ($row->darken_content) : ?>darkened-content<?php endif; ?>">
                                 <?php if ($row->boxed_headline && $row->reverse) : ?>
                                     <div class="boxed-headline">

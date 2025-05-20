@@ -307,8 +307,8 @@ ul[class*="list-"][class*="text-"] {
 }
 
 
-
-a:has(figure) {
+main{
+  a:has(figure) {
   display: block;
   height: inherit;
   color: currentColor;
@@ -325,6 +325,8 @@ a:has(figure) {
   picture {
     display: block;
   }
+}
+
 }
 
 
