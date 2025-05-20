@@ -126,156 +126,138 @@ form {
       padding-left: calc(var(--bs-gutter-x) * .5);
 
 
-
       &:not([class*="col"]) {
         flex-shrink: 0;
         width: 100%;
       }
     }
   }
+}
 
-  textarea.form-control {
-    min-height: 140px !important;
+
+textarea.form-control {
+  min-height: 140px !important;
+}
+
+.widget:not(.form-floating) {
+  transition: opacity 0.15s ease-in-out;
+
+  > label:first-child {
+    padding: 2px 0.75rem 2px 0.75rem;
+    border-radius: var(--bs-input-border-radius) var(--bs-input-border-radius) 0px 0px;
+    background-color: var(--bs-primary);
+    color: var(--bs-body-color-inverse);
+    margin-bottom: 0px;
+    @include font-size(14px);
+
+    & + * {
+      border-radius: 0px var(--bs-input-border-radius) var(--bs-input-border-radius) var(--bs-input-border-radius);
+    }
   }
 
-  .widget:not(.form-floating) {
-    ::placeholder {
-      color: rgba(var(--bs-placeholder-color)) !important;
-      opacity: 1; /* Firefox */
+  label + input:not(.form-control) {
+    border-top-left-radius: 0px !important;
+  }
+
+  .form-control {
+    padding: var(--bs-input-padding-y) var(--bs-input-padding-x);
+    border-radius: var(--bs-input-border-radius);
+    border: var(--bs-input-border);
+    color: var(--bs-input-color);
+
+    &[type="file"] {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      line-height: rfs-value(50px);
+    }
+  }
+
+
+  &.error {
+    color: $danger;
+
+    > input,
+    > textarea {
+      border-bottom-right-radius: 0px;
+      border-bottom-left-radius: 0px;
     }
 
-    :-ms-input-placeholder {
-      /* Internet Explorer 10-11 */
-      color: rgba(var(--bs-placeholder-color)) !important;
+    label {
+      color: $danger;
+    }
+  }
+
+  &.widget-checkbox,
+  &.widget-radio {
+    p.error {
+      padding-left: rfs-value(30px);
+      background-color: transparent;
+      color: $danger;
+      font-weight: $font-weight-bold;
+    }
+  }
+
+
+  &.widget-select {
+    position: relative;
+
+
+    select {
+      padding: var(--bs-input-padding-y) var(--bs-input-padding-x);
     }
 
-    ::-ms-input-placeholder {
-      /* Microsoft Edge */
-      color: rgba(var(--bs-placeholder-color)) !important;
-    }
+    label + .select-wrapper {
+      &:after {
+        margin-top: 11px; //@INFO Label-height / 2
+      }
 
-
-    transition: opacity 0.15s ease-in-out;
-
-    > label:first-child {
-      padding: 2px 0.75rem 2px 0.75rem;
-      border-radius: var(--bs-input-border-radius) var(--bs-input-border-radius) 0px 0px;
-      background-color: var(--bs-primary);
-      color: var(--bs-body-color-inverse);
-      margin-bottom: 0px;
-      @include font-size(14px);
-
-      & + * {
+      > select {
         border-radius: 0px var(--bs-input-border-radius) var(--bs-input-border-radius) var(--bs-input-border-radius);
       }
     }
-
-    label + input:not(.form-control) {
-      border-top-left-radius: 0px !important;
-    }
-
-    .form-control {
-      padding: var(--bs-input-padding-y) var(--bs-input-padding-x);
-      border-radius: var(--bs-input-border-radius);
-      border: var(--bs-input-border);
-      color: var(--bs-input-color);
-
-      &[type="file"] {
-        padding-top: 0px;
-        padding-bottom: 0px;
-        line-height: rfs-value(50px);
-      }
-    }
-
-
-    &.error {
-      color: $danger;
-
-      > input,
-      > textarea {
-        border-bottom-right-radius: 0px;
-        border-bottom-left-radius: 0px;
-      }
-
-      label {
-        color: $danger;
-      }
-    }
-
-    &.widget-checkbox,
-    &.widget-radio {
-      p.error {
-        padding-left: rfs-value(30px);
-        background-color: transparent;
-        color: $danger;
-        font-weight: $font-weight-bold;
-      }
-    }
-
-
-    &.widget-select {
-      position: relative;
-
-
-      select {
-        padding: var(--bs-input-padding-y) var(--bs-input-padding-x);
-      }
-
-      label + .select-wrapper {
-        &:after {
-          margin-top: 11px; //@INFO Label-height / 2
-        }
-
-        > select {
-          border-radius: 0px var(--bs-input-border-radius) var(--bs-input-border-radius) var(--bs-input-border-radius);
-        }
-      }
-    }
-
-    &.widget-submit {
-      //text-align: center;
-      margin-top: 1rem;
-
-      button:not(.btn) {
-        //@extend .btn, .btn-primary;
-      }
-
-      button {
-        //@extend .btn-lg;
-      }
-    }
   }
 
+  &.widget-submit {
+    //text-align: center;
+    margin-top: 1rem;
 
-  .form-check-input {
-    margin-top: .125em;
+    button:not(.btn) {
+      //@extend .btn, .btn-primary;
+    }
 
-    &:checked, &:focus, &:focus-visible {
-      background-color: var(--bs-primary);
-      border-color: var(--bs-primary);
-      box-shadow: 0 0 0 .25rem rgba(var(--bs-primary-rgb), .25);
+    button {
+      //@extend .btn-lg;
     }
   }
+}
 
-  .form-label {
-    margin-bottom: .25rem;
+.form-check-input {
+  margin-top: .125em;
+
+  &:checked, &:focus, &:focus-visible {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 .25rem rgba(var(--bs-primary-rgb), .25);
   }
+}
 
+.form-label {
+  margin-bottom: .25rem;
+}
 
-  .captcha_text {
-    margin-bottom: 5px;
-    display: block;
-    --bs-alert-margin-top: .5rem !important;
-  }
+.captcha_text {
+  margin-bottom: 5px;
+  display: block;
+  --bs-alert-margin-top: .5rem !important;
+}
 
-  p.error {
-    border-radius: 0px 0px var(--bs-input-border-radius) var(--bs-input-border-radius);
-    margin-bottom: 0px;
-    @include padding(5px 0.75rem);
-    @include font-size(14px);
-    color: var(--bs-body-color-inverse);
-    background-color: $danger;
-  }
+p.error {
+  border-radius: 0px 0px var(--bs-input-border-radius) var(--bs-input-border-radius);
+  margin-bottom: 0px;
+  @include padding(5px 0.75rem);
+  @include font-size(14px);
+  color: var(--bs-body-color-inverse);
+  background-color: $danger;
 }
 
 
@@ -291,10 +273,11 @@ form {
 
 .widget:not(.widget-upload):not(.widget-radio):not(.widget-checkbox):not(.widget-captcha) {
   &:not(.form-floating) {
-    input,textarea{
+    input, textarea {
       border-top-left-radius: var(--bs-input-border-radius) !important;
-      border-top-right-radius: var(--bs-input-border-radius)  !important;
+      border-top-right-radius: var(--bs-input-border-radius) !important;
     }
+
     label {
       display: none;
     }

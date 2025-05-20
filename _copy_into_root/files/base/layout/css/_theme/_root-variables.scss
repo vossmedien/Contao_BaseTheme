@@ -1,9 +1,4 @@
-@import "../../_vendor/node_modules/bootstrap/scss/functions";
-@import "../../_vendor/node_modules/bootstrap/scss/variables";
-@import "../../_vendor/node_modules/bootstrap/scss/mixins";
-
-@import "variables";
-@import "map-overwrites";
+@import "functions";
 
 
 :root {
@@ -69,7 +64,6 @@
   --bs-input-padding-x: 0.75rem;
   --bs-input-padding-y: 1rem;
   --bs-input-color: var(--bs-body-color);
-  --bs-placeholder-color: var(--bs-body-color-rgb), 0.4;
   --bs-input-height: 58px;
 
 
