@@ -171,7 +171,7 @@ i:has( + a:hover) {
 
     &:before {
       @extend %fa-icon;
-      @extend #{$icon-type} !optional;
+      font: var(--fa-font-sharp-solid);
       content: "\f00c";
       position: absolute;
       padding-right: rfs-value(10px);
@@ -203,7 +203,7 @@ i:has( + a:hover) {
 
     &:before {
       @extend %fa-icon;
-      @extend #{$icon-type} !optional;
+      font: var(--fa-font-sharp-solid);
       content: "\f019";
       position: absolute;
       padding-right: rfs-value(10px);
@@ -241,7 +241,7 @@ i:has( + a:hover) {
 
     &:before {
       @extend %fa-icon;
-      @extend #{$icon-type} !optional;
+      font: var(--fa-font-sharp-solid);
       content: "\f111";
       position: absolute;
       padding-right: rfs-value(10px);

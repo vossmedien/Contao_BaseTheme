@@ -35,7 +35,8 @@
 
           &:before {
             @extend %fa-icon;
-            @extend #{$icon-type} !optional;
+            //@extend #{$icon-type} !optional;
+            font: var(--fa-font-sharp-solid);
             content: "\f019";
             padding-right: rfs-value(5px);
 

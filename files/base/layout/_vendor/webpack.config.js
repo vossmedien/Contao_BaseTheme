@@ -221,6 +221,7 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
     ];
 
     let themeAliases = {};
+    let isFirstEntryForThisTheme = true; // Flag, um clean:true nur einmal pro Theme anzuwenden
 
     return scssFilesToBundle.map(scssFileName => {
         const scssFilePath = path.join(themeCssDir, scssFileName);
@@ -230,6 +231,10 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
         }
 
         const entryName = scssFileName.replace('.scss', ''); // z.B. _vendors, _base
+        const currentCleanValue = isFirstEntryForThisTheme;
+        if (isFirstEntryForThisTheme) {
+            isFirstEntryForThisTheme = false; // Für nachfolgende Einträge dieses Themes clean:false setzen
+        }
 
         console.log(`CSS-Konfig für Theme "${themeNameRaw}", Datei "${scssFileName}":`);
         console.log(`   SCSS-Datei: ${path.relative(projectRoot, scssFilePath)}`);
@@ -247,7 +252,7 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
                 path: themeCssDistDir,
                 publicPath: themePublicPath,
                 assetModuleFilename: 'fonts/[name].[hash][ext][query]', // Name der Fontdatei beibehalten
-                clean: true, // Alte Dateien im themeCssDistDir vor dem Schreiben neuer Dateien entfernen
+                clean: currentCleanValue, // Alte Dateien im themeCssDistDir nur beim ersten Eintrag entfernen
             },
             module: {
                 rules: [
@@ -278,6 +283,7 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
                         entryPoint: file.chunk?.name
                     })
                 }),
+                /* // Deaktiviert, um die Erstellung von "*.bundle.min.css"-Dateien zu verhindern
                 new WebpackShellPluginNext({
                     onBuildEnd: {
                         scripts: [`sleep 0.5 && touch "${path.join(themeCssDistDir, '[name].[contenthash].bundle.min.css').replace('[name]', entryName).replace('[contenthash]', '*')}"`], // Wildcard für contenthash
@@ -285,6 +291,7 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
                         parallel: true
                     }
                 })
+                */
             ],
             optimization: {
                 minimize: true,
@@ -414,19 +421,29 @@ if (jsElementWebpackConfigs && jsElementWebpackConfigs.length > 0) {
 if (process.env.FILTER_PATTERN) {
     try {
         const regex = new RegExp(process.env.FILTER_PATTERN);
-        const filteredConfigs = allConfigs.filter(conf => conf.name && regex.test(conf.name));
+        
+        const patternMatchingConfigs = allConfigs.filter(conf => conf.name && regex.test(conf.name));
+        const cssConfigs = allConfigs.filter(conf => conf.name && conf.name.endsWith('-css'));
 
-        if (filteredConfigs.length === 0) {
-            console.warn(`Webpack: Keine Konfigurationen entsprachen dem Filter-Muster: "${process.env.FILTER_PATTERN}". Es wird nichts gebaut.`);
-            module.exports = []; // Leeres Array exportieren, wenn keine Konfigurationen dem Filter entsprechen
+        // Kombiniere patternMatchingConfigs und cssConfigs, vermeide Duplikate basierend auf conf.name
+        const combinedConfigs = [...patternMatchingConfigs];
+        cssConfigs.forEach(cssConf => {
+            if (!combinedConfigs.find(c => c.name === cssConf.name)) {
+                combinedConfigs.push(cssConf);
+            }
+        });
+
+        if (combinedConfigs.length === 0) {
+            console.warn(`Webpack: Keine Konfigurationen entsprachen dem Filter-Muster: "${process.env.FILTER_PATTERN}" und es wurden auch keine (passenden) CSS-Konfigurationen gefunden. Es wird nichts gebaut.`);
+            module.exports = [];
         } else {
-            console.log(`Webpack: ${filteredConfigs.length} von ${allConfigs.length} Konfigurationen entsprechen dem Muster "${process.env.FILTER_PATTERN}".`);
-            filteredConfigs.forEach(conf => console.log(` - Verwendete Konfiguration: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
-            module.exports = filteredConfigs;
+            console.log(`Webpack: ${combinedConfigs.length} von ${allConfigs.length} Konfigurationen werden gebaut. CSS-Konfigurationen werden immer berücksichtigt, zusätzlich zu denen, die dem Muster "${process.env.FILTER_PATTERN}" entsprechen.`);
+            combinedConfigs.forEach(conf => console.log(` - Verwendete Konfiguration: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
+            module.exports = combinedConfigs;
         }
     } catch (e) {
         console.error(`Webpack: Ungültiges Regex-Muster im FILTER_PATTERN: "${process.env.FILTER_PATTERN}". Fehler: ${e.message}`);
-        console.warn(`Webpack: Aufgrund des Fehlers im Regex werden alle ${allConfigs.length} Konfigurationen verwendet.`);
+        console.warn(`Webpack: Aufgrund des Fehlers im Regex werden alle ${allConfigs.length} Konfigurationen verwendet (inklusive aller CSS-Dateien).`);
         allConfigs.forEach(conf => console.log(` - Konfigurationsname: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
         module.exports = allConfigs; // Fallback auf alle Konfigurationen bei Regex-Fehler
     }
@@ -435,7 +452,7 @@ if (process.env.FILTER_PATTERN) {
     module.exports = []; // Leeres Array exportieren, wenn überhaupt keine Konfigurationen vorhanden sind
 } else {
     // Kein Filter, alle exportieren
-    console.log(`Exportiere insgesamt ${allConfigs.length} Webpack-Konfigurationen (FILTER_PATTERN nicht gesetzt).`);
+    console.log(`Exportiere insgesamt ${allConfigs.length} Webpack-Konfigurationen (FILTER_PATTERN nicht gesetzt), inklusive aller CSS-Dateien.`);
     allConfigs.forEach(conf => console.log(` - Konfigurationsname: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
     module.exports = allConfigs;
 }

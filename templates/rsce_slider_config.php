@@ -216,6 +216,12 @@ return array(
             'eval' => array('tl_class' => ' clr'),
         ),
 
+        'continuous_scroll' => array(
+            'label' => array('Endlos sliden ohne Verzögerung (Logoscroller)', 'Aktiviert einen kontinuierlichen, langsamen Bildlauf. Überschreibt einige Autoplay/Loop-Einstellungen.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
+
         'autoplay' => array(
             'label' => array('Autoplay aktivieren', ''),
             'inputType' => 'checkbox',
