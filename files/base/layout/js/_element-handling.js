@@ -59,10 +59,19 @@ modalElements.forEach(function (modalElement) {
   function setupButtons() {
     document.querySelectorAll('.btn-outline-currentColor, .btn-currentColor').forEach(button => {
       const parentInfo = findEffectiveBackground(button);
-      const textColor = getEffectiveColor(button, parentInfo.element);
+      const parentElementWithBackground = parentInfo.element;
 
-      button.style.setProperty('--parent-bg-color', parentInfo.backgroundColor);
-      button.style.setProperty('--btn-context-color', textColor);
+      const containerComputedStyle = window.getComputedStyle(parentElementWithBackground);
+      const containerTextColor = containerComputedStyle.color;
+      const containerBackgroundColor = parentInfo.backgroundColor;
+
+      if (button.classList.contains('btn-currentColor')) {
+        button.style.setProperty('--parent-bg-color', containerBackgroundColor);
+        button.style.setProperty('--btn-context-color', containerTextColor);
+      } else if (button.classList.contains('btn-outline-currentColor')) {
+        button.style.setProperty('--parent-bg-color', containerBackgroundColor);
+        button.style.setProperty('--btn-context-color', containerTextColor);
+      }
     });
   }
 

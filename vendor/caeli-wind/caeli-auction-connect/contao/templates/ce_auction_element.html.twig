@@ -1,8 +1,4 @@
-{# Twig Template für das Auction Element Content Element #}
-{% extends '@Contao/content_element/text.html.twig' %}
-
-{% block text %}
-    {# 1. Variable vorbereiten, die immer eine Liste ist #}
+{# 1. Variable vorbereiten, die immer eine Liste ist #}
     {% set auctions_to_display = [] %}
     {% if auction is defined and auction %}
         {# Wenn nur eine einzelne Auktion übergeben wird (selten im CE, aber möglich) #}
@@ -11,34 +7,37 @@
         {% set auctions_to_display = auctions %}
     {% endif %}
 
-    <div class="auction-element-container container{% if cssID[1] %} {{ cssID[1] }}{% endif %}">
-        {% if headline and headline.headline %}
-            <h{{ headline.level|default('1') }}{% if headline.class %} class="{{ headline.class }}"{% endif %}>{{ headline.headline }}</h{{ headline.level|default('1') }}>
-        {% endif %}
+<div class="auction-element-wrapper{% if class is defined and class %} {{ class }}{% endif %}{% if cssID[1] %} {{ cssID[1] }}{% endif %}">
+    {% if headline and headline.headline %}
+        <h{{ headline.level|default('1') }}{% if headline.class %} class="{{ headline.class }}"{% endif %}>{{ headline.headline }}</h{{ headline.level|default('1') }}>
+    {% endif %}
 
-        {% if auctions_to_display|length > 0 %}
-            <div class="auction-card-grid">
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    {% for auction_data_from_loop in auctions_to_display %}
-                        <div class="col">
-                            {% if auctionItemTemplate is defined and auctionItemTemplate %}
-                                {% include auctionItemTemplate with {
-                                    'auction': auction_data_from_loop,
-                                    'raw_data': auction_data_from_loop._raw_data,
-                                    'detailPageUrl': detailPageUrl,
-                                    'cssID': cssID
-                                } %}
-                            {% else %}
-                                <p class="alert alert-danger">Item-Template nicht definiert oder nicht gefunden.</p>
-                                {# Fallback: Rohdaten des gesamten Auktions-Objekts ausgeben, wenn kein Item-Template da ist #}
-                                <pre>{{ auction_data_from_loop|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
-                            {% endif %}
-                        </div>{# Ende .col #}
-                    {% endfor %}
-                </div>{# Ende .row #}
-            </div>{# Ende .auction-card-grid #}
-        {% else %}
-            <div class="alert alert-info">{{ 'content_element.no_auctions_for_criteria'|trans }}</div>
-        {% endif %}
-    </div>
-{% endblock %}
+    {% if auctions_to_display|length > 0 %}
+        <div class="auction-card-grid">
+      <div class="auction-items row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3">
+        {% for auction_data_from_loop in auctions_to_display %}
+            <div class="col">
+            {% if auctionItemTemplate is defined and auctionItemTemplate %}
+                {% include auctionItemTemplate with {
+                    'auction': auction_data_from_loop,
+                    'raw_data': auction_data_from_loop._raw_data,
+                    'detailPageUrl': detailPageUrl,
+                    'cssID': cssID
+                } %}
+            {% else %}
+                <p class="alert alert-danger">Item-Template nicht definiert oder nicht gefunden.</p>
+                {# Fallback: Rohdaten des gesamten Auktions-Objekts ausgeben, wenn kein Item-Template da ist #}
+                <pre>{{ auction_data_from_loop|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
+            {% endif %}
+            </div>{# Ende .col #}
+        {% endfor %}
+        </div>{# Ende .row #}
+        </div>{# Ende .auction-card-grid #}
+    {% else %}
+        <div class="alert alert-info">{{ 'content_element.no_auctions_for_criteria'|trans }}</div>
+    {% endif %}
+</div>
+
+
+
+

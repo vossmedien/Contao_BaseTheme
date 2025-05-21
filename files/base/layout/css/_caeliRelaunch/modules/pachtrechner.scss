@@ -1,0 +1,91 @@
+.pachtrechner-widget {
+
+  .pachtrechner-badge {
+    text-align: right;
+    margin-top: calc(-1 * var(--main-gap));
+    margin-bottom: calc(-1 * var(--main-gap));
+    top: calc(-1 * var(--main-gap));
+    z-index: 10;
+    right: 3rem;
+
+    @include media-breakpoint-up(sm) {
+      position: absolute;
+      margin-block: 0;
+    }
+
+    svg {
+      width: 150px;
+    }
+
+    @include media-breakpoint-up(sm) {
+      right: 4rem;
+    }
+
+    @include media-breakpoint-up(md) {
+      right: 50%;
+      top: calc(var(--main-gap) * -1);
+      transform: translate(150%, -30%);
+
+      svg {
+        width: 170px;
+      }
+    }
+
+    @include media-breakpoint-up(lg) {
+      top: calc(-1 * var(--main-gap) / 2);
+      transform: none;
+      right: 0;
+
+
+    }
+
+    @include media-breakpoint-up(xl) {
+      svg {
+        width: auto;
+      }
+    }
+
+
+    @include media-breakpoint-up(xxl) {
+      right: calc(-1 * var(--main-gap) * 2);
+    }
+  }
+} 
+
+
+#pachtrechnerBar {
+  .progress {
+    background-color: var(--bs-secondary);
+    position: relative; /* Für die Positionierung des Indikators */
+    overflow: visible; /* Damit der Indikator außerhalb sichtbar ist */
+    margin-block: .5rem 1rem;
+  }
+
+  .progress-bar {
+    background-color: var(--bs-primary);
+    position: relative; /* Für die Positionierung des Indikators */
+    transition: width 0.6s ease; /* Hinzugefügte Transition */
+
+    // Selektoren für den Indikator bei sehr geringem Fortschritt
+    &[style*="width: 0%"],
+    &[style*="width: 1%"],
+    &[style*="width: 2%"],
+    &[style*="width: 3%"],
+    &[style*="width: 4%"],
+    &[style*="width: 5%"] { /* Bis ca. 5% Breite sollte der Pfeil am Anfang bleiben*/
+      + .percent-indicator {
+        left: -24px; /* Zentriert am Anfang */
+        right: auto;
+      }
+    }
+  }
+
+  .percent-indicator {
+    position: absolute;
+    right: -24px; /* Hälfte der Breite des SVGs, um es am Ende zu zentrieren */
+    top: -60px; /* Etwas oberhalb der Leiste, Höhe des SVGs + kleiner Abstand */
+    z-index: 10;
+    width: 48px; /* Breite des SVGs */
+    height: 48px; /* Höhe des SVGs */
+  }
+}

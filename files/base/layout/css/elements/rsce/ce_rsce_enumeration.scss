@@ -1,0 +1,161 @@
+@import "../../../_vendor/node_modules/bootstrap/scss/functions";
+@import "../../../_vendor/node_modules/bootstrap/scss/variables";
+@import "../../../_vendor/node_modules/bootstrap/scss/mixins";
+
+// Dein bereitgestelltes Basis-Styling für Listen
+// Annahme: %fa-icon und $icon-type sind global verfügbar oder werden hier definiert/importiert
+// Wenn nicht, müssen diese Zeilen angepasst oder entfernt werden.
+%fa-icon {
+  // Basiseigenschaften für FontAwesome Icons, falls benötigt
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Definiere $icon-type, falls es nicht global existiert. Beispiel:
+// $icon-type: 'fas'; // oder 'far', 'fal', etc. je nach FontAwesome-Setup
+
+.rsce_enumeration {
+  // Allgemeines Styling für das Element
+
+  // Grundlegende Spaltenformatierung über Bootstrap-Klassen im HTML (z.B. gx-md-5)
+  .enumeration--column {
+    // Ggf. zusätzliches Styling für Spalten, falls Bootstrap nicht ausreicht
+  }
+
+  .enumeration--list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0; // Basis-Reset für ul
+  }
+
+  .enumeration--item {
+    &:not(.is-globally-last) {
+      margin-bottom: 1rem;
+    }
+    // Diese Regel muss global gelten, nicht nur für md-up
+    &.is-globally-last {
+      margin-bottom: 0 !important; // Wichtig, um andere Regeln zu überschreiben
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+
+    .item--headline {
+      font-weight: var(--bs-font-weight-bold, bold); // Hinzugefügt
+      // Ggf. margin-bottom für die Headline, falls erforderlich
+      // margin-bottom: 0.25rem;
+    }
+  }
+
+  // Styling für den "Dot mit Underline" Typ
+  &.type_dot {
+    .enumeration--item {
+      position: relative;
+      padding-left: 32px; // Platz für das Icon
+      // Setze eine Standardtextfarbe für das Item, damit currentColor für ::before funktioniert
+      color: inherit; // Oder eine spezifische Farbe, z.B. var(--text-color, #333)
+
+      &::before {
+        @extend %fa-icon;
+        font-family: "Font Awesome Kit"; // Sicherstellen, dass dieser Font geladen wird
+        content: "\e007"; // Dein gewünschtes Icon
+        position: absolute;
+        color: currentColor !important; // Explizit und mit Wichtigkeit, um Überschreibungen zu vermeiden
+        left: 0;
+        top: 2px; // Etwas angepasst für bessere vertikale Zentrierung bei größerer Schrift
+        font-size: 18px; // Erhöht von 15px, ggf. weiter anpassen
+        // font-weight: normal; // Falls das Icon zu fett wirkt
+      }
+
+      // Desktop-Regel: Items mit .has-border (nicht letzte in Desktop-Spalte) bekommen eine Border.
+      &.has-border {
+        @include media-breakpoint-up(md) {
+          border-bottom: 2px solid currentColor !important;
+          padding-bottom: 1rem;
+        }
+      }
+
+      // Mobile-Regel: Alle Items, die NICHT .is-globally-last sind, bekommen eine Border.
+      // Dies fügt die Border für Elemente hinzu, die im Desktop das Ende einer Spalte markierten (und kein .has-border hatten).
+      &:not(.is-globally-last) {
+        @include media-breakpoint-down(sm) { // Gilt für sm und kleiner (alles unter md)
+          border-bottom: 2px solid currentColor !important;
+          padding-bottom: 1rem; // Padding nur, wenn auch eine Border da ist
+        }
+      }
+      // Das .is-globally-last Item hat durch die Regel oben bereits `border: none` und `padding: 0`.
+    }
+  }
+
+  // Styling für den "Box mit Zahl" Typ
+  &.type_box {
+    .enumeration--item {
+      display: flex;
+      align-items: flex-start;
+      // margin-bottom wird bereits durch die generelle .enumeration--item Regel oben gesteuert.
+    }
+
+    .item--box-indicator {
+      width: 60px;
+      height: 60px;
+      min-width: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-right: 1.25rem;
+      background-color: var(--box-bg, var(--bs-primary));
+      color: var(--box-text, var(--white, #fff));
+      //border-radius: var(--border-radius, 0.25rem);
+    }
+
+    .item--headline.large {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+  }
+
+  .item--headline + .item--text{
+    margin-top: .25rem;
+  }
+
+  .item--text p{
+    line-height: 1.2;
+  }
+
+  // Rechter Textblock (wenn vorhanden)
+  .enumeration--text-right {
+    .text-content {
+      margin-top: 1rem; // Abstand zur Headline des rechten Blocks (falls vorhanden)
+    }
+
+    // Wenn der rechte Textblock eine eigene Headline hat, wird diese vom HeadlineHelper gerendert.
+    // Der Abstand zwischen der Headline des rechten Blocks und dem text-content wird hierüber gesteuert.
+  }
+
+  // Mobile Ansicht Anpassungen
+  @media (max-width: 767.98px) { // md breakpoint (entspricht media-breakpoint-down(sm))
+    .enumeration--column {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+
+    // Spezifische Mobile-Anpassungen für .type_dot sind jetzt oben in der Hauptsektion von .type_dot
+    // unter :not(.is-globally-last) mit @include media-breakpoint-down(sm)
+
+    &.columns_1.has-right-text {
+      .enumeration-main-col,
+      .enumeration--text-right {
+        flex: 0 0 100%; // Stellen sicher, dass sie volle Breite im Mobile nehmen
+        max-width: 100%;
+      }
+      .enumeration-main-col {
+         // Abstand zur rechten Spalte (Textblock), wenn sie im Mobile untereinander stacken
+        margin-bottom: 1.5rem; 
+      }
+    }
+  }
+} 

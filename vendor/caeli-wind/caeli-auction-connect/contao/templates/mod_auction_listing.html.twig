@@ -1,5 +1,5 @@
 {# Twig Template für das Auction Listing Modul #}
-<div class="container">
+<div class="{% if class is defined and class %} {{ class }}{% endif %}">
     <div class="auction-listing">
         {% if auctions|default and auctions|length > 0 %}
             {# Filter-Formular - wurde in ein separates Modul ausgelagert #}

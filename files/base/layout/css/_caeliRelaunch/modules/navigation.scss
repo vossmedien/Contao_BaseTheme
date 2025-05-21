@@ -64,7 +64,7 @@
 
       &:hover .level_2-wrapper {
         visibility: visible;
-        height: 500px;
+        height: 400px;
         z-index: 10;
       }
     }
@@ -90,7 +90,7 @@
     width: 100%;
     margin-left: auto;
     padding-left: 0;
-    padding-top: calc(var(--main-gap) / 2);
+    padding-top: calc(var(--main-gap) / 3);
 
     @include media-breakpoint-up(md) {
       position: relative;
@@ -105,7 +105,7 @@
     > li {
       &.is-100 {
         grid-column: 1 / -1;
-        margin-bottom: calc(var(--main-gap) / 2);
+        margin-bottom: calc(var(--main-gap) / 3);
       }
 
       &.is-right {
@@ -116,7 +116,7 @@
         display: inline-flex;
         align-items: center;
         gap: .75rem;
-        @include font-size(26px);
+        @include font-size(20px);
         padding: .75rem .65rem;
         transition: all .3s ease-in-out;
 

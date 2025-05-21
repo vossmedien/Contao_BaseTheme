@@ -1,0 +1,104 @@
+.auction-slider-element-wrapper {
+  text-align: center;
+
+  @include media-breakpoint-down(md) {
+    margin-top: var(--main-gap);
+  }
+
+  .auction-swiper-slider {
+    max-width: 330px;
+    margin-inline: auto;
+    position: relative;
+    display: inline-block;
+
+    .swiper {
+      text-align: left;
+    }
+
+    .swiper-button-prev, .swiper-button-next {
+      padding: 0;
+      width: auto;
+      height: auto;
+      color: currentColor;
+      background-color: transparent;
+      box-shadow: none;
+
+      &:after {
+        display: none;
+      }
+
+      i {
+        font-size: 20px;
+        color: currentColor;
+
+        @include media-breakpoint-up(sm) {
+          font-size: 50px;
+        }
+      }
+    }
+
+    .swiper-button-prev {
+      left: -25px;
+
+      @include media-breakpoint-up(sm) {
+        left: -45px;
+      }
+
+      @include media-breakpoint-up(md) {
+        left: -70px;
+      }
+    }
+
+    .swiper-button-next {
+      right: -25px;
+
+      @include media-breakpoint-up(sm) {
+        right: -45px;
+      }
+
+      @include media-breakpoint-up(md) {
+        right: -70px;
+      }
+    }
+  }
+}
+
+
+.slider-controls {
+  display: inline-flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  .slider-pagination {
+    line-height: 0;
+
+    .swiper-pagination-bullet {
+      width: 40px;
+      height: 8px;
+      background-color: transparent;
+      border: 1px solid currentColor;
+      border-radius: 0;
+      transition: .15s ease-in-out;
+
+      &.swiper-pagination-bullet-active {
+        background-color: currentColor;
+      }
+    }
+  }
+
+
+  button {
+    background-color: transparent;
+    padding: 0;
+    border: 0;
+    color: currentColor;
+    font-size: 1.5rem;
+    transition: .15s ease-in-out;
+
+    &:hover {
+      color: var(--bs-link-hover-color)
+    }
+  }
+}

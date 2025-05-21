@@ -133,14 +133,16 @@ class AuctionFilterController extends AbstractFrontendModuleController
         $bundeslaender = $this->auctionService->getAllBundeslaender();
         $selectedBundesland = $request->query->get('bundesland');
 
-        // Status-Optionen definieren (mit Übersetzungen)
-        $statusOptions = [
-            'STARTED' => $this->translator->trans('filter.status.STARTED', [], 'messages'),
-            'OPEN_FOR_DIRECT_AWARDING' => $this->translator->trans('filter.status.OPEN_FOR_DIRECT_AWARDING', [], 'messages'),
-            'DIRECT_AWARDING' => $this->translator->trans('filter.status.DIRECT_AWARDING', [], 'messages'),
-            'AWARDING' => $this->translator->trans('filter.status.AWARDING', [], 'messages'),
-            'PRE_RELEASE' => $this->translator->trans('filter.status.PRE_RELEASE', [], 'messages'),
-        ];
+        // Status-Optionen dynamisch abrufen und übersetzen
+        $uniqueStatusValues = $this->auctionService->getUniqueStatusValues();
+        $statusOptions = [];
+        foreach ($uniqueStatusValues as $value) {
+            // Erstelle einen Übersetzungsschlüssel, z.B. filter.status.STARTED
+            // Stelle sicher, dass die Werte aus der API (z.B. 'STARTED') hier korrekt als Key verwendet werden.
+            // Die Übersetzung muss dann in der messages.de.yaml etc. existieren.
+            $translationKey = 'filter.status.' . strtoupper($value);
+            $statusOptions[$value] = $this->translator->trans($translationKey, [], 'messages');
+        }
 
         // Eigentum-Optionen dynamisch abrufen und übersetzen
         $propertyValues = $this->auctionService->getUniquePropertyValues();

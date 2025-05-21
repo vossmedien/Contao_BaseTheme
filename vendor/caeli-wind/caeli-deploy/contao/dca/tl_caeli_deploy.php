@@ -133,7 +133,7 @@ $GLOBALS['TL_DCA']['tl_caeli_deploy'] = array(
         'addSubpalette'  => array(
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => array('submitOnChange' => true, 'tl_class' => 'w50 clr'),
+            'eval'      => array('tl_class' => 'w50 clr'),
             'sql'       => "char(1) NOT NULL default ''"
         ),
         'textareaField'  => array(

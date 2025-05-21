@@ -42,7 +42,7 @@
 
     &:after {
       @extend %fa-icon;
-      @extend #{$icon-type} !optional;
+      font: var(--fa-font-sharp-light);
       content: "\e000";
       transition: all .3s ease-in-out;
     }
@@ -71,7 +71,7 @@
 
     &:after {
       @extend %fa-icon;
-      @extend #{$icon-type} !optional;
+      font: var(--fa-font-sharp-light);
       content: "\e001";
       font-size: 32px;
     }
@@ -95,7 +95,7 @@
     &.with-arrow {
       &:after {
         @extend %fa-icon;
-        @extend #{$icon-type} !optional;
+        font: var(--fa-font-sharp-light);
         content: "\e001";
         font-size: 32px;
 
@@ -105,4 +105,8 @@
       }
     }
   }
+}
+
+p a.btn.btn-link{
+  font-weight: $font-weight-base;
 }

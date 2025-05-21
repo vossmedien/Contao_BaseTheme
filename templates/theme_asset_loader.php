@@ -110,7 +110,7 @@ if (!function_exists('load_theme_assets_from_manifest')) {
         // Diese Manifeste werden mit einem publicPath wie /files/base/layout/css/_THEMENAME/dist/ erstellt.
         // Das sollte also weiterhin stimmen, da CSS eine eigene dist-Struktur hat.
         $cssManifestDir = $projectRoot . '/files/base/layout/_vendor/_dist-manifest/_' . $themeName;
-        $cssBundleOrder = ['_vendors', '_base', '_root-variables', '_theme', '_fonts'];
+        $cssBundleOrder = ['_vendors', '_base', '_root-variables', '_theme', '_fonts', '_utilities'];
         foreach ($cssBundleOrder as $bundleName) {
             // Pfad zum spezifischen CSS-Manifest für das aktuelle Theme und Bundle-Typ
             // In Webpack wurde themeManifestDirForCss als path.join(manifestBasePath, themeNameRaw) definiert,

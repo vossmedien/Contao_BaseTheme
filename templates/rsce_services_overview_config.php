@@ -76,14 +76,7 @@ return array(
                  'content_hl' => array(
                      'label' => array('Typ der Überschrift', ''),
                      'inputType' => 'select',
-                     'options' => array(
-                         'h1' => 'H1',
-                         'h2' => 'H2',
-                         'h3' => 'H3',
-                         'h4' => 'H4',
-                         'h5' => 'H5',
-                         'h6' => 'H6',
-                     ),
+                     'options' => GlobalElementConfig::getHeadlineTagOptions(),
                      'eval' => array('includeBlankOption' => true, 'tl_class' => 'w50'),
                  ),
                 'content_topline' => array(
@@ -111,7 +104,7 @@ return array(
                         'fieldType' => 'radio',
                         'mandatory' => false,
                         'tl_class' => 'clr',
-                        'submitOnChange' => true // Wichtig für Subpalette
+                        // Wichtig für Subpalette
                     ),
                 ),
                  'image_animation_type' => array(

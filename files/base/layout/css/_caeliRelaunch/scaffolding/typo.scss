@@ -46,7 +46,7 @@ main .content--element {
 
       &:before {
         @extend %fa-icon;
-        @extend #{$icon-type} !optional;
+        font: var(--fa-font-sharp-light);
         content: "\e007";
         position: absolute;
         color: currentColor;
@@ -80,7 +80,7 @@ ul.list-arrow {
 
     &:before {
       @extend %fa-icon;
-      @extend #{$icon-type} !optional;
+     font: var(--fa-font-sharp-light);
       content: "\e00e";
       position: absolute;
       padding-right: rfs-value(8px);
@@ -105,8 +105,20 @@ li.active {
   }
 }
 
-figcaption, .figcaption{
+figcaption, .figcaption {
   padding-top: .5rem;
   font-size: $font-size-base;
 }
 
+
+.ce--headline.is-quote {
+  > span.ce--subline.ce--subline {
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+
+  > *:not([class*="ce--"]) {
+    font-style: italic;
+    font-weight: $font-weight-light;
+  }
+}

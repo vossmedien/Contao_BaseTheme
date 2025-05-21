@@ -7,6 +7,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 
 // __dirname ist jetzt /Users/christian.voss/PhpstormProjects/Caeli-Relaunch/files/base/layout/_vendor
 
@@ -215,10 +216,12 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
         '_base.scss',
         '_theme.scss',
         '_root-variables.scss',
-        '_fonts.scss'
+        '_fonts.scss',
+        '_utilities.scss'
     ];
 
     let themeAliases = {};
+    let isFirstEntryForThisTheme = true; // Flag, um clean:true nur einmal pro Theme anzuwenden
 
     return scssFilesToBundle.map(scssFileName => {
         const scssFilePath = path.join(themeCssDir, scssFileName);
@@ -228,6 +231,10 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
         }
 
         const entryName = scssFileName.replace('.scss', ''); // z.B. _vendors, _base
+        // const currentCleanValue = isFirstEntryForThisTheme; // Entfernt
+        // if (isFirstEntryForThisTheme) { // Entfernt
+        // isFirstEntryForThisTheme = false; // Entfernt
+        // } // Entfernt
 
         console.log(`CSS-Konfig für Theme "${themeNameRaw}", Datei "${scssFileName}":`);
         console.log(`   SCSS-Datei: ${path.relative(projectRoot, scssFilePath)}`);
@@ -245,7 +252,7 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
                 path: themeCssDistDir,
                 publicPath: themePublicPath,
                 assetModuleFilename: 'fonts/[name].[hash][ext][query]', // Name der Fontdatei beibehalten
-                clean: false, // Wichtig, da wir mehrere Bundles in denselben Ordner schreiben könnten
+                clean: false, // Geändert, da del-cli das übernimmt (vorher currentCleanValue)
             },
             module: {
                 rules: [
@@ -275,7 +282,16 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
                         isChunk: file.isChunk,
                         entryPoint: file.chunk?.name
                     })
+                }),
+                /* // Deaktiviert, um die Erstellung von "*.bundle.min.css"-Dateien zu verhindern
+                new WebpackShellPluginNext({
+                    onBuildEnd: {
+                        scripts: [`sleep 0.5 && touch "${path.join(themeCssDistDir, '[name].[contenthash].bundle.min.css').replace('[name]', entryName).replace('[contenthash]', '*')}"`], // Wildcard für contenthash
+                        blocking: false,
+                        parallel: true
+                    }
                 })
+                */
             ],
             optimization: {
                 minimize: true,
@@ -303,6 +319,7 @@ console.log('Gefundene RSCE SCSS-Dateien:', rsceScssFiles.map(f => path.relative
 const rsceWebpackConfigs = rsceScssFiles.map(scssFile => {
     const fileNameWithoutExt = path.basename(scssFile, '.scss'); // z.B. ce_rsce_videogrid
     const outputDir = path.dirname(scssFile); // Das Verzeichnis der Quelldatei, z.B. .../rsce/
+    const outputCssFilePath = path.join(outputDir, `${fileNameWithoutExt}.min.css`);
 
     return {
         name: `rsce-${fileNameWithoutExt}-css`, // Eindeutiger Name, z.B. rsce-ce_rsce_videogrid-css
@@ -332,6 +349,13 @@ const rsceWebpackConfigs = rsceScssFiles.map(scssFile => {
             new MiniCssExtractPlugin({
                 filename: '[name].min.css', // Erzeugt z.B. ce_rsce_videogrid.min.css
             }),
+            new WebpackShellPluginNext({
+                onBuildEnd: {
+                    scripts: [`sleep 0.5 && touch "${outputCssFilePath}"`],
+                    blocking: false,
+                    parallel: true
+                }
+            })
         ],
         optimization: {
             minimize: true,
@@ -397,19 +421,29 @@ if (jsElementWebpackConfigs && jsElementWebpackConfigs.length > 0) {
 if (process.env.FILTER_PATTERN) {
     try {
         const regex = new RegExp(process.env.FILTER_PATTERN);
-        const filteredConfigs = allConfigs.filter(conf => conf.name && regex.test(conf.name));
+        
+        const patternMatchingConfigs = allConfigs.filter(conf => conf.name && regex.test(conf.name));
+        const cssConfigs = allConfigs.filter(conf => conf.name && conf.name.endsWith('-css'));
 
-        if (filteredConfigs.length === 0) {
-            console.warn(`Webpack: Keine Konfigurationen entsprachen dem Filter-Muster: "${process.env.FILTER_PATTERN}". Es wird nichts gebaut.`);
-            module.exports = []; // Leeres Array exportieren, wenn keine Konfigurationen dem Filter entsprechen
+        // Kombiniere patternMatchingConfigs und cssConfigs, vermeide Duplikate basierend auf conf.name
+        const combinedConfigs = [...patternMatchingConfigs];
+        cssConfigs.forEach(cssConf => {
+            if (!combinedConfigs.find(c => c.name === cssConf.name)) {
+                combinedConfigs.push(cssConf);
+            }
+        });
+
+        if (combinedConfigs.length === 0) {
+            console.warn(`Webpack: Keine Konfigurationen entsprachen dem Filter-Muster: "${process.env.FILTER_PATTERN}" und es wurden auch keine (passenden) CSS-Konfigurationen gefunden. Es wird nichts gebaut.`);
+            module.exports = [];
         } else {
-            console.log(`Webpack: ${filteredConfigs.length} von ${allConfigs.length} Konfigurationen entsprechen dem Muster "${process.env.FILTER_PATTERN}".`);
-            filteredConfigs.forEach(conf => console.log(` - Verwendete Konfiguration: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
-            module.exports = filteredConfigs;
+            console.log(`Webpack: ${combinedConfigs.length} von ${allConfigs.length} Konfigurationen werden gebaut. CSS-Konfigurationen werden immer berücksichtigt, zusätzlich zu denen, die dem Muster "${process.env.FILTER_PATTERN}" entsprechen.`);
+            combinedConfigs.forEach(conf => console.log(` - Verwendete Konfiguration: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
+            module.exports = combinedConfigs;
         }
     } catch (e) {
         console.error(`Webpack: Ungültiges Regex-Muster im FILTER_PATTERN: "${process.env.FILTER_PATTERN}". Fehler: ${e.message}`);
-        console.warn(`Webpack: Aufgrund des Fehlers im Regex werden alle ${allConfigs.length} Konfigurationen verwendet.`);
+        console.warn(`Webpack: Aufgrund des Fehlers im Regex werden alle ${allConfigs.length} Konfigurationen verwendet (inklusive aller CSS-Dateien).`);
         allConfigs.forEach(conf => console.log(` - Konfigurationsname: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
         module.exports = allConfigs; // Fallback auf alle Konfigurationen bei Regex-Fehler
     }
@@ -418,7 +452,7 @@ if (process.env.FILTER_PATTERN) {
     module.exports = []; // Leeres Array exportieren, wenn überhaupt keine Konfigurationen vorhanden sind
 } else {
     // Kein Filter, alle exportieren
-    console.log(`Exportiere insgesamt ${allConfigs.length} Webpack-Konfigurationen (FILTER_PATTERN nicht gesetzt).`);
+    console.log(`Exportiere insgesamt ${allConfigs.length} Webpack-Konfigurationen (FILTER_PATTERN nicht gesetzt), inklusive aller CSS-Dateien.`);
     allConfigs.forEach(conf => console.log(` - Konfigurationsname: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
     module.exports = allConfigs;
 }

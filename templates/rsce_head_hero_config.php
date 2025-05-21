@@ -23,7 +23,7 @@ return array(
         'add_breadcrumb' => array(
             'label' => array('Breadcrumb hinzufügen', 'Fügt das angegebene Breadcrumb-Modul oberhalb der Headline ein.'),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'w50 clr', 'submitOnChange' => true),
+            'eval' => array('tl_class' => 'w50 clr'),
         ),
 
         'breadcrumb_module' => array(
@@ -62,13 +62,7 @@ return array(
         'headline_type' => array(
             'label' => array('Typ der Überschrift', ''),
             'inputType' => 'select',
-            'options' => array(
-                'h1' => 'H1 (Haupt-Headline für SEO, darf nur 1x vorkommen)',
-                'h2' => 'H2 (Sollte H1 thematisch untergeordnet sein)',
-                'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
-                'h4' => 'H4',
-                'h5' => 'H5',
-            ),
+            'options' => GlobalElementConfig::getHeadlineTagOptions(),
             'default' => 'h1',
             'eval' => array('tl_class' => 'w50'),
         ),

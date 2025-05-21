@@ -278,7 +278,7 @@ if (!isset($this->size)) {
                     pagination.classList.add('swiper-pagination');
                     container.appendChild(pagination);
 
-                    swiperInstances[containerId] = new Swiper('.swiper.content-slider_' + containerId, {
+                    let swiperOptions = {
                         direction: 'horizontal',
                         loop: <?php echo $this->loop ? 'true' : 'false'; ?>,
                         lazy: false,
@@ -288,6 +288,7 @@ if (!isset($this->size)) {
                         <?php if ($this->autoplay): ?>
                         autoplay: {
                             delay: <?php echo $this->autoplay_time ?: 3000; ?>,
+                            disableOnInteraction: false, // Standardmäßig false lassen, damit Autoplay nach Interaktion weiterläuft
                         },
                         <?php endif; ?>
                         autoHeight: false,
@@ -343,7 +344,73 @@ if (!isset($this->size)) {
                                 }));
                             }
                         }
-                    });
+                    };
+
+                    <?php if ($this->continuous_scroll): ?>
+                    swiperOptions.loop = true;
+                    swiperOptions.autoplay = {
+                        delay: 1, // Sehr kleine Verzögerung für kontinuierlichen Effekt
+                        disableOnInteraction: false,
+                        pauseOnMouseEnter: true, // Pausiert, wenn Maus über Slider ist
+                    };
+                    swiperOptions.speed = 10000; // Langsame, konstante Geschwindigkeit (Dauer für einen vollen Loop)
+                    swiperOptions.slidesPerView = 'auto';
+                    swiperOptions.freeMode = true; // Erlaubt freieres Scrollen
+                    swiperOptions.effect = 'slide'; // Erzwingt Slide-Effekt für kontinuierliches Scrollen
+                    // Lineare Transition für gleichmäßige Bewegung
+                    if (wrapper) {
+                        wrapper.style.transitionTimingFunction = 'linear';
+                    }
+                    // Deaktiviere Navigation und Paginierung im continuous scroll Modus, da sie stören würden
+                    swiperOptions.navigation = false;
+                    swiperOptions.pagination = false;
+
+                    // Sicherstellen, dass Pfeile und Paginierung ausgeblendet werden, falls sie vorher sichtbar waren
+                    const prevButton = container.parentElement.querySelector('.content-slider_' + containerId + '.swiper-button-prev');
+                    const nextButton = container.parentElement.querySelector('.content-slider_' + containerId + '.swiper-button-next');
+                    const paginationDots = container.parentElement.querySelector('.content-slider_' + containerId + '.swiper-pagination');
+                    if (prevButton) prevButton.style.display = 'none';
+                    if (nextButton) nextButton.style.display = 'none';
+                    if (paginationDots) paginationDots.style.display = 'none';
+
+                    <?php else: ?>
+                    // Logik für Pfeile und Paginierung nur wenn continuous_scroll nicht aktiv ist
+                    if (<?php echo (count($this->galery) > 1 || count($dataSorted) > 1) ? 'true' : 'false'; ?>) {
+                        if (!swiperOptions.navigation) swiperOptions.navigation = {};
+                        swiperOptions.navigation.nextEl = '.content-slider_' + containerId + '.swiper-button-next';
+                        swiperOptions.navigation.prevEl = '.content-slider_' + containerId + '.swiper-button-prev';
+
+                        if (!swiperOptions.pagination) swiperOptions.pagination = {};
+                        swiperOptions.pagination.el = '.content-slider_' + containerId + '.swiper-pagination';
+                        swiperOptions.pagination.clickable = true;
+
+                        // Stelle sicher, dass Pfeile und Paginierung sichtbar sind
+                        const prevButton = container.parentElement.querySelector('.content-slider_' + containerId + '.swiper-button-prev');
+                        const nextButton = container.parentElement.querySelector('.content-slider_' + containerId + '.swiper-button-next');
+                        const paginationDots = container.parentElement.querySelector('.content-slider_' + containerId + '.swiper-pagination');
+                        if (prevButton) prevButton.style.display = 'block'; // Oder 'flex' etc., je nach Styling
+                        if (nextButton) nextButton.style.display = 'block';
+                        if (paginationDots) paginationDots.style.display = 'block';
+
+                    } else {
+                         // Explizit ausblenden, wenn nicht genügend Slides vorhanden sind
+                        const prevButton = container.parentElement.querySelector('.content-slider_' + containerId + '.swiper-button-prev');
+                        const nextButton = container.parentElement.querySelector('.content-slider_' + containerId + '.swiper-button-next');
+                        const paginationDots = container.parentElement.querySelector('.content-slider_' + containerId + '.swiper-pagination');
+                        if (prevButton) prevButton.style.display = 'none';
+                        if (nextButton) nextButton.style.display = 'none';
+                        if (paginationDots) paginationDots.style.display = 'none';
+                    }
+                    <?php endif; ?>
+
+                    swiperInstances[containerId] = new Swiper('.swiper.content-slider_' + containerId, swiperOptions);
+
+                    // Nach der Initialisierung sicherstellen, dass die lineare Transition angewendet wird, falls continuous_scroll aktiv ist
+                    <?php if ($this->continuous_scroll): ?>
+                    if (swiperInstances[containerId] && swiperInstances[containerId].wrapperEl) {
+                        swiperInstances[containerId].wrapperEl.style.transitionTimingFunction = 'linear';
+                    }
+                    <?php endif; ?>
                 }
 
                 initShowMoreButton();

@@ -85,32 +85,30 @@ class AuctionListingController extends AbstractFrontendModuleController
     {
         $this->logger->debug('[AuctionListingController] getResponse gestartet für Modul ID ' . $model->id);
 
-        // 1. Filter aus dem Request lesen (für z.B. externes Filter-Modul)
-        // Alle Query-Parameter als Basis für Request-Filter nehmen
-        $requestFilters = $request->query->all();
-
+        // 1. Filter aus dem Request lesen und STRUKTURIEREN (für z.B. externes Filter-Modul)
+        $rawRequestFilters = $request->query->all();
         // Entferne Parameter, die keine direkten Filter für den AuctionService sind oder separat behandelt werden
-        unset($requestFilters['refresh']); // Der 'refresh' Parameter wird für $forceRefresh genutzt
-        // unset($requestFilters['page']); // Beispiel: Falls Paginierung anders gehandhabt wird
+        // Die structureRequestFilters-Methode wird 'refresh' und 'page' intern überspringen.
+        // unset($rawRequestFilters['refresh']); 
+        // unset($rawRequestFilters['page']);
 
-        // Die _min/_max und kommaseparierten Strings werden direkt vom AuctionService verarbeitet.
-        // Eine manuelle Umstrukturierung wie zuvor für 'size' ist hier nicht mehr nötig.
-
-        if (!empty($requestFilters)){
-            $this->logger->debug('[AuctionListingController] Filter aus Request (query->all()) verwendet', $requestFilters);
+        $structuredRequestFilters = $this->auctionService->structureRequestFilters($rawRequestFilters);
+        if (!empty($structuredRequestFilters)){
+            $this->logger->debug('[AuctionListingController] Strukturierte Filter aus Request erhalten', $structuredRequestFilters);
         }
 
-        // 2. Filter aus den Moduleinstellungen lesen und parsen
+        // 2. Filter aus den Moduleinstellungen lesen und parsen (sind bereits strukturiert)
         $moduleFilters = [];
         if ($model->auctionListingFilters) {
             $moduleFilters = $this->auctionService->parseFiltersFromString((string)$model->auctionListingFilters);
-            $this->logger->debug('[AuctionListingController] Filter aus Moduleinstellungen geparst', $moduleFilters);
+            $this->logger->debug('[AuctionListingController] Strukturierte Filter aus Moduleinstellungen geparst', $moduleFilters);
         }
 
-        // 3. Filter zusammenführen (Request-Filter überschreiben Modul-Filter bei gleichen Schlüsseln)
-        $finalFilters = array_merge($moduleFilters, $requestFilters);
+        // 3. Filter zusammenführen (Request-Filter überschreiben Modul-Filter bei gleichen ZIEL-Feldnamen)
+        // Beide Arrays ($moduleFilters, $structuredRequestFilters) sollten jetzt das gleiche strukturierte Format haben.
+        $finalFilters = array_merge($moduleFilters, $structuredRequestFilters);
         if (!empty($finalFilters)){
-             $this->logger->info('[AuctionListingController] Finale Filter nach Merge', $finalFilters);
+             $this->logger->info('[AuctionListingController] Finale strukturierte Filter nach Merge', $finalFilters);
         }
 
         // 4. Sortieroptionen aus dem Modul lesen

@@ -1,4 +1,9 @@
 .auction-item {
+
+  &.is-simple{
+
+  }
+
   .card {
     --bs-card-border-width: 0;
     --bs-card-cap-bg: white;
@@ -31,6 +36,10 @@
 
     .card-body {
       padding: 1rem var(--bs-card-spacer-x) 2rem var(--bs-card-spacer-x);
+
+      .auction-details-section {
+        gap: .5rem 1rem;
+      }
     }
 
     .card-footer {
@@ -45,13 +54,11 @@
   z-index: 1;
 }
 
-
 /* Relative Position für das Overlay */
 .auction-listing {
   position: relative;
   min-height: 200px;
 }
-
 
 .auction-details-section {
   display: grid;
@@ -72,10 +79,6 @@
   align-items: center;
   z-index: 1050; /* Über den meisten anderen Elementen, aber unter Modals, falls nötig */
 }
-
-/* Der .filter-spinner (SVG) wird innerhalb des Overlays zentriert.
-   Die Animation dafür sollte bereits existieren oder hier definiert werden, falls nicht. 
-   Die Größe des Spinners wird im SVG selbst oder über CSS für .filter-spinner definiert */
 
 .filter-spinner {
   /* Ggf. vorhandene Styles für Größe (width, height) hier belassen oder anpassen */
@@ -132,14 +135,6 @@
         margin-top: calc(150px + var(--main-gap));
       }
     }
-  }
-}
-
-
-
-.auction-item{
-  .auction-details-section{
-    gap: .5rem 1rem;
   }
 }
 

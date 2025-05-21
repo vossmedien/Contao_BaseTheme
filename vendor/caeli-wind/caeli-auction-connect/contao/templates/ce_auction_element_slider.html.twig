@@ -1,0 +1,86 @@
+{# 1. Variable vorbereiten, die immer eine Liste ist #}
+    {% set auctions_to_display = [] %}
+    {% if auction is defined and auction %}
+        {# Wenn nur eine einzelne Auktion übergeben wird (selten im CE, aber möglich) #}
+        {% set auctions_to_display = [auction] %}
+    {% elseif auctions is defined and auctions %}
+        {% set auctions_to_display = auctions %}
+    {% endif %}
+
+{# Eindeutige ID für diesen Slider generieren, falls mehrere auf einer Seite sind #}
+{% set slider_id = 'auction_slider_' ~ random() %}
+
+<div class="auction-slider-element-wrapper{% if class is defined and class %} {{ class }}{% endif %}{% if cssID[1] %} {{ cssID[1] }}{% endif %}">
+
+
+    {% if headline and headline.headline %}
+        <h{{ headline.level|default('1') }}{% if headline.class %} class="{{ headline.class }}"{% endif %}>{{ headline.headline }}</h{{ headline.level|default('1') }}>
+    {% endif %}
+
+    {% if auctions_to_display|length > 0 %}
+        {# Swiper Container #}
+
+
+
+        <div class="auction-swiper-slider">
+            <div id="{{ slider_id }}" class="swiper">
+                <div class="swiper-wrapper">
+                    {% for auction_data_from_loop in auctions_to_display %}
+                        <div class="swiper-slide">
+                        {% if auctionItemTemplate is defined and auctionItemTemplate %}
+                            {% include auctionItemTemplate with {
+                                'auction': auction_data_from_loop,
+                                'raw_data': auction_data_from_loop._raw_data,
+                                'detailPageUrl': detailPageUrl,
+                                'cssID': cssID
+                            } %}
+                        {% else %}
+                            <p class="alert alert-danger">Item-Template nicht definiert oder nicht gefunden.</p>
+                            {# Fallback: Rohdaten des gesamten Auktions-Objekts ausgeben, wenn kein Item-Template da ist #}
+                            <pre>{{ auction_data_from_loop|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
+                        {% endif %}
+                        </div>{# Ende .swiper-slide #}
+                    {% endfor %}
+                </div>{# Ende .swiper-wrapper #}
+            </div>
+
+            {# Swiper Navigation Arrows mit IDs - jetzt Geschwister der Swiper Instanz #}
+            <div id="{{ slider_id }}_prev_button" class="swiper-button-prev"><i class="fak fa-chevron-left"></i></div>
+            <div id="{{ slider_id }}_next_button" class="swiper-button-next"><i class="fak fa-chevron-right"></i></div>
+
+        </div>{# Ende .auction-swiper-slider (Wrapper) #}
+    {% else %}
+        <div class="alert alert-info">{{ 'content_element.no_auctions_for_criteria'|trans }}</div>
+    {% endif %}
+
+</div>
+
+{% if auctions_to_display|length > 0 %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var {{ slider_id }}_swiper = new Swiper('#{{ slider_id }}', {
+                // Optional parameters
+                direction: 'horizontal',
+                loop: true,
+                slidesPerView: 1,
+                spaceBetween: 0, // Kein Abstand zwischen den Slides
+                speed: 800, // Übergangsgeschwindigkeit in ms für sanftere Übergänge
+                autoplay: {
+                    delay: 8000, // Geändert auf 5000ms
+                    disableOnInteraction: false, // Autoplay wird nach User-Interaktion nicht gestoppt
+                },
+                // Navigation arrows
+                navigation: {
+                    nextEl: '#{{ slider_id }}_next_button',
+                    prevEl: '#{{ slider_id }}_prev_button',
+                },
+                // Keine Pagination
+                pagination: false,
+            });
+        });
+    </script>
+{% endif %}
+
+
+
+

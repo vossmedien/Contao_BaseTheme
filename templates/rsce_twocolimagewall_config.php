@@ -203,14 +203,7 @@ return array(
                         'de' => array('Typ der Überschrift', ''),
                     ),
                     'inputType' => 'select',
-                    'options' => array(
-                        'h1' => 'H1',
-                        'h2' => 'H2',
-                        'h3' => 'H3',
-                        'h4' => 'H4',
-                        'h5' => 'H5',
-                        'h6' => 'H6',
-                    ),
+                    'options' => GlobalElementConfig::getHeadlineTagOptions(),
                     'eval' => array('tl_class' => 'clr '),
                 ),
                 'boxed_headline_onlystyle' => array(
@@ -444,14 +437,7 @@ return array(
                         'de' => array('Typ der Überschrift', ''),
                     ),
                     'inputType' => 'select',
-                    'options' => array(
-                        'h1' => 'H1',
-                        'h2' => 'H2',
-                        'h3' => 'H3',
-                        'h4' => 'H4',
-                        'h5' => 'H5',
-                        'h6' => 'H6',
-                    ),
+                    'options' => GlobalElementConfig::getHeadlineTagOptions(),
                     'eval' => array('tl_class' => 'clr'),
                 ),
                 'onlystyle' => array(

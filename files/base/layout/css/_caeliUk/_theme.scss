@@ -254,6 +254,7 @@ html body .ce_rsce_headimagelogo .ce--mainimage .image--holder .mainimage--conte
 
 .contact-card .contact-image {
   @include media-breakpoint-down(md) {
+    margin-inline: auto;
     max-width: 120px;
   }
 }

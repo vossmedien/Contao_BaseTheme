@@ -77,14 +77,7 @@ return array(
             'label' => array('Typ der linken Headline', ''),
             'inputType' => 'select',
             'default' => 'h1',
-            'options' => array(
-                'h1' => 'H1',
-                'h2' => 'H2',
-                'h3' => 'H3',
-                'h4' => 'H4',
-                'h5' => 'H5',
-                'h6' => 'H6',
-            ),
+            'options' => GlobalElementConfig::getHeadlineTagOptions(),
             'eval' => array('tl_class' => 'w50'),
         ),
         'main_text' => array(
@@ -214,7 +207,7 @@ return array(
                     'label' => array('Typ der Slide-Überschrift', ''),
                     'inputType' => 'select',
                     'default' => 'h3',
-                    'options' => array('h2' => 'H2', 'h3' => 'H3', 'h4' => 'H4', 'h5' => 'H5', 'h6' => 'H6', 'p' => 'Absatz (p)'),
+                    'options' => GlobalElementConfig::getHeadlineTagOptions(),
                     'eval' => array('tl_class' => 'w50'),
                 ),
                 'slide_content' => array(

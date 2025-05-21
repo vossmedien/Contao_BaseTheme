@@ -760,6 +760,59 @@ $this->bodyAttributes = $this
     })(window,document,'script','dataLayer','GTM-NPQ5ZG3R');
     </script>
     <!-- End Google Tag Manager -->
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Caeli Platform for Renewables Ltd.",
+  "alternateName": "Caeli UK",
+  "url": "https://www.caeli.co.uk/",
+  "logo": "https://www.caeli.co.uk/files/base/layout/img/logo.svg",
+  "email": "info@caeli.co.uk",
+  "description": "Caeli Platform for Renewables is a digital platform accelerating the development of wind energy projects. Combining AI-powered site analysis with a structured marketplace, Caeli helps landowners, developers, and investors collaborate efficiently – from initial assessment to project completion. Founded in Germany and trusted by leading energy providers, Caeli is now expanding across Europe to support the digital transformation of renewable energy development.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "128 City Road",
+    "addressLocality": "London",
+    "postalCode": "EC1V 2NX",
+    "addressCountry": "GB"
+  },
+  "sameAs": ["https://www.linkedin.com/company/caeli-uk/"],
+  "contactPoint": [
+    {
+      "@type": "ContactPoint",
+      "email": "info@caeli.co.uk",
+      "contactType": "general inquiry",
+      "availableLanguage": ["de", "en"]
+    },
+    {
+      "@type": "ContactPoint",
+      "email": "hans-georg.lewinski@caeli.co.uk",
+      "contactType": "landowner support",
+      "availableLanguage": ["de", "en"]
+    },
+    {
+      "@type": "ContactPoint",
+      "email": "julia.berkenfeld@caeli.co.uk",
+      "contactType": "project developer support",
+      "availableLanguage": ["de", "en"]
+    },
+    {
+      "@type": "ContactPoint",
+      "url": "https://calendly.com/hans-georg-lewinski-caeli-wind/30min",
+      "contactType": "appointment booking for landowners"
+    },
+    {
+      "@type": "ContactPoint",
+      "url": "https://calendly.com/julia-berkenfeld/introduction-caeli",
+      "contactType": "appointment booking for project developers"
+    }
+  ]
+}
+</script>
+
 </head>
 <body<?= $this->bodyAttributes ?>>
 

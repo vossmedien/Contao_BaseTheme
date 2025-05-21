@@ -13,6 +13,7 @@ filter:
     DIRECT_AWARDING: "In freihändiger Vergabe"
     AWARDING: "In Vergabe"
     PRE_RELEASE: "Vorankündigung"
+    PREVIEW: Vorschau
   property:
     PRIVATE: "Privat"
     PUBLIC: "Öffentlich" # Beispiel, falls dieser Wert von der API kommt

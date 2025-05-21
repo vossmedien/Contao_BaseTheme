@@ -43,14 +43,7 @@ return array(
                 'de' => array('Typ der Überschrift', ''),
             ),
             'inputType' => 'select',
-            'options' => array(
-                'h1' => 'H1 (Haupt-Headline für SEO, darf nur 1x vorkommen)',
-                'h2' => 'H2 (Sollte H1 thematisch untergeordnet sein)',
-                'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
-                'h4' => 'H4',
-                'h5' => 'H5',
-                'h6' => 'H6',
-            ),
+            'options' => GlobalElementConfig::getHeadlineTagOptions(),
             'eval' => array('tl_class' => 'w50'),
         ),
 
@@ -286,14 +279,7 @@ return array(
                 'de' => array('Typ der Überschrift', ''),
             ),
             'inputType' => 'select',
-            'options' => array(
-                'h1' => 'H1 (Haupt-Headline für SEO, darf nur 1x vorkommen)',
-                'h2' => 'H2 (Sollte H1 thematisch untergeordnet sein)',
-                'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
-                'h4' => 'H4',
-                'h5' => 'H5',
-                'h6' => 'H6',
-            ),
+            'options' => GlobalElementConfig::getHeadlineTagOptions(),
             'eval' => array('tl_class' => 'w50'),
         ),
 

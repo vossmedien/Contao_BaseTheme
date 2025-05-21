@@ -8,14 +8,16 @@ form .formbody {
 form .widget:not(.form-floating).widget-radio fieldset > span input[type=checkbox],
 form .widget:not(.form-floating).widget-checkbox fieldset > span input[type=checkbox] {
   border-radius: 0;
-  border: 1px solid transparent;
+ // border: 1px solid sla(0, 0%, 100%, .1);;
   width: 20px;
   height: 20px;
   margin-top: 4px;
 }
 
 
-form .form-check-input:checked, form .form-check-input:focus, form .form-check-input:focus-visible {
+ .form-check-input:checked,
+ .form-check-input:focus,
+ .form-check-input:focus-visible {
   border-color: rgba(255, 255, 255, .1);
 }
 
@@ -40,7 +42,7 @@ form .form-check-input:checked, form .form-check-input:focus, form .form-check-i
 
   &:after {
     @extend %fa-icon;
-    @extend #{$icon-type} !optional;
+    font: var(--fa-font-sharp-light);
     content: "\e003";
     border: 0;
     font-size: 7px;
@@ -112,4 +114,15 @@ input[type="range"]:focus::-moz-range-thumb {
   border: 1px solid var(--bs-tertiary);
   outline: 3px solid var(--bs-tertiary);
   outline-offset: 0.125rem;
+}
+
+
+
+
+.input-group{
+  > *{
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+    }
+  }
 }

@@ -47,15 +47,18 @@ class AuctionService
     private array $filterableFields = [
         'id' => ['field' => 'id', 'type' => 'exact', 'value_type' => 'string'], // Für direkte ID-Filter
         'auctionId' => ['field' => 'id', 'type' => 'exact', 'value_type' => 'string'], // Alias für ID-Filter, falls Benutzer auctionId schreibt
-        'bundesland' => ['field' => 'bundesland', 'type' => 'lowercase_exact'],
-        'landkreis' => ['field' => 'district', 'type' => 'lowercase_exact'], // Beachte: Feld heißt 'district' im Mapping
-        'status' => ['field' => 'status', 'type' => 'exact'],
-        'size' => ['field' => 'flaeche_ha', 'type' => 'minmax', 'value_type' => 'float'],
-        'leistung' => ['field' => 'leistung_mw', 'type' => 'minmax', 'value_type' => 'float'],
-        'volllaststunden' => ['field' => 'volllaststunden', 'type' => 'minmax', 'value_type' => 'int'],
-        'property' => ['field' => 'property', 'type' => 'exact'],
-        'focus' => ['field' => 'focus', 'type' => 'exact', 'value_type' => 'bool'], // Korrigiert: Das Feld im gemappten Array heißt 'focus'
-        'irr' => ['field' => 'internalRateOfReturnBeforeRent', 'type' => 'minmax', 'value_type' => 'float'],
+        'bundesland' => ['field' => 'bundesland', 'type' => 'exact', 'access_raw' => false], // Frontend-Key, greift auf gemapptes 'bundesland' zu
+        'landkreis' => ['field' => 'district', 'type' => 'lowercase_exact'], // Beachte: Feld heißt 'district' im Mapping, dieser Key eher für Backend?
+        'status' => ['field' => 'status', 'type' => 'exact', 'access_raw' => false], // Greift auf gemapptes 'status' zu (Rohdatenfeld heißt auch status, aber Konsistenz)
+        'size' => ['field' => 'flaeche_ha', 'type' => 'minmax', 'value_type' => 'float', 'access_raw' => false], // Greift auf gemapptes 'flaeche_ha' zu
+        'areaSize' => ['field' => 'flaeche_ha', 'type' => 'minmax', 'value_type' => 'float', 'access_raw' => false], // Greift auf gemapptes 'flaeche_ha' zu
+        'leistung' => ['field' => 'leistung_mw', 'type' => 'minmax', 'value_type' => 'float', 'access_raw' => false], // Greift auf gemapptes 'leistung_mw' zu
+        'power' => ['field' => 'leistung_mw', 'type' => 'minmax', 'value_type' => 'float', 'access_raw' => false], // Greift auf gemapptes 'leistung_mw' zu
+        'volllaststunden' => ['field' => 'volllaststunden', 'type' => 'minmax', 'value_type' => 'int', 'access_raw' => false], // Greift auf gemapptes 'volllaststunden' zu
+        'property' => ['field' => 'property', 'type' => 'exact', 'access_raw' => false], // Greift auf gemapptes 'property' zu
+        'focus' => ['field' => 'focus', 'type' => 'exact', 'value_type' => 'bool', 'access_raw' => false], // Explizit auf gemapptes Feld zugreifen
+        'isAuctionInFocus' => ['field' => 'focus', 'type' => 'exact', 'value_type' => 'bool', 'access_raw' => false], // Backend-Key, greift auf gemapptes 'focus' zu
+        'irr' => ['field' => 'internalRateOfReturnBeforeRent', 'type' => 'minmax', 'value_type' => 'float', 'access_raw' => false], // Greift auf gemapptes 'internalRateOfReturnBeforeRent' zu
         // Weitere Felder können hier hinzugefügt werden, z.B.:
         // 'some_bool_field' => ['field' => 'is_active', 'type' => 'exact', 'value_type' => 'bool'],
         // 'some_exact_string' => ['field' => 'projekt_name', 'type' => 'exact'],
@@ -351,32 +354,33 @@ class AuctionService
         $mappedAuctions = [];
         $mappingErrors = 0;
         $filteredOutCount = 0;
-        $validStatuses = [
-            'STARTED', 'FIRST_ROUND', 'SECOND_ROUND', 'FIRST_ROUND_EVALUATION',
-            'PRE_RELEASE', 'PREVIEW', 'OPEN_FOR_DIRECT_AWARDING', 'DIRECT_AWARDING', 'AWARDING'
-        ];
+        // $validStatuses = [
+        //     'STARTED', 'FIRST_ROUND', 'SECOND_ROUND', 'FIRST_ROUND_EVALUATION',
+        //     'PRE_RELEASE', 'PREVIEW', 'OPEN_FOR_DIRECT_AWARDING', 'DIRECT_AWARDING', 'AWARDING'
+        // ];
 
         foreach ($auctionsRaw as $index => $auctionSingleRaw) {
             $status = $auctionSingleRaw['status'] ?? null;
             $auctionIdForLogApi = $auctionSingleRaw['auctionId'] ?? 'unbekannt';
 
-            if (in_array($status, $validStatuses)) {
-                try {
-                    $mappedAuction = $this->mapPublicAuctionToInternalFormat($auctionSingleRaw);
-                    $mappedAuctions[] = $mappedAuction;
-                } catch (\Throwable $e) {
-                    $mappingErrors++;
-                    $this->logger->error('[getPublicAuctions] FEHLER beim Mappen einer Roh-Auktion (Index: ' . $index . '): ' . $e->getMessage(), [
-                        'auctionId_raw' => $auctionIdForLogApi,
-                        'exception_trace' => $e->getTraceAsString()
-                    ]);
-                }
-            } else {
-                $filteredOutCount++;
-                // $this->logger->debug('[getPublicAuctions] Roh-Item übersprungen wegen Status-Filter', ['id' => $auctionIdForLogApi, 'status' => $status]);
+            // Entferne die Vorfilterung nach Status, um alle Auktionen zu mappen
+            // if (in_array($status, $validStatuses)) {
+            try {
+                $mappedAuction = $this->mapPublicAuctionToInternalFormat($auctionSingleRaw);
+                $mappedAuctions[] = $mappedAuction;
+            } catch (\Throwable $e) {
+                $mappingErrors++;
+                $this->logger->error('[getPublicAuctions] FEHLER beim Mappen einer Roh-Auktion (Index: ' . $index . '): ' . $e->getMessage(), [
+                    'auctionId_raw' => $auctionIdForLogApi,
+                    'exception_trace' => $e->getTraceAsString()
+                ]);
             }
+            // } else {
+            //     $filteredOutCount++;
+            //     // $this->logger->debug('[getPublicAuctions] Roh-Item übersprungen wegen Status-Filter', ['id' => $auctionIdForLogApi, 'status' => $status]);
+            // }
         }
-        $this->logger->info('[getPublicAuctions] Mapping beendet. ' . count($mappedAuctions) . ' von ' . (count($auctionsRaw) - $filteredOutCount) . ' Auktionen (nach Statusfilter) erfolgreich gemappt (' . $mappingErrors . ' Fehler). ' . $filteredOutCount . ' wurden wegen Status entfernt.');
+        $this->logger->info('[getPublicAuctions] Mapping beendet. ' . count($mappedAuctions) . ' von ' . count($auctionsRaw) . ' Roh-Auktionen erfolgreich gemappt (' . $mappingErrors . ' Fehler).'); // Log angepasst, da $filteredOutCount nicht mehr relevant ist
 
         // 4. Speichere gemappte Daten im Cache
         if (!is_dir($this->cacheDir)) @mkdir($this->cacheDir, 0755, true);
@@ -745,328 +749,114 @@ class AuctionService
                 $structuredFilters[$key] = $value;
             }
         }
-        $this->logger->debug('[getAuctions] Strukturierte Filter für Verarbeitung:', $structuredFilters);
+        $this->logger->debug('[getAuctions] Strukturierte Filter für Verarbeitung:', $structuredFilters); // $structuredFilters ist jetzt $parsedFilters von parseFiltersFromString
 
-        if (!empty($structuredFilters)) {
-            $this->logger->debug('[getAuctions] Wende strukturierte Filter an: ' . json_encode($structuredFilters));
-            $filteredAuctions = [];
+        if (!empty($structuredFilters)) { // $structuredFilters ist die Ausgabe von parseFiltersFromString
+            $this->logger->debug('[getAuctions] Wende geparste Filter an: ' . json_encode($structuredFilters));
+            $finalFilteredAuctions = []; // Umbenannt von $filteredAuctions
 
             foreach ($auctions as $auction) {
-                $include = true;
+                $includeAuction = true; // Umbenannt von $include
                 $auctionIdForLog = $auction['id'] ?? 'unbekannte_ID';
 
-                foreach ($structuredFilters as $filterKeyWithPotentialSuffix => $filterValue) {
-                    // WICHTIG: $matchFound muss für jeden einzelnen Filter zurückgesetzt werden!
-                    $matchFound = false; // Oder benenne es um zu $currentFilterMatches = false;
-
-                    if ($filterValue === null || (is_string($filterValue) && $filterValue === '' && !is_bool($filterValue)) || (is_array($filterValue) && empty($filterValue) && $filterKeyWithPotentialSuffix !== 'focus')) {
-                        // Wenn der Filterwert leer ist (außer bei 'focus', wo 'false' relevant sein kann),
-                        // betrachten wir diesen spezifischen Filter als nicht aktiv oder nicht einschränkend.
-                        // Aber wir wollen nicht, dass er $include fälschlicherweise auf false setzt.
-                        // Stattdessen sollte $matchFound für diesen leeren Filter true sein, damit er nicht ausschließt.
-                        // ODER wir setzen $matchFound hier nicht und verlassen uns darauf, dass die Logik unten korrekt greift
-                        // und diesen Filter quasi überspringt, ohne $include zu ändern.
-                        // Für boolesche Filter wie 'focus' muss der Wert 'false' aber verarbeitet werden.
-
-                        // Wenn der Filter-Input explizit leer ist und es sich NICHT um 'focus' handelt, überspringen wir ihn,
-                        // da er die Auktion nicht weiter einschränken soll.
-                        // $matchFound bleibt hier auf dem Initialwert (false), was dazu führen würde,
-                        // dass der Filter als NICHT ERFÜLLT gilt, wenn keine Werte zum Vergleichen da sind.
-                        // Das ist problematisch. Ein leerer Filter (außer focus=false) sollte die Auktion nicht ausschließen.
-
-                        // Korrektere Logik: Wenn ein Filterwert leer ist (und es nicht focus ist), sollte er nicht zum Ausschluss führen.
-                        // Wir setzen $matchFound auf true, damit dieser spezielle (leere) Filter die Auktion nicht rauswirft.
-                        if ($filterKeyWithPotentialSuffix !== 'focus' || ($filterValue !== 'false' && $filterValue !== false)) {
-                             // $this->logger->debug("[FilterLoop] Auktion: {$auctionIdForLog}, FilterKey: '{$filterKeyWithPotentialSuffix}' hat leeren Wert (außer focus=false) und wird als 'match' behandelt, um nicht auszuschließen.");
-                             $matchFound = true; // Behandle als Match, um nicht fälschlicherweise auszuschließen
-                             // ABER: Die eigentliche Filterung für diesen Key findet dann nicht statt.
-                             // Besser: Diesen Filter einfach überspringen, ohne $matchFound zu setzen oder $include zu ändern.
-                             // Wir müssen sicherstellen, dass der Standardfall (leerer Filterstring) nicht zum Ausschluss führt.
-                             // Die aktuelle Logik unten (`if (!$matchFound) { $include = false; }`) ist das Problem bei leeren Filtern.
-
-                             // Wenn $filterValue leer ist und nicht focus, dann ist dieser Filter nicht aktiv.
-                             // $include sollte nicht beeinflusst werden. $matchFound sollte nicht ausgewertet werden.
-                             // Wir können `continue;` verwenden, um zum nächsten Filter zu springen.
-                             // Aber die Logik `if (!$matchFound)` würde dann mit dem $matchFound des *vorherigen* Filters arbeiten.
-
-                             // Neuer Ansatz: Die `if (!$matchFound)` Prüfung muss spezifischer sein.
-                             // $matchFound wird oben auf false gesetzt. Wenn ein Filter nicht zutrifft, bleibt er false.
-                             // Wenn ein Filterwert leer ist (und nicht focus=false), dann sollte dieser Filter die Auktion NICHT ausschließen.
-                             // Der Filter ist dann einfach nicht aktiv.
-
-                            // Wenn der Wert leer ist (und es nicht `focus=false` ist), überspringe diesen Filter komplett.
-                            // Die Variable `$include` wird dann nicht durch diesen speziellen Filter beeinflusst.
-                            if ($filterKeyWithPotentialSuffix === 'focus' && ($filterValue === 'false' || $filterValue === false)) {
-                                // focus=false ist ein aktiver Filter, nicht überspringen
-                            } else {
-                                $this->logger->debug("[FilterLoop] Auktion: {$auctionIdForLog}, FilterKey: '{$filterKeyWithPotentialSuffix}' wird übersprungen (Wert ist leer oder nicht relevant).");
-                                continue; // Nächster Filter für diese Auktion
-                            }
-                        }
-                    }
-
-                    $baseFilterKey = $filterKeyWithPotentialSuffix;
-                    $operatorSuffix = '';
-
-                    // Suffix-Extraktion für Operatoren wie __in, __ne, etc.
-                    if (str_ends_with($filterKeyWithPotentialSuffix, '__in')) {
-                        $operatorSuffix = '__in';
-                        $baseFilterKey = substr($filterKeyWithPotentialSuffix, 0, -4);
-                    } elseif (str_ends_with($filterKeyWithPotentialSuffix, '__not_in')) {
-                        $operatorSuffix = '__not_in';
-                        $baseFilterKey = substr($filterKeyWithPotentialSuffix, 0, -8);
-                    } elseif (str_ends_with($filterKeyWithPotentialSuffix, '__contains')) {
-                        $operatorSuffix = '__contains';
-                        $baseFilterKey = substr($filterKeyWithPotentialSuffix, 0, -10);
-                    } elseif (str_ends_with($filterKeyWithPotentialSuffix, '__ne')) {
-                        $operatorSuffix = '__ne';
-                        $baseFilterKey = substr($filterKeyWithPotentialSuffix, 0, -4);
-                    }
-                    // Hinweis: _min und _max Suffixe wurden bereits oben zu strukturierten Filtern verarbeitet.
-                    // $baseFilterKey ist hier der Schlüssel, wie er in $filterableFields definiert ist (z.B. 'status', 'size')
-
-                    if (!isset($this->filterableFields[$baseFilterKey])) {
-                        $this->logger->warning("[getAuctions] Unbekannter Basis-Filter-Schlüssel '$baseFilterKey' (abgeleitet von '$filterKeyWithPotentialSuffix') wurde ignoriert.");
-                        continue;
-                    }
-
-                    $config = $this->filterableFields[$baseFilterKey];
-                    $auctionField = $config['field'];
-                    $configFilterType = $config['type'];
-                    $valueType = $config['value_type'] ?? 'string';
-
-                    if (!array_key_exists($auctionField, $auction) && $configFilterType !== 'minmax') { // Bei minmax könnte das Feld fehlen, aber trotzdem gefiltert werden (z.B. Auktion hat keine Leistung angegeben)
-                        $this->logger->debug("[getAuctions] Filter '$filterKeyWithPotentialSuffix' übersprungen (Feld '$auctionField' nicht in Auktion vorhanden).", ['auction_id' => $auctionIdForLog, 'available_keys' => array_keys($auction)]);
-                        // $include = false; // Nicht hier, $matchFound wird false bleiben und unten behandelt
-                        $matchFound = false; // explizit setzen, damit die untere Prüfung greift
-                        // break; // Nicht hier, die äußere Schleife soll weitermachen, aber dieser Filter schlägt fehl
+                foreach ($structuredFilters as $filterFieldKey => $filterRule) {
+                    $auctionValue = null;
+                    if ($filterRule['access_raw']) {
+                        $auctionValue = $auction['_raw_data'][$filterFieldKey] ?? null;
                     } else {
-                        $auctionValue = $auction[$auctionField] ?? null; // null, wenn Feld nicht existiert (relevant für minmax)
+                        $auctionValue = $auction[$filterFieldKey] ?? null;
                     }
 
-                    $actualFilterType = $configFilterType;
-                    if ($operatorSuffix === '__in' || $operatorSuffix === '__not_in') {
-                        $actualFilterType = 'in_or_not_in';
-                    } elseif ($operatorSuffix === '__contains') {
-                        $actualFilterType = 'contains';
-                    } elseif ($operatorSuffix === '__ne') {
-                        $actualFilterType = 'not_equal';
-                    }
+                    $filterValueFromRule = $filterRule['value'];
+                    $operatorType = $filterRule['operator_type'];
+                    $valueTypeHint = $filterRule['value_type_hint'];
+                    
+                    $matchThisRule = false;
 
-                    $this->logger->debug("[FilterLoop] Auktion: {$auctionIdForLog}, FilterKey: '$filterKeyWithPotentialSuffix', BaseKey: '$baseFilterKey', AuctionField: '$auctionField', AuctionValue: '" . (is_array($auctionValue) ? json_encode($auctionValue) : $auctionValue) . "' (Typ: " . gettype($auctionValue) . "), FilterValue: '" . (is_array($filterValue) ? json_encode($filterValue) : $filterValue) . "' (Typ: " . gettype($filterValue) . "), ActualType: '$actualFilterType'");
+                    $this->logger->debug("[FilterLoop] Auktion: {$auctionIdForLog}, FieldKey: '{$filterFieldKey}', Operator: '{$operatorType}', AccessRaw: " . ($filterRule['access_raw']?'true':'false') . ", AuctionValue: '" . (is_array($auctionValue) ? json_encode($auctionValue) : $auctionValue) . "' (Typ: " . gettype($auctionValue) . "), FilterValueFromRule: '" . (is_array($filterValueFromRule) ? json_encode($filterValueFromRule) : $filterValueFromRule) . "', ValueTypeHint: '{$valueTypeHint}'");
 
-                    switch ($actualFilterType) {
-                        case 'exact':
-                        case 'lowercase_exact':
-                            $isLowercase = ($actualFilterType === 'lowercase_exact');
-                            $compareAuctionValue = $isLowercase && is_string($auctionValue) ? strtolower($auctionValue) : $auctionValue;
-
-                            if ($baseFilterKey === 'focus') {
-                                // $filterValue ist hier der Wert aus $structuredFilters['focus']
-                                // Kann 'true', 'false' (als Strings oder bools) oder null/nicht gesetzt sein
-                                if (isset($filterValue) && $filterValue !== '' && $filterValue !== null) { // Wenn 'focus' als Filter aktiv ist
-                                    $parsedFilterFocusValue = filter_var($filterValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-
-                                    if ($parsedFilterFocusValue === true) {
-                                        $matchFound = ($auctionValue === true);
-                                    } elseif ($parsedFilterFocusValue === false) {
-                                        // Explizit focus=false, filtere auf Auktionen, wo focus false ist
-                                        $matchFound = ($auctionValue === false);
-                                    } else {
-                                        // Ungültiger Wert für focus (z.B. "abc"), Filter nicht anwenden.
-                                        $matchFound = true;
-                                        $this->logger->debug("[FilterDetail][{$baseFilterKey}] Focus Filter: Ungültiger übergebener Wert '$filterValue', Filter wirkt nicht einschränkend.");
-                                    }
-                                } else {
-                                    // Filter 'focus' wurde nicht im $structuredFilters gefunden (d.h. nicht im Request)
-                                    // In diesem Fall soll der Fokus-Filter keine Einschränkung bewirken.
-                                    $matchFound = true;
-                                }
-                                $this->logger->debug("[FilterDetail][{$baseFilterKey}] Focus Filter Logic: auctionValue='".var_export($auctionValue, true)."', filterValueReceived='".var_export($filterValue, true)."', matchFound=".var_export($matchFound, true));
-                            } else {
-                                // Normale 'exact' Logik für andere Felder
-                                $valuesToCompareAgainst = [];
-                                if (is_string($filterValue) && str_contains($filterValue, ',')) {
-                                    $valuesToCompareAgainst = explode(',', $filterValue);
-                                } elseif (is_array($filterValue)) {
-                                    $valuesToCompareAgainst = $filterValue;
-                                } else {
-                                    $valuesToCompareAgainst = [$filterValue];
-                                }
-
-                                // $matchFound wurde oben bereits auf false initialisiert. Setze es nur auf true, wenn ein Match existiert.
-                                foreach ($valuesToCompareAgainst as $singleValue) {
-                                    $currentCompareVal = trim((string)$singleValue);
-                                    if ($isLowercase) {
-                                        $currentCompareVal = strtolower($currentCompareVal);
-                                    }
-
-                                    $typedSingleValue = null;
-                                    if ($valueType === 'bool') {
-                                        // Für boolesche Felder (NICHT focus, da oben behandelt)
-                                        $typedSingleValue = filter_var($currentCompareVal, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                                        if ($typedSingleValue === null && $currentCompareVal !== '') {
-                                            $this->logger->debug("[FilterDetail][{$baseFilterKey}] Invalid boolean value '$currentCompareVal' for auction {$auctionIdForLog}");
-                                            continue; // Nächsten Wert in $valuesToCompareAgainst prüfen
-                                        }
-                                    } elseif ($valueType === 'int') {
-                                        $typedSingleValue = (int)$currentCompareVal;
-                                    } elseif ($valueType === 'float') {
-                                        $typedSingleValue = (float)$currentCompareVal;
-                                    } else {
-                                        $typedSingleValue = $currentCompareVal;
-                                    }
-                                    $this->logger->debug("[FilterDetail][{$baseFilterKey}] Comparing: AuctionCompVal='{$compareAuctionValue}' (Type: " . gettype($compareAuctionValue) . ") WITH TypedFilterSingleVal='{$typedSingleValue}' (Type: " . gettype($typedSingleValue) . ")");
-                                    if ($compareAuctionValue == $typedSingleValue) { // Beachte: == für Typumwandlung bei Zahlen vs. Strings
-                                        $matchFound = true;
-                                        $this->logger->debug("[FilterDetail][{$baseFilterKey}] Match found.");
-                                        break; // Ein Match reicht
-                                    }
-                                }
-                                // Nach der Schleife ist $matchFound entweder true oder immer noch false.
-                            }
-                            break;
-
+                    switch ($operatorType) {
+                        case 'equal':
                         case 'not_equal':
-                            $compareValueNE = $filterValue;
-                            if ($valueType === 'bool' && !is_bool($compareValueNE)) {
-                                $compareValueNE = filter_var($compareValueNE, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                            } elseif ($valueType === 'int' && !is_int($compareValueNE)) {
-                                $compareValueNE = (int)$compareValueNE;
-                            } elseif ($valueType === 'float' && !is_float($compareValueNE)) {
-                                $compareValueNE = (float)$compareValueNE;
+                            $compareAuctionVal = $this->coerceTypeForComparison($auctionValue, $filterValueFromRule, $valueTypeHint);
+                            $compareFilterVal = $this->coerceTypeForComparison($filterValueFromRule, $auctionValue, $valueTypeHint);
+                            
+                            if ($valueTypeHint === 'bool' && $compareFilterVal === null && is_string($filterValueFromRule) && $filterValueFromRule !== ''){
+                                // Ungültiger boolescher Wert im Filter, Regel nicht anwendbar
+                                $this->logger->warning("[FilterLoop] Ungültiger boolescher Filterwert '{$filterValueFromRule}' für Feld {$filterFieldKey}. Regel ignoriert.");
+                                $matchThisRule = true; // Ignorierte Regel schließt nicht aus
+                                break;
                             }
-                            if ($auctionValue == $compareValueNE) {
-                                $this->logger->debug("[getAuctions] Filter '$filterKeyWithPotentialSuffix' (not_equal) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_value' => $auctionValue, 'filter_value' => $compareValueNE]);
-                                $include = false;
-                            }
+
+                            $currentMatch = ($compareAuctionVal == $compareFilterVal);
+                            $matchThisRule = ($operatorType === 'equal') ? $currentMatch : !$currentMatch;
                             break;
 
                         case 'minmax':
-                            // $matchFound wurde oben bereits für diesen Filter auf false initialisiert.
-                            $minMaxConditionsMet = true; // Lokale Variable für die Bedingungen dieses MinMax-Filters
-
-                            if (!is_array($filterValue) || (!isset($filterValue['min']) && !isset($filterValue['max']))) {
-                                $this->logger->warning("[FilterDetail][{$baseFilterKey}] Invalid minmax filter structure for auction {$auctionIdForLog}: " . json_encode($filterValue));
-                                $minMaxConditionsMet = false;
+                            // auctionValue muss numerisch sein für minmax
+                            if (!is_numeric($auctionValue)) {
+                                $this->logger->debug("[FilterLoop][{$filterFieldKey}] MinMax nicht anwendbar, Auktionswert '{$auctionValue}' nicht numerisch.");
+                                $matchThisRule = false; // Oder true, wenn nicht-numerische einfach ignoriert werden sollen? Aktuell: schließt aus.
+                                break;
                             }
+                            $numericAuctionValue = (float)$auctionValue;
+                            $minMaxConditionsMet = true;
 
-                            if ($minMaxConditionsMet && $auctionValue === null) {
-                                $this->logger->debug("[FilterDetail][{$baseFilterKey}] Skipped minmax for auction {$auctionIdForLog} as auction value for '$auctionField' is null.");
-                                $minMaxConditionsMet = false; // Kann nicht matchen, wenn Auktionswert null ist
-                            }
+                            $minValueFromFilter = $filterValueFromRule['min'] ?? null;
+                            $maxValueFromFilter = $filterValueFromRule['max'] ?? null;
 
-                            $numericAuctionValue = 0;
-                            if ($minMaxConditionsMet) { // Nur fortfahren, wenn bisher alles OK
-                                if ($valueType === 'int') {
-                                    $numericAuctionValue = (int)$auctionValue;
-                                } elseif ($valueType === 'float') {
-                                    $numericAuctionValue = (float)$auctionValue;
-                                } else {
-                                    $this->logger->warning("[FilterDetail][{$baseFilterKey}] Minmax for auction {$auctionIdForLog} requires value_type 'int' or 'float'. Found '$valueType' for auction value '$auctionValue'.");
+                            if ($minValueFromFilter !== null) {
+                                if ($numericAuctionValue < (float)$minValueFromFilter) {
                                     $minMaxConditionsMet = false;
                                 }
                             }
-
-                            if ($minMaxConditionsMet) { // Nur fortfahren, wenn Typ OK
-                                $minValueFromFilter = $filterValue['min'] ?? null;
-                                $maxValueFromFilter = $filterValue['max'] ?? null;
-
-                                $this->logger->debug("[FilterDetail][{$baseFilterKey}] MinMax Check for auction {$auctionIdForLog}, Field '$auctionField': AuctionVal='{$numericAuctionValue}' (Type: {$valueType}), FilterMin='{$minValueFromFilter}', FilterMax='{$maxValueFromFilter}'");
-
-                                if ($minValueFromFilter !== null) {
-                                    $minFilter = ($valueType === 'int') ? (int)$minValueFromFilter : (float)$minValueFromFilter;
-                                    if ($numericAuctionValue < $minFilter) {
-                                        $this->logger->debug("[FilterResult][{$baseFilterKey}] Min condition NOT MET for auction {$auctionIdForLog}: Val '{$numericAuctionValue}' < Min '{$minFilter}'.");
-                                        $minMaxConditionsMet = false;
-                                    } else {
-                                        // $this->logger->debug("[FilterResult][{$baseFilterKey}] Min condition MET for auction {$auctionIdForLog}: Val '{$numericAuctionValue}' >= Min '{$minFilter}'.");
-                                    }
-                                }
-                                if ($minMaxConditionsMet && $maxValueFromFilter !== null) { // Prüfe $minMaxConditionsMet erneut
-                                    $maxFilter = ($valueType === 'int') ? (int)$maxValueFromFilter : (float)$maxValueFromFilter;
-                                    if ($numericAuctionValue > $maxFilter) {
-                                        $this->logger->debug("[FilterResult][{$baseFilterKey}] Max condition NOT MET for auction {$auctionIdForLog}: Val '{$numericAuctionValue}' > Max '{$maxFilter}'.");
-                                        $minMaxConditionsMet = false;
-                                    } else {
-                                        // $this->logger->debug("[FilterResult][{$baseFilterKey}] Max condition MET for auction {$auctionIdForLog}: Val '{$numericAuctionValue}' <= Max '{$maxFilter}'.");
-                                    }
+                            if ($minMaxConditionsMet && $maxValueFromFilter !== null) {
+                                if ($numericAuctionValue > (float)$maxValueFromFilter) {
+                                    $minMaxConditionsMet = false;
                                 }
                             }
-
-                            if ($minMaxConditionsMet) {
-                                $matchFound = true; // Dieser MinMax-Filter wurde insgesamt erfüllt
-                                $this->logger->debug("[FilterResult][{$baseFilterKey}] MinMax conditions OVERALL MET for auction {$auctionIdForLog}. Setting matchFound=true.");
-                            } else {
-                                // $matchFound bleibt false (Standard von oben)
-                                $this->logger->debug("[FilterResult][{$baseFilterKey}] MinMax conditions NOT MET for auction {$auctionIdForLog}. matchFound remains false.");
-                            }
-                            // Das direkte Setzen von $include = false; hier wird entfernt.
-                            // Die allgemeine Logik `if (!$matchFound)` weiter unten kümmert sich darum.
+                            $matchThisRule = $minMaxConditionsMet;
                             break;
 
-                        case 'in_or_not_in':
-                            $listValues = is_array($filterValue) ? $filterValue : array_map('trim', explode(',', (string)$filterValue));
+                        case 'in':
+                        case 'not_in':
+                            $listValues = array_map('trim', explode(',', (string)$filterValueFromRule));
                             $foundInList = false;
-                            // $isLowercase muss hier basierend auf dem configFilterType des baseFilterKey bestimmt werden
-                            $isLowercase = ($config['type'] === 'lowercase_exact'); 
-
-                            foreach ($listValues as $lv) {
-                                $compareLv = $lv;
-                                if ($valueType === 'bool') {
-                                    $compareLv = filter_var($lv, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                                } elseif ($valueType === 'int') {
-                                    $compareLv = (int)$lv;
-                                } elseif ($valueType === 'float') {
-                                    $compareLv = (float)$lv;
-                                } elseif ($isLowercase) { // Annahme: lowercase_exact + __in
-                                    $compareLv = strtolower((string)$lv);
-                                }
-                                $compareAuctionValForIn = ($isLowercase && is_string($auctionValue)) ? strtolower($auctionValue) : $auctionValue;
-
-                                if ($compareAuctionValForIn == $compareLv) {
+                            foreach ($listValues as $listItem) {
+                                $compareAuctionVal = $this->coerceTypeForComparison($auctionValue, $listItem, $valueTypeHint);
+                                $compareListItem = $this->coerceTypeForComparison($listItem, $auctionValue, $valueTypeHint);
+                                if ($compareAuctionVal == $compareListItem) {
                                     $foundInList = true;
                                     break;
                                 }
                             }
-
-                            if ($operatorSuffix === '__in' && !$foundInList) {
-                                $this->logger->debug("[getAuctions] Filter '$filterKeyWithPotentialSuffix' (__in) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_val' => $auctionValue, 'list' => $listValues]);
-                                $include = false;
-                            } elseif ($operatorSuffix === '__not_in' && $foundInList) {
-                                $this->logger->debug("[getAuctions] Filter '$filterKeyWithPotentialSuffix' (__not_in) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_val' => $auctionValue, 'list' => $listValues]);
-                                $include = false;
-                            }
+                            $matchThisRule = ($operatorType === 'in') ? $foundInList : !$foundInList;
                             break;
 
-                        case 'contains': // Annahme: $filterValue ist hier der Suchstring
-                            if (!is_string($auctionValue) || stripos((string)$auctionValue, (string)$filterValue) === false) {
-                                $this->logger->debug("[getAuctions] Filter '$filterKeyWithPotentialSuffix' (__contains) nicht erfüllt.", ['auction_id' => $auctionIdForLog, 'auction_val' => $auctionValue, 'needle' => $filterValue]);
-                                $include = false;
-                            }
+                        case 'contains': // Annahme: String-Vergleich
+                            $matchThisRule = (is_string($auctionValue) && is_string($filterValueFromRule) && stripos($auctionValue, $filterValueFromRule) !== false);
                             break;
-
+                        
                         default:
-                            $this->logger->warning("[getAuctions] Unbekannter Filtertyp '$actualFilterType' für Filter '$filterKeyWithPotentialSuffix'. Filter ignoriert.");
+                            $this->logger->warning("[FilterLoop] Unbekannter operator_type '{$operatorType}' für Feld {$filterFieldKey}. Regel ignoriert.");
+                            $matchThisRule = true; // Unbekannte Regel schließt nicht aus
                             break;
                     }
 
-                    // Allgemeine Prüfung, ob der aktuelle Filter die Auktion ausschließt
-                    if (!$matchFound) {
-                        $this->logger->debug("[FilterLoopResult] Auktion {$auctionIdForLog}: Filter '{$filterKeyWithPotentialSuffix}' (Base: '{$baseFilterKey}', Type: '{$actualFilterType}') NOT satisfied. AuctionValue: '".(is_array($auctionValue) ? json_encode($auctionValue) : strval($auctionValue))."', FilterValue: '".(is_array($filterValue) ? json_encode($filterValue) : strval($filterValue))."'. Excluding auction.");
-                        $include = false;
-                        break; 
-                    } else {
-                        $this->logger->debug("[FilterLoopResult] Auktion {$auctionIdForLog}: Filter '{$filterKeyWithPotentialSuffix}' (Base: '{$baseFilterKey}', Type: '{$actualFilterType}') satisfied.");
+                    if (!$matchThisRule) {
+                        $this->logger->debug("[FilterLoopResult] Auktion {$auctionIdForLog}: Filter '{$filterFieldKey}' NICHT erfüllt. Ausschluss.");
+                        $includeAuction = false;
+                        break; // Nächste Auktion, da eine Regel nicht erfüllt wurde
                     }
+                    $this->logger->debug("[FilterLoopResult] Auktion {$auctionIdForLog}: Filter '{$filterFieldKey}' ERFÜLLT.");
                 }
 
-                if ($include) {
-                    $filteredAuctions[] = $auction;
+                if ($includeAuction) {
+                    $finalFilteredAuctions[] = $auction;
                 }
             }
 
-            $auctions = $filteredAuctions;
+            $auctions = $finalFilteredAuctions;
             $this->logger->info('[getAuctions] Nach Filterung verbleiben ' . count($auctions) . ' Auktionen.');
         } else {
             $this->logger->info('[getAuctions] Keine Filter angewendet, ' . $initialCount . ' Auktionen werden zurückgegeben.');
@@ -1081,15 +871,38 @@ class AuctionService
                     $field = $rule['field'];
                     $direction = $rule['direction'];
                     $valueType = $rule['value_type'];
+                    $accessRaw = $rule['access_raw'] ?? false; // Default auf false, falls nicht gesetzt
                     
-                    $valA = $a[$field] ?? null;
-                    $valB = $b[$field] ?? null;
+                    $valA = $accessRaw ? ($a['_raw_data'][$field] ?? null) : ($a[$field] ?? null);
+                    $valB = $accessRaw ? ($b['_raw_data'][$field] ?? null) : ($b[$field] ?? null);
                     
-                    // Behandlung für numerische und String-Werte
-                    if ($valueType === 'int' || $valueType === 'float') {
+                    if ($valueType === 'attempt_dynamic') {
+                        // Beide Werte numerisch? Dann numerisch sortieren.
+                        if (is_numeric($valA) && is_numeric($valB)) {
+                            $valA = (float)$valA;
+                            $valB = (float)$valB;
+                        } 
+                        // Beide Werte boolesch interpretierbar (auch als Strings 'true'/'false')? Dann boolesch.
+                        // FILTER_NULL_ON_FAILURE ist wichtig, um nicht-boolesche Strings nicht fälschlich als false zu werten.
+                        else {
+                            $boolValA = filter_var($valA, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                            $boolValB = filter_var($valB, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                            if ($boolValA !== null && $boolValB !== null) {
+                                $valA = $boolValA;
+                                $valB = $boolValB;
+                            } else {
+                                // Fallback: Als String sortieren
+                                $valA = strtolower((string)$valA);
+                                $valB = strtolower((string)$valB);
+                            }
+                        }
+                    } elseif ($valueType === 'int' || $valueType === 'float') {
                         $valA = ($valueType === 'int') ? (int)$valA : (float)$valA;
                         $valB = ($valueType === 'int') ? (int)$valB : (float)$valB;
-                    } else {
+                    } elseif ($valueType === 'bool') {
+                        $valA = filter_var($valA, FILTER_VALIDATE_BOOLEAN);
+                        $valB = filter_var($valB, FILTER_VALIDATE_BOOLEAN);
+                    } else { // Default 'string' oder explizit 'string'
                         $valA = strtolower((string)$valA);
                         $valB = strtolower((string)$valB);
                     }
@@ -1321,71 +1134,91 @@ class AuctionService
                 continue;
             }
 
-            // Versuche, Feld, Operator und Wert zu extrahieren
-            // Regex, um Feld, Operator und den Rest als Wert zu erfassen
             if (preg_match('/^(\w+)\s*(' . implode('|', array_map('preg_quote', $supportedOperators)) . ')\s*(.+)$/i', $line, $matches)) {
                 $fieldKey = trim($matches[1]);
                 $operator = strtoupper(trim($matches[2]));
                 $value = trim($matches[3]);
 
-                if (!isset($this->filterableFields[$fieldKey])) {
-                    $this->logger->warning("[parseFiltersFromString] Unbekanntes Filterfeld '{$fieldKey}' in Zeile: '{$line}'. Wird ignoriert.");
-                    continue;
+                $targetFieldName = $fieldKey;
+                $valueType = 'attempt_dynamic';
+                $accessRaw = true; // Standard: Zugriff auf Rohdaten annehmen
+                // Standard-Filtertyp für die Operator-Interpretation, wenn nicht in filterableFields bekannt
+                // Wenn der Operator >, <, >=, <= ist, impliziert das einen Min/Max-artigen Vergleich.
+                $filterParseType = 'exact'; // Default
+                if (in_array($operator, ['<', '>', '<=', '>='])) {
+                    $filterParseType = 'minmax'; // Damit die min/max Logik unten greift
                 }
 
-                $config = $this->filterableFields[$fieldKey];
-                $filterType = $config['type'];
-                $valueType = $config['value_type'] ?? 'string';
+                if (isset($this->filterableFields[$fieldKey])) {
+                    $config = $this->filterableFields[$fieldKey];
+                    $targetFieldName = $config['field'] ?? $fieldKey;
+                    $valueType = $config['value_type'] ?? 'attempt_dynamic';
+                    $filterParseType = $config['type'] ?? $filterParseType; // Config 'type' überschreibt abgeleiteten Typ
+                    
+                    if (isset($config['access_raw'])) {
+                        $accessRaw = (bool)$config['access_raw'];
+                    } else {
+                        $accessRaw = ($targetFieldName === $fieldKey);
+                    }
+                } else {
+                    // fieldKey nicht in filterableFields: dynamischer Zugriff auf Rohdatenfeld fieldKey
+                    // $targetFieldName bleibt $fieldKey
+                    // $valueType bleibt 'attempt_dynamic'
+                    // $accessRaw bleibt true
+                    // $filterParseType wurde oben basierend auf Operator ggf. schon auf minmax gesetzt
+                }
+                
+                // Die eigentliche Weiterverarbeitung des Filters basierend auf $filterParseType, $operator, $value
+                // und Speicherung von targetFieldName, accessRaw, valueType.
 
                 // Spezifische Behandlung für minmax-Filter, wenn Operatoren <, >, <=, >= verwendet werden
-                if ($filterType === 'minmax') {
-                    if (!isset($parsedFilters[$fieldKey])) {
-                        $parsedFilters[$fieldKey] = ['min' => null, 'max' => null];
-                    }
+                // oder der filterParseType explizit 'minmax' ist.
+                if ($filterParseType === 'minmax') {
+                    $currentFilter = ['min' => null, 'max' => null]; // Temporäres Array für diesen Min/Max-Filter
                     if (in_array($operator, ['>', '>='])) {
-                        $parsedFilters[$fieldKey]['min'] = ($operator === '>') ? $value + 0.00001 : $value; // Kleine Anpassung für exklusives >
+                        $currentFilter['min'] = ($operator === '>') ? $this->convertToType($value, $valueType, 0.00001) : $this->convertToType($value, $valueType);
                     } elseif (in_array($operator, ['<', '<='])) {
-                        $parsedFilters[$fieldKey]['max'] = ($operator === '<') ? $value - 0.00001 : $value; // Kleine Anpassung für exklusives <
+                        $currentFilter['max'] = ($operator === '<') ? $this->convertToType($value, $valueType, -0.00001) : $this->convertToType($value, $valueType);
                     }
-                    // Sicherstellen, dass Werte korrekt typisiert sind
-                    if (isset($parsedFilters[$fieldKey]['min'])) {
-                        $parsedFilters[$fieldKey]['min'] = ($valueType === 'int') ? (int)$parsedFilters[$fieldKey]['min'] : (float)$parsedFilters[$fieldKey]['min'];
+                    // Entferne null-Werte, falls nur ein Teil des minmax gesetzt wurde
+                    if ($currentFilter['min'] === null) unset($currentFilter['min']);
+                    if ($currentFilter['max'] === null) unset($currentFilter['max']);
+                    
+                    if (!empty($currentFilter)) {
+                         // Wenn bereits ein Min/Max-Filter für dieses Feld existiert, merge ihn.
+                         // Wichtig für den Fall, dass der Benutzer z.B. "feld > 10" UND "feld < 20" eingibt.
+                        if (isset($parsedFilters[$targetFieldName]) && is_array($parsedFilters[$targetFieldName]['value'])) {
+                            $existingMinMax = $parsedFilters[$targetFieldName]['value'];
+                            $currentFilter = array_merge($existingMinMax, $currentFilter);
+                        }
+                        $parsedFilters[$targetFieldName] = [
+                            'value' => $currentFilter, 
+                            'operator_type' => 'minmax', // Eindeutiger Typ für die spätere Verarbeitung
+                            'value_type_hint' => $valueType,
+                            'access_raw' => $accessRaw
+                        ];
                     }
-                    if (isset($parsedFilters[$fieldKey]['max'])) {
-                        $parsedFilters[$fieldKey]['max'] = ($valueType === 'int') ? (int)$parsedFilters[$fieldKey]['max'] : (float)$parsedFilters[$fieldKey]['max'];
-                    }
-                     // Entferne null-Werte, falls nur ein Teil des minmax gesetzt wurde
-                    if ($parsedFilters[$fieldKey]['min'] === null) unset($parsedFilters[$fieldKey]['min']);
-                    if ($parsedFilters[$fieldKey]['max'] === null) unset($parsedFilters[$fieldKey]['max']);
-                    if (empty($parsedFilters[$fieldKey])) unset($parsedFilters[$fieldKey]);
-
                 } elseif ($operator === 'IN' || $operator === 'NOT IN') {
-                    // Für IN und NOT IN erwarten wir eine kommaseparierte Liste
-                    // Die getAuctions-Methode muss dies intern behandeln oder wir passen das hier an.
-                    // Aktuell unterstützt getAuctions direkt Array-Werte für IN-Filter nicht.
-                    // Wir müssen das Format anpassen oder getAuctions erweitern.
-                    // Vorerst belassen wir es dabei, dass getAuctions dies handhaben muss, wenn wir einen Filter für 'IN' definieren.
-                    // Für diese Demo: Wir gehen davon aus, dass 'getAuctions' einen einzelnen Wert oder ein Array für 'IN' verarbeiten kann.
-                    // Wichtig: Der 'IN' Operator im String wird hier nicht direkt in ein Array umgewandelt,
-                    // sondern der Wert bleibt ein String. getAuctions muss das bei der Verarbeitung des 'IN' Operators berücksichtigen.
-                    $parsedFilters[$fieldKey . ($operator === 'NOT IN' ? '__not_in' : '__in')] = $value; // Spezialschlüssel für IN/NOT IN
-                                    } elseif ($operator === 'CONTAINS') {
-                    $parsedFilters[$fieldKey . '__contains'] = $value; // Spezialschlüssel für CONTAINS
-
+                    $parsedFilters[$targetFieldName] = [
+                        'value' => $value, // Bleibt als kommaseparierter String, wird in getAuctions behandelt
+                        'operator_type' => ($operator === 'NOT IN' ? 'not_in' : 'in'),
+                        'value_type_hint' => $valueType,
+                        'access_raw' => $accessRaw
+                    ];
+                } elseif ($operator === 'CONTAINS') {
+                    $parsedFilters[$targetFieldName] = [
+                        'value' => $this->convertToType($value, $valueType),
+                        'operator_type' => 'contains',
+                        'value_type_hint' => $valueType,
+                        'access_raw' => $accessRaw
+                    ];
                 } elseif (in_array($operator, ['=', '!='])) {
-                     $finalValue = $value;
-                     if ($valueType === 'bool') {
-                         $finalValue = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                         if ($finalValue === null) {
-                            $this->logger->warning("[parseFiltersFromString] Ungültiger boolescher Wert '{$value}' für Feld '{$fieldKey}'. Filter ignoriert.");
-                            continue;
-                         }
-                     } elseif ($valueType === 'int') {
-                        $finalValue = (int)$value;
-                     } elseif ($valueType === 'float') {
-                        $finalValue = (float)$value;
-                     }
-                    $parsedFilters[$fieldKey . ($operator === '!=' ? '__ne' : '')] = $finalValue; // Spezialschlüssel für != oder Standard
+                    $parsedFilters[$targetFieldName] = [
+                        'value' => $this->convertToType($value, $valueType),
+                        'operator_type' => ($operator === '!=' ? 'not_equal' : 'equal'),
+                        'value_type_hint' => $valueType,
+                        'access_raw' => $accessRaw
+                    ];
                 } else {
                     $this->logger->warning("[parseFiltersFromString] Nicht unterstützter Operator '{$operator}' für Feld '{$fieldKey}' in Zeile: '{$line}'. Wird ignoriert.");
                 }
@@ -1395,6 +1228,36 @@ class AuctionService
         }
         $this->logger->debug("[parseFiltersFromString] Geparste Filter aus String: ", $parsedFilters);
         return $parsedFilters;
+    }
+
+    /**
+     * Hilfsmethode zur Typkonvertierung basierend auf valueType und attempt_dynamic Logik.
+     * $offset wird für exklusive Min/Max-Vergleiche verwendet.
+     */
+    private function convertToType($value, string $valueTypeHint, $offset = 0)
+    {
+        if ($value === null || $value === '') return $value; // Leere Werte nicht ändern
+
+        if ($valueTypeHint === 'int') {
+            return (int)$value + (int)$offset;
+        }
+        if ($valueTypeHint === 'float') {
+            return (float)$value + (float)$offset;
+        }
+        if ($valueTypeHint === 'bool') {
+            // Offset hier nicht sinnvoll
+            return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        }
+        // Für 'string' oder 'attempt_dynamic' (wenn keine spezifische Konvertierung zutrifft)
+        // Bei attempt_dynamic wird der Wert erstmal als String belassen, die Vergleichslogik muss dynamisch sein.
+        // Offset für Strings nicht sinnvoll im allgemeinen Fall, es sei denn es wäre eine numerische Operation.
+        // Da hier aber der Filterwert konvertiert wird, und der Auktionswert später dynamisch verglichen wird,
+        // ist eine Offset-Anwendung auf den Filterwert hier riskant, wenn der Typ nicht fest numerisch ist.
+        // Für Min/Max, wo Offset genutzt wird, sollte valueTypeHint bereits numerisch sein.
+        if (is_numeric($offset) && $offset != 0 && is_numeric($value)) { // Nur Offset anwenden, wenn Wert numerisch
+             return (float)$value + (float)$offset;
+        }
+        return (string)$value;
     }
 
     /**
@@ -1424,25 +1287,40 @@ class AuctionService
                 continue;
             }
 
-            // Regex, um Feldname und Sortierrichtung zu erfassen
-            // Erwartet Format: "feldname richtung" oder nur "feldname" (Default: asc)
             if (preg_match('/^(\w+)(?:\s+(asc|desc))?$/i', $line, $matches)) {
-                $fieldKey = trim($matches[1]);
+                $fieldKey = trim($matches[1]); // Der vom User eingegebene Feldname
                 $direction = isset($matches[2]) ? strtolower(trim($matches[2])) : 'asc';
+                
+                $finalFieldNameForAccess = $fieldKey;
+                $valueType = 'attempt_dynamic';
+                $accessRaw = true; // Standard: Zugriff auf Rohdaten annehmen
 
-                if (!isset($this->filterableFields[$fieldKey])) {
-                    $this->logger->warning("[parseSortRulesFromString] Unbekanntes Sortierfeld '{$fieldKey}' in Zeile: '{$line}'. Wird ignoriert.");
-                    continue;
+                if (isset($this->filterableFields[$fieldKey])) {
+                    $config = $this->filterableFields[$fieldKey];
+                    $finalFieldNameForAccess = $config['field'] ?? $fieldKey;
+                    $valueType = $config['value_type'] ?? 'attempt_dynamic';
+                    
+                    // Bestimme accessRaw basierend auf expliziter Konfig oder Abgleich von fieldKey und targetField
+                    if (isset($config['access_raw'])) {
+                        $accessRaw = (bool)$config['access_raw'];
+                    } else {
+                        // Wenn 'field' explizit gesetzt und anders als fieldKey, ist es wahrscheinlich ein Alias zu einem gemappten Feld
+                        // Wenn 'field' nicht gesetzt oder gleich fieldKey, gehen wir von Rohdatenzugriff aus für diesen Schlüssel
+                        $accessRaw = ($finalFieldNameForAccess === $fieldKey);
+                    }
+                } else {
+                    // fieldKey nicht in filterableFields: dynamischer Zugriff auf Rohdatenfeld fieldKey
+                    // $finalFieldNameForAccess bleibt $fieldKey
+                    // $valueType bleibt 'attempt_dynamic'
+                    // $accessRaw bleibt true
                 }
 
-                $config = $this->filterableFields[$fieldKey];
-                $fieldName = $config['field'];
-
                 $parsedRules[] = [
-                    'field' => $fieldName,
-                    'key' => $fieldKey, // Original-Schlüssel für Logging
+                    'field' => $finalFieldNameForAccess,
+                    'key' => $fieldKey,
                     'direction' => $direction,
-                    'value_type' => $config['value_type'] ?? 'string'
+                    'value_type' => $valueType,
+                    'access_raw' => $accessRaw,
                 ];
             } else {
                 $this->logger->warning("[parseSortRulesFromString] Ungültiges Sortierformat in Zeile: '{$line}'. Wird ignoriert.");
@@ -1482,5 +1360,166 @@ class AuctionService
         sort($propertyValues); // Sortiere die Werte alphabetisch
         $this->logger->info('[getUniquePropertyValues] Eindeutige Property-Werte gefunden: ' . implode(', ', $propertyValues));
         return $propertyValues;
+    }
+
+    /**
+     * Ruft alle eindeutigen Status-Werte aus den Auktionen ab.
+     *
+     * @return array Eine sortierte Liste eindeutiger Status-Werte.
+     */
+    public function getUniqueStatusValues(): array
+    {
+        $this->logger->debug('[getUniqueStatusValues] Rufe eindeutige Status-Werte ab.');
+        $auctions = $this->getPublicAuctions(); // Ruft gemappte Auktionen ab (aus Cache oder API)
+
+        if (empty($auctions)) {
+            $this->logger->warning('[getUniqueStatusValues] Keine Auktionen von getPublicAuctions erhalten.');
+            return [];
+        }
+
+        $statusValues = [];
+        foreach ($auctions as $auction) {
+            // Greife auf das gemappte Feld 'status' zu
+            if (isset($auction['status']) && $auction['status'] !== null && $auction['status'] !== '') {
+                $statusValue = $auction['status'];
+                if (!in_array($statusValue, $statusValues, true)) {
+                    $statusValues[] = $statusValue;
+                }
+            }
+        }
+
+        sort($statusValues); // Sortiere die Werte alphabetisch
+        $this->logger->info('[getUniqueStatusValues] Eindeutige Status-Werte gefunden: ' . implode(', ', $statusValues));
+        return $statusValues;
+    }
+
+    private function coerceTypeForComparison($value1, $value2ForHint, string $valueTypeHint)
+    {
+        if ($value1 === null) return null;
+
+        if ($valueTypeHint === 'int') return (int)$value1;
+        if ($valueTypeHint === 'float') return (float)$value1;
+        if ($valueTypeHint === 'bool') {
+            return filter_var($value1, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        }
+        
+        // attempt_dynamic oder string
+        if ($valueTypeHint === 'attempt_dynamic') {
+            if (is_numeric($value1) && is_numeric($value2ForHint)) return (float)$value1;
+            
+            $boolVal1 = filter_var($value1, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            // Prüfe, ob value2ForHint auch boolesch interpretiert werden KÖNNTE, um einen Typ-Mismatch zu vermeiden
+            $boolVal2Hint = filter_var($value2ForHint, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($boolVal1 !== null && $boolVal2Hint !== null) return $boolVal1;
+        }
+        
+        return (string)$value1; // Fallback auf String
+    }
+
+    /**
+     * Wandelt ein einfaches Key-Value-Array von Request-Parametern
+     * in das strukturierte Filterregel-Format um, das getAuctions erwartet.
+     */
+    public function structureRequestFilters(array $requestParams): array
+    {
+        $structuredRequestFilters = [];
+        $minMaxPairs = []; // Sammelbehälter für Min/Max-Paare
+
+        // Vorverarbeitung: Min/Max-Paare identifizieren und aus $requestParams entfernen
+        foreach ($requestParams as $fieldKey => $rawValue) {
+            if (str_ends_with($fieldKey, '_min')) {
+                $baseKey = substr($fieldKey, 0, -4);
+                $minMaxPairs[$baseKey]['min'] = $rawValue;
+                unset($requestParams[$fieldKey]);
+            } elseif (str_ends_with($fieldKey, '_max')) {
+                $baseKey = substr($fieldKey, 0, -4);
+                $minMaxPairs[$baseKey]['max'] = $rawValue;
+                unset($requestParams[$fieldKey]);
+            }
+        }
+
+        // Verarbeite Min/Max-Paare zuerst
+        foreach ($minMaxPairs as $baseKey => $values) {
+            $targetFieldName = $baseKey;
+            $valueType = 'attempt_dynamic';
+            $accessRaw = true;
+            // Für Min/Max ist der filterInteractionType immer 'minmax'
+
+            if (isset($this->filterableFields[$baseKey])) {
+                $config = $this->filterableFields[$baseKey];
+                $targetFieldName = $config['field'] ?? $baseKey;
+                $valueType = $config['value_type'] ?? 'attempt_dynamic';
+                // $filterInteractionType aus config['type'] hier nicht relevant, da es minmax ist
+                if (isset($config['access_raw'])) {
+                    $accessRaw = (bool)$config['access_raw'];
+                } else {
+                    $accessRaw = ($targetFieldName === $baseKey);
+                }
+            }
+
+            $minVal = $values['min'] ?? null;
+            $maxVal = $values['max'] ?? null;
+
+            $filterValue = [];
+            if ($minVal !== null && $minVal !== '') {
+                $filterValue['min'] = $this->convertToType((string)$minVal, $valueType);
+            }
+            if ($maxVal !== null && $maxVal !== '') {
+                $filterValue['max'] = $this->convertToType((string)$maxVal, $valueType);
+            }
+
+            if (!empty($filterValue)) {
+                $structuredRequestFilters[$targetFieldName] = [
+                    'value'           => $filterValue,
+                    'operator_type'   => 'minmax',
+                    'value_type_hint' => $valueType,
+                    'access_raw'      => $accessRaw,
+                    'original_key'    => $baseKey
+                ];
+            }
+        }
+
+        // Verarbeite die restlichen (nicht Min/Max) Parameter
+        foreach ($requestParams as $fieldKey => $rawValue) {
+            if ($rawValue === null || $rawValue === '' || in_array($fieldKey, ['page', 'refresh', 'token'])) {
+                continue;
+            }
+
+            $targetFieldName = $fieldKey;
+            $valueType = 'attempt_dynamic';
+            $accessRaw = true;
+            $filterInteractionType = 'exact';
+            $operatorTypeToUse = 'equal';
+
+            if (isset($this->filterableFields[$fieldKey])) {
+                $config = $this->filterableFields[$fieldKey];
+                $targetFieldName = $config['field'] ?? $fieldKey;
+                $valueType = $config['value_type'] ?? 'attempt_dynamic';
+                $filterInteractionType = $config['type'] ?? $filterInteractionType;
+                if (isset($config['access_raw'])) {
+                    $accessRaw = (bool)$config['access_raw'];
+                } else {
+                    $accessRaw = ($targetFieldName === $fieldKey);
+                }
+            }
+            
+            // Wenn der rawValue Kommas enthält und der Typ nicht explizit was anderes sagt,
+            // gehen wir von einem 'IN'-Operator aus.
+            if (is_string($rawValue) && str_contains($rawValue, ',') && $filterInteractionType !== 'exact_string_with_comma') { // Beispiel für eine Ausnahme
+                $operatorTypeToUse = 'in';
+            }
+            // Wenn der filterInteractionType aus config 'exact', 'lowercase_exact' etc. ist, bleibt es 'equal'
+            // (oder ggf. später 'contains', falls wir das auch aus Request-Parametern ableiten wollen)
+
+            $structuredRequestFilters[$targetFieldName] = [
+                'value'           => ($operatorTypeToUse === 'in') ? (string)$rawValue : $this->convertToType((string)$rawValue, $valueType),
+                'operator_type'   => $operatorTypeToUse,
+                'value_type_hint' => $valueType,
+                'access_raw'      => $accessRaw,
+                'original_key'    => $fieldKey
+            ];
+        }
+        $this->logger->debug('[structureRequestFilters] Strukturierte Request-Filter: ', $structuredRequestFilters);
+        return $structuredRequestFilters;
     }
 }

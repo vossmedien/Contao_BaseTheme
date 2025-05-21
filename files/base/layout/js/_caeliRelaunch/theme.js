@@ -531,3 +531,56 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+// Flaechencheck ZIP Code Input
+document.addEventListener('DOMContentLoaded', function() {
+  const flaechencheckWrappers = document.querySelectorAll('.enterFlaechencheck');
+
+  flaechencheckWrappers.forEach(wrapper => {
+    const zipCodeInput = wrapper.querySelector('#zipCodeInput'); // Behält ID bei, könnte zu Problemen führen
+    const zipCodeSubmit = wrapper.querySelector('#zipCodeSubmit'); // Behält ID bei
+    const messageContainer = wrapper.querySelector('#messageContainer'); // Behält ID bei
+
+    function showAlert(message, type = 'primary') {
+      if (messageContainer) {
+        const alertHtml = `
+          <div class="alert alert-${type} small p-2 border-0 fade mt-0 show" role="alert">
+            ${message}
+          </div>`;
+        messageContainer.innerHTML = alertHtml;
+      }
+    }
+
+    function clearAlert() {
+      if (messageContainer) {
+        messageContainer.innerHTML = '';
+      }
+    }
+
+    if (zipCodeInput && zipCodeSubmit) {
+      zipCodeSubmit.addEventListener('click', function() {
+        clearAlert(); // Vorherige Nachrichten entfernen
+        const query = zipCodeInput.value.trim();
+        if (query) {
+          window.location.href = '/flaechencheck?search=' + encodeURIComponent(query);
+        } else {
+          showAlert('Bitte geben Sie eine PLZ oder einen Ort ein.', 'primary');
+        }
+      });
+
+      zipCodeInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          zipCodeSubmit.click();
+        }
+      });
+
+      // Optional: Alert entfernen, wenn der Nutzer anfängt zu tippen
+      zipCodeInput.addEventListener('input', function() {
+          if (zipCodeInput.value.trim() !== '') {
+              clearAlert();
+          }
+      });
+    }
+  });
+});

@@ -16,7 +16,6 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-
         'animation_type_element' => array(
             'label' => array('Animation: Komplettes Element', ''),
             'inputType' => 'select',
@@ -24,16 +23,17 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
-
         'header_image_options' => array(
             'label' => ['Kopfbild Optionen'],
             'inputType' => 'group',
         ),
+
         'add_header_image' => array(
             'label' => array('Kopfbild hinzufügen', 'Ein einzelnes Bild, das oberhalb des restlichen Inhalts angezeigt wird.'),
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'w50 clr'),
         ),
+
         'header_image' => array(
             'label' => array('Kopfbild auswählen', ''),
             'inputType' => 'fileTree',
@@ -48,6 +48,7 @@ return array(
                 'field' => 'add_header_image',
             ),
         ),
+
         'header_image_size' => array(
             'label' => array('Bildgröße (Kopfbild)', ''),
             'inputType' => 'imageSize',
@@ -71,16 +72,13 @@ return array(
         'two_columns' => array(
             'label' => array('Inhalte zwei-spaltig darstellen', ''),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'w50 clr', 'submitOnChange' => true),
+            'eval' => array('tl_class' => 'w50 clr'),
         ),
 
-        'wrap_columns_in_container' => array(
-            'label' => array('Beide Spalten innerhalb eines Containers anzeigen', 'Fügt einen .container um die zweispaltige Darstellung hinzu.'),
-            'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'w50'), // Angepasst, damit es neben column_order passt
-            'dependsOn' => array(
-                'field' => 'two_columns',
-            ),
+        'columns_container_css_class' => array(
+            'label' => array('Zusätzliche CSS-Klasse für den inneren Container', ''),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50 clr'),
         ),
 
         'column_width_content' => array(
@@ -126,7 +124,7 @@ return array(
         'add_second_content' => array(
             'label' => array('Zweites Inhaltsfeld integrieren', ''),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'w50 clr', 'submitOnChange' => true),
+            'eval' => array('tl_class' => 'w50 clr'),
             'dependsOn' => array(
                 'field' => 'two_columns',
             ),
@@ -160,14 +158,14 @@ return array(
         'headline_type' => array(
             'label' => array('Typ der Überschrift', ''),
             'inputType' => 'select',
-            'options' => array(
-                'h1' => 'H1 (Haupt-Headline für SEO, darf nur 1x vorkommen)',
-                'h2' => 'H2 (Sollte H1 thematisch untergeordnet sein)',
-                'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
-                'h4' => 'H4',
-                'h5' => 'H5',
-            ),
+            'options' => GlobalElementConfig::getHeadlineTagOptions(),
             'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'is_quote' => array(
+            'label' => array('Ist Zitat', 'Stellt die Headline als Zitat dar (visuelle Anpassung).'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
         ),
 
         'subline' => array(
@@ -342,7 +340,6 @@ return array(
             ),
         ),
 
-
         'deactivate_slider' => array(
             'label' => array('Bildanzeige Modus', 'Wie sollen die Bilder dargestellt werden?'),
             'inputType' => 'select',
@@ -413,8 +410,7 @@ return array(
             'label' => ['Slider Optionen'],
             'inputType' => 'group',
             'dependsOn' => array(
-                'field' => 'deactivate_slider',
-                'value' => array('', 'desktop', 'mobile'),
+                'field' => 'add_images',
             ),
             'eval' => array('tl_class' => 'clr'),
         ),
@@ -437,7 +433,7 @@ return array(
         'slide_effect' => array(
             'label' => array('Slide-Effekt', ''),
             'inputType' => 'select',
-            'options' => array('slide' => 'Slide (Standard)', 'coverflow' => 'Coverflow', 'fade' => 'Fade', 'flip' => 'Flip', 'cube' => 'Cube',),
+            'options' => array('slide' => 'Slide (Standard)', 'coverflow' => 'Coverflow', 'fade' => 'Fade', 'flip' => 'Flip', 'cube' => 'Cube'),
             'eval' => array('tl_class' => 'w50'),
         ),
         'transition_time' => array(
@@ -481,9 +477,6 @@ return array(
             'maxItems' => 20,
             'eval' => array('tl_class' => ' clr'),
             'fields' => ButtonHelper::getButtonConfig(),
-            'dependsOn' => array(
-                'field' => 'two_columns',
-            ),
         ),
 
         'button_group_text_alignment' => array(

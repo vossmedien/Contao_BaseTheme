@@ -7,10 +7,45 @@
   }
 }
 
+.ce--stoerer:hover {
+  .stoerer-trigger > svg {
+    transform: scale(1.2);
+  }
+}
+
+
+.mod_article>.article-content{
+      background-attachment: initial !important;
+}
+
+
+
+.ce_rsce_hero_complex {
+  @include media-breakpoint-down(lg) {
+    margin-top: calc(-1 * var(--main-gap));
+  }
+}
+
+
+
+
+
+
+
+
 
 .pull-down {
   margin-bottom: calc(-1 * (var(--main-gap) * 3)) !important;
 }
+
+[class*="pull-down"].article-content {
+  margin-top: calc(var(--main-gap) * 2);
+}
+
+[class*="pull-up"].article-content {
+  margin-bottom:var(--main-gap);
+}
+
 
 .mod_article:has(.pull-down) {
   & + .mod_article > .article-content {
@@ -30,20 +65,6 @@
 }
 
 
-.ce--stoerer:hover {
-  .stoerer-trigger > svg {
-    transform: scale(1.2);
-  }
-}
-
-
-.ce_rsce_hero_complex {
-  @include media-breakpoint-down(lg) {
-    margin-top: calc(-1 * var(--main-gap));
-  }
-}
-
-
 @each $breakpoint, $size in $grid-breakpoints {
   $infix: "-#{$breakpoint}";
 
@@ -52,7 +73,8 @@
       margin-bottom: calc(-1 * (var(--main-gap) * 3)) !important;
     }
 
-    .mod_article:has(.pull-down#{$infix}) {
+
+    .mod_article:has(.content--element:last-child .pull-down#{$infix}, .content--element:last-child.pull-down#{$infix}) {
       & + .mod_article > .article-content {
         padding-top: calc(var(--main-gap) * 4);
       }
@@ -62,11 +84,10 @@
       margin-top: calc(-1 * (var(--main-gap) * 4)) !important;
     }
 
-    .mod_article:has(+ .mod_article .pull-up#{$infix}) {
+    .mod_article:has(.content--element:last-child .pull-up#{$infix}, .content--element:last-child.pull-up#{$infix}){
       .article-content {
         padding-bottom: calc(var(--main-gap) * 4);
       }
     }
   }
 }
-
