@@ -42,7 +42,7 @@ form .widget:not(.form-floating).widget-checkbox fieldset > span input[type=chec
 
   &:after {
     @extend %fa-icon;
-    font: var(--fa-font-sharp-light);
+   font-family:"Font Awesome Kit";
     content: "\e003";
     border: 0;
     font-size: 7px;

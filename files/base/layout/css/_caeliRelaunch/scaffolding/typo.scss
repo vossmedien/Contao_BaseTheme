@@ -46,7 +46,7 @@ main .content--element {
 
       &:before {
         @extend %fa-icon;
-        font: var(--fa-font-sharp-light);
+           font-family:"Font Awesome Kit";
         content: "\e007";
         position: absolute;
         color: currentColor;
@@ -80,7 +80,7 @@ ul.list-arrow {
 
     &:before {
       @extend %fa-icon;
-     font: var(--fa-font-sharp-light);
+       font-family:"Font Awesome Kit";
       content: "\e00e";
       position: absolute;
       padding-right: rfs-value(8px);

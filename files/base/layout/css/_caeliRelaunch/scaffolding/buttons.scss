@@ -42,7 +42,7 @@
 
     &:after {
       @extend %fa-icon;
-      font: var(--fa-font-sharp-light);
+        font-family:"Font Awesome Kit";
       content: "\e000";
       transition: all .3s ease-in-out;
     }
@@ -71,7 +71,7 @@
 
     &:after {
       @extend %fa-icon;
-      font: var(--fa-font-sharp-light);
+         font-family:"Font Awesome Kit";
       content: "\e001";
       font-size: 32px;
     }
@@ -95,7 +95,7 @@
     &.with-arrow {
       &:after {
         @extend %fa-icon;
-        font: var(--fa-font-sharp-light);
+           font-family:"Font Awesome Kit";
         content: "\e001";
         font-size: 32px;
 

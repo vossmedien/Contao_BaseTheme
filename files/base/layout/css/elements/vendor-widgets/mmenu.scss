@@ -39,7 +39,7 @@
     line-height: 30px;
     transform: rotate(180deg);
     @extend %fa-icon;
-    @extend .fasl !optional;
+    font: var(--fa-font-sharp-light);
     content: "\f061";
   }
 
@@ -116,7 +116,7 @@
       transform: none;
       color: var(--mm-spn-color);
       @extend %fa-icon;
-      @extend .fasl !optional;
+      font: var(--fa-font-sharp-light);
       content: "\f061";
     }
 
