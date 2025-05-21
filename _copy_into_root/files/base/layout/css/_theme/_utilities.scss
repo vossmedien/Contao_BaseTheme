@@ -845,24 +845,25 @@ $utilities: map-merge(
 // der oben definierten Utilities (Bootstrap + Custom) zu behalten.
 
 $desired-utilities-keys: (
-  // Bootstrap Keys (Beispiele - diese Liste müsste alle Keys aus der obigen Map enthalten, wenn alles geladen werden soll)
-  "align", "float", "opacity", "overflow", "display", "shadow", "position", "top", "bottom", "start", "end",
-  "translate-middle", "border", "border-top", "border-end", "border-bottom", "border-start", "border-color",
-  "subtle-border-color", "border-width", "border-opacity", "width", "max-width", "viewport-width", "min-viewport-width",
-  "height", "max-height", "viewport-height", "min-viewport-height", "flex", "flex-direction", "flex-grow", "flex-shrink",
-  "flex-wrap", "justify-content", "align-items", "align-content", "align-self", "order", "margin", "margin-x", "margin-y",
-  "margin-top", "margin-end", "margin-bottom", "margin-start", "negative-margin", "negative-margin-x", "negative-margin-y",
-  "negative-margin-top", "negative-margin-end", "negative-margin-bottom", "negative-margin-start", "padding", "padding-x",
-  "padding-y", "padding-top", "padding-end", "padding-bottom", "padding-start", "gap", "row-gap", "column-gap",
-  "font-family", "font-size", "font-style", "font-weight", "line-height", "text-align", "text-decoration", "text-transform",
-  "white-space", "word-wrap", "color", "text-opacity", "text-color", "link-opacity", "link-offset", "link-underline",
-  "link-underline-opacity", "background-color", "bg-opacity", "subtle-background-color", "gradient", "user-select",
-  "pointer-events", "rounded", "rounded-top", "rounded-end", "rounded-bottom", "rounded-start", "visibility", "z-index",
+  // Bootstrap Keys
+  "align", "float", "object-fit", "opacity", "overflow", "overflow-x", "overflow-y", "display", "shadow",
+  "focus-ring", "position", "top", "bottom", "start", "end", "translate-middle", "border", "border-top",
+  "border-end", "border-bottom", "border-start", "border-color", "subtle-border-color", "border-width",
+  "border-opacity", "width", "max-width", "viewport-width", "min-viewport-width", "height", "max-height",
+  "viewport-height", "min-viewport-height", "flex", "flex-direction", "flex-grow", "flex-shrink",
+  "flex-wrap", "justify-content", "align-items", "align-content", "align-self", "order", "margin", "margin-x",
+  "margin-y", "margin-top", "margin-end", "margin-bottom", "margin-start", "negative-margin",
+  "negative-margin-x", "negative-margin-y", "negative-margin-top", "negative-margin-end",
+  "negative-margin-bottom", "negative-margin-start", "padding", "padding-x", "padding-y", "padding-top",
+  "padding-end", "padding-bottom", "padding-start", "gap", "row-gap", "column-gap", "font-family",
+  "font-size", "font-style", "font-weight", "line-height", "text-align", "text-decoration",
+  "text-transform", "white-space", "word-wrap", "color", "text-opacity", "text-color", "link-opacity",
+  "link-offset", "link-underline", "link-underline-opacity", "background-color", "bg-opacity",
+  "subtle-background-color", "gradient", "user-select", "pointer-events", "rounded", "rounded-top",
+  "rounded-end", "rounded-bottom", "rounded-start", "visibility", "z-index",
 
   // Deine Custom Keys
   "cursor"
-  // Füge hier weitere Schlüssel hinzu oder entferne sie, um die Generierung zu steuern.
-  // Standardmäßig (wenn die Filterung unten auskommentiert ist) werden ALLE oben definierten Utilities generiert.
 );
 
 $filtered-utilities: (); // Umbenannt von $filtered-bootstrap-utilities
@@ -875,7 +876,7 @@ $filtered-utilities: (); // Umbenannt von $filtered-bootstrap-utilities
 
 // Um die Filterung zu aktivieren, die nächste Zeile einkommentieren und sicherstellen, dass
 // `$desired-utilities-keys` alle gewünschten Schlüssel enthält.
-// $utilities: $filtered-utilities; // VORERST AUSKOMMENTIERT, UM ALLE UTILITIES ZU LADEN
+ $utilities: $filtered-utilities; // VORERST AUSKOMMENTIERT, UM ALLE UTILITIES ZU LADEN
 
 // =============================================================================
 // 4. UTILITY-KLASSEN GENERIEREN (AUS DER FINALEN $utilities MAP)
