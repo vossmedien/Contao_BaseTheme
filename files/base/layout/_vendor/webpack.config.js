@@ -125,7 +125,7 @@ const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
             filename: `${themeNameClean}.[contenthash].bundle.min.js`,
             path: themeSpecificDistPath,
             publicPath: themeSpecificPublicPath,
-            clean: true,
+            clean: false,
         },
         module: {
             rules: [
@@ -231,10 +231,10 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
         }
 
         const entryName = scssFileName.replace('.scss', ''); // z.B. _vendors, _base
-        const currentCleanValue = isFirstEntryForThisTheme;
-        if (isFirstEntryForThisTheme) {
-            isFirstEntryForThisTheme = false; // Für nachfolgende Einträge dieses Themes clean:false setzen
-        }
+        // const currentCleanValue = isFirstEntryForThisTheme; // Entfernt
+        // if (isFirstEntryForThisTheme) { // Entfernt
+        // isFirstEntryForThisTheme = false; // Entfernt
+        // } // Entfernt
 
         console.log(`CSS-Konfig für Theme "${themeNameRaw}", Datei "${scssFileName}":`);
         console.log(`   SCSS-Datei: ${path.relative(projectRoot, scssFilePath)}`);
@@ -252,7 +252,7 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
                 path: themeCssDistDir,
                 publicPath: themePublicPath,
                 assetModuleFilename: 'fonts/[name].[hash][ext][query]', // Name der Fontdatei beibehalten
-                clean: currentCleanValue, // Alte Dateien im themeCssDistDir nur beim ersten Eintrag entfernen
+                clean: false, // Geändert, da del-cli das übernimmt (vorher currentCleanValue)
             },
             module: {
                 rules: [
