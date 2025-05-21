@@ -289,19 +289,21 @@ const cssThemeWebpackConfigs = cssThemeFolders.map(themeFolder => { // Geändert
             new WebpackManifestPlugin({
                 fileName: path.join(themeManifestDir, `css.manifest.json`), // Ein Manifest pro Theme für alle CSS
                 publicPath: themePublicPath,
-                // Da wir jetzt ein Manifest pro Theme haben, das alle CSS-Einstiegspunkte enthält,
-                // müssen wir nicht mehr so streng filtern. Alle CSS-Dateien, die aus dieser Konfiguration
-                // stammen, gehören in dieses Manifest.
-                filter: (file) => file.name.endsWith('.css'),
-                map: (file) => ({
-                    name: file.name, // z.B. _vendors.hash.bundle.min.css
-                    path: file.path, // Der volle Pfad inkl. publicPath
-                    isInitial: file.isInitial,
-                    isChunk: file.isChunk,
-                    // file.chunk.name ist der Name des Entry-Chunks (z.B. _vendors, _base)
-                    // Damit kann die Anwendung den ursprünglichen Namen finden.
-                    entryPoint: file.chunk?.name
-                })
+                // Filter erweitert, um auch Font-Dateien einzuschließen
+                filter: (file) => file.name.endsWith('.css') || /\.(woff2?|eot|ttf|otf|svg)$/i.test(file.name),
+                map: (file) => {
+                    const entryPoint = file.chunk?.name; // Nur für CSS-Chunks relevant
+                    const isFontFile = /\.(woff2?|eot|ttf|otf|svg)$/i.test(file.name);
+                    return {
+                        name: file.name, // z.B. _vendors.hash.bundle.min.css oder fontname.hash.woff2
+                        path: file.path, // Der volle Pfad inkl. publicPath
+                        isInitial: file.isInitial,
+                        isChunk: file.isChunk,
+                        // Fonts haben keinen CSS-Entry-Point, CSS-Dateien schon
+                        entryPoint: isFontFile ? null : entryPoint,
+                        isFont: isFontFile // Zusätzliches Flag zur einfachen Identifizierung
+                    };
+                }
             }),
         ],
         optimization: {
@@ -422,29 +424,20 @@ if (jsElementWebpackConfigs && jsElementWebpackConfigs.length > 0) {
 if (process.env.FILTER_PATTERN) {
     try {
         const regex = new RegExp(process.env.FILTER_PATTERN);
-        
-        const patternMatchingConfigs = allConfigs.filter(conf => conf.name && regex.test(conf.name));
-        const cssConfigs = allConfigs.filter(conf => conf.name && conf.name.endsWith('-css'));
 
-        // Kombiniere patternMatchingConfigs und cssConfigs, vermeide Duplikate basierend auf conf.name
-        const combinedConfigs = [...patternMatchingConfigs];
-        cssConfigs.forEach(cssConf => {
-            if (!combinedConfigs.find(c => c.name === cssConf.name)) {
-                combinedConfigs.push(cssConf);
-            }
-        });
+        const filteredConfigs = allConfigs.filter(conf => conf.name && regex.test(conf.name));
 
-        if (combinedConfigs.length === 0) {
-            console.warn(`Webpack: Keine Konfigurationen entsprachen dem Filter-Muster: "${process.env.FILTER_PATTERN}" und es wurden auch keine (passenden) CSS-Konfigurationen gefunden. Es wird nichts gebaut.`);
+        if (filteredConfigs.length === 0) {
+            console.warn(`Webpack: Keine Konfigurationen entsprachen dem Filter-Muster: "${process.env.FILTER_PATTERN}". Es wird nichts gebaut.`);
             module.exports = [];
         } else {
-            console.log(`Webpack: ${combinedConfigs.length} von ${allConfigs.length} Konfigurationen werden gebaut. CSS-Konfigurationen werden immer berücksichtigt, zusätzlich zu denen, die dem Muster "${process.env.FILTER_PATTERN}" entsprechen.`);
-            combinedConfigs.forEach(conf => console.log(` - Verwendete Konfiguration: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
-            module.exports = combinedConfigs;
+            console.log(`Webpack: ${filteredConfigs.length} von ${allConfigs.length} Konfigurationen werden gebaut basierend auf dem Muster "${process.env.FILTER_PATTERN}".`);
+            filteredConfigs.forEach(conf => console.log(` - Verwendete Konfiguration: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
+            module.exports = filteredConfigs;
         }
     } catch (e) {
         console.error(`Webpack: Ungültiges Regex-Muster im FILTER_PATTERN: "${process.env.FILTER_PATTERN}". Fehler: ${e.message}`);
-        console.warn(`Webpack: Aufgrund des Fehlers im Regex werden alle ${allConfigs.length} Konfigurationen verwendet (inklusive aller CSS-Dateien).`);
+        console.warn(`Webpack: Aufgrund des Fehlers im Regex werden alle ${allConfigs.length} Konfigurationen verwendet.`);
         allConfigs.forEach(conf => console.log(` - Konfigurationsname: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
         module.exports = allConfigs; // Fallback auf alle Konfigurationen bei Regex-Fehler
     }

@@ -59,52 +59,54 @@ $this->bodyAttributes = $this
 
     <?= $this->viewport ?>
     <?= $this->framework ?>
-
     <?php
     // --- NEU: CSS optimiert einbinden ---
 
-    // Gewünschte Ladereihenfolge und spezifische Attribute
+    // Gewünschte Ladereihenfolge und spezifische Attribute (Schlüssel sind jetzt EntryPoint-Namen)
     $cssLoadConfig = [
-        '_fonts.bundle.min.css' => ['preload' => true, 'media' => 'all', 'type' => 'fonts'],
-        '_vendors.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'vendors'],
-        '_base.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'base'],
-        '_theme.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'theme'],
-        '_root-variables.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'root-variables'],
+        '_fonts' => ['preload' => true, 'media' => 'all'],
+        '_vendors' => ['preload' => false, 'media' => 'all'],
+        '_base' => ['preload' => false, 'media' => 'all'],
+        '_theme' => ['preload' => false, 'media' => 'all'],
+        '_root-variables' => ['preload' => false, 'media' => 'all'],
+        '_utilities' => ['preload' => false, 'media' => 'all'],
     ];
 
-    $outputtedCss = [];
+    $outputtedCssPaths = []; // Speichert die Pfade der bereits ausgegebenen CSS-Dateien
 
-    // Hilfsfunktion, um den Pfad einer CSS-Datei anhand des Suffixes zu finden
-    $findAssetPathBySuffix = function ($suffix, $assets) {
-        foreach ($assets as $assetPath) {
-            if (str_ends_with($assetPath, $suffix)) {
-                return $assetPath;
+    // Hilfsfunktion, um ein CSS-Asset anhand des EntryPoint-Namens zu finden
+    $findAssetByEntryPoint = function ($entryPointKey, $themeCssAssets) {
+        if (empty($themeCssAssets)) return null;
+        foreach ($themeCssAssets as $asset) {
+            // $asset ist ['path' => '...', 'entryPoint' => '...']
+            if (isset($asset['entryPoint']) && $asset['entryPoint'] === $entryPointKey) {
+                return $asset; // Gibt das gesamte Asset-Array zurück
             }
         }
         return null;
     };
 
-    // 1. Preload für _fonts.bundle.min.css (wenn vorhanden)
-    $fontsCssPath = $findAssetPathBySuffix('_fonts.bundle.min.css', $themeAssets['css'] ?? []);
-    if ($fontsCssPath) {
-        echo '<link rel="preload" href="' . rtrim($this->base, '/') . '/' . ltrim($fontsCssPath, '/') . '" as="style">' . "
-    ";
+    // 1. Preload für _fonts CSS (wenn vorhanden)
+    $fontsCssAsset = $findAssetByEntryPoint('_fonts', $themeAssets['css'] ?? []);
+    if ($fontsCssAsset && isset($fontsCssAsset['path'])) {
+        echo '<link rel="preload" href="' . rtrim($this->base, '/') . '/' . ltrim($fontsCssAsset['path'], '/') . '" as="style">' . "\n    ";
     }
 
     // 2. Stylesheets in definierter Reihenfolge ausgeben
-    $orderedCssPathsForOutput = [];
-    // Zuerst die konfigurierten CSS-Dateien in der gewünschten Reihenfolge sammeln
-    foreach (array_keys($cssLoadConfig) as $fileSuffix) {
-        $path = $findAssetPathBySuffix($fileSuffix, $themeAssets['css'] ?? []);
-        if ($path) {
-            $orderedCssPathsForOutput[$fileSuffix] = $path;
+    $orderedCssAssetsForOutput = [];
+    // Zuerst die konfigurierten CSS-Assets in der gewünschten Reihenfolge sammeln
+    foreach (array_keys($cssLoadConfig) as $entryPointKey) {
+        $asset = $findAssetByEntryPoint($entryPointKey, $themeAssets['css'] ?? []);
+        if ($asset && isset($asset['path'])) {
+            $orderedCssAssetsForOutput[$entryPointKey] = $asset; // Speichere das gesamte Asset
         }
     }
 
     // Generiere die <link> Tags für die konfigurierten Dateien
-    foreach ($cssLoadConfig as $fileSuffix => $config) {
-        if (isset($orderedCssPathsForOutput[$fileSuffix])) {
-            $path = $orderedCssPathsForOutput[$fileSuffix];
+    foreach ($cssLoadConfig as $entryPointKey => $config) {
+        if (isset($orderedCssAssetsForOutput[$entryPointKey])) {
+            $asset = $orderedCssAssetsForOutput[$entryPointKey];
+            $path = $asset['path'];
             $fullPath = rtrim($this->base, '/') . '/' . ltrim($path, '/');
 
             echo '<link rel="stylesheet" href="' . $fullPath . '"';
@@ -120,24 +122,23 @@ $this->bodyAttributes = $this
             if (isset($config['onload'])) {
                 echo '<noscript><link rel="stylesheet" href="' . $fullPath . '"></noscript>' . "\n    ";
             }
-            $outputtedCss[] = $path; // Markiere als ausgegeben
+            $outputtedCssPaths[] = $path; // Markiere Pfad als ausgegeben
         }
     }
 
     // Füge alle verbleibenden CSS-Dateien aus $themeAssets['css'] (die nicht in $cssLoadConfig waren)
     // normal zu $GLOBALS['TL_CSS'] hinzu, damit $this->stylesheets sie verarbeiten kann.
-    // Dies stellt sicher, dass keine CSS-Datei verloren geht, falls neue Bundles hinzukommen,
-    // die nicht explizit in $cssLoadConfig behandelt werden.
     if (!empty($themeAssets['css'])) {
-        foreach ($themeAssets['css'] as $cssFile) {
-            if (!in_array($cssFile, $outputtedCss)) {
-                $GLOBALS['TL_CSS'][] = $cssFile . '|static';
+        foreach ($themeAssets['css'] as $cssAsset) { // $cssAsset ist nun ein Array
+            if (isset($cssAsset['path'])) {
+                $cssPath = $cssAsset['path'];
+                if (!in_array($cssPath, $outputtedCssPaths)) {
+                    $GLOBALS['TL_CSS'][] = $cssPath . '|static';
+                }
             }
         }
     }
     ?>
-
-
     <?php // --- NEU: Font Preloads ---
     if (!empty($themeAssets['fonts_preload'])) {
         foreach ($themeAssets['fonts_preload'] as $font) {
@@ -275,6 +276,7 @@ if (!empty($themeAssets['js_app'])) {
     }
 }
 ?>
+
 
 
 
