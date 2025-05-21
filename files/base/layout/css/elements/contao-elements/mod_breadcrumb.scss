@@ -15,7 +15,7 @@
       &:not(:last-child) {
         &:after {
           @extend %fa-icon;
-          font: var(--fa-font-sharp-solid);
+          font: var(--fa-font-sharp-light);
           content: "\f105";
           display: inline-block;
           color: var(--bs-primary);
