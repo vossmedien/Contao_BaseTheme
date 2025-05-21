@@ -3,6 +3,7 @@
 use Contao\Config;
 use Contao\System;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 return [
     'label' => ['Custom | Content Slider mit Bildoptionen', 'Ein Slider mit Texten, optionaler Headline und flexiblen Bildoptionen (fixiert oder pro Slide).'],
@@ -23,14 +24,7 @@ return [
         'headline_type' => [
             'label' => ['Typ der Headline', ''],
             'inputType' => 'select',
-            'options' => [
-                'h1' => 'H1',
-                'h2' => 'H2',
-                'h3' => 'H3',
-                'h4' => 'H4',
-                'h5' => 'H5',
-                'h6' => 'H6',
-            ],
+            'options' => GlobalElementConfig::getHeadlineTagOptions(),
             'eval' => ['tl_class' => 'w50 clr'],
             'default' => 'h2',
         ],
@@ -133,15 +127,7 @@ return [
                 'slide_headline_type' => [
                     'label' => ['Typ der Slide-Headline', ''],
                     'inputType' => 'select',
-                    'options' => [
-                        'h1' => 'H1',
-                        'h2' => 'H2',
-                        'h3' => 'H3',
-                        'h4' => 'H4',
-                        'h5' => 'H5',
-                        'h6' => 'H6',
-                        'p' => 'Absatz (p)',
-                    ],
+                    'options' => GlobalElementConfig::getHeadlineTagOptions(),
                     'default' => 'h3',
                     'eval' => ['tl_class' => 'w50 clr'],
                 ],

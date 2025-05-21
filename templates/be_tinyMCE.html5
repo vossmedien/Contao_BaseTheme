@@ -46,7 +46,7 @@ if ($GLOBALS['TL_CONFIG']['useRTE']):
                 <?php $this->endblock(); ?>
 
                 <?php $this->block('content_css'); ?>
-                content_css: [document.documentElement.dataset.colorScheme === 'dark' ? '<?= $this->asset('tinymce-dark.css', 'system/themes/' . Backend::getTheme()) ?>' : '<?= $this->asset('tinymce.css', 'system/themes/' . Backend::getTheme()) ?>', 'files/base/layout/css/style.min.css', 'files/base/backend/tinymce.min.css'],
+                content_css: [document.documentElement.dataset.colorScheme === 'dark' ? '<?= $this->asset('tinymce-dark.css', 'system/themes/' . Backend::getTheme()) ?>' : '<?= $this->asset('tinymce.css', 'system/themes/' . Backend::getTheme()) ?>', 'files/base/backend/tinymce.min.css'],
                 importcss_selector_converter: function (selector) {
                     return false;
                 },
@@ -170,45 +170,136 @@ if ($GLOBALS['TL_CONFIG']['useRTE']):
                 ],
                 link_class_list: [
                     {
-                        title: 'None',
+                        title: 'None', // Beibehalten von deiner ursprünglichen Liste
                         value: ''
                     },
+                    // Hauptfarbe-Buttons
                     {
                         title: 'Haupt-Button',
                         value: 'btn btn-primary'
+                    },
+                    {
+                        title: 'Haupt-Button mit Pfeil',
+                        value: 'btn btn-primary with-arrow'
                     },
                     {
                         title: 'Haupt-Button (Outline)',
                         value: 'btn btn-outline-primary'
                     },
                     {
+                        title: 'Haupt-Button (Outline) mit Pfeil',
+                        value: 'btn btn-outline-primary with-arrow'
+                    },
+
+                    // Sekundär-Buttons
+                    {
                         title: 'Sekundärer Button',
                         value: 'btn btn-secondary'
+                    },
+                    {
+                        title: 'Sekundärer Button mit Pfeil',
+                        value: 'btn btn-secondary with-arrow'
                     },
                     {
                         title: 'Sekundärer Button (Outline)',
                         value: 'btn btn-outline-secondary'
                     },
                     {
+                        title: 'Sekundärer Button (Outline) mit Pfeil',
+                        value: 'btn btn-outline-secondary with-arrow'
+                    },
+
+                    // Tertiär-Buttons
+                    {
                         title: 'Tertiärer Button',
                         value: 'btn btn-tertiary'
+                    },
+                    {
+                        title: 'Tertiärer Button mit Pfeil',
+                        value: 'btn btn-tertiary with-arrow'
                     },
                     {
                         title: 'Tertiärer Button (Outline)',
                         value: 'btn btn-outline-tertiary'
                     },
                     {
+                        title: 'Tertiärer Button (Outline) mit Pfeil',
+                        value: 'btn btn-outline-tertiary with-arrow'
+                    },
+
+                    // CurrentColor-Buttons
+                    {
+                        title: 'Farbübernahme vom Elternelement (Outline)',
+                        value: 'btn btn-outline-currentColor'
+                    },
+                    {
+                        title: 'Farbübernahme vom Elternelement (Outline) mit Pfeil',
+                        value: 'btn btn-outline-currentColor with-arrow'
+                    },
+
+                    // Weiße Buttons
+                    {
                         title: 'Weißer Button mit schwarzer Schrift',
                         value: 'btn btn-white'
                     },
                     {
-                        title: 'Transparenter Button mit schwarzer Schrift und Rahmen',
+                        title: 'Weißer Button mit schwarzer Schrift und Pfeil',
+                        value: 'btn btn-white with-arrow'
+                    },
+                    {
+                        title: 'Transparenter Button mit weißer Schrift und Rahmen', // Aus deiner ursprünglichen Liste
+                        value: 'btn btn-outline-white'
+                    },
+                    {
+                        title: 'Transparenter Button mit weißer Schrift, Rahmen und Pfeil', // Titel angepasst für Klarheit
+                        value: 'btn btn-outline-white with-arrow'
+                    },
+
+                    // Schwarze Buttons
+                    {
+                        title: 'Schwarzer Button mit weißer Schrift',
+                        value: 'btn btn-black'
+                    },
+                    {
+                        title: 'Schwarzer Button mit weißer Schrift und Pfeil',
+                        value: 'btn btn-black with-arrow'
+                    },
+                    {
+                        title: 'Transparenter Button mit schwarzer Schrift und Rahmen', // Aus deiner ursprünglichen Liste
                         value: 'btn btn-outline-black'
                     },
                     {
-                        title: 'Transparenter Button mit weißer Schrift und Rahmen',
-                        value: 'btn btn-outline-white'
+                        title: 'Transparenter Button mit schwarzer Schrift, Rahmen und Pfeil', // Titel angepasst für Klarheit
+                        value: 'btn btn-outline-black with-arrow'
                     },
+
+                    // Rote/Danger Buttons
+                    {
+                        title: 'Roter Button',
+                        value: 'btn btn-danger'
+                    },
+                    {
+                        title: 'Roter Button mit Pfeil',
+                        value: 'btn btn-danger with-arrow'
+                    },
+                    {
+                        title: 'Roter Button (Outline)',
+                        value: 'btn btn-outline-danger'
+                    },
+                    {
+                        title: 'Roter Button (Outline) mit Pfeil',
+                        value: 'btn btn-outline-danger with-arrow'
+                    },
+
+                    // Link-Buttons
+                    {
+                        title: 'Link-Optik',
+                        value: 'btn btn-link'
+                    },
+                    {
+                        title: 'Link-Optik mit Pfeil', // "Pfeilen" zu "Pfeil" geändert für Konsistenz, falls es ein einzelner Pfeil-Stil ist
+                        value: 'btn btn-link with-arrow'
+                    }
                 ],
 
                 menu: {

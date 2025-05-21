@@ -6,10 +6,32 @@ use Contao\StringUtil;
 use Vsm\VsmHelperTools\Helper\EnvHelper; // Hinzufügen für Frontend-Check
 use Vsm\VsmHelperTools\Helper\ImageHelper; // Hinzufügen für Bildgenerierung
 
+// Globale Animation überschreibt individuelle Animationen
+$overrideAnimation = null;
+if (!empty($this->animation_type_element) && $this->animation_type_element !== 'no-animation') {
+    $overrideAnimation = 'no-animation';
+}
+
 // Animation für Headline-Element nur setzen, wenn 1-spaltig oder wenn 2-spaltig & Headline oben
-$headlineElementAnimation = null;
+$headlineElementAnimation = $overrideAnimation ?: $this->animation_type_headline;
 if (!$this->two_columns || $this->headline_above_columns) {
-    $headlineElementAnimation = $this->animation_type_headline;
+    // $headlineElementAnimation bleibt wie oben zugewiesen
+} else {
+    // In diesem Fall wird die Animation nicht direkt auf das Headline-Element angewendet,
+    // sondern potenziell auf die Spalte, daher hier keine direkte Zuweisung für $headlineElementAnimation
+    // Die Logik für $headlineHTML weiter unten berücksichtigt $overrideAnimation bereits.
+}
+
+$additionalHeadlineAttributes = []; // Als Array initialisieren
+if (!empty($this->is_quote) && $this->is_quote) {
+    $additionalHeadlineAttributes[] = 'is-quote';
+}
+
+if ($this->two_columns && !$this->headline_above_columns &&
+    empty($this->second_content) &&
+    empty($headlineColumnImageHTML) &&
+    empty($headlineColumnButtonsHTML)) {
+    $additionalHeadlineAttributes[] = 'mb-lg-0';
 }
 
 $headlineHTML = Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
@@ -17,10 +39,10 @@ $headlineHTML = Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
     $this->headline,
     $this->subline,
     $this->headline_type,
-    $headlineElementAnimation, // Animation für das Headline-Element selbst (nur wenn relevant)
-    null,
+    $overrideAnimation ?: ($this->two_columns && !$this->headline_above_columns ? null : $this->animation_type_headline),
+    null, // Sechster Parameter (headlineClass) bleibt null
     (bool)$this->onlystyle,
-    null
+    implode(' ', $additionalHeadlineAttributes) // Attribute als String übergeben
 );
 
 // Helfer für die Buttons generieren
@@ -54,7 +76,7 @@ if ($this->add_images && !empty($this->multiSRC)) {
         });
     }
 }
-
+ 
 $hasImages = !empty($imageUuids);
 $rand = rand(1, 1000); // Zufällige ID für Lightbox/Slider
 $spacingClass = $this->image_spacing_class ?: 'mb-1'; // Abstandsklasse holen oder Fallback
@@ -93,15 +115,22 @@ if ($this->two_columns) {
 
     // Wenn Headline oben, bekommt sie dort die Animation
     if($this->headline_above_columns) {
+        // Wichtig: Wenn die Headline über den Spalten ist, bekommt sie die mb-lg-0 Klasse nicht,
+        // da sie sich nicht auf die alleinige Präsenz in der Spalte bezieht.
+        $headlineAboveColumnsAdditionalAttributes = [];
+        if (!empty($this->is_quote) && $this->is_quote) {
+            $headlineAboveColumnsAdditionalAttributes[] = 'is-quote';
+        }
+
          $headlineHTML = Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
             $this->topline,
             $this->headline,
             $this->subline,
             $this->headline_type,
-            $this->animation_type_headline, // Animation hier, wenn Headline oben
-            null,
+            $overrideAnimation ?: $this->animation_type_headline, // Animation hier, wenn Headline oben
+            null, // Sechster Parameter (headlineClass) bleibt null
             (bool)$this->onlystyle,
-            null
+            implode(' ', $headlineAboveColumnsAdditionalAttributes) // Achter Parameter hier ohne mb-lg-0
         );
     }
 
@@ -153,8 +182,8 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
 
 ?>
 
-<div <?php if($this->animation_type_element):?>data-animation="<?= $this->animation_type_element;?>"<?php endif;?> <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?> <?php if ($this->two_columns): ?>layout-two-columns<?php else: ?>layout-one-column<?php endif; ?>">
-    <div class="ce--inner">
+<div <?php if($overrideAnimation ?: $this->animation_type_element):?>data-animation="<?= $overrideAnimation ?: $this->animation_type_element;?>"<?php endif;?> <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?> <?php if ($this->two_columns): ?>layout-two-columns<?php else: ?>layout-one-column<?php endif; ?>">
+    <div class="ce--inner <?php if (!$this->two_columns && !empty($this->columns_container_css_class)): ?><?= $this->columns_container_css_class ?><?php endif; ?>">
 
         <?php // --- Kopfbild Ausgabe --- ?>
         <?php if ($headerImageHTML): ?>
@@ -174,131 +203,132 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
                  </div>
             <?php endif; ?>
 
-            <?php // Container um die Row, falls Checkbox aktiv ?>
-            <?php if ($this->wrap_columns_in_container): ?><div class="container"><?php endif; ?>
+            <?php // Wrapper für die row, dem die columns_container_css_class hinzugefügt wird ?>
+            <div <?php if (!empty($this->columns_container_css_class)): ?>class="<?= $this->columns_container_css_class ?>"<?php endif; ?>>
+                <div class="row g-md-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
 
-            <div class="row g-md-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
+                    <?php // --- Headlinespalte --- ?>
+                    <?php
+                        // Animation für die Headlinespalte (wenn 2. Inhalt aktiv UND Headline *in* der Spalte ist)
+                        $headlineColumnAnimation = $overrideAnimation ?: $this->animation_type_headline_column;
+                        $headlineColumnClasses = ['headline-column'];
+                        if ($this->headline_column_css_class) {
+                            $headlineColumnClasses[] = $this->headline_column_css_class;
+                        }
+                    ?>
+                    <div  class="col-12 col-lg-<?= $bsColHeadline; ?> <?= $orderHeadlineClass; ?> ">
+                         <div class="<?= implode(' ', $headlineColumnClasses); ?>">
+                            <?php if (!$this->headline_above_columns): ?>
+                                <?= $headlineHTML; // Headline in der Spalte (Animation wird durch $headlineHTML oben schon berücksichtigt) ?>
+                            <?php endif; ?>
 
-                <?php // --- Headlinespalte --- ?>
-                <?php
-                    // Animation für die Headlinespalte (wenn 2. Inhalt aktiv UND Headline *in* der Spalte ist)
-                    $headlineColumnAnimation = $this->animation_type_headline_column;
-                ?>
-                <div  class="col-12 col-lg-<?= $bsColHeadline; ?> <?= $orderHeadlineClass; ?> ">
-                     <div class="headline-column <?php if ($this->headline_column_css_class): ?><?= $this->headline_column_css_class ?><?php endif; ?>">
-                        <?php if (!$this->headline_above_columns): ?>
-                            <?= $headlineHTML; // Headline in der Spalte (ohne Animation vom Helper) ?>
-                        <?php endif; ?>
-
-                        <?php if ($this->add_second_content && $this->second_content): ?>
-                            <div data-animation="<?= $headlineColumnAnimation; ?>" class="text">
-                                <?= $this->second_content; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php // --- Bild für Headline-Spalte Ausgabe --- ?>
-                        <?php if ($headlineColumnImageHTML): ?>
-                            <div class="headline-column-image mt-3">
-                                <?= $headlineColumnImageHTML; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php // --- Buttons für Headline-Spalte Ausgabe --- ?>
-                        <?php if ($headlineColumnButtonsHTML): ?>
-                            <?php
-                                $headlineColumnButtonAlignmentClass = $this->headline_column_button_alignment ?: 'text-lg-start';
-                            ?>
-                            <div class="buttons <?= $headlineColumnButtonAlignmentClass; ?> mt-3">
-                                <?= $headlineColumnButtonsHTML; ?>
-                            </div>
-                        <?php endif; ?>
-                     </div>
-                </div>
-
-                <?php // --- Textspalte --- ?>
-                <div  class="col-12 col-lg-<?= $bsColContent; ?> <?= $orderContentClass; ?> <?php if ($this->content_column_css_class): ?><?= $this->content_column_css_class ?><?php endif; ?>">
-                    <div class="content-column">
-                        <?php if ($this->desc): ?>
-                            <div class="text" data-animation="<?= $this->animation_type_content; ?>">
-                                <?= $this->desc; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php // --- Bilder Logik Start --- ?>
-                        <?php if ($hasImages): ?>
-                            <div class="images-section   <?php if (!$headerImageHTML): ?>header-image<?php endif;?>">
-                                <?php // --- Slider/Listen Container (HTML wird immer gerendert, JS entscheidet) --- ?>
-                                <div class="ce--content-slider content-slider-in-headline <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> <?php if ($totalImages > 1) : ?>is-slider<?php endif; ?>"
-                                     data-slider-id="<?= $this->id; ?>_<?= $rand; ?>"
-                                     data-deactivate-slider="<?= $this->deactivate_slider ?: '' ?>"
-                                     data-image-count="<?= $totalImages ?>">
-                                    <?php if ($this->open_lightbox): ?>
-                                    <script type="text/javascript" defer>
-                                        document.addEventListener('DOMContentLoaded', function () {
-                                            if (typeof VenoBox === 'function') {
-                                                new VenoBox({
-                                                    selector: ".lightbox_<?= $this->id;?>_<?= $rand;?>",
-                                                    infinigall: true,
-                                                    maxWidth: '95%',
-                                                    numeration: true,
-                                                    spinner: 'flow',
-                                                    initialScale: 0.9,
-                                                    transitionSpeed: 200,
-                                                    fitView: true,
-                                                });
-                                            }
-                                        });
-                                    </script>
-                                    <?php endif; ?>
-
-                                    <div class="image-container content-slider_<?= $this->id; ?>_<?= $rand; ?>">
-                                        <div class="image-list-wrapper align-items-center">
-                                            <?php foreach ($imageUuids as $index => $uuid) : ?>
-                                                <?php $isLast = ($index === $totalImages - 1); ?>
-                                                <div class="image-list-item text-center" data-animation="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
-                                                    <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id.'_'.$rand : ""); ?>
-                                                </div>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    </div>
-
-                                    <?php if ($totalImages > 1) : // Controls nur bei mehr als 1 Bild ?>
-                                        <?php if ($this->show_pagination): ?>
-                                            <div class="swiper-pagination content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                                        <?php endif; ?>
-                                        <?php if ($this->show_arrows): ?>
-                                            <div class="swiper-button-prev content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                                            <div class="swiper-button-next content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
+                            <?php if ($this->add_second_content && $this->second_content): ?>
+                                <div <?php if($headlineColumnAnimation): ?>data-animation="<?= $headlineColumnAnimation; ?>"<?php endif; ?> class="text">
+                                    <?= $this->second_content; ?>
                                 </div>
-                            </div>
-                        <?php endif; ?>
-                         <?php // --- Bilder Logik Ende --- ?>
+                            <?php endif; ?>
 
-                        <?php if ($buttonsHTML): ?>
-                            <?php
-                                $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-start';
-                            ?>
-                            <div class="buttons <?= $buttonAlignmentClass; ?> mt-3">
-                                <?= $buttonsHTML; ?>
-                            </div>
-                        <?php endif; ?>
+                            <?php // --- Bild für Headline-Spalte Ausgabe --- ?>
+                            <?php if ($headlineColumnImageHTML): ?>
+                                <div class="headline-column-image mt-3">
+                                    <?= $headlineColumnImageHTML; ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php // --- Buttons für Headline-Spalte Ausgabe --- ?>
+                            <?php if ($headlineColumnButtonsHTML): ?>
+                                <?php
+                                    $headlineColumnButtonAlignmentClass = $this->headline_column_button_alignment ?: 'text-lg-start';
+                                ?>
+                                <div class="buttons <?= $headlineColumnButtonAlignmentClass; ?> mt-3">
+                                    <?= $headlineColumnButtonsHTML; ?>
+                                </div>
+                            <?php endif; ?>
+                         </div>
+                    </div>
+
+                    <?php // --- Textspalte --- ?>
+                    <div  class="col-12 col-lg-<?= $bsColContent; ?> <?= $orderContentClass; ?> <?php if ($this->content_column_css_class): ?><?= $this->content_column_css_class ?><?php endif; ?>">
+                        <div class="content-column">
+                            <?php if ($this->desc): ?>
+                                <div class="text" <?php if($overrideAnimation ?: $this->animation_type_content):?>data-animation="<?= $overrideAnimation ?: $this->animation_type_content; ?>"<?php endif;?>>
+                                    <?= $this->desc; ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php // --- Bilder Logik Start --- ?>
+                            <?php if ($hasImages): ?>
+                                <div class="images-section  <?php if (!$this->desc): ?>mt-3<?php endif;?>  <?php if (!$headerImageHTML): ?>header-image<?php endif;?>">
+                                    <?php // --- Slider/Listen Container (HTML wird immer gerendert, JS entscheidet) --- ?>
+                                    <div class="ce--content-slider content-slider-in-headline <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> <?php if ($totalImages > 1) : ?>is-slider<?php endif; ?>"
+                                         data-slider-id="<?= $this->id; ?>_<?= $rand; ?>"
+                                         data-deactivate-slider="<?= $this->deactivate_slider ?: '' ?>"
+                                         data-image-count="<?= $totalImages ?>">
+                                        <?php if ($this->open_lightbox): ?>
+                                        <script type="text/javascript" defer>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                if (typeof VenoBox === 'function') {
+                                                    new VenoBox({
+                                                        selector: ".lightbox_<?= $this->id;?>_<?= $rand;?>",
+                                                        infinigall: true,
+                                                        maxWidth: '95%',
+                                                        numeration: true,
+                                                        spinner: 'flow',
+                                                        initialScale: 0.9,
+                                                        transitionSpeed: 200,
+                                                        fitView: true,
+                                                    });
+                                                }
+                                            });
+                                        </script>
+                                        <?php endif; ?>
+
+                                        <div class="image-container content-slider_<?= $this->id; ?>_<?= $rand; ?>">
+                                            <div class="image-list-wrapper align-items-center">
+                                                <?php foreach ($imageUuids as $index => $uuid) : ?>
+                                                    <?php $isLast = ($index === $totalImages - 1); ?>
+                                                    <div class="image-list-item text-center" <?php if($overrideAnimation ?: $this->slide_animation_type): ?>data-animation="<?php echo $overrideAnimation ?: $this->slide_animation_type; ?>"<?php endif; ?>>
+                                                        <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id.'_'.$rand : ""); ?>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+
+                                        <?php if ($totalImages > 1) : // Controls nur bei mehr als 1 Bild ?>
+                                            <?php if ($this->show_pagination): ?>
+                                                <div class="swiper-pagination content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
+                                            <?php endif; ?>
+                                            <?php if ($this->show_arrows): ?>
+                                                <div class="swiper-button-prev content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
+                                                <div class="swiper-button-next content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                             <?php // --- Bilder Logik Ende --- ?>
+
+                            <?php if ($buttonsHTML): ?>
+                                <?php
+                                    $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-start';
+                                ?>
+                                <div class="buttons <?= $buttonAlignmentClass; ?> mt-3">
+                                    <?= $buttonsHTML; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <?php // Schließendes Div für den Container ?>
-            <?php if ($this->wrap_columns_in_container): ?></div><?php endif; ?>
+            </div> <?php // Schließendes Div für den Row-Wrapper ?>
 
         <?php else: ?>
             <?php // --- EINSPALTIG --- ?>
-            <?= $headlineHTML; // Headline mit Animation (kommt vom Helper) ?>
+            <?= $headlineHTML; // Headline mit Animation (kommt vom Helper, $overrideAnimation ist dort schon berücksichtigt) ?>
 
 
 
             <?php if ($this->desc): ?>
-                <div <?php if($this->animation_type_content):?>data-animation="<?= $this->animation_type_content;?>"<?php endif;?> class="text">
+                <div <?php if($overrideAnimation ?: $this->animation_type_content):?>data-animation="<?= $overrideAnimation ?: $this->animation_type_content;?>"<?php endif;?> class="text">
                     <?= $this->desc; ?>
                 </div>
             <?php endif; ?>
@@ -334,7 +364,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
                             <div class="image-list-wrapper align-items-center">
                                 <?php foreach ($imageUuids as $index => $uuid) : ?>
                                     <?php $isLast = ($index === $totalImages - 1); ?>
-                                    <div class="image-list-item text-center" data-animation="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
+                                    <div class="image-list-item text-center" <?php if($overrideAnimation ?: $this->slide_animation_type): ?>data-animation="<?php echo $overrideAnimation ?: $this->slide_animation_type; ?>"<?php endif; ?>>
                                         <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id.'_'.$rand : ""); ?>
                                     </div>
                                 <?php endforeach; ?>

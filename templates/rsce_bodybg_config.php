@@ -21,7 +21,7 @@ return array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,mp4,svg',
+                'extensions' => 'jpg,jpeg,png,mp4,svg,webp',
                 'tl_class' => 'clr'
             ),
             'dependsOn' => array(
@@ -37,7 +37,7 @@ return array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg,webp',
+                'extensions' => 'jpg,jpeg,png,mp4,svg,webp',
             ),
             'dependsOn' => array(
                 'field' => 'element_type',

@@ -33,7 +33,9 @@ html, body, #wrapper{
 
   #main {
     .mod_article {
-      transition: background-position 0s ease-in-out;
+      .article-content{
+              transition: background-position 0s ease-in-out;
+      }
 
       &:last-child > > .article-content > div:last-child {
         margin-bottom: var(--main-gap);
@@ -55,7 +57,7 @@ html, body, #wrapper{
 
       .article-content:not(:has(.moved-content)),
       .article-content > .moved-content {
-        > *:not(.body-slider,.bgvideo, .ce_rsce_headline:not(:has(.text))) {
+        > *:not(.body-slider,.bgvideo, .ce_rsce_headline:not(:has(.text, .content-column))) {
           position: relative;
           margin-bottom: var(--main-gap);
 

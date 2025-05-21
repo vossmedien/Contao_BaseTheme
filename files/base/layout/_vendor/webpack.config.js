@@ -216,7 +216,8 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
         '_base.scss',
         '_theme.scss',
         '_root-variables.scss',
-        '_fonts.scss'
+        '_fonts.scss',
+        '_utilities.scss'
     ];
 
     let themeAliases = {};

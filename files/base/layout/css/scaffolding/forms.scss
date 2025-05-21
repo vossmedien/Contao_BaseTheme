@@ -142,7 +142,13 @@ textarea.form-control {
 .widget:not(.form-floating) {
   transition: opacity 0.15s ease-in-out;
 
-  > label:first-child {
+  /*
+
+   */
+
+
+  /*
+    > label:first-child {
     padding: 2px 0.75rem 2px 0.75rem;
     border-radius: var(--bs-input-border-radius) var(--bs-input-border-radius) 0px 0px;
     background-color: var(--bs-primary);
@@ -158,6 +164,9 @@ textarea.form-control {
   label + input:not(.form-control) {
     border-top-left-radius: 0px !important;
   }
+
+   */
+
 
   .form-control {
     padding: var(--bs-input-padding-y) var(--bs-input-padding-x);
@@ -242,7 +251,7 @@ textarea.form-control {
 }
 
 .form-label {
-  margin-bottom: .25rem;
+  margin-bottom: .5rem;
 }
 
 .captcha_text {
@@ -260,9 +269,7 @@ p.error {
   background-color: $danger;
 }
 
-
 .form-select, .form-control {
-  //font-size: var(--bs-body-font-size);
   box-shadow: var(--bs-input-shadow);
 
   &:focus, &:active {
@@ -271,6 +278,7 @@ p.error {
   }
 }
 
+/*
 .widget:not(.widget-upload):not(.widget-radio):not(.widget-checkbox):not(.widget-captcha) {
   &:not(.form-floating) {
     input, textarea {
@@ -284,3 +292,5 @@ p.error {
   }
 }
 
+
+ */

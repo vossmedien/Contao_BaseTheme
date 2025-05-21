@@ -20,7 +20,7 @@ class HeadlineHelper
         $headline = '',
         $subline = '',
         $headlineType = 'h2',
-        $animationType = 'animate__fadeInUp',
+        $animationType = 'animate__fadeIn',
         $textColor = '',
         $onlyStyle = false,
         $headlineClass = ''

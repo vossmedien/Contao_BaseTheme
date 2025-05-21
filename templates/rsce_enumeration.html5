@@ -1,0 +1,178 @@
+<?php
+if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
+    // Optional: CSS-Datei hier einbinden, wenn sie spezifisch für dieses Element ist
+     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_enumeration.min.css|static';
+}
+
+$items = $this->enumeration_items;
+$layoutType = $this->layout_type;
+$enumerationType = $this->enumeration_type;
+$wrapperClass = $this->wrapper_class ? ' ' . $this->wrapper_class : '';
+
+$columns = 1;
+$itemsPerColumn = PHP_INT_MAX; // Standardmäßig alle Items in einer Spalte, falls keine spezifische Anzahl gesetzt ist
+
+if ($layoutType === '1_column' && $this->column_count_1_column) {
+    $itemsPerColumn = (int)$this->column_count_1_column;
+} elseif ($layoutType === '2_columns') {
+    $columns = 2;
+    if ($this->column_count_2_columns) {
+        $itemsPerColumn = (int)$this->column_count_2_columns;
+    } else {
+        $itemsPerColumn = ceil(count($items) / 2);
+    }
+} elseif ($layoutType === '3_columns') {
+    $columns = 3;
+    if ($this->column_count_3_columns) {
+        $itemsPerColumn = (int)$this->column_count_3_columns;
+    } else {
+        $itemsPerColumn = ceil(count($items) / 3);
+    }
+}
+
+// Sicherstellen, dass itemsPerColumn mindestens 1 ist, wenn Items vorhanden sind
+if (count($items) > 0 && $itemsPerColumn === PHP_INT_MAX) {
+    if ($columns > 1) {
+        $itemsPerColumn = ceil(count($items) / $columns);
+    } else {
+        $itemsPerColumn = count($items);
+    }
+} elseif (count($items) === 0) {
+    $itemsPerColumn = 0;
+}
+
+
+$showTextRight = ($layoutType === '1_column' && $this->text_single_column);
+$enumerationColClass = 'col-12'; // Standard für Aufzählungsbereich
+
+// Animation settings
+$animateItemsIndividually = $this->animate_items_individually;
+$animationEnumeration = $this->animation_enumeration;
+$animationTextRight = $this->animation_text_right;
+
+if ($showTextRight) {
+    $enumerationColClass = 'col-md-6'; // Aufzählung nimmt linke Hälfte, wenn Text rechts ist
+}
+
+// Wrapper-Klasse umschließt jetzt den Haupt-Row-Container, wenn sie gesetzt ist
+$mainRowClass = 'row';
+if ($showTextRight) {
+    $mainRowClass .= ' align-items-start gx-md-5';
+}
+
+?>
+
+<div <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?> rsce_enumeration type_<?php echo $enumerationType; ?> columns_<?php echo $columns; ?><?php if($showTextRight) echo ' has-right-text'; ?>">
+    <div class="ce--inner">
+
+        <?php // Globale Headline wird immer außerhalb des $wrapperClass-Containers sein ?>
+        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+            $this->topline,
+            $this->headline,
+            $this->subline,
+            $this->hl,
+            $this->animation_type,
+            null,
+            false,
+            null
+        ); ?>
+
+        <?php // Hier kommt der optionale Wrapper mit der $wrapperClass hin ?>
+        <div class="<?php echo $wrapperClass ? trim("enumeration-outer-wrapper " . $wrapperClass) : 'enumeration-content-area'; ?>">
+            <div class="<?php echo $mainRowClass; ?>">
+                <div class="<?php echo $enumerationColClass; ?> enumeration-main-col">
+                    <?php if ($showTextRight && ($this->topline || $this->headline || $this->subline)) : // Haupt-Headline für linke Spalte, wenn Text rechts ist UND eine Haupt-Headline existiert ?>
+                         <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+                            $this->topline,
+                            $this->headline,
+                            $this->subline,
+                            $this->hl,
+                            null, // Keine separate Animation hier
+                            null,
+                            false,
+                            'mb-4' // Abstand zur Aufzählung
+                        ); ?>
+                    <?php endif; ?>
+
+                    <?php if ($items && count($items) > 0 && $itemsPerColumn > 0) : ?>
+                        <div class="enumeration--items-wrapper" <?php if (!$animateItemsIndividually && $animationEnumeration): ?>data-animation="<?php echo $animationEnumeration; ?>"<?php endif; ?>>
+                            <div class="row gx-md-5">
+                                <?php
+                                $itemChunks = array_chunk($items, $itemsPerColumn);
+                                $totalItemsRenderedGlobal = 0;
+                                $totalNumberOfItems = count($items);
+                                ?>
+                                <?php foreach ($itemChunks as $columnIndex => $columnItems) : ?>
+                                    <?php if ($columnIndex < $columns && count($columnItems) > 0) : ?>
+                                        <?php $totalItemsInThisColumn = count($columnItems); ?>
+                                        <div class="col-<?php echo ($columns > 1) ? (12 / $columns) : 12; ?> enumeration--column">
+                                            <ul class="enumeration--list list-unstyled">
+                                                <?php foreach ($columnItems as $itemIndexLocal => $item) : ?>
+                                                    <?php
+                                                    $totalItemsRenderedGlobal++;
+                                                    $itemNumberGlobal = $totalItemsRenderedGlobal;
+                                                    $isGloballyLastItem = ($itemNumberGlobal === $totalNumberOfItems);
+                                                    $isLastItemInThisColumn = ($itemIndexLocal === ($totalItemsInThisColumn - 1));
+
+                                                    $liClasses = 'enumeration--item';
+                                                    if ($enumerationType === 'dot') {
+                                                        if (!$isLastItemInThisColumn) { // Border, wenn NICHT letztes Element in dieser Spalte
+                                                            $liClasses .= ' has-border';
+                                                        }
+                                                    }
+                                                    if ($isGloballyLastItem) {
+                                                        $liClasses .= ' is-globally-last';
+                                                    }
+                                                    ?>
+                                                    <li class="<?php echo $liClasses; ?>" <?php if ($animateItemsIndividually && $animationEnumeration): ?>data-animation="<?php echo $animationEnumeration; ?>"<?php endif; ?>>
+                                                        <?php if ($enumerationType === 'box') : ?>
+                                                            <div class="item--box-indicator" <?php if ($this->box_background_color || $this->box_text_color) : ?>style="<?php if ($this->box_background_color) { echo 'background-color: ' . $this->box_background_color . ';'; } ?> <?php if ($this->box_text_color) { echo 'color: ' . $this->box_text_color . ';'; } ?>"<?php endif; ?>>
+                                                                <?php echo $itemNumberGlobal; // Globale Nummerierung für Boxen ?>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                        <div class="item--content">
+                                                            <?php if ($item->item_headline): ?>
+                                                                <div class="item--headline<?php echo ($enumerationType === 'box') ? ' large' : ''; ?>">
+                                                                    <?php echo $item->item_headline; ?>
+                                                                </div>
+                                                            <?php endif; ?>
+                                                            <?php if ($item->item_text): ?>
+                                                                <div class="item--text">
+                                                                    <?php echo $item->item_text; ?>
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <?php if ($showTextRight) : ?>
+                    <div class="col-md-6 enumeration--text-right" <?php if ($animationTextRight && $this->text_single_column): ?>data-animation="<?php echo $animationTextRight; ?>"<?php endif; ?>>
+                        <?php if ($this->headline_single_column || $this->topline_single_column || $this->subline_single_column) : ?>
+                            <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+                                $this->topline_single_column,
+                                $this->headline_single_column,
+                                $this->subline_single_column,
+                                $this->hl_single_column,
+                                null, // Keine Animation für diesen Textblock
+                                null,
+                                false,
+                                null
+                            ); ?>
+                        <?php endif; ?>
+                        <div class="text-content">
+                            <?php echo $this->text_single_column; // TinyMCE Inhalt ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>

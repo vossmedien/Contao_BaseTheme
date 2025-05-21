@@ -54,13 +54,7 @@ return [
         'top_headline_type' => [
             'label' => ['Typ der oberen Überschrift', ''],
             'inputType' => 'select',
-            'options' => [
-                'h1' => 'H1 (Haupt-Headline für SEO, darf nur 1x vorkommen)',
-                'h2' => 'H2 (Sollte H1 thematisch untergeordnet sein)',
-                'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
-                'h4' => 'H4',
-                'h5' => 'H5',
-            ],
+            'options' => GlobalElementConfig::getHeadlineTagOptions(),
             'default' => 'h1',
             'eval' => ['tl_class' => 'w50 clr'],
         ],
@@ -138,13 +132,7 @@ return [
         'bottom_headline_type' => [
             'label' => ['Typ der unteren Überschrift', ''],
             'inputType' => 'select',
-            'options' => [
-                'h1' => 'H1',
-                'h2' => 'H2',
-                'h3' => 'H3',
-                'h4' => 'H4',
-                'h5' => 'H5',
-            ],
+            'options' => GlobalElementConfig::getHeadlineTagOptions(),
             'default' => 'h2',
             'eval' => ['tl_class' => 'w50 clr'],
         ],

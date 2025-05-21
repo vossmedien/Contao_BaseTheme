@@ -5,7 +5,7 @@ use Contao\StringUtil;
 
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_bodybg.min.css|static';
-    $articleSelector = "[data-articleid=\"article-$this->pid\"]";
+    $articleSelector = "[data-articleid=\"article-$this->pid\"] > .article-content";
     $angle = $this->winkel ? (strpos($this->winkel, '-') !== false ? str_replace("-", "", $this->winkel) . "deg" : "-{$this->winkel}deg") : 'calc(-1 * var(--base-skew))';
     $backgroundImage = $this->image ? FilesModel::findByUuid($this->image)->path : '';
     $backgroundImageMobile = $this->image_mobile ? FilesModel::findByUuid($this->image_mobile)->path : '';

@@ -1,0 +1,162 @@
+<?php
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+use Vsm\VsmHelperTools\Helper\ImageHelper;
+use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\HeadlineHelper;
+
+$rand = rand(1, 1000); // Zufällige ID für Slider
+$sliderId = 'text-slider-' . $this->id . '-' . $rand;
+$uniqueJsId = str_replace('-', '_', $sliderId); // Für JS-Variablennamen
+
+// Globale Animation überschreibt individuelle Animationen
+$overrideAnimation = null;
+if (!empty($this->animation_type_element) && $this->animation_type_element !== 'no-animation') {
+    $overrideAnimation = 'no-animation';
+}
+
+$headlinePartAnimation = $overrideAnimation ?: $this->headline_animation;
+$elementAnimation = $overrideAnimation ?: $this->animation_type_element;
+
+// JS-sichere Werte vorbereiten
+$jsLoop = $this->loop ? 'true' : 'false';
+$jsSlideEffect = $this->slide_effect ?: "slide";
+$jsTransitionTime = intval($this->transition_time ?: 1000);
+$jsAutoplay = $this->autoplay ? 'true' : 'false';
+$jsAutoplayTime = intval($this->autoplay_time ?: 5000);
+
+?>
+<div <?php if ($elementAnimation): ?>data-animation="<?= $elementAnimation; ?>"<?php endif; ?> <?php echo $this->cssID; ?> class="content--element <?php echo $this->class; ?> rsce_text_slider">
+    <div class="ce--inner">
+        <div class="row">
+            <?php // --- Linke Spalte: Headline --- ?>
+            <div class="col-12 col-lg-6 headline-column <?php echo $this->headline_column_css_class ?: ''; ?>" <?php if ($headlinePartAnimation): ?>data-animation="<?= $headlinePartAnimation; ?>"<?php endif; ?>>
+                <?= HeadlineHelper::generateHeadlineHTML(
+                    $this->topline,
+                    $this->headline,
+                    $this->subline,
+                    $this->headline_type,
+                    null, // Animation wird direkt am Spalten-Wrapper (headline-column) gesetzt, nicht mehr individuell an der Headline hier
+                    null,
+                    false,
+                    null
+                ); ?>
+                <?php if ($this->headline_text): ?>
+                    <div class="headline-additional-text">
+                        <?= $this->headline_text; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <?php // --- Rechte Spalte: Text-Slider --- ?>
+            <div class="col-12 col-lg-6 slider-column <?php echo $this->slider_column_css_class ?: ''; ?>">
+                <?php if (!empty($this->slider_items)): ?>
+                    <div class="swiper-container-outer position-relative"> <?php // Neuer äußerer Container für Swiper + Controls unten ?>
+                        <div class="text-slider-wrapper swiper swiper-container" id="<?= $sliderId; ?>" style="height: <?php echo $this->slider_height ?: 'auto'; ?>;" data-uid="<?= $uniqueJsId ?>">
+                            <div class="swiper-wrapper">
+                                <?php foreach ($this->slider_items as $item): ?>
+                                    <?php
+
+                                    $slideButtonsHTML = '';
+                                    if (!empty($item->slide_buttons)) {
+                                        $slideButtonsHTML = ButtonHelper::generateButtonHTML($item->slide_buttons);
+                                    }
+                                    ?>
+                                    <div class="swiper-slide text-slide-item" >
+                                        <div class="slide-content-wrapper">
+                                            <?php if ($item->slide_image): ?>
+                                                <div class="slide-image mb-3">
+                                                    <?= ImageHelper::generateImageHTML($item->slide_image, strip_tags($item->slide_headline), null, $item->slide_image_size, null, true, true, false); ?>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <?php if ($item->slide_headline): ?>
+                                                <?= HeadlineHelper::generateHeadlineHTML($item->slide_topline, $item->slide_headline, $item->slide_subline, $item->slide_headline_type ?: 'h3', null, 'slide-item-headline'); ?>
+                                            <?php endif; ?>
+
+                                            <?php if ($item->slide_text): ?>
+                                                <div class="slide-text" data-animation="animate__fadeIn">
+                                                    <?= $item->slide_text; ?>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <?php if ($slideButtonsHTML): ?>
+                                                <div class="slide-buttons mt-3">
+                                                    <?= $slideButtonsHTML; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div> <?php // Ende text-slider-wrapper (swiper) ?>
+
+                        <?php // Slider Controls - Struktur von rsce_content_slider übernommen ?>
+                        <?php if (count($this->slider_items) > 1): ?>
+                            <div class="text-center slider-controls-wrapper mt-3"> <?php // Wrapper für Zentrierung und Abstand ?>
+                                <div class="slider-controls d-inline-flex align-items-center">
+                                    <?php if ($this->show_arrows): ?>
+                                    <button class="btn-prev <?= $uniqueJsId ?>_prev"><i class="fak fa-chevron-left"></i></button>
+                                    <?php endif; ?>
+                                    <?php if ($this->show_pagination): ?>
+                                    <div class="slider-pagination <?= $uniqueJsId ?>_pagination mx-2"></div>
+                                    <?php endif; ?>
+                                    <?php if ($this->show_arrows): ?>
+                                    <button class="btn-next <?= $uniqueJsId ?>_next"><i class="fak fa-chevron-right"></i></button>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div> <?php // Ende swiper-container-outer ?>
+
+                    <?php if (EnvHelper::isFrontend()): ?>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const sliderElement_<?= $uniqueJsId ?> = document.getElementById('<?= $sliderId; ?>');
+                                if (sliderElement_<?= $uniqueJsId ?> && typeof Swiper !== 'undefined' && !sliderElement_<?= $uniqueJsId ?>.swiper) {
+                                    let swiperConfig_<?= $uniqueJsId ?> = {
+                                        direction: 'horizontal',
+                                        loop: <?= $jsLoop; ?>,
+                                        effect: '<?= $jsSlideEffect; ?>',
+                                        speed: <?= $jsTransitionTime; ?>,
+                                        slidesPerView: 1,
+                                        spaceBetween: 0,
+                                    };
+
+                                    <?php if ($this->slide_effect === 'fade'): ?>
+                                    swiperConfig_<?= $uniqueJsId ?>.fadeEffect = {
+                                        crossFade: true
+                                    };
+                                    <?php endif; ?>
+
+                                    <?php if ($this->autoplay): ?>
+                                    swiperConfig_<?= $uniqueJsId ?>.autoplay = {
+                                        delay: <?= $jsAutoplayTime; ?>,
+                                        disableOnInteraction: false,
+                                    };
+                                    <?php endif; ?>
+
+                                    <?php if ($this->show_pagination): ?>
+                                    swiperConfig_<?= $uniqueJsId ?>.pagination = {
+                                        el: '.slider-pagination.<?= $uniqueJsId ?>_pagination',
+                                        clickable: true,
+                                    };
+                                    <?php endif; ?>
+
+                                    <?php if ($this->show_arrows): ?>
+                                    swiperConfig_<?= $uniqueJsId ?>.navigation = {
+                                        nextEl: '.btn-next.<?= $uniqueJsId ?>_next',
+                                        prevEl: '.btn-prev.<?= $uniqueJsId ?>_prev',
+                                    };
+                                    <?php endif; ?>
+
+                                    const swiperInstance_<?= $uniqueJsId ?> = new Swiper(sliderElement_<?= $uniqueJsId ?>, swiperConfig_<?= $uniqueJsId ?>);
+                                }
+                            });
+                        </script>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+

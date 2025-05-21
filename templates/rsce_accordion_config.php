@@ -30,7 +30,7 @@ return array(
         'add_left_column_text' => array(
             'label' => array('Text in linker Spalte hinzufügen', 'Fügt eine zusätzliche Spalte links neben dem Akkordeon hinzu.'),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'w50 clr', 'submitOnChange' => true),
+            'eval' => array('tl_class' => 'w50 clr'),
         ),
         'left_column_text' => array(
             'label' => array('Text für linke Spalte', ''),
@@ -92,13 +92,7 @@ return array(
                         'de' => array('Typ der Überschrift', ''),
                     ),
                     'inputType' => 'select',
-                    'options' => array(
-                        'h1' => 'H1 (Haupt-Headline für SEO, darf nur 1x vorkommen)',
-                        'h2' => 'H2 (Sollte H1 thematisch untergeordnet sein)',
-                        'h3' => 'H3 (Sollte H2 thematisch untergeordnet sein)',
-                        'h4' => 'H4',
-                        'h5' => 'H5',
-                    ),
+                    'options' => GlobalElementConfig::getHeadlineTagOptions(),
                     'eval' => array('tl_class' => 'w50'),
                 ),
 
