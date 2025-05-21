@@ -192,7 +192,7 @@ const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
                 })
             }),
             new CopyWebpackPlugin({ patterns: vendorCopyPatterns })
-        ]
+        ],
     };
 
     // Gebe nur die appBundleConfig für dieses Theme zurück
@@ -213,9 +213,9 @@ const cssThemeFolders = fs.readdirSync(cssWorkspaceBase)
 
 console.log('Gefundene CSS-Theme-Ordner:', cssThemeFolders.map(f => f.name));
 
-const cleanedCssThemeDistDirs = new Set(); // NEU: Set zum Verfolgen der bereits geleerten CSS-Dist-Verzeichnisse
+// const cleanedCssThemeDistDirs = new Set(); // Entfernt für den neuen Ansatz
 
-const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
+const cssThemeWebpackConfigs = cssThemeFolders.map(themeFolder => { // Geändert von flatMap zu map
     const themeNameRaw = themeFolder.name; // z.B. _caeliRelaunch
     const themeNameClean = themeNameRaw.substring(1); // z.B. caeliRelaunch
     const themeCssDir = themeFolder.path; // z.B. /path/to/files/base/layout/css/_caeliRelaunch
@@ -226,11 +226,9 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
     // Sicherstellen, dass die Verzeichnisse existieren
     if (!fs.existsSync(themeCssDistDir)) {
         fs.mkdirSync(themeCssDistDir, { recursive: true });
-        console.log(`   Erstelle themenspezifisches CSS dist-Verzeichnis: ${path.relative(projectRoot, themeCssDistDir)}`);
     }
     if (!fs.existsSync(themeManifestDir)) {
         fs.mkdirSync(themeManifestDir, { recursive: true });
-        console.log(`   Erstelle themenspezifisches Manifest-Verzeichnis für CSS: ${path.relative(projectRoot, themeManifestDir)}`);
     }
 
     const scssFilesToBundle = [
@@ -242,87 +240,83 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
         '_utilities.scss'
     ];
 
-    let themeAliases = {};
-
-    return scssFilesToBundle.map(scssFileName => {
+    const entryPoints = {};
+    scssFilesToBundle.forEach(scssFileName => {
         const scssFilePath = path.join(themeCssDir, scssFileName);
-        if (!fs.existsSync(scssFilePath)) {
-            console.warn(`   SCSS-Datei ${scssFileName} nicht in ${themeNameRaw} gefunden unter ${path.relative(projectRoot, scssFilePath)}. Überspringe.`);
-            return null; // Überspringen, wenn die Datei nicht existiert
+        if (fs.existsSync(scssFilePath)) {
+            const entryName = scssFileName.replace('.scss', '');
+            entryPoints[entryName] = scssFilePath;
+        } else {
+            console.warn(`   SCSS-Datei ${scssFileName} nicht in ${themeNameRaw} gefunden unter ${path.relative(projectRoot, scssFilePath)}. Überspringe für Multi-Entry.`);
         }
+    });
 
-        const entryName = scssFileName.replace('.scss', ''); // z.B. _vendors, _base
+    if (Object.keys(entryPoints).length === 0) {
+        console.warn(`   Keine gültigen SCSS-Einstiegspunkte für Theme ${themeNameRaw} gefunden. Überspringe CSS-Konfiguration für dieses Theme.`);
+        return null;
+    }
 
-        // NEU: Logik für output.clean
-        let cleanOutputForThisEntry = false;
-        if (!cleanedCssThemeDistDirs.has(themeCssDistDir)) {
-            cleanOutputForThisEntry = true;
-            cleanedCssThemeDistDirs.add(themeCssDistDir);
-            console.log(`   output.clean wird für ${path.relative(projectRoot, themeCssDistDir)} auf true gesetzt (erstes Bundle für dieses Verzeichnis).`);
-        }
+    console.log(`CSS-Konfig für Theme "${themeNameRaw}" mit folgenden Entry-Points:`, entryPoints);
 
-        console.log(`CSS-Konfig für Theme "${themeNameRaw}", Datei "${scssFileName}":`);
-        console.log(`   SCSS-Datei: ${path.relative(projectRoot, scssFilePath)}`);
-        console.log(`   Ausgabe (output.path): ${path.relative(projectRoot, themeCssDistDir)}`);
-        console.log(`   Public Path (output.publicPath): ${themePublicPath}`);
-        console.log(`   Bundle-Name (entryName): ${entryName}`);
-
-        return {
-            name: `theme-${themeNameClean}-${entryName}-css`,
-            mode: 'production',
-            entry: {
-                [entryName]: scssFilePath // Key ist der Bundle-Name, Value der Pfad zur Datei
-            },
-            output: {
-                path: themeCssDistDir,
-                publicPath: themePublicPath,
-                assetModuleFilename: 'fonts/[name].[hash][ext][query]', // Name der Fontdatei beibehalten
-                clean: cleanOutputForThisEntry, // Geändert: Dynamisch basierend darauf, ob das Verzeichnis schon geleert wurde
-            },
-            module: {
-                rules: [
-                    {
-                        test: /\.scss$/,
-                        use: getScssLoaders(true, true),
-                    },
-                    {
-                        test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
-                        type: 'asset/resource',
-                    }
-                ],
-            },
-            plugins: [
-                new RemoveEmptyScriptsPlugin(),
-                new MiniCssExtractPlugin({
-                    filename: '[name].[contenthash].bundle.min.css', // Wird zu z.B. _vendors.contenthash.bundle.min.css
-                }),
-                new WebpackManifestPlugin({
-                    fileName: path.join(themeManifestDir, `${entryName}-css.manifest.json`), // separates Manifest pro Bundle
-                    publicPath: themePublicPath,
-                    filter: (file) => file.chunk?.name === entryName && file.name.endsWith('.css'),
-                    map: (file) => ({
-                        name: file.name,
-                        path: file.path,
-                        isInitial: file.isInitial,
-                        isChunk: file.isChunk,
-                        entryPoint: file.chunk?.name
-                    })
-                }),
+    return {
+        name: `theme-${themeNameClean}-css-bundle`,
+        mode: 'production',
+        entry: entryPoints,
+        output: {
+            path: themeCssDistDir,
+            publicPath: themePublicPath,
+            filename: '[name].remove.js',// Platzhalter für JS, wird von RemoveEmptyScriptsPlugin entfernt
+            assetModuleFilename: 'fonts/[name].[hash][ext][query]', // Fonts wieder in Unterordner
+            clean: true, // output.clean für diese eine Konfiguration pro Theme
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.scss$/,
+                    use: getScssLoaders(true, true),
+                },
+                {
+                    test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
+                    type: 'asset/resource',
+                }
             ],
-            optimization: {
-                minimize: true,
-                minimizer: [
-                    commonCssMinimizerPlugin,
-                ],
-            },
-            resolve: {
-                alias: themeAliases,
-            },
-            performance: commonPerformanceSettings,
-            ignoreWarnings: commonIgnoreWarningsSetting
-        };
-    }).filter(Boolean); // Entferne null-Werte, falls Dateien nicht gefunden wurden
-});
+        },
+        plugins: [
+            new RemoveEmptyScriptsPlugin(),
+            new MiniCssExtractPlugin({
+                filename: '[name].[contenthash].bundle.min.css',
+            }),
+            new WebpackManifestPlugin({
+                fileName: path.join(themeManifestDir, `css.manifest.json`), // Ein Manifest pro Theme für alle CSS
+                publicPath: themePublicPath,
+                // Da wir jetzt ein Manifest pro Theme haben, das alle CSS-Einstiegspunkte enthält,
+                // müssen wir nicht mehr so streng filtern. Alle CSS-Dateien, die aus dieser Konfiguration
+                // stammen, gehören in dieses Manifest.
+                filter: (file) => file.name.endsWith('.css'),
+                map: (file) => ({
+                    name: file.name, // z.B. _vendors.hash.bundle.min.css
+                    path: file.path, // Der volle Pfad inkl. publicPath
+                    isInitial: file.isInitial,
+                    isChunk: file.isChunk,
+                    // file.chunk.name ist der Name des Entry-Chunks (z.B. _vendors, _base)
+                    // Damit kann die Anwendung den ursprünglichen Namen finden.
+                    entryPoint: file.chunk?.name
+                })
+            }),
+        ],
+        optimization: {
+            minimize: true,
+            minimizer: [
+                commonCssMinimizerPlugin,
+            ],
+        },
+        resolve: {
+            alias: {}, // themeAliases war vorher pro Datei, hier vereinfacht
+        },
+        performance: commonPerformanceSettings,
+        ignoreWarnings: commonIgnoreWarningsSetting,
+    };
+}).filter(Boolean); // Entferne null-Werte, falls ein Theme keine gültigen SCSS-Dateien hatte
 
 // --- NEU: RSCE SCSS-Konfigurationen ---
 const rsceScssFiles = glob.sync(path.join(rsceCssPath, '*.scss').replace(/\\/g, '/'));
@@ -367,7 +361,7 @@ const rsceWebpackConfigs = rsceScssFiles.map(scssFile => {
             minimizer: [commonCssMinimizerPlugin],
         },
         performance: commonPerformanceSettings,
-        ignoreWarnings: commonIgnoreWarningsSetting
+        ignoreWarnings: commonIgnoreWarningsSetting,
     };
 });
 
@@ -402,6 +396,10 @@ const jsElementWebpackConfigs = elementJsFiles.map(jsFile => {
             minimizer: [new TerserPlugin({ extractComments: false, terserOptions: { format: { comments: false } } })],
         },
         performance: { hints: false },
+        watchOptions: {
+            poll: 1000,
+            aggregateTimeout: 600
+        }
     };
 });
 

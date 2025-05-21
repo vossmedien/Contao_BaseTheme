@@ -17,10 +17,10 @@
     "venobox": "*"
   },
   "scripts": {
-    "build:js": "FILTER_PATTERN='^(app-.*-js|element-.*-js)$' webpack",
-    "watch:js": "FILTER_PATTERN='^(app-.*-js|element-.*-js)$' webpack --watch",
-    "build:css": "FILTER_PATTERN='^(theme-.*-css|rsce-.*-css)$' webpack",
-    "watch:css": "FILTER_PATTERN='^(theme-.*-css|rsce-.*-css)$' webpack --watch",
+    "build:js": "webpack",
+    "watch:js": "webpack --watch",
+    "build:css": "webpack",
+    "watch:css": "webpack --watch",
     "build": "webpack",
     "watch": "npm-run-all --parallel watch:js watch:css",
     "test": "echo \"Error: no test specified\" && exit 1"
