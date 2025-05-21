@@ -125,7 +125,7 @@ const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
             filename: `${themeNameClean}.[contenthash].bundle.min.js`,
             path: themeSpecificDistPath,
             publicPath: themeSpecificPublicPath,
-            clean: true,
+            clean: false,
         },
         module: {
             rules: [
@@ -193,8 +193,6 @@ const cssThemeFolders = fs.readdirSync(cssWorkspaceBase)
 
 console.log('Gefundene CSS-Theme-Ordner:', cssThemeFolders.map(f => f.name));
 
-const cleanedCssThemeDistDirs = new Set(); // NEU: Set zum Verfolgen der bereits geleerten CSS-Dist-Verzeichnisse
-
 const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
     const themeNameRaw = themeFolder.name; // z.B. _caeliRelaunch
     const themeNameClean = themeNameRaw.substring(1); // z.B. caeliRelaunch
@@ -223,6 +221,7 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
     ];
 
     let themeAliases = {};
+    let isFirstEntryForThisTheme = true; // Flag, um clean:true nur einmal pro Theme anzuwenden
 
     return scssFilesToBundle.map(scssFileName => {
         const scssFilePath = path.join(themeCssDir, scssFileName);
@@ -232,14 +231,10 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
         }
 
         const entryName = scssFileName.replace('.scss', ''); // z.B. _vendors, _base
-        
-        // NEU: Logik für output.clean
-        let cleanOutputForThisEntry = false;
-        if (!cleanedCssThemeDistDirs.has(themeCssDistDir)) {
-            cleanOutputForThisEntry = true;
-            cleanedCssThemeDistDirs.add(themeCssDistDir);
-            console.log(`   output.clean wird für ${path.relative(projectRoot, themeCssDistDir)} auf true gesetzt (erstes Bundle für dieses Verzeichnis).`);
-        }
+        // const currentCleanValue = isFirstEntryForThisTheme; // Entfernt
+        // if (isFirstEntryForThisTheme) { // Entfernt
+        // isFirstEntryForThisTheme = false; // Entfernt
+        // } // Entfernt
 
         console.log(`CSS-Konfig für Theme "${themeNameRaw}", Datei "${scssFileName}":`);
         console.log(`   SCSS-Datei: ${path.relative(projectRoot, scssFilePath)}`);
@@ -257,7 +252,7 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
                 path: themeCssDistDir,
                 publicPath: themePublicPath,
                 assetModuleFilename: 'fonts/[name].[hash][ext][query]', // Name der Fontdatei beibehalten
-                clean: cleanOutputForThisEntry, // Geändert: Dynamisch basierend darauf, ob das Verzeichnis schon geleert wurde
+                clean: false, // Geändert, da del-cli das übernimmt (vorher currentCleanValue)
             },
             module: {
                 rules: [
