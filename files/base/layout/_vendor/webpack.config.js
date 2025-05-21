@@ -11,6 +11,33 @@ const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 
 // __dirname ist jetzt /Users/christian.voss/PhpstormProjects/Caeli-Relaunch/files/base/layout/_vendor
 
+// --- Gemeinsame Konfigurationsteile ---
+const commonBabelLoaderRule = {
+    test: /\.js$/,
+    exclude: /node_modules/,
+    use: {
+        loader: 'babel-loader',
+        // Babel-Optionen werden aus babel.config.js gelesen
+    },
+};
+
+const commonTerserPlugin = new TerserPlugin({
+    extractComments: false,
+    terserOptions: {
+        format: {
+            comments: false,
+        },
+    },
+});
+
+const commonCssMinimizerPlugin = new CssMinimizerPlugin();
+
+const commonPerformanceSettings = {
+    hints: false,
+};
+
+const commonIgnoreWarningsSetting = [/Warning/];
+
 // Basispfad zu deinen JS-Dateien (eine Ebene höher, dann in 'js')
 const jsWorkspaceBase = path.resolve(__dirname, '../js');
 // Zielverzeichnis für die Bundles (eine Ebene höher, dann in 'js/dist')
@@ -125,7 +152,9 @@ const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
             filename: `${themeNameClean}.[contenthash].bundle.min.js`,
             path: themeSpecificDistPath,
             publicPath: themeSpecificPublicPath,
-            clean: true,
+            clean: {
+                keep: /vendor\//,
+            },
         },
         module: {
             rules: [
@@ -142,19 +171,10 @@ const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
         optimization: {
             minimize: true,
             minimizer: [
-                new TerserPlugin({
-                    extractComments: false,
-                    terserOptions: {
-                        format: {
-                            comments: false,
-                        },
-                    },
-                }),
+                commonTerserPlugin,
             ],
         },
-        performance: {
-            hints: false
-        },
+        performance: commonPerformanceSettings,
         resolve: {
             extensions: ['.js'],
         },
@@ -288,31 +308,18 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
                         entryPoint: file.chunk?.name
                     })
                 }),
-                /* // Deaktiviert, um die Erstellung von "*.bundle.min.css"-Dateien zu verhindern
-                new WebpackShellPluginNext({
-                    onBuildEnd: {
-                        scripts: [`sleep 0.5 && touch "${path.join(themeCssDistDir, '[name].[contenthash].bundle.min.css').replace('[name]', entryName).replace('[contenthash]', '*')}"`], // Wildcard für contenthash
-                        blocking: false,
-                        parallel: true
-                    }
-                })
-                */
             ],
             optimization: {
                 minimize: true,
                 minimizer: [
-                    new CssMinimizerPlugin(),
+                    commonCssMinimizerPlugin,
                 ],
             },
             resolve: {
                 alias: themeAliases,
             },
-            performance: {
-                hints: false
-            },
-            ignoreWarnings: [
-                /Warning/
-            ]
+            performance: commonPerformanceSettings,
+            ignoreWarnings: commonIgnoreWarningsSetting
         };
     }).filter(Boolean); // Entferne null-Werte, falls Dateien nicht gefunden wurden
 });
@@ -354,22 +361,13 @@ const rsceWebpackConfigs = rsceScssFiles.map(scssFile => {
             new MiniCssExtractPlugin({
                 filename: '[name].min.css', // Erzeugt z.B. ce_rsce_videogrid.min.css
             }),
-            new WebpackShellPluginNext({
-                onBuildEnd: {
-                    scripts: [`sleep 0.5 && touch "${outputCssFilePath}"`],
-                    blocking: false,
-                    parallel: true
-                }
-            })
         ],
         optimization: {
             minimize: true,
-            minimizer: [new CssMinimizerPlugin()],
+            minimizer: [commonCssMinimizerPlugin],
         },
-        performance: { hints: false },
-        ignoreWarnings: [
-            /Warning/
-        ]
+        performance: commonPerformanceSettings,
+        ignoreWarnings: commonIgnoreWarningsSetting
     };
 });
 
