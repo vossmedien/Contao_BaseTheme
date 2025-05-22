@@ -196,8 +196,9 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
             <?php // --- ZWEISPALTIG --- ?>
 
             <?php if ($this->headline_above_columns): ?>
-                 <div class="headline-above-columns mb-md-gap">
-                     <div class="container">
+            <div class="container">
+                 <div class="headline-above-columns mb-md-gap ">
+
                      <?= $headlineHTML; // Headline oberhalb der Spalten (mit Animation) ?>
                          </div>
                  </div>
@@ -205,7 +206,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
 
             <?php // Wrapper für die row, dem die columns_container_css_class hinzugefügt wird ?>
             <div <?php if (!empty($this->columns_container_css_class)): ?>class="<?= $this->columns_container_css_class ?>"<?php endif; ?>>
-                <div class="row g-md-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
+                <div class="row g-lg-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
 
                     <?php // --- Headlinespalte --- ?>
                     <?php
@@ -240,7 +241,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
                                 <?php
                                     $headlineColumnButtonAlignmentClass = $this->headline_column_button_alignment ?: 'text-lg-start';
                                 ?>
-                                <div class="buttons <?= $headlineColumnButtonAlignmentClass; ?> mt-3">
+                                <div class="buttons <?= $headlineColumnButtonAlignmentClass; ?> mt-4">
                                     <?= $headlineColumnButtonsHTML; ?>
                                 </div>
                             <?php endif; ?>
@@ -249,7 +250,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
 
                     <?php // --- Textspalte --- ?>
                     <div  class="col-12 col-lg-<?= $bsColContent; ?> <?= $orderContentClass; ?> <?php if ($this->content_column_css_class): ?><?= $this->content_column_css_class ?><?php endif; ?>">
-                        <div class="content-column">
+                        <div class="content-column mt-3 mt-lg-0">
                             <?php if ($this->desc): ?>
                                 <div class="text" <?php if($overrideAnimation ?: $this->animation_type_content):?>data-animation="<?= $overrideAnimation ?: $this->animation_type_content; ?>"<?php endif;?>>
                                     <?= $this->desc; ?>
@@ -258,7 +259,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
 
                             <?php // --- Bilder Logik Start --- ?>
                             <?php if ($hasImages): ?>
-                                <div class="images-section  <?php if (!$this->desc): ?>mt-3<?php endif;?>  <?php if (!$headerImageHTML): ?>header-image<?php endif;?>">
+                                <div class="images-section   <?php if ($this->desc): ?>mt-3<?php endif;?>  <?php if (!$headerImageHTML): ?>header-image<?php endif;?>">
                                     <?php // --- Slider/Listen Container (HTML wird immer gerendert, JS entscheidet) --- ?>
                                     <div class="ce--content-slider content-slider-in-headline <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> <?php if ($totalImages > 1) : ?>is-slider<?php endif; ?>"
                                          data-slider-id="<?= $this->id; ?>_<?= $rand; ?>"
@@ -287,7 +288,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
                                             <div class="image-list-wrapper align-items-center">
                                                 <?php foreach ($imageUuids as $index => $uuid) : ?>
                                                     <?php $isLast = ($index === $totalImages - 1); ?>
-                                                    <div class="image-list-item text-center" <?php if($overrideAnimation ?: $this->slide_animation_type): ?>data-animation="<?php echo $overrideAnimation ?: $this->slide_animation_type; ?>"<?php endif; ?>>
+                                                    <div class="image-list-item " <?php if($overrideAnimation ?: $this->slide_animation_type): ?>data-animation="<?php echo $overrideAnimation ?: $this->slide_animation_type; ?>"<?php endif; ?>>
                                                         <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id.'_'.$rand : ""); ?>
                                                     </div>
                                                 <?php endforeach; ?>
@@ -312,7 +313,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
                                 <?php
                                     $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-start';
                                 ?>
-                                <div class="buttons <?= $buttonAlignmentClass; ?> mt-3">
+                                <div class="buttons <?= $buttonAlignmentClass; ?>  <?php if ($hasImages || $this->desc): ?>mt-4<?php endif;?>">
                                     <?= $buttonsHTML; ?>
                                 </div>
                             <?php endif; ?>
@@ -325,8 +326,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
             <?php // --- EINSPALTIG --- ?>
             <?= $headlineHTML; // Headline mit Animation (kommt vom Helper, $overrideAnimation ist dort schon berücksichtigt) ?>
 
-
-
+        
             <?php if ($this->desc): ?>
                 <div <?php if($overrideAnimation ?: $this->animation_type_content):?>data-animation="<?= $overrideAnimation ?: $this->animation_type_content;?>"<?php endif;?> class="text">
                     <?= $this->desc; ?>
@@ -364,7 +364,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
                             <div class="image-list-wrapper align-items-center">
                                 <?php foreach ($imageUuids as $index => $uuid) : ?>
                                     <?php $isLast = ($index === $totalImages - 1); ?>
-                                    <div class="image-list-item text-center" <?php if($overrideAnimation ?: $this->slide_animation_type): ?>data-animation="<?php echo $overrideAnimation ?: $this->slide_animation_type; ?>"<?php endif; ?>>
+                                    <div class="image-list-item" <?php if($overrideAnimation ?: $this->slide_animation_type): ?>data-animation="<?php echo $overrideAnimation ?: $this->slide_animation_type; ?>"<?php endif; ?>>
                                         <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id.'_'.$rand : ""); ?>
                                     </div>
                                 <?php endforeach; ?>
@@ -394,7 +394,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
                     $oneColumnButtonAlignmentClass = 'text-start'; // Beispiel: Immer linksbündig
                     // Falls die Logik komplexer werden soll, müsste man ggf. ein separates Feld für einspaltige Button-Ausrichtung einführen.
                  ?>
-                 <div class="buttons <?= $oneColumnButtonAlignmentClass; ?> mt-3">
+                 <div class="buttons <?= $oneColumnButtonAlignmentClass; ?> mt-4">
                     <?= $buttonsHTML; ?>
                  </div>
             <?php endif; ?>
@@ -402,9 +402,8 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
         <?php endif; ?>
 
     </div>
-</div>
 
-<?php // --- Swiper JS Initialisierung --- ?>
+    <?php // --- Swiper JS Initialisierung --- ?>
 <?php // Angepasst: JS wird geladen, wenn Bilder vorhanden sind ?>
 <?php if ($this->add_images && EnvHelper::isFrontend()): ?>
 <script type="text/javascript">
@@ -583,3 +582,7 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
 </script>
 <?php endif; ?>
 <?php // --- Ende Swiper JS Initialisierung --- ?>
+
+
+</div>
+

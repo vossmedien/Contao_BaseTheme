@@ -59,12 +59,12 @@ if (EnvHelper::isFrontend()) {
                     </div>
                     <?php endif; ?>
 
-                    <div class="swiper-container-outer position-relative">
+                    <div class="swiper-container-outer position-relative <?= $contentColInnerClass ?>">
                         <div class="swiper <?= $uniqueId ?>" data-uid="<?= $this->id ?>">
                             <div class="swiper-wrapper">
                                 <?php foreach ($this->slides as $index => $slide): ?>
                                     <div class="swiper-slide">
-                                        <div class="slide-inner <?= $contentColInnerClass ?>">
+                                        <div class="slide-inner ">
                                             <?php if ($slide->slide_headline): ?>
                                                 <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, "", "") ?>
                                             <?php endif; ?>

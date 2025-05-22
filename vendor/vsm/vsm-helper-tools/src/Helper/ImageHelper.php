@@ -613,15 +613,27 @@ class ImageHelper
                         );
 
                         if (!isset($isWebp) || !$isWebp) {
-                            $retina2xWebp = self::processImage(
+                            $tempRetina2xWebp = self::processImage(
                                 $absoluteImagePath,
                                 $retinaConfig,
                                 self::getResizeOptions('webp')
                             );
-                            $retinaWebpSrc = $retina2xWebp['src'];
+                            if (is_array($tempRetina2xWebp) && isset($tempRetina2xWebp['src'])) {
+                                $retinaWebpSrc = (string) $tempRetina2xWebp['src'];
+                            } else {
+                                $retinaWebpSrc = ''; // Fallback
+                                $logger = System::getContainer()->get('monolog.logger.contao');
+                                $logger->warning('ImageHelper: processImage (webp retina) returned unexpected value.', ['value' => $tempRetina2xWebp, 'image_path' => $absoluteImagePath]);
+                            }
                         } else {
                             // Bei WebP-Originalbildern verwenden wir die gleiche Retina-Version
-                            $retinaWebpSrc = $retina2xImage['src'];
+                            if (is_array($retina2xImage) && isset($retina2xImage['src'])) {
+                                $retinaWebpSrc = (string) $retina2xImage['src'];
+                            } else {
+                                $retinaWebpSrc = ''; // Fallback
+                                $logger = System::getContainer()->get('monolog.logger.contao');
+                                $logger->warning('ImageHelper: retina2xImage had unexpected value for webp source.', ['value' => $retina2xImage, 'image_path' => $absoluteImagePath]);
+                            }
                         }
 
                         $retinaImageSrc = $retina2xImage['src'];
@@ -808,7 +820,6 @@ class ImageHelper
         if ($finalCaption) {
             $finalOutput .= '<figcaption>' . $finalCaption . '</figcaption>';
         }
-
 
 
         $finalOutput .= '</figure>';

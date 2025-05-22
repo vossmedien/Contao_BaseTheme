@@ -77,6 +77,23 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
         ?>
         <div class="<?php echo trim($outerWrapperClasses); ?>">
 
+                <?php if (!$showTextColumn): ?>
+                <?php
+                // Headline Output
+                echo HeadlineHelper::generateHeadlineHTML(
+                    $this->topline,
+                    $this->headline,
+                    $this->subline,
+                    $this->hl,
+                    $this->animation_type,
+                    null,
+                    false
+                );
+                ?>
+            <?php endif; ?>
+
+
+
             <?php // --- Filter Buttons (if enabled) --- ?>
             <?php if ($this->add_filter_form && (!empty($allTags) || ($this->add_text_filter_option && !empty($this->text_filter_button_label) && !empty($this->text_filter_content)))): ?>
                 <div class="filter-buttons mb-4 justify-content-center justify-content-md-start d-flex gap-1 flex-wrap flex-row">
@@ -107,8 +124,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         $this->hl,
                         $this->animation_type,
                         null,
-                        false,
-                        "mb-3"
+                        false
                     );
                     ?>
                     <?php if ($this->contact_text): ?>

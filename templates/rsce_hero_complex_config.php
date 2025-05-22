@@ -253,5 +253,72 @@ return array(
             'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit'),
             'dependsOn' => array('field' => 'activate_box_slider'),
         ),
+
+        // Mobile Medien
+        'mobile_media_type_toggle' => array(
+            'label' => array('Separates mobiles Medium verwenden?', 'Wenn aktiviert, kann ein anderes Bild/Video für mobile Ansichten festgelegt werden.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr m12', 'submitOnChange' => true),
+        ),
+        'mobile_media_type' => array(
+            'label' => array('Mobiler Medientyp', 'Wählen Sie, ob ein Bild oder Video für mobile Ansichten verwendet werden soll.'),
+            'inputType' => 'select',
+            'options' => array(
+                'image' => 'Mobiles Bild',
+                'video' => 'Mobiles Video',
+            ),
+            'default' => 'image',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'mobile_media_type_toggle',
+            ),
+        ),
+        'mobile_image' => array(
+            'label' => array('Mobiles Bild auswählen', ''),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => Contao\Config::get('validImageTypes'),
+                'tl_class' => 'clr',
+                'mandatory' => true,
+            ),
+            'dependsOn' => array(
+                array('field' => 'mobile_media_type_toggle'),
+                array('field' => 'mobile_media_type', 'value' => 'image'),
+            ),
+        ),
+        'mobile_image_size' => array(
+            'label' => array('Bildgröße mobiles Bild', ''),
+            'inputType' => 'imageSize',
+            'options' => Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => 'w50',
+            ),
+            'dependsOn' => array(
+                array('field' => 'mobile_media_type_toggle'),
+                array('field' => 'mobile_media_type', 'value' => 'image'),
+            ),
+        ),
+        'mobile_video' => array(
+            'label' => array('Mobiles Video auswählen', 'MP4 oder WEBM'),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'mp4,webm',
+                'tl_class' => 'clr',
+                'mandatory' => true,
+            ),
+            'dependsOn' => array(
+                array('field' => 'mobile_media_type_toggle'),
+                array('field' => 'mobile_media_type', 'value' => 'video'),
+            ),
+        ),
     ),
 ); 

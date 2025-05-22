@@ -393,10 +393,12 @@ return array(
             'inputType' => 'text',
             'default' => 'mb-1',
             'eval' => array('tl_class' => 'clr'),
+            /*
             'dependsOn' => array(
                 'field' => 'deactivate_slider',
                 'value' => array('desktop', 'mobile', 'both'),
             ),
+            */
         ),
 
         'slide_animation_type' => array(

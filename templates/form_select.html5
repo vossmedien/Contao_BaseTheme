@@ -22,6 +22,10 @@
   <?php endif; ?>
 
   <select name="<?= $this->name ?>" id="ctrl_<?= $this->id ?>" class="form-select <?= $this->class ?>"<?= $this->getAttributes() ?>>
+    <?php if ($this->mandatory): ?>
+      <?php $placeholderText = str_contains((string)$this->class, 'is-newsletter-select') ? ($GLOBALS['TL_LANG']['MSC']['newsletterSelect'] ?? 'Auswahl Newsletter') : ($GLOBALS['TL_LANG']['MSC']['pleaseSelect'] ?? 'Bitte wählen...'); ?>
+      <option value="" disabled<?= empty($this->value) ? ' selected' : '' ?>><?= htmlspecialchars((string)$placeholderText) ?></option>
+    <?php endif; ?>
     <?php foreach ($this->getOptions() as $option): ?>
       <?php if ('group_start' == $option['type']): ?>
         <optgroup label="<?= $option['label'] ?>">

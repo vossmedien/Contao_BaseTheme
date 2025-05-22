@@ -26,7 +26,7 @@ if ($this->activate_box_slider) {
 $mainMediaHTML = '';
 $mainImageInfo = null;
 if ($this->media_type === 'image' && $this->main_image) {
-    $mainMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media', false, false, true);
+    $mainMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media d-none d-lg-block', false, false, true);
 } elseif ($this->media_type === 'video' && $this->main_video) {
     $mainImageInfo = BasicHelper::getFileInfo($this->main_video);
     if ($mainImageInfo && isset($mainImageInfo['ext'])) {
@@ -34,13 +34,56 @@ if ($this->media_type === 'image' && $this->main_image) {
         if ($isMainVideo) {
             $mainMediaHTML = VideoHelper::renderVideo(
                 $this->main_video,
-                'w-100 h-100 object-fit-cover hero-complex-main-media',
+                'w-100 h-100 object-fit-cover hero-complex-main-media d-none d-lg-block',
                 $this->main_headline, null, null, null,
                 'autoplay muted loop playsinline', true
             );
         }
     } else {
         $mainMediaHTML = '<p>Fehler beim Laden des Videos.</p>';
+    }
+}
+
+// Mobile Medien
+$mobileMediaHTML = '';
+if ($this->mobile_media_type_toggle) {
+    if ($this->mobile_media_type === 'image' && $this->mobile_image) {
+        $mobileMediaHTML = ImageHelper::generateImageHTML($this->mobile_image, null, $this->main_headline, $this->mobile_image_size, 'w-100 h-100 object-fit-cover hero-complex-mobile-media d-lg-none', false, false, true);
+    } elseif ($this->mobile_media_type === 'video' && $this->mobile_video) {
+        $mobileImageInfo = BasicHelper::getFileInfo($this->mobile_video);
+        if ($mobileImageInfo && isset($mobileImageInfo['ext'])) {
+            $isMobileVideo = VideoHelper::isVideoFormat($mobileImageInfo['ext']);
+            if ($isMobileVideo) {
+                $mobileMediaHTML = VideoHelper::renderVideo(
+                    $this->mobile_video,
+                    'w-100 h-100 object-fit-cover hero-complex-mobile-media d-lg-none',
+                    $this->main_headline, null, null, null,
+                    'autoplay muted loop playsinline', true
+                );
+            }
+        } else {
+            $mobileMediaHTML = '<p>Fehler beim Laden des mobilen Videos.</p>';
+        }
+    }
+} else {
+    // Fallback auf Hauptmedien, wenn keine separaten mobilen Medien aktiviert sind, aber für mobile Ansicht
+    if ($this->media_type === 'image' && $this->main_image) {
+        $mobileMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media d-lg-none', false, false, true);
+    } elseif ($this->media_type === 'video' && $this->main_video) {
+        $mainImageInfo = BasicHelper::getFileInfo($this->main_video); // Erneuter Check, falls $mainImageInfo oben nicht gesetzt wurde
+        if ($mainImageInfo && isset($mainImageInfo['ext'])) {
+            $isMainVideo = VideoHelper::isVideoFormat($mainImageInfo['ext']);
+            if ($isMainVideo) {
+                $mobileMediaHTML = VideoHelper::renderVideo(
+                    $this->main_video,
+                    'w-100 h-100 object-fit-cover hero-complex-main-media d-lg-none',
+                    $this->main_headline, null, null, null,
+                    'autoplay muted loop playsinline', true
+                );
+            }
+        } else {
+             $mobileMediaHTML = '<p>Fehler beim Laden des Videos für Mobile.</p>';
+        }
     }
 }
 
@@ -60,6 +103,9 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
             <div class="main-media-wrapper" style="--image-min-height: <?= $this->image_minheight ?: '700px' ?>; --image-mobile-min-height: <?= $this->image_mobile_minheight ?: 'auto' ?>;">
                 <?php if ($mainMediaHTML): ?>
                     <?= $mainMediaHTML ?>
+                <?php endif; ?>
+                <?php if ($mobileMediaHTML): ?>
+                    <?= $mobileMediaHTML ?>
                 <?php endif; ?>
             </div>
         </div>

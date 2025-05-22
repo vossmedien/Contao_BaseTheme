@@ -147,17 +147,17 @@ $listItems = StringUtil::deserialize($this->list_items, true);
 
         <?php // --- Headline & Text (zentriert mit max. Breite) --- ?>
         <div class="row">
-            <div class="col-12 col-xl-9">
-                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
-                    $this->topline,
-                    $this->headline,
-                    $this->subline,
-                    $this->headline_type,
-                    $this->animation_headline,
-                    null,
-                    false,
-                    null
-                ); ?>
+            <div class="col-12 col-xl-10">
+               <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+    $this->topline,
+    $this->headline,
+    $this->subline,
+    $this->headline_type,
+    $this->animation_headline,
+    null,
+    false,
+    (empty($this->text) ? "mb-0" : "")
+); ?>
 
                 <?php if ($this->text): ?>
                     <div class="text-section fw-semibold<?php if ($this->add_list_items): ?> mb-4<?php endif; ?>" <?php if ($this->animation_headline): ?>data-animation="<?= $this->animation_headline ?>"<?php endif; ?>>

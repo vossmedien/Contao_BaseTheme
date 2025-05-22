@@ -87,7 +87,7 @@ if (!function_exists('load_theme_assets_from_manifest')) {
                                 ];
                             }
                         }
-                    }
+                    } 
                     // Fallback-Pfad: Verarbeitet eine flache Key-Value-Struktur im Manifest
                     else if (is_string($assetData) && is_string($keyInManifest)) {
                         $publicPath = $assetData; // Wert ist der Pfad
