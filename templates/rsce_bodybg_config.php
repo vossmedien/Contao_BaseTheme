@@ -3,7 +3,7 @@ use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 //rsce_my_element_config.php
 return array(
-    'label' => array('Custom | Hintergrund für Website / Artikel (bodybg)', ''),
+    'label' => array('Custom | Hintergrund für Website / Artikel / Element (bodybg)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
@@ -12,7 +12,6 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-
 
         'image' => array(
             'label' => array('Bild / Video', ""),
@@ -45,7 +44,6 @@ return array(
             ),
         ),
 
-
         'settings' => array(
             'label' => array('Einstellungen', ''),
             'inputType' => 'group',
@@ -62,15 +60,43 @@ return array(
             ),
         ),
 
+        'target_type' => array(
+            'label' => array('Ziel auswählen', ''),
+            'inputType' => 'radio',
+            'options' => array(
+                'body' => 'Kompletter Body',
+                'article' => 'Nur der aktuelle Abschnitt/Artikel',
+                'element' => 'Bestimmtes Element (nach ID)',
+            ),
+            'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'element_id' => array(
+            'label' => array('Element-ID', 'Geben Sie die ID des Elements ein (z.B. "my-section" oder "#my-section")'),
+            'inputType' => 'text',
+            'eval' => array(
+                'maxlength' => 100,
+                'tl_class' => 'w50',
+                'placeholder' => 'z.B. my-section'
+            ),
+            'dependsOn' => array(
+                'field' => 'target_type',
+                'value' => 'element',
+            ),
+        ),
 
         'only_article' => array(
             'label' => array('', ''),
             'inputType' => 'checkbox',
             'options' => array(
-                '1' => 'Hintergrund für den Abschnitt und nicht für den kompletten Body',
+                '1' => 'Aktiviert (durch target_type bereits gesetzt)',
+            ),
+            'eval' => array('readonly' => true),
+            'dependsOn' => array(
+                'field' => 'target_type',
+                'value' => 'article',
             ),
         ),
-
 
         'is_between' => array(
             'label' => array('', ''),
@@ -79,15 +105,13 @@ return array(
                 '1' => 'Abstand zum Artikel davor entfernen, so dass Abschrägungen ggf. zusammengeführt werden und Artikel aneinander liegen',
             ),
             'dependsOn' => array(
-                'field' => 'only_article',
-                'value' => '1',
+                'field' => 'target_type',
+                'value' => array('article', 'element'),
             ),
         ),
 
-
         'multiSRC' => array(
             'inputType' => 'standardField',
-
             'eval' => array(
                 'multiple' => true,
                 'fieldType' => 'checkbox',
@@ -114,7 +138,6 @@ return array(
                 'coverflow' => 'Coverflow',
                 'flip' => 'Flip',
                 'cube' => 'Cube',
-
             ),
             'eval' => array('tl_class' => ''),
             'dependsOn' => array(
@@ -122,7 +145,6 @@ return array(
                 'value' => '1',
             ),
         ),
-
 
         'darken_image' => array(
             'label' => array('', ''),
@@ -137,7 +159,6 @@ return array(
                 'value' => '2',
             ),
         ),
-
 
         'autoplay' => array(
             'label' => array('Autoplay aktivieren', ''),
@@ -158,7 +179,6 @@ return array(
             'eval' => array('tl_class' => ''),
         ),
 
-
         'transition_time' => array(
             'label' => array('Animationszeit in ms', 'Standard: 1500'),
             'inputType' => 'text',
@@ -168,7 +188,6 @@ return array(
                 'value' => '1',
             ),
         ),
-
 
         'fit_image' => array(
             'label' => array('', ''),
@@ -182,7 +201,6 @@ return array(
             ),
         ),
 
-
         'css' => array(
             'label' => array('Eigener Code', 'wird als inline-style innerhalb von "background: #WERT#" eingebunden. Falls ausgefüllt, wird dieser Wert auch für die Abschrägungen genutzt.'),
             'inputType' => 'text',
@@ -193,7 +211,6 @@ return array(
             ),
         ),
 
-
         'activate' => array(
             'label' => array('', ''),
             'inputType' => 'checkbox',
@@ -201,8 +218,8 @@ return array(
                 '1' => 'Abschrägung aktivieren. Wichtig: deaktiviert parallax-Effekt',
             ),
             'dependsOn' => array(
-                'field' => 'only_article',
-                'value' => '1',
+                'field' => 'target_type',
+                'value' => array('article', 'element'),
             ),
         ),
 
@@ -210,8 +227,8 @@ return array(
             'label' => array('Abschrägungswinkel', 'Geben Sie einen Wert zwischen -5 und 5 ein. Standard: 2.5 bzw. Inhalt von var(--base-skew)'),
             'inputType' => 'text',
             'eval' => array(
-                'rgxp' => 'digit', // Erlaubt Zahlen einschließlich negativer Werte
-                'maxlength' => 2, // Erlaubt bis zu 3 Zeichen (z.B. "-5" oder "5")
+                'rgxp' => 'digit',
+                'maxlength' => 2,
                 'tl_class' => 'w50'
             ),
             'sql' => "varchar(2) NOT NULL default ''",
@@ -219,7 +236,6 @@ return array(
                 'field' => 'activate',
                 'value' => '1',
             ),
-
         ),
     ),
 );
