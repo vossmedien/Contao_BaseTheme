@@ -7,7 +7,6 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 
 // __dirname ist jetzt /Users/christian.voss/PhpstormProjects/Caeli-Relaunch/files/base/layout/_vendor
 
@@ -61,21 +60,44 @@ const rsceCssPath = path.resolve(cssWorkspaceBase, 'elements/rsce'); // NEU
 function getScssLoaders(useResolveUrlLoader = false, sourceMap = false) {
     const loaders = [
         MiniCssExtractPlugin.loader,
-        { loader: 'css-loader', options: { sourceMap: sourceMap } },
+        {
+            loader: 'css-loader',
+            options: {
+                sourceMap: sourceMap,
+                importLoaders: 1 + (useResolveUrlLoader ? 1 : 0),
+                url: (url, resourcePath) => {
+                    const imageRegex = /\\.(png|jpe?g|gif|svg|webp|ico)$/i;
+                    if (imageRegex.test(url)) {
+                        return false;
+                    }
+                    return true;
+                },
+            }
+        },
     ];
+
     if (useResolveUrlLoader) {
-        loaders.push({ loader: 'resolve-url-loader', options: { sourceMap: sourceMap, removeCR: true } });
+        loaders.push({
+            loader: 'resolve-url-loader',
+            options: {
+                sourceMap: sourceMap,
+                removeCR: true,
+                debug: true,
+            }
+        });
     }
+
     loaders.push({
         loader: 'sass-loader',
         options: {
-            sourceMap: sourceMap, // sourceMap hier ist wichtig für resolve-url-loader, falls aktiv
+            sourceMap: sourceMap,
             sassOptions: {
                 outputStyle: 'compressed',
-                quietDeps: true // NEU: Unterdrückt Warnungen von Abhängigkeiten
+                quietDeps: true
             }
         }
     });
+
     return loaders;
 }
 
