@@ -11,6 +11,33 @@ const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 
 // __dirname ist jetzt /Users/christian.voss/PhpstormProjects/Caeli-Relaunch/files/base/layout/_vendor
 
+// --- Gemeinsame Konfigurationsteile ---
+const commonBabelLoaderRule = {
+    test: /\.js$/,
+    exclude: /node_modules/,
+    use: {
+        loader: 'babel-loader',
+        // Babel-Optionen werden aus babel.config.js gelesen
+    },
+};
+
+const commonTerserPlugin = new TerserPlugin({
+    extractComments: false,
+    terserOptions: {
+        format: {
+            comments: false,
+        },
+    },
+});
+
+const commonCssMinimizerPlugin = new CssMinimizerPlugin();
+
+const commonPerformanceSettings = {
+    hints: false,
+};
+
+const commonIgnoreWarningsSetting = [/Warning/];
+
 // Basispfad zu deinen JS-Dateien (eine Ebene höher, dann in 'js')
 const jsWorkspaceBase = path.resolve(__dirname, '../js');
 // Zielverzeichnis für die Bundles (eine Ebene höher, dann in 'js/dist')
@@ -125,7 +152,9 @@ const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
             filename: `${themeNameClean}.[contenthash].bundle.min.js`,
             path: themeSpecificDistPath,
             publicPath: themeSpecificPublicPath,
-            clean: false,
+            clean: {
+                keep: /vendor\//,
+            },
         },
         module: {
             rules: [
@@ -142,19 +171,10 @@ const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
         optimization: {
             minimize: true,
             minimizer: [
-                new TerserPlugin({
-                    extractComments: false,
-                    terserOptions: {
-                        format: {
-                            comments: false,
-                        },
-                    },
-                }),
+                commonTerserPlugin,
             ],
         },
-        performance: {
-            hints: false
-        },
+        performance: commonPerformanceSettings,
         resolve: {
             extensions: ['.js'],
         },
@@ -172,7 +192,7 @@ const jsAppWebpackConfigs = themeFolders.flatMap(theme => {
                 })
             }),
             new CopyWebpackPlugin({ patterns: vendorCopyPatterns })
-        ]
+        ],
     };
 
     // Gebe nur die appBundleConfig für dieses Theme zurück
@@ -193,7 +213,9 @@ const cssThemeFolders = fs.readdirSync(cssWorkspaceBase)
 
 console.log('Gefundene CSS-Theme-Ordner:', cssThemeFolders.map(f => f.name));
 
-const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
+// const cleanedCssThemeDistDirs = new Set(); // Entfernt für den neuen Ansatz
+
+const cssThemeWebpackConfigs = cssThemeFolders.map(themeFolder => { // Geändert von flatMap zu map
     const themeNameRaw = themeFolder.name; // z.B. _caeliRelaunch
     const themeNameClean = themeNameRaw.substring(1); // z.B. caeliRelaunch
     const themeCssDir = themeFolder.path; // z.B. /path/to/files/base/layout/css/_caeliRelaunch
@@ -204,11 +226,9 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
     // Sicherstellen, dass die Verzeichnisse existieren
     if (!fs.existsSync(themeCssDistDir)) {
         fs.mkdirSync(themeCssDistDir, { recursive: true });
-        console.log(`   Erstelle themenspezifisches CSS dist-Verzeichnis: ${path.relative(projectRoot, themeCssDistDir)}`);
     }
     if (!fs.existsSync(themeManifestDir)) {
         fs.mkdirSync(themeManifestDir, { recursive: true });
-        console.log(`   Erstelle themenspezifisches Manifest-Verzeichnis für CSS: ${path.relative(projectRoot, themeManifestDir)}`);
     }
 
     const scssFilesToBundle = [
@@ -220,97 +240,85 @@ const cssThemeWebpackConfigs = cssThemeFolders.flatMap(themeFolder => {
         '_utilities.scss'
     ];
 
-    let themeAliases = {};
-    let isFirstEntryForThisTheme = true; // Flag, um clean:true nur einmal pro Theme anzuwenden
-
-    return scssFilesToBundle.map(scssFileName => {
+    const entryPoints = {};
+    scssFilesToBundle.forEach(scssFileName => {
         const scssFilePath = path.join(themeCssDir, scssFileName);
-        if (!fs.existsSync(scssFilePath)) {
-            console.warn(`   SCSS-Datei ${scssFileName} nicht in ${themeNameRaw} gefunden unter ${path.relative(projectRoot, scssFilePath)}. Überspringe.`);
-            return null; // Überspringen, wenn die Datei nicht existiert
+        if (fs.existsSync(scssFilePath)) {
+            const entryName = scssFileName.replace('.scss', '');
+            entryPoints[entryName] = scssFilePath;
+        } else {
+            console.warn(`   SCSS-Datei ${scssFileName} nicht in ${themeNameRaw} gefunden unter ${path.relative(projectRoot, scssFilePath)}. Überspringe für Multi-Entry.`);
         }
+    });
 
-        const entryName = scssFileName.replace('.scss', ''); // z.B. _vendors, _base
-        // const currentCleanValue = isFirstEntryForThisTheme; // Entfernt
-        // if (isFirstEntryForThisTheme) { // Entfernt
-        // isFirstEntryForThisTheme = false; // Entfernt
-        // } // Entfernt
+    if (Object.keys(entryPoints).length === 0) {
+        console.warn(`   Keine gültigen SCSS-Einstiegspunkte für Theme ${themeNameRaw} gefunden. Überspringe CSS-Konfiguration für dieses Theme.`);
+        return null; 
+    }
 
-        console.log(`CSS-Konfig für Theme "${themeNameRaw}", Datei "${scssFileName}":`);
-        console.log(`   SCSS-Datei: ${path.relative(projectRoot, scssFilePath)}`);
-        console.log(`   Ausgabe (output.path): ${path.relative(projectRoot, themeCssDistDir)}`);
-        console.log(`   Public Path (output.publicPath): ${themePublicPath}`);
-        console.log(`   Bundle-Name (entryName): ${entryName}`);
+    console.log(`CSS-Konfig für Theme "${themeNameRaw}" mit folgenden Entry-Points:`, entryPoints);
 
-        return {
-            name: `theme-${themeNameClean}-${entryName}-css`,
-            mode: 'production',
-            entry: {
-                [entryName]: scssFilePath // Key ist der Bundle-Name, Value der Pfad zur Datei
-            },
-            output: {
-                path: themeCssDistDir,
+    return { 
+        name: `theme-${themeNameClean}-css-bundle`,
+        mode: 'production',
+        entry: entryPoints,
+        output: {
+            path: themeCssDistDir,
+            publicPath: themePublicPath,
+            filename: '[name].remove.js',// Platzhalter für JS, wird von RemoveEmptyScriptsPlugin entfernt
+            assetModuleFilename: 'fonts/[name].[hash][ext][query]', // Fonts wieder in Unterordner
+            clean: true, // output.clean für diese eine Konfiguration pro Theme
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.scss$/,
+                    use: getScssLoaders(true, true),
+                },
+                {
+                    test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
+                    type: 'asset/resource',
+                }
+            ],
+        },
+        plugins: [
+            new RemoveEmptyScriptsPlugin(),
+            new MiniCssExtractPlugin({
+                filename: '[name].[contenthash].bundle.min.css',
+            }),
+            new WebpackManifestPlugin({
+                fileName: path.join(themeManifestDir, `css.manifest.json`), // Ein Manifest pro Theme für alle CSS
                 publicPath: themePublicPath,
-                assetModuleFilename: 'fonts/[name].[hash][ext][query]', // Name der Fontdatei beibehalten
-                clean: false, // Geändert, da del-cli das übernimmt (vorher currentCleanValue)
-            },
-            module: {
-                rules: [
-                    {
-                        test: /\.scss$/,
-                        use: getScssLoaders(true, true),
-                    },
-                    {
-                        test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
-                        type: 'asset/resource',
-                    }
-                ],
-            },
-            plugins: [
-                new RemoveEmptyScriptsPlugin(),
-                new MiniCssExtractPlugin({
-                    filename: '[name].[contenthash].bundle.min.css', // Wird zu z.B. _vendors.contenthash.bundle.min.css
-                }),
-                new WebpackManifestPlugin({
-                    fileName: path.join(themeManifestDir, `${entryName}-css.manifest.json`), // separates Manifest pro Bundle
-                    publicPath: themePublicPath,
-                    filter: (file) => file.chunk?.name === entryName && file.name.endsWith('.css'),
-                    map: (file) => ({
-                        name: file.name,
-                        path: file.path,
+                // Filter erweitert, um auch Font-Dateien einzuschließen
+                filter: (file) => file.name.endsWith('.css') || /\.(woff2?|eot|ttf|otf|svg)$/i.test(file.name),
+                map: (file) => {
+                    const entryPoint = file.chunk?.name; // Nur für CSS-Chunks relevant
+                    const isFontFile = /\.(woff2?|eot|ttf|otf|svg)$/i.test(file.name);
+                    return {
+                        name: file.name, // z.B. _vendors.hash.bundle.min.css oder fontname.hash.woff2
+                        path: file.path, // Der volle Pfad inkl. publicPath
                         isInitial: file.isInitial,
                         isChunk: file.isChunk,
-                        entryPoint: file.chunk?.name
-                    })
-                }),
-                /* // Deaktiviert, um die Erstellung von "*.bundle.min.css"-Dateien zu verhindern
-                new WebpackShellPluginNext({
-                    onBuildEnd: {
-                        scripts: [`sleep 0.5 && touch "${path.join(themeCssDistDir, '[name].[contenthash].bundle.min.css').replace('[name]', entryName).replace('[contenthash]', '*')}"`], // Wildcard für contenthash
-                        blocking: false,
-                        parallel: true
-                    }
-                })
-                */
+                        // Fonts haben keinen CSS-Entry-Point, CSS-Dateien schon
+                        entryPoint: isFontFile ? null : entryPoint,
+                        isFont: isFontFile // Zusätzliches Flag zur einfachen Identifizierung
+                    };
+                }
+            }),
+        ],
+        optimization: {
+            minimize: true,
+            minimizer: [
+                commonCssMinimizerPlugin,
             ],
-            optimization: {
-                minimize: true,
-                minimizer: [
-                    new CssMinimizerPlugin(),
-                ],
-            },
-            resolve: {
-                alias: themeAliases,
-            },
-            performance: {
-                hints: false
-            },
-            ignoreWarnings: [
-                /Warning/
-            ]
-        };
-    }).filter(Boolean); // Entferne null-Werte, falls Dateien nicht gefunden wurden
-});
+        },
+        resolve: {
+            alias: {}, // themeAliases war vorher pro Datei, hier vereinfacht
+        },
+        performance: commonPerformanceSettings,
+        ignoreWarnings: commonIgnoreWarningsSetting,
+    };
+}).filter(Boolean); // Entferne null-Werte, falls ein Theme keine gültigen SCSS-Dateien hatte
 
 // --- NEU: RSCE SCSS-Konfigurationen ---
 const rsceScssFiles = glob.sync(path.join(rsceCssPath, '*.scss').replace(/\\/g, '/'));
@@ -349,22 +357,13 @@ const rsceWebpackConfigs = rsceScssFiles.map(scssFile => {
             new MiniCssExtractPlugin({
                 filename: '[name].min.css', // Erzeugt z.B. ce_rsce_videogrid.min.css
             }),
-            new WebpackShellPluginNext({
-                onBuildEnd: {
-                    scripts: [`sleep 0.5 && touch "${outputCssFilePath}"`],
-                    blocking: false,
-                    parallel: true
-                }
-            })
         ],
         optimization: {
             minimize: true,
-            minimizer: [new CssMinimizerPlugin()],
+            minimizer: [commonCssMinimizerPlugin],
         },
-        performance: { hints: false },
-        ignoreWarnings: [
-            /Warning/
-        ]
+        performance: commonPerformanceSettings,
+        ignoreWarnings: commonIgnoreWarningsSetting,
     };
 });
 
@@ -399,6 +398,10 @@ const jsElementWebpackConfigs = elementJsFiles.map(jsFile => {
             minimizer: [new TerserPlugin({ extractComments: false, terserOptions: { format: { comments: false } } })],
         },
         performance: { hints: false },
+        watchOptions: {
+            poll: 1000,
+            aggregateTimeout: 600
+        }
     };
 });
 
@@ -422,28 +425,19 @@ if (process.env.FILTER_PATTERN) {
     try {
         const regex = new RegExp(process.env.FILTER_PATTERN);
         
-        const patternMatchingConfigs = allConfigs.filter(conf => conf.name && regex.test(conf.name));
-        const cssConfigs = allConfigs.filter(conf => conf.name && conf.name.endsWith('-css'));
+        const filteredConfigs = allConfigs.filter(conf => conf.name && regex.test(conf.name));
 
-        // Kombiniere patternMatchingConfigs und cssConfigs, vermeide Duplikate basierend auf conf.name
-        const combinedConfigs = [...patternMatchingConfigs];
-        cssConfigs.forEach(cssConf => {
-            if (!combinedConfigs.find(c => c.name === cssConf.name)) {
-                combinedConfigs.push(cssConf);
-            }
-        });
-
-        if (combinedConfigs.length === 0) {
-            console.warn(`Webpack: Keine Konfigurationen entsprachen dem Filter-Muster: "${process.env.FILTER_PATTERN}" und es wurden auch keine (passenden) CSS-Konfigurationen gefunden. Es wird nichts gebaut.`);
+        if (filteredConfigs.length === 0) {
+            console.warn(`Webpack: Keine Konfigurationen entsprachen dem Filter-Muster: "${process.env.FILTER_PATTERN}". Es wird nichts gebaut.`);
             module.exports = [];
         } else {
-            console.log(`Webpack: ${combinedConfigs.length} von ${allConfigs.length} Konfigurationen werden gebaut. CSS-Konfigurationen werden immer berücksichtigt, zusätzlich zu denen, die dem Muster "${process.env.FILTER_PATTERN}" entsprechen.`);
-            combinedConfigs.forEach(conf => console.log(` - Verwendete Konfiguration: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
-            module.exports = combinedConfigs;
+            console.log(`Webpack: ${filteredConfigs.length} von ${allConfigs.length} Konfigurationen werden gebaut basierend auf dem Muster "${process.env.FILTER_PATTERN}".`);
+            filteredConfigs.forEach(conf => console.log(` - Verwendete Konfiguration: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
+            module.exports = filteredConfigs;
         }
     } catch (e) {
         console.error(`Webpack: Ungültiges Regex-Muster im FILTER_PATTERN: "${process.env.FILTER_PATTERN}". Fehler: ${e.message}`);
-        console.warn(`Webpack: Aufgrund des Fehlers im Regex werden alle ${allConfigs.length} Konfigurationen verwendet (inklusive aller CSS-Dateien).`);
+        console.warn(`Webpack: Aufgrund des Fehlers im Regex werden alle ${allConfigs.length} Konfigurationen verwendet.`);
         allConfigs.forEach(conf => console.log(` - Konfigurationsname: ${conf.name}, Ausgabe nach: ${conf.output ? path.relative(projectRoot, conf.output.path) : 'N/A'}`));
         module.exports = allConfigs; // Fallback auf alle Konfigurationen bei Regex-Fehler
     }

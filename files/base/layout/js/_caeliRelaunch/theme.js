@@ -584,3 +584,247 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+// Open Pachtrechner Modal on Link Click
+document.addEventListener('DOMContentLoaded', function() {
+    const modalLinks = document.querySelectorAll('a[href$="#pachtrechnerModal"]');
+    const modalElement = document.getElementById('pachtrechnerModal');
+
+    if (modalElement) {
+        const modalInstance = new bootstrap.Modal(modalElement);
+
+        modalLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                modalInstance.show();
+            });
+        });
+    }
+});
+
+// Pachtrechner-Funktionalität
+document.addEventListener('DOMContentLoaded', function () {
+    // Funktion zur Tausendertrennung
+    function tausenderpunkte(zahl = 0, modus = 0, tz = ".") {
+        if (isNaN(zahl)) {
+            return "Eingabe ist keine Zahl!";
+        }
+
+        let temp = String(zahl);
+        let nachkomma = "";
+        let vorkomma = "";
+        // let ausgabeZahl = ""; // Wird von der zweiten Schleife überschrieben
+
+        const dotIndex = temp.indexOf(".");
+        if (dotIndex !== -1) {
+            nachkomma = temp.slice(dotIndex + 1);
+            vorkomma = temp.slice(0, dotIndex);
+        } else {
+            vorkomma = temp;
+            nachkomma = "0";
+        }
+
+        // Erste, etwas komplexe Schleife für Tausenderpunkte (aus User-Code)
+        // let tempVorkomma = "";
+        // for (let i = vorkomma.length - 1; i >= 0; i--) {
+        //     tempVorkomma = vorkomma[i] + tempVorkomma;
+        //     if ((vorkomma.length - 1 - i) % 3 === 0 && i !== 0 && (vorkomma.length - 1 - i) !== 0) {
+        //          tempVorkomma = tz + tempVorkomma;
+        //     }
+        // }
+        // ausgabeZahl = tempVorkomma; // Wird von der nächsten Schleife überschrieben
+
+        // Korrektur/Standard: Tausenderpunkte bei Zahlen wie 100, 1000 etc. richtig setzen
+        let c = 0;
+        let tempVorkomma = ""; // Sicherstellen, dass es hier neu initialisiert wird
+        for (let i = vorkomma.length - 1; i >= 0; i--) {
+            tempVorkomma = vorkomma[i] + tempVorkomma;
+            c++;
+            if (c % 3 === 0 && i !== 0) {
+                tempVorkomma = tz + tempVorkomma;
+            }
+        }
+        let ausgabeZahl = tempVorkomma; // Zuweisung des korrekten Ergebnisses
+
+
+        if (modus === 0) {
+            // bleibt so
+        } else if (modus === 1) {
+            ausgabeZahl = ausgabeZahl + "," + nachkomma;
+        } else if (modus === 2) {
+            ausgabeZahl = ausgabeZahl + ",00";
+        } else if (modus === 3) {
+            ausgabeZahl = ausgabeZahl + ",-";
+        } else if (modus === 4) {
+            ausgabeZahl = ausgabeZahl + ",--";
+        }
+
+        return ausgabeZahl;
+    }
+
+    const pachtrechnerInstances = document.querySelectorAll('.pachtrechner-instance');
+
+    pachtrechnerInstances.forEach(instance => {
+        let pachtrechnerForm;
+        let pachtrechnerErgebnis;
+
+        // Fall 1: `instance` ist der Wrapper, Form und Ergebnis sind direkte Kinder. (z.B. pachtrechner.html5)
+        const formChild = instance.querySelector('.js-pachtrechner-form');
+        const ergebnisChild = instance.querySelector('.js-pachtrechner-ergebnis');
+
+        if (instance.classList.contains('js-pachtrechner-form')) {
+            // Fall 2: `instance` ist das Formular selbst. (z.B. geändertes pachtrechner_box.html5)
+            pachtrechnerForm = instance;
+            let nextSibling = instance.nextElementSibling;
+            while(nextSibling) {
+                if (nextSibling.classList.contains('js-pachtrechner-ergebnis')) {
+                    pachtrechnerErgebnis = nextSibling;
+                    break;
+                }
+                nextSibling = nextSibling.nextElementSibling;
+            }
+        } else if (instance.classList.contains('js-pachtrechner-ergebnis')) {
+            // Fall 3: `instance` ist das Ergebnis selbst (unwahrscheinlich für die aktuelle Logik, aber zur Vollständigkeit)
+            pachtrechnerErgebnis = instance;
+            let prevSibling = instance.previousElementSibling;
+            while(prevSibling) {
+                if (prevSibling.classList.contains('js-pachtrechner-form')) {
+                    pachtrechnerForm = prevSibling;
+                    break;
+                }
+                prevSibling = prevSibling.previousElementSibling;
+            }
+        } else if (formChild && ergebnisChild) {
+            // Zurück zu Fall 1, wenn `instance` weder Form noch Ergebnis ist, aber beides als Kinder hat.
+            pachtrechnerForm = formChild;
+            pachtrechnerErgebnis = ergebnisChild;
+        }
+
+
+        if (!pachtrechnerForm || !pachtrechnerErgebnis) {
+            console.warn('Pachtrechner-Formular oder Ergebnis-Container konnte nicht eindeutig für die Instanz gefunden werden:', instance);
+            return; // Mit der nächsten Instanz fortfahren
+        }
+
+        // Elemente innerhalb des Formulars
+        const pachtrechnerHaInput = pachtrechnerForm.querySelector('.js-pachtrechner-ha-input');
+        const resetHaButton = pachtrechnerForm.querySelector('.js-reset-ha-button'); 
+        const pachtrechnerCheckButton = pachtrechnerForm.querySelector('.js-pachtrechner-check-btn');
+        const pachtrechnerInputError = pachtrechnerForm.querySelector('.js-pachtrechner-input-error');
+
+        // Elemente innerhalb des Ergebnisbereichs
+        const sizeHaSpan = pachtrechnerErgebnis.querySelector('.js-size-ha'); 
+        const jahresPachtSpan = pachtrechnerErgebnis.querySelector('.js-jahres-pacht');
+        const barRangeStartSpan = pachtrechnerErgebnis.querySelector('.js-bar-range-start');
+        const barRangeEndSpan = pachtrechnerErgebnis.querySelector('.js-bar-range-end');
+        const barRangePercentDiv = pachtrechnerErgebnis.querySelector('.js-bar-range-percent');
+
+
+        // Random text logic: Diese Logik wird für jede Instanz ausgeführt.
+        // Wenn 'calculator_img_text_tipp_' und 'calculator_img_text_top_' globale, einmalige IDs sind,
+        // sollte dieser Codeblock aus der forEach-Schleife herausgenommen und nur einmal global ausgeführt werden.
+        // Aktuell (wie im ursprünglichen theme.js) ist es pro Instanz.
+        const randomTextNTipp = document.querySelectorAll('[id^="calculator_img_text_tipp_"]').length;
+        if (randomTextNTipp > 0) {
+            const randomTxtTipp = Math.floor(Math.random() * randomTextNTipp) + 1;
+            const tippElement = document.getElementById('calculator_img_text_tipp_' + randomTxtTipp);
+            if (tippElement) {
+                tippElement.classList.remove('d-none');
+            }
+        }
+
+        const randomTextNTop = document.querySelectorAll('[id^="calculator_img_text_top_"]').length;
+        let randomTxtTop;
+        if (randomTextNTop > 0) {
+            randomTxtTop = Math.floor(Math.random() * randomTextNTop) + 1;
+        }
+
+        // Event listener für Anchor tags mit class 'pachtrechner':
+        // Ähnlich wie oben: Wenn 'a.pachtrechner' globale Links sind, gehört dieser Listener nicht in die Schleife,
+        // da er sonst mehrfach für dieselben Elemente registriert wird.
+        document.querySelectorAll('a.pachtrechner').forEach(function (element) {
+            // Um mehrfache Listener zu vermeiden, könnte man prüfen, ob schon einer hängt, oder eine einmalige ID verwenden.
+            // Fürs Erste belasse ich es, um dem Original-JS nahe zu bleiben, aber es ist ein potenzielles Problem.
+            element.addEventListener('click', function () {
+                if (window.location.hash === '#pachtrechner') {
+                    window.location.reload();
+                }
+            });
+        });
+
+        if (resetHaButton) {
+            resetHaButton.addEventListener('click', function () {
+                if (pachtrechnerErgebnis) pachtrechnerErgebnis.classList.add('d-none');
+                if (pachtrechnerForm) pachtrechnerForm.classList.remove('d-none'); 
+
+                if (randomTextNTop > 0) { 
+                    const topElement = document.getElementById('calculator_img_text_top_' + randomTxtTop);
+                    if (topElement) {
+                        topElement.classList.add('d-none');
+                    }
+                }
+            });
+        }
+
+        if (pachtrechnerCheckButton) {
+            pachtrechnerCheckButton.addEventListener('click', function () {
+                if (!pachtrechnerHaInput) return;
+                const ha = parseFloat(pachtrechnerHaInput.value);
+
+                if (ha > 0 && ha <= 999999) {
+                    if (pachtrechnerInputError) pachtrechnerInputError.classList.add('d-none');
+
+                    const jahresPacht = 8674 * ha;
+                    const barRangeStart = 4251 * ha;
+                    const barRangeEnd = 14667 * ha;
+
+                    if (sizeHaSpan) sizeHaSpan.textContent = ha.toString(); 
+                    if (jahresPachtSpan) jahresPachtSpan.textContent = tausenderpunkte(jahresPacht, 0, ".");
+                    if (barRangeStartSpan) barRangeStartSpan.textContent = tausenderpunkte(barRangeStart, 0, ".");
+                    if (barRangeEndSpan) barRangeEndSpan.textContent = tausenderpunkte(barRangeEnd, 0, ".");
+
+                    if (pachtrechnerErgebnis) pachtrechnerErgebnis.classList.remove('d-none');
+                    if (pachtrechnerForm) pachtrechnerForm.classList.add('d-none'); 
+
+                    if (barRangePercentDiv) {
+                        const percent = (jahresPacht * 100) / barRangeEnd;
+                        setTimeout(function () {
+                            barRangePercentDiv.style.width = percent + "%";
+                            barRangePercentDiv.setAttribute('aria-valuenow', percent.toString());
+                        }, 50);
+                    }
+
+                    if (randomTextNTop > 0) { 
+                        const topElement = document.getElementById('calculator_img_text_top_' + randomTxtTop);
+                        if (topElement) {
+                            topElement.classList.remove('d-none');
+                        }
+                    }
+
+                } else {
+                    if (pachtrechnerHaInput) pachtrechnerHaInput.value = '';
+                    if (pachtrechnerInputError) {
+                        pachtrechnerInputError.classList.remove('d-none');
+                    }
+                }
+            });
+        }
+
+        if (pachtrechnerHaInput) {
+            pachtrechnerHaInput.addEventListener('keyup', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    if (pachtrechnerCheckButton) {
+                        pachtrechnerCheckButton.click();
+                    }
+                }
+            });
+
+            pachtrechnerHaInput.addEventListener('input', function () {
+                if (pachtrechnerInputError && !pachtrechnerInputError.classList.contains('d-none')) {
+                    pachtrechnerInputError.classList.add('d-none');
+                }
+            });
+        }
+    });
+});

@@ -8,22 +8,22 @@ form .formbody {
 form .widget:not(.form-floating).widget-radio fieldset > span input[type=checkbox],
 form .widget:not(.form-floating).widget-checkbox fieldset > span input[type=checkbox] {
   border-radius: 0;
- // border: 1px solid sla(0, 0%, 100%, .1);;
+  // border: 1px solid sla(0, 0%, 100%, .1);;
   width: 20px;
   height: 20px;
   margin-top: 4px;
 }
 
 
- .form-check-input:checked,
- .form-check-input:focus,
- .form-check-input:focus-visible {
+.form-check-input:checked,
+.form-check-input:focus,
+.form-check-input:focus-visible {
   border-color: rgba(255, 255, 255, .1);
 }
 
 
 .checkbox_container label {
-  padding-left: 10px;
+  //padding-left: 10px;
 }
 
 .agb_checkbox label,
@@ -42,7 +42,7 @@ form .widget:not(.form-floating).widget-checkbox fieldset > span input[type=chec
 
   &:after {
     @extend %fa-icon;
-   font-family:"Font Awesome Kit";
+    font-family: "Font Awesome Kit";
     content: "\e003";
     border: 0;
     font-size: 7px;
@@ -77,7 +77,7 @@ input[type="range"]::-webkit-slider-runnable-track {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none; /* Override default look */
   appearance: none;
-  margin-top: -12px; /* Centers thumb on the track */ 
+  margin-top: -12px; /* Centers thumb on the track */
 
   /*custom styles*/
   background-color: var(--bs-tertiary);
@@ -117,12 +117,42 @@ input[type="range"]:focus::-moz-range-thumb {
 }
 
 
-
-
-.input-group{
-  > *{
+.input-group {
+  > * {
     @include media-breakpoint-down(sm) {
       width: 100%;
     }
   }
+}
+
+.widget {
+  &.is-inline {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 1rem;
+    align-items: center;
+
+     @include media-breakpoint-down(lg) {
+       width: auto !important;
+     }
+
+    > label {
+      width: 170px;
+      font-weight: $font-weight-bold;
+
+      & + * {
+        width: calc(100% - 170px - 1rem);
+      }
+    }
+
+    .form-control {
+      background-color: var(--bs-secondary);
+    }
+  }
+}
+
+
+
+.form-select:required:invalid {
+  color: $input-placeholder-color;
 }

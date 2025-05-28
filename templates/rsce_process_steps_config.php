@@ -36,6 +36,13 @@ return array(
             'eval' => array('chosen' => 'true', 'tl_class' => 'clr')
         ),
 
+         'container_css_class' => array(
+            'label' => array('Container CSS-Klasse', 'Optionale CSS-Klasse für einen inneren Wrapper um den gesamten Inhalt des Elements.'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
+
+
         'rows' => array(
             'label' => array('Prozess-Schritte', ''),
             'elementLabel' => '%s. Schritt',

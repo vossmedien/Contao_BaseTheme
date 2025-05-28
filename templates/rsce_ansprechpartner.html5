@@ -8,16 +8,18 @@ use Contao\StringUtil;
 use Contao\Input;
 
 // Helper function to create safe CSS class names from tags
-function createTagClass($tag)
-{
-    $tag = strtolower($tag ?? '');
-    $tag = preg_replace('/ä/', 'ae', $tag);
-    $tag = preg_replace('/ö/', 'oe', $tag);
-    $tag = preg_replace('/ü/', 'ue', $tag);
-    $tag = preg_replace('/ß/', 'ss', $tag);
-    $tag = preg_replace('/[^a-z0-9]+/', '-', $tag);
-    $tag = trim($tag, '-');
-    return 'tag-' . ($tag ?: 'uncategorized');
+if (!function_exists('createTagClass')) {
+    function createTagClass($tag)
+    {
+        $tag = strtolower($tag ?? '');
+        $tag = preg_replace('/ä/', 'ae', $tag);
+        $tag = preg_replace('/ö/', 'oe', $tag);
+        $tag = preg_replace('/ü/', 'ue', $tag);
+        $tag = preg_replace('/ß/', 'ss', $tag);
+        $tag = preg_replace('/[^a-z0-9]+/', '-', $tag);
+        $tag = trim($tag, '-');
+        return 'tag-' . ($tag ?: 'uncategorized');
+    }
 }
 
 // --- Collect all unique tags for filtering (if enabled) ---
@@ -77,6 +79,23 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
         ?>
         <div class="<?php echo trim($outerWrapperClasses); ?>">
 
+                <?php if (!$showTextColumn): ?>
+                <?php
+                // Headline Output
+                echo HeadlineHelper::generateHeadlineHTML(
+                    $this->topline,
+                    $this->headline,
+                    $this->subline,
+                    $this->hl,
+                    $this->animation_type,
+                    null,
+                    false
+                );
+                ?>
+            <?php endif; ?>
+
+
+
             <?php // --- Filter Buttons (if enabled) --- ?>
             <?php if ($this->add_filter_form && (!empty($allTags) || ($this->add_text_filter_option && !empty($this->text_filter_button_label) && !empty($this->text_filter_content)))): ?>
                 <div class="filter-buttons mb-4 justify-content-center justify-content-md-start d-flex gap-1 flex-wrap flex-row">
@@ -107,8 +126,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         $this->hl,
                         $this->animation_type,
                         null,
-                        false,
-                        "mb-3"
+                        false
                     );
                     ?>
                     <?php if ($this->contact_text): ?>

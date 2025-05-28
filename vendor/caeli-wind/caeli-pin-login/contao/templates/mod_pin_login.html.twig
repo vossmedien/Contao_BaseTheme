@@ -1,76 +1,78 @@
 {# Twig Template für das PIN-Login Modul #}
 <div class="{{ class }} block ce_form"{{ cssID|default() }}>
-  {% if headline %}
+    {% if headline %}
     <{{ hl|default('h1') }}>{{ headline }}</{{ hl|default('h1') }}>
-  {% endif %}
+{% endif %}
 
-  <div class="pin-login-form-container">
-    <h2>{{ formTitle }}</h2>
-
+<div class="pin-login-form-container">
     {% if hasError %}
-      <div class="error-message">
-        {{ errorMessage }}
-      </div>
+        <div class="error-message">
+            {{ errorMessage }}
+        </div>
     {% endif %}
 
     {% if successMessage %}
-      <div class="success-message">
-        {{ successMessage }}
-      </div>
+        <div class="success-message">
+            {{ successMessage }}
+        </div>
     {% endif %}
 
     {% if not successMessage %}
-      <form method="post">
-        <div class="formbody">
-          <input type="hidden" name="FORM_SUBMIT" value="pin_login_form">
-          <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
+        <form method="post">
+            <div class="formbody">
+                <input type="hidden" name="FORM_SUBMIT" value="pin_login_form">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
 
-          <div class="widget widget-text mandatory">
-            <label for="pin">{{ pinLabel }}</label>
-            <input type="text" name="pin" id="pin" class="text" required placeholder="{{ pinLabel }}">
-          </div>
+                <div class="widget is-inline widget-text mandatory">
+                    <label class="form-label" for="pin">{{ 'pin_login.pinLabel'|trans }}</label>
+                    <input type="text" name="pin" id="pin" class="form-control text" required placeholder="{{ 'pin_login.pinLabel'|trans }}">
+                </div>
 
-          {% if requireEmail %}
-          <div class="widget widget-text mandatory">
-            <label for="email">{{ emailLabel }}</label>
-            <input type="email" name="email" id="email" class="text" required placeholder="{{ emailLabel }}">
-          </div>
-          {% endif %}
+                {% if requireEmail %}
+                    <div class="widget widget-text mandatory mt-3 is-inline">
+                        <label class="form-label" for="email">{{ 'pin_login.emailLabel'|trans }}</label>
+                        <input type="email" name="email" id="email" class="form-control text" required placeholder="{{ 'pin_login.emailLabel'|trans }}">
+                    </div>
+                {% endif %}
 
-          {% if extraDataField %}
-            <div class="widget widget-textarea">
-              <label for="message">{{ messageLabel }}</label>
-              <textarea name="message" id="message" class="textarea" rows="4" placeholder="{{ messageLabel }}"></textarea>
+                {% if extraDataField %}
+                    <div class="widget widget-textarea is-inline">
+                        <label class="form-label" for="message">{{ 'pin_login.messageLabel'|trans }}</label>
+                        <textarea name="message" id="message" class="form-control textarea" rows="4" placeholder="{{ 'pin_login.messageLabel'|trans }}"></textarea>
+                    </div>
+                {% endif %}
+
+                {# Consent Checkbox und Hinweis, initial versteckt via JS #}
+                <div class="widget widget-checkbox agb_checkbox mandatory d-none mt-3">
+                    <fieldset id="ctrl_pin_agb" class="checkbox_container mandatory">
+                        <input type="hidden" name="agb_akzeptiert" value="">
+                        {# ID und for angepasst, um Kollisionen zu vermeiden #}
+                        <span class="form-check">
+                          <input type="checkbox" name="agb_akzeptiert" id="opt_pin_agb_0" class="form-check-input checkbox" value="agb_akzeptiert" required="">
+                          <label class=form-check-label" id="lbl_pin_agb_0" for="opt_pin_agb_0">{{ 'pin_login.consentText'|trans|raw }}</label>
+                       </span>
+                    </fieldset>
+                </div>
+
+                <div class="widget widget-explanation explanation agb_notice d-none mt-3">
+                    <p>{{ 'pin_login.privacyNotice'|trans|raw }}</p>
+                </div>
+
+                <div class="widget widget-submit text-end">
+                    <button type="submit" class="btn btn-primary btn-lg submit with-arrow">{{ 'pin_login.submitButton'|trans }}</button>
+                </div>
             </div>
-          {% endif %}
-
-          {# Consent Checkbox und Hinweis, initial versteckt via JS #}
-          <div class="widget widget-checkbox agb_checkbox mandatory d-none">
-            <fieldset id="ctrl_pin_agb" class="checkbox_container agb_checkbox mandatory">
-              <input type="hidden" name="agb_akzeptiert" value="">
-              {# ID und for angepasst, um Kollisionen zu vermeiden #}
-              <span><input type="checkbox" name="agb_akzeptiert" id="opt_pin_agb_0" class="checkbox" value="agb_akzeptiert" required=""> <label id="lbl_pin_agb_0" for="opt_pin_agb_0">{{ 'Ich habe die <a href="/datenschutz">Datenschutzhinweise</a> gelesen und bin mit der Datenspeicherung zwecks interner Verarbeitung und Kontaktaufnahme einverstanden.'|raw }}</label></span>
-            </fieldset>
-          </div>
-          <div class="widget widget-explanation explanation agb_notice d-none">
-            <p>{{ 'Ihre eingegebenen Daten werden zur Bearbeitung Ihrer Anfrage verarbeitet. Weitere Informationen zur Verarbeitung Ihrer Daten finden Sie in unserer Datenschutzerklärung.'|raw }}</p>
-          </div>
-
-          <div class="widget widget-submit">
-            <button type="submit" class="submit">{{ submitButton }}</button>
-          </div>
-        </div>
-      </form>
+        </form>
     {% endif %}
 
     {% if isDevMode %}
-      <div class="dev-info">
-        <h3>Debug Information (nur im Dev-Modus sichtbar)</h3>
-        <ul>
-          <li>Target Page ID: {{ targetPageId }}</li>
-          <li>Expected PIN: {{ expectedPin }}</li>
-        </ul>
-      </div>
+        <div class="dev-info">
+            <h3>{{ 'pin_login.debugInfoHeading'|trans }}</h3>
+            <ul>
+                <li>{{ 'pin_login.targetPageIdLabel'|trans }}: {{ targetPageId }}</li>
+                <li>{{ 'pin_login.expectedPinLabel'|trans }}: {{ expectedPin }}</li>
+            </ul>
+        </div>
     {% endif %}
-  </div>
+</div>
 </div>

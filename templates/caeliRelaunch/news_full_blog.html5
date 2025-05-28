@@ -9,7 +9,7 @@
                 <!-- indexer::continue -->
             </div>
             <div class="row">
-                <div class="col-12 col-xl-9">
+                <div class="col-12 col-xl-11">
                     <div class="ce--headline hl-h1">
                         <h1 data-animation="animate__fadeIn">
                             <?= $this->headline ?>

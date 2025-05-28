@@ -20,7 +20,7 @@ return array(
             'label' => array('Animation: Komplettes Element', ''),
             'inputType' => 'select',
             'options' => GlobalElementConfig::getAnimations(),
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'clr', 'submitOnChange' => true, 'includeBlankOption' => true),
         ),
 
         'header_image_options' => array(
@@ -41,7 +41,7 @@ return array(
                 'multiple' => false,
                 'fieldType' => 'radio', // Wichtig für einzelne Auswahl
                 'filesOnly' => true,
-                'extensions' => \Contao\Config::get('validImageTypes'),
+                'extensions' => 'jpg,jpeg,png,svg,webp',
                 'tl_class' => 'clr'
             ),
             'dependsOn' => array(
@@ -85,11 +85,21 @@ return array(
             'label' => array('Spaltenbreite: Textspalte', 'Die Headlinespalte nimmt den restlichen Platz ein.'),
             'inputType' => 'select',
             'options' => array(
-                '25' => '25%',
-                '33' => '33%',
-                '50' => '50%',
-                '67' => '67%',
-                '75' => '75%',
+                '16.67' => '16.67% (1/6)',
+                '20' => '20% (1/5)',
+                '25' => '25% (1/4)',
+                '30' => '30%',
+                '33.33' => '33.33% (1/3)',
+                '40' => '40% (2/5)',
+                '41.67' => '41.67% (5/12)',
+                '50' => '50% (1/2)',
+                '58.33' => '58.33% (7/12)',
+                '60' => '60% (3/5)',
+                '66.67' => '66.67% (2/3)',
+                '70' => '70%',
+                '75' => '75% (3/4)',
+                '80' => '80% (4/5)',
+                '83.33' => '83.33% (5/6)',
             ),
             'default' => '50',
             'eval' => array('tl_class' => 'w50'),
@@ -134,13 +144,17 @@ return array(
             'label' => array('Animation: Headline', ''),
             'inputType' => 'select',
             'options' => GlobalElementConfig::getAnimations(),
-            'eval' => array('tl_class' => 'clr')
+            'eval' => array('tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'animation_type_element',
+                'value' => array('', 'no-animation'),
+            ),
         ),
 
         'onlystyle' => array(
             'label' => array('Nur als Überschrift darstellen', ''),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => ' clr '),
+            'eval' => array('tl_class' => ' clr'),
         ),
 
         'topline' => array(
@@ -152,7 +166,7 @@ return array(
         'headline' => array(
             'label' => array('Überschrift', ''),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
 
         'headline_type' => array(
@@ -176,12 +190,12 @@ return array(
         ),
 
         'animation_type_headline_column' => array(
-            'label' => array('Animation: Inhalt', 'Animiert den Inhalt (z.B. zweiten Text)'),
+            'label' => array('Animation: Headlinespalte', 'Animiert die komplette Headlinespalte bei zweispaltiger Ansicht.'),
             'inputType' => 'select',
             'options' => GlobalElementConfig::getAnimations(),
             'eval' => array('tl_class' => 'clr'),
             'dependsOn' => array(
-                'field' => 'add_second_content',
+                'field' => 'two_columns',
             ),
         ),
 
@@ -216,7 +230,7 @@ return array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => \Contao\Config::get('validImageTypes'),
+                'extensions' => 'jpg,jpeg,png,svg,webp',
                 'tl_class' => 'clr'
             ),
             'dependsOn' => array(
@@ -321,7 +335,11 @@ return array(
             'label' => array('Animation: Textspalte', ''),
             'inputType' => 'select',
             'options' => GlobalElementConfig::getAnimations(),
-            'eval' => array('tl_class' => 'w50 clr')
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'animation_type_element',
+                'value' => array('', 'no-animation'),
+            ),
         ),
 
 
@@ -393,10 +411,12 @@ return array(
             'inputType' => 'text',
             'default' => 'mb-1',
             'eval' => array('tl_class' => 'clr'),
+            /*
             'dependsOn' => array(
                 'field' => 'deactivate_slider',
                 'value' => array('desktop', 'mobile', 'both'),
             ),
+            */
         ),
 
         'slide_animation_type' => array(
@@ -404,6 +424,9 @@ return array(
             'inputType' => 'select',
             'options' => GlobalElementConfig::getAnimations(),
             'eval' => array('chosen' => 'true', 'tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'add_images',
+            )
         ),
 
         'slider_options_group' => array(

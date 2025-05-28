@@ -20,6 +20,12 @@ return array(
             'inputType' => 'group',
         ),
 
+        'container_css_class' => array(
+            'label' => array('Container CSS-Klasse', 'Optionale CSS-Klasse für einen inneren Wrapper um den gesamten Inhalt des Elements.'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
+
         'add_breadcrumb' => array(
             'label' => array('Breadcrumb hinzufügen', 'Fügt das angegebene Breadcrumb-Modul oberhalb der Headline ein.'),
             'inputType' => 'checkbox',
@@ -90,6 +96,15 @@ return array(
             'eval' => array('tl_class' => 'w50 clr'),
         ),
 
+        'list_full_width' => array(
+            'label' => array('Aufzählungspunkte in der vollen Breite anzeigen', 'Wenn aktiviert, nehmen die Aufzählungspunkte die volle verfügbare Breite ein (col-12).'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'add_list_items',
+            ),
+        ),
+
         'animation_list' => array(
             'label' => array('Animation: Aufzählung', ''),
             'inputType' => 'select',
@@ -113,13 +128,13 @@ return array(
                 'item_text' => array(
                     'label' => array('Text', ''),
                     'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
+                    'eval' => array('allowHtml' => true, 'decodeEntities' => true, 'tl_class' => 'long'), // HTML erlauben und Entities dekodieren
                 ),
             ),
         ),
 
         'buttons' => array(
-            'label' => array('Buttons (rechts)', ''),
+            'label' => array('Buttons', ''),
             'elementLabel' => '%s. Button',
             'inputType' => 'list',
             'minItems' => 0,

@@ -136,55 +136,68 @@ $listItems = StringUtil::deserialize($this->list_items, true);
 ?>
 
 <div <?php echo $this->cssID; ?> class="content--element head-hero  <?php echo $this->class; ?>">
-    <div class="ce--inner">
+    <div class="ce--inner <?php if (!empty($this->container_css_class)): ?><?= $this->container_css_class ?><?php endif; ?>">
 
-        <?php // --- Breadcrumb --- ?>
-        <?php if ($this->add_breadcrumb && $this->breadcrumb_module && EnvHelper::isFrontend()): ?>
-            <div class="breadcrumb-container mb-3" data-animation="animate__fadeIn">
-                {{insert_module::<?= $this->breadcrumb_module ?>}}
-            </div>
-        <?php endif; ?>
+        <div class="">
+            <?php // --- Breadcrumb --- ?>
+            <?php if ($this->add_breadcrumb && $this->breadcrumb_module && EnvHelper::isFrontend()): ?>
+                <div class="breadcrumb-wrapper mb-3" data-animation="animate__fadeIn">
+                    {{insert_module::<?= $this->breadcrumb_module ?>}}
+                </div>
+            <?php endif; ?>
 
-        <?php // --- Headline & Text (zentriert mit max. Breite) --- ?>
-        <div class="row">
-            <div class="col-12 col-xl-9">
-                <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
-                    $this->topline,
-                    $this->headline,
-                    $this->subline,
-                    $this->headline_type,
-                    $this->animation_headline,
-                    null,
-                    false,
-                    null
-                ); ?>
+            <?php // --- Headline & Text (zentriert mit max. Breite) --- ?>
+            <div class="row">
+                <div class="col-12 col-xl-11">
+                    <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+                        $this->topline,
+                        $this->headline,
+                        $this->subline,
+                        $this->headline_type,
+                        $this->animation_headline,
+                        null,
+                        false,
+                        (empty($this->text) && !$this->add_list_items && !$this->buttons ? "mb-0" : "")
+                    ); ?>
 
-                <?php if ($this->text): ?>
-                    <div class="text-section fw-semibold<?php if ($this->add_list_items): ?> mb-4<?php endif; ?>" <?php if ($this->animation_headline): ?>data-animation="<?= $this->animation_headline ?>"<?php endif; ?>>
-                        <?= $this->text; ?>
-                    </div>
-                <?php endif; ?>
+                    <?php if ($this->text): ?>
+                        <div class="text-section fw-semibold<?php if ($this->add_list_items): ?> mb-4<?php endif; ?>" <?php if ($this->animation_headline): ?>data-animation="<?= $this->animation_headline ?>"<?php endif; ?>>
+                            <?= $this->text; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
-
         <?php // --- Aufzählung & Buttons (zweispaltig) --- ?>
         <?php if ($this->add_list_items && !empty($listItems) || $this->buttons): // Nur Row ausgeben, wenn Inhalt vorhanden ?>
             <div class="row align-items-center mb-4 g-2">
                 <?php // Spalte für Aufzählung ?>
-                <?php if ($this->add_list_items && !empty($listItems)): ?>
-                    <div class="col-12 col-lg-8" >
-                        <ul class="list-unstyled list-with-icons row g-1">
-                            <?php foreach ($listItems as $item): ?>
-                                <li class="d-flex align-items-center col-md-6" <?php if ($this->animation_list): ?>data-animation="<?= $this->animation_list ?>"<?php endif; ?>>
+                <?php if ($this->add_list_items && !empty($listItems)):
+                    if ($this->list_full_width) {
+                        // Alte Variante: Row mit col-md-6
+                        $listColClass = 'col-12';
+                        $listGridClass = 'row gx-5 gy-1 gy-lg-2';
+                        $listItemClass = 'd-flex col-md-6';
+                    } else {
+                        // Neue Variante: CSS Grid mit 2 Spalten, content-based width
+                        $listColClass = 'col-12 ';
+                        $listGridClass = 'd-lg-grid';
+                        $listItemClass = 'd-flex pe-lg-gap';
+                    }
+                    ?>
+                    <div class="<?= $listColClass ?>">
+                        <ul class="list-unstyled list-with-icons <?= $listGridClass ?>" <?php if (!$this->list_full_width): ?>style="grid-template-columns: repeat(2, max-content);"<?php endif; ?>>
+                            <?php foreach ($listItems as $index => $item): ?>
+                                <li class="<?= $listItemClass ?><?php if (!$this->list_full_width && $index !== count($listItems) - 1): ?> mb-3<?php endif; ?>" <?php if ($this->animation_list): ?>data-animation="<?= $this->animation_list ?>"<?php endif; ?>>
                                     <?php
-                                        $itemText = '';
-                                        $defaultIcon = '<i style="font-size: 36px;" class="fa-kit fa-circle-check text-tertiary me-1 flex-shrink-0"></i>'; // Default Font Awesome Icon
+                                    $itemText = '';
+                                    $defaultIcon = '<i style="font-size: 36px; position: relative; top: -3px;" class="fa-kit fa-circle-check text-tertiary me-2  flex-shrink-0"></i>'; // Default Font Awesome Icon
 
-                                        if (is_array($item)) {
-                                            $itemText = $item['item_text'] ?? '';
-                                        } elseif (is_string($item)) {
-                                            $itemText = $item;
-                                        }
+                                    if (is_array($item)) {
+                                        $itemText = StringUtil::decodeEntities($item['item_text'] ?? '');
+                                    } elseif (is_string($item)) {
+                                        $itemText = StringUtil::decodeEntities($item);
+                                    }
                                     ?>
                                     <?= $defaultIcon ?>
                                     <span class="text"><?= $itemText; ?></span>
@@ -197,7 +210,7 @@ $listItems = StringUtil::deserialize($this->list_items, true);
                 <?php // Spalte für Buttons ?>
                 <?php if ($this->buttons): ?>
                     <div class="col-12 col-lg-auto ">
-                        <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons); ?>
+                        <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons, "mt-4"); ?>
                     </div>
                 <?php endif; ?>
             </div>

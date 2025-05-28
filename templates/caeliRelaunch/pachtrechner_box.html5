@@ -1,0 +1,117 @@
+<div class="pachtrechner-instance pachtrechner-widget is-box container-wide content--element pull-up js-pachtrechner-form">
+
+    <style>
+        .pachtrechner-instance .has-bg {
+            background: url('files/base/layout/img/caeli_de/bg/bg-pachtrechner.jpg') center center / cover no-repeat;
+        }
+    </style>
+    <div class="has-bg p-3 ps-sm-gap pt-sm-gap pb-sm-7 pe-sm-7">
+        <div class="position-relative bg-primary ms-auto me-0 mt-gap text-secondary p-sm-7 p-3 col-12 col-sm-10">
+            <div class="row align-items-center">
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-12 col-sm-8 col-md-12">
+                            <div class="ce--headline hl-h2" data-animation="animate__fadeIn">
+                                <h2><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['title'] ?>
+                                </h2>
+                            </div>
+
+                            <div class="widget widget-text" data-animation="animate__fadeIn">
+                                <label class="form-label d-block" for="pachtrechner_ha_input"><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['labelHa'] ?></label>
+                                <div class="input-group w-auto d-inline-flex">
+                                    <input type="number" style="min-width: 90px;" min="1" class="form-control text-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
+                                    <button class="btn btn-secondary with-arrow js-pachtrechner-check-btn">
+                                        <?= $GLOBALS['TL_LANG']['pachtrechner']['form']['buttonCalculate'] ?>
+                                    </button>
+                                </div>
+                                <div class="alert alert-primary mt-3 d-none js-pachtrechner-input-error" role="alert">
+                                    <?= $GLOBALS['TL_LANG']['pachtrechner']['form']['error']['invalidHa'] ?>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="pachtrechner-badge-in-column text-md-end">
+                        <div data-animation="animate__fadeInRight">
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/badges/pachtrechner-badge-de.svg", null), null, null; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pachtrechner-result d-none content--element js-pachtrechner-ergebnis">
+
+    <div class="result-header">
+        <div class="container">
+            <div class="headline--wrapper hl-h2">
+                <h3 class="h2 mb-0"><?= $GLOBALS['TL_LANG']['pachtrechner']['title'] ?></h3>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="result-body">
+        <div class="container pt-4 pt-md-7">
+            <span class="h2 mb-3">
+                <span class="d-md-block"><?= $GLOBALS['TL_LANG']['pachtrechner']['result']['estimated'] ?></span>
+                <span class="d-md-block"><?= $GLOBALS['TL_LANG']['pachtrechner']['result']['annualLeasePrefix'] ?> <b><span class="count js-jahres-pacht">---</span> €*</b></span>
+            </span>
+
+            <span class="text-lg d-block mt-3 mt-sm-0">
+                <?= $GLOBALS['TL_LANG']['pachtrechner']['result']['usualRange'] ?>
+            </span>
+
+            <div class="mt-gap mb-5 pt-gap py-sm-4">
+                <div class="pachtrechnerBar">
+                    <div class="progress" style="height: 34px;">
+                        <div style="width: 0px;" class="progress-bar h-100 js-bar-range-percent" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
+                            <span class="percent-indicator">
+                             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="23.9629" cy="23.9629" r="23.9629" transform="rotate(90 23.9629 23.9629)" fill="#113534"/>
+                                <path d="M25.4004 11.9032V29.4712L33.0664 21.4018L35 23.4516L24.029 35L13.0581 23.4516L14.9917 21.4162L22.6577 29.4712V11.9032H25.4004Z" fill="#CFCFCF"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between small fw-bold">
+                    <div>
+                        <span class="js-bar-range-start">---</span>
+                        €
+                    </div>
+                    <div>
+                        <span class="js-bar-range-end">---</span>
+                        €*
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-gap">
+                <div class="d-sm-flex gap-5">
+                    <div>
+                        <a href="/kontakt?etcc_cu=onsite&etcc_cmp_onsite=Wunschtermin&etcc_med_onsite=Pachtrechner" style="--bs-btn-padding-left: .75rem;" class="btn btn-outline-primary btn-xl with-arrow pr_wunschtermin" id="" data-css-click-observed-1="true">
+                            <?= $GLOBALS['TL_LANG']['pachtrechner']['button']['bookConsultation'] ?>
+                        </a>
+                    </div>
+                    <div class="mt-3 mt-sm-0">
+                        <a href="/flaechencheck?etcc_cu=onsite&etcc_cmp_onsite=Fl%C3%A4chencheck&etcc_med_onsite=Pachtrechner" style="--bs-btn-padding-left: .75rem;" class="btn btn-outline-primary btn-xl with-arrow pr_flaechencheck" id="" data-css-click-observed-1="true">
+                            <?= $GLOBALS['TL_LANG']['pachtrechner']['button']['areaCheck'] ?>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="result-footer bg-primary text-secondary small">
+        <div class="container py-4">
+            <p><?= $GLOBALS['TL_LANG']['pachtrechner']['disclaimer'] ?></p>
+        </div>
+    </div>
+</div>

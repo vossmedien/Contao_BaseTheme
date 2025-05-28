@@ -1,0 +1,11 @@
+.interactive-svg-links{
+  li:has([class*="btn-link"]):not(:last-child){
+    margin-bottom: .7rem;
+  }
+}
+
+.interactive-svg-figure{
+  svg{
+    width: 100%;
+  }
+}

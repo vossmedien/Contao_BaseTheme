@@ -107,7 +107,6 @@ class PinLoginController extends AbstractFrontendModuleController
         }
 
         // Template-Variablen für Bezeichnungen
-        $template->formTitle = $GLOBALS['TL_LANG']['PIN_LOGIN']['form_title'] ?? 'PIN-Eingabe erforderlich';
         $template->pinLabel = $GLOBALS['TL_LANG']['PIN_LOGIN']['pin_label'] ?? 'PIN-Code';
         $template->emailLabel = $GLOBALS['TL_LANG']['PIN_LOGIN']['email_label'] ?? 'E-Mail-Adresse';
         $template->messageLabel = $GLOBALS['TL_LANG']['PIN_LOGIN']['message_label'] ?? 'Nachricht (optional)';

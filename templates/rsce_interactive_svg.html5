@@ -1,0 +1,220 @@
+<?php
+
+use Contao\StringUtil;
+use Vsm\VsmHelperTools\Helper\HeadlineHelper;
+
+// Für die Überschrift
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+
+// Für Frontend-Check
+
+// Eindeutige ID für dieses Element generieren (wichtig für JS und CSS)
+$elementId = 'interactive-svg-' . $this->id;
+
+// Globale Überschrift vorbereiten
+$overallHeadlineHTML = '';
+if ($this->overall_headline) {
+    $overallHeadlineHTML = HeadlineHelper::generateHeadlineHTML(
+        $this->overall_topline,
+        $this->overall_headline,
+        $this->overall_subline,
+        $this->overall_headline_type,
+        "no-animation", // Keine individuelle Animation für die globale Überschrift hier
+        null,
+        false,
+        null
+    );
+}
+
+// SVG-Code bereinigen und vorbereiten
+$svgOutput = trim($this->svg_code ?? '');
+if (!empty($svgOutput)) {
+    // Ggf. Bereinigungen oder Modifikationen am SVG vornehmen, falls nötig
+    // z.B. um sicherzustellen, dass es IDs oder Klassen hat, auf die JS zugreifen kann.
+    // Fürs Erste gehen wir davon aus, dass das SVG korrekt formatiert ist.
+}
+
+// Überschrift für die rechte Spalte generieren
+$contentHeadlineHTML = '';
+if ($this->headline) {
+    $contentHeadlineHTML = HeadlineHelper::generateHeadlineHTML(
+        $this->topline,
+        $this->headline,
+        $this->subline,
+        $this->headline_type,
+        "no-animation", // Animation wird direkt am Wrapper gesetzt
+        null,
+        false,
+        null
+    );
+}
+
+// Links vorbereiten
+$linksData = [];
+if (!empty($this->links)) {
+    $linksArray = StringUtil::deserialize($this->links, true); // Der zweite Parameter true sollte ein Array erzwingen.
+    // Wir prüfen aber zusätzlich, ob es wirklich ein Array ist.
+    if (is_array($linksArray)) {
+        foreach ($linksArray as $linkItem) {
+            // Sicherstellen, dass $linkItem ein Array ist, bevor auf Indizes zugegriffen wird.
+            // Wenn es ein Objekt ist, müssen wir den Zugriff anpassen.
+            // Da der Fehler aufgetreten ist, gehen wir davon aus, dass $linkItem ein Objekt sein kann.
+            $currentLinkTitle = is_array($linkItem) ? ($linkItem['link_title'] ?? null) : ($linkItem->link_title ?? null);
+            $currentLinkHref = is_array($linkItem) ? ($linkItem['link_href'] ?? null) : ($linkItem->link_href ?? null);
+            $currentSvgClass = is_array($linkItem) ? ($linkItem['svg_class'] ?? null) : ($linkItem->svg_class ?? null);
+            $currentLinkTarget = is_array($linkItem) ? ($linkItem['link_target'] ?? false) : ($linkItem->link_target ?? false);
+            $currentAriaLabel = is_array($linkItem) ? ($linkItem['aria_label'] ?? null) : ($linkItem->aria_label ?? null);
+
+            if (!empty($currentLinkTitle) && !empty($currentLinkHref) && !empty($currentSvgClass)) {
+                $linksData[] = [
+                    'title' => $currentLinkTitle,
+                    'href' => $currentLinkHref,
+                    'target' => $currentLinkTarget ? '_blank' : '',
+                    'svg_class' => trim($currentSvgClass),
+                    'aria_label' => $currentAriaLabel ?? $currentLinkTitle,
+                    'button_class' => $this->link_button_type ?? 'btn-primary', // Globaler Button-Typ
+                ];
+            }
+        }
+    }
+}
+
+$rawHoverColor = $this->hover_color;
+$hoverColor = $rawHoverColor ? html_entity_decode($rawHoverColor) : '#ff0000'; // Standard Hover-Farbe, falls nicht gesetzt
+
+// Animation für Links vorbereiten
+$linksAnimation = $this->animation_type_content_links ?? '';
+$animateLinksIndividually = $this->animate_links_individually ?? false;
+
+?>
+
+<div <?php echo $this->cssID; ?> class="content--element rsce--interactive-svg <?= $this->class; ?>" id="<?= $elementId ?>">
+
+
+    <div class="ce--inner <?= $this->columns_container_css_class ?? ''; ?>">
+
+        <?php if ($overallHeadlineHTML): ?>
+            <?= $overallHeadlineHTML; ?>
+        <?php endif; ?>
+
+        <div class="row align-items-center">
+            <?php // --- Linke Spalte (SVG) --- ?>
+            <div class="d-none d-lg-block col-lg-6 svg-column" <?php if ($this->animation_type_svg && $this->animation_type_svg !== 'no-animation'): ?>data-animation="<?= $this->animation_type_svg; ?>"<?php endif; ?>>
+                <?php if ($svgOutput): ?>
+                    <div class="svg-container interactive-svg-figure">
+                        <?= $svgOutput; // Direkte Ausgabe des SVG-Codes   ?>
+                    </div>
+                <?php else: ?>
+                    <?php if (EnvHelper::isBackend()): ?>
+                        <p class="text-muted"><em>Bitte SVG-Code im Backend einfügen.</em></p>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
+
+            <?php // --- Rechte Spalte (Inhalt & Links) --- ?>
+            <div class="col-lg-6 content-column">
+                <?php if ($contentHeadlineHTML): ?>
+                    <div class="headline-wrap" <?php if ($this->animation_type_content_headline && $this->animation_type_content_headline !== 'no-animation'): ?>data-animation="<?= $this->animation_type_content_headline; ?>"<?php endif; ?>>
+                        <?= $contentHeadlineHTML; ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($this->text): ?>
+                    <div class="text" <?php if ($this->animation_type_content_text && $this->animation_type_content_text !== 'no-animation'): ?>data-animation="<?= $this->animation_type_content_text; ?>"<?php endif; ?>>
+                        <?= $this->text; ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($linksData)): ?>
+                    <ul class="interactive-svg-links list-unstyled mt-3" <?php if (!$animateLinksIndividually && $linksAnimation && $linksAnimation !== 'no-animation'): ?>data-animation="<?= $linksAnimation; ?>"<?php endif; ?>>
+                        <?php foreach ($linksData as $link): ?>
+                            <li <?php if ($animateLinksIndividually && $linksAnimation && $linksAnimation !== 'no-animation'): ?>data-animation="<?= $linksAnimation; ?>"<?php endif; ?>>
+                                <a href="<?= StringUtil::ampersand($link['href']); ?>"
+                                   class="btn <?= $link['button_class']; ?> interactive-svg-link"
+                                   <?php if ($link['target'] === '_blank'): ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>
+                                   data-svg-target-class="<?= $link['svg_class']; ?>"
+                                   aria-label="<?= $link['aria_label']; ?>">
+                                    <?= $link['title']; ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+
+<?php if ($svgOutput && !empty($linksData) && EnvHelper::isFrontend()): ?>
+    <style>
+        #<?= $elementId ?>  .interactive-svg-figure svg .interactable-path {
+            transition: transform 0.2s ease-in-out, fill 0.2s ease-in-out; /* Kürzere Transition */
+            cursor: pointer;
+            transform-origin: center center; /* Skalierung vom Zentrum */
+        }
+
+        #<?= $elementId ?>  .interactive-svg-figure svg .interactable-path.hover-effect {
+            transform: scale(1.02);  /*Subtilere Skalierung */
+            fill: <?= $hoverColor ?> !important; /* Wichtig, um andere Fills zu überschreiben */
+            /* Ein Versuch, das Element anzuheben - Wirkung bei SVG ist aber begrenzt */
+            /* position: relative; */ /* Kann bei SVG-Pfaden unerwünschte Nebeneffekte haben */
+            /* z-index: 10; */ /* z-index wirkt meist nicht direkt auf SVG-Pfade innerhalb derselben Ebene */
+        }
+
+        #<?= $elementId ?>  .interactive-svg-links .interactive-svg-link.hover-effect {
+            /* Hier könnten globale Button-Hover-Effekte definiert werden, falls gewünscht,
+               oder spezifische, die durch JS getriggert werden */
+            /* Beispiel: box-shadow: 0 0 10px rgba(0,0,0,0.5); */
+        }
+    </style>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const mainElement = document.getElementById('<?= $elementId ?>');
+            if (!mainElement) return;
+
+            const svgFigure = mainElement.querySelector('.interactive-svg-figure svg');
+            const links = mainElement.querySelectorAll('.interactive-svg-link');
+
+            if (!svgFigure || links.length === 0) return;
+
+            links.forEach(link => {
+                const targetClass = link.dataset.svgTargetClass;
+                if (!targetClass) return;
+
+                const svgPaths = svgFigure.querySelectorAll('.' + targetClass.replace(/\s+/g, '.')); // Mehrere Klassen unterstützen
+
+                svgPaths.forEach(path => {
+                    path.classList.add('interactable-path'); // Für CSS-Targeting
+
+                    // Hover über SVG-Pfad -> Link hervorheben
+                    path.addEventListener('mouseenter', () => {
+                        link.classList.add('hover-effect');
+                        svgPaths.forEach(p => p.classList.add('hover-effect'));
+                    });
+                    path.addEventListener('mouseleave', () => {
+                        link.classList.remove('hover-effect');
+                        svgPaths.forEach(p => p.classList.remove('hover-effect'));
+                    });
+
+                    // Klick auf SVG-Pfad -> Link-Klick auslösen
+                    path.addEventListener('click', (event) => {
+                        event.preventDefault(); // Verhindert Standardverhalten des SVGs
+                        link.click(); // Löst Klick auf dem <a>-Tag aus
+                    });
+                });
+
+                // Hover über Link -> SVG-Pfad hervorheben
+                link.addEventListener('mouseenter', () => {
+                    svgPaths.forEach(path => path.classList.add('hover-effect'));
+                    link.classList.add('hover-effect');
+                });
+                link.addEventListener('mouseleave', () => {
+                    svgPaths.forEach(path => path.classList.remove('hover-effect'));
+                    link.classList.remove('hover-effect');
+                });
+            });
+        });
+    </script>
+<?php endif; ?>
+</div>

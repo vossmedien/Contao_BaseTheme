@@ -9,9 +9,25 @@ main#main {
 }
 
 
+
+.ce--inner:not([class*="col"]) > .ce--headline {
+  @include media-breakpoint-up(lg) {
+    max-width: 62%;
+  }
+}
+
 .headline-above-columns {
   @include media-breakpoint-up(lg) {
-    max-width: 60%;
+    max-width: 77%;
+  }
+}
+
+[class*="bg-"][class*="container-"] {
+  @include media-breakpoint-up(lg) {
+    .headline-above-columns,
+    .ce--inner:not([class*="col"]) > .ce--headline {
+      max-width: 67%;
+    }
   }
 }
 

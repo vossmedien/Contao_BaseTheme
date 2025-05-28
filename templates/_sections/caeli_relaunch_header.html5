@@ -1,23 +1,54 @@
-<div class="header-top">
-    <div class="container-wide container">
-        {{insert_module::18}}
-        {{insert_module::19}}
-    </div>
-</div>
-<div class="header-bottom">
-    <div class="container-wide container">
-        <div class="nav-wrapper">
-            <div class="logo">
-                <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/logo.svg", null), null, null; ?>
-            </div>
-            <div class="navigation d-none d-lg-block">
-                {{insert_module::14}}
-            </div>
-            <div class="mobileNav__activator-holder d-lg-none">
-                <a href="#mobileNav" class="mobileNav__activator">
-                  <i class="fak fa-bars"></i><span>Menü</span>
-                </a>
+<?php if (strpos($_SERVER['REQUEST_URI'], 'windturbine') !== false): ?>
+    <div class="header-bottom pt-0">
+        <div class="container-wide container">
+            <div class="nav-wrapper align-items-center pb-3">
+
+                <div class="windturbine-cta">
+                    <div class="d-flex align-items-center gap-3">
+                        <div>
+                            <a href="https://wind-turbine.com/marktplatz/windflaeche" class="btn btn-primary btn-sm"><i class="fak fa-chevron-left"></i>
+                                <span>Zurück <span class="d-none d-sm-inline d-md-none d-lg-inline">zu unserem Partner</span></span>
+                            </a>
+                        </div>
+                        <div class="d-none d-md-block">
+                            <a href="https://wind-turbine.com/marktplatz/windflaeche" target="_blank">
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/partner/windturbine.svg", null), null, null; ?>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="logo pb-0">
+                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/logo.svg", null), null, null; ?>
+                </div>
             </div>
         </div>
     </div>
-</div>
+<?php else: ?>
+    <!-- Standard Header -->
+    <div class="header-top">
+        <div class="container-wide container">
+            {{insert_module::18}}
+            {{insert_module::19}}
+        </div>
+    </div>
+    <div class="header-bottom">
+        <div class="container-wide container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/logo.svg", null), null, null; ?>
+                </div>
+                <div class="navigation d-none d-lg-block">
+                    {{insert_module::14}}
+                </div>
+                <div class="mobileNav__activator-holder d-lg-none">
+                    <a href="#mobileNav" class="mobileNav__activator">
+                        <i class="fak fa-bars"></i>
+                        <span>Menü</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

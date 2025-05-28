@@ -26,7 +26,7 @@ if ($this->activate_box_slider) {
 $mainMediaHTML = '';
 $mainImageInfo = null;
 if ($this->media_type === 'image' && $this->main_image) {
-    $mainMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media', false, false, true);
+    $mainMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media d-none d-lg-block', false, false, true);
 } elseif ($this->media_type === 'video' && $this->main_video) {
     $mainImageInfo = BasicHelper::getFileInfo($this->main_video);
     if ($mainImageInfo && isset($mainImageInfo['ext'])) {
@@ -34,7 +34,7 @@ if ($this->media_type === 'image' && $this->main_image) {
         if ($isMainVideo) {
             $mainMediaHTML = VideoHelper::renderVideo(
                 $this->main_video,
-                'w-100 h-100 object-fit-cover hero-complex-main-media',
+                'w-100 h-100 object-fit-cover hero-complex-main-media d-none d-lg-block',
                 $this->main_headline, null, null, null,
                 'autoplay muted loop playsinline', true
             );
@@ -44,9 +44,81 @@ if ($this->media_type === 'image' && $this->main_image) {
     }
 }
 
+// Mobile Medien
+$mobileMediaHTML = '';
+
+// Versuche, das spezifische mobile Medium zu laden, basierend auf der Auswahl in 'mobile_media_type'
+// und ob die entsprechende Datei auch wirklich ausgewählt wurde.
+if ($this->mobile_media_type === 'image' && !empty($this->mobile_image)) {
+    $mobileMediaHTML = ImageHelper::generateImageHTML($this->mobile_image, null, $this->main_headline, $this->mobile_image_size, 'w-100 h-100 object-fit-cover hero-complex-mobile-media d-lg-none', false, false, true);
+} elseif ($this->mobile_media_type === 'video' && !empty($this->mobile_video)) {
+    $mobileImageInfo = BasicHelper::getFileInfo($this->mobile_video);
+    if ($mobileImageInfo && isset($mobileImageInfo['ext'])) {
+        $isMobileVideo = VideoHelper::isVideoFormat($mobileImageInfo['ext']);
+        if ($isMobileVideo) {
+            $mobileMediaHTML = VideoHelper::renderVideo(
+                $this->mobile_video,
+                'w-100 h-100 object-fit-cover hero-complex-mobile-media d-lg-none',
+                $this->main_headline, null, null, null,
+                'autoplay muted loop playsinline', true
+            );
+        } else {
+            $mobileMediaHTML = '<p>Fehler: Das Format des mobilen Videos wird nicht unterstützt.</p>';
+        }
+    } else {
+        $mobileMediaHTML = '<p>Fehler beim Laden des mobilen Videos (Dateiinformationen fehlen).</p>';
+    }
+}
+
+// Fallback auf Hauptmedien für die mobile Ansicht, wenn kein spezifisches mobiles Medium
+// konfiguriert wurde ODER nicht erfolgreich geladen werden konnte (d.h. $mobileMediaHTML ist noch leer).
+if (empty($mobileMediaHTML)) {
+    if ($this->media_type === 'image' && !empty($this->main_image)) {
+        $mobileMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media d-lg-none', false, false, true);
+    } elseif ($this->media_type === 'video' && !empty($this->main_video)) {
+        $mainImageInfo = BasicHelper::getFileInfo($this->main_video); // Erneuter Check, falls $mainImageInfo oben nicht gesetzt wurde
+        if ($mainImageInfo && isset($mainImageInfo['ext'])) {
+            $isMainVideo = VideoHelper::isVideoFormat($mainImageInfo['ext']);
+            if ($isMainVideo) {
+                $mobileMediaHTML = VideoHelper::renderVideo(
+                    $this->main_video,
+                    'w-100 h-100 object-fit-cover hero-complex-main-media d-lg-none',
+                    $this->main_headline, null, null, null,
+                    'autoplay muted loop playsinline', true
+                );
+            } else {
+                 $mobileMediaHTML = '<p>Fehler: Das Format des Hauptvideos (Fallback für Mobile) wird nicht unterstützt.</p>';
+            }
+        } else {
+             $mobileMediaHTML = '<p>Fehler beim Laden des Hauptvideos für Mobile (Dateiinformationen fehlen - Fallback).</p>';
+        }
+    }
+}
+
 //$GLOBALS['TL_BODY'][] = '<script defer type="module">import "/files/base/layout/js/_elements/ce_rsce_hero_complex.js";</script>';
+
+// Prepare min-height values, ensuring they have a unit.
+$desktopMinHeightRaw = $this->image_minheight ?: '700px';
+$mobileMinHeightRaw = $this->image_mobile_minheight ?: 'auto';
+
+$desktopMinHeightProcessed = $desktopMinHeightRaw;
+if (is_string($desktopMinHeightRaw) && preg_match('/^\d+(\.\d+)?$/', $desktopMinHeightRaw)) {
+    $desktopMinHeightProcessed = $desktopMinHeightRaw . 'px';
+} elseif (is_numeric($desktopMinHeightRaw)) { // Handles actual numeric types
+    $desktopMinHeightProcessed = $desktopMinHeightRaw . 'px';
+}
+
+$mobileMinHeightProcessed = $mobileMinHeightRaw;
+if ($mobileMinHeightRaw !== 'auto') {
+    if (is_string($mobileMinHeightRaw) && preg_match('/^\d+(\.\d+)?$/', $mobileMinHeightRaw)) {
+        $mobileMinHeightProcessed = $mobileMinHeightRaw . 'px';
+    } elseif (is_numeric($mobileMinHeightRaw)) {
+        $mobileMinHeightProcessed = $mobileMinHeightRaw . 'px';
+    }
+}
+
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/rsce_hero_complex.min.css|static';
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_hero_complex.min.css|static';
 }
 
 ?>
@@ -57,9 +129,12 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         <!-- Haupt-Medienbereich (Mobile: order-1 / Desktop: order-lg-2, wird dann via CSS zum Hintergrund) -->
         <div class="hero-complex-media-col mb-gap mb-lg-0 order-1 order-lg-2"
              <?php if ($this->animation_type_media): ?>data-animation="<?= $this->animation_type_media ?>"<?php endif; ?>>
-            <div class="main-media-wrapper" style="--image-min-height: <?= $this->image_minheight ?: '700px' ?>; --image-mobile-min-height: <?= $this->image_mobile_minheight ?: 'auto' ?>;">
+            <div class="main-media-wrapper" style="--image-min-height: <?= $desktopMinHeightProcessed ?>; --image-mobile-min-height: <?= $mobileMinHeightProcessed ?>;">
                 <?php if ($mainMediaHTML): ?>
                     <?= $mainMediaHTML ?>
+                <?php endif; ?>
+                <?php if ($mobileMediaHTML): ?>
+                    <?= $mobileMediaHTML ?>
                 <?php endif; ?>
             </div>
         </div>
@@ -93,11 +168,11 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                  <div class="hero-complex-box-slider-wrapper pull-down-lg"
                                        <?php if ($this->animation_type_box): ?>data-animation="<?= $this->animation_type_box ?>"<?php endif; ?>>
                                      <div class="box-slider-anchor" style="<?= $boxStyles ?>">
-                                         <div class="box-slider-container swiper rsce-hero-box-slider-<?= $uniqueId ?>"  data-uid="<?= $uniqueId ?>">
+                                         <div class="box-slider-wrapper swiper rsce-hero-box-slider-<?= $uniqueId ?>"  data-uid="<?= $uniqueId ?>">
                                              <div class="swiper-wrapper">
                                                  <?php foreach ($this->box_slides as $slide): ?>
                                                      <div class="swiper-slide">
-                                                         <div class="box-slide-inner p-4 p-md-5">
+                                                         <div class="box-slide-inner p-3 p-lg-4 p-md-5">
                                                              <?php if ($slide->slide_headline): ?>
                                                                  <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, "", "mb-4") ?>
                                                              <?php endif; ?>

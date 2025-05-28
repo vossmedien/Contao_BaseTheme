@@ -117,6 +117,12 @@ fieldset {
   color: $filled-text !important;
 }
 
+.limit-svg-code-height textarea {
+    height: 200px !important; /* oder die gewünschte Höhe */
+    font-family: monospace;
+}
+
+
 @mixin generate-tab-styles($max-tabs: 40) {
   .stylemanager {
     @for $i from 0 through $max-tabs - 1 {

@@ -1,4 +1,4 @@
-$white: #fff;
+$white: #f3f3f3;
 $gray: var(--bs-gray-300);
 
 $gray-100: #F1F5F7;
@@ -16,11 +16,11 @@ $primary: #113634;
 $secondary: #deeec6;
 $tertiary: #92a0ff;
 
-$body-bg: #ffffff;
+$body-bg: #F3F3F3;
 $body-color: $primary;
 
 $border-radius: 0;
-$border-radius-lg: 18px;
+$border-radius-lg: 0;
 $box-shadow: 0 0 12px rgba(39, 39, 39, 0.15);
 
 $offset-sm: 60px;
@@ -45,7 +45,7 @@ $icon-type: ".fak";
 
 $spacer: 2em;
 $spacer-sm: $spacer/2;
-$spacer-lg: $spacer*1.5;
+$spacer-lg: $spacer*2.15;
 
 $grid-gutter-width: 30px;
 
@@ -100,4 +100,5 @@ $theme-colors: (
         "danger": #dc3545,
         "light": $gray-100,
         "dark": $gray-900,
+        "white": $white
 );

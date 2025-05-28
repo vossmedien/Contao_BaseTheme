@@ -190,7 +190,7 @@ return array(
         'text_filter_content' => array(
             'label' => array('Text für Text-Filter', 'Dieser Text wird angezeigt, wenn der Text-Filter aktiv ist.'),
             'inputType' => 'textarea',
-            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr', 'mandatory' => true),
+            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
             'dependsOn' => array(
                 'field' => 'add_text_filter_option',
             ),

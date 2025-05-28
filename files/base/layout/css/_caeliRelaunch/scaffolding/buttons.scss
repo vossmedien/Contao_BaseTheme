@@ -17,9 +17,11 @@
   }
 
   &.btn-secondary {
-    --bs-btn-hover-bg: transparent;
-    --bs-btn-border-color: var(--bs-secondary);
-    --bs-btn-hover-color: var(--bs-secondary);
+    --bs-btn-hover-color: var(--bs-primary);
+  }
+
+  &.btn-outline-secondary {
+    --bs-btn-hover-color: var(--bs-primary);
   }
 
   &.btn-tertiary {
@@ -42,7 +44,7 @@
 
     &:after {
       @extend %fa-icon;
-        font-family:"Font Awesome Kit";
+      font-family: "Font Awesome Kit";
       content: "\e000";
       transition: all .3s ease-in-out;
     }
@@ -50,6 +52,16 @@
 
   &.btn-link {
     font-weight: $font-weight-bold;
+    text-align: left;
+
+    /*
+     @include media-breakpoint-down(sm) {
+      display: inline;
+      &:after {
+        margin-left: .5rem;
+      }
+    }
+     */
   }
 
   &.btn-sm {
@@ -71,7 +83,7 @@
 
     &:after {
       @extend %fa-icon;
-         font-family:"Font Awesome Kit";
+      font-family: "Font Awesome Kit";
       content: "\e001";
       font-size: 32px;
     }
@@ -95,7 +107,7 @@
     &.with-arrow {
       &:after {
         @extend %fa-icon;
-           font-family:"Font Awesome Kit";
+        font-family: "Font Awesome Kit";
         content: "\e001";
         font-size: 32px;
 
@@ -107,6 +119,6 @@
   }
 }
 
-p a.btn.btn-link{
+p a.btn.btn-link, .interactive-svg-links a.btn.btn-link {
   font-weight: $font-weight-base;
 }

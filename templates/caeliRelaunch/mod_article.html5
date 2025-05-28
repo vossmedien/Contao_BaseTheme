@@ -34,8 +34,8 @@
     $this->class = implode(' ', $remainingClasses);
     ?>
 
-    <div data-articleid="article-<?= $this->id; ?>" class="mod_article block<?= $containerClasses ?>"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
-        <div class="article-content <?= str_replace("mod_article", "", $this->class); ?>">
+    <div data-articleid="article-<?= $this->id; ?>" class="mod_article block<?= $containerClasses ?>"<?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+        <div <?= $this->cssID ?> class="article-content <?= str_replace("mod_article", "", $this->class); ?>">
 
             <?php if ($this->printable): ?>
                 <?php $this->block('syndication'); ?>

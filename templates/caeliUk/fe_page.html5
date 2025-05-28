@@ -91,48 +91,55 @@ $this->bodyAttributes = $this
     <?php
     // --- NEU: CSS optimiert einbinden ---
 
-    // Gewünschte Ladereihenfolge und spezifische Attribute
+    // Gewünschte Ladereihenfolge und spezifische Attribute (Schlüssel sind jetzt EntryPoint-Namen)
     $cssLoadConfig = [
-        '_fonts.bundle.min.css' => ['preload' => true, 'media' => 'all', 'type' => 'fonts'],
-        '_vendors.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'vendors'],
-        '_base.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'base'],
-        '_theme.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'theme'],
-        '_root-variables.bundle.min.css' => ['preload' => false, 'media' => 'all', 'type' => 'root-variables'],
+        '_fonts'          => ['preload' => true, 'media' => 'all'],
+        '_vendors'        => ['preload' => false, 'media' => 'all'],
+        '_base'           => ['preload' => false, 'media' => 'all'],
+        '_theme'          => ['preload' => false, 'media' => 'all'],
+        '_root-variables' => ['preload' => false, 'media' => 'all'],
+        // '_utilities' wird hier nicht explizit aufgeführt, da es für caeliUk evtl. nicht existiert oder anders gehandhabt wird.
+        // Es wird unten durch die Schleife für verbleibende CSS-Dateien abgedeckt.
     ];
 
-    $outputtedCss = [];
+    $outputtedCssPaths = []; // Speichert die Pfade der bereits ausgegebenen CSS-Dateien
 
-    // Hilfsfunktion, um den Pfad einer CSS-Datei anhand des Suffixes zu finden
-    $findAssetPathBySuffix = function ($suffix, $assets) {
-        foreach ($assets as $assetPath) {
-            if (str_ends_with($assetPath, $suffix)) {
-                return $assetPath;
+    // Hilfsfunktion, um ein CSS-Asset anhand des EntryPoint-Namens zu finden
+    $findAssetByEntryPoint = function ($entryPointKey, $themeCssAssets) {
+        if (empty($themeCssAssets)) return null;
+        foreach ($themeCssAssets as $asset) {
+            // $asset ist ['path' => '...', 'entryPoint' => '...']
+            if (isset($asset['entryPoint']) && $asset['entryPoint'] === $entryPointKey) {
+                return $asset; // Gibt das gesamte Asset-Array zurück
             }
         }
         return null;
     };
 
-    // 1. Preload für _fonts.bundle.min.css (wenn vorhanden)
-    $fontsCssPath = $findAssetPathBySuffix('_fonts.bundle.min.css', $themeAssets['css'] ?? []);
-    if ($fontsCssPath) {
-        echo '<link rel="preload" href="' . $this->base . $fontsCssPath . '" as="style">' . "\n    ";
+    // 1. Preload für _fonts CSS (wenn vorhanden)
+    $fontsCssAsset = $findAssetByEntryPoint('_fonts', $themeAssets['css'] ?? []);
+    if ($fontsCssAsset && isset($fontsCssAsset['path'])) {
+        // Korrigierte Pfad-Zusammensetzung für Preload
+        echo '<link rel="preload" href="' . rtrim($this->base, '/') . '/' . ltrim($fontsCssAsset['path'], '/') . '" as="style">' . "\n    ";
     }
 
     // 2. Stylesheets in definierter Reihenfolge ausgeben
-    $orderedCssPathsForOutput = [];
-    // Zuerst die konfigurierten CSS-Dateien in der gewünschten Reihenfolge sammeln
-    foreach (array_keys($cssLoadConfig) as $fileSuffix) {
-        $path = $findAssetPathBySuffix($fileSuffix, $themeAssets['css'] ?? []);
-        if ($path) {
-            $orderedCssPathsForOutput[$fileSuffix] = $path;
+    $orderedCssAssetsForOutput = [];
+    // Zuerst die konfigurierten CSS-Assets in der gewünschten Reihenfolge sammeln
+    foreach (array_keys($cssLoadConfig) as $entryPointKey) {
+        $asset = $findAssetByEntryPoint($entryPointKey, $themeAssets['css'] ?? []);
+        if ($asset && isset($asset['path'])) {
+            $orderedCssAssetsForOutput[$entryPointKey] = $asset; // Speichere das gesamte Asset
         }
     }
 
     // Generiere die <link> Tags für die konfigurierten Dateien
-    foreach ($cssLoadConfig as $fileSuffix => $config) {
-        if (isset($orderedCssPathsForOutput[$fileSuffix])) {
-            $path = $orderedCssPathsForOutput[$fileSuffix];
-            $fullPath = $this->base . $path; // Annahme: $this->base ist korrekt und $path ist relativ dazu oder ein Webpfad
+    foreach ($cssLoadConfig as $entryPointKey => $config) {
+        if (isset($orderedCssAssetsForOutput[$entryPointKey])) {
+            $asset = $orderedCssAssetsForOutput[$entryPointKey];
+            $path = $asset['path'];
+            // Korrigierte Pfad-Zusammensetzung für Stylesheets
+            $fullPath = rtrim($this->base, '/') . '/' . ltrim($path, '/');
 
             echo '<link rel="stylesheet" href="' . $fullPath . '"';
             if (isset($config['media'])) {
@@ -147,18 +154,20 @@ $this->bodyAttributes = $this
             if (isset($config['onload'])) {
                 echo '<noscript><link rel="stylesheet" href="' . $fullPath . '"></noscript>' . "\n    ";
             }
-            $outputtedCss[] = $path; // Markiere als ausgegeben
+            $outputtedCssPaths[] = $path; // Markiere Pfad als ausgegeben
         }
     }
 
     // Füge alle verbleibenden CSS-Dateien aus $themeAssets['css'] (die nicht in $cssLoadConfig waren)
     // normal zu $GLOBALS['TL_CSS'] hinzu, damit $this->stylesheets sie verarbeiten kann.
-    // Dies stellt sicher, dass keine CSS-Datei verloren geht, falls neue Bundles hinzukommen,
-    // die nicht explizit in $cssLoadConfig behandelt werden.
     if (!empty($themeAssets['css'])) {
-        foreach ($themeAssets['css'] as $cssFile) {
-            if (!in_array($cssFile, $outputtedCss)) {
-                $GLOBALS['TL_CSS'][] = $cssFile . '|static';
+        foreach ($themeAssets['css'] as $cssAsset) { // $cssAsset ist nun ein Array
+            if (isset($cssAsset['path'])) {
+                $cssPath = $cssAsset['path'];
+                if (!in_array($cssPath, $outputtedCssPaths)) {
+                     // Korrigierte Pfad-Zusammensetzung für $GLOBALS['TL_CSS']
+                    $GLOBALS['TL_CSS'][] = ltrim($cssPath, '/') . '|static';
+                }
             }
         }
     }
@@ -351,7 +360,8 @@ $this->bodyAttributes = $this
             var c = document.getElementsByTagName("html");
             if (c.length > 0) {
                 c = c[0]
-            } else {
+            }
+            else {
                 c = document.documentElement
             }
             if (c && c.getAttribute) {
@@ -363,7 +373,8 @@ $this->bodyAttributes = $this
                     a = a.split("_").join("-").toUpperCase();
                     var b = window.cmp_getsupportedLangs();
                     return b.indexOf(a) != -1 || b.indexOf(a.substr(0, 2)) != -1 ? a : ""
-                } else {
+                }
+                else {
                     return ""
                 }
             }
@@ -403,10 +414,12 @@ $this->bodyAttributes = $this
                 var J = w.indexOf(e);
                 if (u != -1) {
                     d = L.substring(u + l, 9999)
-                } else {
+                }
+                else {
                     if (J != -1) {
                         d = w.substring(J + l, 9999)
-                    } else {
+                    }
+                    else {
                         return i in o && typeof (o[i]) !== "function" ? o[i] : ""
                     }
                 }
@@ -420,7 +433,8 @@ $this->bodyAttributes = $this
             if (j != "") {
                 t = j;
                 k = t
-            } else {
+            }
+            else {
                 if ("cmp_getlang" in o) {
                     t = o.cmp_getlang().toLowerCase();
                     h = o.cmp_getlangs().slice(0, 3).join("_");
@@ -457,10 +471,12 @@ $this->bodyAttributes = $this
                 var K = "body";
                 if (C[w] && C[w][J]) {
                     C[w][J][l](M)
-                } else {
+                }
+                else {
                     if (C[K]) {
                         C[K][l](M)
-                    } else {
+                    }
+                    else {
                         for (var u = 0; u < L.length; u++) {
                             var I = D(L[u]);
                             if (I.length > 0) {
@@ -479,16 +495,19 @@ $this->bodyAttributes = $this
             var g;
             try {
                 g = C.cookie.length > 0
-            } catch (B) {
+            }
+            catch (B) {
                 g = false
             }
             var x = F("darkmode");
             if (x == "0") {
                 x = 0
-            } else {
+            }
+            else {
                 if (x == "1") {
                     x = 1
-                } else {
+                }
+                else {
                     try {
                         if ("matchMedia" in window && window.matchMedia) {
                             var H = window.matchMedia("(prefers-color-scheme: dark)");
@@ -496,7 +515,8 @@ $this->bodyAttributes = $this
                                 x = 1
                             }
                         }
-                    } catch (B) {
+                    }
+                    catch (B) {
                         x = 0
                     }
                 }
@@ -527,7 +547,8 @@ $this->bodyAttributes = $this
             var l;
             try {
                 l = document.cookie
-            } catch (h) {
+            }
+            catch (h) {
                 l = ""
             }
             var j = "";
@@ -541,7 +562,8 @@ $this->bodyAttributes = $this
                 var k = l.substring(0, l.indexOf("="));
                 if (l.indexOf(";") != -1) {
                     var m = l.substring(l.indexOf("=") + 1, l.indexOf(";"))
-                } else {
+                }
+                else {
                     var m = l.substr(l.indexOf("=") + 1, l.length)
                 }
                 if (c == k) {
@@ -564,7 +586,8 @@ $this->bodyAttributes = $this
             __cmp.a = __cmp.a || [];
             if (!a.length) {
                 return __cmp.a
-            } else {
+            }
+            else {
                 if (a[0] === "ping") {
                     if (a[1] === 2) {
                         a[2]({
@@ -575,19 +598,24 @@ $this->bodyAttributes = $this
                             apiVersion: "2.2",
                             cmpId: 31
                         }, true)
-                    } else {
+                    }
+                    else {
                         a[2](false, true)
                     }
-                } else {
+                }
+                else {
                     if (a[0] === "getTCData") {
                         __cmp.a.push([].slice.apply(a))
-                    } else {
+                    }
+                    else {
                         if (a[0] === "addEventListener" || a[0] === "removeEventListener") {
                             __cmp.a.push([].slice.apply(a))
-                        } else {
+                        }
+                        else {
                             if (a.length == 4 && a[3] === false) {
                                 a[2]({}, false)
-                            } else {
+                            }
+                            else {
                                 __cmp.a.push([].slice.apply(a))
                             }
                         }
@@ -614,7 +642,8 @@ $this->bodyAttributes = $this
             if (h === "ping") {
                 a = window.cmp_gpp_ping();
                 j = true
-            } else {
+            }
+            else {
                 if (h === "addEventListener") {
                     __gpp.e = __gpp.e || [];
                     if (!("lastId" in __gpp)) {
@@ -622,10 +651,11 @@ $this->bodyAttributes = $this
                     }
                     __gpp.lastId++;
                     var d = __gpp.lastId;
-                    __gpp.e.push({id: d, callback: g});
-                    a = {eventName: "listenerRegistered", listenerId: d, data: true, pingData: window.cmp_gpp_ping()};
+                    __gpp.e.push({ id: d, callback: g });
+                    a = { eventName: "listenerRegistered", listenerId: d, data: true, pingData: window.cmp_gpp_ping() };
                     j = true
-                } else {
+                }
+                else {
                     if (h === "removeEventListener") {
                         __gpp.e = __gpp.e || [];
                         a = false;
@@ -637,7 +667,8 @@ $this->bodyAttributes = $this
                             }
                         }
                         j = true
-                    } else {
+                    }
+                    else {
                         __gpp.q.push([].slice.apply(c))
                     }
                 }
@@ -673,7 +704,8 @@ $this->bodyAttributes = $this
                     a.setAttribute("role", "none");
                     a.setAttribute("tabindex", "-1");
                     document.body.appendChild(a)
-                } else {
+                }
+                else {
                     window.setTimeout(window.cmp_addFrame, 10, b)
                 }
             }
@@ -682,34 +714,35 @@ $this->bodyAttributes = $this
             var a = typeof d.data === "string";
             try {
                 var c = a ? JSON.parse(d.data) : d.data
-            } catch (f) {
+            }
+            catch (f) {
                 var c = null
             }
             if (typeof (c) === "object" && c !== null && "__cmpCall" in c) {
                 var b = c.__cmpCall;
                 window.__cmp(b.command, b.parameter, function (h, g) {
-                    var e = {__cmpReturn: {returnValue: h, success: g, callId: b.callId}};
+                    var e = { __cmpReturn: { returnValue: h, success: g, callId: b.callId } };
                     d.source.postMessage(a ? JSON.stringify(e) : e, "*")
                 })
             }
             if (typeof (c) === "object" && c !== null && "__tcfapiCall" in c) {
                 var b = c.__tcfapiCall;
                 window.__tcfapi(b.command, b.version, function (h, g) {
-                    var e = {__tcfapiReturn: {returnValue: h, success: g, callId: b.callId}};
+                    var e = { __tcfapiReturn: { returnValue: h, success: g, callId: b.callId } };
                     d.source.postMessage(a ? JSON.stringify(e) : e, "*")
                 }, b.parameter)
             }
             if (typeof (c) === "object" && c !== null && "__gppCall" in c) {
                 var b = c.__gppCall;
                 window.__gpp(b.command, function (h, g) {
-                    var e = {__gppReturn: {returnValue: h, success: g, callId: b.callId}};
+                    var e = { __gppReturn: { returnValue: h, success: g, callId: b.callId } };
                     d.source.postMessage(a ? JSON.stringify(e) : e, "*")
                 }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
             }
             if (typeof (c) === "object" && c !== null && "__dsaCall" in c) {
                 var b = c.__dsaCall;
                 window.__dsa(b.command, function (h, g) {
-                    var e = {__dsaReturn: {returnValue: h, success: g, callId: b.callId}};
+                    var e = { __dsaReturn: { returnValue: h, success: g, callId: b.callId } };
                     d.source.postMessage(a ? JSON.stringify(e) : e, "*")
                 }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
             }
@@ -868,7 +901,8 @@ $this->bodyAttributes = $this
             <?php $this->endblock(); ?>
 
             <?php $this->block('right'); ?>
-            <?php if ($this->right): ?>
+            <?php if ($this->right):
+                ?>
                 <aside id="right" class="col-12 col-md-auto order-md-2">
                     <div class="right-content">
                         <?= $this->right ?>
@@ -883,7 +917,8 @@ $this->bodyAttributes = $this
     <?php $this->sections('after'); ?>
 
     <?php $this->block('footer'); ?>
-    <?php if ($this->footer): ?>
+    <?php if ($this->footer):
+        ?>
         <!-- indexer::stop -->
         <footer id="footer">
             <?= $this->footer ?>
@@ -902,15 +937,42 @@ $this->bodyAttributes = $this
 if (!empty($themeAssets['js_vendor_individual'])) {
     foreach ($themeAssets['js_vendor_individual'] as $js) {
         // $js ist nun ein Array mit den Schlüsseln 'src' und 'attributes'
-        // z.B. $js = ['src' => 'files/base/.../script.js', 'attributes' => '|defer|static']
-        $scriptTag =  $js['src'] . $js['attributes'];
-        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTag ;
+        // z.B. $js = ['src' => '/files/base/.../script.js', 'attributes' => '|defer|static']
+
+        // Die alte Methode über $GLOBALS['TL_JAVASCRIPT'] erwartet einen String, der Pfad und Attribute kombiniert.
+        // Die Attribute aus $js['attributes'] (z.B. '|defer|static') müssen an den Pfad angehängt werden.
+        $srcPath = $js['src'];
+        // Sicherstellen, dass der Pfad server-relativ ist (beginnt mit /) und keine doppelten Slashes am Anfang hat
+        if (str_starts_with($srcPath, '//')) {
+            $srcPath = substr($srcPath, 1); // Macht aus //files -> /files
+        } elseif (!str_starts_with($srcPath, '/')) {
+            $srcPath = '/' . $srcPath; // Stellt sicher, dass es mit / beginnt
+        }
+
+        // Stelle sicher, dass die Attribute korrekt formatiert sind für Contao
+        $attributesForContao = str_replace('|', '', $js['attributes']); // Entferne die Pipe-Zeichen, Contao fügt sie selbst hinzu
+        if (str_contains($attributesForContao, 'defer')) {
+             $attributesForContao = str_replace('defer', '', $attributesForContao); // Entferne defer, da es separat behandelt werden kann oder in Contao anders
+             // Hier könnte man überlegen, ob man für Contao das defer anders setzt, aber für $TL_JAVASCRIPT ist es meist Teil des Strings.
+        }
+        // In Contao wird 'static' meist nicht als Attribut im Script-Tag selbst benötigt, sondern steuert das Caching.
+        // Die einfachste Variante ist, den String so zu belassen, wie er aus theme.js_vendors.php kommt, Contao sollte das verarbeiten.
+        $scriptTagForGlobalJs = $srcPath . $js['attributes']; // Nutze den Original-Attribut-String
+
+        $GLOBALS['TL_JAVASCRIPT'][] = $scriptTagForGlobalJs;
     }
 }
-// Dann App JS
+// Dann App JS, wird zu TL_BODY hinzugefügt für defer/module etc.
 if (!empty($themeAssets['js_app'])) {
     foreach ($themeAssets['js_app'] as $js) {
-        $scriptTag = '<script src="' . $js['src'] . '"';
+        $srcPath = $js['src'];
+        if (str_starts_with($srcPath, '//')) {
+            $srcPath = substr($srcPath, 1);
+        } elseif (!str_starts_with($srcPath, '/')) {
+            $srcPath = '/' . $srcPath;
+        }
+
+        $scriptTag = '<script src="' . $srcPath . '"';
         if (!empty($js['defer']) && $js['defer']) $scriptTag .= ' defer';
         if (!empty($js['type'])) $scriptTag .= ' type="' . $js['type'] . '"';
         $scriptTag .= '></script>';

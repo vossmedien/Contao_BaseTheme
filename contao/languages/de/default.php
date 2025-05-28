@@ -31,7 +31,8 @@ $GLOBALS['TL_LANG']['MSC']['footerContact'] = 'Kontakt';
 $GLOBALS['TL_LANG']['MSC']['footerLegal'] = 'Rechtliches';
 $GLOBALS['TL_LANG']['MSC']['footerInsights'] = 'Infos & Einblicke';
 $GLOBALS['TL_LANG']['MSC']['footerSocialMedia'] = 'Soziale Netzwerke';
-$GLOBALS['TL_LANG']['MSC']['footerCooperations'] = 'Kooperationen';
+$GLOBALS['TL_LANG']['MSC']['footerCooperations'] = 'Starke Partner';
+$GLOBALS['TL_LANG']['MSC']['footerMembers'] = 'Mitgliedschaften';
 
 // Footer Contact Details
 $GLOBALS['TL_LANG']['MSC']['footerCompanyName'] = 'Caeli Wind GmbH';
@@ -59,3 +60,10 @@ $GLOBALS['TL_LANG']['pachtrechner']['form']['labelHa'] = 'Ihre Flächengröße (
 $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] = 'ha';
 $GLOBALS['TL_LANG']['pachtrechner']['form']['buttonCalculate'] = 'Pachtertrag ermitteln';
 $GLOBALS['TL_LANG']['pachtrechner']['form']['error']['invalidHa'] = 'Bitte geben Sie eine Flächengröße zwischen 1 und 999999 ha ein.';
+
+$GLOBALS['TL_LANG']['MSC']['sortBy'] = 'Sortieren nach';
+$GLOBALS['TL_LANG']['MSC']['filterBy'] = 'Filtern nach';
+
+$GLOBALS['TL_LANG']['MSC']['newsletterSelect'] = 'Auswahl Newsletter';
+
+$GLOBALS['TL_LANG']['MSC']['viewHide'] = ['ausblenden', 'einblenden'];

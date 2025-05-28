@@ -1,12 +1,12 @@
 .auction-item {
 
-  &.is-simple{
+  &.is-simple {
 
   }
 
   .card {
     --bs-card-border-width: 0;
-    --bs-card-cap-bg: white;
+    --bs-card-cap-bg: var(--bs-body-bg);
     --bs-card-spacer-x: 1.5rem;
 
     .card-header {
@@ -45,6 +45,21 @@
     .card-footer {
       padding: 1rem var(--bs-card-spacer-x) 1rem var(--bs-card-spacer-x);
     }
+
+    & + .more-btn {
+      .btn {
+        //border-top: 0;
+      }
+    }
+  }
+}
+
+
+.is-primary {
+  .auction-item .card {
+    --bs-card-cap-bg: var(--bs-primary);
+    --bs-card-bg: var(--bs-primary);
+    color: var(--bs-secondary);
   }
 }
 
@@ -151,7 +166,7 @@
     }
   }
 
-  .auction-image-container {
+  .auction-image-wrapper {
     position: relative;
     min-height: 250px;
     height: 100%;
@@ -206,5 +221,6 @@
     }
   }
 }
+
 
 

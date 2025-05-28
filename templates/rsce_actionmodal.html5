@@ -1,14 +1,29 @@
 <?php
+
+use Contao\FilesModel;
+use Contao\Image;
+
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_actionmodal.min.css|static';
 }
+
+// Animation für das gesamte Modal Element
+$elementAnimation = null;
+if (!empty($this->animation_type_element) && $this->animation_type_element !== 'no-animation') {
+    $elementAnimation = $this->animation_type_element;
+}
+
 ?>
     <!-- indexer::stop -->
-    <div class="<?php echo $this->cssID; ?> modal <?php echo $this->class; ?> actionModal_<?php echo $this->id; ?>" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog <?php echo $this->modal_size; ?> modal-dialog-centered"
-             data-animation="<?php if ($this->animation_type) : ?><?php echo $this->animation_type; ?><?php else : ?>animate__fadeInUp<?php endif; ?>">
+    <div <?php if($elementAnimation):?>data-animation="<?= $elementAnimation;?>"<?php endif;?> <?php echo $this->cssID; ?> class=" modal <?php echo $this->class; ?> actionModal_<?php echo $this->id; ?>" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog <?php echo $this->modal_size; ?> modal-dialog-centered">
             <div class="modal-content"
-                 <?php if ($this->modal_backgroundcolor): ?>style="background-color: <?php echo $this->modal_backgroundcolor; ?>"<?php endif; ?>>
+                 <?php 
+                    $modalContentStyles = [];
+                    if ($this->modal_backgroundcolor) { $modalContentStyles[] = "background-color: {$this->modal_backgroundcolor} !important;"; }
+                    if ($this->modal_text_color) { $modalContentStyles[] = "color: {$this->modal_text_color} !important;"; }
+                    if (!empty($modalContentStyles)) { echo 'style="' . implode(' ', $modalContentStyles) . '"'; }
+                 ?>>
 
                 <?php if ($this->modal_headline): ?>
                     <div class="modal-header">
@@ -26,23 +41,27 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                         ); ?>
 
 
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen">
-
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"
+                                <?php if ($this->close_button_color): ?>style="--bs-btn-close-color: <?php echo $this->close_button_color; ?> !important;"<?php endif; ?>></button>
                     </div>
                 <?php endif; ?>
                 <div class="modal-body" style="overflow-x: hidden;">
                     <?php if ($this->image): ?>
                         <div class="modal--image mb-2 <?php if ($this->remove_image_padding): ?>without-padding<?php endif; ?>">
                             <?php if (!$this->modal_headline): ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"
+                                        <?php if ($this->close_button_color): ?>style="--bs-btn-close-color: <?php echo $this->close_button_color; ?> !important;"<?php endif; ?>>
                                     <i class="fa-sharp fa-light fa-xmark"></i>
                                 </button>
                             <?php endif; ?>
 
 
                             <?php
-                            $filename = FilesModel::findByUuid($this->image)->path;
+                            $filename = '';
+                            $file = \Contao\FilesModel::findByUuid($this->image);
+                            if ($file) {
+                                $filename = $file->path;
+                            }
                             $ext = pathinfo($filename, PATHINFO_EXTENSION);
                             ?>
 
@@ -60,28 +79,42 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
                             <?php else: ?>
                                 <?php if ($this->as_bg): ?>
+                                    <?php 
+                                        $bgImagePath = '';
+                                        $bgImageFile = \Contao\FilesModel::findByUuid($this->image);
+                                        if ($bgImageFile) {
+                                            $bgImagePath = $bgImageFile->path;
+                                        }
+                                    ?> 
                                     <div class="modal-image--wrapper lazy"
-                                         data-bg="<?= Image::get(FilesModel::findByUuid($this->image)->path, null, null, null); ?>"
-                                         style="background-position: center center; background-repeat: no-repeat; background-size: cover; <?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>"></div>
+                                         data-bg="<?= \Contao\Image::get($bgImagePath, null, null, null, ['alt' => $this->modal_headline ?: 'Modal Background']); ?>"
+                                         style="background-position: center center; background-repeat: no-repeat; background-size: cover; <?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?>;<?php endif; ?>"></div>
                                 <?php else: ?>
-                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image, null, $this->modal_headline, null, null, false, true); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image, null, $this->modal_headline, null, 'img-fluid', false, true, true, null, null); ?>
                                 <?php endif; ?>
                             <?php endif; ?>
 
 
                             <div class="image--content">
-                                <div class="d-flex gap-4 align-items-center">
-                                    <?php if ($this->image_headline_left): ?>
-                                        <div class="col-12 left--col <?php if ($this->image_headline_right || $this->image_text_right): ?>col-lg-5<?php endif; ?>">
-                                            <div class="modal-image--big-headline" data-animation="animate__fadeInLeft">
+                                <div class="row g-0 <?php 
+                                    // Bedingung für die Sichtbarkeit der gesamten oberen Bild-Text-Zeile
+                                    $showImageContentRow = $this->image && 
+                                                           ($this->image_headline_left || 
+                                                            ($this->add_image_right_column_content && ($this->image_headline_right || $this->image_text_right)));
+                                    if (!$showImageContentRow) { echo 'd-none'; }
+                                ?>">
+                                    <?php if ($this->image && $this->image_headline_left): ?>
+                                        <div class="col-12 <?php if ($this->add_image_right_column_content && ($this->image_headline_right || $this->image_text_right)): ?>col-lg-5<?php else: ?>col-lg-12<?php endif; ?> left--col">
+                                            <div class="modal-image--big-headline">
                                                 <span><?php echo $this->image_headline_left; ?></span>
                                             </div>
                                         </div>
                                     <?php endif; ?>
-                                    <?php if ($this->image_headline_right || $this->image_text_right): ?>
-                                        <div class="col-12 d-none d-xl-block right--col <?php if ($this->image_headline_left): ?>col-lg-7<?php endif; ?>">
-                                            <div class="modal-image--text-wrapper" data-animation="animate__fadeInRight"
-                                                 style="<?php if ($this->image_right_col_background_color): ?>background-color: <?php echo $this->image_right_col_background_color; ?>;<?php endif; ?> <?php if ($this->image_right_col_text_color): ?>color: <?php echo $this->image_right_col_text_color; ?><?php endif; ?>">
+                                    <?php // Rechte Spalte nur anzeigen, wenn Bild vorhanden, Checkbox aktiv und Inhalt für rechts da ist
+                                    if ($this->image && $this->add_image_right_column_content && ($this->image_headline_right || $this->image_text_right)): ?>
+                                        <div class="col-12 <?php if ($this->image_headline_left): ?>col-lg-7<?php else: ?>col-lg-12<?php endif; ?> right--col">
+                                            <div class="modal-image--text-wrapper"
+                                                 style="<?php if ($this->image_right_col_background_color): ?>background-color: <?php echo $this->image_right_col_background_color; ?> !important;<?php endif; ?> <?php if ($this->image_right_col_text_color): ?>color: <?php echo $this->image_right_col_text_color; ?> !important;<?php endif; ?>">
                                                 <?php if ($this->image_headline_right): ?>
                                                     <span><?php echo $this->image_headline_right; ?></span>
                                                 <?php endif; ?>
@@ -98,7 +131,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                         <div class="d-flex gap-4">
                             <?php if ($this->image_left): ?>
                                 <div class="col-12 col-md-5">
-                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image_left, null, $this->headline, null, null, false, true); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image_left, null, $this->headline, null, 'img-fluid', false, true, true, null, null); ?>
                                 </div>
                             <?php endif; ?>
 
@@ -117,11 +150,13 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
 
                                 <?php if ($this->progress_amount): ?>
-                                    <div class="modal--progress mb-3" data-animation="animate__fadeInUp">
+                                    <div class="modal--progress mb-3">
                                         <?php if ($this->progress_image): ?>
                                             <div class="progressbar--images">
-                                                <?php for ($i = 0; $i <= $this->progress_amount; $i++) : ?>
-                                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->progress_image, null, $this->headline, null, null, false, true); ?>
+                                                <?php 
+                                                $progressAmountNum = intval($this->progress_amount); 
+                                                for ($i = 0; $i < $progressAmountNum; $i++) : ?>
+                                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->progress_image, null, $this->headline, null, 'img-fluid', false, true, true, null, null); ?>
                                                 <?php endfor; ?>
                                             </div>
                                         <?php else: ?>
@@ -136,7 +171,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                         <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
-
+ 
                                 <?php if ($this->text): ?>
                                     <div class="modal--text">
                                         <?php echo $this->text; ?>
@@ -149,33 +184,35 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                 <?php if ($this->buttons[0]->link_text != "" || $this->show_footer_close) : ?>
                     <div class="modal-footer">
                         <?php if ($this->buttons[0]->link_text != "") : ?>
-                            <div class="ce--buttons">
                                 <?php foreach ($this->buttons as $b) : ?>
                                     <a class="d-inline-block btn me-2 <?php if ($b->link_size) : ?><?php echo $b->link_size; ?><?php endif; ?> <?php echo $b->link_type; ?>"
-                                       data-animation="animate__fadeInUp"
                                        href="<?php echo $b->link_url; ?><?php if ($b->link_betreff) : ?>?subject=<?php echo $b->link_betreff; ?><?php endif; ?>"><?php echo $b->link_text; ?> </a>
                                 <?php endforeach ?>
-                            </div>
                         <?php endif; ?>
                         <?php if ($this->show_footer_close && !$this->sponsors): ?>
                             <div class="text-end">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fortfahren
+                                <button type="button" 
+                                        class="btn <?php echo $this->footer_close_button_type ?: 'btn-secondary'; ?> <?php echo $this->footer_close_button_size ?: ''; ?>" 
+                                        data-bs-dismiss="modal">Fortfahren
                                 </button>
                             </div>
                         <?php endif; ?>
                         <?php if ($this->sponsors): ?>
-                            <div class="text-end" data-animation="animate__fadeIn">
+                            <div class="text-end">
                                 <?php foreach ($this->sponsors as $s) : ?><?php if ($s->link): ?>
                                     <a href="<?php echo $s->link; ?>" target="_blank"><?php endif; ?>
 
                                     <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
                                         $s->image,
-                                        null, // $optionalAltText, // Optionaler Parameter: Eigener Alt-Text
-                                        $this->headline, // Optionaler Parameter: Überschrift/Headline, wird als Titel verwendet, falls keine Metadaten vorhanden sind
-                                        null, // $optionalSize, // Optionaler Parameter: Bildgröße als Array [Breite, Höhe, Modus]
-                                        'd-inline-block ms-2', // Optionaler Parameter: Eigene CSS-Klasse für das <img>-Element,
+                                        null,
+                                        $this->headline,
+                                        null,
+                                        'd-inline-block ms-2 img-fluid',
                                         false,
-                                        false
+                                        false,
+                                        true,
+                                        null,
+                                        null
                                     ); ?>
 
                                     <?php if ($s->link): ?></a><?php endif; ?><?php endforeach ?>
@@ -198,6 +235,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
             var modalShown = false;
             var initialScrollPosition = window.pageYOffset;
             var totalScrolledAmount = 0;
+            var exitIntentTriggered = false;
 
             function openModal_<?php echo $this->id; ?>() {
                 if (cookieHide && getCookie('actionModal_<?php echo $this->id; ?>')) {
@@ -250,6 +288,14 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                 case 'initial_hidden':
                     // Do nothing, modal will remain hidden
                     break;
+                case 'exit_intent':
+                     document.addEventListener('mouseout', function(e) {
+                         if (e.clientY <= 0 && !exitIntentTriggered) {
+                             exitIntentTriggered = true;
+                             checkConditionsAndOpenModal();
+                         }
+                     });
+                     break;
                 default:
                     // Open immediately for any other case (including empty string)
                     checkConditionsAndOpenModal();

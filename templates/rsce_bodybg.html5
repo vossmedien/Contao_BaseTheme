@@ -1,11 +1,19 @@
 <?php
+
 use Contao\FilesModel;
 use Contao\StringUtil;
-
 
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_bodybg.min.css|static';
     $articleSelector = "[data-articleid=\"article-$this->pid\"] > .article-content";
+
+    // Element-ID Selector erstellen
+    $elementSelector = '';
+    if ($this->element_id) {
+        $cleanId = str_replace('#', '', $this->element_id);
+        $elementSelector = "#$cleanId";
+    }
+
     $angle = $this->winkel ? (strpos($this->winkel, '-') !== false ? str_replace("-", "", $this->winkel) . "deg" : "-{$this->winkel}deg") : 'calc(-1 * var(--base-skew))';
     $backgroundImage = $this->image ? FilesModel::findByUuid($this->image)->path : '';
     $backgroundImageMobile = $this->image_mobile ? FilesModel::findByUuid($this->image_mobile)->path : '';
@@ -13,12 +21,9 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $backgroundStyle = html_entity_decode($this->css);
     if ($this->darken_image == "1") {
         $backgroundStyle = $this->css ? $backgroundStyle : "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url($backgroundImage)";
-    }
-    elseif ($this->darken_image == "2") {
-          $backgroundStyle = $this->css ? $backgroundStyle : "linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),url($backgroundImage)";
-    }
-
-    else {
+    } elseif ($this->darken_image == "2") {
+        $backgroundStyle = $this->css ? $backgroundStyle : "linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),url($backgroundImage)";
+    } else {
         $backgroundStyle = $this->css ? $backgroundStyle : "url($backgroundImage)";
     }
 }
@@ -29,38 +34,60 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         <style>
             <?php echo $articleSelector; ?>
             {
-                --angle:
-            <?php echo $this->winkel ? $this->winkel . 'deg' : 'var(--base-skew)'; ?>
-            ;
-                position: relative
-            ;
-                outline: 1px solid transparent
-            ;
-                transform-origin: top left
-            ;
+                --angle: <?php echo $this->winkel ? $this->winkel . 'deg' : 'var(--base-skew)'; ?>;
+                position: relative;
+                outline: 1px solid transparent;
+                transform-origin: top left;
             <?php if ($this->activate): ?>
-                padding: var(--with-body-bg-spacing) 0 var(--with-body-bg-spacing) 0
-            ;
+                padding: var(--with-body-bg-spacing) 0 var(--with-body-bg-spacing) 0;
             <?php endif; ?>
             }
 
             <?php if (!$this->activate): ?>
             <?php echo $articleSelector; ?>
             {
-                padding: calc(var(--main-gap)) 0
-            ;
+                padding: calc(var(--main-gap)) 0;
             }
             <?php endif; ?>
 
             <?php if ($this->is_between): ?>
             <?php echo $articleSelector; ?>
             {
-                margin-top: calc(-1 * (var(--with-body-bg-spacing)) - 2px)
-            ;
+                margin-top: calc(-1 * (var(--with-body-bg-spacing)) - 2px);
             }
             <?php endif; ?>
         </style>
     <?php endif; ?>
+
+    <?php if ($this->element_id): ?>
+        <style>
+            <?php echo $elementSelector; ?>
+            {
+                --angle:  <?php echo $this->winkel ? $this->winkel . 'deg' : 'var(--base-skew)'; ?>;
+                position: relative;
+                outline: 1px solid transparent;
+                transform-origin: top left;
+            <?php if ($this->activate): ?>
+                padding: var(--with-body-bg-spacing) 0 var(--with-body-bg-spacing) 0;
+            <?php endif; ?>
+            }
+
+            <?php if (!$this->activate): ?>
+            <?php echo $elementSelector; ?>
+            {
+                padding: calc(var(--main-gap)) 0;
+            }
+            <?php endif; ?>
+
+            <?php if ($this->is_between): ?>
+            <?php echo $elementSelector; ?>
+            {
+                margin-top: calc(-1 * (var(--with-body-bg-spacing)) - 2px);
+            }
+            <?php endif; ?>
+        </style>
+    <?php endif; ?>
+
     <?php if ($this->element_type == 2 || $this->element_type == 3): ?>
         <?php
         $filename = FilesModel::findByUuid($this->image)->path;
@@ -72,24 +99,14 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                 <?php if ($this->only_article): ?>
                 <?php echo $articleSelector; ?>
                 {
-                    background:
-                <?php echo $backgroundStyle; ?>
-                ;
-                    backface-visibility: hidden
-                ;
-                    background-attachment: fixed
-                ;
-                    background-size: cover
-                ;
-                    background-position: center center
-                ;
-                    background-repeat: no-repeat
-                ;
+                    background:  <?php echo $backgroundStyle; ?>;
+                    backface-visibility: hidden;
+                    background-size: cover;
+                    background-position: center center;
+                    background-repeat: no-repeat;
                 <?php if ($this->activate): ?>
-                    transform: skewy(var(--angle))
-                ;
-                    transform-origin: 50% 0
-                ;
+                    transform: skewy(var(--angle));
+                    transform-origin: 50% 0;
                 <?php endif; ?>
                 }
 
@@ -102,6 +119,31 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                 }
 
                 <?php endif; ?>
+
+                <?php elseif ($this->element_id): ?>
+                <?php echo $elementSelector; ?>
+                {
+                    background:  <?php echo $backgroundStyle; ?>;
+                    backface-visibility: hidden;
+                    background-size: cover;
+                    background-position: center center;
+                    background-repeat: no-repeat;
+                <?php if ($this->activate): ?>
+                    transform: skewy(var(--angle));
+                    transform-origin: 50% 0;
+                <?php endif; ?>
+                }
+
+                <?php if ($this->activate): ?>
+                <?php echo $elementSelector; ?>
+                > * {
+                    position: relative;
+                    z-index: 1;
+                    transform: skewy(<?php echo $angle; ?>);
+                }
+
+                <?php endif; ?>
+
                 <?php else: ?>
                 html body #wrapper main#main .main-content > <?php echo $articleSelector; ?> > .article-content {
                     padding: calc(var(--main-gap)) 0;
@@ -122,10 +164,9 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                 <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if (!$this->only_article && $this->image): ?>
+                <?php if (!$this->only_article && !$this->element_id && $this->image): ?>
                 body {
                     background: <?php if ($this->darken_image == "1"): ?> linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),<?php endif; ?><?php if ($this->darken_image == "2"): ?> linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),<?php endif; ?> url(<?= $backgroundImage; ?>) center center no-repeat;
-                    background-attachment: fixed;
                     background-size: cover;
                 }
 
@@ -135,13 +176,21 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
         <?php if ($ext == "mp4"): ?>
             <style>
+                <?php if ($this->only_article): ?>
                 <?php echo $articleSelector; ?>
                 {
                 <?php if (!$this->activate): ?>
 
                 <?php endif; ?>
                 }
+                <?php elseif ($this->element_id): ?>
+                <?php echo $elementSelector; ?>
+                {
+                <?php if (!$this->activate): ?>
 
+                <?php endif; ?>
+                }
+                <?php endif; ?>
 
                 video.bgvideo {
                     transform-origin: 50% 0;
@@ -153,13 +202,12 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                     outline: 1px solid transparent;
                     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
                 <?php if ($this->activate): ?> transform: skewy(var(--angle));
-                <?php endif; ?><?php if ($this->only_article): ?> left: 0;
+                <?php endif; ?><?php if ($this->only_article || $this->element_id): ?> left: 0;
                     top: 0;
                     right: 0;
                     bottom: 0;
                     position: absolute;
-                <?php else: ?>
-                    height: 100dvh;
+                <?php else: ?> height: 100dvh;
                     position: fixed;
                     width: 100vw;
                     top: 0;
@@ -173,17 +221,22 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
             </video>
         <?php endif; ?>
     <?php endif; ?>
+
     <?php if ($this->element_type == 1): ?>
-        <?php if ($this->only_article): ?>
+        <?php if ($this->only_article || $this->element_id): ?>
             <style>
+                <?php if ($this->only_article): ?>
                 <?php echo $articleSelector; ?>
+                <?php elseif ($this->element_id): ?>
+                <?php echo $elementSelector; ?>
+                <?php endif; ?>
                 .body-slider {
                     transform-origin: 50% 0;
                     backface-visibility: hidden;
                     z-index: 0;
                     object-fit: cover;
                 <?php if ($this->activate): ?> transform: skewy(var(--angle));
-                <?php endif; ?><?php if ($this->only_article): ?> left: 0;
+                <?php endif; ?><?php if ($this->only_article || $this->element_id): ?> left: 0;
                     top: 0;
                     right: 0;
                     bottom: 0;
@@ -197,14 +250,18 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                 <?php endif; ?>
                 }
 
+                <?php if ($this->only_article): ?>
                 <?php echo $articleSelector; ?>
+                <?php elseif ($this->element_id): ?>
+                <?php echo $elementSelector; ?>
+                <?php endif; ?>
                 .body-slider .swiper {
                     height: 100%;
                 }
             </style>
         <?php endif; ?>
 
-        <?php if (!$this->only_article): ?>
+        <?php if (!$this->only_article && !$this->element_id): ?>
             <style>
                 .body-slider {
                     position: fixed;

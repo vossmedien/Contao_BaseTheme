@@ -26,6 +26,12 @@ return array(
             'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
         ),
 
+        'close_button_color' => array(
+            'label' => array('Farbe der Schließen-Buttons (X-Icons)', 'In HEX oder RGB angeben. Standard: Schwarz oder Weiß, je nach Hintergrund.'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
+
         'modal_subline' => array(
             'label' => array('Subline', ''),
             'inputType' => 'text',
@@ -75,21 +81,23 @@ return array(
             'eval' => array('tl_class' => 'w50'),
         ),
 
-        'animation_type' => array(
-            'label' => array(
-                'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
-            ),
-            'inputType' => 'select',
-            'options' => GlobalElementConfig::getAnimations(),
-            'eval' => array('chosen' => 'true', 'tl_class' => 'w50')
-        ),
-
         'modal_backgroundcolor' => array(
             'label' => array('Hintergrundfarbe für das gesamte Modal', 'in HEX oder RGB angeben, Standard: Weiß'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'w50'),
         ),
 
+        'modal_text_color' => array(
+            'label' => array('Schriftfarbe für den Modal-Inhalt', 'in HEX oder RGB angeben. Standard: Wird vom CSS geerbt.'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
+
+
+        'opening_settings_group' => array(
+            'label' => array('Verhalten beim Öffnen', ''),
+            'inputType' => 'group',
+        ),
 
         'opening_type' => array(
             'label' => array(
@@ -98,9 +106,10 @@ return array(
             'inputType' => 'select',
             'options' => array(
                 '' => 'Direkt bei Seitenaufruf öffnen',
-                'initial_hidden' => 'Nicht automatisch öffnen, bleibt bis zum manuellen "öffnen" versteckt',
-                'after_scrolling' => 'Nach einer gewissen Scrollzeit einblenden',
+                'initial_hidden' => 'Nicht automatisch öffnen (manuelles Triggern nötig)',
+                'after_scrolling' => 'Nach einer gewissen Scroll-Distanz einblenden',
                 'after_time' => 'Nach einer Weile automatisch einblenden',
+                'exit_intent' => 'Beim Verlassen des Browserfensters (Exit Intent)',
             ),
             'eval' => array('tl_class' => 'w50'),
         ),
@@ -130,7 +139,7 @@ return array(
         'only_mobile' => array(
             'label' => array('Nur auf mobile anzeigen', ''),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'w50'),
         ),
 
 
@@ -140,12 +149,69 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
+        'animation_settings_group' => array(
+            'label' => array('Animationen', ''),
+            'inputType' => 'group',
+        ),
+
+        'animation_type_element' => array(
+            'label' => array('Animation: Gesamtes Modal', 'Globale Animation für das äußere Modal-Fenster.'),
+            'inputType' => 'select',
+            'options' => GlobalElementConfig::getAnimations(),
+            'eval' => array('tl_class' => 'w50', 'includeBlankOption' => true),
+        ),
+
+        'animation_type' => array(
+            'label' => array(
+                'de' => array('Art der Einblendeanimation (Modal-Dialog)', 'Siehe https://animate.style/ für Beispiele. Wird ignoriert, wenn "Animation: Gesamtes Modal" gesetzt ist.'),
+            ),
+            'inputType' => 'select',
+            'options' => GlobalElementConfig::getAnimations(),
+            'default' => 'animate__fadeInUp',
+            'eval' => array('chosen' => 'true', 'tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'animation_type_element',
+                'value' => array('', null),
+            ),
+        ),
+
+
+        'settings_footer' => array(
+            'label' => array('Fußbereich Einstellungen', ''),
+            'inputType' => 'group',
+        ),
 
         'show_footer_close' => array(
             'label' => array('Schließen Button zum Footer hinzufügen', 'Funktioniert nicht MIT Sponsoren-Logos!'),
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'w50 clr', 'submitOnChange' => true),
         ),
+
+        'footer_close_button_type' => array(
+            'label' => array('Button-Stil (Schließen-Button Footer)', ''),
+            'inputType' => 'select',
+            'options' => GlobalElementConfig::getButtonTypes(),
+            'default' => 'btn-secondary',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'show_footer_close',
+            ),
+        ),
+
+        'footer_close_button_size' => array(
+            'label' => array('Button-Größe (Schließen-Button Footer)', ''),
+            'inputType' => 'select',
+            'options' => array(
+                '' => 'Standard',
+                'btn-sm' => 'Klein (btn-sm)',
+                'btn-lg' => 'Groß (btn-lg)',
+            ),
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'show_footer_close',
+            ),
+        ),
+
         'remove_image_padding' => array(
             'label' => array('Außenabstand des Bildes entfernen', 'das Bild liegt dann an der Kante'),
             'inputType' => 'checkbox',
@@ -153,41 +219,78 @@ return array(
         ),
 
         'settings_image' => array(
-            'label' => array('Kopfbereich', ''),
+            'label' => array('Kopfbereich (Bild/Video & optionale rechte Spalte)', ''),
             'inputType' => 'group',
+        ),
+
+        'image' => array(
+            'label' => array('Bild/Video für Kopfbereich', ''),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'jpg,jpeg,png,mp4',
+                'tl_class' => 'w50 clr',
+                'submitOnChange' => true
+            ),
+        ),
+
+        'add_image_right_column_content' => array(
+            'label' => array('Rechte Spalte im Kopfbereich hinzufügen', 'Ermöglicht Text und Hintergrundfarbe rechts neben dem Bild/Video.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr', 'submitOnChange' => true),
+            'dependsOn' => array(
+                'field' => 'image',
+            ),
         ),
 
         'image_headline_left' => array(
             'label' => array('Überschrift für die linke Spalte des Bildes', '(ca. 35% breit)'),
             'inputType' => 'text',
             'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'image',
+            ),
         ),
 
         'image_headline_right' => array(
             'label' => array('Überschrift für Textbereich auf der rechten Seite', ''),
             'inputType' => 'text',
             'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_image_right_column_content',
+            ),
         ),
 
         'image_text_right' => array(
             'label' => array('Langtext für Textbereich auf der rechten Seite', ''),
             'inputType' => 'textarea',
             'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'add_image_right_column_content',
+            ),
         ),
 
         'image_right_col_background_color' => array(
             'label' => array('Hintergrundfarbe für rechte Spalte', 'in HEX oder RGB angeben, Standard: Schwarz mit .75 Deckungskraft'),
             'inputType' => 'text',
             'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_image_right_column_content',
+            ),
         ),
 
         'image_right_col_text_color' => array(
             'label' => array('Textfarbe für rechte Spalte', 'in HEX oder RGB angeben, Standard: weiß'),
             'inputType' => 'text',
             'eval' => array('allowHtml' => true, 'tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_image_right_column_content',
+            ),
         ),
 
-        'image' => array(
+        'image_main' => array(
             'label' => array('Bild/Video', ''),
             'inputType' => 'fileTree',
             'eval' => array(
@@ -208,11 +311,8 @@ return array(
         'fixed_height' => array(
             'label' => array('Feste Höhe', 'Bild-Bereich eine feste Höhe inkl. Einheit (z. B. px) zuweisen'),
             'inputType' => 'text',
-            'dependsOn' => array(
-                'field' => 'as_bg',
-            ),
             'eval' => array(
-                'mandatory' => true,
+                 'tl_class' => 'w50'
             ),
         ),
 
@@ -297,11 +397,16 @@ return array(
         ),
 
 
+        'buttons_group' => array(
+            'label' => array('Buttons & Sponsoren', ''),
+            'inputType' => 'group',
+        ),
+
         'buttons' => array(
             'label' => array('Buttons', ''),
             'elementLabel' => '%s. Button',
             'inputType' => 'list',
-            'minItems' => 1,
+            'minItems' => 0,
             'maxItems' => 20,
             'eval' => array('tl_class' => 'clr'),
             'fields' => ButtonHelper::getButtonConfig(),

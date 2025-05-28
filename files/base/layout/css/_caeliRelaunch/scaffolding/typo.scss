@@ -46,7 +46,7 @@ main .content--element {
 
       &:before {
         @extend %fa-icon;
-           font-family:"Font Awesome Kit";
+        font-family: "Font Awesome Kit";
         content: "\e007";
         position: absolute;
         color: currentColor;
@@ -80,7 +80,7 @@ ul.list-arrow {
 
     &:before {
       @extend %fa-icon;
-       font-family:"Font Awesome Kit";
+      font-family: "Font Awesome Kit";
       content: "\e00e";
       position: absolute;
       padding-right: rfs-value(8px);
@@ -108,6 +108,7 @@ li.active {
 figcaption, .figcaption {
   padding-top: .5rem;
   font-size: $font-size-base;
+  text-align: left;
 }
 
 
@@ -121,4 +122,26 @@ figcaption, .figcaption {
     font-style: italic;
     font-weight: $font-weight-light;
   }
+}
+
+
+p + h1,
+p + h2,
+p + h3,
+p + h4,
+p + h5,
+p + h6,
+p + .h1,
+p + .h2,
+p + .h3,
+p + .h4,
+p + .h5,
+p + .h6 {
+  margin-top: 1.75rem;
+}
+
+.step-content-wrapper .step--headline {
+    @include media-breakpoint-up(lg) {
+      max-width: 50%;
+    }
 }

@@ -10,12 +10,10 @@
 {# Eindeutige ID für diesen Slider generieren, falls mehrere auf einer Seite sind #}
 {% set slider_id = 'auction_slider_' ~ random() %}
 
-<div class="auction-slider-element-wrapper{% if class is defined and class %} {{ class }}{% endif %}{% if cssID[1] %} {{ cssID[1] }}{% endif %}">
+<div class="auction-slider-element-wrapper">
 
 
-    {% if headline and headline.headline %}
-        <h{{ headline.level|default('1') }}{% if headline.class %} class="{{ headline.class }}"{% endif %}>{{ headline.headline }}</h{{ headline.level|default('1') }}>
-    {% endif %}
+
 
     {% if auctions_to_display|length > 0 %}
         {# Swiper Container #}

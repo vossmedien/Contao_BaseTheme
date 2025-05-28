@@ -1,281 +1,115 @@
-<div id="pachtrechner_regebnis" class="pachtrechner-result d-none content--element">
 
-    <div class="result-header">
-        <div class="container">
-            <div class="headline--wrapper hl-h2">
-                <h3 class="h2 mb-0"><?= $GLOBALS['TL_LANG']['pachtrechner']['title'] ?></h3>
+    <div class="pachtrechner-instance pachtrechner-result d-none content--element js-pachtrechner-ergebnis">
+
+        <div class="result-header">
+            <div class="container">
+                <div class="headline--wrapper hl-h2">
+                    <h3 class="h2 mb-0"><?= $GLOBALS['TL_LANG']['pachtrechner']['title'] ?></h3>
+                </div>
             </div>
         </div>
-    </div>
 
 
-    <div class="result-body">
-        <div class="container pt-md-gap">
+        <div class="result-body">
+            <div class="container pt-md-gap">
             <span class="h2 mb-3">
                 <span class="d-md-block"><?= $GLOBALS['TL_LANG']['pachtrechner']['result']['estimated'] ?></span>
-                <span class="d-md-block"><?= $GLOBALS['TL_LANG']['pachtrechner']['result']['annualLeasePrefix'] ?> <b><span class="count" id="jahres_pacht">---</span> €*</b></span>
+                <span class="d-md-block"><?= $GLOBALS['TL_LANG']['pachtrechner']['result']['annualLeasePrefix'] ?> <b><span class="count js-jahres-pacht">---</span> €*</b></span>
             </span>
 
-            <span class="text-lg d-block mt-3 mt-sm-0">
+                <span class="text-lg d-block mt-3 mt-sm-0">
                 <?= $GLOBALS['TL_LANG']['pachtrechner']['result']['usualRange'] ?>
             </span>
 
-            <div class="my-gap pt-gap py-sm-4">
-                <div id="pachtrechnerBar">
-                    <div class="progress" style="height: 34px;">
-                        <div id="bar_range_percent" style="width: 0px;" class="progress-bar h-100" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
+                <div class="my-gap pt-gap py-sm-4">
+                    <div class="pachtrechnerBar">
+                        <div class="progress" style="height: 34px;">
+                            <div style="width: 0px;" class="progress-bar h-100 js-bar-range-percent" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
                             <span class="percent-indicator">
                              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="23.9629" cy="23.9629" r="23.9629" transform="rotate(90 23.9629 23.9629)" fill="#113534"/>
                                 <path d="M25.4004 11.9032V29.4712L33.0664 21.4018L35 23.4516L24.029 35L13.0581 23.4516L14.9917 21.4162L22.6577 29.4712V11.9032H25.4004Z" fill="#CFCFCF"/>
                                 </svg>
                             </span>
+                            </div>
                         </div>
                     </div>
+                    <div class="d-flex justify-content-between small fw-bold">
+                        <div>
+                            <span class="js-bar-range-start">---</span>
+                            €
+                        </div>
+                        <div>
+                            <span class="js-bar-range-end">---</span>
+                            €*
+                        </div>
+                    </div>
+
                 </div>
-                <div class="d-flex justify-content-between small fw-bold">
-                    <div>
-                        <span id="bar_range_start">---</span>
-                        € 
+
+                <div class="my-gap">
+                    <div class="d-sm-flex gap-5">
+                        <div>
+                            <a href="/kontakt?etcc_cu=onsite&etcc_cmp_onsite=Wunschtermin&etcc_med_onsite=Pachtrechner" style="--bs-btn-padding-left: .75rem;" class="btn btn-outline-primary btn-xl with-arro pr_wunschterminw" id="" data-css-click-observed-1="true">
+                                <?= $GLOBALS['TL_LANG']['pachtrechner']['button']['bookConsultation'] ?>
+                            </a>
+                        </div>
+                        <div class="mt-3 mt-sm-0">
+                            <a href="/flaechencheck?etcc_cu=onsite&etcc_cmp_onsite=Fl%C3%A4chencheck&etcc_med_onsite=Pachtrechner" style="--bs-btn-padding-left: .75rem;" class="btn btn-outline-primary btn-xl with-arrow pr_flaechencheck" id="" data-css-click-observed-1="true">
+                                <?= $GLOBALS['TL_LANG']['pachtrechner']['button']['areaCheck'] ?>
+                            </a>
+                        </div>
                     </div>
-                    <div>
-                        <span id="bar_range_end">---</span>
-                        €*
-                    </div>
+
+
                 </div>
 
             </div>
-
-            <div class="my-gap">
-                <div class="d-sm-flex gap-5">
-                    <div>
-                        <a href="/kontakt?etcc_cu=onsite&etcc_cmp_onsite=Wunschtermin&etcc_med_onsite=Pachtrechner" style="--bs-btn-padding-left: .75rem;" class="btn btn-outline-primary btn-xl with-arrow" id="pr_wunschtermin" data-css-click-observed-1="true">
-                            <?= $GLOBALS['TL_LANG']['pachtrechner']['button']['bookConsultation'] ?>
-                        </a>
-                    </div>
-                    <div class="mt-3 mt-sm-0">
-                        <a href="/flaechencheck?etcc_cu=onsite&etcc_cmp_onsite=Fl%C3%A4chencheck&etcc_med_onsite=Pachtrechner" style="--bs-btn-padding-left: .75rem;" class="btn btn-outline-primary btn-xl with-arrow" id="pr_flaechencheck" data-css-click-observed-1="true">
-                            <?= $GLOBALS['TL_LANG']['pachtrechner']['button']['areaCheck'] ?>
-                        </a>
-                    </div>
-                </div>
+        </div>
 
 
+        <div class="result-footer bg-primary text-secondary small">
+            <div class="container py-4">
+                <p><?= $GLOBALS['TL_LANG']['pachtrechner']['disclaimer'] ?></p>
             </div>
-
         </div>
     </div>
 
 
-    <div class="result-footer bg-primary text-secondary small">
-        <div class="container py-4">
-            <p><?= $GLOBALS['TL_LANG']['pachtrechner']['disclaimer'] ?></p>
-        </div>
-    </div>
-</div>
-
-
-<div id="pachtrechner_ha" class="pachtrechner-widget py-gap bg-secondary mb-0 content--element">
-    <div class="container position-relative py-md-gap">
-        <div class="row align-items-end">
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-12 col-sm-8 col-md-12">
-                        <div class="ce--headline hl-h2 mb-md-0" data-animation="animate__fadeIn">
-                            <h2><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['title'] ?>
-                            </h2>
+    <div class="pachtrechner-widget py-gap bg-secondary content--element js-pachtrechner-form">
+        <div class="container position-relative">
+            <div class="row align-items-end">
+                <div class="col-md-5">
+                    <div class="row">
+                       <div class="col-12 col-sm-8 col-md-12">
+                            <div class="ce--headline hl-h2 mb-md-0 pe-lg-gap pe-xxl-0" data-animation="animate__fadeIn">
+                               <h2><?= $_GET['headline'] ?? $GLOBALS['TL_LANG']['pachtrechner']['form']['title'] ?></h2>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6 ">
-                <div class="ps-lg-gap ">
-                    <div class="pachtrechner-badge">
-                        <div data-animation="animate__fadeInRight">
-                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/badges/pachtrechner-badge-de.svg", null), null, null; ?>
+                <div class="col-md-7 ">
+                    <div class="ps-lg-gap ">
+                        <div class="pachtrechner-badge">
+                            <div data-animation="animate__fadeInRight">
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/badges/pachtrechner-badge-de.svg", null), null, null; ?>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="widget widget-text" data-animation="animate__fadeIn">
-                        <label class="form-label" for="pachtrechner_ha_input"><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['labelHa'] ?></label>
-                        <div class="input-group w-auto d-inline-flex">
-                            <input type="number" style="min-width: 90px;" min="1" id="pachtrechner_ha_input" class="form-control text-end" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
-                            <button class="btn btn-primary with-arrow" id="pachtrechner_check_btn">
-                                <?= $GLOBALS['TL_LANG']['pachtrechner']['form']['buttonCalculate'] ?>
-                            </button>
-                        </div>
-                        <div id="pachtrechner_input_error" class="alert alert-primary mt-3 d-none" role="alert">
-                            <?= $GLOBALS['TL_LANG']['pachtrechner']['form']['error']['invalidHa'] ?>
+                        <div class="widget widget-text" data-animation="animate__fadeIn">
+                            <label class="form-label" for="pachtrechner_ha_input"><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['labelHa'] ?></label>
+                            <div class="input-group w-auto d-inline-flex">
+                                <input type="number" style="min-width: 90px;" min="1" class="form-control text-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
+                                <button class="btn btn-primary with-arrow js-pachtrechner-check-btn">
+                                    <?= $GLOBALS['TL_LANG']['pachtrechner']['form']['buttonCalculate'] ?>
+                                </button>
+                            </div>
+                            <div class="alert alert-primary mt-3 d-none js-pachtrechner-input-error" role="alert">
+                                <?= $GLOBALS['TL_LANG']['pachtrechner']['form']['error']['invalidHa'] ?>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        const pachtrechnerErgebnis = document.getElementById('pachtrechner_regebnis');
-        const pachtrechnerHa = document.getElementById('pachtrechner_ha');
-        const pachtrechnerHaInput = document.getElementById('pachtrechner_ha_input');
-        const resetHaButton = document.getElementById('reset_ha');
-        const pachtrechnerCheckButton = document.getElementById('pachtrechner_check_btn');
-        const sizeHaSpan = document.getElementById('size_ha');
-        const jahresPachtSpan = document.getElementById('jahres_pacht');
-        const barRangeStartSpan = document.getElementById('bar_range_start');
-        const barRangeEndSpan = document.getElementById('bar_range_end');
-        const barRangePercentDiv = document.getElementById('bar_range_percent');
-        const pachtrechnerInputError = document.getElementById('pachtrechner_input_error');
-
-        // Random text logic (assuming these elements exist and have IDs like 'calculator_img_text_tipp_1', etc.)
-        const randomTextNTipp = document.querySelectorAll('[id^="calculator_img_text_tipp_"]').length;
-        if (randomTextNTipp > 0) {
-            const randomTxtTipp = Math.floor(Math.random() * randomTextNTipp) + 1;
-            const tippElement = document.getElementById('calculator_img_text_tipp_' + randomTxtTipp);
-            if (tippElement) {
-                tippElement.classList.remove('d-none'); // Assuming 'hidden' was replaced by 'd-none'
-            }
-        }
-
-        const randomTextNTop = document.querySelectorAll('[id^="calculator_img_text_top_"]').length;
-        let randomTxtTop;
-        if (randomTextNTop > 0) {
-            randomTxtTop = Math.floor(Math.random() * randomTextNTop) + 1;
-        }
-
-        // Event listener for anchor tags with class 'pachtrechner'
-        document.querySelectorAll('a.pachtrechner').forEach(function (element) {
-            element.addEventListener('click', function () {
-                if (window.location.hash === '#pachtrechner') {
-                    window.location.reload();
-                }
-            });
-        });
-
-        if (resetHaButton) {
-            resetHaButton.addEventListener('click', function () {
-                if (pachtrechnerErgebnis) pachtrechnerErgebnis.classList.add('d-none');
-                if (pachtrechnerHa) pachtrechnerHa.classList.remove('d-none');
-
-                if (randomTextNTop > 0) {
-                    const topElement = document.getElementById('calculator_img_text_top_' + randomTxtTop);
-                    if (topElement) {
-                        topElement.classList.add('d-none');
-                    }
-                }
-            });
-        }
-
-        if (pachtrechnerCheckButton) {
-            pachtrechnerCheckButton.addEventListener('click', function () {
-                if (!pachtrechnerHaInput) return;
-                const ha = parseFloat(pachtrechnerHaInput.value);
-
-                if (ha > 0 && ha <= 999999) {
-                    if (pachtrechnerInputError) pachtrechnerInputError.classList.add('d-none');
-
-                    const jahresPacht = 8674 * ha;
-                    const barRangeStart = 4251 * ha; //2973 * ha;
-                    const barRangeEnd = 14667 * ha; //20986 * ha;
-
-                    if (sizeHaSpan) sizeHaSpan.textContent = ha;
-                    if (jahresPachtSpan) jahresPachtSpan.textContent = tausenderpunkte(jahresPacht, 0, ".");
-                    if (barRangeStartSpan) barRangeStartSpan.textContent = tausenderpunkte(barRangeStart, 0, ".");
-                    if (barRangeEndSpan) barRangeEndSpan.textContent = tausenderpunkte(barRangeEnd, 0, ".");
-
-                    if (pachtrechnerErgebnis) pachtrechnerErgebnis.classList.remove('d-none');
-                    if (pachtrechnerHa) pachtrechnerHa.classList.add('d-none');
-
-                    if (barRangePercentDiv) {
-                        const percent = (jahresPacht * 100) / barRangeEnd;
-                        setTimeout(function() {
-                            barRangePercentDiv.style.width = percent + "%";
-                            barRangePercentDiv.setAttribute('aria-valuenow', percent);
-                        }, 50);
-                    }
-
-                    if (randomTextNTop > 0) {
-                        const topElement = document.getElementById('calculator_img_text_top_' + randomTxtTop);
-                        if (topElement) {
-                            topElement.classList.remove('d-none');
-                        }
-                    }
-
-                } else {
-                    pachtrechnerHaInput.value = '';
-                    if (pachtrechnerInputError) {
-                        pachtrechnerInputError.classList.remove('d-none');
-                    }
-                }
-            });
-        }
-
-        if (pachtrechnerHaInput) {
-            pachtrechnerHaInput.addEventListener('keyup', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    if (pachtrechnerCheckButton) {
-                        pachtrechnerCheckButton.click();
-                    }
-                }
-            });
-
-            pachtrechnerHaInput.addEventListener('input', function() {
-                if (pachtrechnerInputError && !pachtrechnerInputError.classList.contains('d-none')) {
-                    pachtrechnerInputError.classList.add('d-none');
-                }
-            });
-        }
-    });
-
-    function tausenderpunkte(zahl = 0, modus = 0, tz = ".") {
-        if (isNaN(zahl)) {
-            return "Eingabe ist keine Zahl!";
-        }
-
-        let temp = String(zahl);
-        let nachkomma = "";
-        let vorkomma = "";
-        let ausgabeZahl = "";
-
-        const dotIndex = temp.indexOf(".");
-        if (dotIndex !== -1) {
-            nachkomma = temp.slice(dotIndex + 1);
-            vorkomma = temp.slice(0, dotIndex);
-        } else {
-            vorkomma = temp;
-            nachkomma = "0"; // Behält das ursprüngliche Verhalten bei
-        }
-
-        let anzahl = vorkomma.length;
-        let c = 0;
-
-        let tempVorkomma = "";
-        for (let i = vorkomma.length - 1; i >= 0; i--) {
-            tempVorkomma = vorkomma[i] + tempVorkomma;
-            c++;
-            if (c % 3 === 0 && i !== 0) {
-                tempVorkomma = tz + tempVorkomma;
-            }
-        }
-        ausgabeZahl = tempVorkomma;
-
-        if (modus === 0) {
-            // ausgabeZahl = ausgabeZahl + ""; // Ist redundant
-        }
-        if (modus === 1) {
-            ausgabeZahl = ausgabeZahl + "," + nachkomma;
-        }
-        if (modus === 2) {
-            ausgabeZahl = ausgabeZahl + ",00";
-        }
-        if (modus === 3) {
-            ausgabeZahl = ausgabeZahl + ",-";
-        }
-        if (modus === 4) {
-            ausgabeZahl = ausgabeZahl + ",--";
-        }
-
-        return ausgabeZahl;
-    }
-</script>

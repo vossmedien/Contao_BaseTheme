@@ -11,7 +11,7 @@
                 {# Bild #}
                 {% set image_path = auction.blurred_picture_path|default(auction.picture_path|default(null)) %}
                 {% if image_path %}
-                    <div class="card-img-top auction-image-container">
+                    <div class="card-img-top auction-image-wrapper">
                         <img src="{{ image_path }}"
                              alt="{{ 'auction_listing.card.image_alt_prefix'|trans }} {{ auction.id }}" class="auction-image img-fluid">
 

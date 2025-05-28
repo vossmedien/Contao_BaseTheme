@@ -13,7 +13,7 @@
                     <!-- indexer::continue -->
                 </div>
                 <div class="row">
-                    <div class="col-12 col-xl-9">
+                    <div class="col-12 col-xl-11">
                         <div class="ce--headline hl-h1 mb-gap">
                             <h1>
                                 <span data-animation="animate__fadeIn" class="d-block">{{ 'auction_listing.card.title_prefix'|trans }}</span>
@@ -32,7 +32,7 @@
                     <div class="col-12 col-md-6 col-xxl-5">
                         {% set image_path = auction.blurred_picture_path|default(auction.picture_path|default(null)) %}
                         {% if image_path %}
-                            <div class="auction-image-container">
+                            <div class="auction-image-wrapper">
                                 <div class="d-flex flex-nowrap">
                                     <span data-animation="animate__fadeIn" class="btn btn-secondary no-button btn-sm preview-btn">{{ 'auction_listing.card.preview_button'|trans }}</span>
                                     {% if raw_data.countDown is defined %}
@@ -158,11 +158,15 @@
 
     </div>
 {% elseif error|default %}
+     <div class="my-gap container">
     <div class="alert alert-danger">
         <p>{{ error }}</p>
     </div>
+     </div>
 {% else %}
+     <div class="my-gap container">
     <div class="alert alert-info">
         <p>{{ 'detail.auction_not_found'|trans }}</p>
     </div>
+     </div>
 {% endif %}

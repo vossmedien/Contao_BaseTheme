@@ -33,9 +33,13 @@
 .mod_article .article-content[class*="bg-"] {
   padding-block: var(--main-gap);
 
-  .content--element:last-child{
+  .content--element:last-child:not[class*="pull"]{
     margin-bottom: 0 !important;
   }
+}
+
+.mod_article .article-content[class*="bg-"]:has(.ce_rsce_headimagelogo.mb-0){
+  padding-bottom: 0;
 }
 
 .content--element {
@@ -49,4 +53,3 @@
     padding-bottom: var(--main-gap);
   }
 }
-

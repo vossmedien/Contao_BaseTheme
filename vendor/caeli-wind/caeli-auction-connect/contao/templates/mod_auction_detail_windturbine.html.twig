@@ -1,0 +1,146 @@
+{# Twig Template für das Auction Detail Modul #}
+
+
+{# Einheitliche Datenstruktur erstellen #}
+{% set raw_data = auction._raw_data|default({}) %}
+{% if auction_var|default %}
+    <div class="bg-primary text-white offset-wrapper">
+
+
+
+        <div class="container"><h2>Diese Fläche hat Sie interessiert</h2></div>
+
+
+        <div class="container-wide auction-detail-box ">
+
+            <div class="box-main bg-white text-body">
+                <div class="row gx-0">
+                    <div class="col-12 col-md-6 col-xxl-5">
+                        {% set image_path = auction.blurred_picture_path|default(auction.picture_path|default(null)) %}
+                        {% if image_path %}
+                            <div class="auction-image-wrapper">
+                                <div class="d-flex flex-nowrap">
+                                    <span data-animation="animate__fadeIn" class="btn btn-secondary no-button btn-sm preview-btn">{{ 'auction_listing.card.preview_button'|trans }}</span>
+                                    {% if raw_data.countDown is defined %}
+                                        {% set days_countdown = (raw_data.countDown / 86400)|round(0, 'ceil') %}
+                                        {% if days_countdown > 0 %}
+                                            <span data-animation="animate__fadeIn" class="btn btn-primary no-button btn-sm countdown-btn">{{ 'auction_listing.card.countdown_prefix'|trans }} {{ days_countdown }} {{ 'auction_listing.card.countdown_suffix_days'|trans }}</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <img src="{{ image_path }}" alt="{{ 'auction_listing.card.image_alt_prefix'|trans }} {{ auction.id }}" class="auction-image img-fluid">
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-12 col-md-6 col-xxl-7">
+                        <div class="px-gap mx-xl-3 py-4 auction-content" data-animation="animate__fadeIn">
+                            <div class="auction-details-section">
+                            <span class="auction-detail-label">
+                                {{ 'auction_listing.card.details.power'|trans }}
+                            </span>
+                                <strong class="auction-detail-value">
+                                    {{ raw_data.power }} {{ 'auction_listing.card.unit.mw'|trans }}
+                                </strong>
+
+                                <span class="auction-detail-label">
+                                {{ 'auction_listing.card.details.area_size'|trans }}
+                            </span>
+                                <strong class="auction-detail-value">
+                                    {{ raw_data.areaSize }} {{ 'auction_listing.card.unit.ha'|trans }}
+                                </strong>
+
+                                <span class="auction-detail-label">
+                                {{ 'auction_listing.card.details.full_usage_hours'|trans }}
+                            </span>
+                                <strong class="auction-detail-value">
+                                    {{ raw_data.fullUsageHours }} {{ 'auction_listing.card.unit.h_per_a'|trans }}
+                                </strong>
+
+                                <span class="auction-detail-label">
+                                {{ 'auction_listing.card.details.irr_before_rent'|trans }}
+                            </span>
+                                <strong class="auction-detail-value">
+                                    {{ raw_data.internalRateOfReturnBeforeRent }} {{ 'auction_listing.card.unit.percent'|trans }}
+                                </strong>
+
+
+                                <span class="auction-detail-label">
+                                {{ 'detail.hub_height'|trans }}
+                            </span>
+                                <strong class="auction-detail-value">
+                                    {{ raw_data.weaHubHeight }} m
+                                </strong>
+
+                                <span class="auction-detail-label">
+                                {{ 'detail.wea_count'|trans }}
+                            </span>
+                                <strong class="auction-detail-value">
+                                    {{ raw_data.weaCount }}
+                                </strong>
+
+                                <span class="auction-detail-label">
+                                {{ 'detail.avg_wind_speed'|trans }}
+                            </span>
+                                <strong class="auction-detail-value">
+                                    {{ raw_data.averageWindSpeed }} m/s
+                                </strong>
+
+
+                                <span class="auction-detail-label">
+                                {{ 'auction_listing.card.details.availability'|trans }}
+                            </span>
+                                <strong class="auction-detail-value">
+                                    {{ 'auction_listing.card.details.availability_prefix'|trans }} {{ raw_data.availableFrom }}
+                                </strong>
+                            </div>
+
+                            <div class="mt-3">
+                                <strong class="d-block mb-1">{{ 'detail.planning_law_headline'|trans }}</strong>
+                                <span>Gemäß Planhinweiskarte Baden-Württemberg ist die Planung von 2 WEA sofort möglich.</span> {# Ggf. diesen Text dynamischer gestalten oder spezifischer übersetzen #}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer bg-secondary text-body px-gap py-4 small">
+
+                <strong class="d-block mb-2">{{ 'detail.area_status_headline'|trans }}</strong>
+
+                {% set area_progress_items = [
+                    { 'label_key': 'detail.area_progress.planning_law', 'key': 'planningLawCheck' },
+                    { 'label_key': 'detail.area_progress.faunistics', 'key': 'faunisticsCheck' },
+                    { 'label_key': 'detail.area_progress.air_traffic', 'key': 'airTrafficCheck' },
+                    { 'label_key': 'detail.area_progress.park_planning', 'key': 'parkPlanningCheck' },
+                    { 'label_key': 'detail.area_progress.documentation', 'key': 'documentationCheck' },
+                    { 'label_key': 'detail.area_progress.restrictions', 'key': 'restrictionsCheck' },
+                    { 'label_key': 'detail.area_progress.armed_forces', 'key': 'armedForcesCheck' },
+                    { 'label_key': 'detail.area_progress.inspection', 'key': 'inspectionCheck' },
+                    { 'label_key': 'detail.area_progress.power_connection', 'key': 'powerConnectionCheck' },
+                    { 'label_key': 'detail.area_progress.preparation', 'key': 'preparationCheck' }
+                ] %}
+
+                <div style="--bs-gutter-x: .5rem; --bs-gutter-y: .5rem; white-space: nowrap;" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xxl-5">
+                    {% for item in area_progress_items %}
+                        <div class="col" data-animation="animate__fadeIn">
+                            {% set status = raw_data.areaProgress[item.key]|default('NOT_OK') %}
+                            <i class="fak {{ status == 'OK' ? 'fa-check' : 'fa-hourglass' }}"></i>{{ item.label_key|trans }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% elseif error|default %}
+    <div class="my-gap container">
+    <div class="alert alert-danger">
+        <p>{{ error }}</p>
+    </div>
+        </div>
+{% else %}
+     <div class="my-gap container">
+    <div class="alert alert-info">
+        <p>{{ 'detail.auction_not_found'|trans }}</p>
+    </div>
+     </div>
+{% endif %}

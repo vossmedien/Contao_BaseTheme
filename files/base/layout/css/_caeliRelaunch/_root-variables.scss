@@ -57,8 +57,8 @@
   //Inputs
 
   --bs-input-border-radius: 0;
-  --bs-input-border: 1px solid rgba(0,0,0,.075);
-  --bs-input-shadow: none;
+  --bs-input-border: none;
+  --bs-input-shadow: 0 0 0 1px rgba(0, 0, 0, 0.075);
   --bs-input-padding-x: 0.75rem;
   --bs-input-padding-y: .5rem;
   --bs-input-color: var(--bs-body-color);

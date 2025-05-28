@@ -14,12 +14,6 @@
 }
 
 
-.mod_article>.article-content{
-      background-attachment: initial !important;
-}
-
-
-
 .ce_rsce_hero_complex {
   @include media-breakpoint-down(lg) {
     margin-top: calc(-1 * var(--main-gap));
@@ -27,42 +21,61 @@
 }
 
 
-
-
-
-
-
-
-
-.pull-down {
-  margin-bottom: calc(-1 * (var(--main-gap) * 3)) !important;
-}
-
-[class*="pull-down"].article-content {
-  margin-top: calc(var(--main-gap) * 2);
-}
-
-[class*="pull-up"].article-content {
-  margin-bottom:var(--main-gap);
-}
-
-
-.mod_article:has(.pull-down) {
-  & + .mod_article > .article-content {
-    padding-top: calc(var(--main-gap) * 4);
+.ce_rsce_headline[class*="col-"] {
+  .row.g-lg-3 {
+    --bs-gutter-x: 15px;
+    --bs-gutter-y: 15px;
   }
 }
 
 
+[class*="pull-"] {
+  z-index: 5 !important;
+  position: relative;
+}
+
+.pull-down {
+  margin-bottom: calc(-1 * (var(--main-gap) * 2)) !important;
+}
+
 .pull-up {
-  margin-top: calc(-1 * (var(--main-gap) * 4)) !important;
+  margin-top: calc(-1 * (var(--main-gap) * 2)) !important;
+}
+
+[class*="pull-down"].article-content {
+  margin-top: var(--main-gap);
+}
+
+[class*="pull-up"].article-content {
+  margin-bottom: var(--main-gap);
+}
+
+.mod_article:has(.content--element:last-child .pull-down, .content--element:last-child.pull-down) {
+  & + .mod_article > .article-content {
+    padding-top: calc(var(--main-gap) * 2);
+  }
 }
 
 .mod_article:has(+ .mod_article .pull-up) {
   .article-content {
-    padding-bottom: calc(var(--main-gap) * 4);
+    padding-bottom: calc(var(--main-gap) * 1);
   }
 }
+
+.mod_article > .article-content .content--element.content--element:has(+ .content--element.pull-up) {
+  padding-bottom: calc(var(--main-gap) * 2);
+}
+
+.content--element.content--element.content--element.pull-down + .content--element.content--element:not(.ce_rsce_headimagelogo) {
+  padding-top: calc(var(--main-gap) * 3);
+}
+
+.mod_article:has(> .article-content.pull-down) {
+  & + .mod_article > .article-content > .content--element:first-child {
+    padding-top: calc(var(--main-gap) * 3);
+  }
+}
+
 
 
 @each $breakpoint, $size in $grid-breakpoints {
@@ -70,24 +83,26 @@
 
   @media (min-width: #{$size}) {
     .pull-down#{$infix} {
-      margin-bottom: calc(-1 * (var(--main-gap) * 3)) !important;
+      margin-bottom: calc(-1 * (var(--main-gap) * 2)) !important;
     }
 
 
     .mod_article:has(.content--element:last-child .pull-down#{$infix}, .content--element:last-child.pull-down#{$infix}) {
       & + .mod_article > .article-content {
-        padding-top: calc(var(--main-gap) * 4);
+        padding-top: calc(var(--main-gap) * 2);
       }
     }
 
     .pull-up#{$infix} {
-      margin-top: calc(-1 * (var(--main-gap) * 4)) !important;
+      margin-top: calc(-1 * (var(--main-gap) * 2)) !important;
     }
 
-    .mod_article:has(.content--element:last-child .pull-up#{$infix}, .content--element:last-child.pull-up#{$infix}){
+    .mod_article:has(.content--element:last-child .pull-up#{$infix}, .content--element:last-child.pull-up#{$infix}) {
       .article-content {
-        padding-bottom: calc(var(--main-gap) * 4);
+        padding-bottom: calc(var(--main-gap) * 2);
       }
     }
   }
 }
+
+

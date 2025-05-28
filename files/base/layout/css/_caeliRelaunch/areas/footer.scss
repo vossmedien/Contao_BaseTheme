@@ -111,7 +111,8 @@ footer#footer {
 }
 
 
-#wrapper:has(main .article-content > div:last-child[class*="bg-"]:not([class*="container"])),
+
+#wrapper:has(main .article-content > div:last-child[class*="bg-"]:not([class*="container"],[class*="bg-secondary"])),
 #wrapper:has(main .mod_article:last-child > .article-content[class*="bg-"]),
 body.footer-white {
   footer#footer {
@@ -119,7 +120,7 @@ body.footer-white {
     --bs-link-hover-color-rgb: var(--bs-primary-rgb);
     background-color: var(--bs-body-bg);
 
-    svg path {
+   .logo svg path {
       fill: var(--bs-body-color);
     }
   }
@@ -129,7 +130,8 @@ body.footer-white {
   --bs-link-color-rgb: var(--bs-white-rgb);
   --bs-link-hover-color-rgb: var(--bs-white-rgb);
 
-    svg path {
+    .logo svg path {
       fill: var(--bs-body-color-inverse);
     }
 }
+
