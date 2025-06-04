@@ -1,0 +1,10 @@
+pin_login:
+    pinLabel: 'PIN'
+    emailLabel: 'E-Mail-Adresse'
+    messageLabel: 'Nachricht (optional)'
+    consentText: 'Ich habe die <a href="/datenschutz">Datenschutzhinweise</a> gelesen und bin mit der Datenspeicherung zwecks interner Verarbeitung und Kontaktaufnahme einverstanden.'
+    privacyNotice: 'Ihre eingegebenen Daten werden zur Bearbeitung Ihrer Anfrage verarbeitet. Weitere Informationen zur Verarbeitung Ihrer Daten finden Sie in unserer Datenschutzerklärung.'
+    submitButton: 'Senden'
+    debugInfoHeading: 'Debug Information (nur im Dev-Modus sichtbar)'
+    targetPageIdLabel: 'Zielseiten ID'
+    expectedPinLabel: 'Erwarteter PIN' 
