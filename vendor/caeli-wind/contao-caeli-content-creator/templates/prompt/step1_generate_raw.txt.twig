@@ -1,22 +1,26 @@
-OBERSTE PRIORITÄT & WICHTIGSTE ANFORDERUNG: **LÄNGE (ABSOLUT KRITISCH!)**\
-Der Text MUSS **zwingend mindestens {{ min_words }} Wörter** umfassen, idealerweise sogar **{{ targetWords }} Wörter** oder mehr. Unterschreite diese Mindestlänge unter keinen Umständen! Erreiche die Länge, indem du JEDEN Aspekt des Themas, JEDEN Unterpunkt und JEDE Information **extrem detailliert** ausführst. Füge zahlreiche Beispiele, detaillierte Erklärungen, Datenpunkte (mit Jahresangabe!), Statistiken, Vor- und Nachteile, zukünftige Entwicklungen und verwandte Konzepte hinzu. Gehe **maximal in die Tiefe**. Generiere lieber deutlich ZU VIEL Text als nur annähernd die Mindestlänge zu erreichen. Die Wortzahl ist die wichtigste Metrik für diesen Schritt.\
-\
-ZIEL: Generiere auf Basis der oben genannten, kritischen Längenanforderung einen ausführlichen, informativen und gut recherchierten Rohtext (plain text) zum Thema: "{{ topic }}".\
-\
-{% if targetAudience %}ZIELGRUPPE: Schreibe für {{ targetAudience }}.{% endif %}\
-{% if emphasis %}FOKUS: Lege besonderen Wert auf {{ emphasis }}.{% endif %}\
-\
-KERNANFORDERUNGEN AN DEN TEXT (unter Beachtung der obersten Priorität Länge):\
-- **THEMA & TIEFE:** Behandle das Thema "{{ topic }}" umfassend und **extrem detailliert**. Entwickle JEDES Argument und JEDEN Aspekt vollständig mit ausführlichen Begründungen, vielfältigen Beispielen, Daten/Statistiken (inkl. Jahr!). {% if year is not empty %}**Fokussiere dich explizit auf die Entwicklungen und Daten für das/die Jahr(e) {{ year }}.**{% endif %} Verwende deine Kreativität, um alle relevanten Facetten des Themas zu beleuchten und ausführlich darzustellen, um die Längenvorgabe zu erfüllen.\
-- **STRUKTUR (Grob):** Gliedere den Text sinnvoll in viele Absätze. Eine klare Überschriftenstruktur (H2/H3) ist in diesem Schritt NICHT nötig, wichtiger ist der reine Informationsgehalt und die extreme Ausführlichkeit zur Erreichung der Wortzahl.\
-- **QUELLEN:** {% if include_sources %}Recherchiere sorgfältig und erwähne relevante Fakten oder Daten (inkl. Jahr), die später als Quellen dienen könnten. Nutze diese auch, um die Textlänge zu erhöhen.{% endif %}\
-{% if additionalInstructions -%}\
-- **ZUSÄTZLICHE ANWEISUNGEN:** {{ additionalInstructions }}\
-{% endif -%}\
-\
-WICHTIG: Konzentriere dich NUR auf den extrem ausführlichen Textinhalt mit Daten, um die Längenvorgabe zu erfüllen. Keine HTML-Formatierung (außer ggf. einfache Absätze), keine Bootstrap-Elemente, keine Buttons in diesem Schritt!\
-\
-ANTWORTE NUR MIT DEM REINEN, SEHR LANGEN ROHTEXT, OHNE JEGLICHE FORMATIERUNG ODER UMSCHLIESSENDEN CODE.
+**CONTENT-GENERIERUNG: ROHTEXT-PHASE**
+
+**LÄNGE (KRITISCH):** Mindestens {{ min_words }} Wörter, idealerweise {{ targetWords ?? (min_words * 1.2)|round }} Wörter. Erreiche dies durch extreme Detailtiefe, nicht durch Redundanz.
+
+**THEMA:** {{ topic }}{% if year is not empty %} (Fokus: {{ year }}){% endif %}
+
+{% if targetAudience %}**ZIELGRUPPE:** {{ targetAudience }}{% endif %}
+{% if emphasis %}**SCHWERPUNKT:** {{ emphasis }}{% endif %}
+
+**INHALTLICHE ANFORDERUNGEN:**
+- Umfassende Behandlung aller Themenaspekte mit konkreten Daten, Statistiken und Jahresangaben
+- {% if year is not empty %}Expliziter Fokus auf {{ year }}-Entwicklungen und aktuelle Trends{% endif %}
+- Positive, lösungsorientierte Darstellung ohne andere Branchen abzuwerten
+- Praxisrelevante Informationen und Handlungsempfehlungen
+- {% if include_sources %}Fundierte Fakten mit Quellenangaben (Jahr erforderlich){% endif %}
+
+{% if additionalInstructions %}**PROJEKT-SPEZIFISCHE ANFORDERUNGEN:**
+{{ additionalInstructions }}
+{% endif %}
+
+**AUSGABE:** Nur der reine, strukturierte Fließtext ohne HTML-Formatierung. Gliedere in logische Absätze, aber keine Überschriften in dieser Phase.
+
+**WICHTIG:** Fokussiere dich ausschließlich auf Inhaltsqualität und Länge. Formatierung erfolgt im nächsten Schritt.
 
 
 

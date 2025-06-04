@@ -1,5 +1,5 @@
 {# Twig Template für das Auction Filter Modul #}
-<div class="{% if class is defined and class %} {{ class }}{% endif %} position-static">
+<div id="auctionFilter" class="{% if class is defined and class %} {{ class }}{% endif %}" style="z-index: 6;">
     <div class="auction-filter-module" data-no-results-text="{{ 'general.no_auctions_for_criteria'|trans|escape('html_attr') }}">
         {# Filter-Formular #}
         <div class="filter-buttons mb-4">
@@ -125,7 +125,7 @@
                     <button type="submit" class="btn btn-white btn-sm">
                         {{ 'filter.button.filter'|trans }}
                     </button>
-                    <a href="{{ app.request.pathInfo }}" class="btn btn-white btn-sm">
+                    <a href="{{ app.request.pathInfo }}#auctionFilter" class="btn btn-white btn-sm">
                         {{ 'filter.button.reset'|trans }}
                     </a>
                     <button type="submit" name="refresh" value="1" class="btn btn-danger btn-sm"> {# Versteckt, da AJAX #}

@@ -14,11 +14,12 @@ form .widget:not(.form-floating).widget-checkbox fieldset > span input[type=chec
   margin-top: 4px;
 }
 
-
+.form-check-input,
 .form-check-input:checked,
 .form-check-input:focus,
 .form-check-input:focus-visible {
-  border-color: rgba(255, 255, 255, .1);
+  border: none;
+  box-shadow: var(--bs-input-shadow);
 }
 
 
@@ -118,23 +119,40 @@ input[type="range"]:focus::-moz-range-thumb {
 
 
 .input-group {
+  @include media-breakpoint-down(sm) {
+    overflow: hidden;
+  }
+
   > * {
+
+    &.form-control {
+      text-align: center;
+    }
+
     @include media-breakpoint-down(sm) {
       width: 100%;
+      margin-inline: auto;
+      flex: 100%;
     }
   }
 }
 
 .widget {
+  &[class*="-text"] {
+    label {
+      margin-bottom: .5rem;
+    }
+  }
+
   &.is-inline {
     display: flex;
     flex-flow: row wrap;
     gap: 1rem;
     align-items: center;
 
-     @include media-breakpoint-down(lg) {
-       width: auto !important;
-     }
+    @include media-breakpoint-down(lg) {
+      width: auto !important;
+    }
 
     > label {
       width: 170px;
@@ -152,7 +170,103 @@ input[type="range"]:focus::-moz-range-thumb {
 }
 
 
-
 .form-select:required:invalid {
   color: $input-placeholder-color;
+}
+
+
+#meinungsumfrage {
+  padding: calc(var(--main-gap) / 1.5);
+  padding-bottom: var(--main-gap);
+  text-align: center;
+  background-color: var(--bs-tertiary);
+
+  .formbody {
+    position: relative;
+  }
+
+  .widget-textarea label {
+    font-size: clamp(#{$font-size-lg}, 1.5vw, calc(#{$font-size-lg} + 5px));
+    margin-bottom: 1rem;
+  }
+
+
+  .widget-radio {
+    margin-bottom: 0; // Abstand zwischen den Radio-Gruppen
+
+    legend {
+      margin-bottom: 2rem;
+      font-size: clamp(#{$font-size-lg}, 1.5vw, calc(#{$font-size-lg} + 5px));
+      color: var(--bs-body-color);
+    }
+
+
+    .form-check {
+      display: inline-block; // Erlaubt es, die Spans nebeneinander zu haben und als Block zu behandeln
+      padding-left: 0; // Bootstrap Standard-Padding entfernen
+      margin-inline: .5rem;
+
+      input[type="radio"] {
+        // Radio-Button komplett verstecken
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        pointer-events: none; // Stellt sicher, dass er nicht versehentlich geklickt wird
+      }
+
+      .form-check-label {
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        border: 2px solid var(--bs-primary); // Standard-Button-Rahmen
+        border-radius: var(--bs-border-radius);
+        background-color: var(--bs-primary); // Helle Hintergrundfarbe für nicht ausgewählten Button
+        color: var(--bs-secondary);
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+        min-width: 100px; // Mindestbreite für die Buttons
+        text-align: center;
+
+        &:hover {
+          background-color: transparent; // Primärfarbe für ausgewählten Button
+          color: var(--bs-primary); // Weißer Text auf primärem Hintergrund
+        }
+      }
+
+      // Styling für den ausgewählten Zustand
+      input[type="radio"]:checked + .form-check-label {
+        background-color: transparent; // Primärfarbe für ausgewählten Button
+        color: var(--bs-primary); // Weißer Text auf primärem Hintergrund
+
+        &:hover {
+          background-color: transparent; // Primärfarbe für ausgewählten Button
+          color: var(--bs-primary); // Weißer Text auf primärem Hintergrund
+        }
+      }
+    }
+  }
+
+  .back-btn {
+    position: absolute;
+    bottom: calc(-1 * (var(--main-gap) / 1.5));
+
+    @include media-breakpoint-down(sm) {
+      margin-top: 1.5rem;
+      text-align: center;
+      width: 100%;
+      position: static;
+    }
+
+
+    .btn {
+      --bs-btn-hover-color: var(--bs-primary);
+    }
+  }
+
+  .alert {
+    width: 100%;
+    margin-bottom: 0;
+    margin-top: 1.85rem;
+  }
 }

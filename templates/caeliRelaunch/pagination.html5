@@ -3,21 +3,46 @@
 
   <ul>
     <?php if ($this->hasPrevious): ?>
-      <li class="previous"><a href="<?= $this->previous['href'] ?>" class="previous" title="<?= $this->previous['title'] ?>"><i class="fak fa-chevron-left"></i></a></li>
+      <li class="previous">
+        <a href="<?= $this->previous['href'] ?>#listingAnchor" class="previous" title="<?= $this->previous['title'] ?>" rel="prev">
+          <i class="fak fa-chevron-left"></i>
+        </a>
+      </li>
     <?php endif; ?>
 
     <?php foreach ($this->pages as $page): ?>
       <?php if (null === $page['href']): ?>
         <li><strong class="active"><?= $page['page'] ?></strong></li>
       <?php else: ?>
-        <li><a href="<?= $page['href'] ?>" class="link" title="<?= $page['title'] ?>"><?= $page['page'] ?></a></li>
+        <li>
+          <a href="<?= $page['href'] ?>#listingAnchor" class="link" title="<?= $page['title'] ?>"><?= $page['page'] ?></a>
+        </li>
       <?php endif; ?>
     <?php endforeach; ?>
 
     <?php if ($this->hasNext): ?>
-      <li class="next"><a href="<?= $this->next['href'] ?>" class="next" title="<?= $this->next['title'] ?>"><i class="fak fa-chevron-right"></i></a></li>
+      <li class="next">
+        <a href="<?= $this->next['href'] ?>#listingAnchor" class="next" title="<?= $this->next['title'] ?>" rel="next">
+          <i class="fak fa-chevron-right"></i>
+        </a>
+      </li>
     <?php endif; ?>
   </ul>
 
 </nav>
+
+<?php if (isset($_GET['page']) || isset($_GET['page_n23']) || preg_match('/page(_n\d+)?=/', $_SERVER['QUERY_STRING'] ?? '')): ?>
+  <!-- Canonical und Prev/Next werden vom PaginationCanonicalListener gesetzt -->
+  <script>
+    // Optionale JavaScript-Behandlung für AJAX-Paginierung
+    document.addEventListener('DOMContentLoaded', function() {
+      // Aktualisiere Browser-Titel für paginierte Seiten
+      const currentPage = <?= json_encode($_GET['page'] ?? $_GET['page_n23'] ?? 1) ?>;
+      if (currentPage > 1) {
+        document.title = document.title + ' - Seite ' + currentPage;
+      }
+    });
+  </script>
+<?php endif; ?>
+
 <!-- indexer::continue -->

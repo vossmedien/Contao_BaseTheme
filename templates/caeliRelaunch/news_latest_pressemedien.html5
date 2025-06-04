@@ -54,7 +54,9 @@
 
         <?php if ($this->hasText || $this->hasTeaser): ?>
             <p class="more">
-                <a class="btn btn-link with-arrow" href="<?= $this->link ?>">
+                <a class="btn btn-link with-arrow"
+                   <?php if($this->target):?>target="_blank"<?php endif;?>
+                   href="<?= $this->link ?>">
                     <?= $GLOBALS['TL_LANG']['MSC']['read_more']; ?>
                 </a>
             </p>

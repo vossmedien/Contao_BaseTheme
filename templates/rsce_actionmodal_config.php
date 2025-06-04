@@ -230,7 +230,7 @@ return array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,mp4',
+                'extensions' => 'jpg,jpeg,png,mp4,webm,webp,svg',
                 'tl_class' => 'w50 clr',
                 'submitOnChange' => true
             ),
@@ -297,7 +297,7 @@ return array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,mp4',
+                'extensions' => 'jpg,jpeg,png,mp4,svg,webp',
                 'tl_class' => 'w50'
             ),
         ),
@@ -328,7 +328,7 @@ return array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
+                'extensions' => 'jpg,jpeg,png,mp4,webm,ogv,svg,webp',
             ),
         ),
 
@@ -351,7 +351,7 @@ return array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png',
+                'extensions' => 'jpg,jpeg,png,svg,webp',
             ),
         ),
 

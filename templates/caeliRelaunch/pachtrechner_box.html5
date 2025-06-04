@@ -19,7 +19,7 @@
                             <div class="widget widget-text" data-animation="animate__fadeIn">
                                 <label class="form-label d-block" for="pachtrechner_ha_input"><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['labelHa'] ?></label>
                                 <div class="input-group w-auto d-inline-flex">
-                                    <input type="number" style="min-width: 90px;" min="1" class="form-control text-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
+                                    <input type="number" style="min-width: 90px;" min="1" class="form-control text-center text-sm-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
                                     <button class="btn btn-secondary with-arrow js-pachtrechner-check-btn">
                                         <?= $GLOBALS['TL_LANG']['pachtrechner']['form']['buttonCalculate'] ?>
                                     </button>
@@ -32,7 +32,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 mt-4 mt-md-0 text-center">
                     <div class="pachtrechner-badge-in-column text-md-end">
                         <div data-animation="animate__fadeInRight">
                             <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/badges/pachtrechner-badge-de.svg", null), null, null; ?>
@@ -44,8 +44,8 @@
     </div>
 </div>
 
-<div class="pachtrechner-result d-none content--element js-pachtrechner-ergebnis">
 
+<div class="pachtrechner-result d-none content--element js-pachtrechner-ergebnis">
     <div class="result-header">
         <div class="container">
             <div class="headline--wrapper hl-h2">
@@ -54,7 +54,6 @@
         </div>
     </div>
 
-
     <div class="result-body">
         <div class="container pt-4 pt-md-7">
             <span class="h2 mb-3">
@@ -62,7 +61,7 @@
                 <span class="d-md-block"><?= $GLOBALS['TL_LANG']['pachtrechner']['result']['annualLeasePrefix'] ?> <b><span class="count js-jahres-pacht">---</span> €*</b></span>
             </span>
 
-            <span class="text-lg d-block mt-3 mt-sm-0">
+            <span class="text-lg d-block mt-3">
                 <?= $GLOBALS['TL_LANG']['pachtrechner']['result']['usualRange'] ?>
             </span>
 

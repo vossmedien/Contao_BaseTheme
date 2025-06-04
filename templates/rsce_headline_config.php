@@ -267,7 +267,7 @@ return array(
             'minItems' => 0,
             'maxItems' => 20,
             'eval' => array('tl_class' => ' clr'),
-            'fields' => ButtonHelper::getButtonConfig(),
+            'fields' => ButtonHelper::getButtonConfig(false),
             'dependsOn' => array(
                 'field' => 'add_second_content',
             ),
@@ -499,7 +499,7 @@ return array(
             'minItems' => 0,
             'maxItems' => 20,
             'eval' => array('tl_class' => ' clr'),
-            'fields' => ButtonHelper::getButtonConfig(),
+            'fields' => ButtonHelper::getButtonConfig(false),
         ),
 
         'button_group_text_alignment' => array(
@@ -512,9 +512,6 @@ return array(
             ),
             'default' => 'text-lg-end',
             'eval' => array('tl_class' => 'w50 clr'),
-            'dependsOn' => array(
-                'field' => 'two_columns', // Nur anzeigen, wenn auch Buttons möglich sind
-            ),
         ),
 
     ),

@@ -29,12 +29,4 @@ class CaeliWindContaoCaeliContentCreator extends Bundle
     {
         return new CaeliWindContaoCaeliContentCreatorExtension();
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function build(ContainerBuilder $container): void
-    {
-        parent::build($container);
-    }
 }

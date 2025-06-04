@@ -64,12 +64,14 @@
                                 </strong>
 
 
-                                <span class="auction-detail-label">
+                                   {% if raw_data.weaHubHeight > 0 %}
+                                    <span class="auction-detail-label">
                                 {{ 'detail.hub_height'|trans }}
                             </span>
-                                <strong class="auction-detail-value">
-                                    {{ raw_data.weaHubHeight }} m
-                                </strong>
+                                    <strong class="auction-detail-value">
+                                        {{ raw_data.weaHubHeight }} m
+                                    </strong>
+                                {% endif %}
 
                                 <span class="auction-detail-label">
                                 {{ 'detail.wea_count'|trans }}

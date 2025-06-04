@@ -3,13 +3,13 @@
 
     <div class="content--element head-hero ce_rsce_head_hero container-wide">
         <div class="ce--inner">
-            <div class="breadcrumb-container mb-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
+            <div class="breadcrumb-container mb-4 mb-md-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
                 <!-- indexer::stop -->
                 {{insert_module::20}}
                 <!-- indexer::continue -->
             </div>
             <div class="row">
-                <div class="col-12 col-xl-11">
+                <div class="col-12 col-xl-10">
                     <div class="ce--headline hl-h1">
                         <h1 data-animation="animate__fadeIn">
                             <?= $this->headline ?>
@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <div class="mt-gap container">
+    <div class="mt-gap container content--element">
         <div class="row gx-4">
             <div class="col-12 col-lg-7" data-animation="animate__fadeIn">
                   <?php if ($this->hasSubHeadline): ?>
@@ -69,7 +69,7 @@
 
                     <?php $this->endblock(); ?>
                     <div id="articleNav">
-                        <strong class="d-block mt-2 mb-1"><?= $GLOBALS['TL_LANG']['MSC']['jumpToLabel'] ?></strong>
+                        <strong class="d-block mt-3 mb-2"><?= $GLOBALS['TL_LANG']['MSC']['jumpToLabel'] ?></strong>
                         <ul class="list-arrow">
 
                         </ul>

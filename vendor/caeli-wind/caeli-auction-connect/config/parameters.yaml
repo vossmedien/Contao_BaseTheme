@@ -1,7 +1,4 @@
 #config/parameters.yaml
 parameters:
-    caeli_auction.api_url: '%env(CAELI_AUCTION_API_URL)%'
-    caeli_auction.api_username: '%env(CAELI_AUCTION_API_USERNAME)%'
-    caeli_auction.api_password: '%env(CAELI_AUCTION_API_PASSWORD)%'
     caeli_auction.marketplace_api_url: '%env(CAELI_AUCTION_MARKETPLACE_API_URL)%'
     caeli_auction.marketplace_api_auth: '%env(CAELI_AUCTION_MARKETPLACE_API_AUTH)%'

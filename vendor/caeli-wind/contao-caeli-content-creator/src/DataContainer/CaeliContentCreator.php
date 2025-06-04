@@ -84,7 +84,7 @@ class CaeliContentCreator
             try {
                 // --- Schritt 1: Rohtext generieren ---
                 $this->logger->debug('Step 1: Generating raw content prompt');
-                $promptStep1 = $this->promptBuilder->buildPrompt($model, '@CaeliWindContaoCaeliContentCreator/prompt/step1_generate_raw.txt.twig');
+                $promptStep1 = $this->promptBuilder->buildPrompt($model, true);
 
                 $this->logger->debug('Step 1: Calling Grok API for raw content');
                 // maxTokens is now handled by service default based on config
@@ -122,11 +122,8 @@ class CaeliContentCreator
 
                 // --- Schritt 2: Text formatieren und anreichern ---
                 $this->logger->debug('Step 2: Generating formatting prompt');
-                // Pass rawContent in the context for the second prompt
-                $promptStep2Template = '@CaeliWindContaoCaeliContentCreator/prompt/step2_format_enhance.txt.twig';
-                $basePromptStep2 = $this->promptBuilder->buildPrompt($model, $promptStep2Template);
-                // Replace the placeholder in the prompt with the actual raw content
-                $promptStep2 = str_replace('{{ raw_content }}', $rawContent, $basePromptStep2);
+                // Use new buildFormatPrompt method instead of string replacement
+                $promptStep2 = $this->promptBuilder->buildFormatPrompt($model, $rawContent);
 
                 $this->logger->debug('Step 2: Calling Grok API for formatted content');
                 // maxTokens is now handled by service default based on config
@@ -139,73 +136,47 @@ class CaeliContentCreator
                     (float) $model->topP
                 );
 
-                $this->logger->debug('Step 2: Parsing final response using delimiters.');
+                $this->logger->debug('Step 2: Parsing final response using new delimiter format.');
                 // Logge die komplette rohe Antwort von Schritt 2
                 $this->logger->debug('Raw API response Step 2:', ['response' => $responseStep2]); 
 
-                // Verwende Regex, um die Teile basierend auf den neuen Delimitern zu extrahieren
-                $pattern = '/\[CONTENT_START\](.*)\[CONTENT_END\]\s*\[PAGETITLE_START\](.*)\[PAGETITLE_END\]\s*\[DESCRIPTION_START\](.*)\[DESCRIPTION_END\]\s*\[TAGS_START\](.*)\[TAGS_END\]/is';
-                if (preg_match($pattern, $responseStep2, $matches)) {
-                    $finalContent = trim($matches[1]);
-                    $finalPageTitle = trim($matches[2]);
-                    $finalDescription = trim($matches[3]);
-                    $finalTags = trim($matches[4]);
-
-                    // Logge die extrahierte Description
-                    $this->logger->debug('Extracted description from regex:', ['description' => $finalDescription]);
-
-                    // Bereinige den Content von Code Fences (falls doch noch vorhanden)
-                    $finalContent = preg_replace('/^```(?:html)?\s*/i', '', $finalContent);
-                    $finalContent = preg_replace('/\s*```$/', '', $finalContent);
-                    $finalContent = trim($finalContent);
-
-                    // Extrahiere den Teaser aus dem Content
-                    $finalTeaser = '';
-                    if (preg_match('/<div class=[\'\"]generated-teaser[\'\"][^>]*>(.*?)<\\/div>/is', $finalContent, $teaserMatches)) {
-                        $finalTeaser = trim(strip_tags($teaserMatches[1]));
-                        $this->logger->debug('Extracted teaser from content div.', ['teaser' => $finalTeaser]);
-                        // Entferne das Teaser-Div aus dem Hauptinhalt
-                        $finalContent = preg_replace('/<div class=[\'\"]generated-teaser[\'\"][^>]*>.*?<\\/div>/is', '', $finalContent, 1);
-                        $finalContent = trim($finalContent);
-                    } else {
-                         $this->logger->warning('Could not extract teaser from <div class="generated-teaser"> within content block.');
-                    }
-
+                // Use new PromptBuilder parseGeneratedContent method
+                try {
+                    $parsedContent = $this->promptBuilder->parseGeneratedContent($responseStep2);
+                    
                     $finalData = [
-                        'title'     => $model->topic ?: 'Generierter Beitrag', // Nimm Topic als Basis, da Titel jetzt SEO-Titel ist
-                        'pageTitle' => $finalPageTitle,
-                        'teaser'    => $finalTeaser,
-                        'content'   => $finalContent,
-                        'description' => $finalDescription,
-                        'tags'      => $finalTags
+                        'title'     => $parsedContent['title'] ?: ($model->topic ?: 'Generierter Beitrag'),
+                        'pageTitle' => $parsedContent['title'], // Use generated title as page title
+                        'teaser'    => $parsedContent['teaser'],
+                        'content'   => $parsedContent['content'],
+                        'description' => $parsedContent['teaser'] ?: substr(strip_tags($parsedContent['content']), 0, 155),
+                        'tags'      => $parsedContent['tags']
                     ];
-                    $this->logger->info('Step 2: Final content parsed successfully using delimiters.', [
+                    
+                    $this->logger->info('Step 2: Final content parsed successfully using new format.', [
                         'title' => $finalData['title'],
                         'pageTitle' => $finalData['pageTitle']
                     ]);
-
-                } else {
-                    $this->logger->error('Failed to parse step 2 response using delimiters. Response did not match expected format.', [
-                        'response_snippet' => substr($responseStep2, 0, 800) // Mehr Snippet loggen
+                    
+                } catch (\Exception $parseException) {
+                    $this->logger->error('Failed to parse step 2 response using new format', [
+                        'error' => $parseException->getMessage(),
+                        'response_snippet' => substr($responseStep2, 0, 800)
                     ]);
-                    // Logge, dass das Parsen fehlgeschlagen ist
-                    $this->logger->error('Regex parsing failed for Step 2 response.');
-
-                    // Fallback: Nimm die gesamte Antwort als Content, falls das Parsen fehlschlägt
+                    
+                    // Fallback: Nimm die gesamte Antwort als Content
                     $finalContent = preg_replace('/^```(?:html)?\s*/i', '', $responseStep2);
                     $finalContent = preg_replace('/\s*```$/', '', $finalContent);
                     $finalContent = trim($finalContent);
                     $finalData = [
                          'title'     => $model->topic ?: 'Generierter Beitrag',
-                         'pageTitle' => '',
+                         'pageTitle' => $model->topic ?: 'Generierter Beitrag',
                          'teaser'    => '',
                          'content'   => $finalContent, 
                          'description' => '',
                          'tags'      => ''
                     ];
-                     $this->logger->warning('Using fallback for Step 2 processing due to parsing error.');
-                    // Optional: Hier keine Exception werfen, sondern mit Fallback weitermachen?
-                    // throw new \RuntimeException('Die API lieferte keine korrekt formatierte Antwort zurück (Schritt 2, Delimiter Format).');
+                    $this->logger->warning('Using fallback for Step 2 processing due to parsing error.');
                 }
 
                 // Vorschau im Modell speichern (Annahme: Felder pageTitle und description existieren)

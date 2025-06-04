@@ -18,10 +18,13 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     /* .process-steps-element .ce--process-steps::before { ... } */
 
     .process-step {
-        opacity: 0.25;
-        transition: opacity 0.5s ease-in-out;
         position: relative;
         padding-left: calc(60px + 2rem); /* Platz für 60px Nummer und Abstand */
+    }
+
+    .process-step .step-content-wrapper {
+             opacity: 0.25;
+        transition: opacity 0.5s ease-in-out;
     }
 
     /* Linie für jeden Schritt (außer dem letzten) */
@@ -42,7 +45,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         font-size: 25px;
     }
 
-    .process-step.is-visible {
+    .process-step.is-visible .step-content-wrapper {
         opacity: 1;
     }
 

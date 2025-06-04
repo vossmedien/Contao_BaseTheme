@@ -74,7 +74,7 @@ $GLOBALS['TL_DCA']['tl_caeli_googlenews'] = array(
         )
     ),
     'palettes'    => array(
-        'default'      => '{title_legend},title,newsArchive;{serpapi_legend},serpApiKey,serpApiQuery,serpApiNumResults,serpApiLocation,serpApiLanguage;{filter_legend},dateRestrict,newsSource,paginationEnabled,maxPages;{keywords_legend},blacklistKeywords;{preview_legend},fetchNewsButton,previewView;'
+        'default'      => '{title_legend},title,newsArchive;{serpapi_legend},serpApiKey,serpApiQuery,serpApiNumResults,serpApiLocation,serpApiLanguage;{filter_legend},dateRestrict,newsSource;{keywords_legend},blacklistKeywords;{preview_legend},fetchNewsButton,previewView;'
     ),
 
     // Buttons im Bearbeitungsformular
@@ -170,23 +170,6 @@ $GLOBALS['TL_DCA']['tl_caeli_googlenews'] = array(
             'eval'      => array('maxlength' => 255, 'tl_class' => 'w50'),
             'explanation' => 'Filtere nach einer bestimmten Quelle (z.B. "spiegel.de")',
             'sql'       => "varchar(255) NOT NULL default ''"
-        ),
-        // Pagination-Optionen
-        'paginationEnabled' => array(
-            'inputType' => 'checkbox',
-            'exclude'   => true,
-            'default'   => '',
-            'eval'      => array('tl_class' => 'w50 m12'),
-            'explanation' => 'Aktiviert die Paginierung, um mehr als 100 Ergebnisse abzurufen',
-            'sql'       => "char(1) NOT NULL default ''"
-        ),
-        'maxPages'        => array(
-            'inputType' => 'text',
-            'exclude'   => true,
-            'eval'      => array('rgxp' => 'natural', 'tl_class' => 'w50'),
-            'default'   => 3,
-            'explanation' => 'Maximale Anzahl an Seiten, die abgerufen werden sollen (max. 10)',
-            'sql'       => "smallint(5) unsigned NOT NULL default '3'"
         ),
         // Keywords für Filter
         'blacklistKeywords' => array(

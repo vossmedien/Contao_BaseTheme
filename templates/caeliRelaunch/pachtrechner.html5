@@ -17,7 +17,7 @@
                 <span class="d-md-block"><?= $GLOBALS['TL_LANG']['pachtrechner']['result']['annualLeasePrefix'] ?> <b><span class="count js-jahres-pacht">---</span> €*</b></span>
             </span>
 
-                <span class="text-lg d-block mt-3 mt-sm-0">
+                <span class="text-lg d-block mt-3">
                 <?= $GLOBALS['TL_LANG']['pachtrechner']['result']['usualRange'] ?>
             </span>
 
@@ -88,7 +88,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-7 ">
+                <div class="col-md-7 mt-4 mt-lg-0">
                     <div class="ps-lg-gap ">
                         <div class="pachtrechner-badge">
                             <div data-animation="animate__fadeInRight">
@@ -99,7 +99,7 @@
                         <div class="widget widget-text" data-animation="animate__fadeIn">
                             <label class="form-label" for="pachtrechner_ha_input"><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['labelHa'] ?></label>
                             <div class="input-group w-auto d-inline-flex">
-                                <input type="number" style="min-width: 90px;" min="1" class="form-control text-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
+                                <input type="number" style="min-width: 90px;" min="1" class="form-control text-center text-sm-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
                                 <button class="btn btn-primary with-arrow js-pachtrechner-check-btn">
                                     <?= $GLOBALS['TL_LANG']['pachtrechner']['form']['buttonCalculate'] ?>
                                 </button>

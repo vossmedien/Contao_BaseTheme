@@ -229,6 +229,15 @@ if ($GLOBALS['TL_CONFIG']['useRTE']):
 
                     // CurrentColor-Buttons
                     {
+                        title: 'Farbübernahme vom Elternelement',
+                        value: 'btn btn-currentColor'
+                    },
+                    {
+                        title: 'Farbübernahme vom Elternelement mit Pfeil',
+                        value: 'btn btn-currentColor with-arrow'
+                    },
+
+                    {
                         title: 'Farbübernahme vom Elternelement (Outline)',
                         value: 'btn btn-outline-currentColor'
                     },

@@ -6,7 +6,7 @@
         ?>
         <?php if ($hasSubitems): ?>
             <div class="btn-group">
-                <a data-animation="animate__fadeIn" href="<?= $item['href'] ?>" class="btn btn-sm <?= $buttonClass ?> <?= str_replace('active', 'btn-primary', $item['class']) ?>" title="<?= $item['linkTitle'] ?>" itemprop="url">
+                <a data-animation="animate__fadeIn" href="<?= $item['href'] ?>#listingAnchor" class="btn btn-sm <?= $buttonClass ?> <?= str_replace('active', 'btn-primary', $item['class']) ?>" title="<?= $item['linkTitle'] ?>" itemprop="url">
                     <?php if ($item['image']): ?>
                         <?php $this->insert('picture_default', $item['image']->picture) ?>
                     <?php endif; ?>
@@ -23,7 +23,7 @@
                 </ul>
             </div>
         <?php else: ?>
-            <a data-animation="animate__fadeIn" href="<?= $item['href'] ?>" class="btn btn-sm <?= $buttonClass ?> <?= str_replace('active', 'btn-primary', $item['class']) ?>" title="<?= $item['linkTitle'] ?>" itemprop="url">
+            <a data-animation="animate__fadeIn" href="<?= $item['href'] ?>#listingAnchor" class="btn btn-sm <?= $buttonClass ?> <?= str_replace('active', 'btn-primary', $item['class']) ?>" title="<?= $item['linkTitle'] ?>" itemprop="url">
                 <?php if ($item['image']): ?>
                     <?php $this->insert('picture_default', $item['image']->picture) ?>
                 <?php endif; ?>

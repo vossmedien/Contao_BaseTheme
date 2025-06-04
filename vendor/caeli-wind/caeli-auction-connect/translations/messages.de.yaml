@@ -30,6 +30,14 @@ filter:
   range:
     min: "Min"
     max: "Max"
+
+pagination:
+  showing: "Zeige %start% bis %end% von %total% Einträgen"
+  aria_label: "Seitennavigation"
+  previous: "Vorherige"
+  next: "Nächste"
+  go_to_page: "Gehe zu Seite %page%"
+
 general:
   no_auctions_for_criteria: "Es wurden keine Auktionen für Ihre Filterkriterien gefunden."
 

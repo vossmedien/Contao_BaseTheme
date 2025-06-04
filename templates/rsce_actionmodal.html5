@@ -25,10 +25,11 @@ if (!empty($this->animation_type_element) && $this->animation_type_element !== '
                     if (!empty($modalContentStyles)) { echo 'style="' . implode(' ', $modalContentStyles) . '"'; }
                  ?>>
 
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"
+                                <?php if ($this->close_button_color): ?>style="--bs-btn-close-color: <?php echo $this->close_button_color; ?> !important;"<?php endif; ?>></button>
+
                 <?php if ($this->modal_headline): ?>
                     <div class="modal-header">
-
-
                         <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                             $this->modal_topline,
                             $this->modal_headline,
@@ -39,22 +40,11 @@ if (!empty($this->animation_type_element) && $this->animation_type_element !== '
                             false,
                             "modal-title mb-0"
                         ); ?>
-
-
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"
-                                <?php if ($this->close_button_color): ?>style="--bs-btn-close-color: <?php echo $this->close_button_color; ?> !important;"<?php endif; ?>></button>
                     </div>
                 <?php endif; ?>
                 <div class="modal-body" style="overflow-x: hidden;">
                     <?php if ($this->image): ?>
                         <div class="modal--image mb-2 <?php if ($this->remove_image_padding): ?>without-padding<?php endif; ?>">
-                            <?php if (!$this->modal_headline): ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"
-                                        <?php if ($this->close_button_color): ?>style="--bs-btn-close-color: <?php echo $this->close_button_color; ?> !important;"<?php endif; ?>>
-                                    <i class="fa-sharp fa-light fa-xmark"></i>
-                                </button>
-                            <?php endif; ?>
-
 
                             <?php
                             $filename = '';
@@ -181,7 +171,7 @@ if (!empty($this->animation_type_element) && $this->animation_type_element !== '
                         </div>
                     </div>
                 </div>
-                <?php if ($this->buttons[0]->link_text != "" || $this->show_footer_close) : ?>
+                <?php if ($this->buttons || $this->show_footer_close) : ?>
                     <div class="modal-footer">
                         <?php if ($this->buttons[0]->link_text != "") : ?>
                                 <?php foreach ($this->buttons as $b) : ?>

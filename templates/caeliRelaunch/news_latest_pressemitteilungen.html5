@@ -49,8 +49,8 @@
             ?>
 
             <?php if ($showActualImage): ?>
-             <a href="<?= $this->link ?>">
-                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, $this->headline, '', ["450px", "280px", "crop"], 'img-fluid w-100 h-100 object-fit-cover', false, true); ?>
+             <a class="d-block h-100" href="<?= $this->link ?>">
+                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, $this->headline, '', ["450px", "280px", "crop"], 'img-fluid w-100 h-100 object-fit-cover', false, false); ?>
              </a>
             <?php else: ?>
                 <div class="d-flex justify-content-center align-items-center bg-light h-100" style="min-height: 250px;">
@@ -142,7 +142,7 @@
                 <time datetime="<?= $formattedNewsDate['datetime'] ?>"><?= $formattedNewsDate['display'] ?></time>
             </p>
 
-            <h3 class="mb-3"><?= $this->headline ?></h3>
+            <h3 class="mt-2 mb-3"><?= $this->headline ?></h3>
 
             <div class="mt-auto">
                 <?php if ($this->hasText || $this->hasTeaser): ?>

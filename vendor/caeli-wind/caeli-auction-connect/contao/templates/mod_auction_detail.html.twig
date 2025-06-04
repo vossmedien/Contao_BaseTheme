@@ -7,13 +7,13 @@
     <div class="bg-primary text-white offset-wrapper">
         <div class="content--element head-hero ce_rsce_head_hero container-wide">
             <div class="ce--inner">
-                <div class="breadcrumb-container mb-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
+                <div class="breadcrumb-container mb-4 mb-md-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
                     <!-- indexer::stop -->
                     {{ insert_tag('insert_module::20')|raw }}
                     <!-- indexer::continue -->
                 </div>
                 <div class="row">
-                    <div class="col-12 col-xl-11">
+                    <div class="col-12 col-xl-10">
                         <div class="ce--headline hl-h1 mb-gap">
                             <h1>
                                 <span data-animation="animate__fadeIn" class="d-block">{{ 'auction_listing.card.title_prefix'|trans }}</span>
@@ -47,12 +47,12 @@
                                 <div class="button-holder px-3 px-md-5 d-sm-flex d-md-block d-lg-flex flex-row gap-2 justify-content-between py-3">
                                     <div data-animation="animate__fadeInLeft" class="mb-2 mb-sm-0 mb-md-2 mb-lg-0">
                                         <strong class="d-block mb-1 small">{{ 'detail.new_customer_headline'|trans }}</strong>
-                                        <a href="/" class="btn btn-primary with-arrow btn-sm w-100">{{ 'detail.new_customer_button'|trans }}</a>
+                                        <a href="https://meetings-eu1.hubspot.com/pershin/terminbuchung-caeli-wind" target="_blank" class="btn btn-primary with-arrow btn-sm w-100">{{ 'detail.new_customer_button'|trans }}</a>
                                     </div>
 
                                     <div data-animation="animate__fadeInRight">
                                         <strong class="d-block mb-1 small">{{ 'detail.existing_customer_headline'|trans }}</strong>
-                                        <a href="/" class="btn btn-primary with-arrow btn-sm w-100">{{ 'detail.existing_customer_button'|trans }}</a>
+                                        <a href="https://auction.caeli-wind.de/" target="_blank" class="btn btn-primary with-arrow btn-sm w-100">{{ 'detail.existing_customer_button'|trans }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -89,14 +89,14 @@
                                     {{ raw_data.internalRateOfReturnBeforeRent }} {{ 'auction_listing.card.unit.percent'|trans }}
                                 </strong>
 
-
-                                <span class="auction-detail-label">
+                                {% if raw_data.weaHubHeight > 0 %}
+                                    <span class="auction-detail-label">
                                 {{ 'detail.hub_height'|trans }}
                             </span>
-                                <strong class="auction-detail-value">
-                                    {{ raw_data.weaHubHeight }} m
-                                </strong>
-
+                                    <strong class="auction-detail-value">
+                                        {{ raw_data.weaHubHeight }} m
+                                    </strong>
+                                {% endif %}
                                 <span class="auction-detail-label">
                                 {{ 'detail.wea_count'|trans }}
                             </span>
@@ -158,15 +158,15 @@
 
     </div>
 {% elseif error|default %}
-     <div class="my-gap container">
-    <div class="alert alert-danger">
-        <p>{{ error }}</p>
+    <div class="my-gap container">
+        <div class="alert alert-danger">
+            <p>{{ error }}</p>
+        </div>
     </div>
-     </div>
 {% else %}
-     <div class="my-gap container">
-    <div class="alert alert-info">
-        <p>{{ 'detail.auction_not_found'|trans }}</p>
+    <div class="my-gap container">
+        <div class="alert alert-info">
+            <p>{{ 'detail.auction_not_found'|trans }}</p>
+        </div>
     </div>
-     </div>
 {% endif %}

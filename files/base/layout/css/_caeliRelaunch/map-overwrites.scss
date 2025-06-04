@@ -1,5 +1,3 @@
-
-
 $spacers: (
         0: 0,
         1: 0.25rem,
@@ -36,9 +34,9 @@ $headings-font-sizes: (
                 'desktop': 50px
         ),
         'h3': (
-                  'mobile': 25px,
+                'mobile': 25px,
                 'tablet': 25px,
-                'desktop': 25px
+                'desktop': 30px
         ),
         'h4': (
                 'mobile': 25px,
@@ -51,9 +49,9 @@ $headings-font-sizes: (
                 'desktop': 25px
         ),
         'h6': (
-                'mobile': 25px,
-                'tablet': 25px,
-                'desktop': 25px
+                'mobile': 18px,
+                'tablet': 18px,
+                'desktop': 20px
         )
 );
 
@@ -61,7 +59,7 @@ $headings-font-sizes: (
 // NEUE MAP: Abstände nach Überschriften (margin-bottom)
 $headline-margins: (
         'h1': 2rem,
-        'h2': 1.75rem,
+        'h2': 1.5rem,
         'h3': 1rem,
         'h4': 1rem,
         'h5': 1rem,
@@ -71,11 +69,11 @@ $headline-margins: (
 // NEUE MAP: Mobile Abstände nach Überschriften
 $mobile-headline-margins: (
         'h1': 1.5rem,
-        'h2': 1.25rem,
-        'h3': 1rem,
-        'h4': 0.9rem,
-        'h5': 0.8rem,
-        'h6': 0.6rem
+        'h2': .9rem,
+        'h3': .9rem,
+        'h4': .9rem,
+        'h5': .8rem,
+        'h6': .6rem
 );
 
 
@@ -113,7 +111,7 @@ $topline-sizes-by-headline: (
 $subline-sizes-by-headline: (
         'h1': ('mobile': 32px, 'tablet': 32px, 'desktop': 39px),
         'h2': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
-        'h3': ('mobile': 26px, 'tablet': 32px, 'desktop': 39px),
+        'h3': ('mobile': 25px, 'tablet': 25px, 'desktop': 30px),
         'h4': ('mobile': 23px, 'tablet': 27px, 'desktop': 31px),
         'h5': ('mobile': 20px, 'tablet': 22px, 'desktop': 25px),
         'h6': ('mobile': 18px, 'tablet': 19px, 'desktop': 20px)

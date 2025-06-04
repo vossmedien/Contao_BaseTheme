@@ -117,6 +117,14 @@ if ($mobileMinHeightRaw !== 'auto') {
     }
 }
 
+// Dynamische Klassen basierend auf main_text
+$headlineColClass = 'col-lg-6';
+$textAndBoxColVisible = true;
+if (empty($this->main_text) && !$this->activate_box_slider) { // Überprüft auch, ob der Box-Slider deaktiviert ist
+    $headlineColClass = 'col-lg-9'; // Oder col-lg-12, wenn es die gesamte Breite einnehmen soll
+    $textAndBoxColVisible = false;
+}
+
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_hero_complex.min.css|static';
 }
@@ -144,7 +152,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
             <div class="<?= $this->container_class ?: 'container-wide' ?>">
                 <div class="row align-items-center">
                     <!-- Linke Headline (Mobile: order-2) -->
-                    <div class="col-lg-6 hero-complex-headline-col order-2 pb-md-gap"
+                    <div class="<?= $headlineColClass ?> hero-complex-headline-col order-2 pb-md-gap"
                          <?php if ($this->animation_type_headline): ?>data-animation="<?= $this->animation_type_headline ?>"<?php endif; ?>>
                         <div class="main-headline-col-inner pe-lg-gap">
                             <?= HeadlineHelper::generateHeadlineHTML(
@@ -155,6 +163,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                     </div>
 
                     <!-- Rechte Spalte: Text & Box (Mobile: order-3) -->
+                    <?php if ($textAndBoxColVisible): ?>
                     <div class="col-lg-6 hero-complex-text-and-box-col order-3">
                         <div class="main-text-col-inner">
                             <?php if ($this->main_text): ?>
@@ -211,6 +220,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                              <?php endif; ?>
                         </div>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const articleNavContainer = document.getElementById('articleNav');
     const articleContent = document.querySelector('.col-12.col-lg-7[data-animation="animate__fadeIn"]');
     let navList = articleNavContainer ? articleNavContainer.querySelector('.list-arrow') : null;
-    const headings = articleContent ? articleContent.querySelectorAll('h2, h3, h4') : [];
+    const headings = articleContent ? articleContent.querySelectorAll('h2') : []; //h3,h4 entfernt
 
     function scrollToAnchorHandler(e) {
         e.stopPropagation(); // Verhindert, dass das Event weiter nach oben blubbert (direkt am Anfang)
@@ -601,7 +601,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
 // Pachtrechner-Funktionalität
 document.addEventListener('DOMContentLoaded', function () {
     // Funktion zur Tausendertrennung
@@ -610,56 +609,53 @@ document.addEventListener('DOMContentLoaded', function () {
             return "Eingabe ist keine Zahl!";
         }
 
-        let temp = String(zahl);
+        // Zahl in String umwandeln und Ganzzahl-Teil extrahieren
+        let ganzzahl = Math.floor(Math.abs(zahl)).toString();
         let nachkomma = "";
-        let vorkomma = "";
-        // let ausgabeZahl = ""; // Wird von der zweiten Schleife überschrieben
 
-        const dotIndex = temp.indexOf(".");
-        if (dotIndex !== -1) {
-            nachkomma = temp.slice(dotIndex + 1);
-            vorkomma = temp.slice(0, dotIndex);
-        } else {
-            vorkomma = temp;
-            nachkomma = "0";
-        }
-
-        // Erste, etwas komplexe Schleife für Tausenderpunkte (aus User-Code)
-        // let tempVorkomma = "";
-        // for (let i = vorkomma.length - 1; i >= 0; i--) {
-        //     tempVorkomma = vorkomma[i] + tempVorkomma;
-        //     if ((vorkomma.length - 1 - i) % 3 === 0 && i !== 0 && (vorkomma.length - 1 - i) !== 0) {
-        //          tempVorkomma = tz + tempVorkomma;
-        //     }
-        // }
-        // ausgabeZahl = tempVorkomma; // Wird von der nächsten Schleife überschrieben
-
-        // Korrektur/Standard: Tausenderpunkte bei Zahlen wie 100, 1000 etc. richtig setzen
-        let c = 0;
-        let tempVorkomma = ""; // Sicherstellen, dass es hier neu initialisiert wird
-        for (let i = vorkomma.length - 1; i >= 0; i--) {
-            tempVorkomma = vorkomma[i] + tempVorkomma;
-            c++;
-            if (c % 3 === 0 && i !== 0) {
-                tempVorkomma = tz + tempVorkomma;
+        // Nachkommastellen behandeln je nach Modus
+        if (modus === 1) {
+            const originalStr = String(zahl);
+            const dotIndex = originalStr.indexOf(".");
+            if (dotIndex !== -1) {
+                nachkomma = originalStr.slice(dotIndex + 1);
+            } else {
+                nachkomma = "0";
             }
         }
-        let ausgabeZahl = tempVorkomma; // Zuweisung des korrekten Ergebnisses
 
-
-        if (modus === 0) {
-            // bleibt so
-        } else if (modus === 1) {
-            ausgabeZahl = ausgabeZahl + "," + nachkomma;
-        } else if (modus === 2) {
-            ausgabeZahl = ausgabeZahl + ",00";
-        } else if (modus === 3) {
-            ausgabeZahl = ausgabeZahl + ",-";
-        } else if (modus === 4) {
-            ausgabeZahl = ausgabeZahl + ",--";
+        // Tausendertrennung von rechts nach links
+        let result = "";
+        for (let i = ganzzahl.length - 1, count = 0; i >= 0; i--, count++) {
+            if (count > 0 && count % 3 === 0) {
+                result = tz + result;
+            }
+            result = ganzzahl[i] + result;
         }
 
-        return ausgabeZahl;
+        // Vorzeichen wieder hinzufügen falls negativ
+        if (zahl < 0) {
+            result = "-" + result;
+        }
+
+        // Nachkommastellen je nach Modus anhängen
+        switch (modus) {
+            case 1:
+                result += "," + nachkomma;
+                break;
+            case 2:
+                result += ",00";
+                break;
+            case 3:
+                result += ",-";
+                break;
+            case 4:
+                result += ",--";
+                break;
+            // case 0: bleibt ohne Nachkommastellen
+        }
+
+        return result;
     }
 
     const pachtrechnerInstances = document.querySelectorAll('.pachtrechner-instance');
@@ -708,12 +704,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Elemente innerhalb des Formulars
         const pachtrechnerHaInput = pachtrechnerForm.querySelector('.js-pachtrechner-ha-input');
-        const resetHaButton = pachtrechnerForm.querySelector('.js-reset-ha-button'); 
+        const resetHaButton = pachtrechnerForm.querySelector('.js-reset-ha-button');
         const pachtrechnerCheckButton = pachtrechnerForm.querySelector('.js-pachtrechner-check-btn');
         const pachtrechnerInputError = pachtrechnerForm.querySelector('.js-pachtrechner-input-error');
 
         // Elemente innerhalb des Ergebnisbereichs
-        const sizeHaSpan = pachtrechnerErgebnis.querySelector('.js-size-ha'); 
+        const sizeHaSpan = pachtrechnerErgebnis.querySelector('.js-size-ha');
         const jahresPachtSpan = pachtrechnerErgebnis.querySelector('.js-jahres-pacht');
         const barRangeStartSpan = pachtrechnerErgebnis.querySelector('.js-bar-range-start');
         const barRangeEndSpan = pachtrechnerErgebnis.querySelector('.js-bar-range-end');
@@ -755,9 +751,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (resetHaButton) {
             resetHaButton.addEventListener('click', function () {
                 if (pachtrechnerErgebnis) pachtrechnerErgebnis.classList.add('d-none');
-                if (pachtrechnerForm) pachtrechnerForm.classList.remove('d-none'); 
+                if (pachtrechnerForm) pachtrechnerForm.classList.remove('d-none');
 
-                if (randomTextNTop > 0) { 
+                if (randomTextNTop > 0) {
                     const topElement = document.getElementById('calculator_img_text_top_' + randomTxtTop);
                     if (topElement) {
                         topElement.classList.add('d-none');
@@ -778,13 +774,25 @@ document.addEventListener('DOMContentLoaded', function () {
                     const barRangeStart = 4251 * ha;
                     const barRangeEnd = 14667 * ha;
 
-                    if (sizeHaSpan) sizeHaSpan.textContent = ha.toString(); 
+                    if (sizeHaSpan) sizeHaSpan.textContent = ha.toString();
                     if (jahresPachtSpan) jahresPachtSpan.textContent = tausenderpunkte(jahresPacht, 0, ".");
                     if (barRangeStartSpan) barRangeStartSpan.textContent = tausenderpunkte(barRangeStart, 0, ".");
                     if (barRangeEndSpan) barRangeEndSpan.textContent = tausenderpunkte(barRangeEnd, 0, ".");
 
                     if (pachtrechnerErgebnis) pachtrechnerErgebnis.classList.remove('d-none');
-                    if (pachtrechnerForm) pachtrechnerForm.classList.add('d-none'); 
+                    if (pachtrechnerForm) pachtrechnerForm.classList.add('d-none');
+
+                    // Scroll zum Ergebnis-Container
+                    if (pachtrechnerErgebnis) {
+                        const headerOffset = document.querySelector('header') ? document.querySelector('header').offsetHeight : 0;
+                        const elementPosition = pachtrechnerErgebnis.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 20; // 20px zusätzlicher Abstand
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth"
+                        });
+                    }
 
                     if (barRangePercentDiv) {
                         const percent = (jahresPacht * 100) / barRangeEnd;
@@ -794,7 +802,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }, 50);
                     }
 
-                    if (randomTextNTop > 0) { 
+                    if (randomTextNTop > 0) {
                         const topElement = document.getElementById('calculator_img_text_top_' + randomTxtTop);
                         if (topElement) {
                             topElement.classList.remove('d-none');
@@ -827,4 +835,181 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
+});
+
+// Meinungsumfrage-Formular
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('meinungsumfrage');
+    if (!form) {
+        return; // Formular nicht auf dieser Seite vorhanden
+    }
+
+    // Datentransfer aus dem Div in die Formularfelder - ENTFERNT, da Werte jetzt direkt in hidden fields stehen
+    // const dataDiv = document.querySelector('div[data-form-umfrage_berater]');
+    // if (dataDiv) { ... }
+
+    // Elemente selektieren
+    const formBody = form.querySelector('.formbody');
+    const radioGroups = Array.from(form.querySelectorAll('.widget-radio'));
+    const gruendeTextareaWidget = form.querySelector('.widget-textarea');
+    const submitButtonWidget = form.querySelector('.widget-submit');
+    const globalBackButton = form.querySelector('.back-btn .btn'); // Der neue globale Zurück-Button (das Span darin)
+    const successMessage = form.querySelector('.alert.alert-primary.text-center');
+
+    let currentVisibleQuestionIndex = 0;
+
+    // Alle Radio-Gruppen außer der ersten, die Textarea und den Submit-Button initial ausblenden
+    radioGroups.forEach((group, index) => {
+        if (index > 0) {
+            group.style.display = 'none';
+        }
+    });
+    if (gruendeTextareaWidget) {
+        gruendeTextareaWidget.style.display = 'none';
+    }
+    if (submitButtonWidget) {
+        submitButtonWidget.style.display = 'none';
+    }
+    if (globalBackButton) {
+        globalBackButton.style.display = 'none';
+    }
+    if (successMessage) {
+        successMessage.style.display = 'none';
+    }
+
+    // Event-Listener für die Radio-Buttons hinzufügen
+    radioGroups.forEach((group, index) => {
+        const radios = Array.from(group.querySelectorAll('input[type="radio"]'));
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                // Die dynamische Erstellung der Back-Buttons hier wurde entfernt
+                handleRadioChange(index, radio.value);
+            });
+        });
+    });
+
+    // Event-Listener für den globalen Zurück-Button
+    if (globalBackButton) {
+        globalBackButton.addEventListener('click', () => {
+            handleBackButtonClick();
+        });
+    }
+
+    function showSuccessAndSubmit() {
+        // Der Zurück-Button-Container (.back-btn) soll ausgeblendet werden.
+        // Annahme: globalBackButton ist das Span, der Container ist .back-btn im formBody
+        const backButtonContainer = form.querySelector('.formbody .back-btn'); // Genauer selektieren, falls es im formBody ist
+        if (backButtonContainer) {
+            backButtonContainer.style.display = 'none';
+        }
+
+        // Die Erfolgsmeldung (.alert) anzeigen. Sie wird nicht mehr verschoben.
+        if (successMessage) {
+            successMessage.style.display = 'block';
+        }
+
+        // Kurze Verzögerung, damit der User die Nachricht sieht, bevor die Seite ggf. neu lädt
+        setTimeout(() => {
+            form.submit();
+        }, 1500); // 1,5 Sekunden
+    }
+
+    function handleRadioChange(selectedIndex, selectedValue) {
+        currentVisibleQuestionIndex = selectedIndex; // Index der Frage, die gerade beantwortet wurde
+
+        if (radioGroups[selectedIndex]) {
+            radioGroups[selectedIndex].style.display = 'none';
+        }
+
+        const nextIndex = selectedIndex + 1;
+
+        if (selectedIndex === 0) { // Erste Radio-Gruppe
+            if (selectedValue === 'Nein') {
+                if (gruendeTextareaWidget) gruendeTextareaWidget.style.display = 'block';
+                if (submitButtonWidget) {
+                     submitButtonWidget.style.display = 'block';
+                     // Event Listener für den expliziten Submit-Button im "Nein"-Pfad
+                     const neinSubmitBtn = submitButtonWidget.querySelector('button[type="submit"]');
+                     if(neinSubmitBtn && !neinSubmitBtn.dataset.listenerAttached) {
+                        neinSubmitBtn.addEventListener('click', (e) => {
+                            e.preventDefault(); // Verhindert sofortiges Absenden durch Button-Klick
+                            showSuccessAndSubmit();
+                        });
+                        neinSubmitBtn.dataset.listenerAttached = 'true';
+                     }
+                }
+                if (globalBackButton) globalBackButton.style.display = 'inline-block'; // Zurück anzeigen, da Textarea sichtbar ist
+                currentVisibleQuestionIndex = -1; // Spezialfall für Textarea, nächste reguläre Frage ist nicht direkt folgend
+                for (let i = nextIndex; i < radioGroups.length; i++) {
+                    if (radioGroups[i]) radioGroups[i].style.display = 'none';
+                }
+                return;
+            } else { // "Ja" wurde gewählt
+                if (gruendeTextareaWidget) gruendeTextareaWidget.style.display = 'none';
+                if (submitButtonWidget) submitButtonWidget.style.display = 'none';
+                // Fallthrough zur normalen Logik für die nächste Frage
+            }
+        }
+
+        // Regulärer Ablauf: nächste Radio-Gruppe anzeigen
+        if (nextIndex < radioGroups.length) {
+            if (radioGroups[nextIndex]) {
+                radioGroups[nextIndex].style.display = 'block';
+                currentVisibleQuestionIndex = nextIndex;
+                if (globalBackButton) globalBackButton.style.display = 'inline-block';
+            }
+        } else {
+            // Letzte Radio-Gruppe wurde beantwortet (und es war nicht der "Nein"-Pfad der ersten Frage)
+            const isNeinPathActive = gruendeTextareaWidget && gruendeTextareaWidget.style.display === 'block';
+            if (!isNeinPathActive) {
+                showSuccessAndSubmit();
+            }
+        }
+    }
+
+    function handleBackButtonClick() {
+        let previousRadioGroupToClear = null;
+
+        if (currentVisibleQuestionIndex === -1) { // Wir sind im "Nein"-Pfad (Textarea sichtbar)
+            if (gruendeTextareaWidget) gruendeTextareaWidget.style.display = 'none';
+            if (submitButtonWidget) submitButtonWidget.style.display = 'none';
+            if (radioGroups[0]) {
+                radioGroups[0].style.display = 'block';
+                previousRadioGroupToClear = radioGroups[0];
+            }
+            currentVisibleQuestionIndex = 0;
+            if (globalBackButton) globalBackButton.style.display = 'none'; // Bei erster Frage keinen Zurück-Button
+        } else if (currentVisibleQuestionIndex > 0) {
+            if (radioGroups[currentVisibleQuestionIndex]) {
+                radioGroups[currentVisibleQuestionIndex].style.display = 'none';
+            }
+
+            const prevIndex = currentVisibleQuestionIndex - 1;
+            if (radioGroups[prevIndex]) {
+                radioGroups[prevIndex].style.display = 'block';
+                previousRadioGroupToClear = radioGroups[prevIndex];
+                currentVisibleQuestionIndex = prevIndex;
+                if (prevIndex === 0) {
+                    if (globalBackButton) globalBackButton.style.display = 'none';
+                } else {
+                    if (globalBackButton) globalBackButton.style.display = 'block';
+                }
+            }
+            // Falls Textarea/Submit vom "Nein"-Pfad noch sichtbar waren
+            if (gruendeTextareaWidget && gruendeTextareaWidget.style.display === 'block') {
+                gruendeTextareaWidget.style.display = 'none';
+            }
+            if (submitButtonWidget && submitButtonWidget.style.display === 'block') {
+                submitButtonWidget.style.display = 'none';
+            }
+        }
+
+        // Auswahl der Radio-Buttons in der wieder angezeigten Gruppe zurücksetzen
+        if (previousRadioGroupToClear) {
+            const radiosToClear = previousRadioGroupToClear.querySelectorAll('input[type="radio"]');
+            radiosToClear.forEach(radio => {
+                radio.checked = false;
+            });
+        }
+    }
 });

@@ -1,14 +1,15 @@
+<?php use Contao\FilesModel; ?>
 <div class="layout_full block<?= $this->class ?>">
 
     <div class="content--element head-hero ce_rsce_head_hero container-wide">
         <div class="ce--inner">
-            <div class="breadcrumb-container mb-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
+            <div class="breadcrumb-container mb-4 mb-md-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
                 <!-- indexer::stop -->
                 {{insert_module::20}}
                 <!-- indexer::continue -->
             </div>
             <div class="row">
-                <div class="col-12 col-xl-11">
+                <div class="col-12 col-xl-10">
                     <div class="ce--headline hl-h1">
                         <h1 data-animation="animate__fadeIn">
                             <?= $this->headline ?>
@@ -20,12 +21,40 @@
                 </div>
             </div>
             <div class="image-section mt-gap" data-animation="animate__fadeIn">
-                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, strip_tags($this->teaser), $this->headline, ["1300", "590", "crop"], null, false); ?>
+                <?php if ($this->videoSRC): ?>
+                    <?php
+                    $videoPosterPath = null;
+                    if ($this->videoPosterSRC) {
+                        $posterModel = \Contao\FilesModel::findByUuid($this->videoPosterSRC);
+                        if ($posterModel) {
+                            $videoPosterPath = $posterModel->path;
+                        }
+                    }
+                    // Das aktuelle Objekt $this->User->name ist vermutlich ein Platzhalter und sollte durch etwas Sinnvolleres ersetzt werden,
+                    // z.B. den Nachrichten-Titel ($this->headline) oder eine spezifische Beschreibung für das Video, falls vorhanden.
+                    // Für den Moment verwende ich $this->headline für den Namen und $this->teaser für die Beschreibung.
+                    // Der Parameter uploadDate kann aus $this->date oder $this->timestamp generiert werden.
+                    $uploadDate = date('c', (int)$this->timestamp);
+                    echo \Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo(
+                        $this->videoSRC,
+                        'w-100 ratio ratio-16x9', /* Klassen für das Video */
+                        $this->headline, /* Name des Videos */
+                        strip_tags((string)$this->teaser), /* Beschreibung des Videos */
+                        $uploadDate, /* Upload-Datum */
+                        $videoPosterPath, /* Pfad zum Posterbild */
+                        'playsinline controls', /* Video-Parameter ohne Autoplay, Mute, Loop */
+                        true /* Lazy Loading */
+                    );
+                    ?>
+                <?php else: ?>
+                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, strip_tags((string)$this->teaser), $this->headline, ["1300", "590", "crop"], null, false); ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 
-    <div class="mt-gap container">
+    <?php if ($this->text || !$this->hideAuthorAndNav): ?>
+    <div class="mt-gap container content--element">
         <div class="row gx-4">
             <div class="col-12 col-lg-7" data-animation="animate__fadeIn">
                   <?php if ($this->hasSubHeadline): ?>
@@ -34,7 +63,7 @@
                 <?= $this->text ?>
             </div>
             <div class="col12 col-lg-5" data-animation="animate__fadeIn">
-
+                <?php if (!$this->hideAuthorAndNav): ?>
                 <div class="article-info <?php if (!$this->authorImage): ?>pt-1<?php endif;?>">
                     <?php $this->block('info'); ?>
 
@@ -68,15 +97,17 @@
 
                     <?php $this->endblock(); ?>
                     <div id="articleNav">
-                        <strong class="d-block mt-2 mb-1"><?= $GLOBALS['TL_LANG']['MSC']['jumpToLabel'] ?></strong>
+                        <strong class="d-block mt-3 mb-2"><?= $GLOBALS['TL_LANG']['MSC']['jumpToLabel'] ?></strong>
                         <ul class="list-arrow">
 
                         </ul>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
+    <?php endif; ?>
 </div>
 
 <style>#stoerer-130-1 .stoerer-inner-wrapper .stoerer-trigger {

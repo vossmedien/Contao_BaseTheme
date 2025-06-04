@@ -44,7 +44,7 @@ $enable-rounded: true;
 $icon-type: ".fak";
 
 $spacer: 2em;
-$spacer-sm: $spacer/2;
+$spacer-sm: $spacer/1.5;
 $spacer-lg: $spacer*2.15;
 
 $grid-gutter-width: 30px;
@@ -69,8 +69,8 @@ $font-weight-black: 600;
 $font-size-xs: 10px;
 $font-size-sm: 14px;
 $font-size-base: 16px;
-$font-size-lg: clamp(25px, 1.5vw, 30px);
-$font-size-xl: clamp(30px, 1.5vw, 50px);
+$font-size-lg: 25px;
+$font-size-xl: 50px;
 
 $headings-font-family: null;
 $headings-font-style: null;

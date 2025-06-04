@@ -5,6 +5,7 @@ $GLOBALS['TL_LANG']['tl_module']['auctionListingFilters'] = ['Auktions-Filter', 
 $GLOBALS['TL_LANG']['tl_module']['auctionSortRules'] = ['Sortierregeln (Modul)', 'Definieren Sie die Sortierreihenfolge der Auktionen für dieses Modul. Eine Regel pro Zeile im Format "Feldname sortierrichtung" (z.B. "leistung_mw asc" oder "countDown desc"). Die Regeln werden in der angegebenen Reihenfolge angewendet. Gültige Feldnamen können Sie z.B. über die Rohdaten-Vorschau eines Inhaltselements des Typs "Auktionselement" einsehen.'];
 $GLOBALS['TL_LANG']['tl_module']['auctionSortBy'] = ['Sortieren nach Feld (veraltet für Modul)', 'Wählen Sie das Feld, nach dem die Auktionsliste sortiert werden soll. Bitte verwenden Sie stattdessen das neue Feld "Sortierregeln (Modul)".'];
 $GLOBALS['TL_LANG']['tl_module']['auctionSortDirection'] = ['Sortierrichtung (veraltet für Modul)', 'Wählen Sie die Sortierrichtung. Bitte verwenden Sie stattdessen das neue Feld "Sortierregeln (Modul)".'];
+$GLOBALS['TL_LANG']['tl_module']['perPage'] = ['Einträge pro Seite', 'Anzahl der Auktionen, die pro Seite angezeigt werden sollen (Standard: 12).'];
 
 $GLOBALS['TL_LANG']['tl_module']['auctionRawDataPreviewMod_label'] = ['Vorschau Auktions-Rohdaten (Modul)', 'Zeigt eine Vorschau der Rohdaten einer Beispielauktion für dieses Modul. Diese Feldnamen können für die Filter- und Sortierdefinition verwendet werden. Das Feld selbst wird nicht gespeichert.'];
 

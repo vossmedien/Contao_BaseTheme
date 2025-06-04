@@ -19,3 +19,9 @@ $GLOBALS['TL_LANG']['tl_news']['pdfDownload'] = ['PDF-Download', 'Wählen Sie ei
 $GLOBALS['TL_LANG']['tl_news']['infographicDownload'] = ['Infografik-Download', 'Wählen Sie hier die Infografik-Datei zum Download aus.'];
 $GLOBALS['TL_LANG']['tl_news']['multiSRC'] = ['Bildergalerie', 'Wählen Sie hier die Bilder für die Galerie aus.'];
 $GLOBALS['TL_LANG']['tl_news']['orderSRC'] = ['Sortierreihenfolge Bildergalerie', 'Gespeicherte Sortierreihenfolge für die Bildergalerie.'];
+
+// Neue Felder
+$GLOBALS['TL_LANG']['tl_news']['hideAuthorAndNav'] = ['Autoren-Info/Navigation ausblenden', 'Blendet die Autoreninformationen und die Artikelnavigation (vorheriger/nächster Artikel) aus.'];
+$GLOBALS['TL_LANG']['tl_news']['video_legend'] = 'Video-Einstellungen';
+$GLOBALS['TL_LANG']['tl_news']['videoSRC'] = ['Video-Datei', 'Wählen Sie eine Videodatei (mp4, webm) aus.'];
+$GLOBALS['TL_LANG']['tl_news']['videoPosterSRC'] = ['Video-Posterbild', 'Wählen Sie ein Posterbild für das Video aus.'];

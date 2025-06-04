@@ -7,14 +7,14 @@
     <?php $this->endblock(); ?>
     -->
 
-    <?php if ($this->addImage): ?>
+    <?php if ($this->listImage): ?>
         <a href="<?= $this->link ?>">
             <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->listImage, strip_tags($this->teaser), $this->headline, ["360", "265", "crop"], null, false); ?>
         </a>
     <?php endif; ?>
 
     <div class="p-2 d-flex flex-column flex-grow-1">
-        <h2 class="h3 mb-2 fw-normal"><?= $this->headline ?></h2>
+        <h2 class="h3 mb-2 fw-normal"><a href="<?= $this->link ?>"><?= $this->headline ?></a></h2>
 
         <?php if ($this->hasText || $this->hasTeaser): ?>
             <p class="more mt-auto">

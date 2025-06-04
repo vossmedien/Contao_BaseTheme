@@ -7,7 +7,6 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 
 // __dirname ist jetzt /Users/christian.voss/PhpstormProjects/Caeli-Relaunch/files/base/layout/_vendor
 

@@ -34,6 +34,10 @@
   position: relative;
 }
 
+.content--element:has([class*="pull"]) {
+  z-index: 5 !important;
+}
+
 .pull-down {
   margin-bottom: calc(-1 * (var(--main-gap) * 2)) !important;
 }
@@ -76,6 +80,16 @@
   }
 }
 
+.pull-down.pull-down-large {
+  margin-bottom: calc(var(--main-gap) * -1 * 5) !important;
+}
+
+
+.mod_article:has(.pull-down.pull-down-large) {
+  & + .mod_article > .article-content > .content--element:first-child {
+    padding-top: calc(var(--main-gap) * 5);
+  }
+}
 
 
 @each $breakpoint, $size in $grid-breakpoints {

@@ -85,6 +85,10 @@ class AuctionListingController extends AbstractFrontendModuleController
     {
         $this->logger->debug('[AuctionListingController] getResponse gestartet für Modul ID ' . $model->id);
 
+        // Paginierungs-Parameter
+        $page = max(1, (int)$request->query->get('page', 1));
+        $itemsPerPage = (int)($model->perPage ?: 12); // Default 12 Items pro Seite
+
         // 1. Filter aus dem Request lesen und STRUKTURIEREN (für z.B. externes Filter-Modul)
         $rawRequestFilters = $request->query->all();
         // Entferne Parameter, die keine direkten Filter für den AuctionService sind oder separat behandelt werden
@@ -126,12 +130,35 @@ class AuctionListingController extends AbstractFrontendModuleController
         // Prüfen, ob Daten neu geladen werden sollen (aus Request)
         $forceRefresh = $request->query->has('refresh') && $request->query->get('refresh') === '1';
 
-        // 5. Auktionen mit finalen Filtern und Sortierung abrufen
-        $auctions = $this->auctionService->getAuctions($finalFilters, $forceRefresh, $sortBy, $sortDirection, $sortRules);
-        $this->logger->info('[AuctionListingController] ' . count($auctions) . ' Auktionen vom Service erhalten.');
+        // 5. Alle Auktionen mit finalen Filtern und Sortierung abrufen
+        $allAuctions = $this->auctionService->getAuctions($finalFilters, $forceRefresh, $sortBy, $sortDirection, $sortRules);
+        $this->logger->info('[AuctionListingController] ' . count($allAuctions) . ' Auktionen vom Service erhalten.');
+        
+        // 6. Paginierung berechnen
+        $totalItems = count($allAuctions);
+        $totalPages = (int)ceil($totalItems / $itemsPerPage);
+        $page = min($page, max(1, $totalPages)); // Page korrigieren falls zu hoch
+        
+        $offset = ($page - 1) * $itemsPerPage;
+        $auctions = array_slice($allAuctions, $offset, $itemsPerPage);
+        
+        // Paginierungs-Informationen
+        $pagination = [
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalItems' => $totalItems,
+            'itemsPerPage' => $itemsPerPage,
+            'hasNextPage' => $page < $totalPages,
+            'hasPrevPage' => $page > 1,
+            'nextPage' => $page < $totalPages ? $page + 1 : null,
+            'prevPage' => $page > 1 ? $page - 1 : null,
+            'startItem' => $totalItems > 0 ? $offset + 1 : 0,
+            'endItem' => min($offset + $itemsPerPage, $totalItems)
+        ];
         
         // Template-Variablen setzen
         $template->auctions = $auctions;
+        $template->pagination = $pagination;
         $template->filters = $finalFilters;
 
         // Ausgewähltes Item-Template aus dem Modul-Modell holen oder Default setzen

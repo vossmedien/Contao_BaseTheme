@@ -52,7 +52,7 @@ html body main .mod_newsreader {
     }
   }
 
-  .content--element {
+  .content--element:not(.ce_rsce_head_hero) {
     margin-block: 2rem;
   }
 
@@ -71,14 +71,16 @@ html body main .mod_newsreader {
 .article-info {
   background-color: var(--bs-primary);
   color: var(--bs-secondary);
-  padding: 100px 2rem 1.5rem 2rem;
+  //padding: 100px 2rem 1.5rem 2rem;
+  padding: 1.5rem 2rem 1.5rem 2rem;
   position: sticky;
-  top: 250px;
-  margin-top: var(--main-gap);
+  //top: 250px;
+  top: 190px;
+  //margin-top: var(--main-gap);
 
   .author-img {
     position: relative;
-    margin-top: calc(-1 * (100px + 50px));
+    //margin-top: calc(-1 * (100px + 50px));
     margin-bottom: 1.25rem;
   }
 

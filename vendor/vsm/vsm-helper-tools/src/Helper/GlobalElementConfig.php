@@ -169,6 +169,8 @@ class GlobalElementConfig
             'btn-outline-tertiary with-arrow' => 'Tertiär-Farbe (Outline) mit Pfeil',
 
             // CurrentColor-Buttons
+            'btn-currentColor' => 'Farbübernahme vom Elternelement',
+            'btn-currentColor with-arrow' => 'Farbübernahme vom Elternelement mit Pfeil',
             'btn-outline-currentColor' => 'Farbübernahme vom Elternelement (Outline)',
             'btn-outline-currentColor with-arrow' => 'Farbübernahme vom Elternelement (Outline) mit Pfeil',
 
@@ -206,15 +208,9 @@ class GlobalElementConfig
         ];
     }
 
-    public static function getButtonConfig()
+    public static function getButtonConfig($includeAnimation = true)
     {
-        return [
-            'animation_type' => [
-                'label' => ['Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'],
-                'inputType' => 'select',
-                'options' => self::getAnimations(),
-                'eval' => ['chosen' => 'true']
-            ],
+        $config = [
             'link_text' => [
                 'label' => ['Link-Beschriftung', ''],
                 'inputType' => 'text',
@@ -269,5 +265,19 @@ class GlobalElementConfig
                 ),
             ),
         ];
+
+        // Animation nur hinzufügen wenn gewünscht
+        if ($includeAnimation) {
+            $config = [
+                'animation_type' => [
+                    'label' => ['Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'],
+                    'inputType' => 'select',
+                    'options' => self::getAnimations(),
+                    'eval' => ['chosen' => 'true']
+                ]
+            ] + $config;
+        }
+
+        return $config;
     }
 }

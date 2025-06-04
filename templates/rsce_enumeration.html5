@@ -96,7 +96,7 @@ if ($showTextRight) {
 
                     <?php if ($items && count($items) > 0 && $itemsPerColumn > 0) : ?>
                         <div class="enumeration--items-wrapper" <?php if (!$animateItemsIndividually && $animationEnumeration): ?>data-animation="<?php echo $animationEnumeration; ?>"<?php endif; ?>>
-                            <div class="row gx-md-5">
+                            <div class="row gx-md-3">
                                 <?php
                                 $itemChunks = array_chunk($items, $itemsPerColumn);
                                 $totalItemsRenderedGlobal = 0;

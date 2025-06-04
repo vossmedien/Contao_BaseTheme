@@ -7,20 +7,14 @@
     <?php $this->endblock(); ?>
     -->
 
-    <?php if ($this->addImage): ?>
+    <?php if ($this->listImage): ?>
         <a href="<?= $this->link ?>">
-            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, $this->headline, '', ["380px", "270px", "crop"], '', false); ?>
+            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->listImage, strip_tags($this->teaser), $this->headline, ["360", "265", "crop"], null, false); ?>
         </a>
-    <?php else: ?>
-        <div class="d-flex justify-content-center align-items-center bg-light" style="min-height: 250px;">
-                <svg width="87" height="86" viewBox="0 0 87 86" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0.804688 10.1598C0.804688 7.67138 1.80539 5.28493 3.58666 3.52539C5.36792 1.76584 7.78384 0.777344 10.3029 0.777344H76.7906C79.3097 0.777344 81.7256 1.76584 83.5069 3.52539C85.2882 5.28493 86.2889 7.67138 86.2889 10.1598V75.8366C86.2889 78.325 85.2882 80.7115 83.5069 82.471C81.7256 84.2305 79.3097 85.219 76.7906 85.219H10.3029C7.78384 85.219 5.36792 84.2305 3.58666 82.471C1.80539 80.7115 0.804688 78.325 0.804688 75.8366V10.1598ZM76.7906 10.1598H10.3029V47.3141L26.3312 34.6479C27.1735 33.9817 28.2204 33.6187 29.2994 33.6187C30.3784 33.6187 31.4253 33.9817 32.2676 34.6479L52.6888 50.7856L59.1856 44.3727C60.0762 43.4933 61.284 42.9992 62.5433 42.9992C63.8026 42.9992 65.0103 43.4933 65.9009 44.3727L76.7906 55.1297V10.1598ZM10.3029 75.8366H76.7906V68.3964L62.5433 54.3228L56.4026 60.3885C55.5763 61.2052 54.4741 61.6923 53.3069 61.7563C52.1397 61.8204 50.9897 61.457 50.0768 60.7356L29.2994 44.3117L10.3029 59.3236V75.8366Z" fill="#113534"/>
-                </svg>
-        </div>
     <?php endif; ?>
 
     <div class="p-2 d-flex flex-column flex-grow-1">
-        <h2 class="h3 mb-2 fw-normal"><?= $this->headline ?></h2>
+        <h2 class="h3 mb-2 fw-normal"><a href="<?= $this->link ?>"><?= $this->headline ?></a></h2>
 
         <?php if ($this->hasText || $this->hasTeaser): ?>
             <p class="more mt-auto">
@@ -31,6 +25,8 @@
         <?php endif; ?>
     </div>
 </div>
+
+
 
 <?php
 

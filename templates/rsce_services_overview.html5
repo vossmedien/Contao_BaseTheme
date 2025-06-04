@@ -57,7 +57,7 @@ $rand = random_int(0, 99999); // Für eindeutigen Lightbox-Selektor
                 </button>
             </div>
 
-            <div class="row g-0 g-md-5" >
+            <div class="row g-0" >
                 <!-- Desktop List (Hidden on Mobile) -->
                 <div class="col-md-6 d-none d-md-block">
                     <ul class="services-list">
@@ -70,11 +70,11 @@ $rand = random_int(0, 99999); // Für eindeutigen Lightbox-Selektor
                             <li data-animation="<?php echo $this->animation_type; ?>" class="service-item" data-index="<?php echo $index; ?>">
                                 <?php if ($service->link): ?>
                                 <a href="<?php echo $service->link; ?>" class="service-link">
-                                    <h3 class="mb-0 h5"><?php if ($this->show_arrow): ?><i class="fasl fa-long-arrow-right"></i> <?php endif; ?><?php echo $service->title; ?></h3>
+                                    <h3 class="mb-0 h6"><?php if ($this->show_arrow): ?><i class="fasl fa-long-arrow-right"></i> <?php endif; ?><?php echo $service->title; ?></h3>
                                 </a>
                                 <?php else: ?>
                                 <div class="service-link"> <!-- Non-clickable item -->
-                                     <h3 class="mb-0 h5"><?php if ($this->show_arrow): ?><i class="fasl fa-long-arrow-right"></i> <?php endif; ?><?php echo $service->title; ?></h3>
+                                     <h3 class="mb-0 h6"><?php if ($this->show_arrow): ?><i class="fasl fa-long-arrow-right"></i> <?php endif; ?><?php echo $service->title; ?></h3>
                                 </div>
                                 <?php endif; ?>
                             </li>

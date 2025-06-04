@@ -22,7 +22,7 @@ use CaeliWind\CaeliAuctionConnect\Dca\ModuleDcaHelper;
  * Frontend modules
  */
 // Listing Modul: Mit Weiterleitung zur Detail-Seite
-$GLOBALS['TL_DCA']['tl_module']['palettes'][AuctionListingController::TYPE] = '{title_legend},name,headline,type;{config_legend},jumpTo,auctionItemTemplate;{filter_legend},auctionListingFilters,auctionRawDataPreviewMod;{sort_legend},auctionSortRules;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][AuctionListingController::TYPE] = '{title_legend},name,headline,type;{config_legend},jumpTo,auctionItemTemplate,perPage;{filter_legend},auctionListingFilters,auctionRawDataPreviewMod;{sort_legend},auctionSortRules;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 // Detail Modul: Mit Weiterleitung zurück zur Listing-Seite
 $GLOBALS['TL_DCA']['tl_module']['palettes'][AuctionDetailController::TYPE] = '{title_legend},name,headline,type;{config_legend},jumpTo;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
@@ -82,4 +82,12 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['auctionSortDirection'] = [
     'default'   => 'asc',
     'eval'      => ['chosen' => true, 'tl_class' => 'w50'],
     'sql'       => "varchar(4) NOT NULL default 'asc'"
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['perPage'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_module']['perPage'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => ['rgxp' => 'natural', 'tl_class' => 'w50'],
+    'sql'       => "smallint(5) unsigned NOT NULL default '12'"
 ];

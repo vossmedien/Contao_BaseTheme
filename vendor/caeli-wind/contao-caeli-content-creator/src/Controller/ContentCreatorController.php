@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace CaeliWind\ContaoCaeliContentCreator\Controller;
 
-use CaeliWind\ContaoCaeliContentCreator\Model\ContentCreatorModel;
+use CaeliWind\ContaoCaeliContentCreator\Model\CaeliContentCreatorModel;
 use CaeliWind\ContaoCaeliContentCreator\Service\GrokApiService;
 use CaeliWind\ContaoCaeliContentCreator\Service\NewsContentGenerator;
 use CaeliWind\ContaoCaeliContentCreator\Service\DuplicateChecker;
@@ -30,6 +30,7 @@ use Contao\Message;
 use Contao\NewsArchiveModel;
 use Contao\NewsModel;
 use Contao\System;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,9 +47,9 @@ class ContentCreatorController extends AbstractBackendController
         private readonly NewsContentGenerator $newsContentGenerator,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly PromptBuilder $promptBuilder,
-        private readonly DuplicateChecker $duplicateChecker
+        private readonly DuplicateChecker $duplicateChecker,
+        private readonly LoggerInterface $logger
     ) {
-        // Kein parent::__construct() mehr in Contao 5.5 / Symfony 6
     }
 
     /**
@@ -60,108 +61,28 @@ class ContentCreatorController extends AbstractBackendController
         try {
             $this->framework->initialize();
 
-            // Debug-Ausgabe
-            $systemAdapter = $this->framework->getAdapter(System::class);
-            $logFile = $systemAdapter->getContainer()->getParameter('kernel.logs_dir') . '/preview-debug.log';
-            file_put_contents($logFile, "Starte Preview mit ID: $id\n", FILE_APPEND);
+            $this->logger->info('Starte Preview', ['id' => $id]);
 
             $inputAdapter = $this->framework->getAdapter(Input::class);
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
+            $systemAdapter = $this->framework->getAdapter(System::class);
 
             // Berechtigungen prüfen
             if (!$this->authorizationChecker->isGranted(ContaoCorePermissions::USER_CAN_ACCESS_MODULE, 'caeli_content_creator')) {
-                file_put_contents($logFile, "Zugriff verweigert\n", FILE_APPEND);
+                $this->logger->warning('Zugriff verweigert für Content Creator', ['id' => $id]);
                 throw new AccessDeniedException('Nicht genügend Berechtigungen für den Zugriff auf dieses Modul.');
             }
 
             // Modell laden
-            $model = ContentCreatorModel::findById($id);
+            $model = CaeliContentCreatorModel::findById($id);
             if (null === $model) {
-                file_put_contents($logFile, "Modell nicht gefunden für ID: $id\n", FILE_APPEND);
+                $this->logger->error('Content Creator Konfiguration nicht gefunden', ['id' => $id]);
                 throw new \InvalidArgumentException('Content Creator-Konfiguration mit ID "'.$id.'" nicht gefunden.');
             }
 
-            // Prüfen, ob Inhalt generiert werden soll
-            $generate = $request->isMethod('POST') && $request->request->has('generate');
-            $publish = $request->isMethod('POST') && $request->request->has('publish');
-            $generatedContent = null;
-            
-            file_put_contents($logFile, "Generate: " . ($generate ? "ja" : "nein") . ", Publish: " . ($publish ? "ja" : "nein") . "\n", FILE_APPEND);
-            
-            if ($generate) {
-                try {
-                    file_put_contents($logFile, "Starte Generierung für Modell mit ID: " . $model->id . "\n", FILE_APPEND);
-                    
-                    // Inhalt generieren
-                    $generatedContent = $this->generateContent($model);
-                    
-                    // Im Modell speichern
-                    $model->previewTitle = $generatedContent['title'] ?? '';
-                    $model->previewTeaser = $generatedContent['teaser'] ?? '';
-                    $model->previewContent = $generatedContent['content'] ?? '';
-                    $model->previewTags = $generatedContent['tags'] ?? '';
-                    
-                    // Sonderzeichen in HTML-Inhalten bereinigen und sicherstellen, dass HTML nicht escaped wird
-                    if (!empty($model->previewContent)) {
-                        // HTML-Entities dekodieren, falls sie in der Antwort enthalten sind
-                        $model->previewContent = html_entity_decode($model->previewContent);
-                        
-                        // Sicherstellen, dass keine Backslashes vor Anführungszeichen in HTML-Attributen stehen
-                        $model->previewContent = stripslashes($model->previewContent);
-                        
-                        // Ersetzen von Unicode-Escapesequenzen
-                        $model->previewContent = preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
-                            return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
-                        }, $model->previewContent);
-                        
-                        // Stellen Sie sicher, dass Bootstrap-Container-Elemente korrekt gerendert werden
-                        $model->previewContent = str_replace('\"', '"', $model->previewContent);
-                        
-                        // Debug-Ausgabe des Inhalts für die Fehlersuche
-                        file_put_contents($logFile, "HTML-Inhalt final (ersten 1000 Zeichen): " . substr($model->previewContent, 0, 1000) . "...\n", FILE_APPEND);
-                        
-                        // Prüfen, ob wichtige HTML-Elemente vorhanden sind
-                        $containsHeadings = preg_match('/<h[2-3][^>]*>/', $model->previewContent);
-                        $containsBootstrap = preg_match('/class="(btn|card|alert|table)/', $model->previewContent);
-                        
-                        file_put_contents($logFile, "HTML-Check: Überschriften vorhanden: " . ($containsHeadings ? 'Ja' : 'Nein') . 
-                                           ", Bootstrap-Elemente vorhanden: " . ($containsBootstrap ? 'Ja' : 'Nein') . "\n", FILE_APPEND);
-                    }
-                    
-                    $model->save();
-                    
-                    file_put_contents($logFile, "Generierung abgeschlossen, Titel: " . $model->previewTitle . "\n", FILE_APPEND);
-                    
-                    // Erfolgsmeldung
-                    $template->message = 'Inhaltsvorschau wurde erfolgreich erstellt.';
-                } catch (\Exception $e) {
-                    file_put_contents($logFile, "Fehler bei der Generierung: " . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n", FILE_APPEND);
-                    throw $e;
-                }
-            }
-            
-            // Veröffentlichen des Inhalts
-            if ($publish && $model->previewTitle && $model->previewContent) {
-                file_put_contents($logFile, "Veröffentliche Inhalt\n", FILE_APPEND);
-                try {
-                    // Nachrichtenbeitrag erstellen
-                    $newsId = $this->newsContentGenerator->createNewsArticle(
-                        $model->newsArchive,
-                        $model->previewTitle,
-                        $model->previewTeaser,
-                        $model->previewContent,
-                        $model->previewTags,
-                        $model->contentElement
-                    );
-
-                    file_put_contents($logFile, "Artikel erfolgreich erstellt mit ID: $newsId\n", FILE_APPEND);
-
-                    // Zurück zum DCA mit Erfolgsmeldung
-                    $controllerAdapter->redirect($controllerAdapter->addToUrl('do=caeli_content_creator&table=tl_caeli_content_creator&act=edit&id='.$id.'&confirmMsg=Inhalt wurde erfolgreich als Beitrag veröffentlicht.', true));
-                } catch (\Exception $e) {
-                    file_put_contents($logFile, "FEHLER: " . $e->getMessage() . "\n", FILE_APPEND);
-                    $template->message = 'Fehler beim Veröffentlichen: ' . $e->getMessage();
-                }
+            // Nur Veröffentlichung hier verarbeiten (Generierung läuft async)
+            if ($request->isMethod('POST') && $request->request->has('publish')) {
+                return $this->handlePublish($model);
             }
 
             // Template erstellen
@@ -172,7 +93,7 @@ class ContentCreatorController extends AbstractBackendController
             // Laden der NewsArchive-Daten
             $newsArchive = NewsArchiveModel::findById($model->newsArchive);
             if (null === $newsArchive) {
-                file_put_contents($logFile, "Nachrichtenarchiv nicht gefunden\n", FILE_APPEND);
+                $this->logger->error('Nachrichtenarchiv nicht gefunden', ['archive_id' => $model->newsArchive]);
                 throw new \InvalidArgumentException('Nachrichtenarchiv nicht gefunden.');
             }
 
@@ -180,9 +101,14 @@ class ContentCreatorController extends AbstractBackendController
             $template->newsArchive = $newsArchive->title;
             $template->contentElement = $model->contentElement;
             $template->topic = $model->topic;
+            $template->modelId = $model->id;
             
-            // Nur wenn es eine Vorschau gibt
-            if ($model->previewTitle && $model->previewContent) {
+            // Prüfe Generierungsstatus
+            $generationStatus = $this->getGenerationStatus($model->id);
+            $template->generationStatus = $generationStatus;
+            
+            // Nur wenn es eine fertige Vorschau gibt
+            if ($model->previewTitle && $model->previewContent && $generationStatus === 'completed') {
                 $template->previewExists = true;
                 $template->previewTitle = $model->previewTitle;
                 
@@ -199,29 +125,13 @@ class ContentCreatorController extends AbstractBackendController
                 $template->previewExists = false;
             }
 
-            // Debug-Informationen aus Logs sammeln
-            $debugInfo = '';
-            if (file_exists($logDir . '/api-debug.log')) {
-                $debugInfo .= "API-Debug-Log:\n" . $this->getLastLogEntries($logDir . '/api-debug.log') . "\n\n";
-            }
-            if (file_exists($logDir . '/newsgen-debug.log')) {
-                $debugInfo .= "News-Generator-Log:\n" . $this->getLastLogEntries($logDir . '/newsgen-debug.log') . "\n\n";
-            }
-            $template->debug_info = $debugInfo;
-
-            // Template parsen
-            $content = $template->parse();
-            file_put_contents($logFile, "Template wurde geparsed\n", FILE_APPEND);
-
-            return new Response($content);
+            return new Response($template->parse());
         } catch (\Exception $e) {
-            // Debug-Logfile für Fehler
-            $logFile = $this->framework->getAdapter(System::class)->getContainer()->getParameter('kernel.logs_dir') . '/preview-error.log';
-            file_put_contents(
-                $logFile,
-                date('Y-m-d H:i:s') . " Fehler in Preview: " . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n\n",
-                FILE_APPEND
-            );
+            $this->logger->error('Fehler in Preview', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
 
             // Einfache Fehleranzeige zurückgeben
             $template = new BackendTemplate('be_wildcard');
@@ -233,286 +143,225 @@ class ContentCreatorController extends AbstractBackendController
     }
 
     /**
-     * AJAX-Endpunkt zum Generieren und Veröffentlichen von Inhalt
+     * AJAX-Endpunkt für asynchrone Content-Generierung
      */
-    #[Route('/publish', name: 'caeli_content_creator_publish', methods: ['POST'])]
-    public function publishContent(Request $request): Response
+    #[Route('/generate/{id}', name: 'caeli_content_creator_generate', methods: ['POST'])]
+    public function generateContent(Request $request, int $id): JsonResponse
     {
-        $id = $request->request->get('id');
-
-        // Modell laden
-        $model = ContentCreatorModel::findById($id);
-        if (null === $model) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Datensatz nicht gefunden'
-            ], Response::HTTP_NOT_FOUND);
-        }
-
-        // Generierte Inhalte aus der Session laden
-        $session = $request->getSession();
-        $sessionKey = 'caeli_content_creator_' . $id;
-        $generatedContent = $session->get($sessionKey);
-
-        if (!$generatedContent) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Kein generierter Inhalt gefunden. Bitte zuerst Inhalt generieren.'
-            ]);
-        }
-
         try {
-            // News-Artikel erstellen mit Bildunterstützung
-            $newsId = $this->newsContentGenerator->createNewsArticle(
-                (int) $model->newsArchive,
-                $generatedContent['title'] ?? 'Generierter Artikel',
-                $generatedContent['teaser'] ?? '',
-                $generatedContent['content'] ?? '',
-                $generatedContent['tags'] ?? '',
-                $model->contentElement
-            );
+            $this->framework->initialize();
 
-            // Session bereinigen
-            $session->remove($sessionKey);
+            // Berechtigungen prüfen
+            if (!$this->authorizationChecker->isGranted(ContaoCorePermissions::USER_CAN_ACCESS_MODULE, 'caeli_content_creator')) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Nicht genügend Berechtigungen'
+                ], Response::HTTP_FORBIDDEN);
+            }
 
-            // Erfolgsmeldung zurückgeben
-            return new JsonResponse([
-                'success' => true,
-                'message' => 'Artikel erfolgreich erstellt',
-                'newsId' => $newsId,
-                'newsUrl' => $this->generateNewsUrl($newsId)
-            ]);
+            // Modell laden
+            $model = CaeliContentCreatorModel::findById($id);
+            if (null === $model) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Konfiguration nicht gefunden'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            // Status auf "generating" setzen
+            $this->setGenerationStatus($id, 'generating');
+
+            $this->logger->info('Starte async Content-Generierung', ['model_id' => $model->id]);
+
+            try {
+                // Content generieren
+                $generatedContent = $this->performContentGeneration($model);
+                
+                // Im Modell speichern
+                $model->previewTitle = $generatedContent['title'] ?? '';
+                $model->previewTeaser = $generatedContent['teaser'] ?? '';
+                $model->previewContent = $this->cleanHtmlContent($generatedContent['content'] ?? '');
+                $model->previewTags = $generatedContent['tags'] ?? '';
+                $model->save();
+
+                // Status auf "completed" setzen
+                $this->setGenerationStatus($id, 'completed');
+                
+                $this->logger->info('Async Content-Generierung erfolgreich', [
+                    'model_id' => $model->id,
+                    'title' => $model->previewTitle
+                ]);
+
+                return new JsonResponse([
+                    'success' => true,
+                    'message' => 'Inhalt erfolgreich generiert',
+                    'data' => [
+                        'title' => $model->previewTitle,
+                        'teaser' => $model->previewTeaser,
+                        'content' => $model->previewContent,
+                        'tags' => $model->previewTags,
+                        'attempt' => $generatedContent['attempt'] ?? 1
+                    ]
+                ]);
+
+            } catch (\Exception $e) {
+                // Status auf "error" setzen
+                $this->setGenerationStatus($id, 'error', $e->getMessage());
+                
+                $this->logger->error('Fehler bei async Content-Generierung', [
+                    'model_id' => $model->id,
+                    'error' => $e->getMessage()
+                ]);
+
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Fehler bei der Generierung: ' . $e->getMessage()
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
         } catch (\Exception $e) {
+            $this->logger->error('Allgemeiner Fehler bei Content-Generierung', [
+                'id' => $id,
+                'error' => $e->getMessage()
+            ]);
+
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Fehler beim Erstellen des Artikels: ' . $e->getMessage()
-            ]);
+                'message' => 'Allgemeiner Fehler: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Generiert den Inhalt mit der KI-API
+     * AJAX-Endpunkt für Status-Abfrage der Content-Generierung
      */
-    private function generateContent(ContentCreatorModel $model): array
+    #[Route('/status/{id}', name: 'caeli_content_creator_status', methods: ['GET'])]
+    public function getStatus(Request $request, int $id): JsonResponse
     {
-        // Debug-Ausgabe
-        $logFile = $this->framework->getAdapter(System::class)->getContainer()->getParameter('kernel.logs_dir') . '/api-debug.log';
-        file_put_contents($logFile, "Starte Inhaltsgenerierung für Thema: {$model->topic}\n", FILE_APPEND);
-        
-        // Zentralen PromptBuilder nutzen
-        $basePrompt = $this->promptBuilder->buildPrompt($model, true);
-        $prompt = $basePrompt;
-        file_put_contents($logFile, "Basis-Prompt erstellt, rufe API auf\n", FILE_APPEND);
-        
         try {
-            // Maximale Anzahl an Versuchen, um ein Nicht-Duplikat zu finden
-            $maxAttempts = 5; // Erhöht von 3 auf 5
-            $attempt = 0;
-            $generatedContent = null;
-            $hasDuplicates = true;
-            $previousDuplicateTypes = []; // Speichert die Duplikattypen früherer Versuche
-            $generatedTitles = []; // Speichert alle bisher generierten Titel
+            $status = $this->getGenerationStatus($id);
+            $progress = $this->getGenerationProgress($id);
             
-            // Themenvariationen für unterschiedliche Ansätze
-            $thematicVariations = [
-                'historischer Kontext',
-                'wirtschaftliche Analyse',
-                'technologische Innovation',
-                'Fallstudien und Best Practices',
-                'persönliche Erfahrungen',
-                'wissenschaftliche Perspektive',
-                'Zukunftsausblick',
-                'globale Entwicklungen',
-                'regionale Besonderheiten',
-                'juristische Rahmenbedingungen'
+            $response = [
+                'success' => true,
+                'status' => $status,
+                'progress' => $progress
             ];
-            
-            // Strukturvariationen für unterschiedliche Textformen
-            $structuralVariations = [
-                'Listenform mit detaillierten Beispielen',
-                'Frage-Antwort-Format',
-                'Chronologische Darstellung',
-                'Vergleichende Analyse',
-                'Problemlösungsstruktur',
-                'Experteninterview-Stil',
-                'Reportage-Format',
-                'These-Antithese-Synthese',
-                'Storytelling mit konkreten Fallbeispielen',
-                'Praxisleitfaden mit konkreten Handlungsempfehlungen'
-            ];
-            
-            // So lange versuchen, bis ein eindeutiger Inhalt gefunden wird oder die maximalen Versuche erreicht sind
-            while ($hasDuplicates && $attempt < $maxAttempts) {
-                $attempt++;
-                file_put_contents($logFile, "Generierungsversuch #{$attempt}/{$maxAttempts}\n", FILE_APPEND);
-                
-                // Bei weiteren Versuchen den Prompt gezielt variieren
-                if ($attempt > 1) {
-                    // Thematische und strukturelle Variation auswählen
-                    $themeVariation = $thematicVariations[array_rand($thematicVariations)];
-                    $structureVariation = $structuralVariations[array_rand($structuralVariations)];
-                    
-                    // Nachdrückliche Anweisung zur Einzigartigkeit hinzufügen
-                    $prompt = $basePrompt . "\n\n";
-                    $prompt .= "WICHTIG: ABSOLUTE EINZIGARTIGKEIT ERFORDERLICH!\n";
-                    $prompt .= "===========================================\n";
-                    $prompt .= "Für diesen Artikel MUSST du folgende Punkte STRIKT einhalten:\n";
-                    $prompt .= "1. Vermeide KOMPLETT folgende bereits erstellte Titel:\n";
-                    
-                    // Alle bisher generierten Titel aufführen
-                    foreach ($generatedTitles as $title) {
-                        $prompt .= "   - \"$title\"\n";
-                    }
-                    
-                    $prompt .= "2. Verwende einen völlig UNKONVENTIONELLEN Ansatz zum Thema, z.B. als '$themeVariation'\n";
-                    $prompt .= "3. Strukturiere den Text in einem besonderen Format: '$structureVariation'\n";
-                    $prompt .= "4. Wähle ANDERE ÜBERSCHRIFTEN, BEISPIELE und KERNARGUMENTE als die bisherigen Versuche\n";
-                    
-                    // Bei späteren Versuchen immer radikalere Änderungen verlangen
-                    if ($attempt > 2) {
-                        $prompt .= "5. VERMEIDE, mit 'Windenergie und die globale Energiewende' oder ähnlichen Formulierungen zu beginnen\n";
-                        $prompt .= "6. ERFINDE neue Wortschöpfungen und kreative Überschriften, die besonders auffällig und einzigartig sind\n";
-                        $prompt .= "7. PRÄSENTIERE das Thema aus einem KONTRÄREN oder UNERWARTETEN BLICKWINKEL\n";
-                    }
-                    
-                    $prompt .= "===========================================\n\n";
-                }
-                
-                // API aufrufen
-                $response = $this->grokApiService->callApi(
-                    $model->apiKey,
-                    $model->apiEndpoint,
-                    $prompt,
-                    (float)($attempt > 1 ? min($model->temperature + 0.1 * $attempt, 1.0) : $model->temperature), // Erhöhe die Temperatur mit jedem Versuch
-                    (int)$model->maxTokens,
-                    (float)($attempt > 1 ? min($model->topP + 0.05 * $attempt, 0.99) : $model->topP) // Erhöhe auch top_p für mehr Variation
-                );
-                
-                // JSON extrahieren und parsen
-                $json = $response;
-                
-                try {
-                    // Debug-Log für die JSON-Antwort
-                    $logDir = $this->framework->getAdapter(System::class)->getContainer()->getParameter('kernel.logs_dir');
-                    file_put_contents($logDir . '/api-json-debug.log', "Erhaltenes JSON (Versuch #{$attempt}): " . $json . "\n", FILE_APPEND);
-                    
-                    // Versuchen, das JSON zu bereinigen und zu parsen
-                    $json = preg_replace('/```json\s*(.*?)\s*```/s', '$1', $json);
-                    $json = preg_replace('/```\s*(.*?)\s*```/s', '$1', $json);
-                    
-                    // Extrahiere nur den JSON-Teil, falls die API zusätzlichen Text zurückgibt
-                    if (preg_match('/{.*}/s', $json, $matches)) {
-                        $json = $matches[0];
-                    }
-                    
-                    $data = json_decode($json, true);
-                    
-                    if (json_last_error() !== JSON_ERROR_NONE) {
-                        file_put_contents($logFile, "JSON-Fehler: " . json_last_error_msg() . "\n", FILE_APPEND);
-                        
-                        // Neuer Versuch mit einer strukturierteren Regex, um das JSON zu extrahieren
-                        preg_match('/{[\s\S]*"title"[\s\S]*"teaser"[\s\S]*"content"[\s\S]*}/m', $response, $matches);
-                        if (!empty($matches[0])) {
-                            $json = $matches[0];
-                            $data = json_decode($json, true);
-                            if (json_last_error() !== JSON_ERROR_NONE) {
-                                throw new \RuntimeException('JSON konnte nicht dekodiert werden: ' . json_last_error_msg());
-                            }
-                        } else {
-                            throw new \RuntimeException('Kein gültiges JSON-Format in der Antwort gefunden.');
-                        }
-                    }
-                    
-                    // Erfolgreiche Extraktion
-                    file_put_contents($logFile, "JSON erfolgreich extrahiert\n", FILE_APPEND);
-                    
-                    // Prüfe, ob das wichtigste vorhanden ist
-                    if (!isset($data['title']) || !isset($data['content'])) {
-                        throw new \RuntimeException('JSON unvollständig - Titel oder Inhalt fehlt.');
-                    }
-                    
-                    // Speichere den generierten Titel für spätere Vergleiche
-                    $generatedTitles[] = $data['title'];
-                    
-                    // Auf Duplikate prüfen
-                    $duplicates = $this->duplicateChecker->checkForDuplicates(
-                        $model->newsArchive,
-                        $data['title'],
-                        $data['teaser'] ?? ''
-                    );
-                    
-                    $duplicateCount = count($duplicates);
-                    file_put_contents($logFile, "Duplikat-Prüfung: {$duplicateCount} potenzielle Duplikate gefunden\n", FILE_APPEND);
-                    
-                    // Aktuelle Duplikattypen speichern
-                    $currentDuplicateTypes = [];
-                    foreach ($duplicates as $duplicate) {
-                        if (isset($duplicate['duplicateType'])) {
-                            $currentDuplicateTypes[] = $duplicate['duplicateType'];
-                        }
-                    }
-                    $previousDuplicateTypes[] = $currentDuplicateTypes;
-                    
-                    // Prüfen, ob es ernsthafte Duplikate gibt (exakt oder thematisch)
-                    $seriousDuplicates = array_filter($duplicates, function($dup) {
-                        return (isset($dup['duplicateType']) && in_array($dup['duplicateType'], ['exact_match', 'partial_match', 'theme_match'])) 
-                            || (isset($dup['exactMatch']) && $dup['exactMatch'] === true);
-                    });
-                    
-                    // Wenn keine ernsthaften Duplikate gefunden wurden oder wir schon beim letzten Versuch sind
-                    if (empty($seriousDuplicates) || $attempt >= $maxAttempts) {
-                        // Wenn nur leichte Ähnlichkeiten gefunden wurden und wir nicht im ersten Versuch sind, akzeptieren wir das
-                        $acceptableDuplication = empty($seriousDuplicates) && $duplicateCount <= 2;
-                        
-                        // Bei letztem Versuch akzeptieren wir auch einen Artikel mit geringeren Ähnlichkeiten
-                        if ($acceptableDuplication || $attempt >= $maxAttempts) {
-                            $hasDuplicates = false; // Schleife beenden
-                            $generatedContent = [
-                                'title' => $data['title'],
-                                'teaser' => $data['teaser'] ?? '',
-                                'content' => $data['content'],
-                                'tags' => $data['tags'] ?? '',
-                                'duplicates' => $duplicates, // Für optionale Anzeige im Backend
-                                'attempt' => $attempt,     // Speichern, im wievielten Versuch dieser Inhalt generiert wurde
-                                'message' => $acceptableDuplication ? 
-                                    'Inhalt mit akzeptablen Unterschieden generiert' : 
-                                    'Maximale Anzahl an Versuchen erreicht, Inhalt könnte Ähnlichkeiten aufweisen'
-                            ];
-                            
-                            if (empty($duplicates)) {
-                                file_put_contents($logFile, "Eindeutiger Inhalt gefunden, Generierung erfolgreich (Versuch #{$attempt})\n", FILE_APPEND);
-                            } else {
-                                file_put_contents($logFile, "Inhalt mit akzeptablen Ähnlichkeiten generiert oder maximale Versuche erreicht (Versuch #{$attempt})\n", FILE_APPEND);
-                            }
-                        }
-                    } else {
-                        // Bei Duplikaten, detaillierte Analyse der Gründe für die Ähnlichkeit
-                        file_put_contents($logFile, "Zu starke Ähnlichkeit zu existierenden Inhalten, versuche es erneut (Versuch #{$attempt})\n", FILE_APPEND);
-                        
-                        // Detaillierte Gründe für Ähnlichkeiten protokollieren
-                        foreach ($seriousDuplicates as $idx => $duplicate) {
-                            $reason = isset($duplicate['reason']) ? $duplicate['reason'] : "Hohe Ähnlichkeit";
-                            file_put_contents($logFile, "Ähnlichkeit mit \"{$duplicate['headline']}\": {$reason}\n", FILE_APPEND);
-                        }
-                        
-                        // Bereite einen radikal anderen Ansatz basierend auf den erkannten Ähnlichkeiten vor
-                        // Prompt wird bereits am Anfang der nächsten Schleife angepasst
-                    }
-                } catch (\Exception $e) {
-                    file_put_contents($logFile, "Fehler beim Parsen der API-Antwort: " . $e->getMessage() . "\n", FILE_APPEND);
-                    throw $e;
+
+            // Bei completed Status auch die Daten mitliefern
+            if ($status === 'completed') {
+                $model = CaeliContentCreatorModel::findById($id);
+                if ($model && $model->previewTitle) {
+                    $response['data'] = [
+                        'title' => $model->previewTitle,
+                        'teaser' => $model->previewTeaser,
+                        'content' => $model->previewContent,
+                        'tags' => $model->previewTags
+                    ];
                 }
             }
-            
-            if ($generatedContent === null) {
-                throw new \RuntimeException('Konnte keinen eindeutigen Inhalt nach ' . $maxAttempts . ' Versuchen generieren.');
-            }
-            
-            file_put_contents($logFile, "Inhalt erfolgreich generiert (Versuch #{$attempt})\n", FILE_APPEND);
-            return $generatedContent;
+
+            return new JsonResponse($response);
             
         } catch (\Exception $e) {
-            file_put_contents($logFile, "Fehler bei API-Aufruf: " . $e->getMessage() . "\n", FILE_APPEND);
+            return new JsonResponse([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Generiert den Inhalt mit der KI-API (2-Step-Prozess)
+     */
+    private function performContentGeneration(CaeliContentCreatorModel $model): array
+    {
+        $this->logger->info('Starte 2-Step Content-Generierung', [
+            'model_id' => $model->id,
+            'topic' => $model->topic
+        ]);
+        
+        try {
+            // **SCHRITT 1: Rohtext generieren**
+            $this->setGenerationProgress($model->id, 10);
+            $this->logger->debug('Step 1: Generating raw text');
+            
+            $rawTextPrompt = $this->promptBuilder->buildPrompt($model, true);
+            $rawTextResponse = $this->grokApiService->callApi(
+                $model->apiKey,
+                $model->apiEndpoint,
+                $rawTextPrompt,
+                (float)$model->temperature,
+                (int)$model->maxTokens,
+                (float)$model->topP
+            );
+            
+            $this->setGenerationProgress($model->id, 50);
+            $this->logger->debug('Step 1 completed', ['raw_text_length' => strlen($rawTextResponse)]);
+            
+            // **SCHRITT 2: HTML-Formatierung**
+            $this->logger->debug('Step 2: Formatting to HTML');
+            
+            $formatPrompt = $this->promptBuilder->buildFormatPrompt($model, $rawTextResponse);
+            $formattedResponse = $this->grokApiService->callApi(
+                $model->apiKey,
+                $model->apiEndpoint,
+                $formatPrompt,
+                (float)$model->temperature * 0.8, // Niedrigere Temperature für Formatierung
+                (int)$model->maxTokens,
+                (float)$model->topP
+            );
+            
+            $this->setGenerationProgress($model->id, 80);
+            
+            // **SCHRITT 3: Content parsen**
+            $this->logger->debug('Step 3: Parsing formatted content');
+            $generatedContent = $this->promptBuilder->parseGeneratedContent($formattedResponse);
+            
+            // Content-Qualität prüfen
+            if (!$this->validateContentQuality($generatedContent)) {
+                throw new \RuntimeException('Generierter Content entspricht nicht den Qualitätsstandards.');
+            }
+            
+            // **SCHRITT 4: Duplikat-Check**
+            $this->setGenerationProgress($model->id, 90);
+            $duplicates = $this->duplicateChecker->checkForDuplicates(
+                $model->newsArchive,
+                $generatedContent['title'],
+                $generatedContent['teaser'] ?? ''
+            );
+            
+            $seriousDuplicates = array_filter($duplicates, function($dup) {
+                return (isset($dup['duplicateType']) && in_array($dup['duplicateType'], ['exact_match', 'partial_match'])) 
+                    || (isset($dup['exactMatch']) && $dup['exactMatch'] === true);
+            });
+            
+            $result = [
+                'title' => $generatedContent['title'],
+                'teaser' => $generatedContent['teaser'] ?? '',
+                'content' => $this->cleanHtmlContent($generatedContent['content']),
+                'tags' => $generatedContent['tags'] ?? '',
+                'duplicates' => $duplicates,
+                'serious_duplicates_count' => count($seriousDuplicates),
+                'raw_text_length' => strlen($rawTextResponse),
+                'final_content_length' => strlen($generatedContent['content'])
+            ];
+            
+            $this->logger->info('2-Step Content-Generierung erfolgreich', [
+                'model_id' => $model->id,
+                'title' => $result['title'],
+                'serious_duplicates' => count($seriousDuplicates),
+                'raw_length' => $result['raw_text_length'],
+                'final_length' => $result['final_content_length']
+            ]);
+            
+            return $result;
+            
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler bei 2-Step Content-Generierung', [
+                'model_id' => $model->id,
+                'error' => $e->getMessage()
+            ]);
             throw $e;
         }
     }
@@ -523,5 +372,229 @@ class ContentCreatorController extends AbstractBackendController
     private function generateNewsUrl(int $newsId): string
     {
         return '/contao?do=news&table=tl_content&id=' . $newsId;
+    }
+
+    /**
+     * Bereinigt HTML-Inhalte und entfernt Escape-Sequenzen
+     */
+    private function cleanHtmlContent(string $content): string
+    {
+        if (empty($content)) {
+            return $content;
+        }
+
+        // HTML-Entities dekodieren
+        $content = html_entity_decode($content);
+        
+        // Backslashes vor Anführungszeichen entfernen
+        $content = stripslashes($content);
+        
+        // Unicode-Escapesequenzen ersetzen
+        $content = preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
+            return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+        }, $content);
+        
+        // Bootstrap-Container korrekt rendern
+        $content = str_replace('\"', '"', $content);
+        
+        $this->logger->debug('HTML-Inhalt bereinigt', [
+            'original_length' => strlen($content),
+            'contains_headings' => (bool)preg_match('/<h[2-3][^>]*>/', $content),
+            'contains_bootstrap' => (bool)preg_match('/class="(btn|card|alert|table)/', $content)
+        ]);
+        
+        return $content;
+    }
+
+    /**
+     * Verarbeitet die Veröffentlichung eines generierten Inhalts
+     */
+    private function handlePublish(CaeliContentCreatorModel $model): Response
+    {
+        $this->logger->info('Starte Veröffentlichung', ['model_id' => $model->id]);
+        
+        try {
+            if (!$model->previewTitle || !$model->previewContent) {
+                throw new \InvalidArgumentException('Kein Inhalt zum Veröffentlichen vorhanden. Bitte zuerst Inhalt generieren.');
+            }
+
+            // Nachrichtenbeitrag erstellen
+            $newsId = $this->newsContentGenerator->createNewsArticle(
+                $model->newsArchive,
+                $model->previewTitle,
+                $model->previewTeaser,
+                $model->previewContent,
+                $model->previewTags,
+                $model->contentElement
+            );
+
+            $this->logger->info('Artikel erfolgreich veröffentlicht', [
+                'model_id' => $model->id,
+                'news_id' => $newsId
+            ]);
+
+            // Zurück zum DCA mit Erfolgsmeldung
+            $controllerAdapter = $this->framework->getAdapter(Controller::class);
+            return $controllerAdapter->redirect($controllerAdapter->addToUrl('do=caeli_content_creator&table=tl_caeli_content_creator&act=edit&id='.$model->id.'&confirmMsg=Inhalt wurde erfolgreich als Beitrag veröffentlicht.', true));
+            
+        } catch (\Exception $e) {
+            $this->logger->error('Fehler beim Veröffentlichen', [
+                'model_id' => $model->id,
+                'error' => $e->getMessage()
+            ]);
+            
+            // Fehlertemplate erstellen
+            $template = new BackendTemplate('be_wildcard');
+            $template->wildcard = '<h1>Fehler beim Veröffentlichen</h1><p>' . $e->getMessage() . '</p>';
+            $template->backUrl = $this->framework->getAdapter(System::class)->getReferer();
+            
+            return new Response($template->parse());
+        }
+    }
+
+    /**
+     * Setzt oder holt den Generierungsstatus
+     */
+    private function getGenerationStatus(int $modelId): string
+    {
+        $cacheKey = "content_generation_status_{$modelId}";
+        
+        // Hier würde normalerweise ein Cache-System verwendet
+        // Für die einfache Implementierung verwenden wir Session
+        $adapter = $this->framework->getAdapter(System::class);
+        $session = $adapter->getContainer()->get('session');
+        
+        return $session->get($cacheKey, 'idle');
+    }
+
+    private function setGenerationStatus(int $modelId, string $status, string $message = ''): void
+    {
+        $cacheKey = "content_generation_status_{$modelId}";
+        
+        $adapter = $this->framework->getAdapter(System::class);
+        $session = $adapter->getContainer()->get('session');
+        
+        $session->set($cacheKey, $status);
+        
+        if ($message) {
+            $session->set($cacheKey . '_message', $message);
+        }
+        
+        $this->logger->debug('Generation status updated', [
+            'model_id' => $modelId,
+            'status' => $status,
+            'message' => $message
+        ]);
+    }
+
+    /**
+     * Setzt oder holt den Generierungsfortschritt
+     */
+    private function getGenerationProgress(int $modelId): int
+    {
+        $cacheKey = "content_generation_progress_{$modelId}";
+        
+        $adapter = $this->framework->getAdapter(System::class);
+        $session = $adapter->getContainer()->get('session');
+        
+        return (int)$session->get($cacheKey, 0);
+    }
+
+    private function setGenerationProgress(int $modelId, int $progress): void
+    {
+        $cacheKey = "content_generation_progress_{$modelId}";
+        
+        $adapter = $this->framework->getAdapter(System::class);
+        $session = $adapter->getContainer()->get('session');
+        
+        $session->set($cacheKey, $progress);
+    }
+
+    /**
+     * Validiert die Qualität des generierten Contents
+     */
+    private function validateContentQuality(array $data): bool
+    {
+        $content = $data['content'] ?? '';
+        $title = $data['title'] ?? '';
+
+        // Grundlegende Checks
+        if (empty($title) || empty($content)) {
+            $this->logger->debug('Content-Validierung fehlgeschlagen: Leer', [
+                'has_title' => !empty($title),
+                'has_content' => !empty($content)
+            ]);
+            return false;
+        }
+
+        // Mindestlänge prüfen (ca. 500 Wörter = ~3000 Zeichen)
+        $minContentLength = 2500;
+        if (strlen($content) < $minContentLength) {
+            $this->logger->debug('Content-Validierung fehlgeschlagen: Zu kurz', [
+                'content_length' => strlen($content),
+                'min_required' => $minContentLength
+            ]);
+            return false;
+        }
+
+        // Prüfen ob HTML-Struktur vorhanden (Überschriften)
+        if (!preg_match('/<h[2-4][^>]*>/', $content)) {
+            $this->logger->debug('Content-Validierung fehlgeschlagen: Keine Überschriften');
+            return false;
+        }
+
+        // Prüfen auf Placeholder-Text
+        $placeholderPatterns = [
+            '/lorem ipsum/i',
+            '/placeholder/i',
+            '/\[.*?\]/i', // [Placeholder] Format
+            '/TODO|FIXME/i'
+        ];
+
+        foreach ($placeholderPatterns as $pattern) {
+            if (preg_match($pattern, $content)) {
+                $this->logger->debug('Content-Validierung fehlgeschlagen: Placeholder gefunden', [
+                    'pattern' => $pattern
+                ]);
+                return false;
+            }
+        }
+
+        // Prüfen auf sinnvolle Wortanzahl vs. HTML-Tags Verhältnis
+        $textContent = strip_tags($content);
+        $wordCount = str_word_count($textContent);
+        $minWords = 400;
+
+        if ($wordCount < $minWords) {
+            $this->logger->debug('Content-Validierung fehlgeschlagen: Zu wenige Wörter', [
+                'word_count' => $wordCount,
+                'min_required' => $minWords
+            ]);
+            return false;
+        }
+
+        // Prüfen auf sinnvollen Titel (nicht nur Sonderzeichen)
+        if (strlen(trim(preg_replace('/[^a-zA-ZäöüÄÖÜß\s]/', '', $title))) < 10) {
+            $this->logger->debug('Content-Validierung fehlgeschlagen: Titel zu kurz oder nur Sonderzeichen');
+            return false;
+        }
+
+        // Prüfen auf doppelte Absätze (Zeichen für Copy-Paste Fehler)
+        $paragraphs = preg_split('/<\/p>\s*<p[^>]*>/', $content);
+        $uniqueParagraphs = array_unique(array_map('trim', $paragraphs));
+        
+        if (count($paragraphs) > 3 && count($uniqueParagraphs) < count($paragraphs) * 0.8) {
+            $this->logger->debug('Content-Validierung fehlgeschlagen: Zu viele doppelte Absätze');
+            return false;
+        }
+
+        $this->logger->debug('Content-Validierung erfolgreich', [
+            'content_length' => strlen($content),
+            'word_count' => $wordCount,
+            'title_length' => strlen($title),
+            'paragraphs' => count($paragraphs)
+        ]);
+
+        return true;
     }
 }

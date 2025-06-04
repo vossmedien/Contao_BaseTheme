@@ -7,13 +7,13 @@
   <h2><?= $this->formTitle ?></h2>
 
   <?php if ($this->hasError): ?>
-    <div class="error-message">
+    <div class="error-message alert alert-danger mb-3">
       <?= $this->errorMessage ?>
     </div>
   <?php endif; ?>
 
   <?php if ($this->successMessage): ?>
-    <div class="success-message">
+    <div class="success-message alert alert-primary mb-3">
       <?= $this->successMessage ?>
     </div>
   <?php endif; ?>

@@ -34,93 +34,189 @@ class GrokApiService
 
     /**
      * Ruft die Grok API auf und gibt die Antwort zurück
-     * Use configured maxTokens if not overridden in call
      */
     public function callApi(string $apiKey, string $apiEndpoint, string $prompt, float $temperature = 0.7, ?int $maxTokens = null, float $topP = 0.95): string
     {
+        return $this->callApiWithRetry($apiKey, $apiEndpoint, $prompt, $temperature, $maxTokens, $topP, 3);
+    }
+
+    /**
+     * API-Aufruf mit Retry-Pattern und exponential backoff
+     */
+    private function callApiWithRetry(string $apiKey, string $apiEndpoint, string $prompt, float $temperature, ?int $maxTokens, float $topP, int $maxRetries): string
+    {
         $fullEndpoint = rtrim($apiEndpoint, '/') . '/chat/completions';
-        $this->logger->info('Calling Grok API', ['endpoint' => $fullEndpoint]);
-
         $requestMaxTokens = $maxTokens ?? $this->apiMaxTokens;
-        $this->logger->debug('Using max_tokens for API call', ['max_tokens' => $requestMaxTokens]);
+        
+        $this->logger->info('Calling Grok API with retry pattern', [
+            'endpoint' => $fullEndpoint,
+            'max_tokens' => $requestMaxTokens,
+            'temperature' => $temperature,
+            'max_retries' => $maxRetries,
+            'timeout' => $this->apiTimeout,
+            'reasoning_effort' => 'high'
+        ]);
 
-        try {
-            $response = $this->httpClient->request('POST', $fullEndpoint, [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $apiKey,
-                    'Accept' => 'application/json',
-                    'User-Agent' => 'Caeli-ContentCreator/0.2'
-                ],
-                'json' => [
-                    'model' => 'grok-3-beta',
-                    'messages' => [
-                        [
-                            'role' => 'system',
-                            'content' => 'Du bist ein hilfreicher AI-Assistent, spezialisiert auf die Erstellung von Blogbeiträgen für Caeli Wind im Bereich Windenergie. Halte dich strikt an die Anweisungen im User-Prompt, insbesondere bezüglich Struktur, Tonalität, SEO-Keywords und Mindestlänge. Erzeuge qualitativ hochwertige, informative und ansprechende Inhalte. Wenn nach Quellen gefragt wird, gib diese bitte an.'
+        $lastException = null;
+
+        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+            try {
+                $this->logger->debug('API call attempt', ['attempt' => $attempt]);
+
+                $response = $this->httpClient->request('POST', $fullEndpoint, [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Authorization' => 'Bearer ' . $apiKey,
+                        'Accept' => 'application/json',
+                        'User-Agent' => 'Caeli-ContentCreator/0.3'
+                    ],
+                    'json' => [
+                        'model' => 'grok-3-beta',
+                        'messages' => [
+                            [
+                                'role' => 'system',
+                                'content' => 'Du bist ein hilfreicher AI-Assistent, spezialisiert auf die Erstellung von Blogbeiträgen für Caeli Wind im Bereich Windenergie. Halte dich strikt an die Anweisungen im User-Prompt, insbesondere bezüglich Struktur, Tonalität, SEO-Keywords und Mindestlänge. Erzeuge qualitativ hochwertige, informative und ansprechende Inhalte. Wenn nach Quellen gefragt wird, gib diese bitte an.'
+                            ],
+                            [
+                                'role' => 'user',
+                                'content' => $prompt
+                            ]
                         ],
-                        [
-                            'role' => 'user',
-                            'content' => $prompt
-                        ]
+                        'temperature' => $temperature,
+                        'max_tokens' => $requestMaxTokens,
+                        'top_p' => $topP,
+                        'top_k' => 40,
+                        'repetition_penalty' => 1.1,
+                        'reasoning' => [
+                            'effort' => 'medium',
+                            'exclude' => false
+                        ],
+                        'stop' => null
                     ],
-                    'temperature' => $temperature,
-                    'max_tokens' => $requestMaxTokens,
-                    'top_p' => $topP,
-                    'top_k' => 40,
-                    'repetition_penalty' => 1.1,
-                    'reasoning' => [
-                        'effort' => 'medium',
-                        'exclude' => false
-                    ],
-                    'stop' => null
-                ],
-                'timeout' => $this->apiTimeout,
-                'verify_peer' => true,
-                'verify_host' => true
-            ]);
-
-            $statusCode = $response->getStatusCode();
-            if ($statusCode !== 200) {
-                $this->logger->error('Grok API request failed with status code', [
-                    'status_code' => $statusCode,
-                    'response_headers' => $response->getHeaders(false),
-                    'response_body_snippet' => substr($response->getContent(false), 0, 500)
+                    'timeout' => $this->apiTimeout,
+                    'verify_peer' => true,
+                    'verify_host' => true
                 ]);
-                throw new \RuntimeException("API-Anfrage fehlgeschlagen mit Status-Code: {$statusCode}");
+
+                $statusCode = $response->getStatusCode();
+                if ($statusCode !== 200) {
+                    throw new \RuntimeException("API-Anfrage fehlgeschlagen mit Status-Code: {$statusCode}");
+                }
+
+                $content = $response->getContent();
+                $this->logger->debug('API call successful', [
+                    'attempt' => $attempt,
+                    'response_length' => strlen($content)
+                ]);
+
+                $responseData = json_decode($content, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new \RuntimeException('Fehler beim Dekodieren der API-Antwort: ' . json_last_error_msg());
+                }
+
+                return $this->extractMessageContent($responseData);
+
+            } catch (TransportExceptionInterface $e) {
+                $lastException = $e;
+                $this->logger->warning('API transport error on attempt', [
+                    'attempt' => $attempt,
+                    'max_retries' => $maxRetries,
+                    'error' => $e->getMessage()
+                ]);
+
+                // Bei letztem Versuch: Exception werfen
+                if ($attempt === $maxRetries) {
+                    break;
+                }
+
+                // Exponential backoff: 1s, 2s, 4s...
+                $backoffSeconds = min(pow(2, $attempt - 1), 10);
+                $this->logger->info('Retrying API call after backoff', [
+                    'backoff_seconds' => $backoffSeconds,
+                    'next_attempt' => $attempt + 1
+                ]);
+                sleep($backoffSeconds);
+
+            } catch (\Exception $e) {
+                $lastException = $e;
+                $this->logger->error('API call failed on attempt', [
+                    'attempt' => $attempt,
+                    'error' => $e->getMessage()
+                ]);
+
+                // Bei Server-Fehlern (5xx) retry, bei Client-Fehlern (4xx) nicht
+                if ($this->shouldRetry($e, $attempt, $maxRetries)) {
+                    $backoffSeconds = min(pow(2, $attempt - 1), 10);
+                    sleep($backoffSeconds);
+                    continue;
+                }
+
+                // Sofort abbrechen bei nicht-retryable Fehlern
+                break;
             }
-
-            $content = $response->getContent();
-            $this->logger->debug('Grok API response received', ['response_snippet' => substr($content, 0, 200) . '...']);
-
-            $responseData = json_decode($content, true);
-
-            // **Workaround: Directly extract text content, assuming no JSON structure is needed from step 1**
-            if (isset($responseData['choices'][0]['message']['content'])) {
-                $messageContent = $responseData['choices'][0]['message']['content'];
-                $this->logger->debug('Extracted raw text content from API response.', ['content_snippet' => substr($messageContent, 0, 200) . '...']);
-                // Return the raw text directly
-                return $messageContent;
-            } else {
-                 $this->logger->error('Could not find expected message content structure in API response.', [
-                    'response_structure_keys' => is_array($responseData) ? array_keys($responseData) : null,
-                    'response_content_snippet' => substr($content, 0, 500)
-                 ]);
-                 throw new \RuntimeException('Die API-Antwort enthielt nicht die erwartete Struktur (choices[0].message.content).');
-            }
-
-            /* // Remove all JSON parsing logic
-            $trimmedContent = trim($messageContent);
-            // ... (rest of the JSON parsing logic removed) ...
-            throw new \RuntimeException('Konnte keinen validen JSON-Inhalt aus der API-Antwort extrahieren.');
-            */
-
-        } catch (TransportExceptionInterface $e) {
-            $this->logger->error('Grok API request transport error', ['exception' => $e]);
-            throw new \RuntimeException('Fehler bei der API-Anfrage (Transport): ' . $e->getMessage(), $e->getCode(), $e);
-        } catch (\Exception $e) {
-            $this->logger->error('Grok API general error', ['exception' => $e]);
-            throw new \RuntimeException('Allgemeiner Fehler bei der API-Verarbeitung: ' . $e->getMessage(), $e->getCode(), $e);
         }
+
+        // Alle Versuche fehlgeschlagen
+        $this->logger->error('All API retry attempts failed', [
+            'max_retries' => $maxRetries,
+            'last_error' => $lastException ? $lastException->getMessage() : 'Unknown error'
+        ]);
+
+        if ($lastException instanceof TransportExceptionInterface) {
+            throw new \RuntimeException('Fehler bei der API-Anfrage (Transport): ' . $lastException->getMessage(), $lastException->getCode(), $lastException);
+        }
+
+        throw new \RuntimeException('API-Aufruf nach ' . $maxRetries . ' Versuchen fehlgeschlagen: ' . ($lastException ? $lastException->getMessage() : 'Unbekannter Fehler'));
+    }
+
+    /**
+     * Prüft, ob ein Retry sinnvoll ist
+     */
+    private function shouldRetry(\Exception $e, int $attempt, int $maxRetries): bool
+    {
+        if ($attempt >= $maxRetries) {
+            return false;
+        }
+
+        $message = $e->getMessage();
+        
+        // Retry bei Timeout/Netzwerkfehlern
+        if (str_contains($message, 'timeout') || str_contains($message, 'network')) {
+            return true;
+        }
+
+        // Retry bei 5xx Server-Fehlern
+        if (preg_match('/Status-Code: 5\d\d/', $message)) {
+            return true;
+        }
+
+        // Retry bei Rate Limiting
+        if (str_contains($message, '429') || str_contains($message, 'rate limit')) {
+            return true;
+        }
+
+        // Kein Retry bei 4xx Client-Fehlern (außer 429)
+        return false;
+    }
+
+    /**
+     * Extrahiert den Message-Content aus der API-Response
+     */
+    private function extractMessageContent(array $responseData): string
+    {
+        if (!isset($responseData['choices'][0]['message']['content'])) {
+            $this->logger->error('Invalid API response structure', [
+                'available_keys' => array_keys($responseData)
+            ]);
+            throw new \RuntimeException('Die API-Antwort enthielt nicht die erwartete Struktur (choices[0].message.content).');
+        }
+
+        $messageContent = $responseData['choices'][0]['message']['content'];
+        
+        $this->logger->debug('Message content extracted', [
+            'content_length' => strlen($messageContent)
+        ]);
+
+        return $messageContent;
     }
 }

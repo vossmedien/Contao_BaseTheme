@@ -76,7 +76,7 @@
                     </div>
                 </div>
 
-                <div class="mt-5">
+                <div style="margin-top: var(--bs-gutter-y);" class="mt-md-5">
                      <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerMembers" aria-expanded="false" aria-controls="footerMembers">
                      <?= $GLOBALS['TL_LANG']['MSC']['footerMembers'] ?> <span class="indicator d-sm-none float-end">+</span>
                  </span>

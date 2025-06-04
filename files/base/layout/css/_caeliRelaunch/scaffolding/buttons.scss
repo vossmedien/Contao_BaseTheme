@@ -17,6 +17,7 @@
   }
 
   &.btn-secondary {
+    --bs-btn-color: var(--bs-primary);
     --bs-btn-hover-color: var(--bs-primary);
   }
 
@@ -34,7 +35,11 @@
 
 
   &.with-arrow {
-    gap: .85rem;
+    gap: .5rem;
+
+    @include media-breakpoint-up(md) {
+      gap: .85rem;
+    }
 
     &:hover {
       &:after {
@@ -54,14 +59,19 @@
     font-weight: $font-weight-bold;
     text-align: left;
 
-    /*
-     @include media-breakpoint-down(sm) {
+    &:after {
+      position: relative;
+      top: 1px;
+    }
+
+    @include media-breakpoint-down(sm) {
       display: inline;
       &:after {
         margin-left: .5rem;
+        display: inline;
       }
     }
-     */
+
   }
 
   &.btn-sm {
@@ -74,6 +84,8 @@
     --bs-btn-font-size: 20px;
     border-width: 3px;
     border-radius: 48px;
+    line-height: 1.1;
+    padding-block: .75rem;
 
     &.with-arrow {
       --bs-btn-padding-top: 0rem;
@@ -99,6 +111,8 @@
 
 
     @include media-breakpoint-up(md) {
+      --bs-btn-padding-left: 1rem;
+      --bs-btn-padding-right: 1rem;
       border-width: 4px;
       border-radius: 48px;
       --bs-btn-font-size: 25px;
@@ -121,4 +135,15 @@
 
 p a.btn.btn-link, .interactive-svg-links a.btn.btn-link {
   font-weight: $font-weight-base;
+}
+
+
+.btn-close {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  z-index: 10;
+  border: 3px solid currentColor;
+  opacity: 1;
+  transition: all .15s ease-in-out;
 }

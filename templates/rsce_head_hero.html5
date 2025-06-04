@@ -141,25 +141,27 @@ $listItems = StringUtil::deserialize($this->list_items, true);
         <div class="">
             <?php // --- Breadcrumb --- ?>
             <?php if ($this->add_breadcrumb && $this->breadcrumb_module && EnvHelper::isFrontend()): ?>
-                <div class="breadcrumb-wrapper mb-3" data-animation="animate__fadeIn">
+                <div class="breadcrumb-wrapper mb-4 mb-md-3" data-animation="animate__fadeIn">
                     {{insert_module::<?= $this->breadcrumb_module ?>}}
                 </div>
             <?php endif; ?>
 
             <?php // --- Headline & Text (zentriert mit max. Breite) --- ?>
             <div class="row">
-                <div class="col-12 col-xl-11">
-                    <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
-                        $this->topline,
-                        $this->headline,
-                        $this->subline,
-                        $this->headline_type,
-                        $this->animation_headline,
-                        null,
-                        false,
-                        (empty($this->text) && !$this->add_list_items && !$this->buttons ? "mb-0" : "")
-                    ); ?>
+                <div class="col-12 col-xl-10">
 
+                    <div class="headline-section" <?php if ($this->animation_headline): ?>data-animation="<?= $this->animation_headline ?>"<?php endif; ?>>
+                        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+                            $this->topline,
+                            $this->headline,
+                            $this->subline,
+                            $this->headline_type,
+                            null,
+                            null,
+                            false,
+                            (empty($this->text) && !$this->add_list_items && !$this->buttons ? "mb-0" : "")
+                        ); ?>
+                    </div>
                     <?php if ($this->text): ?>
                         <div class="text-section fw-semibold<?php if ($this->add_list_items): ?> mb-4<?php endif; ?>" <?php if ($this->animation_headline): ?>data-animation="<?= $this->animation_headline ?>"<?php endif; ?>>
                             <?= $this->text; ?>
@@ -170,7 +172,7 @@ $listItems = StringUtil::deserialize($this->list_items, true);
         </div>
         <?php // --- Aufzählung & Buttons (zweispaltig) --- ?>
         <?php if ($this->add_list_items && !empty($listItems) || $this->buttons): // Nur Row ausgeben, wenn Inhalt vorhanden ?>
-            <div class="row align-items-center mb-4 g-2">
+            <div class="">
                 <?php // Spalte für Aufzählung ?>
                 <?php if ($this->add_list_items && !empty($listItems)):
                     if ($this->list_full_width) {
@@ -181,17 +183,19 @@ $listItems = StringUtil::deserialize($this->list_items, true);
                     } else {
                         // Neue Variante: CSS Grid mit 2 Spalten, content-based width
                         $listColClass = 'col-12 ';
-                        $listGridClass = 'd-lg-grid';
+                        $listGridClass = 'd-lg-grid gap-3 d-flex flex-column';
                         $listItemClass = 'd-flex pe-lg-gap';
                     }
-                    ?>
+                    ?>  <ul class="list-unstyled list-with-icons <?= $listGridClass ?>" <?php if (!$this->list_full_width): ?>style="grid-template-columns: repeat(2, max-content);"<?php endif; ?>>
                     <div class="<?= $listColClass ?>">
                         <ul class="list-unstyled list-with-icons <?= $listGridClass ?>" <?php if (!$this->list_full_width): ?>style="grid-template-columns: repeat(2, max-content);"<?php endif; ?>>
-                            <?php foreach ($listItems as $index => $item): ?>
-                                <li class="<?= $listItemClass ?><?php if (!$this->list_full_width && $index !== count($listItems) - 1): ?> mb-3<?php endif; ?>" <?php if ($this->animation_list): ?>data-animation="<?= $this->animation_list ?>"<?php endif; ?>>
+                            <?php foreach ($listItems as $index => $item):
+                                $isLastInGridColumn = ($index == count($listItems) - 1) || ($index % 2 == 0 && $index == count($listItems) - 2);
+                                ?>
+                                <li class="<?= $listItemClass ?>" <?php if ($this->animation_list): ?>data-animation="<?= $this->animation_list ?>"<?php endif; ?>>
                                     <?php
                                     $itemText = '';
-                                    $defaultIcon = '<i style="font-size: 36px; position: relative; top: -3px;" class="fa-kit fa-circle-check text-tertiary me-2  flex-shrink-0"></i>'; // Default Font Awesome Icon
+                                    $defaultIcon = '<i style="font-size: 36px; position: relative; top: -5px;" class="fa-kit fa-circle-check text-tertiary me-2  flex-shrink-0"></i>'; // Default Font Awesome Icon
 
                                     if (is_array($item)) {
                                         $itemText = StringUtil::decodeEntities($item['item_text'] ?? '');

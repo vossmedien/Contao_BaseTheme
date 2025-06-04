@@ -2,13 +2,7 @@
     <div class="row g-0 align-items-end">
         <div class="col-md">
             <div class="d-flex flex-column gap-1">
-                <?php if ($this->hasDetails): ?>
-                    <h3 class="m-0">
-                        <a href="<?= $this->href ?>" title="<?= $this->title ?> (<?php if ($this->day): ?><?= $this->day ?>, <?php endif; ?><?= $this->date ?><?php if ($this->time): ?> <?= $this->time ?><?php endif; ?>)"<?= $this->target ?>><?= $this->link ?></a>
-                    </h3>
-                <?php else: ?>
-                    <h3 class="m-0"><?= $this->title ?></h3>
-                <?php endif; ?>
+                <h3 class="m-0"><?= html_entity_decode($this->title) ?></h3>
 
                 <?php
                 // Locale korrekt aus dem Request Stack holen
@@ -91,15 +85,18 @@
                 }
 
                 ?>
-                <p class="h3 fw-normal date m-0">
+                <p class="h3 fw-normal date mt-1 mb-0">
                     <time datetime="<?= $timeTagDatetimeAttribute ?>">
                         <?= $formattedDateOutput ?><?php if ($this->time && strpos($formattedDateOutput, (string)$this->time) === false): ?> <?= $this->time ?><?php endif; ?>
                     </time>
-                </p>
 
-                <?php if ($this->location): ?>
-                    <p class="h3 location fw-normal m-0"><?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></p>
-                <?php endif; ?>
+
+                    <?php if ($this->location): ?>
+                        <br>
+                        <span class=" location fw-normal m-0"><?= $this->location ?><?php if ($this->address): ?> (<?= $this->address ?>)<?php endif; ?></span><?php if ($this->eventStatus): ?> | <?= $this->eventStatus ?><?php endif; ?>
+                    <?php endif; ?>
+
+                </p>
             </div>
         </div>
         <div class="col-md-auto mt-2 mt-md-0">

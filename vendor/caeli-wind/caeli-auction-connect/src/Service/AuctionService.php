@@ -15,8 +15,6 @@ declare(strict_types=1);
 namespace CaeliWind\CaeliAuctionConnect\Service;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class AuctionService
@@ -29,11 +27,6 @@ class AuctionService
     private const RAW_AUCTIONS_CACHE_FILE = 'auctions.json';
     private const MAPPED_AUCTIONS_CACHE_FILE = 'auctions_mapped.json';
 
-    private ?string $csrfToken = null;
-    private string $apiUrl;
-    private string $apiUsername;
-    private string $apiPassword;
-    private string $cookieFile;
     private string $cacheDir;
 
     /**
@@ -68,158 +61,13 @@ class AuctionService
         private readonly LoggerInterface $logger,
         private readonly ParameterBagInterface $params
     ) {
-        $this->apiUrl = rtrim($this->params->get('caeli_auction.api_url'), '/');
-        $this->apiUsername = $this->params->get('caeli_auction.api_username');
-        $this->apiPassword = $this->params->get('caeli_auction.api_password');
-        $this->cookieFile = sys_get_temp_dir() . '/caeli_auction_' . md5(session_id() . time()) . '.txt';
-
         // Cache-Verzeichnis
         $this->cacheDir = $_SERVER['DOCUMENT_ROOT'] . '/../' . self::CACHE_DIR;
         if (!is_dir($this->cacheDir)) {
             @mkdir($this->cacheDir, 0755, true);
         }
 
-        $this->logger->debug('AuctionService initialisiert mit URL: ' . $this->apiUrl . ', Cache: ' . $this->cacheDir);
-    }
-
-    /**
-     * API-Login und Token-Speicherung - direkt aus Cronjobs.php kopiert
-     * Exakte Nachbildung der funktionierenden Implementierung
-     */
-    public function login(): bool
-    {
-        try {
-            $this->logger->debug('Starte API-Login mit Benutzer: ' . $this->apiUsername);
-
-            // Direkt aus Cronjobs.php kopiert
-            $fields = json_encode([
-                "email" => $this->apiUsername,
-                "password" => $this->apiPassword,
-            ]);
-
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $this->apiUrl . '/auth/login');
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $fields);
-            curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieFile);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json'
-            ]);
-
-            $this->logger->debug('Login-Anfrage an: ' . $this->apiUrl . '/auth/login');
-            $result = curl_exec($curl);
-
-            if (curl_error($curl)) {
-                $this->logger->error('API-Login fehlgeschlagen (cURL): ' . curl_error($curl));
-                curl_close($curl);
-                return false;
-            }
-
-            $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            curl_close($curl);
-
-            $this->logger->debug('Login-Antwort: Status ' . $statusCode . ', Inhalt: ' . $result);
-
-            // Prüfung des Status-Codes
-            if ($statusCode !== 200) {
-                $this->logger->error('API-Login fehlgeschlagen: HTTP-Status ' . $statusCode);
-                return false;
-            }
-
-            // Versuchen, das CSRF-Token zu extrahieren
-            $data = json_decode($result, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->logger->error('API-Antwort konnte nicht geparst werden: ' . json_last_error_msg());
-                return false;
-            }
-
-            if (!isset($data['tokens']['csrf_session_id'])) {
-                $this->logger->error('Kein CSRF-Token in der API-Antwort gefunden');
-                return false;
-            }
-
-            $this->csrfToken = $data['tokens']['csrf_session_id'];
-            $this->logger->info('API-Login erfolgreich, CSRF-Token erhalten: ' . $this->csrfToken);
-            return true;
-
-        } catch (\Exception $e) {
-            $this->logger->error('API-Login fehlgeschlagen: ' . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Methode zum Abrufen von Informationen zu einer spezifischen Auktion
-     * Direkt aus Cronjobs.php (getPlotInfo) kopiert und angepasst
-     */
-    private function fetchAuctionRaw(string $id): ?array
-    {
-        try {
-            // Sicherstellen, dass wir eingeloggt sind
-            if (!$this->csrfToken && !$this->login()) {
-                $this->logger->error('Nicht eingeloggt und Login fehlgeschlagen');
-                return null;
-            }
-
-            // Exakt aus Cronjobs.php kopiert
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $this->apiUrl . '/api/auctions/' . $id);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
-            curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieFile);
-            curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieFile);
-            curl_setopt($curl, CURLINFO_HEADER_OUT, true);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, [
-                'X-CSRF-Token: ' . $this->csrfToken
-            ]);
-
-            $this->logger->debug('Anfrage nach Auktion: ' . $this->apiUrl . '/api/auctions/' . $id);
-            $result = curl_exec($curl);
-
-            if (curl_error($curl)) {
-                $this->logger->error('API-Anfrage fehlgeschlagen (cURL): ' . curl_error($curl));
-                curl_close($curl);
-                return null;
-            }
-
-            $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            $requestInfo = curl_getinfo($curl);
-            curl_close($curl);
-
-            $this->logger->debug('Auktions-Antwort: Status ' . $statusCode . ', Request: ' . json_encode($requestInfo));
-
-            if ($statusCode !== 200) {
-                if ($statusCode === 404) {
-                    $this->logger->info('API-Anfrage für Auktion ' . $id . ' ergab 404 (nicht gefunden).');
-                } else {
-                    $this->logger->error('API-Anfrage fehlgeschlagen: HTTP-Status ' . $statusCode);
-                }
-                $this->logger->debug('Antwort: ' . $result);
-
-                // Bei 401/403 versuchen wir einen erneuten Login
-                if (in_array($statusCode, [401, 403])) {
-                    $this->logger->warning('Versuche erneuten Login nach Authentifizierungsfehler');
-                    $this->csrfToken = null;
-                    $this->login();
-                }
-
-                return null;
-            }
-
-            // Antwort parsen
-            $data = json_decode($result, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->logger->error('API-Antwort konnte nicht geparst werden: ' . json_last_error_msg());
-                return null;
-            }
-
-            return $data;
-
-        } catch (\Exception $e) {
-            $this->logger->error('Fehler beim Abrufen der Auktion: ' . $e->getMessage());
-            return null;
-        }
+        $this->logger->debug('AuctionService initialisiert, Cache: ' . $this->cacheDir);
     }
 
     /**
@@ -248,152 +96,152 @@ class AuctionService
                 if ($cachedMappedData === false) {
                     $this->logger->error('[getPublicAuctions] FEHLER beim Lesen der gemappten Cache-Datei: ' . $mappedCacheFile);
                 } else {
-                    $this->logger->debug('[getPublicAuctions] Gemappte Cache-Datei erfolgreich gelesen (Größe: ' . strlen($cachedMappedData) . ' Bytes).');
-                    $auctionsFromMappedCache = json_decode($cachedMappedData, true);
-
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($auctionsFromMappedCache)) {
-                        $this->logger->info('[getPublicAuctions] Gemappter Cache JSON erfolgreich dekodiert. Gebe ' . count($auctionsFromMappedCache) . ' Auktionen aus gemapptem Cache zurück.');
-                        return $auctionsFromMappedCache;
-                    } else {
-                        $this->logger->error('[getPublicAuctions] FEHLER: Gemappte Cache-Datei ist KEIN gültiges JSON oder kein Array.', ['json_error' => json_last_error_msg()]);
-                        @unlink($mappedCacheFile); // Korrupten gemappten Cache löschen
-                        $this->logger->info('[getPublicAuctions] Korrupte gemappte Cache-Datei gelöscht: ' . $mappedCacheFile);
+                    $data = json_decode($cachedMappedData, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $this->logger->info('[getPublicAuctions] Erfolgreich gemappte Auktionen aus Cache geladen: ' . $mappedCacheFile);
+                        return $data;
                     }
+                    $this->logger->warning('[getPublicAuctions] Gemappte Cache-Datei ist kein valides JSON: ' . $mappedCacheFile);
                 }
             } else {
-                $this->logger->info('[getPublicAuctions] Gemappter Cache ist abgelaufen.');
+                $this->logger->info('[getPublicAuctions] Gemappte Cache-Datei ist abgelaufen: ' . $mappedCacheFile);
             }
         } else {
-            if ($useCache) $this->logger->info('[getPublicAuctions] Keine gemappte Cache-Datei gefunden.');
-            // Kein 'else' für '!$useCache', da wir dann sowieso alles neu machen
+            $this->logger->info('[getPublicAuctions] Keine gemappte Cache-Datei gefunden oder Cache deaktiviert.');
         }
 
-        // 2. Wenn gemappter Cache nicht verfügbar/gültig, lade Rohdaten und mappe sie
-        $this->logger->info('[getPublicAuctions] Gemappter Cache nicht verwendet oder ungültig. Lade/verarbeite Rohdaten...');
-
-        $auctionsRaw = null;
-
-        // Lade Rohdaten aus dem Rohdaten-Cache oder von der API
+        // 2. Versuche, Rohdaten aus dem Cache zu laden (wenn gemappte nicht verfügbar/abgelaufen)
+        $rawAuctions = null;
         if ($useCache && file_exists($rawCacheFile)) {
             $rawCacheAge = time() - filemtime($rawCacheFile);
             $this->logger->debug('[getPublicAuctions] Rohdaten-Cache-Datei gefunden, Alter: ' . $rawCacheAge . 's');
+
             if ($rawCacheAge < self::CACHE_LIFETIME) {
                 $this->logger->info('[getPublicAuctions] Versuche, gültigen Rohdaten-Cache zu verwenden: ' . $rawCacheFile);
                 $cachedRawData = @file_get_contents($rawCacheFile);
-                if ($cachedRawData !== false) {
-                    $auctionsFromRawCache = json_decode($cachedRawData, true);
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($auctionsFromRawCache)) {
-                        $this->logger->info('[getPublicAuctions] Rohdaten-Cache JSON erfolgreich dekodiert. ' . count($auctionsFromRawCache) . ' Roh-Auktionen geladen.');
-                        $auctionsRaw = $auctionsFromRawCache;
-                    } else {
-                        $this->logger->error('[getPublicAuctions] FEHLER: Rohdaten-Cache ist KEIN gültiges JSON.', ['json_error' => json_last_error_msg()]);
-                        @unlink($rawCacheFile);
-                    }
-                } else {
+                if ($cachedRawData === false) {
                     $this->logger->error('[getPublicAuctions] FEHLER beim Lesen der Rohdaten-Cache-Datei: ' . $rawCacheFile);
+                } else {
+                    $data = json_decode($cachedRawData, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $this->logger->info('[getPublicAuctions] Erfolgreich Rohdaten aus Cache geladen: ' . $rawCacheFile);
+                        $rawAuctions = $data; // Rohdaten für späteres Mapping verwenden
+                    } else {
+                        $this->logger->warning('[getPublicAuctions] Rohdaten-Cache-Datei ist kein valides JSON: ' . $rawCacheFile);
+                    }
                 }
             } else {
-                $this->logger->info('[getPublicAuctions] Rohdaten-Cache ist abgelaufen.');
+                $this->logger->info('[getPublicAuctions] Rohdaten-Cache-Datei ist abgelaufen: ' . $rawCacheFile);
             }
+        } else {
+            $this->logger->info('[getPublicAuctions] Keine Rohdaten-Cache-Datei gefunden oder Cache deaktiviert.');
         }
 
-        // Wenn Rohdaten nicht aus Cache geladen wurden (oder Cache deaktiviert), von API holen
-        if ($auctionsRaw === null) {
-            if (!$useCache) $this->logger->info('[getPublicAuctions] Cache-Nutzung ist deaktiviert (forceRefresh=true für Rohdaten).');
-            else $this->logger->info('[getPublicAuctions] Keine gültigen Rohdaten aus Cache geladen, frage API an.');
+
+        // 3. Wenn keine gültigen Rohdaten aus dem Cache, von API holen
+        if ($rawAuctions === null) {
+            $this->logger->info('[getPublicAuctions] Keine gültigen Rohdaten im Cache, versuche API-Abruf.');
+            $apiUrl = rtrim($this->params->get('caeli_auction.marketplace_api_url'), '/');
+            $apiAuth = $this->params->get('caeli_auction.marketplace_api_auth');
+
+            if (empty($apiUrl) || empty($apiAuth)) {
+                $this->logger->error('[getPublicAuctions] Marketplace API URL oder Auth Token nicht konfiguriert. API-Abruf übersprungen.');
+                return null;
+            }
+
+            $this->logger->debug('[getPublicAuctions] Rufe öffentliche Auktionen von API ab: ' . $apiUrl);
+
+            // Basic Auth Header vorbereiten
+            $authHeader = 'Basic ' . $apiAuth; // $apiAuth direkt verwenden
+
+            $contextOptions = [
+                'http' => [
+                    'method' => 'GET',
+                    'header' => "Authorization: " . $authHeader . "\r\n",
+                    'timeout' => 30 // Timeout in Sekunden
+                ]
+            ];
+            $context = stream_context_create($contextOptions);
 
             try {
-                $this->logger->info('[getPublicAuctions] Lade Auktions-Rohdaten von der Public API...');
-                $ch = curl_init();
-                $url = $this->params->get('caeli_auction.marketplace_api_url');
-                $BasicAuth = $this->params->get('caeli_auction.marketplace_api_auth');
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-                curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Basic '.$BasicAuth]);
-                curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-                $result = curl_exec($ch);
-                $curlError = curl_error($ch);
-                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                curl_close($ch);
+                $response = @file_get_contents($apiUrl, false, $context);
 
-                if ($curlError) {
-                    $this->logger->error('[getPublicAuctions] API-Anfrage für Rohdaten fehlgeschlagen (cURL Fehler): ' . $curlError);
+                if ($response === false) {
+                    $error = error_get_last();
+                    $this->logger->error('[getPublicAuctions] API-Anfrage fehlgeschlagen: ' . ($error['message'] ?? 'Unbekannter Fehler'));
+                    // HTTP-Statuscode aus den Headern extrahieren, falls möglich (erfordert PHP 7.1+ für $http_response_header)
+                    if (isset($http_response_header)) {
+                        foreach ($http_response_header as $header) {
+                            if (preg_match('{^HTTP/\d\.\d\s+(\d+)\s*(.*)$}', $header, $matches)) {
+                                $statusCode = (int)$matches[1];
+                                $this->logger->error('[getPublicAuctions] API-Antwort Status Code: ' . $statusCode);
+                                break;
+                            }
+                        }
+                    }
                     return null;
                 }
-                if ($httpCode !== 200) {
-                    $this->logger->error('[getPublicAuctions] API-Anfrage für Rohdaten fehlgeschlagen: HTTP-Status ' . $httpCode, ['body' => substr($result ?: '', 0, 500)]);
+
+                $this->logger->debug('[getPublicAuctions] API-Antwort erhalten. Länge: ' . strlen($response));
+                $decodedResponse = json_decode($response, true);
+
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $this->logger->error('[getPublicAuctions] API-Antwort konnte nicht als JSON geparst werden: ' . json_last_error_msg());
+                    $this->logger->debug('[getPublicAuctions] Rohe API-Antwort: ' . substr($response, 0, 500)); // Logge einen Teil der Antwort
                     return null;
                 }
-                $auctionsFromApi = json_decode($result, true);
-                if (json_last_error() !== JSON_ERROR_NONE || !is_array($auctionsFromApi)) {
-                    $this->logger->error('[getPublicAuctions] FEHLER: API-Antwort für Rohdaten ist KEIN gültiges JSON.', ['json_error' => json_last_error_msg()]);
-                    return null;
+
+                $rawAuctions = $decodedResponse; // API-Antwort sind die Rohdaten
+
+                // Rohdaten im Cache speichern
+                if (!is_dir(dirname($rawCacheFile))) {
+                    @mkdir(dirname($rawCacheFile), 0755, true);
                 }
-                $this->logger->info('[getPublicAuctions] API hat ' . count($auctionsFromApi) . ' Roh-Auktionen zurückgegeben. Speichere im Rohdaten-Cache...');
-                if (!is_dir($this->cacheDir)) @mkdir($this->cacheDir, 0755, true);
-                if (@file_put_contents($rawCacheFile, $result) === false) {
-                    $this->logger->error('[getPublicAuctions] FEHLER beim Schreiben der Rohdaten-Cache-Datei: ' . $rawCacheFile);
+                if (@file_put_contents($rawCacheFile, json_encode($rawAuctions)) === false) {
+                    $this->logger->error('[getPublicAuctions] FEHLER beim Schreiben der Rohdaten in Cache-Datei: ' . $rawCacheFile);
                 } else {
-                    $this->logger->debug('[getPublicAuctions] Rohdaten im Cache gespeichert: ' . $rawCacheFile);
+                    $this->logger->info('[getPublicAuctions] Rohdaten erfolgreich in Cache geschrieben: ' . $rawCacheFile);
                 }
-                $auctionsRaw = $auctionsFromApi;
-            } catch (\Throwable $e) {
-                $this->logger->error('[getPublicAuctions] KRITISCHER FEHLER beim API-Abruf der Rohdaten: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+
+            } catch (\Exception $e) {
+                $this->logger->error('[getPublicAuctions] Ausnahme beim API-Abruf: ' . $e->getMessage());
                 return null;
             }
         }
 
-        if ($auctionsRaw === null) {
-            $this->logger->error('[getPublicAuctions] Konnte keine Roh-Auktionsdaten laden (weder Cache noch API).');
-            return null;
+
+        // 4. Rohdaten mappen (entweder aus Cache oder frisch von API)
+        if (empty($rawAuctions)) {
+            $this->logger->warning('[getPublicAuctions] Keine Rohdaten zum Mappen vorhanden.');
+            return []; // Leeres Array zurückgeben, wenn keine Daten vorhanden sind
         }
 
-        // 3. Mappe die Rohdaten
-        $this->logger->info('[getPublicAuctions] Starte Mapping von ' . count($auctionsRaw) . ' Roh-Auktionen...');
+        $this->logger->debug('[getPublicAuctions] Beginne Mapping von ' . count($rawAuctions) . ' Roh-Auktionen.');
         $mappedAuctions = [];
-        $mappingErrors = 0;
-        $filteredOutCount = 0;
-        // $validStatuses = [
-        //     'STARTED', 'FIRST_ROUND', 'SECOND_ROUND', 'FIRST_ROUND_EVALUATION',
-        //     'PRE_RELEASE', 'PREVIEW', 'OPEN_FOR_DIRECT_AWARDING', 'DIRECT_AWARDING', 'AWARDING'
-        // ];
-
-        foreach ($auctionsRaw as $index => $auctionSingleRaw) {
-            $status = $auctionSingleRaw['status'] ?? null;
-            $auctionIdForLogApi = $auctionSingleRaw['auctionId'] ?? 'unbekannt';
-
-            // Entferne die Vorfilterung nach Status, um alle Auktionen zu mappen
-            // if (in_array($status, $validStatuses)) {
-            try {
-                $mappedAuction = $this->mapPublicAuctionToInternalFormat($auctionSingleRaw);
-                $mappedAuctions[] = $mappedAuction;
-            } catch (\Throwable $e) {
-                $mappingErrors++;
-                $this->logger->error('[getPublicAuctions] FEHLER beim Mappen einer Roh-Auktion (Index: ' . $index . '): ' . $e->getMessage(), [
-                    'auctionId_raw' => $auctionIdForLogApi,
-                    'exception_trace' => $e->getTraceAsString()
-                ]);
+        $itemCounter = 0;
+        foreach ($rawAuctions as $auction) {
+            $itemCounter++;
+            if (!is_array($auction)) {
+                $this->logger->warning('[getPublicAuctions] Element ' . $itemCounter . ' in Rohdaten ist kein Array, wird übersprungen.');
+                continue;
             }
-            // } else {
-            //     $filteredOutCount++;
-            //     // $this->logger->debug('[getPublicAuctions] Roh-Item übersprungen wegen Status-Filter', ['id' => $auctionIdForLogApi, 'status' => $status]);
-            // }
+            $mappedAuction = $this->mapPublicAuctionToInternalFormat($auction);
+            if ($mappedAuction) { // Nur hinzufügen, wenn das Mapping erfolgreich war und nicht null ist
+                $mappedAuctions[] = $mappedAuction;
+            }
         }
-        $this->logger->info('[getPublicAuctions] Mapping beendet. ' . count($mappedAuctions) . ' von ' . count($auctionsRaw) . ' Roh-Auktionen erfolgreich gemappt (' . $mappingErrors . ' Fehler).'); // Log angepasst, da $filteredOutCount nicht mehr relevant ist
+        $this->logger->debug('[getPublicAuctions] Mapping abgeschlossen. ' . count($mappedAuctions) . ' Auktionen gemappt.');
 
-        // 4. Speichere gemappte Daten im Cache
-        if (!is_dir($this->cacheDir)) @mkdir($this->cacheDir, 0755, true);
-        $mappedJsonToWrite = json_encode($mappedAuctions);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-             $this->logger->error('[getPublicAuctions] FEHLER beim Enkodieren der gemappten Auktionen zu JSON.', ['json_error' => json_last_error_msg()]);
-        } elseif (@file_put_contents($mappedCacheFile, $mappedJsonToWrite) === false) {
-            $this->logger->error('[getPublicAuctions] FEHLER beim Schreiben der gemappten Cache-Datei: ' . $mappedCacheFile);
+        // Gemappte Daten im Cache speichern
+        if (!is_dir(dirname($mappedCacheFile))) {
+            @mkdir(dirname($mappedCacheFile), 0755, true);
+        }
+        if (@file_put_contents($mappedCacheFile, json_encode($mappedAuctions)) === false) {
+            $this->logger->error('[getPublicAuctions] FEHLER beim Schreiben der gemappten Auktionen in Cache-Datei: ' . $mappedCacheFile);
         } else {
-            $this->logger->info('[getPublicAuctions] Gemappte Daten im Cache gespeichert: ' . $mappedCacheFile . ' (Größe: ' . strlen($mappedJsonToWrite) . ' Bytes)');
+            $this->logger->info('[getPublicAuctions] Gemappte Auktionen erfolgreich in Cache geschrieben: ' . $mappedCacheFile);
         }
 
-        $this->logger->info('[getPublicAuctions] Gebe ' . count($mappedAuctions) . ' frisch gemappte Auktionen zurück.');
         return $mappedAuctions;
     }
 
@@ -584,6 +432,11 @@ class AuctionService
             // BasicAuth aus NEdev Methode übernehmen
             $BasicAuth = $this->params->get('caeli_auction.marketplace_api_auth');
 
+            if (empty($apiBaseUrl) || empty($BasicAuth)) {
+                $this->logger->error('Marketplace API URL oder Auth Token nicht konfiguriert. Download für Bild ' . $filename . ' übersprungen.');
+                return '';
+            }
+
             $this->logger->debug('Lade Bild herunter: ' . $imageUrl . ' mit Auth');
 
             // Anfrage exakt wie in NEdev implementieren
@@ -770,7 +623,7 @@ class AuctionService
                     $filterValueFromRule = $filterRule['value'];
                     $operatorType = $filterRule['operator_type'];
                     $valueTypeHint = $filterRule['value_type_hint'];
-                    
+
                     $matchThisRule = false;
 
                     $this->logger->debug("[FilterLoop] Auktion: {$auctionIdForLog}, FieldKey: '{$filterFieldKey}', Operator: '{$operatorType}', AccessRaw: " . ($filterRule['access_raw']?'true':'false') . ", AuctionValue: '" . (is_array($auctionValue) ? json_encode($auctionValue) : $auctionValue) . "' (Typ: " . gettype($auctionValue) . "), FilterValueFromRule: '" . (is_array($filterValueFromRule) ? json_encode($filterValueFromRule) : $filterValueFromRule) . "', ValueTypeHint: '{$valueTypeHint}'");
@@ -780,7 +633,7 @@ class AuctionService
                         case 'not_equal':
                             $compareAuctionVal = $this->coerceTypeForComparison($auctionValue, $filterValueFromRule, $valueTypeHint);
                             $compareFilterVal = $this->coerceTypeForComparison($filterValueFromRule, $auctionValue, $valueTypeHint);
-                            
+
                             if ($valueTypeHint === 'bool' && $compareFilterVal === null && is_string($filterValueFromRule) && $filterValueFromRule !== ''){
                                 // Ungültiger boolescher Wert im Filter, Regel nicht anwendbar
                                 $this->logger->warning("[FilterLoop] Ungültiger boolescher Filterwert '{$filterValueFromRule}' für Feld {$filterFieldKey}. Regel ignoriert.");
@@ -836,7 +689,7 @@ class AuctionService
                         case 'contains': // Annahme: String-Vergleich
                             $matchThisRule = (is_string($auctionValue) && is_string($filterValueFromRule) && stripos($auctionValue, $filterValueFromRule) !== false);
                             break;
-                        
+
                         default:
                             $this->logger->warning("[FilterLoop] Unbekannter operator_type '{$operatorType}' für Feld {$filterFieldKey}. Regel ignoriert.");
                             $matchThisRule = true; // Unbekannte Regel schließt nicht aus
@@ -865,23 +718,23 @@ class AuctionService
         // Mehrstufige Sortierung anwenden, falls sortRules vorhanden
         if (!empty($sortRules)) {
             $this->logger->info("[getAuctions] Wende mehrstufige Sortierung an mit " . count($sortRules) . " Regeln");
-            
+
             usort($auctions, function ($a, $b) use ($sortRules) {
                 foreach ($sortRules as $rule) {
                     $field = $rule['field'];
                     $direction = $rule['direction'];
                     $valueType = $rule['value_type'];
                     $accessRaw = $rule['access_raw'] ?? false; // Default auf false, falls nicht gesetzt
-                    
+
                     $valA = $accessRaw ? ($a['_raw_data'][$field] ?? null) : ($a[$field] ?? null);
                     $valB = $accessRaw ? ($b['_raw_data'][$field] ?? null) : ($b[$field] ?? null);
-                    
+
                     if ($valueType === 'attempt_dynamic') {
                         // Beide Werte numerisch? Dann numerisch sortieren.
                         if (is_numeric($valA) && is_numeric($valB)) {
                             $valA = (float)$valA;
                             $valB = (float)$valB;
-                        } 
+                        }
                         // Beide Werte boolesch interpretierbar (auch als Strings 'true'/'false')? Dann boolesch.
                         // FILTER_NULL_ON_FAILURE ist wichtig, um nicht-boolesche Strings nicht fälschlich als false zu werten.
                         else {
@@ -906,11 +759,11 @@ class AuctionService
                         $valA = strtolower((string)$valA);
                         $valB = strtolower((string)$valB);
                     }
-                    
+
                     if ($valA == $valB) {
                         continue; // Gleiche Werte, zur nächsten Sortierregel gehen
                     }
-                    
+
                     // Rückgabe des Sortiervergleichs basierend auf der aktuellen Regel
                     if ($direction === 'asc') {
                         return ($valA < $valB) ? -1 : 1;
@@ -918,11 +771,11 @@ class AuctionService
                         return ($valA > $valB) ? -1 : 1;
                     }
                 }
-                
+
                 // Wenn alle Regeln gleiche Werte ergeben haben, sind die Elemente als gleich zu betrachten
                 return 0;
             });
-            
+
             $this->logger->debug("[getAuctions] Mehrstufige Sortierung abgeschlossen.");
         }
         // Einfache Sortierung für Abwärtskompatibilität, falls keine sortRules aber sortBy vorhanden
@@ -951,7 +804,7 @@ class AuctionService
                 if ($sortDirection === 'asc') {
                     return ($valA < $valB) ? -1 : 1;
                 }
-                
+
                 return ($valA > $valB) ? -1 : 1;
             });
         } elseif ($sortBy) {
@@ -1071,10 +924,9 @@ class AuctionService
      */
     public function __destruct()
     {
-        // Cookie-Datei löschen, wenn sie existiert
-        if (file_exists($this->cookieFile)) {
-            @unlink($this->cookieFile);
-        }
+        // if (isset($this->cookieFile) && file_exists($this->cookieFile)) { // Entfernt, da cookieFile nicht mehr existiert
+        //     @unlink($this->cookieFile);
+        // }
     }
 
     /**
@@ -1088,22 +940,22 @@ class AuctionService
         $this->logger->debug('[AuctionService] getSampleAuctionRawData() aufgerufen.');
         // ForceRefresh auf false setzen, um nicht bei jedem Backend-Aufruf die API neu zu belasten
         // getAuctions sollte idealerweise intern den Cache von getPublicAuctions nutzen.
-        $allAuctions = $this->getAuctions([], false); 
+        $allAuctions = $this->getAuctions([], false);
 
         if (empty($allAuctions)) {
             $this->logger->warning('[AuctionService] Keine Auktionen für Sample Raw Data gefunden.');
             return null;
         }
 
-        $sampleAuction = reset($allAuctions); 
+        $sampleAuction = reset($allAuctions);
 
         if (isset($sampleAuction['_raw_data']) && is_array($sampleAuction['_raw_data'])) {
             $this->logger->debug('[AuctionService] Sample Raw Data (aus _raw_data) gefunden.');
             return $sampleAuction['_raw_data'];
         }
-        
+
         $this->logger->debug('[AuctionService] Sample Raw Data (aus gemapptem Array als Fallback) gefunden, da \'_raw_data\' nicht gesetzt war.', ['sampleAuctionKeys' => array_keys($sampleAuction)]);
-        return $sampleAuction; 
+        return $sampleAuction;
     }
 
     /**
@@ -1154,7 +1006,7 @@ class AuctionService
                     $targetFieldName = $config['field'] ?? $fieldKey;
                     $valueType = $config['value_type'] ?? 'attempt_dynamic';
                     $filterParseType = $config['type'] ?? $filterParseType; // Config 'type' überschreibt abgeleiteten Typ
-                    
+
                     if (isset($config['access_raw'])) {
                         $accessRaw = (bool)$config['access_raw'];
                     } else {
@@ -1167,7 +1019,7 @@ class AuctionService
                     // $accessRaw bleibt true
                     // $filterParseType wurde oben basierend auf Operator ggf. schon auf minmax gesetzt
                 }
-                
+
                 // Die eigentliche Weiterverarbeitung des Filters basierend auf $filterParseType, $operator, $value
                 // und Speicherung von targetFieldName, accessRaw, valueType.
 
@@ -1183,7 +1035,7 @@ class AuctionService
                     // Entferne null-Werte, falls nur ein Teil des minmax gesetzt wurde
                     if ($currentFilter['min'] === null) unset($currentFilter['min']);
                     if ($currentFilter['max'] === null) unset($currentFilter['max']);
-                    
+
                     if (!empty($currentFilter)) {
                          // Wenn bereits ein Min/Max-Filter für dieses Feld existiert, merge ihn.
                          // Wichtig für den Fall, dass der Benutzer z.B. "feld > 10" UND "feld < 20" eingibt.
@@ -1192,7 +1044,7 @@ class AuctionService
                             $currentFilter = array_merge($existingMinMax, $currentFilter);
                         }
                         $parsedFilters[$targetFieldName] = [
-                            'value' => $currentFilter, 
+                            'value' => $currentFilter,
                             'operator_type' => 'minmax', // Eindeutiger Typ für die spätere Verarbeitung
                             'value_type_hint' => $valueType,
                             'access_raw' => $accessRaw
@@ -1280,7 +1132,7 @@ class AuctionService
         }
 
         $lines = preg_split('/\r\n|\r|\n/', $sortRulesString);
-        
+
         foreach ($lines as $line) {
             $line = trim($line);
             if (empty($line)) {
@@ -1290,7 +1142,7 @@ class AuctionService
             if (preg_match('/^(\w+)(?:\s+(asc|desc))?$/i', $line, $matches)) {
                 $fieldKey = trim($matches[1]); // Der vom User eingegebene Feldname
                 $direction = isset($matches[2]) ? strtolower(trim($matches[2])) : 'asc';
-                
+
                 $finalFieldNameForAccess = $fieldKey;
                 $valueType = 'attempt_dynamic';
                 $accessRaw = true; // Standard: Zugriff auf Rohdaten annehmen
@@ -1299,7 +1151,7 @@ class AuctionService
                     $config = $this->filterableFields[$fieldKey];
                     $finalFieldNameForAccess = $config['field'] ?? $fieldKey;
                     $valueType = $config['value_type'] ?? 'attempt_dynamic';
-                    
+
                     // Bestimme accessRaw basierend auf expliziter Konfig oder Abgleich von fieldKey und targetField
                     if (isset($config['access_raw'])) {
                         $accessRaw = (bool)$config['access_raw'];
@@ -1326,7 +1178,7 @@ class AuctionService
                 $this->logger->warning("[parseSortRulesFromString] Ungültiges Sortierformat in Zeile: '{$line}'. Wird ignoriert.");
             }
         }
-        
+
         $this->logger->debug("[parseSortRulesFromString] Geparste Sortierregeln aus String: ", $parsedRules);
         return $parsedRules;
     }
@@ -1402,17 +1254,17 @@ class AuctionService
         if ($valueTypeHint === 'bool') {
             return filter_var($value1, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
         }
-        
+
         // attempt_dynamic oder string
         if ($valueTypeHint === 'attempt_dynamic') {
             if (is_numeric($value1) && is_numeric($value2ForHint)) return (float)$value1;
-            
+
             $boolVal1 = filter_var($value1, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             // Prüfe, ob value2ForHint auch boolesch interpretiert werden KÖNNTE, um einen Typ-Mismatch zu vermeiden
             $boolVal2Hint = filter_var($value2ForHint, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if ($boolVal1 !== null && $boolVal2Hint !== null) return $boolVal1;
         }
-        
+
         return (string)$value1; // Fallback auf String
     }
 
@@ -1502,7 +1354,7 @@ class AuctionService
                     $accessRaw = ($targetFieldName === $fieldKey);
                 }
             }
-            
+
             // Wenn der rawValue Kommas enthält und der Typ nicht explizit was anderes sagt,
             // gehen wir von einem 'IN'-Operator aus.
             if (is_string($rawValue) && str_contains($rawValue, ',') && $filterInteractionType !== 'exact_string_with_comma') { // Beispiel für eine Ausnahme

@@ -459,23 +459,32 @@ class GoogleNewsFetcher
         // Lade das Konfigurationsmodell für die Archiv-ID
         $configModel = CaeliGooglenewsModel::findById($dc->id);
 
-        // BEGINN: AKTUELLE NEWS AUSGABE
-        if (!empty($currentNewsItems)) {
-            $output .= '<h3 class="caeli-news-header">Aktuelle News-Artikel (' . count($currentNewsItems) . ')</h3>';
-
-            // Steuerelemente
-            $output .= '<div class="caeli-news-controls tl_listing_container">';
-
+        // BUTTONS NUR EINMAL GANZ OBEN
+        if (!empty($currentNewsItems) || !empty($archivedNewsItems)) {
+            $output .= '<div class="caeli-news-controls tl_listing_container" style="margin-bottom: 20px;">';
+            
             // Anzahl anzeigen
-            $output .= '<div class="caeli-news-count">' . count($currentNewsItems) . ' neue Artikel gefunden</div>';
+            $totalCurrent = count($currentNewsItems);
+            $totalArchived = count($archivedNewsItems);
+            $output .= '<div class="caeli-news-count">Aktuelle: ' . $totalCurrent . ' | Archivierte: ' . $totalArchived . '</div>';
 
             // Aktionen (rechts)
             $output .= '<div class="caeli-news-actions">';
-            $output .= '<button type="button" id="import-selected-current" class="tl_submit">Ausgewählte importieren</button> ';
+            if (!empty($currentNewsItems)) {
+                $output .= '<button type="button" id="import-selected-current" class="tl_submit">Aktuelle importieren</button> ';
+            }
+            if (!empty($archivedNewsItems)) {
+                $output .= '<button type="button" id="import-selected-archive" class="tl_submit">Archivierte importieren</button> ';
+            }
             $output .= '<a href="' . Environment::get('base') . 'contao/caeli_googlenews/reset/' . $dc->id . '?_token=' . $token . '" class="tl_submit" onclick="return confirm(\'Möchten Sie wirklich alle News zurücksetzen?\');">News zurücksetzen</a>';
             $output .= '</div>';
 
             $output .= '</div>'; // Ende controls
+        }
+
+        // BEGINN: AKTUELLE NEWS AUSGABE
+        if (!empty($currentNewsItems)) {
+            $output .= '<h3 class="caeli-news-header">Aktuelle News-Artikel (' . count($currentNewsItems) . ')</h3>';
 
             // Tabelle im Contao-Stil
             $output .= '<div class="tl_listing_container list_view">';
@@ -610,20 +619,6 @@ class GoogleNewsFetcher
         // BEGINN: ARCHIVIERTE NEWS AUSGABE
         if (!empty($archivedNewsItems)) {
             $output .= '<h3 class="caeli-news-header">Archivierte News-Artikel (' . count($archivedNewsItems) . ')</h3>';
-
-            // Steuerelemente
-            $output .= '<div class="caeli-news-controls tl_listing_container">';
-
-            // Anzahl anzeigen
-            $output .= '<div class="caeli-news-count">' . count($archivedNewsItems) . ' Artikel im Archiv</div>';
-
-            // Aktionen (rechts)
-            $output .= '<div class="caeli-news-actions">';
-            $output .= '<button type="button" id="import-selected-archive" class="tl_submit">Ausgewählte importieren</button> ';
-            $output .= '<a href="' . Environment::get('base') . 'contao/caeli_googlenews/reset/' . $dc->id . '?_token=' . $token . '" class="tl_submit" onclick="return confirm(\'Möchten Sie wirklich alle News zurücksetzen?\');">News zurücksetzen</a>';
-            $output .= '</div>';
-
-            $output .= '</div>'; // Ende controls
 
             // Tabelle im Contao-Stil
             $output .= '<div class="tl_listing_container list_view">';
@@ -1064,42 +1059,10 @@ class GoogleNewsFetcher
      */
     public function onLoadCallback(mixed $dc = null): void
     {
-        // Prüfen, ob Keyword-Änderungen vorliegen und ob es sich nicht um eine Mehrfachveröffentlichung handelt
-        if (is_object($dc) && $dc->id > 0) {
-            $model = CaeliGooglenewsModel::findById($dc->id);
-            $request = System::getContainer()->get('request_stack')->getCurrentRequest();
-
-            // Nur ausführen, wenn es sich wirklich um ein Edit des Hauptformulars handelt
-            // und nicht um eine Aktion wie publish oder publish-multiple
-            if ($model
-                && Input::post('FORM_SUBMIT') === 'tl_caeli_googlenews'
-                && !$request->query->has('_token') // Keine Token-basierte Aktion
-                && !Input::get('act') === 'publishMultiple' // Keine Mehrfachveröffentlichung
-            ) {
-                // Wenn sich die Keywords geändert haben, Archiv zurücksetzen
-                $blacklistKeywords = Input::post('blacklistKeywords');
-
-                if ($blacklistKeywords !== $model->blacklistKeywords) {
-                    // Beim Ändern der Keywords das Archiv in der JSON-Datei zurücksetzen
-                    $jsonDir = System::getContainer()->getParameter('kernel.project_dir') . '/var/caeli_googlenews';
-                    $filePath = $jsonDir . '/news_' . $dc->id . '_archived.json';
-
-                    // Verzeichnis erstellen falls es nicht existiert
-                    if (!is_dir($jsonDir)) {
-                        mkdir($jsonDir, 0755, true);
-                    }
-
-                    // Leere Archived-JSON-Datei schreiben
-                    file_put_contents($filePath, json_encode([]));
-
-                    Message::addInfo('Die Keywords wurden geändert. Das Archiv wurde zurückgesetzt.');
-
-                    // Aktualisiere auch die aktuelle Vorschau basierend auf den neuen Keywords
-                    $this->refreshFilteredPreview($dc->id);
-                    Message::addInfo('Die aktuelle Vorschau wurde basierend auf den neuen Keywords aktualisiert.');
-                }
-            }
-        }
+        // Entfernt die automatische Archiv-Löschung bei Keyword-Änderungen
+        // Diese war zu aggressiv und löschte ungewollt Archive
+        
+        // Die Keyword-Filterung kann weiterhin manuell über den Reset-Button erfolgen
     }
 
     /**

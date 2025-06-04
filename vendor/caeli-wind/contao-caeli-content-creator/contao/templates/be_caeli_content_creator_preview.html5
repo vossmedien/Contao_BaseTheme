@@ -17,6 +17,28 @@
     </div>
   </div>
 
+  <!-- Status- und Progress-Anzeige -->
+  <div id="generationStatus" class="widget" style="<?= $this->generationStatus === 'idle' ? 'display: none;' : '' ?>">
+    <h3>Generierungsstatus</h3>
+    <div class="tl_info">
+      <div id="statusMessage">
+        <?php if ($this->generationStatus === 'generating'): ?>
+          <p><strong>Status:</strong> Inhalt wird generiert...</p>
+        <?php elseif ($this->generationStatus === 'completed'): ?>
+          <p><strong>Status:</strong> Generierung abgeschlossen!</p>
+        <?php elseif ($this->generationStatus === 'error'): ?>
+          <p><strong>Status:</strong> Fehler bei der Generierung</p>
+        <?php endif; ?>
+      </div>
+      <div class="progress-container" style="margin-top: 10px;">
+        <div class="progress-bar" style="width: 100%; background-color: #f0f0f0; border-radius: 4px; overflow: hidden;">
+          <div id="progressBar" class="progress-fill" style="height: 20px; background-color: #3498db; width: 0%; transition: width 0.3s ease;"></div>
+        </div>
+        <div id="progressText" style="margin-top: 5px; font-size: 12px; color: #666;">0%</div>
+      </div>
+    </div>
+  </div>
+
   <?php if ($this->message): ?>
     <div class="tl_message">
       <p class="tl_confirm"><?= $this->message ?></p>
@@ -25,74 +47,219 @@
 
   <form method="post" id="contentGeneratorForm">
     <div class="tl_formbody_edit">
-      <?php if (!$this->previewExists): ?>
-        <div class="tl_info">
-          <p>Es wurde noch kein Inhalt generiert. Klicken Sie auf "Inhalt generieren", um einen neuen Inhalt zu erstellen.</p>
-        </div>
-      <?php else: ?>
-        <div class="widget">
-          <h3>Vorschau des generierten Inhalts</h3>
+      <!-- Preview Container -->
+      <div id="previewContainer" class="widget" style="<?= !$this->previewExists ? 'display: none;' : '' ?>">
+        <h3>Vorschau des generierten Inhalts</h3>
+        <div class="preview-wrapper" style="border: 1px solid #ddd; padding: 20px; margin-bottom: 20px;">
+          <h2 id="previewTitle"><?= $this->previewTitle ?? '' ?></h2>
 
-          <div class="preview-container" style="border: 1px solid #ddd; padding: 20px; margin-bottom: 20px;">
-            <h2><?= $this->previewTitle ?></h2>
+          <div id="previewTeaser" class="preview-teaser" style="font-style: italic; margin-bottom: 20px; padding: 10px; background: #f0f0f0; <?= empty($this->previewTeaser) ? 'display: none;' : '' ?>">
+            <?= $this->previewTeaser ?? '' ?>
+          </div>
 
-            <?php if ($this->previewTeaser): ?>
-              <div class="preview-teaser" style="font-style: italic; margin-bottom: 20px; padding: 10px; background: #f0f0f0;">
-                <?= $this->previewTeaser ?>
-              </div>
-            <?php endif; ?>
+          <div id="previewContent" class="preview-content">
+            <?= $this->previewContent ?? '' ?>
+          </div>
 
-            <div class="preview-content">
-              <?= $this->previewContent ?>
-            </div>
-
-            <?php if ($this->previewTags): ?>
-              <div class="preview-tags" style="margin-top: 20px; color: #666;">
-                <strong>Tags:</strong> <?= $this->previewTags ?>
-              </div>
-            <?php endif; ?>
-
-            <?php if (isset($this->duplicates) && !empty($this->duplicates)): ?>
-            <div class="duplicate-warning" style="margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeeba; color: #856404;">
-              <h4>Mögliche Duplikate gefunden</h4>
-              <ul>
-                <?php foreach ($this->duplicates as $duplicate): ?>
-                <li>
-                  <strong><?= $duplicate['headline'] ?></strong>
-                  (<?= $duplicate['date'] ?>) -
-                  Ähnlichkeit: Titel <?= $duplicate['titleSimilarity'] ?>%,
-                  Teaser <?= $duplicate['teaserSimilarity'] ?>%
-                </li>
-                <?php endforeach; ?>
-              </ul>
-            </div>
-            <?php endif; ?>
-
-            <?php if (isset($this->debug_info) && $this->debug_info): ?>
-            <div class="debug-info" style="margin-top: 20px; padding: 15px; background: #f8f8f8; border: 1px solid #ccc; font-family: monospace; font-size: 12px;">
-              <h4>Debug-Informationen</h4>
-              <pre><?= $this->debug_info ?></pre>
-            </div>
-            <?php endif; ?>
+          <div id="previewTags" class="preview-tags" style="margin-top: 20px; color: #666; <?= empty($this->previewTags) ? 'display: none;' : '' ?>">
+            <strong>Tags:</strong> <span class="tags-content"><?= $this->previewTags ?? '' ?></span>
           </div>
         </div>
-      <?php endif; ?>
+      </div>
 
-      <!-- Mögliche Duplikate-Anzeige, wird via JavaScript befüllt -->
+      <!-- Fallback für JavaScript-Disabled -->
+      <noscript>
+        <?php if (!$this->previewExists): ?>
+          <div class="tl_info">
+            <p>Es wurde noch kein Inhalt generiert. Klicken Sie auf "Inhalt generieren", um einen neuen Inhalt zu erstellen.</p>
+          </div>
+        <?php endif; ?>
+      </noscript>
+
+      <!-- Placeholder für noch keinen generierten Inhalt -->
+      <div id="noPreviewMessage" class="tl_info" style="<?= $this->previewExists ? 'display: none;' : '' ?>">
+        <p>Es wurde noch kein Inhalt generiert. Klicken Sie auf "Inhalt generieren", um einen neuen Inhalt zu erstellen.</p>
+      </div>
+
+      <!-- Duplikate-Anzeige -->
       <div id="duplicateContainer" style="display: none; margin: 20px 0; padding: 15px; background: #fff3cd; border: 1px solid #ffeeba; color: #856404;">
-        <h4>Mögliche Duplikate</h4>
+        <h4>Mögliche Duplikate gefunden</h4>
         <div id="duplicateContent"></div>
       </div>
     </div>
 
     <div class="tl_formbody_submit">
       <div class="tl_submit_container">
-        <button type="submit" name="generate" value="1" id="generateButton" class="tl_submit" style="background-color: #3498db;">Inhalt generieren</button>
-        <?php if ($this->previewExists): ?>
-          <button type="submit" name="publish" value="1" id="publishButton" class="tl_submit" style="background-color: #27ae60;">Inhalt veröffentlichen</button>
-        <?php endif; ?>
+        <button type="button" id="generateButton" class="tl_submit" style="background-color: #3498db;">
+          <span class="button-text">Inhalt generieren</span>
+          <span class="spinner" style="display: none; margin-left: 8px;">⏳</span>
+        </button>
+        <button type="submit" name="publish" value="1" id="publishButton" class="tl_submit" style="background-color: #27ae60; <?= !$this->previewExists ? 'display: none;' : '' ?>">Inhalt veröffentlichen</button>
         <a href="<?= $this->backUrl ?>" class="tl_submit" style="background-color: #7f8c8d;">Zurück</a>
       </div>
     </div>
   </form>
+
+  <script>
+  (function() {
+    'use strict';
+    
+    const modelId = <?= (int)$this->modelId ?>;
+    const generateButton = document.getElementById('generateButton');
+    const publishButton = document.getElementById('publishButton');
+    const statusContainer = document.getElementById('generationStatus');
+    const statusMessage = document.getElementById('statusMessage');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const previewContainer = document.getElementById('previewContainer');
+    const noPreviewMessage = document.getElementById('noPreviewMessage');
+    
+    let statusCheckInterval = null;
+    
+    // Event-Listener für Generierung
+    generateButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      startGeneration();
+    });
+    
+    function startGeneration() {
+      // UI für Generierung vorbereiten
+      generateButton.disabled = true;
+      generateButton.querySelector('.button-text').textContent = 'Generiere...';
+      generateButton.querySelector('.spinner').style.display = 'inline';
+      publishButton.style.display = 'none';
+      
+      // Status-Container anzeigen
+      statusContainer.style.display = 'block';
+      updateStatus('generating', 'Inhalt wird generiert...');
+      updateProgress(0);
+      
+      // API-Aufruf starten
+      fetch(`/contao/caeli_content_creator/generate/${modelId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Erfolg: Preview aktualisieren
+          updatePreview(data.data);
+          updateStatus('completed', 'Generierung erfolgreich abgeschlossen!');
+          updateProgress(100);
+          
+          // UI zurücksetzen
+          resetGenerateButton();
+          publishButton.style.display = 'inline-block';
+          
+        } else {
+          // Fehler anzeigen
+          updateStatus('error', `Fehler: ${data.message}`);
+          resetGenerateButton();
+        }
+      })
+      .catch(error => {
+        console.error('Generation error:', error);
+        updateStatus('error', `Netzwerkfehler: ${error.message}`);
+        resetGenerateButton();
+      });
+      
+      // Status-Polling starten
+      startStatusPolling();
+    }
+    
+    function startStatusPolling() {
+      if (statusCheckInterval) {
+        clearInterval(statusCheckInterval);
+      }
+      
+      statusCheckInterval = setInterval(() => {
+        checkGenerationStatus();
+      }, 2000); // Alle 2 Sekunden prüfen
+    }
+    
+    function checkGenerationStatus() {
+      fetch(`/contao/caeli_content_creator/status/${modelId}`, {
+        method: 'GET',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          updateProgress(data.progress || 0);
+          
+          if (data.status === 'completed') {
+            clearInterval(statusCheckInterval);
+            if (data.data) {
+              updatePreview(data.data);
+            }
+          } else if (data.status === 'error') {
+            clearInterval(statusCheckInterval);
+            updateStatus('error', 'Fehler bei der Generierung');
+            resetGenerateButton();
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Status check error:', error);
+      });
+    }
+    
+    function updateStatus(status, message) {
+      statusMessage.innerHTML = `<p><strong>Status:</strong> ${message}</p>`;
+    }
+    
+    function updateProgress(percent) {
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${Math.round(percent)}%`;
+    }
+    
+    function updatePreview(data) {
+      // Preview-Container anzeigen
+      previewContainer.style.display = 'block';
+      noPreviewMessage.style.display = 'none';
+      
+      // Inhalte aktualisieren
+      document.getElementById('previewTitle').textContent = data.title || '';
+      
+      const teaserElement = document.getElementById('previewTeaser');
+      if (data.teaser && data.teaser !== data.title) {
+        teaserElement.textContent = data.teaser;
+        teaserElement.style.display = 'block';
+      } else {
+        teaserElement.style.display = 'none';
+      }
+      
+      document.getElementById('previewContent').innerHTML = data.content || '';
+      
+      const tagsElement = document.getElementById('previewTags');
+      if (data.tags) {
+        tagsElement.querySelector('.tags-content').textContent = data.tags;
+        tagsElement.style.display = 'block';
+      } else {
+        tagsElement.style.display = 'none';
+      }
+    }
+    
+    function resetGenerateButton() {
+      generateButton.disabled = false;
+      generateButton.querySelector('.button-text').textContent = 'Inhalt generieren';
+      generateButton.querySelector('.spinner').style.display = 'none';
+    }
+    
+    // Initial Status prüfen falls bereits eine Generierung läuft
+    const initialStatus = '<?= $this->generationStatus ?>';
+    if (initialStatus === 'generating') {
+      generateButton.disabled = true;
+      generateButton.querySelector('.button-text').textContent = 'Generiere...';
+      generateButton.querySelector('.spinner').style.display = 'inline';
+      startStatusPolling();
+    }
+    
+  })();
+  </script>
 <?php $this->endblock(); ?>

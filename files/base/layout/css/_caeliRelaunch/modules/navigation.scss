@@ -48,7 +48,7 @@
         }
       }
 
-      a.contact-btn {
+      .contact-btn {
         background-color: var(--bs-primary);
         color: var(--bs-body-color-inverse);
         padding-inline: 1.25rem;
@@ -146,6 +146,10 @@ body:not(.is-home) .level_1 > li {
 
 .mm-spn.mod_navigation {
   --mm-spn-border-color: var(--bs-light);
+
+  .contact-btn {
+    display: none !important;
+  }
 }
 
 .mm-spn.mod_navigation:before {
@@ -182,12 +186,37 @@ html body main#main .content--element .mod_breadcrumb {
         content: '>';
         vertical-align: baseline;
         margin-right: 5px;
-        font-family: var(--bs-body-font-family)
+        font-family: var(--bs-body-font-family);
       }
 
       > * {
         color: currentColor;
+      }
+    }
 
+    @include media-breakpoint-down(sm) {
+      // Alle li-Elemente, die nicht das letzte sind, werden zu "..."
+      li:not(:last-child) {
+        > a,
+        > strong {
+          font-size: 0 !important; // Versteckt Originaltext
+          &:after {
+            content: '...' !important;
+            font-size: rfs-value(12px) !important; // Schriftgröße für "..."
+            display: inline !important;
+          }
+        }
+      }
+
+      li[aria-current="page"] {
+        > a,
+        > strong {
+          font-size: rfs-value(12px) !important; // Stelle Original-Schriftgröße wieder her
+          &:after {
+            content: '' !important; // Kein "..."
+            display: none !important; // Sicherstellen, dass ::after nicht stört
+          }
+        }
       }
     }
   }
@@ -196,6 +225,8 @@ html body main#main .content--element .mod_breadcrumb {
 .pagination {
   text-align: center;
   margin-top: var(--main-gap);
+  width: 100%;
+  color: currentColor;
 
   ul {
     list-style-type: none;
@@ -205,12 +236,16 @@ html body main#main .content--element .mod_breadcrumb {
     gap: .75rem;
     align-items: center;
 
-    a:after{
+    a{
+      color: currentColor;
+    }
+
+    a:after {
       display: none;
     }
 
     .active, a:hover {
-      color: $primary;
+      color: currentColor;
       -webkit-text-stroke: 0.3px currentColor;
       text-stroke: 0.3px currentColor;
     }

@@ -1,25 +1,16 @@
 
 main, footer {
   a:not(.btn, .text-decoration-none):not(:has(img)) {
-    position: relative;
+    text-decoration: none;
+    background-image: linear-gradient(to right, currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: bottom left;
+    background-size: 0 1px; /* Anfangs keine Unterstreichung */
+    transition: all 0.3s;
+  }
 
-
-    &:after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      background-color: currentColor;
-      height: 1px;
-      width: 0;
-      transition: width 0.3s;
-    }
-
-    &:hover {
-      &:after {
-        width: 100%;
-      }
-    }
+  a:not(.btn, .text-decoration-none):not(:has(img)):hover {
+    background-size: 100% 1px; /* Unterstreichung beim Hovern */
   }
 
   p a, label a {
@@ -29,6 +20,11 @@ main, footer {
 
 p + ul {
   margin-top: 1rem;
+}
+
+p a {
+  //display: inline-block;
+  //margin-inline: .25rem;
 }
 
 main .content--element {
@@ -41,7 +37,11 @@ main .content--element {
       padding-left: 32px;
 
       &:not(:last-child) {
-        margin-bottom: 1rem
+        margin-bottom: .875rem
+      }
+
+      &:last-child {
+        //margin-bottom: 1rem;
       }
 
       &:before {
@@ -86,7 +86,7 @@ ul.list-arrow {
       padding-right: rfs-value(8px);
       color: currentColor;
       left: 0;
-      top: 5px;
+      top: 2px;
       font-size: 16px;
     }
 
@@ -99,9 +99,32 @@ ul.list-arrow {
 }
 
 
+ul.list-check {
+  > li {
+    padding-left: 45px;
+
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+
+    &:before {
+      @extend %fa-icon;
+      font-family: "Font Awesome Kit";
+      content: "\e008";
+      position: absolute;
+      padding-right: rfs-value(10px);
+      color: var(--bs-tertiary);
+      left: 0;
+      top: -4px;
+      font-size: 1.75rem;
+    }
+  }
+}
+
+
 li.active {
-  a:after {
-    width: 100% !important;
+  a {
+    background-size: 100% 1px !important;
   }
 }
 
@@ -141,7 +164,39 @@ p + .h6 {
 }
 
 .step-content-wrapper .step--headline {
-    @include media-breakpoint-up(lg) {
-      max-width: 50%;
-    }
+  @include media-breakpoint-up(lg) {
+    max-width: 50%;
+  }
+}
+
+.small-subline {
+  .ce--subline {
+    font-size: var(--bs-body-font-size) !important;
+  }
+
+  h2 + .ce--subline {
+    margin-top: 1.5rem !important;
+  }
+}
+
+
+.special-uk-element {
+
+  .ce--headline.hl-h2 {
+    margin-bottom: 1rem;
+  }
+
+  p {
+    line-height: 1.1;
+  }
+}
+
+h2, .h2, h3, .h3 {
+  a {
+    background: none !important;
+  }
+}
+
+.text-lg{
+  hyphens: auto;
 }

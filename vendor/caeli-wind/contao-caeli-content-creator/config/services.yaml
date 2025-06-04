@@ -15,28 +15,18 @@ services:
         resource: ../src/Controller
         tags: ['controller.service_arguments']
 
-    # Services registrieren - öffentlich für den Container-Zugriff
+    # Service-Definitionen mit optimierter Dependency Injection
     CaeliWind\ContaoCaeliContentCreator\Service\GrokApiService:
-        public: true
         arguments:
-            # HttpClient wird autowired (?HttpClientInterface)
-            # Logger wird autowired (LoggerInterface)
-            $apiTimeout: '%caeli.content_creator.api_timeout%' # Inject timeout parameter
+            $apiTimeout: '%caeli.content_creator.api_timeout%'
             $apiMaxTokens: '%caeli.content_creator.api_max_tokens%'
 
     CaeliWind\ContaoCaeliContentCreator\Service\NewsContentGenerator:
-        public: true
         arguments:
-            - '@contao.framework'          # ContaoFramework
-            - '@database_connection'       # Connection
-            - '@logger'                    # LoggerInterface (using common alias)
-            - '%kernel.project_dir%'       # Project Directory Parameter
+            $projectDir: '%kernel.project_dir%'
 
-    CaeliWind\ContaoCaeliContentCreator\Service\DuplicateChecker:
-        public: true
+    CaeliWind\ContaoCaeliContentCreator\Service\DuplicateChecker: ~
 
     CaeliWind\ContaoCaeliContentCreator\Service\PromptBuilder:
-        public: true
         arguments:
-            - '@twig'                              # Twig Environment
-            - '@logger'                            # LoggerInterface (using common alias)
+            $projectDir: '%kernel.project_dir%'

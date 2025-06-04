@@ -4,6 +4,15 @@
         {% if auctions|default and auctions|length > 0 %}
             {# Filter-Formular - wurde in ein separates Modul ausgelagert #}
 
+            {# Paginierungs-Info oben #}
+            {% if pagination.totalPages > 1 %}
+                <div class="pagination-info mb-3">
+                    <small>
+                        {{ 'pagination.showing'|trans({'%start%': pagination.startItem, '%end%': pagination.endItem, '%total%': pagination.totalItems}) }}
+                    </small>
+                </div>
+            {% endif %}
+
             {# Auktionsliste #}
             <div class="auction-items row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3">
                 {% for auction in auctions %}
@@ -17,6 +26,71 @@
 
                 {% endfor %}
             </div>
+
+            {# Paginierung unten - angepasst an bestehende Struktur #}
+            {% if pagination.totalPages > 1 %}
+                <!-- indexer::stop -->
+
+                    <nav class="pagination block" aria-label="{{ 'pagination.aria_label'|trans }}">
+                        <ul class>
+                            {# Vorherige Seite #}
+                            {% if pagination.hasPrevPage %}
+                                <li class="previous">
+                                    <a href="?page={{ pagination.prevPage }}#listingAnchor" class="previous pagination-link" data-page="{{ pagination.prevPage }}" title="{{ 'pagination.previous'|trans }}">
+                                        <i class="fak fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {# Seitenzahlen #}
+                            {% set startPage = max(1, pagination.currentPage - 2) %}
+                            {% set endPage = min(pagination.totalPages, pagination.currentPage + 2) %}
+
+                            {% if startPage > 1 %}
+                                <li>
+                                    <a href="?page=1#listingAnchor" class="link pagination-link" data-page="1" title="{{ 'pagination.go_to_page'|trans({'%page%': 1}) }}">1</a>
+                                </li>
+                                {% if startPage > 2 %}
+                                    <li>
+                                        <span class="gap">...</span>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+
+                            {% for pageNum in startPage..endPage %}
+                                {% if pageNum == pagination.currentPage %}
+                                    <li><strong class="active">{{ pageNum }}</strong></li>
+                                {% else %}
+                                    <li>
+                                        <a href="?page={{ pageNum }}#listingAnchor" class="link pagination-link" data-page="{{ pageNum }}" title="{{ 'pagination.go_to_page'|trans({'%page%': pageNum}) }}">{{ pageNum }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if endPage < pagination.totalPages %}
+                                {% if endPage < pagination.totalPages - 1 %}
+                                    <li>
+                                        <span class="gap">...</span>
+                                    </li>
+                                {% endif %}
+                                <li>
+                                    <a href="?page={{ pagination.totalPages }}#listingAnchor" class="link pagination-link" data-page="{{ pagination.totalPages }}" title="{{ 'pagination.go_to_page'|trans({'%page%': pagination.totalPages}) }}">{{ pagination.totalPages }}</a>
+                                </li>
+                            {% endif %}
+
+                            {# Nächste Seite #}
+                            {% if pagination.hasNextPage %}
+                                <li class="next">
+                                    <a href="?page={{ pagination.nextPage }}#listingAnchor" class="next pagination-link" data-page="{{ pagination.nextPage }}" title="{{ 'pagination.next'|trans }}">
+                                        <i class="fak fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+
+                <!-- indexer::continue -->
+            {% endif %}
         {% else %}
             <div class="no-auctions">
                 <p class="alert alert-warning">{{ 'auction_listing.no_auctions_found'|trans }}</p>
@@ -24,4 +98,138 @@
         {% endif %}
     </div>
 </div>
+
+{# JavaScript für AJAX Paginierung #}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Paginierungs-Links mit AJAX erweitern
+        function initPaginationAjax() {
+            document.querySelectorAll('.pagination-link').forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    const page = this.dataset.page;
+                    const currentUrl = new URL(window.location);
+                    currentUrl.searchParams.set('page', page);
+
+                    // Loading-Indikator
+                    const spinner = document.querySelector('#filterSpinnerContainer');
+                    if (spinner) {
+                        spinner.style.display = 'flex';
+                    }
+
+                    // AJAX-Request
+                    fetch(currentUrl.toString())
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+
+                            // Auction Listing Container aktualisieren
+                            const newListingContainer = doc.querySelector('.auction-listing');
+                            const currentListingContainer = document.querySelector('.auction-listing');
+
+                            if (newListingContainer && currentListingContainer) {
+                                currentListingContainer.innerHTML = newListingContainer.innerHTML;
+
+                                // data-animation Attribute von allen Elementen entfernen (wichtig für AJAX-Updates)
+                                currentListingContainer.querySelectorAll('[data-animation]').forEach(item => {
+                                    item.removeAttribute('data-animation');
+                                });
+
+                                // Zusätzlich alle .col Elemente in .auction-items prüfen
+                                currentListingContainer.querySelectorAll('.auction-items .col[data-animation]').forEach(item => {
+                                    item.removeAttribute('data-animation');
+                                });
+
+                                // Meta-Tags aus dem neuen HTML aktualisieren
+                                const newDoc = parser.parseFromString(html, 'text/html');
+                                
+                                // Canonical Tag aktualisieren
+                                const newCanonical = newDoc.querySelector('link[rel="canonical"]');
+                                const currentCanonical = document.querySelector('link[rel="canonical"]');
+                                if (newCanonical && currentCanonical) {
+                                    currentCanonical.href = newCanonical.href;
+                                }
+                                
+                                // Prev Tag aktualisieren
+                                const newPrev = newDoc.querySelector('link[rel="prev"]');
+                                let currentPrev = document.querySelector('link[rel="prev"]');
+                                if (newPrev) {
+                                    if (currentPrev) {
+                                        currentPrev.href = newPrev.href;
+                                    } else {
+                                        // Prev Tag neu erstellen
+                                        const prevLink = document.createElement('link');
+                                        prevLink.rel = 'prev';
+                                        prevLink.href = newPrev.href;
+                                        document.head.appendChild(prevLink);
+                                    }
+                                } else if (currentPrev) {
+                                    // Prev Tag entfernen (z.B. bei Seite 1)
+                                    currentPrev.remove();
+                                }
+                                
+                                // Next Tag aktualisieren
+                                const newNext = newDoc.querySelector('link[rel="next"]');
+                                let currentNext = document.querySelector('link[rel="next"]');
+                                if (newNext) {
+                                    if (currentNext) {
+                                        currentNext.href = newNext.href;
+                                    } else {
+                                        // Next Tag neu erstellen
+                                        const nextLink = document.createElement('link');
+                                        nextLink.rel = 'next';
+                                        nextLink.href = newNext.href;
+                                        document.head.appendChild(nextLink);
+                                    }
+                                } else if (currentNext) {
+                                    // Next Tag entfernen (z.B. bei letzter Seite)
+                                    currentNext.remove();
+                                }
+                                
+                                // Nach dem Update die AJAX-Handler neu initialisieren
+                                initPaginationAjax();
+                                
+                                // URL aktualisieren ohne Reload
+                                history.pushState({page: page}, '', currentUrl.toString());
+                                
+                                // Zum Listing-Anker scrollen (wie im Original)
+                                const auctionAnchor = document.getElementById('auctionFilter');
+                                if (auctionAnchor) {
+                                    auctionAnchor.scrollIntoView({ 
+                                        behavior: 'smooth',
+                                        block: 'start'
+                                    });
+                                } else {
+                                    // Fallback: Zum Listing-Container scrollen
+                                    currentListingContainer.scrollIntoView({ 
+                                        behavior: 'smooth',
+                                        block: 'start'
+                                    });
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Paginierung Fehler:', error);
+                        })
+                        .finally(() => {
+                            if (spinner) {
+                                spinner.style.display = 'none';
+                            }
+                        });
+                });
+            });
+        }
+
+        initPaginationAjax();
+
+        // Browser Back/Forward-Buttons unterstützen
+        window.addEventListener('popstate', function (event) {
+            if (event.state && event.state.page) {
+                window.location.reload(); // Einfacher Reload bei Back/Forward
+            }
+        });
+    });
+</script>
 

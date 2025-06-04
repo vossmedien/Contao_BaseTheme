@@ -6,13 +6,13 @@
 
 <div class="pin-login-form-container">
     {% if hasError %}
-        <div class="error-message">
+        <div class="error-message alert alert-danger mb-3">
             {{ errorMessage }}
         </div>
     {% endif %}
 
     {% if successMessage %}
-        <div class="success-message">
+        <div class="success-message alert alert-primary mb-3">
             {{ successMessage }}
         </div>
     {% endif %}

@@ -20,7 +20,7 @@
                     <span class="name"><?= $GLOBALS['TL_LANG']['MSC']['all_entrys'] ?></span>
                 </button>
             <?php else: ?>
-                <a data-animation="animate__fadeIn" href="<?= $baseUrl ?>" class="btn btn-sm btn-outline-primary" title="<?= $GLOBALS['TL_LANG']['MSC']['all_entrys'] ?>">
+                <a data-animation="animate__fadeIn" href="<?= $baseUrl ?>#listingAnchor" class="btn btn-sm btn-outline-primary" title="<?= $GLOBALS['TL_LANG']['MSC']['all_entrys'] ?>">
                     <span class="name"><?= $GLOBALS['TL_LANG']['MSC']['all_entrys'] ?></span>
                 </a>
             <?php endif; ?>
@@ -35,7 +35,7 @@
                         <?php endif; ?>
                     </button>
                 <?php else: ?>
-                    <a data-animation="animate__fadeIn" href="<?= $monthData['href'] ?>" class="btn btn-sm btn-outline-primary" title="<?= $monthData['title'] ?>">
+                    <a data-animation="animate__fadeIn" href="<?= $monthData['href'] ?>#listingAnchor" class="btn btn-sm btn-outline-primary" title="<?= $monthData['title'] ?>">
                         <span class="name"><?= $monthData['link'] ?></span>
                         <?php if ($this->showQuantity): ?>
                             <span class="quantity">(<?= $monthData['quantity'] ?>)</span>
@@ -49,10 +49,10 @@
             <thead>
             <tr>
                 <th class="head previous">
-                    <a href="<?= $this->prevHref ?>" title="<?= $this->prevTitle ?>"><?= $this->prevLabel ?></a></th>
+                    <a href="<?= $this->prevHref ?>#listingAnchor" title="<?= $this->prevTitle ?>"><?= $this->prevLabel ?></a></th>
                 <th colspan="5" class="head current"><?= $this->current ?></th>
                 <th class="head next">
-                    <a href="<?= $this->nextHref ?>" title="<?= $this->nextTitle ?>"><?= $this->nextLabel ?></a></th>
+                    <a href="<?= $this->nextHref ?>#listingAnchor" title="<?= $this->nextTitle ?>"><?= $this->nextLabel ?></a></th>
             </tr>
             <tr>
                 <?php foreach ($this->days as $day): ?>
@@ -66,7 +66,7 @@
                     <?php foreach ($week as $day): ?>
                         <?php if ($day['href']): ?>
                             <td class="<?= $day['class'] ?>">
-                                <a href="<?= $day['href'] ?>" title="<?= $day['title'] ?>"><?= $day['label'] ?></a></td>
+                                <a href="<?= $day['href'] ?>#listingAnchor" title="<?= $day['title'] ?>"><?= $day['label'] ?></a></td>
                         <?php else: ?>
                             <td class="<?= $day['class'] ?>"><?= $day['label'] ?></td>
                         <?php endif; ?>
@@ -82,7 +82,7 @@
                     <?php if ($year == $this->activeYear): ?>
                         <strong class="active"><?= $year ?></strong>
                     <?php else: ?>
-                        <a href="<?= $this->url ?>year=<?= $year ?>"><?= $year ?></a>
+                        <a href="<?= $this->url ?>year=<?= $year ?>#listingAnchor"><?= $year ?></a>
                     <?php endif; ?>
                     <ul class="level_2">
                         <?php foreach ($months as $month): ?>
@@ -92,7 +92,7 @@
                                 </li>
                             <?php else: ?>
                                 <li>
-                                    <a href="<?= $this->url ?>month=<?= $month['date'] ?>" title="<?= $month['title'] ?>"><?= $month['link'] ?><?php if ($this->showQuantity): ?> (<?= $month['quantity'] ?>)<?php endif; ?></a>
+                                    <a href="<?= $this->url ?>month=<?= $month['date'] ?>#listingAnchor" title="<?= $month['title'] ?>"><?= $month['link'] ?><?php if ($this->showQuantity): ?> (<?= $month['quantity'] ?>)<?php endif; ?></a>
                                 </li>
                             <?php endif; ?>
                         <?php endforeach; ?>
