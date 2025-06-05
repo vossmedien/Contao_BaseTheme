@@ -1,0 +1,143 @@
+<div class="content--element bg-">
+    <div class="mod_caeli_area_check">
+        {% if error %}
+            <div class="alert alert-danger">
+                <h4>Fehler bei der Auswertung</h4>
+                <p>{{ error }}</p>
+            </div>
+        {% elseif success and rating %}
+            <div class="container my-5">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="text-center mb-4">Ihr Flächencheck-Ergebnis</h2>
+                        
+                        {% if searchedAddress %}
+                            <div class="alert alert-info">
+                                <strong>Geprüfte Adresse:</strong> {{ searchedAddress }}
+                            </div>
+                        {% endif %}
+                        
+                        {% if parkid %}
+                            <div class="alert alert-success">
+                                <strong>Park-ID:</strong> {{ parkid }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">Bewertungsergebnis</h4>
+                            </div>
+                            <div class="card-body">
+                                {% if rating.status is defined and rating.status == 'success' %}
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h5>Allgemeine Bewertung</h5>
+                                            {% if rating.overall_score is defined %}
+                                                <div class="progress mb-3">
+                                                    <div class="progress-bar bg-success" role="progressbar" 
+                                                         style="width: {{ rating.overall_score }}%" 
+                                                         aria-valuenow="{{ rating.overall_score }}" 
+                                                         aria-valuemin="0" aria-valuemax="100">
+                                                        {{ rating.overall_score }}%
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            {% if rating.message is defined %}
+                                                <p><strong>Bewertung:</strong> {{ rating.message }}</p>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <h5>Detailbewertungen</h5>
+                                            {% if rating.details is defined %}
+                                                <ul class="list-group list-group-flush">
+                                                    {% for key, value in rating.details %}
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            {{ key|title|replace({'_': ' '}) }}
+                                                            <span class="badge bg-{{ value == 'OK' ? 'success' : (value == 'WARNING' ? 'warning' : 'danger') }}">
+                                                                {{ value }}
+                                                            </span>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    {% if rating.recommendations is defined %}
+                                        <div class="mt-4">
+                                            <h5>Empfehlungen</h5>
+                                            <div class="alert alert-info">
+                                                {{ rating.recommendations }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="alert alert-warning">
+                                        <h5>Bewertung nicht verfügbar</h5>
+                                        <p>Die Bewertung konnte nicht abgerufen werden. Bitte versuchen Sie es später erneut.</p>
+                                        {% if rating %}
+                                            <details>
+                                                <summary>Rohdaten anzeigen</summary>
+                                                <pre>{{ rating|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                                            </details>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <a href="/flaechencheck" class="btn btn-primary">Neue Prüfung starten</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <h4>Willkommen zum Flächencheck</h4>
+                <p>Bitte füllen Sie das Formular aus, um eine Flächenbewertung zu erhalten.</p>
+                <form method="post">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Name:</label>
+                                <input type="text" name="name" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Vorname:</label>
+                                <input type="text" name="vorname" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Telefon:</label>
+                                <input type="text" name="phone" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">E-Mail:</label>
+                                <input type="email" name="email" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Gesuchte Adresse:</label>
+                        <input type="text" name="searched_address" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Geometrie:</label>
+                        <textarea name="geometry" rows="3" class="form-control"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Absenden</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</div>

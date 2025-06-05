@@ -1,3 +1,8 @@
+
+.is-flaechencheck .mod_article{
+  padding-top: 0 !important;
+}
+
 main#main {
   .main-content > .mod_article:first-child:not(:has( > .article-content:not([class*="bg-"]) > *[class*="bg-"]:first-child)) {
     padding-top: calc(var(--main-gap));

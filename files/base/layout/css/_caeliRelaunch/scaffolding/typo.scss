@@ -28,7 +28,7 @@ p a {
 }
 
 main .content--element {
-  ul:not([class]) {
+  ul:not([class], [role]) {
     list-style-type: none;
     padding: 0;
 

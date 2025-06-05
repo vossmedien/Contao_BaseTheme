@@ -1,0 +1,167 @@
+{% if isResult %}
+    {# Result-Bereich anzeigen #}
+    <div class="content--element bg-">
+        <div class="mod_caeli_area_check">
+            {% if error %}
+                <div class="alert alert-danger">
+                    <h4>Fehler bei der Auswertung</h4>
+                    <p>{{ error }}</p>
+                </div>
+            {% elseif success and rating %}
+                <div class="container my-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="text-center mb-4">Ihr Flächencheck-Ergebnis</h2>
+                            
+                            {% if searchedAddress %}
+                                <div class="alert alert-info">
+                                    <strong>Geprüfte Adresse:</strong> {{ searchedAddress }}
+                                </div>
+                            {% endif %}
+                            
+                            {% if parkid %}
+                                <div class="alert alert-success">
+                                    <strong>Park-ID:</strong> {{ parkid }}
+                                </div>
+                            {% endif %}
+                            
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h4 class="mb-0">Bewertungsergebnis</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-warning">
+                                        <h5>Bewertung verfügbar</h5>
+                                        <p>Die Bewertung wurde erfolgreich abgerufen.</p>
+                                        <details>
+                                            <summary>Rohdaten anzeigen</summary>
+                                            <pre>{{ rating|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                                        </details>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <a href="/flaechencheck" class="btn btn-primary">Neue Prüfung starten</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <h4>Willkommen zum Flächencheck</h4>
+                    <p>Bitte führen Sie zunächst eine Flächenprüfung durch.</p>
+                    <div class="text-center">
+                        <a href="/flaechencheck" class="btn btn-primary">Flächencheck starten</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% else %}
+    {# Map-Bereich anzeigen (bestehender Code) #}
+<div class="content--element mb-0">
+    {% block caeli_area_check_styles %}
+        <link rel="stylesheet" href="{{ asset('bundles/caeliareacheck/css/caeli-area-check.css') }}">
+    {% endblock %}
+
+    <div class="mod_caeli_area_check" style="position:relative">
+    <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
+    <!-- Consent-Overlay -->
+    <div id="consent-overlay" class="consent-overlay" style="display:none;">
+        <div class="consent-content">
+            <h4>Cookie-Einstellungen erforderlich</h4>
+            <p>Für den Flächencheck werden Google Maps und HubSpot benötigt. Bitte aktivieren Sie die entsprechenden Cookies, um fortzufahren.</p>
+            <button id="activate-consent-btn" class="mt-3 btn btn-primary">Cookies aktivieren</button>
+        </div>
+    </div>
+    
+    <div id="map" data-map-id="{{ googleMapsMapId }}"></div>
+    
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <h2>Ihr Grundstück wird geprüft...</h2>
+            <div class="loading-spinner">
+                <svg width="304" height="304" viewBox="0 0 304 304" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path class="spinner-bar" data-index="0" d="M163.93 0H139.298V122.651H163.93V0Z" fill="#DEEEC6"/>
+                    <path class="spinner-bar" data-index="1" d="M216.811 14.0302L191.499 57.8711L212.831 70.1871L238.143 26.3462L216.811 14.0302Z" fill="#DEEEC6"/>
+                    <path class="spinner-bar" data-index="2" d="M276.895 65.0361L233.054 90.3477L245.37 111.68L289.211 86.3681L276.895 65.0361Z" fill="#DEEEC6"/>
+                    <path class="spinner-bar" data-index="3" d="M303.398 139.297H252.775V163.929H303.398V139.297Z" fill="#DEEEC6"/>
+                    <path class="spinner-bar" data-index="4" d="M182.787 155.438L170.556 176.842L233.071 212.856L276.729 238.167L289.13 216.763L182.787 155.438Z" fill="#DEEEC6"/>
+                    <path class="spinner-bar" data-index="5" d="M212.809 232.969L191.477 245.285L216.789 289.126L238.121 276.81L212.809 232.969Z" fill="#DEEEC6"/>
+                    <path class="spinner-bar" data-index="6" d="M163.93 252.777H139.298V303.4H163.93V252.777Z" fill="#DEEEC6"/>
+                    <path class="spinner-bar" data-index="7" d="M90.4734 232.972L65.1619 276.812L86.4938 289.129L111.805 245.288L90.4734 232.972Z" fill="#DEEEC6"/>
+                    <path class="spinner-bar" data-index="8" d="M57.9274 191.621L14.0994 216.763L26.5003 238.167L132.673 176.842L120.272 155.438L57.9274 191.621Z" fill="#DEEEC6"/>
+                    <path class="spinner-bar" data-index="9" d="M50.6231 139.297H0V163.929H50.6231V139.297Z" fill="#DEEEC6"/>
+                    <path class="spinner-bar" data-index="10" d="M26.4188 65.086L14.1028 86.418L57.9437 111.73L70.2597 90.3975L26.4188 65.086Z" fill="#DEEEC6"/>
+                    <path class="spinner-bar" data-index="11" d="M86.5371 14.2621L65.2051 26.5781L90.5166 70.419L111.849 58.103L86.5371 14.2621Z" fill="#DEEEC6"/>
+                </svg>
+            </div>
+            <div class="loading-percentage">0 %</div>
+        </div>
+    </div>
+    <div id="controls" class="card" style="display:none;">
+        <div class="card-header text-white bg-primary">
+            <b class="d-block">Caeli Wind Flächencheck</b>
+            für Windkraftanlagen
+        </div>
+        <div class="card-body bg-secondary">
+            <div id="plz-alert" class="alert alert-primary" style="display:none;">
+                <strong>Hinweis:</strong> Bitte geben Sie eine vollständige 5-stellige PLZ ein.
+            </div>
+            
+            <div>
+                <label for="place-autocomplete" class="form-label">Grundstück finden und einzeichnen:</label>
+                <input id="place-autocomplete" type="text" class="form-control" placeholder="Ort eingeben (PLZ erforderlich)"/>
+            </div>
+
+            <div id="button-wrapper" class="gap-2 mt-3" style="display:none;">
+                <button id="delete-button" class="btn btn-outline-primary">Neustarten</button>
+                <button id="log-coordinates-button" class="btn btn-primary">Fläche bestätigen</button>
+            </div>
+            
+            <div id="warning" class="alert alert-danger" style="display:none;">
+                <strong>Warnung:</strong> Die Fläche ist größer als 700 ha!
+            </div>
+            
+            <form id="park-form" action="/flaechencheck/result" method="POST">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
+                <input type="hidden" name="geometry" id="geometry-field" value="">
+                <input type="hidden" name="searched_address" id="searched-address-field" value="">
+            </form>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- Tutorial Popover Templates -->
+    <div style="display: none;">
+        <div id="tutorial-polygon-content" class="tutorial-content">
+            Ziehen Sie das Polygon oder die Eckpunkte, um die Fläche anzupassen.
+            <div class="tutorial-buttons mt-2">
+                <button type="button" class="btn btn-primary btn-sm" id="tutorial-polygon-next">Weiter</button>
+            </div>
+        </div>
+        
+        <div id="tutorial-confirm-content" class="tutorial-content">
+            Klicken Sie hier, um die Prüfung abzuschließen und zum Ergebnis zu gelangen.
+            <div class="tutorial-buttons mt-2">
+                <button type="button" class="btn btn-outline-primary btn-sm me-2" id="tutorial-confirm-back">Zurück</button>
+                <button type="button" class="btn btn-primary btn-sm" id="tutorial-confirm-next">Weiter</button>
+            </div>
+        </div>
+        
+        <div id="tutorial-restart-content" class="tutorial-content">
+            Hier können Sie die Flächenzeichnung neu beginnen.
+            <div class="tutorial-buttons mt-2">
+                <button type="button" class="btn btn-outline-primary btn-sm me-2" id="tutorial-restart-back">Zurück</button>
+                <button type="button" class="btn btn-primary btn-sm" id="tutorial-restart-finish">Fertig</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('bundles/caeliareacheck/js/caeli-area-check.js') }}"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?key={{ googleMapsApiKey }}&libraries=places,drawing,geometry,marker&v=weekly&loading=async"></script>
+</div>
+{% endif %}
