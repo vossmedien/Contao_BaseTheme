@@ -7,10 +7,10 @@
   .card {
     --bs-card-border-width: 0;
     --bs-card-cap-bg: var(--bs-body-bg);
-    --bs-card-spacer-x: 1.5rem;
+    --bs-card-spacer-x: 1rem;
 
     .card-header {
-      padding: 2rem var(--bs-card-spacer-x) 1rem var(--bs-card-spacer-x);
+      padding: 1rem var(--bs-card-spacer-x) 1rem var(--bs-card-spacer-x);
     }
 
     .card-img {

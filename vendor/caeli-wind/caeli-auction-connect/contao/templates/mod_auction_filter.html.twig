@@ -603,6 +603,7 @@
                         const currentAuctionListingContainer = document.querySelector('#auction_listing_container');
 
                         let resultsFound = false;
+                        let shouldResetPagination = false;
 
                         if (newAuctionListingContainer && currentAuctionListingContainer) {
                             currentAuctionListingContainer.innerHTML = newAuctionListingContainer.innerHTML;
@@ -613,6 +614,17 @@
                             if (currentAuctionListingContainer.querySelector('.auction-item')) { // Annahme: .auction-item existiert pro Ergebnis
                                 resultsFound = true;
                             }
+                            
+                            // Prüfen ob Paginierung zurückgesetzt werden muss
+                            const newPagination = newAuctionListingContainer.querySelector('.pagination');
+                            const currentPage = new URLSearchParams(window.location.search).get('page') || new URLSearchParams(window.location.search).get('page_n23');
+                            
+                            if (currentPage && parseInt(currentPage) > 1 && !newPagination) {
+                                // Wir sind auf Seite 2+, aber die neue Antwort hat keine Paginierung
+                                // Das bedeutet: alle Ergebnisse passen auf eine Seite
+                                shouldResetPagination = true;
+                            }
+                            
                         } else if (doc.querySelector('.auction-items') || doc.querySelector('.no-auctions')) {
                             const newItems = doc.querySelector('.auction-items');
                             const newNoItems = doc.querySelector('.no-auctions');
@@ -629,11 +641,26 @@
                                 if (currentItems.querySelector('.auction-item')) { // Annahme
                                     resultsFound = true;
                                 }
+                                
+                                // Prüfen ob Paginierung zurückgesetzt werden muss
+                                const newPagination = doc.querySelector('.pagination');
+                                const currentPage = new URLSearchParams(window.location.search).get('page') || new URLSearchParams(window.location.search).get('page_n23');
+                                
+                                if (currentPage && parseInt(currentPage) > 1 && !newPagination) {
+                                    shouldResetPagination = true;
+                                }
+                                
                             } else if (currentNoItems && newNoItems) {
                                 if (currentItems) currentItems.style.display = 'none';
                                 currentNoItems.innerHTML = newNoItems.innerHTML;
                                 currentNoItems.style.display = newNoItems.style.display || 'block';
                                 // resultsFound bleibt false, da .no-auctions angezeigt wird
+                                
+                                // Bei "keine Auktionen" auch Paginierung zurücksetzen
+                                const currentPage = new URLSearchParams(window.location.search).get('page') || new URLSearchParams(window.location.search).get('page_n23');
+                                if (currentPage && parseInt(currentPage) > 1) {
+                                    shouldResetPagination = true;
+                                }
                             } else {
                                 // console.warn("Konnte weder Auktionsitems noch 'Keine Auktionen'-Nachricht im AJAX-Response finden oder der Inhalt war leer.");
                                 if (currentItems) currentItems.innerHTML = '';
@@ -644,6 +671,55 @@
                             }
                         } else {
                             // console.warn('Weder #auction_listing_container noch .auction-items/.no-auctions im AJAX-Response gefunden.');
+                        }
+
+                        // Paginierung zurücksetzen wenn nötig
+                        if (shouldResetPagination) {
+                            const currentUrl = new URL(window.location);
+                            let hasPageParam = false;
+                            
+                            // Alle möglichen Paginierungs-Parameter entfernen
+                            if (currentUrl.searchParams.has('page')) {
+                                currentUrl.searchParams.delete('page');
+                                hasPageParam = true;
+                            }
+                            if (currentUrl.searchParams.has('page_n23')) {
+                                currentUrl.searchParams.delete('page_n23');
+                                hasPageParam = true;
+                            }
+                            
+                            // URL aktualisieren und Seite neu laden (da sich die Paginierung geändert hat)
+                            if (hasPageParam) {
+                                const stateObject = formDataToObject(new FormData(filterForm));
+                                delete stateObject.page; // Page-Parameter auch aus dem State entfernen
+                                delete stateObject.page_n23;
+                                history.replaceState({formData: stateObject}, '', currentUrl.toString());
+                                
+                                // Neue Anfrage ohne Page-Parameter stellen
+                                fetch(currentUrl.toString(), {
+                                    method: 'GET',
+                                    headers: {'X-Requested-With': 'XMLHttpRequest'}
+                                })
+                                .then(response => response.text())
+                                .then(html => {
+                                    // Auction Listing nochmal komplett aktualisieren
+                                    const parser = new DOMParser();
+                                    const newDoc = parser.parseFromString(html, 'text/html');
+                                    const newListingContainer = newDoc.querySelector('#auction_listing_container') || newDoc.querySelector('.auction-listing');
+                                    const currentListingContainer = document.querySelector('#auction_listing_container') || document.querySelector('.auction-listing');
+                                    
+                                    if (newListingContainer && currentListingContainer) {
+                                        currentListingContainer.innerHTML = newListingContainer.innerHTML;
+                                        currentListingContainer.querySelectorAll('[data-animation]').forEach(item => {
+                                            item.removeAttribute('data-animation');
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Paginierungs-Reset Fehler:', error);
+                                });
+                                return; // Früher Ausstieg, da wir eine neue Anfrage stellen
+                            }
                         }
 
                         // Alert anzeigen, wenn keine Ergebnisse gefunden wurden
