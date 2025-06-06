@@ -1,0 +1,295 @@
+<div class="content--element ">
+    <div class="mod_caeli_area_check container-wide">
+
+
+        {#
+            <details>
+            <summary>Rohdaten anzeigen</summary>
+            <pre>{{ rating|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+        </details>
+        #}
+
+
+        {% if error and not rating %}
+            <div class="alert alert-danger">
+                <h4>Fehler bei der Auswertung</h4>
+                <p>{{ error }}</p>
+                {% if mapPage %}
+                    <div class="mt-3">
+                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">Neue Prüfung starten</a>
+                    </div>
+                {% endif %}
+            </div>
+        {% elseif rating %}
+            {# Rating-Daten vorhanden - zeige detaillierte Auswertung (auch für fehlgeschlagene Parks) #}
+            {# WICHTIG: Berücksichtige den tatsächlichen Status, nicht nur die Rating-Farben #}
+            {% set isSuitable = isSuccess and 
+                               (rating.rating_cutdensity is defined and rating.rating_cutdensity in ['green', 'yellow']) and 
+                               (not rating.rating_restrictions is defined or rating.rating_restrictions in ['green', 'yellow']) and 
+                               (rating.rating_grid_connection is defined and rating.rating_grid_connection in ['green', 'yellow']) %}
+            
+            {% if isSuitable %}
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="ce--headline hl-h2 mb-0" data-animation="animate__fadeIn">
+                            <h2>
+                                <b>Herzlichen Glückwunsch:</b><br>
+                                Ihr Grundstück weist gute Bedingungen für Windkraft auf.
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="ce--headline hl-h2 mb-0" data-animation="animate__fadeIn">
+                            <h2>
+                                <b>Flächencheck-Ergebnis:</b><br>
+                                Ihre Fläche ist für Windkraft nicht optimal geeignet.
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="content--element my-gap">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="result-container pe-lg-5">
+                            <ul class="list-check">
+                                <li data-animation="animate__fadeInUp">
+                                    <b class="h3 mb-2 fw-normal">Windgegebenheiten</b>
+                                    <span>Die Windleistung im angegebenen Gebiet</span>
+                                    {% if rating.rating_cutdensity is defined %}
+                                        <span class="rating-{{ rating.rating_cutdensity }}">
+                                            {% if rating.rating_cutdensity == 'green' %}
+                                                ✓ Gut geeignet
+                                            {% elseif rating.rating_cutdensity == 'yellow' %}
+                                                ⚠ Bedingt geeignet
+                                            {% endif %}
+                                        </span>
+                                    {% else %}
+                                        <span class="rating-red">✗ Nicht geeignet</span>
+                                    {% endif %}
+                                </li>
+
+                                <li class="my-3" data-animation="animate__fadeInUp">
+                                    <b class="h3 mb-2 fw-normal">Restriktionen</b>
+                                    <span>Prüfung raumordnerischer Restriktionen, auf denen Windkraftnutzung untersagt ist.</span>
+                                    {% if rating.rating_restrictions is defined %}
+                                        <span class="rating-{{ rating.rating_restrictions }}">
+                                            {% if rating.rating_restrictions == 'green' %}
+                                                ✓ Keine Restriktionen
+                                            {% elseif rating.rating_restrictions == 'yellow' %}
+                                                ⚠ Eingeschränkt möglich
+                                            {% else %}
+                                                ✗ Restriktionen vorhanden
+                                            {% endif %}
+                                        </span>
+                                    {% else %}
+                                        {# Bei failed_with_rating ohne rating_restrictions = wahrscheinlich Restriktionen #}
+                                        {% if not isSuccess %}
+                                            <span class="rating-red">✗ Restriktionen vorhanden</span>
+                                        {% else %}
+                                            <span class="rating-green">✓ Keine Restriktionen</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </li>
+
+                                <li data-animation="animate__fadeInUp">
+                                    <b class="h3 mb-2 fw-normal">Netzanschluss</b>
+                                    <span>Erreichbarkeit der Grundstücksfläche zur nächsten Hochspannung.</span>
+                                    {% if rating.rating_grid_connection is defined %}
+                                        <span class="rating-{{ rating.rating_grid_connection }}">
+                                            {% if rating.rating_grid_connection == 'green' %}
+                                                ✓ Gut erreichbar
+                                            {% elseif rating.rating_grid_connection == 'yellow' %}
+                                                ⚠ Bedingt erreichbar
+                                            {% endif %}
+                                        </span>
+                                    {% else %}
+                                        <span class="rating-red">✗ Nicht geeignet</span>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                            
+                            {% if not isSuitable %}
+                                <div class="alert alert-warning mt-4">
+                                    <h5>Fazit:</h5>
+                                    <p>Ihre Fläche erfüllt nicht alle Kriterien für ein optimales Windenergieprojekt. 
+                                    {% if isSuccess and rating.rating_cutdensity is defined and rating.rating_cutdensity in ['green', 'yellow'] %}
+                                        Die Windverhältnisse sind jedoch vielversprechend.
+                                    {% endif %}
+                                    Kontaktieren Sie uns für eine individuelle Beratung.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="form-container p-5 bg-secondary">
+                            <div class="mb-3">
+                                <div class="row">
+                                    <div class="col-md-8" data-animation="animate__fadeIn">
+                                        <h3 class="mb-0">
+                                            {% if isSuitable %}
+                                                Jetzt Ihre Windkraft-Chance prüfen – kostenlos und unverbindlich:
+                                            {% else %}
+                                                Interesse an einer detaillierten Beratung?
+                                            {% endif %}
+                                        </h3>
+                                    </div>
+                                    <div class="col-md-4" data-animation="animate__fadeInDown">
+                                        <img style="max-width: 230px; margin-top: -90%;" src="/files/base/layout/img/flaechencheck-pdf-badge-de.png">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div data-animation="animate__fadeIn">
+                                {% if app.request.locale == 'en' %}
+                                    {% if isSuitable %}
+                                        {{ "{{insert_form::11}}"|insert_tag|raw }}
+                                    {% else %}
+                                        {{ "{{insert_form::13}}"|insert_tag|raw }}
+                                    {% endif %}
+                                {% else %}
+                                    {% if isSuitable %}
+                                        {{ "{{insert_form::10}}"|insert_tag|raw }}
+                                    {% else %}
+                                        {{ "{{insert_form::12}}"|insert_tag|raw }}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% elseif isSuccess and not rating %}
+            <div class="container my-5">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="text-center mb-4">Ihr Flächencheck-Ergebnis</h2>
+
+                        <div class="alert alert-warning">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Fläche nicht geeignet</h4>
+                            <p>Leider ist Ihre gewählte Fläche für ein Windenergieprojekt nicht geeignet.</p>
+                            {% if errorMessage %}
+                                <div class="mt-3">
+                                    <strong>Grund:</strong> {{ errorMessage }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if checkData %}
+                            <div class="card mt-4">
+                                <div class="card-header bg-secondary text-white">
+                                    <h5 class="mb-0">Geprüfte Fläche</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Geprüfte Adresse:</strong><br>
+                                            {{ checkData.searched_address|default('Nicht verfügbar') }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Prüfung durchgeführt:</strong><br>
+                                            {{ checkData.tstamp|date('d.m.Y H:i') }} Uhr
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="alert alert-info mt-4">
+                            <h5>Was können Sie tun?</h5>
+                            <ul class="mb-0">
+                                <li>Probieren Sie eine andere Fläche aus</li>
+                                <li>Kontaktieren Sie uns für eine individuelle Beratung</li>
+                                <li>Informieren Sie sich über alternative Standorte</li>
+                            </ul>
+                        </div>
+
+                        <div class="form-container p-4 bg-light mt-4">
+                            {% if app.request.locale == 'en' %}
+                                {{ "{{insert_form::13}}"|insert_tag|raw }}
+                            {% else %}
+                                {{ "{{insert_form::12}}"|insert_tag|raw }}
+                            {% endif %}
+                        </div>
+
+                        <div class="text-center mt-4">
+                            {% if mapPage %}
+                                <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary btn-lg">Neue Fläche
+                                    prüfen</a>
+                            {% else %}
+                                <a href="/flaechencheck" class="btn btn-primary btn-lg">Neue Fläche prüfen</a>
+                            {% endif %}
+                            <a href="/kontakt" class="btn btn-outline-secondary btn-lg ms-2">Beratung anfragen</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% elseif checkid %}
+            <div class="alert alert-danger">
+                <h4>Fehler</h4>
+                <p>Der angeforderte Flächencheck konnte nicht gefunden werden.</p>
+                <div class="mt-3">
+                    {% if mapPage %}
+                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">Neue Prüfung starten</a>
+                    {% else %}
+                        <a href="/flaechencheck" class="btn btn-primary">Neue Prüfung starten</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <h4>Willkommen zum Flächencheck</h4>
+                <p>Bitte führen Sie zunächst eine Flächenprüfung durch.</p>
+                <div class="text-center">
+                    {% if mapPage %}
+                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">Flächencheck starten</a>
+                    {% else %}
+                        <a href="/flaechencheck" class="btn btn-primary">Flächencheck starten</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div> 
+
+<style>
+.rating-green {
+    color: #00ca90;
+    font-weight: bold;
+}
+
+.rating-yellow {
+    color: #EB7500;
+    font-weight: bold;
+}
+
+.rating-red {
+    color: #D80027;
+    font-weight: bold;
+}
+
+.list-check li {
+    position: relative;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 1rem;
+}
+
+.list-check li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.list-check li .rating-green,
+.list-check li .rating-yellow,
+.list-check li .rating-red {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+</style> 

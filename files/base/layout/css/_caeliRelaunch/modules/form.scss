@@ -3,6 +3,14 @@ form .formbody {
   --bs-gutter-y: 10px;
 }
 
+.form-control{
+  background-color: var(--bs-white);
+
+  &:focus{
+     background-color: var(--bs-white);
+  }
+}
+
 
 .form-check-input[type=checkbox],
 form .widget:not(.form-floating).widget-radio fieldset > span input[type=checkbox],

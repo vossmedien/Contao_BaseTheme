@@ -58,6 +58,7 @@
     background-color: var(--bs-tertiary) !important;
     color: var(--bs-body-color) !important;
     padding: 0.35rem .75rem !important;
+    border-top: 0;
     border-bottom: 1px solid rgba(0, 0, 0, .1) !important;
     font-size: var(--bs-body-font-size) !important;
     cursor: pointer;
@@ -189,7 +190,7 @@ h3.popover-header {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: white;
+    background-color: var(--bs-body-bg);
     z-index: 2000;
     display: flex;
     align-items: center;
@@ -201,7 +202,7 @@ h3.popover-header {
 }
 
 .loading-content h2 {
-    margin-bottom: 2rem;
+    margin-bottom: var(--main-gap) !important;
     color: var(--bs-primary);
     font-weight: 600;
 }
@@ -216,9 +217,9 @@ h3.popover-header {
 }
 
 .loading-percentage {
-    font-size: 55px;
-    font-weight: bold;
+    font-size: 40px;
     color: var(--bs-primary);
+    margin-top: var(--main-gap);
 }
 
 /* SVG Spinner Animation */
@@ -231,10 +232,10 @@ h3.popover-header {
 #map div[style*="width:9px"],
 #map div[style*="height: 9px"],
 #map div[style*="height:9px"] {
-    min-width: 15px !important;
-    min-height: 15px !important;
-    width: 15px !important;
-    height: 15px !important;
+    min-width: 17px !important;
+    min-height: 17px !important;
+    width: 17px !important;
+    height: 17px !important;
     border: 3px solid white !important;
     background-color: yellow !important;
     border-radius: 50% !important;

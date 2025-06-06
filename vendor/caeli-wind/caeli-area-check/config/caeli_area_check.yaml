@@ -1,0 +1,16 @@
+# Konfiguration für CaeliAreaCheck Bundle
+caeli_area_check:
+    # Formular-IDs die überwacht werden sollen
+    # Diese IDs entsprechen den formID-Werten der Contao-Formulare
+    form_ids:
+        - 'flaechencheckNotSuccessEN'  # Flächencheck fehlgeschlagen (englisch)
+        - 'flaechencheckNotSuccessDE'  # Flächencheck fehlgeschlagen (deutsch)
+        - 'flaechencheckSuccessEN'     # Flächencheck erfolgreich (englisch)
+        - 'flaechencheckSuccessDE'     # Flächencheck erfolgreich (deutsch)
+        
+    # Optional: Feld-Mapping falls die Formularfelder andere Namen haben
+    field_mapping:
+        lastname_field: 'lastname'   # Feldname für Nachname
+        firstname_field: 'firstname' # Feldname für Vorname  
+        phone_field: 'phone'         # Feldname für Telefon
+        email_field: 'email'         # Feldname für E-Mail 

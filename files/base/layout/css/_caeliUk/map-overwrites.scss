@@ -30,34 +30,34 @@ $gutters: (
 
 $headings-font-sizes: (
         'h1': (
-                'mobile': rfs-value(32px),
-                'tablet': rfs-value(46px),
-                'desktop': rfs-value(50px)
+                'mobile': 32px,
+                'tablet': 46px,
+                'desktop': 55px
         ),
         'h2': (
-                'mobile': rfs-value(29px),
-                'tablet': rfs-value(39px),
-                'desktop': rfs-value(44px)
+                'mobile': 29px,
+                'tablet': 39px,
+                'desktop': 44px
         ),
         'h3': (
-                'mobile': rfs-value(25px),
-                'tablet': rfs-value(25px),
-                'desktop': rfs-value(25px)
+                'mobile': 25px,
+                'tablet': 25px,
+                'desktop': 25px
         ),
         'h4': (
-                 'mobile': rfs-value(25px),
-                'tablet': rfs-value(25px),
-                'desktop': rfs-value(25px)
+                 'mobile': 25px,
+                'tablet': 25px,
+                'desktop': 25px
         ),
         'h5': (
-                'mobile': rfs-value(20px),
-                'tablet': rfs-value(22px),
-                'desktop': rfs-value(25px)
+                'mobile':20px,
+                'tablet': 22px,
+                'desktop': 25px
         ),
         'h6': (
-                'mobile': rfs-value(18px),
-                'tablet': rfs-value(19px),
-                'desktop': rfs-value(20px)
+                'mobile': 18px,
+                'tablet': 19px,
+                'desktop': 20px,
         )
 );
 

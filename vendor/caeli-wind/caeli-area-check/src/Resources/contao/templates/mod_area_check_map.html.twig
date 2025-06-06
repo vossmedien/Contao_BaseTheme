@@ -1,0 +1,138 @@
+<div class="content--element mb-0">
+    {% block caeli_area_check_styles %}
+        <link rel="stylesheet" href="{{ asset('bundles/caeliareacheck/css/caeli-area-check.css') }}">
+    {% endblock %}
+
+    <div class="mod_caeli_area_check" style="position:relative">
+        <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
+
+        {% if error %}
+            <div class="alert alert-danger">
+                <h4>{{ translations.error.title }}</h4>
+                <p>{{ error }}</p>
+                <div class="mt-3">
+                    <a href="{{ app.request.uri }}" class="btn btn-primary">{{ translations.error.retry_button }}</a>
+                </div>
+            </div>
+        {% else %}
+            <!-- Consent-Overlay -->
+            <div id="consent-overlay" class="consent-overlay" style="display:none;">
+                <div class="consent-content">
+                    <h4>{{ translations.consent.overlay.title }}</h4>
+                    <p>{{ translations.consent.overlay.message }}</p>
+                    <button id="activate-consent-btn" class="mt-3 btn btn-primary">{{ translations.consent.overlay.button }}</button>
+                </div>
+            </div>
+
+            <div id="map" data-map-id="{{ googleMapsMapId }}"></div>
+
+            <!-- Loading Overlay -->
+            <div id="loading-overlay" style="display: none;">
+                <div class="loading-content">
+                    <h2>{{ translations.loading.title }}</h2>
+                    <div class="loading-spinner">
+                        <svg width="304" height="304" viewBox="0 0 304 304" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="spinner-bar" data-index="0" d="M163.93 0H139.298V122.651H163.93V0Z" fill="#DEEEC6"/>
+                            <path class="spinner-bar" data-index="1" d="M216.811 14.0302L191.499 57.8711L212.831 70.1871L238.143 26.3462L216.811 14.0302Z" fill="#DEEEC6"/>
+                            <path class="spinner-bar" data-index="2" d="M276.895 65.0361L233.054 90.3477L245.37 111.68L289.211 86.3681L276.895 65.0361Z" fill="#DEEEC6"/>
+                            <path class="spinner-bar" data-index="3" d="M303.398 139.297H252.775V163.929H303.398V139.297Z" fill="#DEEEC6"/>
+                            <path class="spinner-bar" data-index="4" d="M182.787 155.438L170.556 176.842L233.071 212.856L276.729 238.167L289.13 216.763L182.787 155.438Z" fill="#DEEEC6"/>
+                            <path class="spinner-bar" data-index="5" d="M212.809 232.969L191.477 245.285L216.789 289.126L238.121 276.81L212.809 232.969Z" fill="#DEEEC6"/>
+                            <path class="spinner-bar" data-index="6" d="M163.93 252.777H139.298V303.4H163.93V252.777Z" fill="#DEEEC6"/>
+                            <path class="spinner-bar" data-index="7" d="M90.4734 232.972L65.1619 276.812L86.4938 289.129L111.805 245.288L90.4734 232.972Z" fill="#DEEEC6"/>
+                            <path class="spinner-bar" data-index="8" d="M57.9274 191.621L14.0994 216.763L26.5003 238.167L132.673 176.842L120.272 155.438L57.9274 191.621Z" fill="#DEEEC6"/>
+                            <path class="spinner-bar" data-index="9" d="M50.6231 139.297H0V163.929H50.6231V139.297Z" fill="#DEEEC6"/>
+                            <path class="spinner-bar" data-index="10" d="M26.4188 65.086L14.1028 86.418L57.9437 111.73L70.2597 90.3975L26.4188 65.086Z" fill="#DEEEC6"/>
+                            <path class="spinner-bar" data-index="11" d="M86.5371 14.2621L65.2051 26.5781L90.5166 70.419L111.849 58.103L86.5371 14.2621Z" fill="#DEEEC6"/>
+                        </svg>
+                    </div>
+                    <div class="loading-percentage">0 %</div>
+                </div>
+            </div>
+
+            <div id="controls" class="card" style="display:none;">
+                <div class="card-header text-white bg-primary">
+                    <b class="d-block">{{ translations.interface.header.title }}</b>
+                    {{ translations.interface.header.subtitle }}
+                </div>
+                <div class="card-body bg-secondary">
+                    <div id="plz-alert" class="alert alert-primary" style="display:none;">
+                        <strong>{{ translations.interface.hints.strong }}</strong> {{ translations.form.plz_alert }}
+                    </div>
+
+                    <!-- Dynamic Alert Box for JavaScript-generated alerts -->
+                    <div id="dynamic-alert" class="alert" style="display:none;">
+                        <strong id="dynamic-alert-title"></strong> <span id="dynamic-alert-message"></span>
+                    </div>
+
+                    <div>
+                        <label for="place-autocomplete" class="form-label">{{ translations.interface.form.label }}</label>
+                        <input id="place-autocomplete"
+                               name="search"
+                               type="text"
+                               class="form-control"
+                               placeholder="{{ translations.form.plz_placeholder }}"
+                               value="{{ app.request.query.get('search') | default('') }}"/>
+                    </div>
+
+                    <div id="button-wrapper" class="gap-2 mt-3" style="display:none;">
+                        <button id="delete-button" class="btn btn-outline-primary">{{ translations.form.button.restart }}</button>
+                        <button id="log-coordinates-button" class="btn btn-primary">{{ translations.form.button.check_area }}</button>
+                    </div>
+
+                    <div id="warning" class="alert alert-danger" style="display:none;">
+                        <strong>{{ translations.interface.hints.warning }}</strong> {{ translations.form.warning }}
+                    </div>
+
+                    <form id="park-form" action="{{ app.request.uri }}" method="POST">
+                        <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
+                        <input type="hidden" name="geometry" id="geometry-field" value="">
+                        <input type="hidden" name="searched_address" id="searched-address-field" value="">
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Tutorial Popover Templates -->
+    <div style="display: none;">
+        <div id="tutorial-welcome-content" class="tutorial-content">
+            {{ translations.tutorial.welcome.content }}
+            <div class="tutorial-buttons mt-2">
+                <button type="button" class="btn btn-outline-primary btn-sm me-2" id="tutorial-welcome-skip">{{ translations.tutorial.welcome.button_skip }}</button>
+                <button type="button" class="btn btn-primary btn-sm" id="tutorial-welcome-next">{{ translations.tutorial.welcome.button_next }}</button>
+            </div>
+        </div>
+
+        <div id="tutorial-plz-content" class="tutorial-content">
+            {{ translations.tutorial.plz_input.content }}
+            <div class="tutorial-buttons mt-2">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="tutorial-plz-back">{{ translations.tutorial.plz_input.button_back }}</button>
+            </div>
+        </div>
+
+        <div id="tutorial-polygon-content" class="tutorial-content">
+            {{ translations.tutorial.polygon_edit.content }}
+            <div class="tutorial-buttons mt-2">
+                <button type="button" class="btn btn-outline-primary btn-sm me-2" id="tutorial-polygon-back">{{ translations.tutorial.polygon_edit.button_back }}</button>
+                <button type="button" class="btn btn-primary btn-sm" id="tutorial-polygon-next">{{ translations.tutorial.polygon_edit.button_next }}</button>
+            </div>
+        </div>
+
+        <div id="tutorial-confirm-content" class="tutorial-content">
+            {{ translations.tutorial.area_confirm.content }}
+            <div class="tutorial-buttons mt-2">
+                <button type="button" class="btn btn-outline-primary btn-sm me-2" id="tutorial-confirm-back">{{ translations.tutorial.area_confirm.button_back }}</button>
+                <button type="button" class="btn btn-primary btn-sm" id="tutorial-confirm-next">{{ translations.tutorial.area_confirm.button_next }}</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Übersetzungen für JavaScript bereitstellen -->
+    <script>
+        window.CaeliAreaCheckTranslations = {{ translations|json_encode|raw }};
+        console.log('Translations loaded:', window.CaeliAreaCheckTranslations);
+    </script>
+    <script src="{{ asset('bundles/caeliareacheck/js/caeli-area-check.js') }}"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key={{ googleMapsApiKey }}&libraries=places,drawing,geometry,marker&v=weekly&loading=async"></script>
+</div> 

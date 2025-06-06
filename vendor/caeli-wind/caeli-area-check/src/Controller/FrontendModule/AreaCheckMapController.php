@@ -1,0 +1,606 @@
+<?php
+
+declare(strict_types=1);
+
+namespace CaeliWind\CaeliAreaCheckBundle\Controller\FrontendModule;
+
+use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\ModuleModel;
+use Contao\PageModel;
+use Contao\Template;
+use Contao\Database;
+use Contao\Environment;
+use Contao\System;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Psr\Log\LoggerInterface;
+
+#[AsFrontendModule(category: 'caeli_wind', template: 'mod_area_check_map', name: 'area_check_map')]
+class AreaCheckMapController extends AbstractFrontendModuleController
+{
+    public const TYPE = 'area_check_map';
+    
+    private string $api_url;
+    private string $api_user;
+    private string $api_pass;
+
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly LoggerInterface $logger,
+        private readonly TranslatorInterface $translator
+    ) {
+        $this->api_url = getenv('CAELI_INFRA_API_URL') ?: "https://infra.caeli-wind.de/api/";
+        $this->api_user = getenv('CAELI_INFRA_API_USERNAME') ?: "website@caeli-wind.de";
+        $this->api_pass = getenv('CAELI_INFRA_API_PASSWORD') ?: "d&*D)xm.??s3>vEZ";
+    }
+
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    {
+        $this->logger->debug('[AreaCheckMapController] Map-Controller aufgerufen');
+
+        // POST-Verarbeitung - Park erstellen und weiterleiten
+        if ($request->isMethod('POST')) {
+            try {
+                // Park erstellen versuchen
+                                        // Exakt wie Original: $_POST direkt an createPark übergeben  
+            $parkid = $this->createPark($request->request->all());
+            
+            // Exakt wie Original: Rating für jeden Park abrufen
+            $parkData = null;
+            if ($parkid != "-") {
+                $parkData = $this->getPlotRating($parkid);
+                $status = 'success';
+                $isSuccess = true;
+                $errorMessage = null;
+            } else {
+                // Wie NEdev-Modul: Bei fehlgeschlagenem Park trotzdem Rating versuchen
+                $this->logger->info('[AreaCheckMapController] Park fehlgeschlagen - versuche Rating');
+                try {
+                    $geometry_raw = $request->request->get('geometry', '{}');
+                    $ratingData = $this->getRatingAreaForFailedPark($geometry_raw);
+                    if ($ratingData) {
+                        $parkData = $ratingData;
+                        $status = 'failed_with_rating';
+                        $this->logger->info('[AreaCheckMapController] Rating für fehlgeschlagenen Park erhalten');
+                    } else {
+                        $status = 'failed';
+                    }
+                } catch (\Throwable $e) {
+                    $this->logger->error('[AreaCheckMapController] Rating für fehlgeschlagenen Park fehlgeschlagen: ' . $e->getMessage());
+                    $status = 'failed';
+                }
+                $isSuccess = false;
+                $errorMessage = 'Park konnte nicht erstellt werden';
+            }
+            
+            $this->logger->debug('[AreaCheckMapController] Park-Erstellung: success=' . ($isSuccess ? 'true' : 'false') . ', parkid=' . $parkid . ', error=' . $errorMessage);
+                
+                // Daten in die Datenbank einfügen
+                $set = [
+                    'tstamp' => time(),
+                    'name' => $request->request->get('name', 'Testkunde'),
+                    'vorname' => $request->request->get('vorname', 'Muster'),
+                    'phone' => $request->request->get('phone', '1234567890'),
+                    'email' => $request->request->get('email', 'test@test.de'),
+                    'searched_address' => $request->request->get('searched_address', ''),
+                    'geometry' => $request->request->get('geometry', ''),
+                    'park_id' => $parkid,
+                    'park_rating' => $parkData ? json_encode($parkData) : null,
+                    'status' => $status,
+                    'error_message' => $errorMessage ?: '',
+                ];
+
+                // Insert ausführen
+                $dbResult = Database::getInstance()
+                    ->prepare("INSERT INTO tl_flaechencheck %s")
+                    ->set($set)
+                    ->execute();
+                
+                $insertId = $dbResult->insertId;
+                $this->logger->info('[AreaCheckMapController] === DB-INSERT DEBUG ===');
+                $this->logger->info('[AreaCheckMapController] DB-Insert erfolgreich, ID: ' . $insertId . ', isSuccess: ' . ($isSuccess ? 'true' : 'false'));
+                $this->logger->info('[AreaCheckMapController] Eingefügte Daten: ' . json_encode($set));
+                
+                // Immer zur Detailseite weiterleiten - auch bei fehlgeschlagenen Parks
+                if ($model->jumpTo) {
+                    $framework = $this->framework;
+                    $framework->initialize();
+                    $detailPage = $framework->getAdapter(PageModel::class)->findById($model->jumpTo);
+                    
+                    if ($detailPage) {
+                        // Bei erfolgreichen Parks: parkid verwenden (dauerhaft aufrufbar)
+                        // Bei fehlgeschlagenen Parks: checkid mit DB-ID verwenden (nur für diesen Check)
+                        if ($isSuccess) {
+                            $detailUrl = $detailPage->getFrontendUrl() . '?parkid=' . urlencode($parkid);
+                        } else {
+                            $detailUrl = $detailPage->getFrontendUrl() . '?checkid=' . urlencode($insertId);
+                        }
+                        
+                        $this->logger->info('[AreaCheckMapController] === REDIRECT DEBUG ===');
+                        $this->logger->info('[AreaCheckMapController] URL-Parameter: ' . ($isSuccess ? 'parkid=' . $parkid : 'checkid=' . $insertId));
+                        $this->logger->info('[AreaCheckMapController] detailUrl: ' . $detailUrl);
+                        $this->logger->info('[AreaCheckMapController] Detailseite Frontend URL: ' . $detailPage->getFrontendUrl());
+                        return new Response('', 302, ['Location' => $detailUrl]);
+                    } else {
+                        $this->logger->error('[AreaCheckMapController] Detail-Seite nicht gefunden für jumpTo: ' . $model->jumpTo);
+                    }
+                } else {
+                    $this->logger->error('[AreaCheckMapController] Kein jumpTo konfiguriert.');
+                }
+                
+                // Fallback: Fehler anzeigen
+                $template->error = 'Keine Detailseite konfiguriert.';
+                
+            } catch (\Throwable $e) {
+                $this->logger->error('[AreaCheckMapController] Schwerwiegender Fehler: ' . $e->getMessage());
+                $template->error = 'Schwerwiegender Fehler bei der Verarbeitung: ' . $e->getMessage();
+            }
+        }
+
+        // Google Maps Variablen setzen
+        $googleMapsApiKey = getenv('GOOGLE_MAPS_API_KEY') ?: ($_ENV['GOOGLE_MAPS_API_KEY'] ?? '');
+        $googleMapsMapId = getenv('GOOGLE_MAPS_MAP_ID') ?: ($_ENV['GOOGLE_MAPS_MAP_ID'] ?? '');
+        
+        $template->googleMapsApiKey = $googleMapsApiKey;
+        $template->googleMapsMapId = $googleMapsMapId;
+        
+        // Contao Sprachdatei laden
+        System::loadLanguageFile('default');
+        
+        // Übersetzungen aus Contao-Sprachdateien verwenden
+        $translations = $GLOBALS['TL_LANG']['caeli_area_check'] ?? [];
+        
+        $template->translations = $translations;
+        
+        // CSRF Token setzen
+        $framework = $this->framework;
+        $framework->initialize();
+        $tokenManager = $this->container->get('contao.csrf.token_manager');
+        $template->request_token = $tokenManager->getDefaultTokenValue();
+        
+        // Detailseite für Form-Action
+        $template->detailPage = null;
+        if ($model->jumpTo) {
+            $template->detailPage = $framework->getAdapter(PageModel::class)->findById($model->jumpTo);
+        }
+        
+        // Stelle sicher, dass error immer gesetzt ist
+        if (!isset($template->error)) {
+            $template->error = null;
+        }
+
+        return $template->getResponse();
+    }
+
+    private function getApiSessionId(): ?string
+    {
+        // DEBUG: Login-Call debuggen
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        
+        $fields = json_encode([
+            "email" =>  $this->api_user,
+            "password" => $this->api_pass,
+        ]);
+
+        $cookieFile = $rootDir."/system/tmp/".session_id().'.txt';
+        $this->logger->info('[AreaCheckMapController] LOGIN CALL - Cookie File: ' . $cookieFile);
+        $this->logger->info('[AreaCheckMapController] LOGIN CALL - API URL: ' . $this->api_url."auth/login");
+
+        $curl_session = curl_init();
+        curl_setopt($curl_session ,CURLOPT_URL, $this->api_url."auth/login");
+        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl_session, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $cookieFile);
+        // WICHTIG: Login braucht KEIN COOKIEFILE (noch keine Cookies vorhanden)
+        curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json'
+        ]);
+        $result = curl_exec($curl_session);
+        
+        if (curl_error($curl_session)) {
+            $this->logger->error('[AreaCheckMapController] LOGIN ERROR: ' . curl_error($curl_session));
+        }
+        
+        curl_close($curl_session);
+        
+        $this->logger->info('[AreaCheckMapController] LOGIN RESPONSE: ' . $result);
+        
+        // Cookie-File prüfen
+        if (file_exists($cookieFile)) {
+            $this->logger->info('[AreaCheckMapController] Cookie-File existiert, Größe: ' . filesize($cookieFile) . ' bytes');
+            $this->logger->info('[AreaCheckMapController] Cookie-Inhalt: ' . file_get_contents($cookieFile));
+        } else {
+            $this->logger->error('[AreaCheckMapController] Cookie-File wurde NICHT erstellt!');
+        }
+        
+        $json = json_decode($result);
+        $token = $json->tokens->csrf_session_id ?? null;
+        
+        $this->logger->info('[AreaCheckMapController] CSRF Token: ' . ($token ?: 'NULL'));
+        
+        return $token;
+    }
+
+    private function createPark($data) {
+        // Exakt wie Original-Modul
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        $api_session_id = $this->getApiSessionId();
+
+        // Exakt wie Original: json_decode auf geometry-String
+        $postData = [
+            'geometry' => json_decode($data['geometry']),
+        ];
+
+        $curl_session = curl_init();
+        curl_setopt($curl_session ,CURLOPT_URL, $this->api_url."wind/caeli/park");
+        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
+        curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
+        curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
+            'X-CSRF-TOKEN: '.$api_session_id,
+            'Content-Type: application/json'
+        ]);
+        $result = curl_exec($curl_session);
+
+        curl_close($curl_session);
+        
+        // Exakt wie Original: Check und Return
+        if(json_decode($result)->status == 'success') {
+            return str_replace(["[","]", "'"], ["","",""], json_decode($result)->parks->id);
+        }else{
+            return "-";
+        }
+    }
+
+    private function createParkWithResult(array $data): array
+    {
+        // Get project root directory für Cookie-Speicherung
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        
+        $api_session_id = $this->getApiSessionId();
+        if (!$api_session_id) {
+            return [
+                'success' => false,
+                'parkid' => '-',
+                'error' => 'API-Session konnte nicht erstellt werden.'
+            ];
+        }
+        
+        // Debug: Geometry-Struktur loggen
+        $geometryData = json_decode($data['geometry'] ?? '{}', true);
+        $this->logger->info('[AreaCheckMapController] Originale Geometry-Struktur: ' . json_encode($geometryData));
+        
+        // Die API erwartet direkt die Geometry, nicht nochmal eingepackt
+        // Frontend sendet: {"geometry": {"type": "Polygon", "coordinates": [...]}}
+        // API erwartet: {"geometry": {"type": "Polygon", "coordinates": [...]}}
+        // Problem: Wir machen {"geometry": {"geometry": {"type": "Polygon", ...}}}
+        $correctGeometry = isset($geometryData['geometry']) ? $geometryData['geometry'] : $geometryData;
+        
+        $postData = [
+            'geometry' => $correctGeometry,
+        ];
+        
+        $this->logger->info('[AreaCheckMapController] Korrigierte Geometry für API: ' . json_encode($postData));
+
+        $curl_session = curl_init();
+        curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/park");
+        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
+        curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
+        curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
+            'X-CSRF-TOKEN: '.$api_session_id,
+            'Content-Type: application/json'
+        ]);
+        $result = curl_exec($curl_session);
+        curl_close($curl_session);
+        
+        // Debug: Rohe API-Response loggen
+        $this->logger->info('[AreaCheckMapController] === PARK API RESPONSE ===');
+        $this->logger->info('[AreaCheckMapController] Raw Result: ' . $result);
+        
+        $json = json_decode($result);
+        $this->logger->info('[AreaCheckMapController] Decoded JSON: ' . json_encode($json));
+        
+        if(isset($json->status) && $json->status == 'success') {
+            $parkid = str_replace(["[", "]", "'"], ["", "", ""], $json->parks->id);
+            $this->logger->debug('[AreaCheckMapController] Park erfolgreich erstellt: ' . $parkid);
+            return [
+                'success' => true,
+                'parkid' => $parkid,
+                'error' => ''
+            ];
+        } else {
+            // Auch fehlgeschlagene API-Responses sind valide Ergebnisse
+            $errorMessage = $json->message ?? $json->error ?? 'Unbekannter Fehler';
+            $this->logger->info('[AreaCheckMapController] Park nicht geeignet: ' . $errorMessage);
+            $this->logger->info('[AreaCheckMapController] Vollständige API-Response: ' . json_encode($json));
+            return [
+                'success' => false,
+                'parkid' => '-',
+                'error' => $errorMessage
+            ];
+        }
+    }
+
+    private function getParkEvaluation(string $parkid): ?array
+    {
+        // Get project root directory für Cookie-Speicherung
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        
+        $api_session_id = $this->getApiSessionId();
+        if (!$api_session_id) {
+            $this->logger->error('[AreaCheckMapController] Keine API-Session für Park-Bewertung');
+            return null;
+        }
+        
+        // Rating-Endpoint verwenden wie im Result-Controller
+        $curl_session = curl_init();
+        curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/rating?".http_build_query([
+            'area_id'=>$parkid
+        ]));
+        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
+            'X-CSRF-TOKEN: '.$api_session_id,
+            'Content-Type: application/json'
+        ]);
+        $result = curl_exec($curl_session);
+        curl_close($curl_session);
+        
+        $json = json_decode($result, true);
+        
+        // Rating-Endpoint gibt direkt die Bewertungsdaten zurück (ohne status-Wrapper)
+        if ($json && isset($json['rating_cutdensity'])) {
+            $this->logger->debug('[AreaCheckMapController] Park-Bewertung erfolgreich abgerufen für Park: ' . $parkid);
+            return $json;
+        } else {
+            $this->logger->error('[AreaCheckMapController] Park-Bewertung konnte nicht abgerufen werden: ' . $result);
+            return null;
+        }
+    }
+
+    private function getRatingArea($longitude, $latitude, $size_ha = 3): ?array
+    {
+        // Get project root directory für Cookie-Speicherung
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        
+        $api_session_id = $this->getApiSessionId();
+        if (!$api_session_id) {
+            $this->logger->error('[AreaCheckMapController] Keine API-Session für Rating Area');
+            return null;
+        }
+
+        // Geometrie aus Koordinaten erstellen (ähnlich wie im alten Modul)
+        $coordinates = $this->getCoordinatesForMarker($longitude, $latitude, $size_ha);
+        
+        $postData = [
+            'geometry' => $coordinates,
+        ];
+
+        $curl_session = curl_init();
+        curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/ratingArea");
+        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
+        curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
+            'X-CSRF-TOKEN: '.$api_session_id,
+            'Content-Type: application/json'
+        ]);
+        $result = curl_exec($curl_session);
+        curl_close($curl_session);
+
+        return json_decode($result, true);
+    }
+
+    private function getCoordinatesForMarker($longitude, $latitude, $size_ha = 3)
+    {
+        $api_session_id = $this->getApiSessionId();
+        if (!$api_session_id) {
+            return null;
+        }
+
+        $curl_session = curl_init();
+        curl_setopt($curl_session, CURLOPT_URL, $this->api_url . "wind/caeli/buffer?" . http_build_query([
+            'size_ha' => $size_ha,
+            'longitude' => $longitude,
+            'latitude' => $latitude
+        ]));
+        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, System::getContainer()->getParameter('kernel.project_dir') . "/system/tmp/" . session_id() . '.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, System::getContainer()->getParameter('kernel.project_dir') . "/system/tmp/" . session_id() . '.txt');
+        curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
+        curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
+            'X-CSRF-TOKEN: ' . $api_session_id,
+            'Content-Type: application/json'
+        ]);
+        $result = curl_exec($curl_session);
+        
+        if (curl_error($curl_session)) {
+            $this->logger->error('[AreaCheckMapController] Buffer API Error: ' . curl_error($curl_session));
+            curl_close($curl_session);
+            return null;
+        }
+        
+        curl_close($curl_session);
+        
+        $decoded = json_decode($result);
+        if ($decoded && isset($decoded->featureCollection->features[0])) {
+            return $decoded->featureCollection->features[0];
+        }
+        
+        return null;
+    }
+
+    private function getRatingAreaWithGeometry($originalGeometry): ?array
+    {
+        $this->logger->info('[AreaCheckMapController] === RATING FÜR FEHLGESCHLAGENEN PARK ===');
+        $this->logger->info('[AreaCheckMapController] Geometry: ' . substr(json_encode($originalGeometry), 0, 200) . '...');
+        
+        // Prüfen ob es ein String oder Array ist
+        if (is_string($originalGeometry)) {
+            $decoded = json_decode($originalGeometry, true);
+            $this->logger->info('[AreaCheckMapController] Geometry decoded from string: ' . ($decoded ? 'erfolgreich' : 'fehlgeschlagen'));
+            
+            if (!$decoded || !isset($decoded['geometry'])) {
+                $this->logger->warning('[AreaCheckMapController] Ungültige Geometry-Struktur');
+                return null;
+            }
+            $geometry = $decoded['geometry'];
+        } else {
+            // Array ist bereits die Geometry selbst
+            $this->logger->info('[AreaCheckMapController] Geometry ist bereits Array (direkte Geometry)');
+            $geometry = $originalGeometry;
+        }
+        $this->logger->info('[AreaCheckMapController] Extrahierte Geometry: ' . json_encode($geometry));
+        
+        // Berechne Koordinaten für Buffer API wie im NEdev-Modul
+        $coords = $geometry['coordinates'][0][0];
+        $lon = $coords[0];
+        $lat = $coords[1];
+        $size_ha = 3; // Standard
+        $this->logger->info('[AreaCheckMapController] Koordinaten: lon=' . number_format($lon, 12) . ', lat=' . number_format($lat, 12) . ', size_ha=' . $size_ha);
+        
+        // Hole Feature von Buffer API wie im NEdev-Modul
+        $featureFromBuffer = $this->getCoordinatesForMarker($lon, $lat, $size_ha);
+        if (!$featureFromBuffer) {
+            $this->logger->warning('[AreaCheckMapController] Konnte kein Feature von Buffer API erhalten');
+            return null;
+        }
+        
+        $this->logger->info('[AreaCheckMapController] Buffer API Feature: ' . json_encode($featureFromBuffer));
+        
+        // Verwende exakt das NEdev-Format: geometry = Feature-Objekt
+        $postData = [
+            'geometry' => $featureFromBuffer
+        ];
+        
+        $this->logger->info('[AreaCheckMapController] NEdev-Format für ratingArea API: ' . json_encode($postData));
+        
+        $api_session_id = $this->getApiSessionId();
+        if (!$api_session_id) {
+            $this->logger->error('[AreaCheckMapController] Keine API Session verfügbar');
+            return null;
+        }
+
+        $curl_session = curl_init();
+        curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/ratingArea");
+        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, System::getContainer()->getParameter('kernel.project_dir') . "/system/tmp/" . session_id() . '.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, System::getContainer()->getParameter('kernel.project_dir') . "/system/tmp/" . session_id() . '.txt');
+        curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
+        curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
+        curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
+            'X-CSRF-TOKEN: ' . $api_session_id,
+            'Content-Type: application/json'
+        ]);
+        $result = curl_exec($curl_session);
+        
+        if (curl_error($curl_session)) {
+            $this->logger->error('[AreaCheckMapController] cURL Error: ' . curl_error($curl_session));
+            curl_close($curl_session);
+            return null;
+        }
+        
+        curl_close($curl_session);
+        
+        $this->logger->info('[AreaCheckMapController] Rating response: ' . $result);
+        
+        $ratingData = json_decode($result, true);
+        // ratingArea API gibt direkt die Rating-Daten zurück (ohne status-Wrapper)
+        if ($ratingData && isset($ratingData['rating_cutdensity'])) {
+            $this->logger->info('[AreaCheckMapController] ✅ ERFOLGREICHES RATING ERHALTEN!');
+            return $ratingData;
+        }
+        
+        $this->logger->warning('[AreaCheckMapController] Kein gültiges Rating erhalten: ' . $result);
+        return null;
+    }
+
+
+
+    private function getPlotRating($id)
+    {
+        // Exakt wie Original-Modul: Rating-API MIT Cookies
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        $api_session_id = $this->getApiSessionId();
+        if (!$api_session_id) {
+            throw new \RuntimeException('API-Session konnte nicht erstellt werden.');
+        }
+        $curl_session = curl_init();
+        curl_setopt($curl_session ,CURLOPT_URL, $this->api_url."wind/caeli/rating?".http_build_query([
+            'area_id'=>$id
+        ]));
+        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
+        curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
+            'X-CSRF-TOKEN: '.$api_session_id,
+            'Content-Type: application/json'
+        ]);
+        $result = curl_exec($curl_session);
+        curl_close($curl_session);
+        return json_decode($result);
+    }
+
+    private function getRatingAreaForFailedPark($geometry_raw) 
+    {
+        // Wie NEdev-Modul: ratingArea API für fehlgeschlagene Parks
+        $this->logger->info('[AreaCheckMapController] === RATING FÜR FEHLGESCHLAGENEN PARK ===');
+        
+        $api_session_id = $this->getApiSessionId();
+        if (!$api_session_id) {
+            $this->logger->error('[AreaCheckMapController] Keine API Session für Rating verfügbar');
+            return null;
+        }
+
+        // Geometry wie im NEdev-Modul verarbeiten
+        $postData = [
+            'geometry' => json_decode($geometry_raw)
+        ];
+
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        $curl_session = curl_init();
+        curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/ratingArea");
+        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
+        curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
+        curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
+            'X-CSRF-TOKEN: '.$api_session_id,
+            'Content-Type: application/json'
+        ]);
+        $result = curl_exec($curl_session);
+        curl_close($curl_session);
+
+        $this->logger->info('[AreaCheckMapController] Rating response: ' . $result);
+
+        $ratingData = json_decode($result);
+        if ($ratingData) {
+            return $ratingData;
+        }
+        
+        return null;
+    }
+
+
+} 

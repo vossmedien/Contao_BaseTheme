@@ -1,5 +1,34 @@
 services:
-    CaeliWind\CaeliAreaCheckBundle\Module\AreaCheckModule:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    # Registriere alle Dienste aus dem Bundle
+    CaeliWind\CaeliAreaCheckBundle\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Resources/'
+            - '../src/Tests/'
+
+    # Explizit den AreaCheckMapController konfigurieren
+    CaeliWind\CaeliAreaCheckBundle\Controller\FrontendModule\AreaCheckMapController:
         arguments:
-            $connection: '@doctrine.dbal.default_connection'
-        tags: [contao.frontend_module] 
+            $framework: '@contao.framework'
+            $logger: '@monolog.logger.contao'
+
+    # Explizit den AreaCheckResultController konfigurieren
+    CaeliWind\CaeliAreaCheckBundle\Controller\FrontendModule\AreaCheckResultController:
+        arguments:
+            $framework: '@contao.framework'
+            $logger: '@monolog.logger.contao'
+
+    # FormDataListener für Formular-Hooks
+    CaeliWind\CaeliAreaCheckBundle\EventListener\FormDataListener:
+        arguments:
+            $logger: '@monolog.logger.contao'
+            $formIds: '%caeli_area_check.form_ids%'
+            $fieldMapping: '%caeli_area_check.field_mapping%'
+        tags:
+            - { name: contao.hook, hook: processFormData, method: onProcessFormData } 

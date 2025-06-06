@@ -1,6 +1,7 @@
 <?php
 
 // Felder
+$GLOBALS['TL_LANG']['tl_flaechencheck']['tstamp']           = ['Datum', 'Datum der Anfrage'];
 $GLOBALS['TL_LANG']['tl_flaechencheck']['name']             = ['Nachname', 'Bitte geben Sie den Nachnamen ein.'];
 $GLOBALS['TL_LANG']['tl_flaechencheck']['vorname']          = ['Vorname', 'Bitte geben Sie den Vornamen ein.'];
 $GLOBALS['TL_LANG']['tl_flaechencheck']['phone']            = ['Telefon', 'Bitte geben Sie die Telefonnummer ein.'];

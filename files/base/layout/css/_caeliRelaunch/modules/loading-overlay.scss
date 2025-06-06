@@ -1,0 +1,32 @@
+
+.filter-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh; /* Dynamische Viewport-Höhe ist oft besser */
+  background-color: rgba(0, 0, 0, 0.35); /* Etwas dezenter vielleicht */
+  display: none; /* Standardmäßig ausgeblendet */
+  justify-content: center;
+  align-items: center;
+  z-index: 1050; /* Über den meisten anderen Elementen, aber unter Modals, falls nötig */
+}
+
+.filter-spinner {
+  /* Ggf. vorhandene Styles für Größe (width, height) hier belassen oder anpassen */
+  /* style="width: 50px; height: 50px;" ist aktuell inline im SVG-Tag */
+  animation: caeliAuctionSpin 1.8s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+}
+
+@keyframes caeliAuctionSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.filter-spinner path {
+  fill: #fff;
+}

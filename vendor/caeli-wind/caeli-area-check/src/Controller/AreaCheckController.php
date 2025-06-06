@@ -53,12 +53,53 @@ class AreaCheckController extends AbstractController
                     'geometry'          => $request->request->get('geometry', ''),
                     'park_id'           => $parkid,
                     'park_rating'       => json_encode($rating),
+                    'status'            => 'success',
                 ];
 
                 $this->connection->insert('tl_flaechencheck', $data);
                 $success = true;
             } catch (\Throwable $e) {
                 $error = $e->getMessage();
+                
+                // Auch bei Fehlern versuchen wir ein Rating zu bekommen
+                // ähnlich wie im alten Modul
+                try {
+                    $geometry = $request->request->get('geometry', '');
+                    if ($geometry) {
+                        $geometryData = json_decode($geometry, true);
+                        if (isset($geometryData['geometry']['coordinates'][0][0])) {
+                            // Erste Koordinate aus dem Polygon extrahieren
+                            $coords = $geometryData['geometry']['coordinates'][0][0];
+                            $longitude = $coords[0];
+                            $latitude = $coords[1];
+                            $size_ha = $request->request->get('size_ha', 3);
+                            
+                            $rating = $this->getRatingArea($longitude, $latitude, $size_ha);
+                            $searchedAddress = $request->request->get('searched_address', '');
+                            
+                            // Auch bei ungültigen Flächen die Daten speichern
+                            $data = [
+                                'tstamp'            => time(),
+                                'name'              => $request->request->get('name', 'Testkunde'),
+                                'vorname'           => $request->request->get('vorname', 'Muster'),
+                                'phone'             => $request->request->get('phone', '1234567890'),
+                                'email'             => $request->request->get('email', 'test@test.de'),
+                                'searched_address'  => $searchedAddress,
+                                'geometry'          => $geometry,
+                                'park_id'           => null,
+                                'park_rating'       => json_encode($rating),
+                                'status'            => 'failed_with_rating',
+                                'error_message'     => $error,
+                            ];
+                            
+                            $this->connection->insert('tl_flaechencheck', $data);
+                            $success = true; // Setzen auf true, da wir Rating haben
+                        }
+                    }
+                } catch (\Throwable $ratingException) {
+                    // Falls auch das Rating fehlschlägt, ursprünglichen Fehler beibehalten
+                    error_log('Rating-Fehler: ' . $ratingException->getMessage());
+                }
             }
         }
 
@@ -143,5 +184,53 @@ class AreaCheckController extends AbstractController
         $result = curl_exec($curl_session);
         curl_close($curl_session);
         return json_decode($result);
+    }
+
+    private function getRatingArea($longitude, $latitude, $size_ha = 3)
+    {
+        $api_session_id = $this->getApiSessionId();
+        if (!$api_session_id) {
+            throw new \RuntimeException('API-Session konnte nicht erstellt werden.');
+        }
+
+        // Geometrie aus Koordinaten erstellen (ähnlich wie im alten Modul)
+        $coordinates = $this->getCoordinatesForMarker($longitude, $latitude, $size_ha);
+        
+        $postData = [
+            'geometry' => $coordinates,
+        ];
+
+        $curl_session = curl_init();
+        curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/ratingArea");
+        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
+        curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
+        curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
+            'X-CSRF-TOKEN: '.$api_session_id,
+            'Content-Type: application/json'
+        ]);
+        $result = curl_exec($curl_session);
+        curl_close($curl_session);
+
+        return json_decode($result);
+    }
+
+    private function getCoordinatesForMarker($longitude, $latitude, $size_ha = 3)
+    {
+        // Einfache Polygon-Erzeugung um den Mittelpunkt
+        // Basierend auf der size_ha einen groben Radius berechnen
+        $radius = sqrt($size_ha * 10000) / 111320; // Grobe Umrechnung Hektar zu Grad
+        
+        return [
+            "type" => "Polygon",
+            "coordinates" => [[
+                [$longitude - $radius, $latitude - $radius],
+                [$longitude + $radius, $latitude - $radius], 
+                [$longitude + $radius, $latitude + $radius],
+                [$longitude - $radius, $latitude + $radius],
+                [$longitude - $radius, $latitude - $radius]
+            ]]
+        ];
     }
 } 

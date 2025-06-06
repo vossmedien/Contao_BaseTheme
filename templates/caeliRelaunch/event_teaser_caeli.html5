@@ -107,14 +107,14 @@
                     ?>
                     <div>
                         <a href="<?= $this->onSiteAppointmentLink ?>" target="_blank" class="btn btn-sm btn-outline-primary">
-                            <?= $GLOBALS['TL_LANG']['MSC']['onSiteAppointment'] ?>
+                            <?= $this->more ?>
                         </a>
                     </div>
                 <?php endif; ?>
                 <?php if ($this->hasDetails): ?>
                     <div>
                         <a href="<?= $this->href ?>" title="<?= $this->readMore ?>" class="btn btn-sm btn-outline-primary">
-                            <?= $this->more ?>
+                            <?= $GLOBALS['TL_LANG']['MSC']['onSiteAppointment'] ?>
                         </a>
                     </div>
                 <?php endif; ?>

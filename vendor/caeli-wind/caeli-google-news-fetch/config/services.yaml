@@ -76,4 +76,4 @@ services:
             $newsFeedService: '@CaeliWind\CaeliGoogleNewsFetch\Service\GoogleNewsFeedService'
             $logger: '@monolog.logger.contao'
         tags:
-            - { name: 'contao.cronjob', interval: 'daily' }
+            - { name: 'contao.cronjob', interval: 'daily', time: '02:00' }

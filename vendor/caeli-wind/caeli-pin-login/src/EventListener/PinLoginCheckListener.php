@@ -47,27 +47,16 @@ class PinLoginCheckListener
      */
     public function __invoke(PageModel $pageModel, LayoutModel $layout, PageRegular $pageRegular): void
     {
-        // Debug-Ausgabe
-        if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'dev') {
-            $debugMessages = [
-                "PIN-Login Debug for PageId: " . $pageModel->id,
-                "PIN Protected: " . ($pageModel->pin_protected ? 'Ja' : 'Nein'),
-            ];
-            if ($pageModel->pin_protected) {
-                $debugMessages[] = "PIN Value: " . $pageModel->pin_value;
-                $debugMessages[] = "PIN Login Page: " . $pageModel->pin_login_page;
-                $debugMessages[] = "isPageAuthorized: " . ($this->sessionManager->isPageAuthorized($pageModel->id, (int) $pageModel->pin_timeout) ? 'Ja' : 'Nein');
-                $debugMessages[] = "AuthorizedPages: " . print_r($this->sessionManager->getDebugAuthorizedPages(), true);
-            }
-            foreach ($debugMessages as $message) {
-                $this->logger->debug($message);
-            }
+        // Früher Ausstieg: Nur bei PIN-geschützten Seiten weitermachen
+        if (!$pageModel->pin_protected || !$pageModel->pin_value) {
+            return;
         }
+
+
 
         $this->framework->initialize();
 
-        // Prüfen, ob für diese Seite ein PIN-Schutz aktiviert ist und ein PIN-Wert gesetzt ist
-        if ($pageModel->pin_protected && $pageModel->pin_value) {
+        // PIN-Schutz ist aktiviert und PIN-Wert ist gesetzt
             $request = $this->requestStack->getCurrentRequest();
             if (null === $request) {
                 return;
@@ -75,28 +64,12 @@ class PinLoginCheckListener
 
             $currentUrl = $request->getUri();
             
-            // Debug-Info zur Session
-            if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'dev') {
-                file_put_contents(
-                    dirname(__DIR__, 4) . '/pin-login-debug.log',
-                    date('Y-m-d H:i:s') . ' - Check Auth: Page ' . $pageModel->id . 
-                    ' | Authorized: ' . ($this->sessionManager->isPageAuthorized($pageModel->id, (int) $pageModel->pin_timeout) ? 'Yes' : 'No') . PHP_EOL,
-                    FILE_APPEND
-                );
-            }
+
             
             // Prüfen, ob diese spezifische Seite bereits autorisiert ist
             if (!$this->sessionManager->isPageAuthorized($pageModel->id, (int) $pageModel->pin_timeout)) {
                 
-                // Debug-Info zur Session für fehlgeschlagene Auth
-                if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'dev') {
-                    file_put_contents(
-                        dirname(__DIR__, 4) . '/pin-login-debug.log',
-                        date('Y-m-d H:i:s') . ' - Auth Failed: Setting session data and redirecting | ' . 
-                        'Current URL: ' . $currentUrl . ' | Target ID: ' . $pageModel->id . ' | PIN: ' . $pageModel->pin_value . PHP_EOL,
-                        FILE_APPEND
-                    );
-                }
+
                 
                 // PIN nicht korrekt oder nicht gesetzt oder abgelaufen - Weiterleitung zum Login
                 $this->sessionManager->setReferrer($currentUrl);
@@ -124,14 +97,7 @@ class PinLoginCheckListener
                         }
                     }
                     
-                    // Debug-Info zur Weiterleitung
-                    if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'dev') {
-                        file_put_contents(
-                            dirname(__DIR__, 4) . '/pin-login-debug.log',
-                            date('Y-m-d H:i:s') . ' - Redirecting to: ' . $url . PHP_EOL,
-                            FILE_APPEND
-                        );
-                    }
+
                     
                     // Sicherstellen, dass noch keine Ausgabe erfolgt ist
                     if (!headers_sent()) {
@@ -144,15 +110,7 @@ class PinLoginCheckListener
                     }
                 }
             } else {
-                // Debug-Info für erfolgreiche Auth
-                if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'dev') {
-                    file_put_contents(
-                        dirname(__DIR__, 4) . '/pin-login-debug.log',
-                        date('Y-m-d H:i:s') . ' - Auth Successful: Page ' . $pageModel->id . ' is authorized.' . PHP_EOL,
-                        FILE_APPEND
-                    );
-                }
+
             }
-        }
     }
 } 

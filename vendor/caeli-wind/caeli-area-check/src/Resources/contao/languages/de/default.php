@@ -1,0 +1,122 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Caeli Area Check Bundle - German translations
+ */
+
+// Loading texts
+$GLOBALS['TL_LANG']['caeli_area_check']['loading']['texts'] = [
+    'checking_area' => 'Wir prüfen Ihre Fläche',
+    'wind_conditions' => 'Passen die Windgegebenheiten?',
+    'restrictions_check' => 'Gibt es Restriktionen?',
+    'grid_connection' => 'Ist ein Netzanschluss gegeben?',
+    'analyzing_potential' => 'Analysiere Windpotential',
+    'checking_nature' => 'Prüfe Naturschutzgebiete',
+    'calculating_economics' => 'Berechne Wirtschaftlichkeit',
+    'checking_distances' => 'Überprüfe Abstandsregelungen',
+    'analyzing_capacity' => 'Analysiere Netzkapazität',
+    'evaluating_quality' => 'Bewerte Standortqualität',
+];
+
+// Form elements
+$GLOBALS['TL_LANG']['caeli_area_check']['form'] = [
+    'plz_placeholder' => 'PLZ eingeben',
+    'plz_alert' => 'Bitte geben Sie eine vollständige 5-stellige Postleitzahl ein.',
+    'button' => [
+        'check_area' => 'Ergebnis anzeigen',
+        'restart' => 'Neu starten',
+    ],
+    'warning' => 'Die ausgewählte Fläche ist größer als 700 Hektar. Bitte reduzieren Sie die Flächengröße.',
+];
+
+// Tutorial system
+$GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
+    'welcome' => [
+        'title' => 'Willkommen bei Ihrem Flächencheck.',
+        'content' => 'Entdecken Sie in wenigen Schritten das Windpotenzial Ihres Grundstücks. Wir zeigen Ihnen kurz, wie es funktioniert. Einfach auf "Weiter" klicken.',
+        'button_skip' => 'Überspringen',
+        'button_next' => 'Weiter',
+    ],
+    'plz_input' => [
+        'title' => 'Schritt 1: Ihr Standort zählt.',
+        'title_alt' => 'Hier starten Sie Ihren Flächencheck.',
+        'content' => 'Starten Sie, indem Sie Ihren Ort oder die Postleitzahl eingeben. So finden wir den richtigen Kartenausschnitt für Ihre Fläche.',
+        'button_back' => 'Zurück',
+        'button_next' => 'Weiter',
+    ],
+    'polygon_edit' => [
+        'title' => 'Schritt 2: Fläche einzeichnen.',
+        'title_alt' => 'Hier zeichnen Sie Ihre Fläche ein.',
+        'content' => 'Jetzt kommt der spannende Teil: Bewegen Sie die Karte zum gewünschten Gebiet und nutzen Sie die Eckpunkte des Polygons. Ziehen Sie diese an die richtige Position, um präzise Ihr Grundstück auf der Karte anzulegen.',
+        'button_back' => 'Zurück',
+        'button_next' => 'Weiter',
+    ],
+    'area_confirm' => [
+        'title' => 'Schritt 3: Fast geschafft!',
+        'title_alt' => 'Sobald Sie Ihr Grundstück markiert haben, kann die Prüfung beginnen.',
+        'content' => 'Fast geschafft: Klicken Sie auf "Ergebnis anzeigen" wenn Sie mit Ihr festgelegten Fläche zufrieden sind. Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche und Sie erhalten unmittelbar das Ergebnis Ihres Flächenchecks.',
+        'button_back' => 'Zurück',
+        'button_next' => 'Fertig',
+    ],
+];
+
+// Consent overlay
+$GLOBALS['TL_LANG']['caeli_area_check']['consent']['overlay'] = [
+    'title' => 'Consent erforderlich',
+    'message' => 'Für die Nutzung dieser Funktion benötigen wir Ihr Einverständnis für Google Maps und HubSpot.',
+    'button' => 'Einverständnis erteilen',
+];
+
+// Error messages
+$GLOBALS['TL_LANG']['caeli_area_check']['error'] = [
+    'no_geodata' => 'Keine Geodaten für diesen Ort gefunden!',
+    'geocoding_failed' => 'Geocodierung war aus folgendem Grund nicht erfolgreich:',
+    'select_area_first' => 'Bitte zuerst eine Fläche auswählen.',
+    'google_maps_loading' => 'Google Maps API konnte nicht geladen werden!',
+    'title' => 'Fehler',
+    'retry_button' => 'Erneut versuchen',
+];
+
+// Alert messages for box display
+$GLOBALS['TL_LANG']['caeli_area_check']['alerts'] = [
+    'no_geodata' => [
+        'title' => 'Keine Geodaten verfügbar',
+        'message' => 'Keine Geodaten für diesen Ort gefunden!',
+        'type' => 'danger',
+    ],
+    'select_area_first' => [
+        'title' => 'Fläche auswählen',
+        'message' => 'Bitte zuerst eine Fläche auswählen.',
+        'type' => 'warning',
+    ],
+    'geocoding_failed' => [
+        'title' => 'Geocodierung fehlgeschlagen',
+        'message' => 'Geocodierung war aus folgendem Grund nicht erfolgreich:',
+        'type' => 'danger',
+    ],
+    'google_maps_loading' => [
+        'title' => 'Google Maps Fehler',
+        'message' => 'Google Maps API konnte nicht geladen werden!',
+        'type' => 'danger',
+    ],
+];
+
+// Loading overlay
+$GLOBALS['TL_LANG']['caeli_area_check']['loading']['title'] = 'Ihr Grundstück wird geprüft...';
+
+// Interface elements
+$GLOBALS['TL_LANG']['caeli_area_check']['interface'] = [
+    'header' => [
+        'title' => 'Caeli Wind Flächencheck',
+        'subtitle' => 'für Windkraftanlagen',
+    ],
+    'form' => [
+        'label' => 'Grundstück finden und einzeichnen:',
+    ],
+    'hints' => [
+        'strong' => 'Hinweis:',
+        'warning' => 'Warnung:',
+    ],
+]; 

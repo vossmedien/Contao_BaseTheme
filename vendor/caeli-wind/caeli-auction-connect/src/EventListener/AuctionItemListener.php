@@ -46,38 +46,28 @@ class AuctionItemListener
             return null;
         }
 
-        // Framework initialisieren
+        // Früher Ausstieg: Nur bei Auction-URLs weitermachen
+        $path = $request->getPathInfo();
+        if (!preg_match('/(auction|auktion|detail)/i', $path)) {
+            return null;
+        }
+
+        // Framework nur bei relevanten URLs initialisieren
         $this->framework->initialize();
         $inputAdapter = $this->framework->getAdapter(Input::class);
 
-        // Debug-Logging für alle Fragment-Pfade
-        $this->logger->debug('AuctionItemListener: Pfad-Fragmente', [
-            'fragments' => $fragments,
-            'uri' => $request->getRequestUri(),
-            'pathInfo' => $request->getPathInfo(),
-            'fragment_count' => count($fragments),
-            'method' => $request->getMethod()
-        ]);
 
-        // Jede URL prüfen, die die Wörter 'auction', 'detail' oder 'auktion' enthält
-        $path = $request->getPathInfo();
-        if (preg_match('/(auction|auktion|detail)/i', $path)) {
-            $this->logger->info('Potenzielle Auktions-URL erkannt: ' . $path);
 
-            // Die URL in Segmente teilen und nach IDs suchen
-            $pathSegments = explode('/', trim($path, '/'));
-            $lastSegment = end($pathSegments);
+        // Die URL in Segmente teilen und nach IDs suchen
+        $pathSegments = explode('/', trim($path, '/'));
+        $lastSegment = end($pathSegments);
 
-            // Prüfen, ob das letzte Segment eine potenzielle ID ist
-            if ($lastSegment && $lastSegment !== 'detail' && preg_match('/^[a-zA-Z0-9_-]+$/', $lastSegment)) {
-                $inputAdapter->setGet('auto_item', $lastSegment);
-                $inputAdapter->setGet('auction_id', $lastSegment);
+        // Prüfen, ob das letzte Segment eine potenzielle ID ist
+        if ($lastSegment && $lastSegment !== 'detail' && preg_match('/^[a-zA-Z0-9_-]+$/', $lastSegment)) {
+            $inputAdapter->setGet('auto_item', $lastSegment);
+            $inputAdapter->setGet('auction_id', $lastSegment);
 
-                $this->logger->info('Auktions-ID aus URL-Pfad extrahiert: ' . $lastSegment, [
-                    'path' => $path,
-                    'segments' => $pathSegments
-                ]);
-            }
+
         }
 
         // Standard-Fragments-Verarbeitung (falls obige Methode nichts findet)
@@ -85,9 +75,7 @@ class AuctionItemListener
             $inputAdapter->setGet('auto_item', $fragments[1]);
             $inputAdapter->setGet('auction_id', $fragments[1]);
 
-            $this->logger->info('Auktions-ID aus URL-Fragmenten extrahiert: ' . $fragments[1], [
-                'fragments' => $fragments
-            ]);
+
         }
 
         // Wir geben null zurück, damit die normale Contao-Seitenauflösung fortgesetzt wird

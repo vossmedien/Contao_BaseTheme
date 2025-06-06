@@ -168,6 +168,32 @@ return array(
             'default' => false,
             'eval' => array('tl_class' => 'w50 clr'), // clr für neue Zeile
         ),
+        'add_zip_filter' => array(
+            'label' => array('PLZ-Filter integrieren', 'Ermöglicht Filterung nach Postleitzahl mit konfigurierbarem Umkreis.'),
+            'inputType' => 'checkbox',
+            'default' => false,
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_filter_form',
+            ),
+        ),
+        'zip_filter_radius' => array(
+            'label' => array('PLZ-Filter Umkreis (km)', 'Radius in Kilometern für die PLZ-Filterung.'),
+            'inputType' => 'text',
+            'default' => '150',
+            'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_filter_blacklist' => array(
+            'label' => array('PLZ-Filter Blacklist', 'Kommagetrennte Liste von Tags/Kategorien, bei denen der PLZ-Filter NICHT angezeigt wird (z.B. "Online Beratung, Telefonberatung").'),
+            'inputType' => 'textarea',
+            'eval' => array('tl_class' => 'w50', 'rows' => 3),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
         // --- NEUE FELDER FÜR TEXT-FILTER ---
         'add_text_filter_option' => array(
             'label' => array('Filter-Option mit Text hinzufügen', 'Fügt eine weitere Filter-Schaltfläche hinzu, die einen Text anzeigt.'),
@@ -193,6 +219,32 @@ return array(
             'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
             'dependsOn' => array(
                 'field' => 'add_text_filter_option',
+            ),
+        ),
+        'add_general_inquiry' => array(
+            'label' => array('Allgemeine Anfrage Button hinzufügen', 'Fügt einen Button für allgemeine Anfragen hinzu.'),
+            'inputType' => 'checkbox',
+            'default' => false,
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'add_filter_form',
+            ),
+        ),
+        'general_inquiry_button_label' => array(
+            'label' => array('Button-Label für Allgemeine Anfrage', 'Beschriftung der Schaltfläche für allgemeine Anfragen.'),
+            'inputType' => 'text',
+            'default' => 'Allgemeine Anfrage',
+            'eval' => array('tl_class' => 'w50', 'mandatory' => true),
+            'dependsOn' => array(
+                'field' => 'add_general_inquiry',
+            ),
+        ),
+        'general_inquiry_content' => array(
+            'label' => array('Text für Allgemeine Anfrage', 'Dieser Text wird angezeigt, wenn der Allgemeine Anfrage Button aktiv ist.'),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'add_general_inquiry',
             ),
         ),
         // --- 6. Partner-Liste --- //
@@ -233,6 +285,16 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
+                'zip_code' => array(
+                    'label' => array('Postleitzahl', ''),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'linkedin_link' => array(
+                    'label' => array('LinkedIn-Link', 'z.B. https://www.linkedin.com/in/benutzername'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50', 'rgxp' => 'url'),
+                ),
                 // Beschreibung
                 'description' => array(
                     'label' => array('Beschreibung', 'Detaillierte Informationen zum Ansprechpartner.'),
@@ -261,7 +323,7 @@ return array(
                     'inputType' => 'select',
                     'options' => GlobalElementConfig::getAnimations(),
                     'eval' => array('chosen' => 'true', 'tl_class' => 'w50 clr')
-                )
+                ),
             ),
         ),
     )
