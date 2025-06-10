@@ -32,9 +32,21 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         private readonly LoggerInterface $logger,
         private readonly TranslatorInterface $translator
     ) {
-        $this->api_url = getenv('CAELI_INFRA_API_URL') ?: "https://infra.caeli-wind.de/api/";
-        $this->api_user = getenv('CAELI_INFRA_API_USERNAME') ?: "website@caeli-wind.de";
-        $this->api_pass = getenv('CAELI_INFRA_API_PASSWORD') ?: "d&*D)xm.??s3>vEZ";
+        // Flexiblere Environment Variable Erkennung - getenv() und $_ENV kombinieren
+        $this->api_url = getenv('CAELI_INFRA_API_URL') ?: ($_ENV['CAELI_INFRA_API_URL'] ?? '');
+        $this->api_user = getenv('CAELI_INFRA_API_USERNAME') ?: ($_ENV['CAELI_INFRA_API_USERNAME'] ?? '');
+        $this->api_pass = getenv('CAELI_INFRA_API_PASSWORD') ?: ($_ENV['CAELI_INFRA_API_PASSWORD'] ?? '');
+        
+        // Validierung mit besserer Fehlermeldung
+        if (empty($this->api_url)) {
+            throw new \RuntimeException('CAELI_INFRA_API_URL environment variable is required. Prüfe deine .env/.env.local Datei.');
+        }
+        if (empty($this->api_user)) {
+            throw new \RuntimeException('CAELI_INFRA_API_USERNAME environment variable is required. Prüfe deine .env/.env.local Datei.');
+        }
+        if (empty($this->api_pass)) {
+            throw new \RuntimeException('CAELI_INFRA_API_PASSWORD environment variable is required. Prüfe deine .env/.env.local Datei.');
+        }
     }
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
@@ -78,16 +90,30 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             
             $this->logger->debug('[AreaCheckMapController] Park-Erstellung: success=' . ($isSuccess ? 'true' : 'false') . ', parkid=' . $parkid . ', error=' . $errorMessage);
                 
+                // Input-Daten validieren und sanitizen
+                $name = trim($request->request->get('name', ''));
+                $vorname = trim($request->request->get('vorname', ''));
+                $phone = trim($request->request->get('phone', ''));
+                $email = trim($request->request->get('email', ''));
+                $searchedAddress = trim($request->request->get('searched_address', ''));
+                $geometry = trim($request->request->get('geometry', ''));
+
+                // E-Mail Validierung
+                if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $this->logger->warning('[AreaCheckMapController] Ungültige E-Mail-Adresse: ' . $email);
+                    $email = '';
+                }
+
                 // Daten in die Datenbank einfügen
                 $set = [
                     'tstamp' => time(),
-                    'name' => $request->request->get('name', 'Testkunde'),
-                    'vorname' => $request->request->get('vorname', 'Muster'),
-                    'phone' => $request->request->get('phone', '1234567890'),
-                    'email' => $request->request->get('email', 'test@test.de'),
-                    'searched_address' => $request->request->get('searched_address', ''),
-                    'geometry' => $request->request->get('geometry', ''),
-                    'park_id' => $parkid,
+                    'name' => $name ?: 'Unbekannt',
+                    'vorname' => $vorname ?: 'Unbekannt',
+                    'phone' => $phone ?: '',
+                    'email' => $email ?: '',
+                    'searched_address' => $searchedAddress ?: '',
+                    'geometry' => $geometry ?: '',
+                    'park_id' => $parkid ?: '',
                     'park_rating' => $parkData ? json_encode($parkData) : null,
                     'status' => $status,
                     'error_message' => $errorMessage ?: '',
@@ -144,6 +170,12 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         $googleMapsApiKey = getenv('GOOGLE_MAPS_API_KEY') ?: ($_ENV['GOOGLE_MAPS_API_KEY'] ?? '');
         $googleMapsMapId = getenv('GOOGLE_MAPS_MAP_ID') ?: ($_ENV['GOOGLE_MAPS_MAP_ID'] ?? '');
         
+        // Google Maps API Key validieren
+        if (empty($googleMapsApiKey)) {
+            $this->logger->error('[AreaCheckMapController] Google Maps API Key fehlt');
+            $template->error = 'Google Maps API Key ist nicht konfiguriert.';
+        }
+        
         $template->googleMapsApiKey = $googleMapsApiKey;
         $template->googleMapsMapId = $googleMapsMapId;
         
@@ -190,19 +222,34 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         $this->logger->info('[AreaCheckMapController] LOGIN CALL - API URL: ' . $this->api_url."auth/login");
 
         $curl_session = curl_init();
+        if (!$curl_session) {
+            $this->logger->error('[AreaCheckMapController] cURL-Initialisierung fehlgeschlagen');
+            return null;
+        }
+
         curl_setopt($curl_session ,CURLOPT_URL, $this->api_url."auth/login");
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($curl_session, CURLOPT_COOKIEJAR, $cookieFile);
-        // WICHTIG: Login braucht KEIN COOKIEFILE (noch keine Cookies vorhanden)
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 30); // 30 Sekunden Timeout
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json'
         ]);
+        
         $result = curl_exec($curl_session);
+        $httpCode = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
         
         if (curl_error($curl_session)) {
-            $this->logger->error('[AreaCheckMapController] LOGIN ERROR: ' . curl_error($curl_session));
+            $this->logger->error('[AreaCheckMapController] cURL ERROR: ' . curl_error($curl_session));
+            curl_close($curl_session);
+            return null;
+        }
+        
+        if ($httpCode !== 200) {
+            $this->logger->error('[AreaCheckMapController] LOGIN HTTP Error: ' . $httpCode);
+            curl_close($curl_session);
+            return null;
         }
         
         curl_close($curl_session);

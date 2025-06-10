@@ -11,7 +11,7 @@ use Contao\Form;
 use Psr\Log\LoggerInterface;
 
 /**
- * Listener für Formular-Submissions zur Aktualisierung der Flächencheck-Einträge
+ * Event Listener für Formular-Submissions zur Aktualisierung der Flächencheck-Einträge
  */
 class FormDataListener
 {
@@ -24,7 +24,7 @@ class FormDataListener
         array $fieldMapping = []
     ) {
         $this->formIds = $formIds ?: [
-            // Fallback-IDs falls keine Konfiguration vorhanden
+            // Standard-Fallback IDs für Flächencheck-Formulare
             'flaechencheckNotSuccessEN',
             'flaechencheckNotSuccessDE', 
             'flaechencheckSuccessEN',
@@ -64,11 +64,24 @@ class FormDataListener
                 return;
             }
 
-                         // Formulardaten extrahieren (mit konfigurierbaren Feldnamen)
-            $lastname = $submittedData[$this->fieldMapping['lastname_field']] ?? '';
-            $firstname = $submittedData[$this->fieldMapping['firstname_field']] ?? '';
-            $phone = $submittedData[$this->fieldMapping['phone_field']] ?? '';
-            $email = $submittedData[$this->fieldMapping['email_field']] ?? '';
+            // Sanitize checkid
+            $checkId = trim($checkId);
+            if (empty($checkId)) {
+                $this->logger->warning('[FormDataListener] Leere checkid nach Sanitization');
+                return;
+            }
+
+            // Formulardaten extrahieren (mit konfigurierbaren Feldnamen)
+            $lastname = trim($submittedData[$this->fieldMapping['lastname_field']] ?? '');
+            $firstname = trim($submittedData[$this->fieldMapping['firstname_field']] ?? '');
+            $phone = trim($submittedData[$this->fieldMapping['phone_field']] ?? '');
+            $email = trim($submittedData[$this->fieldMapping['email_field']] ?? '');
+
+            // E-Mail Validierung
+            if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $this->logger->warning('[FormDataListener] Ungültige E-Mail-Adresse: ' . $email);
+                $email = ''; // Ungültige E-Mail nicht speichern
+            }
 
             // Validierung
             if (empty($lastname) && empty($firstname) && empty($phone) && empty($email)) {
@@ -96,10 +109,21 @@ class FormDataListener
         
         if (is_numeric($checkId)) {
             // Numerische checkid = DB-ID (für fehlgeschlagene Parks)
+            // Zusätzliche Validierung: nur positive Integers
+            $numericId = (int) $checkId;
+            if ($numericId <= 0) {
+                $this->logger->error('[FormDataListener] Ungültige numerische checkid: ' . $checkId);
+                return;
+            }
             $result = $db->prepare("SELECT * FROM tl_flaechencheck WHERE id = ?")
-                         ->execute($checkId);
+                         ->execute($numericId);
         } else {
             // String checkid = park_id (für erfolgreiche Parks)
+            // Validierung: nur alphanumerische Zeichen und erlaubte Sonderzeichen
+            if (!preg_match('/^[a-zA-Z0-9_-]+$/', $checkId)) {
+                $this->logger->error('[FormDataListener] Ungültige park_id: ' . $checkId);
+                return;
+            }
             $result = $db->prepare("SELECT * FROM tl_flaechencheck WHERE park_id = ? ORDER BY tstamp DESC LIMIT 1")
                          ->execute($checkId);
         }
