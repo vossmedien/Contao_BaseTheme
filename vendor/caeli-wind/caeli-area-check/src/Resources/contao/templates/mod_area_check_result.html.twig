@@ -22,10 +22,11 @@
             </div>
         {% elseif rating %}
             {# Rating-Daten vorhanden - zeige detaillierte Auswertung (auch für fehlgeschlagene Parks) #}
-            {# WICHTIG: Berücksichtige den tatsächlichen Status, nicht nur die Rating-Farben #}
+            {# WICHTIG: Berücksichtige den tatsächlichen Status UND alle drei Faktoren müssen grün/gelb sein #}
+            {# Fehlende Ratings gelten als "rot" und machen die Fläche nicht geeignet #}
             {% set isSuitable = isSuccess and 
                                (rating.rating_cutdensity is defined and rating.rating_cutdensity in ['green', 'yellow']) and 
-                               (not rating.rating_restrictions is defined or rating.rating_restrictions in ['green', 'yellow']) and 
+                               (rating.rating_restrictions is defined and rating.rating_restrictions in ['green', 'yellow']) and 
                                (rating.rating_grid_connection is defined and rating.rating_grid_connection in ['green', 'yellow']) %}
             
             {% if isSuitable %}
@@ -66,6 +67,8 @@
                                                 ✓ Gut geeignet
                                             {% elseif rating.rating_cutdensity == 'yellow' %}
                                                 ⚠ Bedingt geeignet
+                                            {% else %}
+                                                ✗ Nicht geeignet
                                             {% endif %}
                                         </span>
                                     {% else %}
@@ -87,12 +90,8 @@
                                             {% endif %}
                                         </span>
                                     {% else %}
-                                        {# Bei failed_with_rating ohne rating_restrictions = wahrscheinlich Restriktionen #}
-                                        {% if not isSuccess %}
-                                            <span class="rating-red">✗ Restriktionen vorhanden</span>
-                                        {% else %}
-                                            <span class="rating-green">✓ Keine Restriktionen</span>
-                                        {% endif %}
+                                        {# Fehlende rating_restrictions = immer rot (Restriktionen vorhanden) #}
+                                        <span class="rating-red">✗ Restriktionen vorhanden</span>
                                     {% endif %}
                                 </li>
 
@@ -105,6 +104,8 @@
                                                 ✓ Gut erreichbar
                                             {% elseif rating.rating_grid_connection == 'yellow' %}
                                                 ⚠ Bedingt erreichbar
+                                            {% else %}
+                                                ✗ Nicht geeignet
                                             {% endif %}
                                         </span>
                                     {% else %}
