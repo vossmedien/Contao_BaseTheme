@@ -1,17 +1,74 @@
-let map;
-let polygon = null;
-let areaLabel = null;
-let geocoder;
-let infoWindow;
+// Configuration
+const CONFIG = {
+    MOBILE_BREAKPOINT: 768,
+    DEFAULT_ZOOM: 15,
+    MOBILE_ZOOM: 13,
+    DEFAULT_AREA_SIZE: 40, // Hektar
+    MAX_AREA_SIZE: 700, // Hektar
+    DELAYS: {
+        INIT: 1500,
+        TUTORIAL_TRANSITION: 300,
+        PLACE_SELECTED: 1000,
+        POLYGON_CREATED: 500,
+        MAP_MOVE_RESET: 100
+    },
+    TUTORIAL_COOKIE: 'caeli_area_check_tutorial_completed',
+    PLZ_REGEX: /\b\d{5}\b/
+};
 
-// Polygon-Offset tracking für Map-Bewegung
-let polygonRelativeOffset = null;
-let isPolygonBeingEdited = false;
+// Hauptobjekt für alle App-Daten
+const CaeliAreaCheck = {
+    // Google Maps Objekte
+    map: null,
+    polygon: null,
+    areaLabel: null,
+    geocoder: null,
+    infoWindow: null,
+    
+    // State Management
+    state: {
+        polygonRelativeOffset: null,
+        isPolygonBeingEdited: false,
+        currentTutorialStep: 0,
+        tutorialActive: false,
+        formSubmissionInProgress: false,
+        consentCheckInitialized: false,
+        mapInitialized: false
+    }
+};
 
-// Tutorial System
-let currentTutorialStep = 0;
-let tutorialActive = false;
-const TUTORIAL_COOKIE = 'caeli_area_check_tutorial_completed';
+// Utility Functions
+const Utils = {
+    isMobile() {
+        return window.innerWidth <= CONFIG.MOBILE_BREAKPOINT;
+    },
+    
+    validatePLZ(input, address = '') {
+        const hasPLZ = CONFIG.PLZ_REGEX.test(input) || CONFIG.PLZ_REGEX.test(address);
+        const alertElement = document.getElementById('plz-alert');
+        
+        if (!hasPLZ && alertElement) {
+            alertElement.style.display = 'block';
+            return false;
+        }
+        
+        if (hasPLZ && alertElement) {
+            alertElement.style.display = 'none';
+            hideDynamicAlert();
+        }
+        
+        return hasPLZ;
+    },
+    
+    safeElementAction(selector, action) {
+        const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
+        if (element && typeof action === 'function') {
+            action(element);
+        } else if (!element) {
+            console.warn(`Element ${selector} not found`);
+        }
+    }
+};
 
 // Tutorial Steps werden dynamisch mit Übersetzungen erstellt
 function getTutorialSteps() {
@@ -33,6 +90,7 @@ function getTutorialSteps() {
         {
             // Schritt 1: PLZ/Ort eingeben
             element: '#place-autocomplete',
+            elementMobile: '#controls', // Auf Mobile an der Box ausrichten
             title: tutorial.plz_input?.title || 'Schritt 1: Ihr Standort zählt.',
             content: tutorial.plz_input?.content || 'Starten Sie, indem Sie Ihren Ort oder die Postleitzahl eingeben. So finden wir den richtigen Kartenausschnitt für Ihre Fläche.',
             placement: 'right',
@@ -70,17 +128,17 @@ function initMap() {
     const mapDiv = document.getElementById("map");
     const mapId = mapDiv.getAttribute('data-map-id') || undefined;
 
-    map = new google.maps.Map(mapDiv, {
+    CaeliAreaCheck.map = new google.maps.Map(mapDiv, {
         center: { lat: 51.165691, lng: 10.451526 },
-        zoom: 15,
+        zoom: CONFIG.DEFAULT_ZOOM,
         mapTypeId: 'satellite',
         mapId: mapId,
         scrollwheel: true,
         gestureHandling: 'greedy' // Bessere Mobile-Bedienung
     });
 
-    geocoder = new google.maps.Geocoder();
-    infoWindow = new google.maps.InfoWindow();
+    CaeliAreaCheck.geocoder = new google.maps.Geocoder();
+    CaeliAreaCheck.infoWindow = new google.maps.InfoWindow();
 
     // Klassisches Place Autocomplete
     const input = document.getElementById('place-autocomplete');
@@ -89,7 +147,7 @@ function initMap() {
         componentRestrictions: { country: 'de' }, // Nur Deutschland
         fields: ['place_id', 'formatted_address', 'address_components', 'geometry', 'name']
     });
-    autocomplete.bindTo('bounds', map);
+    autocomplete.bindTo('bounds', CaeliAreaCheck.map);
     
     // Tutorial Event Listener für Input
     input.addEventListener('focus', handleInputFocus);
@@ -105,45 +163,40 @@ function initMap() {
             return;
         }
 
-        // Einfache PLZ-Validation: 5-stellige PLZ erforderlich
+        // PLZ-Validation mit Utility-Funktion
         const inputValue = input.value;
-        const plzRegex = /\b\d{5}\b/; // 5 Ziffern
 
-        // Prüfen ob eine vollständige PLZ in der Auswahl enthalten ist
-        const hasPLZ = plzRegex.test(inputValue) || plzRegex.test(place.formatted_address || '');
-
-        if (!hasPLZ) {
-            document.getElementById('plz-alert').style.display = 'block';
+        if (!Utils.validatePLZ(inputValue, place.formatted_address || '')) {
             input.focus();
             return;
         }
-
-        // PLZ gefunden - Alert ausblenden
-        document.getElementById('plz-alert').style.display = 'none';
-        hideDynamicAlert();
+        
+// Eingabe über Autocomplete - wird bei Polygon-Bewegung überschrieben
 
         let targetLocation = place.geometry.location;
         
         // Mobile-Anpassung: Zentrum weiter nach unten verschieben, horizontal zentriert lassen
-        if (window.innerWidth <= 768 && targetLocation) {
-            const mapBounds = map.getBounds();
+        if (Utils.isMobile() && targetLocation) {
+            const mapBounds = CaeliAreaCheck.map.getBounds();
             const latSpan = mapBounds.getNorthEast().lat() - mapBounds.getSouthWest().lat();
             const adjustedLat = targetLocation.lat() - (latSpan * 0.4); // 40% nach unten
             targetLocation = new google.maps.LatLng(adjustedLat, targetLocation.lng()); // Longitude bleibt unverändert
         }
         
         if (targetLocation) {
-            map.setCenter(targetLocation);
-            map.setZoom(15);
+            CaeliAreaCheck.map.setCenter(targetLocation);
+            // Mobile: Zoom weiter raus für bessere Übersicht
+            const zoomLevel = Utils.isMobile() ? CONFIG.MOBILE_ZOOM : CONFIG.DEFAULT_ZOOM;
+            CaeliAreaCheck.map.setZoom(zoomLevel);
         }
         // Kein Popup mehr anzeigen
-        infoWindow.close();
+        CaeliAreaCheck.infoWindow.close();
 
         // Nach Ortssuche: Polygon direkt erstellen
         if (targetLocation) {
             createPolygonAtLocation(targetLocation);
             // Buttons nach erfolgreicher PLZ-Eingabe anzeigen
-            document.getElementById('button-wrapper').style.display = 'flex';
+            Utils.safeElementAction('#button-wrapper', el => el.style.display = 'flex');
             
             // Tutorial: Place selected
             handlePlaceSelected();
@@ -151,14 +204,15 @@ function initMap() {
     });
 
     // Map-Event-Listener für Polygon-Mitbewegen
-    google.maps.event.addListener(map, 'center_changed', function() {
-        if (polygon && polygonRelativeOffset && !isPolygonBeingEdited) {
+    google.maps.event.addListener(CaeliAreaCheck.map, 'center_changed', function() {
+        if (CaeliAreaCheck.polygon && CaeliAreaCheck.state.polygonRelativeOffset && !CaeliAreaCheck.state.isPolygonBeingEdited) {
             movePolygonWithMap();
         }
     });
 
-    document.getElementById('delete-button').addEventListener('click', deletePolygon);
-    document.getElementById('log-coordinates-button').addEventListener('click', logCoordinates);
+    // Event Listener für Buttons
+    Utils.safeElementAction('#delete-button', el => el.addEventListener('click', deletePolygon));
+    Utils.safeElementAction('#log-coordinates-button', el => el.addEventListener('click', logCoordinates));
     
     // Prüfe beim Seitenload, ob das Input bereits einen Wert hat
     checkInputValueOnLoad();
@@ -203,54 +257,50 @@ function prepareInputForInteraction(input) {
         setTimeout(() => {
             input.style.boxShadow = '';
         }, 2000);
-    }, 1500); // 1.5 Sekunden Verzögerung für vollständige Initialisierung
+    }, CONFIG.DELAYS.INIT); // Verzögerung für vollständige Initialisierung
 }
 
 function geocodeInputValue(address) {
-    if (!geocoder) return;
+    if (!CaeliAreaCheck.geocoder) return;
     
-    // PLZ-Validation
-    const plzRegex = /\b\d{5}\b/;
-    if (!plzRegex.test(address)) {
-        document.getElementById('plz-alert').style.display = 'block';
+    // PLZ-Validation mit Utility-Funktion
+    if (!Utils.validatePLZ(address)) {
         return;
     }
     
-    geocoder.geocode({
+    CaeliAreaCheck.geocoder.geocode({
         address: address,
         componentRestrictions: { country: 'de' }
     }, function(results, status) {
         if (status === 'OK' && results[0]) {
             const place = results[0];
             
-            // PLZ nochmals prüfen in der Adresse
-            const hasPLZ = plzRegex.test(address) || plzRegex.test(place.formatted_address || '');
-            if (!hasPLZ) {
-                document.getElementById('plz-alert').style.display = 'block';
+            // PLZ nochmals prüfen mit Utility-Funktion
+            if (!Utils.validatePLZ(address, place.formatted_address || '')) {
                 return;
             }
             
-            // PLZ gefunden - Alerts ausblenden
-            document.getElementById('plz-alert').style.display = 'none';
-            hideDynamicAlert();
+// Eingabe über Geocoding - wird bei Polygon-Bewegung überschrieben
             
             let targetLocation = place.geometry.location;
             
             // Mobile-Anpassung: Zentrum weiter nach unten verschieben
-            if (window.innerWidth <= 768 && targetLocation) {
-                const mapBounds = map.getBounds();
+            if (Utils.isMobile() && targetLocation) {
+                const mapBounds = CaeliAreaCheck.map.getBounds();
                 const latSpan = mapBounds.getNorthEast().lat() - mapBounds.getSouthWest().lat();
                 const adjustedLat = targetLocation.lat() - (latSpan * 0.4);
                 targetLocation = new google.maps.LatLng(adjustedLat, targetLocation.lng());
             }
             
             if (targetLocation) {
-                map.setCenter(targetLocation);
-                map.setZoom(15);
+                CaeliAreaCheck.map.setCenter(targetLocation);
+                // Mobile: Zoom weiter raus für bessere Übersicht
+                const zoomLevel = Utils.isMobile() ? CONFIG.MOBILE_ZOOM : CONFIG.DEFAULT_ZOOM;
+                CaeliAreaCheck.map.setZoom(zoomLevel);
                 createPolygonAtLocation(targetLocation);
                 
                 // Buttons anzeigen
-                document.getElementById('button-wrapper').style.display = 'flex';
+                Utils.safeElementAction('#button-wrapper', el => el.style.display = 'flex');
                 
                 // Tutorial: Place selected
                 handlePlaceSelected();
@@ -263,16 +313,16 @@ function geocodeInputValue(address) {
 
 function createPolygonAtLocation(center) {
     // Vorheriges Polygon entfernen falls vorhanden
-    if (polygon) {
-        polygon.setMap(null);
+    if (CaeliAreaCheck.polygon) {
+        CaeliAreaCheck.polygon.setMap(null);
     }
-    if (areaLabel) {
-        areaLabel.setMap(null);
-        areaLabel = null;
+    if (CaeliAreaCheck.areaLabel) {
+        CaeliAreaCheck.areaLabel.setMap(null);
+        CaeliAreaCheck.areaLabel = null;
     }
 
-    // Standardgröße von 40 Hektar
-    const size = 40;
+    // Standardgröße aus Config
+    const size = CONFIG.DEFAULT_AREA_SIZE;
     const earthRadius = 6371000; // in meters
     const areaSideLength = Math.sqrt(size * 10000); // Convert ha to m²
     const latDiff = (areaSideLength / 2) / earthRadius * (180 / Math.PI);
@@ -292,9 +342,9 @@ function createPolygonAtLocation(center) {
         {lat: bounds.south, lng: bounds.west}
     ];
 
-    polygon = new google.maps.Polygon({
+    CaeliAreaCheck.polygon = new google.maps.Polygon({
         path: path,
-        map: map,
+        map: CaeliAreaCheck.map,
         strokeColor: 'yellow',
         strokeOpacity: 1,
         strokeWeight: 3,
@@ -307,7 +357,7 @@ function createPolygonAtLocation(center) {
     });
 
     // Relativen Offset zum Map-Center speichern
-    polygonRelativeOffset = {
+    CaeliAreaCheck.state.polygonRelativeOffset = {
         lat: 0, // Polygon ist zentriert
         lng: 0
     };
@@ -316,32 +366,35 @@ function createPolygonAtLocation(center) {
     updateGeometryField();
 
     // Event Listener für Polygon-Änderungen
-    google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
-        // Nur NICHT reagieren wenn gerade movePolygonWithMap läuft
-        if (!isPolygonBeingEdited) {
-            updatePolygonOffset();
-            updateAreaLabel();
-            updateGeometryField();
-        }
-    });
-    google.maps.event.addListener(polygon.getPath(), 'insert_at', function() {
-        // Nur NICHT reagieren wenn gerade movePolygonWithMap läuft
-        if (!isPolygonBeingEdited) {
-            updatePolygonOffset();
-            updateAreaLabel();
-            updateGeometryField();
-        }
-    });
-    
-    // Event Listener für Drag-Operationen
-    google.maps.event.addListener(polygon, 'dragstart', function() {
-        isPolygonBeingEdited = true;
-    });
-    google.maps.event.addListener(polygon, 'dragend', function() {
+    google.maps.event.addListener(CaeliAreaCheck.polygon.getPath(), 'set_at', function() {
+        // Immer reagieren - auch während der Bearbeitung für Live-Updates
         updatePolygonOffset();
         updateAreaLabel();
         updateGeometryField();
-        isPolygonBeingEdited = false;
+    });
+    google.maps.event.addListener(CaeliAreaCheck.polygon.getPath(), 'insert_at', function() {
+        // Immer reagieren - auch während der Bearbeitung für Live-Updates
+        updatePolygonOffset();
+        updateAreaLabel();
+        updateGeometryField();
+    });
+    
+    // Event Listener für Drag-Operationen
+    google.maps.event.addListener(CaeliAreaCheck.polygon, 'dragstart', function() {
+        CaeliAreaCheck.state.isPolygonBeingEdited = true;
+    });
+    google.maps.event.addListener(CaeliAreaCheck.polygon, 'dragend', function() {
+        updatePolygonOffset();
+        updateAreaLabel();
+        updateGeometryField();
+        CaeliAreaCheck.state.isPolygonBeingEdited = false;
+    });
+    
+    // Event Listener für Live-Updates während des Ziehens der Polygon-Punkte
+    google.maps.event.addListener(CaeliAreaCheck.polygon.getPath(), 'remove_at', function() {
+        updatePolygonOffset();
+        updateAreaLabel();
+        updateGeometryField();
     });
 
     // Tutorial: Polygon wurde erstellt
@@ -349,40 +402,40 @@ function createPolygonAtLocation(center) {
 }
 
 function deletePolygon() {
-    if (polygon) {
-        polygon.setMap(null);
-        polygon = null;
+    if (CaeliAreaCheck.polygon) {
+        CaeliAreaCheck.polygon.setMap(null);
+        CaeliAreaCheck.polygon = null;
     }
-    if (areaLabel) {
-        areaLabel.setMap(null);
-        areaLabel = null;
+    if (CaeliAreaCheck.areaLabel) {
+        CaeliAreaCheck.areaLabel.setMap(null);
+        CaeliAreaCheck.areaLabel = null;
     }
 
     // Polygon-Offset zurücksetzen
-    polygonRelativeOffset = null;
-    isPolygonBeingEdited = false;
+    CaeliAreaCheck.state.polygonRelativeOffset = null;
+    CaeliAreaCheck.state.isPolygonBeingEdited = false;
 
-    document.getElementById('warning').style.display = 'none';
+    Utils.safeElementAction('#warning', el => el.style.display = 'none');
     updateGeometryField();
 
     // Neues Polygon an aktueller Position anzeigen (nach Neustarten)
-    const currentCenter = map.getCenter();
+    const currentCenter = CaeliAreaCheck.map.getCenter();
     if (currentCenter) {
         createPolygonAtLocation(currentCenter);
     }
 }
 
 function updateAreaLabel() {
-    if (areaLabel) {
-        areaLabel.map = null;
-        areaLabel = null;
+    if (CaeliAreaCheck.areaLabel) {
+        CaeliAreaCheck.areaLabel.map = null;
+        CaeliAreaCheck.areaLabel = null;
     }
 
-    const area = google.maps.geometry.spherical.computeArea(polygon.getPath());
+    const area = google.maps.geometry.spherical.computeArea(CaeliAreaCheck.polygon.getPath());
     const areaInHectares = (area / 10000).toFixed(2);
 
     const bounds = new google.maps.LatLngBounds();
-    polygon.getPath().forEach(function(latLng) {
+    CaeliAreaCheck.polygon.getPath().forEach(function(latLng) {
         bounds.extend(latLng);
     });
 
@@ -399,29 +452,123 @@ function updateAreaLabel() {
     labelDiv.style.color = 'black';
     labelDiv.textContent = `${areaInHectares} ha`;
 
-    areaLabel = new AdvancedMarkerElement({
-        map: map,
+    CaeliAreaCheck.areaLabel = new AdvancedMarkerElement({
+        map: CaeliAreaCheck.map,
         position: center,
         content: labelDiv
     });
 
-    // Check if area is greater than 700 ha
-    if (areaInHectares > 700) {
-        document.getElementById('warning').style.display = 'block';
-        document.getElementById('log-coordinates-button').disabled = true;
+    // Check if area is greater than configured max size
+    if (areaInHectares > CONFIG.MAX_AREA_SIZE) {
+        Utils.safeElementAction('#warning', el => el.style.display = 'block');
+        Utils.safeElementAction('#log-coordinates-button', el => el.disabled = true);
     } else {
-        document.getElementById('warning').style.display = 'none';
-        document.getElementById('log-coordinates-button').disabled = false;
+        Utils.safeElementAction('#warning', el => el.style.display = 'none');
+        Utils.safeElementAction('#log-coordinates-button', el => el.disabled = false);
     }
+    
+    // Live Reverse Geocoding für bessere Adresserkennung (Optional - kann performance-intensiv sein)
+    updatePolygonAddress(center);
+}
+
+// Live Adress-Update für Polygon-Zentrum (throttled)
+let reverseGeocodingTimeout;
+function updatePolygonAddress(center) {
+    // Throttling: Nur alle 2 Sekunden ein Reverse Geocoding
+    clearTimeout(reverseGeocodingTimeout);
+    reverseGeocodingTimeout = setTimeout(() => {
+        if (CaeliAreaCheck.geocoder && center) {
+            CaeliAreaCheck.geocoder.geocode({
+                location: center
+            }, function(results, status) {
+                if (status === 'OK' && results && results.length > 0) {
+                    // Beste verfügbare Adresse finden
+                    const bestAddress = findBestAddress(results);
+                    
+                    if (bestAddress) {
+                        // Kurze Adresse für Live-Update extrahieren
+                        const shortAddress = extractShortAddress(bestAddress);
+                        
+                        // Direkt ins Input-Feld schreiben (Live-Update)
+                        const searchInput = document.getElementById('place-autocomplete');
+                        if (searchInput) {
+                            // Immer überschreiben - User verschiebt Polygon und will neue Adresse sehen
+                            searchInput.value = shortAddress;
+                        }
+                    }
+                }
+            });
+        }
+    }, 1500); // 1.5 Sekunden throttling für bessere User Experience
+}
+
+// Beste Adresse aus Reverse Geocoding Ergebnissen finden (keine Plus Codes!)
+function findBestAddress(results) {
+    if (!results || results.length === 0) return null;
+    
+    // Prioritätsliste für die beste Adresse:
+    // 1. Adresse mit deutscher PLZ (5 Ziffern)
+    // 2. Adresse ohne Plus Code (keine Buchstaben+Zahlen Kombination am Anfang)
+    // 3. Längste Adresse (meist detaillierter)
+    
+    for (let result of results) {
+        const address = result.formatted_address;
+        
+        // Plus Codes vermeiden (Format: "F6R7+QH" am Anfang)
+        if (address.match(/^[A-Z0-9]{4}\+[A-Z0-9]{2}/)) {
+            continue; // Plus Code überspringen
+        }
+        
+        // Deutsche PLZ bevorzugen
+        if (address.match(/\b\d{5}\s+[A-Za-zäöüÄÖÜß]/)) {
+            return address;
+        }
+    }
+    
+    // Fallback: Erste Adresse ohne Plus Code
+    for (let result of results) {
+        const address = result.formatted_address;
+        if (!address.match(/^[A-Z0-9]{4}\+[A-Z0-9]{2}/)) {
+            return address;
+        }
+    }
+    
+    // Notfall-Fallback: Erste verfügbare Adresse
+    return results[0].formatted_address;
+}
+
+// Hilfsfunktion: Kurze Adresse extrahieren (PLZ + Ort)
+function extractShortAddress(fullAddress) {
+    // Deutsche Adressen: "Straße, PLZ Ort, Deutschland" -> "PLZ Ort"
+    // oder "PLZ Ort, Deutschland" -> "PLZ Ort"
+    
+    // Zuerst nach deutscher PLZ + Ort suchen
+    const plzMatch = fullAddress.match(/(\d{5}\s+[^,]+)/);
+    if (plzMatch) {
+        return plzMatch[1].trim();
+    }
+    
+    // Fallback: Ersten Teil vor Komma nehmen (ohne Plus Codes)
+    const parts = fullAddress.split(',');
+    for (let part of parts) {
+        const trimmed = part.trim();
+        // Plus Codes überspringen
+        if (!trimmed.match(/^[A-Z0-9]{4}\+[A-Z0-9]{2}/)) {
+            return trimmed;
+        }
+    }
+    
+    // Notfall: Ersten Teil zurückgeben
+    return parts[0].trim();
 }
 
 function logCoordinates() {
-    if (polygon) {
+    if (CaeliAreaCheck.polygon) {
         // Verhindere doppelte Submissions
-        if (formSubmissionInProgress) {
+        if (CaeliAreaCheck.state.formSubmissionInProgress) {
             return;
         }
-        formSubmissionInProgress = true;
+        CaeliAreaCheck.state.formSubmissionInProgress = true;
         
         // Alle Popovers schließen vor dem Absenden
         hideAllPopovers();
@@ -429,7 +576,7 @@ function logCoordinates() {
         // Loading Overlay anzeigen
         showLoadingOverlay();
         
-        const coordinates = polygon.getPath().getArray().map(latLng => [latLng.lng(), latLng.lat()]);
+        const coordinates = CaeliAreaCheck.polygon.getPath().getArray().map(latLng => [latLng.lng(), latLng.lat()]);
         coordinates.push(coordinates[0]); // Polygon schließen
         const geometry = {
             geometry: {
@@ -439,17 +586,62 @@ function logCoordinates() {
         };
         
         // Geometrie in das versteckte Form-Feld schreiben
-        document.getElementById('geometry-field').value = JSON.stringify(geometry);
+        Utils.safeElementAction('#geometry-field', el => el.value = JSON.stringify(geometry));
         
-        // Suchfeld-Wert ins versteckte Adress-Feld schreiben
-        const searchInput = document.getElementById('place-autocomplete');
-        const hiddenAddress = document.getElementById('searched-address-field');
-        if (searchInput && hiddenAddress) {
-            hiddenAddress.value = searchInput.value;
+        // Polygon-Zentrum für Reverse Geocoding ermitteln
+        const bounds = new google.maps.LatLngBounds();
+        CaeliAreaCheck.polygon.getPath().forEach(function(latLng) {
+            bounds.extend(latLng);
+        });
+        const polygonCenter = bounds.getCenter();
+        
+        // Reverse Geocoding für das Polygon-Zentrum
+        if (CaeliAreaCheck.geocoder) {
+            CaeliAreaCheck.geocoder.geocode({
+                location: polygonCenter
+            }, function(results, status) {
+                if (status === 'OK' && results && results.length > 0) {
+                    // Beste verfügbare Adresse finden (keine Plus Codes!)
+                    const bestAddress = findBestAddress(results);
+                    
+                    if (bestAddress) {
+                        // Adresse ins versteckte Feld schreiben (überschreibt manuell eingegebene PLZ)
+                        const hiddenAddress = document.getElementById('searched-address-field');
+                        if (hiddenAddress) {
+                            hiddenAddress.value = bestAddress;
+                        }
+                    } else {
+                        // Fallback: ursprünglich eingegebene PLZ verwenden
+                        const searchInput = document.getElementById('place-autocomplete');
+                        const hiddenAddress = document.getElementById('searched-address-field');
+                        if (searchInput && hiddenAddress) {
+                            hiddenAddress.value = searchInput.value;
+                        }
+                    }
+                } else {
+                    // Fallback: ursprünglich eingegebene PLZ verwenden
+                    const searchInput = document.getElementById('place-autocomplete');
+                    const hiddenAddress = document.getElementById('searched-address-field');
+                    if (searchInput && hiddenAddress) {
+                        hiddenAddress.value = searchInput.value;
+                    }
+                    console.warn('Reverse Geocoding fehlgeschlagen:', status);
+                }
+                
+                // Loading Animation starten (verzögert, damit Geocoding abgeschlossen ist)
+                startLoadingAnimation();
+            });
+        } else {
+            // Fallback ohne Reverse Geocoding: ursprünglich eingegebene PLZ verwenden
+            const searchInput = document.getElementById('place-autocomplete');
+            const hiddenAddress = document.getElementById('searched-address-field');
+            if (searchInput && hiddenAddress) {
+                hiddenAddress.value = searchInput.value;
+            }
+            
+            // Loading Animation starten
+            startLoadingAnimation();
         }
-        
-        // Loading Animation starten
-        startLoadingAnimation();
     } else {
         const translations = window.CaeliAreaCheckTranslations || {};
         showDynamicAlert('select_area_first', translations);
@@ -470,8 +662,8 @@ function searchAddressFallback(address) {
 }
 
 function updateGeometryField() {
-    if (polygon) {
-        const coordinates = polygon.getPath().getArray().map(latLng => [latLng.lng(), latLng.lat()]);
+    if (CaeliAreaCheck.polygon) {
+        const coordinates = CaeliAreaCheck.polygon.getPath().getArray().map(latLng => [latLng.lng(), latLng.lat()]);
         coordinates.push(coordinates[0]);
         const geometry = {
             geometry: {
@@ -479,46 +671,46 @@ function updateGeometryField() {
                 type: "Polygon"
             }
         };
-        document.getElementById('geometry-field').value = JSON.stringify(geometry);
+        Utils.safeElementAction('#geometry-field', el => el.value = JSON.stringify(geometry));
     } else {
-        document.getElementById('geometry-field').value = '';
+        Utils.safeElementAction('#geometry-field', el => el.value = '');
     }
 }
 
 // Hilfsfunktionen für Polygon-Mitbewegen
 function updatePolygonOffset() {
-    if (!polygon || !map) return;
+    if (!CaeliAreaCheck.polygon || !CaeliAreaCheck.map) return;
     
     // Aktuelles Polygon-Center berechnen
     const bounds = new google.maps.LatLngBounds();
-    polygon.getPath().forEach(function(latLng) {
+    CaeliAreaCheck.polygon.getPath().forEach(function(latLng) {
         bounds.extend(latLng);
     });
     const polygonCenter = bounds.getCenter();
-    const mapCenter = map.getCenter();
+    const mapCenter = CaeliAreaCheck.map.getCenter();
     
     // Relativen Offset speichern
-    polygonRelativeOffset = {
+    CaeliAreaCheck.state.polygonRelativeOffset = {
         lat: polygonCenter.lat() - mapCenter.lat(),
         lng: polygonCenter.lng() - mapCenter.lng()
     };
 }
 
 function movePolygonWithMap() {
-    if (!polygon || !polygonRelativeOffset || !map) return;
+    if (!CaeliAreaCheck.polygon || !CaeliAreaCheck.state.polygonRelativeOffset || !CaeliAreaCheck.map) return;
     
-    // Flag setzen, um Event-Listener während dem Move zu deaktivieren
-    isPolygonBeingEdited = true;
+    // Flag setzen, um rekursive Updates zu vermeiden
+    CaeliAreaCheck.state.isPolygonBeingEdited = true;
     
-    const mapCenter = map.getCenter();
+    const mapCenter = CaeliAreaCheck.map.getCenter();
     const targetCenter = {
-        lat: mapCenter.lat() + polygonRelativeOffset.lat,
-        lng: mapCenter.lng() + polygonRelativeOffset.lng
+        lat: mapCenter.lat() + CaeliAreaCheck.state.polygonRelativeOffset.lat,
+        lng: mapCenter.lng() + CaeliAreaCheck.state.polygonRelativeOffset.lng
     };
     
     // Aktuelles Polygon-Center berechnen
     const bounds = new google.maps.LatLngBounds();
-    polygon.getPath().forEach(function(latLng) {
+    CaeliAreaCheck.polygon.getPath().forEach(function(latLng) {
         bounds.extend(latLng);
     });
     const currentCenter = bounds.getCenter();
@@ -528,7 +720,7 @@ function movePolygonWithMap() {
     const deltaLng = targetCenter.lng - currentCenter.lng();
     
     // Alle Polygon-Punkte verschieben
-    const path = polygon.getPath();
+    const path = CaeliAreaCheck.polygon.getPath();
     const newPath = [];
     for (let i = 0; i < path.getLength(); i++) {
         const point = path.getAt(i);
@@ -538,25 +730,24 @@ function movePolygonWithMap() {
         ));
     }
     
-    polygon.setPath(newPath);
+    CaeliAreaCheck.polygon.setPath(newPath);
     
-    // Nur EINMAL Area-Label und Geometry-Field updaten
+    // Area-Label und Geometry-Field nach Karten-Move updaten
     updateAreaLabel();
     updateGeometryField();
     
-    // Flag zurücksetzen - kurz verzögert, damit set_at Events nicht mehr reagieren
+    // Flag zurücksetzen - verzögert für saubere Event-Behandlung
     setTimeout(() => { 
-        isPolygonBeingEdited = false; 
-    }, 100);
+        CaeliAreaCheck.state.isPolygonBeingEdited = false; 
+    }, CONFIG.DELAYS.MAP_MOVE_RESET);
 }
 
-let formSubmissionInProgress = false;
-
+// Form-Handler
 const parkForm = document.getElementById('park-form');
 if (parkForm) {
     parkForm.addEventListener('submit', function(e) {
         // Verhindere doppelte Submissions
-        if (formSubmissionInProgress) {
+        if (CaeliAreaCheck.state.formSubmissionInProgress) {
             e.preventDefault();
             return;
         }
@@ -576,8 +767,6 @@ if (parkForm) {
 }
 
 // Consent Management für Google Maps und HubSpot
-let consentCheckInitialized = false;
-let mapInitialized = false;
 
 function checkConsent() {
     let hasGoogleMapsConsent = false;
@@ -628,11 +817,11 @@ function activateConsent() {
 }
 
 function loadGoogleMaps() {
-    if (mapInitialized) return;
+    if (CaeliAreaCheck.state.mapInitialized) return;
 
     if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
         initMap();
-        mapInitialized = true;
+        CaeliAreaCheck.state.mapInitialized = true;
         // Tutorial nach Map-Initialisierung starten
         setTimeout(initTutorial, 1000);
     } else {
@@ -657,8 +846,8 @@ function loadGoogleMaps() {
 }
 
 function initConsentHandling() {
-    if (consentCheckInitialized) return;
-    consentCheckInitialized = true;
+    if (CaeliAreaCheck.state.consentCheckInitialized) return;
+    CaeliAreaCheck.state.consentCheckInitialized = true;
 
     const consentOverlay = document.getElementById('consent-overlay');
     const activateBtn = document.getElementById('activate-consent-btn');
@@ -719,12 +908,12 @@ window.addEventListener('load', function() {
 
 function initTutorial() {
     // Prüfen ob Tutorial bereits abgeschlossen
-    if (getCookie(TUTORIAL_COOKIE)) {
+    if (getCookie(CONFIG.TUTORIAL_COOKIE)) {
         return;
     }
 
-    tutorialActive = true;
-    currentTutorialStep = 0;
+    CaeliAreaCheck.state.tutorialActive = true;
+    CaeliAreaCheck.state.currentTutorialStep = 0;
     showTutorialStep(0);
 }
 
@@ -736,10 +925,12 @@ function showTutorialStep(stepIndex) {
     }
 
     const step = tutorialSteps[stepIndex];
-    const element = document.querySelector(step.element);
+    const isMobile = Utils.isMobile();
+    const targetElement = isMobile && step.elementMobile ? step.elementMobile : step.element;
+    const element = document.querySelector(targetElement);
 
     if (!element) {
-        console.warn(`Tutorial element ${step.element} not found`);
+        console.warn(`Tutorial element ${targetElement} not found`);
         return;
     }
 
@@ -747,7 +938,6 @@ function showTutorialStep(stepIndex) {
     hideAllPopovers();
 
     // Responsive Placement
-    const isMobile = window.innerWidth <= 768;
     const placement = isMobile ? step.placementMobile : step.placement;
 
     // Popover Content basierend auf Template erstellen
@@ -841,23 +1031,23 @@ function nextTutorialStep() {
     // Aktuelles Popover schließen
     hideAllPopovers();
 
-    currentTutorialStep++;
+    CaeliAreaCheck.state.currentTutorialStep++;
     const tutorialSteps = getTutorialSteps();
 
-    if (currentTutorialStep >= tutorialSteps.length) {
+    if (CaeliAreaCheck.state.currentTutorialStep >= tutorialSteps.length) {
         completeTutorial();
     } else {
-        showTutorialStep(currentTutorialStep);
+        showTutorialStep(CaeliAreaCheck.state.currentTutorialStep);
     }
 }
 
 function previousTutorialStep() {
-    if (currentTutorialStep > 0) {
+    if (CaeliAreaCheck.state.currentTutorialStep > 0) {
         // Aktuelles Popover schließen
         hideAllPopovers();
 
-        currentTutorialStep--;
-        showTutorialStep(currentTutorialStep);
+        CaeliAreaCheck.state.currentTutorialStep--;
+        showTutorialStep(CaeliAreaCheck.state.currentTutorialStep);
     }
 }
 
@@ -874,8 +1064,8 @@ function hideAllPopovers() {
 
 function completeTutorial() {
     hideAllPopovers();
-    tutorialActive = false;
-    setCookie(TUTORIAL_COOKIE, 'true', 365); // 1 Jahr gültig
+    CaeliAreaCheck.state.tutorialActive = false;
+    setCookie(CONFIG.TUTORIAL_COOKIE, 'true', 365); // 1 Jahr gültig
 }
 
 function setCookie(name, value, days) {
@@ -897,35 +1087,35 @@ function getCookie(name) {
 
 // Tutorial Event Handlers
 function handleInputFocus() {
-    if (tutorialActive && currentTutorialStep === 0) {
+    if (CaeliAreaCheck.state.tutorialActive && CaeliAreaCheck.state.currentTutorialStep === 0) {
         // Vom Willkommen-Schritt zum PLZ-Schritt wechseln
         hideAllPopovers();
         setTimeout(() => {
             showTutorialStep(1);
-            currentTutorialStep = 1;
-        }, 300);
+            CaeliAreaCheck.state.currentTutorialStep = 1;
+        }, CONFIG.DELAYS.TUTORIAL_TRANSITION);
     }
 }
 
 function handlePlaceSelected() {
-    if (tutorialActive && currentTutorialStep === 1) {
+    if (CaeliAreaCheck.state.tutorialActive && CaeliAreaCheck.state.currentTutorialStep === 1) {
         // Vom PLZ-Schritt zum Polygon-Schritt wechseln
         hideAllPopovers();
         setTimeout(() => {
             showTutorialStep(2);
-            currentTutorialStep = 2;
-        }, 1000);
+            CaeliAreaCheck.state.currentTutorialStep = 2;
+        }, CONFIG.DELAYS.PLACE_SELECTED);
     }
 }
 
 function handlePolygonCreated() {
-    if (tutorialActive && currentTutorialStep === 2) {
+    if (CaeliAreaCheck.state.tutorialActive && CaeliAreaCheck.state.currentTutorialStep === 2) {
         // Vom Polygon-Schritt zum Bestätigen-Schritt wechseln
         hideAllPopovers();
         setTimeout(() => {
             showTutorialStep(3);
-            currentTutorialStep = 3;
-        }, 500);
+            CaeliAreaCheck.state.currentTutorialStep = 3;
+        }, CONFIG.DELAYS.POLYGON_CREATED);
     }
 }
 

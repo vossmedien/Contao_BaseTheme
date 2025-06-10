@@ -159,6 +159,14 @@ class AreaCheckResultController extends AbstractFrontendModuleController
             $template->rating = null;
         }
         
+        // Contao Sprachdatei laden - wie im Map-Controller
+        System::loadLanguageFile('default');
+        
+        // Übersetzungen aus Contao-Sprachdateien verwenden
+        $translations = $GLOBALS['TL_LANG']['caeli_area_check'] ?? [];
+        
+        $template->translations = $translations;
+        
         return $template->getResponse();
     }
 

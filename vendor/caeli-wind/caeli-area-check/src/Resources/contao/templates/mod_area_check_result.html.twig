@@ -1,22 +1,26 @@
 <div class="content--element ">
+    <!-- Übersetzungen für Template bereitstellen -->
+    <script>
+        window.CaeliAreaCheckTranslations = {{ translations|json_encode|raw }};
+    </script>
     <div class="mod_caeli_area_check container-wide">
 
 
         {#
-            <details>
-            <summary>Rohdaten anzeigen</summary>
-            <pre>{{ rating|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-        </details>
+        <details>
+        <summary>Rohdaten anzeigen</summary>
+        <pre>{{ rating|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+    </details>
         #}
 
 
         {% if error and not rating %}
             <div class="alert alert-danger">
-                <h4>Fehler bei der Auswertung</h4>
+                <h4>{{ translations.result.error_states.check_failed.title }}</h4>
                 <p>{{ error }}</p>
                 {% if mapPage %}
                     <div class="mt-3">
-                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">Neue Prüfung starten</a>
+                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">{{ translations.result.error_states.check_failed.button }}</a>
                     </div>
                 {% endif %}
             </div>
@@ -24,18 +28,18 @@
             {# Rating-Daten vorhanden - zeige detaillierte Auswertung (auch für fehlgeschlagene Parks) #}
             {# WICHTIG: Berücksichtige den tatsächlichen Status UND alle drei Faktoren müssen grün/gelb sein #}
             {# Fehlende Ratings gelten als "rot" und machen die Fläche nicht geeignet #}
-            {% set isSuitable = isSuccess and 
-                               (rating.rating_cutdensity is defined and rating.rating_cutdensity in ['green', 'yellow']) and 
-                               (rating.rating_restrictions is defined and rating.rating_restrictions in ['green', 'yellow']) and 
-                               (rating.rating_grid_connection is defined and rating.rating_grid_connection in ['green', 'yellow']) %}
-            
+            {% set isSuitable = isSuccess and
+                (rating.rating_cutdensity is defined and rating.rating_cutdensity in ['green', 'yellow']) and
+                (rating.rating_restrictions is defined and rating.rating_restrictions in ['green', 'yellow']) and
+                (rating.rating_grid_connection is defined and rating.rating_grid_connection in ['green', 'yellow']) %}
+
             {% if isSuitable %}
                 <div class="row">
                     <div class="col-md-7">
                         <div class="ce--headline hl-h2 mb-0" data-animation="animate__fadeIn">
                             <h2>
-                                <b>Herzlichen Glückwunsch:</b><br>
-                                Ihr Grundstück weist gute Bedingungen für Windkraft auf.
+                                <b class="d-block">{{ translations.result.success.title_bold }}</b>
+                                {{ translations.result.success.title_text }}
                             </h2>
                         </div>
                     </div>
@@ -45,8 +49,8 @@
                     <div class="col-md-7">
                         <div class="ce--headline hl-h2 mb-0" data-animation="animate__fadeIn">
                             <h2>
-                                <b>Flächencheck-Ergebnis:</b><br>
-                                Ihre Fläche ist für Windkraft nicht optimal geeignet.
+                                <b>{{ translations.result.unsuitable.title_bold }}</b><br>
+                                {{ translations.result.unsuitable.title_text }}
                             </h2>
                         </div>
                     </div>
@@ -54,93 +58,93 @@
             {% endif %}
 
             <div class="content--element my-gap">
-                <div class="row">
+                <div class="row align-items-center">
                     <div class="col-md-5">
                         <div class="result-container pe-lg-5">
                             <ul class="list-check">
                                 <li data-animation="animate__fadeInUp">
-                                    <b class="h3 mb-2 fw-normal">Windgegebenheiten</b>
-                                    <span>Die Windleistung im angegebenen Gebiet</span>
+                                    <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.wind_conditions.title }}</b>
+                                    <span>{{ translations.result.criteria.wind_conditions.description }}</span>
                                     {% if rating.rating_cutdensity is defined %}
                                         <span class="rating-{{ rating.rating_cutdensity }}">
                                             {% if rating.rating_cutdensity == 'green' %}
-                                                ✓ Gut geeignet
+                                                ✓ {{ translations.result.criteria.wind_conditions.rating.green }}
                                             {% elseif rating.rating_cutdensity == 'yellow' %}
-                                                ⚠ Bedingt geeignet
+                                                ⚠ {{ translations.result.criteria.wind_conditions.rating.yellow }}
                                             {% else %}
-                                                ✗ Nicht geeignet
+                                                ✗ {{ translations.result.criteria.wind_conditions.rating.red }}
                                             {% endif %}
                                         </span>
                                     {% else %}
-                                        <span class="rating-red">✗ Nicht geeignet</span>
+                                        <span class="rating-red">✗ {{ translations.result.criteria.wind_conditions.rating.red }}</span>
                                     {% endif %}
                                 </li>
 
                                 <li class="my-3" data-animation="animate__fadeInUp">
-                                    <b class="h3 mb-2 fw-normal">Restriktionen</b>
-                                    <span>Prüfung raumordnerischer Restriktionen, auf denen Windkraftnutzung untersagt ist.</span>
+                                    <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.restrictions.title }}</b>
+                                    <span>{{ translations.result.criteria.restrictions.description }}</span>
                                     {% if rating.rating_restrictions is defined %}
                                         <span class="rating-{{ rating.rating_restrictions }}">
                                             {% if rating.rating_restrictions == 'green' %}
-                                                ✓ Keine Restriktionen
+                                                ✓ {{ translations.result.criteria.restrictions.rating.green }}
                                             {% elseif rating.rating_restrictions == 'yellow' %}
-                                                ⚠ Eingeschränkt möglich
+                                                ⚠ {{ translations.result.criteria.restrictions.rating.yellow }}
                                             {% else %}
-                                                ✗ Restriktionen vorhanden
+                                                ✗ {{ translations.result.criteria.restrictions.rating.red }}
                                             {% endif %}
                                         </span>
                                     {% else %}
                                         {# Fehlende rating_restrictions = immer rot (Restriktionen vorhanden) #}
-                                        <span class="rating-red">✗ Restriktionen vorhanden</span>
+                                        <span class="rating-red">✗ {{ translations.result.criteria.restrictions.rating.red }}</span>
                                     {% endif %}
                                 </li>
 
                                 <li data-animation="animate__fadeInUp">
-                                    <b class="h3 mb-2 fw-normal">Netzanschluss</b>
-                                    <span>Erreichbarkeit der Grundstücksfläche zur nächsten Hochspannung.</span>
+                                    <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.grid_connection.title }}</b>
+                                    <span>{{ translations.result.criteria.grid_connection.description }}</span>
                                     {% if rating.rating_grid_connection is defined %}
                                         <span class="rating-{{ rating.rating_grid_connection }}">
                                             {% if rating.rating_grid_connection == 'green' %}
-                                                ✓ Gut erreichbar
+                                                ✓ {{ translations.result.criteria.grid_connection.rating.green }}
                                             {% elseif rating.rating_grid_connection == 'yellow' %}
-                                                ⚠ Bedingt erreichbar
+                                                ⚠ {{ translations.result.criteria.grid_connection.rating.yellow }}
                                             {% else %}
-                                                ✗ Nicht geeignet
+                                                ✗ {{ translations.result.criteria.grid_connection.rating.red }}
                                             {% endif %}
                                         </span>
                                     {% else %}
-                                        <span class="rating-red">✗ Nicht geeignet</span>
+                                        <span class="rating-red">✗ {{ translations.result.criteria.grid_connection.rating.red }}</span>
                                     {% endif %}
                                 </li>
                             </ul>
-                            
+
                             {% if not isSuitable %}
                                 <div class="alert alert-warning mt-4">
-                                    <h5>Fazit:</h5>
-                                    <p>Ihre Fläche erfüllt nicht alle Kriterien für ein optimales Windenergieprojekt. 
-                                    {% if isSuccess and rating.rating_cutdensity is defined and rating.rating_cutdensity in ['green', 'yellow'] %}
-                                        Die Windverhältnisse sind jedoch vielversprechend.
-                                    {% endif %}
-                                    Kontaktieren Sie uns für eine individuelle Beratung.</p>
+                                    <h5>{{ translations.result.conclusion.title }}</h5>
+                                    <p>{{ translations.result.conclusion.unsuitable_text }}
+                                        {% if isSuccess and rating.rating_cutdensity is defined and rating.rating_cutdensity in ['green', 'yellow'] %}
+                                            {{ translations.result.conclusion.good_wind_text }}
+                                        {% endif %}
+                                        {{ translations.result.conclusion.contact_text }}</p>
                                 </div>
                             {% endif %}
                         </div>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-7 mt-4 mt-md-0">
                         <div class="form-container p-5 bg-secondary">
                             <div class="mb-3">
                                 <div class="row">
                                     <div class="col-md-8" data-animation="animate__fadeIn">
                                         <h3 class="mb-0">
                                             {% if isSuitable %}
-                                                Jetzt Ihre Windkraft-Chance prüfen – kostenlos und unverbindlich:
+                                                {{ translations.result.form_section.suitable_title }}
                                             {% else %}
-                                                Interesse an einer detaillierten Beratung?
+                                                {{ translations.result.form_section.unsuitable_title }}
                                             {% endif %}
                                         </h3>
                                     </div>
                                     <div class="col-md-4" data-animation="animate__fadeInDown">
-                                        <img style="max-width: 230px; margin-top: -90%;" src="/files/base/layout/img/flaechencheck-pdf-badge-de.png">
+                                        <img class="pdf-preview" src="/files/base/layout/img/flaechencheck-pdf-badge-de.png">
                                     </div>
                                 </div>
                             </div>
@@ -169,14 +173,16 @@
             <div class="container my-5">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="text-center mb-4">Ihr Flächencheck-Ergebnis</h2>
+                        <h2 class="text-center mb-4">{{ translations.result.error_states.area_unsuitable.title }}</h2>
 
                         <div class="alert alert-warning">
-                            <h4><i class="fas fa-exclamation-triangle"></i> Fläche nicht geeignet</h4>
-                            <p>Leider ist Ihre gewählte Fläche für ein Windenergieprojekt nicht geeignet.</p>
+                            <h4>
+                                <i class="fas fa-exclamation-triangle"></i> {{ translations.result.error_states.area_unsuitable.warning_title }}
+                            </h4>
+                            <p>{{ translations.result.error_states.area_unsuitable.warning_text }}</p>
                             {% if errorMessage %}
                                 <div class="mt-3">
-                                    <strong>Grund:</strong> {{ errorMessage }}
+                                    <strong>{{ translations.result.error_states.area_unsuitable.reason_label }}</strong> {{ errorMessage }}
                                 </div>
                             {% endif %}
                         </div>
@@ -184,16 +190,16 @@
                         {% if checkData %}
                             <div class="card mt-4">
                                 <div class="card-header bg-secondary text-white">
-                                    <h5 class="mb-0">Geprüfte Fläche</h5>
+                                    <h5 class="mb-0">{{ translations.result.error_states.checked_area.title }}</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <strong>Geprüfte Adresse:</strong><br>
-                                            {{ checkData.searched_address|default('Nicht verfügbar') }}
+                                            <strong>{{ translations.result.error_states.checked_area.address_label }}</strong><br>
+                                            {{ checkData.searched_address|default(translations.result.error_states.checked_area.not_available) }}
                                         </div>
                                         <div class="col-md-6">
-                                            <strong>Prüfung durchgeführt:</strong><br>
+                                            <strong>{{ translations.result.error_states.checked_area.timestamp_label }}</strong><br>
                                             {{ checkData.tstamp|date('d.m.Y H:i') }} Uhr
                                         </div>
                                     </div>
@@ -202,11 +208,11 @@
                         {% endif %}
 
                         <div class="alert alert-info mt-4">
-                            <h5>Was können Sie tun?</h5>
+                            <h5>{{ translations.result.error_states.what_to_do.title }}</h5>
                             <ul class="mb-0">
-                                <li>Probieren Sie eine andere Fläche aus</li>
-                                <li>Kontaktieren Sie uns für eine individuelle Beratung</li>
-                                <li>Informieren Sie sich über alternative Standorte</li>
+                                <li>{{ translations.result.error_states.what_to_do.try_other_area }}</li>
+                                <li>{{ translations.result.error_states.what_to_do.contact_advice }}</li>
+                                <li>{{ translations.result.error_states.what_to_do.alternative_locations }}</li>
                             </ul>
                         </div>
 
@@ -220,77 +226,70 @@
 
                         <div class="text-center mt-4">
                             {% if mapPage %}
-                                <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary btn-lg">Neue Fläche
-                                    prüfen</a>
+                                <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary btn-lg">{{ translations.result.buttons.new_check }}</a>
                             {% else %}
-                                <a href="/flaechencheck" class="btn btn-primary btn-lg">Neue Fläche prüfen</a>
+                                <a href="/flaechencheck" class="btn btn-primary btn-lg">{{ translations.result.buttons.new_check }}</a>
                             {% endif %}
-                            <a href="/kontakt" class="btn btn-outline-secondary btn-lg ms-2">Beratung anfragen</a>
+                            <a href="/kontakt" class="btn btn-outline-secondary btn-lg ms-2">{{ translations.result.buttons.request_consultation }}</a>
                         </div>
                     </div>
                 </div>
             </div>
         {% elseif checkid %}
             <div class="alert alert-danger">
-                <h4>Fehler</h4>
-                <p>Der angeforderte Flächencheck konnte nicht gefunden werden.</p>
+                <h4>{{ translations.result.error_states.not_found.title }}</h4>
+                <p>{{ translations.result.error_states.not_found.message }}</p>
                 <div class="mt-3">
                     {% if mapPage %}
-                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">Neue Prüfung starten</a>
+                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">{{ translations.result.error_states.not_found.button }}</a>
                     {% else %}
-                        <a href="/flaechencheck" class="btn btn-primary">Neue Prüfung starten</a>
+                        <a href="/flaechencheck" class="btn btn-primary">{{ translations.result.error_states.not_found.button }}</a>
                     {% endif %}
                 </div>
             </div>
         {% else %}
             <div class="alert alert-info">
-                <h4>Willkommen zum Flächencheck</h4>
-                <p>Bitte führen Sie zunächst eine Flächenprüfung durch.</p>
+                <h4>{{ translations.result.error_states.welcome.title }}</h4>
+                <p>{{ translations.result.error_states.welcome.message }}</p>
                 <div class="text-center">
                     {% if mapPage %}
-                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">Flächencheck starten</a>
+                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">{{ translations.result.error_states.welcome.button }}</a>
                     {% else %}
-                        <a href="/flaechencheck" class="btn btn-primary">Flächencheck starten</a>
+                        <a href="/flaechencheck" class="btn btn-primary">{{ translations.result.error_states.welcome.button }}</a>
                     {% endif %}
                 </div>
             </div>
         {% endif %}
     </div>
-</div> 
+</div>
+
+
+{{ insert_tag('insert_node::20')|raw }}
 
 <style>
-.rating-green {
-    color: #00ca90;
-    font-weight: bold;
-}
 
-.rating-yellow {
-    color: #EB7500;
-    font-weight: bold;
-}
+    .pdf-preview {
+        max-width: 230px;
+        margin: 1rem auto 0 auto;
 
-.rating-red {
-    color: #D80027;
-    font-weight: bold;
-}
+        @media (min-width: 768px) {
+            margin-top: -90%;
+        }
+    }
 
-.list-check li {
-    position: relative;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e0e0e0;
-    margin-bottom: 1rem;
-}
+    span[class*="rating-"]{
+        display: block;
+    }
 
-.list-check li:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
+    .rating-green {
+        color: #00ca90;
+    }
 
-.list-check li .rating-green,
-.list-check li .rating-yellow,
-.list-check li .rating-red {
-    display: block;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-}
+    .rating-yellow {
+        color: #EB7500;
+    }
+
+    .rating-red {
+        color: #D80027;
+    }
 </style> 

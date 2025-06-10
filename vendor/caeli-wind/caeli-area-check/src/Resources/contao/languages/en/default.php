@@ -119,4 +119,93 @@ $GLOBALS['TL_LANG']['caeli_area_check']['interface'] = [
         'strong' => 'Note:',
         'warning' => 'Warning:',
     ],
+];
+
+// Result page translations
+$GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
+    'success' => [
+        'title_bold' => 'Congratulations:',
+        'title_text' => 'Your property shows good conditions for wind power.',
+    ],
+    'unsuitable' => [
+        'title_bold' => 'Area Check Result:',
+        'title_text' => 'Your area is not optimally suited for wind power.',
+    ],
+    'criteria' => [
+        'wind_conditions' => [
+            'title' => 'Wind Conditions',
+            'description' => 'Wind power performance in the specified area',
+            'rating' => [
+                'green' => 'Well suited',
+                'yellow' => 'Conditionally suitable',
+                'red' => 'Not suitable',
+            ],
+        ],
+        'restrictions' => [
+            'title' => 'Restrictions',
+            'description' => 'Review of spatial planning restrictions where wind energy use is prohibited.',
+            'rating' => [
+                'green' => 'No restrictions',
+                'yellow' => 'Limited possible',
+                'red' => 'Restrictions present',
+            ],
+        ],
+        'grid_connection' => [
+            'title' => 'Grid Connection',
+            'description' => 'Accessibility of the property area to the nearest high voltage.',
+            'rating' => [
+                'green' => 'Well accessible',
+                'yellow' => 'Conditionally accessible',
+                'red' => 'Not suitable',
+            ],
+        ],
+    ],
+    'conclusion' => [
+        'title' => 'Conclusion:',
+        'unsuitable_text' => 'Your area does not meet all criteria for an optimal wind energy project.',
+        'good_wind_text' => 'However, wind conditions are promising.',
+        'contact_text' => 'Contact us for individual consultation.',
+    ],
+    'form_section' => [
+        'suitable_title' => 'Check your wind power opportunity now – free and non-binding:',
+        'unsuitable_title' => 'Interested in detailed consultation?',
+    ],
+    'error_states' => [
+        'check_failed' => [
+            'title' => 'Evaluation Error',
+            'button' => 'Start New Check',
+        ],
+        'area_unsuitable' => [
+            'title' => 'Your Area Check Result',
+            'warning_title' => 'Area not suitable',
+            'warning_text' => 'Unfortunately, your selected area is not suitable for a wind energy project.',
+            'reason_label' => 'Reason:',
+        ],
+        'checked_area' => [
+            'title' => 'Checked Area',
+            'address_label' => 'Checked Address:',
+            'timestamp_label' => 'Check performed:',
+            'not_available' => 'Not available',
+        ],
+        'what_to_do' => [
+            'title' => 'What can you do?',
+            'try_other_area' => 'Try another area',
+            'contact_advice' => 'Contact us for individual consultation',
+            'alternative_locations' => 'Learn about alternative locations',
+        ],
+        'not_found' => [
+            'title' => 'Error',
+            'message' => 'The requested area check could not be found.',
+            'button' => 'Start New Check',
+        ],
+        'welcome' => [
+            'title' => 'Welcome to Area Check',
+            'message' => 'Please first perform an area check.',
+            'button' => 'Start Area Check',
+        ],
+    ],
+    'buttons' => [
+        'new_check' => 'Check New Area',
+        'request_consultation' => 'Request Consultation',
+    ],
 ]; 

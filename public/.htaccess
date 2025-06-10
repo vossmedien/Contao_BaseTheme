@@ -1,3 +1,6 @@
+# In .htaccess ganz oben
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://b.delivery.consentmanager.net https://cdn.consentmanager.net https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://cdn.consentmanager.net https://b.delivery.consentmanager.net https://maps.googleapis.com https://maps.gstatic.com https://khms0.googleapis.com https://khms1.googleapis.com https://streetviewpixels-pa.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://b.delivery.consentmanager.net https://maps.googleapis.com; frame-src 'self' https://cdn.consentmanager.net;"
+
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "DENY"

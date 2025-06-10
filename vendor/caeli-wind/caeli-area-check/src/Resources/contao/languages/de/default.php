@@ -119,4 +119,93 @@ $GLOBALS['TL_LANG']['caeli_area_check']['interface'] = [
         'strong' => 'Hinweis:',
         'warning' => 'Warnung:',
     ],
+];
+
+// Result page translations
+$GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
+    'success' => [
+        'title_bold' => 'Herzlichen Glückwunsch:',
+        'title_text' => 'Ihr Grundstück weist gute Bedingungen für Windkraft auf.',
+    ],
+    'unsuitable' => [
+        'title_bold' => 'Flächencheck-Ergebnis:',
+        'title_text' => 'Ihre Fläche ist für Windkraft nicht optimal geeignet.',
+    ],
+    'criteria' => [
+        'wind_conditions' => [
+            'title' => 'Windgegebenheiten',
+            'description' => 'Die Windleistung im angegebenen Gebiet',
+            'rating' => [
+                'green' => 'Gut geeignet',
+                'yellow' => 'Bedingt geeignet',
+                'red' => 'Nicht geeignet',
+            ],
+        ],
+        'restrictions' => [
+            'title' => 'Restriktionen',
+            'description' => 'Prüfung raumordnerischer Restriktionen, auf denen Windkraftnutzung untersagt ist.',
+            'rating' => [
+                'green' => 'Keine Restriktionen',
+                'yellow' => 'Eingeschränkt möglich',
+                'red' => 'Restriktionen vorhanden',
+            ],
+        ],
+        'grid_connection' => [
+            'title' => 'Netzanschluss',
+            'description' => 'Erreichbarkeit der Grundstücksfläche zur nächsten Hochspannung.',
+            'rating' => [
+                'green' => 'Gut erreichbar',
+                'yellow' => 'Bedingt erreichbar',
+                'red' => 'Nicht geeignet',
+            ],
+        ],
+    ],
+    'conclusion' => [
+        'title' => 'Fazit:',
+        'unsuitable_text' => 'Ihre Fläche erfüllt nicht alle Kriterien für ein optimales Windenergieprojekt.',
+        'good_wind_text' => 'Die Windverhältnisse sind jedoch vielversprechend.',
+        'contact_text' => 'Kontaktieren Sie uns für eine individuelle Beratung.',
+    ],
+    'form_section' => [
+        'suitable_title' => 'Jetzt Ihre Windkraft-Chance prüfen – kostenlos und unverbindlich:',
+        'unsuitable_title' => 'Interesse an einer detaillierten Beratung?',
+    ],
+    'error_states' => [
+        'check_failed' => [
+            'title' => 'Fehler bei der Auswertung',
+            'button' => 'Neue Prüfung starten',
+        ],
+        'area_unsuitable' => [
+            'title' => 'Ihr Flächencheck-Ergebnis',
+            'warning_title' => 'Fläche nicht geeignet',
+            'warning_text' => 'Leider ist Ihre gewählte Fläche für ein Windenergieprojekt nicht geeignet.',
+            'reason_label' => 'Grund:',
+        ],
+        'checked_area' => [
+            'title' => 'Geprüfte Fläche',
+            'address_label' => 'Geprüfte Adresse:',
+            'timestamp_label' => 'Prüfung durchgeführt:',
+            'not_available' => 'Nicht verfügbar',
+        ],
+        'what_to_do' => [
+            'title' => 'Was können Sie tun?',
+            'try_other_area' => 'Probieren Sie eine andere Fläche aus',
+            'contact_advice' => 'Kontaktieren Sie uns für eine individuelle Beratung',
+            'alternative_locations' => 'Informieren Sie sich über alternative Standorte',
+        ],
+        'not_found' => [
+            'title' => 'Fehler',
+            'message' => 'Der angeforderte Flächencheck konnte nicht gefunden werden.',
+            'button' => 'Neue Prüfung starten',
+        ],
+        'welcome' => [
+            'title' => 'Willkommen zum Flächencheck',
+            'message' => 'Bitte führen Sie zunächst eine Flächenprüfung durch.',
+            'button' => 'Flächencheck starten',
+        ],
+    ],
+    'buttons' => [
+        'new_check' => 'Neue Fläche prüfen',
+        'request_consultation' => 'Beratung anfragen',
+    ],
 ]; 
