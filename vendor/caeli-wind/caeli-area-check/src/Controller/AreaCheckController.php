@@ -31,6 +31,7 @@ class AreaCheckController extends AbstractController
     #[Route('/flaechencheck/result', name: 'caeli_area_check_result', methods: ['GET', 'POST'])]
     public function result(Request $request): Response
     {
+        $startTime = microtime(true);
         $success = false;
         $error = null;
         $rating = null;
@@ -38,6 +39,8 @@ class AreaCheckController extends AbstractController
         $searchedAddress = null;
         
         if ($request->isMethod('POST')) {
+            error_log('[FLAECHENCHECK] Neuer Check gestartet um ' . date('Y-m-d H:i:s'));
+            
             try {
                 $parkid = $this->createPark($request->request->all());
                 $rating = $this->getPlotRating($parkid);
@@ -58,8 +61,14 @@ class AreaCheckController extends AbstractController
 
                 $this->connection->insert('tl_flaechencheck', $data);
                 $success = true;
+                
+                $duration = round((microtime(true) - $startTime), 2);
+                error_log('[FLAECHENCHECK] Check erfolgreich abgeschlossen in ' . $duration . 's, Park-ID: ' . $parkid);
+                
             } catch (\Throwable $e) {
                 $error = $e->getMessage();
+                $duration = round((microtime(true) - $startTime), 2);
+                error_log('[FLAECHENCHECK] Check fehlgeschlagen nach ' . $duration . 's: ' . $error);
                 
                 // Auch bei Fehlern versuchen wir ein Rating zu bekommen
                 // ähnlich wie im alten Modul
@@ -94,14 +103,20 @@ class AreaCheckController extends AbstractController
                             
                             $this->connection->insert('tl_flaechencheck', $data);
                             $success = true; // Setzen auf true, da wir Rating haben
+                            
+                            $finalDuration = round((microtime(true) - $startTime), 2);
+                            error_log('[FLAECHENCHECK] Fallback-Rating erstellt in ' . $finalDuration . 's');
                         }
                     }
                 } catch (\Throwable $ratingException) {
                     // Falls auch das Rating fehlschlägt, ursprünglichen Fehler beibehalten
-                    error_log('Rating-Fehler: ' . $ratingException->getMessage());
+                    error_log('[FLAECHENCHECK] Auch Fallback-Rating fehlgeschlagen: ' . $ratingException->getMessage());
                 }
             }
         }
+
+        $totalDuration = round((microtime(true) - $startTime), 2);
+        error_log('[FLAECHENCHECK] Request abgeschlossen in ' . $totalDuration . 's');
 
         return $this->render('@CaeliAreaCheck/result.html.twig', [
             'success' => $success,
@@ -124,6 +139,9 @@ class AreaCheckController extends AbstractController
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, $fields);
+        // Performance-Optimierung: Timeouts begrenzen
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 30); // Max 30 Sekunden Gesamtzeit
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 10); // Max 10 Sekunden Verbindungsaufbau
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json'
         ]);
@@ -150,6 +168,9 @@ class AreaCheckController extends AbstractController
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
         curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
+        // Performance-Optimierung: Timeouts begrenzen
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 30); // Max 30 Sekunden Gesamtzeit
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 10); // Max 10 Sekunden Verbindungsaufbau
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
             'X-CSRF-TOKEN: '.$api_session_id,
             'Content-Type: application/json'
@@ -177,6 +198,9 @@ class AreaCheckController extends AbstractController
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
+        // Performance-Optimierung: Timeouts begrenzen
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 30); // Max 30 Sekunden Gesamtzeit
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 10); // Max 10 Sekunden Verbindungsaufbau
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
             'X-CSRF-TOKEN: '.$api_session_id,
             'Content-Type: application/json'
@@ -206,6 +230,9 @@ class AreaCheckController extends AbstractController
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
         curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
+        // Performance-Optimierung: Timeouts begrenzen
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 30); // Max 30 Sekunden Gesamtzeit
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 10); // Max 10 Sekunden Verbindungsaufbau
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
             'X-CSRF-TOKEN: '.$api_session_id,
             'Content-Type: application/json'

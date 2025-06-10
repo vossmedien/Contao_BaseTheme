@@ -22,8 +22,14 @@ $GLOBALS['TL_LANG']['caeli_area_check']['loading']['texts'] = [
 
 // Form elements
 $GLOBALS['TL_LANG']['caeli_area_check']['form'] = [
-    'plz_placeholder' => 'Enter postal code',
-    'plz_alert' => 'Please enter a complete 5-digit postal code.',
+    'address_label' => 'Address or Location',
+    'address_placeholder' => 'Enter address or postal code',
+    'address_alert' => 'Please enter a complete address or postal code.',
+    'name_label' => 'Last Name',
+    'firstname_label' => 'First Name',
+    'phone_label' => 'Phone',
+    'email_label' => 'Email Address',
+    'submit_button' => 'Start Area Check',
     'button' => [
         'check_area' => 'Show result',
         'restart' => 'Restart',
@@ -64,9 +70,9 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
 
 // Consent overlay
 $GLOBALS['TL_LANG']['caeli_area_check']['consent']['overlay'] = [
-    'title' => 'Consent required',
-    'message' => 'For using this function we need your consent for Google Maps and HubSpot.',
-    'button' => 'Give consent',
+    'title' => 'Your area check starts soon!',
+    'message' => 'To show you the interactive map and process your request, we need your brief consent.',
+    'button' => 'Start now',
 ];
 
 // Error messages
@@ -100,6 +106,11 @@ $GLOBALS['TL_LANG']['caeli_area_check']['alerts'] = [
         'title' => 'Google Maps Error',
         'message' => 'Google Maps API could not be loaded!',
         'type' => 'danger',
+    ],
+    'invalid_postal_code' => [
+        'title' => 'Invalid Postal Code',
+        'message' => 'Please enter a valid address with postal code.',
+        'type' => 'warning',
     ],
 ];
 

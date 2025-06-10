@@ -10,10 +10,16 @@ const CONFIG = {
         TUTORIAL_TRANSITION: 300,
         PLACE_SELECTED: 1000,
         POLYGON_CREATED: 500,
-        MAP_MOVE_RESET: 100
+        MAP_MOVE_RESET: 100,
+        SEARCH: 500,
+        POLYGON_UPDATE: 100
     },
     TUTORIAL_COOKIE: 'caeli_area_check_tutorial_completed',
-    PLZ_REGEX: /\b\d{5}\b/
+    AREA_SIZES: {
+        MIN: 3,
+        MAX: 50,
+        DEFAULT: 3
+    }
 };
 
 // Hauptobjekt für alle App-Daten
@@ -43,32 +49,89 @@ const Utils = {
         return window.innerWidth <= CONFIG.MOBILE_BREAKPOINT;
     },
     
-    validatePLZ(input, address = '') {
-        const hasPLZ = CONFIG.PLZ_REGEX.test(input) || CONFIG.PLZ_REGEX.test(address);
+    getCountryFromPlace(place) {
+        if (!place || !place.address_components) return null;
+        
+        const countryComponent = place.address_components.find(
+            component => component.types.includes('country')
+        );
+        
+        return countryComponent ? countryComponent.short_name.toLowerCase() : null;
+    },
+
+    getPostalCodeRegex(countryCode) {
+        const regexMap = {
+            'de': /\b\d{5}\b/,                    // Deutschland: 12345
+            'at': /\b\d{4}\b/,                    // Österreich: 1234  
+            'ch': /\b\d{4}\b/,                    // Schweiz: 1234
+            'fr': /\b\d{5}\b/,                    // Frankreich: 12345
+            'nl': /\b\d{4}\s?[A-Z]{2}\b/,         // Niederlande: 1234 AB
+            'be': /\b\d{4}\b/,                    // Belgien: 1234
+            'dk': /\b\d{4}\b/,                    // Dänemark: 1234
+            'se': /\b\d{3}\s?\d{2}\b/,            // Schweden: 123 45
+            'no': /\b\d{4}\b/,                    // Norwegen: 1234
+            'fi': /\b\d{5}\b/,                    // Finnland: 12345
+            'it': /\b\d{5}\b/,                    // Italien: 12345
+            'es': /\b\d{5}\b/,                    // Spanien: 12345
+            'pt': /\b\d{4}-?\d{3}\b/,             // Portugal: 1234-123
+            'pl': /\b\d{2}-?\d{3}\b/,             // Polen: 12-345
+            'cz': /\b\d{3}\s?\d{2}\b/,            // Tschechien: 123 45
+            'sk': /\b\d{3}\s?\d{2}\b/,            // Slowakei: 123 45
+            'hu': /\b\d{4}\b/,                    // Ungarn: 1234
+            'gb': /\b[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}\b/, // UK: M1 1AA
+            'ie': /\b[A-Z]\d{2}\s?[A-Z0-9]{4}\b/, // Irland: D02 XY45
+            // Fallback für unbekannte Länder: flexiblere Validation
+            'default': /\b\d{3,5}(\s?[A-Z]{0,3})?\b/
+        };
+        
+        return regexMap[countryCode] || regexMap.default;
+    },
+
+    validatePLZ(input, place = null) {
+        // Wenn ein Place-Objekt vorhanden ist, das Land daraus ermitteln
+        const countryCode = place ? this.getCountryFromPlace(place) : null;
+        const regex = this.getPostalCodeRegex(countryCode);
+        
+        // PLZ in Input oder Adresse suchen
+        const hasPostalCode = regex.test(input) || (place && regex.test(place.formatted_address || ''));
+        
         const alertElement = document.getElementById('plz-alert');
         
-        if (!hasPLZ && alertElement) {
+        if (!hasPostalCode && alertElement) {
             alertElement.style.display = 'block';
             return false;
         }
         
-        if (hasPLZ && alertElement) {
+        if (hasPostalCode && alertElement) {
             alertElement.style.display = 'none';
-            hideDynamicAlert();
         }
         
-        return hasPLZ;
+        return hasPostalCode;
     },
     
     safeElementAction(selector, action) {
-        const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
+        const element = document.querySelector(selector);
         if (element && typeof action === 'function') {
             action(element);
-        } else if (!element) {
-            console.warn(`Element ${selector} not found`);
         }
     }
 };
+
+// Global function for updating submit button state
+function updateSubmitButtonState(isValidPLZ) {
+    const submitButton = document.getElementById('log-coordinates-button');
+    if (submitButton) {
+        if (isValidPLZ && CaeliAreaCheck.polygon) {
+            submitButton.disabled = false;
+            submitButton.classList.remove('btn-secondary');
+            submitButton.classList.add('btn-primary');
+        } else {
+            submitButton.disabled = true;
+            submitButton.classList.remove('btn-primary');
+            submitButton.classList.add('btn-secondary');
+        }
+    }
+}
 
 // Tutorial Steps werden dynamisch mit Übersetzungen erstellt
 function getTutorialSteps() {
@@ -88,7 +151,7 @@ function getTutorialSteps() {
             showSkipButton: true
         },
         {
-            // Schritt 1: PLZ/Ort eingeben
+            // Schritt 1: Adresse/Ort eingeben
             element: '#place-autocomplete',
             elementMobile: '#controls', // Auf Mobile an der Box ausrichten
             title: tutorial.plz_input?.title || 'Schritt 1: Ihr Standort zählt.',
@@ -140,68 +203,186 @@ function initMap() {
     CaeliAreaCheck.geocoder = new google.maps.Geocoder();
     CaeliAreaCheck.infoWindow = new google.maps.InfoWindow();
 
-    // Klassisches Place Autocomplete
+    // Eigene Autocomplete-Lösung mit Geocoding Service
     const input = document.getElementById('place-autocomplete');
-    const autocomplete = new google.maps.places.Autocomplete(input, {
-        types: ['geocode'], // Nur geografische Orte
-        componentRestrictions: { country: 'de' }, // Nur Deutschland
-        fields: ['place_id', 'formatted_address', 'address_components', 'geometry', 'name']
-    });
-    autocomplete.bindTo('bounds', CaeliAreaCheck.map);
+    const dropdown = document.getElementById('autocomplete-dropdown');
+    let debounceTimer;
+    let currentSuggestions = [];
+    let selectedIndex = -1;
     
-    // Tutorial Event Listener für Input
-    input.addEventListener('focus', handleInputFocus);
-    
-    // Autocomplete-Instanz global speichern für späteren Zugriff
-    window.autocompleteInstance = autocomplete;
-    
-    autocomplete.addListener('place_changed', function() {
-        const place = autocomplete.getPlace();
-        if (!place.geometry || (!place.geometry.location && !place.geometry.viewport)) {
-            const translations = window.CaeliAreaCheckTranslations || {};
-            showDynamicAlert('no_geodata', translations);
+    if (input && dropdown) {
+        // Tutorial Event Listener für Focus
+        input.addEventListener('focus', handleInputFocus);
+        
+            // Input Event für Live-Suche und PLZ-Validierung
+    input.addEventListener('input', function(e) {
+        const query = e.target.value.trim();
+        
+        // PLZ-Validierung bei jeder Eingabe
+        const isValidPLZ = Utils.validatePLZ(query);
+        updateSubmitButtonState(isValidPLZ);
+        
+        // Dropdown verstecken bei leerem Input
+        if (query.length < 2) {
+            hideDropdown();
             return;
         }
-
-        // PLZ-Validation mit Utility-Funktion
-        const inputValue = input.value;
-
-        if (!Utils.validatePLZ(inputValue, place.formatted_address || '')) {
+        
+        // Debounce für bessere Performance
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            searchPlaces(query);
+        }, 300);
+    });
+        
+        // Keyboard Navigation
+        input.addEventListener('keydown', function(e) {
+            if (dropdown.style.display === 'none') return;
+            
+            switch(e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    selectedIndex = Math.min(selectedIndex + 1, currentSuggestions.length - 1);
+                    updateSelection();
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    selectedIndex = Math.max(selectedIndex - 1, -1);
+                    updateSelection();
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    if (selectedIndex >= 0 && currentSuggestions[selectedIndex]) {
+                        selectPlace(currentSuggestions[selectedIndex]);
+                    }
+                    break;
+                case 'Escape':
+                    hideDropdown();
+                    break;
+            }
+        });
+        
+        // Klick außerhalb schließt Dropdown
+        document.addEventListener('click', function(e) {
+            if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                hideDropdown();
+            }
+        });
+    }
+    
+    function searchPlaces(query) {
+        if (!CaeliAreaCheck.geocoder) return;
+        
+        CaeliAreaCheck.geocoder.geocode({
+            address: query
+        }, function(results, status) {
+            if (status === 'OK' && results && results.length > 0) {
+                // Nur die besten 5 Ergebnisse anzeigen
+                const topResults = results.slice(0, 5);
+                currentSuggestions = topResults;
+                showSuggestions(topResults);
+            } else {
+                hideDropdown();
+            }
+        });
+    }
+    
+    function showSuggestions(suggestions) {
+        if (!dropdown || suggestions.length === 0) {
+            hideDropdown();
+            return;
+        }
+        
+        dropdown.innerHTML = '';
+        selectedIndex = -1;
+        
+        suggestions.forEach((place, index) => {
+            const item = document.createElement('div');
+            item.className = 'autocomplete-item';
+            item.innerHTML = `
+                <svg class="autocomplete-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                ${place.formatted_address}
+            `;
+            
+            item.addEventListener('click', function() {
+                selectPlace(place);
+            });
+            
+            item.addEventListener('mouseenter', function() {
+                selectedIndex = index;
+                updateSelection();
+            });
+            
+            dropdown.appendChild(item);
+        });
+        
+        dropdown.style.display = 'block';
+    }
+    
+    function updateSelection() {
+        const items = dropdown.querySelectorAll('.autocomplete-item');
+        items.forEach((item, index) => {
+            if (index === selectedIndex) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+    }
+    
+    function selectPlace(place) {
+        if (!place || !place.geometry) return;
+        
+        // Input-Wert setzen
+        input.value = place.formatted_address;
+        hideDropdown();
+        
+        // PLZ-Validation
+        const isValidPLZ = Utils.validatePLZ(input.value, place);
+        if (!isValidPLZ) {
+            updateSubmitButtonState(false);
             input.focus();
             return;
         }
         
-// Eingabe über Autocomplete - wird bei Polygon-Bewegung überschrieben
-
+        // Gleiche Logik wie vorher
         let targetLocation = place.geometry.location;
         
-        // Mobile-Anpassung: Zentrum weiter nach unten verschieben, horizontal zentriert lassen
+        // Mobile-Anpassung
         if (Utils.isMobile() && targetLocation) {
             const mapBounds = CaeliAreaCheck.map.getBounds();
             const latSpan = mapBounds.getNorthEast().lat() - mapBounds.getSouthWest().lat();
-            const adjustedLat = targetLocation.lat() - (latSpan * 0.4); // 40% nach unten
-            targetLocation = new google.maps.LatLng(adjustedLat, targetLocation.lng()); // Longitude bleibt unverändert
+            const adjustedLat = targetLocation.lat() - (latSpan * 0.4);
+            targetLocation = new google.maps.LatLng(adjustedLat, targetLocation.lng());
         }
         
         if (targetLocation) {
             CaeliAreaCheck.map.setCenter(targetLocation);
-            // Mobile: Zoom weiter raus für bessere Übersicht
             const zoomLevel = Utils.isMobile() ? CONFIG.MOBILE_ZOOM : CONFIG.DEFAULT_ZOOM;
             CaeliAreaCheck.map.setZoom(zoomLevel);
         }
-        // Kein Popup mehr anzeigen
+        
         CaeliAreaCheck.infoWindow.close();
-
-        // Nach Ortssuche: Polygon direkt erstellen
+        
         if (targetLocation) {
             createPolygonAtLocation(targetLocation);
-            // Buttons nach erfolgreicher PLZ-Eingabe anzeigen
             Utils.safeElementAction('#button-wrapper', el => el.style.display = 'flex');
-            
-            // Tutorial: Place selected
+            updateSubmitButtonState(isValidPLZ);
             handlePlaceSelected();
         }
-    });
+    }
+    
+    function hideDropdown() {
+        if (dropdown) {
+            dropdown.style.display = 'none';
+            selectedIndex = -1;
+            currentSuggestions = [];
+        }
+    }
+    
+
 
     // Map-Event-Listener für Polygon-Mitbewegen
     google.maps.event.addListener(CaeliAreaCheck.map, 'center_changed', function() {
@@ -220,35 +401,27 @@ function initMap() {
 
 function checkInputValueOnLoad() {
     const input = document.getElementById('place-autocomplete');
+    
     if (input && input.value && input.value.trim() !== '') {
         // Führe direkt das Geocoding aus für bessere UX
         geocodeInputValue(input.value.trim());
         
         // Mache das Input bereit für weitere Eingaben
         prepareInputForInteraction(input);
+    } else {
+        // Button initial deaktivieren wenn kein Input vorhanden
+        updateSubmitButtonState(false);
     }
 }
 
 function prepareInputForInteraction(input) {
-    // Verzögere den Focus, damit Google Maps und Autocomplete vollständig geladen sind
+    if (!input) return;
+    
+    // Verzögere den Focus, damit Google Maps vollständig geladen ist
     setTimeout(() => {
         // Input fokussieren und Cursor ans Ende setzen
         input.focus();
         input.setSelectionRange(input.value.length, input.value.length);
-        
-        // Bei der nächsten Eingabe das Autocomplete triggern
-        const triggerOnNextInput = function(event) {
-            // Entferne den Event Listener nach der ersten Eingabe
-            input.removeEventListener('input', triggerOnNextInput);
-            
-            // Trigger das normale Autocomplete-Verhalten
-            setTimeout(() => {
-                const inputEvent = new Event('input', { bubbles: true });
-                input.dispatchEvent(inputEvent);
-            }, 50);
-        };
-        
-        input.addEventListener('input', triggerOnNextInput);
         
         // Visueller Hinweis mit Animation
         input.style.transition = 'box-shadow 0.3s ease';
@@ -263,24 +436,27 @@ function prepareInputForInteraction(input) {
 function geocodeInputValue(address) {
     if (!CaeliAreaCheck.geocoder) return;
     
-    // PLZ-Validation mit Utility-Funktion
-    if (!Utils.validatePLZ(address)) {
+    // PLZ-Validation mit Utility-Funktion (ohne Place-Objekt)
+    const isValidPLZ = Utils.validatePLZ(address);
+    if (!isValidPLZ) {
+        updateSubmitButtonState(false);
         return;
     }
     
     CaeliAreaCheck.geocoder.geocode({
-        address: address,
-        componentRestrictions: { country: 'de' }
+        address: address
     }, function(results, status) {
         if (status === 'OK' && results[0]) {
             const place = results[0];
             
             // PLZ nochmals prüfen mit Utility-Funktion
-            if (!Utils.validatePLZ(address, place.formatted_address || '')) {
+            const placeValidPLZ = Utils.validatePLZ(address, place);
+            if (!placeValidPLZ) {
+                updateSubmitButtonState(false);
                 return;
             }
             
-// Eingabe über Geocoding - wird bei Polygon-Bewegung überschrieben
+            // Eingabe über Geocoding - wird bei Polygon-Bewegung überschrieben
             
             let targetLocation = place.geometry.location;
             
@@ -301,6 +477,9 @@ function geocodeInputValue(address) {
                 
                 // Buttons anzeigen
                 Utils.safeElementAction('#button-wrapper', el => el.style.display = 'flex');
+                
+                // Button-Status aktualisieren
+                updateSubmitButtonState(placeValidPLZ);
                 
                 // Tutorial: Place selected
                 handlePlaceSelected();
@@ -417,6 +596,15 @@ function deletePolygon() {
 
     Utils.safeElementAction('#warning', el => el.style.display = 'none');
     updateGeometryField();
+    
+    // Button-Status zurücksetzen
+    const input = document.getElementById('place-autocomplete');
+    if (input && input.value) {
+        const isValidPLZ = Utils.validatePLZ(input.value);
+        updateSubmitButtonState(isValidPLZ);
+    } else {
+        updateSubmitButtonState(false);
+    }
 
     // Neues Polygon an aktueller Position anzeigen (nach Neustarten)
     const currentCenter = CaeliAreaCheck.map.getCenter();
@@ -461,10 +649,17 @@ function updateAreaLabel() {
     // Check if area is greater than configured max size
     if (areaInHectares > CONFIG.MAX_AREA_SIZE) {
         Utils.safeElementAction('#warning', el => el.style.display = 'block');
-        Utils.safeElementAction('#log-coordinates-button', el => el.disabled = true);
+        updateSubmitButtonState(false);
     } else {
         Utils.safeElementAction('#warning', el => el.style.display = 'none');
-        Utils.safeElementAction('#log-coordinates-button', el => el.disabled = false);
+        // Button-Status basierend auf PLZ-Validierung setzen
+        const input = document.getElementById('place-autocomplete');
+        if (input && input.value) {
+            const isValidPLZ = Utils.validatePLZ(input.value);
+            updateSubmitButtonState(isValidPLZ);
+        } else {
+            updateSubmitButtonState(false);
+        }
     }
     
     // Live Reverse Geocoding für bessere Adresserkennung (Optional - kann performance-intensiv sein)
@@ -486,20 +681,24 @@ function updatePolygonAddress(center) {
                     const bestAddress = findBestAddress(results);
                     
                     if (bestAddress) {
-                        // Kurze Adresse für Live-Update extrahieren
-                        const shortAddress = extractShortAddress(bestAddress);
+                        // Vollständige Adresse für Live-Update verwenden
+                        const fullAddress = extractFullAddress(bestAddress);
                         
                         // Direkt ins Input-Feld schreiben (Live-Update)
                         const searchInput = document.getElementById('place-autocomplete');
                         if (searchInput) {
                             // Immer überschreiben - User verschiebt Polygon und will neue Adresse sehen
-                            searchInput.value = shortAddress;
+                            searchInput.value = fullAddress;
+                            
+                            // PLZ-Validierung für live-aktualisierte Adresse
+                            const isValidPLZ = Utils.validatePLZ(fullAddress);
+                            updateSubmitButtonState(isValidPLZ);
                         }
                     }
                 }
             });
         }
-    }, 1500); // 1.5 Sekunden throttling für bessere User Experience
+    }, 750); // 1.5 Sekunden throttling für bessere User Experience
 }
 
 // Beste Adresse aus Reverse Geocoding Ergebnissen finden (keine Plus Codes!)
@@ -507,7 +706,7 @@ function findBestAddress(results) {
     if (!results || results.length === 0) return null;
     
     // Prioritätsliste für die beste Adresse:
-    // 1. Adresse mit deutscher PLZ (5 Ziffern)
+            // 1. Adresse mit Postleitzahl
     // 2. Adresse ohne Plus Code (keine Buchstaben+Zahlen Kombination am Anfang)
     // 3. Längste Adresse (meist detaillierter)
     
@@ -519,8 +718,12 @@ function findBestAddress(results) {
             continue; // Plus Code überspringen
         }
         
-        // Deutsche PLZ bevorzugen
-        if (address.match(/\b\d{5}\s+[A-Za-zäöüÄÖÜß]/)) {
+        // Postleitzahl bevorzugen (verwende das erste Ergebnis für Country-Detection)
+        const firstResult = results[0];
+        const countryCode = Utils.getCountryFromPlace(firstResult);
+        const postalRegex = Utils.getPostalCodeRegex(countryCode);
+        
+        if (postalRegex.test(address)) {
             return address;
         }
     }
@@ -537,29 +740,22 @@ function findBestAddress(results) {
     return results[0].formatted_address;
 }
 
-// Hilfsfunktion: Kurze Adresse extrahieren (PLZ + Ort)
-function extractShortAddress(fullAddress) {
-    // Deutsche Adressen: "Straße, PLZ Ort, Deutschland" -> "PLZ Ort"
-    // oder "PLZ Ort, Deutschland" -> "PLZ Ort"
+// Hilfsfunktion: Vollständige Adresse verwenden (inkl. Deutschland)
+function extractFullAddress(fullAddress) {
+    // Komplette Adresse zurückgeben für bessere Übersichtlichkeit
+    // "Am alten bhf 22, 04420 Markranstädt, Deutschland" bleibt so
     
-    // Zuerst nach deutscher PLZ + Ort suchen
-    const plzMatch = fullAddress.match(/(\d{5}\s+[^,]+)/);
-    if (plzMatch) {
-        return plzMatch[1].trim();
-    }
-    
-    // Fallback: Ersten Teil vor Komma nehmen (ohne Plus Codes)
-    const parts = fullAddress.split(',');
-    for (let part of parts) {
-        const trimmed = part.trim();
-        // Plus Codes überspringen
-        if (!trimmed.match(/^[A-Z0-9]{4}\+[A-Z0-9]{2}/)) {
-            return trimmed;
+    // Nur Plus Codes am Anfang entfernen, Rest beibehalten
+    if (fullAddress.match(/^[A-Z0-9]{4}\+[A-Z0-9]{2}/)) {
+        const parts = fullAddress.split(',');
+        // Plus Code entfernen, Rest zusammenfügen
+        if (parts.length > 1) {
+            return parts.slice(1).join(',').trim();
         }
     }
     
-    // Notfall: Ersten Teil zurückgeben
-    return parts[0].trim();
+    // Standard: Vollständige Adresse zurückgeben
+    return fullAddress;
 }
 
 function logCoordinates() {
@@ -568,6 +764,18 @@ function logCoordinates() {
         if (CaeliAreaCheck.state.formSubmissionInProgress) {
             return;
         }
+        
+        // Finale PLZ-Validierung vor Absenden
+        const input = document.getElementById('place-autocomplete');
+        if (input && input.value) {
+            const isValidPLZ = Utils.validatePLZ(input.value);
+            if (!isValidPLZ) {
+                const translations = window.CaeliAreaCheckTranslations || {};
+                showDynamicAlert('invalid_postal_code', translations);
+                return;
+            }
+        }
+        
         CaeliAreaCheck.state.formSubmissionInProgress = true;
         
         // Alle Popovers schließen vor dem Absenden
@@ -605,13 +813,13 @@ function logCoordinates() {
                     const bestAddress = findBestAddress(results);
                     
                     if (bestAddress) {
-                        // Adresse ins versteckte Feld schreiben (überschreibt manuell eingegebene PLZ)
+                        // Adresse ins versteckte Feld schreiben (überschreibt manuell eingegebene Adresse)
                         const hiddenAddress = document.getElementById('searched-address-field');
                         if (hiddenAddress) {
                             hiddenAddress.value = bestAddress;
                         }
                     } else {
-                        // Fallback: ursprünglich eingegebene PLZ verwenden
+                        // Fallback: ursprünglich eingegebene Adresse verwenden
                         const searchInput = document.getElementById('place-autocomplete');
                         const hiddenAddress = document.getElementById('searched-address-field');
                         if (searchInput && hiddenAddress) {
@@ -619,7 +827,7 @@ function logCoordinates() {
                         }
                     }
                 } else {
-                    // Fallback: ursprünglich eingegebene PLZ verwenden
+                    // Fallback: ursprünglich eingegebene Adresse verwenden
                     const searchInput = document.getElementById('place-autocomplete');
                     const hiddenAddress = document.getElementById('searched-address-field');
                     if (searchInput && hiddenAddress) {
@@ -632,7 +840,7 @@ function logCoordinates() {
                 startLoadingAnimation();
             });
         } else {
-            // Fallback ohne Reverse Geocoding: ursprünglich eingegebene PLZ verwenden
+            // Fallback ohne Reverse Geocoding: ursprünglich eingegebene Adresse verwenden
             const searchInput = document.getElementById('place-autocomplete');
             const hiddenAddress = document.getElementById('searched-address-field');
             if (searchInput && hiddenAddress) {
@@ -991,9 +1199,9 @@ function showTutorialStep(stepIndex) {
             if (nextButton) {
                 nextButton.addEventListener('click', nextTutorialStep);
             }
-        } else if (step.template === 'plz') {
-            // PLZ-Schritt (1) - nur Zurück-Button, automatische Weiterleitung
-            const backButton = popoverElement.querySelector('#tutorial-plz-back');
+                    } else if (step.template === 'plz') {
+                // Adress-Schritt (1) - nur Zurück-Button, automatische Weiterleitung
+                const backButton = popoverElement.querySelector('#tutorial-plz-back');
             
             if (backButton) {
                 backButton.addEventListener('click', previousTutorialStep);
@@ -1088,7 +1296,7 @@ function getCookie(name) {
 // Tutorial Event Handlers
 function handleInputFocus() {
     if (CaeliAreaCheck.state.tutorialActive && CaeliAreaCheck.state.currentTutorialStep === 0) {
-        // Vom Willkommen-Schritt zum PLZ-Schritt wechseln
+                    // Vom Willkommen-Schritt zum Adress-Schritt wechseln
         hideAllPopovers();
         setTimeout(() => {
             showTutorialStep(1);
@@ -1099,7 +1307,7 @@ function handleInputFocus() {
 
 function handlePlaceSelected() {
     if (CaeliAreaCheck.state.tutorialActive && CaeliAreaCheck.state.currentTutorialStep === 1) {
-        // Vom PLZ-Schritt zum Polygon-Schritt wechseln
+                    // Vom Adress-Schritt zum Polygon-Schritt wechseln
         hideAllPopovers();
         setTimeout(() => {
             showTutorialStep(2);

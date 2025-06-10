@@ -57,7 +57,7 @@
                 </div>
                 <div class="card-body bg-secondary">
                     <div id="plz-alert" class="alert alert-primary" style="display:none;">
-                        <strong>{{ translations.interface.hints.strong }}</strong> {{ translations.form.plz_alert }}
+                        <strong>{{ translations.interface.hints.strong }}</strong> {{ translations.form.address_alert }}
                     </div>
 
                     <!-- Dynamic Alert Box for JavaScript-generated alerts -->
@@ -67,12 +67,17 @@
 
                     <div>
                         <label for="place-autocomplete" class="form-label">{{ translations.interface.form.label }}</label>
+                        <!-- Zurück zu normalem Input mit eigener Autocomplete-Lösung -->
                         <input id="place-autocomplete"
                                name="search"
-                               type="text"
-                               class="form-control"
-                               placeholder="{{ translations.form.plz_placeholder }}"
-                               value="{{ app.request.query.get('search') | default('') }}"/>
+                               type="text" 
+                               class="form-control" 
+                               placeholder="{{ translations.form.address_placeholder }}"
+                               value="{{ app.request.query.get('search') | default('') }}"
+                               autocomplete="off"/>
+
+                        <!-- Dropdown für Vorschläge -->
+                        <div id="autocomplete-dropdown" class="autocomplete-dropdown" style="display:none;"></div>
                     </div>
 
                     <div id="button-wrapper" class="gap-2 mt-3" style="display:none;">

@@ -14,20 +14,7 @@
         #}
 
 
-        {% if error and not rating %}
-            <div class="alert alert-danger">
-                <h4>{{ translations.result.error_states.check_failed.title }}</h4>
-                <p>{{ error }}</p>
-                {% if mapPage %}
-                    <div class="mt-3">
-                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">{{ translations.result.error_states.check_failed.button }}</a>
-                    </div>
-                {% endif %}
-            </div>
-        {% elseif rating %}
-            {# Rating-Daten vorhanden - zeige detaillierte Auswertung (auch für fehlgeschlagene Parks) #}
-            {# WICHTIG: Berücksichtige den tatsächlichen Status UND alle drei Faktoren müssen grün/gelb sein #}
-            {# Fehlende Ratings gelten als "rot" und machen die Fläche nicht geeignet #}
+        {% if rating %}
             {% set isSuitable = isSuccess and
                 (rating.rating_cutdensity is defined and rating.rating_cutdensity in ['green', 'yellow']) and
                 (rating.rating_restrictions is defined and rating.rating_restrictions in ['green', 'yellow']) and
@@ -62,71 +49,84 @@
                     <div class="col-md-5">
                         <div class="result-container pe-lg-5">
                             <ul class="list-check">
-                                <li data-animation="animate__fadeInUp">
+                                <li data-animation="animate__fadeInUp"{% if (rating.rating_cutdensity is not defined) or (rating.rating_cutdensity == 'red') %} class="is-invalid is-danger"{% elseif rating.rating_cutdensity == 'yellow' %} class="is-invalid is-warning"{% endif %}>
                                     <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.wind_conditions.title }}</b>
                                     <span>{{ translations.result.criteria.wind_conditions.description }}</span>
+
+                                    {#
                                     {% if rating.rating_cutdensity is defined %}
-                                        <span class="rating-{{ rating.rating_cutdensity }}">
-                                            {% if rating.rating_cutdensity == 'green' %}
-                                                ✓ {{ translations.result.criteria.wind_conditions.rating.green }}
-                                            {% elseif rating.rating_cutdensity == 'yellow' %}
-                                                ⚠ {{ translations.result.criteria.wind_conditions.rating.yellow }}
-                                            {% else %}
-                                                ✗ {{ translations.result.criteria.wind_conditions.rating.red }}
-                                            {% endif %}
-                                        </span>
-                                    {% else %}
-                                        <span class="rating-red">✗ {{ translations.result.criteria.wind_conditions.rating.red }}</span>
-                                    {% endif %}
+                                     <span class="rating-{{ rating.rating_cutdensity }}">
+                                         {% if rating.rating_cutdensity == 'green' %}
+                                             ✓ {{ translations.result.criteria.wind_conditions.rating.green }}
+                                         {% elseif rating.rating_cutdensity == 'yellow' %}
+                                             ⚠ {{ translations.result.criteria.wind_conditions.rating.yellow }}
+                                         {% else %}
+                                             ✗ {{ translations.result.criteria.wind_conditions.rating.red }}
+                                         {% endif %}
+                                     </span>
+                                 {% else %}
+                                     <span class="rating-red">✗ {{ translations.result.criteria.wind_conditions.rating.red }}</span>
+                                 {% endif %}
+                                    #}
+
                                 </li>
 
-                                <li class="my-3" data-animation="animate__fadeInUp">
+                                <li data-animation="animate__fadeInUp"{% if (rating.rating_restrictions is not defined) or (rating.rating_restrictions == 'red') %} class="my-3 is-invalid is-danger"{% elseif rating.rating_restrictions == 'yellow' %} class="my-3 is-invalid is-warning"{% else %} class="my-3"{% endif %}>
                                     <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.restrictions.title }}</b>
                                     <span>{{ translations.result.criteria.restrictions.description }}</span>
+                                    {#
                                     {% if rating.rating_restrictions is defined %}
-                                        <span class="rating-{{ rating.rating_restrictions }}">
-                                            {% if rating.rating_restrictions == 'green' %}
-                                                ✓ {{ translations.result.criteria.restrictions.rating.green }}
-                                            {% elseif rating.rating_restrictions == 'yellow' %}
-                                                ⚠ {{ translations.result.criteria.restrictions.rating.yellow }}
-                                            {% else %}
-                                                ✗ {{ translations.result.criteria.restrictions.rating.red }}
-                                            {% endif %}
-                                        </span>
-                                    {% else %}
-                                        {# Fehlende rating_restrictions = immer rot (Restriktionen vorhanden) #}
-                                        <span class="rating-red">✗ {{ translations.result.criteria.restrictions.rating.red }}</span>
+                                     <span class="rating-{{ rating.rating_restrictions }}">
+                                         {% if rating.rating_restrictions == 'green' %}
+                                             ✓ {{ translations.result.criteria.restrictions.rating.green }}
+                                         {% elseif rating.rating_restrictions == 'yellow' %}
+                                             ⚠ {{ translations.result.criteria.restrictions.rating.yellow }}
+                                         {% else %}
+                                             ✗ {{ translations.result.criteria.restrictions.rating.red }}
+                                         {% endif %}
+                                     </span>
+                                 {% else %}
+                                    <span class="rating-red">✗ {{ translations.result.criteria.restrictions.rating.red }}</span>
                                     {% endif %}
+                                    #}
+
                                 </li>
 
-                                <li data-animation="animate__fadeInUp">
+                                <li data-animation="animate__fadeInUp"{% if (rating.rating_grid_connection is not defined) or (rating.rating_grid_connection == 'red') %} class="is-invalid is-danger"{% elseif rating.rating_grid_connection == 'yellow' %} class="is-invalid is-warning"{% endif %}>
                                     <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.grid_connection.title }}</b>
                                     <span>{{ translations.result.criteria.grid_connection.description }}</span>
+
+                                    {#
                                     {% if rating.rating_grid_connection is defined %}
-                                        <span class="rating-{{ rating.rating_grid_connection }}">
-                                            {% if rating.rating_grid_connection == 'green' %}
-                                                ✓ {{ translations.result.criteria.grid_connection.rating.green }}
-                                            {% elseif rating.rating_grid_connection == 'yellow' %}
-                                                ⚠ {{ translations.result.criteria.grid_connection.rating.yellow }}
-                                            {% else %}
-                                                ✗ {{ translations.result.criteria.grid_connection.rating.red }}
-                                            {% endif %}
-                                        </span>
-                                    {% else %}
-                                        <span class="rating-red">✗ {{ translations.result.criteria.grid_connection.rating.red }}</span>
-                                    {% endif %}
+                                   <span class="rating-{{ rating.rating_grid_connection }}">
+                                       {% if rating.rating_grid_connection == 'green' %}
+                                           ✓ {{ translations.result.criteria.grid_connection.rating.green }}
+                                       {% elseif rating.rating_grid_connection == 'yellow' %}
+                                           ⚠ {{ translations.result.criteria.grid_connection.rating.yellow }}
+                                       {% else %}
+                                           ✗ {{ translations.result.criteria.grid_connection.rating.red }}
+                                       {% endif %}
+                                   </span>
+                               {% else %}
+                                   <span class="rating-red">✗ {{ translations.result.criteria.grid_connection.rating.red }}</span>
+                               {% endif %}
+                                    #}
+
                                 </li>
                             </ul>
 
                             {% if not isSuitable %}
+                                {#
                                 <div class="alert alert-warning mt-4">
-                                    <h5>{{ translations.result.conclusion.title }}</h5>
-                                    <p>{{ translations.result.conclusion.unsuitable_text }}
-                                        {% if isSuccess and rating.rating_cutdensity is defined and rating.rating_cutdensity in ['green', 'yellow'] %}
-                                            {{ translations.result.conclusion.good_wind_text }}
-                                        {% endif %}
-                                        {{ translations.result.conclusion.contact_text }}</p>
-                                </div>
+                           <h5>{{ translations.result.conclusion.title }}</h5>
+                           <p>{{ translations.result.conclusion.unsuitable_text }}
+                               {% if isSuccess and rating.rating_cutdensity is defined and rating.rating_cutdensity in ['green', 'yellow'] %}
+                                   {{ translations.result.conclusion.good_wind_text }}
+                               {% endif %}
+                               {{ translations.result.conclusion.contact_text }}</p>
+                       </div>
+                                #}
+
                             {% endif %}
                         </div>
                     </div>
@@ -169,83 +169,23 @@
                 </div>
             </div>
 
-        {% elseif isSuccess and not rating %}
-            <div class="container my-5">
-                <div class="row">
-                    <div class="col-12">
-                        <h2 class="text-center mb-4">{{ translations.result.error_states.area_unsuitable.title }}</h2>
-
-                        <div class="alert alert-warning">
-                            <h4>
-                                <i class="fas fa-exclamation-triangle"></i> {{ translations.result.error_states.area_unsuitable.warning_title }}
-                            </h4>
-                            <p>{{ translations.result.error_states.area_unsuitable.warning_text }}</p>
-                            {% if errorMessage %}
-                                <div class="mt-3">
-                                    <strong>{{ translations.result.error_states.area_unsuitable.reason_label }}</strong> {{ errorMessage }}
-                                </div>
-                            {% endif %}
-                        </div>
-
-                        {% if checkData %}
-                            <div class="card mt-4">
-                                <div class="card-header bg-secondary text-white">
-                                    <h5 class="mb-0">{{ translations.result.error_states.checked_area.title }}</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <strong>{{ translations.result.error_states.checked_area.address_label }}</strong><br>
-                                            {{ checkData.searched_address|default(translations.result.error_states.checked_area.not_available) }}
-                                        </div>
-                                        <div class="col-md-6">
-                                            <strong>{{ translations.result.error_states.checked_area.timestamp_label }}</strong><br>
-                                            {{ checkData.tstamp|date('d.m.Y H:i') }} Uhr
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        <div class="alert alert-info mt-4">
-                            <h5>{{ translations.result.error_states.what_to_do.title }}</h5>
-                            <ul class="mb-0">
-                                <li>{{ translations.result.error_states.what_to_do.try_other_area }}</li>
-                                <li>{{ translations.result.error_states.what_to_do.contact_advice }}</li>
-                                <li>{{ translations.result.error_states.what_to_do.alternative_locations }}</li>
-                            </ul>
-                        </div>
-
-                        <div class="form-container p-4 bg-light mt-4">
-                            {% if app.request.locale == 'en' %}
-                                {{ "{{insert_form::13}}"|insert_tag|raw }}
-                            {% else %}
-                                {{ "{{insert_form::12}}"|insert_tag|raw }}
-                            {% endif %}
-                        </div>
-
-                        <div class="text-center mt-4">
-                            {% if mapPage %}
-                                <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary btn-lg">{{ translations.result.buttons.new_check }}</a>
-                            {% else %}
-                                <a href="/flaechencheck" class="btn btn-primary btn-lg">{{ translations.result.buttons.new_check }}</a>
-                            {% endif %}
-                            <a href="/kontakt" class="btn btn-outline-secondary btn-lg ms-2">{{ translations.result.buttons.request_consultation }}</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
         {% elseif checkid %}
             <div class="alert alert-danger">
-                <h4>{{ translations.result.error_states.not_found.title }}</h4>
-                <p>{{ translations.result.error_states.not_found.message }}</p>
-                <div class="mt-3">
-                    {% if mapPage %}
-                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">{{ translations.result.error_states.not_found.button }}</a>
-                    {% else %}
-                        <a href="/flaechencheck" class="btn btn-primary">{{ translations.result.error_states.not_found.button }}</a>
-                    {% endif %}
-                </div>
+                <h4>{{ translations.result.error_states.check_failed.title }}</h4>
+                {% if error %}
+                    <p>{{ error }}</p>
+                {% else %}
+                    <p>{{ translations.result.error_states.not_found.message }}</p>
+                {% endif %}
+                {% if mapPage %}
+                    <div class="mt-3">
+                        <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">{{ translations.result.error_states.check_failed.button }}</a>
+                    </div>
+                {% else %}
+                    <div class="mt-3">
+                        <a href="/flaechencheck" class="btn btn-primary">{{ translations.result.error_states.check_failed.button }}</a>
+                    </div>
+                {% endif %}
             </div>
         {% else %}
             <div class="alert alert-info">
@@ -277,19 +217,23 @@
         }
     }
 
-    span[class*="rating-"]{
-        display: block;
-    }
+
+    {#
+   span[class*="rating-"] {
+       display: block;
+   }
 
     .rating-green {
-        color: #00ca90;
-    }
+       color: var(--bs-success);
+   }
 
-    .rating-yellow {
-        color: #EB7500;
-    }
+   .rating-yellow {
+       color: var(--bs-warning);
+   }
 
-    .rating-red {
-        color: #D80027;
-    }
+   .rating-red {
+       color: var(--bs-danger);
+   }
+    #}
+
 </style> 

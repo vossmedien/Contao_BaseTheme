@@ -24,6 +24,20 @@ $headlineColumnAnim = $applyIndividualAnimations && !empty($this->animation_type
 $contentColumnAnim = $applyIndividualAnimations && !empty($this->animation_type_content) && $this->animation_type_content !== 'no-animation' ? $this->animation_type_content : null;
 $slideAnim = $applyIndividualAnimations && !empty($this->slide_animation_type) && $this->slide_animation_type !== 'no-animation' ? $this->slide_animation_type : null;
 
+// Button-Animation mit Fallback auf Text-Animation (nur wenn Spalte selbst keine Animation hat)
+$buttonAnim = null;
+$buttonAnimForTwoColumn = null;
+if ($applyIndividualAnimations) {
+    if (!empty($this->animation_type_buttons) && $this->animation_type_buttons !== 'no-animation') {
+        $buttonAnim = $this->animation_type_buttons;
+        $buttonAnimForTwoColumn = $this->animation_type_buttons;
+    } elseif ($contentColumnAnim) {
+        $buttonAnim = $contentColumnAnim;
+        // Für zweispaltig: keine Button-Animation wenn Spalte Animation hat
+        $buttonAnimForTwoColumn = null;
+    }
+}
+
 // Zusätzliche Headline-Attribute vorbereiten
 $additionalHeadlineAttributes = [];
 if (!empty($this->is_quote) && $this->is_quote) {
@@ -166,15 +180,15 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
             <?php if ($this->two_columns): ?>
                 <?php // --- ZWEISPALTIG --- ?>
 
-                <?php if ($this->headline_above_columns): ?>
-                    <div class="">
-                        <div <?php if ($headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="headline-above-columns">
-                            <?= $headlineHTML; // Headline oberhalb der Spalten  ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-
                     <div class="row <?php if($this->second_content != "" && $headlineColumnImageHTML != "" && $headlineColumnButtonsHTML != ""):?>gy-2<?php endif;?> gy-lg-0 gx-lg-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
+
+                        <?php if ($this->headline_above_columns): ?>
+                            <div <?php if ($headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="col-12">
+                                <div class="headline-above-columns">
+                                    <?= $headlineHTML; // Headline oberhalb der Spalten  ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
 
                         <?php // --- Headlinespalte --- ?>
                         <?php
@@ -209,7 +223,7 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
                                     <?php
                                     $headlineColumnButtonAlignmentClass = $this->headline_column_button_alignment ?: 'text-lg-start';
                                     ?>
-                                    <div <?php if (!$headlineColumnAnim && $headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="buttons <?= $headlineColumnButtonAlignmentClass; ?> mt-4">
+                                    <div <?php if ($buttonAnimForTwoColumn): ?>data-animation="<?= $buttonAnimForTwoColumn; ?>"<?php elseif (!$headlineColumnAnim && $headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="buttons <?= $headlineColumnButtonAlignmentClass; ?> mt-4">
                                         <?= $headlineColumnButtonsHTML; ?>
                                     </div>
                                 <?php endif; ?>
@@ -279,7 +293,7 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
                                     <?php
                                     $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-start';
                                     ?>
-                                    <div class="buttons <?= $buttonAlignmentClass; ?>  <?php if ($hasImages || $this->desc): ?>mt-4<?php endif; ?>">
+                                    <div <?php if ($buttonAnimForTwoColumn): ?>data-animation="<?= $buttonAnimForTwoColumn; ?>"<?php endif; ?> class="buttons <?= $buttonAlignmentClass; ?>  <?php if ($hasImages || $this->desc): ?>mt-4<?php endif; ?>">
                                         <?= $buttonsHTML; ?>
                                     </div>
                                 <?php endif; ?>
@@ -351,9 +365,9 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
 
                 <?php if ($buttonsHTML): ?>
                     <?php
-                    $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-start';
+                    $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-lg-start';
                     ?>
-                    <div class="buttons <?= $buttonAlignmentClass; ?> buttons mt-4">
+                    <div <?php if ($buttonAnim): ?>data-animation="<?= $buttonAnim; ?>"<?php endif; ?> class="buttons <?= $buttonAlignmentClass; ?> mt-4">
                         <?= $buttonsHTML; ?>
                     </div>
                 <?php endif; ?>

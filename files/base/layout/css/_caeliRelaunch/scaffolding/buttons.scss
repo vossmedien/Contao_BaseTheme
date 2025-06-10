@@ -19,6 +19,12 @@
   &.btn-secondary {
     --bs-btn-color: var(--bs-primary);
     --bs-btn-hover-color: var(--bs-primary);
+    
+    &:disabled {
+      --bs-btn-disabled-color: rgba(var(--bs-primary-rgb), 0.4);
+      --bs-btn-disabled-border-color: rgba(var(--bs-primary-rgb), 0.3);
+      opacity: 0.7;
+    }
   }
 
   &.btn-outline-secondary {

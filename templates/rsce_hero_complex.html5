@@ -125,6 +125,26 @@ if (empty($this->main_text) && !$this->activate_box_slider) { // Überprüft auc
     $textAndBoxColVisible = false;
 }
 
+// Bestimme die Spaltenausrichtung
+$alignmentClass = '';
+switch ($this->column_alignment ?: 'center') {
+    case 'start':
+        // Keine Klasse zuweisen für start (Standard)
+        break;
+    case 'end':
+        $alignmentClass = 'align-items-end';
+        break;
+    case 'center':
+    default:
+        $alignmentClass = 'align-items-center';
+        break;
+}
+
+// Box-Position bestimmen
+$boxPosition = $this->box_position ?: 'right';
+$showBoxInLeft = ($this->activate_box_slider && $boxPosition === 'left');
+$showBoxInRight = ($this->activate_box_slider && $boxPosition === 'right');
+
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_hero_complex.min.css|static';
 }
@@ -150,74 +170,127 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         <!-- Inhalt Wrapper (Texte und Box) (Mobile: order-2 / Desktop: order-lg-1) -->
         <div class="hero-complex-content-overlay-wrapper order-2 order-lg-1">
             <div class="<?= $this->container_class ?: 'container-wide' ?>">
-                <div class="row align-items-center">
-                    <!-- Linke Headline (Mobile: order-2) -->
-                    <div class="<?= $headlineColClass ?> hero-complex-headline-col order-2 pb-md-gap"
+                <div class="row <?= $alignmentClass ?>">
+                    <!-- Linke Spalte: Headline + optional Text + optional Box -->
+                    <div class="<?= $headlineColClass ?> hero-complex-headline-col order-2"
                          <?php if ($this->animation_type_headline): ?>data-animation="<?= $this->animation_type_headline ?>"<?php endif; ?>>
-                        <div class="main-headline-col-inner pe-lg-gap">
-                            <?= HeadlineHelper::generateHeadlineHTML(
-                                null, $this->main_headline, null, $this->main_headline_type ?: 'h1',
-                                "no-animation", null, "", "mb-3 mb-md-0"
-                            ) ?>
+                        <div class="main-headline-col-inner d-flex flex-column h-100">
+                            <div class="headline-and-text-wrapper">
+                                <?= HeadlineHelper::generateHeadlineHTML(
+                                    null, $this->main_headline, null, $this->main_headline_type ?: 'h1',
+                                    "no-animation", null, (bool)$this->main_headline_onlystyle, "mb-3"
+                                ) ?>
+                                
+                                <?php if ($this->left_text_below_headline): ?>
+                                    <div class="left-text-below-headline mb-gap">
+                                        <?= $this->left_text_below_headline ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <?php if ($showBoxInLeft): ?>
+                                <!-- Box-Slider in der linken Spalte -->
+                                <div class="hero-complex-box-slider-wrapper mt-auto pull-down-lg"
+                                     <?php if ($this->animation_type_box): ?>data-animation="<?= $this->animation_type_box ?>"<?php endif; ?>>
+                                    <div class="box-slider-anchor" style="<?= $boxStyles ?>">
+                                        <div class="box-slider-wrapper swiper rsce-hero-box-slider-<?= $uniqueId ?>"  data-uid="<?= $uniqueId ?>">
+                                            <div class="swiper-wrapper">
+                                                <?php foreach ($this->box_slides as $slide): ?>
+                                                    <div class="swiper-slide">
+                                                        <div class="box-slide-inner p-3 p-lg-4 p-md-5">
+                                                            <?php if ($slide->slide_headline): ?>
+                                                                <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, (bool)$slide->slide_headline_onlystyle, "mb-4") ?>
+                                                            <?php endif; ?>
+
+                                                            <?php if ($slide->slide_content): ?>
+                                                                <div class="box-slide-content rte">
+                                                                    <?= $slide->slide_content ?>
+                                                                </div>
+                                                            <?php endif; ?>
+
+                                                            <?php if (!empty($slide->buttons)): ?>
+                                                                <div class="buttons pt-4">
+                                                                    <?= ButtonHelper::generateButtonHTML($slide->buttons) ?>
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                        <?php if (count($this->box_slides) > 1): ?>
+                                            <div class="box-paginator rsce-hero-box-slider-pagination-<?= $uniqueId ?>"></div>
+                                            <div class="hero-complex-swiper-nav">
+                                                <button type="button" class="hc-button-prev rsce-hero-box-slider-prev-<?= $uniqueId ?>">
+                                                    <i class="fak fa-chevron-left"></i>
+                                                </button>
+                                                <div class="button-separator"></div>
+                                                <button type="button" class="hc-button-next rsce-hero-box-slider-next-<?= $uniqueId ?>">
+                                                    <i class="fak fa-chevron-right"></i>
+                                                </button>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
-                    <!-- Rechte Spalte: Text & Box (Mobile: order-3) -->
+                    <!-- Rechte Spalte: Text + optional Box -->
                     <?php if ($textAndBoxColVisible): ?>
                     <div class="col-lg-6 hero-complex-text-and-box-col order-3">
                         <div class="main-text-col-inner">
                             <?php if ($this->main_text): ?>
-                                 <div class="main-text-content fw-bold pb-gap" <?php if ($this->animation_type_text): ?>data-animation="<?= $this->animation_type_text ?>"<?php endif; ?>>
+                                <div class="main-text-content flex-grow-1 ps-lg-gap<?php if ($showBoxInRight): ?> my-gap<?php endif; ?>" <?php if ($this->animation_type_text): ?>data-animation="<?= $this->animation_type_text ?>"<?php endif; ?>>
                                     <?= $this->main_text ?>
                                 </div>
                             <?php endif; ?>
 
-                            <?php if ($this->activate_box_slider && !empty($this->box_slides)): ?>
-                                 <!-- Box-Slider Bereich (Mobile: order-4 innerhalb dieser Spalte) -->
-                                 <div class="hero-complex-box-slider-wrapper pull-down-lg"
-                                       <?php if ($this->animation_type_box): ?>data-animation="<?= $this->animation_type_box ?>"<?php endif; ?>>
-                                     <div class="box-slider-anchor" style="<?= $boxStyles ?>">
-                                         <div class="box-slider-wrapper swiper rsce-hero-box-slider-<?= $uniqueId ?>"  data-uid="<?= $uniqueId ?>">
-                                             <div class="swiper-wrapper">
-                                                 <?php foreach ($this->box_slides as $slide): ?>
-                                                     <div class="swiper-slide">
-                                                         <div class="box-slide-inner p-3 p-lg-4 p-md-5">
-                                                             <?php if ($slide->slide_headline): ?>
-                                                                 <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, "", "mb-4") ?>
-                                                             <?php endif; ?>
+                            <?php if ($showBoxInRight): ?>
+                                <!-- Box-Slider in der rechten Spalte -->
+                                <div class="hero-complex-box-slider-wrapper pull-down-lg"
+                                     <?php if ($this->animation_type_box): ?>data-animation="<?= $this->animation_type_box ?>"<?php endif; ?>>
+                                    <div class="box-slider-anchor" style="<?= $boxStyles ?>">
+                                        <div class="box-slider-wrapper swiper rsce-hero-box-slider-<?= $uniqueId ?>"  data-uid="<?= $uniqueId ?>">
+                                            <div class="swiper-wrapper">
+                                                <?php foreach ($this->box_slides as $slide): ?>
+                                                    <div class="swiper-slide">
+                                                        <div class="box-slide-inner p-3 p-lg-4 p-md-5">
+                                                            <?php if ($slide->slide_headline): ?>
+                                                                <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, (bool)$slide->slide_headline_onlystyle, "mb-4") ?>
+                                                            <?php endif; ?>
 
-                                                             <?php if ($slide->slide_content): ?>
-                                                                 <div class="box-slide-content rte">
-                                                                     <?= $slide->slide_content ?>
-                                                                 </div>
-                                                             <?php endif; ?>
+                                                            <?php if ($slide->slide_content): ?>
+                                                                <div class="box-slide-content rte">
+                                                                    <?= $slide->slide_content ?>
+                                                                </div>
+                                                            <?php endif; ?>
 
-                                                             <?php if (!empty($slide->buttons)): ?>
-                                                                 <div class="buttons pt-4">
-                                                                     <?= ButtonHelper::generateButtonHTML($slide->buttons) ?>
-                                                                 </div>
-                                                             <?php endif; ?>
-                                                         </div>
-                                                     </div>
-                                                 <?php endforeach; ?>
-                                             </div>
-                                             <?php /* Swiper Controls kommen hier nicht mehr hin, sondern in box-slider-anchor */ ?>
-                                         </div>
-                                         <?php if (count($this->box_slides) > 1): ?>
-                                             <div class="box-paginator rsce-hero-box-slider-pagination-<?= $uniqueId ?>"></div>
-                                             <div class="hero-complex-swiper-nav">
-                                                 <button type="button" class="hc-button-prev rsce-hero-box-slider-prev-<?= $uniqueId ?>">
-                                                     <i class="fak fa-chevron-left"></i>
-                                                 </button>
-                                                 <div class="button-separator"></div>
-                                                 <button type="button" class="hc-button-next rsce-hero-box-slider-next-<?= $uniqueId ?>">
-                                                     <i class="fak fa-chevron-right"></i>
-                                                 </button>
-                                             </div>
-                                         <?php endif; ?>
-                                     </div>
-                                 </div>
-                             <?php endif; ?>
+                                                            <?php if (!empty($slide->buttons)): ?>
+                                                                <div class="buttons pt-4">
+                                                                    <?= ButtonHelper::generateButtonHTML($slide->buttons) ?>
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                        <?php if (count($this->box_slides) > 1): ?>
+                                            <div class="box-paginator rsce-hero-box-slider-pagination-<?= $uniqueId ?>"></div>
+                                            <div class="hero-complex-swiper-nav">
+                                                <button type="button" class="hc-button-prev rsce-hero-box-slider-prev-<?= $uniqueId ?>">
+                                                    <i class="fak fa-chevron-left"></i>
+                                                </button>
+                                                <div class="button-separator"></div>
+                                                <button type="button" class="hc-button-next rsce-hero-box-slider-next-<?= $uniqueId ?>">
+                                                    <i class="fak fa-chevron-right"></i>
+                                                </button>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <?php endif; ?>

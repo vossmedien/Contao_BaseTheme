@@ -342,6 +342,16 @@ return array(
             ),
         ),
 
+        'animation_type_buttons' => array(
+            'label' => array('Animation: Buttons', 'Falls nicht gesetzt, wird die Text-Animation verwendet.'),
+            'inputType' => 'select',
+            'options' => GlobalElementConfig::getAnimations(),
+            'eval' => array('tl_class' => 'w50', 'includeBlankOption' => true),
+            'dependsOn' => array(
+                'field' => 'animation_type_element',
+                'value' => array('', 'no-animation'),
+            ),
+        ),
 
         'add_images' => array(
             'label' => array('Bilder hinzufügen', ''),

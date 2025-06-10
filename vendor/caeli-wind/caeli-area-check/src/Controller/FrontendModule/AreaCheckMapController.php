@@ -104,6 +104,9 @@ class AreaCheckMapController extends AbstractFrontendModuleController
                     $email = '';
                 }
 
+                // UUID für fehlgeschlagene Parks generieren
+                $uuid = $this->generateUniqueUuid();
+
                 // Daten in die Datenbank einfügen
                 $set = [
                     'tstamp' => time(),
@@ -117,6 +120,7 @@ class AreaCheckMapController extends AbstractFrontendModuleController
                     'park_rating' => $parkData ? json_encode($parkData) : null,
                     'status' => $status,
                     'error_message' => $errorMessage ?: '',
+                    'uuid' => $uuid,
                 ];
 
                 // Insert ausführen
@@ -138,15 +142,15 @@ class AreaCheckMapController extends AbstractFrontendModuleController
                     
                     if ($detailPage) {
                         // Bei erfolgreichen Parks: parkid verwenden (dauerhaft aufrufbar)
-                        // Bei fehlgeschlagenen Parks: checkid mit DB-ID verwenden (nur für diesen Check)
+                        // Bei fehlgeschlagenen Parks: UUID verwenden (kryptisch, sicher)
                         if ($isSuccess) {
                             $detailUrl = $detailPage->getFrontendUrl() . '?parkid=' . urlencode($parkid);
                         } else {
-                            $detailUrl = $detailPage->getFrontendUrl() . '?checkid=' . urlencode($insertId);
+                            $detailUrl = $detailPage->getFrontendUrl() . '?checkid=' . urlencode($uuid);
                         }
                         
                         $this->logger->info('[AreaCheckMapController] === REDIRECT DEBUG ===');
-                        $this->logger->info('[AreaCheckMapController] URL-Parameter: ' . ($isSuccess ? 'parkid=' . $parkid : 'checkid=' . $insertId));
+                        $this->logger->info('[AreaCheckMapController] URL-Parameter: ' . ($isSuccess ? 'parkid=' . $parkid : 'checkid=' . $uuid));
                         $this->logger->info('[AreaCheckMapController] detailUrl: ' . $detailUrl);
                         $this->logger->info('[AreaCheckMapController] Detailseite Frontend URL: ' . $detailPage->getFrontendUrl());
                         return new Response('', 302, ['Location' => $detailUrl]);
@@ -647,6 +651,41 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         }
         
         return null;
+    }
+
+    /**
+     * Generiert eine eindeutige UUID für fehlgeschlagene Park-Checks
+     */
+    private function generateUniqueUuid(): string
+    {
+        $maxAttempts = 10;
+        $attempts = 0;
+        
+        do {
+            // UUID4 generieren (zufällig)
+            $uuid = sprintf(
+                '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+                mt_rand(0, 0xffff),
+                mt_rand(0, 0x0fff) | 0x4000,
+                mt_rand(0, 0x3fff) | 0x8000,
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            );
+            
+            // Prüfen ob UUID bereits existiert
+            $existing = Database::getInstance()
+                ->prepare("SELECT id FROM tl_flaechencheck WHERE uuid = ?")
+                ->execute($uuid);
+            
+            if ($existing->numRows === 0) {
+                return $uuid;
+            }
+            
+            $attempts++;
+        } while ($attempts < $maxAttempts);
+        
+        // Fallback: Timestamp-basiert wenn UUID-Kollision
+        return 'fc-' . time() . '-' . bin2hex(random_bytes(8));
     }
 
 

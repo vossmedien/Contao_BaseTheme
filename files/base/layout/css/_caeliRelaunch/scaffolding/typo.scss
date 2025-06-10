@@ -118,6 +118,23 @@ ul.list-check {
       top: -4px;
       font-size: 1.75rem;
     }
+
+    &.is-invalid{
+      &:before{
+        content: "\e010";
+      }
+    }
+
+    &.is-danger{
+      &:before{
+        color: var(--bs-danger);
+      }
+    }
+    &.is-warning{
+      &:before{
+        color: var(--bs-warning);
+      }
+    }
   }
 }
 

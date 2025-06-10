@@ -39,6 +39,13 @@ class AreaCheckResultController extends AbstractFrontendModuleController
     {
         $this->logger->info('[AreaCheckResultController] === DEBUGGING START ===');
         
+        // Contao Sprachdatei laden - SOFORT am Anfang
+        System::loadLanguageFile('default');
+        
+        // Übersetzungen aus Contao-Sprachdateien verwenden
+        $translations = $GLOBALS['TL_LANG']['caeli_area_check'] ?? [];
+        $template->translations = $translations;
+        
         // Alle URL-Parameter loggen
         $allParams = $request->query->all();
         $this->logger->info('[AreaCheckResultController] Alle URL-Parameter: ' . json_encode($allParams));
@@ -83,19 +90,31 @@ class AreaCheckResultController extends AbstractFrontendModuleController
             }
             $this->logger->info('[AreaCheckResultController] Letzte 10 DB-Einträge: ' . json_encode($entries));
             
-            // Zuerst in der Datenbank suchen - entweder über park_id oder ID
+            // Zuerst in der Datenbank suchen - entweder über park_id, UUID oder ID (Fallback)
             $dbResult = null;
-            if (is_numeric($checkid)) {
-                // Numeric checkid = DB-ID (für fehlgeschlagene Parks)
-                $this->logger->info('[AreaCheckResultController] Suche nach DB-ID: ' . $checkid);
-                $dbResult = Database::getInstance()
-                    ->prepare("SELECT * FROM tl_flaechencheck WHERE id = ?")
-                    ->execute($checkid);
-            } else {
-                // String checkid = park_id (für erfolgreiche Parks, auch Pseudo-Park-IDs)
+            
+            // 1. Versuch: park_id (für erfolgreiche Parks) - ZUERST prüfen!
+            if (!is_numeric($checkid)) {
                 $this->logger->info('[AreaCheckResultController] Suche nach park_id: ' . $checkid);
                 $dbResult = Database::getInstance()
                     ->prepare("SELECT * FROM tl_flaechencheck WHERE park_id = ? ORDER BY tstamp DESC LIMIT 1")
+                    ->execute($checkid);
+                
+                // Wenn nicht als park_id gefunden und es UUID-Format hat, dann in uuid Spalte suchen
+                if ((!$dbResult || $dbResult->numRows === 0) && 
+                    (preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i', $checkid) || 
+                     preg_match('/^fc-\d+-[a-f0-9]{16}$/', $checkid))) {
+                    $this->logger->info('[AreaCheckResultController] park_id nicht gefunden, versuche UUID: ' . $checkid);
+                    $dbResult = Database::getInstance()
+                        ->prepare("SELECT * FROM tl_flaechencheck WHERE uuid = ?")
+                        ->execute($checkid);
+                }
+            }
+            // 2. Fallback: DB-ID (für alte fehlgeschlagene Parks)
+            else {
+                $this->logger->info('[AreaCheckResultController] Fallback: Suche nach DB-ID: ' . $checkid);
+                $dbResult = Database::getInstance()
+                    ->prepare("SELECT * FROM tl_flaechencheck WHERE id = ?")
                     ->execute($checkid);
             }
             
@@ -158,14 +177,6 @@ class AreaCheckResultController extends AbstractFrontendModuleController
             $template->isSuccess = false;
             $template->rating = null;
         }
-        
-        // Contao Sprachdatei laden - wie im Map-Controller
-        System::loadLanguageFile('default');
-        
-        // Übersetzungen aus Contao-Sprachdateien verwenden
-        $translations = $GLOBALS['TL_LANG']['caeli_area_check'] ?? [];
-        
-        $template->translations = $translations;
         
         return $template->getResponse();
     }

@@ -54,6 +54,17 @@ return array(
             'default' => 'container-wide',
             'eval' => array('tl_class' => 'w50'),
         ),
+        'column_alignment' => array(
+            'label' => array('Spaltenausrichtung (vertikal)', 'Standardmäßig mittig'),
+            'inputType' => 'select',
+            'options' => array(
+                'center' => 'Mittig (Standard)',
+                'start' => 'Oben',
+                'end' => 'Unten',
+            ),
+            'default' => 'center',
+            'eval' => array('tl_class' => 'w50'),
+        ),
 
         // Haupt-Layout (oben)
         'main_layout_group' => array(
@@ -71,6 +82,16 @@ return array(
             'default' => 'h1',
             'options' => GlobalElementConfig::getHeadlineTagOptions(),
             'eval' => array('tl_class' => 'w50'),
+        ),
+        'main_headline_onlystyle' => array(
+            'label' => array('Hauptheadline nur als Überschrift darstellen', 'Stellt die Headline visuell als Überschrift dar, aber nicht semantisch.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
+        'left_text_below_headline' => array(
+            'label' => array('Zusätzlicher Text unter der Headline (links)', ''),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr', 'allowHtml' => true),
         ),
         'main_text' => array(
             'label' => array('Rechter Textblock', ''),
@@ -102,7 +123,6 @@ return array(
                 'filesOnly' => true,
                 'extensions' => Contao\Config::get('validImageTypes'),
                 'tl_class' => 'clr',
-                'mandatory' => true,
             ),
             'dependsOn' => array(
                 'field' => 'media_type',
@@ -225,10 +245,23 @@ return array(
             'inputType' => 'checkbox',
             'eval' => array( 'tl_class' => 'clr'),
         ),
+        'box_position' => array(
+            'label' => array('Position der Box', 'In welcher Spalte soll die Box angezeigt werden?'),
+            'inputType' => 'select',
+            'options' => array(
+                'right' => 'Rechte Spalte (Standard)',
+                'left' => 'Linke Spalte',
+            ),
+            'default' => 'right',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'activate_box_slider',
+            ),
+        ),
         'box_background_color' => array(
             'label' => array('Hintergrundfarbe der Box', 'z.B. #FFFFFF oder rgba(0,0,0,0.5)'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50 clr'),
+            'eval' => array('tl_class' => 'w50'),
             'dependsOn' => array(
                 'field' => 'activate_box_slider',
             ),
@@ -263,6 +296,11 @@ return array(
                     'default' => 'h3',
                     'options' => GlobalElementConfig::getHeadlineTagOptions(),
                     'eval' => array('tl_class' => 'w50'),
+                ),
+                'slide_headline_onlystyle' => array(
+                    'label' => array('Slide-Headline nur als Überschrift darstellen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50 clr'),
                 ),
                 'slide_content' => array(
                     'label' => array('Inhaltstext des Slides', ''),

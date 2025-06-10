@@ -79,6 +79,12 @@ class AuctionElementController extends AbstractContentElementController
 
         $this->logger->info('[AuctionElementController] ' . count($auctions) . ' Auktionen nach Filterung und Sortierung erhalten.');
 
+        // Limit anwenden, falls gesetzt
+        if ($model->auctionElementLimit > 0) {
+            $auctions = array_slice($auctions, 0, (int)$model->auctionElementLimit);
+            $this->logger->debug('[AuctionElementController] Limit von ' . $model->auctionElementLimit . ' angewendet. Neue Anzahl: ' . count($auctions));
+        }
+
         $template->detailPage = null;
         if ($model->jumpTo) {
             $pageModel = PageModel::findById($model->jumpTo);

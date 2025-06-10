@@ -47,7 +47,63 @@
     margin-bottom: 0.5rem;
 }
 
-/* Autocomplete Dropdown Styling */
+/* Eigene Autocomplete-Lösung */
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--bs-tertiary) !important;
+    border: var(--bs-border-width) solid var(--bs-border-color) !important;
+    border-top: none !important;
+    border-radius: 0 0 var(--bs-border-radius) var(--bs-border-radius) !important;
+    box-shadow: var(--bs-box-shadow) !important;
+    z-index: 1000 !important;
+    max-height: 200px;
+    overflow-y: auto;
+    
+    @media (max-width: 768px) {
+        max-width: calc(100vw - 2rem) !important;
+        width: calc(100vw - 2rem) !important;
+        transform: scale(0.8) !important;
+        transform-origin: top left !important;
+    }
+}
+
+.autocomplete-item {
+    padding: 0.35rem 0.75rem !important;
+    color: var(--bs-body-color) !important;
+    background-color: var(--bs-tertiary) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+    cursor: pointer !important;
+    font-size: var(--bs-body-font-size) !important;
+    display: flex;
+    align-items: center;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.selected {
+    background-color: var(--bs-primary) !important;
+    color: white !important;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none !important;
+}
+
+.autocomplete-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    opacity: 0.6;
+}
+
+/* Input-Container für relative Positionierung */
+#controls > .card-body > div:has(#place-autocomplete) {
+    position: relative;
+}
+
+/* Fallback: Altes Google Autocomplete falls noch verwendet */
 .pac-container {
     background-color: var(--bs-tertiary) !important;
     color: var(--bs-body-color) !important;

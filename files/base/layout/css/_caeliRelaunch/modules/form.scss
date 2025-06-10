@@ -3,7 +3,7 @@ form .formbody {
   --bs-gutter-y: 10px;
 }
 
-.form-control{
+.form-control, .form-select{
   background-color: var(--bs-white);
 
   &:focus{

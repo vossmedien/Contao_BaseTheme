@@ -52,7 +52,7 @@ $GLOBALS['TL_DCA']['tl_flaechencheck'] = [
     ],
     'palettes' => [
         '__selector__' => [],
-        'default' => 'name,vorname,phone,email,searched_address,geometry,park_id,park_rating,status,error_message'
+        'default' => 'name,vorname,phone,email,searched_address,geometry,park_id,park_rating,status,error_message,uuid'
     ],
     'fields' => [
         'id' => [
@@ -130,6 +130,12 @@ $GLOBALS['TL_DCA']['tl_flaechencheck'] = [
             'inputType' => 'text',
             'eval' => ['maxlength'=>255],
             'sql' => "varchar(255) NOT NULL default ''"
+        ],
+        'uuid' => [
+            'label' => ['Eindeutige ID', 'Zufällige UUID für sichere URL-Parameter'],
+            'inputType' => 'text',
+            'eval' => ['maxlength'=>36, 'unique'=>true, 'doNotCopy'=>true],
+            'sql' => "varchar(36) NOT NULL default ''"
         ]
     ]
 ];

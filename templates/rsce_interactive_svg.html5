@@ -97,7 +97,7 @@ $animateLinksIndividually = $this->animate_links_individually ?? false;
             <?= $overallHeadlineHTML; ?>
         <?php endif; ?>
 
-        <div class="row align-items-center">
+        <div class="row align-items-center pt-lg-5">
             <?php // --- Linke Spalte (SVG) --- ?>
             <div class="d-none d-lg-block col-lg-6 svg-column" <?php if ($this->animation_type_svg && $this->animation_type_svg !== 'no-animation'): ?>data-animation="<?= $this->animation_type_svg; ?>"<?php endif; ?>>
                 <?php if ($svgOutput): ?>

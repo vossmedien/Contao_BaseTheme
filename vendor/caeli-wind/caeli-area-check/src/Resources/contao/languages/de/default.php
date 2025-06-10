@@ -22,8 +22,14 @@ $GLOBALS['TL_LANG']['caeli_area_check']['loading']['texts'] = [
 
 // Form elements
 $GLOBALS['TL_LANG']['caeli_area_check']['form'] = [
-    'plz_placeholder' => 'PLZ eingeben',
-    'plz_alert' => 'Bitte geben Sie eine vollständige 5-stellige Postleitzahl ein.',
+    'address_label' => 'Adresse oder Ort',
+    'address_placeholder' => 'Adresse oder Postleitzahl eingeben',
+    'address_alert' => 'Bitte geben Sie eine vollständige Adresse oder Postleitzahl ein.',
+    'name_label' => 'Nachname',
+    'firstname_label' => 'Vorname',
+    'phone_label' => 'Telefon',
+    'email_label' => 'E-Mail-Adresse',
+    'submit_button' => 'Flächenprüfung starten',
     'button' => [
         'check_area' => 'Ergebnis anzeigen',
         'restart' => 'Neu starten',
@@ -41,10 +47,9 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
     ],
     'plz_input' => [
         'title' => 'Schritt 1: Ihr Standort zählt.',
-        'title_alt' => 'Hier starten Sie Ihren Flächencheck.',
-        'content' => 'Starten Sie, indem Sie Ihren Ort oder die Postleitzahl eingeben. So finden wir den richtigen Kartenausschnitt für Ihre Fläche.',
         'button_back' => 'Zurück',
         'button_next' => 'Weiter',
+        'content' => 'Starten Sie, indem Sie Ihren Ort oder Ihre Adresse eingeben. So finden wir den richtigen Kartenausschnitt für Ihre Fläche.',
     ],
     'polygon_edit' => [
         'title' => 'Schritt 2: Fläche einzeichnen.',
@@ -64,9 +69,9 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
 
 // Consent overlay
 $GLOBALS['TL_LANG']['caeli_area_check']['consent']['overlay'] = [
-    'title' => 'Consent erforderlich',
-    'message' => 'Für die Nutzung dieser Funktion benötigen wir Ihr Einverständnis für Google Maps und HubSpot.',
-    'button' => 'Einverständnis erteilen',
+    'title' => 'Ihr Flächencheck startet gleich!',
+    'message' => 'Um Ihnen die interaktive Karte zu zeigen und Ihre Anfrage bearbeiten zu können, benötigen wir kurz Ihr Einverständnis.',
+    'button' => 'Jetzt starten',
 ];
 
 // Error messages
@@ -100,6 +105,11 @@ $GLOBALS['TL_LANG']['caeli_area_check']['alerts'] = [
         'title' => 'Google Maps Fehler',
         'message' => 'Google Maps API konnte nicht geladen werden!',
         'type' => 'danger',
+    ],
+    'invalid_postal_code' => [
+        'title' => 'Ungültige Postleitzahl',
+        'message' => 'Bitte geben Sie eine gültige Adresse mit Postleitzahl ein.',
+        'type' => 'warning',
     ],
 ];
 

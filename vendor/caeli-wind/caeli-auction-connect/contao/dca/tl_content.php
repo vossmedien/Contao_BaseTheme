@@ -19,7 +19,7 @@ use CaeliWind\CaeliAuctionConnect\Controller\ContentElement\AuctionElementContro
  */
 $GLOBALS['TL_DCA']['tl_content']['palettes'][AuctionElementController::TYPE] = '
     {type_legend},type,headline;
-    {auction_legend},auctionElementFilters,auctionRawDataPreview;
+    {auction_legend},auctionElementFilters,auctionElementLimit,auctionRawDataPreview;
     {sort_legend_ce},auctionSortRulesCE;
     {link_legend:hide},jumpTo;
     {template_legend:hide},customTpl,auctionItemTemplateCE;
@@ -44,6 +44,14 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['auctionElementFilters'] = [
     'inputType'               => 'textarea',
     'eval'                    => ['style' => 'height:60px', 'preserveTags' => true, 'rte' => false, 'tl_class' => 'clr'],
     'sql'                     => "text NULL"
+];
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['auctionElementLimit'] = [
+    'label'     => ['Anzahl begrenzen', 'Maximale Anzahl der angezeigten Auktionen (0 = unbegrenzt)'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => ['rgxp' => 'natural', 'tl_class' => 'w50'],
+    'sql'       => "smallint(5) unsigned NOT NULL default '0'"
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['auctionRawDataPreview'] = [

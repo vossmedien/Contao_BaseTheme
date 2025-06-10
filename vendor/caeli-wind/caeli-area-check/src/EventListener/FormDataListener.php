@@ -104,10 +104,27 @@ class FormDataListener
     {
         $db = Database::getInstance();
         
-        // Datenbank-Entry finden - zuerst versuchen über park_id, dann über ID
+        // Datenbank-Entry finden - zuerst park_id, dann UUID, dann ID (Fallback)
         $result = null;
         
-        if (is_numeric($checkId)) {
+        // 1. Versuch: park_id (für erfolgreiche Parks) - ZUERST prüfen!
+        if (!is_numeric($checkId)) {
+            // Validierung: nur alphanumerische Zeichen und erlaubte Sonderzeichen für park_id
+            if (preg_match('/^[a-zA-Z0-9_-]+$/', $checkId)) {
+                $result = $db->prepare("SELECT * FROM tl_flaechencheck WHERE park_id = ? ORDER BY tstamp DESC LIMIT 1")
+                             ->execute($checkId);
+            }
+            
+            // Wenn nicht als park_id gefunden und es UUID-Format hat, dann in uuid Spalte suchen
+            if ((!$result || $result->numRows === 0) && 
+                (preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i', $checkId) || 
+                 preg_match('/^fc-\d+-[a-f0-9]{16}$/', $checkId))) {
+                $result = $db->prepare("SELECT * FROM tl_flaechencheck WHERE uuid = ?")
+                             ->execute($checkId);
+            }
+        }
+        // 2. Fallback: DB-ID (für alte fehlgeschlagene Parks)
+        else {
             // Numerische checkid = DB-ID (für fehlgeschlagene Parks)
             // Zusätzliche Validierung: nur positive Integers
             $numericId = (int) $checkId;
@@ -117,15 +134,6 @@ class FormDataListener
             }
             $result = $db->prepare("SELECT * FROM tl_flaechencheck WHERE id = ?")
                          ->execute($numericId);
-        } else {
-            // String checkid = park_id (für erfolgreiche Parks)
-            // Validierung: nur alphanumerische Zeichen und erlaubte Sonderzeichen
-            if (!preg_match('/^[a-zA-Z0-9_-]+$/', $checkId)) {
-                $this->logger->error('[FormDataListener] Ungültige park_id: ' . $checkId);
-                return;
-            }
-            $result = $db->prepare("SELECT * FROM tl_flaechencheck WHERE park_id = ? ORDER BY tstamp DESC LIMIT 1")
-                         ->execute($checkId);
         }
 
         if (!$result || $result->numRows === 0) {
