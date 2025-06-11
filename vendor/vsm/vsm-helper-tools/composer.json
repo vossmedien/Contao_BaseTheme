@@ -1,6 +1,6 @@
 {
   "name": "vsm/vsm-helper-tools",
-  "description": "VSM Helper & Tools &#40;Bildgenerierung, STRIPE-Anbindung, etc.&#41;",
+  "description": "VSM Helper & Tools für Contao 5.x - Bildgenerierung, Video-Handling, Button-Helper und Twig-Extensions",
   "keywords": [
     "contao",
     "bundle",
