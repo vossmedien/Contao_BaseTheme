@@ -97,12 +97,12 @@ $animateLinksIndividually = $this->animate_links_individually ?? false;
             <?= $overallHeadlineHTML; ?>
         <?php endif; ?>
 
-        <div class="row align-items-center">
+        <div class="row align-items-center pt-lg-5">
             <?php // --- Linke Spalte (SVG) --- ?>
             <div class="d-none d-lg-block col-lg-6 svg-column" <?php if ($this->animation_type_svg && $this->animation_type_svg !== 'no-animation'): ?>data-animation="<?= $this->animation_type_svg; ?>"<?php endif; ?>>
                 <?php if ($svgOutput): ?>
                     <div class="svg-container interactive-svg-figure">
-                        <?= $svgOutput; // Direkte Ausgabe des SVG-Codes   ?>
+                        <?= $svgOutput; // Direkte Ausgabe des SVG-Codes    ?>
                     </div>
                 <?php else: ?>
                     <?php if (EnvHelper::isBackend()): ?>
@@ -143,77 +143,77 @@ $animateLinksIndividually = $this->animate_links_individually ?? false;
             </div>
         </div>
     </div>
-</div>
 
-<?php if ($svgOutput && !empty($linksData) && EnvHelper::isFrontend()): ?>
-    <style>
-        #<?= $elementId ?>  .interactive-svg-figure svg .interactable-path {
-            transition: transform 0.2s ease-in-out, fill 0.2s ease-in-out; /* Kürzere Transition */
-            cursor: pointer;
-            transform-origin: center center; /* Skalierung vom Zentrum */
-        }
 
-        #<?= $elementId ?>  .interactive-svg-figure svg .interactable-path.hover-effect {
-            transform: scale(1.02);  /*Subtilere Skalierung */
-            fill: <?= $hoverColor ?> !important; /* Wichtig, um andere Fills zu überschreiben */
-            /* Ein Versuch, das Element anzuheben - Wirkung bei SVG ist aber begrenzt */
-            /* position: relative; */ /* Kann bei SVG-Pfaden unerwünschte Nebeneffekte haben */
-            /* z-index: 10; */ /* z-index wirkt meist nicht direkt auf SVG-Pfade innerhalb derselben Ebene */
-        }
+    <?php if ($svgOutput && !empty($linksData) && EnvHelper::isFrontend()): ?>
+        <style>
+            #<?= $elementId ?>  .interactive-svg-figure svg .interactable-path {
+                transition: transform 0.2s ease-in-out, fill 0.2s ease-in-out; /* Kürzere Transition */
+                cursor: pointer;
+                transform-origin: center center; /* Skalierung vom Zentrum */
+            }
 
-        #<?= $elementId ?>  .interactive-svg-links .interactive-svg-link.hover-effect {
-            /* Hier könnten globale Button-Hover-Effekte definiert werden, falls gewünscht,
-               oder spezifische, die durch JS getriggert werden */
-            /* Beispiel: box-shadow: 0 0 10px rgba(0,0,0,0.5); */
-        }
-    </style>
+            #<?= $elementId ?>  .interactive-svg-figure svg .interactable-path.hover-effect {
+                transform: scale(1.02); /*Subtilere Skalierung */
+                fill: <?= $hoverColor ?> !important; /* Wichtig, um andere Fills zu überschreiben */
+            }
 
-    <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            const mainElement = document.getElementById('<?= $elementId ?>');
-            if (!mainElement) return;
+            #<?= $elementId ?>  .interactive-svg-links .interactive-svg-link.hover-effect {
+                color: var(--bs-btn-hover-color);
+            }
 
-            const svgFigure = mainElement.querySelector('.interactive-svg-figure svg');
-            const links = mainElement.querySelectorAll('.interactive-svg-link');
+            #<?= $elementId ?>  .interactive-svg-links .interactive-svg-link.hover-effect:after {
+                padding-left: .35rem;
+            }
+        </style>
 
-            if (!svgFigure || links.length === 0) return;
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                const mainElement = document.getElementById('<?= $elementId ?>');
+                if (!mainElement) return;
 
-            links.forEach(link => {
-                const targetClass = link.dataset.svgTargetClass;
-                if (!targetClass) return;
+                const svgFigure = mainElement.querySelector('.interactive-svg-figure svg');
+                const links = mainElement.querySelectorAll('.interactive-svg-link');
 
-                const svgPaths = svgFigure.querySelectorAll('.' + targetClass.replace(/\s+/g, '.')); // Mehrere Klassen unterstützen
+                if (!svgFigure || links.length === 0) return;
 
-                svgPaths.forEach(path => {
-                    path.classList.add('interactable-path'); // Für CSS-Targeting
+                links.forEach(link => {
+                    const targetClass = link.dataset.svgTargetClass;
+                    if (!targetClass) return;
 
-                    // Hover über SVG-Pfad -> Link hervorheben
-                    path.addEventListener('mouseenter', () => {
+                    const svgPaths = svgFigure.querySelectorAll('.' + targetClass.replace(/\s+/g, '.')); // Mehrere Klassen unterstützen
+
+                    svgPaths.forEach(path => {
+                        path.classList.add('interactable-path'); // Für CSS-Targeting
+
+                        // Hover über SVG-Pfad -> Link hervorheben
+                        path.addEventListener('mouseenter', () => {
+                            link.classList.add('hover-effect');
+                            svgPaths.forEach(p => p.classList.add('hover-effect'));
+                        });
+                        path.addEventListener('mouseleave', () => {
+                            link.classList.remove('hover-effect');
+                            svgPaths.forEach(p => p.classList.remove('hover-effect'));
+                        });
+
+                        // Klick auf SVG-Pfad -> Link-Klick auslösen
+                        path.addEventListener('click', (event) => {
+                            event.preventDefault(); // Verhindert Standardverhalten des SVGs
+                            link.click(); // Löst Klick auf dem <a>-Tag aus
+                        });
+                    });
+
+                    // Hover über Link -> SVG-Pfad hervorheben
+                    link.addEventListener('mouseenter', () => {
+                        svgPaths.forEach(path => path.classList.add('hover-effect'));
                         link.classList.add('hover-effect');
-                        svgPaths.forEach(p => p.classList.add('hover-effect'));
                     });
-                    path.addEventListener('mouseleave', () => {
+                    link.addEventListener('mouseleave', () => {
+                        svgPaths.forEach(path => path.classList.remove('hover-effect'));
                         link.classList.remove('hover-effect');
-                        svgPaths.forEach(p => p.classList.remove('hover-effect'));
                     });
-
-                    // Klick auf SVG-Pfad -> Link-Klick auslösen
-                    path.addEventListener('click', (event) => {
-                        event.preventDefault(); // Verhindert Standardverhalten des SVGs
-                        link.click(); // Löst Klick auf dem <a>-Tag aus
-                    });
-                });
-
-                // Hover über Link -> SVG-Pfad hervorheben
-                link.addEventListener('mouseenter', () => {
-                    svgPaths.forEach(path => path.classList.add('hover-effect'));
-                    link.classList.add('hover-effect');
-                });
-                link.addEventListener('mouseleave', () => {
-                    svgPaths.forEach(path => path.classList.remove('hover-effect'));
-                    link.classList.remove('hover-effect');
                 });
             });
-        });
-    </script>
-<?php endif; ?> 
+        </script>
+    <?php endif; ?>
+</div>

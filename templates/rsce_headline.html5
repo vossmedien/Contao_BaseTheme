@@ -3,55 +3,66 @@
 // generateHeadlineHTML($topline, $headline, $subline, $headlineType, $animation = null, $headlineClass = null, $onlystyle = false, $additionalAttributes = null)
 
 use Contao\StringUtil;
-use Vsm\VsmHelperTools\Helper\EnvHelper; // Hinzufügen für Frontend-Check
-use Vsm\VsmHelperTools\Helper\ImageHelper; // Hinzufügen für Bildgenerierung
+use Vsm\VsmHelperTools\Helper\EnvHelper;
 
-// Globale Animation überschreibt individuelle Animationen
-$overrideAnimation = null;
-if (!empty($this->animation_type_element) && $this->animation_type_element !== 'no-animation') {
-    $overrideAnimation = 'no-animation';
+// Hinzufügen für Frontend-Check
+use Vsm\VsmHelperTools\Helper\ImageHelper;
+
+// Hinzufügen für Bildgenerierung
+
+// NEUE LOGIK für globale Animation
+$elementAnimation = null;
+$applyIndividualAnimations = !(!empty($this->animation_type_element) && $this->animation_type_element !== 'no-animation');
+
+if (!$applyIndividualAnimations) {
+    $elementAnimation = $this->animation_type_element;
 }
 
-// Animation für Headline-Element nur setzen, wenn 1-spaltig oder wenn 2-spaltig & Headline oben
-$headlineElementAnimation = $overrideAnimation ?: $this->animation_type_headline;
-if (!$this->two_columns || $this->headline_above_columns) {
-    // $headlineElementAnimation bleibt wie oben zugewiesen
-} else {
-    // In diesem Fall wird die Animation nicht direkt auf das Headline-Element angewendet,
-    // sondern potenziell auf die Spalte, daher hier keine direkte Zuweisung für $headlineElementAnimation
-    // Die Logik für $headlineHTML weiter unten berücksichtigt $overrideAnimation bereits.
+// Animationen für die verschiedenen Teile vorbereiten (vereinfacht):
+$headlineAnimation = $applyIndividualAnimations && !empty($this->animation_type_headline) && $this->animation_type_headline !== 'no-animation' ? $this->animation_type_headline : null;
+$headlineColumnAnim = $applyIndividualAnimations && !empty($this->animation_type_headline_column) && $this->animation_type_headline_column !== 'no-animation' ? $this->animation_type_headline_column : null;
+$contentColumnAnim = $applyIndividualAnimations && !empty($this->animation_type_content) && $this->animation_type_content !== 'no-animation' ? $this->animation_type_content : null;
+$slideAnim = $applyIndividualAnimations && !empty($this->slide_animation_type) && $this->slide_animation_type !== 'no-animation' ? $this->slide_animation_type : null;
+
+// Button-Animation mit Fallback auf Text-Animation (nur wenn Spalte selbst keine Animation hat)
+$buttonAnim = null;
+$buttonAnimForTwoColumn = null;
+if ($applyIndividualAnimations) {
+    if (!empty($this->animation_type_buttons) && $this->animation_type_buttons !== 'no-animation') {
+        $buttonAnim = $this->animation_type_buttons;
+        $buttonAnimForTwoColumn = $this->animation_type_buttons;
+    } elseif ($contentColumnAnim) {
+        $buttonAnim = $contentColumnAnim;
+        // Für zweispaltig: keine Button-Animation wenn Spalte Animation hat
+        $buttonAnimForTwoColumn = null;
+    }
 }
 
-$additionalHeadlineAttributes = []; // Als Array initialisieren
+// Zusätzliche Headline-Attribute vorbereiten
+$additionalHeadlineAttributes = [];
 if (!empty($this->is_quote) && $this->is_quote) {
     $additionalHeadlineAttributes[] = 'is-quote';
 }
 
-if ($this->two_columns && !$this->headline_above_columns &&
-    empty($this->second_content) &&
-    empty($headlineColumnImageHTML) &&
-    empty($headlineColumnButtonsHTML)) {
-    $additionalHeadlineAttributes[] = 'mb-lg-0';
-}
-
+// Headline ohne Animation vom Helper generieren
 $headlineHTML = Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
     $this->topline,
     $this->headline,
     $this->subline,
     $this->headline_type,
-    $overrideAnimation ?: ($this->two_columns && !$this->headline_above_columns ? null : $this->animation_type_headline),
-    null, // Sechster Parameter (headlineClass) bleibt null
+    'no-animation',
+    null,
     (bool)$this->onlystyle,
-    implode(' ', $additionalHeadlineAttributes) // Attribute als String übergeben
+    implode(' ', $additionalHeadlineAttributes)
 );
 
-// Helfer für die Buttons generieren
+// Buttons mit korrekter Animation-Einstellung generieren
 $buttonsHTML = '';
 if (!empty($this->buttons)) {
-    $buttonsHTML = Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons);
+    $buttonsHTML = Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->buttons, null, false);
 }
 
-// Standardwerte und Berechnungen für zweispaltiges Layout
+// Standardwerte für zweispaltiges Layout
 $colWidthContent = '50';
 $bsColContent = 6;
 $bsColHeadline = 6;
@@ -59,16 +70,12 @@ $orderContentClass = 'order-1';
 $orderHeadlineClass = 'order-2';
 
 // Bilddaten vorbereiten
-$imagesData = [];
 $imageUuids = [];
 if ($this->add_images && !empty($this->multiSRC)) {
     $unserialized = StringUtil::deserialize($this->multiSRC);
     if (is_array($unserialized)) {
-        $imageUuids = $unserialized;
-
-        // Filterung bleibt wichtig, falls ungültige Einträge oder Verzeichnisse dabei sind
-        $imageUuids = array_filter($imageUuids, function ($uuid) {
-            if (!is_string($uuid) || strlen($uuid) !== 36) { // Grundlegende UUID-String-Prüfung
+        $imageUuids = array_filter($unserialized, function ($uuid) {
+            if (!is_string($uuid) || strlen($uuid) !== 36) {
                 return false;
             }
             $file = \Contao\FilesModel::findByUuid($uuid);
@@ -76,100 +83,66 @@ if ($this->add_images && !empty($this->multiSRC)) {
         });
     }
 }
- 
+
 $hasImages = !empty($imageUuids);
-$rand = rand(1, 1000); // Zufällige ID für Lightbox/Slider
-$spacingClass = $this->image_spacing_class ?: 'mb-1'; // Abstandsklasse holen oder Fallback
+$rand = rand(1, 1000);
+$spacingClass = $this->image_spacing_class ?: 'mb-1';
 $totalImages = count($imageUuids);
 
 if ($this->two_columns) {
-    $colWidthContent = $this->column_width_content ?? '50'; // Standard 50%
-    $colWidthContentInt = (int)$colWidthContent;
-    $colWidthHeadlineInt = 100 - $colWidthContentInt;
+    $colWidthContent = $this->column_width_content ?? '50';
+    $colWidthContentFloat = (float)$colWidthContent;
 
-    // Bootstrap Spaltenklassen berechnen (Basis ist 12)
-    $bsColContent = round(12 * ($colWidthContentInt / 100));
-    // Sicherstellen, dass die Summe 12 ergibt und keine Spalte 0 ist
-    $bsColContent = max(1, min(11, $bsColContent));
+    // Bootstrap Spaltenklassen mit optimierter Switch-Logik
+    $bsColContent = match($colWidthContent) {
+        '16.67' => 2,
+        '20', '25' => 3,
+        '30', '33.33' => 4,
+        '40', '41.67' => 5,
+        '50' => 6,
+        '58.33', '60' => 7,
+        '66.67', '70' => 8,
+        '75' => 9,
+        '80', '83.33' => 10,
+        default => max(1, min(11, round(12 * ($colWidthContentFloat / 100))))
+    };
+
     $bsColHeadline = 12 - $bsColContent;
 
-    // Klassen für Spaltenreihenfolge basierend auf der Auswahl 'column_order'
-    $orderHeadlineClass = 'order-lg-1 order-1'; // Standard: HL Mobil, HL Desktop
-    $orderContentClass = 'order-lg-2 order-2'; // Standard: CO Mobil, CO Desktop
-
-    switch ($this->column_order) {
-        case 'hl_co': // Mobil: HL, Desktop: CO
-            $orderHeadlineClass = 'order-lg-2 order-1';
-            $orderContentClass = 'order-lg-1 order-2';
-            break;
-        case 'co_hl': // Mobil: CO, Desktop: HL
-            $orderHeadlineClass = 'order-lg-1 order-2';
-            $orderContentClass = 'order-lg-2 order-1';
-            break;
-        case 'co_co': // Mobil: CO, Desktop: CO
-            $orderHeadlineClass = 'order-lg-2 order-2';
-            $orderContentClass = 'order-lg-1 order-1';
-            break;
-        // Fall 'hl_hl' ist der Standard und bereits gesetzt
-    }
-
-    // Wenn Headline oben, bekommt sie dort die Animation
-    if($this->headline_above_columns) {
-        // Wichtig: Wenn die Headline über den Spalten ist, bekommt sie die mb-lg-0 Klasse nicht,
-        // da sie sich nicht auf die alleinige Präsenz in der Spalte bezieht.
-        $headlineAboveColumnsAdditionalAttributes = [];
-        if (!empty($this->is_quote) && $this->is_quote) {
-            $headlineAboveColumnsAdditionalAttributes[] = 'is-quote';
-        }
-
-         $headlineHTML = Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
-            $this->topline,
-            $this->headline,
-            $this->subline,
-            $this->headline_type,
-            $overrideAnimation ?: $this->animation_type_headline, // Animation hier, wenn Headline oben
-            null, // Sechster Parameter (headlineClass) bleibt null
-            (bool)$this->onlystyle,
-            implode(' ', $headlineAboveColumnsAdditionalAttributes) // Achter Parameter hier ohne mb-lg-0
-        );
-    }
-
+    // Spaltenreihenfolge
+    [$orderHeadlineClass, $orderContentClass] = match($this->column_order ?? 'hl_hl') {
+        'hl_co' => ['order-lg-2 order-1', 'order-lg-1 order-2'],
+        'co_hl' => ['order-lg-1 order-2', 'order-lg-2 order-1'],
+        'co_co' => ['order-lg-2 order-2', 'order-lg-1 order-1'],
+        default => ['order-lg-1 order-1', 'order-lg-2 order-2']
+    };
 }
-
-
 
 // Kopfbild vorbereiten
 $headerImageHTML = '';
 if ($this->add_header_image && $this->header_image) {
-    // fileTree mit fieldType=radio speichert UUID direkt (nicht serialisiert)
-
-
-        $headerImageHTML = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
-            $this->header_image,
-            null, // Kein Alt-Text aus Headline
-            null, // Keine Beschreibung
-            $this->header_image_size, // Gewählte Bildgröße
-            null, // Keine CSS-Klasse extra
-            false, // Korrektur: Auf true geändert, um Figure/Picture zu erzwingen
-            false // Keine Lightbox per Default (kann man anpassen)
-        );
-
+    $headerImageHTML = ImageHelper::generateImageHTML(
+        $this->header_image,
+        null,
+        null,
+        $this->header_image_size,
+        null,
+        false,
+        false
+    );
 }
 
 // Bild für Headline-Spalte vorbereiten
 $headlineColumnImageHTML = '';
 if ($this->two_columns && $this->add_second_content && $this->add_headline_column_image && $this->headline_column_image) {
-    $lightboxIdHeadlineColumn = null;
-    if ($this->headline_column_open_lightbox) {
-        $lightboxIdHeadlineColumn = 'lightbox_hl_col_' . $this->id . '_' . $rand;
-    }
-    $headlineColumnImageHTML = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
+    $lightboxIdHeadlineColumn = $this->headline_column_open_lightbox ? 'lightbox_hl_col_' . $this->id . '_' . $rand : null;
+    $headlineColumnImageHTML = ImageHelper::generateImageHTML(
         $this->headline_column_image,
         null,
         null,
         $this->headline_column_image_size,
         null,
-        false, // Ggf. auf true ändern für figure/picture
+        false,
         $lightboxIdHeadlineColumn
     );
 }
@@ -177,13 +150,24 @@ if ($this->two_columns && $this->add_second_content && $this->add_headline_colum
 // Helfer für die Buttons der Headlinespalte generieren
 $headlineColumnButtonsHTML = '';
 if ($this->two_columns && $this->add_second_content && !empty($this->headline_column_buttons)) {
-    $headlineColumnButtonsHTML = Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->headline_column_buttons);
+    $headlineColumnButtonsHTML = Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($this->headline_column_buttons, null,  false);
 }
+
+// mb-lg-0 für Headline-Attribute hinzufügen falls nötig
+if ($this->two_columns && !$this->headline_above_columns &&
+    empty($this->second_content) &&
+    empty($headlineColumnImageHTML) &&
+    empty($headlineColumnButtonsHTML)) {
+    $additionalHeadlineAttributes[] = 'mb-lg-0';
+}
+
+// Variable für die Zuweisung der columns_container_css_class
+$assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'container');
 
 ?>
 
-<div <?php if($overrideAnimation ?: $this->animation_type_element):?>data-animation="<?= $overrideAnimation ?: $this->animation_type_element;?>"<?php endif;?> <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?> <?php if ($this->two_columns): ?>layout-two-columns<?php else: ?>layout-one-column<?php endif; ?>">
-    <div class="ce--inner <?php if (!$this->two_columns && !empty($this->columns_container_css_class)): ?><?= $this->columns_container_css_class ?><?php endif; ?>">
+<div <?php if ($elementAnimation): ?>data-animation="<?= $elementAnimation; ?>"<?php endif; ?> <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?> <?php if ($this->two_columns): ?>layout-two-columns<?php else: ?>layout-one-column<?php endif; ?>">
+    <div class="ce--inner <?php if ($assignColumnsContainerClassToInner): ?><?= $this->columns_container_css_class ?><?php endif; ?>">
 
         <?php // --- Kopfbild Ausgabe --- ?>
         <?php if ($headerImageHTML): ?>
@@ -192,397 +176,366 @@ if ($this->two_columns && $this->add_second_content && !empty($this->headline_co
             </div>
         <?php endif; ?>
 
-        <?php if ($this->two_columns): ?>
-            <?php // --- ZWEISPALTIG --- ?>
+        <div <?php if (!$assignColumnsContainerClassToInner && !empty($this->columns_container_css_class)): ?>class="<?= $this->columns_container_css_class ?>"<?php endif; ?> >
+            <?php if ($this->two_columns): ?>
+                <?php // --- ZWEISPALTIG --- ?>
 
-            <?php if ($this->headline_above_columns): ?>
-            <div class="container">
-                 <div class="headline-above-columns mb-md-gap ">
+                    <div class="row <?php if($this->second_content != "" && $headlineColumnImageHTML != "" && $headlineColumnButtonsHTML != ""):?>gy-2<?php elseif(!$this->desc && $hasImages):?>gy-1<?php endif;?> gy-lg-0 gx-lg-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
 
-                     <?= $headlineHTML; // Headline oberhalb der Spalten (mit Animation) ?>
-                         </div>
-                 </div>
-            <?php endif; ?>
+                        <?php if ($this->headline_above_columns): ?>
+                            <div <?php if ($headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="col-12">
+                                <div class="headline-above-columns">
+                                    <?= $headlineHTML; // Headline oberhalb der Spalten  ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
 
-            <?php // Wrapper für die row, dem die columns_container_css_class hinzugefügt wird ?>
-            <div <?php if (!empty($this->columns_container_css_class)): ?>class="<?= $this->columns_container_css_class ?>"<?php endif; ?>>
-                <div class="row g-lg-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
-
-                    <?php // --- Headlinespalte --- ?>
-                    <?php
-                        // Animation für die Headlinespalte (wenn 2. Inhalt aktiv UND Headline *in* der Spalte ist)
-                        $headlineColumnAnimation = $overrideAnimation ?: $this->animation_type_headline_column;
+                        <?php // --- Headlinespalte --- ?>
+                        <?php
                         $headlineColumnClasses = ['headline-column'];
                         if ($this->headline_column_css_class) {
                             $headlineColumnClasses[] = $this->headline_column_css_class;
                         }
-                    ?>
-                    <div  class="col-12 col-lg-<?= $bsColHeadline; ?> <?= $orderHeadlineClass; ?> ">
-                         <div class="<?= implode(' ', $headlineColumnClasses); ?>">
-                            <?php if (!$this->headline_above_columns): ?>
-                                <?= $headlineHTML; // Headline in der Spalte (Animation wird durch $headlineHTML oben schon berücksichtigt) ?>
-                            <?php endif; ?>
+                        ?>
+                        <div <?php if ($headlineColumnAnim): ?>data-animation="<?= $headlineColumnAnim; ?>"<?php endif; ?> class="col-12 col-lg-<?= $bsColHeadline; ?> <?= $orderHeadlineClass; ?> <?= implode(' ', $headlineColumnClasses); ?>">
+                            <div class="">
+                                <?php if (!$this->headline_above_columns): ?>
+                                    <div <?php if ($headlineAnimation && !$headlineColumnAnim): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="headline-wrapper">
+                                        <?= $headlineHTML; ?>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php if ($this->add_second_content && $this->second_content): ?>
-                                <div <?php if($headlineColumnAnimation): ?>data-animation="<?= $headlineColumnAnimation; ?>"<?php endif; ?> class="text">
-                                    <?= $this->second_content; ?>
-                                </div>
-                            <?php endif; ?>
+                                <?php if ($this->add_second_content && $this->second_content): ?>
+                                    <div <?php if (!$headlineColumnAnim && $headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="text">
+                                        <?= $this->second_content; ?>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php // --- Bild für Headline-Spalte Ausgabe --- ?>
-                            <?php if ($headlineColumnImageHTML): ?>
-                                <div class="headline-column-image mt-3">
-                                    <?= $headlineColumnImageHTML; ?>
-                                </div>
-                            <?php endif; ?>
+                                <?php // --- Bild für Headline-Spalte Ausgabe --- ?>
+                                <?php if ($headlineColumnImageHTML): ?>
+                                    <div <?php if (!$headlineColumnAnim && $headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="headline-column-image <?php if (($this->second_content) || ($headlineHTML)): ?>mt-3<?php endif;?>">
+                                        <?= $headlineColumnImageHTML; ?>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php // --- Buttons für Headline-Spalte Ausgabe --- ?>
-                            <?php if ($headlineColumnButtonsHTML): ?>
-                                <?php
+                                <?php // --- Buttons für Headline-Spalte Ausgabe --- ?>
+                                <?php if ($headlineColumnButtonsHTML): ?>
+                                    <?php
                                     $headlineColumnButtonAlignmentClass = $this->headline_column_button_alignment ?: 'text-lg-start';
-                                ?>
-                                <div class="buttons <?= $headlineColumnButtonAlignmentClass; ?> mt-4">
-                                    <?= $headlineColumnButtonsHTML; ?>
-                                </div>
-                            <?php endif; ?>
-                         </div>
-                    </div>
-
-                    <?php // --- Textspalte --- ?>
-                    <div  class="col-12 col-lg-<?= $bsColContent; ?> <?= $orderContentClass; ?> <?php if ($this->content_column_css_class): ?><?= $this->content_column_css_class ?><?php endif; ?>">
-                        <div class="content-column mt-3 mt-lg-0">
-                            <?php if ($this->desc): ?>
-                                <div class="text" <?php if($overrideAnimation ?: $this->animation_type_content):?>data-animation="<?= $overrideAnimation ?: $this->animation_type_content; ?>"<?php endif;?>>
-                                    <?= $this->desc; ?>
-                                </div>
-                            <?php endif; ?>
-
-                            <?php // --- Bilder Logik Start --- ?>
-                            <?php if ($hasImages): ?>
-                                <div class="images-section   <?php if ($this->desc): ?>mt-3<?php endif;?>  <?php if (!$headerImageHTML): ?>header-image<?php endif;?>">
-                                    <?php // --- Slider/Listen Container (HTML wird immer gerendert, JS entscheidet) --- ?>
-                                    <div class="ce--content-slider content-slider-in-headline <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> <?php if ($totalImages > 1) : ?>is-slider<?php endif; ?>"
-                                         data-slider-id="<?= $this->id; ?>_<?= $rand; ?>"
-                                         data-deactivate-slider="<?= $this->deactivate_slider ?: '' ?>"
-                                         data-image-count="<?= $totalImages ?>">
-                                        <?php if ($this->open_lightbox): ?>
-                                        <script type="text/javascript" defer>
-                                            document.addEventListener('DOMContentLoaded', function () {
-                                                if (typeof VenoBox === 'function') {
-                                                    new VenoBox({
-                                                        selector: ".lightbox_<?= $this->id;?>_<?= $rand;?>",
-                                                        infinigall: true,
-                                                        maxWidth: '95%',
-                                                        numeration: true,
-                                                        spinner: 'flow',
-                                                        initialScale: 0.9,
-                                                        transitionSpeed: 200,
-                                                        fitView: true,
-                                                    });
-                                                }
-                                            });
-                                        </script>
-                                        <?php endif; ?>
-
-                                        <div class="image-container content-slider_<?= $this->id; ?>_<?= $rand; ?>">
-                                            <div class="image-list-wrapper align-items-center">
-                                                <?php foreach ($imageUuids as $index => $uuid) : ?>
-                                                    <?php $isLast = ($index === $totalImages - 1); ?>
-                                                    <div class="image-list-item " <?php if($overrideAnimation ?: $this->slide_animation_type): ?>data-animation="<?php echo $overrideAnimation ?: $this->slide_animation_type; ?>"<?php endif; ?>>
-                                                        <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id.'_'.$rand : ""); ?>
-                                                    </div>
-                                                <?php endforeach; ?>
-                                            </div>
-                                        </div>
-
-                                        <?php if ($totalImages > 1) : // Controls nur bei mehr als 1 Bild ?>
-                                            <?php if ($this->show_pagination): ?>
-                                                <div class="swiper-pagination content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                                            <?php endif; ?>
-                                            <?php if ($this->show_arrows): ?>
-                                                <div class="swiper-button-prev content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                                                <div class="swiper-button-next content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
+                                    ?>
+                                    <div <?php if ($buttonAnimForTwoColumn): ?>data-animation="<?= $buttonAnimForTwoColumn; ?>"<?php elseif (!$headlineColumnAnim && $headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="buttons <?= $headlineColumnButtonAlignmentClass; ?> mt-4">
+                                        <?= $headlineColumnButtonsHTML; ?>
                                     </div>
-                                </div>
-                            <?php endif; ?>
-                             <?php // --- Bilder Logik Ende --- ?>
-
-                            <?php if ($buttonsHTML): ?>
-                                <?php
-                                    $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-start';
-                                ?>
-                                <div class="buttons <?= $buttonAlignmentClass; ?>  <?php if ($hasImages || $this->desc): ?>mt-4<?php endif;?>">
-                                    <?= $buttonsHTML; ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            </div> <?php // Schließendes Div für den Row-Wrapper ?>
-
-        <?php else: ?>
-            <?php // --- EINSPALTIG --- ?>
-            <?= $headlineHTML; // Headline mit Animation (kommt vom Helper, $overrideAnimation ist dort schon berücksichtigt) ?>
-
-        
-            <?php if ($this->desc): ?>
-                <div <?php if($overrideAnimation ?: $this->animation_type_content):?>data-animation="<?= $overrideAnimation ?: $this->animation_type_content;?>"<?php endif;?> class="text">
-                    <?= $this->desc; ?>
-                </div>
-            <?php endif; ?>
-
-            <?php // --- Bilder Logik Start (Einspaltig) --- ?>
-            <?php if ($hasImages): ?>
-                <div class="images-section mt-3">
-                     <?php // --- Slider/Listen Container (HTML wird immer gerendert, JS entscheidet) --- ?>
-                     <div class="ce--content-slider content-slider-in-headline <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> <?php if ($totalImages > 1) : ?>is-slider<?php endif; ?>"
-                         data-slider-id="<?= $this->id; ?>_<?= $rand; ?>"
-                         data-deactivate-slider="<?= $this->deactivate_slider ?: '' ?>"
-                         data-image-count="<?= $totalImages ?>">
-                        <?php if ($this->open_lightbox): ?>
-                        <script type="text/javascript" defer>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                if (typeof VenoBox === 'function') {
-                                    new VenoBox({
-                                        selector: ".lightbox_<?= $this->id;?>_<?= $rand;?>",
-                                        infinigall: true,
-                                        maxWidth: '95%',
-                                        numeration: true,
-                                        spinner: 'flow',
-                                        initialScale: 0.9,
-                                        transitionSpeed: 200,
-                                        fitView: true,
-                                    });
-                                }
-                            });
-                        </script>
-                        <?php endif; ?>
-
-                        <div class="image-container content-slider_<?= $this->id; ?>_<?= $rand; ?>">
-                            <div class="image-list-wrapper align-items-center">
-                                <?php foreach ($imageUuids as $index => $uuid) : ?>
-                                    <?php $isLast = ($index === $totalImages - 1); ?>
-                                    <div class="image-list-item" <?php if($overrideAnimation ?: $this->slide_animation_type): ?>data-animation="<?php echo $overrideAnimation ?: $this->slide_animation_type; ?>"<?php endif; ?>>
-                                        <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id.'_'.$rand : ""); ?>
-                                    </div>
-                                <?php endforeach; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
 
-                        <?php if ($totalImages > 1) : // Controls nur bei mehr als 1 Bild ?>
-                            <?php if ($this->show_pagination): ?>
-                                <div class="swiper-pagination content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                            <?php endif; ?>
-                            <?php if ($this->show_arrows): ?>
+                        <?php // --- Textspalte --- ?>
+
+                        <?php if($this->desc  || $hasImages || $buttonsHTML):?>
+                        <div <?php if ($contentColumnAnim): ?>data-animation="<?= $contentColumnAnim; ?>"<?php endif; ?> class="col-12 col-lg-<?= $bsColContent; ?> <?= $orderContentClass; ?> <?php if ($this->content_column_css_class): ?><?= $this->content_column_css_class ?><?php endif; ?>">
+                            <div  class="content-column <?php if ((!$this->headline || $this->second_content) && ($this->column_order == "hl_hl" || $this->column_order == "hl_co")): ?>mt-3 mt-lg-0<?php endif; ?>">
+                                <?php if ($this->desc): ?>
+                                    <div class="text">
+                                        <?= $this->desc; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php // --- Bilder Logik Start --- ?>
+                                <?php if ($hasImages): ?>
+                                    <div class="images-section   <?php if ($this->desc): ?>mt-3<?php endif; ?>  <?php if (!$headerImageHTML): ?>header-image<?php endif; ?>">
+                                        <?php // --- Slider/Listen Container (HTML wird immer gerendert, JS entscheidet) --- ?>
+                                        <div class="ce--content-slider content-slider-in-headline <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> <?php if ($totalImages > 1) : ?>is-slider<?php endif; ?>"
+                                             data-slider-id="<?= $this->id; ?>_<?= $rand; ?>"
+                                             data-deactivate-slider="<?= $this->deactivate_slider ?: '' ?>"
+                                             data-image-count="<?= $totalImages ?>">
+                                            <?php if ($this->open_lightbox): ?>
+                                                <script type="text/javascript" defer>
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        if (typeof VenoBox === 'function') {
+                                                            new VenoBox({
+                                                                selector: ".lightbox_<?= $this->id;?>_<?= $rand;?>",
+                                                                infinigall: true,
+                                                                maxWidth: '95%',
+                                                                numeration: true,
+                                                                spinner: 'flow',
+                                                                initialScale: 0.9,
+                                                                transitionSpeed: 200,
+                                                                fitView: true,
+                                                            });
+                                                        }
+                                                    });
+                                                </script>
+                                            <?php endif; ?>
+
+                                            <div class="image-container content-slider_<?= $this->id; ?>_<?= $rand; ?>">
+                                                <div class="image-list-wrapper align-items-center">
+                                                    <?php foreach ($imageUuids as $index => $uuid) : ?>
+                                                        <div class="image-list-item text-center" <?php if ($slideAnim): ?>data-animation="<?php echo $slideAnim; ?>"<?php endif; ?>>
+                                                            <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id . '_' . $rand : ""); ?>
+                                                        </div>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </div>
+
+                                                                        <?php if ($totalImages > 1) : ?>
+                                <?php if ($this->show_pagination): ?>
+                                    <div class="swiper-pagination content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
+                                <?php endif; ?>
                                 <div class="swiper-button-prev content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
                                 <div class="swiper-button-next content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
                             <?php endif; ?>
-                        <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($buttonsHTML): ?>
+                                    <?php
+                                    $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-start';
+                                    ?>
+                                    <div <?php if ($buttonAnimForTwoColumn): ?>data-animation="<?= $buttonAnimForTwoColumn; ?>"<?php endif; ?> class="buttons <?= $buttonAlignmentClass; ?>  <?php if ($hasImages || $this->desc): ?>mt-4<?php endif; ?>">
+                                        <?= $buttonsHTML; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endif;?>
                     </div>
+
+            <?php else: ?>
+                <?php // --- EINSPALTIG --- ?>
+
+                <div <?php if ($headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="headline-wrapper">
+                    <?= $headlineHTML; ?>
                 </div>
+
+                <?php if ($this->desc): ?>
+                    <div <?php if ($contentColumnAnim): ?>data-animation="<?= $contentColumnAnim; ?>"<?php endif; ?> class="text">
+                        <?= $this->desc; ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php // --- Bilder Logik Start (Einspaltig) --- ?>
+                <?php if ($hasImages): ?>
+                    <div class="images-section mt-3">
+                        <div class="ce--content-slider content-slider-in-headline <?php if ($this->show_pagination): ?>with-pagination<?php endif; ?> <?php if ($totalImages > 1) : ?>is-slider<?php endif; ?>"
+                             data-slider-id="<?= $this->id; ?>_<?= $rand; ?>"
+                             data-deactivate-slider="<?= $this->deactivate_slider ?: '' ?>"
+                             data-image-count="<?= $totalImages ?>">
+                            <?php if ($this->open_lightbox): ?>
+                                <script type="text/javascript" defer>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        if (typeof VenoBox === 'function') {
+                                            new VenoBox({
+                                                selector: ".lightbox_<?= $this->id;?>_<?= $rand;?>",
+                                                infinigall: true,
+                                                maxWidth: '95%',
+                                                numeration: true,
+                                                spinner: 'flow',
+                                                initialScale: 0.9,
+                                                transitionSpeed: 200,
+                                                fitView: true,
+                                            });
+                                        }
+                                    });
+                                </script>
+                            <?php endif; ?>
+
+                            <div class="image-container content-slider_<?= $this->id; ?>_<?= $rand; ?>">
+                                <div class="image-list-wrapper align-items-center">
+                                    <?php foreach ($imageUuids as $index => $uuid) : ?>
+                                        <div class="text-center image-list-item" <?php if ($slideAnim): ?>data-animation="<?php echo $slideAnim; ?>"<?php endif; ?>>
+                                            <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id . '_' . $rand : ""); ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+
+                            <?php if ($totalImages > 1) : ?>
+                                <?php if ($this->show_pagination): ?>
+                                    <div class="swiper-pagination content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
+                                <?php endif; ?>
+                                <div class="swiper-button-prev content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
+                                <div class="swiper-button-next content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($buttonsHTML): ?>
+                    <?php
+                    $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-lg-start';
+                    ?>
+                    <div <?php if ($buttonAnim): ?>data-animation="<?= $buttonAnim; ?>"<?php endif; ?> class="buttons <?= $buttonAlignmentClass; ?> mt-4">
+                        <?= $buttonsHTML; ?>
+                    </div>
+                <?php endif; ?>
+
             <?php endif; ?>
-            <?php // --- Bilder Logik Ende (Einspaltig) --- ?>
-
-            <?php if ($buttonsHTML): ?>
-                 <?php
-                    // Für den einspaltigen Fall verwenden wir hier vorerst eine Standardausrichtung oder die aus dem zweispaltigen Fall,
-                    // falls Buttons im einspaltigen Layout überhaupt eine separate Ausrichtungsoption benötigen.
-                    // Aktuell ist das Feld 'button_group_text_alignment' an 'two_columns' gebunden.
-                    // Wenn Buttons hier immer linksbündig sein sollen (oder eine andere feste Ausrichtung haben):
-                    $oneColumnButtonAlignmentClass = 'text-start'; // Beispiel: Immer linksbündig
-                    // Falls die Logik komplexer werden soll, müsste man ggf. ein separates Feld für einspaltige Button-Ausrichtung einführen.
-                 ?>
-                 <div class="buttons <?= $oneColumnButtonAlignmentClass; ?> mt-4">
-                    <?= $buttonsHTML; ?>
-                 </div>
-            <?php endif; ?>
-
-        <?php endif; ?>
-
+        </div>
     </div>
 
     <?php // --- Swiper JS Initialisierung --- ?>
-<?php // Angepasst: JS wird geladen, wenn Bilder vorhanden sind ?>
-<?php if ($this->add_images && EnvHelper::isFrontend()): ?>
-<script type="text/javascript">
-    window.addEventListener('DOMContentLoaded', function() {
-        const sliderContainers = document.querySelectorAll('.ce--content-slider[data-slider-id][data-deactivate-slider]');
-        const swiperInstances = {}; // Zum Speichern erstellter Instanzen
+    <?php if ($this->add_images && EnvHelper::isFrontend()): ?>
+        <script type="text/javascript">
+            window.addEventListener('DOMContentLoaded', function () {
+                const sliderContainers = document.querySelectorAll('.ce--content-slider[data-slider-id][data-deactivate-slider]');
+                const swiperInstances = {};
 
-        // Debounce Funktion (verhindert zu häufige Ausführung bei Resize)
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Funktion zum Aktualisieren des Anzeigemodus (Slider oder Liste)
-        function updateDisplayMode(outerContainer) {
-            const sliderId = outerContainer.getAttribute('data-slider-id');
-            const deactivateOption = outerContainer.getAttribute('data-deactivate-slider');
-            const imageCount = parseInt(outerContainer.getAttribute('data-image-count') || '0', 10);
-            const imageContainerSelector = '.image-container.content-slider_' + sliderId;
-            const imageContainerElement = outerContainer.querySelector(imageContainerSelector);
-
-            if (!imageContainerElement || typeof Swiper === 'undefined') {
-                 // Fehlermeldungen bleiben wie zuvor
-                return;
-            }
-
-            const wrapperElement = imageContainerElement.querySelector('.image-list-wrapper');
-            const itemElements = imageContainerElement.querySelectorAll('.image-list-item');
-            const spacing = "<?= $spacingClass ?>";
-
-            // Funktion zur Prüfung, ob Swiper initialisiert werden soll
-            function shouldInitializeSwiper() {
-                // Nur initialisieren, wenn mehr als 1 Bild vorhanden ist
-                if (imageCount <= 1) {
-                    return false;
-                }
-                const currentWidth = window.innerWidth;
-                const isMobile = currentWidth < 992;
-                if (deactivateOption === 'both') return false;
-                if (deactivateOption === 'desktop' && !isMobile) return false;
-                if (deactivateOption === 'mobile' && isMobile) return false;
-                return true;
-            }
-
-             // ---- Logik Start ----
-            const initialize = shouldInitializeSwiper();
-
-            // Bestehende Swiper-Instanz zerstören, falls vorhanden
-            if (swiperInstances[sliderId]) {
-                swiperInstances[sliderId].destroy(true, true);
-                delete swiperInstances[sliderId];
-            }
-
-            if (initialize) {
-                // --- Swiper initialisieren ---
-                imageContainerElement.classList.add('swiper');
-                if (wrapperElement) wrapperElement.classList.add('swiper-wrapper');
-                itemElements.forEach(item => {
-                    item.classList.add('swiper-slide');
-                    if (spacing && item.classList.contains(spacing)) {
-                        item.classList.remove(spacing);
-                    }
-                });
-
-                // Lazy Loading Funktionen (unverändert)
-                 function updateLazyLoading() {
-                     if (window.VSM && window.VSM.lazyMediaLoader) {
-                        document.querySelectorAll(imageContainerSelector + ' img[data-src], ' + imageContainerSelector + ' video[data-src], ' + imageContainerSelector + ' video.lazy').forEach(element => {
-                            window.VSM.lazyMediaLoader.handleNewElement(element);
-                        });
-                    }
+                function debounce(func, wait) {
+                    let timeout;
+                    return function executedFunction(...args) {
+                        const later = () => {
+                            clearTimeout(timeout);
+                            func(...args);
+                        };
+                        clearTimeout(timeout);
+                        timeout = setTimeout(later, wait);
+                    };
                 }
 
-                function updateLazyLoadingForSwiper(swiper) {
-                    if (window.VSM && window.VSM.lazyMediaLoader) {
-                        swiper.slides.forEach(slide => {
-                            const imageElement = slide.querySelector('img, video');
-                            if (imageElement) {
-                                window.VSM.lazyMediaLoader.handleNewElement(imageElement);
+                function updateDisplayMode(outerContainer) {
+                    const sliderId = outerContainer.getAttribute('data-slider-id');
+                    const deactivateOption = outerContainer.getAttribute('data-deactivate-slider');
+                    const imageCount = parseInt(outerContainer.getAttribute('data-image-count') || '0', 10);
+                    const imageContainerSelector = '.image-container.content-slider_' + sliderId;
+                    const imageContainerElement = outerContainer.querySelector(imageContainerSelector);
+
+                    if (!imageContainerElement || typeof Swiper === 'undefined') {
+                        return;
+                    }
+
+                    const wrapperElement = imageContainerElement.querySelector('.image-list-wrapper');
+                    const itemElements = imageContainerElement.querySelectorAll('.image-list-item');
+                    const spacing = "<?= $spacingClass ?>";
+
+                    function shouldInitializeSwiper() {
+                        if (imageCount <= 1) return false;
+                        const currentWidth = window.innerWidth;
+                        const isMobile = currentWidth < 992;
+                        if (deactivateOption === 'both') return false;
+                        if (deactivateOption === 'desktop' && !isMobile) return false;
+                        if (deactivateOption === 'mobile' && isMobile) return false;
+                        return true;
+                    }
+
+                    const initialize = shouldInitializeSwiper();
+
+                    if (swiperInstances[sliderId]) {
+                        swiperInstances[sliderId].destroy(true, true);
+                        delete swiperInstances[sliderId];
+                    }
+
+                    if (initialize) {
+                        imageContainerElement.classList.add('swiper');
+                        if (wrapperElement) wrapperElement.classList.add('swiper-wrapper');
+                        itemElements.forEach(item => {
+                            item.classList.add('swiper-slide');
+                            if (spacing && item.classList.contains(spacing)) {
+                                item.classList.remove(spacing);
                             }
                         });
+
+                        function updateLazyLoading() {
+                            if (window.VSM && window.VSM.lazyMediaLoader) {
+                                document.querySelectorAll(imageContainerSelector + ' img[data-src], ' + imageContainerSelector + ' video[data-src], ' + imageContainerSelector + ' video.lazy').forEach(element => {
+                                    window.VSM.lazyMediaLoader.handleNewElement(element);
+                                });
+                            }
+                        }
+
+                        function updateLazyLoadingForSwiper(swiper) {
+                            if (window.VSM && window.VSM.lazyMediaLoader) {
+                                swiper.slides.forEach(slide => {
+                                    const imageElement = slide.querySelector('img, video');
+                                    if (imageElement) {
+                                        window.VSM.lazyMediaLoader.handleNewElement(imageElement);
+                                    }
+                                });
+                            }
+                        }
+
+                        const newSwiperInstance = new Swiper(imageContainerSelector, {
+                            direction: 'horizontal',
+                            loop: <?php echo $this->loop ? 'true' : 'false'; ?>,
+                            lazy: false,
+                            spaceBetween: <?= !empty($this->space_between) && is_numeric($this->space_between) ? intval($this->space_between) : 30; ?>,
+                            speed: <?= !empty($this->transition_time) && is_numeric($this->transition_time) ? intval($this->transition_time) : 1500; ?>,
+                            effect: <?php echo $this->slide_effect ? "'$this->slide_effect'" : "'slide'"; ?>,
+                            <?php if ($this->autoplay): ?>
+                            autoplay: {
+                                delay: <?= !empty($this->autoplay_time) && is_numeric($this->autoplay_time) ? intval($this->autoplay_time) : 3000; ?>,
+                                disableOnInteraction: false,
+                            },
+                            <?php endif; ?>
+                            autoHeight: false,
+                            <?php if ($this->slide_effect == "coverflow"): ?>
+                            coverflowEffect: {
+                                rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true,
+                            },
+                            <?php endif; ?>
+                            <?php if ($this->slide_effect == "fade"): ?>
+                            fadeEffect: {crossFade: true},
+                            <?php endif; ?>
+                            navigation: {
+                                nextEl: '.swiper-button-next.content-slider_' + sliderId,
+                                prevEl: '.swiper-button-prev.content-slider_' + sliderId,
+                            },
+                            pagination: {
+                                el: '.swiper-pagination.content-slider_' + sliderId,
+                                clickable: true,
+                            },
+                            <?php
+                            $slidesPerView = $this->slides_per_view ?: "'auto'";
+                            $slidesPerViewMobile = $this->slides_per_view_mobile ?: 1;
+                            ?>
+                            slidesPerView: <?= is_numeric($slidesPerViewMobile) ? intval($slidesPerViewMobile) : 1 ?>,
+                            breakpoints: {
+                                992: {
+                                    slidesPerView: <?= is_numeric($slidesPerView) ? floatval($slidesPerView) : (is_string($slidesPerView) ? $slidesPerView : "'auto'") ?>,
+                                }
+                            },
+                            on: {
+                                init: function () {
+                                    updateLazyLoadingForSwiper(this);
+                                    updateLazyLoading();
+                                },
+                                slideChange: function () {
+                                    updateLazyLoadingForSwiper(this);
+                                    updateLazyLoading();
+                                    document.dispatchEvent(new CustomEvent('swiper:slideChange', {detail: {swiper: this}}));
+                                }
+                            }
+                        });
+                        swiperInstances[sliderId] = newSwiperInstance;
+                        outerContainer.querySelectorAll('.swiper-pagination, .swiper-button-prev, .swiper-button-next').forEach(el => el.style.display = '');
+
+                    } else {
+                        imageContainerElement.classList.remove('swiper');
+                        if (wrapperElement) wrapperElement.classList.remove('swiper-wrapper');
+                        itemElements.forEach((item, index) => {
+                            item.classList.remove('swiper-slide');
+                            item.style.display = 'block';
+                            const isLast = index === itemElements.length - 1;
+                            if (!isLast && spacing && spacing.startsWith('mb-')) {
+                                item.classList.add(spacing);
+                            } else if (spacing && item.classList.contains(spacing)) {
+                                item.classList.remove(spacing);
+                            }
+                        });
+                        outerContainer.querySelectorAll('.swiper-pagination, .swiper-button-prev, .swiper-button-next').forEach(el => el.style.display = 'none');
                     }
                 }
 
-                // Swiper Instanz erstellen
-                const newSwiperInstance = new Swiper(imageContainerSelector, {
-                    direction: 'horizontal',
-                    loop: <?php echo $this->loop ? 'true' : 'false'; ?>,
-                    lazy: false,
-                    spaceBetween: <?= !empty($this->space_between) && is_numeric($this->space_between) ? intval($this->space_between) : 30; ?>,
-                    speed: <?= !empty($this->transition_time) && is_numeric($this->transition_time) ? intval($this->transition_time) : 1500; ?>,
-                    effect: <?php echo $this->slide_effect ? "'$this->slide_effect'" : "'slide'"; ?>,
-                    <?php if ($this->autoplay): ?>
-                    autoplay: {
-                        delay: <?= !empty($this->autoplay_time) && is_numeric($this->autoplay_time) ? intval($this->autoplay_time) : 3000; ?>,
-                        disableOnInteraction: false,
-                    },
-                    <?php endif; ?>
-                    autoHeight: false,
-                    <?php if ($this->slide_effect == "coverflow"): ?>
-                    coverflowEffect: {
-                        rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true,
-                    },
-                    <?php endif; ?>
-                    <?php if ($this->slide_effect == "fade"): ?>
-                    fadeEffect: { crossFade: true },
-                    <?php endif; ?>
-                    navigation: {
-                        nextEl: imageContainerSelector + '.swiper-button-next',
-                        prevEl: imageContainerSelector + '.swiper-button-prev',
-                    },
-                    pagination: {
-                        el: imageContainerSelector + '.swiper-pagination',
-                        clickable: true,
-                    },
-                    <?php
-                        $slidesPerView = $this->slides_per_view ?: "'auto'";
-                        $slidesPerViewMobile = $this->slides_per_view_mobile ?: 1;
-                    ?>
-                    slidesPerView: <?= is_numeric($slidesPerViewMobile) ? intval($slidesPerViewMobile) : 1 ?>,
-                    breakpoints: {
-                        992: {
-                            slidesPerView: <?= is_numeric($slidesPerView) ? floatval($slidesPerView) : (is_string($slidesPerView) ? $slidesPerView : "'auto'") ?>,
-                        }
-                    },
-                    on: {
-                        init: function () {
-                            updateLazyLoadingForSwiper(this);
-                            updateLazyLoading();
-                        },
-                        slideChange: function () {
-                            updateLazyLoadingForSwiper(this);
-                            updateLazyLoading();
-                            document.dispatchEvent(new CustomEvent('swiper:slideChange', { detail: {swiper: this} }));
-                        }
-                    }
-                });
-                swiperInstances[sliderId] = newSwiperInstance; // Neue Instanz speichern
-                outerContainer.querySelectorAll('.swiper-pagination, .swiper-button-prev, .swiper-button-next').forEach(el => el.style.display = ''); // Controls anzeigen
+                sliderContainers.forEach(container => updateDisplayMode(container));
 
-            } else {
-                // --- Liste darstellen ---
-                imageContainerElement.classList.remove('swiper');
-                if (wrapperElement) wrapperElement.classList.remove('swiper-wrapper');
-                itemElements.forEach((item, index) => {
-                    item.classList.remove('swiper-slide');
-                    item.style.display = 'block';
-                    const isLast = index === itemElements.length - 1;
-                    if (!isLast && spacing && spacing.startsWith('mb-')) {
-                        item.classList.add(spacing);
-                    } else if (spacing && item.classList.contains(spacing)) {
-                        item.classList.remove(spacing);
-                    }
-                });
-                outerContainer.querySelectorAll('.swiper-pagination, .swiper-button-prev, .swiper-button-next').forEach(el => el.style.display = 'none'); // Controls ausblenden
-            }
-        }
+                const debouncedResizeHandler = debounce(() => {
+                    sliderContainers.forEach(container => updateDisplayMode(container));
+                }, 250);
+                window.addEventListener('resize', debouncedResizeHandler);
 
-        // Initialer Durchlauf beim Laden
-        sliderContainers.forEach(container => updateDisplayMode(container));
-
-        // Event Listener für Resize hinzufügen
-        const debouncedResizeHandler = debounce(() => {
-            sliderContainers.forEach(container => updateDisplayMode(container));
-        }, 250); // 250ms Verzögerung
-        window.addEventListener('resize', debouncedResizeHandler);
-
-    });
-</script>
-<?php endif; ?>
-<?php // --- Ende Swiper JS Initialisierung --- ?>
-
+            });
+        </script>
+    <?php endif; ?>
 
 </div>
-

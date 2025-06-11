@@ -123,7 +123,7 @@ return array(
         'link_button_type' => array(
             'label' => array('Button-Stil für Links', 'Globaler Stil für alle Links dieses Elements.'),
             'inputType' => 'select',
-                'options' => GlobalElementConfig::getButtonTypes(),
+            'options' => GlobalElementConfig::getButtonTypes(),
             'default' => 'btn-primary',
             'eval' => array('tl_class' => 'w50 clr'),
         ),

@@ -5,7 +5,11 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 }
 ?>
 
-<style>
+
+
+<div <?php echo $this->cssID; ?> class="content--element process-steps-element <?php echo $this->class; ?>">
+
+    <style>
     .process-steps-element .ce--process-steps {
         position: relative;
     }
@@ -14,10 +18,13 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     /* .process-steps-element .ce--process-steps::before { ... } */
 
     .process-step {
-        opacity: 0.25;
-        transition: opacity 0.5s ease-in-out;
         position: relative;
         padding-left: calc(60px + 2rem); /* Platz für 60px Nummer und Abstand */
+    }
+
+    .process-step .step-content-wrapper {
+             opacity: 0.25;
+        transition: opacity 0.5s ease-in-out;
     }
 
     /* Linie für jeden Schritt (außer dem letzten) */
@@ -27,7 +34,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         top: 60px; /* Beginnt unter der 60px Box */
         left: 30px; /* Zentriert zur Box */
         width: 2px;
-        height: calc(100% - var(--main-gap) + 3rem); /* Füllt den Raum bis zum nächsten Step (Höhe 100% + mb-5 = 3rem) */
+        height: calc(100% + 1.5rem); /* Füllt den Raum bis zum nächsten Step (Höhe 100% + mb-5 = 3rem) */
         background-color: var(--bs-tertiary);
         transform: translateX(-50%);
         z-index: 0; /* Hinter der Box, falls doch mal Überlappung */
@@ -38,13 +45,10 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         font-size: 25px;
     }
 
-    .process-step.is-visible {
+    .process-step.is-visible .step-content-wrapper {
         opacity: 1;
     }
 
-    .step-content-wrapper {
-
-    }
 
     .step-number {
         position: absolute;
@@ -55,6 +59,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         height: 60px;
         display: flex;
         align-items: center;
+        background-color: var(--bs-primary);
         font-size: 25px;
         justify-content: center;
         font-weight: bold;
@@ -63,38 +68,37 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         z-index: 1; /* Über eventuellen Linien */
     }
 
-    .step-content-wrapper {
+    .step-content-wrapper .step--headline{
         /* Kein spezieller Abstand mehr nötig, da padding-left am process-step */
     }
 </style>
 
-<div <?php echo $this->cssID; ?> class="content--element process-steps-element <?php echo $this->class; ?>">
-    <div class="ce--inner">
+    <div class="ce--inner <?php if (!empty($this->container_css_class)): ?><?= $this->container_css_class ?><?php endif; ?>">
 
         <div class="col-xl-9 mx-0">
-              <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
-            $this->topline,
-            $this->headline,
-            $this->subline,
-            $this->hl,
-            $this->animation_type, // Globale Animation wird über data-animation am Haupt-Div gesteuert
-            null,
-            false,
-            null
-        ); ?>
+            <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+                $this->topline,
+                $this->headline,
+                $this->subline,
+                $this->hl,
+                $this->animation_type, // Globale Animation wird über data-animation am Haupt-Div gesteuert
+                null,
+                false,
+                null
+            ); ?>
 
-        <?php if ($this->intro_text): ?>
-            <div class="ce--intro-text mb-gap" data-animation="<?= $this->animation_type ?: '' ?>">
-                <?= $this->intro_text; ?>
-            </div>
-        <?php endif; ?>
+            <?php if ($this->intro_text): ?>
+                <div class="ce--intro-text mb-gap" data-animation="<?= $this->animation_type ?: '' ?>">
+                    <?= $this->intro_text; ?>
+                </div>
+            <?php endif; ?>
 
         </div>
 
         <?php if ($this->rows) : ?>
             <div class="ce--process-steps">
                 <?php foreach ($this->rows as $i => $row) : ?>
-                    <div class="process-step mb-gap">
+                    <div class="process-step<?php if ($i < count($this->rows) - 1) : ?> mb-gap<?php endif; ?>">
                         <span class="step-number"><?= $i + 1; ?></span>
                         <div class="step-content-wrapper pt-1 pt-md-0">
                             <?php if ($row->headline): ?>

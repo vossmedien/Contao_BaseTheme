@@ -20,7 +20,7 @@ class HeadlineHelper
         $headline = '',
         $subline = '',
         $headlineType = 'h2',
-        $animationType = 'animate__fadeIn',
+        $animationType = null,
         $textColor = '',
         $onlyStyle = false,
         $headlineClass = ''
@@ -31,7 +31,6 @@ class HeadlineHelper
         $headline = $headline ?? '';
         $subline = $subline ?? '';
         $headlineType = $headlineType ?? 'h2';
-        $animationType = $animationType ?? 'animate__fadeIn';
         $textColor = $textColor ?? '';
         $headlineClass = $headlineClass ?? '';
 
@@ -45,23 +44,23 @@ class HeadlineHelper
             $headlineHTML = "<div {$headlineClassAttribute}>";
 
             if ($topline) {
-                $headlineHTML .= "<span data-animation=\"{$animationType}\" class=\"ce--topline\">";
+                $headlineHTML .= "<span class=\"ce--topline\">";
                 $headlineHTML .= html_entity_decode($topline, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $headlineHTML .= "</span>";
             }
 
             if (!$onlyStyle && $headline != "") {
-                $headlineHTML .= "<{$headlineType} data-animation=\"{$animationType}\" style=\"{$textColorStyle}\">";
+                $headlineHTML .= "<{$headlineType} style=\"{$textColorStyle}\">";
                 $headlineHTML .= html_entity_decode($headline, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $headlineHTML .= "</{$headlineType}>";
             } elseif ($headline != "") {
-                $headlineHTML .= "<span data-animation=\"{$animationType}\" class=\"{$headlineType}\" style=\"{$textColorStyle}\">";
+                $headlineHTML .= "<span class=\"{$headlineType}\" style=\"{$textColorStyle}\">";
                 $headlineHTML .= html_entity_decode($headline, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $headlineHTML .= "</span>";
             }
 
             if ($subline) {
-                $headlineHTML .= "<span data-animation=\"{$animationType}\" class=\"ce--subline\">";
+                $headlineHTML .= "<span class=\"ce--subline\">";
                 $headlineHTML .= html_entity_decode($subline, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $headlineHTML .= "</span>";
             }

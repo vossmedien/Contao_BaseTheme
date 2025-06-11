@@ -181,25 +181,25 @@ return array(
                 ),
 
                 'column_width' => array(
-                    'label' => array('Relativer Platzbedarf (Gewichtung)', 'Nur wirksam, wenn "Spaltenbreite für jedes Bild individuell festlegen" aktiv ist. Bestimmt das relative Gewicht des Elements in der Flexbox-Zeile (Standard: 1).'),
+                    'label' => array(
+                        'de' => array('Relative Spaltenbreite', 'Wie viel Raum dieses Element im Verhältnis einnehmen soll (1-10)'),
+                    ),
                     'inputType' => 'select',
                     'options' => array(
-                        '' => 'Standard (Gewicht 1)',
-                        '1' => 'Gewicht 1',
-                        '2' => 'Gewicht 2',
-                        '3' => 'Gewicht 3',
-                        '4' => 'Gewicht 4',
-                        '5' => 'Gewicht 5',
-                        '6' => 'Gewicht 6',
-                        '7' => 'Gewicht 7',
-                        '8' => 'Gewicht 8',
-                        '9' => 'Gewicht 9',
-                        '10' => 'Gewicht 10',
+                        '1' => '1/10 der Zeile (10%)',
+                        '2' => '2/10 der Zeile (20%)',
+                        '3' => '3/10 der Zeile (30%)',
+                        '4' => '4/10 der Zeile (40%)',
+                        '5' => '5/10 der Zeile (50%)',
+                        '6' => '6/10 der Zeile (60%)',
+                        '7' => '7/10 der Zeile (70%)',
+                        '8' => '8/10 der Zeile (80%)',
+                        '9' => '9/10 der Zeile (90%)',
+                        '10' => 'Volle Breite (100%)',
                     ),
-                    'default' => '',
+                    'default' => '5',
                     'eval' => array(
-                        'tl_class' => 'w50',
-                        'includeBlankOption' => false
+                        'tl_class' => 'w50'
                     ),
                     'dependsOn' => array(
                         'field' => 'custom_column_widths',

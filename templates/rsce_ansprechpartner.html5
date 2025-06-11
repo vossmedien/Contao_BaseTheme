@@ -1,28 +1,59 @@
 <?php
 
-use Vsm\VsmHelperTools\Helper\EnvHelper;
 use Vsm\VsmHelperTools\Helper\HeadlineHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\ImageHelper;
-use Contao\StringUtil;
-use Contao\Input;
+
 
 // Helper function to create safe CSS class names from tags
-function createTagClass($tag)
-{
-    $tag = strtolower($tag ?? '');
-    $tag = preg_replace('/ä/', 'ae', $tag);
-    $tag = preg_replace('/ö/', 'oe', $tag);
-    $tag = preg_replace('/ü/', 'ue', $tag);
-    $tag = preg_replace('/ß/', 'ss', $tag);
-    $tag = preg_replace('/[^a-z0-9]+/', '-', $tag);
-    $tag = trim($tag, '-');
-    return 'tag-' . ($tag ?: 'uncategorized');
+if (!function_exists('createTagClass')) {
+    function createTagClass($tag)
+    {
+        $tag = strtolower($tag ?? '');
+        $tag = preg_replace('/ä/', 'ae', $tag);
+        $tag = preg_replace('/ö/', 'oe', $tag);
+        $tag = preg_replace('/ü/', 'ue', $tag);
+        $tag = preg_replace('/ß/', 'ss', $tag);
+        $tag = preg_replace('/[^a-z0-9]+/', '-', $tag);
+        $tag = trim($tag, '-');
+        return 'tag-' . ($tag ?: 'uncategorized');
+    }
 }
 
 // --- Collect all unique tags for filtering (if enabled) ---
 $allTags = [];
 $initialFilterTagClass = 'all'; // Default filter
+$hideAllButton = false; // Flag to hide "Alle" button
+
+// --- Process PLZ-Filter Blacklist ---
+$zipFilterBlacklist = [];
+if ($this->add_zip_filter && !empty($this->zip_filter_blacklist)) {
+    $blacklistRaw = explode(',', $this->zip_filter_blacklist);
+    foreach ($blacklistRaw as $item) {
+        $trimmed = trim($item);
+        if (!empty($trimmed)) {
+            $zipFilterBlacklist[] = $trimmed;
+        }
+    }
+}
+
+// --- URL-Segment to Filter-Tag Mapping ---
+function createUrlSegmentMapping($allTags)
+{
+    $mapping = [];
+    foreach ($allTags as $tag) {
+        // Create URL-friendly version of tag
+        $urlSegment = strtolower($tag);
+        $urlSegment = preg_replace('/ä/', 'ae', $urlSegment);
+        $urlSegment = preg_replace('/ö/', 'oe', $urlSegment);
+        $urlSegment = preg_replace('/ü/', 'ue', $urlSegment);
+        $urlSegment = preg_replace('/ß/', 'ss', $urlSegment);
+        $urlSegment = preg_replace('/[^a-z0-9]+/', '', $urlSegment);
+
+        $mapping[$urlSegment] = $tag;
+    }
+    return $mapping;
+}
 
 if ($this->add_filter_form && !empty($this->partners)) {
     foreach ($this->partners as $partner) {
@@ -37,13 +68,26 @@ if ($this->add_filter_form && !empty($this->partners)) {
     $allTags = array_keys($allTags);
     sort($allTags);
 
-    // --- Read GET parameter for initial filter ---
+    // --- Referrer-based Filter Detection ---
+    $referrerUrl = $_SERVER['HTTP_REFERER'] ?? '';
+    $urlSegmentMapping = createUrlSegmentMapping($allTags);
+
+    foreach ($urlSegmentMapping as $urlSegment => $tagName) {
+        if (!empty($referrerUrl) && strpos($referrerUrl, $urlSegment) !== false) {
+            $initialFilterTagClass = createTagClass($tagName);
+            $hideAllButton = true;
+            break;
+        }
+    }
+
+    // --- Read GET parameter for initial filter (has higher priority than URL detection) ---
     // Example: ?filter=YourTag (URL-encoded, e.g., ?filter=Topic%201)
     $getFilter = \Contao\Input::get('filter');
     if (!empty($getFilter)) {
         $potentialTag = trim($getFilter);
         if (in_array($potentialTag, $allTags, true)) {
             $initialFilterTagClass = createTagClass($potentialTag);
+            $hideAllButton = false; // GET parameter doesn't hide "Alle" button
         }
     }
 }
@@ -77,7 +121,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
         ?>
         <div class="<?php echo trim($outerWrapperClasses); ?>">
 
-                <?php if (!$showTextColumn): ?>
+            <?php if (!$showTextColumn): ?>
                 <?php
                 // Headline Output
                 echo HeadlineHelper::generateHeadlineHTML(
@@ -98,7 +142,9 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
             <?php if ($this->add_filter_form && (!empty($allTags) || ($this->add_text_filter_option && !empty($this->text_filter_button_label) && !empty($this->text_filter_content)))): ?>
                 <div class="filter-buttons mb-4 justify-content-center justify-content-md-start d-flex gap-1 flex-wrap flex-row">
                     <?php // Set initial active state ?>
-                    <button data-animation="animate__fadeIn" class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all"><?php echo $GLOBALS['TL_LANG']['MSC']['filter_show_all'] ?? 'Alle'; ?></button>
+                    <?php if (!$hideAllButton): ?>
+                        <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all"><?php echo $GLOBALS['TL_LANG']['MSC']['filter_show_all'] ?? 'Alle'; ?></button>
+                    <?php endif; ?>
                     <?php foreach ($allTags as $tag):
                         $currentTagClass = createTagClass($tag);
                         ?>
@@ -107,8 +153,74 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
                     <?php // --- NEU: Text Filter Button --- ?>
                     <?php if ($this->add_text_filter_option && !empty($this->text_filter_button_label) && !empty($this->text_filter_content)): ?>
-                        <button data-animation="animate__fadeIn" class="btn btn-sm filter-btn btn-outline-primary" data-filter-tag="text-filter-content"><?= \Contao\StringUtil::specialchars($this->text_filter_button_label); ?></button>
+                        <button class="btn btn-sm filter-btn btn-outline-primary" data-filter-tag="text-filter-content"><?= \Contao\StringUtil::specialchars($this->text_filter_button_label); ?></button>
                     <?php endif; ?>
+
+                    <?php // --- NEU: Allgemeine Anfrage Button --- ?>
+                    <?php if ($this->add_general_inquiry && !empty($this->general_inquiry_button_label) && !empty($this->general_inquiry_content)): ?>
+                        <button class="btn btn-sm filter-btn btn-outline-primary" data-filter-tag="general-inquiry-content"><?= \Contao\StringUtil::specialchars($this->general_inquiry_button_label); ?></button>
+                    <?php endif; ?>
+                </div>
+
+                <?php // --- PLZ-Filter Eingabefeld (wenn aktiviert) --- ?>
+                <?php if ($this->add_zip_filter): ?>
+                    <!-- PLZ Alert Container -->
+                    <div id="plzAlertContainer-<?= $this->id; ?>"></div>
+                    
+                    <div class="zip-filter-container mb-4" style="display: none;">
+                        <div class="mb-3">
+                            <span>Sie finden Ihren <b>persönlichen Ansprechpartner über die nachfolgende Postleitzahlsuche im Umkreis von <?= $this->zip_filter_radius ?: 150; ?> km an.</b></span>
+                            <br>
+                            Vereinbaren Sie noch heute Ihr unverbindliches Erstgespräch.
+                        </div>
+
+
+                        <div class="row g-2 align-items-end">
+                            <div class="col-auto">
+                                <label for="zip-filter-input-<?= $this->id; ?>" class="form-label small">PLZ
+                                    eingeben:</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" id="zip-filter-input-<?= $this->id; ?>" class="form-control" placeholder="z.B. 12345" maxlength="5" pattern="[0-9]{5}">
+                                    <button type="button" class="btn btn-primary with-arrow" style="--bs-btn-color: var(--bs-white);" id="apply-zip-filter-<?= $this->id; ?>">
+                                        Ansprechpartner im Umkreis anzeigen
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="clear-zip-filter-<?= $this->id; ?>">
+                                    Zurücksetzen
+                                </button>
+                            </div>
+                        </div>
+
+
+                    </div>
+                <?php endif; ?>
+
+                <!-- Filter Loading Overlay -->
+                                 <div id="filterSpinnerContainer" class="filter-loading-overlay" style="display: none;">
+                     <svg class="filter-spinner" style="width: 50px; height: 50px; animation: caeliSpinner 1s linear infinite;" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+                        <g id="spinner">
+                                                         <path d="M24.4874 0.755859H20.9375V18.3459H24.4874V0.755859Z" fill="#fff"/>
+                             <path d="M24.4874 37.0078H20.9375V44.268H24.4874V37.0078Z" fill="#fff"/>
+                             <path d="M8.15787 20.7324H0.862305V24.265H8.15787V20.7324Z" fill="#fff"/>
+                             <path d="M44.5866 20.7324H37.291V24.265H44.5866V20.7324Z" fill="#fff"/>
+                             <path d="M40.7669 10.0828L34.4487 13.7129L36.2237 16.7722L42.5418 13.1422L40.7669 10.0828Z" fill="#fff"/>
+                             <path d="M31.5313 34.1673L28.457 35.9336L32.1048 42.2211L35.1791 40.4548L31.5313 34.1673Z" fill="#fff"/>
+                             <path d="M13.3335 2.80009L10.2593 4.56641L13.9071 10.8539L16.9813 9.08757L13.3335 2.80009Z" fill="#fff"/>
+                             <path d="M32.1082 2.76721L28.4604 9.05469L31.5347 10.821L35.1825 4.53352L32.1082 2.76721Z" fill="#fff"/>
+                             <path d="M13.9007 34.1676L10.2529 40.4551L13.3272 42.2214L16.975 35.9339L13.9007 34.1676Z" fill="#fff"/>
+                             <path d="M4.66946 10.091L2.89453 13.1504L9.21268 16.7805L10.9876 13.7211L4.66946 10.091Z" fill="#fff"/>
+                             <path d="M27.2046 23.0488L25.4419 26.1186L34.4512 31.2835L40.743 34.9136L42.5302 31.8438L27.2046 23.0488Z" fill="#fff"/>
+                             <path d="M9.21034 28.2381L2.89404 31.8438L4.68121 34.9136L19.9823 26.1186L18.1951 23.0488L9.21034 28.2381Z" fill="#fff"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- No Results Message -->
+                <div id="noResultsMessage-<?= $this->id; ?>" class="alert alert-primary mt-3" style="display: none;">
+                    <b>Keine Ansprechpartner im gewählten Umkreis gefunden</b> - 
+                    Bitte versuchen Sie es mit einer anderen Postleitzahl.
                 </div>
             <?php endif; ?>
 
@@ -181,7 +293,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                             $partnerTagClasses .= ' tag-uncategorized';
                         }
                         ?>
-                        <div class="<?php echo $partnerColClass; ?> <?php echo $partnerTagClasses; ?>" data-animation="<?php echo $animation; ?>">
+                        <div class="<?php echo $partnerColClass; ?> <?php echo $partnerTagClasses; ?>" data-animation="<?php echo $animation; ?>" data-zip-code="<?= $partner->zip_code ?: ''; ?>">
                             <div class="<?php echo $partnerCardClasses; ?> position-relative">
                                 <?php // Partner Image
                                 ?>
@@ -199,6 +311,12 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                             true
                                         );
                                         ?>
+                                        <?php // PLZ Distance Badge ?>
+                                        <div class="zip-distance-badge badge position-absolute start-0 top-0 bg-primary text-white" style="display: none; margin: 0.5rem;" data-partner-zip="<?= $partner->zip_code ?: ''; ?>">
+                                            im Umkreis von ca.
+                                            <span class="distance-value">0</span>
+                                            km
+                                        </div>
                                         <?php // Icons on Image (if enabled) ?>
                                         <?php if ($this->show_icons_on_image): ?>
                                             <div class="contact-icons-overlay position-absolute bottom-0 end-0 d-flex flex-column align-items-end">
@@ -212,6 +330,12 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                                 <?php if ($partner->email_link): ?>
                                                     <a href="<?= $partner->email_link; ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $emailLabel; ?>">
                                                         <i class="fak fa-mail text-body"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                                <?php // LinkedIn Icon ?>
+                                                <?php if ($partner->linkedin_link): ?>
+                                                    <a href="<?= $partner->linkedin_link; ?>" target="_blank" rel="noopener" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em; " data-bs-placement="left" data-bs-toggle="tooltip" title="LinkedIn Profil">
+                                                        <i style="font-size: 1.5rem;" class="fak fa-linkedin text-body"></i>
                                                     </a>
                                                 <?php endif; ?>
                                             </div>
@@ -259,6 +383,22 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                                 <a href="tel:<?= \Contao\StringUtil::standardize($partner->phone); ?>" class="text-nowrap">
                                                     <i style="width: 20px;" class="fal fa-phone me-1"></i>
                                                     <span class="text-body"><?= $this->phone_display_label ?: $partner->phone; ?></span>
+                                                </a>
+                                            </p>
+                                        <?php endif; ?>
+
+                                        <?php if ($partner->zip_code): ?>
+                                            <p class="contact-zipcode mb-2">
+                                                <i style="width: 20px;" class="fal fa-map-marker-alt me-1"></i>
+                                                <span class="text-body"><?= $partner->zip_code; ?></span>
+                                            </p>
+                                        <?php endif; ?>
+
+                                        <?php if ($partner->linkedin_link): ?>
+                                            <p class="contact-linkedin mb-2">
+                                                <a href="<?= $partner->linkedin_link; ?>" target="_blank" rel="noopener" class="text-nowrap">
+                                                    <i style="width: 20px;  font-size: 1.25rem;" class="fak fa-linkedin me-1"></i>
+                                                    <span class="text-body text-decoration-underline">LinkedIn Profil</span>
                                                 </a>
                                             </p>
                                         <?php endif; ?>
@@ -313,12 +453,27 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         <?= $this->text_filter_content; ?>
                     </div>
                 <?php endif; ?>
+
+                <?php // --- NEU: Allgemeine Anfrage Content Wrapper --- ?>
+                <?php if ($this->add_general_inquiry && !empty($this->general_inquiry_content)): ?>
+                    <div class="general-inquiry-content-wrapper pt-gap" data-animation="animate__fadeIn" style="display: none;">
+                        <?= $this->general_inquiry_content; ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
         </div>
 
     </div>
 
+
+    <?php // --- CSS for Filter Spinner --- ?>
+    <style>
+        @keyframes caeliSpinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 
     <?php // --- JavaScript for Collapse, Tooltips & Filter --- ?>
     <script>
@@ -360,17 +515,277 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                 });
             });
 
+            // PLZ coordinates cache to minimize API requests
+            const plzCoordinatesCache = {};
+
+            // Get PLZ coordinates directly from Nominatim (einfacher Ansatz)
+            async function getPLZCoordinates(plz) {
+                if (!plz || plz.length !== 5) return null;
+
+                // Check cache first
+                if (plzCoordinatesCache[plz]) {
+                    return plzCoordinatesCache[plz];
+                }
+
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&country=Germany&postalcode=${plz}&limit=1`);
+                    const data = await response.json();
+
+                    if (data && data[0]) {
+                        const coordinates = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                        plzCoordinatesCache[plz] = coordinates; // Cache result
+                        return coordinates;
+                    }
+                } catch (error) {
+                    console.warn('PLZ API error:', error);
+                }
+
+                return null;
+            }
+
+            // Calculate distance using Haversine formula
+            function haversineDistance(coord1, coord2) {
+                if (!coord1 || !coord2) return null;
+
+                const R = 6371; // Earth's radius in km
+                const dLat = (coord2[0] - coord1[0]) * Math.PI / 180;
+                const dLon = (coord2[1] - coord1[1]) * Math.PI / 180;
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(coord1[0] * Math.PI / 180) * Math.cos(coord2[0] * Math.PI / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return R * c;
+            }
+
+            // Main distance calculation function (async)
+            async function calculateDistance(zip1, zip2) {
+                if (!zip1 || !zip2 || zip1.length !== 5 || zip2.length !== 5) return null;
+
+                // Same ZIP = 1km (avoid 0)
+                if (zip1 === zip2) return 1;
+
+                try {
+                    const coord1 = await getPLZCoordinates(zip1);
+                    const coord2 = await getPLZCoordinates(zip2);
+
+                    if (!coord1 || !coord2) return null;
+
+                    return haversineDistance(coord1, coord2);
+                } catch (error) {
+                    console.warn('Distance calculation error:', error);
+                    return null;
+                }
+            }
+
             // Filter Button Logic
             const filterButtons = document.querySelectorAll('.rsce-ansprechpartner .filter-btn');
             const partnerContainer = document.querySelector('.rsce-ansprechpartner .filter-container');
             const partnerItems = partnerContainer ? partnerContainer.querySelectorAll('.filter-item') : [];
             const textFilterContentWrapper = document.querySelector('.rsce-ansprechpartner .text-filter-content-wrapper');
+            const generalInquiryContentWrapper = document.querySelector('.rsce-ansprechpartner .general-inquiry-content-wrapper');
+            const zipFilterContainer = document.querySelector('.rsce-ansprechpartner .zip-filter-container');
 
-            if (filterButtons.length && (partnerContainer || textFilterContentWrapper)) {
+            let currentTagFilter = 'all';
+            let currentZipFilter = null;
+            let userInteracted = false; // Flag für User-Interaktion
+            const savedZipFilters = {}; // PLZ-Filter pro Tag speichern
+            const zipFilterRadius = <?= $this->zip_filter_radius ?: 150; ?>;
+            const zipFilterBlacklist = <?= json_encode($zipFilterBlacklist); ?>;
+
+            // PLZ Filter functionality
+            const zipInput = document.getElementById('zip-filter-input-<?= $this->id; ?>');
+            const applyZipBtn = document.getElementById('apply-zip-filter-<?= $this->id; ?>');
+            const clearZipBtn = document.getElementById('clear-zip-filter-<?= $this->id; ?>');
+
+            if (applyZipBtn && zipInput) {
+                applyZipBtn.addEventListener('click', async () => {
+                    const inputZip = zipInput.value.trim();
+                    if (inputZip.length === 5 && /^\d{5}$/.test(inputZip)) {
+                        // Clear any previous alert
+                        const alertContainer = document.getElementById('plzAlertContainer-<?= $this->id; ?>');
+                        if (alertContainer) {
+                            alertContainer.innerHTML = '';
+                        }
+                        userInteracted = true; // Mark user interaction
+                        currentZipFilter = inputZip;
+                        await applyFilters();
+                    } else {
+                        // Show alert via div instead of alert()
+                        const alertContainer = document.getElementById('plzAlertContainer-<?= $this->id; ?>');
+                        if (alertContainer) {
+                            alertContainer.innerHTML = `
+                                <div class="alert alert-primary small p-2 border-0 fade mt-0 show" role="alert">
+                                    Bitte geben Sie eine gültige 5-stellige Postleitzahl ein.
+                                </div>
+                            `;
+                            // Auto-hide after 3 seconds
+                            setTimeout(() => {
+                                alertContainer.innerHTML = '';
+                            }, 3000);
+                        }
+                    }
+                });
+            }
+
+            if (clearZipBtn) {
+                clearZipBtn.addEventListener('click', async () => {
+                    userInteracted = true; // Mark user interaction
+                    currentZipFilter = null;
+                    if (zipInput) zipInput.value = '';
+                    await applyFilters();
+                });
+            }
+
+            // Enter key support for zip input
+            if (zipInput) {
+                zipInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && applyZipBtn) {
+                        applyZipBtn.click();
+                    }
+                });
+            }
+
+            async function applyFilters() {
+                if (!partnerItems.length) return;
+
+                const spinnerContainer = document.getElementById('filterSpinnerContainer');
+                const noResultsMessage = document.getElementById('noResultsMessage-<?= $this->id; ?>');
+
+                // Show spinner if ZIP filter is active
+                if (currentZipFilter && spinnerContainer) {
+                    spinnerContainer.style.display = 'flex';
+                    // Hide all partners during calculation
+                    partnerItems.forEach(item => item.style.display = 'none');
+                }
+
+                // Hide no results message initially
+                if (noResultsMessage) {
+                    noResultsMessage.style.display = 'none';
+                }
+
+                const partnersToShow = [];
+
+                for (const item of partnerItems) {
+                    let showItem = true;
+                    let distance = null;
+
+                    // Apply tag filter
+                    if (currentTagFilter !== 'all' && !item.classList.contains(currentTagFilter)) {
+                        showItem = false;
+                    }
+
+                    // Apply zip filter
+                    if (showItem && currentZipFilter) {
+                        const partnerZip = item.getAttribute('data-zip-code');
+                        if (partnerZip) {
+                            distance = await calculateDistance(currentZipFilter, partnerZip);
+                            if (distance === null || distance > zipFilterRadius) {
+                                showItem = false;
+                            }
+                        } else {
+                            showItem = false; // Hide partners without zip code when zip filter is active
+                        }
+                    }
+
+                    // Handle distance badge
+                    const distanceBadge = item.querySelector('.zip-distance-badge');
+                    if (distanceBadge) {
+                        if (currentZipFilter && distance !== null && showItem) {
+                            // Show badge with calculated distance
+                            const distanceValue = distanceBadge.querySelector('.distance-value');
+                            if (distanceValue) {
+                                distanceValue.textContent = Math.round(distance);
+                            }
+                            distanceBadge.style.display = 'block';
+                        } else {
+                            // Hide badge when no zip filter is active or item is hidden
+                            distanceBadge.style.display = 'none';
+                        }
+                    }
+
+                    // Remove animation attribute only after user interaction
+                    if (userInteracted && item.hasAttribute('data-animation')) {
+                        item.removeAttribute('data-animation');
+                    }
+
+                    if (showItem) {
+                        partnersToShow.push(item);
+                    }
+                }
+
+                // Hide spinner
+                if (spinnerContainer) {
+                    spinnerContainer.style.display = 'none';
+                }
+
+                // Show all partners that should be visible at once
+                partnerItems.forEach(item => {
+                    item.style.display = partnersToShow.includes(item) ? '' : 'none';
+                });
+
+                // Show no results message if no partners found and ZIP filter is active
+                if (currentZipFilter && partnersToShow.length === 0 && noResultsMessage) {
+                    noResultsMessage.style.display = 'block';
+                }
+            }
+
+            if (filterButtons.length && (partnerContainer || textFilterContentWrapper || generalInquiryContentWrapper)) {
                 filterButtons.forEach(button => {
-                    button.addEventListener('click', (e) => {
+                    button.addEventListener('click', async (e) => {
                         e.preventDefault();
                         const filterTag = button.getAttribute('data-filter-tag');
+
+                        // Remove animations from all partner items immediately when any filter is clicked
+                        if (partnerItems.length) {
+                            partnerItems.forEach(item => {
+                                // Remove data-animation attribute
+                                if (item.hasAttribute('data-animation')) {
+                                    item.removeAttribute('data-animation');
+                                }
+                                // Remove animation classes
+                                item.classList.remove('animate__fadeIn', 'animate__animated');
+                                // Remove animation styles
+                                item.style.removeProperty('animation-duration');
+                                item.style.removeProperty('animation-delay');
+                            });
+                        }
+
+                        // Mark as user interaction (after animation removal)
+                        userInteracted = true;
+
+                        // Save current PLZ filter for current tag before switching
+                        if (currentZipFilter && currentTagFilter !== 'all') {
+                            savedZipFilters[currentTagFilter] = currentZipFilter;
+                        }
+                        
+                        // Clear PLZ for tags that don't support it
+                        const alertContainer = document.getElementById('plzAlertContainer-<?= $this->id; ?>');
+                        let clearZipFilter = false;
+                        
+                        // Clear for special filter types
+                        if (filterTag === 'text-filter-content' || filterTag === 'general-inquiry-content' || filterTag === 'all') {
+                            clearZipFilter = true;
+                        }
+                        
+                        // Clear for blacklisted tags
+                        if (!clearZipFilter && zipFilterBlacklist && zipFilterBlacklist.length > 0) {
+                            const originalTagName = filterTag.replace('tag-', '').replace(/-/g, ' ');
+                            for (let blacklistItem of zipFilterBlacklist) {
+                                const blacklistItemNormalized = blacklistItem.toLowerCase().trim();
+                                const tagNormalized = originalTagName.toLowerCase();
+                                
+                                if (tagNormalized.includes(blacklistItemNormalized) || blacklistItemNormalized.includes(tagNormalized)) {
+                                    clearZipFilter = true;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if (clearZipFilter) {
+                            currentZipFilter = null;
+                            if (zipInput) zipInput.value = '';
+                            if (alertContainer) alertContainer.innerHTML = '';
+                        }
 
                         // Update button active states
                         filterButtons.forEach(btn => btn.classList.remove('active', 'btn-primary'));
@@ -378,40 +793,181 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         button.classList.add('active', 'btn-primary');
                         button.classList.remove('btn-outline-primary');
 
+                        // Show/hide ZIP filter input
+                        if (zipFilterContainer) {
+                            let hideZipFilter = false;
+
+                            // Hide for special filter types
+                            if (filterTag === 'text-filter-content' || filterTag === 'general-inquiry-content' || filterTag === 'all') {
+                                hideZipFilter = true;
+                            }
+
+                            // Check if current filter tag is in blacklist
+                            if (!hideZipFilter && zipFilterBlacklist && zipFilterBlacklist.length > 0) {
+                                // Convert filter tag back to original tag name for comparison
+                                const originalTagName = filterTag.replace('tag-', '').replace(/-/g, ' ');
+
+                                // Check if any blacklist item matches the current tag
+                                for (let blacklistItem of zipFilterBlacklist) {
+                                    const blacklistItemNormalized = blacklistItem.toLowerCase().trim();
+                                    const tagNormalized = originalTagName.toLowerCase();
+
+                                    if (tagNormalized.includes(blacklistItemNormalized) || blacklistItemNormalized.includes(tagNormalized)) {
+                                        hideZipFilter = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            zipFilterContainer.style.display = hideZipFilter ? 'none' : '';
+                        }
+
                         // Show/hide based on selected tag
                         if (filterTag === 'text-filter-content') {
-                            // Show text content, hide partners
+                            // Show text content, hide partners and general inquiry
+                            currentTagFilter = 'text-filter-content';
                             if (partnerItems.length) {
-                                partnerItems.forEach(item => item.style.display = 'none');
+                                partnerItems.forEach(item => {
+                                    item.style.display = 'none';
+                                });
                             }
                             if (textFilterContentWrapper) {
                                 textFilterContentWrapper.style.display = '';
                             }
-                        } else {
-                            // Show partners, hide text content
+                            if (generalInquiryContentWrapper) {
+                                generalInquiryContentWrapper.style.display = 'none';
+                            }
+                        } else if (filterTag === 'general-inquiry-content') {
+                            // Show general inquiry content, hide partners and text filter
+                            currentTagFilter = 'general-inquiry-content';
+                            if (partnerItems.length) {
+                                partnerItems.forEach(item => {
+                                    item.style.display = 'none';
+                                });
+                            }
                             if (textFilterContentWrapper) {
                                 textFilterContentWrapper.style.display = 'none';
                             }
-                            if (partnerItems.length) {
-                                partnerItems.forEach(item => {
-                                    if (filterTag === 'all' || item.classList.contains(filterTag)) {
-                                        item.style.display = ''; // Show
-                                    } else {
-                                        item.style.display = 'none'; // Hide
-                                    }
-                                });
+                            if (generalInquiryContentWrapper) {
+                                generalInquiryContentWrapper.style.display = '';
                             }
+                        } else {
+                            // Show partners, hide text content and general inquiry
+                            currentTagFilter = filterTag;
+                            if (textFilterContentWrapper) {
+                                textFilterContentWrapper.style.display = 'none';
+                            }
+                            if (generalInquiryContentWrapper) {
+                                generalInquiryContentWrapper.style.display = 'none';
+                            }
+                            
+                            // Restore saved PLZ filter for this tag (if any)
+                            if (savedZipFilters[filterTag]) {
+                                currentZipFilter = savedZipFilters[filterTag];
+                                if (zipInput) zipInput.value = currentZipFilter;
+                            }
+                            
+                            await applyFilters();
                         }
                     });
                 });
 
-                // Trigger initial filter based on URL param or default
+                // Trigger initial filter based on URL param or default (without user interaction)
                 const initiallyActiveButton = document.querySelector('.rsce-ansprechpartner .filter-btn.active');
                 if (initiallyActiveButton) {
-                    // Ensure the click is deferred slightly if the content might not be fully ready
+                    // Apply filter without triggering click event (preserves animations)
                     setTimeout(() => {
-                        initiallyActiveButton.click(); // Apply filter
+                        const filterTag = initiallyActiveButton.getAttribute('data-filter-tag');
+                        currentTagFilter = filterTag;
+                        
+                        // Show/hide ZIP filter input (same logic as in click handler)
+                        if (zipFilterContainer) {
+                            let hideZipFilter = false;
+                            
+                            // Hide for special filter types
+                            if (filterTag === 'text-filter-content' || filterTag === 'general-inquiry-content' || filterTag === 'all') {
+                                hideZipFilter = true;
+                            }
+                            
+                            // Check if current filter tag is in blacklist
+                            if (!hideZipFilter && zipFilterBlacklist && zipFilterBlacklist.length > 0) {
+                                // Convert filter tag back to original tag name for comparison
+                                const originalTagName = filterTag.replace('tag-', '').replace(/-/g, ' ');
+                                
+                                // Check if any blacklist item matches the current tag
+                                for (let blacklistItem of zipFilterBlacklist) {
+                                    const blacklistItemNormalized = blacklistItem.toLowerCase().trim();
+                                    const tagNormalized = originalTagName.toLowerCase();
+                                    
+                                    if (tagNormalized.includes(blacklistItemNormalized) || blacklistItemNormalized.includes(tagNormalized)) {
+                                        hideZipFilter = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            zipFilterContainer.style.display = hideZipFilter ? 'none' : '';
+                        }
+                        
+                        // Apply the same logic as in click handler but without user interaction
+                        if (filterTag === 'text-filter-content') {
+                            if (partnerItems.length) {
+                                partnerItems.forEach(item => item.style.display = 'none');
+                            }
+                            if (textFilterContentWrapper) textFilterContentWrapper.style.display = '';
+                            if (generalInquiryContentWrapper) generalInquiryContentWrapper.style.display = 'none';
+                        } else if (filterTag === 'general-inquiry-content') {
+                            if (partnerItems.length) {
+                                partnerItems.forEach(item => item.style.display = 'none');
+                            }
+                            if (textFilterContentWrapper) textFilterContentWrapper.style.display = 'none';
+                            if (generalInquiryContentWrapper) generalInquiryContentWrapper.style.display = '';
+                        } else {
+                            if (textFilterContentWrapper) textFilterContentWrapper.style.display = 'none';
+                            if (generalInquiryContentWrapper) generalInquiryContentWrapper.style.display = 'none';
+                            applyFilters(); // This will preserve animations since userInteracted = false
+                        }
                     }, 0);
+                } else {
+                    // If no "Alle" button exists and no other button is active, apply default filter
+                    const firstFilterButton = document.querySelector('.rsce-ansprechpartner .filter-btn');
+                    if (firstFilterButton && !document.querySelector('.rsce-ansprechpartner .filter-btn[data-filter-tag="all"]')) {
+                        setTimeout(() => {
+                            const filterTag = firstFilterButton.getAttribute('data-filter-tag');
+                            currentTagFilter = filterTag;
+                            
+                            // Show/hide ZIP filter input (same logic as in click handler)
+                            if (zipFilterContainer) {
+                                let hideZipFilter = false;
+                                
+                                // Hide for special filter types
+                                if (filterTag === 'text-filter-content' || filterTag === 'general-inquiry-content' || filterTag === 'all') {
+                                    hideZipFilter = true;
+                                }
+                                
+                                // Check if current filter tag is in blacklist
+                                if (!hideZipFilter && zipFilterBlacklist && zipFilterBlacklist.length > 0) {
+                                    // Convert filter tag back to original tag name for comparison
+                                    const originalTagName = filterTag.replace('tag-', '').replace(/-/g, ' ');
+                                    
+                                    // Check if any blacklist item matches the current tag
+                                    for (let blacklistItem of zipFilterBlacklist) {
+                                        const blacklistItemNormalized = blacklistItem.toLowerCase().trim();
+                                        const tagNormalized = originalTagName.toLowerCase();
+                                        
+                                        if (tagNormalized.includes(blacklistItemNormalized) || blacklistItemNormalized.includes(tagNormalized)) {
+                                            hideZipFilter = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                                zipFilterContainer.style.display = hideZipFilter ? 'none' : '';
+                            }
+                            
+                            applyFilters(); // This will preserve animations since userInteracted = false
+                        }, 0);
+                    }
                 }
             }
         });

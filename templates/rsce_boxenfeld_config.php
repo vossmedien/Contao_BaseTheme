@@ -222,7 +222,7 @@ return array(
                     'label' => array('Buttons', ''),
                     'elementLabel' => '%s. Button',
                     'inputType' => 'list',
-                    'minItems' => 0,
+                    'minItems' => 1,
                     'maxItems' => 20,
                     'eval' => array('tl_class' => 'clr'),
                     'fields' => ButtonHelper::getButtonConfig(),

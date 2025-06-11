@@ -12,14 +12,6 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-        // Globale Einstellungen entfernt
-        // 'animation_type_element' => array(
-        //     'label' => array('Animation: Gesamtes Element', ''),
-        //     'inputType' => 'select',
-        //     'options' => GlobalElementConfig::getAnimations(),
-        //     'eval' => array('tl_class' => 'clr'),
-        // ),
-
         'animations_group' => array(
             'label' => array('Animationen der Bereiche', ''),
             'inputType' => 'group',
@@ -62,6 +54,17 @@ return array(
             'default' => 'container-wide',
             'eval' => array('tl_class' => 'w50'),
         ),
+        'column_alignment' => array(
+            'label' => array('Spaltenausrichtung (vertikal)', 'Standardmäßig mittig'),
+            'inputType' => 'select',
+            'options' => array(
+                'center' => 'Mittig (Standard)',
+                'start' => 'Oben',
+                'end' => 'Unten',
+            ),
+            'default' => 'center',
+            'eval' => array('tl_class' => 'w50'),
+        ),
 
         // Haupt-Layout (oben)
         'main_layout_group' => array(
@@ -80,6 +83,16 @@ return array(
             'options' => GlobalElementConfig::getHeadlineTagOptions(),
             'eval' => array('tl_class' => 'w50'),
         ),
+        'main_headline_onlystyle' => array(
+            'label' => array('Hauptheadline nur als Überschrift darstellen', 'Stellt die Headline visuell als Überschrift dar, aber nicht semantisch.'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
+        'left_text_below_headline' => array(
+            'label' => array('Zusätzlicher Text unter der Headline (links)', ''),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr', 'allowHtml' => true),
+        ),
         'main_text' => array(
             'label' => array('Rechter Textblock', ''),
             'inputType' => 'textarea',
@@ -88,7 +101,7 @@ return array(
 
         // Haupt-Bild/Video Bereich
         'main_media_group' => array(
-            'label' => array('Haupt-Bild/Video Bereich', ''),
+            'label' => array('Haupt-Bild/Video Bereich (Desktop)', ''),
             'inputType' => 'group',
         ),
         'media_type' => array(
@@ -110,7 +123,6 @@ return array(
                 'filesOnly' => true,
                 'extensions' => Contao\Config::get('validImageTypes'),
                 'tl_class' => 'clr',
-                'mandatory' => true,
             ),
             'dependsOn' => array(
                 'field' => 'media_type',
@@ -148,11 +160,73 @@ return array(
                 'value' => 'video',
             ),
         ),
-         'image_minheight' => array(
+        'image_minheight' => array(
             'label' => array('Minimale Höhe des Medienbereichs (Desktop)', 'Einheit (px, rem, vh usw.) bitte angeben. Standard: 700px;'),
             'inputType' => 'text',
             'default' => '700px',
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
+
+
+
+        // Mobile Medien Gruppe als Fieldset
+        'mobile_media_group' => array(
+            'label' => array('Mobile Bild/Video Einstellungen', ''),
+            'inputType' => 'group',
+
+        ),
+        'mobile_media_type' => array(
+            'label' => array('Mobiler Medientyp (optional)', 'Wählen Sie, ob ein Bild oder Video für mobile Ansichten verwendet werden soll.'),
+            'inputType' => 'select',
+            'options' => array(
+                'image' => 'Mobiles Bild',
+                'video' => 'Mobiles Video',
+            ),
+            'default' => 'image',
+            'eval' => array('tl_class' => 'w50 clr'),
+
+        ),
+        'mobile_image' => array(
+            'label' => array('Mobiles Bild auswählen', ''),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => Contao\Config::get('validImageTypes'),
+                'tl_class' => 'clr',
+            ),
+            'dependsOn' => array(
+             'field' => 'mobile_media_type', 'value' => 'image'
+            ),
+        ),
+        'mobile_image_size' => array(
+            'label' => array('Bildgröße mobiles Bild', ''),
+            'inputType' => 'imageSize',
+            'options' => Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => 'w50',
+            ),
+            'dependsOn' => array(
+       'field' => 'mobile_media_type', 'value' => 'image'
+            ),
+        ),
+        'mobile_video' => array(
+            'label' => array('Mobiles Video auswählen', 'MP4 oder WEBM'),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'mp4,webm',
+                'tl_class' => 'clr',
+            ),
+            'dependsOn' => array(
+               'field' => 'mobile_media_type', 'value' => 'video',
+            ),
         ),
         'image_mobile_minheight' => array(
             'label' => array('Minimale Höhe des Medienbereichs (Mobile)', 'Einheit (px, rem, vh usw.) bitte angeben. Standard: auto;'),
@@ -171,10 +245,23 @@ return array(
             'inputType' => 'checkbox',
             'eval' => array( 'tl_class' => 'clr'),
         ),
+        'box_position' => array(
+            'label' => array('Position der Box', 'In welcher Spalte soll die Box angezeigt werden?'),
+            'inputType' => 'select',
+            'options' => array(
+                'right' => 'Rechte Spalte (Standard)',
+                'left' => 'Linke Spalte',
+            ),
+            'default' => 'right',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'activate_box_slider',
+            ),
+        ),
         'box_background_color' => array(
             'label' => array('Hintergrundfarbe der Box', 'z.B. #FFFFFF oder rgba(0,0,0,0.5)'),
             'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50 clr'),
+            'eval' => array('tl_class' => 'w50'),
             'dependsOn' => array(
                 'field' => 'activate_box_slider',
             ),
@@ -209,6 +296,11 @@ return array(
                     'default' => 'h3',
                     'options' => GlobalElementConfig::getHeadlineTagOptions(),
                     'eval' => array('tl_class' => 'w50'),
+                ),
+                'slide_headline_onlystyle' => array(
+                    'label' => array('Slide-Headline nur als Überschrift darstellen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50 clr'),
                 ),
                 'slide_content' => array(
                     'label' => array('Inhaltstext des Slides', ''),
@@ -253,72 +345,5 @@ return array(
             'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit'),
             'dependsOn' => array('field' => 'activate_box_slider'),
         ),
-
-        // Mobile Medien
-        'mobile_media_type_toggle' => array(
-            'label' => array('Separates mobiles Medium verwenden?', 'Wenn aktiviert, kann ein anderes Bild/Video für mobile Ansichten festgelegt werden.'),
-            'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'w50 clr m12', 'submitOnChange' => true),
-        ),
-        'mobile_media_type' => array(
-            'label' => array('Mobiler Medientyp', 'Wählen Sie, ob ein Bild oder Video für mobile Ansichten verwendet werden soll.'),
-            'inputType' => 'select',
-            'options' => array(
-                'image' => 'Mobiles Bild',
-                'video' => 'Mobiles Video',
-            ),
-            'default' => 'image',
-            'eval' => array('tl_class' => 'w50 clr'),
-            'dependsOn' => array(
-                'field' => 'mobile_media_type_toggle',
-            ),
-        ),
-        'mobile_image' => array(
-            'label' => array('Mobiles Bild auswählen', ''),
-            'inputType' => 'fileTree',
-            'eval' => array(
-                'multiple' => false,
-                'fieldType' => 'radio',
-                'filesOnly' => true,
-                'extensions' => Contao\Config::get('validImageTypes'),
-                'tl_class' => 'clr',
-                'mandatory' => true,
-            ),
-            'dependsOn' => array(
-                array('field' => 'mobile_media_type_toggle'),
-                array('field' => 'mobile_media_type', 'value' => 'image'),
-            ),
-        ),
-        'mobile_image_size' => array(
-            'label' => array('Bildgröße mobiles Bild', ''),
-            'inputType' => 'imageSize',
-            'options' => Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
-            'reference' => &$GLOBALS['TL_LANG']['MSC'],
-            'eval' => array(
-                'rgxp' => 'digit',
-                'includeBlankOption' => true,
-                'tl_class' => 'w50',
-            ),
-            'dependsOn' => array(
-                array('field' => 'mobile_media_type_toggle'),
-                array('field' => 'mobile_media_type', 'value' => 'image'),
-            ),
-        ),
-        'mobile_video' => array(
-            'label' => array('Mobiles Video auswählen', 'MP4 oder WEBM'),
-            'inputType' => 'fileTree',
-            'eval' => array(
-                'multiple' => false,
-                'fieldType' => 'radio',
-                'filesOnly' => true,
-                'extensions' => 'mp4,webm',
-                'tl_class' => 'clr',
-                'mandatory' => true,
-            ),
-            'dependsOn' => array(
-                array('field' => 'mobile_media_type_toggle'),
-                array('field' => 'mobile_media_type', 'value' => 'video'),
-            ),
-        ),
     ),
-); 
+);

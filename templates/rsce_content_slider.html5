@@ -43,7 +43,7 @@ if ($this->image_mode === 'fixed' && $this->fixed_image_src) {
 }
 
 if (EnvHelper::isFrontend()) {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/rsce_content_slider.min.css|static';
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_content_slider.min.css|static';
 }
 
 ?>

@@ -58,7 +58,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                     $b->headline,
                                     $b->subline,
                                     $b->headline_type,
-                                    "no-animation",
+                                    null,
                                     $b->alt_headlinecolor,
                                     $b->only_style,
                                     ""

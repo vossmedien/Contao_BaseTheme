@@ -15,12 +15,12 @@ namespace Vsm\VsmHelperTools\Helper;
 
 class ButtonHelper
 {
-    public static function getButtonConfig()
+    public static function getButtonConfig($includeAnimation = true)
     {
-        return GlobalElementConfig::getButtonConfig();
+        return GlobalElementConfig::getButtonConfig($includeAnimation);
     }
 
-    public static function generateButtonHTML($buttons, $css = null)
+    public static function generateButtonHTML($buttons, $css = null, $includeAnimation = true)
     {
         $buttonHTML = "";
 
@@ -57,7 +57,11 @@ class ButtonHelper
                 $betreff = $btn->link_betreff ? "?subject=" . urlencode($btn->link_betreff) : '';
 
                 $buttonHTML .= "<a class=\"{$buttonClasses}\"";
-                $buttonHTML .= " data-animation=\"{$animationType}\"";
+                
+                if ($includeAnimation) {
+                    $buttonHTML .= " data-animation=\"{$animationType}\"";
+                }
+                
                 $buttonHTML .= " href=\"{$buttonUrl}{$betreff}\"";
 
                 if (!empty($buttonId)) {

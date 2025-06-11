@@ -99,7 +99,7 @@ if ($addLeftColumn) {
 
                     <?php // "Alle anzeigen" Button ?>
                     <?php if ($addShowAllButton && count($this->elements) > $initialVisibleItems): ?>
-                        <button data-animation="<?= $this->animation_type; ?>" class="btn btn-outline-primary mt-3 toggle-accordion-items"
+                        <button data-animation="<?= $this->animation_type; ?>" class="btn btn-outline-primary mt-4 toggle-accordion-items"
                                 data-target-accordion="#accordion_<?= $this->id ?>"
                                 data-visible-items="<?= $initialVisibleItems ?>"
                                 data-show-all-text="<?= $showAllText ?>"

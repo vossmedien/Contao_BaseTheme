@@ -46,30 +46,36 @@ if ($this->media_type === 'image' && $this->main_image) {
 
 // Mobile Medien
 $mobileMediaHTML = '';
-if ($this->mobile_media_type_toggle) {
-    if ($this->mobile_media_type === 'image' && $this->mobile_image) {
-        $mobileMediaHTML = ImageHelper::generateImageHTML($this->mobile_image, null, $this->main_headline, $this->mobile_image_size, 'w-100 h-100 object-fit-cover hero-complex-mobile-media d-lg-none', false, false, true);
-    } elseif ($this->mobile_media_type === 'video' && $this->mobile_video) {
-        $mobileImageInfo = BasicHelper::getFileInfo($this->mobile_video);
-        if ($mobileImageInfo && isset($mobileImageInfo['ext'])) {
-            $isMobileVideo = VideoHelper::isVideoFormat($mobileImageInfo['ext']);
-            if ($isMobileVideo) {
-                $mobileMediaHTML = VideoHelper::renderVideo(
-                    $this->mobile_video,
-                    'w-100 h-100 object-fit-cover hero-complex-mobile-media d-lg-none',
-                    $this->main_headline, null, null, null,
-                    'autoplay muted loop playsinline', true
-                );
-            }
+
+// Versuche, das spezifische mobile Medium zu laden, basierend auf der Auswahl in 'mobile_media_type'
+// und ob die entsprechende Datei auch wirklich ausgewählt wurde.
+if ($this->mobile_media_type === 'image' && !empty($this->mobile_image)) {
+    $mobileMediaHTML = ImageHelper::generateImageHTML($this->mobile_image, null, $this->main_headline, $this->mobile_image_size, 'w-100 h-100 object-fit-cover hero-complex-mobile-media d-lg-none', false, false, true);
+} elseif ($this->mobile_media_type === 'video' && !empty($this->mobile_video)) {
+    $mobileImageInfo = BasicHelper::getFileInfo($this->mobile_video);
+    if ($mobileImageInfo && isset($mobileImageInfo['ext'])) {
+        $isMobileVideo = VideoHelper::isVideoFormat($mobileImageInfo['ext']);
+        if ($isMobileVideo) {
+            $mobileMediaHTML = VideoHelper::renderVideo(
+                $this->mobile_video,
+                'w-100 h-100 object-fit-cover hero-complex-mobile-media d-lg-none',
+                $this->main_headline, null, null, null,
+                'autoplay muted loop playsinline', true
+            );
         } else {
-            $mobileMediaHTML = '<p>Fehler beim Laden des mobilen Videos.</p>';
+            $mobileMediaHTML = '<p>Fehler: Das Format des mobilen Videos wird nicht unterstützt.</p>';
         }
+    } else {
+        $mobileMediaHTML = '<p>Fehler beim Laden des mobilen Videos (Dateiinformationen fehlen).</p>';
     }
-} else {
-    // Fallback auf Hauptmedien, wenn keine separaten mobilen Medien aktiviert sind, aber für mobile Ansicht
-    if ($this->media_type === 'image' && $this->main_image) {
+}
+
+// Fallback auf Hauptmedien für die mobile Ansicht, wenn kein spezifisches mobiles Medium
+// konfiguriert wurde ODER nicht erfolgreich geladen werden konnte (d.h. $mobileMediaHTML ist noch leer).
+if (empty($mobileMediaHTML)) {
+    if ($this->media_type === 'image' && !empty($this->main_image)) {
         $mobileMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media d-lg-none', false, false, true);
-    } elseif ($this->media_type === 'video' && $this->main_video) {
+    } elseif ($this->media_type === 'video' && !empty($this->main_video)) {
         $mainImageInfo = BasicHelper::getFileInfo($this->main_video); // Erneuter Check, falls $mainImageInfo oben nicht gesetzt wurde
         if ($mainImageInfo && isset($mainImageInfo['ext'])) {
             $isMainVideo = VideoHelper::isVideoFormat($mainImageInfo['ext']);
@@ -80,161 +86,268 @@ if ($this->mobile_media_type_toggle) {
                     $this->main_headline, null, null, null,
                     'autoplay muted loop playsinline', true
                 );
+            } else {
+                $mobileMediaHTML = '<p>Fehler: Das Format des Hauptvideos (Fallback für Mobile) wird nicht unterstützt.</p>';
             }
         } else {
-             $mobileMediaHTML = '<p>Fehler beim Laden des Videos für Mobile.</p>';
+            $mobileMediaHTML = '<p>Fehler beim Laden des Hauptvideos für Mobile (Dateiinformationen fehlen - Fallback).</p>';
         }
     }
 }
 
 //$GLOBALS['TL_BODY'][] = '<script defer type="module">import "/files/base/layout/js/_elements/ce_rsce_hero_complex.js";</script>';
+
+// Prepare min-height values, ensuring they have a unit.
+$desktopMinHeightRaw = $this->image_minheight ?: '700px';
+$mobileMinHeightRaw = $this->image_mobile_minheight ?: 'auto';
+
+$desktopMinHeightProcessed = $desktopMinHeightRaw;
+if (is_string($desktopMinHeightRaw) && preg_match('/^\d+(\.\d+)?$/', $desktopMinHeightRaw)) {
+    $desktopMinHeightProcessed = $desktopMinHeightRaw . 'px';
+} elseif (is_numeric($desktopMinHeightRaw)) { // Handles actual numeric types
+    $desktopMinHeightProcessed = $desktopMinHeightRaw . 'px';
+}
+
+$mobileMinHeightProcessed = $mobileMinHeightRaw;
+if ($mobileMinHeightRaw !== 'auto') {
+    if (is_string($mobileMinHeightRaw) && preg_match('/^\d+(\.\d+)?$/', $mobileMinHeightRaw)) {
+        $mobileMinHeightProcessed = $mobileMinHeightRaw . 'px';
+    } elseif (is_numeric($mobileMinHeightRaw)) {
+        $mobileMinHeightProcessed = $mobileMinHeightRaw . 'px';
+    }
+}
+
+// Dynamische Klassen basierend auf main_text
+$headlineColClass = 'col-lg-6';
+$textAndBoxColVisible = true;
+if (empty($this->main_text) && !$this->activate_box_slider) { // Überprüft auch, ob der Box-Slider deaktiviert ist
+    $headlineColClass = 'col-lg-9'; // Oder col-lg-12, wenn es die gesamte Breite einnehmen soll
+    $textAndBoxColVisible = false;
+}
+
+// Bestimme die Spaltenausrichtung
+$alignmentClass = '';
+switch ($this->column_alignment ?: 'center') {
+    case 'start':
+        // Keine Klasse zuweisen für start (Standard)
+        break;
+    case 'end':
+        $alignmentClass = 'align-items-end';
+        break;
+    case 'center':
+    default:
+        $alignmentClass = 'align-items-center';
+        break;
+}
+
+// Box-Position bestimmen
+$boxPosition = $this->box_position ?: 'right';
+$showBoxInLeft = ($this->activate_box_slider && $boxPosition === 'left');
+$showBoxInRight = ($this->activate_box_slider && $boxPosition === 'right');
+
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
-    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/rsce_hero_complex.min.css|static';
+    $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_hero_complex.min.css|static';
 }
 
 ?>
 
-<div <?= $this->cssID ?> class="content--element <?= $this->class ?>">
-    <div class="ce--inner hero-complex-inner_<?= $uniqueId ?> position-relative d-flex flex-column">
+    <div <?= $this->cssID ?> class="content--element <?= $this->class ?>">
+        <div class="ce--inner hero-complex-inner_<?= $uniqueId ?> position-relative d-flex flex-column">
 
-        <!-- Haupt-Medienbereich (Mobile: order-1 / Desktop: order-lg-2, wird dann via CSS zum Hintergrund) -->
-        <div class="hero-complex-media-col mb-gap mb-lg-0 order-1 order-lg-2"
-             <?php if ($this->animation_type_media): ?>data-animation="<?= $this->animation_type_media ?>"<?php endif; ?>>
-            <div class="main-media-wrapper" style="--image-min-height: <?= $this->image_minheight ?: '700px' ?>; --image-mobile-min-height: <?= $this->image_mobile_minheight ?: 'auto' ?>;">
-                <?php if ($mainMediaHTML): ?>
-                    <?= $mainMediaHTML ?>
-                <?php endif; ?>
-                <?php if ($mobileMediaHTML): ?>
-                    <?= $mobileMediaHTML ?>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <!-- Inhalt Wrapper (Texte und Box) (Mobile: order-2 / Desktop: order-lg-1) -->
-        <div class="hero-complex-content-overlay-wrapper order-2 order-lg-1">
-            <div class="<?= $this->container_class ?: 'container-wide' ?>">
-                <div class="row align-items-center">
-                    <!-- Linke Headline (Mobile: order-2) -->
-                    <div class="col-lg-6 hero-complex-headline-col order-2 pb-md-gap"
-                         <?php if ($this->animation_type_headline): ?>data-animation="<?= $this->animation_type_headline ?>"<?php endif; ?>>
-                        <div class="main-headline-col-inner pe-lg-gap">
-                            <?= HeadlineHelper::generateHeadlineHTML(
-                                null, $this->main_headline, null, $this->main_headline_type ?: 'h1',
-                                "no-animation", null, "", "mb-3 mb-md-0"
-                            ) ?>
-                        </div>
+            <?php if ($mainMediaHTML || $mobileMediaHTML): ?>
+                <!-- Haupt-Medienbereich (Mobile: order-1 / Desktop: order-lg-2, wird dann via CSS zum Hintergrund) -->
+                <div class="hero-complex-media-col mb-gap mb-lg-0 order-1 order-lg-2"
+                     <?php if ($this->animation_type_media): ?>data-animation="<?= $this->animation_type_media ?>"<?php endif; ?>>
+                    <div class="main-media-wrapper" style="--image-min-height: <?= $desktopMinHeightProcessed ?>; --image-mobile-min-height: <?= $mobileMinHeightProcessed ?>;">
+                        <?php if ($mainMediaHTML): ?>
+                            <?= $mainMediaHTML ?>
+                        <?php endif; ?>
+                        <?php if ($mobileMediaHTML): ?>
+                            <?= $mobileMediaHTML ?>
+                        <?php endif; ?>
                     </div>
+                </div>
+            <?php endif; ?>
+            <!-- Inhalt Wrapper (Texte und Box) (Mobile: order-2 / Desktop: order-lg-1) -->
+            <div class="hero-complex-content-overlay-wrapper order-2 order-lg-1">
+                <div class="<?= $this->container_class ?: 'container-wide' ?>">
+                    <div class="row <?= $alignmentClass ?>">
+                        <!-- Linke Spalte: Headline + optional Text + optional Box -->
+                        <div class="<?= $headlineColClass ?> hero-complex-headline-col order-2"
+                             <?php if ($this->animation_type_headline): ?>data-animation="<?= $this->animation_type_headline ?>"<?php endif; ?>>
+                            <div class="main-headline-col-inner d-flex flex-column h-100">
+                                <div class="headline-and-text-wrapper">
+                                    <?= HeadlineHelper::generateHeadlineHTML(
+                                        null, $this->main_headline, null, $this->main_headline_type ?: 'h1',
+                                        "no-animation", null, (bool)$this->main_headline_onlystyle, "mb-3"
+                                    ) ?>
 
-                    <!-- Rechte Spalte: Text & Box (Mobile: order-3) -->
-                    <div class="col-lg-6 hero-complex-text-and-box-col order-3">
-                        <div class="main-text-col-inner">
-                            <?php if ($this->main_text): ?>
-                                 <div class="main-text-content fw-bold pb-gap" <?php if ($this->animation_type_text): ?>data-animation="<?= $this->animation_type_text ?>"<?php endif; ?>>
-                                    <?= $this->main_text ?>
+                                    <?php if ($this->left_text_below_headline): ?>
+                                        <div class="left-text-below-headline mb-gap">
+                                            <?= $this->left_text_below_headline ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
-                            <?php endif; ?>
 
-                            <?php if ($this->activate_box_slider && !empty($this->box_slides)): ?>
-                                 <!-- Box-Slider Bereich (Mobile: order-4 innerhalb dieser Spalte) -->
-                                 <div class="hero-complex-box-slider-wrapper pull-down-lg"
-                                       <?php if ($this->animation_type_box): ?>data-animation="<?= $this->animation_type_box ?>"<?php endif; ?>>
-                                     <div class="box-slider-anchor" style="<?= $boxStyles ?>">
-                                         <div class="box-slider-container swiper rsce-hero-box-slider-<?= $uniqueId ?>"  data-uid="<?= $uniqueId ?>">
-                                             <div class="swiper-wrapper">
-                                                 <?php foreach ($this->box_slides as $slide): ?>
-                                                     <div class="swiper-slide">
-                                                         <div class="box-slide-inner p-4 p-md-5">
-                                                             <?php if ($slide->slide_headline): ?>
-                                                                 <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, "", "mb-4") ?>
-                                                             <?php endif; ?>
+                                <?php if ($showBoxInLeft): ?>
+                                    <!-- Box-Slider in der linken Spalte -->
+                                    <div class="hero-complex-box-slider-wrapper mt-auto pull-down-lg"
+                                         <?php if ($this->animation_type_box): ?>data-animation="<?= $this->animation_type_box ?>"<?php endif; ?>>
+                                        <div class="box-slider-anchor mb-5 mb-lg-0" style="<?= $boxStyles ?>">
+                                            <div class="box-slider-wrapper swiper rsce-hero-box-slider-<?= $uniqueId ?>" data-uid="<?= $uniqueId ?>">
+                                                <div class="swiper-wrapper">
+                                                    <?php foreach ($this->box_slides as $slide): ?>
+                                                        <div class="swiper-slide">
+                                                            <div class="box-slide-inner p-3 p-lg-4 p-md-5">
+                                                                <?php if ($slide->slide_headline): ?>
+                                                                    <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, (bool)$slide->slide_headline_onlystyle, "mb-4") ?>
+                                                                <?php endif; ?>
 
-                                                             <?php if ($slide->slide_content): ?>
-                                                                 <div class="box-slide-content rte">
-                                                                     <?= $slide->slide_content ?>
-                                                                 </div>
-                                                             <?php endif; ?>
+                                                                <?php if ($slide->slide_content): ?>
+                                                                    <div class="box-slide-content rte">
+                                                                        <?= $slide->slide_content ?>
+                                                                    </div>
+                                                                <?php endif; ?>
 
-                                                             <?php if (!empty($slide->buttons)): ?>
-                                                                 <div class="buttons pt-4">
-                                                                     <?= ButtonHelper::generateButtonHTML($slide->buttons) ?>
-                                                                 </div>
-                                                             <?php endif; ?>
-                                                         </div>
-                                                     </div>
-                                                 <?php endforeach; ?>
-                                             </div>
-                                             <?php /* Swiper Controls kommen hier nicht mehr hin, sondern in box-slider-anchor */ ?>
-                                         </div>
-                                         <?php if (count($this->box_slides) > 1): ?>
-                                             <div class="box-paginator rsce-hero-box-slider-pagination-<?= $uniqueId ?>"></div>
-                                             <div class="hero-complex-swiper-nav">
-                                                 <button type="button" class="hc-button-prev rsce-hero-box-slider-prev-<?= $uniqueId ?>">
-                                                     <i class="fak fa-chevron-left"></i>
-                                                 </button>
-                                                 <div class="button-separator"></div>
-                                                 <button type="button" class="hc-button-next rsce-hero-box-slider-next-<?= $uniqueId ?>">
-                                                     <i class="fak fa-chevron-right"></i>
-                                                 </button>
-                                             </div>
-                                         <?php endif; ?>
-                                     </div>
-                                 </div>
-                             <?php endif; ?>
+                                                                <?php if (!empty($slide->buttons)): ?>
+                                                                    <div class="buttons pt-4">
+                                                                        <?= ButtonHelper::generateButtonHTML($slide->buttons) ?>
+                                                                    </div>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        </div>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </div>
+                                            <?php if (count($this->box_slides) > 1): ?>
+                                                <div class="box-paginator rsce-hero-box-slider-pagination-<?= $uniqueId ?>"></div>
+                                                <div class="hero-complex-swiper-nav">
+                                                    <button type="button" class="hc-button-prev rsce-hero-box-slider-prev-<?= $uniqueId ?>">
+                                                        <i class="fak fa-chevron-left"></i>
+                                                    </button>
+                                                    <div class="button-separator"></div>
+                                                    <button type="button" class="hc-button-next rsce-hero-box-slider-next-<?= $uniqueId ?>">
+                                                        <i class="fak fa-chevron-right"></i>
+                                                    </button>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
+
+                        <!-- Rechte Spalte: Text + optional Box -->
+                        <?php if ($textAndBoxColVisible): ?>
+                            <div class="col-lg-6 hero-complex-text-and-box-col order-3">
+                                <div class="main-text-col-inner">
+                                    <?php if ($this->main_text): ?>
+                                        <div class="main-text-content flex-grow-1 ps-lg-gap<?php if ($showBoxInRight): ?> my-gap<?php endif; ?>" <?php if ($this->animation_type_text): ?>data-animation="<?= $this->animation_type_text ?>"<?php endif; ?>>
+                                            <?= $this->main_text ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($showBoxInRight): ?>
+                                        <!-- Box-Slider in der rechten Spalte -->
+                                        <div class="hero-complex-box-slider-wrapper pull-down-lg"
+                                             <?php if ($this->animation_type_box): ?>data-animation="<?= $this->animation_type_box ?>"<?php endif; ?>>
+                                            <div class="box-slider-anchor" style="<?= $boxStyles ?>">
+                                                <div class="box-slider-wrapper swiper rsce-hero-box-slider-<?= $uniqueId ?>" data-uid="<?= $uniqueId ?>">
+                                                    <div class="swiper-wrapper">
+                                                        <?php foreach ($this->box_slides as $slide): ?>
+                                                            <div class="swiper-slide">
+                                                                <div class="box-slide-inner p-3 p-lg-4 p-md-5">
+                                                                    <?php if ($slide->slide_headline): ?>
+                                                                        <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, (bool)$slide->slide_headline_onlystyle, "mb-4") ?>
+                                                                    <?php endif; ?>
+
+                                                                    <?php if ($slide->slide_content): ?>
+                                                                        <div class="box-slide-content rte">
+                                                                            <?= $slide->slide_content ?>
+                                                                        </div>
+                                                                    <?php endif; ?>
+
+                                                                    <?php if (!empty($slide->buttons)): ?>
+                                                                        <div class="buttons pt-4">
+                                                                            <?= ButtonHelper::generateButtonHTML($slide->buttons) ?>
+                                                                        </div>
+                                                                    <?php endif; ?>
+                                                                </div>
+                                                            </div>
+                                                        <?php endforeach; ?>
+                                                    </div>
+                                                </div>
+                                                <?php if (count($this->box_slides) > 1): ?>
+                                                    <div class="box-paginator rsce-hero-box-slider-pagination-<?= $uniqueId ?>"></div>
+                                                    <div class="hero-complex-swiper-nav">
+                                                        <button type="button" class="hc-button-prev rsce-hero-box-slider-prev-<?= $uniqueId ?>">
+                                                            <i class="fak fa-chevron-left"></i>
+                                                        </button>
+                                                        <div class="button-separator"></div>
+                                                        <button type="button" class="hc-button-next rsce-hero-box-slider-next-<?= $uniqueId ?>">
+                                                            <i class="fak fa-chevron-right"></i>
+                                                        </button>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 <?php if ($this->activate_box_slider && !empty($this->box_slides) && EnvHelper::isFrontend()): ?>
-<script type="text/javascript" defer>
-    window.addEventListener('DOMContentLoaded', () => {
-        const sliderSelector = '.rsce-hero-box-slider-<?= $uniqueId ?>';
-        const boxSliderEl_<?= $uniqueId ?> = document.querySelector(sliderSelector);
+    <script type="text/javascript" defer>
+        window.addEventListener('DOMContentLoaded', () => {
+            const sliderSelector = '.rsce-hero-box-slider-<?= $uniqueId ?>';
+            const boxSliderEl_<?= $uniqueId ?> = document.querySelector(sliderSelector);
 
-        if (boxSliderEl_<?= $uniqueId ?> && !boxSliderEl_<?= $uniqueId ?>.swiper) {
-            const config = {
-                loop: <?= $this->box_slider_loop ? 'true' : 'false' ?>,
-                speed: <?= (int)($this->box_slider_transition_time ?: 1000) ?>,
-                watchOverflow: true,
-                effect: 'fade',
-                fadeEffect: {
-                    crossFade: true
-                },
-                pagination: {
-                    el: '.box-paginator.rsce-hero-box-slider-pagination-<?= $uniqueId ?>',
-                    type: 'custom',
-                    renderCustom: function (swiper, current, total) {
-                        return '<span class="current-slide">' + current + '</span>' +
-                               ' / ' +
-                               '<span class="total-slides">' + total + '</span>';
+            if (boxSliderEl_<?= $uniqueId ?> && !boxSliderEl_<?= $uniqueId ?>.swiper) {
+                const config = {
+                    loop: <?= $this->box_slider_loop ? 'true' : 'false' ?>,
+                    speed: <?= (int)($this->box_slider_transition_time ?: 1000) ?>,
+                    watchOverflow: true,
+                    effect: 'fade',
+                    fadeEffect: {
+                        crossFade: true
+                    },
+                    pagination: {
+                        el: '.box-paginator.rsce-hero-box-slider-pagination-<?= $uniqueId ?>',
+                        type: 'custom',
+                        renderCustom: function (swiper, current, total) {
+                            return '<span class="current-slide">' + current + '</span>' +
+                                ' / ' +
+                                '<span class="total-slides">' + total + '</span>';
+                        }
+                    },
+                    navigation: {
+                        nextEl: '.rsce-hero-box-slider-next-<?= $uniqueId ?>.hc-button-next',
+                        prevEl: '.rsce-hero-box-slider-prev-<?= $uniqueId ?>.hc-button-prev',
                     }
-                },
-                navigation: {
-                    nextEl: '.rsce-hero-box-slider-next-<?= $uniqueId ?>.hc-button-next',
-                    prevEl: '.rsce-hero-box-slider-prev-<?= $uniqueId ?>.hc-button-prev',
-                }
-            };
+                };
 
-            <?php if ($this->box_slider_autoplay): ?>
-            config.autoplay = {
-                delay: <?= (int)($this->box_slider_autoplay_time ?: 5000) ?>,
-                disableOnInteraction: false,
-            };
-            <?php endif; ?>
+                <?php if ($this->box_slider_autoplay): ?>
+                config.autoplay = {
+                    delay: <?= (int)($this->box_slider_autoplay_time ?: 5000) ?>,
+                    disableOnInteraction: false,
+                };
+                <?php endif; ?>
 
-            new Swiper(boxSliderEl_<?= $uniqueId ?>, config);
-        }
-    });
-</script>
+                new Swiper(boxSliderEl_<?= $uniqueId ?>, config);
+            }
+        });
+    </script>
 <?php endif; ?>
 
 <?php if ($this->activate_box_slider && !empty($this->box_font_color) && EnvHelper::isFrontend()): ?>
-<style>
-.hero-complex-inner_<?= $uniqueId ?> .button-separator {
-    background-color: <?= BasicHelper::cleanColor($this->box_font_color) ?> !important;
-}
-</style>
+    <style>
+        .hero-complex-inner_<?= $uniqueId ?> .button-separator {
+            background-color: <?= BasicHelper::cleanColor($this->box_font_color) ?> !important;
+        }
+    </style>
 <?php endif; ?>

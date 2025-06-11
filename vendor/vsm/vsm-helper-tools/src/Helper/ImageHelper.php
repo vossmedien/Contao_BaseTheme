@@ -44,6 +44,9 @@ class ImageHelper
     private static $imageFormatCacheSize = 0;
     private static $maxFormatCacheSize = 100; // Maximale Anzahl von Formaten im Cache
 
+    // Cache für Bildgrößen-Auflösung
+    private static $sizeConfigCache = [];
+
     private static function handleImageFormat(string $imagePath): array
     {
         // Aus Cache laden, wenn vorhanden
@@ -360,6 +363,76 @@ class ImageHelper
         return $result;
     }
 
+    /**
+     * Löst eine Bildgrößen-ID oder Config-Key zu den tatsächlichen Werten auf
+     */
+    private static function resolveSizeConfiguration($size): ?array
+    {
+        if (!is_array($size) || count($size) < 3) {
+            return $size; // Nicht das erwartete Format, unverändert zurückgeben
+        }
+
+        $thirdElement = $size[2];
+        
+        // Cache-Check für bessere Performance
+        $cacheKey = 'size_' . $thirdElement;
+        if (isset(self::$sizeConfigCache[$cacheKey])) {
+            return self::$sizeConfigCache[$cacheKey];
+        }
+        
+        // Prüfen ob es eine numerische ID ist (gespeicherte Bildgröße)
+        if (is_numeric($thirdElement) && (int)$thirdElement > 0) {
+            try {
+                $container = System::getContainer();
+                $connection = $container->get('database_connection');
+                
+                // Bildgröße aus der Datenbank laden
+                $imageSizeConfig = $connection->fetchAssociative('SELECT * FROM tl_image_size WHERE id = ?', [(int)$thirdElement]);
+                
+                if ($imageSizeConfig) {
+                    $result = [
+                        (int)$imageSizeConfig['width'] ?: '',
+                        (int)$imageSizeConfig['height'] ?: '',
+                        $imageSizeConfig['resizeMode'] ?: 'proportional'
+                    ];
+                    self::$sizeConfigCache[$cacheKey] = $result;
+                    return $result;
+                }
+            } catch (\Exception $e) {
+                $logger = System::getContainer()->get('monolog.logger.contao');
+                $logger->error('Fehler beim Laden der Bildgröße mit ID ' . $thirdElement . ': ' . $e->getMessage());
+            }
+        }
+        
+        // Prüfen ob es ein Config-Key ist (beginnt mit _)
+        if (is_string($thirdElement) && strpos($thirdElement, '_') === 0) {
+            try {
+                $container = System::getContainer();
+                $configKey = substr($thirdElement, 1); // Underscore entfernen
+                
+                // Versuche die Konfiguration direkt aus dem Parameter zu laden
+                $imageSizeConfigs = $container->getParameter('contao.image.sizes');
+                
+                if (isset($imageSizeConfigs[$configKey])) {
+                    $config = $imageSizeConfigs[$configKey];
+                    $result = [
+                        isset($config['width']) ? (int)$config['width'] : '',
+                        isset($config['height']) ? (int)$config['height'] : '',
+                        isset($config['resize_mode']) ? $config['resize_mode'] : 'proportional'
+                    ];
+                    self::$sizeConfigCache[$cacheKey] = $result;
+                    return $result;
+                }
+            } catch (\Exception $e) {
+                $logger = System::getContainer()->get('monolog.logger.contao');
+                $logger->error('Fehler beim Laden der Bildgröße mit Key ' . $thirdElement . ': ' . $e->getMessage());
+            }
+        }
+        
+        // Fallback: Original-Array zurückgeben
+        return $size;
+    }
+
     public static function generateImageHTML(
         $imageSource,
         ?string $altText = '',
@@ -480,6 +553,9 @@ class ImageHelper
 
         $originalWidth = (int)$originalImageInfo[0];
         $originalHeight = (int)$originalImageInfo[1];
+
+        // Bildgröße auflösen falls ID übergeben wurde
+        $size = self::resolveSizeConfiguration($size);
 
         // Basiskonfiguration
 // Basiskonfiguration
@@ -937,6 +1013,9 @@ class ImageHelper
             default:
                 $absolutePath = $imageFormat['path'];
         }
+
+        // Bildgröße auflösen falls ID übergeben wurde
+        $size = self::resolveSizeConfiguration($size);
 
         $config = new ResizeConfiguration();
         if ($size) {

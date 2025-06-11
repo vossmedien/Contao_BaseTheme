@@ -95,7 +95,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         ?>
 
         <?php if ($ext != "mp4"): ?>
-            <style class="<?php if ($this->only_article || $this->element_id): ?>with-bg<?php endif; ?> <?php echo $this->is_between ? 'is-between' : ''; ?> <?php echo $this->image ? 'with-image' : ''; ?>">
+            <style class="<?php if ($this->only_article): ?>with-bg<?php endif; ?> <?php echo $this->is_between ? 'is-between' : ''; ?> <?php echo $this->image ? 'with-image' : ''; ?>">
                 <?php if ($this->only_article): ?>
                 <?php echo $articleSelector; ?>
                 {
