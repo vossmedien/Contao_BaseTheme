@@ -1,6 +1,5 @@
 <?php
 
-use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 //rsce_my_element_config.php
@@ -14,7 +13,6 @@ return array(
         'type' => 'none',
     ),
     'fields' => array(
-
 
         'is_fixed' => array(
             'label' => array('Störer scrollt mit', ''),
@@ -54,16 +52,6 @@ return array(
             'inputType' => 'group',
         ),
 
-
-        /*
-               'text_rotation' => array(
-            'label' => array('Gradzahl der Drehung', 'Falls der Störer im Uhrzeigersinn geneigt werden soll'),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => ''),
-        ),
-         */
-
-
         'alternate_top_position' => array(
             'label' => array('Abstand von oberer Bildschirmkante', 'Standard: 150px - entweder OBEN oder UNTEN ausfüllen'),
             'inputType' => 'text',
@@ -94,7 +82,6 @@ return array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
-
         'stoerer' => array(
             'label' => array('Haupt-Elemente', ''),
             'elementLabel' => '%s. Haupt-Element',
@@ -103,9 +90,7 @@ return array(
             'maxItems' => 999,
             'fields' => array(
                 'animation_type' => array(
-                    'label' => array(
-                        'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
-                    ),
+                    'label' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
                     'inputType' => 'select',
                     'options' => GlobalElementConfig::getAnimations(),
                     'eval' => array('tl_class' => 'clr')
@@ -120,25 +105,25 @@ return array(
                 'trigger_text_color' => array(
                     'label' => array('Schriftfarbe Trigger', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
                 ),
 
                 'trigger_text_hover_color' => array(
                     'label' => array('Schriftfarbe Trigger (Hover)', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
                 ),
 
                 'trigger_bg_color' => array(
                     'label' => array('Hintergrundfarbe Trigger', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
                 ),
 
                 'trigger_bg_hover_color' => array(
                     'label' => array('Hintergrundfarbe Trigger (Hover)', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
                 ),
 
                 'settings_color_content' => array(
@@ -150,25 +135,25 @@ return array(
                 'content_text_color' => array(
                     'label' => array('Schriftfarbe Inhalt', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
                 ),
 
                 'content_text_hover_color' => array(
                     'label' => array('Schriftfarbe Inhalt (Hover)', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
                 ),
 
                 'content_bg_color' => array(
                     'label' => array('Hintergrundfarbe Inhalt', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
                 ),
 
                 'content_bg_hover_color' => array(
                     'label' => array('Hintergrundfarbe Inhalt (Hover)', ''),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50'),
+                    'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
                 ),
 
                 'settings_inhalt' => array(
@@ -209,6 +194,7 @@ return array(
                         'extensions' => 'jpg,jpeg,png,svg,webp',
                     ),
                 ),
+                
                 'content' => array(
                     'label' => array('Text', ''),
                     'inputType' => 'textarea',
@@ -239,7 +225,7 @@ return array(
                             'label' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
                             'inputType' => 'select',
                             'options' => GlobalElementConfig::getAnimations(),
-                               'eval' => array('tl_class' => 'w50 '),
+                            'eval' => array('tl_class' => 'w50 '),
                         ),
                         'link_text' => array(
                             'label' => array('Link-Beschriftung (Button-Text)', ''),
@@ -270,47 +256,32 @@ return array(
                             'label' => array('Optik des Buttons', ''),
                             'inputType' => 'select',
                             'options' => [
-                                // Hauptfarbe-Buttons
                                 'btn-primary' => 'Hauptfarbe',
                                 'btn-primary with-arrow' => 'Hauptfarbe mit Pfeil',
                                 'btn-outline-primary' => 'Hauptfarbe (Outline)',
                                 'btn-outline-primary with-arrow' => 'Hauptfarbe (Outline) mit Pfeil',
-
-                                // Sekundär-Buttons
                                 'btn-secondary' => 'Sekundär-Farbe',
                                 'btn-secondary with-arrow' => 'Sekundär-Farbe mit Pfeil',
                                 'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
                                 'btn-outline-secondary with-arrow' => 'Sekundär-Farbe (Outline) mit Pfeil',
-
-                                // Tertiär-Buttons
                                 'btn-tertiary' => 'Tertiär-Farbe',
                                 'btn-tertiary with-arrow' => 'Tertiär-Farbe mit Pfeil',
                                 'btn-outline-tertiary' => 'Tertiär-Farbe (Outline)',
                                 'btn-outline-tertiary with-arrow' => 'Tertiär-Farbe (Outline) mit Pfeil',
-
-                                // CurrentColor-Buttons
                                 'btn-outline-currentColor' => 'Farbübernahme vom Elternelement (Outline)',
                                 'btn-outline-currentColor with-arrow' => 'Farbübernahme vom Elternelement (Outline) mit Pfeil',
-
-                                // Weiße Buttons
                                 'btn-white' => 'Weißer Button mit schwarzer Schrift',
                                 'btn-white with-arrow' => 'Weißer Button mit schwarzer Schrift und Pfeil',
                                 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
                                 'btn-outline-white with-arrow' => 'Transparenter Button mit weißer Schrift und Rahmen sowie Pfeil',
-
-                                // Schwarze Buttons
                                 'btn-black' => 'Schwarzer Button mit weißer Schrift',
                                 'btn-black with-arrow' => 'Schwarzer Button mit weißer Schrift und Pfeil',
                                 'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen',
                                 'btn-outline-black with-arrow' => 'Transparenter Button mit schwarzer Schrift und Rahmen sowie Pfeil',
-
-                                // Rote/Danger Buttons
                                 'btn-danger' => 'Roter Button',
                                 'btn-danger with-arrow' => 'Roter Button mit Pfeil',
                                 'btn-outline-danger' => 'Roter Button (Outline)',
                                 'btn-outline-danger with-arrow' => 'Roter Button (Outline) mit Pfeil',
-
-                                // Link-Buttons
                                 'btn-link' => 'Link-Optik',
                                 'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
                             ],
@@ -344,9 +315,7 @@ return array(
             ),
             'fields' => array(
                 'animation_type' => array(
-                    'label' => array(
-                        'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
-                    ),
+                    'label' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),
                     'inputType' => 'select',
                     'options' => GlobalElementConfig::getAnimations(),
                     'eval' => array('tl_class' => 'w50')
@@ -413,7 +382,7 @@ return array(
                 'field' => 'integrate_footer',
                 'value' => '1',
             ),
-            'eval' => array('tl_class' => 'w50 '),
+            'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
         ),
 
         'footer_initial_color' => array(
@@ -423,7 +392,7 @@ return array(
                 'field' => 'integrate_footer',
                 'value' => '1',
             ),
-            'eval' => array('tl_class' => 'w50 '),
+            'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
         ),
 
         'footer_bg_hover_color' => array(
@@ -433,7 +402,7 @@ return array(
                 'field' => 'integrate_footer',
                 'value' => '1',
             ),
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
         ),
 
         'footer_svg_hover_color' => array(
@@ -443,7 +412,7 @@ return array(
                 'field' => 'integrate_footer',
                 'value' => '1',
             ),
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50', 'colorpicker' => true),
         ),
 
     ),

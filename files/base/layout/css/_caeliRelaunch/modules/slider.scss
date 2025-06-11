@@ -1,65 +1,92 @@
 .auction-slider-element-wrapper {
-  text-align: center;
-
   @include media-breakpoint-down(md) {
     margin-top: var(--main-gap);
   }
 
+  .swiper-wrapper {
+    padding-bottom: 1px;
+  }
+
   .auction-swiper-slider {
-    max-width: 330px;
-    margin-inline: auto;
     position: relative;
-    display: inline-block;
 
-    .swiper {
-      text-align: left;
-    }
-
-    .swiper-button-prev, .swiper-button-next {
-      padding: 0;
-      width: auto;
-      height: auto;
-      color: currentColor;
-      background-color: transparent;
-      box-shadow: none;
-
-      &:after {
-        display: none;
-      }
-
-      i {
-        font-size: 20px;
-        color: currentColor;
-
-        @include media-breakpoint-up(sm) {
-          font-size: 50px;
+    &:has(.is-primary) {
+      [class*="swiper-button"] {
+        &:after {
+          @include media-breakpoint-down(lg) {
+            color: var(--bs-tertiary);
+          }
         }
       }
     }
 
-    .swiper-button-prev {
-      left: -25px;
+    &.single {
+      display: inline-block;
+      max-width: 330px;
+      margin-inline: auto;
 
-      @include media-breakpoint-up(sm) {
-        left: -45px;
+      .swiper-button-prev {
+        left: -25px;
+
+        @include media-breakpoint-up(sm) {
+          left: -45px;
+        }
+
+        @include media-breakpoint-up(md) {
+          left: -70px;
+        }
       }
 
-      @include media-breakpoint-up(md) {
-        left: -70px;
+      .swiper-button-next {
+        right: -25px;
+
+        @include media-breakpoint-up(sm) {
+          right: -45px;
+        }
+
+        @include media-breakpoint-up(md) {
+          right: -70px;
+        }
+      }
+
+      .swiper {
+        text-align: left;
       }
     }
 
-    .swiper-button-next {
-      right: -25px;
+  }
+}
 
-      @include media-breakpoint-up(sm) {
-        right: -45px;
-      }
 
-      @include media-breakpoint-up(md) {
-        right: -70px;
-      }
+.swiper-button-prev, .swiper-button-next {
+  padding: 0;
+  width: auto;
+  height: auto;
+  color: currentColor;
+  background-color: transparent;
+  box-shadow: none;
+
+  &:after {
+    font-size: 40px;
+    color: currentColor;
+
+    @include media-breakpoint-up(sm) {
+      font-size: 50px;
     }
+  }
+}
+
+.swiper-button-prev {
+  &:after {
+    @extend %fa-icon, .fak;
+    content: '\e005';
+  }
+}
+
+.swiper-button-next {
+  &:after {
+    @extend %fa-icon, .fak;
+    content: '\e000';
   }
 }
 

@@ -8,7 +8,7 @@
 
 <div class="footer-bottom">
     <div class="container">
-        <div class="row g-1 g-sm-3 row-cols-1 row-cols-sm-2 row-cols-lg-5">
+        <div class="row g-1 g-sm-3 row-cols-1 row-cols-sm-2 {{iflng::de}}row-cols-lg-5{{iflng::en}}row-cols-lg-4{{iflng}}">
             <div class="col">
             <span class="footer-title">
                 <?= $GLOBALS['TL_LANG']['MSC']['footerContact'] ?>
@@ -35,26 +35,36 @@
                         <?= $GLOBALS['TL_LANG']['MSC']['footerLegal'] ?> <span class="indicator d-sm-none float-end">+</span>
                     </span>
                     <div class="collapse" id="footerRechtliches">
-                        {{insert_module::16}}
+                        {{iflng::de}}{{insert_module::16}}{{iflng::en}}{{insert_module::47}}{{iflng}}
                     </div>
                 </div>
             </div>
 
-            <div class="col footer-accordion-item">
+            {{iflng::de}}<div class="col footer-accordion-item">
                  <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerCaeli" aria-expanded="false" aria-controls="footerCaeli">
                     <?= $GLOBALS['TL_LANG']['MSC']['footerInsights'] ?> <span class="indicator d-sm-none float-end">+</span>
                  </span>
                 <div class="collapse" id="footerCaeli">
                     {{insert_module::36}}
                 </div>
+            </div>{{iflng}}
+            <!-- {{iflng::en}}
+            <div class="col footer-accordion-item">
+                 <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerCaeli" aria-expanded="false" aria-controls="footerCaeli">
+                    <?= $GLOBALS['TL_LANG']['MSC']['footerInsights'] ?> <span class="indicator d-sm-none float-end">+</span>
+                 </span>
+                <div class="collapse" id="footerCaeli">
+                    {{insert_module::48}}
+                </div>
             </div>
+            {{iflng}} -->
 
             <div class="col footer-accordion-item ps-lg-5 pe-lg-0">
                  <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerSoziales" aria-expanded="false" aria-controls="footerSoziales">
                     <?= $GLOBALS['TL_LANG']['MSC']['footerSocialMedia'] ?> <span class="indicator d-sm-none float-end">+</span>
                  </span>
                 <div class="collapse" id="footerSoziales">
-                    {{insert_module::15}}
+                    {{iflng::de}}{{insert_module::15}}{{iflng::en}}{{insert_module::49}}{{iflng}}
                 </div>
             </div>
 

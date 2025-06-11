@@ -1,0 +1,13 @@
+services:
+    # Auto-configure all controllers as services
+    CaeliWind\CaeliAreaCheckBundle\Controller\:
+        resource: '../../Controller'
+        tags: ['controller.service_arguments']
+        public: true
+        
+    # AJAX Controller explicitly
+    CaeliWind\CaeliAreaCheckBundle\Controller\FrontendModule\AreaCheckMapController:
+        autowire: true
+        autoconfigure: true
+        public: true
+        tags: ['controller.service_arguments'] 

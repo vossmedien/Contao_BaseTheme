@@ -1,6 +1,6 @@
 <?php if (strpos($_SERVER['REQUEST_URI'], 'windturbine') !== false): ?>
     <div class="header-bottom pt-0">
-        <div class="container-wide container">
+        <div class="container-wide ">
             <div class="nav-wrapper align-items-center pb-3">
 
                 <div class="windturbine-cta">
@@ -28,13 +28,13 @@
 <?php else: ?>
     <!-- Standard Header -->
     <div class="header-top">
-        <div class="container-wide container">
-            {{insert_module::18}}
+        <div class="container-wide ">
+            {{iflng::de}}{{insert_module::18}}{{iflng::en}}{{insert_module::46}}{{iflng}}
             {{insert_module::19}}
         </div>
     </div>
     <div class="header-bottom">
-        <div class="container-wide container">
+        <div class="container-wide ">
             <div class="nav-wrapper">
                 <div class="logo">
                     <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/logo.svg", null), null, null; ?>

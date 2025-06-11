@@ -18,6 +18,7 @@ use Contao\ContentModel;
 use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
 use Contao\PageModel;
+use Contao\StringUtil;
 use Contao\Template;
 use CaeliWind\CaeliAuctionConnect\Service\AuctionService;
 use Psr\Log\LoggerInterface;
@@ -120,7 +121,18 @@ class AuctionElementController extends AbstractContentElementController
         $template->auctionItemTemplate = '@CaeliWindCaeliAuctionConnect/' . $itemTemplateName;
         $this->logger->debug('[AuctionElementController] Item-Template für CE gesetzt auf: ' . $template->auctionItemTemplate);
 
-        $template->headline = $model->headline;
+        // Headline deserialisieren falls vorhanden
+        $headlineData = null;
+        if ($model->headline) {
+            $deserializedHeadline = StringUtil::deserialize($model->headline, true);
+            if (is_array($deserializedHeadline)) {
+                $headlineData = [
+                    'unit' => $deserializedHeadline['unit'] ?? 'h2',
+                    'value' => trim($deserializedHeadline['value'] ?? '')
+                ];
+            }
+        }
+        $template->headline = $headlineData;
         $template->cssClass = $model->cssID[1] ?? '';
 
         return $template->getResponse();

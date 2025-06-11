@@ -23,8 +23,8 @@ $GLOBALS['TL_LANG']['caeli_area_check']['loading']['texts'] = [
 // Form elements
 $GLOBALS['TL_LANG']['caeli_area_check']['form'] = [
     'address_label' => 'Adresse oder Ort',
-    'address_placeholder' => 'Adresse oder Postleitzahl eingeben',
-    'address_alert' => 'Bitte geben Sie eine vollständige Adresse oder Postleitzahl ein.',
+    'address_placeholder' => 'Postleitzahl eingeben',
+    'address_alert' => 'Bitte geben Sie eine vollständige Postleitzahl ein.',
     'name_label' => 'Nachname',
     'firstname_label' => 'Vorname',
     'phone_label' => 'Telefon',
@@ -111,10 +111,48 @@ $GLOBALS['TL_LANG']['caeli_area_check']['alerts'] = [
         'message' => 'Bitte geben Sie eine gültige Adresse mit Postleitzahl ein.',
         'type' => 'warning',
     ],
+    'ajax_fallback' => [
+        'title' => 'Verarbeitung läuft',
+        'message' => 'AJAX-Verarbeitung nicht verfügbar.',
+        'type' => 'info',
+    ],
+    'processing_error' => [
+        'title' => 'Verarbeitungsfehler',
+        'message' => 'Bei der Flächenprüfung ist ein Fehler aufgetreten:',
+        'type' => 'danger',
+    ],
+    'fallback_sync' => [
+        'title' => 'Wechsel zu Standard-Verarbeitung',
+        'message' => 'Die Prüfung wird mit der Standard-Verarbeitung fortgesetzt...',
+        'type' => 'info',
+    ],
 ];
 
 // Loading overlay
-$GLOBALS['TL_LANG']['caeli_area_check']['loading']['title'] = 'Ihr Grundstück wird geprüft...';
+$GLOBALS['TL_LANG']['caeli_area_check']['loading'] = [
+    'title' => 'Ihr Grundstück wird geprüft...',
+    'progress' => 'Fortschritt',
+    'texts' => [
+        'checking_area' => 'Wir prüfen Ihre Fläche',
+        'wind_conditions' => 'Passen die Windgegebenheiten?',
+        'restrictions_check' => 'Gibt es Restriktionen?',
+        'grid_connection' => 'Ist ein Netzanschluss gegeben?',
+        'analyzing_potential' => 'Analysiere Windpotential',
+        'checking_nature' => 'Prüfe Naturschutzgebiete',
+        'calculating_economics' => 'Berechne Wirtschaftlichkeit',
+        'checking_distances' => 'Überprüfe Abstandsregelungen',
+        'analyzing_capacity' => 'Analysiere Netzkapazität',
+        'evaluating_quality' => 'Bewerte Standortqualität'
+    ],
+    'steps' => [
+        'connecting' => 'Verbindung zur API herstellen...',
+        'analyzing' => 'Fläche wird analysiert...',
+        'rating' => 'Windpotential wird bewertet...',
+        'fallback_rating' => 'Alternative Bewertung wird erstellt...',
+        'saving' => 'Ergebnis wird gespeichert...',
+        'completed' => 'Verarbeitung abgeschlossen!'
+    ]
+];
 
 // Interface elements
 $GLOBALS['TL_LANG']['caeli_area_check']['interface'] = [

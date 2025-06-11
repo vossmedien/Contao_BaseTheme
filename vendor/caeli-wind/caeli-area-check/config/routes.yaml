@@ -1,0 +1,7 @@
+# Routes für Caeli Area Check AJAX-Endpoints
+caeli_area_check_ajax:
+    resource: ../src/Controller/
+    type: attribute
+    defaults:
+        _scope: frontend
+        _token_check: false 

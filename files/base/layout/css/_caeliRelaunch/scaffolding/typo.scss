@@ -18,7 +18,7 @@ main, footer {
   }
 }
 
-p + ul {
+p + ul, p + ol {
   margin-top: 1rem;
 }
 
@@ -64,6 +64,11 @@ main .content--element {
   }
 }
 
+ol{
+  li:not(:last-child){
+    margin-bottom:1rem;
+  }
+}
 
 ul.list-arrow {
   list-style-type: none;

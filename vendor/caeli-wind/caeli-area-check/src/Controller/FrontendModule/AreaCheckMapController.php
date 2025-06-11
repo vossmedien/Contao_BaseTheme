@@ -15,6 +15,9 @@ use Contao\Environment;
 use Contao\System;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Psr\Log\LoggerInterface;
 
@@ -203,6 +206,20 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             $template->detailPage = $framework->getAdapter(PageModel::class)->findById($model->jumpTo);
         }
         
+        // AJAX-Konfiguration für JavaScript bereitstellen
+        // URLs basierend auf aktueller Seite generieren
+        $currentPath = rtrim($request->getPathInfo(), '/');
+        $baseUrl = $request->getScheme() . '://' . $request->getHost() . $currentPath;
+        
+        $template->ajaxConfig = [
+            'startUrl' => $baseUrl . '/ajax/start',
+            'statusUrl' => $baseUrl . '/ajax/status',
+            'detailPageUrl' => $template->detailPage ? $template->detailPage->getFrontendUrl() : null
+        ];
+        
+        $this->logger->info('[AreaCheckMapController] AJAX Config generiert: ' . json_encode($template->ajaxConfig));
+        $this->logger->info('[AreaCheckMapController] Current Path: ' . $currentPath);
+        
         // Stelle sicher, dass error immer gesetzt ist
         if (!isset($template->error)) {
             $template->error = null;
@@ -236,7 +253,7 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($curl_session, CURLOPT_COOKIEJAR, $cookieFile);
-        curl_setopt($curl_session, CURLOPT_TIMEOUT, 30); // 30 Sekunden Timeout
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 45); // 30 Sekunden Timeout
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json'
         ]);
@@ -688,5 +705,242 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         return 'fc-' . time() . '-' . bin2hex(random_bytes(8));
     }
 
+    /**
+     * AJAX-Endpoint: Startet die asynchrone Flächenprüfung
+     */
+    #[Route('/flaechencheck/ajax/start', name: 'caeli_area_check_ajax_start', methods: ['POST'])]
+    public function startAsync(Request $request, SessionInterface $session): JsonResponse
+    {
+        try {
+            $this->logger->info('[AreaCheckMapController] === AJAX START REQUEST ===');
+            $this->logger->info('[AreaCheckMapController] Request Method: ' . $request->getMethod());
+            $this->logger->info('[AreaCheckMapController] Request URI: ' . $request->getRequestUri());
+            $this->logger->info('[AreaCheckMapController] Request Headers: ' . json_encode($request->headers->all()));
+            
+            // Eindeutige Session-ID generieren
+            $sessionId = 'check_' . uniqid();
+            
+            // Request-Daten in Session speichern
+            $requestData = $request->request->all();
+            $this->logger->info('[AreaCheckMapController] Request Data Keys: ' . json_encode(array_keys($requestData)));
+            $session->set($sessionId, $requestData);
+            
+            $this->logger->info('[AreaCheckMapController] AJAX Check gestartet, sessionId: ' . $sessionId);
+            
+            return new JsonResponse([
+                'status' => 'queued',
+                'sessionId' => $sessionId,
+                'statusUrl' => '/flaechencheck/ajax/status/' . $sessionId,
+                'debug' => 'AJAX endpoint reached successfully'
+            ]);
+            
+        } catch (\Throwable $e) {
+            $this->logger->error('[AreaCheckMapController] AJAX Start Fehler: ' . $e->getMessage());
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => 'Fehler beim Starten der Prüfung: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * AJAX-Endpoint: Prüft den Status der Flächenprüfung
+     */
+    #[Route('/flaechencheck/ajax/status/{sessionId}', name: 'caeli_area_check_ajax_status', methods: ['GET'])]
+    public function checkStatus(string $sessionId, SessionInterface $session): JsonResponse
+    {
+        try {
+            $this->logger->info('[AreaCheckMapController] === AJAX STATUS CHECK ===');
+            $this->logger->info('[AreaCheckMapController] AJAX Status Check für sessionId: ' . $sessionId);
+            
+            // Prüfen ob bereits verarbeitet
+            if ($session->has($sessionId . '_result')) {
+                $result = $session->get($sessionId . '_result');
+                $this->logger->info('[AreaCheckMapController] AJAX Ergebnis gefunden für sessionId: ' . $sessionId);
+                
+                return new JsonResponse([
+                    'status' => 'completed',
+                    'result' => $result
+                ]);
+            }
+            
+            // Prüfen ob Fehler aufgetreten
+            if ($session->has($sessionId . '_error')) {
+                $error = $session->get($sessionId . '_error');
+                $this->logger->error('[AreaCheckMapController] AJAX Fehler gefunden für sessionId: ' . $sessionId . ' - ' . $error);
+                
+                return new JsonResponse([
+                    'status' => 'error',
+                    'message' => $error
+                ]);
+            }
+            
+            // Verarbeitung starten wenn noch nicht begonnen
+            if ($session->has($sessionId) && !$session->has($sessionId . '_processing')) {
+                $session->set($sessionId . '_processing', true);
+                $this->processAreaCheckAsync($sessionId, $session);
+            }
+            
+            // Progress-Daten abrufen wenn verfügbar
+            $progressData = $session->get($sessionId . '_progress', ['percentage' => 0, 'message' => 'Startet...']);
+            
+            return new JsonResponse([
+                'status' => 'processing',
+                'progress' => $progressData
+            ]);
+            
+        } catch (\Throwable $e) {
+            $this->logger->error('[AreaCheckMapController] AJAX Status Fehler: ' . $e->getMessage());
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => 'Fehler beim Prüfen des Status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Verarbeitet die Flächenprüfung asynchron (verwendet bestehende Logik)
+     */
+    private function processAreaCheckAsync(string $sessionId, SessionInterface $session): void
+    {
+        try {
+            $requestData = $session->get($sessionId);
+            if (!$requestData) {
+                throw new \RuntimeException('Keine Request-Daten gefunden');
+            }
+            
+            $this->logger->info('[AreaCheckMapController] AJAX Verarbeitung gestartet für sessionId: ' . $sessionId);
+            
+            // Schritt 1: API-Session vorbereiten (20%)
+            $this->updateProgress($sessionId, $session, 20, 'Verbindung zur API herstellen...');
+            
+            // Bestehende Logik aus getResponse() wiederverwenden
+            // AJAX: Sicherstellen dass alle Dependencies verfügbar sind
+            if (!$this->framework) {
+                throw new \RuntimeException('ContaoFramework nicht verfügbar');
+            }
+            
+            $this->framework->initialize();
+            
+            $parkid = $this->createPark($requestData);
+            
+            // Schritt 2: Park erstellt (50%)
+            $this->updateProgress($sessionId, $session, 50, 'Fläche wird analysiert...');
+            
+            $parkData = null;
+            $status = 'failed';
+            $isSuccess = false;
+            $errorMessage = null;
+            
+            if ($parkid != "-") {
+                // Schritt 3: Rating abrufen (75%)
+                $this->updateProgress($sessionId, $session, 75, 'Windpotential wird bewertet...');
+                
+                $parkData = $this->getPlotRating($parkid);
+                $status = 'success';
+                $isSuccess = true;
+            } else {
+                // Schritt 3: Fallback-Rating versuchen (75%)
+                $this->updateProgress($sessionId, $session, 75, 'Alternative Bewertung wird erstellt...');
+                
+                // Fallback wie im synchronen Code
+                try {
+                    $geometry_raw = $requestData['geometry'] ?? '{}';
+                    $ratingData = $this->getRatingAreaForFailedPark($geometry_raw);
+                    if ($ratingData) {
+                        $parkData = $ratingData;
+                        $status = 'failed_with_rating';
+                        $this->logger->info('[AreaCheckMapController] AJAX Rating für fehlgeschlagenen Park erhalten');
+                    }
+                } catch (\Throwable $e) {
+                    $this->logger->error('[AreaCheckMapController] AJAX Rating für fehlgeschlagenen Park fehlgeschlagen: ' . $e->getMessage());
+                }
+                $errorMessage = 'Park konnte nicht erstellt werden';
+            }
+            
+            // Input-Daten wie im synchronen Code
+            $name = trim($requestData['name'] ?? '');
+            $vorname = trim($requestData['vorname'] ?? '');
+            $phone = trim($requestData['phone'] ?? '');
+            $email = trim($requestData['email'] ?? '');
+            $searchedAddress = trim($requestData['searched_address'] ?? '');
+            $geometry = trim($requestData['geometry'] ?? '');
 
+            // E-Mail Validierung
+            if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $this->logger->warning('[AreaCheckMapController] AJAX Ungültige E-Mail-Adresse: ' . $email);
+                $email = '';
+            }
+
+            // UUID für fehlgeschlagene Parks
+            $uuid = $this->generateUniqueUuid();
+
+            // DB-Insert wie im synchronen Code
+            $set = [
+                'tstamp' => time(),
+                'name' => $name ?: 'Unbekannt',
+                'vorname' => $vorname ?: 'Unbekannt',
+                'phone' => $phone ?: '',
+                'email' => $email ?: '',
+                'searched_address' => $searchedAddress ?: '',
+                'geometry' => $geometry ?: '',
+                'park_id' => $parkid ?: '',
+                'park_rating' => $parkData ? json_encode($parkData) : null,
+                'status' => $status,
+                'error_message' => $errorMessage ?: '',
+                'uuid' => $uuid,
+            ];
+
+            // Schritt 4: Daten speichern (90%)
+            $this->updateProgress($sessionId, $session, 90, 'Ergebnis wird gespeichert...');
+            
+            Database::getInstance()
+                ->prepare("INSERT INTO tl_flaechencheck %s")
+                ->set($set)
+                ->execute();
+            
+            $this->logger->info('[AreaCheckMapController] AJAX DB-Insert erfolgreich für sessionId: ' . $sessionId);
+            
+            // Schritt 5: Abgeschlossen (100%)
+            $this->updateProgress($sessionId, $session, 100, 'Verarbeitung abgeschlossen!');
+            
+            // Ergebnis in Session speichern
+            $result = [
+                'isSuccess' => $isSuccess,
+                'checkId' => $isSuccess ? $parkid : $uuid,
+                'parkData' => $parkData,
+                'status' => $status,
+                'errorMessage' => $errorMessage
+            ];
+            
+            $session->set($sessionId . '_result', $result);
+            
+            // Cleanup
+            $session->remove($sessionId);
+            $session->remove($sessionId . '_processing');
+            
+            $this->logger->info('[AreaCheckMapController] AJAX Verarbeitung erfolgreich abgeschlossen für sessionId: ' . $sessionId);
+            
+        } catch (\Throwable $e) {
+            $this->logger->error('[AreaCheckMapController] AJAX Verarbeitung Fehler: ' . $e->getMessage());
+            $session->set($sessionId . '_error', $e->getMessage());
+            $session->remove($sessionId);
+            $session->remove($sessionId . '_processing');
+        }
+    }
+    
+    /**
+     * Aktualisiert den Progress in der Session
+     */
+    private function updateProgress(string $sessionId, SessionInterface $session, int $percentage, string $message): void
+    {
+        $progressData = [
+            'percentage' => $percentage,
+            'message' => $message,
+            'timestamp' => time()
+        ];
+        
+        $session->set($sessionId . '_progress', $progressData);
+        $this->logger->debug('[AreaCheckMapController] AJAX Progress updated: ' . $percentage . '% - ' . $message);
+    }
 } 

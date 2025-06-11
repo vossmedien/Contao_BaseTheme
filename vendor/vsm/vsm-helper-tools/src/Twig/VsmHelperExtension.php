@@ -19,7 +19,6 @@ use Twig\TwigFunction;
 use Vsm\VsmHelperTools\Helper\BasicHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\EnvHelper;
-use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 use Vsm\VsmHelperTools\Helper\HeadlineHelper;
 use Vsm\VsmHelperTools\Helper\ImageHelper;
 use Vsm\VsmHelperTools\Helper\VideoHelper;
@@ -38,6 +37,7 @@ class VsmHelperExtension extends AbstractExtension
             
             // ButtonHelper
             new TwigFunction('vsm_generate_button_html', [ButtonHelper::class, 'generateButtonHTML']),
+            new TwigFunction('vsm_get_button_config', [ButtonHelper::class, 'getButtonConfig']),
             
             // ImageHelper Functions
             new TwigFunction('vsm_generate_image_html', [ImageHelper::class, 'generateImageHTML']),
@@ -45,17 +45,12 @@ class VsmHelperExtension extends AbstractExtension
             new TwigFunction('vsm_get_svg_code', [ImageHelper::class, 'getSvgCode']),
             
             // VideoHelper
-            new TwigFunction('vsm_get_video_src', [VideoHelper::class, 'getVideoSrc']),
-            new TwigFunction('vsm_get_video_attributes', [VideoHelper::class, 'getVideoAttributes']),
+            new TwigFunction('vsm_render_video', [VideoHelper::class, 'renderVideo']),
+            new TwigFunction('vsm_is_video_format', [VideoHelper::class, 'isVideoFormat']),
             
             // EnvHelper
-            new TwigFunction('vsm_is_dev', [EnvHelper::class, 'isDev']),
-            
-            // Global Element Config
-            new TwigFunction('vsm_element_config', [GlobalElementConfig::class, 'getGlobalConfig']),
-            
-            // Weitere Funktionen können hier hinzugefügt werden
-            // ...
+            new TwigFunction('vsm_is_backend', [EnvHelper::class, 'isBackend']),
+            new TwigFunction('vsm_is_frontend', [EnvHelper::class, 'isFrontend']),
         ];
     }
 

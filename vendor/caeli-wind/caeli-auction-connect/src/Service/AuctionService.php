@@ -929,6 +929,8 @@ class AuctionService
         // }
     }
 
+
+
     /**
      * Holt die Rohdaten einer einzelnen Beispielauktion.
      * Ideal für die Anzeige im Backend, um verfügbare Felder zu sehen.

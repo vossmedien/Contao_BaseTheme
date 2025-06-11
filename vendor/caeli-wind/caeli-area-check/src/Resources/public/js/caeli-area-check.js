@@ -6,13 +6,13 @@ const CONFIG = {
     DEFAULT_AREA_SIZE: 40, // Hektar
     MAX_AREA_SIZE: 700, // Hektar
     DELAYS: {
-        INIT: 1500,
-        TUTORIAL_TRANSITION: 300,
-        PLACE_SELECTED: 1000,
-        POLYGON_CREATED: 500,
-        MAP_MOVE_RESET: 100,
-        SEARCH: 500,
-        POLYGON_UPDATE: 100
+        INIT: 500,
+        TUTORIAL_TRANSITION: 100,
+        PLACE_SELECTED: 300,
+        POLYGON_CREATED: 200,
+        MAP_MOVE_RESET: 50,
+        SEARCH: 300,
+        POLYGON_UPDATE: 50
     },
     TUTORIAL_COOKIE: 'caeli_area_check_tutorial_completed',
     AREA_SIZES: {
@@ -232,7 +232,7 @@ function initMap() {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
             searchPlaces(query);
-        }, 300);
+        }, 200);
     });
         
         // Keyboard Navigation
@@ -391,9 +391,12 @@ function initMap() {
         }
     });
 
-    // Event Listener für Buttons
-    Utils.safeElementAction('#delete-button', el => el.addEventListener('click', deletePolygon));
-    Utils.safeElementAction('#log-coordinates-button', el => el.addEventListener('click', logCoordinates));
+    // Event Listener für Buttons - nur einmal registrieren
+    if (!window.caeliEventListenersInitialized) {
+        Utils.safeElementAction('#delete-button', el => el.addEventListener('click', deletePolygon));
+        Utils.safeElementAction('#log-coordinates-button', el => el.addEventListener('click', logCoordinates));
+        window.caeliEventListenersInitialized = true;
+    }
     
     // Prüfe beim Seitenload, ob das Input bereits einen Wert hat
     checkInputValueOnLoad();
@@ -669,7 +672,7 @@ function updateAreaLabel() {
 // Live Adress-Update für Polygon-Zentrum (throttled)
 let reverseGeocodingTimeout;
 function updatePolygonAddress(center) {
-    // Throttling: Nur alle 2 Sekunden ein Reverse Geocoding
+    // Throttling: Nur alle 1 Sekunde ein Reverse Geocoding  
     clearTimeout(reverseGeocodingTimeout);
     reverseGeocodingTimeout = setTimeout(() => {
         if (CaeliAreaCheck.geocoder && center) {
@@ -698,7 +701,7 @@ function updatePolygonAddress(center) {
                 }
             });
         }
-    }, 750); // 1.5 Sekunden throttling für bessere User Experience
+    }, 500); // 0.5 Sekunden throttling für bessere User Experience
 }
 
 // Beste Adresse aus Reverse Geocoding Ergebnissen finden (keine Plus Codes!)
@@ -836,8 +839,8 @@ function logCoordinates() {
                     console.warn('Reverse Geocoding fehlgeschlagen:', status);
                 }
                 
-                // Loading Animation starten (verzögert, damit Geocoding abgeschlossen ist)
-                startLoadingAnimation();
+                            // AJAX Form-Submit starten (verzögert, damit Geocoding abgeschlossen ist)
+            submitFormWithRedirect();
             });
         } else {
             // Fallback ohne Reverse Geocoding: ursprünglich eingegebene Adresse verwenden
@@ -847,8 +850,8 @@ function logCoordinates() {
                 hiddenAddress.value = searchInput.value;
             }
             
-            // Loading Animation starten
-            startLoadingAnimation();
+            // AJAX Form-Submit starten
+            submitFormWithRedirect();
         }
     } else {
         const translations = window.CaeliAreaCheckTranslations || {};
@@ -1030,16 +1033,16 @@ function loadGoogleMaps() {
     if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
         initMap();
         CaeliAreaCheck.state.mapInitialized = true;
-        // Tutorial nach Map-Initialisierung starten
-        setTimeout(initTutorial, 1000);
+        // Tutorial sofort starten
+        setTimeout(initTutorial, 100);
     } else {
         let tries = 0;
         function tryInit() {
             if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
                 initMap();
                 mapInitialized = true;
-                // Tutorial nach Map-Initialisierung starten
-                setTimeout(initTutorial, 1000);
+                // Tutorial sofort starten
+                setTimeout(initTutorial, 100);
             } else if (tries < 20) {
                 tries++;
                 setTimeout(tryInit, 200);
@@ -1351,10 +1354,10 @@ function initLoadingSpinner() {
         bar.setAttribute('fill', '#113534'); // Alle dunkelgrün
     });
     
-    // Rotation CSS hinzufügen falls nicht vorhanden
+    // KEINE Rotation mehr - SVG bleibt statisch
     const spinner = document.querySelector('.loading-spinner svg');
     if (spinner) {
-        spinner.style.animation = 'spin 1.5s linear infinite';
+        spinner.style.animation = 'none'; // Rotation entfernt
     }
 }
 
@@ -1444,10 +1447,502 @@ function startLoadingAnimation() {
 }
 
 function submitFormWithRedirect() {
-    // Form direkt submitten (führt zu Redirect)
-    const parkForm = document.getElementById('park-form');
-    if (parkForm) {
-        parkForm.submit();
+    console.log('=== submitFormWithRedirect aufgerufen ===');
+    
+    // AJAX-Konfiguration aus Template laden
+    let ajaxConfig = window.CaeliAreaCheckConfig;
+    
+    // AJAX ist IMMER verfügbar - kein Fallback zu sync
+    if (!ajaxConfig || !ajaxConfig.startUrl || !ajaxConfig.statusUrl) {
+        console.error('❌ AJAX Config fehlt komplett - schwerwiegender Fehler!');
+        showAsyncError('Konfigurationsfehler: AJAX-Endpoints nicht verfügbar. Bitte kontaktieren Sie den Support.');
+        return false; // Verhindert Form-Submit komplett
+    }
+    
+    console.log('✅ AJAX Config vollständig - starte AJAX-Processing');
+    
+    // Loading-Overlay sofort anzeigen
+    showLoadingOverlay();
+    
+    // AJAX-Processing starten (verhindert normale Form-Submit)
+    startAsyncAreaCheck();
+    return false; // Verhindert normale Form-Submit IMMER
+}
+
+/**
+ * Startet AJAX Area Check mit animierter Progress-Anzeige
+ */
+function startAsyncAreaCheck() {
+    console.log('[DEBUG] AJAX: Start async area check aufgerufen');
+    
+    const form = document.getElementById('park-form');
+    if (!form) {
+        console.error('[DEBUG] Form nicht gefunden');
+        window.caeliAjaxInProgress = false;
+        return;
+    }
+    
+    // Loading-Animation mit wechselnden Texten starten
+    startLoadingAnimationWithTextRotation();
+    
+    // Form-Daten sammeln
+    const formData = new FormData(form);
+    const config = window.CaeliAreaCheckConfig || {};
+    const startUrl = config.startUrl;
+    
+    console.log('[DEBUG] AJAX Config:', config);
+    console.log('[DEBUG] Start URL:', startUrl);
+    
+    // Debug: Form Data loggen
+    for (let [key, value] of formData.entries()) {
+        console.log('[DEBUG] Form Data:', key, value);
+    }
+    
+    console.log('[DEBUG] Sende AJAX Request an:', startUrl);
+    
+    fetch(startUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        console.log('[DEBUG] AJAX Start Response Status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        return response.text().then(text => {
+            console.log('[DEBUG] Response Text:', text.substring(0, 200) + '...');
+            return JSON.parse(text);
+        });
+    })
+    .then(data => {
+        console.log('[DEBUG] AJAX Start Response Data:', data);
+        
+        if (data.status === 'queued' && data.sessionId) {
+            console.log('[DEBUG] Starting polling with sessionId:', data.sessionId);
+            startPolling(data.sessionId);
+        } else {
+            throw new Error('Ungültige Response-Struktur: ' + JSON.stringify(data));
+        }
+    })
+    .catch(error => {
+        console.error('[DEBUG] AJAX Start Fehler:', error);
+        handleAsyncError('AJAX-Fehler: ' + error.message);
+    });
+}
+
+/**
+ * Loading-Animation mit wechselnden Texten und simulierter Progress
+ */
+function startLoadingAnimationWithTextRotation() {
+    // Übersetzungen laden
+    const translations = window.CaeliAreaCheckTranslations || {};
+    const loadingTextsObj = translations.loading?.texts || {};
+    
+    // Die Übersetzungen sind als Objekt definiert, konvertiere zu Array
+    const loadingTexts = [
+        loadingTextsObj.checking_area || "Wir prüfen Ihre Fläche",
+        loadingTextsObj.wind_conditions || "Passen die Windgegebenheiten?", 
+        loadingTextsObj.restrictions_check || "Gibt es Restriktionen?",
+        loadingTextsObj.grid_connection || "Ist ein Netzanschluss gegeben?",
+        loadingTextsObj.analyzing_potential || "Analysiere Windpotential",
+        loadingTextsObj.checking_nature || "Prüfe Naturschutzgebiete",
+        loadingTextsObj.calculating_economics || "Berechne Wirtschaftlichkeit",
+        loadingTextsObj.checking_distances || "Überprüfe Abstandsregelungen",
+        loadingTextsObj.analyzing_capacity || "Analysiere Netzkapazität",
+        loadingTextsObj.evaluating_quality || "Bewerte Standortqualität"
+    ];
+    
+    let currentTextIndex = 0;
+    let simulatedProgress = 0;
+    
+    // SVG-Spinner initialisieren (ohne Rotation)
+    initLoadingSpinner();
+    
+    // Text-Element für animierte Rotation
+    const messageElement = document.querySelector('.loading-message');
+    const percentageElement = document.querySelector('.loading-percentage');
+    
+    if (messageElement) {
+        // Erstes animiertes Einblenden
+        messageElement.textContent = loadingTexts[currentTextIndex];
+        messageElement.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        messageElement.style.transform = 'translateY(30px)';
+        messageElement.style.opacity = '0';
+        
+        // Ersten Text sofort einblenden
+        setTimeout(() => {
+            messageElement.style.transform = 'translateY(0)';
+            messageElement.style.opacity = '1';
+        }, 30);
+    }
+    
+    // Kontinuierliche simulierte Progress bis echte Daten kommen (KEIN STOPP bei 40%)
+    const progressInterval = setInterval(() => {
+        if (simulatedProgress < 85) { // Erhöht von 40% auf 85%
+            simulatedProgress += Math.random() * 8 + 2; // 2-10% pro Schritt (schneller)
+            simulatedProgress = Math.min(simulatedProgress, 85);
+            
+            if (percentageElement) {
+                percentageElement.textContent = `${Math.round(simulatedProgress)}%`;
+            }
+            updateSpinnerProgress(simulatedProgress);
+        }
+    }, 200); // Alle 200ms (schneller)
+    
+    // Text-Rotation starten nach dem ersten Einblenden
+    const textInterval = setInterval(() => {
+        if (messageElement) {
+            // Smooth fade out nach oben
+            messageElement.style.transition = 'transform 0.6s cubic-bezier(0.55, 0.06, 0.68, 0.19), opacity 0.6s cubic-bezier(0.55, 0.06, 0.68, 0.19)';
+            messageElement.style.transform = 'translateY(-30px)';
+            messageElement.style.opacity = '0';
+            
+            setTimeout(() => {
+                // Nächsten Text setzen
+                currentTextIndex = (currentTextIndex + 1) % loadingTexts.length;
+                messageElement.textContent = loadingTexts[currentTextIndex];
+                
+                // Von unten einblenden - sofort positionieren
+                messageElement.style.transform = 'translateY(30px)';
+                messageElement.style.opacity = '0';
+                
+                // Smooth fade in
+                setTimeout(() => {
+                    messageElement.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    messageElement.style.transform = 'translateY(0)';
+                    messageElement.style.opacity = '1';
+                }, 20);
+            }, 300);
+        }
+    }, 2500); // Alle 2.5 Sekunden Text wechseln
+    
+    // Intervalles für Cleanup speichern
+    window.caeliLoadingIntervals = { progressInterval, textInterval };
+}
+
+/**
+ * Stoppt alle Loading-Animationen
+ */
+function stopLoadingAnimations() {
+    if (window.caeliLoadingIntervals) {
+        clearInterval(window.caeliLoadingIntervals.progressInterval);
+        clearInterval(window.caeliLoadingIntervals.textInterval);
+        window.caeliLoadingIntervals = null;
+        console.log('[DEBUG] Loading-Animationen gestoppt');
+    }
+}
+
+/**
+ * Aktualisiert mit echten Progress-Daten vom Backend
+ */
+function updateRealProgress(progressData) {
+    const percentage = progressData.percentage || 0;
+    const message = progressData.message || 'Wird verarbeitet...';
+    
+    // Simulierte Progress stoppen wenn echte Daten kommen
+    stopLoadingAnimations();
+    
+    // Loading-Percentage aktualisieren
+    const percentageElement = document.querySelector('.loading-percentage');
+    if (percentageElement) {
+        percentageElement.textContent = `${percentage}%`;
+    }
+    
+    // SVG-Progress Animation: Balken von 12 Uhr im Uhrzeigersinn färben
+    updateSpinnerProgress(percentage);
+    
+    // Wechselnde Status-Texte im loading-message div (überschreibt Rotation)
+    const messageElement = document.querySelector('.loading-message');
+    if (messageElement && percentage < 100) {
+        messageElement.textContent = message;
+        messageElement.style.transform = 'translateY(0)';
+        messageElement.style.opacity = '1';
+    }
+    
+    console.log(`[Progress] ${percentage}%: ${message}`);
+}
+
+/**
+ * Spinner initialisieren - alle Balken grau, OHNE Rotation
+ */
+function initLoadingSpinner() {
+    const bars = document.querySelectorAll('.spinner-bar');
+    bars.forEach((bar) => {
+        bar.setAttribute('fill', '#DEEEC6'); // Standard-Farbe grau
+    });
+    
+    // KEINE Rotation mehr - SVG bleibt statisch
+    const spinner = document.querySelector('.loading-spinner svg');
+    if (spinner) {
+        spinner.style.animation = 'none'; // Rotation entfernt
+    }
+}
+
+/**
+ * Behandelt Async-Fehler
+ */
+function handleAsyncError(errorMessage) {
+    // OVERLAY BLEIBT SICHTBAR - Keine hideLoadingOverlay()!
+    
+    const translations = window.CaeliAreaCheckTranslations || {};
+    
+    // Fehler-Message im Loading-Overlay anzeigen
+    const messageElement = document.querySelector('.loading-message');
+    if (messageElement) {
+        messageElement.textContent = 'Fehler: ' + errorMessage;
+        messageElement.style.color = '#dc3545'; // Bootstrap danger color
+    }
+    
+    // Nach 5 Sekunden Fallback auf synchrone Form ABER OVERLAY BLEIBT
+    setTimeout(() => {
+        const messageElement = document.querySelector('.loading-message');
+        if (messageElement) {
+            messageElement.textContent = 'Verwende synchrone Verarbeitung...';
+            messageElement.style.color = '#666';
+        }
+        
+        const parkForm = document.getElementById('park-form');
+        if (parkForm) {
+            setTimeout(() => {
+                parkForm.submit();
+            }, 1000);
+        }
+    }, 5000);
+}
+
+/**
+ * Startet Polling für Session-Status - SINGLETON PATTERN
+ */
+function startPolling(sessionId) {
+    console.log('[DEBUG] startPolling aufgerufen mit sessionId:', sessionId);
+    
+    const maxPolls = 60; // 3 Minuten bei 3s Intervall
+    let pollCount = 0;
+    let isCompleted = false; // Verhindert doppelte Completion durch Race Conditions
+    
+    const baseUrl = window.CaeliAreaCheckConfig?.statusUrl;
+    if (!baseUrl) {
+        console.error('[DEBUG] Status URL nicht verfügbar');
+        handleAsyncError('Status URL nicht konfiguriert');
+        return;
+    }
+    
+    console.log('[DEBUG] Starting polling for sessionId:', sessionId);
+    
+    const pollInterval = setInterval(() => {
+        pollCount++;
+        console.log(`[DEBUG] Polling #${pollCount} für Session: ${sessionId}`);
+        
+        const pollUrl = `${baseUrl}/${sessionId}`;
+        
+        fetch(pollUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('[DEBUG] Polling Response Data:', data);
+            
+            // Race Condition: Ignoriere weitere Responses wenn bereits completed
+            if (isCompleted) {
+                console.log('[DEBUG] Bereits completed - ignoriere Response');
+                return;
+            }
+            
+            if (!data || typeof data !== 'object') {
+                console.error('[DEBUG] Invalid response data:', data);
+                throw new Error('Ungültige Response-Daten');
+            }
+            
+            if (data.status === 'completed') {
+                console.log('[DEBUG] Status completed - stoppe Polling');
+                isCompleted = true; // Flag setzen BEVOR clearInterval
+                clearInterval(pollInterval);
+                handleAsyncResult(data.result);
+            } else if (data.status === 'error') {
+                console.log('[DEBUG] Status error - stoppe Polling');
+                isCompleted = true; // Flag setzen BEVOR clearInterval
+                clearInterval(pollInterval);
+                handleAsyncError(data.message);
+            } else if (data.status === 'processing') {
+                // Echten Progress verwenden falls verfügbar
+                if (data.progress) {
+                    updateRealProgress(data.progress);
+                } else {
+                    // Fallback auf Polling-basierte Progress
+                    updateAsyncProgress(pollCount, maxPolls);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('[DEBUG] Polling Fehler:', error);
+            // Race Condition: Ignoriere weitere Fehler wenn bereits completed
+            if (isCompleted) {
+                console.log('[DEBUG] Bereits completed - ignoriere Fehler');
+                return;
+            }
+            
+            // NICHT sofort abbrechen - erst nach mehreren Fehlern
+            if (pollCount >= 5) {
+                console.log('[DEBUG] Zu viele Polling-Fehler - stoppe Polling');
+                isCompleted = true;
+                clearInterval(pollInterval);
+                handleAsyncError('Verbindungsfehler beim Statuscheck: ' + error.message);
+            }
+        });
+        
+        // Timeout nach max Polls
+        if (pollCount >= maxPolls && !isCompleted) {
+            console.log('[DEBUG] Polling Timeout erreicht - stoppe Polling');
+            isCompleted = true;
+            clearInterval(pollInterval);
+            handleAsyncError('Timeout: Verarbeitung dauert zu lange (3 Minuten überschritten)');
+        }
+        
+    }, 2000); // Alle 2 Sekunden prüfen (schneller)
+    
+    console.log('[DEBUG] Polling gestartet');
+}
+
+/**
+ * Behandelt erfolgreiches Async-Ergebnis
+ */
+function handleAsyncResult(result) {
+    console.log('[DEBUG] handleAsyncResult aufgerufen - Direkte Weiterleitung ohne Message');
+    
+    // Alle Animationen stoppen
+    stopLoadingAnimations();
+    
+    // 100% Progress: Alle Balken grün färben
+    updateSpinnerProgress(100);
+    
+    const percentageElement = document.querySelector('.loading-percentage');
+    if (percentageElement) {
+        percentageElement.textContent = '100%';
+    }
+    
+    // Redirect zur Ergebnisseite basierend auf dem Result
+    const checkId = result.checkId;
+    const isSuccess = result.isSuccess;
+    
+    // AJAX-Konfiguration aus Template laden (jumpTo aus Backend)
+    const config = window.CaeliAreaCheckConfig || {};
+    let resultPageUrl = config.detailPageUrl;
+    
+    if (!resultPageUrl) {
+        // Fallback: Smart-Detection der korrekten Result-URL
+        const currentUrl = window.location.href;
+        
+        if (currentUrl.includes('/flaechencheck/')) {
+            // Standardfall: Wir sind auf der Flaechencheck-Seite
+            resultPageUrl = currentUrl.replace('/flaechencheck/', '/flaechencheck-ergebnis/');
+        } else {
+            // Fallback: Relative Navigation zur Ergebnisseite
+            const urlParts = currentUrl.split('/');
+            urlParts[urlParts.length - 1] = 'flaechencheck-ergebnis';
+            resultPageUrl = urlParts.join('/');
+        }
+    }
+    
+    // URL-Parameter hinzufügen
+    const separator = resultPageUrl.includes('?') ? '&' : '?';
+    if (isSuccess) {
+        resultPageUrl += `${separator}parkid=${encodeURIComponent(checkId)}`;
+    } else {
+        resultPageUrl += `${separator}checkid=${encodeURIComponent(checkId)}`;
+    }
+    
+    console.log('[DEBUG] Leite weiter zu:', resultPageUrl);
+    console.log('[DEBUG] Aktueller window.location:', window.location.href);
+    console.log('[DEBUG] Result-Object:', result);
+    
+    // DEBUGGING: Mehrere Redirect-Methoden versuchen
+    try {
+        console.log('[DEBUG] Versuche window.location.href...');
+        window.location.href = resultPageUrl;
+        
+        // Fallback falls href nicht funktioniert  
+        setTimeout(() => {
+            console.log('[DEBUG] Fallback 1: window.location.assign...');
+            window.location.assign(resultPageUrl);
+        }, 100);
+        
+        // Zweiter Fallback
+        setTimeout(() => {
+            console.log('[DEBUG] Fallback 2: window.location.replace...');
+            window.location.replace(resultPageUrl);
+        }, 200);
+        
+    } catch (error) {
+        console.error('[DEBUG] Redirect Error:', error);
+        // Notfall-Fallback mit Link
+        alert('Redirect zu: ' + resultPageUrl);
+    }
+}
+
+/**
+ * Aktualisiert das SVG-Spinner basierend auf Progress-Prozent
+ * Färbt Balken von 12 Uhr (data-index="0") im Uhrzeigersinn mit #113634
+ */
+function updateSpinnerProgress(percentage) {
+    const spinnerContainer = document.querySelector('.loading-spinner');
+    if (!spinnerContainer) return;
+    
+    const bars = spinnerContainer.querySelectorAll('.spinner-bar');
+    if (bars.length === 0) return;
+    
+    // 12 Balken = 100% / 12 = ca. 8.33% pro Balken
+    const barsToFill = Math.floor((percentage / 100) * bars.length);
+    
+    // Alle Balken zurücksetzen auf Standard-Farbe
+    bars.forEach(bar => {
+        bar.setAttribute('fill', '#DEEEC6');
+    });
+    
+    // Balken von 12 Uhr (Index 0) im Uhrzeigersinn färben
+    for (let i = 0; i < barsToFill; i++) {
+        const bar = spinnerContainer.querySelector(`[data-index="${i}"]`);
+        if (bar) {
+            bar.setAttribute('fill', '#113634');
+        }
+    }
+    
+    // Bei exakt 100% alle Balken färben
+    if (percentage >= 100) {
+        bars.forEach(bar => {
+            bar.setAttribute('fill', '#113634');
+        });
+    }
+}
+
+/**
+ * Aktualisiert Progress-Indikator (Fallback auf Polling-Zeit)
+ */
+function updateAsyncProgress(currentPoll, maxPolls) {
+    const progressPercent = Math.min(Math.round((currentPoll / maxPolls) * 100), 95);
+    
+    // Optional: Progress im Loading-Text anzeigen
+    const textElement = document.querySelector('.loading-percentage');
+    if (textElement && progressPercent > 30) {
+        // Nach 30% gelegentlich Progress anzeigen
+        if (currentPoll % 5 === 0) {
+            const translations = window.CaeliAreaCheckTranslations || {};
+            const progressText = translations.loading?.progress || 'Fortschritt';
+            updateLoadingText(`${progressText}: ${progressPercent}%`);
+        }
     }
 }
 

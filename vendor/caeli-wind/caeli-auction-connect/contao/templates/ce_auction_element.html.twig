@@ -7,9 +7,20 @@
         {% set auctions_to_display = auctions %}
     {% endif %}
 
-<div class="auction-element-wrapper{% if class is defined and class %} {{ class }}{% endif %}{% if cssID[1] %} {{ cssID[1] }}{% endif %}">
-    {% if headline and headline.headline %}
-        <h{{ headline.level|default('1') }}{% if headline.class %} class="{{ headline.class }}"{% endif %}>{{ headline.headline }}</h{{ headline.level|default('1') }}>
+<div class="auction-element-wrapper{% if class is defined and class %} {{ class }}{% endif %}{% if cssClass %} {{ cssClass }}{% endif %}">
+    {# Headline ausgeben, falls vorhanden #}
+    {% if headline and headline.value %}
+        <div class="content--element ce_rsce_headline">
+            <div class="ce--inner">
+                <div>
+                    <div data-animation="animate__fadeIn" class="headline-wrapper">
+                        <div class="ce--headline hl-{{ headline.unit|default('h2') }}">
+                            <{{ headline.unit|default('h2') }} style="">{{ headline.value }}</{{ headline.unit|default('h2') }}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% endif %}
 
     {% if auctions_to_display|length > 0 %}
@@ -22,7 +33,7 @@
                     'auction': auction_data_from_loop,
                     'raw_data': auction_data_from_loop._raw_data,
                     'detailPageUrl': detailPageUrl,
-                    'cssID': cssID
+                    'cssClass': cssClass
                 } %}
             {% else %}
                 <p class="alert alert-danger">Item-Template nicht definiert oder nicht gefunden.</p>
@@ -33,11 +44,5 @@
         {% endfor %}
         </div>{# Ende .row #}
         </div>{# Ende .auction-card-grid #}
-    {% else %}
-        <div class="alert alert-info">{{ 'content_element.no_auctions_for_criteria'|trans }}</div>
     {% endif %}
 </div>
-
-
-
-

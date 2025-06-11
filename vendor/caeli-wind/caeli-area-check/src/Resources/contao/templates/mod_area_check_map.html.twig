@@ -29,7 +29,8 @@
             <!-- Loading Overlay -->
             <div id="loading-overlay" style="display: none;">
                 <div class="loading-content">
-                    <h2>{{ translations.loading.title }}</h2>
+                    <h2>{{ translations.loading.title }}  <span class="loading-percentage">0%</span></h2>
+
                     <div class="loading-spinner">
                         <svg width="304" height="304" viewBox="0 0 304 304" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path class="spinner-bar" data-index="0" d="M163.93 0H139.298V122.651H163.93V0Z" fill="#DEEEC6"/>
@@ -46,7 +47,8 @@
                             <path class="spinner-bar" data-index="11" d="M86.5371 14.2621L65.2051 26.5781L90.5166 70.419L111.849 58.103L86.5371 14.2621Z" fill="#DEEEC6"/>
                         </svg>
                     </div>
-                    <div class="loading-percentage">0 %</div>
+
+                    <div class="loading-message">Startet...</div>
                 </div>
             </div>
 
@@ -89,7 +91,7 @@
                         <strong>{{ translations.interface.hints.warning }}</strong> {{ translations.form.warning }}
                     </div>
 
-                    <form id="park-form" action="{{ app.request.uri }}" method="POST">
+                    <form id="park-form" action="#" method="POST" onsubmit="return submitFormWithRedirect();">
                         <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
                         <input type="hidden" name="geometry" id="geometry-field" value="">
                         <input type="hidden" name="searched_address" id="searched-address-field" value="">
@@ -133,10 +135,21 @@
         </div>
     </div>
 
-    <!-- Übersetzungen für JavaScript bereitstellen -->
+    <!-- Übersetzungen und AJAX-Config für JavaScript bereitstellen -->
     <script>
         window.CaeliAreaCheckTranslations = {{ translations|json_encode|raw }};
+        
+        // AJAX-Config: URLs basierend auf aktueller Seite generieren
+        const currentPath = window.location.pathname.replace(/\/$/, ''); // Trailing slash entfernen
+        window.CaeliAreaCheckConfig = {
+            startUrl: '/flaechencheck/ajax/start',
+            statusUrl: '/flaechencheck/ajax/status',
+            detailPageUrl: {{ (detailPage ? detailPage.getFrontendUrl() : "'/flaechencheck/ergebnis'")|json_encode|raw }}
+        };
+        
+        console.log('✅ AJAX-Processing aktiviert');
         console.log('Translations loaded:', window.CaeliAreaCheckTranslations);
+        console.log('AJAX Config loaded:', window.CaeliAreaCheckConfig);
     </script>
     <script src="{{ asset('bundles/caeliareacheck/js/caeli-area-check.js') }}"></script>
     <script async src="https://maps.googleapis.com/maps/api/js?key={{ googleMapsApiKey }}&libraries=places,drawing,geometry,marker&v=weekly&loading=async"></script>

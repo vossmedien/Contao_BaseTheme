@@ -27,7 +27,7 @@ $this->wrapperAttributes = $this
         {{iflng}}
 
         {{iflng::en}}
-       <!-- @TODO C.VOSS ENGLISCHES MENÜ -->
+      {{insert_module::47}}
         {{iflng}}
     </div>
 </nav>

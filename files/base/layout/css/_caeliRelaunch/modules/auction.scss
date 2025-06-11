@@ -1,7 +1,9 @@
 .auction-item {
 
-  &.is-simple {
-
+  &.is-primary .card{
+   --bs-card-cap-bg: var(--bs-primary);
+    --bs-card-bg: var(--bs-primary);
+    color: var(--bs-secondary);
   }
 
   .card {

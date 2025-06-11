@@ -180,7 +180,7 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
             <?php if ($this->two_columns): ?>
                 <?php // --- ZWEISPALTIG --- ?>
 
-                    <div class="row <?php if($this->second_content != "" && $headlineColumnImageHTML != "" && $headlineColumnButtonsHTML != ""):?>gy-2<?php endif;?> gy-lg-0 gx-lg-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
+                    <div class="row <?php if($this->second_content != "" && $headlineColumnImageHTML != "" && $headlineColumnButtonsHTML != ""):?>gy-2<?php elseif(!$this->desc && $hasImages):?>gy-1<?php endif;?> gy-lg-0 gx-lg-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
 
                         <?php if ($this->headline_above_columns): ?>
                             <div <?php if ($headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="col-12">
@@ -231,6 +231,8 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
                         </div>
 
                         <?php // --- Textspalte --- ?>
+
+                        <?php if($this->desc  || $hasImages || $buttonsHTML):?>
                         <div <?php if ($contentColumnAnim): ?>data-animation="<?= $contentColumnAnim; ?>"<?php endif; ?> class="col-12 col-lg-<?= $bsColContent; ?> <?= $orderContentClass; ?> <?php if ($this->content_column_css_class): ?><?= $this->content_column_css_class ?><?php endif; ?>">
                             <div  class="content-column <?php if ((!$this->headline || $this->second_content) && ($this->column_order == "hl_hl" || $this->column_order == "hl_co")): ?>mt-3 mt-lg-0<?php endif; ?>">
                                 <?php if ($this->desc): ?>
@@ -276,15 +278,13 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
                                                 </div>
                                             </div>
 
-                                            <?php if ($totalImages > 1) : ?>
-                                                <?php if ($this->show_pagination): ?>
-                                                    <div class="swiper-pagination content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                                                <?php endif; ?>
-                                                <?php if ($this->show_arrows): ?>
-                                                    <div class="swiper-button-prev content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                                                    <div class="swiper-button-next content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                                                <?php endif; ?>
-                                            <?php endif; ?>
+                                                                        <?php if ($totalImages > 1) : ?>
+                                <?php if ($this->show_pagination): ?>
+                                    <div class="swiper-pagination content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
+                                <?php endif; ?>
+                                <div class="swiper-button-prev content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
+                                <div class="swiper-button-next content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
+                            <?php endif; ?>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -299,6 +299,7 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
                                 <?php endif; ?>
                             </div>
                         </div>
+                        <?php endif;?>
                     </div>
 
             <?php else: ?>
@@ -354,10 +355,8 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
                                 <?php if ($this->show_pagination): ?>
                                     <div class="swiper-pagination content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
                                 <?php endif; ?>
-                                <?php if ($this->show_arrows): ?>
-                                    <div class="swiper-button-prev content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                                    <div class="swiper-button-next content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
-                                <?php endif; ?>
+                                <div class="swiper-button-prev content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
+                                <div class="swiper-button-next content-slider_<?= $this->id; ?>_<?= $rand; ?>"></div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -479,11 +478,11 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
                             fadeEffect: {crossFade: true},
                             <?php endif; ?>
                             navigation: {
-                                nextEl: imageContainerSelector + '.swiper-button-next',
-                                prevEl: imageContainerSelector + '.swiper-button-prev',
+                                nextEl: '.swiper-button-next.content-slider_' + sliderId,
+                                prevEl: '.swiper-button-prev.content-slider_' + sliderId,
                             },
                             pagination: {
-                                el: imageContainerSelector + '.swiper-pagination',
+                                el: '.swiper-pagination.content-slider_' + sliderId,
                                 clickable: true,
                             },
                             <?php

@@ -2,7 +2,7 @@ header#header {
   position: sticky;
   top: 0;
   border-bottom: 1px solid $border-color;
-  z-index: 10;
+  z-index: 20;
   background-color: $body-bg;
   padding-block: calc(var(--main-gap) / 2) 0;
   transition: padding .3s ease-in-out;
@@ -43,6 +43,8 @@ header#header {
   .header-top {
     text-align: right;
     font-size: $font-size-sm;
+    position: relative;
+    z-index: 5;
 
     ul {
       list-style-type: none;

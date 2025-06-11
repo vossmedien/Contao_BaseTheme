@@ -10,7 +10,7 @@
 {# Eindeutige ID für diesen Slider generieren, falls mehrere auf einer Seite sind #}
 {% set slider_id = 'auction_slider_' ~ random() %}
 
-<div class="text-center auction-slider-element-wrapper{% if class is defined and class %} {{ class }}{% endif %}{% if cssClass %} {{ cssClass }}{% endif %}">
+<div class="auction-slider-element-wrapper{% if class is defined and class %} {{ class }}{% endif %}{% if cssClass %} {{ cssClass }}{% endif %}">
     {% if auctions_to_display|length > 0 %}
 
       {% if headline and headline.value %}
@@ -27,7 +27,7 @@
         </div>
     {% endif %}
         {# Swiper Container #}
-        <div class="auction-swiper-slider single">
+        <div class="auction-swiper-slider">
             <div id="{{ slider_id }}" class="swiper">
                 <div class="swiper-wrapper">
                     {% for auction_data_from_loop in auctions_to_display %}
@@ -37,7 +37,9 @@
                                 'auction': auction_data_from_loop,
                                 'raw_data': auction_data_from_loop._raw_data,
                                 'detailPageUrl': detailPageUrl,
-                                'cssID': cssID
+                                'cssID': cssID,
+                                'class': 'is-primary',
+
                             } %}
                         {% else %}
                             <p class="alert alert-danger">Item-Template nicht definiert oder nicht gefunden.</p>
@@ -65,12 +67,25 @@
                 // Optional parameters
                 direction: 'horizontal',
                 loop: true,
-                slidesPerView: 1,
-                spaceBetween: 0, // Kein Abstand zwischen den Slides
+                slidesPerView: 1, // Default für Mobile
+                spaceBetween: 15, // Kleinerer Abstand auf Mobile
                 speed: 800, // Übergangsgeschwindigkeit in ms für sanftere Übergänge
                 autoplay: {
-                    delay: 8000, // Geändert auf 5000ms
+                    delay: 8000, // Geändert auf 8000ms
                     disableOnInteraction: false, // Autoplay wird nach User-Interaktion nicht gestoppt
+                },
+                // Responsive breakpoints
+                breakpoints: {
+                    // Ab 768px (Tablet) zeige 2 Slides
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 20
+                    },
+                    // Ab 992px (Desktop) zeige 3 Slides
+                    992: {
+                        slidesPerView: 3,
+                        spaceBetween: 30
+                    }
                 },
                 // Navigation arrows
                 navigation: {

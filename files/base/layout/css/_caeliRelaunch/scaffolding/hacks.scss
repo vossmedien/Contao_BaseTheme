@@ -14,7 +14,7 @@
 }
 
 
-.ce_rsce_hero_complex {
+.ce_rsce_hero_complex:first-child {
   @include media-breakpoint-down(lg) {
     margin-top: calc(-1 * var(--main-gap));
   }

@@ -1013,3 +1013,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// Sprachwechsler URL-ID Ergänzung
+document.addEventListener('DOMContentLoaded', function() {
+    const languageSwitcher = document.querySelector('.mod_changelanguage');
+    if (!languageSwitcher) return;
+
+    // Aktuelle URL analysieren
+    const currentPath = window.location.pathname;
+    
+    // Prüfen ob wir auf einer Details-Seite mit ID sind
+    const detailsMatch = currentPath.match(/\/(en\/)?(?:marketplace|marktplatz)\/details\/(\d+)$/);
+    
+    if (detailsMatch) {
+        const detailId = detailsMatch[2]; // Die ID extrahieren
+        
+        // Alle Links im Sprachwechsler durchgehen
+        const languageLinks = languageSwitcher.querySelectorAll('a[href*="/details"]');
+        
+        languageLinks.forEach(link => {
+            const currentHref = link.getAttribute('href');
+            // Prüfen ob die URL bereits mit /details endet (ohne ID)
+            if (currentHref.endsWith('/details')) {
+                link.setAttribute('href', currentHref + '/' + detailId);
+            }
+        });
+    }
+});

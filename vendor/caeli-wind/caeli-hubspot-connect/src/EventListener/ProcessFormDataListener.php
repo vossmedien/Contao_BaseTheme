@@ -48,18 +48,18 @@ class ProcessFormDataListener
      */
     public function __invoke(array $submittedData, array $formData, ?array $files, array $labels, Form $form): void
     {
-        // Logging: Prüfen auf doppelte Ausführung
+        // Prüfen, ob HubSpot für dieses Formular aktiviert ist
+        if (!isset($formData['enableHubspot']) || !$formData['enableHubspot']) {
+            return;
+        }
+
+        // Logging: Prüfen auf doppelte Ausführung (erst nach Aktivitätsprüfung)
         $timestamp = microtime(true);
         $this->logger->info(sprintf('[HubSpot Connect] processFormData Hook für Formular ID %d ausgelöst um %.4f', $form->id, $timestamp), [
             'form_id' => $form->id,
             'form_title' => $formData['title'] ?? 'Unbekannt',
             'timestamp' => $timestamp
         ]);
-
-        // Prüfen, ob HubSpot für dieses Formular aktiviert ist
-        if (!isset($formData['enableHubspot']) || !$formData['enableHubspot']) {
-            return;
-        }
 
         // Prüfen, ob die Portal-ID und Formular-ID gesetzt sind
         if (empty($formData['hubspotPortalId']) || empty($formData['hubspotFormId'])) {
@@ -79,10 +79,18 @@ class ProcessFormDataListener
 
         if ($formFields) {
             while ($formFields->next()) {
-                if ($formFields->hubspotFieldName) {
+                if (!empty($formFields->hubspotFieldName)) {
                     $fieldMappings[$formFields->name] = $formFields->hubspotFieldName;
                 }
             }
+        }
+
+        // Wenn keine Feld-Mappings vorhanden sind, warnen
+        if (empty($fieldMappings)) {
+            $this->logger->warning('HubSpot-Integration aktiviert, aber keine Feld-Mappings konfiguriert.', [
+                'form_id' => $form->id,
+                'form_title' => $formData['title'] ?? 'Unbekannt'
+            ]);
         }
 
         // Aktuellen Request holen
@@ -107,17 +115,34 @@ class ProcessFormDataListener
         // Formularfelder gemäß den Mappings hinzufügen
         foreach ($submittedData as $fieldName => $value) {
             // Spezielle Felder überspringen
-            if (in_array($fieldName, ['FORM_SUBMIT', 'REQUEST_TOKEN'])) {
+            if (in_array($fieldName, ['FORM_SUBMIT', 'REQUEST_TOKEN'], true)) {
+                continue;
+            }
+
+            // Leere Werte überspringen (optional - kann je nach Anforderung angepasst werden)
+            if (empty($value) && $value !== '0') {
                 continue;
             }
 
             // HubSpot-Feldname aus dem Mapping holen oder Feldname verwenden
             $hubspotFieldName = $fieldMappings[$fieldName] ?? $fieldName;
 
+            // Wert sanitizen (falls nötig)
+            $sanitizedValue = is_string($value) ? trim($value) : $value;
+
             $hubspotData['fields'][] = [
                 'name' => $hubspotFieldName,
-                'value' => $value
+                'value' => $sanitizedValue
             ];
+        }
+
+        // Prüfen, ob überhaupt Felder zu senden sind
+        if (empty($hubspotData['fields'])) {
+            $this->logger->warning('Keine Formulardaten für HubSpot vorhanden.', [
+                'form_id' => $form->id,
+                'form_title' => $formData['title'] ?? 'Unbekannt'
+            ]);
+            return;
         }
 
         // Debug-Log der zu sendenden Daten

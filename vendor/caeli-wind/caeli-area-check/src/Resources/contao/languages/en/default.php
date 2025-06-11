@@ -112,10 +112,48 @@ $GLOBALS['TL_LANG']['caeli_area_check']['alerts'] = [
         'message' => 'Please enter a valid address with postal code.',
         'type' => 'warning',
     ],
+    'ajax_fallback' => [
+        'title' => 'Processing Running',
+        'message' => 'AJAX processing not available.',
+        'type' => 'info',
+    ],
+    'processing_error' => [
+        'title' => 'Processing Error',
+        'message' => 'An error occurred during area check:',
+        'type' => 'danger',
+    ],
+    'fallback_sync' => [
+        'title' => 'Switching to Standard Processing',
+        'message' => 'The check continues with standard processing...',
+        'type' => 'info',
+    ],
 ];
 
 // Loading overlay
-$GLOBALS['TL_LANG']['caeli_area_check']['loading']['title'] = 'Your property is being checked...';
+$GLOBALS['TL_LANG']['caeli_area_check']['loading'] = [
+    'title' => 'Your property is being checked...',
+    'progress' => 'Progress',
+    'texts' => [
+        'checking_area' => 'We are checking your area',
+        'wind_conditions' => 'Do the wind conditions match?',
+        'restrictions_check' => 'Are there restrictions?',
+        'grid_connection' => 'Is grid connection available?',
+        'analyzing_potential' => 'Analyzing wind potential',
+        'checking_nature' => 'Checking nature reserves',
+        'calculating_economics' => 'Calculating economics',
+        'checking_distances' => 'Checking distance regulations',
+        'analyzing_capacity' => 'Analyzing grid capacity',
+        'evaluating_quality' => 'Evaluating site quality'
+    ],
+    'steps' => [
+        'connecting' => 'Connecting to API...',
+        'analyzing' => 'Area is being analyzed...',
+        'rating' => 'Wind potential is being evaluated...',
+        'fallback_rating' => 'Alternative evaluation is being created...',
+        'saving' => 'Result is being saved...',
+        'completed' => 'Processing completed!'
+    ]
+];
 
 // Interface elements
 $GLOBALS['TL_LANG']['caeli_area_check']['interface'] = [
