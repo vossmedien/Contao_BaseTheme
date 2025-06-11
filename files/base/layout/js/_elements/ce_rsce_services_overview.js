@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Activate selected desktop link
         const activeLink = overview.querySelector(`.service-item[data-index="${newIndex}"] .service-link`);
         if (activeLink) {
-            activeLink.classList.add('active');
+            activeLink.classList.add('active'); 
         }
 
         // Activate selected mobile button and scroll into view

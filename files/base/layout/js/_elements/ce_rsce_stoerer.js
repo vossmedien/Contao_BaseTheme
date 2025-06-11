@@ -20,18 +20,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (value.endsWith('px')) return val;
         if (value.endsWith('rem')) return val * parseFloat(getComputedStyle(document.documentElement).fontSize);
-        if (value.endsWith('em')) return val * parseFloat(getComputedStyle(baseElement).fontSize);
+        if (value.endsWith('em')) return val * parseFloat(getComputedStyle(baseElement).fontSize); 
         if (value.endsWith('vh')) return val * window.innerHeight / 100;
         if (value.endsWith('vw')) return val * window.innerWidth / 100;
         // Prozentwerte sind kontextabhängig, hier ignoriert oder Standard-Fallback
         return val; // Fallback für reine Zahlen oder unbekannte Einheiten
-    }
+    } 
 
     // --- START: Neue Hilfsfunktionen für Breitenberechnung ---
     function applyMaxWidth(stoerer) {
-        const content = stoerer.querySelector('.stoerer--content');
+        const content = stoerer.querySelector('.stoerer--content'); 
         if (!content) return;
-
+        
         const originalTransition = content.style.transition;
         content.style.transition = 'none';
         content.style.maxWidth = 'max-content';
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (rect.right >= viewportWidth - tolerance) {
                 element.classList.add('is-flush-right');
             }
-        });
+        });  
     }
 
     // --- Initialisierungsfunktion ---
@@ -197,10 +197,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 addSafeEventListener(stoerer, 'mouseleave', () => {
                     if (stoerer.classList.contains('is-interacting')) return; // Ignore if interacting
                     // Nur schließen, wenn nicht durch Klick aktiviert
-                    if (!stoerer.classList.contains('is-clicked-active')) {
+                    if (!stoerer.classList.contains('is-clicked-active')) { 
                         stoerer.classList.remove('is-expanded');
                         removeMaxWidth(stoerer);
-                    }
+                    } 
                 });
                 stoerer.dataset.stoererHoverListenerAttached = 'true';
             }
@@ -256,4 +256,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-});
+});  

@@ -117,8 +117,8 @@
     }
 
     .stoerer-content--inner {
+      width: var(--stoerer-content-max-width);
       padding: var(--stoerer-padding-inner);
-      white-space: nowrap;
       // Transition für Textfarbe im Inhalt
       transition: color var(--transition-color-duration) ease-in-out;
 
