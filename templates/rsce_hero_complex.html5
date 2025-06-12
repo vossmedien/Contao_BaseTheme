@@ -242,7 +242,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                             <div class="col-lg-6 hero-complex-text-and-box-col order-3">
                                 <div class="main-text-col-inner">
                                     <?php if ($this->main_text): ?>
-                                        <div class="main-text-content flex-grow-1 ps-lg-gap<?php if ($showBoxInRight): ?> mb-gap mt-lg-gap <?php endif; ?>" <?php if ($this->animation_type_text): ?>data-animation="<?= $this->animation_type_text ?>"<?php endif; ?>>
+                                        <div class="main-text-content flex-grow-1 <?php if ($showBoxInRight): ?> mb-gap mt-lg-gap<?php else:?>ps-lg-gap<?php endif; ?>" <?php if ($this->animation_type_text): ?>data-animation="<?= $this->animation_type_text ?>"<?php endif; ?>>
                                             <?= $this->main_text ?>
                                         </div>
                                     <?php endif; ?>

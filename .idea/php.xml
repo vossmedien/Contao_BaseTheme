@@ -17,7 +17,6 @@
   <component name="PhpIncludePathManager">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/vsm/vsm-helper-tools" />
-      <path value="$PROJECT_DIR$/vendor/NEdev/contao-lbd-aiolos-bundle" />
       <path value="$PROJECT_DIR$/vendor/vsm/vsm-stripe-connect" />
       <path value="$PROJECT_DIR$/vendor/vsm/vsm-news-events-enhancements" />
       <path value="$PROJECT_DIR$/vendor/vsm/vsm-ab-test" />
@@ -29,6 +28,7 @@
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-deploy" />
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-auction-connect" />
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-area-check" />
+      <path value="$PROJECT_DIR$/vendor/NEdev/contao-lbd-aiolos-bundle" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
