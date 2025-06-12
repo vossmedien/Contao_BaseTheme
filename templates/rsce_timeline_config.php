@@ -1,16 +1,17 @@
 <?php
 
+
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
 //rsce_my_element_config.php
-return array(
+$config = array(
     'label' => array('Custom | Timeline (timeline)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('headline', 'cssID'),
-    'wrapper' => array(
+        'wrapper' => array(
         'type' => 'none',
     ),
     'fields' => array(
@@ -230,3 +231,6 @@ return array(
         ),
     ),
 );
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config);

@@ -69,39 +69,67 @@
             </div>
 
             <div class="col footer-accordion-item">
-                <div>
-                     <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerKoop" aria-expanded="false" aria-controls="footerKoop">
-                     <?= $GLOBALS['TL_LANG']['MSC']['footerCooperations'] ?> <span class="indicator d-sm-none float-end">+</span>
-                 </span>
-                    <div class="collapse" id="footerKoop">
-                        <ul class="list-inline partner-list">
-                            <li class="mb-3 text-nowrap">
-                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/wind-turbine-com.svg", null), null, null; ?>  <span class="ms-3"><?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/impact-factory.svg", null), null, null; ?></span>
-                            </li>
+    <div>
+        <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerKoop" aria-expanded="false" aria-controls="footerKoop">
+            <?= $GLOBALS['TL_LANG']['MSC']['footerCooperations'] ?> <span class="indicator d-sm-none float-end">+</span>
+        </span>
 
-                            <li class="text-nowrap">
-                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/humboldt-uni.svg", null), null, null; ?>  <span class="ms-3"><?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/die-waldeigentuemer.svg", null), null, null; ?></span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+        <div class="collapse" id="footerKoop">
+            <ul class="list-inline partner-list">
+                <li class="mb-3 text-nowrap">
+                    <a href="https://wind-turbine.com/" target="_blank" rel="noopener noreferrer">
+                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/wind-turbine-com.svg", null, null, null); ?>
+                    </a>
+                    <span class="ms-3">
+                        <a href="https://www.impact-factory.de/" target="_blank" rel="noopener noreferrer">
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/impact-factory.svg", null, null, null); ?>
+                        </a>
+                    </span>
+                </li>
+                <li class="text-nowrap">
+                    <a href="https://www.hu-berlin.de/de" target="_blank" rel="noopener noreferrer">
+                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/humboldt-uni.svg", null, null, null); ?>
+                    </a>
+                    <span class="ms-3">
+                        <a href="https://www.waldeigentuemer.de/" target="_blank" rel="noopener noreferrer">
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/die-waldeigentuemer.svg", null, null, null); ?>
+                        </a>
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
 
-                <div style="margin-top: var(--bs-gutter-y);" class="mt-md-5">
-                     <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerMembers" aria-expanded="false" aria-controls="footerMembers">
-                     <?= $GLOBALS['TL_LANG']['MSC']['footerMembers'] ?> <span class="indicator d-sm-none float-end">+</span>
-                 </span>
-                    <div class="collapse" id="footerMembers">
-                        <ul class="list-inline partner-list">
-                            <li class="mb-3 text-nowrap">
-                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/bwe.svg", null), null, null; ?> <span class="ms-3"><?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/lee.svg", null), null, null; ?></span>
-                            </li>
-                            <li class=" text-nowrap">
-                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/future-forest-initiative.svg", null), null, null; ?> <span class="ms-3">  <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/mr.svg", null), null, null; ?></span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+    <div style="margin-top: var(--bs-gutter-y);" class="mt-md-5">
+        <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerMembers" aria-expanded="false" aria-controls="footerMembers">
+            <?= $GLOBALS['TL_LANG']['MSC']['footerMembers'] ?> <span class="indicator d-sm-none float-end">+</span>
+        </span>
+        <div class="collapse" id="footerMembers">
+            <ul class="list-inline partner-list">
+                <li class="mb-3 text-nowrap">
+                    <a href="https://www.wind-energie.de/" target="_blank" rel="noopener noreferrer">
+                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/bwe.svg", null, null, null); ?>
+                    </a>
+                    <span class="ms-3">
+                        <a href="https://lee-nds-hb.de/" target="_blank" rel="noopener noreferrer">
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/lee.svg", null, null, null); ?>
+                        </a>
+                    </span>
+                </li>
+                <li class="text-nowrap">
+                    <a href="https://www.futureforest.de/" target="_blank" rel="noopener noreferrer">
+                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/future-forest-initiative.svg", null, null, null); ?>
+                    </a>
+                    <span class="ms-3">
+                        <a href="https://www.maschinenring.de/" target="_blank" rel="noopener noreferrer">
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/mr.svg", null, null, null); ?>
+                        </a>
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 </div>

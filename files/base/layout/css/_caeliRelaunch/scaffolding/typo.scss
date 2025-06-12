@@ -1,6 +1,6 @@
 
 main, footer {
-  a:not(.btn, .text-decoration-none):not(:has(img)) {
+  a:not(.btn, .text-decoration-none):not(:has(img,svg)) {
     text-decoration: none;
     background-image: linear-gradient(to right, currentColor, currentColor);
     background-repeat: no-repeat;
@@ -9,7 +9,7 @@ main, footer {
     transition: all 0.3s;
   }
 
-  a:not(.btn, .text-decoration-none):not(:has(img)):hover {
+  a:not(.btn, .text-decoration-none):not(:has(img,svg)):hover {
     background-size: 100% 1px; /* Unterstreichung beim Hovern */
   }
 

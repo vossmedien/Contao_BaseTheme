@@ -120,3 +120,9 @@
 }
 
 
+html body .mb-lg-50{
+    @include media-breakpoint-up(lg) {
+      margin-bottom: 50% !important;
+    }
+}
+

@@ -48,7 +48,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
     'plz_input' => [
         'title' => 'Step 1: Your location matters.',
         'title_alt' => 'Here you start your area check.',
-        'content' => 'Start by entering your location or postal code. This way we find the right map section for your area.',
+        'content' => 'Start by entering your postal code. After entering, the polygon field will appear, which you can then move to the correct position.',
         'button_back' => 'Back',
         'button_next' => 'Next',
     ],
@@ -62,7 +62,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
     'area_confirm' => [
         'title' => 'Step 3: Almost done!',
         'title_alt' => 'Once you have marked your property, the check can begin.',
-        'content' => 'Almost done: Click "Show result" when you are satisfied with your defined area. We check the conditions on your area at lightning speed and you receive the result of your area check immediately.',
+        'content' => 'Almost done: Move the polygon to the correct position and align the corner points to your property. Then click "Show result". We check the conditions on your area at lightning speed.',
         'button_back' => 'Back',
         'button_next' => 'Finish',
     ],

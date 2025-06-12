@@ -4,8 +4,9 @@ use Contao\Config;
 use Contao\System;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 
-return [
+$config = [
     'label' => ['Custom | Content Slider mit Bildoptionen', 'Ein Slider mit Texten, optionaler Headline und flexiblen Bildoptionen (fixiert oder pro Slide).'],
     'types' => ['content'],
     'contentCategory' => 'Custom',
@@ -176,4 +177,7 @@ return [
             'eval' => ['rgxp' => 'digit', 'tl_class' => 'w50 clr'],
         ],
     ],
-]; 
+];
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config); 

@@ -16,18 +16,18 @@
   </component>
   <component name="PhpIncludePathManager">
     <include_path>
-      <path value="$PROJECT_DIR$/vendor/caeli-wind/contao-caeli-content-creator" />
       <path value="$PROJECT_DIR$/vendor/vsm/vsm-helper-tools" />
-      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-auction-connect" />
       <path value="$PROJECT_DIR$/vendor/NEdev/contao-lbd-aiolos-bundle" />
-      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-pin-login" />
-      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-pin-login_backup" />
       <path value="$PROJECT_DIR$/vendor/vsm/vsm-stripe-connect" />
-      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-google-news-fetch" />
-      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-hubspot-connect" />
-      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-deploy" />
       <path value="$PROJECT_DIR$/vendor/vsm/vsm-news-events-enhancements" />
+      <path value="$PROJECT_DIR$/vendor/vsm/vsm-ab-test" />
+      <path value="$PROJECT_DIR$/vendor/caeli-wind/contao-caeli-content-creator" />
+      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-pin-login" />
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-news-event-enhancements" />
+      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-hubspot-connect" />
+      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-google-news-fetch" />
+      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-deploy" />
+      <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-auction-connect" />
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-area-check" />
     </include_path>
   </component>

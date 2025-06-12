@@ -49,7 +49,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
         'title' => 'Schritt 1: Ihr Standort zählt.',
         'button_back' => 'Zurück',
         'button_next' => 'Weiter',
-        'content' => 'Starten Sie, indem Sie Ihren Ort oder Ihre Adresse eingeben. So finden wir den richtigen Kartenausschnitt für Ihre Fläche.',
+        'content' => 'Starten Sie, indem Sie Ihre Postleitzahl eingeben. Nach der Eingabe wird das Polygonfeld erscheinen, welches Sie dann an die korrekte Position verschieben können.',
     ],
     'polygon_edit' => [
         'title' => 'Schritt 2: Fläche einzeichnen.',
@@ -61,7 +61,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
     'area_confirm' => [
         'title' => 'Schritt 3: Fast geschafft!',
         'title_alt' => 'Sobald Sie Ihr Grundstück markiert haben, kann die Prüfung beginnen.',
-        'content' => 'Fast geschafft: Klicken Sie auf "Ergebnis anzeigen" wenn Sie mit Ihr festgelegten Fläche zufrieden sind. Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche und Sie erhalten unmittelbar das Ergebnis Ihres Flächenchecks.',
+        'content' => 'Fast geschafft: Verschieben Sie das Polygon an die korrekte Position und richten Sie die Eckpunkte an Ihrem Grundstück aus. Klicken Sie dann auf "Ergebnis anzeigen". Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche.',
         'button_back' => 'Zurück',
         'button_next' => 'Fertig',
     ],

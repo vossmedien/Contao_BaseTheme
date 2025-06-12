@@ -2,6 +2,7 @@
 
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 
 return array(
     'label' => array('Custom | Headline & Text-Slider (text_slider)', ''),
@@ -188,4 +189,7 @@ return array(
             'dependsOn' => array('field' => 'autoplay'),
         ),
     ),
-); 
+);
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config); 

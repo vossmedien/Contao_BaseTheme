@@ -1,14 +1,16 @@
 <?php
 
+
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
-return [
+$config = [
     'label' => ['Custom | Kopfbereich (headblock)', ''],
     'types' => ['content'],
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => ['headline', 'cssID'],
+    'standardFields' => ['cssID', 'abTestVariant'],
     'wrapper' => [
         'type' => 'none',
     ],
@@ -102,3 +104,6 @@ return [
         ],
     ],
 ];
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config);

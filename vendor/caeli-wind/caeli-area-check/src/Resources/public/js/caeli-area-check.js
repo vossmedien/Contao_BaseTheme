@@ -2,7 +2,7 @@
 const CONFIG = {
     MOBILE_BREAKPOINT: 768,
     DEFAULT_ZOOM: 15,
-    MOBILE_ZOOM: 13,
+    MOBILE_ZOOM: 14,
     DEFAULT_AREA_SIZE: 40, // Hektar
     MAX_AREA_SIZE: 700, // Hektar
     DELAYS: {
@@ -147,20 +147,18 @@ function getTutorialSteps() {
             placement: 'left',
             placementMobile: 'bottom',
             trigger: 'init',
-            template: 'welcome',
-            showSkipButton: true
+            template: 'welcome'
         },
         {
             // Schritt 1: Adresse/Ort eingeben
             element: '#place-autocomplete',
             elementMobile: '#controls', // Auf Mobile an der Box ausrichten
             title: tutorial.plz_input?.title || 'Schritt 1: Ihr Standort zählt.',
-            content: tutorial.plz_input?.content || 'Starten Sie, indem Sie Ihren Ort oder die Postleitzahl eingeben. So finden wir den richtigen Kartenausschnitt für Ihre Fläche.',
+            content: tutorial.plz_input?.content || 'Starten Sie, indem Sie Ihre Postleitzahl eingeben. Nach der Eingabe wird das Polygonfeld erscheinen, welches Sie dann an die korrekte Position verschieben können.',
             placement: 'right',
             placementMobile: 'bottom',
             trigger: 'manual',
-            template: 'plz',
-            showBackButton: true
+            template: 'plz'
         },
         {
             // Schritt 2: Polygon zeichnen - am rechten Bildschirmrand
@@ -170,19 +168,17 @@ function getTutorialSteps() {
             placement: 'left',
             placementMobile: 'bottom',
             trigger: 'polygon',
-            template: 'polygon',
-            showBackButton: true
+            template: 'polygon'
         },
         {
             // Schritt 3: Bestätigen/Fertig
             element: '#log-coordinates-button',
             title: tutorial.area_confirm?.title || 'Schritt 3: Fast geschafft!',
-            content: tutorial.area_confirm?.content || 'Fast geschafft: Bestätigen Sie Ihre Eingabe mit einem Doppelklick auf den letzten Punkt oder klicken Sie auf "Ergebnis anzeigen". Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche und Sie erhalten unmittelbar das Ergebnis Ihres Flächenchecks.',
+            content: tutorial.area_confirm?.content || 'Fast geschafft: Verschieben Sie das Polygon an die korrekte Position und richten Sie die Eckpunkte an Ihrem Grundstück aus. Klicken Sie dann auf "Ergebnis anzeigen". Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche.',
             placement: 'top',
             placementMobile: 'top',
             trigger: 'manual',
-            template: 'confirm',
-            showBackButton: true
+            template: 'confirm'
         }
     ];
 }
@@ -503,18 +499,29 @@ function createPolygonAtLocation(center) {
         CaeliAreaCheck.areaLabel = null;
     }
 
+    // Polygon-Center auf Mobile nach unten verschieben
+    let polygonCenter = center;
+    if (Utils.isMobile()) {
+        // Auf Mobile das Polygon deutlich weiter nach unten verschieben
+        const offsetLat = -0.001; // Etwa 100m nach Süden
+        polygonCenter = new google.maps.LatLng(
+            center.lat() + offsetLat,
+            center.lng()
+        );
+    }
+
     // Standardgröße aus Config
     const size = CONFIG.DEFAULT_AREA_SIZE;
     const earthRadius = 6371000; // in meters
     const areaSideLength = Math.sqrt(size * 10000); // Convert ha to m²
     const latDiff = (areaSideLength / 2) / earthRadius * (180 / Math.PI);
-    const lngDiff = latDiff / Math.cos(center.lat() * Math.PI / 180);
+    const lngDiff = latDiff / Math.cos(polygonCenter.lat() * Math.PI / 180);
 
     const bounds = {
-        north: center.lat() + latDiff,
-        south: center.lat() - latDiff,
-        east: center.lng() + lngDiff,
-        west: center.lng() - lngDiff
+        north: polygonCenter.lat() + latDiff,
+        south: polygonCenter.lat() - latDiff,
+        east: polygonCenter.lng() + lngDiff,
+        west: polygonCenter.lng() - lngDiff
     };
 
     const path = [
@@ -539,10 +546,17 @@ function createPolygonAtLocation(center) {
     });
 
     // Relativen Offset zum Map-Center speichern
-    CaeliAreaCheck.state.polygonRelativeOffset = {
-        lat: 0, // Polygon ist zentriert
-        lng: 0
-    };
+    if (Utils.isMobile()) {
+        CaeliAreaCheck.state.polygonRelativeOffset = {
+            lat: -0.002, // Polygon ist auf Mobile nach unten verschoben
+            lng: 0
+        };
+    } else {
+        CaeliAreaCheck.state.polygonRelativeOffset = {
+            lat: 0, // Polygon ist zentriert
+            lng: 0
+        };
+    }
 
     updateAreaLabel();
     updateGeometryField();
@@ -901,10 +915,26 @@ function updatePolygonOffset() {
     const mapCenter = CaeliAreaCheck.map.getCenter();
     
     // Relativen Offset speichern
-    CaeliAreaCheck.state.polygonRelativeOffset = {
+    let calculatedOffset = {
         lat: polygonCenter.lat() - mapCenter.lat(),
         lng: polygonCenter.lng() - mapCenter.lng()
     };
+    
+    // Auf Mobile: Mindest-Offset beibehalten, damit Polygon sichtbar bleibt
+    if (Utils.isMobile()) {
+        const minMobileOffset = -0.002;
+        // Wenn das Polygon manuell nach oben verschoben wurde, trotzdem Mindest-Offset beibehalten
+        if (calculatedOffset.lat > minMobileOffset) {
+            calculatedOffset.lat = minMobileOffset;
+        }
+        // Wenn das Polygon weiter unten ist, den berechneten Wert beibehalten aber nicht über den Mindest-Offset hinausgehen
+        if (calculatedOffset.lat < minMobileOffset && calculatedOffset.lat > -0.01) {
+            // Akzeptiere moderate Verschiebungen nach unten
+            // calculatedOffset.lat bleibt wie berechnet
+        }
+    }
+    
+    CaeliAreaCheck.state.polygonRelativeOffset = calculatedOffset;
 }
 
 function movePolygonWithMap() {
@@ -914,9 +944,19 @@ function movePolygonWithMap() {
     CaeliAreaCheck.state.isPolygonBeingEdited = true;
     
     const mapCenter = CaeliAreaCheck.map.getCenter();
+    
+    // Auf Mobile: Mindest-Offset sicherstellen
+    let finalOffset = CaeliAreaCheck.state.polygonRelativeOffset;
+    if (Utils.isMobile() && finalOffset.lat > -0.002) {
+        finalOffset = {
+            lat: -0.002,
+            lng: finalOffset.lng
+        };
+    }
+    
     const targetCenter = {
-        lat: mapCenter.lat() + CaeliAreaCheck.state.polygonRelativeOffset.lat,
-        lng: mapCenter.lng() + CaeliAreaCheck.state.polygonRelativeOffset.lng
+        lat: mapCenter.lat() + finalOffset.lat,
+        lng: mapCenter.lng() + finalOffset.lng
     };
     
     // Aktuelles Polygon-Center berechnen
@@ -1129,6 +1169,8 @@ function initTutorial() {
 }
 
 function showTutorialStep(stepIndex) {
+    console.log('showTutorialStep called with stepIndex:', stepIndex);
+    
     const tutorialSteps = getTutorialSteps();
     if (stepIndex >= tutorialSteps.length) {
         completeTutorial();
@@ -1136,14 +1178,20 @@ function showTutorialStep(stepIndex) {
     }
 
     const step = tutorialSteps[stepIndex];
+    console.log('Step:', step);
+    
     const isMobile = Utils.isMobile();
     const targetElement = isMobile && step.elementMobile ? step.elementMobile : step.element;
+    console.log('Target element:', targetElement);
+    
     const element = document.querySelector(targetElement);
 
     if (!element) {
         console.warn(`Tutorial element ${targetElement} not found`);
         return;
     }
+    
+    console.log('Element found:', element);
 
     // Vorherige Popovers schließen
     hideAllPopovers();
@@ -1203,11 +1251,18 @@ function showTutorialStep(stepIndex) {
                 nextButton.addEventListener('click', nextTutorialStep);
             }
                     } else if (step.template === 'plz') {
-                // Adress-Schritt (1) - nur Zurück-Button, automatische Weiterleitung
+                // Adress-Schritt (1) - Zurück-Button nur auf Desktop anzeigen
                 const backButton = popoverElement.querySelector('#tutorial-plz-back');
             
             if (backButton) {
-                backButton.addEventListener('click', previousTutorialStep);
+                console.log('PLZ Back button found');
+                backButton.addEventListener('click', () => {
+                    console.log('PLZ Back button clicked');
+                    previousTutorialStep(false);
+                });
+                console.log('PLZ Back button event listener added');
+            } else {
+                console.log('PLZ Back button NOT found');
             }
         } else if (step.template === 'polygon') {
             // Polygon-Schritt (2)
@@ -1215,7 +1270,7 @@ function showTutorialStep(stepIndex) {
             const nextButton = popoverElement.querySelector('#tutorial-polygon-next');
             
             if (backButton) {
-                backButton.addEventListener('click', previousTutorialStep);
+                backButton.addEventListener('click', () => previousTutorialStep(true));
             }
             if (nextButton) {
                 nextButton.addEventListener('click', nextTutorialStep);
@@ -1226,7 +1281,7 @@ function showTutorialStep(stepIndex) {
             const nextButton = popoverElement.querySelector('#tutorial-confirm-next');
             
             if (backButton) {
-                backButton.addEventListener('click', previousTutorialStep);
+                backButton.addEventListener('click', () => previousTutorialStep(true));
             }
             if (nextButton) {
                 nextButton.addEventListener('click', completeTutorial);
@@ -1252,22 +1307,76 @@ function nextTutorialStep() {
     }
 }
 
-function previousTutorialStep() {
+function previousTutorialStep(fromPolygonStep = false) {
     if (CaeliAreaCheck.state.currentTutorialStep > 0) {
+        console.log('Previous step called, current step:', CaeliAreaCheck.state.currentTutorialStep, 'fromPolygonStep:', fromPolygonStep);
+        
         // Aktuelles Popover schließen
         hideAllPopovers();
 
+        // Spezielle Behandlung beim Zurückgehen von Schritt 2 zu Schritt 1
+        if (CaeliAreaCheck.state.currentTutorialStep === 2) {
+            // Input leeren, damit User PLZ neu eingeben muss
+            const input = document.getElementById('place-autocomplete');
+            if (input) {
+                input.value = '';
+                // Nur Fokus setzen wenn nicht vom Polygon-Back (fromPolygonStep = false)
+                if (!fromPolygonStep) {
+                    input.focus();
+                }
+            }
+            
+            // Polygon und Buttons verstecken
+            deletePolygon();
+            Utils.safeElementAction('#button-wrapper', el => el.style.display = 'none');
+        }
+
+        // Spezielle Behandlung beim Zurückgehen von Schritt 1 zu Schritt 0 (PLZ-Back)
+        if (CaeliAreaCheck.state.currentTutorialStep === 1 && !fromPolygonStep) {
+            console.log('Going from step 1 to step 0');
+            // Input leeren, damit User wieder von vorne beginnt
+            const input = document.getElementById('place-autocomplete');
+            if (input) {
+                input.value = '';
+            }
+        }
+
         CaeliAreaCheck.state.currentTutorialStep--;
-        showTutorialStep(CaeliAreaCheck.state.currentTutorialStep);
+        console.log('New step:', CaeliAreaCheck.state.currentTutorialStep);
+        
+        // Kurz warten bevor neues Popover angezeigt wird
+        setTimeout(() => {
+            showTutorialStep(CaeliAreaCheck.state.currentTutorialStep);
+        }, 100);
     }
 }
 
 function hideAllPopovers() {
-    const tutorialSteps = getTutorialSteps();
-    tutorialSteps.forEach(step => {
-        const element = document.querySelector(step.element);
+    console.log('hideAllPopovers called');
+    
+    // Alle sichtbaren Popovers entfernen
+    const existingPopovers = document.querySelectorAll('.popover');
+    console.log('Found existing popovers:', existingPopovers.length);
+    existingPopovers.forEach(popover => {
+        popover.remove();
+    });
+
+    // Alle möglichen Elemente durchgehen und Popover-Referenzen entfernen
+    const allElements = [
+        '#controls',
+        '#place-autocomplete', 
+        '#log-coordinates-button'
+    ];
+    
+    allElements.forEach(selector => {
+        const element = document.querySelector(selector);
         if (element && element._tutorialPopover) {
-            element._tutorialPopover.dispose();
+            console.log('Removing popover from:', selector);
+            try {
+                element._tutorialPopover.dispose();
+            } catch (e) {
+                console.warn('Fehler beim Dispose von Popover:', e);
+            }
             delete element._tutorialPopover;
         }
     });
@@ -1584,7 +1693,7 @@ function startLoadingAnimationWithTextRotation() {
     // Kontinuierliche simulierte Progress bis echte Daten kommen (KEIN STOPP bei 40%)
     const progressInterval = setInterval(() => {
         if (simulatedProgress < 85) { // Erhöht von 40% auf 85%
-            simulatedProgress += Math.random() * 8 + 2; // 2-10% pro Schritt (schneller)
+            simulatedProgress += Math.random() * 3 + 2; // 2-5% pro Schritt
             simulatedProgress = Math.min(simulatedProgress, 85);
             
             if (percentageElement) {
@@ -1592,7 +1701,7 @@ function startLoadingAnimationWithTextRotation() {
             }
             updateSpinnerProgress(simulatedProgress);
         }
-    }, 200); // Alle 200ms (schneller)
+    }, 400); // Alle 400ms
     
     // Text-Rotation starten nach dem ersten Einblenden
     const textInterval = setInterval(() => {

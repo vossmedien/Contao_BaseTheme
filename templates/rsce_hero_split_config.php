@@ -2,6 +2,7 @@
 
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 
 return [
     'label' => ['Custom | Hero Split (Box / Boxen)', 'Zweispaltiges Element mit Box links und Boxen rechts.'],
@@ -281,4 +282,7 @@ return [
             'eval' => ['tl_class' => 'w50']
         ],
     ],
-]; 
+];
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config); 

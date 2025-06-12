@@ -1,9 +1,10 @@
 <?php
 
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 
 //rsce_process_steps_config.php
-return array(
+$config = array(
     'label' => array('Custom | Prozess-Schritte (process_steps)', 'Stellt einen Prozess in nummerierten Schritten mit Bild dar.'),
     'types' => array('content'),
     'contentCategory' => 'Custom',
@@ -112,4 +113,7 @@ return array(
             ),
         ),
     ),
-); 
+);
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config); 

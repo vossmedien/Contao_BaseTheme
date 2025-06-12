@@ -41,7 +41,27 @@
 
                     <?php if ($this->authorImage): ?>
                         <div class="author-img">
-                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->authorImage, strip_tags($this->authorTitle), $this->postAuthor, ["350", "170", "crop"], null, false); ?>
+                            <div class="position-relative">
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->authorImage, strip_tags($this->authorTitle), $this->postAuthor, ["370", "170", "crop"], null, false); ?>
+                                
+                                <?php // Icons on Image (if email or LinkedIn is available) ?>
+                                <?php if ($this->authorEmail || $this->authorLinkedIn): ?>
+                                    <div class="author-icons-overlay position-absolute bottom-0 end-0 d-flex flex-column align-items-end">
+                                        <?php // Email Icon ?>
+                                        <?php if ($this->authorEmail): ?>
+                                            <a href="mailto:<?= \Contao\StringUtil::specialchars($this->authorEmail); ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="E-Mail senden">
+                                                <i class="fak fa-mail text-body"></i>
+                                            </a>
+                                        <?php endif; ?>
+                                        <?php // LinkedIn Icon ?>
+                                        <?php if ($this->authorLinkedIn): ?>
+                                            <a href="<?= $this->authorLinkedIn; ?>" target="_blank" rel="noopener" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="LinkedIn Profil">
+                                                <i style="font-size: 1.5rem;" class="fak fa-linkedin text-body"></i>
+                                            </a>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     <?php endif; ?>
 
@@ -181,3 +201,15 @@ if ($this->figure) {
 
     $this->addSchemaOrg($primaryImage);
 }
+
+?>
+
+<script>
+// Initialize Bootstrap Tooltips for author icons
+document.addEventListener('DOMContentLoaded', () => {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('.author-icons-overlay [data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {placement: 'left'});
+    });
+});
+</script>

@@ -1,102 +1,85 @@
 <?php
 
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 
-return array(
-    'label' => array('Custom | Menü Boxen', 'Element zur Darstellung von klickbaren Boxen mit Bild, Text und Link.'),
+$config = array(
+    'label' => array('Custom | Menü-Boxen', 'Boxen mit Verlinkungen für Menü-Strukturen'),
     'types' => array('content'),
     'contentCategory' => 'Custom',
-    'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('headline', 'cssID'), // Headline optional hinzugefügt
-    'wrapper' => array(
-        'type' => 'none',
-    ),
+    'standardFields' => array('cssID'),
     'fields' => array(
-        'image_size' => array(
-            'label' => array('Bildgröße', 'Hier können Sie die Abmessungen der Bilder in den Boxen festlegen.'),
-            'inputType' => 'imageSize',
-            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
-            'reference' => &$GLOBALS['TL_LANG']['MSC'],
-            'eval' => array(
-                'rgxp' => 'digit',
-                'includeBlankOption' => true,
-                'tl_class' => 'clr'
-            ),
-        ),
-        'background_color' => array(
-            'label' => array('Hintergrundfarbe der Boxen', 'Standard: #ECF0F2 mit 90% Opazität'),
+
+        'headline' => array(
+            'label' => array('Überschrift', ''),
             'inputType' => 'text',
-            'default' => 'rgba(236, 240, 242, 0.9)',
-            'eval' => array('colorpicker' => true, 'tl_class' => 'w50 clr'),
+            'eval' => array('tl_class' => 'w50'),
         ),
-        'text_color' => array(
-            'label' => array('Textfarbe der Boxen', 'Standard: var(--bs-body-color)'),
-            'inputType' => 'text',
-            'default' => 'var(--bs-body-color)',
-            'eval' => array('colorpicker' => true, 'tl_class' => 'w50'),
+
+        'headline_type' => array(
+            'label' => array('Typ der Überschrift', ''),
+            'inputType' => 'select',
+            'options' => GlobalElementConfig::getHeadlineTagOptions(),
+            'default' => 'h2',
+            'eval' => array('tl_class' => 'w50'),
         ),
-         'font_size' => array(
-            'label' => array('Schriftgröße des Textes', 'Standard: 20px'),
-            'inputType' => 'text',
-            'default' => '20px',
-            'eval' => array('tl_class' => 'w50 clr'),
+
+        'intro_text' => array(
+            'label' => array('Einleitungstext', ''),
+            'inputType' => 'textarea',
+            'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
         ),
+
         'boxes' => array(
             'label' => array('Menü-Boxen', ''),
             'elementLabel' => '%s. Box',
             'inputType' => 'list',
             'minItems' => 1,
-            'maxItems' => 12, // Flexibel, wie viele Boxen hinzugefügt werden können
-            'eval' => array('tl_class' => 'clr'),
+            'maxItems' => 12,
             'fields' => array(
-                 'animation_type' => array(
-                    'label' => array(
-                        'de' => array('Art der Einblendeanimation für diese Box', 'Siehe https://animate.style/ für Beispiele'),
-                    ),
-                    'inputType' => 'select',
-                    'options' => GlobalElementConfig::getAnimations(),
-                    'eval' => array('chosen' => 'true')
-                ),
-                'image' => array(
-                    'label' => array('Bild', ''),
-                    'inputType' => 'fileTree',
-                    'eval' => array(
-                        'filesOnly' => true,
-                        'extensions' => \Contao\Config::get('validImageTypes'),
-                        'fieldType' => 'radio',
-                        'mandatory' => true,
-                        'tl_class' => 'clr'
-                    ),
-                ),
-                'title' => array(
-                    'label' => array('Titel', 'Text in der Box'),
+                'box_title' => array(
+                    'label' => array('Box-Titel', ''),
                     'inputType' => 'text',
                     'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
                 ),
-                'link' => array(
-                     'label' => array('Verlinkung', 'Interne Seite auswählen'),
-                     'inputType' => 'pageTree',
-                     'eval' => array('mandatory' => true, 'fieldType'=>'radio', 'tl_class'=>'w50 clr'),
-                ),
-                'column_class' => array(
-                    'label' => array('Breite der Box (Bootstrap Grid)', 'Wählen Sie die Spaltenbreite für diese Box.'),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'col-12' => 'Ganze Breite (12/12)',
-                        'col-md-8' => 'Zwei Drittel (8/12)',
-                        'col-md-6' => 'Halbe Breite (6/12)',
-                        'col-md-4' => 'Ein Drittel (4/12)',
-                        'col-md-3' => 'Ein Viertel (3/12)',
-                    ),
-                    'default' => 'col-md-4',
+                'box_icon' => array(
+                    'label' => array('Icon-Klasse', 'z.B. fa-home für FontAwesome Icons'),
+                    'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
-                 'vertical_stack_group' => array(
-                    'label' => array('Vertikale Stapelgruppe', 'Optional. Geben Sie eine Zahl ein (z.B. 1, 2). Boxen mit der gleichen Zahl in derselben Spalte werden vertikal gestapelt, wenn das Layout dies erfordert (experimentell).'),
-                    'inputType' => 'text',
-                    'eval' => array('rgxp' => 'digit', 'tl_class' => 'w50 clr'),
+                'box_description' => array(
+                    'label' => array('Beschreibung', ''),
+                    'inputType' => 'textarea',
+                    'eval' => array('tl_class' => 'clr'),
+                ),
+                'box_link' => array(
+                    'label' => array('Link', 'Link-Ziel für die Box'),
+                    'inputType' => 'pageTree',
+                    'eval' => array('fieldType' => 'radio', 'tl_class' => 'w50'),
+                ),
+                'box_link_target' => array(
+                    'label' => array('In neuem Fenster öffnen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
             ),
         ),
+
+        'columns' => array(
+            'label' => array('Anzahl Spalten', 'Wie viele Boxen pro Zeile angezeigt werden sollen'),
+            'inputType' => 'select',
+            'options' => array(
+                '1' => '1 Spalte',
+                '2' => '2 Spalten',
+                '3' => '3 Spalten',
+                '4' => '4 Spalten',
+                '6' => '6 Spalten'
+            ),
+            'default' => '3',
+            'eval' => array('tl_class' => 'w50'),
+        ),
     ),
-); 
+);
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config); 

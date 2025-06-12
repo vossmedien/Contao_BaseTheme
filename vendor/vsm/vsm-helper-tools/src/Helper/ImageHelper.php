@@ -292,9 +292,8 @@ class ImageHelper
     {
         if ($width * $factor <= $originalWidth) {
             $retinaConfig = clone $baseConfig;
-            $retinaConfig->setWidth($width * $factor);
-            $retinaConfig->setHeight((int)($baseConfig->getHeight() * $factor));
-
+            $retinaConfig->setWidth((int)($width * $factor));
+            
             // Wenn eine Höhe gesetzt ist, diese auch anpassen
             if ($baseConfig->getHeight()) {
                 $retinaConfig->setHeight((int)($baseConfig->getHeight() * $factor));
@@ -455,17 +454,17 @@ class ImageHelper
                 $mode = !empty($size[2]) ? $size[2] : "proportional";
 
                 if ($requestedWidth) {
-                    $config->setWidth($requestedWidth);
+                    $config->setWidth((int)$requestedWidth);
                 }
                 if ($requestedHeight) {
-                    $config->setHeight($requestedHeight);
+                    $config->setHeight((int)$requestedHeight);
                 }
                 if ($mode) {
                     $config->setMode($mode);
                 }
 
-                $baseWidth = $requestedWidth ?? ($requestedHeight ? round($originalWidth * ($requestedHeight / $originalHeight)) : $originalWidth);
-                $baseHeight = $requestedHeight ?? ($requestedWidth ? round($originalHeight * ($requestedWidth / $originalWidth)) : $originalHeight);
+                $baseWidth = $requestedWidth ?? ($requestedHeight ? (int)round($originalWidth * ($requestedHeight / $originalHeight)) : $originalWidth);
+                $baseHeight = $requestedHeight ?? ($requestedWidth ? (int)round($originalHeight * ($requestedWidth / $originalWidth)) : $originalHeight);
             } else {
                 $config->setMode("proportional");
             }
@@ -720,7 +719,7 @@ class ImageHelper
                 $ratio = $size[1] / $size[0];
                 $height = (int)round($width * $ratio);
                 $config->setWidth((int)$width);
-                $config->setHeight((int)$height);
+                $config->setHeight($height);
                 $config->setMode($mode);
             } else {
                 $config->setWidth((int)$width);
@@ -810,9 +809,9 @@ class ImageHelper
         
         // Standard-Image für Lightbox und Fallbacks generieren
         $standardConfig = new ResizeConfiguration();
-        $standardConfig->setWidth($baseWidth);
+        $standardConfig->setWidth((int)$baseWidth);
         if ($baseHeight) {
-            $standardConfig->setHeight($baseHeight);
+            $standardConfig->setHeight((int)$baseHeight);
         }
         if (!empty($size[2])) {
             $standardConfig->setMode($size[2]);
@@ -1010,8 +1009,8 @@ class ImageHelper
                 $height = !empty($size[1]) ? (int)$size[1] : null;
                 $mode = !empty($size[2]) ? $size[2] : 'proportional';
 
-                if ($width) $config->setWidth($width);
-                if ($height) $config->setHeight($height);
+                if ($width) $config->setWidth((int)$width);
+                if ($height) $config->setHeight((int)$height);
                 if ($mode) $config->setMode($mode);
             } else {
                 // Bei leeren Werten setzen wir nur den proportionalen Modus

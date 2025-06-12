@@ -1,0 +1,44 @@
+# config/services.yaml
+services:
+    _defaults:
+        autowire: true          # Automatically injects dependencies in your services.
+        autoconfigure: true     # Automatically registers your services as commands, event subscribers, etc.
+        public: false           # Allows optimizing the container by removing unused services; this also means
+                                # fetching services directly from the container via $container->get() won't work.
+                                # The best practice is to be explicit about your dependencies anyway.
+        bind:
+            #$projectDir: '%kernel.project_dir%'
+
+    Vsm\VsmAbTest\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/ContaoManager/'
+
+    # Add a session bag
+    caeli_wind_vsm_ab_test.session_bag:
+        class: Contao\CoreBundle\Session\Attribute\ArrayAttributeBag
+        calls:
+            - [ setName, [ caeli_wind_vsm_ab_test ] ]
+
+    Vsm\VsmAbTest\Service\AbTestManager:
+        arguments:
+            $requestStack: '@request_stack'
+
+    Vsm\VsmAbTest\EventListener\AbTestListener:
+        arguments:
+            $abTestManager: '@Vsm\VsmAbTest\Service\AbTestManager'
+        tags:
+            - { name: contao.hook, hook: getContentElement, priority: 10 }
+            - { name: contao.hook, hook: getArticle, priority: 10 }
+            - { name: contao.hook, hook: getFrontendModule, priority: 10 }
+            - { name: contao.hook, hook: replaceInsertTags, priority: 10 }
+
+    Vsm\VsmAbTest\EventListener\ContentElementListener:
+        arguments:
+            $abTestManager: '@Vsm\VsmAbTest\Service\AbTestManager'
+        tags:
+            - { name: contao.hook, hook: parseWidget, priority: 10 }
+            - { name: contao.hook, hook: parseTemplate, priority: 10 }
+
+    Vsm\VsmAbTest\EventListener\DataContainerListener: ~

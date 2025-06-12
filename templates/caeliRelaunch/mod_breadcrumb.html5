@@ -5,44 +5,44 @@ $this->wrapperAttributes = $this
     ->addClass([$this->class, 'block'])
     ->addStyle($this->style ?? '')
     ->set('aria-label', $this->trans('MSC.breadcrumbMenu'))
-    ->mergeWith($this->wrapperAttributes)
-;
+    ->mergeWith($this->wrapperAttributes);
 
 ?>
 
-<!-- indexer::stop -->
+    <!-- indexer::stop -->
 <nav<?= $this->wrapperAttributes ?>>
 
 
 
-  <?php $this->block('headline'); ?>
-    <?php if ($this->headline): ?>
-      <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
-    <?php endif; ?>
-  <?php $this->endblock(); ?>
+<?php $this->block('headline'); ?>
+<?php if ($this->headline): ?>
+    <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
+<?php endif; ?>
+<?php $this->endblock(); ?>
 
-  <?php $this->block('content'); ?>
+<?php $this->block('content'); ?>
     <ul>
-<?php foreach ($this->items as $index => $item): ?>
-  <?php if ($item['isActive']): ?>
-    <li class="active" aria-current="page"><?= $item['link'] ?></li>
-  <?php else: ?>
-    <?php
-      // rootPageTitle nur für den ersten Menüpunkt verwenden
-      if ($index === 0 && !empty($item['data']['rootPageTitle'])) {
-        $displayText = $item['data']['rootPageTitle'];
-      } else {
-        $displayText = !empty($item['data']['mainPageTitle']) ? $item['data']['mainPageTitle'] : $item['link'];
-      }
-    ?>
-    <li><a href="<?= $item['href'] ?>"><?= $displayText ?></a></li>
-  <?php endif; ?>
-<?php endforeach; ?>
+        <?php foreach ($this->items as $index => $item): ?>
+            <?php if ($item['isActive']): ?>
+                <li class="active" aria-current="page"><?= $item['link'] ?></li>
+            <?php else: ?>
+                <?php
+                // rootPageTitle nur für den ersten Menüpunkt verwenden
+                if ($index === 0 && !empty($item['data']['rootPageTitle'])) {
+                    $displayText = $item['data']['rootPageTitle'];
+                } else {
+                    // Für alle anderen Einträge bevorzugt title verwenden, da mainPageTitle oft falsche Werte hat
+                    $displayText = !empty($item['title']) ? $item['title'] : $item['link'];
+                }
+                ?>
+                <li><a href="<?= $item['href'] ?>"><?= $displayText ?></a></li>
+            <?php endif; ?>
+        <?php endforeach; ?>
     </ul>
-  <?php $this->endblock(); ?>
+<?php $this->endblock(); ?>
 
-</nav>
-<!-- indexer::continue -->
+    </nav>
+    <!-- indexer::continue -->
 
 <?php
 
