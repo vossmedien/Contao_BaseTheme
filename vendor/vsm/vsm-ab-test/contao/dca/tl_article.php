@@ -30,8 +30,7 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['abTestVariant'] = [
     'options_callback' => ['Vsm\VsmAbTest\EventListener\DataContainerListener', 'getAbTestVariantOptions'],
     'eval' => [
         'includeBlankOption' => true,
-        'tl_class' => 'w50',
-        'mandatory' => true
+        'tl_class' => 'w50'
     ],
     'sql' => "varchar(32) NOT NULL default ''"
 ];

@@ -58,6 +58,12 @@ class AuctionElementController extends AbstractContentElementController
             $this->logger->debug('[AuctionElementController] Neue Sortierregeln aus auctionSortRulesCE geparst', ['sortRules' => $sortRules]);
         }
 
+        // URL-Parameter aus CE-Einstellungen lesen
+        $urlParams = $model->auctionApiUrlParamsCE ?: null;
+        if (!empty($urlParams)) {
+            $this->logger->debug('[AuctionElementController] URL-Parameter aus CE-Einstellungen: ' . $urlParams);
+        }
+
         // Behandlung von auction_ids (für Abwärtskompatibilität, bis das Feld entfernt wird)
         $targetAuctionIds = array_filter(array_map('trim', explode(',', (string)($model->auction_ids ?? ''))));
 
@@ -71,11 +77,11 @@ class AuctionElementController extends AbstractContentElementController
             $filters['id__in'] = implode(',', $targetAuctionIds);
             $this->logger->debug('[AuctionElementController] Kombinierte Filter mit id__in', $filters);
             
-            $auctions = $this->auctionService->getAuctions($filters, false, $sortBy, $sortDirection, $sortRules);
+            $auctions = $this->auctionService->getAuctions($filters, false, $sortBy, $sortDirection, $sortRules, $urlParams);
 
         } else {
             $this->logger->debug('[AuctionElementController] Keine spezifischen auction_ids. Verwende Filter aus Textarea.');
-            $auctions = $this->auctionService->getAuctions($filters, false, $sortBy, $sortDirection, $sortRules);
+            $auctions = $this->auctionService->getAuctions($filters, false, $sortBy, $sortDirection, $sortRules, $urlParams);
         }
 
         $this->logger->info('[AuctionElementController] ' . count($auctions) . ' Auktionen nach Filterung und Sortierung erhalten.');

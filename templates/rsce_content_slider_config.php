@@ -10,7 +10,7 @@ $config = [
     'label' => ['Custom | Content Slider mit Bildoptionen', 'Ein Slider mit Texten, optionaler Headline und flexiblen Bildoptionen (fixiert oder pro Slide).'],
     'types' => ['content'],
     'contentCategory' => 'Custom',
-    'standardFields' => ['cssID'],
+    'standardFields' => array('headline', 'cssID'),
     'fields' => [
         // Element-Headline
         'element_headline_group' => [

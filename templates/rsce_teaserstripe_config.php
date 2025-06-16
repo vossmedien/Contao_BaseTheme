@@ -10,6 +10,7 @@ $config = array(
     'label' => array('Custom | Full-Width Störer (fullwidthstoerer)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

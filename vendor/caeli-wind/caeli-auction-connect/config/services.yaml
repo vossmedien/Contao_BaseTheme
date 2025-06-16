@@ -59,6 +59,13 @@ services:
             $auctionService: '@CaeliWind\CaeliAuctionConnect\Service\AuctionService'
             $logger: '@monolog.logger.contao'
 
+    # DCA Helper Services - müssen public sein für Callbacks
+    CaeliWind\CaeliAuctionConnect\Dca\ModuleDcaHelper:
+        public: true
+        
+    CaeliWind\CaeliAuctionConnect\Dca\ContentDcaHelper:
+        public: true
+
     # Add a session bag
     caeli_wind.caeli_auction_connect.session.factory:
         class: CaeliWind\CaeliAuctionConnect\Session\SessionFactory

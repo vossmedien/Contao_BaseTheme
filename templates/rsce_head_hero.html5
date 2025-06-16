@@ -14,6 +14,9 @@ use Vsm\VsmHelperTools\Helper\ImageHelper;
 use Vsm\VsmHelperTools\Helper\HeadlineHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 
+// Social Media Meta-Tags Helper hinzufügen
+use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
+
 // Animation für Headline-Element nur setzen, wenn 1-spaltig oder wenn 2-spaltig & Headline oben
 $headlineElementAnimation = null;
 if (!$this->two_columns || $this->headline_above_columns) {
@@ -132,6 +135,18 @@ if ($this->image_src) {
 
 // Aufzählungspunkte vorbereiten
 $listItems = StringUtil::deserialize($this->list_items, true);
+
+// Social Media Meta-Tags generieren (nur einmal pro Seite)
+if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
+    $socialMetaData = [
+        'title' => $this->headline,
+        'description' => $this->text,
+        'image' => $this->image_src,
+        'type' => 'website'
+    ];
+    
+    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
+}
 
 ?>
 

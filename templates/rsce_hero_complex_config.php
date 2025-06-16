@@ -9,6 +9,7 @@ $config = array(
     'label' => array('Custom | Hero Komplex', 'Ein komplexes Hero-Element mit Headline, Text, Bild/Video und einem Box-Slider.'),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
         'wrapper' => array(
         'type' => 'none',
     ),

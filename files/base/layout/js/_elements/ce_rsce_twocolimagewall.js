@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function (event) {
-
     function adjustImageColumnWidths() {
         const rows = document.querySelectorAll('.ce_rsce_twocolimagewall .ce--imagetextwall--outer .row');
 
@@ -30,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             const isRowReverse = row.classList.contains('flex-row-reverse');
             const notAsBg = imageInner && imageInner.classList.contains('not-as-bg');
             const isRowBg = imageInner && imageInner.classList.contains('is-row-bg');
+            const isFullwidth = containerElement && containerElement.classList.contains('is-fullwidth');
 
             const resetStyles = (el) => {
                  if (el) {
@@ -55,15 +55,29 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             if (!notAsBg && !isRowBg) {
                 let targetWidthCol = 0;
-                if (isRowReverse) {
-                    const spaceRightOfImageCol = window.innerWidth - imageColRect.right;
-                    const spaceLeftOfReference = refRect.left;
-                    targetWidthCol = window.innerWidth - spaceRightOfImageCol - spaceLeftOfReference;
+
+                if (isFullwidth) {
+                    // For fullwidth elements, extend to absolute screen edges
+                    if (isRowReverse) {
+                        // Image visually on left: extend from current position to left screen edge (0)
+                        targetWidthCol = imageColRect.left + imageColRect.width;
+                    } else {
+                        // Image visually on right: extend from current position to right screen edge
+                        targetWidthCol = window.innerWidth - imageColRect.left;
+                    }
                 } else {
-                    const spaceLeftOfImageCol = imageColRect.left;
-                    const spaceRightOfReference = window.innerWidth - refRect.right;
-                    targetWidthCol = window.innerWidth - spaceLeftOfImageCol - spaceRightOfReference;
+                    // Original logic for container elements
+                    if (isRowReverse) {
+                        const spaceRightOfImageCol = window.innerWidth - imageColRect.right;
+                        const spaceLeftOfReference = refRect.left;
+                        targetWidthCol = window.innerWidth - spaceRightOfImageCol - spaceLeftOfReference;
+                    } else {
+                        const spaceLeftOfImageCol = imageColRect.left;
+                        const spaceRightOfReference = window.innerWidth - refRect.right;
+                        targetWidthCol = window.innerWidth - spaceLeftOfImageCol - spaceRightOfReference;
+                    }
                 }
+
                 targetWidthCol = Math.max(0, Math.min(targetWidthCol, window.innerWidth));
                 imageCol.style.width = `${targetWidthCol}px`;
                 imageCol.style.maxWidth = `${targetWidthCol}px`;
@@ -100,6 +114,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
         requestAnimationFrame(adjustImageColumnWidths);
     }
 
+    // Run immediately to prevent flicker
+    runAdjustments();
+
     if (document.readyState === 'complete') {
         runAdjustments();
     } else {
@@ -112,6 +129,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         resizeTimer = setTimeout(runAdjustments, 100);
     }, { passive: true });
 
+    // Additional runs to ensure everything is loaded
+    setTimeout(runAdjustments, 100);
     setTimeout(runAdjustments, 250);
 
 }, { passive: true });

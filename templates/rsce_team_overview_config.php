@@ -8,6 +8,7 @@ $config = array(
     'label' => array('Custom | Team Übersicht (team_overview)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

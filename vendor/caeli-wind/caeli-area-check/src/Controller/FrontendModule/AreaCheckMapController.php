@@ -206,6 +206,24 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             $template->detailPage = $framework->getAdapter(PageModel::class)->findById($model->jumpTo);
         }
         
+        // Länder-Beschränkung aus Modulkonfiguration verarbeiten
+        $allowedCountries = [];
+        if ($model->allowedCountries) {
+            // Das listWizard Feld speichert serialisierte Arrays
+            $allowedCountriesRaw = \Contao\StringUtil::deserialize($model->allowedCountries);
+            if (is_array($allowedCountriesRaw)) {
+                $allowedCountries = array_filter(array_map('trim', array_map('strtolower', $allowedCountriesRaw)));
+            }
+        }
+        
+        // Fallback auf Deutschland wenn keine Länder konfiguriert
+        if (empty($allowedCountries)) {
+            $allowedCountries = ['de'];
+        }
+        
+        $template->allowedCountries = $allowedCountries;
+        $this->logger->info('[AreaCheckMapController] Allowed Countries: ' . json_encode($allowedCountries));
+        
         // AJAX-Konfiguration für JavaScript bereitstellen
         // URLs basierend auf aktueller Seite generieren
         $currentPath = rtrim($request->getPathInfo(), '/');
@@ -239,6 +257,32 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         ]);
 
         $cookieFile = $rootDir."/system/tmp/".session_id().'.txt';
+        
+        // Sicherstellen dass das tmp-Verzeichnis existiert und beschreibbar ist
+        $tmpDir = dirname($cookieFile);
+        if (!is_dir($tmpDir)) {
+            if (!mkdir($tmpDir, 0755, true)) {
+                $this->logger->error('[AreaCheckMapController] Tmp-Verzeichnis konnte nicht erstellt werden: ' . $tmpDir);
+                return null;
+            }
+        }
+        
+        if (!is_writable($tmpDir)) {
+            $this->logger->error('[AreaCheckMapController] Tmp-Verzeichnis ist nicht beschreibbar: ' . $tmpDir);
+            return null;
+        }
+        
+        // Cookie-File vorher löschen falls vorhanden
+        if (file_exists($cookieFile)) {
+            unlink($cookieFile);
+        }
+        
+        // Explizit leeres Cookie-File erstellen
+        if (file_put_contents($cookieFile, '') === false) {
+            $this->logger->error('[AreaCheckMapController] Cookie-File konnte nicht erstellt werden: ' . $cookieFile);
+            return null;
+        }
+        
         $this->logger->info('[AreaCheckMapController] LOGIN CALL - Cookie File: ' . $cookieFile);
         $this->logger->info('[AreaCheckMapController] LOGIN CALL - API URL: ' . $this->api_url."auth/login");
 
@@ -253,22 +297,37 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($curl_session, CURLOPT_COOKIEJAR, $cookieFile);
-        curl_setopt($curl_session, CURLOPT_TIMEOUT, 45); // 30 Sekunden Timeout
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $cookieFile); // Auch COOKIEFILE setzen
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 20); // Timeout reduziert
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 5); // Verbindungs-Timeout reduziert
+        curl_setopt($curl_session, CURLOPT_FOLLOWLOCATION, true); // Redirects folgen
+        curl_setopt($curl_session, CURLOPT_SSL_VERIFYPEER, false); // SSL-Verifikation für Tests deaktivieren
+        curl_setopt($curl_session, CURLOPT_USERAGENT, 'Caeli-Area-Check/1.0'); // User-Agent setzen
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json'
+            'Content-Type: application/json',
+            'Accept: application/json'
         ]);
+        
+        $this->logger->info('[AreaCheckMapController] Sende Login-Request an: ' . $this->api_url."auth/login");
         
         $result = curl_exec($curl_session);
         $httpCode = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($curl_session);
         
-        if (curl_error($curl_session)) {
-            $this->logger->error('[AreaCheckMapController] cURL ERROR: ' . curl_error($curl_session));
+        if ($curlError) {
+            $this->logger->error('[AreaCheckMapController] cURL ERROR: ' . $curlError);
+            curl_close($curl_session);
+            return null;
+        }
+        
+        if ($result === false) {
+            $this->logger->error('[AreaCheckMapController] cURL exec failed');
             curl_close($curl_session);
             return null;
         }
         
         if ($httpCode !== 200) {
-            $this->logger->error('[AreaCheckMapController] LOGIN HTTP Error: ' . $httpCode);
+            $this->logger->error('[AreaCheckMapController] LOGIN HTTP Error: ' . $httpCode . ', Response: ' . $result);
             curl_close($curl_session);
             return null;
         }
@@ -277,18 +336,38 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         
         $this->logger->info('[AreaCheckMapController] LOGIN RESPONSE: ' . $result);
         
-        // Cookie-File prüfen
+        // Cookie-File prüfen - erweiterte Diagnose
         if (file_exists($cookieFile)) {
-            $this->logger->info('[AreaCheckMapController] Cookie-File existiert, Größe: ' . filesize($cookieFile) . ' bytes');
-            $this->logger->info('[AreaCheckMapController] Cookie-Inhalt: ' . file_get_contents($cookieFile));
+            $fileSize = filesize($cookieFile);
+            $this->logger->info('[AreaCheckMapController] Cookie-File existiert, Größe: ' . $fileSize . ' bytes');
+            
+            if ($fileSize > 0) {
+                $cookieContent = file_get_contents($cookieFile);
+                $this->logger->info('[AreaCheckMapController] Cookie-Inhalt: ' . $cookieContent);
+            } else {
+                $this->logger->warning('[AreaCheckMapController] Cookie-File ist leer - verwende Session-loses Login');
+            }
         } else {
             $this->logger->error('[AreaCheckMapController] Cookie-File wurde NICHT erstellt!');
+            $this->logger->error('[AreaCheckMapController] Verzeichnis-Rechte: ' . substr(sprintf('%o', fileperms($tmpDir)), -4));
+            $this->logger->error('[AreaCheckMapController] PHP User: ' . get_current_user());
         }
         
+        // JSON-Parsing mit besserer Fehlerbehandlung
         $json = json_decode($result);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->logger->error('[AreaCheckMapController] JSON Parse Error: ' . json_last_error_msg());
+            return null;
+        }
+        
         $token = $json->tokens->csrf_session_id ?? null;
         
-        $this->logger->info('[AreaCheckMapController] CSRF Token: ' . ($token ?: 'NULL'));
+        if (!$token) {
+            $this->logger->error('[AreaCheckMapController] Kein CSRF Token in Response gefunden');
+            return null;
+        }
+        
+        $this->logger->info('[AreaCheckMapController] CSRF Token: ' . $token);
         
         return $token;
     }
@@ -750,13 +829,19 @@ class AreaCheckMapController extends AbstractFrontendModuleController
     public function checkStatus(string $sessionId, SessionInterface $session): JsonResponse
     {
         try {
-            $this->logger->info('[AreaCheckMapController] === AJAX STATUS CHECK ===');
-            $this->logger->info('[AreaCheckMapController] AJAX Status Check für sessionId: ' . $sessionId);
+            $this->logger->debug('[AreaCheckMapController] AJAX Status Check für sessionId: ' . $sessionId);
             
-            // Prüfen ob bereits verarbeitet
+            // Optimiert: Erst auf completed prüfen, dann error, dann processing
+            // Das verhindert unnötige Session-Abfragen
+            
+            // 1. Prüfen ob bereits verarbeitet (häufigster Fall nach Completion)
             if ($session->has($sessionId . '_result')) {
                 $result = $session->get($sessionId . '_result');
                 $this->logger->info('[AreaCheckMapController] AJAX Ergebnis gefunden für sessionId: ' . $sessionId);
+                
+                // Session-Cleanup sofort nach Abruf der Ergebnisse
+                $session->remove($sessionId . '_result');
+                $session->remove($sessionId . '_progress');
                 
                 return new JsonResponse([
                     'status' => 'completed',
@@ -764,10 +849,14 @@ class AreaCheckMapController extends AbstractFrontendModuleController
                 ]);
             }
             
-            // Prüfen ob Fehler aufgetreten
+            // 2. Prüfen ob Fehler aufgetreten
             if ($session->has($sessionId . '_error')) {
                 $error = $session->get($sessionId . '_error');
                 $this->logger->error('[AreaCheckMapController] AJAX Fehler gefunden für sessionId: ' . $sessionId . ' - ' . $error);
+                
+                // Session-Cleanup auch bei Fehlern
+                $session->remove($sessionId . '_error');
+                $session->remove($sessionId . '_progress');
                 
                 return new JsonResponse([
                     'status' => 'error',
@@ -775,13 +864,23 @@ class AreaCheckMapController extends AbstractFrontendModuleController
                 ]);
             }
             
-            // Verarbeitung starten wenn noch nicht begonnen
+            // 3. Verarbeitung starten wenn noch nicht begonnen
             if ($session->has($sessionId) && !$session->has($sessionId . '_processing')) {
+                $this->logger->info('[AreaCheckMapController] Starte Verarbeitung für sessionId: ' . $sessionId);
                 $session->set($sessionId . '_processing', true);
+                
+                // Verarbeitung in separatem Prozess starten (um Request nicht zu blockieren)
+                // Die processAreaCheckAsync Methode läuft dann parallel
+                try {
                 $this->processAreaCheckAsync($sessionId, $session);
+                } catch (\Throwable $e) {
+                    // Fehler in Session speichern für nächsten Poll
+                    $session->set($sessionId . '_error', 'Verarbeitungsfehler: ' . $e->getMessage());
+                    $session->remove($sessionId . '_processing');
+                }
             }
             
-            // Progress-Daten abrufen wenn verfügbar
+            // 4. Progress-Daten abrufen wenn verfügbar
             $progressData = $session->get($sessionId . '_progress', ['percentage' => 0, 'message' => 'Startet...']);
             
             return new JsonResponse([
@@ -791,9 +890,17 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             
         } catch (\Throwable $e) {
             $this->logger->error('[AreaCheckMapController] AJAX Status Fehler: ' . $e->getMessage());
+            
+            // Session-Cleanup auch bei unerwarteten Fehlern
+            $session->remove($sessionId);
+            $session->remove($sessionId . '_processing');
+            $session->remove($sessionId . '_progress');
+            $session->remove($sessionId . '_result');
+            $session->remove($sessionId . '_error');
+            
             return new JsonResponse([
                 'status' => 'error',
-                'message' => 'Fehler beim Prüfen des Status: ' . $e->getMessage()
+                'message' => 'Unerwarteter Fehler beim Statuscheck: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -811,8 +918,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             
             $this->logger->info('[AreaCheckMapController] AJAX Verarbeitung gestartet für sessionId: ' . $sessionId);
             
-            // Schritt 1: API-Session vorbereiten (20%)
-            $this->updateProgress($sessionId, $session, 20, 'Verbindung zur API herstellen...');
+            // Schritt 1: API-Session vorbereiten (10%)
+            $this->updateProgress($sessionId, $session, 10, 'Verbindung zur API herstellen...');
             
             // Bestehende Logik aus getResponse() wiederverwenden
             // AJAX: Sicherstellen dass alle Dependencies verfügbar sind
@@ -822,10 +929,13 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             
             $this->framework->initialize();
             
+            // Schritt 2: Verarbeitung starten (30%)
+            $this->updateProgress($sessionId, $session, 30, 'Fläche wird analysiert...');
+            
             $parkid = $this->createPark($requestData);
             
-            // Schritt 2: Park erstellt (50%)
-            $this->updateProgress($sessionId, $session, 50, 'Fläche wird analysiert...');
+            // Schritt 3: Park verarbeitet (60%)
+            $this->updateProgress($sessionId, $session, 60, 'Windpotential wird bewertet...');
             
             $parkData = null;
             $status = 'failed';
@@ -833,15 +943,15 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             $errorMessage = null;
             
             if ($parkid != "-") {
-                // Schritt 3: Rating abrufen (75%)
-                $this->updateProgress($sessionId, $session, 75, 'Windpotential wird bewertet...');
+                // Schritt 4: Rating abrufen (80%)
+                $this->updateProgress($sessionId, $session, 80, 'Bewertung wird abgerufen...');
                 
                 $parkData = $this->getPlotRating($parkid);
                 $status = 'success';
                 $isSuccess = true;
             } else {
-                // Schritt 3: Fallback-Rating versuchen (75%)
-                $this->updateProgress($sessionId, $session, 75, 'Alternative Bewertung wird erstellt...');
+                // Schritt 4: Fallback-Rating versuchen (80%)
+                $this->updateProgress($sessionId, $session, 80, 'Alternative Bewertung wird erstellt...');
                 
                 // Fallback wie im synchronen Code
                 try {
@@ -857,6 +967,9 @@ class AreaCheckMapController extends AbstractFrontendModuleController
                 }
                 $errorMessage = 'Park konnte nicht erstellt werden';
             }
+            
+            // Schritt 5: Daten vorbereiten (90%)
+            $this->updateProgress($sessionId, $session, 90, 'Ergebnis wird gespeichert...');
             
             // Input-Daten wie im synchronen Code
             $name = trim($requestData['name'] ?? '');
@@ -890,9 +1003,6 @@ class AreaCheckMapController extends AbstractFrontendModuleController
                 'error_message' => $errorMessage ?: '',
                 'uuid' => $uuid,
             ];
-
-            // Schritt 4: Daten speichern (90%)
-            $this->updateProgress($sessionId, $session, 90, 'Ergebnis wird gespeichert...');
             
             Database::getInstance()
                 ->prepare("INSERT INTO tl_flaechencheck %s")
@@ -901,7 +1011,7 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             
             $this->logger->info('[AreaCheckMapController] AJAX DB-Insert erfolgreich für sessionId: ' . $sessionId);
             
-            // Schritt 5: Abgeschlossen (100%)
+            // Schritt 6: Abgeschlossen (100%)
             $this->updateProgress($sessionId, $session, 100, 'Verarbeitung abgeschlossen!');
             
             // Ergebnis in Session speichern
@@ -918,6 +1028,7 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             // Cleanup
             $session->remove($sessionId);
             $session->remove($sessionId . '_processing');
+            $session->remove($sessionId . '_progress'); // Progress-Daten auch entfernen
             
             $this->logger->info('[AreaCheckMapController] AJAX Verarbeitung erfolgreich abgeschlossen für sessionId: ' . $sessionId);
             
@@ -926,14 +1037,21 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             $session->set($sessionId . '_error', $e->getMessage());
             $session->remove($sessionId);
             $session->remove($sessionId . '_processing');
+            $session->remove($sessionId . '_progress'); // Progress-Daten auch bei Fehlern entfernen
         }
     }
     
     /**
-     * Aktualisiert den Progress in der Session
+     * Aktualisiert den Progress in der Session (nur vorwärts!)
      */
     private function updateProgress(string $sessionId, SessionInterface $session, int $percentage, string $message): void
     {
+        // Prüfen ob bereits höherer Progress existiert (Race Condition vermeiden)
+        $currentProgress = $session->get($sessionId . '_progress', ['percentage' => 0]);
+        $currentPercentage = $currentProgress['percentage'] ?? 0;
+        
+        // Nur vorwärts gehen, nie rückwärts
+        if ($percentage > $currentPercentage) {
         $progressData = [
             'percentage' => $percentage,
             'message' => $message,
@@ -942,5 +1060,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         
         $session->set($sessionId . '_progress', $progressData);
         $this->logger->debug('[AreaCheckMapController] AJAX Progress updated: ' . $percentage . '% - ' . $message);
+        } else {
+            $this->logger->debug('[AreaCheckMapController] AJAX Progress ignored (rückwärts): ' . $percentage . '% (aktuell: ' . $currentPercentage . '%)');
+        }
     }
 } 

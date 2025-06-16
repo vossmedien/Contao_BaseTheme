@@ -348,8 +348,10 @@ class FormDataListener
                     if ($geometry && !$widget->value) {
                         $areaSize = $this->calculateAreaFromGeometry($geometry);
                         if ($areaSize) {
-                            $widget->value = $areaSize . ' ha';
-                            $this->logger->info('[FormDataListener] ✅ Flächengröße vorausgefüllt: ' . $areaSize . ' ha');
+                            // Für HubSpot: Englisches Zahlenformat mit Punkt (ohne "ha")
+                            $areaSizeFormatted = (string) $areaSize;
+                            $widget->value = $areaSizeFormatted;
+                            $this->logger->info('[FormDataListener] ✅ Flächengröße vorausgefüllt: ' . $areaSizeFormatted);
                         } else {
                             $this->logger->info('[FormDataListener] ❌ Flächenberechnung fehlgeschlagen');
                         }

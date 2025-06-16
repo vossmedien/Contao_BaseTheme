@@ -132,16 +132,9 @@ class DataContainerListener
     }
 
     /**
-     * Label callback für Seiten
+     * Label callback für Seiten (Seitenstruktur)
+     * Hinweis: tl_page verwendet ein spezielles Tree-System, daher wird hier kein Label-Callback verwendet
+     * A/B Test Informationen werden direkt in der Seitenstruktur angezeigt
      */
-    #[AsCallback(table: 'tl_page', target: 'list.label.label')]
-    public function addAbTestInfoToPageLabel($row, string $label): string
-    {
-        if ($row['enableAbTest'] && $row['abTestVariant']) {
-            $variant = strtoupper(str_replace('test_', '', $row['abTestVariant']));
-            $label .= ' <span style="color: #b3d4fc; font-weight: bold;">[A/B Test: ' . $variant . ']</span>';
-        }
-        
-        return $label;
-    }
+
 } 

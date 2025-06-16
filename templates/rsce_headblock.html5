@@ -3,8 +3,24 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_head_block.min.css|static';
 }
 
+// Social Media Meta-Tags Helper hinzufügen
+use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+
 $uniqueId = 'content-block-' . uniqid();
 $isTwoColumn = $this->layout === 'two_column';
+
+// Social Media Meta-Tags generieren (nur einmal pro Seite)
+if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
+    $socialMetaData = [
+        'title' => $this->headline,
+        'description' => $this->text,
+        'image' => $this->image ?: null,
+        'type' => 'website'
+    ];
+    
+    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
+}
 ?>
 
 <div id="<?= $uniqueId ?>" <?php echo $this->cssID; ?> class="<?php echo $this->class; ?> content--element" >

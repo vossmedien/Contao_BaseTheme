@@ -1,6 +1,6 @@
 <div class="col" data-animation="animate__fadeIn">
-    <article class="auction-item {{ class }}" id="{{ cssID }}">
-        <div class="card" style="--bs-card-bg: var(--bs-primary); --bs-card-cap-bg: var(--bs-primary); --bs-card-color: var(--bs-body-color-inverse); --bs-card-title-color: var(--bs-card-color)">
+    <article class="auction-item h-100 {{ class }}" id="{{ cssID }}">
+        <div class="card h-100" style="--bs-card-bg: var(--bs-primary); --bs-card-cap-bg: var(--bs-primary); --bs-card-color: var(--bs-body-color-inverse); --bs-card-title-color: var(--bs-card-color)">
             <div class="card-header">
                 <h3 class="card-title h5 mb-0">
                     <span class="d-block">{{ 'auction_listing.card.title_prefix'|trans }}</span>
@@ -26,10 +26,7 @@
             </div>
             <div class="card-body">
                 <p>
-                    #TEXT#<br>
-                    ENTEGA gewinnt die erste digitale Flächenausschreibung in Deutschland. Im Büdinger Wald, Nordhessen
-                    entstehen auf 250 ha bald 10 WEAs, die mit 60 MW 45.000 Haushalte mit klimaneutralem Strom versorgen
-                    können.
+                    {{ raw_data.description }}
                 </p>
             </div>
         </div>

@@ -1,6 +1,6 @@
 <div class="content--element mb-0">
     {% block caeli_area_check_styles %}
-        <link rel="stylesheet" href="{{ asset('bundles/caeliareacheck/css/caeli-area-check.css') }}">
+        <link rel="stylesheet" href="{{ asset('bundles/caeliareacheck/css/caeli-area-check.css?v=4') }}">
     {% endblock %}
 
     <div class="mod_caeli_area_check" style="position:relative">
@@ -122,17 +122,11 @@
             {{ translations.tutorial.polygon_edit.content }}
             <div class="tutorial-buttons mt-2">
                 <button type="button" class="btn btn-outline-primary btn-sm me-2" id="tutorial-polygon-back">{{ translations.tutorial.polygon_edit.button_back }}</button>
-                <button type="button" class="btn btn-primary btn-sm" id="tutorial-polygon-next">{{ translations.tutorial.polygon_edit.button_next }}</button>
+                <button type="button" class="btn btn-primary btn-sm" id="tutorial-polygon-next">{{ translations.tutorial.area_confirm.button_next }}</button>
             </div>
         </div>
 
-        <div id="tutorial-confirm-content" class="tutorial-content">
-            {{ translations.tutorial.area_confirm.content }}
-            <div class="tutorial-buttons mt-2">
-                <button type="button" class="btn btn-outline-primary btn-sm me-2" id="tutorial-confirm-back">{{ translations.tutorial.area_confirm.button_back }}</button>
-                <button type="button" class="btn btn-primary btn-sm" id="tutorial-confirm-next">{{ translations.tutorial.area_confirm.button_next }}</button>
-            </div>
-        </div>
+
     </div>
 
     <!-- Übersetzungen und AJAX-Config für JavaScript bereitstellen -->
@@ -144,13 +138,18 @@
         window.CaeliAreaCheckConfig = {
             startUrl: '/flaechencheck/ajax/start',
             statusUrl: '/flaechencheck/ajax/status',
-            detailPageUrl: {{ (detailPage ? detailPage.getFrontendUrl() : "'/flaechencheck/ergebnis'")|json_encode|raw }}
+            detailPageUrl: {{ (detailPage ? detailPage.getFrontendUrl() : "'/flaechencheck/ergebnis'")|json_encode|raw }},
+            // Länder-Beschränkung für Geocoding (ISO 3166-1 Alpha-2 Codes)
+            // Modulspezifische Konfiguration aus Backend-Einstellungen
+            allowedCountries: {{ allowedCountries|json_encode|raw }},
+            // Google Maps API Key für dynamisches Laden
+            googleMapsApiKey: {{ googleMapsApiKey|json_encode|raw }}
         };
         
         console.log('✅ AJAX-Processing aktiviert');
         console.log('Translations loaded:', window.CaeliAreaCheckTranslations);
         console.log('AJAX Config loaded:', window.CaeliAreaCheckConfig);
     </script>
-    <script src="{{ asset('bundles/caeliareacheck/js/caeli-area-check.js') }}"></script>
-    <script async src="https://maps.googleapis.com/maps/api/js?key={{ googleMapsApiKey }}&libraries=places,drawing,geometry,marker&v=weekly&loading=async"></script>
+    <script src="{{ asset('bundles/caeliareacheck/js/caeli-area-check.js?v=4') }}"></script>
+    <!-- Google Maps Script wird dynamisch geladen nach Consent-Check -->
 </div> 

@@ -9,6 +9,7 @@ $config = array(
     'label' => array('Custom | Leistungen im Überblick (services_overview)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

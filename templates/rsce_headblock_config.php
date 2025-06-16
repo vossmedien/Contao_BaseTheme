@@ -10,7 +10,7 @@ $config = [
     'types' => ['content'],
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => ['cssID', 'abTestVariant'],
+    'standardFields' => array('headline', 'cssID'),
     'wrapper' => [
         'type' => 'none',
     ],

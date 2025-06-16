@@ -102,14 +102,20 @@ class ProcessFormDataListener
             'context' => [
                 'pageUri' => \Contao\Environment::get('uri'),
                 'pageName' => isset($GLOBALS['objPage']) && property_exists($GLOBALS['objPage'], 'pageTitle') ? $GLOBALS['objPage']->pageTitle : 'Formular-Seite',
-                // hutk hinzufügen, falls vorhanden
-                // 'hutk' => $request?->cookies->get('hubspotutk') ?? null // Option 1: direkt
             ]
         ];
 
-        // hutk hinzufügen, falls der Cookie im Request vorhanden ist
-        if ($request && $hutk = $request->cookies->get('hubspotutk')) {
-            $hubspotData['context']['hutk'] = $hutk;
+        // IP-Adresse hinzufügen
+        if ($request && $clientIp = $request->getClientIp()) {
+            $hubspotData['context']['ipAddress'] = $clientIp;
+        }
+
+        // HubSpot Tracking Cookie (hutk) hinzufügen - verschiedene Cookie-Namen prüfen
+        if ($request) {
+            $hutk = $request->cookies->get('hubspotutk') ?: $request->cookies->get('__hstc') ?: $request->cookies->get('__hssc');
+            if ($hutk) {
+                $hubspotData['context']['hutk'] = $hutk;
+            }
         }
 
         // Formularfelder gemäß den Mappings hinzufügen
@@ -119,13 +125,18 @@ class ProcessFormDataListener
                 continue;
             }
 
+            // Felder ohne HubSpot-Feldname überspringen
+            if (!isset($fieldMappings[$fieldName])) {
+                continue;
+            }
+
             // Leere Werte überspringen (optional - kann je nach Anforderung angepasst werden)
             if (empty($value) && $value !== '0') {
                 continue;
             }
 
-            // HubSpot-Feldname aus dem Mapping holen oder Feldname verwenden
-            $hubspotFieldName = $fieldMappings[$fieldName] ?? $fieldName;
+            // HubSpot-Feldname aus dem Mapping holen
+            $hubspotFieldName = $fieldMappings[$fieldName];
 
             // Wert sanitizen (falls nötig)
             $sanitizedValue = is_string($value) ? trim($value) : $value;

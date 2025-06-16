@@ -1,0 +1,72 @@
+
+.popover {
+  max-width: 380px;
+  --bs-popover-border-color: var(--bs-primary);
+  --bs-popover-bg: var(--bs-tertiary);
+  --bs-popover-header-bg: var(--bs-primary);
+  --bs-popover-header-color: var(--bs-secondary);
+
+  @media (max-width: 768px) {
+    max-width: 280px;
+    --bs-popover-body-padding-x: 0.5rem;
+    --bs-popover-body-padding-y: 0.5rem;
+
+    /* Mobile Popovers am unteren Bildschirmrand positionieren */
+    position: fixed !important;
+    bottom: 40px !important;
+    left: 10px !important;
+    right: 10px !important;
+    top: auto !important;
+    transform: none !important;
+    margin: 0 !important;
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+  }
+}
+
+/* Popover Arrow Primary Color - Pfeil zeigt nach oben */
+/* Bei Bottom-Placement: Popover ist unten, Pfeil zeigt nach oben */
+.bs-popover-bottom .popover-arrow::after,
+.bs-popover-auto[data-popper-placement="bottom"] .popover-arrow::after {
+  border-bottom-color: var(--bs-primary) !important;
+}
+
+/* Mobile Popovers: Pfeil verstecken da fixe Positionierung */
+@media (max-width: 768px) {
+  .popover .popover-arrow {
+    display: none !important;
+  }
+}
+
+
+h3.popover-header {
+  margin-bottom: 0 !important;
+  font-size: 25px;
+  font-weight: normal;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
+}
+
+.popover-body {
+  --bs-popover-body-padding-x: .75rem;
+  --bs-popover-body-padding-y: .75rem;
+  font-size: var(--bs-body-font-size);
+
+  @media (max-width: 768px) {
+    --bs-popover-body-padding-x: 0.5rem;
+    --bs-popover-body-padding-y: 0.5rem;
+    font-size: 14px;
+  }
+
+  i {
+    font-size: .875rem;
+    text-align: center;
+    width: 35px;
+
+    &.fa-check {
+      font-size: .75rem;
+    }
+  }
+}

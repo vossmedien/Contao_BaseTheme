@@ -18,6 +18,12 @@ main, footer {
   }
 }
 
+main {
+  ul li a {
+      color: var(--bs-tertiary);
+  }
+}
+
 p + ul, p + ol {
   margin-top: 1rem;
 }
@@ -57,16 +63,16 @@ main .content--element {
 
       a {
         text-decoration: none;
-        color: currentColor;
-        display: inline-block;
+        //color: currentColor;
+        //display: inline-block;
       }
     }
   }
 }
 
-ol{
-  li:not(:last-child){
-    margin-bottom:1rem;
+ol {
+  li:not(:last-child) {
+    margin-bottom: 1rem;
   }
 }
 
@@ -124,19 +130,20 @@ ul.list-check {
       font-size: 1.75rem;
     }
 
-    &.is-invalid{
-      &:before{
+    &.is-invalid {
+      &:before {
         content: "\e010";
       }
     }
 
-    &.is-danger{
-      &:before{
+    &.is-danger {
+      &:before {
         color: var(--bs-danger);
       }
     }
-    &.is-warning{
-      &:before{
+
+    &.is-warning {
+      &:before {
         color: var(--bs-warning);
       }
     }
@@ -158,6 +165,8 @@ figcaption, .figcaption {
 
 
 .ce--headline.is-quote {
+  margin-bottom: 1rem;
+
   > span.ce--subline.ce--subline {
     font-size: 1rem;
     margin-top: 1rem;
@@ -201,6 +210,14 @@ p + .h6 {
   }
 }
 
+p small:first-child:last-child {
+  display: block;
+  line-height: 1.5;
+}
+
+small {
+
+}
 
 .special-uk-element {
 

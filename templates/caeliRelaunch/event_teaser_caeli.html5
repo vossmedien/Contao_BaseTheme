@@ -101,20 +101,29 @@
         </div>
         <div class="col-md-auto mt-2 mt-md-0">
             <div class="d-flex justify-content-end flex-row gap-1">
-                <?php if ($this->onSiteAppointmentLink ?? null):
-                    // Der Null-Koaleszenz-Operator stellt sicher, dass $this->onSiteAppointmentLink existiert.
-                    // Die Sprachvariable wird nur verwendet, wenn der Link tatsächlich vorhanden ist.
-                    ?>
+                <?php if ($this->onSiteAppointmentLink ?? null): ?>
                     <div>
                         <a href="<?= $this->onSiteAppointmentLink ?>" target="_blank" class="btn btn-sm btn-outline-primary">
-                            <?= $this->more ?>
+                            <?= $GLOBALS['TL_LANG']['MSC']['onSiteAppointment'] ?>
                         </a>
                     </div>
                 <?php endif; ?>
-                <?php if ($this->hasDetails): ?>
+
+                                <?php 
+
+                // Prüfen ob learnMoreLink aus den Template-Daten verfügbar ist
+                $learnMoreLink = $this->learnMoreLink ?? $this->arrData['learnMoreLink'] ?? '';
+                ?>
+                <?php if (!empty($learnMoreLink)): ?>
+                    <div>
+                        <a href="<?= $learnMoreLink ?>" title="<?= $this->more ?>" class="btn btn-sm btn-outline-primary">
+                            <?= $this->more ?>
+                        </a>
+                    </div>
+                <?php elseif ($this->hasDetails): ?>
                     <div>
                         <a href="<?= $this->href ?>" title="<?= $this->readMore ?>" class="btn btn-sm btn-outline-primary">
-                            <?= $GLOBALS['TL_LANG']['MSC']['onSiteAppointment'] ?>
+                            <?= $this->readMore ?>
                         </a>
                     </div>
                 <?php endif; ?>

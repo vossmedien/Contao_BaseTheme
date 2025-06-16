@@ -7,6 +7,7 @@ filter:
     leistung: "Leistung (MW)"
     volllaststunden: "Volllaststunden"
     irr: "IRR (%)"
+    isAuctionInFocus: "Auktion im Fokus"
   status:
     STARTED: "Gestartet"
     OPEN_FOR_DIRECT_AWARDING: "Freihändige Vergabe möglich"
@@ -52,7 +53,7 @@ auction_listing:
     details:
       power: "Leistung"
       area_size: "Flächengröße"
-      full_usage_hours: "Vollaststunden"
+      full_usage_hours: "Volllaststunden"
       irr_before_rent: "IRR vor Pacht"
       availability: "Verfügbarkeit"
       availability_prefix: "Ab"
@@ -90,6 +91,11 @@ detail:
     power_connection: "Netzanschluss"
     preparation: "Auktionsvorbereitung"
   new_customer_headline: "Ich bin Neukunde"
-  new_customer_button: "Jetzt Freischalten"
+  new_customer_button: "Termin vereinbaren"
   existing_customer_headline: "Ich bin Bestandskunde"
   existing_customer_button: "Zum Login"
+  status_legend:
+    title: "Legende"
+    completed: "Abgeschlossen"
+    in_progress: "In Bearbeitung"
+    requested: "Angefragt"

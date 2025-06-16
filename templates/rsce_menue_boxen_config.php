@@ -7,7 +7,7 @@ $config = array(
     'label' => array('Custom | Menü-Boxen', 'Boxen mit Verlinkungen für Menü-Strukturen'),
     'types' => array('content'),
     'contentCategory' => 'Custom',
-    'standardFields' => array('cssID'),
+    'standardFields' => array('headline', 'cssID'),
     'fields' => array(
 
         'headline' => array(

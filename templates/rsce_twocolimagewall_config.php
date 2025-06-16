@@ -10,6 +10,7 @@ $config = array(
     'label' => array('Custom | Zeile mit zwei Spalten & vollflächigen Bildern (twocolimagewall)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

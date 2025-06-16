@@ -8,6 +8,7 @@ $config = array(
     'label' => array('Custom | Terminliste (event_list)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

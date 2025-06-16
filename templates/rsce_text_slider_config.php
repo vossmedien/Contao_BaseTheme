@@ -9,7 +9,7 @@ return array(
     'types' => array('content'),
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('cssID'), // Globale Headline-Felder hier nicht als Standard, da sie spezifisch für die linke Spalte sind
+    'standardFields' => array('headline', 'cssID'), // Globale Headline-Felder hier nicht als Standard, da sie spezifisch für die linke Spalte sind
     'wrapper' => array(
         'type' => 'none',
     ),

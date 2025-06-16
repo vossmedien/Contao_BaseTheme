@@ -21,6 +21,8 @@
                 (rating.rating_grid_connection is defined and rating.rating_grid_connection in ['green', 'yellow']) %}
 
             {% if isSuitable %}
+                {{ insert_tag('insert_node::20')|raw }}
+
                 <div class="row">
                     <div class="col-md-7">
                         <div class="ce--headline hl-h2 mb-0" data-animation="animate__fadeIn">
@@ -135,16 +137,20 @@
                             <div class="mb-3">
                                 <div class="row">
                                     <div class="col-md-8" data-animation="animate__fadeIn">
-                                        <h3 class="mb-0">
-                                            {% if isSuitable %}
-                                                {{ translations.result.form_section.suitable_title }}
-                                            {% else %}
-                                                {{ translations.result.form_section.unsuitable_title }}
+
+                                            {% if isSuitable %}   <h3 class="mb-0">
+                                                {{ translations.result.form_section.suitable_title }} </h3>
+                                            {% else %} <h3 class="fw-normal mb-0">
+                                                {{ translations.result.form_section.unsuitable_title }}</h3>
                                             {% endif %}
-                                        </h3>
+
                                     </div>
                                     <div class="col-md-4" data-animation="animate__fadeInDown">
-                                        <img class="pdf-preview" src="/files/base/layout/img/flaechencheck-pdf-badge-de.png">
+                                        {% if isSuitable %}
+                                            <img class="pdf-preview" src="/files/base/layout/img/flaechencheck-pdf-badge-de.png">
+                                        {% else %}
+                                              <img class="pdf-preview is-badge" src="/files/base/layout/img/caeli_de/badges/flaechencheck-pdf-badge-de_negativ.svg">
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -204,8 +210,6 @@
 </div>
 
 
-{{ insert_tag('insert_node::20')|raw }}
-
 <style>
 
     .pdf-preview {
@@ -214,6 +218,12 @@
 
         @media (min-width: 768px) {
             margin-top: -90%;
+        }
+    }
+
+    .pdf-preview.is-badge{
+         @media (min-width: 768px) {
+            margin-top: -50%;
         }
     }
 

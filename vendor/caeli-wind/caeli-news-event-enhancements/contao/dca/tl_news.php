@@ -42,6 +42,24 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['authorImage'] = [
     'sql' => "binary(16) NULL"
 ];
 
+$GLOBALS['TL_DCA']['tl_news']['fields']['authorEmail'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_news']['authorEmail'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'text',
+    'eval' => ['maxlength' => 255, 'tl_class' => 'w50', 'rgxp' => 'email'],
+    'sql' => "varchar(255) NOT NULL default ''"
+];
+
+$GLOBALS['TL_DCA']['tl_news']['fields']['authorLinkedIn'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_news']['authorLinkedIn'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'text',
+    'eval' => ['maxlength' => 255, 'tl_class' => 'w50', 'rgxp' => 'url'],
+    'sql' => "varchar(255) NOT NULL default ''"
+];
+
 $GLOBALS['TL_DCA']['tl_news']['fields']['readingTime'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_news']['readingTime'],
     'exclude' => true,
@@ -173,7 +191,7 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['videoPosterSRC'] = [
     ->addField('detailTitle', 'headline', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
 
     ->addLegend('author_legend', 'date_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField(['postAuthor', 'authorTitle', 'authorImage'], 'author_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField(['postAuthor', 'authorTitle', 'authorImage', 'authorEmail', 'authorLinkedIn'], 'author_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
 
     ->addLegend('article_legend', 'author_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField(['readingTime', 'articleStatus', 'hideAuthorAndNav'], 'article_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)

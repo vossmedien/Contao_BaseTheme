@@ -194,18 +194,22 @@
                                 // URL aktualisieren ohne Reload
                                 history.pushState({page: page}, '', currentUrl.toString());
                                 
-                                // Zum Listing-Anker scrollen (wie im Original)
+                                // Zum Listing-Anker scrollen mit 100px Offset nach oben
                                 const auctionAnchor = document.getElementById('auctionFilter');
                                 if (auctionAnchor) {
-                                    auctionAnchor.scrollIntoView({ 
-                                        behavior: 'smooth',
-                                        block: 'start'
+                                    const elementTop = auctionAnchor.getBoundingClientRect().top + window.pageYOffset;
+                                    const offsetPosition = elementTop - 100;
+                                    window.scrollTo({
+                                        top: offsetPosition,
+                                        behavior: 'smooth'
                                     });
                                 } else {
                                     // Fallback: Zum Listing-Container scrollen
-                                    currentListingContainer.scrollIntoView({ 
-                                        behavior: 'smooth',
-                                        block: 'start'
+                                    const elementTop = currentListingContainer.getBoundingClientRect().top + window.pageYOffset;
+                                    const offsetPosition = elementTop - 100;
+                                    window.scrollTo({
+                                        top: offsetPosition,
+                                        behavior: 'smooth'
                                     });
                                 }
                             }

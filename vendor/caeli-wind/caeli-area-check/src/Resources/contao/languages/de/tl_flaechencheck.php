@@ -15,6 +15,7 @@ $GLOBALS['TL_LANG']['tl_flaechencheck']['park_rating']      = ['Park-Bewertung',
 $GLOBALS['TL_LANG']['tl_flaechencheck']['edit']   = ['Eintrag bearbeiten', 'Eintrag ID %s bearbeiten'];
 $GLOBALS['TL_LANG']['tl_flaechencheck']['delete'] = ['Eintrag löschen', 'Eintrag ID %s löschen'];
 $GLOBALS['TL_LANG']['tl_flaechencheck']['show']   = ['Details anzeigen', 'Details des Eintrags ID %s anzeigen'];
+$GLOBALS['TL_LANG']['tl_flaechencheck']['export'] = ['Daten exportieren', 'Export der Flächencheck-Daten als CSV'];
 
 // Legenden
 $GLOBALS['TL_LANG']['tl_flaechencheck']['title_legend'] = 'Personendaten';

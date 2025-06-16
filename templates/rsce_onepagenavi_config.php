@@ -8,6 +8,7 @@ $config = array(
     'label' => array('Custom | Anker-Navigation (onepagenavi)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

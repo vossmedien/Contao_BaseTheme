@@ -17,13 +17,13 @@ main#main {
 
 .ce--inner:not([class*="col"]) > .ce--headline {
   @include media-breakpoint-up(lg) {
-    max-width: 62%;
+    max-width: 70%;
   }
 }
 
 .headline-above-columns {
   @include media-breakpoint-up(lg) {
-    max-width: 77%;
+    max-width: 85%;
   }
 }
 

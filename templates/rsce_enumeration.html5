@@ -10,35 +10,35 @@ $enumerationType = $this->enumeration_type;
 $wrapperClass = $this->wrapper_class ? ' ' . $this->wrapper_class : '';
 
 $columns = 1;
-$itemsPerColumn = PHP_INT_MAX; // Standardmäßig alle Items in einer Spalte, falls keine spezifische Anzahl gesetzt ist
+$columnItems = []; // Array für die Aufteilung der Items auf Spalten
 
-if ($layoutType === '1_column' && $this->column_count_1_column) {
-    $itemsPerColumn = (int)$this->column_count_1_column;
+// Spaltenlogik je nach Layout
+if ($layoutType === '1_column') {
+    $columns = 1;
+    $columnItems[0] = $items; // Alle Items in erste Spalte
 } elseif ($layoutType === '2_columns') {
     $columns = 2;
-    if ($this->column_count_2_columns) {
-        $itemsPerColumn = (int)$this->column_count_2_columns;
-    } else {
-        $itemsPerColumn = ceil(count($items) / 2);
-    }
+    $firstColumnCount = $this->items_first_column_2_col ? (int)$this->items_first_column_2_col : ceil(count($items) / 2);
+    
+    // Erste Spalte: bis zur definierten Anzahl
+    $columnItems[0] = array_slice($items, 0, $firstColumnCount);
+    // Zweite Spalte: der Rest
+    $columnItems[1] = array_slice($items, $firstColumnCount);
+    
 } elseif ($layoutType === '3_columns') {
     $columns = 3;
-    if ($this->column_count_3_columns) {
-        $itemsPerColumn = (int)$this->column_count_3_columns;
-    } else {
-        $itemsPerColumn = ceil(count($items) / 3);
-    }
-}
-
-// Sicherstellen, dass itemsPerColumn mindestens 1 ist, wenn Items vorhanden sind
-if (count($items) > 0 && $itemsPerColumn === PHP_INT_MAX) {
-    if ($columns > 1) {
-        $itemsPerColumn = ceil(count($items) / $columns);
-    } else {
-        $itemsPerColumn = count($items);
-    }
-} elseif (count($items) === 0) {
-    $itemsPerColumn = 0;
+    $firstColumnCount = $this->items_first_column_3_col ? (int)$this->items_first_column_3_col : ceil(count($items) / 3);
+    
+    // Erste Spalte: bis zur definierten Anzahl
+    $columnItems[0] = array_slice($items, 0, $firstColumnCount);
+    
+    // Rest gleichmäßig auf Spalte 2 und 3 verteilen
+    $remainingItems = array_slice($items, $firstColumnCount);
+    $remainingCount = count($remainingItems);
+    $itemsPerRemainingColumn = ceil($remainingCount / 2);
+    
+    $columnItems[1] = array_slice($remainingItems, 0, $itemsPerRemainingColumn);
+    $columnItems[2] = array_slice($remainingItems, $itemsPerRemainingColumn);
 }
 
 
@@ -94,20 +94,19 @@ if ($showTextRight) {
                         ); ?>
                     <?php endif; ?>
 
-                    <?php if ($items && count($items) > 0 && $itemsPerColumn > 0) : ?>
+                    <?php if ($items && count($items) > 0) : ?>
                         <div class="enumeration--items-wrapper" <?php if (!$animateItemsIndividually && $animationEnumeration): ?>data-animation="<?php echo $animationEnumeration; ?>"<?php endif; ?>>
                             <div class="row gx-md-3">
                                 <?php
-                                $itemChunks = array_chunk($items, $itemsPerColumn);
                                 $totalItemsRenderedGlobal = 0;
                                 $totalNumberOfItems = count($items);
                                 ?>
-                                <?php foreach ($itemChunks as $columnIndex => $columnItems) : ?>
-                                    <?php if ($columnIndex < $columns && count($columnItems) > 0) : ?>
-                                        <?php $totalItemsInThisColumn = count($columnItems); ?>
+                                <?php foreach ($columnItems as $columnIndex => $currentColumnItems) : ?>
+                                    <?php if ($columnIndex < $columns && count($currentColumnItems) > 0) : ?>
+                                        <?php $totalItemsInThisColumn = count($currentColumnItems); ?>
                                         <div class="col-<?php echo ($columns > 1) ? (12 / $columns) : 12; ?> enumeration--column">
-                                            <ul class="enumeration--list list-unstyled">
-                                                <?php foreach ($columnItems as $itemIndexLocal => $item) : ?>
+                                            <ul<?php if ($enumerationType !== 'normal') : ?> class="enumeration--list list-unstyled"<?php endif; ?>>
+                                                <?php foreach ($currentColumnItems as $itemIndexLocal => $item) : ?>
                                                     <?php
                                                     $totalItemsRenderedGlobal++;
                                                     $itemNumberGlobal = $totalItemsRenderedGlobal;
@@ -124,25 +123,36 @@ if ($showTextRight) {
                                                         $liClasses .= ' is-globally-last';
                                                     }
                                                     ?>
-                                                    <li class="<?php echo $liClasses; ?>" <?php if ($animateItemsIndividually && $animationEnumeration): ?>data-animation="<?php echo $animationEnumeration; ?>"<?php endif; ?>>
-                                                        <?php if ($enumerationType === 'box') : ?>
-                                                            <div class="item--box-indicator" <?php if ($this->box_background_color || $this->box_text_color) : ?>style="<?php if ($this->box_background_color) { echo 'background-color: ' . $this->box_background_color . ';'; } ?> <?php if ($this->box_text_color) { echo 'color: ' . $this->box_text_color . ';'; } ?>"<?php endif; ?>>
-                                                                <?php echo $itemNumberGlobal; // Globale Nummerierung für Boxen ?>
-                                                            </div>
-                                                        <?php endif; ?>
-                                                        <div class="item--content">
+                                                    <?php if ($enumerationType === 'normal') : ?>
+                                                        <li <?php if ($animateItemsIndividually && $animationEnumeration): ?>data-animation="<?php echo $animationEnumeration; ?>"<?php endif; ?>>
                                                             <?php if ($item->item_headline): ?>
-                                                                <div class="item--headline<?php echo ($enumerationType === 'box') ? ' large' : ''; ?>">
-                                                                    <?php echo $item->item_headline; ?>
-                                                                </div>
+                                                                <strong><?php echo $item->item_headline; ?></strong><br>
                                                             <?php endif; ?>
                                                             <?php if ($item->item_text): ?>
-                                                                <div class="item--text">
-                                                                    <?php echo $item->item_text; ?>
+                                                                <?php echo $item->item_text; ?>
+                                                            <?php endif; ?>
+                                                        </li>
+                                                    <?php else : ?>
+                                                        <li class="<?php echo $liClasses; ?>" <?php if ($animateItemsIndividually && $animationEnumeration): ?>data-animation="<?php echo $animationEnumeration; ?>"<?php endif; ?>>
+                                                            <?php if ($enumerationType === 'box') : ?>
+                                                                <div class="item--box-indicator" <?php if ($this->box_background_color || $this->box_text_color) : ?>style="<?php if ($this->box_background_color) { echo 'background-color: ' . $this->box_background_color . ';'; } ?> <?php if ($this->box_text_color) { echo 'color: ' . $this->box_text_color . ';'; } ?>"<?php endif; ?>>
+                                                                    <?php echo $itemNumberGlobal; // Globale Nummerierung für Boxen ?>
                                                                 </div>
                                                             <?php endif; ?>
-                                                        </div>
-                                                    </li>
+                                                            <div class="item--content">
+                                                                <?php if ($item->item_headline): ?>
+                                                                    <div class="item--headline<?php echo ($enumerationType === 'box') ? ' large' : ''; ?>">
+                                                                        <?php echo $item->item_headline; ?>
+                                                                    </div>
+                                                                <?php endif; ?>
+                                                                <?php if ($item->item_text): ?>
+                                                                    <div class="item--text">
+                                                                        <?php echo $item->item_text; ?>
+                                                                    </div>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        </li>
+                                                    <?php endif; ?>
                                                 <?php endforeach; ?>
                                             </ul>
                                         </div>

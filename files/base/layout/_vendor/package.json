@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@awesome.me/kit-2504132cb2": "^1.0.27",
     "@awesome.me/kit-c9b4e661cb": "^1.0.232",
-    "@awesome.me/kit-2504132cb2": "^1.0.18",
     "@babel/preset-env": "^7.27.2",
     "@popperjs/core": "*",
     "animate.css": "*",

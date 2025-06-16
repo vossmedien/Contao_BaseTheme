@@ -55,7 +55,7 @@ $GLOBALS['TL_LANG']['pachtrechner']['result']['usualRange'] = 'Übliche Ertragss
 $GLOBALS['TL_LANG']['pachtrechner']['button']['bookConsultation'] = 'Jetzt Erstgespräch buchen';
 $GLOBALS['TL_LANG']['pachtrechner']['button']['areaCheck'] = 'Zum Flächencheck';
 $GLOBALS['TL_LANG']['pachtrechner']['disclaimer'] = '* Disclaimer: Die berechneten Pachterträge basieren auf Durchschnittswerten vergangener Auktionen und derzeitigen Marktpreisen. Während "Ihr geschätzter Jahres-Pachtertrag" den Durchschnittswert abbildet auf Basis der von Ihnen angegebenen Nutzfläche legt die "Ertragsspanne Jahres-Pacht" den jeweils niedrigsten und höchsten Ertrag vergangener Auktionen umgerechnet auf die von Ihnen angegebene Nutzfläche zugrunde. In Abhängigkeit von der tatsächlich nutzbaren Fläche unter Berücksichtigung der Windhöffigkeit sowie örtlicher Restriktionen kann der erzielbare Pachtertrag abweichen. Faktoren wie Inflation und sich verändernde Energiepreise sind kein Bestandteil dieser Kalkulation.';
-$GLOBALS['TL_LANG']['pachtrechner']['form']['title'] = 'Berechnen Sie jetzt den möglichen Pachtertrag für Ihren Grund und Boden.';
+$GLOBALS['TL_LANG']['pachtrechner']['form']['title'] = 'Berechnen Sie jetzt den möglichen Pachtertrag für Ihre Fläche.';
 $GLOBALS['TL_LANG']['pachtrechner']['form']['labelHa'] = 'Ihre Flächengröße (in ha):';
 $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] = 'ha';
 $GLOBALS['TL_LANG']['pachtrechner']['form']['buttonCalculate'] = 'Pachtertrag ermitteln';
@@ -64,6 +64,6 @@ $GLOBALS['TL_LANG']['pachtrechner']['form']['error']['invalidHa'] = 'Bitte geben
 $GLOBALS['TL_LANG']['MSC']['sortBy'] = 'Sortieren nach';
 $GLOBALS['TL_LANG']['MSC']['filterBy'] = 'Filtern nach';
 
-$GLOBALS['TL_LANG']['MSC']['newsletterSelect'] = 'Auswahl Newsletter';
+$GLOBALS['TL_LANG']['MSC']['newsletterSelect'] = 'Auswahl Newsletter*';
 
 $GLOBALS['TL_LANG']['MSC']['viewHide'] = ['ausblenden', 'einblenden'];

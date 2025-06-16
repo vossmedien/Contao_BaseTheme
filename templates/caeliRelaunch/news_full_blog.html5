@@ -42,7 +42,7 @@
                     <?php if ($this->authorImage): ?>
                         <div class="author-img">
                             <div class="position-relative">
-                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->authorImage, strip_tags($this->authorTitle), $this->postAuthor, ["370", "170", "crop"], null, false); ?>
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->authorImage, strip_tags($this->authorTitle), $this->postAuthor, ["370", "170", "proportional"], null, false); ?>
                                 
                                 <?php // Icons on Image (if email or LinkedIn is available) ?>
                                 <?php if ($this->authorEmail || $this->authorLinkedIn): ?>

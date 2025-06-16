@@ -142,7 +142,24 @@ const initAnimations = () => {
         observer = new IntersectionObserver((entries) => {
             // Batch-Verarbeitung für bessere Performance
             const visibleElements = entries
-                .filter(entry => entry.isIntersecting && !animatedElements.has(entry.target))
+                .filter(entry => {
+                    // Für sehr große Elemente: Animation starten wenn mindestens ein Pixel sichtbar ist
+                    // Für normale Elemente: Standard-Intersection verwenden
+                    if (!entry.isIntersecting) return false;
+                    if (animatedElements.has(entry.target)) return false;
+                    
+                    const element = entry.target;
+                    const elementHeight = element.getBoundingClientRect().height;
+                    const viewportHeight = window.innerHeight;
+                    
+                    // Bei Elementen die höher als 1.5x Viewport sind, bereits bei wenig Sichtbarkeit animieren
+                    if (elementHeight > viewportHeight * 1.5) {
+                        return entry.intersectionRatio > 0;
+                    }
+                    
+                    // Normale Elemente benötigen mindestens 10% Sichtbarkeit
+                    return entry.intersectionRatio >= 0.1;
+                })
                 .map(entry => entry.target)
                 .filter(element => {
                     const animation = element.getAttribute('data-animation');
@@ -170,7 +187,7 @@ const initAnimations = () => {
             });
 
         }, {
-            threshold: 0.1, // Leicht erhöht für bessere Performance
+            threshold: [0, 0.1, 0.25], // Mehrere Schwellenwerte für verschiedene Elementgrößen
             rootMargin
         });
     };

@@ -4,4 +4,4 @@ caeli_area_check_ajax:
     type: attribute
     defaults:
         _scope: frontend
-        _token_check: false 
+        _token_check: false

@@ -10,14 +10,14 @@ header#header {
   .mobileNav__activator-holder, .navigation .level_1 > li, .logo {
     transition: padding .3s ease-in-out;
 
-       @include media-breakpoint-up(lg) {
-             padding-bottom: 1.5rem;
-       }
+    @include media-breakpoint-up(lg) {
+      padding-bottom: 1.5rem;
+    }
   }
 
 
   &.is-scrolling {
-    padding-block: 1rem 0;
+    padding-block: .5rem 0;
 
     .mobileNav__activator-holder,
     .navigation .level_1 > li,
@@ -34,6 +34,15 @@ header#header {
       }
     }
 
+
+    &:not(.is-scrolling-up) {
+      .header-top {
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+      }
+    }
+
     .header-bottom {
       padding-top: 0;
     }
@@ -45,6 +54,8 @@ header#header {
     font-size: $font-size-sm;
     position: relative;
     z-index: 5;
+    transition: all .3s ease-in-out;
+    max-height: 38px;
 
     ul {
       list-style-type: none;

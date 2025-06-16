@@ -8,6 +8,7 @@ $GLOBALS['TL_LANG']['tl_module']['auctionSortDirection'] = ['Sortierrichtung (ve
 $GLOBALS['TL_LANG']['tl_module']['perPage'] = ['Einträge pro Seite', 'Anzahl der Auktionen, die pro Seite angezeigt werden sollen (Standard: 12).'];
 
 $GLOBALS['TL_LANG']['tl_module']['auctionRawDataPreviewMod_label'] = ['Vorschau Auktions-Rohdaten (Modul)', 'Zeigt eine Vorschau der Rohdaten einer Beispielauktion für dieses Modul. Diese Feldnamen können für die Filter- und Sortierdefinition verwendet werden. Das Feld selbst wird nicht gespeichert.'];
+$GLOBALS['TL_LANG']['tl_module']['auctionFilterOptions'] = ['Filter-Optionen', 'Kommaseparierte Liste der anzuzeigenden Filter-Optionen (z.B. "isAuctionInFocus, state, areaSize, power"). Wenn leer, werden alle verfügbaren Filter angezeigt. Die Reihenfolge entspricht der Eingabe.'];
 
 // Optionen für auctionSortBy (damit die Backend-Labels stimmen)
 $GLOBALS['TL_LANG']['tl_module']['auctionSortBy_options'] = [
@@ -17,6 +18,9 @@ $GLOBALS['TL_LANG']['tl_module']['auctionSortBy_options'] = [
     'internalRateOfReturnBeforeRent' => 'IRR (vor Pacht)',
 ];
 
+$GLOBALS['TL_LANG']['tl_module']['auctionApiUrlParams'] = ['API URL Parameter', 'Zusätzliche Parameter für die API-URL (z.B. "/closed?language=de"). Wird an die Base-URL aus der Konfiguration angehängt.'];
+
 // Legenden
+$GLOBALS['TL_LANG']['tl_module']['api_legend'] = 'API-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['filter_legend'] = 'Filtereinstellungen';
 $GLOBALS['TL_LANG']['tl_module']['sort_legend'] = 'Sortiereinstellungen'; 

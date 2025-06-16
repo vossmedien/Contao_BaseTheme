@@ -10,6 +10,7 @@ $config = array(
     'label' => array('Custom | Boxen mit Bild, Text, Verlinkung, ggf. modales Fenster (linkboxen)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

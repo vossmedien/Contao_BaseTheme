@@ -152,7 +152,8 @@ $GLOBALS['TL_LANG']['caeli_area_check']['loading'] = [
         'fallback_rating' => 'Alternative evaluation is being created...',
         'saving' => 'Result is being saved...',
         'completed' => 'Processing completed!'
-    ]
+    ],
+    'completed_redirect' => 'Completed! Redirecting...'
 ];
 
 // Interface elements
@@ -168,6 +169,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['interface'] = [
         'strong' => 'Note:',
         'warning' => 'Warning:',
     ],
+    'no_plz_message' => 'Please enter an address with postal code.',
 ];
 
 // Result page translations
@@ -256,5 +258,15 @@ $GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
     'buttons' => [
         'new_check' => 'Check New Area',
         'request_consultation' => 'Request Consultation',
+    ],
+];
+
+// Status legend for area progress
+$GLOBALS['TL_LANG']['caeli_area_check']['status'] = [
+    'legend' => [
+        'title' => 'Legend',
+        'completed' => 'Completed',
+        'in_progress' => 'In Progress',
+        'requested' => 'Requested',
     ],
 ]; 

@@ -8,6 +8,7 @@ $config = array(
     'label' => array('Spalten Trenner: Ende', ''),
     'types' => array('content'),
     'contentCategory' => 'Spalten',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'stop',

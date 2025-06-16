@@ -20,6 +20,7 @@ use CaeliWind\CaeliAuctionConnect\Controller\ContentElement\AuctionElementContro
 $GLOBALS['TL_DCA']['tl_content']['palettes'][AuctionElementController::TYPE] = '
     {type_legend},type,headline;
     {auction_legend},auctionElementFilters,auctionElementLimit,auctionRawDataPreview;
+    {api_legend},auctionApiUrlParamsCE;
     {sort_legend_ce},auctionSortRulesCE;
     {link_legend:hide},jumpTo;
     {template_legend:hide},customTpl,auctionItemTemplateCE;
@@ -86,4 +87,12 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['jumpTo'] = [
     'eval'                    => ['fieldType'=>'radio', 'tl_class'=>'clr'],
     'sql'                     => "int(10) unsigned NOT NULL default 0",
     'relation'                => ['type'=>'hasOne', 'load'=>'lazy']
+];
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['auctionApiUrlParamsCE'] = [
+    'label'     => ['API URL Parameter', 'Zusätzliche Parameter für die API-URL (z.B. "/closed?language=de")'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+    'sql'       => "varchar(255) NOT NULL default ''"
 ];

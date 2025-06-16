@@ -17,5 +17,8 @@ $GLOBALS['TL_LANG']['tl_content']['auctionSortByCE_options'] = [
 
 $GLOBALS['TL_LANG']['tl_content']['auctionItemTemplateCE'] = ['Item-Template (Inhaltselement)', 'Wählen Sie das Template für die Darstellung eines einzelnen Auktionseintrags in diesem Inhaltselement. Wenn leer, wird ein Standard-Template verwendet.'];
 
-// Legende
+$GLOBALS['TL_LANG']['tl_content']['auctionApiUrlParamsCE'] = ['API URL Parameter', 'Zusätzliche Parameter für die API-URL (z.B. "/closed?language=de"). Wird an die Base-URL aus der Konfiguration angehängt.'];
+
+// Legenden
+$GLOBALS['TL_LANG']['tl_content']['api_legend'] = 'API-Einstellungen';
 $GLOBALS['TL_LANG']['tl_content']['sort_legend_ce'] = 'Sortiereinstellungen für Inhaltselement'; 

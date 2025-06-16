@@ -75,14 +75,17 @@ class AuctionService
      * Verwendet Basic Authentication statt Login/CSRF
      *
      * @param bool $useCache Gibt an, ob der Cache verwendet werden soll
+     * @param string|null $urlParams Zusätzliche URL-Parameter die an die API-URL angehängt werden
      * @return array|null
      */
-    private function getPublicAuctions(bool $useCache = true): ?array
+    private function getPublicAuctions(bool $useCache = true, ?string $urlParams = null): ?array
     {
-        $rawCacheFile = $this->cacheDir . '/' . self::RAW_AUCTIONS_CACHE_FILE;
-        $mappedCacheFile = $this->cacheDir . '/' . self::MAPPED_AUCTIONS_CACHE_FILE;
+        // Cache-Dateinamen basierend auf URL-Parametern generieren
+        $paramHash = !empty($urlParams) ? '_' . md5($urlParams) : '';
+        $rawCacheFile = $this->cacheDir . '/' . str_replace('.json', $paramHash . '.json', self::RAW_AUCTIONS_CACHE_FILE);
+        $mappedCacheFile = $this->cacheDir . '/' . str_replace('.json', $paramHash . '.json', self::MAPPED_AUCTIONS_CACHE_FILE);
 
-        $this->logger->debug('[getPublicAuctions] Prüfe Caches. Raw: ' . $rawCacheFile . ', Mapped: ' . $mappedCacheFile . ' | useCache=' . ($useCache ? 'true' : 'false'));
+        $this->logger->debug('[getPublicAuctions] Prüfe Caches. Raw: ' . $rawCacheFile . ', Mapped: ' . $mappedCacheFile . ' | useCache=' . ($useCache ? 'true' : 'false') . ' | urlParams=' . ($urlParams ?: 'null'));
 
         // 1. Versuche, gemappte Daten aus dem Cache zu laden
         if ($useCache && file_exists($mappedCacheFile)) {
@@ -143,6 +146,17 @@ class AuctionService
             $this->logger->info('[getPublicAuctions] Keine gültigen Rohdaten im Cache, versuche API-Abruf.');
             $apiUrl = rtrim($this->params->get('caeli_auction.marketplace_api_url'), '/');
             $apiAuth = $this->params->get('caeli_auction.marketplace_api_auth');
+
+            // URL-Parameter anhängen, falls vorhanden
+            if (!empty($urlParams)) {
+                // Sicherstellen, dass der Parameter korrekt formatiert ist
+                $urlParams = ltrim($urlParams, '/');
+                if (!empty($urlParams)) {
+                    $apiUrl .= '/' . $urlParams;
+                }
+                $this->logger->debug('[getPublicAuctions] URL-Parameter hinzugefügt: ' . $urlParams);
+                $this->logger->info('[getPublicAuctions] Finale API-URL: ' . $apiUrl);
+            }
 
             if (empty($apiUrl) || empty($apiAuth)) {
                 $this->logger->error('[getPublicAuctions] Marketplace API URL oder Auth Token nicht konfiguriert. API-Abruf übersprungen.');
@@ -531,24 +545,25 @@ class AuctionService
     }
 
     /**
-     * Löscht den Cache für die Auktionsdaten
+     * Löscht den Cache für die Auktionsdaten (alle Varianten)
      */
     public function clearCache(): bool
     {
-        $rawCacheFile = $this->cacheDir . '/' . self::RAW_AUCTIONS_CACHE_FILE;
-        $mappedCacheFile = $this->cacheDir . '/' . self::MAPPED_AUCTIONS_CACHE_FILE;
-        $successRaw = true;
-        $successMapped = true;
-
-        if (file_exists($rawCacheFile)) {
-            $successRaw = @unlink($rawCacheFile);
-            $this->logger->info('Rohdaten-Cache gelöscht: ' . $rawCacheFile . ' (Erfolg: ' . ($successRaw ? 'ja' : 'nein') . ')');
+        $success = true;
+        
+        // Cache-Verzeichnis durchsuchen und alle Auction-Cache-Dateien löschen
+        if (is_dir($this->cacheDir)) {
+            $files = glob($this->cacheDir . '/auctions*.json');
+            foreach ($files as $file) {
+                if (file_exists($file)) {
+                    $deleteSuccess = @unlink($file);
+                    $success = $success && $deleteSuccess;
+                    $this->logger->info('Cache-Datei gelöscht: ' . $file . ' (Erfolg: ' . ($deleteSuccess ? 'ja' : 'nein') . ')');
+                }
+            }
         }
-        if (file_exists($mappedCacheFile)) {
-            $successMapped = @unlink($mappedCacheFile);
-            $this->logger->info('Gemappter Cache gelöscht: ' . $mappedCacheFile . ' (Erfolg: ' . ($successMapped ? 'ja' : 'nein') . ')');
-        }
-        return $successRaw && $successMapped;
+        
+        return $success;
     }
 
     /**
@@ -560,9 +575,10 @@ class AuctionService
      * @param string|null $sortBy Das Feld, nach dem sortiert werden soll (für Abwärtskompatibilität)
      * @param string $sortDirection Die Sortierrichtung ('asc' oder 'desc') (für Abwärtskompatibilität)
      * @param array $sortRules Array von Sortierregeln im Format [['field' => 'feldname', 'direction' => 'asc'], ...]
+     * @param string|null $urlParams Zusätzliche URL-Parameter die an die API-URL angehängt werden
      * @return array Die gefilterten und sortierten Auktionen
      */
-    public function getAuctions(array $filters = [], bool $forceRefresh = false, ?string $sortBy = null, string $sortDirection = 'asc', array $sortRules = []): array
+    public function getAuctions(array $filters = [], bool $forceRefresh = false, ?string $sortBy = null, string $sortDirection = 'asc', array $sortRules = [], ?string $urlParams = null): array
     {
         $this->logger->debug('[getAuctions] Auktionen werden abgerufen', [ // Präfix [TESTLOG-ERROR] entfernt
             'raw_filters' => $filters,
@@ -572,7 +588,7 @@ class AuctionService
             'sortRules' => $sortRules,
         ]);
 
-        $auctions = $this->getPublicAuctions(!$forceRefresh);
+        $auctions = $this->getPublicAuctions(!$forceRefresh, $urlParams);
         if ($auctions === null) {
             $this->logger->debug('[getAuctions] Keine Auktionsdaten von getPublicAuctions erhalten.'); // War [TESTLOG-ERROR]
             return [];

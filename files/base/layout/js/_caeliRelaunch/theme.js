@@ -21,17 +21,68 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Header Scrolling Class (is-scrolling)
+// Header Scrolling Class (is-scrolling & is-scrolling-up)
 document.addEventListener('DOMContentLoaded', function () {
     const header = document.querySelector('header');
+    if (!header) return;
+    
+    let lastScrollTop = 0;
+    let isThrottled = false;
+    let isScrollingUp = false;
+    let hasScrolled = false;
+    
+    // Deutlich höhere Schwellenwerte für mehr Stabilität
+    const SCROLL_THRESHOLD = 100; // Erst ab 100px Scroll wird überhaupt reagiert
+    const DIRECTION_THRESHOLD = 50; // Mindestens 50px in eine Richtung scrollen
+
+    function handleScroll() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Ganz oben - alle Klassen entfernen
+        if (scrollTop <= 20) {
+            header.classList.remove('is-scrolling', 'is-scrolling-up');
+            lastScrollTop = 0;
+            isScrollingUp = false;
+            hasScrolled = false;
+            return;
+        }
+        
+        // Ab 20px ist Header im "scrolling" Modus
+        if (!hasScrolled) {
+            header.classList.add('is-scrolling');
+            hasScrolled = true;
+        }
+        
+        // Nur bei ausreichender Scroll-Position Richtung prüfen
+        if (scrollTop < SCROLL_THRESHOLD) {
+            lastScrollTop = scrollTop;
+            return;
+        }
+        
+        // Richtungsänderung nur bei ausreichender Bewegung
+        const scrollDiff = scrollTop - lastScrollTop;
+        
+        if (Math.abs(scrollDiff) >= DIRECTION_THRESHOLD) {
+            if (scrollDiff > 0 && isScrollingUp) {
+                // Nach unten scrollen - Meta-Nav verstecken
+                header.classList.remove('is-scrolling-up');
+                isScrollingUp = false;
+            } else if (scrollDiff < 0 && !isScrollingUp) {
+                // Nach oben scrollen - Meta-Nav anzeigen
+                header.classList.add('is-scrolling-up');
+                isScrollingUp = true;
+            }
+            lastScrollTop = scrollTop;
+        }
+    }
 
     window.addEventListener('scroll', function () {
-        // Check both window.pageYOffset and document.documentElement.scrollTop
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop > 0) {
-            header.classList.add('is-scrolling');
-        } else {
-            header.classList.remove('is-scrolling');
+        if (!isThrottled) {
+            handleScroll();
+            isThrottled = true;
+            setTimeout(() => {
+                isThrottled = false;
+            }, 100);
         }
     });
 });
@@ -321,12 +372,13 @@ document.addEventListener('DOMContentLoaded', function () {
 // Scroll Progress Bar & Scroll-to-Top Button
 document.addEventListener('DOMContentLoaded', function () {
     // Erstelle Progress-Bar
-    const progressBar = document.createElement('div');
-    progressBar.className = 'scroll-progress-bar';
-    document.body.appendChild(progressBar);
+    //const progressBar = document.createElement('div');
+    //progressBar.className = 'scroll-progress-bar';
+    //document.body.appendChild(progressBar);
 
     // Erstelle oder finde den Scroll-to-Top Button
     let scrollTopBtn = document.querySelector('.BodyScrollToTop');
+    let progressThrottled = false;
 
     if (!scrollTopBtn) {
         // Button erstellen
@@ -360,15 +412,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Update beim Scrollen
-    window.addEventListener('scroll', function () {
+    function updateScrollProgress() {
         // Berechne Scroll-Fortschritt
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const scrollProgress = scrollTop / scrollHeight;
 
         // Aktualisiere Progressbar oben
-        progressBar.style.width = (scrollProgress * 100) + '%';
+        //progressBar.style.width = (scrollProgress * 100) + '%';
 
         // CSS-Variable für den Fortschritt setzen
         document.documentElement.style.setProperty('--scroll-progress', scrollProgress);
@@ -380,6 +431,17 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             scrollTopBtn.style.opacity = '0';
             scrollTopBtn.style.visibility = 'hidden';
+        }
+    }
+
+    // Update beim Scrollen mit Throttling
+    window.addEventListener('scroll', function () {
+        if (!progressThrottled) {
+            updateScrollProgress();
+            progressThrottled = true;
+            setTimeout(() => {
+                progressThrottled = false;
+            }, 100); // Gleiche Throttling-Rate wie Header
         }
     });
 });

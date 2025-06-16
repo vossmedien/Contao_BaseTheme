@@ -86,3 +86,8 @@ detail:
   new_customer_button: "Register now"
   existing_customer_headline: "I am an existing customer"
   existing_customer_button: "Login"
+  status_legend:
+    title: "Legend"
+    completed: "Completed"
+    in_progress: "In Progress"
+    requested: "Requested"

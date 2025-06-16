@@ -10,6 +10,7 @@ $config = array(
     'label' => array('Custom | Timeline (timeline)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

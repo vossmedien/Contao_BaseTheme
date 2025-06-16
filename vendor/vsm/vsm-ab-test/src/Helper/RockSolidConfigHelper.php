@@ -47,8 +47,7 @@ class RockSolidConfigHelper
             ],
             'eval' => [
                 'includeBlankOption' => true,
-                'tl_class' => 'w50',
-                'mandatory' => true
+                'tl_class' => 'w50'
             ],
             'dependsOn' => [
                 'field' => 'enableAbTest',

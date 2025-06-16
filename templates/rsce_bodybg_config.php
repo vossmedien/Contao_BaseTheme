@@ -45,6 +45,38 @@ $config = array(
             ),
         ),
 
+        'image_size' => array(
+            'label' => array('Bildgröße', ''),
+            'inputType' => 'imageSize',
+            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => 'w50'
+            ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '2',
+            ),
+        ),
+
+        'image_mobile_size' => array(
+            'label' => array('Bildgröße Mobile', ''),
+            'inputType' => 'imageSize',
+            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => 'w50'
+            ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '2',
+            ),
+        ),
+
         'settings' => array(
             'label' => array('Einstellungen', ''),
             'inputType' => 'group',

@@ -8,6 +8,7 @@ $config = array(
     'label' => array('Spalten/Slider End-Element', ''),
     'types' => array('content'),
     'contentCategory' => 'Spalten',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'fields' => array(),
     'wrapper' => array(

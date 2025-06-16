@@ -22,13 +22,13 @@ use CaeliWind\CaeliAuctionConnect\Dca\ModuleDcaHelper;
  * Frontend modules
  */
 // Listing Modul: Mit Weiterleitung zur Detail-Seite
-$GLOBALS['TL_DCA']['tl_module']['palettes'][AuctionListingController::TYPE] = '{title_legend},name,headline,type;{config_legend},jumpTo,auctionItemTemplate,perPage;{filter_legend},auctionListingFilters,auctionRawDataPreviewMod;{sort_legend},auctionSortRules;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][AuctionListingController::TYPE] = '{title_legend},name,headline,type;{config_legend},jumpTo,auctionItemTemplate,perPage;{api_legend},auctionApiUrlParams;{filter_legend},auctionListingFilters,auctionRawDataPreviewMod;{sort_legend},auctionSortRules;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 // Detail Modul: Mit Weiterleitung zurück zur Listing-Seite
 $GLOBALS['TL_DCA']['tl_module']['palettes'][AuctionDetailController::TYPE] = '{title_legend},name,headline,type;{config_legend},jumpTo;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
-// Filter Modul: Ohne spezielle Weiterleitung
-$GLOBALS['TL_DCA']['tl_module']['palettes'][AuctionFilterController::TYPE] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+// Filter Modul: Mit Vorschau und Filter-Optionen
+$GLOBALS['TL_DCA']['tl_module']['palettes'][AuctionFilterController::TYPE] = '{title_legend},name,headline,type;{config_legend},auctionFilterOptions,auctionRawDataPreviewMod;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 // Definition des neuen Feldes
 $GLOBALS['TL_DCA']['tl_module']['fields']['auctionItemTemplate'] = [
@@ -90,4 +90,20 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['perPage'] = [
     'inputType' => 'text',
     'eval'      => ['rgxp' => 'natural', 'tl_class' => 'w50'],
     'sql'       => "smallint(5) unsigned NOT NULL default '12'"
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['auctionFilterOptions'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_module']['auctionFilterOptions'],
+    'exclude'   => true,
+    'inputType' => 'textarea',
+    'eval'      => ['style' => 'height:60px', 'preserveTags' => true, 'rte' => false, 'tl_class' => 'clr'],
+    'sql'       => "text NULL"
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['auctionApiUrlParams'] = [
+    'label'     => ['API URL Parameter', 'Zusätzliche Parameter für die API-URL (z.B. "/closed?language=de")'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+    'sql'       => "varchar(255) NOT NULL default ''"
 ];

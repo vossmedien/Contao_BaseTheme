@@ -7,6 +7,7 @@ $config = array(
     'label' => array('Custom | Kursplan mit Filter (course_schedule)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

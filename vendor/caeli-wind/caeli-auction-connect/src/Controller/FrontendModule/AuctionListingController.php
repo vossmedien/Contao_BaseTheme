@@ -130,11 +130,17 @@ class AuctionListingController extends AbstractFrontendModuleController
         // Prüfen, ob Daten neu geladen werden sollen (aus Request)
         $forceRefresh = $request->query->has('refresh') && $request->query->get('refresh') === '1';
 
-        // 5. Alle Auktionen mit finalen Filtern und Sortierung abrufen
-        $allAuctions = $this->auctionService->getAuctions($finalFilters, $forceRefresh, $sortBy, $sortDirection, $sortRules);
+        // 5. URL-Parameter aus Modul-Einstellungen lesen
+        $urlParams = $model->auctionApiUrlParams ?: null;
+        if (!empty($urlParams)) {
+            $this->logger->debug('[AuctionListingController] URL-Parameter aus Modul-Einstellungen: ' . $urlParams);
+        }
+
+        // 6. Alle Auktionen mit finalen Filtern und Sortierung abrufen
+        $allAuctions = $this->auctionService->getAuctions($finalFilters, $forceRefresh, $sortBy, $sortDirection, $sortRules, $urlParams);
         $this->logger->info('[AuctionListingController] ' . count($allAuctions) . ' Auktionen vom Service erhalten.');
         
-        // 6. Paginierung berechnen
+        // 7. Paginierung berechnen
         $totalItems = count($allAuctions);
         $totalPages = (int)ceil($totalItems / $itemsPerPage);
         $page = min($page, max(1, $totalPages)); // Page korrigieren falls zu hoch

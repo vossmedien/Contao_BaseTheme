@@ -41,27 +41,27 @@ $GLOBALS['TL_LANG']['caeli_area_check']['form'] = [
 $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
     'welcome' => [
         'title' => 'Willkommen bei Ihrem Flächencheck.',
-        'content' => 'Entdecken Sie in wenigen Schritten das Windpotenzial Ihres Grundstücks. Wir zeigen Ihnen kurz, wie es funktioniert. Einfach auf "Weiter" klicken.',
+        'content' => 'Entdecken Sie in zwei Schritten das Windpotenzial Ihres Grundstücks. Wir zeigen Ihnen wie es funktioniert, dazu einfach auf „Weiter“ klicken.',
         'button_skip' => 'Überspringen',
         'button_next' => 'Weiter',
     ],
     'plz_input' => [
-        'title' => 'Schritt 1: Ihr Standort zählt.',
+        'title' => 'Schritt 1: Grundstück finden.',
         'button_back' => 'Zurück',
         'button_next' => 'Weiter',
-        'content' => 'Starten Sie, indem Sie Ihre Postleitzahl eingeben. Nach der Eingabe wird das Polygonfeld erscheinen, welches Sie dann an die korrekte Position verschieben können.',
+        'content' => 'Starten Sie, indem Sie Ihre Postleitzahl eingeben und den gewünschten Ort auswählen. Nach der Eingabe erscheint ein Polygon, dass Sie an die gewünschte Position verschieben können.',
     ],
     'polygon_edit' => [
-        'title' => 'Schritt 2: Fläche einzeichnen.',
+        'title' => 'Schritt 2: Grundstück einzeichnen und prüfen.',
         'title_alt' => 'Hier zeichnen Sie Ihre Fläche ein.',
-        'content' => 'Jetzt kommt der spannende Teil: Bewegen Sie die Karte zum gewünschten Gebiet und nutzen Sie die Eckpunkte des Polygons. Ziehen Sie diese an die richtige Position, um präzise Ihr Grundstück auf der Karte anzulegen.',
+        'content' => 'Platzieren Sie das Polygon im gewünschten Gebiet und nutzen Sie die Eckpunkte des Polygons zur Feinjustierung. Klicken Sie dann auf „Ergebnis anzeigen“. Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche.',
         'button_back' => 'Zurück',
         'button_next' => 'Weiter',
     ],
     'area_confirm' => [
         'title' => 'Schritt 3: Fast geschafft!',
         'title_alt' => 'Sobald Sie Ihr Grundstück markiert haben, kann die Prüfung beginnen.',
-        'content' => 'Fast geschafft: Verschieben Sie das Polygon an die korrekte Position und richten Sie die Eckpunkte an Ihrem Grundstück aus. Klicken Sie dann auf "Ergebnis anzeigen". Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche.',
+        'content' => 'Fast geschafft: Verschieben Sie das Polygon an die korrekte Position und richten Sie die Eckpunkte an Ihrem Grundstück aus. Klicken Sie dann auf „Ergebnis anzeigen“. Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche.',
         'button_back' => 'Zurück',
         'button_next' => 'Fertig',
     ],
@@ -70,7 +70,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
 // Consent overlay
 $GLOBALS['TL_LANG']['caeli_area_check']['consent']['overlay'] = [
     'title' => 'Ihr Flächencheck startet gleich!',
-    'message' => 'Um Ihnen die interaktive Karte zu zeigen und Ihre Anfrage bearbeiten zu können, benötigen wir kurz Ihr Einverständnis.',
+    'message' => 'Um Ihnen die interaktive Karte zeigen und Ihre Anfrage bearbeiten zu können, benötigen wir Ihr Einverständnis für notwendige Cookies.',
     'button' => 'Jetzt starten',
 ];
 
@@ -151,7 +151,8 @@ $GLOBALS['TL_LANG']['caeli_area_check']['loading'] = [
         'fallback_rating' => 'Alternative Bewertung wird erstellt...',
         'saving' => 'Ergebnis wird gespeichert...',
         'completed' => 'Verarbeitung abgeschlossen!'
-    ]
+    ],
+    'completed_redirect' => 'Abgeschlossen! Weiterleitung...'
 ];
 
 // Interface elements
@@ -167,6 +168,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['interface'] = [
         'strong' => 'Hinweis:',
         'warning' => 'Warnung:',
     ],
+    'no_plz_message' => 'Bitte geben Sie eine Adresse mit Postleitzahl ein.',
 ];
 
 // Result page translations
@@ -176,13 +178,13 @@ $GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
         'title_text' => 'Ihr Grundstück weist gute Bedingungen für Windkraft auf.',
     ],
     'unsuitable' => [
-        'title_bold' => 'Flächencheck-Ergebnis:',
-        'title_text' => 'Ihre Fläche ist für Windkraft nicht optimal geeignet.',
+        'title_bold' => 'Nicht ideal für Windkraft:',
+        'title_text' => 'Gerne schaut sich unser Team Ihr Grundstück im Detail an.',
     ],
     'criteria' => [
         'wind_conditions' => [
             'title' => 'Windgegebenheiten',
-            'description' => 'Die Windleistung im angegebenen Gebiet',
+            'description' => 'Die Windleistung im angegebenen Gebiet.',
             'rating' => [
                 'green' => 'Gut geeignet',
                 'yellow' => 'Bedingt geeignet',
@@ -216,7 +218,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
     ],
     'form_section' => [
         'suitable_title' => 'Jetzt Ihre Windkraft-Chance prüfen – kostenlos und unverbindlich:',
-        'unsuitable_title' => 'Interesse an einer detaillierten Beratung?',
+        'unsuitable_title' => 'Jetzt gesicherte Aussage zur Windkrafteignung erhalten:',
     ],
     'error_states' => [
         'check_failed' => [
@@ -255,5 +257,15 @@ $GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
     'buttons' => [
         'new_check' => 'Neue Fläche prüfen',
         'request_consultation' => 'Beratung anfragen',
+    ],
+];
+
+// Status legend for area progress
+$GLOBALS['TL_LANG']['caeli_area_check']['status'] = [
+    'legend' => [
+        'title' => 'Legende',
+        'completed' => 'Abgeschlossen',
+        'in_progress' => 'In Bearbeitung',
+        'requested' => 'Angefragt',
     ],
 ]; 

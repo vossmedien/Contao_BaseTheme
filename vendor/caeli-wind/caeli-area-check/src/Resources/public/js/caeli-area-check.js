@@ -78,7 +78,7 @@ const Utils = {
             'cz': /\b\d{3}\s?\d{2}\b/,            // Tschechien: 123 45
             'sk': /\b\d{3}\s?\d{2}\b/,            // Slowakei: 123 45
             'hu': /\b\d{4}\b/,                    // Ungarn: 1234
-            'gb': /\b[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}\b/, // UK: M1 1AA
+            'gb': /([A-Z]{1,2}\d{1,2}[A-Z]?(\s?\d[A-Z]{2})?)|([A-Z]{2}\d{1,2}(\s?\d[A-Z]{2})?)/i, // UK: SW1A, SW1A 1AA, M1, M1 1AA, B33 8TH
             'ie': /\b[A-Z]\d{2}\s?[A-Z0-9]{4}\b/, // Irland: D02 XY45
             // Fallback für unbekannte Länder: flexiblere Validation
             'default': /\b\d{3,5}(\s?[A-Z]{0,3})?\b/
@@ -88,25 +88,18 @@ const Utils = {
     },
 
     validatePLZ(input, place = null) {
-        // Wenn ein Place-Objekt vorhanden ist, das Land daraus ermitteln
-        const countryCode = place ? this.getCountryFromPlace(place) : null;
-        const regex = this.getPostalCodeRegex(countryCode);
-        
-        // PLZ in Input oder Adresse suchen
-        const hasPostalCode = regex.test(input) || (place && regex.test(place.formatted_address || ''));
-        
-        const alertElement = document.getElementById('plz-alert');
-        
-        if (!hasPostalCode && alertElement) {
-            alertElement.style.display = 'block';
+        // Sehr lockere Validierung: Fast alles akzeptieren
+        if (!input || input.length < 2) {
             return false;
         }
         
-        if (hasPostalCode && alertElement) {
-            alertElement.style.display = 'none';
+        // Bei Place-Objekt: Wenn Google es gefunden hat, ist es definitiv gültig
+        if (place && place.formatted_address) {
+            return true;
         }
         
-        return hasPostalCode;
+        // Sehr lockerer Check: Enthält Zahlen oder ist länger als 3 Zeichen
+        return /\d/.test(input) || input.length > 3;
     },
     
     safeElementAction(selector, action) {
@@ -142,8 +135,8 @@ function getTutorialSteps() {
         {
             // Schritt 0: Willkommen (Initial Popover) - an der Controls-Box ausrichten
             element: '#controls',
-            title: tutorial.welcome?.title || 'Willkommen bei Ihrem Flächencheck.',
-            content: tutorial.welcome?.content || 'Entdecken Sie in wenigen Schritten das Windpotenzial Ihres Grundstücks. Wir zeigen Ihnen kurz, wie es funktioniert. Einfach auf "Weiter" klicken.',
+            title: tutorial.welcome?.title,
+            content: tutorial.welcome?.content,
             placement: 'left',
             placementMobile: 'bottom',
             trigger: 'init',
@@ -153,32 +146,22 @@ function getTutorialSteps() {
             // Schritt 1: Adresse/Ort eingeben
             element: '#place-autocomplete',
             elementMobile: '#controls', // Auf Mobile an der Box ausrichten
-            title: tutorial.plz_input?.title || 'Schritt 1: Ihr Standort zählt.',
-            content: tutorial.plz_input?.content || 'Starten Sie, indem Sie Ihre Postleitzahl eingeben. Nach der Eingabe wird das Polygonfeld erscheinen, welches Sie dann an die korrekte Position verschieben können.',
+            title: tutorial.plz_input?.title,
+            content: tutorial.plz_input?.content,
             placement: 'right',
             placementMobile: 'bottom',
             trigger: 'manual',
             template: 'plz'
         },
         {
-            // Schritt 2: Polygon zeichnen - am rechten Bildschirmrand
+            // Schritt 2: Polygon zeichnen - am rechten Bildschirmrand (letzter Schritt)
             element: '#controls',
-            title: tutorial.polygon_edit?.title || 'Schritt 2: Fläche einzeichnen.',
-            content: tutorial.polygon_edit?.content || 'Jetzt kommt der spannende Teil: Klicken Sie die Eckpunkte Ihrer Fläche nacheinander an. So zeichnen Sie präzise Ihr Grundstück auf der Karte ein.',
+            title: tutorial.polygon_edit?.title,
+            content: tutorial.polygon_edit?.content,
             placement: 'left',
             placementMobile: 'bottom',
             trigger: 'polygon',
             template: 'polygon'
-        },
-        {
-            // Schritt 3: Bestätigen/Fertig
-            element: '#log-coordinates-button',
-            title: tutorial.area_confirm?.title || 'Schritt 3: Fast geschafft!',
-            content: tutorial.area_confirm?.content || 'Fast geschafft: Verschieben Sie das Polygon an die korrekte Position und richten Sie die Eckpunkte an Ihrem Grundstück aus. Klicken Sie dann auf "Ergebnis anzeigen". Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche.',
-            placement: 'top',
-            placementMobile: 'top',
-            trigger: 'manual',
-            template: 'confirm'
         }
     ];
 }
@@ -269,11 +252,26 @@ function initMap() {
     function searchPlaces(query) {
         if (!CaeliAreaCheck.geocoder) return;
         
-        CaeliAreaCheck.geocoder.geocode({
+        // Länder-Beschränkung aus Config laden
+        const config = window.CaeliAreaCheckConfig || {};
+        const allowedCountries = config.allowedCountries || ['de']; // Fallback auf Deutschland
+        
+        const geocodeRequest = {
             address: query
-        }, function(results, status) {
+        };
+        
+        // ComponentRestrictions für Länder-Beschränkung hinzufügen
+        if (allowedCountries.length > 0) {
+            // Google Maps API erwartet für Geocoding einen String (bei einem Land) oder Array (bei mehreren)
+            // Wichtig: allowedCountries muss ein Array von ISO-Codes sein
+            geocodeRequest.componentRestrictions = {
+                country: allowedCountries.length === 1 ? allowedCountries[0] : allowedCountries
+            };
+        }
+        
+        CaeliAreaCheck.geocoder.geocode(geocodeRequest, function(results, status) {
             if (status === 'OK' && results && results.length > 0) {
-                // Nur die besten 5 Ergebnisse anzeigen
+                // Alle Ergebnisse erstmal anzeigen - PLZ-Check erst beim Auswählen
                 const topResults = results.slice(0, 5);
                 currentSuggestions = topResults;
                 showSuggestions(topResults);
@@ -295,12 +293,10 @@ function initMap() {
         suggestions.forEach((place, index) => {
             const item = document.createElement('div');
             item.className = 'autocomplete-item';
-            item.innerHTML = `
-                <svg class="autocomplete-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                </svg>
-                ${place.formatted_address}
-            `;
+            
+            // Bessere Anzeige: Nur Ort und Land, keine PLZ
+            const displayText = getCleanDisplayText(place);
+            item.innerHTML = displayText;
             
             item.addEventListener('click', function() {
                 selectPlace(place);
@@ -317,6 +313,48 @@ function initMap() {
         dropdown.style.display = 'block';
     }
     
+    function getCleanDisplayText(place) {
+        if (!place || !place.address_components) {
+            return place.formatted_address || '';
+        }
+        
+        let locality = '';
+        let country = '';
+        
+        // Extrahiere Stadt/Ort und Land aus den Komponenten
+        place.address_components.forEach(component => {
+            if (component.types.includes('locality')) {
+                locality = component.long_name;
+            }
+            if (component.types.includes('country')) {
+                country = component.long_name;
+            }
+        });
+        
+        // Fallback: Versuche administrative_area_level_1 für Städte
+        if (!locality) {
+            place.address_components.forEach(component => {
+                if (component.types.includes('administrative_area_level_1')) {
+                    locality = component.long_name;
+                }
+            });
+        }
+        
+        // Fallback: Nutze den ersten Teil der formatted_address
+        if (!locality) {
+            const parts = place.formatted_address.split(',');
+            locality = parts[0].replace(/\d+\s*/, '').trim(); // Entferne führende Zahlen
+        }
+        
+        // Saubere Anzeige: "Nürnberg, Deutschland"
+        if (locality && country) {
+            return `${locality}, ${country}`;
+        }
+        
+        // Fallback auf formatted_address
+        return place.formatted_address;
+    }
+    
     function updateSelection() {
         const items = dropdown.querySelectorAll('.autocomplete-item');
         items.forEach((item, index) => {
@@ -331,8 +369,8 @@ function initMap() {
     function selectPlace(place) {
         if (!place || !place.geometry) return;
         
-        // Input-Wert setzen
-        input.value = place.formatted_address;
+        // Input-Wert mit sauberer Anzeige setzen (ohne PLZ)
+        input.value = getCleanDisplayText(place);
         hideDropdown();
         
         // PLZ-Validation
@@ -376,6 +414,26 @@ function initMap() {
             selectedIndex = -1;
             currentSuggestions = [];
         }
+    }
+    
+    function showNoPLZMessage() {
+        if (!dropdown) return;
+        
+        dropdown.innerHTML = '';
+        selectedIndex = -1;
+        currentSuggestions = [];
+        
+        const translations = window.CaeliAreaCheckTranslations || {};
+        const message = translations.interface?.no_plz_message || 'Bitte geben Sie eine Adresse mit Postleitzahl ein.';
+        
+                const messageItem = document.createElement('div');
+        messageItem.className = 'autocomplete-message';
+        messageItem.innerHTML = `
+            <small>${message}</small>
+        `;
+        
+        dropdown.appendChild(messageItem);
+        dropdown.style.display = 'block';
     }
     
 
@@ -442,9 +500,25 @@ function geocodeInputValue(address) {
         return;
     }
     
-    CaeliAreaCheck.geocoder.geocode({
+    // Länder-Beschränkung aus Config laden
+    const config = window.CaeliAreaCheckConfig || {};
+    const allowedCountries = config.allowedCountries || ['de']; // Fallback auf Deutschland
+    
+    const geocodeRequest = {
         address: address
-    }, function(results, status) {
+    };
+    
+    // ComponentRestrictions für Länder-Beschränkung hinzufügen
+    if (allowedCountries.length > 0) {
+        // Google Maps API erwartet für Geocoding einen String (bei einem Land) oder Array (bei mehreren)
+        // Wichtig: allowedCountries muss ein Array von ISO-Codes sein
+        geocodeRequest.componentRestrictions = {
+            country: allowedCountries.length === 1 ? allowedCountries[0] : allowedCountries
+        };
+        console.log('[DEBUG] Geocoding country restriction:', geocodeRequest.componentRestrictions.country);
+    }
+    
+    CaeliAreaCheck.geocoder.geocode(geocodeRequest, function(results, status) {
         if (status === 'OK' && results[0]) {
             const place = results[0];
             
@@ -561,37 +635,57 @@ function createPolygonAtLocation(center) {
     updateAreaLabel();
     updateGeometryField();
 
-    // Event Listener für Polygon-Änderungen
-    google.maps.event.addListener(CaeliAreaCheck.polygon.getPath(), 'set_at', function() {
-        // Immer reagieren - auch während der Bearbeitung für Live-Updates
+    // Event Listener für Polygon-Änderungen - LIVE UPDATES
+    const polygonPath = CaeliAreaCheck.polygon.getPath();
+    
+    // Event Listener für alle Änderungen am Polygon-Pfad
+    google.maps.event.addListener(polygonPath, 'set_at', function() {
+        console.log('[DEBUG] Polygon set_at event - updating area');
         updatePolygonOffset();
         updateAreaLabel();
         updateGeometryField();
+        refreshPolygonMidpoints();
     });
-    google.maps.event.addListener(CaeliAreaCheck.polygon.getPath(), 'insert_at', function() {
-        // Immer reagieren - auch während der Bearbeitung für Live-Updates
+    
+    google.maps.event.addListener(polygonPath, 'insert_at', function() {
+        console.log('[DEBUG] Polygon insert_at event - updating area');
         updatePolygonOffset();
+        updateAreaLabel();
+        updateGeometryField();
+        refreshPolygonMidpoints();
+    });
+    
+    google.maps.event.addListener(polygonPath, 'remove_at', function() {
+        console.log('[DEBUG] Polygon remove_at event - updating area');
+        updatePolygonOffset();
+        updateAreaLabel();
+        updateGeometryField();
+        refreshPolygonMidpoints();
+    });
+    
+    // Event Listener für Drag-Operationen des gesamten Polygons
+    google.maps.event.addListener(CaeliAreaCheck.polygon, 'dragstart', function() {
+        console.log('[DEBUG] Polygon dragstart');
+        CaeliAreaCheck.state.isPolygonBeingEdited = true;
+    });
+    
+    google.maps.event.addListener(CaeliAreaCheck.polygon, 'drag', function() {
+        // LIVE UPDATE während des Ziehens des gesamten Polygons
+        console.log('[DEBUG] Polygon drag - live update');
         updateAreaLabel();
         updateGeometryField();
     });
     
-    // Event Listener für Drag-Operationen
-    google.maps.event.addListener(CaeliAreaCheck.polygon, 'dragstart', function() {
-        CaeliAreaCheck.state.isPolygonBeingEdited = true;
-    });
     google.maps.event.addListener(CaeliAreaCheck.polygon, 'dragend', function() {
+        console.log('[DEBUG] Polygon dragend');
         updatePolygonOffset();
         updateAreaLabel();
         updateGeometryField();
         CaeliAreaCheck.state.isPolygonBeingEdited = false;
+        refreshPolygonMidpoints();
     });
     
-    // Event Listener für Live-Updates während des Ziehens der Polygon-Punkte
-    google.maps.event.addListener(CaeliAreaCheck.polygon.getPath(), 'remove_at', function() {
-        updatePolygonOffset();
-        updateAreaLabel();
-        updateGeometryField();
-    });
+
 
     // Tutorial: Polygon wurde erstellt
     handlePolygonCreated();
@@ -636,51 +730,99 @@ function updateAreaLabel() {
         CaeliAreaCheck.areaLabel = null;
     }
 
-    const area = google.maps.geometry.spherical.computeArea(CaeliAreaCheck.polygon.getPath());
-    const areaInHectares = (area / 10000).toFixed(2);
-
-    const bounds = new google.maps.LatLngBounds();
-    CaeliAreaCheck.polygon.getPath().forEach(function(latLng) {
-        bounds.extend(latLng);
-    });
-
-    const center = bounds.getCenter();
-
-    // AdvancedMarkerElement für Flächenlabel
-    const { AdvancedMarkerElement } = google.maps.marker;
-    const labelDiv = document.createElement('div');
-    labelDiv.style.background = 'white';
-    labelDiv.style.borderRadius = '12px';
-    labelDiv.style.padding = '2px 8px';
-    labelDiv.style.fontWeight = 'bold';
-    labelDiv.style.fontSize = '16px';
-    labelDiv.style.color = 'black';
-    labelDiv.textContent = `${areaInHectares} ha`;
-
-    CaeliAreaCheck.areaLabel = new AdvancedMarkerElement({
-        map: CaeliAreaCheck.map,
-        position: center,
-        content: labelDiv
-    });
-
-    // Check if area is greater than configured max size
-    if (areaInHectares > CONFIG.MAX_AREA_SIZE) {
-        Utils.safeElementAction('#warning', el => el.style.display = 'block');
-        updateSubmitButtonState(false);
-    } else {
-        Utils.safeElementAction('#warning', el => el.style.display = 'none');
-        // Button-Status basierend auf PLZ-Validierung setzen
-        const input = document.getElementById('place-autocomplete');
-        if (input && input.value) {
-            const isValidPLZ = Utils.validatePLZ(input.value);
-            updateSubmitButtonState(isValidPLZ);
-        } else {
-            updateSubmitButtonState(false);
-        }
+    // Sicherstellen, dass Polygon existiert und mindestens 3 Punkte hat
+    if (!CaeliAreaCheck.polygon || !CaeliAreaCheck.polygon.getPath()) {
+        console.warn('[DEBUG] updateAreaLabel: Polygon oder Path nicht verfügbar');
+        return;
     }
     
-    // Live Reverse Geocoding für bessere Adresserkennung (Optional - kann performance-intensiv sein)
-    updatePolygonAddress(center);
+    const path = CaeliAreaCheck.polygon.getPath();
+    if (path.getLength() < 3) {
+        console.warn('[DEBUG] updateAreaLabel: Polygon hat weniger als 3 Punkte');
+        return;
+    }
+
+    // Prüfen ob Google Maps Geometry Library verfügbar ist
+    if (!google.maps.geometry || !google.maps.geometry.spherical) {
+        console.error('[DEBUG] updateAreaLabel: Google Maps Geometry Library nicht verfügbar');
+        return;
+    }
+
+    try {
+        const area = google.maps.geometry.spherical.computeArea(path);
+        const areaInHectares = (area / 10000).toFixed(2);
+        console.log('[DEBUG] updateAreaLabel: Berechnet', areaInHectares, 'ha für', path.getLength(), 'Punkte');
+
+        const bounds = new google.maps.LatLngBounds();
+        CaeliAreaCheck.polygon.getPath().forEach(function(latLng) {
+            bounds.extend(latLng);
+        });
+
+        const center = bounds.getCenter();
+
+        // AdvancedMarkerElement für Flächenlabel
+        const { AdvancedMarkerElement } = google.maps.marker;
+        const labelDiv = document.createElement('div');
+        labelDiv.style.background = 'white';
+        labelDiv.style.borderRadius = '12px';
+        labelDiv.style.padding = '2px 8px';
+        labelDiv.style.fontWeight = 'bold';
+        labelDiv.style.fontSize = '16px';
+        labelDiv.style.color = 'black';
+        labelDiv.textContent = `${areaInHectares} ha`;
+
+        CaeliAreaCheck.areaLabel = new AdvancedMarkerElement({
+            map: CaeliAreaCheck.map,
+            position: center,
+            content: labelDiv
+        });
+
+        // Check if area is greater than configured max size
+        if (areaInHectares > CONFIG.MAX_AREA_SIZE) {
+            Utils.safeElementAction('#warning', el => el.style.display = 'block');
+            updateSubmitButtonState(false);
+        } else {
+            Utils.safeElementAction('#warning', el => el.style.display = 'none');
+            // Button-Status basierend auf PLZ-Validierung setzen
+            const input = document.getElementById('place-autocomplete');
+            if (input && input.value) {
+                const isValidPLZ = Utils.validatePLZ(input.value);
+                updateSubmitButtonState(isValidPLZ);
+            } else {
+                updateSubmitButtonState(false);
+            }
+        }
+        
+        // Live Reverse Geocoding für bessere Adresserkennung (Optional - kann performance-intensiv sein)
+        updatePolygonAddress(center);
+        
+    } catch (error) {
+        console.error('[DEBUG] updateAreaLabel: Fehler bei Flächenberechnung:', error);
+        // Fallback: Zeige Fehler im Label an
+        const labelDiv = document.createElement('div');
+        labelDiv.style.background = '#ffcccc';
+        labelDiv.style.borderRadius = '12px';
+        labelDiv.style.padding = '2px 8px';
+        labelDiv.style.fontWeight = 'bold';
+        labelDiv.style.fontSize = '16px';
+        labelDiv.style.color = 'red';
+        labelDiv.textContent = 'Fehler';
+        
+        if (CaeliAreaCheck.map) {
+            const bounds = new google.maps.LatLngBounds();
+            CaeliAreaCheck.polygon.getPath().forEach(function(latLng) {
+                bounds.extend(latLng);
+            });
+            const center = bounds.getCenter();
+            
+            const { AdvancedMarkerElement } = google.maps.marker;
+            CaeliAreaCheck.areaLabel = new AdvancedMarkerElement({
+                map: CaeliAreaCheck.map,
+                position: center,
+                content: labelDiv
+            });
+        }
+    }
 }
 
 // Live Adress-Update für Polygon-Zentrum (throttled)
@@ -902,6 +1044,89 @@ function updateGeometryField() {
     }
 }
 
+// Event-Listener für Polygon neu setzen (nach Kartenverschiebung)
+function reattachPolygonEventListeners() {
+    if (!CaeliAreaCheck.polygon) return;
+    
+    console.log('[DEBUG] Reattaching polygon event listeners after map move');
+    
+    // Alle vorherigen Event-Listener entfernen
+    google.maps.event.clearInstanceListeners(CaeliAreaCheck.polygon);
+    
+    const polygonPath = CaeliAreaCheck.polygon.getPath();
+    google.maps.event.clearInstanceListeners(polygonPath);
+    
+    // Event Listener für alle Änderungen am Polygon-Pfad neu setzen
+    google.maps.event.addListener(polygonPath, 'set_at', function() {
+        console.log('[DEBUG] Polygon set_at event - updating area (reattached)');
+        updatePolygonOffset();
+        updateAreaLabel();
+        updateGeometryField();
+        refreshPolygonMidpoints();
+    });
+    
+    google.maps.event.addListener(polygonPath, 'insert_at', function() {
+        console.log('[DEBUG] Polygon insert_at event - updating area (reattached)');
+        updatePolygonOffset();
+        updateAreaLabel();
+        updateGeometryField();
+        refreshPolygonMidpoints();
+    });
+    
+    google.maps.event.addListener(polygonPath, 'remove_at', function() {
+        console.log('[DEBUG] Polygon remove_at event - updating area (reattached)');
+        updatePolygonOffset();
+        updateAreaLabel();
+        updateGeometryField();
+        refreshPolygonMidpoints();
+    });
+    
+    // Event Listener für Drag-Operationen des gesamten Polygons neu setzen
+    google.maps.event.addListener(CaeliAreaCheck.polygon, 'dragstart', function() {
+        console.log('[DEBUG] Polygon dragstart (reattached)');
+        CaeliAreaCheck.state.isPolygonBeingEdited = true;
+    });
+    
+    google.maps.event.addListener(CaeliAreaCheck.polygon, 'drag', function() {
+        // LIVE UPDATE während des Ziehens des gesamten Polygons
+        console.log('[DEBUG] Polygon drag - live update (reattached)');
+        updateAreaLabel();
+        updateGeometryField();
+    });
+    
+    google.maps.event.addListener(CaeliAreaCheck.polygon, 'dragend', function() {
+        console.log('[DEBUG] Polygon dragend (reattached)');
+        updatePolygonOffset();
+        updateAreaLabel();
+        updateGeometryField();
+        CaeliAreaCheck.state.isPolygonBeingEdited = false;
+        refreshPolygonMidpoints();
+    });
+}
+
+/**
+ * Aktualisiert die Midpoints des Polygons durch temporäres Deaktivieren/Aktivieren des Edit-Modus
+ */
+function refreshPolygonMidpoints() {
+    if (!CaeliAreaCheck.polygon) return;
+    
+    try {
+        // Kurz editable ausschalten und wieder einschalten um Midpoints zu refreshen
+        const wasEditable = CaeliAreaCheck.polygon.getEditable();
+        if (wasEditable) {
+            CaeliAreaCheck.polygon.setEditable(false);
+            // Sehr kurzer Timeout damit die UI Zeit hat zu reagieren
+            setTimeout(function() {
+                if (CaeliAreaCheck.polygon) {
+                    CaeliAreaCheck.polygon.setEditable(true);
+                }
+            }, 1);
+        }
+    } catch (error) {
+        console.warn('[DEBUG] refreshPolygonMidpoints Fehler:', error);
+    }
+}
+
 // Hilfsfunktionen für Polygon-Mitbewegen
 function updatePolygonOffset() {
     if (!CaeliAreaCheck.polygon || !CaeliAreaCheck.map) return;
@@ -982,6 +1207,9 @@ function movePolygonWithMap() {
     }
     
     CaeliAreaCheck.polygon.setPath(newPath);
+    
+    // Event-Listener nach Kartenverschiebung neu setzen
+    reattachPolygonEventListeners();
     
     // Area-Label und Geometry-Field nach Karten-Move updaten
     updateAreaLabel();
@@ -1070,29 +1298,69 @@ function activateConsent() {
 function loadGoogleMaps() {
     if (CaeliAreaCheck.state.mapInitialized) return;
 
+    // Prüfe ob Google Maps bereits geladen ist
     if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
-        initMap();
-        CaeliAreaCheck.state.mapInitialized = true;
-        // Tutorial sofort starten
-        setTimeout(initTutorial, 100);
-    } else {
-        let tries = 0;
-        function tryInit() {
-            if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+        // Prüfe ob Geometry Library verfügbar ist
+        if (!google.maps.geometry || !google.maps.geometry.spherical) {
+            console.warn('[DEBUG] Google Maps Geometry Library nicht verfügbar - lade nach');
+            // Versuche Geometry Library nachzuladen
+            const script = document.createElement('script');
+            script.src = 'https://maps.googleapis.com/maps/api/js?libraries=geometry&callback=onGeometryLoaded';
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+            
+            window.onGeometryLoaded = function() {
+                console.log('[DEBUG] Geometry Library nachgeladen');
                 initMap();
-                mapInitialized = true;
-                // Tutorial sofort starten
+                CaeliAreaCheck.state.mapInitialized = true;
                 setTimeout(initTutorial, 100);
-            } else if (tries < 20) {
-                tries++;
-                setTimeout(tryInit, 200);
-            } else {
-                const translations = window.CaeliAreaCheckTranslations || {};
-                showDynamicAlert('google_maps_loading', translations);
-                console.error('Google Maps API konnte nicht geladen werden!');
-            }
+            };
+        } else {
+            console.log('[DEBUG] Google Maps und Geometry Library verfügbar');
+            initMap();
+            CaeliAreaCheck.state.mapInitialized = true;
+            // Tutorial sofort starten
+            setTimeout(initTutorial, 100);
         }
-        tryInit();
+    } else {
+        console.log('[DEBUG] Google Maps Script wird nach Consent geladen');
+        
+        // Google Maps Script dynamisch laden
+        const script = document.createElement('script');
+        script.async = true;
+        
+        // API Key und Libraries aus Template-Variablen
+        const googleMapsApiKey = window.CaeliAreaCheckConfig?.googleMapsApiKey || '';
+        if (!googleMapsApiKey) {
+            console.error('[DEBUG] Google Maps API Key nicht verfügbar');
+            return;
+        }
+        
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places,drawing,geometry,marker&v=weekly&loading=async&callback=onGoogleMapsLoaded`;
+        
+        // Callback für geladenes Script
+        window.onGoogleMapsLoaded = function() {
+            console.log('[DEBUG] Google Maps Script erfolgreich geladen');
+            let tries = 0;
+            function tryInit() {
+                if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+                    initMap();
+                    CaeliAreaCheck.state.mapInitialized = true;
+                    setTimeout(initTutorial, 100);
+                } else if (tries < 20) {
+                    tries++;
+                    setTimeout(tryInit, 200);
+                } else {
+                    const translations = window.CaeliAreaCheckTranslations || {};
+                    showDynamicAlert('google_maps_loading', translations);
+                    console.error('Google Maps API konnte nicht geladen werden!');
+                }
+            }
+            tryInit();
+        };
+        
+        document.head.appendChild(script);
     }
 }
 
@@ -1220,9 +1488,10 @@ function showTutorialStep(stepIndex) {
         content = `<div class="tutorial-content">${step.content}</div>`;
     }
 
-    // Bootstrap Popover erstellen
+    // Bootstrap Popover erstellen mit Schließen-Button im Header
     const popoverOptions = {
-        title: step.title,
+        title: `<span class="tutorial-title">${step.title}</span>
+                <button type="button" class="btn-close tutorial-close-btn float-end" aria-label="Tutorial schließen"></button>`,
         content: content,
         html: true,
         placement: placement,
@@ -1237,6 +1506,12 @@ function showTutorialStep(stepIndex) {
     setTimeout(() => {
         const popoverElement = document.querySelector('.popover');
         if (!popoverElement) return;
+
+        // Event Listener für Schließen-Button hinzufügen
+        const closeButton = popoverElement.querySelector('.tutorial-close-btn');
+        if (closeButton) {
+            closeButton.addEventListener('click', completeTutorial);
+        }
 
         // Event Listener basierend auf Step-Template
         if (step.template === 'welcome') {
@@ -1265,20 +1540,9 @@ function showTutorialStep(stepIndex) {
                 console.log('PLZ Back button NOT found');
             }
         } else if (step.template === 'polygon') {
-            // Polygon-Schritt (2)
+            // Polygon-Schritt (2) - letzter Schritt
             const backButton = popoverElement.querySelector('#tutorial-polygon-back');
             const nextButton = popoverElement.querySelector('#tutorial-polygon-next');
-            
-            if (backButton) {
-                backButton.addEventListener('click', () => previousTutorialStep(true));
-            }
-            if (nextButton) {
-                nextButton.addEventListener('click', nextTutorialStep);
-            }
-        } else if (step.template === 'confirm') {
-            // Bestätigen-Schritt (3)
-            const backButton = popoverElement.querySelector('#tutorial-confirm-back');
-            const nextButton = popoverElement.querySelector('#tutorial-confirm-next');
             
             if (backButton) {
                 backButton.addEventListener('click', () => previousTutorialStep(true));
@@ -1320,15 +1584,26 @@ function previousTutorialStep(fromPolygonStep = false) {
             const input = document.getElementById('place-autocomplete');
             if (input) {
                 input.value = '';
+                // PLZ-Validierung zurücksetzen
+                updateSubmitButtonState(false);
                 // Nur Fokus setzen wenn nicht vom Polygon-Back (fromPolygonStep = false)
                 if (!fromPolygonStep) {
-                    input.focus();
+                    setTimeout(() => input.focus(), 200);
                 }
             }
             
             // Polygon und Buttons verstecken
             deletePolygon();
             Utils.safeElementAction('#button-wrapper', el => el.style.display = 'none');
+            
+            // Tutorial-State temporär deaktivieren um Auto-Sprung zu verhindern
+            const wasActive = CaeliAreaCheck.state.tutorialActive;
+            CaeliAreaCheck.state.tutorialActive = false;
+            
+            // Nach kurzer Verzögerung wieder aktivieren
+            setTimeout(() => {
+                CaeliAreaCheck.state.tutorialActive = wasActive;
+            }, 500);
         }
 
         // Spezielle Behandlung beim Zurückgehen von Schritt 1 zu Schritt 0 (PLZ-Back)
@@ -1338,6 +1613,7 @@ function previousTutorialStep(fromPolygonStep = false) {
             const input = document.getElementById('place-autocomplete');
             if (input) {
                 input.value = '';
+                updateSubmitButtonState(false);
             }
         }
 
@@ -1347,7 +1623,7 @@ function previousTutorialStep(fromPolygonStep = false) {
         // Kurz warten bevor neues Popover angezeigt wird
         setTimeout(() => {
             showTutorialStep(CaeliAreaCheck.state.currentTutorialStep);
-        }, 100);
+        }, 200);
     }
 }
 
@@ -1429,14 +1705,9 @@ function handlePlaceSelected() {
 }
 
 function handlePolygonCreated() {
-    if (CaeliAreaCheck.state.tutorialActive && CaeliAreaCheck.state.currentTutorialStep === 2) {
-        // Vom Polygon-Schritt zum Bestätigen-Schritt wechseln
-        hideAllPopovers();
-        setTimeout(() => {
-            showTutorialStep(3);
-            CaeliAreaCheck.state.currentTutorialStep = 3;
-        }, CONFIG.DELAYS.POLYGON_CREATED);
-    }
+    // Polygon wurde erstellt - Tutorial bleibt bei Schritt 2 (letzter Schritt)
+    // Keine automatische Weiterleitung mehr, da Schritt 2 der letzte Schritt ist
+    console.log('[DEBUG] Polygon created - Tutorial bleibt bei Schritt 2');
 }
 
 function findPolygonHandle() {
@@ -1525,33 +1796,33 @@ function startLoadingAnimation() {
         }
     }, 300);
     
-    // Text-Rotation starten nach dem ersten Einblenden
-    setTimeout(() => {
-        textInterval = setInterval(() => {
-            if (textElement) {
-                // Smooth fade out nach oben
-                textElement.style.transition = 'transform 0.6s cubic-bezier(0.55, 0.06, 0.68, 0.19), opacity 0.6s cubic-bezier(0.55, 0.06, 0.68, 0.19)';
-                textElement.style.transform = 'translateY(30px)';
-                textElement.style.opacity = '0';
-                
-                setTimeout(() => {
-                    // Nächsten Text setzen
-                    currentTextIndex = (currentTextIndex + 1) % loadingTexts.length;
-                    textElement.textContent = loadingTexts[currentTextIndex];
-                    
-                    // Von unten einblenden - sofort positionieren
+            // Text-Rotation starten nach dem ersten Einblenden
+        setTimeout(() => {
+            textInterval = setInterval(() => {
+                if (textElement) {
+                    // Smooth fade out nach oben
+                    textElement.style.transition = 'transform 0.6s cubic-bezier(0.55, 0.06, 0.68, 0.19), opacity 0.6s cubic-bezier(0.55, 0.06, 0.68, 0.19)';
                     textElement.style.transform = 'translateY(30px)';
                     textElement.style.opacity = '0';
                     
-                    // Smooth fade in
                     setTimeout(() => {
-                        textElement.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                        textElement.style.transform = 'translateY(0)';
-                        textElement.style.opacity = '1';
-                    }, 50);
-                }, 600);
-            }
-        }, 2500);
+                        // Nächsten Text setzen
+                        currentTextIndex = (currentTextIndex + 1) % loadingTexts.length;
+                        textElement.textContent = loadingTexts[currentTextIndex];
+                        
+                        // Von unten einblenden - sofort positionieren
+                        textElement.style.transform = 'translateY(30px)';
+                        textElement.style.opacity = '0';
+                        
+                        // Smooth fade in
+                        setTimeout(() => {
+                            textElement.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                            textElement.style.transform = 'translateY(0)';
+                            textElement.style.opacity = '1';
+                        }, 50);
+                    }, 600);
+                }
+            }, 4000);
          }, 800); // Erste Rotation nach 0.8s
 }
 
@@ -1677,17 +1948,17 @@ function startLoadingAnimationWithTextRotation() {
     const percentageElement = document.querySelector('.loading-percentage');
     
     if (messageElement) {
-        // Erstes animiertes Einblenden
+        // Erstes animiertes Einblenden mit sanfter Bewegung
         messageElement.textContent = loadingTexts[currentTextIndex];
-        messageElement.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        messageElement.style.transform = 'translateY(30px)';
+        messageElement.style.transition = 'transform 1.0s cubic-bezier(0.0, 0.0, 0.2, 1), opacity 1.0s cubic-bezier(0.0, 0.0, 0.2, 1)';
+        messageElement.style.transform = 'translateY(20px) scale(0.95)';
         messageElement.style.opacity = '0';
         
-        // Ersten Text sofort einblenden
+        // Ersten Text sanft einblenden
         setTimeout(() => {
-            messageElement.style.transform = 'translateY(0)';
+            messageElement.style.transform = 'translateY(0) scale(1)';
             messageElement.style.opacity = '1';
-        }, 30);
+        }, 150);
     }
     
     // Kontinuierliche simulierte Progress bis echte Daten kommen (KEIN STOPP bei 40%)
@@ -1706,9 +1977,9 @@ function startLoadingAnimationWithTextRotation() {
     // Text-Rotation starten nach dem ersten Einblenden
     const textInterval = setInterval(() => {
         if (messageElement) {
-            // Smooth fade out nach oben
-            messageElement.style.transition = 'transform 0.6s cubic-bezier(0.55, 0.06, 0.68, 0.19), opacity 0.6s cubic-bezier(0.55, 0.06, 0.68, 0.19)';
-            messageElement.style.transform = 'translateY(-30px)';
+            // Sanfteres Ausblenden mit subtilerer Bewegung
+            messageElement.style.transition = 'transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1)';
+            messageElement.style.transform = 'translateY(-15px) scale(0.98)';
             messageElement.style.opacity = '0';
             
             setTimeout(() => {
@@ -1716,19 +1987,19 @@ function startLoadingAnimationWithTextRotation() {
                 currentTextIndex = (currentTextIndex + 1) % loadingTexts.length;
                 messageElement.textContent = loadingTexts[currentTextIndex];
                 
-                // Von unten einblenden - sofort positionieren
-                messageElement.style.transform = 'translateY(30px)';
+                // Startposition für Einblenden - subtiler
+                messageElement.style.transform = 'translateY(15px) scale(0.98)';
                 messageElement.style.opacity = '0';
                 
-                // Smooth fade in
+                // Sanftes Einblenden mit Material Design ease-out
                 setTimeout(() => {
-                    messageElement.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                    messageElement.style.transform = 'translateY(0)';
+                    messageElement.style.transition = 'transform 1.0s cubic-bezier(0.0, 0.0, 0.2, 1), opacity 1.0s cubic-bezier(0.0, 0.0, 0.2, 1)';
+                    messageElement.style.transform = 'translateY(0) scale(1)';
                     messageElement.style.opacity = '1';
-                }, 20);
-            }, 300);
+                }, 100);
+            }, 600);
         }
-    }, 2500); // Alle 2.5 Sekunden Text wechseln
+    }, 4000); // Alle 4 Sekunden Text wechseln
     
     // Intervalles für Cleanup speichern
     window.caeliLoadingIntervals = { progressInterval, textInterval };
@@ -1748,10 +2019,23 @@ function stopLoadingAnimations() {
 
 /**
  * Aktualisiert mit echten Progress-Daten vom Backend
+ * Verhindert rückwärts gehende Progress-Updates
  */
 function updateRealProgress(progressData) {
     const percentage = progressData.percentage || 0;
     const message = progressData.message || 'Wird verarbeitet...';
+    
+    // Aktuelle Progress prüfen um Rückwärts-Updates zu vermeiden
+    const currentPercentage = parseInt(document.querySelector('.loading-percentage')?.textContent) || 0;
+    
+    // Nur vorwärts gehen, nie rückwärts (Race Condition vermeiden)
+    if (percentage < currentPercentage) {
+        // Minimales Logging für bessere Performance ohne DevTools
+        if (window.location.search.includes('debug=1')) {
+            console.log('[Progress] Ignoriere rückwärts Update: ' + percentage + '% (aktuell: ' + currentPercentage + '%)');
+        }
+        return;
+    }
     
     // Simulierte Progress stoppen wenn echte Daten kommen
     stopLoadingAnimations();
@@ -1759,13 +2043,13 @@ function updateRealProgress(progressData) {
     // Loading-Percentage aktualisieren
     const percentageElement = document.querySelector('.loading-percentage');
     if (percentageElement) {
-        percentageElement.textContent = `${percentage}%`;
+        percentageElement.textContent = percentage + '%';
     }
     
     // SVG-Progress Animation: Balken von 12 Uhr im Uhrzeigersinn färben
     updateSpinnerProgress(percentage);
     
-    // Wechselnde Status-Texte im loading-message div (überschreibt Rotation)
+    // Status-Message aktualisieren
     const messageElement = document.querySelector('.loading-message');
     if (messageElement && percentage < 100) {
         messageElement.textContent = message;
@@ -1773,7 +2057,10 @@ function updateRealProgress(progressData) {
         messageElement.style.opacity = '1';
     }
     
-    console.log(`[Progress] ${percentage}%: ${message}`);
+    // Nur debug logging bei URL-Parameter
+    if (window.location.search.includes('debug=1')) {
+        console.log('[Progress] ' + percentage + '%: ' + message);
+    }
 }
 
 /**
@@ -1830,9 +2117,10 @@ function handleAsyncError(errorMessage) {
 function startPolling(sessionId) {
     console.log('[DEBUG] startPolling aufgerufen mit sessionId:', sessionId);
     
-    const maxPolls = 60; // 3 Minuten bei 3s Intervall
+    const maxPolls = 90; // 3 Minuten bei 1s Intervall (erhöht wegen schnellerem Polling)
     let pollCount = 0;
     let isCompleted = false; // Verhindert doppelte Completion durch Race Conditions
+    let consecutiveErrors = 0; // Zähle aufeinanderfolgende Fehler
     
     const baseUrl = window.CaeliAreaCheckConfig?.statusUrl;
     if (!baseUrl) {
@@ -1843,22 +2131,36 @@ function startPolling(sessionId) {
     
     console.log('[DEBUG] Starting polling for sessionId:', sessionId);
     
-    const pollInterval = setInterval(() => {
-        pollCount++;
-        console.log(`[DEBUG] Polling #${pollCount} für Session: ${sessionId}`);
+    // Stabileres Polling mit setTimeout statt setInterval
+    function doPoll() {
+        if (isCompleted) {
+            console.log('[DEBUG] Polling bereits completed - stoppe');
+            return;
+        }
         
-        const pollUrl = `${baseUrl}/${sessionId}`;
+        pollCount++;
+        console.log('[DEBUG] Polling #' + pollCount + ' für Session: ' + sessionId);
+        
+        const pollUrl = baseUrl + '/' + sessionId;
+        
+        // Promise-basierter Fetch mit besserer Fehlerbehandlung
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s Request-Timeout
         
         fetch(pollUrl, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest'
-            }
+            },
+            signal: controller.signal
         })
         .then(response => {
+            clearTimeout(timeoutId);
+            consecutiveErrors = 0; // Reset bei erfolgreichem Request
+            
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                throw new Error('HTTP ' + response.status + ': ' + response.statusText);
             }
             return response.json();
         })
@@ -1878,14 +2180,17 @@ function startPolling(sessionId) {
             
             if (data.status === 'completed') {
                 console.log('[DEBUG] Status completed - stoppe Polling');
-                isCompleted = true; // Flag setzen BEVOR clearInterval
-                clearInterval(pollInterval);
-                handleAsyncResult(data.result);
+                isCompleted = true;
+                // Sofortiger Redirect ohne weitere Delays
+                setTimeout(function() {
+                    handleAsyncResult(data.result);
+                }, 50); // Minimaler Delay für UI-Update
+                return;
             } else if (data.status === 'error') {
                 console.log('[DEBUG] Status error - stoppe Polling');
-                isCompleted = true; // Flag setzen BEVOR clearInterval
-                clearInterval(pollInterval);
+                isCompleted = true;
                 handleAsyncError(data.message);
+                return;
             } else if (data.status === 'processing') {
                 // Echten Progress verwenden falls verfügbar
                 if (data.progress) {
@@ -1895,33 +2200,44 @@ function startPolling(sessionId) {
                     updateAsyncProgress(pollCount, maxPolls);
                 }
             }
+            
+            // Nächsten Poll planen wenn nicht completed
+            if (!isCompleted && pollCount < maxPolls) {
+                setTimeout(doPoll, 1000); // 1 Sekunde warten
+            } else if (pollCount >= maxPolls && !isCompleted) {
+                console.log('[DEBUG] Polling Timeout erreicht');
+                isCompleted = true;
+                handleAsyncError('Timeout: Verarbeitung dauert zu lange (3 Minuten überschritten)');
+            }
         })
         .catch(error => {
-            console.error('[DEBUG] Polling Fehler:', error);
+            clearTimeout(timeoutId);
+            consecutiveErrors++;
+            console.error('[DEBUG] Polling Fehler #' + consecutiveErrors + ':', error);
+            
             // Race Condition: Ignoriere weitere Fehler wenn bereits completed
             if (isCompleted) {
                 console.log('[DEBUG] Bereits completed - ignoriere Fehler');
                 return;
             }
             
-            // NICHT sofort abbrechen - erst nach mehreren Fehlern
-            if (pollCount >= 5) {
+            // Nach zu vielen aufeinanderfolgenden Fehlern abbrechen
+            if (consecutiveErrors >= 5) {
                 console.log('[DEBUG] Zu viele Polling-Fehler - stoppe Polling');
                 isCompleted = true;
-                clearInterval(pollInterval);
                 handleAsyncError('Verbindungsfehler beim Statuscheck: ' + error.message);
+                return;
+            }
+            
+            // Bei Fehlern etwas länger warten bevor nächster Versuch
+            if (!isCompleted && pollCount < maxPolls) {
+                setTimeout(doPoll, 2000); // 2 Sekunden bei Fehlern
             }
         });
-        
-        // Timeout nach max Polls
-        if (pollCount >= maxPolls && !isCompleted) {
-            console.log('[DEBUG] Polling Timeout erreicht - stoppe Polling');
-            isCompleted = true;
-            clearInterval(pollInterval);
-            handleAsyncError('Timeout: Verarbeitung dauert zu lange (3 Minuten überschritten)');
-        }
-        
-    }, 2000); // Alle 2 Sekunden prüfen (schneller)
+    }
+    
+    // Erstes Poll starten
+    doPoll();
     
     console.log('[DEBUG] Polling gestartet');
 }
@@ -1930,17 +2246,26 @@ function startPolling(sessionId) {
  * Behandelt erfolgreiches Async-Ergebnis
  */
 function handleAsyncResult(result) {
-    console.log('[DEBUG] handleAsyncResult aufgerufen - Direkte Weiterleitung ohne Message');
+    console.log('[DEBUG] handleAsyncResult aufgerufen - Sofortige Weiterleitung');
     
     // Alle Animationen stoppen
     stopLoadingAnimations();
     
-    // 100% Progress: Alle Balken grün färben
+    // 100% Progress sofort setzen
     updateSpinnerProgress(100);
     
     const percentageElement = document.querySelector('.loading-percentage');
     if (percentageElement) {
         percentageElement.textContent = '100%';
+    }
+    
+    // Kurze visuelle Bestätigung bevor Redirect
+    const messageElement = document.querySelector('.loading-message');
+    if (messageElement) {
+        const translations = window.CaeliAreaCheckTranslations || {};
+        const completedMessage = translations.loading?.completed_redirect || 'Abgeschlossen! Weiterleitung...';
+        messageElement.textContent = completedMessage;
+        messageElement.style.color = '#92a0ff'; // Designfarbe für Erfolg
     }
     
     // Redirect zur Ergebnisseite basierend auf dem Result
@@ -1969,37 +2294,61 @@ function handleAsyncResult(result) {
     // URL-Parameter hinzufügen
     const separator = resultPageUrl.includes('?') ? '&' : '?';
     if (isSuccess) {
-        resultPageUrl += `${separator}parkid=${encodeURIComponent(checkId)}`;
+        resultPageUrl += separator + 'parkid=' + encodeURIComponent(checkId);
     } else {
-        resultPageUrl += `${separator}checkid=${encodeURIComponent(checkId)}`;
+        resultPageUrl += separator + 'checkid=' + encodeURIComponent(checkId);
     }
     
-    console.log('[DEBUG] Leite weiter zu:', resultPageUrl);
-    console.log('[DEBUG] Aktueller window.location:', window.location.href);
+    console.log('[DEBUG] Leite sofort weiter zu:', resultPageUrl);
     console.log('[DEBUG] Result-Object:', result);
     
-    // DEBUGGING: Mehrere Redirect-Methoden versuchen
-    try {
-        console.log('[DEBUG] Versuche window.location.href...');
-        window.location.href = resultPageUrl;
+    // Robuster Redirect-Mechanismus - mehrere Methoden versuchen
+    let redirectAttempted = false;
+    
+    function doRedirect() {
+        if (redirectAttempted) return;
+        redirectAttempted = true;
         
-        // Fallback falls href nicht funktioniert  
-        setTimeout(() => {
-            console.log('[DEBUG] Fallback 1: window.location.assign...');
-            window.location.assign(resultPageUrl);
-        }, 100);
-        
-        // Zweiter Fallback
-        setTimeout(() => {
-            console.log('[DEBUG] Fallback 2: window.location.replace...');
-            window.location.replace(resultPageUrl);
-        }, 200);
-        
-    } catch (error) {
-        console.error('[DEBUG] Redirect Error:', error);
-        // Notfall-Fallback mit Link
-        alert('Redirect zu: ' + resultPageUrl);
+        try {
+            // Methode 1: Standard window.location.href
+            window.location.href = resultPageUrl;
+        } catch (error) {
+            console.error('[DEBUG] Redirect Method 1 failed:', error);
+            
+            try {
+                // Methode 2: window.location.assign
+                window.location.assign(resultPageUrl);
+            } catch (error2) {
+                console.error('[DEBUG] Redirect Method 2 failed:', error2);
+                
+                try {
+                    // Methode 3: window.location.replace
+                    window.location.replace(resultPageUrl);
+                } catch (error3) {
+                    console.error('[DEBUG] Redirect Method 3 failed:', error3);
+                    
+                    // Notfall: Form-Submission erstellen
+                    const form = document.createElement('form');
+                    form.method = 'GET';
+                    form.action = resultPageUrl;
+                    form.style.display = 'none';
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        }
     }
+    
+    // Sofortiger Redirect-Versuch
+    doRedirect();
+    
+    // Fallback-Timer falls der erste Versuch fehlschlägt
+    setTimeout(function() {
+        if (!redirectAttempted) {
+            console.log('[DEBUG] Fallback Redirect after timeout');
+            doRedirect();
+        }
+    }, 100);
 }
 
 /**

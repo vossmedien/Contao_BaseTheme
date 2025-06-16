@@ -8,6 +8,7 @@ $config = array(
     'label' => array('Custom | Bildwechsler mit Beschreibungstext (colorpalettes)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

@@ -6,42 +6,43 @@
             <form class="auction-filter" method="get">
                 <div class="row g-1 mb-3"> {# g-2 für kleinen Abstand zwischen den Filter-Buttons #}
 
-                    {# Neuer "Highlights"-Filter-Button (einfacher Toggle) #}
-                    <div class="col-auto filter-item-highlights">
-                        {# Hidden Input, um den Wert von 'focus' zu senden, gesteuert durch Klick auf den Button #}
-                        {# Sicherstellen, dass value='true' nur gesetzt wird, wenn filters.focus exakt der String 'true' ist #}
-                        <input type="hidden" name="focus" id="focus_hidden_input" value="{{ filters.focus == 'true' ? 'true' : 'false' }}">
-                        <button class="btn {{ filters.focus == 'true' ? 'btn-white' : 'btn-outline-white' }} btn-sm" type="button" id="filterHighlightsButton">
-                            {{ 'filter.highlights_button'|trans }}
-                        </button>
-                    </div>
-
-                    {# Bestehende Filter als Dropdowns #}
+                    {# Bestehende Filter als Dropdowns und spezielle Behandlung für isAuctionInFocus #}
                     {% for key, config in filter_configs|default([]) %}
-                        {% set filter_value = filters[key]|default(null) %}
-                        {% set filter_value_min = filters[key ~ '_min']|default(null) %}
-                        {% set filter_value_max = filters[key ~ '_max']|default(null) %}
+                        {% if key == 'isAuctionInFocus' %}
+                            {# Spezielle Behandlung für isAuctionInFocus: Zeige Highlights Button #}
+                            <div class="col-auto filter-item-highlights">
+                                {# Hidden Input, um den Wert von 'focus' zu senden, gesteuert durch Klick auf den Button #}
+                                {# Sicherstellen, dass value='true' nur gesetzt wird, wenn filters.focus exakt der String 'true' ist #}
+                                <input type="hidden" name="focus" id="focus_hidden_input" value="{{ filters.focus == 'true' ? 'true' : 'false' }}">
+                                <button class="btn {{ filters.focus == 'true' ? 'btn-white' : 'btn-outline-white' }} btn-sm" type="button" id="filterHighlightsButton">
+                                    {{ 'filter.highlights_button'|trans }}
+                                </button>
+                            </div>
+                        {% else %}
+                            {% set filter_value = filters[key]|default(null) %}
+                            {% set filter_value_min = filters[key ~ '_min']|default(null) %}
+                            {% set filter_value_max = filters[key ~ '_max']|default(null) %}
 
-                        <div class="col-auto filter-item-{{ key }}">
-                            <div class="dropdown">
-                                {% set is_filter_active = false %}
-                                {% if config.type == 'select' %}
-                                    {# Für Selects prüfen wir, ob filter_value (jetzt ein String oder null) nicht leer ist #}
-                                    {% if filter_value is not null and filter_value != '' %}
-                                        {% set is_filter_active = true %}
+                            <div class="col-auto filter-item-{{ key }}">
+                                <div class="dropdown">
+                                    {% set is_filter_active = false %}
+                                    {% if config.type == 'select' %}
+                                        {# Für Selects prüfen wir, ob filter_value (jetzt ein String oder null) nicht leer ist #}
+                                        {% if filter_value is not null and filter_value != '' %}
+                                            {% set is_filter_active = true %}
+                                        {% endif %}
+                                    {% elseif config.type == 'range_slider' %}
+                                        {% if (filters[key ~ '_min'] is not null and filters[key ~ '_min'] != config.min|default(0)) or
+                                            (filters[key ~ '_max'] is not null and filters[key ~ '_max'] != config.max|default(100)) %}
+                                            {% set is_filter_active = true %}
+                                        {% endif %}
                                     {% endif %}
-                                {% elseif config.type == 'range_slider' %}
-                                    {% if (filters[key ~ '_min'] is not null and filters[key ~ '_min'] != config.min|default(0)) or
-                                        (filters[key ~ '_max'] is not null and filters[key ~ '_max'] != config.max|default(100)) %}
-                                        {% set is_filter_active = true %}
-                                    {% endif %}
-                                {% endif %}
 
-                                {# Button ist jetzt btn-primary, ggf. mit Indikator für Aktivität #}
-                                <button class="btn btn-white {{ is_filter_active ? 'active' : '' }} dropdown-toggle btn-sm" type="button" id="filterDropdown{{ key|capitalize }}" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
-                                    {{ config.label|trans }}
-                                    {% if is_filter_active %}
-                                        <span class="badge bg-white text-dark ms-1 rounded-pill">
+                                    {# Button ist jetzt btn-primary, ggf. mit Indikator für Aktivität #}
+                                    <button class="btn btn-white {{ is_filter_active ? 'active' : '' }} dropdown-toggle btn-sm" type="button" id="filterDropdown{{ key|capitalize }}" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+                                        {{ config.label|trans }}
+                                        {% if is_filter_active %}
+                                            <span class="badge bg-white text-dark ms-1 rounded-pill">
                                                 {% if config.type == 'select' %}
                                                     {# Zähle die Anzahl der ausgewählten Optionen im Kommaseparierten String #}
                                                     {{ filter_value|split(',')|length }}
@@ -49,89 +50,133 @@
                                                     !
                                                 {% endif %}
                                             </span>
-                                    {% endif %}
-                                </button>
-                                {# Dropdown-Menü mit bg-primary text-white #}
-                                <ul class="dropdown-menu bg-primary text-white p-2" aria-labelledby="filterDropdown{{ key|capitalize }}" style="min-width: 310px;">
-                                    <li>
-                                        {% if config.type == 'select' %}
-                                            {% set select_options = options[config.options_key]|default([]) %}
-                                            {% set current_values = filter_value is not null ? filter_value|split(',') : [] %}
-                                            {% if select_options is not empty %}
-                                                {% for option_value, option_label in select_options %}
-                                                    <div class="form-check">
-                                                        {# Name ist jetzt ohne [], Wert wird via JS als kommaseparierter String gesammelt #}
-                                                        <input class="form-check-input" type="checkbox" name="{{ key }}" value="{{ option_value }}" id="filter_{{ key }}_{{ loop.index }}"
-                                                               {% if option_value in current_values %}checked{% endif %}>
-                                                        {# Label-Textfarbe muss ggf. angepasst werden, wenn text-white global ist #}
-                                                        <label class="form-check-label small" for="filter_{{ key }}_{{ loop.index }}">
-                                                            {{ option_label }}
-                                                        </label>
-                                                    </div>
-                                                {% endfor %}
-                                            {% else %}
-                                                <small class="d-block">{{ 'filter.no_options_available'|trans }}</small> {# text-white greift hier #}
-                                            {% endif %}
-
-                                        {% elseif config.type == 'range_slider' %}
-                                            {% set min_cfg = config.min|default(0) %}
-                                            {% set max_cfg = config.max|default(100) %}
-                                            {% set step_cfg = config.step|default(1) %}
-                                            {% set current_min_val = filter_value_min|default(min_cfg) %}
-                                            {% set current_max_val = filter_value_max|default(max_cfg) %}
-
-                                            <div class="mb-2">
-                                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                                    {# Label-Textfarbe #}
-                                                    <label class="form-label mb-0 small">{{ config.label|trans }}</label>
-                                                    {# Badge-Farbe anpassen #}
-                                                    <span id="{{ key }}-range-value" class="badge bg-secondary text-body fw-normal small">{{ current_min_val }} - {{ current_max_val }}</span>
-                                                </div>
-                                                {# Range Slider selbst - das Aussehen wird durch Browser/Bootstrap bestimmt #}
-                                                <div class="mb-1">
-                                                    <label for="{{ key }}_min_slider" class="form-label small visually-hidden">{{ 'filter.range.min'|trans }}</label>
-                                                    <input type="range" class="form-range form-range-sm" id="{{ key }}_min_slider"
-                                                           name="{{ key }}_min"
-                                                           min="{{ min_cfg }}"
-                                                           max="{{ max_cfg }}"
-                                                           step="{{ step_cfg }}"
-                                                           value="{{ current_min_val }}">
-                                                </div>
-                                                <div>
-                                                    <label for="{{ key }}_max_slider" class="form-label small visually-hidden">{{ 'filter.range.max'|trans }}</label>
-                                                    <input type="range" class="form-range form-range-sm" id="{{ key }}_max_slider"
-                                                           name="{{ key }}_max"
-                                                           min="{{ min_cfg }}"
-                                                           max="{{ max_cfg }}"
-                                                           step="{{ step_cfg }}"
-                                                           value="{{ current_max_val }}">
-                                                </div>
-                                                <div class="d-flex justify-content-between mt-1 small">
-                                                    {# Textfarbe für Min/Max Labels #}
-                                                    <small class="text-white-50">{{ min_cfg }}</small>
-                                                    <small class="text-white-50">{{ max_cfg }}</small>
-                                                </div>
-                                            </div>
                                         {% endif %}
-                                    </li>
-                                </ul>
+                                    </button>
+                                    {# Dropdown-Menü mit bg-primary text-white #}
+                                    <ul class="dropdown-menu bg-primary text-white p-2" aria-labelledby="filterDropdown{{ key|capitalize }}" style="min-width: 310px;">
+                                        <li>
+                                            {% if config.type == 'select' %}
+                                                {% set select_options = options[config.options_key]|default([]) %}
+                                                {% set current_values = filter_value is not null ? filter_value|split(',') : [] %}
+                                                {% if select_options is not empty %}
+                                                    {% for option_value, option_label in select_options %}
+                                                        <div class="form-check">
+                                                            {# Name ist jetzt ohne [], Wert wird via JS als kommaseparierter String gesammelt #}
+                                                            <input class="form-check-input" type="checkbox" name="{{ key }}" value="{{ option_value }}" id="filter_{{ key }}_{{ loop.index }}"
+                                                                   {% if option_value in current_values %}checked{% endif %}>
+                                                            {# Label-Textfarbe muss ggf. angepasst werden, wenn text-white global ist #}
+                                                            <label class="form-check-label small" for="filter_{{ key }}_{{ loop.index }}">
+                                                                {{ option_label }}
+                                                            </label>
+                                                        </div>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <small class="d-block">{{ 'filter.no_options_available'|trans }}</small> {# text-white greift hier #}
+                                                {% endif %}
+
+                                            {% elseif config.type == 'range_slider' %}
+                                                {% set min_cfg = config.min|default(0) %}
+                                                {% set max_cfg = config.max|default(100) %}
+                                                {% set step_cfg = config.step|default(1) %}
+                                                {% set current_min_val = filter_value_min|default(min_cfg) %}
+                                                {% set current_max_val = filter_value_max|default(max_cfg) %}
+
+                                                <div class="mb-2">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        {# Label-Textfarbe #}
+                                                        <label class="form-label mb-0 small">{{ config.label|trans }}</label>
+                                                        {# Badge-Farbe anpassen #}
+                                                        <span id="{{ key }}-range-value" class="badge bg-secondary text-body fw-normal small">{{ current_min_val }} - {{ current_max_val }}</span>
+                                                    </div>
+                                                    {# Range Slider selbst - das Aussehen wird durch Browser/Bootstrap bestimmt #}
+                                                    <div class="mb-1">
+                                                        <label for="{{ key }}_min_slider" class="form-label small visually-hidden">{{ 'filter.range.min'|trans }}</label>
+                                                        <input type="range" class="form-range form-range-sm" id="{{ key }}_min_slider"
+                                                               name="{{ key }}_min"
+                                                               min="{{ min_cfg }}"
+                                                               max="{{ max_cfg }}"
+                                                               step="{{ step_cfg }}"
+                                                               value="{{ current_min_val }}">
+                                                    </div>
+                                                    <div>
+                                                        <label for="{{ key }}_max_slider" class="form-label small visually-hidden">{{ 'filter.range.max'|trans }}</label>
+                                                        <input type="range" class="form-range form-range-sm" id="{{ key }}_max_slider"
+                                                               name="{{ key }}_max"
+                                                               min="{{ min_cfg }}"
+                                                               max="{{ max_cfg }}"
+                                                               step="{{ step_cfg }}"
+                                                               value="{{ current_max_val }}">
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mt-1 small">
+                                                        {# Textfarbe für Min/Max Labels #}
+                                                        <small class="text-white-50">{{ min_cfg }}</small>
+                                                        <small class="text-white-50">{{ max_cfg }}</small>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+
+                    {# Prüfe ob irgendwelche Filter aktiv sind #}
+                    {% set has_active_filters = false %}
+                    
+                    {# Prüfe Focus-Filter #}
+                    {% if filters.focus == 'true' %}
+                        {% set has_active_filters = true %}
+                    {% endif %}
+                    
+                    {# Prüfe andere Filter #}
+                    {% if not has_active_filters %}
+                        {% for key, config in filter_configs|default([]) %}
+                            {% if key != 'isAuctionInFocus' %}
+                                {% set filter_value = filters[key]|default(null) %}
+                                {% set filter_value_min = filters[key ~ '_min']|default(null) %}
+                                {% set filter_value_max = filters[key ~ '_max']|default(null) %}
+                                
+                                {% if config.type == 'select' %}
+                                    {# Für Selects prüfen ob Wert gesetzt und nicht leer #}
+                                    {% if filter_value is not null and filter_value != '' %}
+                                        {% set has_active_filters = true %}
+                                    {% endif %}
+                                {% elseif config.type == 'range_slider' %}
+                                    {# Für Range Slider prüfen ob Werte von Default abweichen #}
+                                    {% if (filter_value_min is not null and filter_value_min != config.min|default(0)) or
+                                        (filter_value_max is not null and filter_value_max != config.max|default(100)) %}
+                                        {% set has_active_filters = true %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if has_active_filters %}
+                        <div class="col-auto ms-auto">
+                            {# Buttons mit etwas mehr Abstand oben #}
+                            <div class="d-flex gap-2 flex-wrap filter-buttons">
+                                {#
+                                <button type="submit" class="btn btn-white btn-sm">
+                                    {{ 'filter.button.filter'|trans }}
+                                </button> #}
+                                <a href="{{ app.request.pathInfo }}#auctionFilter" class="btn btn-white btn-sm">
+                                    {{ 'filter.button.reset'|trans }}
+                                </a>
+                                {#
+                                <button type="submit" name="refresh" value="1" class="btn btn-danger btn-sm">
+                                    {{ 'filter.button.update_data'|trans }}
+                                </button>
+                                #}
                             </div>
                         </div>
-                    {% endfor %}
+                    {% endif %}
+
                 </div> {# Ende der .row für Filter-Buttons #}
 
-                {# Buttons mit etwas mehr Abstand oben #}
-                <div class="d-flex gap-2 flex-wrap filter-buttons mt-4">
-                    <button type="submit" class="btn btn-white btn-sm">
-                        {{ 'filter.button.filter'|trans }}
-                    </button>
-                    <a href="{{ app.request.pathInfo }}#auctionFilter" class="btn btn-white btn-sm">
-                        {{ 'filter.button.reset'|trans }}
-                    </a>
-                    <button type="submit" name="refresh" value="1" class="btn btn-danger btn-sm"> {# Versteckt, da AJAX #}
-                        {{ 'filter.button.update_data'|trans }}
-                    </button>
-                </div>
+
             </form>
         </div>
 
@@ -614,17 +659,17 @@
                             if (currentAuctionListingContainer.querySelector('.auction-item')) { // Annahme: .auction-item existiert pro Ergebnis
                                 resultsFound = true;
                             }
-                            
+
                             // Prüfen ob Paginierung zurückgesetzt werden muss
                             const newPagination = newAuctionListingContainer.querySelector('.pagination');
                             const currentPage = new URLSearchParams(window.location.search).get('page') || new URLSearchParams(window.location.search).get('page_n23');
-                            
+
                             if (currentPage && parseInt(currentPage) > 1 && !newPagination) {
                                 // Wir sind auf Seite 2+, aber die neue Antwort hat keine Paginierung
                                 // Das bedeutet: alle Ergebnisse passen auf eine Seite
                                 shouldResetPagination = true;
                             }
-                            
+
                         } else if (doc.querySelector('.auction-items') || doc.querySelector('.no-auctions')) {
                             const newItems = doc.querySelector('.auction-items');
                             const newNoItems = doc.querySelector('.no-auctions');
@@ -641,21 +686,21 @@
                                 if (currentItems.querySelector('.auction-item')) { // Annahme
                                     resultsFound = true;
                                 }
-                                
+
                                 // Prüfen ob Paginierung zurückgesetzt werden muss
                                 const newPagination = doc.querySelector('.pagination');
                                 const currentPage = new URLSearchParams(window.location.search).get('page') || new URLSearchParams(window.location.search).get('page_n23');
-                                
+
                                 if (currentPage && parseInt(currentPage) > 1 && !newPagination) {
                                     shouldResetPagination = true;
                                 }
-                                
+
                             } else if (currentNoItems && newNoItems) {
                                 if (currentItems) currentItems.style.display = 'none';
                                 currentNoItems.innerHTML = newNoItems.innerHTML;
                                 currentNoItems.style.display = newNoItems.style.display || 'block';
                                 // resultsFound bleibt false, da .no-auctions angezeigt wird
-                                
+
                                 // Bei "keine Auktionen" auch Paginierung zurücksetzen
                                 const currentPage = new URLSearchParams(window.location.search).get('page') || new URLSearchParams(window.location.search).get('page_n23');
                                 if (currentPage && parseInt(currentPage) > 1) {
@@ -677,7 +722,7 @@
                         if (shouldResetPagination) {
                             const currentUrl = new URL(window.location);
                             let hasPageParam = false;
-                            
+
                             // Alle möglichen Paginierungs-Parameter entfernen
                             if (currentUrl.searchParams.has('page')) {
                                 currentUrl.searchParams.delete('page');
@@ -687,37 +732,37 @@
                                 currentUrl.searchParams.delete('page_n23');
                                 hasPageParam = true;
                             }
-                            
+
                             // URL aktualisieren und Seite neu laden (da sich die Paginierung geändert hat)
                             if (hasPageParam) {
                                 const stateObject = formDataToObject(new FormData(filterForm));
                                 delete stateObject.page; // Page-Parameter auch aus dem State entfernen
                                 delete stateObject.page_n23;
                                 history.replaceState({formData: stateObject}, '', currentUrl.toString());
-                                
+
                                 // Neue Anfrage ohne Page-Parameter stellen
                                 fetch(currentUrl.toString(), {
                                     method: 'GET',
                                     headers: {'X-Requested-With': 'XMLHttpRequest'}
                                 })
-                                .then(response => response.text())
-                                .then(html => {
-                                    // Auction Listing nochmal komplett aktualisieren
-                                    const parser = new DOMParser();
-                                    const newDoc = parser.parseFromString(html, 'text/html');
-                                    const newListingContainer = newDoc.querySelector('#auction_listing_container') || newDoc.querySelector('.auction-listing');
-                                    const currentListingContainer = document.querySelector('#auction_listing_container') || document.querySelector('.auction-listing');
-                                    
-                                    if (newListingContainer && currentListingContainer) {
-                                        currentListingContainer.innerHTML = newListingContainer.innerHTML;
-                                        currentListingContainer.querySelectorAll('[data-animation]').forEach(item => {
-                                            item.removeAttribute('data-animation');
-                                        });
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Paginierungs-Reset Fehler:', error);
-                                });
+                                    .then(response => response.text())
+                                    .then(html => {
+                                        // Auction Listing nochmal komplett aktualisieren
+                                        const parser = new DOMParser();
+                                        const newDoc = parser.parseFromString(html, 'text/html');
+                                        const newListingContainer = newDoc.querySelector('#auction_listing_container') || newDoc.querySelector('.auction-listing');
+                                        const currentListingContainer = document.querySelector('#auction_listing_container') || document.querySelector('.auction-listing');
+
+                                        if (newListingContainer && currentListingContainer) {
+                                            currentListingContainer.innerHTML = newListingContainer.innerHTML;
+                                            currentListingContainer.querySelectorAll('[data-animation]').forEach(item => {
+                                                item.removeAttribute('data-animation');
+                                            });
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Paginierungs-Reset Fehler:', error);
+                                    });
                                 return; // Früher Ausstieg, da wir eine neue Anfrage stellen
                             }
                         }

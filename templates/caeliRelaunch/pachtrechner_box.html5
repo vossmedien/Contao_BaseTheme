@@ -1,11 +1,9 @@
 <div class="pachtrechner-instance pachtrechner-widget is-box container-wide content--element pull-up js-pachtrechner-form">
 
-    <style>
-        .pachtrechner-instance .has-bg {
-            background: url('files/base/layout/img/caeli_de/bg/bg-pachtrechner.jpg') center center / cover no-repeat;
-        }
-    </style>
-    <div class="has-bg p-3 ps-sm-gap pt-sm-gap pb-sm-7 pe-sm-7">
+
+    <div class="has-bg p-3 ps-sm-gap pt-sm-gap pb-sm-7 pe-sm-7 lazy"
+     data-bg="<?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL('files/base/content/caeli_de/bilder/ge/luftaufnahme-getreidefeld-mit-traktorspuren.webp', ["1150","650","crop"]) ?>"
+    >
         <div class="position-relative bg-primary ms-auto me-0 mt-gap text-secondary p-sm-7 p-3 col-12 col-sm-10">
             <div class="row align-items-center">
                 <div class="col-md-9">

@@ -7,6 +7,9 @@ use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\BasicHelper;
 use Vsm\VsmHelperTools\Helper\EnvHelper;
 
+// Social Media Meta-Tags Helper hinzufügen
+use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
+
 $uniqueId = $this->id . '_' . uniqid();
 
 // Styles für die Box
@@ -149,6 +152,18 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_hero_complex.min.css|static';
 }
 
+// Social Media Meta-Tags generieren (nur einmal pro Seite)
+if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
+    $socialMetaData = [
+        'title' => $this->main_headline,
+        'description' => $this->left_text_below_headline ?: $this->main_text,
+        'image' => $this->main_image ?: null,
+        'type' => 'website'
+    ];
+    
+    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
+}
+
 ?>
 
     <div <?= $this->cssID ?> class="content--element <?= $this->class ?>">
@@ -198,7 +213,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                                 <div class="swiper-wrapper">
                                                     <?php foreach ($this->box_slides as $slide): ?>
                                                         <div class="swiper-slide">
-                                                            <div class="box-slide-inner p-3 p-lg-4 p-md-5">
+                                                            <div class="box-slide-inner p-5">
                                                                 <?php if ($slide->slide_headline): ?>
                                                                     <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, (bool)$slide->slide_headline_onlystyle, "mb-4") ?>
                                                                 <?php endif; ?>
@@ -256,7 +271,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                                     <div class="swiper-wrapper">
                                                         <?php foreach ($this->box_slides as $slide): ?>
                                                             <div class="swiper-slide">
-                                                                <div class="box-slide-inner p-3 p-lg-4 p-md-5">
+                                                                <div class="box-slide-inner p-5">
                                                                     <?php if ($slide->slide_headline): ?>
                                                                         <?= HeadlineHelper::generateHeadlineHTML(null, $slide->slide_headline, null, $slide->slide_headline_type ?: 'h3', "no-animation", null, (bool)$slide->slide_headline_onlystyle, "mb-4") ?>
                                                                     <?php endif; ?>

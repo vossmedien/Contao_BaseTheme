@@ -11,6 +11,7 @@ $config = array(
     'label' => array('Custom | Galerie auf voller Breite mit Hover-Text & Verlinkung (fullwidthgallery)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

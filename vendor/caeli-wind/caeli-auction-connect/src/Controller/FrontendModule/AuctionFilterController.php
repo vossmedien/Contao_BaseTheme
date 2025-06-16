@@ -79,8 +79,18 @@ class AuctionFilterController extends AbstractFrontendModuleController
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
-        // --- Filterkonfiguration definieren ---
-        $filterConfigs = [
+        // --- Vollständige Filterkonfiguration definieren ---
+        $allFilterConfigs = [
+            'isAuctionInFocus' => [
+                'label' => 'filter.label.isAuctionInFocus',
+                'type' => 'highlights_button', // Spezialtyp für Highlights Button
+            ],
+            'state' => [
+                'label' => 'filter.label.bundesland', // bestehende Übersetzung wiederverwenden
+                'type' => 'select',
+                'options_key' => 'bundeslaender',
+                'placeholder' => 'filter.placeholder.bundeslaender',
+            ],
             'bundesland' => [
                 'label' => 'filter.label.bundesland',
                 'type' => 'select',
@@ -99,12 +109,26 @@ class AuctionFilterController extends AbstractFrontendModuleController
                 'options_key' => 'property_values',
                 'placeholder' => 'filter.placeholder.property_values',
             ],
+            'areaSize' => [
+                'label' => 'filter.label.size', // bestehende Übersetzung wiederverwenden
+                'type' => 'range_slider',
+                'min' => 0,
+                'max' => 500,
+                'step' => 10,
+            ],
             'size' => [
                 'label' => 'filter.label.size',
                 'type' => 'range_slider',
                 'min' => 0,
                 'max' => 500,
                 'step' => 10,
+            ],
+            'power' => [
+                'label' => 'filter.label.leistung', // bestehende Übersetzung wiederverwenden
+                'type' => 'range_slider',
+                'min' => 0,
+                'max' => 250,
+                'step' => 5,
             ],
             'leistung' => [
                 'label' => 'filter.label.leistung',
@@ -113,12 +137,26 @@ class AuctionFilterController extends AbstractFrontendModuleController
                 'max' => 250,
                 'step' => 5,
             ],
+            'fullUsageHours' => [
+                'label' => 'filter.label.volllaststunden', // bestehende Übersetzung wiederverwenden
+                'type' => 'range_slider',
+                'min' => 0,
+                'max' => 4000,
+                'step' => 100,
+            ],
             'volllaststunden' => [
                 'label' => 'filter.label.volllaststunden',
                 'type' => 'range_slider',
                 'min' => 0,
                 'max' => 4000,
                 'step' => 100,
+            ],
+            'internalRateOfReturnBeforeRent' => [
+                'label' => 'filter.label.irr', // bestehende Übersetzung wiederverwenden
+                'type' => 'range_slider',
+                'min' => 0,
+                'max' => 20,
+                'step' => 0.5,
             ],
             'irr' => [
                 'label' => 'filter.label.irr',
@@ -128,6 +166,10 @@ class AuctionFilterController extends AbstractFrontendModuleController
                 'step' => 0.5,
             ],
         ];
+
+        // --- Filter-Optionen aus dem Modul auslesen und filtern ---
+        $filterOptionsString = $model->auctionFilterOptions ?: '';
+        $filterConfigs = $this->getFilteredConfigs($allFilterConfigs, $filterOptionsString);
 
         // --- Optionen für Select-Felder vorbereiten ---
         $bundeslaender = $this->auctionService->getAllBundeslaender();
@@ -155,10 +197,17 @@ class AuctionFilterController extends AbstractFrontendModuleController
             $propertyOptions[$value] = $this->translator->trans($translationKey, [], 'messages');
         }
 
+        // Focus-Optionen hinzufügen
+        $focusOptions = [
+            'true' => $this->translator->trans('filter.focus.true', [], 'messages'),
+            'false' => $this->translator->trans('filter.focus.false', [], 'messages'),
+        ];
+
         $options = [
             'bundeslaender' => array_combine($bundeslaender, $bundeslaender),
             'status_values' => $statusOptions,
             'property_values' => $propertyOptions,
+            'focus_values' => $focusOptions,
         ];
 
         // --- Aktuelle Filterwerte aus der Anfrage extrahieren (für Template) ---
@@ -215,5 +264,35 @@ class AuctionFilterController extends AbstractFrontendModuleController
 
         // Immer die Standard-Antwort zurückgeben
         return $template->getResponse();
+    }
+
+    /**
+     * Filtert und sortiert die Filter-Konfigurationen basierend auf den im Modul definierten Optionen.
+     *
+     * @param array $allConfigs Alle verfügbaren Filter-Konfigurationen
+     * @param string $filterOptionsString Kommaseparierte Liste der gewünschten Filter-Optionen
+     * @return array Gefilterte und sortierte Filter-Konfigurationen
+     */
+    private function getFilteredConfigs(array $allConfigs, string $filterOptionsString): array
+    {
+        // Wenn keine spezifischen Optionen angegeben wurden, alle Filter zurückgeben
+        if (empty(trim($filterOptionsString))) {
+            return $allConfigs;
+        }
+
+        // Filter-Optionen parsen (kommasepariert, Leerzeichen entfernen)
+        $requestedFilters = array_map('trim', explode(',', $filterOptionsString));
+        $requestedFilters = array_filter($requestedFilters); // Leere Einträge entfernen
+
+        $filteredConfigs = [];
+        
+        // In der gewünschten Reihenfolge durchgehen
+        foreach ($requestedFilters as $filterKey) {
+            if (isset($allConfigs[$filterKey])) {
+                $filteredConfigs[$filterKey] = $allConfigs[$filterKey];
+            }
+        }
+
+        return $filteredConfigs;
     }
 }

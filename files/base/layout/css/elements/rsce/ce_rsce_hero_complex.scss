@@ -51,9 +51,9 @@
 
 
     .ce--headline {
-      padding-right: 2rem;
+      //padding-right: 2rem;
       @include media-breakpoint-up(sm) {
-        padding-right: 3rem;
+        //padding-right: 3rem;
       }
 
       > * {

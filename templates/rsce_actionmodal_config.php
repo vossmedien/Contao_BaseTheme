@@ -10,6 +10,7 @@ $config = array(
     'label' => array('Custom | Modales Fenster für Aktionen (actionmodal)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

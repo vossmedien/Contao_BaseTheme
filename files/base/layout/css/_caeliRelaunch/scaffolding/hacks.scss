@@ -126,3 +126,13 @@ html body .mb-lg-50{
     }
 }
 
+
+
+
+.ce_rsce_twocolimagewall:has(form){
+   @include media-breakpoint-down(lg) {
+     .image--col{
+       display: none;
+     }
+   }
+}

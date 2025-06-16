@@ -9,7 +9,7 @@ return [
     'types' => ['content'],
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => ['cssID'],
+    'standardFields' => array('headline', 'cssID'),
     'wrapper' => [
         'type' => 'none',
     ],

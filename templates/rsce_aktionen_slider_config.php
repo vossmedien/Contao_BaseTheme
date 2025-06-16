@@ -9,6 +9,7 @@ $config = array(
     'label' => array('Custom | Aktionen Slider', 'Slider zur Anzeige von Aktionen mit konfigurierbaren Boxen'),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',

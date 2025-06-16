@@ -9,7 +9,7 @@ $config = array(
     'label' => array('Custom | Interaktives SVG mit Links', 'Element mit SVG-Grafik und verknüpften Links'),
     'types' => array('content'),
     'contentCategory' => 'Custom',
-    'standardFields' => array('cssID'),
+    'standardFields' => array('headline', 'cssID'),
     'wrapper' => array(
         'type' => 'none',
     ),

@@ -12,6 +12,7 @@ $config = array(
     'label' => array('Custom | Überschrift & Text (headline)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+     'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',
@@ -402,9 +403,9 @@ $config = array(
 
         ),
 
-        'multiSRC' => [
-            'label' => ['Bilder', ''],
-            'inputType' => 'fileTree',
+        'multiSRC' => array(
+            'inputType' => 'standardField',
+
             'eval' => array(
                 'multiple' => true,
                 'fieldType' => 'checkbox',
@@ -414,8 +415,7 @@ $config = array(
                 'isGallery' => true,
                 'extensions' => 'jpg,jpeg,png,svg,webp',
             ),
-
-        ],
+        ),
 
         'image_spacing_class' => array(
             'label' => array('Abstandsklasse für Bilder (Listen-Ansicht)', 'Standard: mb-1. Wird beim letzten Bild nicht angewendet.'),

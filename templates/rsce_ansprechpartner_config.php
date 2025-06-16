@@ -10,6 +10,7 @@ $config = array(
     'label' => array('Custom | Ansprechpartner mit Kontaktinformationen', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+    'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
         'wrapper' => array(
         'type' => 'none',
@@ -169,6 +170,37 @@ $config = array(
             'default' => false,
             'eval' => array('tl_class' => 'w50 clr'), // clr für neue Zeile
         ),
+        'hide_all_button' => array(
+            'label' => array('Alle-Button ausblenden', 'Blendet den "Alle"-Button aus und zeigt direkt eine spezifische Kategorie an.'),
+            'inputType' => 'checkbox',
+            'default' => false,
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_filter_form',
+            ),
+        ),
+        'default_category' => array(
+            'label' => array('Kategorie an erster Stelle (optional)', 'Diese Kategorie wird an erster Stelle angezeigt und vorausgewählt.'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'hide_all_button',
+            ),
+        ),
+        'url_filter_mapping' => array(
+            'label' => array('URL-Filter Zuordnung', 'Verknüpfung zwischen URL-Begriffen und Filter-Tags. Wenn ein URL-Begriff im Referrer gefunden wird, wird der entsprechende Filter vorausgewählt.'),
+            'inputType' => 'keyValueWizard',
+            'eval' => array(
+                'tl_class' => 'clr',
+                'mandatory' => false,
+                'keyLabel' => 'URL-Begriff',
+                'valueLabel' => 'Filter-Tag',
+                'placeholder' => array('Marktplatz', 'Grundeigentümer')
+            ),
+            'dependsOn' => array(
+                'field' => 'add_filter_form',
+            ),
+        ),
         'add_zip_filter' => array(
             'label' => array('PLZ-Filter integrieren', 'Ermöglicht Filterung nach Postleitzahl mit konfigurierbarem Umkreis.'),
             'inputType' => 'checkbox',
@@ -178,11 +210,12 @@ $config = array(
                 'field' => 'add_filter_form',
             ),
         ),
-        'zip_filter_radius' => array(
-            'label' => array('PLZ-Filter Umkreis (km)', 'Radius in Kilometern für die PLZ-Filterung.'),
-            'inputType' => 'text',
-            'default' => '150',
-            'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
+
+        'show_distance_badge' => array(
+            'label' => array('Entfernung anzeigen', 'Zeigt die ungefähre Entfernung in km als Badge auf dem Partnerbild an (nur bei PLZ-Filter).'),
+            'inputType' => 'checkbox',
+            'default' => false,
+            'eval' => array('tl_class' => 'w50'),
             'dependsOn' => array(
                 'field' => 'add_zip_filter',
             ),
@@ -254,7 +287,7 @@ $config = array(
             'elementLabel' => '%s. Ansprechpartner',
             'inputType' => 'list',
             'minItems' => 1,
-            'maxItems' => 6,
+            'maxItems' => 99,
             'fields' => array(
                 'title' => array(
                     'label' => array('Titel / Abteilung', 'z.B. "Vertrieb" oder "Technik"'),
@@ -286,10 +319,20 @@ $config = array(
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
+                'appointment_link' => array(
+                    'label' => array('Termin vereinbaren Link', 'z.B. /termine oder https://calendly.com/username'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50', 'rgxp' => 'url'),
+                ),
                 'zip_code' => array(
-                    'label' => array('Postleitzahl', ''),
+                    'label' => array('Postleitzahl', 'Eigene PLZ des Partners für Entfernungsberechnung'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
+                ),
+                'coverage_areas' => array(
+                    'label' => array('Zuständigkeitsbereiche', 'PLZ-Bereiche oder Bundesländer kommagetrennt (z.B. "Bayern, Sachsen" oder "1,2,8-9")'),
+                    'inputType' => 'textarea',
+                    'eval' => array('tl_class' => 'clr', 'rows' => 2),
                 ),
                 'linkedin_link' => array(
                     'label' => array('LinkedIn-Link', 'z.B. https://www.linkedin.com/in/benutzername'),

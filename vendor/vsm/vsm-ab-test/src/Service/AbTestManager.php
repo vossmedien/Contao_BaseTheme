@@ -126,8 +126,8 @@ class AbTestManager
             }
         }
 
-        // Zufällige Auswahl einer Variante
-        $selectedVariant = $availableVariants[array_rand($availableVariants)];
+        // Homogene Verteilung basierend auf Session-ID oder IP für Konsistenz
+        $selectedVariant = $this->selectVariantHomogenously($availableVariants, $pageId, $type);
         
         // In Session speichern für Konsistenz
         if ($session) {
@@ -137,6 +137,41 @@ class AbTestManager
         $this->selectedVariants[$cacheKey] = $selectedVariant;
         
         return $selectedVariant;
+    }
+
+    /**
+     * Wählt eine Variante homogen aus verfügbaren Varianten aus
+     * Berücksichtigt nur tatsächlich vorhandene Tests
+     */
+    private function selectVariantHomogenously(array $availableVariants, int $pageId, string $type): string
+    {
+        if (empty($availableVariants)) {
+            return '';
+        }
+
+        // Erstelle einen stabilen Hash basierend auf Session oder IP + Page + Type
+        $request = $this->requestStack->getCurrentRequest();
+        $session = $request?->getSession();
+        
+        // Fallbacks für stabile Identifikation
+        $identifier = '';
+        if ($session && $session->getId()) {
+            $identifier = $session->getId();
+        } elseif ($request && $request->getClientIp()) {
+            $identifier = $request->getClientIp();
+        } else {
+            // Fallback auf Zufallsauswahl wenn keine stabile ID verfügbar
+            return $availableVariants[array_rand($availableVariants)];
+        }
+        
+        // Erstelle Hash für konsistente aber gleichmäßige Verteilung
+        $hashInput = $identifier . '_' . $pageId . '_' . $type;
+        $hash = crc32($hashInput);
+        
+        // Modulo für gleichmäßige Verteilung auf verfügbare Varianten
+        $variantIndex = abs($hash) % count($availableVariants);
+        
+        return $availableVariants[$variantIndex];
     }
 
     /**
@@ -302,8 +337,8 @@ class AbTestManager
             }
         }
 
-        // Zufällige Auswahl einer Variante
-        $selectedVariant = $availableVariants[array_rand($availableVariants)];
+        // Homogene Verteilung für Seitengruppen
+        $selectedVariant = $this->selectVariantHomogenously($availableVariants, crc32($group), 'page_group');
         
         // In Session speichern für Konsistenz
         if ($session) {
