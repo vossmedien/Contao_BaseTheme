@@ -76,7 +76,7 @@
     </div>
 
 
-    <div class="pachtrechner-widget py-gap bg-secondary content--element js-pachtrechner-form">
+    <div class="pachtrechner-widget py-gap bg-secondary mb-0 mb-sm-gap content--element js-pachtrechner-form">
         <div class="container position-relative">
             <div class="row align-items-end">
                 <div class="col-md-5">
@@ -90,7 +90,7 @@
                 </div>
                 <div class="col-md-7 mt-4 mt-lg-0">
                     <div class="ps-lg-gap ">
-                        <div class="pachtrechner-badge">
+                        <div class="pachtrechner-badge d-none d-sm-block">
                             <div data-animation="animate__fadeInRight">
                                 <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/badges/pachtrechner-badge-de.svg", null), null, null; ?>
                             </div>
@@ -99,7 +99,7 @@
                         <div class="widget widget-text" data-animation="animate__fadeIn">
                             <label class="form-label" for="pachtrechner_ha_input"><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['labelHa'] ?></label>
                             <div class="input-group w-auto d-inline-flex">
-                                <input type="number" style="min-width: 90px;" min="1" class="form-control text-center text-sm-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
+                                <input type="number" style="min-width: 90px;" min="1" id="pachtrechner_ha_input" class="form-control text-center text-sm-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
                                 <button class="btn btn-primary with-arrow js-pachtrechner-check-btn">
                                     <?= $GLOBALS['TL_LANG']['pachtrechner']['form']['buttonCalculate'] ?>
                                 </button>

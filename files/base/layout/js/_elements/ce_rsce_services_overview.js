@@ -76,26 +76,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Arrow Positioning: Measured container height:', contentRect.height); // DEBUG
                 const contentMidY = contentRect.top + contentRect.height / 2;
 
-                // Berechne die Oberkante des Nav-Wrappers relativ zum Viewport
-                const wrapperRect = navWrapper.getBoundingClientRect();
-                const wrapperTop = wrapperRect.top;
-
-                // Berechne die Höhe eines Pfeils
-                 const arrowHeight = prevArrow.offsetHeight;
-
-                // Berechne die gewünschte Top-Position für die Pfeile relativ zum Nav-Wrapper
-                 // Mitte Content (rel. Viewport) - Oberkante Wrapper (rel. Viewport) - Halbe Pfeilhöhe
-                let targetTop = contentMidY - wrapperTop - (arrowHeight / 2);
-
-                 // Sicherstellen, dass top nicht negativ ist oder übermäßig groß
-                targetTop = Math.max(0, targetTop);
-
-                // Wende die berechnete Top-Position an
-                prevArrow.style.top = `${targetTop}px`;
-                nextArrow.style.top = `${targetTop}px`;
-                // Entferne transform, da wir top direkt setzen
-                prevArrow.style.transform = 'none';
-                nextArrow.style.transform = 'none';
             } else {
                 console.warn('Elements for arrow positioning not found');
             }
@@ -114,52 +94,116 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // --- Height Adjustment Logic for MOBILE (Clone Method - Reinstated) ---
+    // --- Height Adjustment Logic for MOBILE (Optimized - Reduced Height) ---
      const setMobileContainerHeight = (overview) => {
          const contentContainer = overview.querySelector('.service-content-container');
          const serviceContents = overview.querySelectorAll('.service-content');
+         
          if (!contentContainer || serviceContents.length === 0) return;
 
          if (window.matchMedia('(max-width: 767.98px)').matches) {
              let maxHeight = 0;
-             // console.log('Calculating mobile height (clone method)...');
-
-             const tempContainer = document.createElement('div');
-             tempContainer.style.position = 'absolute';
-             tempContainer.style.left = '-9999px';
-             tempContainer.style.top = '-9999px';
-             tempContainer.style.visibility = 'hidden';
-             tempContainer.style.pointerEvents = 'none';
-             document.body.appendChild(tempContainer);
-
+             
+             // Store original states
+             const originalStates = [];
+             
+             // Temporär alle Contents aktivieren für korrekte Messung (position: relative)
              serviceContents.forEach((content, index) => {
-                 const clone = content.cloneNode(true);
-                 clone.style.width = contentContainer.offsetWidth + 'px';
-                 clone.style.padding = window.getComputedStyle(content).padding;
-                 clone.style.display = 'block';
-                 clone.style.position = 'static';
-                 clone.style.visibility = 'visible';
-                 clone.style.opacity = '1';
-                 clone.classList.add('active'); // Wichtig für korrekte Styles/Höhe
-
-                 tempContainer.appendChild(clone);
-                 const currentHeight = clone.offsetHeight;
-                 maxHeight = Math.max(maxHeight, currentHeight);
-                 // console.log(`Index ${index} clone height: ${currentHeight}`);
-                 tempContainer.removeChild(clone);
+                 originalStates[index] = {
+                     wasActive: content.classList.contains('active'),
+                     position: content.style.position,
+                     visibility: content.style.visibility,
+                     opacity: content.style.opacity,
+                     zIndex: content.style.zIndex
+                 };
+                 
+                 // WICHTIG: Alle temporär auf relative Position und sichtbar setzen
+                 content.classList.add('active');
+                 content.style.position = 'relative';
+                 content.style.visibility = 'visible';
+                 content.style.opacity = '1';
+                 content.style.zIndex = '1';
              });
-
-             document.body.removeChild(tempContainer);
-
+             
+             // Force layout recalc
+             contentContainer.offsetHeight;
+             
+             // Measure heights of actual text content with detailed debugging
+             serviceContents.forEach((content, index) => {
+                 let contentHeight = 0;
+                 let debugInfo = [];
+                 
+                 // Headlines messen (stehen außerhalb von service-text!)
+                 const headlines = content.querySelectorAll('h1, h2, h3, h4, h5, h6, .ce--headline');
+                 let headlinesHeight = 0;
+                 headlines.forEach(headline => {
+                     headlinesHeight += headline.offsetHeight;
+                 });
+                 if (headlinesHeight > 0) {
+                     contentHeight += headlinesHeight;
+                     debugInfo.push(`headlines: ${headlinesHeight}px`);
+                 }
+                 
+                 // Service-Text messen (nur der reine Text-Content)
+                 const serviceText = content.querySelector('.service-text');
+                 if (serviceText) {
+                     const textHeight = serviceText.offsetHeight;
+                     contentHeight += textHeight;
+                     debugInfo.push(`text: ${textHeight}px`);
+                 }
+                 
+                 // Service-Image messen
+                 const serviceImage = content.querySelector('.service-image');
+                 if (serviceImage) {
+                     const imageHeight = serviceImage.offsetHeight;
+                     contentHeight += imageHeight;
+                     debugInfo.push(`image: ${imageHeight}px`);
+                 }
+                 
+                 // Service-Buttons messen
+                 const serviceButtons = content.querySelector('.service-buttons');
+                 if (serviceButtons) {
+                     const buttonsHeight = serviceButtons.offsetHeight;
+                     contentHeight += buttonsHeight;
+                     debugInfo.push(`buttons: ${buttonsHeight}px`);
+                 }
+                 
+                 // Abstände zwischen Elementen
+                 const elementsCount = [headlines.length > 0 ? 1 : 0, serviceText ? 1 : 0, serviceImage ? 1 : 0, serviceButtons ? 1 : 0].reduce((a, b) => a + b, 0);
+                 let spacingHeight = 0;
+                 if (elementsCount > 1) {
+                     spacingHeight = (elementsCount - 1) * 16;
+                     contentHeight += spacingHeight;
+                     debugInfo.push(`spacing: ${spacingHeight}px`);
+                 }
+                 
+                 maxHeight = Math.max(maxHeight, contentHeight);
+                 console.log(`Content ${index}: ${contentHeight}px total [${debugInfo.join(', ')}]`);
+             });
+             
+             // Restore original states
+             serviceContents.forEach((content, index) => {
+                 const state = originalStates[index];
+                 if (!state.wasActive) {
+                     content.classList.remove('active');
+                 }
+                 content.style.position = state.position;
+                 content.style.visibility = state.visibility;
+                 content.style.opacity = state.opacity;
+                 content.style.zIndex = state.zIndex;
+             });
+             
              if (maxHeight > 0) {
-                 contentContainer.style.minHeight = `${maxHeight}px`;
-                 // console.log(`Mobile min-height set to: ${maxHeight}px`);
+                 // Container auf 90% der höchsten Content-Höhe setzen (kompakter für Mobile)
+                 const targetHeight = Math.floor(maxHeight * 0.6);
+                 contentContainer.style.height = `${targetHeight}px`;
+                 console.log(`Mobile: Container height set to: ${targetHeight}px (90% of max ${maxHeight}px)`);
              } else {
-                 // console.log('Max height calculation resulted in 0');
-                 contentContainer.style.minHeight = ''; // Fallback
+                 contentContainer.style.height = '';
              }
          } else {
-             contentContainer.style.minHeight = ''; // Höhe auf Desktop entfernen
+             // Desktop: Container-Höhe entfernen
+             contentContainer.style.height = '';
          }
      };
 

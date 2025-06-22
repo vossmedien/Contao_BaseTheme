@@ -27,27 +27,25 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!header) return;
     
     let lastScrollTop = 0;
-    let isThrottled = false;
     let isScrollingUp = false;
     let hasScrolled = false;
     
     // Deutlich höhere Schwellenwerte für mehr Stabilität
     const SCROLL_THRESHOLD = 100; // Erst ab 100px Scroll wird überhaupt reagiert
-    const DIRECTION_THRESHOLD = 50; // Mindestens 50px in eine Richtung scrollen
+    const DIRECTION_THRESHOLD = 100; // Mindestens 50px in eine Richtung scrollen
 
     function handleScroll() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
         // Ganz oben - alle Klassen entfernen
-        if (scrollTop <= 20) {
+        if (scrollTop <= 0) {
             header.classList.remove('is-scrolling', 'is-scrolling-up');
             lastScrollTop = 0;
             isScrollingUp = false;
             hasScrolled = false;
             return;
         }
-        
-        // Ab 20px ist Header im "scrolling" Modus
+
         if (!hasScrolled) {
             header.classList.add('is-scrolling');
             hasScrolled = true;
@@ -77,13 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.addEventListener('scroll', function () {
-        if (!isThrottled) {
-            handleScroll();
-            isThrottled = true;
-            setTimeout(() => {
-                isThrottled = false;
-            }, 100);
-        }
+         handleScroll();
     });
 });
 
@@ -599,14 +591,22 @@ document.addEventListener('DOMContentLoaded', function() {
   const flaechencheckWrappers = document.querySelectorAll('.enterFlaechencheck');
 
   flaechencheckWrappers.forEach(wrapper => {
-    const zipCodeInput = wrapper.querySelector('#zipCodeInput'); // Behält ID bei, könnte zu Problemen führen
-    const zipCodeSubmit = wrapper.querySelector('#zipCodeSubmit'); // Behält ID bei
-    const messageContainer = wrapper.querySelector('#messageContainer'); // Behält ID bei
+    const zipCodeInput = wrapper.querySelector('#zipCodeInput, .zipCodeInput');
+    const zipCodeSubmit = wrapper.querySelector('#zipCodeSubmit, .zipCodeSubmit');
+    let messageContainer = wrapper.querySelector('#messageContainer, .messageContainer');
+    
+    // MessageContainer erstellen wenn nicht vorhanden
+    if (!messageContainer) {
+      messageContainer = document.createElement('div');
+      messageContainer.className = 'messageContainer';
+      // Als erstes Element in den wrapper einfügen
+      wrapper.insertBefore(messageContainer, wrapper.firstChild);
+    }
 
     function showAlert(message, type = 'primary') {
       if (messageContainer) {
         const alertHtml = `
-          <div class="alert alert-${type} small p-2 border-0 fade mt-0 show" role="alert">
+          <div class="alert alert-${type} small p-2 border-0 fade mt-0 mb-0 show" role="alert">
             ${message}
           </div>`;
         messageContainer.innerHTML = alertHtml;
@@ -624,9 +624,11 @@ document.addEventListener('DOMContentLoaded', function() {
         clearAlert(); // Vorherige Nachrichten entfernen
         const query = zipCodeInput.value.trim();
         if (query) {
-          window.location.href = '/flaechencheck?search=' + encodeURIComponent(query);
+          const areaCheckUrl = window.caeliLang?.areaCheckUrl || '/flaechencheck';
+          window.location.href = areaCheckUrl + '?search=' + encodeURIComponent(query);
         } else {
-          showAlert('Bitte geben Sie eine PLZ oder einen Ort ein.', 'primary');
+          const errorMessage = window.caeliLang?.zipSearchError || 'Bitte geben Sie eine PLZ oder einen Ort ein.';
+          showAlert(errorMessage, 'primary');
         }
       });
 

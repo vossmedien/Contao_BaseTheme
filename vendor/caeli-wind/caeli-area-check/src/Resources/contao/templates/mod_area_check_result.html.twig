@@ -50,106 +50,51 @@
                 <div class="row align-items-center">
                     <div class="col-md-5">
                         <div class="result-container pe-lg-5">
-                            <ul class="list-check">
-                                <li data-animation="animate__fadeInUp"{% if (rating.rating_cutdensity is not defined) or (rating.rating_cutdensity == 'red') %} class="is-invalid is-danger"{% elseif rating.rating_cutdensity == 'yellow' %} class="is-invalid is-warning"{% endif %}>
-                                    <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.wind_conditions.title }}</b>
-                                    <span>{{ translations.result.criteria.wind_conditions.description }}</span>
+                            <div class="row align-items-center">
+                                <div class="col-sm-8 col-md-12">
+                                    <ul class="list-check">
+                                        <li data-animation="animate__fadeInUp"{% if (rating.rating_cutdensity is not defined) or (rating.rating_cutdensity == 'red') %} class="is-invalid is-danger"{% elseif rating.rating_cutdensity == 'yellow' %} class=""{% endif %}>
+                                            <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.wind_conditions.title }}</b>
+                                            <span>{{ translations.result.criteria.wind_conditions.description }}</span>
+                                        </li>
 
-                                    {#
-                                    {% if rating.rating_cutdensity is defined %}
-                                     <span class="rating-{{ rating.rating_cutdensity }}">
-                                         {% if rating.rating_cutdensity == 'green' %}
-                                             ✓ {{ translations.result.criteria.wind_conditions.rating.green }}
-                                         {% elseif rating.rating_cutdensity == 'yellow' %}
-                                             ⚠ {{ translations.result.criteria.wind_conditions.rating.yellow }}
-                                         {% else %}
-                                             ✗ {{ translations.result.criteria.wind_conditions.rating.red }}
-                                         {% endif %}
-                                     </span>
-                                 {% else %}
-                                     <span class="rating-red">✗ {{ translations.result.criteria.wind_conditions.rating.red }}</span>
-                                 {% endif %}
-                                    #}
+                                        <li data-animation="animate__fadeInUp"{% if (rating.rating_restrictions is not defined) or (rating.rating_restrictions == 'red') %} class="my-3 is-invalid is-danger"{% elseif rating.rating_restrictions == 'yellow' %} class="my-3 "{% else %} class="my-3"{% endif %}>
+                                            <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.restrictions.title }}</b>
+                                            <span>{{ translations.result.criteria.restrictions.description }}</span>
+                                        </li>
 
-                                </li>
-
-                                <li data-animation="animate__fadeInUp"{% if (rating.rating_restrictions is not defined) or (rating.rating_restrictions == 'red') %} class="my-3 is-invalid is-danger"{% elseif rating.rating_restrictions == 'yellow' %} class="my-3 is-invalid is-warning"{% else %} class="my-3"{% endif %}>
-                                    <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.restrictions.title }}</b>
-                                    <span>{{ translations.result.criteria.restrictions.description }}</span>
-                                    {#
-                                    {% if rating.rating_restrictions is defined %}
-                                     <span class="rating-{{ rating.rating_restrictions }}">
-                                         {% if rating.rating_restrictions == 'green' %}
-                                             ✓ {{ translations.result.criteria.restrictions.rating.green }}
-                                         {% elseif rating.rating_restrictions == 'yellow' %}
-                                             ⚠ {{ translations.result.criteria.restrictions.rating.yellow }}
-                                         {% else %}
-                                             ✗ {{ translations.result.criteria.restrictions.rating.red }}
-                                         {% endif %}
-                                     </span>
-                                 {% else %}
-                                    <span class="rating-red">✗ {{ translations.result.criteria.restrictions.rating.red }}</span>
+                                        <li data-animation="animate__fadeInUp"{% if (rating.rating_grid_connection is not defined) or (rating.rating_grid_connection == 'red') %} class="is-invalid is-danger"{% elseif rating.rating_grid_connection == 'yellow' %} class=""{% endif %}>
+                                            <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.grid_connection.title }}</b>
+                                            <span>{{ translations.result.criteria.grid_connection.description }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-4  d-none d-sm-block d-md-none">
+                                    {% if isSuitable %}
+                                        <img class="pdf-preview" src="/files/base/layout/img/flaechencheck-pdf-badge-de.png">
                                     {% endif %}
-                                    #}
-
-                                </li>
-
-                                <li data-animation="animate__fadeInUp"{% if (rating.rating_grid_connection is not defined) or (rating.rating_grid_connection == 'red') %} class="is-invalid is-danger"{% elseif rating.rating_grid_connection == 'yellow' %} class="is-invalid is-warning"{% endif %}>
-                                    <b class="h3 mb-2 fw-normal">{{ translations.result.criteria.grid_connection.title }}</b>
-                                    <span>{{ translations.result.criteria.grid_connection.description }}</span>
-
-                                    {#
-                                    {% if rating.rating_grid_connection is defined %}
-                                   <span class="rating-{{ rating.rating_grid_connection }}">
-                                       {% if rating.rating_grid_connection == 'green' %}
-                                           ✓ {{ translations.result.criteria.grid_connection.rating.green }}
-                                       {% elseif rating.rating_grid_connection == 'yellow' %}
-                                           ⚠ {{ translations.result.criteria.grid_connection.rating.yellow }}
-                                       {% else %}
-                                           ✗ {{ translations.result.criteria.grid_connection.rating.red }}
-                                       {% endif %}
-                                   </span>
-                               {% else %}
-                                   <span class="rating-red">✗ {{ translations.result.criteria.grid_connection.rating.red }}</span>
-                               {% endif %}
-                                    #}
-
-                                </li>
-                            </ul>
-
-                            {% if not isSuitable %}
-                                {#
-                                <div class="alert alert-warning mt-4">
-                           <h5>{{ translations.result.conclusion.title }}</h5>
-                           <p>{{ translations.result.conclusion.unsuitable_text }}
-                               {% if isSuccess and rating.rating_cutdensity is defined and rating.rating_cutdensity in ['green', 'yellow'] %}
-                                   {{ translations.result.conclusion.good_wind_text }}
-                               {% endif %}
-                               {{ translations.result.conclusion.contact_text }}</p>
-                       </div>
-                                #}
-
-                            {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-7 mt-4 mt-md-0">
-                        <div class="form-container p-5 bg-secondary">
+                        <div class="form-container p-3 p-md-5 bg-secondary">
                             <div class="mb-3">
                                 <div class="row">
                                     <div class="col-md-8" data-animation="animate__fadeIn">
 
-                                            {% if isSuitable %}   <h3 class="mb-0">
-                                                {{ translations.result.form_section.suitable_title }} </h3>
-                                            {% else %} <h3 class="fw-normal mb-0">
-                                                {{ translations.result.form_section.unsuitable_title }}</h3>
-                                            {% endif %}
+                                        {% if isSuitable %}   <h3 class="mb-0">
+                                            {{ translations.result.form_section.suitable_title }} </h3>
+                                        {% else %} <h3 class="fw-normal mb-0">
+                                            {{ translations.result.form_section.unsuitable_title }}</h3>
+                                        {% endif %}
 
                                     </div>
                                     <div class="col-md-4" data-animation="animate__fadeInDown">
                                         {% if isSuitable %}
-                                            <img class="pdf-preview" src="/files/base/layout/img/flaechencheck-pdf-badge-de.png">
+                                            <img class="pdf-preview d-none d-md-block" src="/files/base/layout/img/flaechencheck-pdf-badge-de.png">
                                         {% else %}
-                                              <img class="pdf-preview is-badge" src="/files/base/layout/img/caeli_de/badges/flaechencheck-pdf-badge-de_negativ.svg">
+                                            <img class="pdf-preview is-badge" src="/files/base/layout/img/caeli_de/badges/flaechencheck-pdf-badge-de_negativ.svg">
                                         {% endif %}
                                     </div>
                                 </div>
@@ -213,16 +158,27 @@
 <style>
 
     .pdf-preview {
-        max-width: 230px;
-        margin: 1rem auto 0 auto;
-
         @media (min-width: 768px) {
             margin-top: -90%;
+            max-width: 230px;
+            position: relative;
+            right: 30px;
         }
     }
 
-    .pdf-preview.is-badge{
-         @media (min-width: 768px) {
+    .pdf-preview:not(.is-badge) {
+
+    }
+
+    .pdf-preview.is-badge {
+
+        @media (max-width: 767.999px) {
+            position: absolute;
+            right: 0;
+            margin-top: 330px;
+        }
+
+        @media (min-width: 768px) {
             margin-top: -50%;
         }
     }

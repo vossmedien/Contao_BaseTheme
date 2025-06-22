@@ -147,6 +147,14 @@ $this->bodyAttributes = $this
     <?= $this->stylesheets ?>
     <?= $this->mooScripts ?>
     <?= $this->head ?>
+    
+    <!-- Language variables for JavaScript -->
+    <script>
+        window.caeliLang = window.caeliLang || {};
+        window.caeliLang.zipSearchError = <?= json_encode($GLOBALS['TL_LANG']['MSC']['zip_search_error'] ?? ($this->language === 'en' ? 'Please enter a postal code or location.' : 'Bitte geben Sie eine PLZ oder einen Ort ein.')); ?>;
+        window.caeliLang.areaCheckUrl = <?= json_encode($GLOBALS['TL_LANG']['MSC']['area_check_url'] ?? ($this->language === 'en' ? '/area-check' : '/flaechencheck')); ?>;
+    </script>
+    
     <?php $this->endblock(); ?>
 
 <script type="application/ld+json">

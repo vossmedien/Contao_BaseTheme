@@ -139,18 +139,19 @@
 }
 
 body:not(.is-home) .level_1 > li {
-  animation-name: none;
-  opacity: 1;
+  animation-name: none !important;
+  opacity: 1 !important;
   visibility: visible !important;
 }
 
 .mm-spn.mod_navigation {
-  --mm-spn-border-color: var(--bs-light);
+
 
   .contact-btn {
     display: none !important;
   }
 }
+
 
 .mm-spn.mod_navigation:before {
   @extend %fa-icon, .fak;
@@ -236,7 +237,7 @@ html body main#main .content--element .mod_breadcrumb {
     gap: .75rem;
     align-items: center;
 
-    a{
+    a {
       color: currentColor;
     }
 

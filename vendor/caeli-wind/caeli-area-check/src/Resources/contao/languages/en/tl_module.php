@@ -3,8 +3,8 @@
 /**
  * Frontend modules
  */
-$GLOBALS['TL_LANG']['FMD']['area_check_map'] = ['Area Check Map', 'Module for area selection with Google Maps'];
-$GLOBALS['TL_LANG']['FMD']['area_check_result'] = ['Area Check Result', 'Module for displaying evaluation results'];
+$GLOBALS['TL_LANG']['FMD']['area_check_map'] = ['Site Check Map', 'Module for area selection with Google Maps'];
+$GLOBALS['TL_LANG']['FMD']['area_check_result'] = ['Site Check Result', 'Module for displaying evaluation results'];
 
 /**
  * Fields

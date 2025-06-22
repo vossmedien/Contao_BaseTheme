@@ -1,10 +1,10 @@
 {# Twig Template für das Auction Filter Modul #}
-<div id="auctionFilter" class="{% if class is defined and class %} {{ class }}{% endif %}" style="z-index: 6;">
+<div id="auctionFilter" class="mb-0 mb-sm-gap {% if class is defined and class %} {{ class }}{% endif %}" style="z-index: 6;">
     <div class="auction-filter-module" data-no-results-text="{{ 'general.no_auctions_for_criteria'|trans|escape('html_attr') }}">
         {# Filter-Formular #}
-        <div class="filter-buttons mb-4">
+        <div class="filter-buttons mb-0 mb-sm-4">
             <form class="auction-filter" method="get">
-                <div class="row g-1 mb-3"> {# g-2 für kleinen Abstand zwischen den Filter-Buttons #}
+                <div class="row g-1 mb-0 mb-sm-3 justify-content-start"> {# g-2 für kleinen Abstand zwischen den Filter-Buttons #}
 
                     {# Bestehende Filter als Dropdowns und spezielle Behandlung für isAuctionInFocus #}
                     {% for key, config in filter_configs|default([]) %}
@@ -124,12 +124,12 @@
 
                     {# Prüfe ob irgendwelche Filter aktiv sind #}
                     {% set has_active_filters = false %}
-                    
+
                     {# Prüfe Focus-Filter #}
                     {% if filters.focus == 'true' %}
                         {% set has_active_filters = true %}
                     {% endif %}
-                    
+
                     {# Prüfe andere Filter #}
                     {% if not has_active_filters %}
                         {% for key, config in filter_configs|default([]) %}
@@ -137,7 +137,7 @@
                                 {% set filter_value = filters[key]|default(null) %}
                                 {% set filter_value_min = filters[key ~ '_min']|default(null) %}
                                 {% set filter_value_max = filters[key ~ '_max']|default(null) %}
-                                
+
                                 {% if config.type == 'select' %}
                                     {# Für Selects prüfen ob Wert gesetzt und nicht leer #}
                                     {% if filter_value is not null and filter_value != '' %}
@@ -200,9 +200,11 @@
                 </g>
             </svg>
         </div>
-
-        <div class="auction-items-placeholder mt-3">
+{#
+       <div class="auction-items-placeholder mt-3">
         </div>
+#}
+
     </div>
 
     {# JavaScript für AJAX-Filter und HTML5 Range Slider #}

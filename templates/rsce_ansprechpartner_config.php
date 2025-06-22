@@ -16,15 +16,6 @@ $config = array(
         'type' => 'none',
     ),
     'fields' => array(
-        // --- 2. Allgemeines Layout & Raster --- //
-        'animation_type' => array(
-            'label' => array(
-                'de' => array('Art der Einblendeanimation (Überschrift)', 'Siehe https://animate.style/ für Beispiele'),
-            ),
-            'inputType' => 'select',
-            'options' => GlobalElementConfig::getAnimations(),
-            'eval' => array('chosen' => 'true', 'tl_class' => 'clr') // clr hinzugefügt für eigene Zeile
-        ),
         // --- 1. Allgemeine Text- & Inhaltselemente --- //
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
@@ -42,7 +33,126 @@ $config = array(
             'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
         ),
 
+        // --- KONFIGURIERBARE TEXTE --- //
+        'email_icon_label' => array(
+            'label' => array('Label für E-Mail-Text', ''),
+            'inputType' => 'text',
+            'default' => 'Nachricht schreiben',
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
+        'phone_display_label' => array(
+            'label' => array('Anzeigetext / Tooltip für Telefonnummer', ''),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'more_info_label' => array(
+            'label' => array('Text für "Mehr erfahren"', 'Text für den Link, der die Beschreibung ein-/ausblendet.'),
+            'inputType' => 'text',
+            'default' => 'Mehr erfahren',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'text_filter_button_label' => array(
+            'label' => array('Button-Label für Text-Filter', 'Beschriftung der Schaltfläche für den Text-Filter.'),
+            'inputType' => 'text',
+            'default' => 'Weitere Informationen',
+            'eval' => array('tl_class' => 'w50', 'mandatory' => false),
+            'dependsOn' => array(
+                'field' => 'add_text_filter_option',
+            ),
+        ),
+        'general_inquiry_button_label' => array(
+            'label' => array('Button-Label für Allgemeine Anfrage', 'Beschriftung der Schaltfläche für allgemeine Anfragen.'),
+            'inputType' => 'text',
+            'default' => 'Allgemeine Anfrage',
+            'eval' => array('tl_class' => 'w50', 'mandatory' => false),
+            'dependsOn' => array(
+                'field' => 'add_general_inquiry',
+            ),
+        ),
+        'zip_search_intro_text' => array(
+            'label' => array('PLZ-Suche Einführungstext', 'Text oberhalb des PLZ-Eingabefelds'),
+            'inputType' => 'textarea',
+            'default' => 'Sie finden Ihren <b>persönlichen Ansprechpartner über die nachfolgende Standortsuche.</b><br>Vereinbaren Sie noch heute Ihr unverbindliches Erstgespräch.',
+            'eval' => array('tl_class' => 'clr', 'allowHtml' => true, 'rows' => 3),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_input_label' => array(
+            'label' => array('PLZ-Eingabefeld Label', 'Beschriftung für das PLZ-Eingabefeld'),
+            'inputType' => 'text',
+            'default' => 'PLZ eingeben:',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_reset_button_label' => array(
+            'label' => array('PLZ-Reset Button Text', 'Text für den Zurücksetzen-Button'),
+            'inputType' => 'text',
+            'default' => 'Zurücksetzen',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_no_results_text' => array(
+            'label' => array('PLZ Keine Ergebnisse Text', 'Text wenn keine Ansprechpartner im Umkreis gefunden werden'),
+            'inputType' => 'textarea',
+            'default' => '<b>Keine Ansprechpartner im gewählten Umkreis gefunden</b> - Bitte versuchen Sie es mit einer anderen Postleitzahl.',
+            'eval' => array('tl_class' => 'clr', 'allowHtml' => true, 'rows' => 2),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        
+        // NEU: Fehlermeldungen und URLs
+        'zip_search_error_text' => array(
+            'label' => array('PLZ Sucheingabe Fehlermeldung', 'Fehlermeldung wenn keine PLZ/Ort eingegeben wurde'),
+            'inputType' => 'text',
+            'default' => 'Bitte geben Sie eine PLZ oder einen Ort ein.',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'area_check_url' => array(
+            'label' => array('Flächencheck URL', 'URL für den Flächencheck (ohne Domain)'),
+            'inputType' => 'text',
+            'default' => '/flaechencheck',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_no_search_results_text' => array(
+            'label' => array('Text für keine Suchergebnisse', 'Meldung wenn keine Ergebnisse für die Suche gefunden werden. Verwenden Sie [SEARCH] als Platzhalter.'),
+            'inputType' => 'text',
+            'default' => 'Keine Ergebnisse für "[SEARCH]" gefunden.',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_search_api_error_text' => array(
+            'label' => array('Text für API-Fehler', 'Fehlermeldung bei Problemen mit der Such-API'),
+            'inputType' => 'text',
+            'default' => 'Fehler bei der Suche. Bitte versuchen Sie es erneut.',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
 
+        // --- 2. Allgemeines Layout & Raster --- //
+        'animation_type' => array(
+            'label' => array(
+                'de' => array('Art der Einblendeanimation (Überschrift)', 'Siehe https://animate.style/ für Beispiele'),
+            ),
+            'inputType' => 'select',
+            'options' => GlobalElementConfig::getAnimations(),
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr') // clr hinzugefügt für eigene Zeile
+        ),
         'partner_columns' => array(
             'label' => array('Anzahl Spalten für Ansprechpartner', 'Bestimmt, wie viele Partner nebeneinander angezeigt werden (Bootstrap Grid).'),
             'inputType' => 'select',
@@ -92,32 +202,12 @@ $config = array(
             'default' => 'text-start',
             'eval' => array('tl_class' => 'w50'),
         ),
-        'email_icon_label' => array(
-            'label' => array('Label für E-Mail-Text', ''),
-            'inputType' => 'text',
-            'default' => 'Nachricht schreiben',
-            'eval' => array('tl_class' => 'w50'), // Neben 'Icons auf Bild'
-        ),
-        'phone_display_label' => array(
-            'label' => array('Anzeigetext / Tooltip für Telefonnummer', ''),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50 '), // Nimmt jetzt eine ganze Zeile ein
-        ),
-
         'hide_all_descriptions' => array(
             'label' => array('Beschreibungen hinter "Mehr erfahren" verstecken', 'Blendet alle Beschreibungen initial aus und zeigt einen "Mehr erfahren"-Link.'),
             'inputType' => 'checkbox',
             'default' => false,
             'eval' => array('tl_class' => 'w50 clr'), // clr für neue Zeile
         ),
-        'more_info_label' => array(
-            'label' => array('Text für "Mehr erfahren"', 'Text für den Link, der die Beschreibung ein-/ausblendet.'),
-            'inputType' => 'text',
-            'default' => 'Mehr erfahren',
-
-            'eval' => array('tl_class' => 'w50'), // Neben Checkbox
-        ),
-
         'title_below_name' => array(
             'label' => array('Titel unterhalb des Namens anzeigen', 'Zeigt den Titel/Abteilung unter dem Namen an (Standard: Titel: Name).'),
             'inputType' => 'checkbox',
@@ -131,10 +221,7 @@ $config = array(
             'default' => false,
         ),
 
-
         // --- 4. Funktionale Einstellungen --- //
-
-
         'round_images' => array(
             'label' => array('Bilder abrunden', 'Fügt die Klasse .rounded-circle zu den Bildern hinzu.'),
             'inputType' => 'checkbox',
@@ -150,7 +237,6 @@ $config = array(
                 'value' => 'layout-image-left',
             ),
         ),
-
 
         // --- 5. Globale Bildgröße --- //
         'size' => array(
@@ -238,15 +324,6 @@ $config = array(
                 'field' => 'add_filter_form',
             ),
         ),
-        'text_filter_button_label' => array(
-            'label' => array('Button-Label für Text-Filter', 'Beschriftung der Schaltfläche für den Text-Filter.'),
-            'inputType' => 'text',
-            'default' => 'Weitere Informationen',
-            'eval' => array('tl_class' => 'w50', 'mandatory' => true),
-            'dependsOn' => array(
-                'field' => 'add_text_filter_option',
-            ),
-        ),
         'text_filter_content' => array(
             'label' => array('Text für Text-Filter', 'Dieser Text wird angezeigt, wenn der Text-Filter aktiv ist.'),
             'inputType' => 'textarea',
@@ -262,15 +339,6 @@ $config = array(
             'eval' => array('tl_class' => 'w50 clr'),
             'dependsOn' => array(
                 'field' => 'add_filter_form',
-            ),
-        ),
-        'general_inquiry_button_label' => array(
-            'label' => array('Button-Label für Allgemeine Anfrage', 'Beschriftung der Schaltfläche für allgemeine Anfragen.'),
-            'inputType' => 'text',
-            'default' => 'Allgemeine Anfrage',
-            'eval' => array('tl_class' => 'w50', 'mandatory' => true),
-            'dependsOn' => array(
-                'field' => 'add_general_inquiry',
             ),
         ),
         'general_inquiry_content' => array(

@@ -1,0 +1,6 @@
+<div class="tl_info">
+    <h3>📄 PDF-Generierungs-Modul</h3>
+    <p><strong>Funktion:</strong> Generiert PDF-Berichte für Windenergie-Ersteinschätzungen</p>
+    <p><strong>Parameter:</strong> <code>?parkid=UUID</code></p>
+    <p><strong>Status:</strong> Modul konfiguriert und bereit</p>
+</div> 

@@ -102,7 +102,7 @@
 
   // Einfaches CSS für die Buttons
   &.btn-outline-currentColor {
-    border: 1px solid var(--btn-context-color, currentColor);
+    border: var(--bs-btn-border-width) solid var(--btn-context-color, currentColor);
     background-color: transparent;
     color: var(--btn-context-color, currentColor);
 
@@ -113,7 +113,7 @@
   }
 
   &.btn-currentColor {
-    border: 1px solid var(--btn-context-color, currentColor);
+    border: var(--bs-btn-border-width) solid var(--btn-context-color, currentColor);
     background-color: var(--btn-context-color, currentColor);
     color: var(--parent-bg-color, white);
 

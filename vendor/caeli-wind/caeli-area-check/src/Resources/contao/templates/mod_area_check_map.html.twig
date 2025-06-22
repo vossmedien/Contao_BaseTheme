@@ -1,6 +1,6 @@
 <div class="content--element mb-0">
     {% block caeli_area_check_styles %}
-        <link rel="stylesheet" href="{{ asset('bundles/caeliareacheck/css/caeli-area-check.css?v=4') }}">
+        <link rel="stylesheet" href="{{ asset('bundles/caeliareacheck/css/caeli-area-check.css?v=8') }}">
     {% endblock %}
 
     <div class="mod_caeli_area_check" style="position:relative">
@@ -18,7 +18,7 @@
             <!-- Consent-Overlay -->
             <div id="consent-overlay" class="consent-overlay" style="display:none;">
                 <div class="consent-content">
-                    <h4>{{ translations.consent.overlay.title }}</h4>
+                    <h4>{{ translations.consent.overlay.title|raw }}</h4>
                     <p>{{ translations.consent.overlay.message }}</p>
                     <button id="activate-consent-btn" class="mt-3 btn btn-primary">{{ translations.consent.overlay.button }}</button>
                 </div>
@@ -91,7 +91,7 @@
                         <strong>{{ translations.interface.hints.warning }}</strong> {{ translations.form.warning }}
                     </div>
 
-                    <form id="park-form" action="#" method="POST" onsubmit="return submitFormWithRedirect();">
+                    <form id="park-form" action="{{ app.request.uri|split('#')[0] }}" method="POST">
                         <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
                         <input type="hidden" name="geometry" id="geometry-field" value="">
                         <input type="hidden" name="searched_address" id="searched-address-field" value="">
@@ -129,27 +129,22 @@
 
     </div>
 
-    <!-- Übersetzungen und AJAX-Config für JavaScript bereitstellen -->
+    <!-- Übersetzungen und Config für JavaScript bereitstellen -->
     <script>
         window.CaeliAreaCheckTranslations = {{ translations|json_encode|raw }};
         
-        // AJAX-Config: URLs basierend auf aktueller Seite generieren
-        const currentPath = window.location.pathname.replace(/\/$/, ''); // Trailing slash entfernen
+        // Config für JavaScript
         window.CaeliAreaCheckConfig = {
-            startUrl: '/flaechencheck/ajax/start',
-            statusUrl: '/flaechencheck/ajax/status',
-            detailPageUrl: {{ (detailPage ? detailPage.getFrontendUrl() : "'/flaechencheck/ergebnis'")|json_encode|raw }},
             // Länder-Beschränkung für Geocoding (ISO 3166-1 Alpha-2 Codes)
-            // Modulspezifische Konfiguration aus Backend-Einstellungen
             allowedCountries: {{ allowedCountries|json_encode|raw }},
             // Google Maps API Key für dynamisches Laden
             googleMapsApiKey: {{ googleMapsApiKey|json_encode|raw }}
         };
         
-        console.log('✅ AJAX-Processing aktiviert');
+        console.log('✅ Flächen-Check initialisiert');
         console.log('Translations loaded:', window.CaeliAreaCheckTranslations);
-        console.log('AJAX Config loaded:', window.CaeliAreaCheckConfig);
+        console.log('Config loaded:', window.CaeliAreaCheckConfig);
     </script>
-    <script src="{{ asset('bundles/caeliareacheck/js/caeli-area-check.js?v=4') }}"></script>
+    <script src="{{ asset('bundles/caeliareacheck/js/caeli-area-check.js?v=9') }}"></script>
     <!-- Google Maps Script wird dynamisch geladen nach Consent-Check -->
 </div> 

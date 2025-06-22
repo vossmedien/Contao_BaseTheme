@@ -17,7 +17,7 @@
                             <div class="widget widget-text" data-animation="animate__fadeIn">
                                 <label class="form-label d-block" for="pachtrechner_ha_input"><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['labelHa'] ?></label>
                                 <div class="input-group w-auto d-inline-flex">
-                                    <input type="number" style="min-width: 90px;" min="1" class="form-control text-center text-sm-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
+                                    <input type="number" style="min-width: 90px;" min="1" id="pachtrechner_ha_input" class="form-control text-center text-sm-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
                                     <button class="btn btn-secondary with-arrow js-pachtrechner-check-btn">
                                         <?= $GLOBALS['TL_LANG']['pachtrechner']['form']['buttonCalculate'] ?>
                                     </button>

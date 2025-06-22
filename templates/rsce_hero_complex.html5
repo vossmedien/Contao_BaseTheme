@@ -171,7 +171,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
 
             <?php if ($mainMediaHTML || $mobileMediaHTML): ?>
                 <!-- Haupt-Medienbereich (Mobile: order-1 / Desktop: order-lg-2, wird dann via CSS zum Hintergrund) -->
-                <div class="hero-complex-media-col mb-gap mb-lg-0 order-1 order-lg-2"
+                <div class="hero-complex-media-col  mb-lg-0 order-2"
                      <?php if ($this->animation_type_media): ?>data-animation="<?= $this->animation_type_media ?>"<?php endif; ?>>
                     <div class="main-media-wrapper" style="--image-min-height: <?= $desktopMinHeightProcessed ?>; --image-mobile-min-height: <?= $mobileMinHeightProcessed ?>;">
                         <?php if ($mainMediaHTML): ?>
@@ -184,18 +184,19 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
                 </div>
             <?php endif; ?>
             <!-- Inhalt Wrapper (Texte und Box) (Mobile: order-2 / Desktop: order-lg-1) -->
-            <div class="hero-complex-content-overlay-wrapper order-2 order-lg-1">
+            <div class="hero-complex-content-overlay-wrapper order-1">
                 <div class="<?= $this->container_class ?: 'container-wide' ?>">
                     <div class="row <?= $alignmentClass ?>">
                         <!-- Linke Spalte: Headline + optional Text + optional Box -->
-                        <div class="<?= $headlineColClass ?> hero-complex-headline-col order-2"
+                        <div class="<?= $headlineColClass ?> hero-complex-headline-col order-2 <?php if(!$this->activate_box_slider):?>mb-gap<?php endif;?>"
                              <?php if ($this->animation_type_headline): ?>data-animation="<?= $this->animation_type_headline ?>"<?php endif; ?>>
                             <div class="main-headline-col-inner d-flex flex-column h-100">
                                 <div class="headline-and-text-wrapper">
-                                    <?= HeadlineHelper::generateHeadlineHTML(
-                                        null, $this->main_headline, null, $this->main_headline_type ?: 'h1',
-                                        "no-animation", null, (bool)$this->main_headline_onlystyle, "mb-3"
-                                    ) ?>
+                                   <?= HeadlineHelper::generateHeadlineHTML(
+    null, $this->main_headline, null, $this->main_headline_type ?: 'h1',
+    "no-animation", null, (bool)$this->main_headline_onlystyle,
+    $this->activate_box_slider ? "mb-3" : "mb-0"
+) ?>
 
                                     <?php if ($this->left_text_below_headline): ?>
                                         <div class="left-text-below-headline mb-gap">
@@ -206,7 +207,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
 
                                 <?php if ($showBoxInLeft): ?>
                                     <!-- Box-Slider in der linken Spalte -->
-                                    <div class="hero-complex-box-slider-wrapper mt-auto pull-down-lg"
+                                    <div class="hero-complex-box-slider-wrapper d-none d-lg-block mt-auto pull-down-lg"
                                          <?php if ($this->animation_type_box): ?>data-animation="<?= $this->animation_type_box ?>"<?php endif; ?>>
                                         <div class="box-slider-anchor mb-5 mb-lg-0" style="<?= $boxStyles ?>">
                                             <div class="box-slider-wrapper swiper rsce-hero-box-slider-<?= $uniqueId ?>" data-uid="<?= $uniqueId ?>">
@@ -264,7 +265,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
 
                                     <?php if ($showBoxInRight): ?>
                                         <!-- Box-Slider in der rechten Spalte -->
-                                        <div class="hero-complex-box-slider-wrapper pull-down-lg"
+                                        <div class="hero-complex-box-slider-wrapper d-none d-lg-block pull-down-lg"
                                              <?php if ($this->animation_type_box): ?>data-animation="<?= $this->animation_type_box ?>"<?php endif; ?>>
                                             <div class="box-slider-anchor" style="<?= $boxStyles ?>">
                                                 <div class="box-slider-wrapper swiper rsce-hero-box-slider-<?= $uniqueId ?>" data-uid="<?= $uniqueId ?>">
@@ -314,7 +315,6 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
                 </div>
             </div>
         </div>
-    </div>
 
 <?php if ($this->activate_box_slider && !empty($this->box_slides) && EnvHelper::isFrontend()): ?>
     <script type="text/javascript" defer>
@@ -366,3 +366,4 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
         }
     </style>
 <?php endif; ?>
+    </div>

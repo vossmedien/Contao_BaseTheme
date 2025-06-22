@@ -6,10 +6,37 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_stoerer.min.js"></script>';
 }
 
+// Prüfung ob die aktuelle Seite ausgeschlossen werden soll
+if (!empty($this->exclude_pages)) {
+    global $objPage;
+    $currentPageId = $objPage->id ?? null;
+    $excludePages = is_array($this->exclude_pages) ? $this->exclude_pages : [$this->exclude_pages];
+    
+    if ($currentPageId) {
+        // Prüfe ob aktuelle Seite direkt ausgeschlossen ist
+        if (in_array($currentPageId, $excludePages)) {
+            return;
+        }
+        
+        // Prüfe ob eine der Parent-Seiten ausgeschlossen ist (inkl. Unterseiten)
+        $currentPage = $objPage;
+        while ($currentPage && $currentPage->pid > 0) {
+            if (in_array($currentPage->pid, $excludePages)) {
+                return;
+            }
+            // Lade Parent-Seite
+            $parentPage = \Contao\PageModel::findById($currentPage->pid);
+            $currentPage = $parentPage;
+        }
+    }
+}
+
 // Hilfsfunktion zum Decodieren der Farbwerte
-function decodeColor($color)
-{
-    return html_entity_decode($color, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+if (!function_exists('decodeColor')) {
+    function decodeColor($color)
+    {
+        return html_entity_decode($color, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    }
 }
 
 

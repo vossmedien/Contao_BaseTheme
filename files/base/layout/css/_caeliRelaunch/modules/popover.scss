@@ -10,17 +10,6 @@
     max-width: 280px;
     --bs-popover-body-padding-x: 0.5rem;
     --bs-popover-body-padding-y: 0.5rem;
-
-    /* Mobile Popovers am unteren Bildschirmrand positionieren */
-    position: fixed !important;
-    bottom: 40px !important;
-    left: 10px !important;
-    right: 10px !important;
-    top: auto !important;
-    transform: none !important;
-    margin: 0 !important;
-    width: calc(100vw - 20px) !important;
-    max-width: calc(100vw - 20px) !important;
   }
 }
 
@@ -46,6 +35,10 @@ h3.popover-header {
 
   @media (max-width: 768px) {
     font-size: 20px;
+  }
+
+  &:has(.tutorial-close-btn){
+    padding-right: .5rem;
   }
 }
 

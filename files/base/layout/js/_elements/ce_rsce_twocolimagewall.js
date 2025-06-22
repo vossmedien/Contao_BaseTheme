@@ -15,7 +15,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
             if (containerElement) {
                 const hasContainerClass = Array.from(containerElement.classList).some(cls => cls.startsWith('container'));
                 if (hasContainerClass) {
-                    refElement = containerElement;
+                    // Create a virtual reference that represents the actual container content area
+                    // by calculating where the container padding should end
+                    const containerRect = containerElement.getBoundingClientRect();
+                    const computedStyle = window.getComputedStyle(containerElement);
+                    const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
+                    const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
+                    
+                    refElement = {
+                        getBoundingClientRect: () => ({
+                            left: containerRect.left + paddingLeft,
+                            right: containerRect.right - paddingRight,
+                            width: containerRect.width - paddingLeft - paddingRight
+                        })
+                    };
                 }
             }
 
@@ -66,15 +79,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         targetWidthCol = window.innerWidth - imageColRect.left;
                     }
                 } else {
-                    // Original logic for container elements
+                    // Container elements: extend to container edge, not viewport edge
                     if (isRowReverse) {
-                        const spaceRightOfImageCol = window.innerWidth - imageColRect.right;
-                        const spaceLeftOfReference = refRect.left;
-                        targetWidthCol = window.innerWidth - spaceRightOfImageCol - spaceLeftOfReference;
+                        // Image on left: extend from container left edge to current right edge of image
+                        targetWidthCol = imageColRect.right - refRect.left;
                     } else {
-                        const spaceLeftOfImageCol = imageColRect.left;
-                        const spaceRightOfReference = window.innerWidth - refRect.right;
-                        targetWidthCol = window.innerWidth - spaceLeftOfImageCol - spaceRightOfReference;
+                        // Image on right: extend from current left edge to container right edge
+                        targetWidthCol = refRect.right - imageColRect.left;
                     }
                 }
 
@@ -89,19 +100,29 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             if (darkenOverlayContent) {
                 let targetWidthContentOverlay = 0;
-                 if (isRowReverse) {
-                    const spaceLeftOfContentCol = contentColRect.left;
-                    const spaceRightOfReference = window.innerWidth - refRect.right;
-                    targetWidthContentOverlay = window.innerWidth - spaceLeftOfContentCol - spaceRightOfReference;
-                    darkenOverlayContent.style.left = '0';
-                    darkenOverlayContent.style.right = 'auto';
-                 } else {
-                    const spaceRightOfContentCol = window.innerWidth - contentColRect.right;
-                    const spaceLeftOfReference = refRect.left;
-                    targetWidthContentOverlay = window.innerWidth - spaceRightOfContentCol - spaceLeftOfReference;
-                    darkenOverlayContent.style.right = '0';
-                    darkenOverlayContent.style.left = 'auto';
-                 }
+                if (isFullwidth) {
+                    // For fullwidth: extend to viewport edges
+                    if (isRowReverse) {
+                        targetWidthContentOverlay = contentColRect.right;
+                        darkenOverlayContent.style.left = '0';
+                        darkenOverlayContent.style.right = 'auto';
+                    } else {
+                        targetWidthContentOverlay = window.innerWidth - contentColRect.left;
+                        darkenOverlayContent.style.right = '0';
+                        darkenOverlayContent.style.left = 'auto';
+                    }
+                } else {
+                    // For container: extend to container edges
+                    if (isRowReverse) {
+                        targetWidthContentOverlay = contentColRect.right - refRect.left;
+                        darkenOverlayContent.style.left = '0';
+                        darkenOverlayContent.style.right = 'auto';
+                    } else {
+                        targetWidthContentOverlay = refRect.right - contentColRect.left;
+                        darkenOverlayContent.style.right = '0';
+                        darkenOverlayContent.style.left = 'auto';
+                    }
+                }
                 targetWidthContentOverlay = Math.max(0, Math.min(targetWidthContentOverlay, window.innerWidth));
                 darkenOverlayContent.style.width = `${targetWidthContentOverlay}px`;
                 darkenOverlayContent.style.maxWidth = `${targetWidthContentOverlay}px`;

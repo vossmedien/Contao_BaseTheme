@@ -14,8 +14,8 @@ class CaeliAreaCheckBundleExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
-        // Default-Konfiguration aus config.yaml laden
-        $defaultConfigPath = __DIR__.'/../../config/config.yaml';
+        // Default-Konfiguration aus caeli_area_check.yaml laden
+        $defaultConfigPath = __DIR__.'/../../config/caeli_area_check.yaml';
         $defaultConfig = [];
         
         if (file_exists($defaultConfigPath)) {

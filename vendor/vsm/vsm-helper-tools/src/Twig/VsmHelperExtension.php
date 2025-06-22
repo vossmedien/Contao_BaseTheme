@@ -63,6 +63,8 @@ class VsmHelperExtension extends AbstractExtension
             
             // SocialMetaHelper
             new TwigFunction('vsm_generate_hero_social_meta', [SocialMetaHelper::class, 'generateHeroSocialMeta']),
+            new TwigFunction('vsm_generate_news_social_meta', [SocialMetaHelper::class, 'generateNewsSocialMeta']),
+            new TwigFunction('vsm_extract_news_data_from_template', [SocialMetaHelper::class, 'extractNewsDataFromTemplate']),
             
             // GlobalElementConfig
             new TwigFunction('vsm_get_animations', [GlobalElementConfig::class, 'getAnimations']),

@@ -46,6 +46,15 @@ const initMobileNav = () => {
             body.classList.contains("mm-ocd-opened") ? drawer.close() : drawer.open();
         });
 
+        // Event Listener für Schließen-Button
+        const closeButton = mobileNavElement.querySelector('.mmenu-close-btn');
+        if (closeButton) {
+            closeButton.addEventListener('click', (evnt) => {
+                evnt.preventDefault();
+                drawer.close();
+            });
+        }
+
         mobileNavElement.querySelectorAll('a').forEach(item => {
             item.addEventListener('click', () => {
                 drawer.close();

@@ -7,7 +7,8 @@ header#header {
   padding-block: calc(var(--main-gap) / 2) 0;
   transition: padding .3s ease-in-out;
 
-  .mobileNav__activator-holder, .navigation .level_1 > li, .logo {
+  //.mobileNav__activator-holder, .navigation .level_1 > li,
+  .logo {
     transition: padding .3s ease-in-out;
 
     @include media-breakpoint-up(lg) {
@@ -15,9 +16,17 @@ header#header {
     }
   }
 
+  padding-bottom: .5rem;
+  @include media-breakpoint-up(lg) {
+    padding-bottom: 0;
+  }
 
   &.is-scrolling {
-    padding-block: .5rem 0;
+    padding-block: .5rem;
+
+    @include media-breakpoint-up(lg) {
+      padding-block: .5rem 0;
+    }
 
     .mobileNav__activator-holder,
     .navigation .level_1 > li,

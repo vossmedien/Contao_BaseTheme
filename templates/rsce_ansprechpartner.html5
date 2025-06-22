@@ -140,7 +140,7 @@ $showTextColumn = !empty($this->topline)
 $textAlignClass = $this->text_alignment ?: 'text-center';
 $partnerAlignClass = $this->partner_alignment ?: 'text-start';
 $imageClass = $this->round_images ? 'rounded-circle' : '';
-$partnerColClass = $this->partner_columns ?: 'col-md-6 col-lg-4';
+$partnerColClass = str_replace("-md-","-sm-",$this->partner_columns) ?: 'col-sm-6 col-lg-4';
 $partnerLayoutClass = $this->partner_layout ?: 'layout-image-left';
 $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
@@ -180,7 +180,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                 <div class="filter-buttons mb-4 justify-content-center justify-content-md-start d-flex gap-1 flex-wrap flex-row">
                     <?php // Set initial active state ?>
                     <?php if (!$hideAllButton): ?>
-                        <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all"><?php echo $GLOBALS['TL_LANG']['MSC']['filter_show_all'] ?? 'Alle'; ?></button>
+                        <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all">Alle</button>
                     <?php endif; ?>
                     <?php foreach ($allTags as $tag):
                         $currentTagClass = createTagClass($tag);
@@ -206,18 +206,16 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                     
                     <div class="zip-filter-container mb-4" style="display: none;">
                         <div class="mb-3">
-                            <span>Sie finden Ihren <b>persönlichen Ansprechpartner über die nachfolgende Standortsuche.</b></span>
-                            <br>
-                            Vereinbaren Sie noch heute Ihr unverbindliches Erstgespräch.
+                            <?= $this->zip_search_intro_text ?: 'Sie finden Ihren <b>persönlichen Ansprechpartner über die nachfolgende Standortsuche.</b><br>Vereinbaren Sie noch heute Ihr unverbindliches Erstgespräch.'; ?>
                         </div>
 
 
                         <div class="mb-3">
-                            <label for="zip-filter-input-<?= $this->id; ?>" class="d-block form-label small">PLZ eingeben:</label>
-                            <div class="input-group input-group-sm d-inline-flex w-auto">
+                            <label for="zip-filter-input-<?= $this->id; ?>" class="d-block form-label small"><?= $this->zip_input_label ?: 'PLZ eingeben:'; ?></label>
+                            <div class="input-group input-group-sm d-sm-inline-flex w-auto">
                                 <input type="text" id="zip-filter-input-<?= $this->id; ?>" class="form-control" placeholder="z.B. 12345">
-                                <button type="button" class="btn btn-outline-primary" id="clear-zip-filter-<?= $this->id; ?>">
-                                    Zurücksetzen
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="clear-zip-filter-<?= $this->id; ?>">
+                                    <?= $this->zip_reset_button_label ?: 'Zurücksetzen'; ?>
                                 </button>
                             </div>
                         </div>
@@ -248,8 +246,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
                 <!-- No Results Message -->
                 <div id="noResultsMessage-<?= $this->id; ?>" class="alert alert-primary mt-3" style="display: none;">
-                    <b>Keine Ansprechpartner im gewählten Umkreis gefunden</b> - 
-                    Bitte versuchen Sie es mit einer anderen Postleitzahl.
+                    <?= $this->zip_no_results_text ?: '<b>Keine Ansprechpartner im gewählten Umkreis gefunden</b> - Bitte versuchen Sie es mit einer anderen Postleitzahl.'; ?>
                 </div>
             <?php endif; ?>
 
@@ -292,7 +289,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                     }
                 }
                 ?>
-                <div class="row g-2 g-md-3 justify-content-center <?php echo $rowJustifyClass; ?> filter-container">
+                <div class="row g-2 g-md-3  <?php echo $rowJustifyClass; ?> filter-container">
                     <?php foreach ($this->partners as $index => $partner):
                         // Unique ID for collapse element
                         $collapseId = 'partner-desc-' . $this->id . '-' . $index;
@@ -675,6 +672,12 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
             const savedZipFilters = {}; // PLZ-Filter pro Tag speichern
             const zipFilterBlacklist = <?= json_encode($zipFilterBlacklist); ?>;
             const showDistanceBadge = <?= $this->show_distance_badge ? 'true' : 'false'; ?>;
+            
+            // Configurable texts
+            const zipSearchErrorText = <?= json_encode($this->zip_search_error_text ?: 'Bitte geben Sie eine PLZ oder einen Ort ein.'); ?>;
+            const areaCheckUrl = <?= json_encode($this->area_check_url ?: '/flaechencheck'); ?>;
+            const noSearchResultsText = <?= json_encode($this->zip_no_search_results_text ?: 'Keine Ergebnisse für "[SEARCH]" gefunden.'); ?>;
+            const searchErrorText = <?= json_encode($this->zip_search_api_error_text ?: 'Fehler bei der Suche. Bitte versuchen Sie es erneut.'); ?>;
 
             // PLZ coordinates cache for distance calculation
             const plzCoordinatesCache = {};
@@ -817,8 +820,8 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         const alertContainer = document.getElementById('plzAlertContainer-<?= $this->id; ?>');
                         if (alertContainer) {
                             alertContainer.innerHTML = `
-                                <div class="alert alert-primary small p-2 border-0 fade mt-0 show" role="alert">
-                                    Keine Ergebnisse für "${searchInput}" gefunden.
+                                <div class="alert alert-primary small p-2 border-0 mb-0 fade mt-0 show" role="alert">
+                                    ${noSearchResultsText.replace('[SEARCH]', searchInput)}
                                 </div>
                             `;
                             // Auto-hide after 3 seconds
@@ -837,8 +840,8 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                     const alertContainer = document.getElementById('plzAlertContainer-<?= $this->id; ?>');
                     if (alertContainer) {
                         alertContainer.innerHTML = `
-                            <div class="alert alert-danger small p-2 border-0 fade mt-0 show" role="alert">
-                                Fehler bei der Suche. Bitte versuchen Sie es erneut.
+                            <div class="alert alert-danger small p-2 border-0 mb-0 fade mt-0 show" role="alert">
+                                ${searchErrorText}
                             </div>
                         `;
                         setTimeout(() => {

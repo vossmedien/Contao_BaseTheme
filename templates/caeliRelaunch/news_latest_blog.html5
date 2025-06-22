@@ -9,7 +9,7 @@
 
     <?php if ($this->listImage): ?>
         <a href="<?= $this->link ?>">
-            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->listImage, strip_tags($this->teaser), $this->headline, ["360", "265", "crop"], null, false); ?>
+            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->listImage, strip_tags($this->teaser), $this->headline, ["550", "330", "crop"], null, false); ?>
         </a>
     <?php endif; ?>
 

@@ -1,3 +1,15 @@
+<?php
+// Social Media Meta-Tags Helper hinzufügen
+use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+use Contao\StringUtil;
+use Contao\FilesModel;
+
+// Social Media Meta-Tags generieren (nur einmal pro Seite)
+if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
+    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateNewsSocialMeta($this);
+}
+?>
 <div class="layout_full block<?= $this->class ?>">
 
     <div class="content--element head-hero ce_rsce_head_hero container-wide">
@@ -62,7 +74,7 @@
                         <ul class="list-inline">
                             <?php 
                             if ($this->pdfDownload): 
-                                $pdfFile = \Contao\FilesModel::findByUuid($this->pdfDownload);
+                                $pdfFile = FilesModel::findByUuid($this->pdfDownload);
                                 if ($pdfFile): 
                             ?>
                                 <li class="list-inline-item">
@@ -74,7 +86,7 @@
                             ?>
                             <?php 
                             if ($this->infographicDownload): 
-                                $infographicFile = \Contao\FilesModel::findByUuid($this->infographicDownload);
+                                $infographicFile = FilesModel::findByUuid($this->infographicDownload);
                                 if ($infographicFile): 
                             ?>
                                 <li class="list-inline-item">
@@ -100,7 +112,7 @@
                                 // Sicherstellen, dass es sich um einen String handelt, bevor deserialisiert wird
                                 $multiSRCDaten = $this->multiSRC;
                                 if (is_string($multiSRCDaten)) {
-                                    $galleryImagesUuids = Contao\StringUtil::deserialize($multiSRCDaten, true);
+                                    $galleryImagesUuids = StringUtil::deserialize($multiSRCDaten, true);
                                 }
                             }
                             ?>

@@ -23,6 +23,12 @@ $this->wrapperAttributes = $this
 <?php $this->block('content'); ?>
     <ul>
         <?php foreach ($this->items as $index => $item): ?>
+            <?php 
+            // Folder-Seiten nicht anzeigen
+            if (isset($item['data']['type']) && $item['data']['type'] === 'folder') {
+                continue;
+            }
+            ?>
             <?php if ($item['isActive']): ?>
                 <li class="active" aria-current="page"><?= $item['link'] ?></li>
             <?php else: ?>

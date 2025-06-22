@@ -35,10 +35,11 @@
                             <div class="auction-image-wrapper">
                                 <div class="d-flex flex-nowrap">
                                     <span data-animation="animate__fadeIn" class="btn btn-secondary no-button btn-sm preview-btn">{{ 'auction_listing.card.preview_button'|trans }}</span>
-                                    {% if raw_data.countDown is defined %}
+                                    {% if raw_data.countDown is defined and raw_data.countDown > 0 %}
                                         {% set days_countdown = (raw_data.countDown / 86400)|round(0, 'ceil') %}
                                         {% if days_countdown > 0 %}
-                                            <span data-animation="animate__fadeIn" class="btn btn-primary no-button btn-sm countdown-btn">{{ 'auction_listing.card.countdown_prefix'|trans }} {{ days_countdown }} {{ 'auction_listing.card.countdown_suffix_days'|trans }}</span>
+                                            {% set countdown_text = raw_data.status == 'STARTED' ? 'auction_listing.card.countdown_end_prefix' : 'auction_listing.card.countdown_prefix' %}
+                                            <span data-animation="animate__fadeIn" class="btn btn-primary no-button btn-sm countdown-btn">{{ countdown_text|trans }} {{ days_countdown }} {{ 'auction_listing.card.countdown_suffix_days'|trans }}</span>
                                         {% endif %}
                                     {% endif %}
                                 </div>
@@ -116,13 +117,17 @@
                                 {{ 'auction_listing.card.details.availability'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ 'auction_listing.card.details.availability_prefix'|trans }} {{ raw_data.availableFrom }}
+                                    {% if raw_data.status == 'STARTED' %}
+                                        {{ 'marktplatz.as_of_now'|trans }}
+                                    {% else %}
+                                        {{ 'auction_listing.card.details.availability_prefix'|trans }} {{ raw_data.availableFrom }}
+                                    {% endif %}
                                 </strong>
                             </div>
 
                             <div class="mt-3">
                                 <strong class="d-block mb-1">{{ 'detail.planning_law_headline'|trans }}</strong>
-                                <span>Planungsrechtliche Informationen nach Registrierung</span> {# Ggf. diesen Text dynamischer gestalten oder spezifischer übersetzen #}
+                                <span>{{ 'detail.planning_law_info_text'|trans }}</span>
                             </div>
                         </div>
                     </div>
@@ -131,7 +136,7 @@
             <div class="box-footer bg-secondary text-body px-gap py-4 small">
 
                 <strong class="d-block mb-2">{{ 'detail.area_status_headline'|trans }}
-                    <i class="fak fa-info text-tertiary ms-1"
+                    <i class="fak fa-info text-tertiary ms-1 fs-5"
                        data-bs-toggle="popover"
                        data-bs-placement="top"
                        data-bs-html="true"

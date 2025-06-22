@@ -27,6 +27,17 @@ $config = array(
             'eval' => array('tl_class' => 'clr'),
         ),
 
+        'exclude_pages' => array(
+            'label' => array('Seiten ausschließen', 'Wählen Sie Seiten aus, auf denen dieser Störer NICHT angezeigt werden soll. Unterseiten werden automatisch mit ausgeschlossen.'),
+            'inputType' => 'pageTree',
+            'eval' => array(
+                'multiple' => true,
+                'fieldType' => 'checkbox',
+                'orderField' => 'exclude_pages_order',
+                'tl_class' => 'clr'
+            ),
+        ),
+
         'size' => array(
             'label' => array('Bildgröße (Hauptbild)', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),
             'inputType' => 'imageSize',

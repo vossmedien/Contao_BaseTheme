@@ -90,10 +90,10 @@
 .market-detail {
   .offset-wrapper {
     .auction-detail-box {
-      margin-bottom: calc(-1 * (235px + var(--main-gap)));
+      margin-bottom: calc(-1 * (242px + var(--main-gap)));
 
       @include media-breakpoint-up(sm) {
-        margin-bottom: calc(-1 * (205px + var(--main-gap)));
+        margin-bottom: calc(-1 * (212px + var(--main-gap)));
       }
 
       @include media-breakpoint-up(md) {
@@ -106,10 +106,10 @@
     }
 
     & + .content--element {
-      margin-top: calc(235px + var(--main-gap));
+      margin-top: calc(242px + var(--main-gap));
 
       @include media-breakpoint-up(sm) {
-        margin-top: calc(205px + var(--main-gap));
+        margin-top: calc(212px + var(--main-gap));
       }
 
       @include media-breakpoint-up(md) {

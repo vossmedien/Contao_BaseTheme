@@ -152,9 +152,25 @@ class AuctionService
                 // Sicherstellen, dass der Parameter korrekt formatiert ist
                 $urlParams = ltrim($urlParams, '/');
                 if (!empty($urlParams)) {
-                    $apiUrl .= '/' . $urlParams;
+                    // Prüfen ob bereits Query-Parameter vorhanden sind
+                    if (strpos($urlParams, '?') !== false) {
+                        // URL-Parameter enthält bereits Query-Parameter, direkt anhängen
+                        $apiUrl .= '/' . $urlParams;
+                    } else {
+                        // Einfacher Pfad-Parameter
+                        $apiUrl .= '/' . $urlParams;
+                    }
                 }
                 $this->logger->debug('[getPublicAuctions] URL-Parameter hinzugefügt: ' . $urlParams);
+                $this->logger->debug('[getPublicAuctions] URL-Parameter RAW (vor decode): ' . var_export($urlParams, true));
+                
+                // HTML-Entities dekodieren, falls nötig
+                if (strpos($urlParams, '&#') !== false) {
+                    $urlParams = html_entity_decode($urlParams, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                    $this->logger->debug('[getPublicAuctions] URL-Parameter nach decode: ' . $urlParams);
+                    $apiUrl = rtrim($this->params->get('caeli_auction.marketplace_api_url'), '/') . '/' . ltrim($urlParams, '/');
+                }
+                
                 $this->logger->info('[getPublicAuctions] Finale API-URL: ' . $apiUrl);
             }
 
@@ -171,7 +187,9 @@ class AuctionService
             $contextOptions = [
                 'http' => [
                     'method' => 'GET',
-                    'header' => "Authorization: " . $authHeader . "\r\n",
+                    'header' => "Authorization: " . $authHeader . "\r\n" . 
+                               "Accept-Language: de\r\n" .
+                               "Content-Type: application/json\r\n",
                     'timeout' => 30 // Timeout in Sekunden
                 ]
             ];

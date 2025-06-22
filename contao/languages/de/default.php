@@ -6,6 +6,12 @@ $GLOBALS['TL_LANG']['MSC']['read_more'] = 'Weiterlesen';
 $GLOBALS['TL_LANG']['MSC']['all_entrys'] = 'Alle';
 $GLOBALS['TL_LANG']['MSC']['all_categories'] = 'Alle Kategorien';
 
+// Filter and Search 
+$GLOBALS['TL_LANG']['MSC']['filter_show_all'] = 'Alle';
+$GLOBALS['TL_LANG']['MSC']['zip_search_error'] = 'Bitte geben Sie eine PLZ oder einen Ort ein.';
+$GLOBALS['TL_LANG']['MSC']['zip_no_results'] = '<b>Keine Ansprechpartner im gewählten Umkreis gefunden</b> - Bitte versuchen Sie es mit einer anderen Postleitzahl.';
+$GLOBALS['TL_LANG']['MSC']['area_check_url'] = '/flaechencheck';
+
 // Event Details
 $GLOBALS['TL_LANG']['MSC']['targetAudienceLabel'] = 'Zielgruppe:';
 $GLOBALS['TL_LANG']['MSC']['dateLabel'] = 'Datum:';

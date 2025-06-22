@@ -258,7 +258,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
 
                         <?php if($this->desc  || $hasImages || $buttonsHTML):?>
                         <div <?php if ($contentColumnAnim): ?>data-animation="<?= $contentColumnAnim; ?>"<?php endif; ?> class="col-12 col-lg-<?= $bsColContent; ?> <?= $orderContentClass; ?> <?php if ($this->content_column_css_class): ?><?= $this->content_column_css_class ?><?php endif; ?>">
-                            <div  class="content-column <?php if ((!$this->headline || $this->second_content) && ($this->column_order == "hl_hl" || $this->column_order == "hl_co")): ?>mt-3 mt-lg-0<?php endif; ?>">
+                            <div  class="content-column <?php if ((!$this->headline || $this->second_content) && ($this->column_order == "hl_hl" || $this->column_order == "hl_co")): ?>mt-sm-3 mt-lg-0<?php endif; ?>">
                                 <?php if ($this->desc): ?>
                                     <div class="text">
                                         <?= $this->desc; ?>

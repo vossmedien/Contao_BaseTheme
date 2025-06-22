@@ -31,28 +31,40 @@ filter:
     max: "Max"
 general:
   no_auctions_for_criteria: "No auctions were found for your filter criteria."
+  household_consumption_note: "*Average consumption of a 2-person household in Germany."
+
+pagination:
+  showing: "Showing %start% to %end% of %total% entries"
+  aria_label: "Page navigation"
+  previous: "Previous"
+  next: "Next"
+  go_to_page: "Go to page %page%"
+
+marktplatz:
+  as_of_now: "as of now"
 
 # Added keys from CaeliWindCaeliAuctionConnect.en.php
 auction_listing:
   card:
-    title_prefix: "Area in"
+    title_prefix: "Site in"
     image_alt_prefix: "Preview image of auction"
-    countdown_prefix: "Auction starts in"
+    countdown_prefix: "Auction starts in:"
+    countdown_end_prefix: "Auction ends in:"
     countdown_suffix_days: "days"
     preview_button: "Preview"
     details:
-      power: "Power"
-      area_size: "Area size"
-      full_usage_hours: "Full load hours"
-      irr_before_rent: "IRR before rent"
-      availability: "Availability"
-      availability_prefix: "From"
+      power: "Capacity"
+      area_size: "Site Area"
+      full_usage_hours: "Full Load Hours"
+      irr_before_rent: "IRR Before Lease"
+      availability: "Available"
+      availability_prefix: "from"
     footer_notice: "Planning law information after registration"
     more_button: "Learn more"
     unit:
       mw: "MW"
       ha: "ha"
-      h_per_a: "h/a"
+      h_per_a: "h/year"
       percent: "%"
       m: "m"
       m_per_s: "m/s"
@@ -65,11 +77,12 @@ detail:
   raw_data_headline: "Raw Data of the Auction"
   back_to_overview_button: "Back to Overview"
   auction_not_found: "Auction not found or not available."
-  hub_height: "Hub height"
-  wea_count: "Number of WTG"
-  avg_wind_speed: "Avg. wind speed:"
-  planning_law_headline: "Planning Law"
-  planning_law_text_placeholder: "According to the planning reference map of Baden-Württemberg, the planning of 2 WTG is possible immediately. ##PLACEHOLDER_TEXT##" # Please review/adapt this text
+  hub_height: "Hub Height"
+  wea_count: "Number of Turbines"
+  avg_wind_speed: "Average Wind Speed"
+  planning_law_headline: "Planning Status"
+  planning_law_info_text: "Planning law information after registration"
+  planning_law_text_placeholder: "According to the planning reference map for Baden-Württemberg, development of 2 wind turbines is immediately feasible."
   area_status_headline: "Area Status"
   area_progress:
     planning_law: "Planning Law"
@@ -82,10 +95,10 @@ detail:
     inspection: "Site Inspection"
     power_connection: "Grid Connection"
     preparation: "Auction Preparation"
-  new_customer_headline: "I am a new customer"
-  new_customer_button: "Register now"
-  existing_customer_headline: "I am an existing customer"
-  existing_customer_button: "Login"
+  new_customer_headline: "I'm a New User"
+  new_customer_button: "Activate Access"
+  existing_customer_headline: "I'm a Returning User"
+  existing_customer_button: "Log In"
   status_legend:
     title: "Legend"
     completed: "Completed"

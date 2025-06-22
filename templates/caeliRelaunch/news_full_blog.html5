@@ -1,3 +1,14 @@
+<?php
+// Social Media Meta-Tags Helper hinzufügen
+use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+use Contao\StringUtil;
+
+// Social Media Meta-Tags generieren (nur einmal pro Seite)
+if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
+    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateNewsSocialMeta($this);
+}
+?>
 <div class="layout_full block<?= $this->class ?>">
 
 
@@ -49,7 +60,7 @@
                                     <div class="author-icons-overlay position-absolute bottom-0 end-0 d-flex flex-column align-items-end">
                                         <?php // Email Icon ?>
                                         <?php if ($this->authorEmail): ?>
-                                            <a href="mailto:<?= \Contao\StringUtil::specialchars($this->authorEmail); ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="E-Mail senden">
+                                            <a href="mailto:<?= StringUtil::specialchars($this->authorEmail); ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="E-Mail senden">
                                                 <i class="fak fa-mail text-body"></i>
                                             </a>
                                         <?php endif; ?>

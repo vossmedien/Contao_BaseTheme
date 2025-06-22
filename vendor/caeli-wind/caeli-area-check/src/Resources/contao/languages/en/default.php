@@ -23,7 +23,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['loading']['texts'] = [
 // Form elements
 $GLOBALS['TL_LANG']['caeli_area_check']['form'] = [
     'address_label' => 'Address or Location',
-    'address_placeholder' => 'Enter address or postal code',
+    'address_placeholder' => 'Enter location or postal code',
     'address_alert' => 'Please enter a complete address or postal code.',
     'name_label' => 'Last Name',
     'firstname_label' => 'First Name',
@@ -31,7 +31,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['form'] = [
     'email_label' => 'Email Address',
     'submit_button' => 'Start Area Check',
     'button' => [
-        'check_area' => 'Show result',
+        'check_area' => 'Confirm selected area',
         'restart' => 'Restart',
     ],
     'warning' => 'The selected area is larger than 700 hectares. Please reduce the area size.',
@@ -40,28 +40,25 @@ $GLOBALS['TL_LANG']['caeli_area_check']['form'] = [
 // Tutorial system
 $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
     'welcome' => [
-        'title' => 'Welcome to your area check.',
-        'content' => 'Discover the wind potential of your property in just a few steps. We\'ll show you briefly how it works. Simply click "Next".',
+        'title' => 'Welcome to your site check.',
+        'content' => 'Determine the wind potential of your property in two steps. Click "Start" to begin.',
         'button_skip' => 'Skip',
-        'button_next' => 'Next',
+        'button_next' => 'Start',
     ],
     'plz_input' => [
-        'title' => 'Step 1: Your location matters.',
-        'title_alt' => 'Here you start your area check.',
-        'content' => 'Start by entering your postal code. After entering, the polygon field will appear, which you can then move to the correct position.',
+        'title' => 'Step 1: Find property.',
         'button_back' => 'Back',
-        'button_next' => 'Next',
+        'button_next' => 'Continue',
+        'content' => 'Enter the address of your property and select the suggested location.',
     ],
     'polygon_edit' => [
-        'title' => 'Step 2: Draw your area.',
-        'title_alt' => 'Here you draw your area.',
-        'content' => 'Now comes the exciting part: Move the map to the desired area and use the corner points of the polygon. Drag them to the correct position to precisely define your property on the map.',
+        'title' => 'Step 2: Draw and check property.',
+        'content' => 'You now see a yellow polygon that you can move to the desired position. Use the corner points of the polygon to roughly outline your property and select "Show result" when you are finished. We check the conditions of your area at lightning speed.',
         'button_back' => 'Back',
-        'button_next' => 'Next',
+        'button_next' => 'Continue',
     ],
     'area_confirm' => [
         'title' => 'Step 3: Almost done!',
-        'title_alt' => 'Once you have marked your property, the check can begin.',
         'content' => 'Almost done: Move the polygon to the correct position and align the corner points to your property. Then click "Show result". We check the conditions on your area at lightning speed.',
         'button_back' => 'Back',
         'button_next' => 'Finish',
@@ -70,8 +67,8 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
 
 // Consent overlay
 $GLOBALS['TL_LANG']['caeli_area_check']['consent']['overlay'] = [
-    'title' => 'Your area check starts soon!',
-    'message' => 'To show you the interactive map and process your request, we need your brief consent.',
+    'title' => 'Your site check<br>starts soon!',
+    'message' => 'To show you the interactive map and process your request, we need your consent for necessary cookies.',
     'button' => 'Start now',
 ];
 
@@ -119,7 +116,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['alerts'] = [
     ],
     'processing_error' => [
         'title' => 'Processing Error',
-        'message' => 'An error occurred during area check:',
+        'message' => 'An error occurred during site check:',
         'type' => 'danger',
     ],
     'fallback_sync' => [
@@ -159,33 +156,33 @@ $GLOBALS['TL_LANG']['caeli_area_check']['loading'] = [
 // Interface elements
 $GLOBALS['TL_LANG']['caeli_area_check']['interface'] = [
     'header' => [
-        'title' => 'Caeli Wind Area Check',
-        'subtitle' => 'for wind turbines',
+        'title' => 'Caeli Wind Site Check',
+        'subtitle' => 'for Wind Energy Projects',
     ],
     'form' => [
-        'label' => 'Find and draw property:',
+        'label' => 'Find and mark your property',
     ],
     'hints' => [
         'strong' => 'Note:',
         'warning' => 'Warning:',
     ],
-    'no_plz_message' => 'Please enter an address with postal code.',
+    'no_plz_message' => 'Enter location or postal code',
 ];
 
 // Result page translations
 $GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
     'success' => [
-        'title_bold' => 'Congratulations:',
-        'title_text' => 'Your property shows good conditions for wind power.',
+        'title_bold' => 'Preliminary result',
+        'title_text' => 'Your property has wind power potential',
     ],
     'unsuitable' => [
-        'title_bold' => 'Area Check Result:',
-        'title_text' => 'Your area is not optimally suited for wind power.',
+        'title_bold' => 'Preliminary result:',
+        'title_text' => "The area doesn't seem ideal - let's check that",
     ],
     'criteria' => [
         'wind_conditions' => [
             'title' => 'Wind Conditions',
-            'description' => 'Wind power performance in the specified area',
+            'description' => 'The wind power in the specified area.',
             'rating' => [
                 'green' => 'Well suited',
                 'yellow' => 'Conditionally suitable',
@@ -194,7 +191,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
         ],
         'restrictions' => [
             'title' => 'Restrictions',
-            'description' => 'Review of spatial planning restrictions where wind energy use is prohibited.',
+            'description' => 'Examination of spatial planning restrictions on which wind power utilisation is prohibited.',
             'rating' => [
                 'green' => 'No restrictions',
                 'yellow' => 'Limited possible',
@@ -202,8 +199,8 @@ $GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
             ],
         ],
         'grid_connection' => [
-            'title' => 'Grid Connection',
-            'description' => 'Accessibility of the property area to the nearest high voltage.',
+            'title' => 'Power',
+            'description' => 'Accessibility of the plot area to the nearest high voltage.',
             'rating' => [
                 'green' => 'Well accessible',
                 'yellow' => 'Conditionally accessible',
@@ -218,8 +215,9 @@ $GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
         'contact_text' => 'Contact us for individual consultation.',
     ],
     'form_section' => [
-        'suitable_title' => 'Check your wind power opportunity now – free and non-binding:',
-        'unsuitable_title' => 'Interested in detailed consultation?',
+        'suitable_title' => 'Get your free non-binding initial assessment now:',
+        'unsuitable_title' => 'Let us analyze your area in detail:',
+        'pdf_report_button' => 'Get Your Free PDF Report',
     ],
     'error_states' => [
         'check_failed' => [

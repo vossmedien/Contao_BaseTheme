@@ -28,12 +28,13 @@ class FormDataListener
         
         // Fallback: Wenn auto_ prefixed IDs fehlen, direkt aus config.yaml laden
         $autoIds = array_filter($this->formIds, fn($id) => str_starts_with($id, 'auto_'));
+        
         if (empty($autoIds)) {
-            $this->logger->warning('[FormDataListener] auto_ prefixed IDs fehlen, lade Fallback-Konfiguration');
+            $this->logger->debug('[FormDataListener] auto_ prefixed IDs fehlen, lade Fallback-Konfiguration');
             $this->loadFallbackConfiguration();
         }
         
-        $this->logger->info('[FormDataListener] Constructor - Final Form-IDs: ' . json_encode($this->formIds));
+
     }
 
     /**
@@ -52,7 +53,7 @@ class FormDataListener
         $autoIds = array_map(fn($id) => 'auto_' . $id, $standardIds);
         $this->formIds = array_unique(array_merge($this->formIds, $autoIds));
         
-        $this->logger->info('[FormDataListener] Fallback: auto_ prefixed IDs hinzugefügt: ' . json_encode($autoIds));
+        $this->logger->debug('[FormDataListener] Fallback: auto_ prefixed IDs hinzugefügt: ' . json_encode($autoIds));
     }
 
     /**
@@ -377,6 +378,17 @@ class FormDataListener
                         $this->logger->info('[FormDataListener] ✅ Quelle als "caeli" gesetzt');
                     } else {
                         $this->logger->info('[FormDataListener] ❌ Quelle bereits gesetzt: ' . $widget->value);
+                    }
+                    break;
+                    
+                case 'flaechencheck_pdf':
+                    $parkId = $checkData['park_id'] ?? '';
+                    if ($parkId && !$widget->value) {
+                        $pdfUrl = 'https://www.caeli-wind.de/start?getersteinschaetzung=' . $parkId;
+                        $widget->value = $pdfUrl;
+                        $this->logger->info('[FormDataListener] ✅ Flächencheck PDF URL vorausgefüllt: ' . $pdfUrl);
+                    } else {
+                        $this->logger->info('[FormDataListener] ❌ Flächencheck PDF nicht gesetzt (parkId=' . $parkId . ', widget->value=' . ($widget->value ?: 'NULL') . ')');
                     }
                     break;
                     

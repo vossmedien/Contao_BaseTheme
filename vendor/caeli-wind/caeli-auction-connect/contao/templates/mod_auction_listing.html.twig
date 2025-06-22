@@ -5,10 +5,10 @@
             {# Filter-Formular - wurde in ein separates Modul ausgelagert #}
 
             {# Paginierungs-Info oben #}
-            {% if pagination.totalPages > 1 %}
+            {% if pagination.totalPages|default(0) > 1 %}
                 <div class="pagination-info mb-3">
                     <small>
-                        {{ 'pagination.showing'|trans({'%start%': pagination.startItem, '%end%': pagination.endItem, '%total%': pagination.totalItems}) }}
+                        {{ 'pagination.showing'|trans({'%start%': pagination.startItem|default(1), '%end%': pagination.endItem|default(0), '%total%': pagination.totalItems|default(0)}, 'messages') }}
                     </small>
                 </div>
             {% endif %}
@@ -26,6 +26,15 @@
 
                 {% endfor %}
             </div>
+
+
+            {# Haushaltsverbrauchshinweis unterhalb der Pagination - nur wenn Klasse "with-note" vorhanden #}
+            {% if auctions|default and auctions|length > 0 and 'with-note' in (class|default('')) %}
+                <div class="text-end mt-3">
+                    <small class="text-muted">{{ 'general.household_consumption_note'|trans }}</small>
+                </div>
+            {% endif %}
+
 
             {# Paginierung unten - angepasst an bestehende Struktur #}
             {% if pagination.totalPages > 1 %}
@@ -91,6 +100,8 @@
 
                 <!-- indexer::continue -->
             {% endif %}
+
+
         {% else %}
             <div class="no-auctions">
                 <p class="alert alert-warning">{{ 'auction_listing.no_auctions_found'|trans }}</p>
@@ -144,14 +155,14 @@
 
                                 // Meta-Tags aus dem neuen HTML aktualisieren
                                 const newDoc = parser.parseFromString(html, 'text/html');
-                                
+
                                 // Canonical Tag aktualisieren
                                 const newCanonical = newDoc.querySelector('link[rel="canonical"]');
                                 const currentCanonical = document.querySelector('link[rel="canonical"]');
                                 if (newCanonical && currentCanonical) {
                                     currentCanonical.href = newCanonical.href;
                                 }
-                                
+
                                 // Prev Tag aktualisieren
                                 const newPrev = newDoc.querySelector('link[rel="prev"]');
                                 let currentPrev = document.querySelector('link[rel="prev"]');
@@ -169,7 +180,7 @@
                                     // Prev Tag entfernen (z.B. bei Seite 1)
                                     currentPrev.remove();
                                 }
-                                
+
                                 // Next Tag aktualisieren
                                 const newNext = newDoc.querySelector('link[rel="next"]');
                                 let currentNext = document.querySelector('link[rel="next"]');
@@ -187,13 +198,13 @@
                                     // Next Tag entfernen (z.B. bei letzter Seite)
                                     currentNext.remove();
                                 }
-                                
+
                                 // Nach dem Update die AJAX-Handler neu initialisieren
                                 initPaginationAjax();
-                                
+
                                 // URL aktualisieren ohne Reload
                                 history.pushState({page: page}, '', currentUrl.toString());
-                                
+
                                 // Zum Listing-Anker scrollen mit 100px Offset nach oben
                                 const auctionAnchor = document.getElementById('auctionFilter');
                                 if (auctionAnchor) {

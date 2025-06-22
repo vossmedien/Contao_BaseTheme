@@ -17,8 +17,9 @@
   }
 
   &.btn-secondary {
+      --bs-btn-hover-bg: transparent;
     --bs-btn-color: var(--bs-primary);
-    --bs-btn-hover-color: var(--bs-primary);
+    --bs-btn-hover-color: var(--bs-secondary);
     
     &:disabled {
       --bs-btn-disabled-color: rgba(var(--bs-primary-rgb), 0.4);

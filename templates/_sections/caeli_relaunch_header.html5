@@ -45,7 +45,6 @@
                 <div class="mobileNav__activator-holder d-lg-none">
                     <a href="#mobileNav" class="mobileNav__activator">
                         <i class="fak fa-bars"></i>
-                        <span>Menü</span>
                     </a>
                 </div>
             </div>

@@ -41,6 +41,10 @@ pagination:
 
 general:
   no_auctions_for_criteria: "Es wurden keine Auktionen für Ihre Filterkriterien gefunden."
+  household_consumption_note: "*Durchschnittlicher Verbrauch eines 2-Personen-Haushalts in Deutschland."
+
+marktplatz:
+  as_of_now: "ab sofort"
 
 # Hinzugefügte Schlüssel aus CaeliWindCaeliAuctionConnect.de.php
 auction_listing:
@@ -48,6 +52,7 @@ auction_listing:
     title_prefix: "Fläche in"
     image_alt_prefix: "Vorschaubild der Auktion"
     countdown_prefix: "Auktionsbeginn in"
+    countdown_end_prefix: "Auktionsende in"
     countdown_suffix_days: "Tage"
     preview_button: "Vorschau"
     details:
@@ -78,6 +83,7 @@ detail:
   wea_count: "Anzahl WEA"
   avg_wind_speed: "Ø Windgeschwindigkeit:"
   planning_law_headline: "Planungsrecht"
+  planning_law_info_text: "Planungsrechtliche Informationen nach Registrierung"
   area_status_headline: "Flächenstatus"
   area_progress:
     planning_law: "Planungsrecht"

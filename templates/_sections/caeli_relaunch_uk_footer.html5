@@ -1,0 +1,41 @@
+<div class="footer-top">
+    <div class="container">
+        <div class="logo">
+            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_uk/logo-footer.svg", null), null, null; ?>
+        </div>
+    </div>
+</div>
+
+<div class="footer-bottom">
+    <div class="container">
+        <div class="d-flex flex-md-row flex-column align-items-md-center gap-3 flex-row">
+            <div>
+                {{insert_module::5}}
+            </div>
+             <div>
+                 <a href="https://www.linkedin.com/company/caeli-uk/" target="_blank" title="Imprint"><img alt="LinkedIn Logo" style="margin-top: -1px;" class="lazy d-inline-block align-sub me-1" height="18" width="18" data-src="files/base/layout/img/logo_linkedIn.svg">LinkedIn</a>
+            </div>
+            <div class="ms-md-gap">
+                <span class="d-inline-block me-2">Member of:</span>
+                <a target="_blank" href="https://www.renewableuk.com/" title="RenewableUk"><img height="41" alt="RenewableUK Logo" class="lazy" data-src="files/base/layout/img/logo_renewableUk.svg"></a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    footer#footer .mod_customnav ul{
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+
+       footer#footer .mod_customnav ul li{
+           display: inline-block;
+           margin-right: 1rem;
+           margin-block: 0 !important;
+       }
+</style>

@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Psr\Log\LoggerInterface;
+use CaeliWind\CaeliAreaCheckBundle\Service\MapImageGeneratorService;
 
 #[AsFrontendModule(category: 'caeli_wind', template: 'mod_area_check_map', name: 'area_check_map')]
 class AreaCheckMapController extends AbstractFrontendModuleController
@@ -29,11 +30,14 @@ class AreaCheckMapController extends AbstractFrontendModuleController
     private string $api_url;
     private string $api_user;
     private string $api_pass;
+    private ?string $cached_token = null;
+    private ?int $token_expires = null;
 
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly LoggerInterface $logger,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly MapImageGeneratorService $mapImageGenerator
     ) {
         // Flexiblere Environment Variable Erkennung - getenv() und $_ENV kombinieren
         $this->api_url = getenv('CAELI_INFRA_API_URL') ?: ($_ENV['CAELI_INFRA_API_URL'] ?? '');
@@ -59,6 +63,27 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         // POST-Verarbeitung - Park erstellen und weiterleiten
         if ($request->isMethod('POST')) {
             try {
+                // Token-Validierung mit Fallback bei Fehlern
+                $requestToken = $request->request->get('REQUEST_TOKEN');
+                $framework = $this->framework;
+                $framework->initialize();
+                $tokenManager = $this->container->get('contao.csrf.token_manager');
+                
+                if (!$requestToken) {
+                    $this->logger->warning('[AreaCheckMapController] REQUEST_TOKEN fehlt, aber fahre fort (Fallback)');
+                    // NICHT abbrechen - für bessere UX bei Token-Problemen
+                } else {
+                    try {
+                        // Korrekte Token-Validierung mit CsrfToken Objekt
+                        $csrfToken = new \Symfony\Component\Security\Csrf\CsrfToken('contao.csrf_token', $requestToken);
+                        if (!$tokenManager->isTokenValid($csrfToken)) {
+                            $this->logger->warning('[AreaCheckMapController] Ungültiger REQUEST_TOKEN, aber fahre fort (Fallback)');
+                        }
+                    } catch (\Throwable $e) {
+                        $this->logger->warning('[AreaCheckMapController] Token-Validierung fehlgeschlagen: ' . $e->getMessage() . ', fahre fort (Fallback)');
+                    }
+                }
+                
                 // Park erstellen versuchen
                                         // Exakt wie Original: $_POST direkt an createPark übergeben  
             $parkid = $this->createPark($request->request->all());
@@ -136,6 +161,16 @@ class AreaCheckMapController extends AbstractFrontendModuleController
                 $this->logger->info('[AreaCheckMapController] === DB-INSERT DEBUG ===');
                 $this->logger->info('[AreaCheckMapController] DB-Insert erfolgreich, ID: ' . $insertId . ', isSuccess: ' . ($isSuccess ? 'true' : 'false'));
                 $this->logger->info('[AreaCheckMapController] Eingefügte Daten: ' . json_encode($set));
+                
+                // Kartenbild für erfolgreiche Flächenchecks generieren
+                if ($isSuccess && $insertId && $parkid && $parkid !== '-') {
+                    try {
+                        $this->mapImageGenerator->generateAndSaveMapImage($parkid, $geometry, $isSuccess);
+                    } catch (\Throwable $e) {
+                        // Bildgenerierung soll den Hauptflow nicht blockieren
+                        $this->logger->warning('[AreaCheckMapController] Bildgenerierung fehlgeschlagen (Park: ' . $parkid . '): ' . $e->getMessage());
+                    }
+                }
                 
                 // Immer zur Detailseite weiterleiten - auch bei fehlgeschlagenen Parks
                 if ($model->jumpTo) {
@@ -248,6 +283,12 @@ class AreaCheckMapController extends AbstractFrontendModuleController
 
     private function getApiSessionId(): ?string
     {
+        // Cached Token wiederverwenden falls noch gültig (5 Minuten Cache)
+        if ($this->cached_token && $this->token_expires && time() < $this->token_expires) {
+            $this->logger->debug('[AreaCheckMapController] Verwende cached API Token (noch gültig für ' . ($this->token_expires - time()) . ' Sekunden)');
+            return $this->cached_token;
+        }
+        
         // DEBUG: Login-Call debuggen
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
         
@@ -256,7 +297,7 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             "password" => $this->api_pass,
         ]);
 
-        $cookieFile = $rootDir."/system/tmp/".session_id().'.txt';
+        $cookieFile = $this->getCookieFilePath();
         
         // Sicherstellen dass das tmp-Verzeichnis existiert und beschreibbar ist
         $tmpDir = dirname($cookieFile);
@@ -272,15 +313,15 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             return null;
         }
         
-        // Cookie-File vorher löschen falls vorhanden
+        // Cookie-File für cURL vorbereiten (auch wenn API keine HTTP-Cookies sendet)
         if (file_exists($cookieFile)) {
             unlink($cookieFile);
         }
         
-        // Explizit leeres Cookie-File erstellen
-        if (file_put_contents($cookieFile, '') === false) {
-            $this->logger->error('[AreaCheckMapController] Cookie-File konnte nicht erstellt werden: ' . $cookieFile);
-            return null;
+        // Leeres Cookie-File für cURL erstellen (für COOKIEJAR/COOKIEFILE Optionen)
+        if (file_put_contents($cookieFile, '# Netscape HTTP Cookie File' . PHP_EOL) === false) {
+            $this->logger->warning('[AreaCheckMapController] Cookie-File konnte nicht erstellt werden: ' . $cookieFile);
+            // Weitermachen ohne Cookie-File - API funktioniert trotzdem
         }
         
         $this->logger->info('[AreaCheckMapController] LOGIN CALL - Cookie File: ' . $cookieFile);
@@ -336,21 +377,16 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         
         $this->logger->info('[AreaCheckMapController] LOGIN RESPONSE: ' . $result);
         
-        // Cookie-File prüfen - erweiterte Diagnose
+        // Cookie-File Status prüfen (informativ - API funktioniert auch ohne HTTP-Cookies)
         if (file_exists($cookieFile)) {
             $fileSize = filesize($cookieFile);
-            $this->logger->info('[AreaCheckMapController] Cookie-File existiert, Größe: ' . $fileSize . ' bytes');
+            $this->logger->debug('[AreaCheckMapController] Cookie-File vorhanden, Größe: ' . $fileSize . ' bytes');
             
-            if ($fileSize > 0) {
-                $cookieContent = file_get_contents($cookieFile);
-                $this->logger->info('[AreaCheckMapController] Cookie-Inhalt: ' . $cookieContent);
-            } else {
-                $this->logger->warning('[AreaCheckMapController] Cookie-File ist leer - verwende Session-loses Login');
+            if ($fileSize > 30) { // Mehr als nur Header = echte Cookies
+                $this->logger->debug('[AreaCheckMapController] HTTP-Cookies erhalten - Session wird wiederverwendet');
             }
         } else {
-            $this->logger->error('[AreaCheckMapController] Cookie-File wurde NICHT erstellt!');
-            $this->logger->error('[AreaCheckMapController] Verzeichnis-Rechte: ' . substr(sprintf('%o', fileperms($tmpDir)), -4));
-            $this->logger->error('[AreaCheckMapController] PHP User: ' . get_current_user());
+            $this->logger->debug('[AreaCheckMapController] Cookie-File nicht vorhanden - API sendet keine HTTP-Cookies');
         }
         
         // JSON-Parsing mit besserer Fehlerbehandlung
@@ -369,6 +405,11 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         
         $this->logger->info('[AreaCheckMapController] CSRF Token: ' . $token);
         
+        // Token für 5 Minuten cachen (Caeli-API Sessions sind länger gültig)
+        $this->cached_token = $token;
+        $this->token_expires = time() + 300; // 5 Minuten
+        $this->logger->debug('[AreaCheckMapController] API Token gecacht bis: ' . date('H:i:s', $this->token_expires));
+        
         return $token;
     }
 
@@ -386,8 +427,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session ,CURLOPT_URL, $this->api_url."wind/caeli/park");
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
-        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
         curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
@@ -440,8 +481,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/park");
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
-        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
         curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
@@ -497,8 +538,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         ]));
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "GET");
-        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
-        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
             'X-CSRF-TOKEN: '.$api_session_id,
             'Content-Type: application/json'
@@ -540,8 +581,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/ratingArea");
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
-        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
             'X-CSRF-TOKEN: '.$api_session_id,
@@ -568,8 +609,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         ]));
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "GET");
-        curl_setopt($curl_session, CURLOPT_COOKIEJAR, System::getContainer()->getParameter('kernel.project_dir') . "/system/tmp/" . session_id() . '.txt');
-        curl_setopt($curl_session, CURLOPT_COOKIEFILE, System::getContainer()->getParameter('kernel.project_dir') . "/system/tmp/" . session_id() . '.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
             'X-CSRF-TOKEN: ' . $api_session_id,
@@ -648,8 +689,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/ratingArea");
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl_session, CURLOPT_COOKIEJAR, System::getContainer()->getParameter('kernel.project_dir') . "/system/tmp/" . session_id() . '.txt');
-        curl_setopt($curl_session, CURLOPT_COOKIEFILE, System::getContainer()->getParameter('kernel.project_dir') . "/system/tmp/" . session_id() . '.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
         curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
@@ -695,8 +736,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         ]));
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "GET");
-        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
-        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
             'X-CSRF-TOKEN: '.$api_session_id,
@@ -728,8 +769,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/ratingArea");
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
-        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir."/system/tmp/".session_id().'.txt');
+        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
+        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
         curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
@@ -747,6 +788,16 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         }
         
         return null;
+    }
+
+    /**
+     * Generiert konsistenten Cookie-File-Pfad für API-Sessions
+     */
+    private function getCookieFilePath(): string
+    {
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        $sessionHash = md5($this->api_user . date('Y-m-d-H'));
+        return $rootDir."/system/tmp/caeli_api_session_".$sessionHash.'.txt';
     }
 
     /**
@@ -842,7 +893,16 @@ class AreaCheckMapController extends AbstractFrontendModuleController
                 // Session-Cleanup sofort nach Abruf der Ergebnisse
                 $session->remove($sessionId . '_result');
                 $session->remove($sessionId . '_progress');
+                $session->remove($sessionId);
+                $session->remove($sessionId . '_processing');
                 
+                // SERVER-SEITIGES HTTP-REDIRECT statt JSON (funktioniert IMMER)
+                if (isset($result['redirectUrl']) && $result['redirectUrl']) {
+                    $this->logger->info('[AreaCheckMapController] Server-seitiges Redirect zu: ' . $result['redirectUrl']);
+                    return new Response('', 302, ['Location' => $result['redirectUrl']]);
+                }
+                
+                // Fallback: JSON Response
                 return new JsonResponse([
                     'status' => 'completed',
                     'result' => $result
@@ -1004,15 +1064,47 @@ class AreaCheckMapController extends AbstractFrontendModuleController
                 'uuid' => $uuid,
             ];
             
-            Database::getInstance()
+            $dbResult = Database::getInstance()
                 ->prepare("INSERT INTO tl_flaechencheck %s")
                 ->set($set)
                 ->execute();
             
-            $this->logger->info('[AreaCheckMapController] AJAX DB-Insert erfolgreich für sessionId: ' . $sessionId);
+            $insertId = $dbResult->insertId;
+            $this->logger->info('[AreaCheckMapController] AJAX DB-Insert erfolgreich für sessionId: ' . $sessionId . ', ID: ' . $insertId);
+            
+            // Kartenbild für erfolgreiche Flächenchecks generieren
+            if ($isSuccess && $insertId && $parkid && $parkid !== '-') {
+                try {
+                    $this->mapImageGenerator->generateAndSaveMapImage($parkid, $geometry, $isSuccess);
+                } catch (\Throwable $e) {
+                    // Bildgenerierung soll den Hauptflow nicht blockieren
+                    $this->logger->warning('[AreaCheckMapController] AJAX Bildgenerierung fehlgeschlagen (Park: ' . $parkid . '): ' . $e->getMessage());
+                }
+            }
             
             // Schritt 6: Abgeschlossen (100%)
             $this->updateProgress($sessionId, $session, 100, 'Verarbeitung abgeschlossen!');
+            
+            // Redirect-URL server-seitig berechnen (wie im synchronen Code)
+            $redirectUrl = null;
+            
+            // Hier sollten wir das ModuleModel haben, aber da wir in async context sind...
+            // Wir verwenden die Session-Daten für die jumpTo-Information
+            $moduleId = $requestData['module_id'] ?? null;
+            if ($moduleId) {
+                $moduleModel = \Contao\ModuleModel::findById($moduleId);
+                if ($moduleModel && $moduleModel->jumpTo) {
+                    $detailPage = \Contao\PageModel::findById($moduleModel->jumpTo);
+                    if ($detailPage) {
+                        if ($isSuccess) {
+                            $redirectUrl = $detailPage->getFrontendUrl() . '?parkid=' . urlencode($parkid);
+                        } else {
+                            $redirectUrl = $detailPage->getFrontendUrl() . '?checkid=' . urlencode($uuid);
+                        }
+                        $this->logger->info('[AreaCheckMapController] AJAX Redirect-URL berechnet: ' . $redirectUrl);
+                    }
+                }
+            }
             
             // Ergebnis in Session speichern
             $result = [
@@ -1020,7 +1112,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
                 'checkId' => $isSuccess ? $parkid : $uuid,
                 'parkData' => $parkData,
                 'status' => $status,
-                'errorMessage' => $errorMessage
+                'errorMessage' => $errorMessage,
+                'redirectUrl' => $redirectUrl  // Server-seitige Redirect-URL hinzufügen
             ];
             
             $session->set($sessionId . '_result', $result);

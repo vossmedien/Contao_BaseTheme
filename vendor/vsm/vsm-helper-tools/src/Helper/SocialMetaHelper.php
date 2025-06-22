@@ -477,6 +477,123 @@ class SocialMetaHelper
     }
 
     /**
+     * Convenience-Methode für News-Templates
+     */
+    public static function generateNewsSocialMeta($templateObject): string
+    {
+        $data = [];
+        
+        // Titel aus verfügbaren News-Feldern
+        if (!empty($templateObject->headline)) {
+            $data['title'] = $templateObject->headline;
+        }
+        
+        // Beschreibung aus verfügbaren News-Feldern
+        if (!empty($templateObject->teaser)) {
+            // HTML-Tags aus teaser entfernen für Meta-Tags
+            $data['description'] = strip_tags($templateObject->teaser);
+        } elseif (!empty($templateObject->text)) {
+            // Fallback auf text-Inhalt
+            $data['description'] = strip_tags($templateObject->text);
+        }
+        
+        // Hauptbild der News verwenden
+        if (!empty($templateObject->src)) {
+            $data['image'] = $templateObject->src;
+        }
+        
+        // Alt-Text für Bild
+        if (!empty($data['image']) && !empty($data['title'])) {
+            $data['image_alt'] = $data['title'];
+        }
+        
+        // Autor hinzufügen wenn verfügbar
+        if (!empty($templateObject->postAuthor)) {
+            $data['author'] = $templateObject->postAuthor;
+        }
+        
+        // Sprache
+        global $objPage;
+        if ($objPage && $objPage->language) {
+            $locale = str_replace('-', '_', $objPage->language);
+            $data['locale'] = $locale;
+        }
+        
+        // News-spezifische Anpassungen
+        $data['type'] = 'article';
+        
+        return self::generateSocialMetaTags($data);
+    }
+
+    /**
+     * Extrahiert Social Media Daten spezifisch für News-Templates mit erweiterten Optionen
+     */
+    public static function extractNewsDataFromTemplate($templateObject): array
+    {
+        $data = [];
+        
+        // Titel aus News-Template
+        if (!empty($templateObject->headline)) {
+            $data['title'] = $templateObject->headline;
+        }
+        
+        // Beschreibung: Priorität teaser > text
+        if (!empty($templateObject->teaser)) {
+            $data['description'] = strip_tags($templateObject->teaser);
+        } elseif (!empty($templateObject->text)) {
+            $data['description'] = strip_tags($templateObject->text);
+        }
+        
+        // Bild: Priorität src > authorImage
+        if (!empty($templateObject->src)) {
+            $data['image'] = $templateObject->src;
+        } elseif (!empty($templateObject->authorImage)) {
+            $data['image'] = $templateObject->authorImage;
+        }
+        
+        // Video-Support für Ratgeber-Template
+        if (!empty($templateObject->videoSRC)) {
+            // Bei Videos das Poster-Bild als Social Media Bild verwenden
+            if (!empty($templateObject->videoPosterSRC)) {
+                $data['image'] = $templateObject->videoPosterSRC;
+            }
+        }
+        
+        // Galerie-Support für Pressemedien-Template
+        if (!empty($templateObject->multiSRC) && empty($data['image'])) {
+            // Erstes Bild aus der Galerie verwenden
+            if (is_string($templateObject->multiSRC)) {
+                $galleryImages = \Contao\StringUtil::deserialize($templateObject->multiSRC, true);
+                if (!empty($galleryImages) && is_array($galleryImages)) {
+                    $data['image'] = $galleryImages[0];
+                }
+            }
+        }
+        
+        // Alt-Text für Bild
+        if (!empty($data['image']) && !empty($data['title'])) {
+            $data['image_alt'] = $data['title'];
+        }
+        
+        // Autor hinzufügen
+        if (!empty($templateObject->postAuthor)) {
+            $data['author'] = $templateObject->postAuthor;
+        }
+        
+        // Sprache
+        global $objPage;
+        if ($objPage && $objPage->language) {
+            $locale = str_replace('-', '_', $objPage->language);
+            $data['locale'] = $locale;
+        }
+        
+        // News-spezifische Metadaten
+        $data['type'] = 'article';
+        
+        return $data;
+    }
+
+    /**
      * Setzt den Singleton-Status zurück (für Tests oder spezielle Fälle)
      */
     public static function resetSingletonStatus(): void

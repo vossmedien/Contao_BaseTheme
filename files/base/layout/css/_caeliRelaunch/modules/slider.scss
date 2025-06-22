@@ -67,7 +67,7 @@
   box-shadow: none;
 
   &:after {
-    font-size: 40px;
+    font-size: 30px;
     color: currentColor;
 
     @include media-breakpoint-up(sm) {

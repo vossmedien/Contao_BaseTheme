@@ -13,10 +13,8 @@ $this->wrapperAttributes = $this
 <!-- indexer::stop -->
 <nav<?= $this->wrapperAttributes ?>>
 
-    <div class="logo">
-        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/logo.svg", null), null, null; ?>
-    </div>
-
+    <button type="button" class="mmenu-close-btn" aria-label="Navigation schließen">
+    </button>
 
     <?= $this->items ?>
 

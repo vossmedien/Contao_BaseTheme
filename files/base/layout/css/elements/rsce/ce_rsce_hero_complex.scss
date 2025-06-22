@@ -70,11 +70,6 @@
       left: auto;
       width: auto;
       bottom: auto;
-
-      @include media-breakpoint-up(md) {
-        right: 3rem;
-        top: 32px;
-      }
     }
 
     .hero-complex-swiper-nav {

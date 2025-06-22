@@ -50,6 +50,8 @@
 
 .ce_rsce_accordion {
   .ce--headline {
-    margin-bottom: var(--main-gap);
+     @include media-breakpoint-up(sm) {
+        margin-bottom: var(--main-gap);
+     }
   }
 }

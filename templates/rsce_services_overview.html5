@@ -16,75 +16,79 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         $GLOBALS['TL_CSS'][] = 'files/base/layout/js/venobox/venobox.min.css|static';
         $GLOBALS['TL_BODY'][] = '<script defer src="/files/base/layout/js/venobox/venobox.min.js"></script>';
     }
-} 
+}
 $rand = random_int(0, 99999); // Für eindeutigen Lightbox-Selektor
 ?>
 
-<style>
-    /* Mobile Navigation Styles - Removed as requested */
-</style>
 
-<div <?php echo $this->cssID; ?> class="content--element services-overview <?= $this->class; ?>" <?php if ($this->disable_hover): ?>data-hover-disabled="true"<?php endif; ?>>
-    <div class="ce--inner">
-        <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
-            $this->topline,
-            $this->headline,
-            $this->subline,
-            $this->hl,
-            $this->animation_type,
-            null,
-            false,
-            null
-        ); ?>
+    <div <?php echo $this->cssID; ?> class="content--element services-overview <?= $this->class; ?>" <?php if ($this->disable_hover): ?>data-hover-disabled="true"<?php endif; ?>>
+        <div class="ce--inner">
+            <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+                $this->topline,
+                $this->headline,
+                $this->subline,
+                $this->hl,
+                $this->animation_type,
+                null,
+                false,
+                null
+            ); ?>
 
-        <div class="mt-md-5">
-            <!-- Mobile Navigation (Buttons + Arrows) -->
-            <div class="mobile-services-nav-wrapper d-md-none mb-1">
-                 <button class="mobile-nav-arrow prev disabled" aria-label="Vorherige Leistung">
-                    <i class="fak fa-chevron-left"></i>
-                 </button>
-                 <div class="mobile-services-nav">
-                     <div class="mobile-services-nav-inner">
-                        <?php foreach ($this->services as $index => $service): ?>
-                            <button class="mobile-service-button <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index; ?>">
-                                <?= $service->title; ?>
-                            </button>
-                        <?php endforeach; ?>
+            <div class="mt-md-5">
+                <!-- Mobile Navigation (Buttons + Arrows) -->
+                <div class="mobile-services-nav-wrapper d-md-none mb-1">
+
+                    <div class="mobile-services-nav">
+                        <div class="mobile-services-nav-inner">
+                            <?php foreach ($this->services as $index => $service): ?>
+                                <button class="mobile-service-button <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index; ?>">
+                                    <?= $service->title; ?>
+                                </button>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                </div>
-                 <button class="mobile-nav-arrow next" aria-label="Nächste Leistung">
-                    <i class="fak fa-chevron-right"></i>
-                </button>
-            </div>
 
-            <div class="row g-0" >
-                <!-- Desktop List (Hidden on Mobile) -->
-                <div class="col-md-6 d-none d-md-block">
-                    <ul class="services-list">
-                        <?php foreach ($this->services as $index => $service): ?>
-                            <?php
+                </div>
+
+                <div class="row g-0">
+                    <!-- Desktop List (Hidden on Mobile) -->
+                    <div class="col-md-6 d-none d-md-block">
+                        <ul class="services-list">
+                            <?php foreach ($this->services as $index => $service): ?>
+                                <?php
                                 // Zugriff auf Subpaletten-Felder anpassen, falls 'fields_for_subpalettes' verwendet wird
                                 $serviceSize = $service->fields_for_subpalettes['size'] ?? $service->size ?? null;
                                 $openLightbox = $service->fields_for_subpalettes['open_lightbox'] ?? $service->open_lightbox ?? false;
-                            ?>
-                            <li data-animation="<?php echo $this->animation_type; ?>" class="service-item" data-index="<?php echo $index; ?>">
-                                <?php if ($service->link): ?>
-                                <a href="<?php echo $service->link; ?>" class="service-link">
-                                    <h3 class="mb-0 h6"><?php if ($this->show_arrow): ?><i class="fasl fa-long-arrow-right"></i> <?php endif; ?><?php echo $service->title; ?></h3>
-                                </a>
-                                <?php else: ?>
-                                <div class="service-link"> <!-- Non-clickable item -->
-                                     <h3 class="mb-0 h6"><?php if ($this->show_arrow): ?><i class="fasl fa-long-arrow-right"></i> <?php endif; ?><?php echo $service->title; ?></h3>
-                                </div>
-                                <?php endif; ?>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <div class="service-content-container">
-                        <?php foreach ($this->services as $index => $service): ?>
-                             <?php
+                                ?>
+                                <li data-animation="<?php echo $this->animation_type; ?>" class="service-item" data-index="<?php echo $index; ?>">
+                                    <?php if ($service->link): ?>
+                                        <a href="<?php echo $service->link; ?>" class="service-link">
+                                            <h3 class="mb-0 h6"><?php if ($this->show_arrow): ?>
+                                                    <i class="fasl fa-long-arrow-right"></i> <?php endif; ?><?php echo $service->title; ?>
+                                            </h3>
+                                        </a>
+                                    <?php else: ?>
+                                        <div class="service-link"> <!-- Non-clickable item -->
+                                            <h3 class="mb-0 h6"><?php if ($this->show_arrow): ?>
+                                                    <i class="fasl fa-long-arrow-right"></i> <?php endif; ?><?php echo $service->title; ?>
+                                            </h3>
+                                        </div>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="service-content-container">
+                            <button class="mobile-nav-arrow prev disabled d-md-none" aria-label="Vorherige Leistung">
+                                <i class="fak fa-chevron-left"></i>
+                            </button>
+                            <button class="mobile-nav-arrow next d-md-none" aria-label="Nächste Leistung">
+                                <i class="fak fa-chevron-right"></i>
+                            </button>
+
+                            <?php foreach ($this->services as $index => $service): ?>
+                                <?php
                                 // Zugriff auf Subpaletten-Felder anpassen, falls 'fields_for_subpalettes' verwendet wird
                                 $serviceSize = $service->fields_for_subpalettes['size'] ?? $service->size ?? null;
                                 $openLightbox = $service->fields_for_subpalettes['open_lightbox'] ?? $service->open_lightbox ?? false;
@@ -93,91 +97,91 @@ $rand = random_int(0, 99999); // Für eindeutigen Lightbox-Selektor
                                 if (empty(trim(strip_tags((string)($service->content_text ?? ''))))) {
                                     $contentClass .= ' no-text';
                                 }
-                            ?>
-                            <div class="service-content <?= trim($contentClass) ?>" data-index="<?php echo $index; ?>">
-                                 <?php
-                                  echo $headlineOutput = Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
-                                      $service->content_topline,
-                                      $service->content_headline,
-                                      $service->content_subline,
-                                      $service->content_hl ?: 'h3',
-                                      $service->headline_animation_type,
-                                      null,
-                                      false,
-                                      null
-                                  );
-                                 ?>
-
-                                <?php
-                                $imageHtml = '';
-                                $imageUrl = null;
-                                if ($service->image) {
-                                    $imageModel = \Contao\FilesModel::findByUuid($service->image);
-                                    if ($imageModel !== null) {
-                                        $imageUrl = $imageModel->path;
-                                        $imageHtml = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
-                                            $service->image,
-                                            null,
-                                            $service->content_headline ?: $service->title,
-                                            $serviceSize,
-                                            'mb-4', // Diese Klasse wird im SCSS bei .no-text überschrieben
-                                            false,
-                                            $openLightbox ? 'lightbox_' . $rand : false,
-                                            true,
-                                            null,
-                                            $openLightbox ? $imageUrl : null
-                                        );
-                                    }
-                                }
                                 ?>
+                                <div class="service-content <?= trim($contentClass) ?>" data-index="<?php echo $index; ?>">
+                                    <?php
+                                    echo $headlineOutput = Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
+                                        $service->content_topline,
+                                        $service->content_headline,
+                                        $service->content_subline,
+                                        $service->content_hl ?: 'h3',
+                                        $service->headline_animation_type,
+                                        null,
+                                        false,
+                                        null
+                                    );
+                                    ?>
 
-                                <?php if ($imageHtml): ?>
-                                    <div class="service-image" <?php if ($service->image_animation_type): ?>data-animation="<?= htmlspecialchars($service->image_animation_type, ENT_QUOTES) ?>"<?php endif; ?>>
-                                        <?php if ($openLightbox && $imageUrl): ?>
-                                            <a href="<?= $imageUrl ?>" class="lightbox_<?= $rand; ?>" data-gall="service-gallery-<?= $this->id ?>" data-title="<?= $service->content_headline ?: $service->title ?>">
+                                    <?php
+                                    $imageHtml = '';
+                                    $imageUrl = null;
+                                    if ($service->image) {
+                                        $imageModel = \Contao\FilesModel::findByUuid($service->image);
+                                        if ($imageModel !== null) {
+                                            $imageUrl = $imageModel->path;
+                                            $imageHtml = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
+                                                $service->image,
+                                                null,
+                                                $service->content_headline ?: $service->title,
+                                                $serviceSize,
+                                                'mb-4', // Diese Klasse wird im SCSS bei .no-text überschrieben
+                                                false,
+                                                $openLightbox ? 'lightbox_' . $rand : false,
+                                                true,
+                                                null,
+                                                $openLightbox ? $imageUrl : null
+                                            );
+                                        }
+                                    }
+                                    ?>
+
+                                    <?php if ($imageHtml): ?>
+                                        <div class="service-image" <?php if ($service->image_animation_type): ?>data-animation="<?= htmlspecialchars($service->image_animation_type, ENT_QUOTES) ?>"<?php endif; ?>>
+                                            <?php if ($openLightbox && $imageUrl): ?>
+                                                <a href="<?= $imageUrl ?>" class="lightbox_<?= $rand; ?>" data-gall="service-gallery-<?= $this->id ?>" data-title="<?= $service->content_headline ?: $service->title ?>">
+                                                    <?= $imageHtml ?>
+                                                </a>
+                                            <?php else: ?>
                                                 <?= $imageHtml ?>
-                                            </a>
-                                        <?php else: ?>
-                                            <?= $imageHtml ?>
-                                        <?php endif; ?>
-                                    </div>
-                                <?php endif; ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
 
-                                <?php if (!empty(trim(strip_tags((string)($service->content_text ?? ''))))): // Stelle sicher, dass der Text-Div nur gerendert wird, wenn auch Text da ist ?>
-                                <div class="service-text" <?php if ($service->text_animation_type): ?>data-animation="<?= htmlspecialchars($service->text_animation_type, ENT_QUOTES) ?>"<?php endif; ?>>
-                                    <?= $service->content_text ?>
+                                    <?php if (!empty(trim(strip_tags((string)($service->content_text ?? ''))))): // Stelle sicher, dass der Text-Div nur gerendert wird, wenn auch Text da ist ?>
+                                        <div class="service-text" <?php if ($service->text_animation_type): ?>data-animation="<?= htmlspecialchars($service->text_animation_type, ENT_QUOTES) ?>"<?php endif; ?>>
+                                            <?= $service->content_text ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if (!empty($service->buttons)): ?>
+                                        <div class="service-buttons mt-4">
+                                            <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($service->buttons) ?>
+                                        </div>
+                                    <?php endif; ?>
+
                                 </div>
-                                <?php endif; ?>
-
-                                <?php if (!empty($service->buttons)): ?>
-                                <div class="service-buttons mt-4">
-                                     <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($service->buttons) ?>
-                                </div>
-                                <?php endif; ?>
-
-                            </div>
-                        <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
-</div>
 
 <?php if ($needsLightbox): ?>
-<script type="text/javascript" defer>
-document.addEventListener('DOMContentLoaded', function () {
-    new VenoBox({
-        selector: ".lightbox_<?= $rand;?>",
-        infinigall: true,
-        maxWidth: '95%',
-        numeration: true,
-        spinner: 'flow',
-        initialScale: 0.9,
-        transitionSpeed: 200,
-        fitView: true,
-    });
-});
-</script>
+    <script type="text/javascript" defer>
+        document.addEventListener('DOMContentLoaded', function () {
+            new VenoBox({
+                selector: ".lightbox_<?= $rand;?>",
+                infinigall: true,
+                maxWidth: '95%',
+                numeration: true,
+                spinner: 'flow',
+                initialScale: 0.9,
+                transitionSpeed: 200,
+                fitView: true,
+            });
+        });
+    </script>
 <?php endif; ?>

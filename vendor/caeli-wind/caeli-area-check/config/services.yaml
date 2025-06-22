@@ -26,9 +26,24 @@ services:
     # FormDataListener für Formular-Hooks
     CaeliWind\CaeliAreaCheckBundle\EventListener\FormDataListener:
         arguments:
-            $logger: '@monolog.logger.contao'
-            $formIds: '%caeli_area_check.form_ids%'
-            $fieldMapping: '%caeli_area_check.field_mapping%'
+            - '@monolog.logger.contao'
+            - '%caeli_area_check.form_ids%'
+            - '%caeli_area_check.field_mapping%'
         tags:
             - { name: contao.hook, hook: processFormData, method: onProcessFormData }
-            - { name: contao.hook, hook: loadFormField, method: onLoadFormField } 
+            - { name: contao.hook, hook: loadFormField, method: onLoadFormField }
+
+    CaeliWind\CaeliAreaCheckBundle\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    CaeliWind\CaeliAreaCheckBundle\EventListener\:
+        resource: '../src/EventListener/'
+
+    # Map Image Generator Service
+    CaeliWind\CaeliAreaCheckBundle\Service\MapImageGeneratorService:
+        arguments:
+            $logger: '@logger'
+            $projectDir: '%kernel.project_dir%'
+        tags:
+            - { name: 'monolog.logger', channel: 'caeli_area_check' } 

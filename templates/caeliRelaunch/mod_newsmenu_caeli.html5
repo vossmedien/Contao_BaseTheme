@@ -12,7 +12,7 @@
         $activeYearFromQuery = $currentRequest ? $currentRequest->query->get('year') : null;
         $baseUrl = $currentRequest ? $currentRequest->getPathInfo() : ''; // Basis-URL ohne Query-Parameter
         ?>
-        <div class="filter-buttons mb-4 justify-content-center justify-content-md-start d-flex gap-1 flex-wrap flex-row">
+        <div class="filter-buttons mb-sm-4 d-flex gap-1 flex-wrap flex-row">
 
             <?php // "Alle" Button ?>
             <?php if ($activeYearFromQuery === null): ?>

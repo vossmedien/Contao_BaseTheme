@@ -43,6 +43,8 @@ const CaeliAreaCheck = {
     }
 };
 
+console.log("2");
+
 // Utility Functions
 const Utils = {
     isMobile() {
@@ -88,7 +90,7 @@ const Utils = {
     },
 
     validatePLZ(input, place = null) {
-        // Sehr lockere Validierung: Fast alles akzeptieren
+        // Sehr lockere Validierung für bessere UX
         if (!input || input.length < 2) {
             return false;
         }
@@ -98,8 +100,34 @@ const Utils = {
             return true;
         }
         
-        // Sehr lockerer Check: Enthält Zahlen oder ist länger als 3 Zeichen
-        return /\d/.test(input) || input.length > 3;
+        // Intelligent prüfen ob es eine sinnvolle Adresseingabe ist
+        const trimmedInput = input.trim();
+        
+        // Vollständige Adressen (enthalten sowohl Zahlen als auch Buchstaben)
+        if (/\d/.test(trimmedInput) && /[a-zA-ZäöüÄÖÜß]/.test(trimmedInput)) {
+            return true;
+        }
+        
+        // PLZ-Pattern für verschiedene Länder prüfen
+        const plzPatterns = [
+            /^\d{5}$/,                    // Deutschland: 12345
+            /^\d{4}$/,                    // Österreich/Schweiz: 1234
+            /^\d{4}\s?[A-Z]{2}$/i,        // Niederlande: 1234 AB
+            /^\d{2}-?\d{3}$/,             // Polen: 12-345
+            /^[A-Z]\d{2}\s?[A-Z0-9]{4}$/i // Irland: D02 XY45
+        ];
+        
+        // Direkte PLZ-Eingabe
+        if (plzPatterns.some(pattern => pattern.test(trimmedInput))) {
+            return true;
+        }
+        
+        // Stadtnamen oder längere Eingaben akzeptieren
+        if (trimmedInput.length > 3 && /[a-zA-ZäöüÄÖÜß]/.test(trimmedInput)) {
+            return true;
+        }
+        
+        return false;
     },
     
     safeElementAction(selector, action) {
@@ -190,8 +218,22 @@ function initMap() {
     let selectedIndex = -1;
     
     if (input && dropdown) {
-        // Tutorial Event Listener für Focus
-        input.addEventListener('focus', handleInputFocus);
+        // Focus Event Listener für Tutorial UND Autocomplete-Wiederherstellung
+        input.addEventListener('focus', function(e) {
+            handleInputFocus(); // Tutorial-Logik
+            
+            // Autocomplete wieder anzeigen wenn bereits Text vorhanden
+            const query = e.target.value.trim();
+            if (query.length >= 2 && currentSuggestions.length > 0) {
+                showSuggestions(currentSuggestions);
+            } else if (query.length >= 2) {
+                // Neue Suche starten wenn keine cached Suggestions vorhanden
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    searchPlaces(query);
+                }, 200);
+            }
+        });
         
             // Input Event für Live-Suche und PLZ-Validierung
     input.addEventListener('input', function(e) {
@@ -318,41 +360,126 @@ function initMap() {
             return place.formatted_address || '';
         }
         
+        // Intelligente Anzeige basierend auf verfügbaren Adresskomponenten
+        let streetNumber = '';
+        let route = '';
         let locality = '';
+        let postalCode = '';
         let country = '';
+        let administrativeArea = '';
         
-        // Extrahiere Stadt/Ort und Land aus den Komponenten
+        // Alle relevanten Komponenten extrahieren
         place.address_components.forEach(component => {
-            if (component.types.includes('locality')) {
+            const types = component.types;
+            
+            if (types.includes('street_number')) {
+                streetNumber = component.long_name;
+            }
+            if (types.includes('route')) {
+                route = component.long_name;
+            }
+            if (types.includes('locality')) {
                 locality = component.long_name;
             }
-            if (component.types.includes('country')) {
+            if (types.includes('postal_code')) {
+                postalCode = component.long_name;
+            }
+            if (types.includes('country')) {
                 country = component.long_name;
+            }
+            if (types.includes('administrative_area_level_1')) {
+                administrativeArea = component.long_name;
             }
         });
         
-        // Fallback: Versuche administrative_area_level_1 für Städte
-        if (!locality) {
-            place.address_components.forEach(component => {
-                if (component.types.includes('administrative_area_level_1')) {
-                    locality = component.long_name;
+        // Straßenadresse vorhanden? (Vollständige Adresse anzeigen)
+        if (route && locality) {
+            let street = route;
+            if (streetNumber) {
+                street = `${route} ${streetNumber}`;
+            }
+            
+            if (postalCode) {
+                // Nur vollständige PLZ verwenden (mindestens 4 Stellen für Deutschland)
+                if (country && country.toLowerCase().includes('deutsch') && postalCode.length >= 4) {
+                    return `${street}, ${postalCode} ${locality}`;
+                } else if (!country || !country.toLowerCase().includes('deutsch')) {
+                    // Andere Länder: PLZ wie sie ist
+                    return `${street}, ${postalCode} ${locality}`;
+                } else {
+                    // Unvollständige deutsche PLZ: Ohne PLZ anzeigen
+                    return `${street}, ${locality}`;
                 }
-            });
+            } else {
+                return `${street}, ${locality}`;
+            }
         }
         
-        // Fallback: Nutze den ersten Teil der formatted_address
-        if (!locality) {
-            const parts = place.formatted_address.split(',');
-            locality = parts[0].replace(/\d+\s*/, '').trim(); // Entferne führende Zahlen
+        // Nur Ort mit PLZ? (PLZ + Ort anzeigen)
+        if (locality && postalCode) {
+            // Nur vollständige PLZ verwenden (mindestens 4 Stellen für Deutschland)
+            if (country && country.toLowerCase().includes('deutsch') && postalCode.length >= 4) {
+                return `${postalCode} ${locality}`;
+            } else if (!country || !country.toLowerCase().includes('deutsch')) {
+                // Andere Länder: PLZ wie sie ist
+                return `${postalCode} ${locality}`;
+            } else {
+                // Unvollständige deutsche PLZ: Nur Ort anzeigen
+                return locality;
+            }
         }
         
-        // Saubere Anzeige: "Nürnberg, Deutschland"
+        // Nur Ort ohne PLZ? (Ort + Land anzeigen, aber Duplikate vermeiden)
         if (locality && country) {
+            // Vermeide "Deutschland, Deutschland" - prüfe ob Ort bereits Länderinfo enthält
+            if (locality.toLowerCase().includes(country.toLowerCase()) || 
+                country.toLowerCase().includes(locality.toLowerCase())) {
+                return locality;
+            }
             return `${locality}, ${country}`;
         }
         
-        // Fallback auf formatted_address
-        return place.formatted_address;
+        // Nur PLZ-Bereich? Administrative Area verwenden
+        if (postalCode && administrativeArea && !locality) {
+            // Nur vollständige PLZ verwenden (mindestens 4 Stellen für Deutschland)
+            if (country && country.toLowerCase().includes('deutsch') && postalCode.length >= 4) {
+                if (country && !administrativeArea.toLowerCase().includes(country.toLowerCase())) {
+                    return `${postalCode} ${administrativeArea}, ${country}`;
+                } else {
+                    return `${postalCode} ${administrativeArea}`;
+                }
+            } else if (!country || !country.toLowerCase().includes('deutsch')) {
+                // Andere Länder: PLZ wie sie ist
+                if (country && !administrativeArea.toLowerCase().includes(country.toLowerCase())) {
+                    return `${postalCode} ${administrativeArea}, ${country}`;
+                } else {
+                    return `${postalCode} ${administrativeArea}`;
+                }
+            } else {
+                // Unvollständige deutsche PLZ: Nur administrativeArea anzeigen
+                if (country && !administrativeArea.toLowerCase().includes(country.toLowerCase())) {
+                    return `${administrativeArea}, ${country}`;
+                } else {
+                    return administrativeArea;
+                }
+            }
+        }
+        
+        // Fallback: Bereinige formatted_address
+        let cleanAddress = place.formatted_address;
+        
+        // Entferne redundante Länderinformationen bei deutschen Adressen
+        if (country && country.toLowerCase() === 'deutschland') {
+            // Entferne ", Deutschland" am Ende
+            cleanAddress = cleanAddress.replace(/, Deutschland$/, '');
+            // Entferne ", Germany" am Ende (falls englische Version)
+            cleanAddress = cleanAddress.replace(/, Germany$/, '');
+        }
+        
+        // Entferne Plus Codes am Anfang
+        cleanAddress = cleanAddress.replace(/^[A-Z0-9]{4}\+[A-Z0-9]{2},?\s*/, '');
+        
+        return cleanAddress || place.formatted_address;
     }
     
     function updateSelection() {
@@ -369,11 +496,11 @@ function initMap() {
     function selectPlace(place) {
         if (!place || !place.geometry) return;
         
-        // Input-Wert mit sauberer Anzeige setzen (ohne PLZ)
+        // Input-Wert mit intelligenter Anzeige setzen
         input.value = getCleanDisplayText(place);
         hideDropdown();
         
-        // PLZ-Validation
+        // PLZ-Validation - bei vollständigen Adressen immer als gültig betrachten
         const isValidPLZ = Utils.validatePLZ(input.value, place);
         if (!isValidPLZ) {
             updateSubmitButtonState(false);
@@ -438,9 +565,11 @@ function initMap() {
     
 
 
-    // Map-Event-Listener für Polygon-Mitbewegen
+    // Map-Event-Listener für sauberes Polygon-Mitbewegen
     google.maps.event.addListener(CaeliAreaCheck.map, 'center_changed', function() {
-        if (CaeliAreaCheck.polygon && CaeliAreaCheck.state.polygonRelativeOffset && !CaeliAreaCheck.state.isPolygonBeingEdited) {
+        if (CaeliAreaCheck.polygon && 
+            CaeliAreaCheck.state.polygonRelativeOffset && 
+            !CaeliAreaCheck.state.isPolygonBeingEdited) {
             movePolygonWithMap();
         }
     });
@@ -515,7 +644,7 @@ function geocodeInputValue(address) {
         geocodeRequest.componentRestrictions = {
             country: allowedCountries.length === 1 ? allowedCountries[0] : allowedCountries
         };
-        console.log('[DEBUG] Geocoding country restriction:', geocodeRequest.componentRestrictions.country);
+        //console.log('[DEBUG] Geocoding country restriction:', geocodeRequest.componentRestrictions.country);
     }
     
     CaeliAreaCheck.geocoder.geocode(geocodeRequest, function(results, status) {
@@ -638,53 +767,98 @@ function createPolygonAtLocation(center) {
     // Event Listener für Polygon-Änderungen - LIVE UPDATES
     const polygonPath = CaeliAreaCheck.polygon.getPath();
     
-    // Event Listener für alle Änderungen am Polygon-Pfad
+    // Event Listener für alle Änderungen am Polygon-Pfad (Mobile-optimiert)
     google.maps.event.addListener(polygonPath, 'set_at', function() {
-        console.log('[DEBUG] Polygon set_at event - updating area');
-        updatePolygonOffset();
-        updateAreaLabel();
-        updateGeometryField();
-        refreshPolygonMidpoints();
+        //console.log('[DEBUG] Polygon set_at event - updating area');
+        // Kurze Verzögerung für Mobile-Performance
+        setTimeout(() => {
+            updateAreaLabel();
+            updateGeometryField();
+        }, 50);
     });
     
     google.maps.event.addListener(polygonPath, 'insert_at', function() {
-        console.log('[DEBUG] Polygon insert_at event - updating area');
-        updatePolygonOffset();
-        updateAreaLabel();
-        updateGeometryField();
-        refreshPolygonMidpoints();
+        //console.log('[DEBUG] Polygon insert_at event - updating area');
+        setTimeout(() => {
+            updateAreaLabel();
+            updateGeometryField();
+        }, 50);
     });
     
     google.maps.event.addListener(polygonPath, 'remove_at', function() {
-        console.log('[DEBUG] Polygon remove_at event - updating area');
-        updatePolygonOffset();
-        updateAreaLabel();
-        updateGeometryField();
-        refreshPolygonMidpoints();
+        //console.log('[DEBUG] Polygon remove_at event - updating area');
+        setTimeout(() => {
+            updateAreaLabel();
+            updateGeometryField();
+        }, 50);
     });
     
     // Event Listener für Drag-Operationen des gesamten Polygons
     google.maps.event.addListener(CaeliAreaCheck.polygon, 'dragstart', function() {
-        console.log('[DEBUG] Polygon dragstart');
+        //console.log('[DEBUG] Polygon dragstart');
+        CaeliAreaCheck.state.isPolygonBeingEdited = true;
+    });
+    
+    // Event Listener für Vertex-Editing Start
+    google.maps.event.addListener(CaeliAreaCheck.polygon, 'mousedown', function() {
+        //console.log('[DEBUG] Polygon mousedown - potential vertex edit start');
         CaeliAreaCheck.state.isPolygonBeingEdited = true;
     });
     
     google.maps.event.addListener(CaeliAreaCheck.polygon, 'drag', function() {
         // LIVE UPDATE während des Ziehens des gesamten Polygons
-        console.log('[DEBUG] Polygon drag - live update');
+        //console.log('[DEBUG] Polygon drag - live update');
         updateAreaLabel();
         updateGeometryField();
     });
     
     google.maps.event.addListener(CaeliAreaCheck.polygon, 'dragend', function() {
-        console.log('[DEBUG] Polygon dragend');
-        updatePolygonOffset();
+        //console.log('[DEBUG] Polygon dragend');
+        updatePolygonOffset(); // Neuen Offset nach User-Dragging berechnen
         updateAreaLabel();
         updateGeometryField();
         CaeliAreaCheck.state.isPolygonBeingEdited = false;
-        refreshPolygonMidpoints();
     });
     
+    // WICHTIG: Event Listener für Polygon-Editing (Eckpunkte ziehen mit Dots)
+    google.maps.event.addListener(CaeliAreaCheck.polygon, 'mouseup', function() {
+        //console.log('[DEBUG] Polygon mouseup - vertex edit completed');
+        CaeliAreaCheck.state.isPolygonBeingEdited = false; // Flag zurücksetzen
+        setTimeout(() => {
+            updateAreaLabel();
+            updateGeometryField();
+        }, 100); // Etwas länger für Edit-Operations
+    });
+    
+    // Event für Touch-Geräte (Mobile)
+    google.maps.event.addListener(CaeliAreaCheck.polygon, 'touchend', function() {
+        //console.log('[DEBUG] Polygon touchend - vertex edit completed');
+        CaeliAreaCheck.state.isPolygonBeingEdited = false; // Flag zurücksetzen
+        setTimeout(() => {
+            updateAreaLabel();
+            updateGeometryField();
+        }, 100);
+    });
+    
+    // Zusätzliche Events für robustes Vertex-Editing
+    google.maps.event.addListener(CaeliAreaCheck.polygon, 'click', function() {
+        //console.log('[DEBUG] Polygon click - potential vertex edit');
+        setTimeout(() => {
+            updateAreaLabel();
+            updateGeometryField();
+        }, 150);
+    });
+    
+    // Global map mouseup Event als Fallback für alle Polygon-Änderungen
+    google.maps.event.addListener(CaeliAreaCheck.map, 'mouseup', function() {
+        // Nur wenn Polygon existiert und nicht gerade verschoben wird
+        if (CaeliAreaCheck.polygon && !CaeliAreaCheck.state.isPolygonBeingEdited) {
+            setTimeout(() => {
+                updateAreaLabel();
+                updateGeometryField();
+            }, 200);
+        }
+    });
 
 
     // Tutorial: Polygon wurde erstellt
@@ -725,6 +899,7 @@ function deletePolygon() {
 }
 
 function updateAreaLabel() {
+    // Altes Label korrekt entfernen
     if (CaeliAreaCheck.areaLabel) {
         CaeliAreaCheck.areaLabel.map = null;
         CaeliAreaCheck.areaLabel = null;
@@ -751,7 +926,7 @@ function updateAreaLabel() {
     try {
         const area = google.maps.geometry.spherical.computeArea(path);
         const areaInHectares = (area / 10000).toFixed(2);
-        console.log('[DEBUG] updateAreaLabel: Berechnet', areaInHectares, 'ha für', path.getLength(), 'Punkte');
+        //console.log('[DEBUG] updateAreaLabel: Berechnet', areaInHectares, 'ha für', path.getLength(), 'Punkte');
 
         const bounds = new google.maps.LatLngBounds();
         CaeliAreaCheck.polygon.getPath().forEach(function(latLng) {
@@ -995,7 +1170,7 @@ function logCoordinates() {
                     console.warn('Reverse Geocoding fehlgeschlagen:', status);
                 }
                 
-                            // AJAX Form-Submit starten (verzögert, damit Geocoding abgeschlossen ist)
+                            // Form-Submit starten (verzögert, damit Geocoding abgeschlossen ist)
             submitFormWithRedirect();
             });
         } else {
@@ -1006,7 +1181,7 @@ function logCoordinates() {
                 hiddenAddress.value = searchInput.value;
             }
             
-            // AJAX Form-Submit starten
+            // Form-Submit starten
             submitFormWithRedirect();
         }
     } else {
@@ -1015,18 +1190,7 @@ function logCoordinates() {
     }
 }
 
-function searchAddressFallback(address) {
-    if (!address) return;
-    geocoder.geocode({ 'address': address }, function(results, status) {
-        if (status === 'OK') {
-            map.setCenter(results[0].geometry.location);
-            map.setZoom(16);
-        } else {
-            const translations = window.CaeliAreaCheckTranslations || {};
-            showDynamicAlert('geocoding_failed', translations, status);
-        }
-    });
-}
+// Geocoding-Fallback-Funktion entfernt (wird nicht verwendet)
 
 function updateGeometryField() {
     if (CaeliAreaCheck.polygon) {
@@ -1044,133 +1208,16 @@ function updateGeometryField() {
     }
 }
 
-// Event-Listener für Polygon neu setzen (nach Kartenverschiebung)
-function reattachPolygonEventListeners() {
-    if (!CaeliAreaCheck.polygon) return;
-    
-    console.log('[DEBUG] Reattaching polygon event listeners after map move');
-    
-    // Alle vorherigen Event-Listener entfernen
-    google.maps.event.clearInstanceListeners(CaeliAreaCheck.polygon);
-    
-    const polygonPath = CaeliAreaCheck.polygon.getPath();
-    google.maps.event.clearInstanceListeners(polygonPath);
-    
-    // Event Listener für alle Änderungen am Polygon-Pfad neu setzen
-    google.maps.event.addListener(polygonPath, 'set_at', function() {
-        console.log('[DEBUG] Polygon set_at event - updating area (reattached)');
-        updatePolygonOffset();
-        updateAreaLabel();
-        updateGeometryField();
-        refreshPolygonMidpoints();
-    });
-    
-    google.maps.event.addListener(polygonPath, 'insert_at', function() {
-        console.log('[DEBUG] Polygon insert_at event - updating area (reattached)');
-        updatePolygonOffset();
-        updateAreaLabel();
-        updateGeometryField();
-        refreshPolygonMidpoints();
-    });
-    
-    google.maps.event.addListener(polygonPath, 'remove_at', function() {
-        console.log('[DEBUG] Polygon remove_at event - updating area (reattached)');
-        updatePolygonOffset();
-        updateAreaLabel();
-        updateGeometryField();
-        refreshPolygonMidpoints();
-    });
-    
-    // Event Listener für Drag-Operationen des gesamten Polygons neu setzen
-    google.maps.event.addListener(CaeliAreaCheck.polygon, 'dragstart', function() {
-        console.log('[DEBUG] Polygon dragstart (reattached)');
-        CaeliAreaCheck.state.isPolygonBeingEdited = true;
-    });
-    
-    google.maps.event.addListener(CaeliAreaCheck.polygon, 'drag', function() {
-        // LIVE UPDATE während des Ziehens des gesamten Polygons
-        console.log('[DEBUG] Polygon drag - live update (reattached)');
-        updateAreaLabel();
-        updateGeometryField();
-    });
-    
-    google.maps.event.addListener(CaeliAreaCheck.polygon, 'dragend', function() {
-        console.log('[DEBUG] Polygon dragend (reattached)');
-        updatePolygonOffset();
-        updateAreaLabel();
-        updateGeometryField();
-        CaeliAreaCheck.state.isPolygonBeingEdited = false;
-        refreshPolygonMidpoints();
-    });
-}
+// Midpoint-Refresh und Event-Listener-Manipulation entfernt
+// Polygon-Interaktion funktioniert jetzt stabil ohne komplexe Workarounds
 
-/**
- * Aktualisiert die Midpoints des Polygons durch temporäres Deaktivieren/Aktivieren des Edit-Modus
- */
-function refreshPolygonMidpoints() {
-    if (!CaeliAreaCheck.polygon) return;
-    
-    try {
-        // Kurz editable ausschalten und wieder einschalten um Midpoints zu refreshen
-        const wasEditable = CaeliAreaCheck.polygon.getEditable();
-        if (wasEditable) {
-            CaeliAreaCheck.polygon.setEditable(false);
-            // Sehr kurzer Timeout damit die UI Zeit hat zu reagieren
-            setTimeout(function() {
-                if (CaeliAreaCheck.polygon) {
-                    CaeliAreaCheck.polygon.setEditable(true);
-                }
-            }, 1);
-        }
-    } catch (error) {
-        console.warn('[DEBUG] refreshPolygonMidpoints Fehler:', error);
-    }
-}
-
-// Hilfsfunktionen für Polygon-Mitbewegen
-function updatePolygonOffset() {
-    if (!CaeliAreaCheck.polygon || !CaeliAreaCheck.map) return;
-    
-    // Aktuelles Polygon-Center berechnen
-    const bounds = new google.maps.LatLngBounds();
-    CaeliAreaCheck.polygon.getPath().forEach(function(latLng) {
-        bounds.extend(latLng);
-    });
-    const polygonCenter = bounds.getCenter();
-    const mapCenter = CaeliAreaCheck.map.getCenter();
-    
-    // Relativen Offset speichern
-    let calculatedOffset = {
-        lat: polygonCenter.lat() - mapCenter.lat(),
-        lng: polygonCenter.lng() - mapCenter.lng()
-    };
-    
-    // Auf Mobile: Mindest-Offset beibehalten, damit Polygon sichtbar bleibt
-    if (Utils.isMobile()) {
-        const minMobileOffset = -0.002;
-        // Wenn das Polygon manuell nach oben verschoben wurde, trotzdem Mindest-Offset beibehalten
-        if (calculatedOffset.lat > minMobileOffset) {
-            calculatedOffset.lat = minMobileOffset;
-        }
-        // Wenn das Polygon weiter unten ist, den berechneten Wert beibehalten aber nicht über den Mindest-Offset hinausgehen
-        if (calculatedOffset.lat < minMobileOffset && calculatedOffset.lat > -0.01) {
-            // Akzeptiere moderate Verschiebungen nach unten
-            // calculatedOffset.lat bleibt wie berechnet
-        }
-    }
-    
-    CaeliAreaCheck.state.polygonRelativeOffset = calculatedOffset;
-}
-
+// Saubere Implementierung des Polygon-Mitbewegens
 function movePolygonWithMap() {
     if (!CaeliAreaCheck.polygon || !CaeliAreaCheck.state.polygonRelativeOffset || !CaeliAreaCheck.map) return;
     
-    // Flag setzen, um rekursive Updates zu vermeiden
-    CaeliAreaCheck.state.isPolygonBeingEdited = true;
-    
     const mapCenter = CaeliAreaCheck.map.getCenter();
     
-    // Auf Mobile: Mindest-Offset sicherstellen
+    // Mobile-Offset berücksichtigen
     let finalOffset = CaeliAreaCheck.state.polygonRelativeOffset;
     if (Utils.isMobile() && finalOffset.lat > -0.002) {
         finalOffset = {
@@ -1195,7 +1242,16 @@ function movePolygonWithMap() {
     const deltaLat = targetCenter.lat - currentCenter.lat();
     const deltaLng = targetCenter.lng - currentCenter.lng();
     
-    // Alle Polygon-Punkte verschieben
+    // Nur verschieben wenn tatsächlich notwendig (Performance-Optimierung)
+    if (Math.abs(deltaLat) < 0.000001 && Math.abs(deltaLng) < 0.000001) {
+        return; // Kein merklicher Unterschied
+    }
+    
+    // Temporär Editing-Flag setzen um Rekursion zu vermeiden
+    const wasBeingEdited = CaeliAreaCheck.state.isPolygonBeingEdited;
+    CaeliAreaCheck.state.isPolygonBeingEdited = true;
+    
+    // Neue Polygon-Punkte berechnen
     const path = CaeliAreaCheck.polygon.getPath();
     const newPath = [];
     for (let i = 0; i < path.getLength(); i++) {
@@ -1206,32 +1262,65 @@ function movePolygonWithMap() {
         ));
     }
     
+    // Polygon verschieben
     CaeliAreaCheck.polygon.setPath(newPath);
     
-    // Event-Listener nach Kartenverschiebung neu setzen
-    reattachPolygonEventListeners();
-    
-    // Area-Label und Geometry-Field nach Karten-Move updaten
+    // Area-Label mitbewegen
     updateAreaLabel();
     updateGeometryField();
     
-    // Flag zurücksetzen - verzögert für saubere Event-Behandlung
-    setTimeout(() => { 
-        CaeliAreaCheck.state.isPolygonBeingEdited = false; 
-    }, CONFIG.DELAYS.MAP_MOVE_RESET);
+    // State sofort zurücksetzen
+    CaeliAreaCheck.state.isPolygonBeingEdited = wasBeingEdited;
 }
 
-// Form-Handler
+function updatePolygonOffset() {
+    if (!CaeliAreaCheck.polygon || !CaeliAreaCheck.map) return;
+    
+    // Aktuelles Polygon-Center berechnen
+    const bounds = new google.maps.LatLngBounds();
+    CaeliAreaCheck.polygon.getPath().forEach(function(latLng) {
+        bounds.extend(latLng);
+    });
+    const polygonCenter = bounds.getCenter();
+    const mapCenter = CaeliAreaCheck.map.getCenter();
+    
+    // Relativen Offset speichern
+    CaeliAreaCheck.state.polygonRelativeOffset = {
+        lat: polygonCenter.lat() - mapCenter.lat(),
+        lng: polygonCenter.lng() - mapCenter.lng()
+    };
+}
+
+// Form-Handler - NORMALE Form-Submit (kein AJAX mehr)
 const parkForm = document.getElementById('park-form');
 if (parkForm) {
     parkForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // IMMER verhindern
+        
         // Verhindere doppelte Submissions
         if (CaeliAreaCheck.state.formSubmissionInProgress) {
-            e.preventDefault();
             return;
         }
         
-        e.preventDefault(); // Form-Submit verhindern
+        // PLZ-Validierung vor Submit
+        const input = document.getElementById('place-autocomplete');
+        if (input && input.value) {
+            const isValidPLZ = Utils.validatePLZ(input.value);
+            if (!isValidPLZ) {
+                const translations = window.CaeliAreaCheckTranslations || {};
+                showDynamicAlert('invalid_postal_code', translations);
+                return;
+            }
+        }
+        
+        // Polygon muss existieren
+        if (!CaeliAreaCheck.polygon) {
+            const translations = window.CaeliAreaCheckTranslations || {};
+            showDynamicAlert('select_area_first', translations);
+            return;
+        }
+        
+        CaeliAreaCheck.state.formSubmissionInProgress = true;
         
         // Wert aus dem Suchfeld holen und ins Hidden-Feld schreiben
         const searchInput = document.getElementById('place-autocomplete');
@@ -1240,8 +1329,8 @@ if (parkForm) {
             hiddenAddress.value = searchInput.value;
         }
         
-        // logCoordinates() aufrufen statt direktes Submit
-        logCoordinates();
+        // Loading anzeigen und normale Form-Submit
+        submitFormWithRedirect();
     });
 }
 
@@ -1311,20 +1400,20 @@ function loadGoogleMaps() {
             document.head.appendChild(script);
             
             window.onGeometryLoaded = function() {
-                console.log('[DEBUG] Geometry Library nachgeladen');
+                //console.log('[DEBUG] Geometry Library nachgeladen');
                 initMap();
                 CaeliAreaCheck.state.mapInitialized = true;
                 setTimeout(initTutorial, 100);
             };
         } else {
-            console.log('[DEBUG] Google Maps und Geometry Library verfügbar');
+            //console.log('[DEBUG] Google Maps und Geometry Library verfügbar');
             initMap();
             CaeliAreaCheck.state.mapInitialized = true;
             // Tutorial sofort starten
             setTimeout(initTutorial, 100);
         }
     } else {
-        console.log('[DEBUG] Google Maps Script wird nach Consent geladen');
+        //console.log('[DEBUG] Google Maps Script wird nach Consent geladen');
         
         // Google Maps Script dynamisch laden
         const script = document.createElement('script');
@@ -1341,7 +1430,7 @@ function loadGoogleMaps() {
         
         // Callback für geladenes Script
         window.onGoogleMapsLoaded = function() {
-            console.log('[DEBUG] Google Maps Script erfolgreich geladen');
+            //console.log('[DEBUG] Google Maps Script erfolgreich geladen');
             let tries = 0;
             function tryInit() {
                 if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
@@ -1423,7 +1512,7 @@ window.addEventListener('load', function() {
     checkCmpAndInit();
 });
 
-// movePolygonTo entfernt - nicht mehr benötigt, da Polygon direkt neu erstellt wird
+// Polygon wird bei Ortswechsel direkt neu erstellt
 
 function initTutorial() {
     // Prüfen ob Tutorial bereits abgeschlossen
@@ -1437,7 +1526,7 @@ function initTutorial() {
 }
 
 function showTutorialStep(stepIndex) {
-    console.log('showTutorialStep called with stepIndex:', stepIndex);
+    //console.log('showTutorialStep called with stepIndex:', stepIndex);
     
     const tutorialSteps = getTutorialSteps();
     if (stepIndex >= tutorialSteps.length) {
@@ -1446,11 +1535,11 @@ function showTutorialStep(stepIndex) {
     }
 
     const step = tutorialSteps[stepIndex];
-    console.log('Step:', step);
+    //console.log('Step:', step);
     
     const isMobile = Utils.isMobile();
     const targetElement = isMobile && step.elementMobile ? step.elementMobile : step.element;
-    console.log('Target element:', targetElement);
+    //console.log('Target element:', targetElement);
     
     const element = document.querySelector(targetElement);
 
@@ -1459,7 +1548,7 @@ function showTutorialStep(stepIndex) {
         return;
     }
     
-    console.log('Element found:', element);
+    //console.log('Element found:', element);
 
     // Vorherige Popovers schließen
     hideAllPopovers();
@@ -1488,10 +1577,9 @@ function showTutorialStep(stepIndex) {
         content = `<div class="tutorial-content">${step.content}</div>`;
     }
 
-    // Bootstrap Popover erstellen mit Schließen-Button im Header
+    // Bootstrap Popover erstellen - Close-Button wird nachträglich hinzugefügt
     const popoverOptions = {
-        title: `<span class="tutorial-title">${step.title}</span>
-                <button type="button" class="btn-close tutorial-close-btn float-end" aria-label="Tutorial schließen"></button>`,
+        title: step.title,
         content: content,
         html: true,
         placement: placement,
@@ -1506,6 +1594,19 @@ function showTutorialStep(stepIndex) {
     setTimeout(() => {
         const popoverElement = document.querySelector('.popover');
         if (!popoverElement) return;
+
+        // Close-Button dynamisch zum Header hinzufügen
+        const popoverHeader = popoverElement.querySelector('.popover-header');
+        if (popoverHeader && !popoverHeader.querySelector('.tutorial-close-btn')) {
+            // Header-Inhalt in Flex-Container wrappen
+            const titleText = popoverHeader.innerHTML;
+            popoverHeader.innerHTML = `
+                <div class="d-flex justify-content-between align-items-start w-100">
+                    <span class="tutorial-title">${titleText}</span>
+                    <button type="button" class="tutorial-close-btn" aria-label="Tutorial schließen">&times;</button>
+                </div>
+            `;
+        }
 
         // Event Listener für Schließen-Button hinzufügen
         const closeButton = popoverElement.querySelector('.tutorial-close-btn');
@@ -1530,14 +1631,14 @@ function showTutorialStep(stepIndex) {
                 const backButton = popoverElement.querySelector('#tutorial-plz-back');
             
             if (backButton) {
-                console.log('PLZ Back button found');
+                //console.log('PLZ Back button found');
                 backButton.addEventListener('click', () => {
-                    console.log('PLZ Back button clicked');
+                    //console.log('PLZ Back button clicked');
                     previousTutorialStep(false);
                 });
-                console.log('PLZ Back button event listener added');
+                //console.log('PLZ Back button event listener added');
             } else {
-                console.log('PLZ Back button NOT found');
+                //console.log('PLZ Back button NOT found');
             }
         } else if (step.template === 'polygon') {
             // Polygon-Schritt (2) - letzter Schritt
@@ -1573,7 +1674,7 @@ function nextTutorialStep() {
 
 function previousTutorialStep(fromPolygonStep = false) {
     if (CaeliAreaCheck.state.currentTutorialStep > 0) {
-        console.log('Previous step called, current step:', CaeliAreaCheck.state.currentTutorialStep, 'fromPolygonStep:', fromPolygonStep);
+        //console.log('Previous step called, current step:', CaeliAreaCheck.state.currentTutorialStep, 'fromPolygonStep:', fromPolygonStep);
         
         // Aktuelles Popover schließen
         hideAllPopovers();
@@ -1608,7 +1709,7 @@ function previousTutorialStep(fromPolygonStep = false) {
 
         // Spezielle Behandlung beim Zurückgehen von Schritt 1 zu Schritt 0 (PLZ-Back)
         if (CaeliAreaCheck.state.currentTutorialStep === 1 && !fromPolygonStep) {
-            console.log('Going from step 1 to step 0');
+            //console.log('Going from step 1 to step 0');
             // Input leeren, damit User wieder von vorne beginnt
             const input = document.getElementById('place-autocomplete');
             if (input) {
@@ -1618,7 +1719,7 @@ function previousTutorialStep(fromPolygonStep = false) {
         }
 
         CaeliAreaCheck.state.currentTutorialStep--;
-        console.log('New step:', CaeliAreaCheck.state.currentTutorialStep);
+        //console.log('New step:', CaeliAreaCheck.state.currentTutorialStep);
         
         // Kurz warten bevor neues Popover angezeigt wird
         setTimeout(() => {
@@ -1628,11 +1729,11 @@ function previousTutorialStep(fromPolygonStep = false) {
 }
 
 function hideAllPopovers() {
-    console.log('hideAllPopovers called');
+    //console.log('hideAllPopovers called');
     
     // Alle sichtbaren Popovers entfernen
     const existingPopovers = document.querySelectorAll('.popover');
-    console.log('Found existing popovers:', existingPopovers.length);
+    //console.log('Found existing popovers:', existingPopovers.length);
     existingPopovers.forEach(popover => {
         popover.remove();
     });
@@ -1647,7 +1748,7 @@ function hideAllPopovers() {
     allElements.forEach(selector => {
         const element = document.querySelector(selector);
         if (element && element._tutorialPopover) {
-            console.log('Removing popover from:', selector);
+            //console.log('Removing popover from:', selector);
             try {
                 element._tutorialPopover.dispose();
             } catch (e) {
@@ -1707,7 +1808,7 @@ function handlePlaceSelected() {
 function handlePolygonCreated() {
     // Polygon wurde erstellt - Tutorial bleibt bei Schritt 2 (letzter Schritt)
     // Keine automatische Weiterleitung mehr, da Schritt 2 der letzte Schritt ist
-    console.log('[DEBUG] Polygon created - Tutorial bleibt bei Schritt 2');
+    //console.log('[DEBUG] Polygon created - Tutorial bleibt bei Schritt 2');
 }
 
 function findPolygonHandle() {
@@ -1741,19 +1842,14 @@ function initLoadingSpinner() {
     }
 }
 
-function updateLoadingText(text) {
-    const textElement = document.querySelector('.loading-percentage');
-    if (textElement) {
-        textElement.textContent = text;
-    }
-}
+// Loading-Text-Update-Funktion entfernt (wird nicht verwendet)
 
 function startLoadingAnimation() {
-    // Übersetzungen laden, Fallback auf Deutsch falls nicht verfügbar
+    // Übersetzungen laden
     const translations = window.CaeliAreaCheckTranslations || {};
     const loadingTextsObj = translations.loading?.texts || {};
     
-    // Die Übersetzungen sind als Objekt definiert, konvertiere zu Array
+    // Texte für Wechsel vorbereiten
     const loadingTexts = [
         loadingTextsObj.checking_area || "Wir prüfen Ihre Fläche",
         loadingTextsObj.wind_conditions || "Passen die Windgegebenheiten?",
@@ -1768,218 +1864,53 @@ function startLoadingAnimation() {
     ];
     
     let currentTextIndex = 0;
-    let textInterval;
     
     // Spinner initialisieren
     initLoadingSpinner();
     
-    const textElement = document.querySelector('.loading-percentage');
-    if (textElement) {
-        // Erstes animiertes Einblenden
-        textElement.textContent = loadingTexts[currentTextIndex];
-        textElement.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        textElement.style.transform = 'translateY(30px)';
-        textElement.style.opacity = '0';
-        
-        // Ersten Text animiert einblenden
-        setTimeout(() => {
-            textElement.style.transform = 'translateY(0)';
-            textElement.style.opacity = '1';
-        }, 100);
-    }
-    
-    // Formular sofort abschicken
-    setTimeout(() => {
-        const parkForm = document.getElementById('park-form');
-        if (parkForm) {
-            parkForm.submit();
-        }
-    }, 300);
-    
-            // Text-Rotation starten nach dem ersten Einblenden
-        setTimeout(() => {
-            textInterval = setInterval(() => {
-                if (textElement) {
-                    // Smooth fade out nach oben
-                    textElement.style.transition = 'transform 0.6s cubic-bezier(0.55, 0.06, 0.68, 0.19), opacity 0.6s cubic-bezier(0.55, 0.06, 0.68, 0.19)';
-                    textElement.style.transform = 'translateY(30px)';
-                    textElement.style.opacity = '0';
-                    
-                    setTimeout(() => {
-                        // Nächsten Text setzen
-                        currentTextIndex = (currentTextIndex + 1) % loadingTexts.length;
-                        textElement.textContent = loadingTexts[currentTextIndex];
-                        
-                        // Von unten einblenden - sofort positionieren
-                        textElement.style.transform = 'translateY(30px)';
-                        textElement.style.opacity = '0';
-                        
-                        // Smooth fade in
-                        setTimeout(() => {
-                            textElement.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                            textElement.style.transform = 'translateY(0)';
-                            textElement.style.opacity = '1';
-                        }, 50);
-                    }, 600);
-                }
-            }, 4000);
-         }, 800); // Erste Rotation nach 0.8s
-}
-
-function submitFormWithRedirect() {
-    console.log('=== submitFormWithRedirect aufgerufen ===');
-    
-    // AJAX-Konfiguration aus Template laden
-    let ajaxConfig = window.CaeliAreaCheckConfig;
-    
-    // AJAX ist IMMER verfügbar - kein Fallback zu sync
-    if (!ajaxConfig || !ajaxConfig.startUrl || !ajaxConfig.statusUrl) {
-        console.error('❌ AJAX Config fehlt komplett - schwerwiegender Fehler!');
-        showAsyncError('Konfigurationsfehler: AJAX-Endpoints nicht verfügbar. Bitte kontaktieren Sie den Support.');
-        return false; // Verhindert Form-Submit komplett
-    }
-    
-    console.log('✅ AJAX Config vollständig - starte AJAX-Processing');
-    
-    // Loading-Overlay sofort anzeigen
-    showLoadingOverlay();
-    
-    // AJAX-Processing starten (verhindert normale Form-Submit)
-    startAsyncAreaCheck();
-    return false; // Verhindert normale Form-Submit IMMER
-}
-
-/**
- * Startet AJAX Area Check mit animierter Progress-Anzeige
- */
-function startAsyncAreaCheck() {
-    console.log('[DEBUG] AJAX: Start async area check aufgerufen');
-    
-    const form = document.getElementById('park-form');
-    if (!form) {
-        console.error('[DEBUG] Form nicht gefunden');
-        window.caeliAjaxInProgress = false;
-        return;
-    }
-    
-    // Loading-Animation mit wechselnden Texten starten
-    startLoadingAnimationWithTextRotation();
-    
-    // Form-Daten sammeln
-    const formData = new FormData(form);
-    const config = window.CaeliAreaCheckConfig || {};
-    const startUrl = config.startUrl;
-    
-    console.log('[DEBUG] AJAX Config:', config);
-    console.log('[DEBUG] Start URL:', startUrl);
-    
-    // Debug: Form Data loggen
-    for (let [key, value] of formData.entries()) {
-        console.log('[DEBUG] Form Data:', key, value);
-    }
-    
-    console.log('[DEBUG] Sende AJAX Request an:', startUrl);
-    
-    fetch(startUrl, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(response => {
-        console.log('[DEBUG] AJAX Start Response Status:', response.status);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        return response.text().then(text => {
-            console.log('[DEBUG] Response Text:', text.substring(0, 200) + '...');
-            return JSON.parse(text);
-        });
-    })
-    .then(data => {
-        console.log('[DEBUG] AJAX Start Response Data:', data);
-        
-        if (data.status === 'queued' && data.sessionId) {
-            console.log('[DEBUG] Starting polling with sessionId:', data.sessionId);
-            startPolling(data.sessionId);
-        } else {
-            throw new Error('Ungültige Response-Struktur: ' + JSON.stringify(data));
-        }
-    })
-    .catch(error => {
-        console.error('[DEBUG] AJAX Start Fehler:', error);
-        handleAsyncError('AJAX-Fehler: ' + error.message);
-    });
-}
-
-/**
- * Loading-Animation mit wechselnden Texten und simulierter Progress
- */
-function startLoadingAnimationWithTextRotation() {
-    // Übersetzungen laden
-    const translations = window.CaeliAreaCheckTranslations || {};
-    const loadingTextsObj = translations.loading?.texts || {};
-    
-    // Die Übersetzungen sind als Objekt definiert, konvertiere zu Array
-    const loadingTexts = [
-        loadingTextsObj.checking_area || "Wir prüfen Ihre Fläche",
-        loadingTextsObj.wind_conditions || "Passen die Windgegebenheiten?", 
-        loadingTextsObj.restrictions_check || "Gibt es Restriktionen?",
-        loadingTextsObj.grid_connection || "Ist ein Netzanschluss gegeben?",
-        loadingTextsObj.analyzing_potential || "Analysiere Windpotential",
-        loadingTextsObj.checking_nature || "Prüfe Naturschutzgebiete",
-        loadingTextsObj.calculating_economics || "Berechne Wirtschaftlichkeit",
-        loadingTextsObj.checking_distances || "Überprüfe Abstandsregelungen",
-        loadingTextsObj.analyzing_capacity || "Analysiere Netzkapazität",
-        loadingTextsObj.evaluating_quality || "Bewerte Standortqualität"
-    ];
-    
-    let currentTextIndex = 0;
-    let simulatedProgress = 0;
-    
-    // SVG-Spinner initialisieren (ohne Rotation)
-    initLoadingSpinner();
-    
-    // Text-Element für animierte Rotation
     const messageElement = document.querySelector('.loading-message');
     const percentageElement = document.querySelector('.loading-percentage');
     
     if (messageElement) {
-        // Erstes animiertes Einblenden mit sanfter Bewegung
         messageElement.textContent = loadingTexts[currentTextIndex];
-        messageElement.style.transition = 'transform 1.0s cubic-bezier(0.0, 0.0, 0.2, 1), opacity 1.0s cubic-bezier(0.0, 0.0, 0.2, 1)';
-        messageElement.style.transform = 'translateY(20px) scale(0.95)';
-        messageElement.style.opacity = '0';
-        
-        // Ersten Text sanft einblenden
-        setTimeout(() => {
-            messageElement.style.transform = 'translateY(0) scale(1)';
-            messageElement.style.opacity = '1';
-        }, 150);
+        messageElement.style.opacity = '1';
     }
     
-    // Kontinuierliche simulierte Progress bis echte Daten kommen (KEIN STOPP bei 40%)
-    const progressInterval = setInterval(() => {
-        if (simulatedProgress < 85) { // Erhöht von 40% auf 85%
-            simulatedProgress += Math.random() * 3 + 2; // 2-5% pro Schritt
-            simulatedProgress = Math.min(simulatedProgress, 85);
-            
-            if (percentageElement) {
-                percentageElement.textContent = `${Math.round(simulatedProgress)}%`;
-            }
-            updateSpinnerProgress(simulatedProgress);
-        }
-    }, 400); // Alle 400ms
+    if (percentageElement) {
+        percentageElement.textContent = '0%';
+    }
     
-    // Text-Rotation starten nach dem ersten Einblenden
+    // Langsamere Progress-Simulation mit kontinuierlichem Fortschritt
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        if (progress < 80) {
+            // Schneller bis 80%
+            progress += Math.random() * 2 + 0.7; // 0.7-2.7% pro Schritt
+        } else if (progress < 95) {
+            // Langsamer von 80-95%
+            progress += Math.random() * 0.8 + 0.2; // 0.2-1.0% pro Schritt
+        } else {
+            // Sehr langsam ab 95% aber niemals stoppen
+            progress += Math.random() * 0.3 + 0.1; // 0.1-0.4% pro Schritt
+            progress = Math.min(progress, 99.5); // Maximal 99.5% (niemals 100%)
+        }
+        
+        if (percentageElement) {
+            percentageElement.textContent = Math.round(progress) + '%';
+        }
+        updateSpinnerProgress(progress);
+        
+        // Intervall niemals stoppen - läuft bis Seitenwechsel
+    }, 300);
+    
+    // Text-Wechsel alle 2 Sekunden
+    let textChangeCount = 0;
     const textInterval = setInterval(() => {
-        if (messageElement) {
-            // Sanfteres Ausblenden mit subtilerer Bewegung
-            messageElement.style.transition = 'transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1)';
-            messageElement.style.transform = 'translateY(-15px) scale(0.98)';
+        if (messageElement && loadingTexts.length > 1) {
+            textChangeCount++;
+            
+            // Sanftes Ausblenden
+            messageElement.style.transition = 'opacity 0.5s ease-out';
             messageElement.style.opacity = '0';
             
             setTimeout(() => {
@@ -1987,390 +1918,158 @@ function startLoadingAnimationWithTextRotation() {
                 currentTextIndex = (currentTextIndex + 1) % loadingTexts.length;
                 messageElement.textContent = loadingTexts[currentTextIndex];
                 
-                // Startposition für Einblenden - subtiler
-                messageElement.style.transform = 'translateY(15px) scale(0.98)';
-                messageElement.style.opacity = '0';
-                
-                // Sanftes Einblenden mit Material Design ease-out
-                setTimeout(() => {
-                    messageElement.style.transition = 'transform 1.0s cubic-bezier(0.0, 0.0, 0.2, 1), opacity 1.0s cubic-bezier(0.0, 0.0, 0.2, 1)';
-                    messageElement.style.transform = 'translateY(0) scale(1)';
-                    messageElement.style.opacity = '1';
-                }, 100);
-            }, 600);
+                // Sanftes Einblenden
+                messageElement.style.transition = 'opacity 0.7s ease-in';
+                messageElement.style.opacity = '1';
+            }, 500);
         }
-    }, 4000); // Alle 4 Sekunden Text wechseln
+    }, 2000);
     
-    // Intervalles für Cleanup speichern
+    // Intervalle für eventuelles Cleanup speichern (optional)
     window.caeliLoadingIntervals = { progressInterval, textInterval };
 }
 
-/**
- * Stoppt alle Loading-Animationen
- */
-function stopLoadingAnimations() {
-    if (window.caeliLoadingIntervals) {
-        clearInterval(window.caeliLoadingIntervals.progressInterval);
-        clearInterval(window.caeliLoadingIntervals.textInterval);
-        window.caeliLoadingIntervals = null;
-        console.log('[DEBUG] Loading-Animationen gestoppt');
+function submitFormWithRedirect() {
+    //console.log('=== submitFormWithRedirect aufgerufen ===');
+    
+    // ROBUSTE LÖSUNG: Token vor Submit validieren und ggf. refreshen
+    const parkForm = document.getElementById('park-form');
+    if (!parkForm) {
+        console.error('Form nicht gefunden');
+        return false;
     }
+    
+    showLoadingOverlay();
+    startLoadingAnimation();
+    
+    // Token-Handling: Fresh token vom Server holen wenn möglich
+    const tokenInput = parkForm.querySelector('input[name="REQUEST_TOKEN"]');
+    if (tokenInput) {
+        // Versuche neuen Token zu holen (falls verfügbar)
+        refreshTokenIfNeeded(tokenInput, () => {
+            // Submit nach Token-Refresh
+            setTimeout(() => {
+                parkForm.submit();
+            }, 300);
+        });
+    } else {
+        // Direkter Submit wenn kein Token-Field vorhanden
+        setTimeout(() => {
+            parkForm.submit();
+        }, 500);
+    }
+    
+    return false; // Verhindert doppeltes Submit
 }
 
 /**
- * Aktualisiert mit echten Progress-Daten vom Backend
- * Verhindert rückwärts gehende Progress-Updates
+ * Versucht ein neues REQUEST_TOKEN zu holen um Token-Fehler zu vermeiden
  */
-function updateRealProgress(progressData) {
-    const percentage = progressData.percentage || 0;
-    const message = progressData.message || 'Wird verarbeitet...';
-    
-    // Aktuelle Progress prüfen um Rückwärts-Updates zu vermeiden
-    const currentPercentage = parseInt(document.querySelector('.loading-percentage')?.textContent) || 0;
-    
-    // Nur vorwärts gehen, nie rückwärts (Race Condition vermeiden)
-    if (percentage < currentPercentage) {
-        // Minimales Logging für bessere Performance ohne DevTools
-        if (window.location.search.includes('debug=1')) {
-            console.log('[Progress] Ignoriere rückwärts Update: ' + percentage + '% (aktuell: ' + currentPercentage + '%)');
-        }
+function refreshTokenIfNeeded(tokenInput, callback) {
+    // Prüfe ob Token älter als 15 Minuten ist (heuristisch)
+    const currentToken = tokenInput.value;
+    if (!currentToken || currentToken.length < 10) {
+        console.warn('Token fehlt oder ist zu kurz, fahre mit Submit fort');
+        callback();
         return;
     }
     
-    // Simulierte Progress stoppen wenn echte Daten kommen
-    stopLoadingAnimations();
-    
-    // Loading-Percentage aktualisieren
-    const percentageElement = document.querySelector('.loading-percentage');
-    if (percentageElement) {
-        percentageElement.textContent = percentage + '%';
-    }
-    
-    // SVG-Progress Animation: Balken von 12 Uhr im Uhrzeigersinn färben
-    updateSpinnerProgress(percentage);
-    
-    // Status-Message aktualisieren
-    const messageElement = document.querySelector('.loading-message');
-    if (messageElement && percentage < 100) {
-        messageElement.textContent = message;
-        messageElement.style.transform = 'translateY(0)';
-        messageElement.style.opacity = '1';
-    }
-    
-    // Nur debug logging bei URL-Parameter
-    if (window.location.search.includes('debug=1')) {
-        console.log('[Progress] ' + percentage + '%: ' + message);
-    }
+    // Versuche über AJAX einen neuen Token zu holen
+    // Das ist optional - wenn es fehlschlägt, verwenden wir den bestehenden Token
+    fetch(window.location.href, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        // Extrahiere neuen Token aus Response
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newTokenInput = doc.querySelector('input[name="REQUEST_TOKEN"]');
+        
+        if (newTokenInput && newTokenInput.value && newTokenInput.value !== currentToken) {
+            console.log('Neuen REQUEST_TOKEN erhalten, aktualisiere Form');
+            tokenInput.value = newTokenInput.value;
+            
+            // Auch verstecktes Token-Field aktualisieren falls vorhanden
+            const hiddenToken = document.querySelector('.mod_caeli_area_check input[name="REQUEST_TOKEN"]');
+            if (hiddenToken) {
+                hiddenToken.value = newTokenInput.value;
+            }
+        }
+        
+        callback();
+    })
+    .catch(error => {
+        console.warn('Token-Refresh fehlgeschlagen, verwende bestehenden Token:', error);
+        callback();
+    });
+}
+
+// ===== VEREINFACHTE LOADING-ANIMATION =====
+// Alle AJAX-Funktionen entfernt - wir verwenden normale Form-Submit mit HTTP-Redirect
+
+/**
+ * Stoppt alle Loading-Animationen (optional - bei Form-Submit nicht kritisch)
+ */
+function stopLoadingAnimations() {
+    // Intervalle laufen bis Seitenwechsel weiter (ist ok)
 }
 
 /**
- * Spinner initialisieren - alle Balken grau, OHNE Rotation
+ * Spinner initialisieren - alle Balken grau, ohne Rotation
  */
 function initLoadingSpinner() {
     const bars = document.querySelectorAll('.spinner-bar');
-    bars.forEach((bar) => {
-        bar.setAttribute('fill', '#DEEEC6'); // Standard-Farbe grau
-    });
     
-    // KEINE Rotation mehr - SVG bleibt statisch
-    const spinner = document.querySelector('.loading-spinner svg');
-    if (spinner) {
-        spinner.style.animation = 'none'; // Rotation entfernt
-    }
-}
-
-/**
- * Behandelt Async-Fehler
- */
-function handleAsyncError(errorMessage) {
-    // OVERLAY BLEIBT SICHTBAR - Keine hideLoadingOverlay()!
-    
-    const translations = window.CaeliAreaCheckTranslations || {};
-    
-    // Fehler-Message im Loading-Overlay anzeigen
-    const messageElement = document.querySelector('.loading-message');
-    if (messageElement) {
-        messageElement.textContent = 'Fehler: ' + errorMessage;
-        messageElement.style.color = '#dc3545'; // Bootstrap danger color
-    }
-    
-    // Nach 5 Sekunden Fallback auf synchrone Form ABER OVERLAY BLEIBT
-    setTimeout(() => {
-        const messageElement = document.querySelector('.loading-message');
-        if (messageElement) {
-            messageElement.textContent = 'Verwende synchrone Verarbeitung...';
-            messageElement.style.color = '#666';
-        }
-        
-        const parkForm = document.getElementById('park-form');
-        if (parkForm) {
-            setTimeout(() => {
-                parkForm.submit();
-            }, 1000);
-        }
-    }, 5000);
-}
-
-/**
- * Startet Polling für Session-Status - SINGLETON PATTERN
- */
-function startPolling(sessionId) {
-    console.log('[DEBUG] startPolling aufgerufen mit sessionId:', sessionId);
-    
-    const maxPolls = 90; // 3 Minuten bei 1s Intervall (erhöht wegen schnellerem Polling)
-    let pollCount = 0;
-    let isCompleted = false; // Verhindert doppelte Completion durch Race Conditions
-    let consecutiveErrors = 0; // Zähle aufeinanderfolgende Fehler
-    
-    const baseUrl = window.CaeliAreaCheckConfig?.statusUrl;
-    if (!baseUrl) {
-        console.error('[DEBUG] Status URL nicht verfügbar');
-        handleAsyncError('Status URL nicht konfiguriert');
-        return;
-    }
-    
-    console.log('[DEBUG] Starting polling for sessionId:', sessionId);
-    
-    // Stabileres Polling mit setTimeout statt setInterval
-    function doPoll() {
-        if (isCompleted) {
-            console.log('[DEBUG] Polling bereits completed - stoppe');
-            return;
-        }
-        
-        pollCount++;
-        console.log('[DEBUG] Polling #' + pollCount + ' für Session: ' + sessionId);
-        
-        const pollUrl = baseUrl + '/' + sessionId;
-        
-        // Promise-basierter Fetch mit besserer Fehlerbehandlung
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s Request-Timeout
-        
-        fetch(pollUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            signal: controller.signal
-        })
-        .then(response => {
-            clearTimeout(timeoutId);
-            consecutiveErrors = 0; // Reset bei erfolgreichem Request
-            
-            if (!response.ok) {
-                throw new Error('HTTP ' + response.status + ': ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('[DEBUG] Polling Response Data:', data);
-            
-            // Race Condition: Ignoriere weitere Responses wenn bereits completed
-            if (isCompleted) {
-                console.log('[DEBUG] Bereits completed - ignoriere Response');
-                return;
-            }
-            
-            if (!data || typeof data !== 'object') {
-                console.error('[DEBUG] Invalid response data:', data);
-                throw new Error('Ungültige Response-Daten');
-            }
-            
-            if (data.status === 'completed') {
-                console.log('[DEBUG] Status completed - stoppe Polling');
-                isCompleted = true;
-                // Sofortiger Redirect ohne weitere Delays
-                setTimeout(function() {
-                    handleAsyncResult(data.result);
-                }, 50); // Minimaler Delay für UI-Update
-                return;
-            } else if (data.status === 'error') {
-                console.log('[DEBUG] Status error - stoppe Polling');
-                isCompleted = true;
-                handleAsyncError(data.message);
-                return;
-            } else if (data.status === 'processing') {
-                // Echten Progress verwenden falls verfügbar
-                if (data.progress) {
-                    updateRealProgress(data.progress);
-                } else {
-                    // Fallback auf Polling-basierte Progress
-                    updateAsyncProgress(pollCount, maxPolls);
-                }
-            }
-            
-            // Nächsten Poll planen wenn nicht completed
-            if (!isCompleted && pollCount < maxPolls) {
-                setTimeout(doPoll, 1000); // 1 Sekunde warten
-            } else if (pollCount >= maxPolls && !isCompleted) {
-                console.log('[DEBUG] Polling Timeout erreicht');
-                isCompleted = true;
-                handleAsyncError('Timeout: Verarbeitung dauert zu lange (3 Minuten überschritten)');
-            }
-        })
-        .catch(error => {
-            clearTimeout(timeoutId);
-            consecutiveErrors++;
-            console.error('[DEBUG] Polling Fehler #' + consecutiveErrors + ':', error);
-            
-            // Race Condition: Ignoriere weitere Fehler wenn bereits completed
-            if (isCompleted) {
-                console.log('[DEBUG] Bereits completed - ignoriere Fehler');
-                return;
-            }
-            
-            // Nach zu vielen aufeinanderfolgenden Fehlern abbrechen
-            if (consecutiveErrors >= 5) {
-                console.log('[DEBUG] Zu viele Polling-Fehler - stoppe Polling');
-                isCompleted = true;
-                handleAsyncError('Verbindungsfehler beim Statuscheck: ' + error.message);
-                return;
-            }
-            
-            // Bei Fehlern etwas länger warten bevor nächster Versuch
-            if (!isCompleted && pollCount < maxPolls) {
-                setTimeout(doPoll, 2000); // 2 Sekunden bei Fehlern
-            }
+    if (Utils.isMobile()) {
+        // Mobile: Alle Balken in Basis-Farbe, CSS-Animation übernimmt
+        bars.forEach((bar) => {
+            bar.setAttribute('fill', '#DEEEC6');
         });
-    }
-    
-    // Erstes Poll starten
-    doPoll();
-    
-    console.log('[DEBUG] Polling gestartet');
-}
-
-/**
- * Behandelt erfolgreiches Async-Ergebnis
- */
-function handleAsyncResult(result) {
-    console.log('[DEBUG] handleAsyncResult aufgerufen - Sofortige Weiterleitung');
-    
-    // Alle Animationen stoppen
-    stopLoadingAnimations();
-    
-    // 100% Progress sofort setzen
-    updateSpinnerProgress(100);
-    
-    const percentageElement = document.querySelector('.loading-percentage');
-    if (percentageElement) {
-        percentageElement.textContent = '100%';
-    }
-    
-    // Kurze visuelle Bestätigung bevor Redirect
-    const messageElement = document.querySelector('.loading-message');
-    if (messageElement) {
-        const translations = window.CaeliAreaCheckTranslations || {};
-        const completedMessage = translations.loading?.completed_redirect || 'Abgeschlossen! Weiterleitung...';
-        messageElement.textContent = completedMessage;
-        messageElement.style.color = '#92a0ff'; // Designfarbe für Erfolg
-    }
-    
-    // Redirect zur Ergebnisseite basierend auf dem Result
-    const checkId = result.checkId;
-    const isSuccess = result.isSuccess;
-    
-    // AJAX-Konfiguration aus Template laden (jumpTo aus Backend)
-    const config = window.CaeliAreaCheckConfig || {};
-    let resultPageUrl = config.detailPageUrl;
-    
-    if (!resultPageUrl) {
-        // Fallback: Smart-Detection der korrekten Result-URL
-        const currentUrl = window.location.href;
-        
-        if (currentUrl.includes('/flaechencheck/')) {
-            // Standardfall: Wir sind auf der Flaechencheck-Seite
-            resultPageUrl = currentUrl.replace('/flaechencheck/', '/flaechencheck-ergebnis/');
-        } else {
-            // Fallback: Relative Navigation zur Ergebnisseite
-            const urlParts = currentUrl.split('/');
-            urlParts[urlParts.length - 1] = 'flaechencheck-ergebnis';
-            resultPageUrl = urlParts.join('/');
-        }
-    }
-    
-    // URL-Parameter hinzufügen
-    const separator = resultPageUrl.includes('?') ? '&' : '?';
-    if (isSuccess) {
-        resultPageUrl += separator + 'parkid=' + encodeURIComponent(checkId);
+        // CSS-Animation läuft automatisch via @media query
     } else {
-        resultPageUrl += separator + 'checkid=' + encodeURIComponent(checkId);
-    }
-    
-    console.log('[DEBUG] Leite sofort weiter zu:', resultPageUrl);
-    console.log('[DEBUG] Result-Object:', result);
-    
-    // Robuster Redirect-Mechanismus - mehrere Methoden versuchen
-    let redirectAttempted = false;
-    
-    function doRedirect() {
-        if (redirectAttempted) return;
-        redirectAttempted = true;
+        // Desktop: Normale Progress-basierte Darstellung
+        bars.forEach((bar) => {
+            bar.setAttribute('fill', '#DEEEC6');
+        });
         
-        try {
-            // Methode 1: Standard window.location.href
-            window.location.href = resultPageUrl;
-        } catch (error) {
-            console.error('[DEBUG] Redirect Method 1 failed:', error);
-            
-            try {
-                // Methode 2: window.location.assign
-                window.location.assign(resultPageUrl);
-            } catch (error2) {
-                console.error('[DEBUG] Redirect Method 2 failed:', error2);
-                
-                try {
-                    // Methode 3: window.location.replace
-                    window.location.replace(resultPageUrl);
-                } catch (error3) {
-                    console.error('[DEBUG] Redirect Method 3 failed:', error3);
-                    
-                    // Notfall: Form-Submission erstellen
-                    const form = document.createElement('form');
-                    form.method = 'GET';
-                    form.action = resultPageUrl;
-                    form.style.display = 'none';
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            }
+        const spinner = document.querySelector('.loading-spinner svg');
+        if (spinner) {
+            spinner.style.animation = 'none';
         }
     }
-    
-    // Sofortiger Redirect-Versuch
-    doRedirect();
-    
-    // Fallback-Timer falls der erste Versuch fehlschlägt
-    setTimeout(function() {
-        if (!redirectAttempted) {
-            console.log('[DEBUG] Fallback Redirect after timeout');
-            doRedirect();
-        }
-    }, 100);
 }
 
 /**
  * Aktualisiert das SVG-Spinner basierend auf Progress-Prozent
- * Färbt Balken von 12 Uhr (data-index="0") im Uhrzeigersinn mit #113634
+ * Färbt Balken von 12 Uhr (data-index="0") im Uhrzeigersinn komplett mit #113634
  */
 function updateSpinnerProgress(percentage) {
     const spinnerContainer = document.querySelector('.loading-spinner');
     if (!spinnerContainer) return;
     
+    // Auf Mobile: Keine Progress-Updates, da dort endlose Rotation läuft
+    if (Utils.isMobile()) {
+        return; // Spinner dreht sich bereits via CSS-Animation
+    }
+    
     const bars = spinnerContainer.querySelectorAll('.spinner-bar');
     if (bars.length === 0) return;
     
     // 12 Balken = 100% / 12 = ca. 8.33% pro Balken
-    const barsToFill = Math.floor((percentage / 100) * bars.length);
+    const totalBars = bars.length;
+    const barsToFill = Math.floor((percentage / 100) * totalBars);
     
     // Alle Balken zurücksetzen auf Standard-Farbe
     bars.forEach(bar => {
         bar.setAttribute('fill', '#DEEEC6');
+        bar.removeAttribute('fill-opacity'); // Opacity komplett entfernen
     });
     
-    // Balken von 12 Uhr (Index 0) im Uhrzeigersinn färben
+    // Balken von 12 Uhr (Index 0) im Uhrzeigersinn komplett färben
     for (let i = 0; i < barsToFill; i++) {
         const bar = spinnerContainer.querySelector(`[data-index="${i}"]`);
         if (bar) {
@@ -2378,7 +2077,7 @@ function updateSpinnerProgress(percentage) {
         }
     }
     
-    // Bei exakt 100% alle Balken färben
+    // Bei 100% alle Balken vollständig färben
     if (percentage >= 100) {
         bars.forEach(bar => {
             bar.setAttribute('fill', '#113634');
@@ -2386,23 +2085,7 @@ function updateSpinnerProgress(percentage) {
     }
 }
 
-/**
- * Aktualisiert Progress-Indikator (Fallback auf Polling-Zeit)
- */
-function updateAsyncProgress(currentPoll, maxPolls) {
-    const progressPercent = Math.min(Math.round((currentPoll / maxPolls) * 100), 95);
-    
-    // Optional: Progress im Loading-Text anzeigen
-    const textElement = document.querySelector('.loading-percentage');
-    if (textElement && progressPercent > 30) {
-        // Nach 30% gelegentlich Progress anzeigen
-        if (currentPoll % 5 === 0) {
-            const translations = window.CaeliAreaCheckTranslations || {};
-            const progressText = translations.loading?.progress || 'Fortschritt';
-            updateLoadingText(`${progressText}: ${progressPercent}%`);
-        }
-    }
-}
+// ===== GLOBALE FUNKTIONEN UND ALERT-SYSTEM =====
 
 // Globale Funktionen für Button-Callbacks
 window.nextTutorialStep = nextTutorialStep;

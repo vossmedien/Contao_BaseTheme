@@ -15,10 +15,11 @@
 }
 
 @media (max-width: 768px) {
-    #button-wrapper{
+    #button-wrapper {
         white-space: nowrap;
         justify-content: space-between;
-        .btn{
+
+        .btn {
             padding: .5rem;
         }
     }
@@ -40,8 +41,8 @@
         top: 5rem;
         transform: none;
     }
-    
-    
+
+
 }
 
 #controls .card-header {
@@ -153,6 +154,21 @@
     margin: .35rem;
 }
 
+.popover {
+    @media (max-width: 768px) {
+        /* Mobile Popovers am unteren Bildschirmrand positionieren */
+        position: fixed !important;
+        bottom: 40px !important;
+        left: 10px !important;
+        right: 10px !important;
+        top: auto !important;
+        transform: none !important;
+        margin: 0 !important;
+        width: calc(100vw - 20px) !important;
+        max-width: calc(100vw - 20px) !important;
+    }
+}
+
 .pac-item {
     background-color: var(--bs-tertiary) !important;
     color: var(--bs-body-color) !important;
@@ -242,14 +258,6 @@
     color: #666;
 }
 
-/* Tutorial Popover Styling */
-.tutorial-content {
-
- @media (min-width: 768px) {
-      max-width: 300px;
- }
-
-}
 
 .tutorial-buttons {
     text-align: right;
@@ -259,22 +267,19 @@
 .tutorial-close-btn {
     border: none;
     background: none;
-    font-size: 0.75rem;
-    opacity: 0.7;
+    font-size: 1.5rem;
+    opacity: 1;
     padding: 0;
     margin: 0;
     line-height: 1;
     width: auto;
     height: auto;
+    color: var(--bs-secondary);
 }
 
-.tutorial-close-btn:hover {
-    opacity: 1;
-}
 
 /* Tutorial Title im Header */
 .tutorial-title {
-    font-weight: 600;
     display: inline-block;
     margin-right: 8px;
 }
@@ -324,6 +329,41 @@
     height: 150px;
 }
 
+/* Desktop: Keine Animationen - nur Progress-basierte Färbung */
+@media (min-width: 768px) {
+    .spinner-bar {
+        animation: none !important;
+    }
+}
+
+/* Mobile: Endlose Füll-Animation der Balken im Uhrzeigersinn */
+@media (max-width: 767px) {
+    .loading-spinner svg {
+        animation: none; /* Keine Rotation */
+    }
+    
+    /* Jeder Balken hat eine zeitversetzte Fill-Animation - langsamer und sanfter */
+    .spinner-bar[data-index="0"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 0s; }
+    .spinner-bar[data-index="1"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 0.5s; }
+    .spinner-bar[data-index="2"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 1s; }
+    .spinner-bar[data-index="3"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 1.5s; }
+    .spinner-bar[data-index="4"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 2s; }
+    .spinner-bar[data-index="5"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 2.5s; }
+    .spinner-bar[data-index="6"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 3s; }
+    .spinner-bar[data-index="7"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 3.5s; }
+    .spinner-bar[data-index="8"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 4s; }
+    .spinner-bar[data-index="9"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 4.5s; }
+    .spinner-bar[data-index="10"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 5s; }
+    .spinner-bar[data-index="11"] { animation: fill-bar 6s ease-in-out infinite; animation-delay: 5.5s; }
+    
+    /* Keyframes nur für Mobile verfügbar */
+    @keyframes fill-bar {
+        0% { fill: #DEEEC6; }
+        50% { fill: #113634; }
+        100% { fill: #DEEEC6; }
+    }
+}
+
 .loading-percentage {
     font-size: 30px;
     color: var(--bs-primary);
@@ -334,6 +374,10 @@
 
     @media (min-width: 768px) {
         font-size: 50px;
+    }
+    
+    @media (max-width: 767px) {
+        display: none; /* Prozentanzeige auf Mobile ausblenden */
     }
 }
 

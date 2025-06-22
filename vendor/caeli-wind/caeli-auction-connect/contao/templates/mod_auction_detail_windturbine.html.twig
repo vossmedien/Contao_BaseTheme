@@ -87,7 +87,11 @@
                                 {{ 'auction_listing.card.details.availability'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ 'auction_listing.card.details.availability_prefix'|trans }} {{ raw_data.availableFrom }}
+                                    {% if raw_data.status == 'STARTED' %}
+                                        {{ 'marktplatz.as_of_now'|trans }}
+                                    {% else %}
+                                        {{ 'auction_listing.card.details.availability_prefix'|trans }} {{ raw_data.availableFrom }}
+                                    {% endif %}
                                 </strong>
                             </div>
 
@@ -102,7 +106,7 @@
             <div class="box-footer bg-secondary text-body px-gap py-4 small">
 
                 <strong class="d-block mb-2">{{ 'detail.area_status_headline'|trans }}
-                    <i class="fak fa-info text-tertiary ms-1"
+                    <i class="fak fa-info text-tertiary ms-1 fs-5"
                        data-bs-toggle="popover"
                        data-bs-placement="top"
                        data-bs-html="true"

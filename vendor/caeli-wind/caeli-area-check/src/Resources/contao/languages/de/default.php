@@ -41,26 +41,24 @@ $GLOBALS['TL_LANG']['caeli_area_check']['form'] = [
 $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
     'welcome' => [
         'title' => 'Willkommen bei Ihrem Flächencheck.',
-        'content' => 'Entdecken Sie in zwei Schritten das Windpotenzial Ihres Grundstücks. Wir zeigen Ihnen wie es funktioniert, dazu einfach auf „Weiter“ klicken.',
+        'content' => 'Ermitteln Sie in zwei Schritten das Windpotenzial Ihres Grundstücks. Klicken sie hierzu auf „Starten“.',
         'button_skip' => 'Überspringen',
-        'button_next' => 'Weiter',
+        'button_next' => 'Starten',
     ],
     'plz_input' => [
         'title' => 'Schritt 1: Grundstück finden.',
         'button_back' => 'Zurück',
         'button_next' => 'Weiter',
-        'content' => 'Starten Sie, indem Sie Ihre Postleitzahl eingeben und den gewünschten Ort auswählen. Nach der Eingabe erscheint ein Polygon, dass Sie an die gewünschte Position verschieben können.',
+        'content' => 'Geben Sie die Adresse Ihres Grundstücks ein und wählen Sie den vorgeschlagenen Ort aus.',
     ],
     'polygon_edit' => [
         'title' => 'Schritt 2: Grundstück einzeichnen und prüfen.',
-        'title_alt' => 'Hier zeichnen Sie Ihre Fläche ein.',
-        'content' => 'Platzieren Sie das Polygon im gewünschten Gebiet und nutzen Sie die Eckpunkte des Polygons zur Feinjustierung. Klicken Sie dann auf „Ergebnis anzeigen“. Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche.',
+        'content' => 'Sie sehen nun ein gelbes Polygon, dass Sie an die gewünschte Position verschieben können. Nutzen Sie die Eckpunkte des Polygons zur groben Eingrenzung Ihres Grundstücks und wählen Sie „Ergebnis anzeigen“, sobald sie fertig sind. Wir prüfen in Windeseile die Bedingungen Ihrer Fläche.',
         'button_back' => 'Zurück',
         'button_next' => 'Weiter',
     ],
     'area_confirm' => [
         'title' => 'Schritt 3: Fast geschafft!',
-        'title_alt' => 'Sobald Sie Ihr Grundstück markiert haben, kann die Prüfung beginnen.',
         'content' => 'Fast geschafft: Verschieben Sie das Polygon an die korrekte Position und richten Sie die Eckpunkte an Ihrem Grundstück aus. Klicken Sie dann auf „Ergebnis anzeigen“. Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche.',
         'button_back' => 'Zurück',
         'button_next' => 'Fertig',
@@ -69,7 +67,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
 
 // Consent overlay
 $GLOBALS['TL_LANG']['caeli_area_check']['consent']['overlay'] = [
-    'title' => 'Ihr Flächencheck startet gleich!',
+    'title' => 'Ihr Flächencheck <br>startet gleich!',
     'message' => 'Um Ihnen die interaktive Karte zeigen und Ihre Anfrage bearbeiten zu können, benötigen wir Ihr Einverständnis für notwendige Cookies.',
     'button' => 'Jetzt starten',
 ];
