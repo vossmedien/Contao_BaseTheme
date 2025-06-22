@@ -5,13 +5,14 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "Dein Name",
-      "email": "deine@email.de"
+      "name": "Caeli Wind GmbH",
+      "email": "christian.voss@caeli-wind.de"
     }
   ],
   "require": {
     "php": ">=8.1",
-    "contao/core-bundle": ">=5.0 <6.0"
+    "contao/core-bundle": ">=5.0 <6.0",
+    "tecnickcom/tcpdf": "^6.6"
   },
   "autoload": {
     "psr-4": {

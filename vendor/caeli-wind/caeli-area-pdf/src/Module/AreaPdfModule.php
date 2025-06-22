@@ -12,90 +12,156 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Doctrine\DBAL\Connection;
 use Contao\Database;
 use Contao\Environment;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class AreaPdfModule extends Module
 {
     protected $strTemplate = 'mod_caeli_area_pdf';
 
-    protected $api_url;
-    protected $api_user;
-    protected $api_pass;
+    private string $api_url;
+    private string $api_user;
+    private string $api_pass;
+    private string $google_maps_key;
 
     public function __construct($module, $column = 'main')
     {
         parent::__construct($module, $column);
 
-        // Flexiblere Environment Variable Erkennung - getenv() und $_ENV kombinieren
-        $this->api_url = getenv('CAELI_INFRA_API_URL') ?: ($_ENV['CAELI_INFRA_API_URL'] ?? "https://infra.caeli-wind.de/api/");
-        $this->api_user = getenv('CAELI_INFRA_API_USERNAME') ?: ($_ENV['CAELI_INFRA_API_USERNAME'] ?? "");
-        $this->api_pass = getenv('CAELI_INFRA_API_PASSWORD') ?: ($_ENV['CAELI_INFRA_API_PASSWORD'] ?? "");
+        // Umgebungsvariablen mit Fallbacks laden
+        $this->api_url = $this->getEnvironmentVariable('CAELI_INFRA_API_URL', 'https://infra.caeli-wind.de/api/');
+        $this->api_user = $this->getEnvironmentVariable('CAELI_INFRA_API_USERNAME', '');
+        $this->api_pass = $this->getEnvironmentVariable('CAELI_INFRA_API_PASSWORD', '');
+        $this->google_maps_key = $this->getEnvironmentVariable('GOOGLE_MAPS_API_KEY', '');
     }
 
-    private function getApiSessionId()
+    /**
+     * Sichere Umgebungsvariablen-Behandlung
+     */
+    private function getEnvironmentVariable(string $key, string $default = ''): string
     {
+        return $_ENV[$key] ?? getenv($key) ?: $default;
+    }
+
+    /**
+     * UUID Validierung
+     */
+    private function isValidUuid(string $uuid): bool
+    {
+        return (bool) preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $uuid);
+    }
+
+    /**
+     * API Session ID abrufen mit verbessertem Error Handling
+     */
+    private function getApiSessionId(): ?string
+    {
+        if (empty($this->api_user) || empty($this->api_pass)) {
+            System::log('API credentials not configured', __METHOD__, TL_ERROR);
+            return null;
+        }
 
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        $cookieFile = $rootDir . '/var/tmp/api_session_' . session_id() . '.txt';
 
-        $fields = json_encode(array(
+        $fields = json_encode([
             "email" => $this->api_user,
             "password" => $this->api_pass,
-        ));
+        ]);
 
         $curl_session = curl_init();
-        curl_setopt($curl_session, CURLOPT_URL, $this->api_url . "auth/login");
-        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl_session, CURLOPT_POSTFIELDS, $fields);
-        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir . "/system/tmp/" . session_id() . '.txt');
-        curl_setopt($curl_session, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json')
-        );
-        $result = curl_exec($curl_session);
+        curl_setopt_array($curl_session, [
+            CURLOPT_URL => $this->api_url . "auth/login",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $fields,
+            CURLOPT_COOKIEJAR => $cookieFile,
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_CONNECTTIMEOUT => 10,
+        ]);
 
-        /*
-        if(curl_error($curl_session)) {
-          dump(curl_error($curl_session));
+        $result = curl_exec($curl_session);
+        $httpCode = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
+        
+        if (curl_error($curl_session)) {
+            System::log('API Login cURL Error: ' . curl_error($curl_session), __METHOD__, TL_ERROR);
+            curl_close($curl_session);
+            return null;
         }
-        */
+        
         curl_close($curl_session);
 
-        //$_SESSION['new_plot']['api_session'] = json_decode($result)->tokens->csrf_session_id;
-        return json_decode($result)->tokens->csrf_session_id;
+        if ($httpCode !== 200) {
+            System::log('API Login failed with HTTP ' . $httpCode, __METHOD__, TL_ERROR);
+            return null;
+        }
+
+        $response = json_decode($result);
+        if (!$response || !isset($response->tokens->csrf_session_id)) {
+            System::log('Invalid API response structure', __METHOD__, TL_ERROR);
+            return null;
+        }
+
+        return $response->tokens->csrf_session_id;
     }
 
-    private function createPark($data)
+    /**
+     * Park erstellen mit verbessertem Error Handling
+     */
+    private function createPark(array $data): ?string
     {
-        //return 'bcaf9ff4-65c1-47f2-9139-82430d3710c3';
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
         $api_session_id = $this->getApiSessionId();
+        
+        if (!$api_session_id) {
+            return null;
+        }
 
-        //$data['geometry'] = '{"geometry":{"coordinates":[[[8.147900888731186,52.232090618982824],[8.149789166524073,52.22536137556068],[8.17387184960154,52.226623186819864],[8.182197157783861,52.229199273847854],[8.181534955077865,52.236724393655976],[8.179732510797493,52.242164146228674],[8.147900888731186,52.232090618982824]]],"type":"Polygon"}}';
-        //{"status": "success", "message": "Parkplanung erfolgreich durchgef\u00fchrt", "parks": {"status": "success", "id": "['bcaf9ff4-65c1-47f2-9139-82430d3710c3']"}}
+        $cookieFile = $rootDir . '/var/tmp/api_session_' . session_id() . '.txt';
+        
         $postData = [
             'geometry' => json_decode($data['geometry']),
         ];
 
         $curl_session = curl_init();
-        curl_setopt($curl_session, CURLOPT_URL, $this->api_url . "wind/caeli/park");
-        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir . "/system/tmp/" . session_id() . '.txt');
-        curl_setopt($curl_session, CURLOPT_COOKIEFILE, $rootDir . "/system/tmp/" . session_id() . '.txt');
-        curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
-        curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
-        curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
-            'X-CSRF-TOKEN: ' . $api_session_id,
-            'Content-Type: application/json'
+        curl_setopt_array($curl_session, [
+            CURLOPT_URL => $this->api_url . "wind/caeli/park",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_COOKIEJAR => $cookieFile,
+            CURLOPT_COOKIEFILE => $cookieFile,
+            CURLOPT_POSTFIELDS => json_encode($postData),
+            CURLOPT_HTTPHEADER => [
+                'X-CSRF-TOKEN: ' . $api_session_id,
+                'Content-Type: application/json'
+            ],
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_CONNECTTIMEOUT => 10,
         ]);
+        
         $result = curl_exec($curl_session);
-
-        curl_close($curl_session);
-        if (json_decode($result)->status == 'success') {
-
-            return str_replace(["[", "]", "'"], ["", "", ""], json_decode($result)->parks->id);
-        } else {
-            return "-";//json_decode($result);
+        $httpCode = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
+        
+        if (curl_error($curl_session)) {
+            System::log('Park creation cURL Error: ' . curl_error($curl_session), __METHOD__, TL_ERROR);
+            curl_close($curl_session);
+            return null;
         }
+        
+        curl_close($curl_session);
+        
+        if ($httpCode !== 200) {
+            System::log('Park creation failed with HTTP ' . $httpCode, __METHOD__, TL_ERROR);
+            return null;
+        }
+        
+        $response = json_decode($result);
+        if ($response && $response->status === 'success' && isset($response->parks->id)) {
+            return str_replace(["[", "]", "'"], ["", "", ""], $response->parks->id);
+        }
+        
+        System::log('Park creation failed: ' . ($response->message ?? 'Unknown error'), __METHOD__, TL_ERROR);
+        return null;
     }
 
     private function getPlotRating($id)
@@ -146,35 +212,69 @@ class AreaPdfModule extends Module
         }
     }
 
-    private function buildStaticMapUrl($geometry)
+    /**
+     * Google Static Map URL erstellen mit Error Handling
+     */
+    private function buildStaticMapUrl($geometry): ?string
     {
-        // Flexiblere Environment Variable Erkennung - getenv() und $_ENV kombinieren
-        $apiKey = getenv('GOOGLE_MAPS_API_KEY') ?: ($_ENV['GOOGLE_MAPS_API_KEY'] ?? '');
+        $apiKey = $this->google_maps_key;
+        
+        if (empty($apiKey)) {
+            System::log('Google Maps API Key not configured', __METHOD__, TL_ERROR);
+            return null;
+        }
+        
+        if (!isset($geometry->coordinates[0][0])) {
+            System::log('Invalid geometry structure for map generation', __METHOD__, TL_ERROR);
+            return null;   
+        }
 
         $polygon = $geometry->coordinates[0][0]; // [ [lng,lat], ... ]
+        
         // Koordinaten in "lat,lng" umwandeln
         $path = [];
         $lats = [];
         $lngs = [];
+        
         foreach ($polygon as $point) {
-            $lng = $point[0];
-            $lat = $point[1];
+            if (!is_array($point) || count($point) < 2) {
+                continue;
+            }
+            
+            $lng = (float) $point[0];
+            $lat = (float) $point[1];
+            
+            // Koordinaten-Validierung
+            if ($lat < -90 || $lat > 90 || $lng < -180 || $lng > 180) {
+                continue;
+            }
+            
             $path[] = $lat . ',' . $lng;
             $lats[] = $lat;
             $lngs[] = $lng;
         }
+        
+        if (empty($path)) {
+            System::log('No valid coordinates found for map generation', __METHOD__, TL_ERROR);
+            return null;
+        }
+        
         // Mittelpunkt berechnen
         $centerLat = (min($lats) + max($lats)) / 2;
         $centerLng = (min($lngs) + max($lngs)) / 2;
         $pathStr = implode('|', $path);
-        $url = "https://maps.googleapis.com/maps/api/staticmap?"
-            . "center={$centerLat},{$centerLng}"
-            . "&zoom=15"
-            . "&size=600x400"
-            . "&maptype=satellite"
-            . "&path=fillcolor:0x00ca9033|color:0x00ca90ff|weight:3|{$pathStr}"
-            . "&key={$apiKey}";
-        return $url;
+        
+        // URL sicher zusammenbauen
+        $params = [
+            'center' => "{$centerLat},{$centerLng}",
+            'zoom' => '15',
+            'size' => '600x400',
+            'maptype' => 'satellite',
+            'path' => "fillcolor:0x00ca9033|color:0x00ca90ff|weight:3|{$pathStr}",
+            'key' => $apiKey
+        ];
+        
+        return "https://maps.googleapis.com/maps/api/staticmap?" . http_build_query($params);
     }
 
     protected function compile(): void
@@ -183,6 +283,18 @@ class AreaPdfModule extends Module
 
         // Ohne parkid nichts machen (für Backend oder Frontend ohne Parameter)
         if (empty($parkid)) {
+            return;
+        }
+
+        // Eingabe-Validierung: UUID-Format prüfen
+        if (!$this->isValidUuid($parkid)) {
+            System::log('Invalid parkid format: ' . $parkid, __METHOD__, TL_ERROR);
+            return;
+        }
+
+        // Parkid validieren (UUID Format)
+        if (!$this->isValidUuid($parkid)) {
+            System::log('Invalid parkid format: ' . $parkid, __METHOD__, TL_ERROR);
             return;
         }
 

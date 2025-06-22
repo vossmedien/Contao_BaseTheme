@@ -1,5 +1,7 @@
 services:
     CaeliWind\CaeliAreaPdfBundle\Module\AreaPdfModule:
-        arguments:
-            $connection: '@doctrine.dbal.default_connection'
-        tags: [contao.frontend_module] 
+        tags: 
+            - { name: 'contao.frontend_module', category: 'miscellaneous' }
+        public: true
+        calls:
+            - [setContainer, ['@service_container']] 

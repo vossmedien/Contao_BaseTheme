@@ -1,0 +1,21 @@
+<?php
+// Caeli Area PDF Module Template
+// Dieses Template wird nur im Backend zur Information angezeigt
+// Das Frontend-Modul generiert PDFs direkt ohne HTML-Output
+?>
+
+<!-- Backend Information -->
+<div class="tl_info">
+    <h3>Caeli Area PDF Generator</h3>
+    <p>Dieses Modul generiert PDF-Berichte für Windenergie-Ersteinschätzungen.</p>
+    <ul>
+        <li><strong>Frontend ohne Parameter:</strong> Unsichtbar</li>
+        <li><strong>Frontend mit ?parkid=:</strong> PDF-Download</li>
+        <li><strong>URL-Format:</strong> <code>https://domain.de/seite?parkid=uuid</code></li>
+    </ul>
+</div>
+
+<?php 
+// Frontend: Wenn kein parkid Parameter vorhanden ist, nichts ausgeben
+// Bei vorhandenem parkid wird die PDF-Generierung in der compile() Methode ausgelöst
+?> 
