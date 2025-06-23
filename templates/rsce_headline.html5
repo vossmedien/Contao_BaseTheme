@@ -10,6 +10,9 @@ use Vsm\VsmHelperTools\Helper\ImageHelper;
 
 // Hinzufügen für Bildgenerierung
 
+// Social Media Meta-Tags Helper hinzufügen
+use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
+
 // NEUE LOGIK für globale Animation
 $elementAnimation = null;
 $applyIndividualAnimations = !(!empty($this->animation_type_element) && $this->animation_type_element !== 'no-animation');
@@ -72,9 +75,16 @@ $orderHeadlineClass = 'order-2';
 // Bilddaten vorbereiten
 $imageUuids = [];
 if ($this->add_images && !empty($this->multiSRC)) {
-    $unserialized = StringUtil::deserialize($this->multiSRC);
-    if (is_array($unserialized)) {
-        $imageUuids = array_filter($unserialized, function ($uuid) {
+    // Prüfen ob die Daten bereits ein Array sind oder deserialisiert werden müssen
+    if (is_array($this->multiSRC)) {
+        $unserializedData = $this->multiSRC;
+    } else {
+        $unserializedData = unserialize($this->multiSRC);
+    }
+    
+    if (is_array($unserializedData)) {
+        $imageUuids = array_map([StringUtil::class, 'binToUuid'], $unserializedData);
+        $imageUuids = array_filter($imageUuids, function ($uuid) {
             if (!is_string($uuid) || strlen($uuid) !== 36) {
                 return false;
             }
@@ -164,6 +174,18 @@ if ($this->two_columns && !$this->headline_above_columns &&
 // Variable für die Zuweisung der columns_container_css_class
 $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'container');
 
+// Social Media Meta-Tags generieren (nur einmal pro Seite)
+if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
+    $socialMetaData = [
+        'title' => $this->headline,
+        'description' => $this->desc ?: $this->second_content,
+        'image' => !empty($imageUuids) ? $imageUuids[0] : null,
+        'type' => 'website'
+    ];
+    
+    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
+}
+
 ?>
 
 <div <?php if ($elementAnimation): ?>data-animation="<?= $elementAnimation; ?>"<?php endif; ?> <?php echo $this->cssID; ?> class="content--element  <?php echo $this->class; ?> <?php if ($this->two_columns): ?>layout-two-columns<?php else: ?>layout-one-column<?php endif; ?>">
@@ -180,7 +202,7 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
             <?php if ($this->two_columns): ?>
                 <?php // --- ZWEISPALTIG --- ?>
 
-                    <div class="row <?php if($this->second_content != "" && $headlineColumnImageHTML != "" && $headlineColumnButtonsHTML != ""):?>gy-2<?php elseif(!$this->desc && $hasImages):?>gy-1<?php endif;?> gy-lg-0 gx-lg-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
+                    <div class="row <?php if($this->second_content != "" && $headlineColumnImageHTML != "" && $headlineColumnButtonsHTML != ""):?>gy-2<?php elseif($hasImages):?>gy-1<?php endif;?> gy-lg-0 gx-lg-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
 
                         <?php if ($this->headline_above_columns): ?>
                             <div <?php if ($headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="col-12">
@@ -197,6 +219,8 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
                             $headlineColumnClasses[] = $this->headline_column_css_class;
                         }
                         ?>
+
+                         <?php if($headlineHTML  || $this->second_content || $headlineColumnImageHTML || $headlineColumnButtonsHTML):?>
                         <div <?php if ($headlineColumnAnim): ?>data-animation="<?= $headlineColumnAnim; ?>"<?php endif; ?> class="col-12 col-lg-<?= $bsColHeadline; ?> <?= $orderHeadlineClass; ?> <?= implode(' ', $headlineColumnClasses); ?>">
                             <div class="">
                                 <?php if (!$this->headline_above_columns): ?>
@@ -229,12 +253,12 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
                                 <?php endif; ?>
                             </div>
                         </div>
-
+<?php endif; ?>
                         <?php // --- Textspalte --- ?>
 
                         <?php if($this->desc  || $hasImages || $buttonsHTML):?>
                         <div <?php if ($contentColumnAnim): ?>data-animation="<?= $contentColumnAnim; ?>"<?php endif; ?> class="col-12 col-lg-<?= $bsColContent; ?> <?= $orderContentClass; ?> <?php if ($this->content_column_css_class): ?><?= $this->content_column_css_class ?><?php endif; ?>">
-                            <div  class="content-column <?php if ((!$this->headline || $this->second_content) && ($this->column_order == "hl_hl" || $this->column_order == "hl_co")): ?>mt-3 mt-lg-0<?php endif; ?>">
+                            <div  class="content-column <?php if ((!$this->headline || $this->second_content) && ($this->column_order == "hl_hl" || $this->column_order == "hl_co")): ?>mt-sm-3 mt-lg-0<?php endif; ?>">
                                 <?php if ($this->desc): ?>
                                     <div class="text">
                                         <?= $this->desc; ?>
@@ -412,7 +436,7 @@ $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'conta
                     function shouldInitializeSwiper() {
                         if (imageCount <= 1) return false;
                         const currentWidth = window.innerWidth;
-                        const isMobile = currentWidth < 992;
+                        const isMobile = currentWidth < 1040;
                         if (deactivateOption === 'both') return false;
                         if (deactivateOption === 'desktop' && !isMobile) return false;
                         if (deactivateOption === 'mobile' && isMobile) return false;

@@ -18,9 +18,12 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use Vsm\VsmHelperTools\Helper\BasicHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
+use Vsm\VsmHelperTools\Helper\EmailHelper;
 use Vsm\VsmHelperTools\Helper\EnvHelper;
+use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 use Vsm\VsmHelperTools\Helper\HeadlineHelper;
 use Vsm\VsmHelperTools\Helper\ImageHelper;
+use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
 use Vsm\VsmHelperTools\Helper\VideoHelper;
 
 class VsmHelperExtension extends AbstractExtension
@@ -39,7 +42,7 @@ class VsmHelperExtension extends AbstractExtension
             new TwigFunction('vsm_generate_button_html', [ButtonHelper::class, 'generateButtonHTML']),
             new TwigFunction('vsm_get_button_config', [ButtonHelper::class, 'getButtonConfig']),
             
-            // ImageHelper Functions
+            // ImageHelper
             new TwigFunction('vsm_generate_image_html', [ImageHelper::class, 'generateImageHTML']),
             new TwigFunction('vsm_generate_image_url', [ImageHelper::class, 'generateImageURL']),
             new TwigFunction('vsm_get_svg_code', [ImageHelper::class, 'getSvgCode']),
@@ -51,6 +54,23 @@ class VsmHelperExtension extends AbstractExtension
             // EnvHelper
             new TwigFunction('vsm_is_backend', [EnvHelper::class, 'isBackend']),
             new TwigFunction('vsm_is_frontend', [EnvHelper::class, 'isFrontend']),
+            
+            // EmailHelper
+            new TwigFunction('vsm_load_template', [EmailHelper::class, 'loadTemplate']),
+            new TwigFunction('vsm_render_email_template', [EmailHelper::class, 'renderTemplate']),
+            new TwigFunction('vsm_get_rendered_email', [EmailHelper::class, 'getRenderedEmail']),
+            new TwigFunction('vsm_wrap_email_template', [EmailHelper::class, 'wrapInBasicEmailTemplate']),
+            
+            // SocialMetaHelper
+            new TwigFunction('vsm_generate_hero_social_meta', [SocialMetaHelper::class, 'generateHeroSocialMeta']),
+            new TwigFunction('vsm_generate_news_social_meta', [SocialMetaHelper::class, 'generateNewsSocialMeta']),
+            new TwigFunction('vsm_extract_news_data_from_template', [SocialMetaHelper::class, 'extractNewsDataFromTemplate']),
+            
+            // GlobalElementConfig
+            new TwigFunction('vsm_get_animations', [GlobalElementConfig::class, 'getAnimations']),
+            new TwigFunction('vsm_get_color_options', [GlobalElementConfig::class, 'getColorOptions']),
+            new TwigFunction('vsm_get_text_align_options', [GlobalElementConfig::class, 'getTextAlignOptions']),
+            new TwigFunction('vsm_get_image_size_options', [GlobalElementConfig::class, 'getImageSizeOptions']),
         ];
     }
 

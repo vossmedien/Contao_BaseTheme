@@ -9,7 +9,6 @@ html body {
    */
 
 
-
   *:focus,
   *:active {
     outline: 0px;
@@ -48,7 +47,6 @@ html body {
       color: currentColor;
     }
   }
-
 
 
   p {
@@ -103,9 +101,10 @@ html body {
       margin-bottom: 0px;
     }
 
-    th{
-         white-space: nowrap;
+    th {
+      white-space: nowrap;
     }
+
     tr {
       td {
         width: auto;
@@ -125,7 +124,7 @@ html body {
   }
 }
 
-i:has( + a){
+i:has( + a) {
   transition: color .3s ease-in-out;
 }
 
@@ -241,7 +240,7 @@ i:has( + a:hover) {
 
     &:before {
       @extend %fa-icon;
-      font: var(--fa-font-sharp-light);
+      font: var(--fa-font-sharp-solid);
       content: "\f111";
       position: absolute;
       padding-right: rfs-value(10px);
@@ -287,11 +286,11 @@ ul[class*="list-"][class*="text-"] {
 
 // Schriftgrößen-Klassen
 .text-xs {
-  @include font-size($font-size-xs);
+  font-size: $font-size-xs;
 }
 
 .text-sm {
-  @include font-size($font-size-sm);
+  font-size: $font-size-sm;
 }
 
 .text-base {
@@ -299,13 +298,12 @@ ul[class*="list-"][class*="text-"] {
 }
 
 .text-lg {
-  @include font-size($font-size-lg);
+  font-size: $font-size-lg;
 }
 
 .text-xl {
-  @include font-size($font-size-xl);
+  font-size: $font-size-xl;
 }
-
 
 
 main a:has(figure) {
@@ -328,6 +326,6 @@ main a:has(figure) {
 }
 
 
-.figcaption{
+.figcaption {
   @extend figcaption;
 }

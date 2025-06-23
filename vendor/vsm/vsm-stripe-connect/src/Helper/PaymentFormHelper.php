@@ -3,6 +3,17 @@
 declare(strict_types=1);
 
 /*
+<<<<<<<< HEAD:vendor/vsm/vsm-helper-tools/src/Helper/PaymentFormHelper.php
+ * This file is part of VSM Helper und Integrations.
+ *
+ * (c) Vossmedien - Christian Voss 2025 <christian@vossmedien.de>
+ * @license MIT
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/vsm/vsm-helper-tools
+ */
+namespace Vsm\VsmHelperTools\Helper;
+========
  * This file is part of vsm-stripe-connect.
  *
  * (c) Christian Voss 2025 <christian@vossmedien.de>
@@ -12,6 +23,7 @@ declare(strict_types=1);
  * @link https://github.com/vsm/vsm-stripe-connect
  */
 namespace Vsm\VsmStripeConnect\Helper;
+>>>>>>>> refs/heads/contao5:vendor/vsm/vsm-stripe-connect/src/Helper/PaymentFormHelper.php
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\System;

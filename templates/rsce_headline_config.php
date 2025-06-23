@@ -1,18 +1,20 @@
 <?php
 
+
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 use Contao\Config;
 use Contao\System;
 
 //rsce_my_element_config.php
-return array(
+$config = array(
     'label' => array('Custom | Überschrift & Text (headline)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
+     'standardFields' => array('headline', 'cssID'),
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('cssID'),
-    'wrapper' => array(
+        'wrapper' => array(
         'type' => 'none',
     ),
     'fields' => array(
@@ -401,9 +403,9 @@ return array(
 
         ),
 
-        'multiSRC' => [
-            'label' => ['Bilder', ''],
-            'inputType' => 'fileTree',
+        'multiSRC' => array(
+            'inputType' => 'standardField',
+
             'eval' => array(
                 'multiple' => true,
                 'fieldType' => 'checkbox',
@@ -413,8 +415,7 @@ return array(
                 'isGallery' => true,
                 'extensions' => 'jpg,jpeg,png,svg,webp',
             ),
-
-        ],
+        ),
 
         'image_spacing_class' => array(
             'label' => array('Abstandsklasse für Bilder (Listen-Ansicht)', 'Standard: mb-1. Wird beim letzten Bild nicht angewendet.'),
@@ -526,3 +527,6 @@ return array(
 
     ),
 );
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config);

@@ -75,7 +75,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
     <div class="ce--inner <?php if (!empty($this->container_css_class)): ?><?= $this->container_css_class ?><?php endif; ?>">
 
-        <div class="col-xl-9 mx-0">
+        <div class=" mx-0">
             <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                 $this->topline,
                 $this->headline,
@@ -116,7 +116,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                 </div>
                             <?php endif; ?>
 
-                            <div class="step-desc-wrapper ps-md-gap ms-md-gap mt-gap">
+                            <div class="step-desc-wrapper ms-md-gap mt-gap">
                                 <div class="row gy-2 gx-3 align-items-center">
                                     <?php if ($row->image): ?>
                                         <div class="col-md-5" data-animation="<?= $row->step_animation_type ?: '' ?>">

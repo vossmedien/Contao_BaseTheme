@@ -17,6 +17,10 @@
 }
 
 
+.fak, .fa-kit {
+  font-family: 'Font Awesome Kit';
+}
+
 
 @mixin content-box($override-padding: "") {
   border-radius: $border-radius;

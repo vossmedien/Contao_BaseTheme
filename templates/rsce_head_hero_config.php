@@ -2,14 +2,15 @@
 
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 
 //rsce_windpark_hero_config.php
-return array(
+$config = array(
     'label' => array('Custom | Hero', 'Zeigt einen Hero-Bereich an.'),
     'types' => array('content'),
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('cssID'),
+    'standardFields' => array('headline', 'cssID'),
     'wrapper' => array(
         'type' => 'none',
     ),
@@ -181,3 +182,6 @@ return array(
         ),
     ),
 );
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config);

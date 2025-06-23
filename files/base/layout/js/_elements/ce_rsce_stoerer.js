@@ -23,11 +23,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (value.endsWith('em')) return val * parseFloat(getComputedStyle(baseElement).fontSize); 
         if (value.endsWith('vh')) return val * window.innerHeight / 100;
         if (value.endsWith('vw')) return val * window.innerWidth / 100;
-        // Prozentwerte sind kontextabhängig, hier ignoriert oder Standard-Fallback
         return val; // Fallback für reine Zahlen oder unbekannte Einheiten
     } 
 
-    // --- START: Neue Hilfsfunktionen für Breitenberechnung ---
+    // --- Hilfsfunktionen für Breitenberechnung ---
     function applyMaxWidth(stoerer) {
         const content = stoerer.querySelector('.stoerer--content'); 
         if (!content) return;
@@ -38,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const scrollWidth = content.scrollWidth;
         content.style.maxWidth = '';
         content.style.transition = originalTransition;
+        
         requestAnimationFrame(() => {
             content.style.setProperty('--stoerer-content-max-width', scrollWidth + 'px');
         });
@@ -48,168 +48,202 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!content) return;
         content.style.removeProperty('--stoerer-content-max-width');
     }
-    // --- ENDE: Neue Hilfsfunktionen für Breitenberechnung ---
 
-    // --- Kernfunktionen (vereinfacht) ---
-    // Funktion calculateDynamicWidth und Hover/Focus-Listener entfernt
+    // --- Vereinfachte State-Verwaltung ---
+    class StoererState {
+        constructor(element) {
+            this.element = element;
+            this.isExpanded = false;
+            this.isActive = false; // Vereinfacht: nur ein Active-State statt mehrerer
+            this.isInteracting = false;
+        }
 
-    function handleMobileClick(event) {
-         if (window.innerWidth < 768) {
-            const stoerer = event.currentTarget.closest('.ce--stoerer');
-            if (stoerer && !stoerer.classList.contains('clicked')) {
-                event.preventDefault(); // Verhindert Link-Navigation nur beim ersten Klick
-                removeAllClickedClasses(); // Schließe andere
-                stoerer.classList.add('clicked');
+        expand() {
+            if (!this.isExpanded) {
+                this.isExpanded = true;
+                this.element.classList.add('is-expanded');
+                applyMaxWidth(this.element);
             }
         }
-        // Bei > 768px wird der Link normal verfolgt
+
+        collapse() {
+            if (this.isExpanded) {
+                this.isExpanded = false;
+                this.element.classList.remove('is-expanded');
+                removeMaxWidth(this.element);
+            }
+        }
+
+        activate() {
+            this.isActive = true;
+            this.element.classList.add('is-active');
+        }
+
+        deactivate() {
+            this.isActive = false;
+            this.element.classList.remove('is-active');
+        }
+
+        setInteracting(state) {
+            this.isInteracting = state;
+            this.element.classList.toggle('is-interacting', state);
+        }
     }
 
-    function removeAllClickedClasses() {
-        document.querySelectorAll('.ce--stoerer.clicked').forEach(el => el.classList.remove('clicked'));
+    // --- Globale State-Map ---
+    const stoererStates = new Map();
+
+    function getStoererState(element) {
+        if (!stoererStates.has(element)) {
+            stoererStates.set(element, new StoererState(element));
+        }
+        return stoererStates.get(element);
     }
 
+    // --- Mobile-Handler vereinfacht ---
+    function handleMobileClick(event) {
+        if (window.innerWidth >= 768) return; // Nur mobile
+        
+        const stoerer = event.currentTarget.closest('.ce--stoerer');
+        if (!stoerer) return;
+        
+        const state = getStoererState(stoerer);
+        
+        if (!state.isActive) {
+            event.preventDefault(); // Verhindert Link-Navigation nur beim ersten Klick
+            closeAllMobileStates(); // Schließe andere
+            state.activate();
+            state.expand();
+        }
+    }
+
+    function closeAllMobileStates() {
+        stoererStates.forEach(state => {
+            if (window.innerWidth < 768) {
+                state.deactivate();
+                state.collapse();
+            }
+        });
+    }
+
+    // --- Fixed Störer Stacking optimiert ---
     function stackFixedStoerers() {
         const fixedStoererWrappers = document.querySelectorAll('.is-fixed.content--element.ce_rsce_stoerer');
 
         fixedStoererWrappers.forEach(wrapper => {
-            const trulyFixedStoerers = Array.from(wrapper.querySelectorAll(':scope > .ce--stoerer.is-expandable'));
-            const totalStoerers = trulyFixedStoerers.length;
-
-            if (totalStoerers <= 1) {
-                if(trulyFixedStoerers.length === 1) {
-                    trulyFixedStoerers[0].style.zIndex = '';
-                }
+            const stoerers = Array.from(wrapper.querySelectorAll(':scope > .ce--stoerer.is-expandable'));
+            
+            if (stoerers.length <= 1) {
+                stoerers.forEach(el => el.style.zIndex = '');
                 return;
             }
 
-            // --- Calculate Gap ---
-            let gapValuePx = getPixelValue('0.75rem');
+            // Gap-Berechnung
             const gapStyle = getComputedStyle(wrapper).getPropertyValue('--stoerer-vertical-gap') || '0.75rem';
-            gapValuePx = getPixelValue(gapStyle.trim(), wrapper);
+            const gapValuePx = getPixelValue(gapStyle.trim(), wrapper);
 
-            // --- Sort Stoerers based on initial intended position ---
-             trulyFixedStoerers.sort((a, b) => {
-                 const getInitialTopPx = (el) => {
-                      // Berechne initialen Top-Wert in Pixel für Sortierung, speichere Original-Style
-                      if (el.dataset.initialTopPx === undefined) {
-                          const styleTop = el.style.top || getComputedStyle(el).top;
-                          if (!el.dataset.originalStyleTop) {
-                              el.dataset.originalStyleTop = styleTop; // Store "25vh" etc.
-                          }
-                          el.dataset.initialTopPx = getPixelValue(styleTop, el);
-                      }
-                      return parseFloat(el.dataset.initialTopPx);
-                  };
-                  return getInitialTopPx(a) - getInitialTopPx(b);
-              });
+            // Sortierung basierend auf Position
+            stoerers.sort((a, b) => {
+                const getTopValue = (el) => {
+                    if (!el.dataset.initialTopPx) {
+                        const styleTop = el.style.top || getComputedStyle(el).top;
+                        el.dataset.originalStyleTop = styleTop;
+                        el.dataset.initialTopPx = getPixelValue(styleTop, el);
+                    }
+                    return parseFloat(el.dataset.initialTopPx);
+                };
+                return getTopValue(a) - getTopValue(b);
+            });
 
-            // --- Position Stoerers ---
-            let firstStoererOriginalTopStyle = "0px"; // Fallback
+            // Positionierung
+            let firstStoererOriginalTop = "0px";
             let firstStoererTriggerHeight = 0;
 
-            trulyFixedStoerers.forEach((element, index) => {
-                element.style.zIndex = totalStoerers - index;
+            stoerers.forEach((element, index) => {
+                element.style.zIndex = stoerers.length - index;
 
                 if (index === 0) {
-                    // FIRST element: Get its original top style (e.g., "25vh") and trigger height.
-                    // Ensure original style is stored and applied.
-                    if (!element.dataset.originalStyleTop) {
-                        element.dataset.originalStyleTop = element.style.top || getComputedStyle(element).top || "0px";
-                    }
-                    firstStoererOriginalTopStyle = element.dataset.originalStyleTop;
-                    element.style.top = firstStoererOriginalTopStyle; // Stelle sicher, dass der Originalwert drin steht
-
-                    const triggerElement = element.querySelector('.stoerer-trigger');
-                    firstStoererTriggerHeight = triggerElement ? triggerElement.offsetHeight : 0;
-
+                    firstStoererOriginalTop = element.dataset.originalStyleTop || "0px";
+                    element.style.top = firstStoererOriginalTop;
+                    
+                    const trigger = element.querySelector('.stoerer-trigger');
+                    firstStoererTriggerHeight = trigger ? trigger.offsetHeight : 0;
                 } else {
-                    // SUBSEQUENT elements: Set top using calc() based on the FIRST element's original top and trigger height.
-                    element.style.top = `calc(${firstStoererOriginalTopStyle} + ${firstStoererTriggerHeight}px + ${gapValuePx}px)`;
-
-                    // If more than 2 stoerers need stacking relative to each other, this part needs adjustment.
-                    // For now, it positions all subsequent stoerers relative to the first one's trigger.
+                    element.style.top = `calc(${firstStoererOriginalTop} + ${firstStoererTriggerHeight}px + ${gapValuePx}px)`;
                 }
             });
         });
     }
 
+    // --- Edge-Position Check optimiert ---
     function checkEdgePositioning() {
-        // Selektiere direkt die Elemente, die potenziell am Rand sind
-        const edgeStoerers = document.querySelectorAll('.ce--stoerer[style*="left:"]:not([style*="left: auto"]), .ce--stoerer[style*="right:"]:not([style*="right: auto"])');
+        const edgeStoerers = document.querySelectorAll('.ce--stoerer[style*="left:"], .ce--stoerer[style*="right:"]');
+        
         edgeStoerers.forEach(element => {
             element.classList.remove('is-flush-left', 'is-flush-right');
-             const rect = element.getBoundingClientRect();
-             const viewportWidth = window.innerWidth;
-             const tolerance = 2;
+            
+            const rect = element.getBoundingClientRect();
+            const tolerance = 2;
 
             if (rect.left <= tolerance) {
                 element.classList.add('is-flush-left');
-            } else if (rect.right >= viewportWidth - tolerance) {
+            } else if (rect.right >= window.innerWidth - tolerance) {
                 element.classList.add('is-flush-right');
             }
         });  
     }
 
-    // --- Initialisierungsfunktion ---
+    // --- Hauptinitialisierung ---
     function initializeAllStoerers() {
         const allStoerers = document.querySelectorAll('.ce--stoerer.is-expandable');
         const stoererContainers = document.querySelectorAll('.content--element.ce_rsce_stoerer');
 
         allStoerers.forEach(stoerer => {
+            const state = getStoererState(stoerer);
 
             // Event-Listener für Trigger-Klick
             const trigger = stoerer.querySelector('.stoerer-trigger');
-            if (trigger && !trigger.dataset.stoererClickListenerAttached) {
+            if (trigger && !trigger.dataset.listenerAttached) {
                 addSafeEventListener(trigger, 'click', (event) => {
-                    stoerer.classList.add('is-interacting'); // Set temporary interaction flag
+                    state.setInteracting(true);
 
-                    // Störer öffnen/schließen Logik
-                    if (stoerer.classList.contains('is-expanded')) {
-                        stoerer.classList.remove('is-expanded');
-                        stoerer.classList.remove('is-clicked-active');
-                        removeMaxWidth(stoerer);
+                    if (state.isExpanded) {
+                        state.collapse();
+                        state.deactivate();
                     } else {
-                        stoerer.classList.add('is-expanded');
-                        stoerer.classList.add('is-clicked-active'); // Markiert als durch Klick aktiviert
-                        applyMaxWidth(stoerer);
+                        state.expand();
+                        state.activate();
                     }
 
-                    // Remove interaction flag after a short delay
-                    setTimeout(() => {
-                        stoerer.classList.remove('is-interacting');
-                    }, 50); // 50ms delay
+                    // Remove interaction flag
+                    setTimeout(() => state.setInteracting(false), 50);
                 });
-                trigger.dataset.stoererListenerAttached = 'true';
+                trigger.dataset.listenerAttached = 'true';
             }
 
-            // Event-Listener für Hover auf dem gesamten Störer-Element
-            if (!stoerer.dataset.stoererHoverListenerAttached) {
+            // Hover-Events (nur Desktop)
+            if (!stoerer.dataset.hoverListenerAttached) {
                 addSafeEventListener(stoerer, 'mouseenter', () => {
-                    if (stoerer.classList.contains('is-interacting')) return; // Ignore if interacting
-                    // Nur öffnen, wenn nicht durch Klick bereits aktiv
-                    if (!stoerer.classList.contains('is-clicked-active')) {
-                        stoerer.classList.add('is-expanded');
-                        applyMaxWidth(stoerer);
+                    if (window.innerWidth < 768 || state.isInteracting) return;
+                    if (!state.isActive) {
+                        state.expand();
                     }
                 });
 
                 addSafeEventListener(stoerer, 'mouseleave', () => {
-                    if (stoerer.classList.contains('is-interacting')) return; // Ignore if interacting
-                    // Nur schließen, wenn nicht durch Klick aktiviert
-                    if (!stoerer.classList.contains('is-clicked-active')) { 
-                        stoerer.classList.remove('is-expanded');
-                        removeMaxWidth(stoerer);
+                    if (window.innerWidth < 768 || state.isInteracting) return;
+                    if (!state.isActive) { 
+                        state.collapse();
                     } 
                 });
-                stoerer.dataset.stoererHoverListenerAttached = 'true';
+                stoerer.dataset.hoverListenerAttached = 'true';
             }
         });
 
         stackFixedStoerers();
         checkEdgePositioning();
 
-        // Ready-Klasse hinzufügen, um sie sichtbar zu machen
+        // Ready-Klasse hinzufügen
         stoererContainers.forEach(container => container.classList.add('js-stoerer-ready'));
     }
 
@@ -219,40 +253,34 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialer Aufruf
     initializeAllStoerers();
 
-    // Bei Resize (debounced)
+    // Resize (debounced)
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(initializeAllStoerers, 250);
     });
 
-    // Bei Klick ausserhalb (für Mobile UND Desktop zum Schließen)
+    // Klick außerhalb (vereinfacht)
     addSafeEventListener(document, 'click', function (event) {
-        // Prüfen, ob außerhalb eines Störers geklickt wurde
         const clickedStoerer = event.target.closest('.ce--stoerer.is-expandable');
 
-        // Alle Störer durchgehen, die aktuell geöffnet sind
-        document.querySelectorAll('.ce--stoerer.is-expandable.is-expanded').forEach(expandedStoerer => {
-            // Wenn der Klick NICHT innerhalb des gerade geprüften, geöffneten Störers war
-            // ODER wenn der Klick auf dem Trigger eines ANDEREN Störers war (optional, kann zu Verwirrung führen)
-            if (!clickedStoerer || clickedStoerer !== expandedStoerer) {
-                expandedStoerer.classList.remove('is-expanded');
-                expandedStoerer.classList.remove('is-clicked-active'); // Klick-Aktivierung aufheben
-                removeMaxWidth(expandedStoerer); // Breite entfernen
+        stoererStates.forEach((state, element) => {
+            if (element !== clickedStoerer && state.isExpanded) {
+                state.collapse();
+                state.deactivate();
             }
         });
 
-        // Mobile: .clicked-Klasse entfernen, wenn außerhalb geklickt wird
-        if (window.innerWidth < 768 && !event.target.closest('.ce--stoerer.clicked')) {
-            removeAllClickedClasses();
+        // Mobile: Schließe alle wenn außerhalb geklickt
+        if (window.innerWidth < 768 && !clickedStoerer) {
+            closeAllMobileStates();
         }
     });
 
-    // Listener für Custom Event -> wenn theme.js einen Störer hinzufügt
+    // Custom Event für dynamische Störer
     document.body.addEventListener('stoererAdded', function(e) {
         console.log('Event stoererAdded empfangen.');
-        // *** NEU: Mit requestAnimationFrame aufrufen ***
         requestAnimationFrame(() => {
-             initializeAllStoerers(); // Initialisierung neu ausführen
+            initializeAllStoerers();
         });
     });
 

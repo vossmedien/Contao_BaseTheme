@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function (event) {
-
     function adjustImageColumnWidths() {
         const rows = document.querySelectorAll('.ce_rsce_twocolimagewall .ce--imagetextwall--outer .row');
 
@@ -16,7 +15,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
             if (containerElement) {
                 const hasContainerClass = Array.from(containerElement.classList).some(cls => cls.startsWith('container'));
                 if (hasContainerClass) {
-                    refElement = containerElement;
+                    // Create a virtual reference that represents the actual container content area
+                    // by calculating where the container padding should end
+                    const containerRect = containerElement.getBoundingClientRect();
+                    const computedStyle = window.getComputedStyle(containerElement);
+                    const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
+                    const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
+                    
+                    refElement = {
+                        getBoundingClientRect: () => ({
+                            left: containerRect.left + paddingLeft,
+                            right: containerRect.right - paddingRight,
+                            width: containerRect.width - paddingLeft - paddingRight
+                        })
+                    };
                 }
             }
 
@@ -30,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             const isRowReverse = row.classList.contains('flex-row-reverse');
             const notAsBg = imageInner && imageInner.classList.contains('not-as-bg');
             const isRowBg = imageInner && imageInner.classList.contains('is-row-bg');
+            const isFullwidth = containerElement && containerElement.classList.contains('is-fullwidth');
 
             const resetStyles = (el) => {
                  if (el) {
@@ -55,15 +68,27 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             if (!notAsBg && !isRowBg) {
                 let targetWidthCol = 0;
-                if (isRowReverse) {
-                    const spaceRightOfImageCol = window.innerWidth - imageColRect.right;
-                    const spaceLeftOfReference = refRect.left;
-                    targetWidthCol = window.innerWidth - spaceRightOfImageCol - spaceLeftOfReference;
+
+                if (isFullwidth) {
+                    // For fullwidth elements, extend to absolute screen edges
+                    if (isRowReverse) {
+                        // Image visually on left: extend from current position to left screen edge (0)
+                        targetWidthCol = imageColRect.left + imageColRect.width;
+                    } else {
+                        // Image visually on right: extend from current position to right screen edge
+                        targetWidthCol = window.innerWidth - imageColRect.left;
+                    }
                 } else {
-                    const spaceLeftOfImageCol = imageColRect.left;
-                    const spaceRightOfReference = window.innerWidth - refRect.right;
-                    targetWidthCol = window.innerWidth - spaceLeftOfImageCol - spaceRightOfReference;
+                    // Container elements: extend to container edge, not viewport edge
+                    if (isRowReverse) {
+                        // Image on left: extend from container left edge to current right edge of image
+                        targetWidthCol = imageColRect.right - refRect.left;
+                    } else {
+                        // Image on right: extend from current left edge to container right edge
+                        targetWidthCol = refRect.right - imageColRect.left;
+                    }
                 }
+
                 targetWidthCol = Math.max(0, Math.min(targetWidthCol, window.innerWidth));
                 imageCol.style.width = `${targetWidthCol}px`;
                 imageCol.style.maxWidth = `${targetWidthCol}px`;
@@ -75,19 +100,29 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             if (darkenOverlayContent) {
                 let targetWidthContentOverlay = 0;
-                 if (isRowReverse) {
-                    const spaceLeftOfContentCol = contentColRect.left;
-                    const spaceRightOfReference = window.innerWidth - refRect.right;
-                    targetWidthContentOverlay = window.innerWidth - spaceLeftOfContentCol - spaceRightOfReference;
-                    darkenOverlayContent.style.left = '0';
-                    darkenOverlayContent.style.right = 'auto';
-                 } else {
-                    const spaceRightOfContentCol = window.innerWidth - contentColRect.right;
-                    const spaceLeftOfReference = refRect.left;
-                    targetWidthContentOverlay = window.innerWidth - spaceRightOfContentCol - spaceLeftOfReference;
-                    darkenOverlayContent.style.right = '0';
-                    darkenOverlayContent.style.left = 'auto';
-                 }
+                if (isFullwidth) {
+                    // For fullwidth: extend to viewport edges
+                    if (isRowReverse) {
+                        targetWidthContentOverlay = contentColRect.right;
+                        darkenOverlayContent.style.left = '0';
+                        darkenOverlayContent.style.right = 'auto';
+                    } else {
+                        targetWidthContentOverlay = window.innerWidth - contentColRect.left;
+                        darkenOverlayContent.style.right = '0';
+                        darkenOverlayContent.style.left = 'auto';
+                    }
+                } else {
+                    // For container: extend to container edges
+                    if (isRowReverse) {
+                        targetWidthContentOverlay = contentColRect.right - refRect.left;
+                        darkenOverlayContent.style.left = '0';
+                        darkenOverlayContent.style.right = 'auto';
+                    } else {
+                        targetWidthContentOverlay = refRect.right - contentColRect.left;
+                        darkenOverlayContent.style.right = '0';
+                        darkenOverlayContent.style.left = 'auto';
+                    }
+                }
                 targetWidthContentOverlay = Math.max(0, Math.min(targetWidthContentOverlay, window.innerWidth));
                 darkenOverlayContent.style.width = `${targetWidthContentOverlay}px`;
                 darkenOverlayContent.style.maxWidth = `${targetWidthContentOverlay}px`;
@@ -99,6 +134,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     function runAdjustments() {
         requestAnimationFrame(adjustImageColumnWidths);
     }
+
+    // Run immediately to prevent flicker
+    runAdjustments();
 
     if (document.readyState === 'complete') {
         runAdjustments();
@@ -112,6 +150,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         resizeTimer = setTimeout(runAdjustments, 100);
     }, { passive: true });
 
+    // Additional runs to ensure everything is loaded
+    setTimeout(runAdjustments, 100);
     setTimeout(runAdjustments, 250);
 
 }, { passive: true });

@@ -23,7 +23,7 @@ if (!function_exists('createTagClass')) {
 // --- Collect all unique tags for filtering (if enabled) ---
 $allTags = [];
 $initialFilterTagClass = 'all'; // Default filter
-$hideAllButton = false; // Flag to hide "Alle" button
+$hideAllButton = $this->hide_all_button ?: false; // Flag to hide "Alle" button from configuration
 
 // --- Process PLZ-Filter Blacklist ---
 $zipFilterBlacklist = [];
@@ -36,6 +36,8 @@ if ($this->add_zip_filter && !empty($this->zip_filter_blacklist)) {
         }
     }
 }
+
+
 
 // --- URL-Segment to Filter-Tag Mapping ---
 function createUrlSegmentMapping($allTags)
@@ -68,15 +70,50 @@ if ($this->add_filter_form && !empty($this->partners)) {
     $allTags = array_keys($allTags);
     sort($allTags);
 
-    // --- Referrer-based Filter Detection ---
-    $referrerUrl = $_SERVER['HTTP_REFERER'] ?? '';
-    $urlSegmentMapping = createUrlSegmentMapping($allTags);
+    // --- Kategorie an erste Stelle setzen (wenn konfiguriert) ---
+    if (!empty($this->default_category)) {
+        $defaultCategory = trim($this->default_category);
+        // Kategorie aus der sortierten Liste entfernen (falls vorhanden)
+        $allTags = array_filter($allTags, function($tag) use ($defaultCategory) {
+            return $tag !== $defaultCategory;
+        });
+        // Kategorie an den Anfang setzen
+        array_unshift($allTags, $defaultCategory);
+        
+        // Standard-Filter auf diese Kategorie setzen (wenn "Alle"-Button ausgeblendet ist)
+        if ($this->hide_all_button) {
+            $initialFilterTagClass = createTagClass($defaultCategory);
+        }
+    }
 
-    foreach ($urlSegmentMapping as $urlSegment => $tagName) {
-        if (!empty($referrerUrl) && strpos($referrerUrl, $urlSegment) !== false) {
-            $initialFilterTagClass = createTagClass($tagName);
-            $hideAllButton = true;
-            break;
+    // --- Extended URL-based Filter Detection ---
+    $referrerUrl = $_SERVER['HTTP_REFERER'] ?? '';
+    
+    // Check configured URL mappings first (highest priority)
+    if (!empty($this->url_filter_mapping) && is_array($this->url_filter_mapping)) {
+        foreach ($this->url_filter_mapping as $mapping) {
+            if (!empty($mapping['key']) && !empty($mapping['value']) && !empty($referrerUrl)) {
+                $urlKeyword = strtolower(trim($mapping['key']));
+                $filterTag = trim($mapping['value']);
+                
+                if (stripos($referrerUrl, $urlKeyword) !== false && in_array($filterTag, $allTags, true)) {
+                    $initialFilterTagClass = createTagClass($filterTag);
+                    $hideAllButton = true;
+                    break;
+                }
+            }
+        }
+    } 
+    
+    // Fallback: Original automatic tag-based detection (lower priority)
+    if ($initialFilterTagClass === 'all' || ($this->hide_all_button && $initialFilterTagClass === createTagClass($this->default_category))) {
+        $urlSegmentMapping = createUrlSegmentMapping($allTags);
+        foreach ($urlSegmentMapping as $urlSegment => $tagName) {
+            if (!empty($referrerUrl) && strpos($referrerUrl, $urlSegment) !== false) {
+                $initialFilterTagClass = createTagClass($tagName);
+                $hideAllButton = true;
+                break;
+            }
         }
     }
 
@@ -103,7 +140,7 @@ $showTextColumn = !empty($this->topline)
 $textAlignClass = $this->text_alignment ?: 'text-center';
 $partnerAlignClass = $this->partner_alignment ?: 'text-start';
 $imageClass = $this->round_images ? 'rounded-circle' : '';
-$partnerColClass = $this->partner_columns ?: 'col-md-6 col-lg-4';
+$partnerColClass = str_replace("-md-","-sm-",$this->partner_columns) ?: 'col-sm-6 col-lg-4';
 $partnerLayoutClass = $this->partner_layout ?: 'layout-image-left';
 $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
@@ -143,7 +180,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                 <div class="filter-buttons mb-4 justify-content-center justify-content-md-start d-flex gap-1 flex-wrap flex-row">
                     <?php // Set initial active state ?>
                     <?php if (!$hideAllButton): ?>
-                        <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all"><?php echo $GLOBALS['TL_LANG']['MSC']['filter_show_all'] ?? 'Alle'; ?></button>
+                        <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all"><?= $this->filter_all_button_text ?: 'Alle'; ?></button>
                     <?php endif; ?>
                     <?php foreach ($allTags as $tag):
                         $currentTagClass = createTagClass($tag);
@@ -169,26 +206,16 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                     
                     <div class="zip-filter-container mb-4" style="display: none;">
                         <div class="mb-3">
-                            <span>Sie finden Ihren <b>persönlichen Ansprechpartner über die nachfolgende Postleitzahlsuche im Umkreis von <?= $this->zip_filter_radius ?: 150; ?> km an.</b></span>
-                            <br>
-                            Vereinbaren Sie noch heute Ihr unverbindliches Erstgespräch.
+                            <?= $this->zip_search_intro_text ?: 'Sie finden Ihren <b>persönlichen Ansprechpartner über die nachfolgende Standortsuche.</b><br>Vereinbaren Sie noch heute Ihr unverbindliches Erstgespräch.'; ?>
                         </div>
 
 
-                        <div class="row g-2 align-items-end">
-                            <div class="col-auto">
-                                <label for="zip-filter-input-<?= $this->id; ?>" class="form-label small">PLZ
-                                    eingeben:</label>
-                                <div class="input-group input-group-sm">
-                                    <input type="text" id="zip-filter-input-<?= $this->id; ?>" class="form-control" placeholder="z.B. 12345" maxlength="5" pattern="[0-9]{5}">
-                                    <button type="button" class="btn btn-primary with-arrow" style="--bs-btn-color: var(--bs-white);" id="apply-zip-filter-<?= $this->id; ?>">
-                                        Ansprechpartner im Umkreis anzeigen
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <button type="button" class="btn btn-sm btn-outline-primary" id="clear-zip-filter-<?= $this->id; ?>">
-                                    Zurücksetzen
+                        <div class="mb-3">
+                            <label for="zip-filter-input-<?= $this->id; ?>" class="d-block form-label small"><?= $this->zip_input_label ?: 'PLZ eingeben:'; ?></label>
+                            <div class="input-group input-group-sm d-sm-inline-flex w-auto">
+                                <input type="text" id="zip-filter-input-<?= $this->id; ?>" class="form-control" placeholder="<?= $this->zip_input_placeholder ?: 'z.B. 12345'; ?>">
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="clear-zip-filter-<?= $this->id; ?>">
+                                    <?= $this->zip_reset_button_label ?: 'Zurücksetzen'; ?>
                                 </button>
                             </div>
                         </div>
@@ -219,8 +246,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
                 <!-- No Results Message -->
                 <div id="noResultsMessage-<?= $this->id; ?>" class="alert alert-primary mt-3" style="display: none;">
-                    <b>Keine Ansprechpartner im gewählten Umkreis gefunden</b> - 
-                    Bitte versuchen Sie es mit einer anderen Postleitzahl.
+                    <?= $this->zip_no_results_text ?: '<b>Keine Ansprechpartner im gewählten Umkreis gefunden</b> - Bitte versuchen Sie es mit einer anderen Postleitzahl.'; ?>
                 </div>
             <?php endif; ?>
 
@@ -251,7 +277,19 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
             <?php // --- Right Column (Partners) --- ?>
             <div class="<?php echo $showTextColumn ? 'col-md-7' : 'col-12'; ?>">
-                <div class="row g-2 g-md-3 justify-content-center <?php echo $rowJustifyClass; ?> filter-container">
+                <?php
+                // Check if at least one partner has a title to ensure equal heights
+                $hasAnyTitle = false;
+                if (!empty($this->partners)) {
+                    foreach ($this->partners as $partner) {
+                        if (!empty($partner->title)) {
+                            $hasAnyTitle = true;
+                            break;
+                        }
+                    }
+                }
+                ?>
+                <div class="row g-2 g-md-3  <?php echo $rowJustifyClass; ?> filter-container">
                     <?php foreach ($this->partners as $index => $partner):
                         // Unique ID for collapse element
                         $collapseId = 'partner-desc-' . $this->id . '-' . $index;
@@ -264,7 +302,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
                         $animation = $partner->animation_type ?: '';
 
-                        // Prepare tooltip texts
+                                                                // Prepare tooltip texts
                         $phoneLabel = $this->phone_display_label ?: $partner->phone;
                         $emailLabel = $this->email_icon_label;
                         if (empty($emailLabel) && str_starts_with($partner->email_link ?? '', 'mailto:')) {
@@ -273,6 +311,8 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         if (empty($emailLabel)) {
                             $emailLabel = 'Nachricht schreiben';
                         }
+                        $appointmentLabel = $this->appointment_label ?: 'Termin vereinbaren';
+                        $linkedinLabel = $this->linkedin_label ?: 'LinkedIn Profil';
 
                         // Get image column width style if layout is image-left
                         $imageStyle = '';
@@ -293,7 +333,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                             $partnerTagClasses .= ' tag-uncategorized';
                         }
                         ?>
-                        <div class="<?php echo $partnerColClass; ?> <?php echo $partnerTagClasses; ?>" data-animation="<?php echo $animation; ?>" data-zip-code="<?= $partner->zip_code ?: ''; ?>">
+                        <div class="<?php echo $partnerColClass; ?> <?php echo $partnerTagClasses; ?>" data-animation="<?php echo $animation; ?>" data-zip-code="<?= $partner->zip_code ?: ''; ?>" data-coverage-areas="<?= htmlspecialchars($partner->coverage_areas ?: '', ENT_QUOTES); ?>">
                             <div class="<?php echo $partnerCardClasses; ?> position-relative">
                                 <?php // Partner Image
                                 ?>
@@ -313,28 +353,35 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                         ?>
                                         <?php // PLZ Distance Badge ?>
                                         <div class="zip-distance-badge badge position-absolute start-0 top-0 bg-primary text-white" style="display: none; margin: 0.5rem;" data-partner-zip="<?= $partner->zip_code ?: ''; ?>">
-                                            im Umkreis von ca.
-                                            <span class="distance-value">0</span>
-                                            km
+                                            <?php 
+                                            $distanceBadgeText = $this->distance_badge_text ?: 'im Umkreis von ca. [DISTANCE] km';
+                                            echo str_replace('[DISTANCE]', '<span class="distance-value">0</span>', $distanceBadgeText);
+                                            ?>
                                         </div>
                                         <?php // Icons on Image (if enabled) ?>
                                         <?php if ($this->show_icons_on_image): ?>
                                             <div class="contact-icons-overlay position-absolute bottom-0 end-0 d-flex flex-column align-items-end">
                                                 <?php // Phone Icon ?>
                                                 <?php if ($partner->phone): ?>
-                                                    <a href="tel:<?= \Contao\StringUtil::standardize($partner->phone); ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $phoneLabel; ?>">
+                                                    <a href="tel:<?= preg_replace('/[^\d+]/', '', $partner->phone);; ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $phoneLabel; ?>">
+                                                        <i style="font-size:1.5rem;" class="fak fa-phone text-body"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                                <?php // Appointment Icon ?>
+                                                <?php if ($partner->appointment_link): ?>
+                                                    <a href="<?= $partner->appointment_link; ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $appointmentLabel; ?>">
                                                         <i class="fak fa-calendar text-body"></i>
                                                     </a>
                                                 <?php endif; ?>
                                                 <?php // Email Icon ?>
                                                 <?php if ($partner->email_link): ?>
-                                                    <a href="<?= $partner->email_link; ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $emailLabel; ?>">
+                                                    <a href="mailto:<?= $partner->email_link; ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $emailLabel; ?>">
                                                         <i class="fak fa-mail text-body"></i>
                                                     </a>
                                                 <?php endif; ?>
                                                 <?php // LinkedIn Icon ?>
                                                 <?php if ($partner->linkedin_link): ?>
-                                                    <a href="<?= $partner->linkedin_link; ?>" target="_blank" rel="noopener" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em; " data-bs-placement="left" data-bs-toggle="tooltip" title="LinkedIn Profil">
+                                                    <a href="<?= $partner->linkedin_link; ?>" target="_blank" rel="noopener" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em; " data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $linkedinLabel; ?>">
                                                         <i style="font-size: 1.5rem;" class="fak fa-linkedin text-body"></i>
                                                     </a>
                                                 <?php endif; ?>
@@ -355,11 +402,15 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                         <?php endif; ?>
                                         <?php if ($partner->title): ?>
                                             <p class="contact-title mb-2"><?= $partner->title; ?></p>
+                                        <?php elseif ($hasAnyTitle): ?>
+                                            <p class="contact-title mb-2">&nbsp;</p>
                                         <?php endif; ?>
                                     <?php else: ?>
                                         <?php // Default version: Title: Name ?>
                                         <?php if ($partner->title): ?>
                                             <h3 class="contact-title h6 mb-1"><?= $partner->title; ?></h3>
+                                        <?php elseif ($hasAnyTitle): ?>
+                                            <h3 class="contact-title h6 mb-1">&nbsp;</h3>
                                         <?php endif; ?>
                                         <?php if ($partner->name): ?>
                                             <p class="contact-name fw-bold mb-2"><?= $partner->name; ?></p>
@@ -379,10 +430,19 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                         <?php endif; ?>
 
                                         <?php if ($partner->phone): ?>
-                                            <p class="contact-phone mb-2">
+                                            <p class="contact-phone mb-1">
                                                 <a href="tel:<?= \Contao\StringUtil::standardize($partner->phone); ?>" class="text-nowrap">
-                                                    <i style="width: 20px;" class="fal fa-phone me-1"></i>
+                                                    <i style="width: 20px;" class="fak fa-phone me-1"></i>
                                                     <span class="text-body"><?= $this->phone_display_label ?: $partner->phone; ?></span>
+                                                </a>
+                                            </p>
+                                        <?php endif; ?>
+
+                                        <?php if ($partner->appointment_link): ?>
+                                            <p class="contact-appointment mb-2">
+                                                <a href="<?= $partner->appointment_link; ?>" class="text-nowrap">
+                                                    <i style="width: 20px;" class="fak fa-calendar me-1"></i>
+                                                    <span class="text-body text-decoration-underline"><?= $appointmentLabel; ?></span>
                                                 </a>
                                             </p>
                                         <?php endif; ?>
@@ -398,7 +458,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                             <p class="contact-linkedin mb-2">
                                                 <a href="<?= $partner->linkedin_link; ?>" target="_blank" rel="noopener" class="text-nowrap">
                                                     <i style="width: 20px;  font-size: 1.25rem;" class="fak fa-linkedin me-1"></i>
-                                                    <span class="text-body text-decoration-underline">LinkedIn Profil</span>
+                                                    <span class="text-body text-decoration-underline"><?= $linkedinLabel; ?></span>
                                                 </a>
                                             </p>
                                         <?php endif; ?>
@@ -515,12 +575,9 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                 });
             });
 
-            // PLZ coordinates cache to minimize API requests
-            const plzCoordinatesCache = {};
-
-            // Get PLZ coordinates directly from Nominatim (einfacher Ansatz)
+            // Get PLZ coordinates directly from Nominatim (only if distance badge is enabled)
             async function getPLZCoordinates(plz) {
-                if (!plz || plz.length !== 5) return null;
+                if (!showDistanceBadge || !plz || plz.length !== 5) return null;
 
                 // Check cache first
                 if (plzCoordinatesCache[plz]) {
@@ -543,9 +600,9 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                 return null;
             }
 
-            // Calculate distance using Haversine formula
+            // Calculate distance using Haversine formula (only if distance badge is enabled)
             function haversineDistance(coord1, coord2) {
-                if (!coord1 || !coord2) return null;
+                if (!showDistanceBadge || !coord1 || !coord2) return null;
 
                 const R = 6371; // Earth's radius in km
                 const dLat = (coord2[0] - coord1[0]) * Math.PI / 180;
@@ -557,9 +614,9 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                 return R * c;
             }
 
-            // Main distance calculation function (async)
+            // Main distance calculation function (only if distance badge is enabled)
             async function calculateDistance(zip1, zip2) {
-                if (!zip1 || !zip2 || zip1.length !== 5 || zip2.length !== 5) return null;
+                if (!showDistanceBadge || !zip1 || !zip2 || zip1.length !== 5 || zip2.length !== 5) return null;
 
                 // Same ZIP = 1km (avoid 0)
                 if (zip1 === zip2) return 1;
@@ -577,6 +634,32 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                 }
             }
 
+            // Check if state matches partner's coverage areas (supports both full names and abbreviations)
+            function checkZipFilterMatch(partnerCoverageAreas) {
+                if (!currentZipState || !partnerCoverageAreas) return false;
+                
+                // Parse partner's coverage areas (comma-separated)
+                const coverageList = partnerCoverageAreas.split(',').map(area => area.trim().toLowerCase());
+                const stateLower = currentZipState.toLowerCase();
+                
+                // Check if any coverage area matches the state
+                return coverageList.some(coverage => {
+                    // Direct match with current state
+                    if (stateLower === coverage) return true;
+                    
+                    // Check if coverage is an abbreviation that maps to current state
+                    if (germanStates[coverage] && germanStates[coverage].toLowerCase() === stateLower) return true;
+                    
+                    // Check if current state is an abbreviation that maps to coverage
+                    if (germanStates[stateLower] && germanStates[stateLower].toLowerCase() === coverage) return true;
+                    
+                    // Check common state name variations
+                    if (stateLower.includes(coverage) || coverage.includes(stateLower)) return true;
+                    
+                    return false;
+                });
+            }
+
             // Filter Button Logic
             const filterButtons = document.querySelectorAll('.rsce-ansprechpartner .filter-btn');
             const partnerContainer = document.querySelector('.rsce-ansprechpartner .filter-container');
@@ -589,33 +672,158 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
             let currentZipFilter = null;
             let userInteracted = false; // Flag für User-Interaktion
             const savedZipFilters = {}; // PLZ-Filter pro Tag speichern
-            const zipFilterRadius = <?= $this->zip_filter_radius ?: 150; ?>;
             const zipFilterBlacklist = <?= json_encode($zipFilterBlacklist); ?>;
+            const showDistanceBadge = <?= $this->show_distance_badge ? 'true' : 'false'; ?>;
+            
+            // Configurable texts
+            const zipSearchErrorText = <?= json_encode($this->zip_search_error_text ?: 'Bitte geben Sie eine PLZ oder einen Ort ein.'); ?>;
+            const areaCheckUrl = <?= json_encode($this->area_check_url ?: '/flaechencheck'); ?>;
+            const noSearchResultsText = <?= json_encode($this->zip_no_search_results_text ?: 'Keine Ergebnisse für "[SEARCH]" gefunden.'); ?>;
+            const searchErrorText = <?= json_encode($this->zip_search_api_error_text ?: 'Fehler bei der Suche. Bitte versuchen Sie es erneut.'); ?>;
+
+            // PLZ coordinates cache for distance calculation
+            const plzCoordinatesCache = {};
 
             // PLZ Filter functionality
             const zipInput = document.getElementById('zip-filter-input-<?= $this->id; ?>');
-            const applyZipBtn = document.getElementById('apply-zip-filter-<?= $this->id; ?>');
             const clearZipBtn = document.getElementById('clear-zip-filter-<?= $this->id; ?>');
 
-            if (applyZipBtn && zipInput) {
-                applyZipBtn.addEventListener('click', async () => {
-                    const inputZip = zipInput.value.trim();
-                    if (inputZip.length === 5 && /^\d{5}$/.test(inputZip)) {
-                        // Clear any previous alert
-                        const alertContainer = document.getElementById('plzAlertContainer-<?= $this->id; ?>');
-                        if (alertContainer) {
-                            alertContainer.innerHTML = '';
-                        }
-                        userInteracted = true; // Mark user interaction
-                        currentZipFilter = inputZip;
+            // Live-Filterung bei PLZ/Ort-Eingabe (basierend auf API)
+            if (zipInput) {
+                let searchTimeout;
+                
+                zipInput.addEventListener('input', async () => {
+                    const inputValue = zipInput.value.trim();
+                    
+                    // Clear any previous alert
+                    const alertContainer = document.getElementById('plzAlertContainer-<?= $this->id; ?>');
+                    if (alertContainer) {
+                        alertContainer.innerHTML = '';
+                    }
+                    
+                    // Clear previous timeout
+                    if (searchTimeout) {
+                        clearTimeout(searchTimeout);
+                    }
+                    
+                    if (inputValue.length === 0) {
+                        // Reset filter when input is empty
+                        userInteracted = true;
+                        currentZipFilter = null;
                         await applyFilters();
+                    } else if (inputValue.length >= 3) {
+                        // Search after 500ms delay to avoid too many API calls
+                        searchTimeout = setTimeout(async () => {
+                            userInteracted = true;
+                            await getStateFromAPI(inputValue);
+                        }, 500);
+                    }
+                });
+            }
+
+            // Known German states (Bundesländer) for direct matching
+            const germanStates = {
+                // Offizielle Kürzel
+                'by': 'Bayern',
+                'sn': 'Sachsen', 
+                'th': 'Thüringen',
+                'he': 'Hessen',
+                'bw': 'Baden-Württemberg',
+                'nw': 'Nordrhein-Westfalen',
+                'ni': 'Niedersachsen',
+                'sh': 'Schleswig-Holstein',
+                'rp': 'Rheinland-Pfalz',
+                'be': 'Berlin',
+                'hb': 'Bremen',
+                'hh': 'Hamburg',
+                'bb': 'Brandenburg',
+                'mv': 'Mecklenburg-Vorpommern',
+                'sl': 'Saarland',
+                'st': 'Sachsen-Anhalt',
+                
+                // Deutsche Namen
+                'bayern': 'Bayern',
+                'bavaria': 'Bayern',
+                'sachsen': 'Sachsen',
+                'saxony': 'Sachsen',
+                'thüringen': 'Thüringen',
+                'thuringia': 'Thüringen',
+                'hessen': 'Hessen',
+                'hesse': 'Hessen',
+                'baden-württemberg': 'Baden-Württemberg',
+                'baden württemberg': 'Baden-Württemberg',
+                'nordrhein-westfalen': 'Nordrhein-Westfalen',
+                'nordrhein westfalen': 'Nordrhein-Westfalen',
+                'nrw': 'Nordrhein-Westfalen',
+                'niedersachsen': 'Niedersachsen',
+                'lower saxony': 'Niedersachsen',
+                'schleswig-holstein': 'Schleswig-Holstein',
+                'schleswig holstein': 'Schleswig-Holstein',
+                'rheinland-pfalz': 'Rheinland-Pfalz',
+                'rheinland pfalz': 'Rheinland-Pfalz',
+                'berlin': 'Berlin',
+                'bremen': 'Bremen',
+                'hamburg': 'Hamburg',
+                'brandenburg': 'Brandenburg',
+                'mecklenburg-vorpommern': 'Mecklenburg-Vorpommern',
+                'mecklenburg vorpommern': 'Mecklenburg-Vorpommern',
+                'saarland': 'Saarland',
+                'sachsen-anhalt': 'Sachsen-Anhalt',
+                'sachsen anhalt': 'Sachsen-Anhalt'
+            };
+
+            // Get state from input (local states or API)
+            async function getStateFromAPI(searchInput) {
+                const inputLower = searchInput.toLowerCase().trim();
+                const spinnerContainer = document.getElementById('filterSpinnerContainer');
+                
+                // Show spinner immediately when starting API search
+                if (spinnerContainer) {
+                    spinnerContainer.style.display = 'flex';
+                }
+                
+                try {
+                    // Check if input is a known German state
+                    if (germanStates[inputLower]) {
+                        currentZipFilter = searchInput;
+                        currentZipState = germanStates[inputLower];
+                        await applyFilters();
+                        return;
+                    }
+                    
+                    let apiUrl;
+                    
+                    // Check if input is a 5-digit PLZ
+                    if (/^\d{5}$/.test(searchInput)) {
+                        apiUrl = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&country=Germany&postalcode=${searchInput}`;
                     } else {
-                        // Show alert via div instead of alert()
+                        // Search for city/address in Germany (not states)
+                        apiUrl = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&country=Germany&city=${encodeURIComponent(searchInput)}`;
+                    }
+                    
+                    const response = await fetch(apiUrl);
+                    const data = await response.json();
+                    
+                    if (data && data[0] && data[0].address) {
+                        let state = data[0].address.state;
+                        
+                        // Fallback to city if state is undefined (like in old script)
+                        if (typeof state === 'undefined') {
+                            state = data[0].address.city;
+                        }
+                        
+                        if (state) {
+                            currentZipFilter = searchInput;
+                            currentZipState = state;
+                            await applyFilters();
+                        }
+                    } else {
+                        // No results found
                         const alertContainer = document.getElementById('plzAlertContainer-<?= $this->id; ?>');
                         if (alertContainer) {
                             alertContainer.innerHTML = `
-                                <div class="alert alert-primary small p-2 border-0 fade mt-0 show" role="alert">
-                                    Bitte geben Sie eine gültige 5-stellige Postleitzahl ein.
+                                <div class="alert alert-primary small p-2 border-0 mb-0 fade mt-0 show" role="alert">
+                                    ${noSearchResultsText.replace('[SEARCH]', searchInput)}
                                 </div>
                             `;
                             // Auto-hide after 3 seconds
@@ -623,25 +831,42 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                 alertContainer.innerHTML = '';
                             }, 3000);
                         }
+                        
+                        // Hide spinner if no results found
+                        if (spinnerContainer) {
+                            spinnerContainer.style.display = 'none';
+                        }
                     }
-                });
+                } catch (error) {
+                    console.warn('Search API error:', error);
+                    const alertContainer = document.getElementById('plzAlertContainer-<?= $this->id; ?>');
+                    if (alertContainer) {
+                        alertContainer.innerHTML = `
+                            <div class="alert alert-danger small p-2 border-0 mb-0 fade mt-0 show" role="alert">
+                                ${searchErrorText}
+                            </div>
+                        `;
+                        setTimeout(() => {
+                            alertContainer.innerHTML = '';
+                        }, 3000);
+                    }
+                    
+                    // Hide spinner on error
+                    if (spinnerContainer) {
+                        spinnerContainer.style.display = 'none';
+                    }
+                }
             }
+
+            let currentZipState = null;
 
             if (clearZipBtn) {
                 clearZipBtn.addEventListener('click', async () => {
                     userInteracted = true; // Mark user interaction
                     currentZipFilter = null;
+                    currentZipState = null;
                     if (zipInput) zipInput.value = '';
                     await applyFilters();
-                });
-            }
-
-            // Enter key support for zip input
-            if (zipInput) {
-                zipInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && applyZipBtn) {
-                        applyZipBtn.click();
-                    }
                 });
             }
 
@@ -674,23 +899,29 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         showItem = false;
                     }
 
-                    // Apply zip filter
-                    if (showItem && currentZipFilter) {
+                    // Apply zip filter (simplified based on API state)
+                    if (showItem && currentZipFilter && currentZipState) {
+                        const partnerCoverageAreas = item.getAttribute('data-coverage-areas');
                         const partnerZip = item.getAttribute('data-zip-code');
-                        if (partnerZip) {
-                            distance = await calculateDistance(currentZipFilter, partnerZip);
-                            if (distance === null || distance > zipFilterRadius) {
+                        
+                        if (partnerCoverageAreas) {
+                            // Check if partner's coverage areas match the API state
+                            const filterMatches = checkZipFilterMatch(partnerCoverageAreas);
+                            if (!filterMatches) {
                                 showItem = false;
+                            } else if (showDistanceBadge && partnerZip) {
+                                // Calculate distance only if badge should be shown and item matches filter
+                                distance = await calculateDistance(currentZipFilter, partnerZip);
                             }
                         } else {
-                            showItem = false; // Hide partners without zip code when zip filter is active
+                            showItem = false; // Hide partners without coverage areas when zip filter is active
                         }
                     }
 
                     // Handle distance badge
                     const distanceBadge = item.querySelector('.zip-distance-badge');
                     if (distanceBadge) {
-                        if (currentZipFilter && distance !== null && showItem) {
+                        if (showDistanceBadge && currentZipFilter && distance !== null && showItem) {
                             // Show badge with calculated distance
                             const distanceValue = distanceBadge.querySelector('.distance-value');
                             if (distanceValue) {
@@ -698,7 +929,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                             }
                             distanceBadge.style.display = 'block';
                         } else {
-                            // Hide badge when no zip filter is active or item is hidden
+                            // Hide badge when disabled, no zip filter is active or item is hidden
                             distanceBadge.style.display = 'none';
                         }
                     }

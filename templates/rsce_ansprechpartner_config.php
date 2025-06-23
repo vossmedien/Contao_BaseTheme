@@ -1,28 +1,21 @@
 <?php
 
+
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 use Contao\System;
 
-return array(
+$config = array(
     'label' => array('Custom | Ansprechpartner mit Kontaktinformationen', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
-    'moduleCategory' => 'miscellaneous',
     'standardFields' => array('headline', 'cssID'),
-    'wrapper' => array(
+    'moduleCategory' => 'miscellaneous',
+        'wrapper' => array(
         'type' => 'none',
     ),
     'fields' => array(
-        // --- 2. Allgemeines Layout & Raster --- //
-        'animation_type' => array(
-            'label' => array(
-                'de' => array('Art der Einblendeanimation (Überschrift)', 'Siehe https://animate.style/ für Beispiele'),
-            ),
-            'inputType' => 'select',
-            'options' => GlobalElementConfig::getAnimations(),
-            'eval' => array('chosen' => 'true', 'tl_class' => 'clr') // clr hinzugefügt für eigene Zeile
-        ),
         // --- 1. Allgemeine Text- & Inhaltselemente --- //
         'topline' => array(
             'label' => array('Topline', 'Text oberhalb der Überschrift'),
@@ -40,7 +33,165 @@ return array(
             'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
         ),
 
+        // --- KONFIGURIERBARE TEXTE --- //
+        'email_icon_label' => array(
+            'label' => array('Label für E-Mail-Text', ''),
+            'inputType' => 'text',
+            'default' => 'Nachricht schreiben',
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
+        'phone_display_label' => array(
+            'label' => array('Anzeigetext / Tooltip für Telefonnummer', ''),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'more_info_label' => array(
+            'label' => array('Text für "Mehr erfahren"', 'Text für den Link, der die Beschreibung ein-/ausblendet.'),
+            'inputType' => 'text',
+            'default' => 'Mehr erfahren',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'text_filter_button_label' => array(
+            'label' => array('Button-Label für Text-Filter', 'Beschriftung der Schaltfläche für den Text-Filter.'),
+            'inputType' => 'text',
+            'default' => 'Weitere Informationen',
+            'eval' => array('tl_class' => 'w50', 'mandatory' => false),
+            'dependsOn' => array(
+                'field' => 'add_text_filter_option',
+            ),
+        ),
+        'general_inquiry_button_label' => array(
+            'label' => array('Button-Label für Allgemeine Anfrage', 'Beschriftung der Schaltfläche für allgemeine Anfragen.'),
+            'inputType' => 'text',
+            'default' => 'Allgemeine Anfrage',
+            'eval' => array('tl_class' => 'w50', 'mandatory' => false),
+            'dependsOn' => array(
+                'field' => 'add_general_inquiry',
+            ),
+        ),
+        'zip_search_intro_text' => array(
+            'label' => array('PLZ-Suche Einführungstext', 'Text oberhalb des PLZ-Eingabefelds'),
+            'inputType' => 'textarea',
+            'default' => 'Sie finden Ihren <b>persönlichen Ansprechpartner über die nachfolgende Standortsuche.</b><br>Vereinbaren Sie noch heute Ihr unverbindliches Erstgespräch.',
+            'eval' => array('tl_class' => 'clr', 'allowHtml' => true, 'rows' => 3),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_input_label' => array(
+            'label' => array('PLZ-Eingabefeld Label', 'Beschriftung für das PLZ-Eingabefeld'),
+            'inputType' => 'text',
+            'default' => 'PLZ eingeben:',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_reset_button_label' => array(
+            'label' => array('PLZ-Reset Button Text', 'Text für den Zurücksetzen-Button'),
+            'inputType' => 'text',
+            'default' => 'Zurücksetzen',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_no_results_text' => array(
+            'label' => array('PLZ Keine Ergebnisse Text', 'Text wenn keine Ansprechpartner im Umkreis gefunden werden'),
+            'inputType' => 'textarea',
+            'default' => '<b>Keine Ansprechpartner im gewählten Umkreis gefunden</b> - Bitte versuchen Sie es mit einer anderen Postleitzahl.',
+            'eval' => array('tl_class' => 'clr', 'allowHtml' => true, 'rows' => 2),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        
+        // NEU: Fehlermeldungen und URLs
+        'zip_search_error_text' => array(
+            'label' => array('PLZ Sucheingabe Fehlermeldung', 'Fehlermeldung wenn keine PLZ/Ort eingegeben wurde'),
+            'inputType' => 'text',
+            'default' => 'Bitte geben Sie eine PLZ oder einen Ort ein.',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'area_check_url' => array(
+            'label' => array('Flächencheck URL', 'URL für den Flächencheck (ohne Domain)'),
+            'inputType' => 'text',
+            'default' => '/flaechencheck',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_no_search_results_text' => array(
+            'label' => array('Text für keine Suchergebnisse', 'Meldung wenn keine Ergebnisse für die Suche gefunden werden. Verwenden Sie [SEARCH] als Platzhalter.'),
+            'inputType' => 'text',
+            'default' => 'Keine Ergebnisse für "[SEARCH]" gefunden.',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_search_api_error_text' => array(
+            'label' => array('Text für API-Fehler', 'Fehlermeldung bei Problemen mit der Such-API'),
+            'inputType' => 'text',
+            'default' => 'Fehler bei der Suche. Bitte versuchen Sie es erneut.',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'zip_input_placeholder' => array(
+            'label' => array('PLZ-Eingabefeld Placeholder', 'Platzhaltertext im PLZ-Eingabefeld'),
+            'inputType' => 'text',
+            'default' => 'z.B. 12345',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'distance_badge_text' => array(
+            'label' => array('Entfernungsanzeige Text', 'Text für die Entfernungsanzeige (verwenden Sie [DISTANCE] als Platzhalter für km-Wert)'),
+            'inputType' => 'text',
+            'default' => 'im Umkreis von ca. [DISTANCE] km',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'show_distance_badge',
+            ),
+        ),
+        'appointment_label' => array(
+            'label' => array('Termin-Link Label', 'Anzeigetext für Termin vereinbaren'),
+            'inputType' => 'text',
+            'default' => 'Termin vereinbaren',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'linkedin_label' => array(
+            'label' => array('LinkedIn-Link Label', 'Anzeigetext für LinkedIn Profil'),
+            'inputType' => 'text',
+            'default' => 'LinkedIn Profil',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'filter_all_button_text' => array(
+            'label' => array('Filter "Alle" Button Text', 'Text für den "Alle" Filter-Button'),
+            'inputType' => 'text',
+            'default' => 'Alle',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_filter_form',
+            ),
+        ),
 
+        // --- 2. Allgemeines Layout & Raster --- //
+        'animation_type' => array(
+            'label' => array(
+                'de' => array('Art der Einblendeanimation (Überschrift)', 'Siehe https://animate.style/ für Beispiele'),
+            ),
+            'inputType' => 'select',
+            'options' => GlobalElementConfig::getAnimations(),
+            'eval' => array('chosen' => 'true', 'tl_class' => 'clr') // clr hinzugefügt für eigene Zeile
+        ),
         'partner_columns' => array(
             'label' => array('Anzahl Spalten für Ansprechpartner', 'Bestimmt, wie viele Partner nebeneinander angezeigt werden (Bootstrap Grid).'),
             'inputType' => 'select',
@@ -90,32 +241,12 @@ return array(
             'default' => 'text-start',
             'eval' => array('tl_class' => 'w50'),
         ),
-        'email_icon_label' => array(
-            'label' => array('Label für E-Mail-Text', ''),
-            'inputType' => 'text',
-            'default' => 'Nachricht schreiben',
-            'eval' => array('tl_class' => 'w50'), // Neben 'Icons auf Bild'
-        ),
-        'phone_display_label' => array(
-            'label' => array('Anzeigetext / Tooltip für Telefonnummer', ''),
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50 '), // Nimmt jetzt eine ganze Zeile ein
-        ),
-
         'hide_all_descriptions' => array(
             'label' => array('Beschreibungen hinter "Mehr erfahren" verstecken', 'Blendet alle Beschreibungen initial aus und zeigt einen "Mehr erfahren"-Link.'),
             'inputType' => 'checkbox',
             'default' => false,
             'eval' => array('tl_class' => 'w50 clr'), // clr für neue Zeile
         ),
-        'more_info_label' => array(
-            'label' => array('Text für "Mehr erfahren"', 'Text für den Link, der die Beschreibung ein-/ausblendet.'),
-            'inputType' => 'text',
-            'default' => 'Mehr erfahren',
-
-            'eval' => array('tl_class' => 'w50'), // Neben Checkbox
-        ),
-
         'title_below_name' => array(
             'label' => array('Titel unterhalb des Namens anzeigen', 'Zeigt den Titel/Abteilung unter dem Namen an (Standard: Titel: Name).'),
             'inputType' => 'checkbox',
@@ -129,10 +260,7 @@ return array(
             'default' => false,
         ),
 
-
         // --- 4. Funktionale Einstellungen --- //
-
-
         'round_images' => array(
             'label' => array('Bilder abrunden', 'Fügt die Klasse .rounded-circle zu den Bildern hinzu.'),
             'inputType' => 'checkbox',
@@ -148,7 +276,6 @@ return array(
                 'value' => 'layout-image-left',
             ),
         ),
-
 
         // --- 5. Globale Bildgröße --- //
         'size' => array(
@@ -168,6 +295,37 @@ return array(
             'default' => false,
             'eval' => array('tl_class' => 'w50 clr'), // clr für neue Zeile
         ),
+        'hide_all_button' => array(
+            'label' => array('Alle-Button ausblenden', 'Blendet den "Alle"-Button aus und zeigt direkt eine spezifische Kategorie an.'),
+            'inputType' => 'checkbox',
+            'default' => false,
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_filter_form',
+            ),
+        ),
+        'default_category' => array(
+            'label' => array('Kategorie an erster Stelle (optional)', 'Diese Kategorie wird an erster Stelle angezeigt und vorausgewählt.'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'hide_all_button',
+            ),
+        ),
+        'url_filter_mapping' => array(
+            'label' => array('URL-Filter Zuordnung', 'Verknüpfung zwischen URL-Begriffen und Filter-Tags. Wenn ein URL-Begriff im Referrer gefunden wird, wird der entsprechende Filter vorausgewählt.'),
+            'inputType' => 'keyValueWizard',
+            'eval' => array(
+                'tl_class' => 'clr',
+                'mandatory' => false,
+                'keyLabel' => 'URL-Begriff',
+                'valueLabel' => 'Filter-Tag',
+                'placeholder' => array('Marktplatz', 'Grundeigentümer')
+            ),
+            'dependsOn' => array(
+                'field' => 'add_filter_form',
+            ),
+        ),
         'add_zip_filter' => array(
             'label' => array('PLZ-Filter integrieren', 'Ermöglicht Filterung nach Postleitzahl mit konfigurierbarem Umkreis.'),
             'inputType' => 'checkbox',
@@ -177,11 +335,12 @@ return array(
                 'field' => 'add_filter_form',
             ),
         ),
-        'zip_filter_radius' => array(
-            'label' => array('PLZ-Filter Umkreis (km)', 'Radius in Kilometern für die PLZ-Filterung.'),
-            'inputType' => 'text',
-            'default' => '150',
-            'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
+
+        'show_distance_badge' => array(
+            'label' => array('Entfernung anzeigen', 'Zeigt die ungefähre Entfernung in km als Badge auf dem Partnerbild an (nur bei PLZ-Filter).'),
+            'inputType' => 'checkbox',
+            'default' => false,
+            'eval' => array('tl_class' => 'w50'),
             'dependsOn' => array(
                 'field' => 'add_zip_filter',
             ),
@@ -204,15 +363,6 @@ return array(
                 'field' => 'add_filter_form',
             ),
         ),
-        'text_filter_button_label' => array(
-            'label' => array('Button-Label für Text-Filter', 'Beschriftung der Schaltfläche für den Text-Filter.'),
-            'inputType' => 'text',
-            'default' => 'Weitere Informationen',
-            'eval' => array('tl_class' => 'w50', 'mandatory' => true),
-            'dependsOn' => array(
-                'field' => 'add_text_filter_option',
-            ),
-        ),
         'text_filter_content' => array(
             'label' => array('Text für Text-Filter', 'Dieser Text wird angezeigt, wenn der Text-Filter aktiv ist.'),
             'inputType' => 'textarea',
@@ -230,15 +380,6 @@ return array(
                 'field' => 'add_filter_form',
             ),
         ),
-        'general_inquiry_button_label' => array(
-            'label' => array('Button-Label für Allgemeine Anfrage', 'Beschriftung der Schaltfläche für allgemeine Anfragen.'),
-            'inputType' => 'text',
-            'default' => 'Allgemeine Anfrage',
-            'eval' => array('tl_class' => 'w50', 'mandatory' => true),
-            'dependsOn' => array(
-                'field' => 'add_general_inquiry',
-            ),
-        ),
         'general_inquiry_content' => array(
             'label' => array('Text für Allgemeine Anfrage', 'Dieser Text wird angezeigt, wenn der Allgemeine Anfrage Button aktiv ist.'),
             'inputType' => 'textarea',
@@ -253,7 +394,7 @@ return array(
             'elementLabel' => '%s. Ansprechpartner',
             'inputType' => 'list',
             'minItems' => 1,
-            'maxItems' => 6,
+            'maxItems' => 99,
             'fields' => array(
                 'title' => array(
                     'label' => array('Titel / Abteilung', 'z.B. "Vertrieb" oder "Technik"'),
@@ -285,10 +426,20 @@ return array(
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
+                'appointment_link' => array(
+                    'label' => array('Termin vereinbaren Link', 'z.B. /termine oder https://calendly.com/username'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50', 'rgxp' => 'url'),
+                ),
                 'zip_code' => array(
-                    'label' => array('Postleitzahl', ''),
+                    'label' => array('Postleitzahl', 'Eigene PLZ des Partners für Entfernungsberechnung'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
+                ),
+                'coverage_areas' => array(
+                    'label' => array('Zuständigkeitsbereiche', 'PLZ-Bereiche oder Bundesländer kommagetrennt (z.B. "Bayern, Sachsen" oder "1,2,8-9")'),
+                    'inputType' => 'textarea',
+                    'eval' => array('tl_class' => 'clr', 'rows' => 2),
                 ),
                 'linkedin_link' => array(
                     'label' => array('LinkedIn-Link', 'z.B. https://www.linkedin.com/in/benutzername'),
@@ -328,3 +479,6 @@ return array(
         ),
     )
 );
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config);

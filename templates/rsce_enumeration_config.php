@@ -1,15 +1,17 @@
 <?php
 
+
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 
-return array(
+$config = array(
     'label' => array('Custom | Aufzählung (enumeration)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
-    'moduleCategory' => 'miscellaneous',
     'standardFields' => array('headline', 'cssID'),
-    'wrapper' => array(
+    'moduleCategory' => 'miscellaneous',
+        'wrapper' => array(
         'type' => 'none',
     ),
     'fields' => array(
@@ -29,13 +31,34 @@ return array(
             'options' => array(
                 'dot' => 'Dot mit Underline',
                 'box' => 'Box mit Zahl',
+                'normal' => 'normale Aufzählung',
             ),
             'eval' => array('tl_class' => 'w50', 'chosen' => true),
         ),
+
         'wrapper_class' => array(
             'label' => array('Zusätzliche CSS-Klasse für Wrapper', 'Optionale Klasse für den direkten Wrapper der Aufzählungsliste.'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'clr'),
+        ),
+
+        'items_first_column_2_col' => array(
+            'label' => array('Punkte in erster Spalte (2-spaltig)', 'Anzahl Punkte für die erste Spalte. Rest wird in zweite Spalte aufgeteilt. Leer = gleichmäßige Verteilung.'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50 clr', 'rgxp' => 'digit', 'minval' => 1),
+            'dependsOn' => array(
+                'field' => 'layout_type',
+                'value' => '2_columns',
+            ),
+        ),
+        'items_first_column_3_col' => array(
+            'label' => array('Punkte in erster Spalte (3-spaltig)', 'Anzahl Punkte für die erste Spalte. Rest wird gleichmäßig auf Spalte 2+3 aufgeteilt. Leer = gleichmäßige Verteilung.'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit', 'minval' => 1),
+            'dependsOn' => array(
+                'field' => 'layout_type',
+                'value' => '3_columns',
+            ),
         ),
 
         'animation_group' => array(
@@ -68,36 +91,6 @@ return array(
                 'value' => '1_column',
             ),
         ),
-
-        // Aufzählungspunkte pro Spalte
-        'column_count_1_column' => array(
-            'label' => array('Anzahl Aufzählungspunkte (1-spaltig)', 'Definiere die Anzahl der Punkte. Wenn leer, werden alle Punkte in dieser Spalte angezeigt.'),
-            'inputType' => 'number',
-            'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit', 'minval' => 1),
-            'dependsOn' => array(
-                'field' => 'layout_type',
-                'value' => '1_column',
-            ),
-        ),
-        'column_count_2_columns' => array(
-            'label' => array('Anzahl Aufzählungspunkte pro Spalte (2-spaltig)', 'Definiere die Anzahl der Punkte pro Spalte. Wenn leer, werden Punkte gleichmäßig verteilt.'),
-            'inputType' => 'number',
-            'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit', 'minval' => 1),
-            'dependsOn' => array(
-                'field' => 'layout_type',
-                'value' => '2_columns',
-            ),
-        ),
-        'column_count_3_columns' => array(
-            'label' => array('Anzahl Aufzählungspunkte pro Spalte (3-spaltig)', 'Definiere die Anzahl der Punkte pro Spalte. Wenn leer, werden Punkte gleichmäßig verteilt.'),
-            'inputType' => 'number',
-            'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit', 'minval' => 1),
-            'dependsOn' => array(
-                'field' => 'layout_type',
-                'value' => '3_columns',
-            ),
-        ),
-
 
         // Box Styling (abhängig von enumeration_type == 'box')
         'box_styling_group' => array(
@@ -162,16 +155,28 @@ return array(
             'label' => array('Topline', 'Text oberhalb der Überschrift des rechten Textfeldes'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
+            'dependsOn' => array(
+                'field' => 'layout_type',
+                'value' => '1_column',
+            ),
         ),
         'headline_single_column' => array(
             'label' => array('Überschrift', 'Überschrift des rechten Textfeldes'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'layout_type',
+                'value' => '1_column',
+            ),
         ),
         'subline_single_column' => array(
             'label' => array('Subline', 'Text unterhalb der Überschrift des rechten Textfeldes'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50', 'allowHtml' => true),
+            'dependsOn' => array(
+                'field' => 'layout_type', 
+                'value' => '1_column',
+            ),
         ),
         'hl_single_column' => array(
             'label' => array('Typ der Überschrift', 'HTML-Tag für die Überschrift'),
@@ -179,11 +184,22 @@ return array(
             'options' => GlobalElementConfig::getHeadlineTagOptions(),
             'default' => 'h2',
             'eval' => array('tl_class' => 'w50', 'chosen' => true),
+            'dependsOn' => array(
+                'field' => 'layout_type',
+                'value' => '1_column',
+            ),
         ),
         'text_single_column' => array(
             'label' => array('Text für rechte Spalte', 'Wenn dieses Feld ausgefüllt ist, wird der Textblock rechts neben der einspaltigen Aufzählung angezeigt.'),
             'inputType' => 'textarea',
             'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+            'dependsOn' => array(
+                'field' => 'layout_type',
+                'value' => '1_column',
+            ),
         ),
     ),
-); 
+);
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config);

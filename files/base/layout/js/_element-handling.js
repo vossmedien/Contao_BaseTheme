@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', function() {
     const headerContent = document.querySelector(".header-content.fixed");
     const wrapper = document.querySelector("#wrapper");
 
@@ -53,30 +53,35 @@ modalElements.forEach(function (modalElement) {
         document.body.appendChild(modalElement);
     }
 });
-
-
 (function() {
   function setupButtons() {
     document.querySelectorAll('.btn-outline-currentColor, .btn-currentColor').forEach(button => {
       const parentInfo = findEffectiveBackground(button);
-      const textColor = getEffectiveColor(button, parentInfo.element);
+      const containerBackgroundColor = parentInfo.backgroundColor;
 
-      button.style.setProperty('--parent-bg-color', parentInfo.backgroundColor);
-      button.style.setProperty('--btn-context-color', textColor);
+      // Bestimme die Kontrastfarbe basierend auf der Helligkeit des Hintergrunds
+      const contrastColor = getContrastColor(containerBackgroundColor);
+
+      if (button.classList.contains('btn-currentColor')) {
+        button.style.setProperty('--parent-bg-color', containerBackgroundColor);
+        button.style.setProperty('--btn-context-color', contrastColor);
+      } else if (button.classList.contains('btn-outline-currentColor')) {
+        button.style.setProperty('--parent-bg-color', containerBackgroundColor);
+        button.style.setProperty('--btn-context-color', contrastColor);
+      }
     });
   }
 
   function findEffectiveBackground(element) {
     let current = element.parentElement;
-    const transparentRgba = 'rgba(0, 0, 0, 0)';
-    const transparentRgb = 'rgb(0, 0, 0)';
+    const transparentValues = ['rgba(0, 0, 0, 0)', 'rgb(0, 0, 0)', 'transparent'];
 
     while (current) {
       const style = window.getComputedStyle(current);
       const bgColor = style.backgroundColor;
       const bgImage = style.backgroundImage;
 
-      if ((bgColor && bgColor !== transparentRgba && bgColor !== transparentRgb) ||
+      if ((bgColor && !transparentValues.includes(bgColor)) ||
           (bgImage && bgImage !== 'none')) {
         return {
           element: current,
@@ -91,7 +96,7 @@ modalElements.forEach(function (modalElement) {
         const bodyStyle = window.getComputedStyle(document.body);
         return {
           element: document.body,
-          backgroundColor: bodyStyle.backgroundColor,
+          backgroundColor: bodyStyle.backgroundColor || 'white',
           hasImage: bodyStyle.backgroundImage !== 'none'
         };
       }
@@ -104,14 +109,28 @@ modalElements.forEach(function (modalElement) {
     };
   }
 
-  function getEffectiveColor(button, container) {
-    let buttonColor = window.getComputedStyle(button).color;
+  function getContrastColor(backgroundColor) {
+    // Konvertiere rgb/rgba zu RGB-Werten
+    const rgbMatch = backgroundColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)|rgba\((\d+),\s*(\d+),\s*(\d+)/);
 
-    if (!buttonColor || buttonColor === 'rgba(0, 0, 0, 0)') {
-      buttonColor = window.getComputedStyle(container).color;
+    if (!rgbMatch) {
+      return '#000000'; // Fallback zu schwarz
     }
 
-    return buttonColor || '#000000';
+    const r = parseInt(rgbMatch[1] || rgbMatch[4]);
+    const g = parseInt(rgbMatch[2] || rgbMatch[5]);
+    const b = parseInt(rgbMatch[3] || rgbMatch[6]);
+
+    // Berechne die relative Helligkeit
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+    // Für helle Hintergründe (wie das grüne rgb(222, 238, 198)) verwende dunkles Grün
+    // Für dunkle Hintergründe verwende helles Grün oder Weiß
+    if (luminance > 0.5) {
+      return 'rgb(17, 54, 52)'; // Dunkles Grün
+    } else {
+      return 'rgb(222, 238, 198)'; // Helles Grün
+    }
   }
 
   if (document.readyState === 'loading') {

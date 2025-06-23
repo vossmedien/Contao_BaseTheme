@@ -1,0 +1,108 @@
+<?php $this->extend('form_row'); ?>
+
+<?php $this->block('field'); ?>
+  <fieldset id="ctrl_<?= $this->id ?>" class="checkbox_container<?php if ($this->class): ?> <?= $this->class ?><?php endif; ?>">
+
+    <?php if ($this->label): ?>
+      <legend>
+        <?php if ($this->mandatory): ?>
+          <span class="invisible"><?= $this->mandatoryField ?> </span><?= $this->label ?><span class="mandatory">*</span>
+        <?php else: ?>
+          <?= $this->label ?>
+        <?php endif; ?>
+      </legend>
+    <?php endif; ?>
+
+    <?php if ($this->hasErrors()): ?>
+      <p class="error"><?= $this->getErrorAsString() ?></p>
+    <?php endif; ?>
+
+    <input type="hidden" name="<?= $this->name ?>" value="">
+
+    <?php foreach ($this->getOptions() as $option): ?>
+      <?php // Existing option rendering logic... ?>
+      <?php if ('group_start' == $option['type']): ?>
+        <fieldset>
+        <legend><?= $option['label'] ?></legend>
+      <?php endif; ?>
+
+      <?php if ('option' == $option['type']): ?>
+        <span><input type="checkbox" name="<?= $option['name'] ?>" id="opt_<?= $option['id'] ?>" class="checkbox" value="<?= $option['value'] ?>"<?= $option['checked'] ?><?= $option['attributes'] ?>> <label id="lbl_<?= $option['id'] ?>" for="opt_<?= $option['id'] ?>"><?= $option['label'] ?></label></span>
+      <?php endif; ?>
+
+      <?php if ('group_end' == $option['type']): ?>
+        </fieldset>
+      <?php endif; ?>
+    <?php endforeach; ?>
+
+  </fieldset>
+
+  <?php // Add the JavaScript logic ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const fieldset = document.getElementById('ctrl_<?= $this->id ?>');
+      if (!fieldset) return;
+
+      const form = fieldset.closest('form');
+      if (!form) return;
+
+      // Find all checkboxes within this specific fieldset
+      const checkboxes = fieldset.querySelectorAll('input[type="checkbox"]');
+      if (checkboxes.length === 0) return; // No checkboxes found in this fieldset
+
+      form.addEventListener('submit', function(event) {
+        // Check if at least one checkbox in this fieldset is checked
+        let isChecked = false;
+        checkboxes.forEach(function(checkbox) {
+          if (checkbox.checked) {
+            isChecked = true;
+          }
+        });
+
+        if (isChecked) {
+          // Check if ConsentManager API is available
+          if (typeof __cmp === 'function') {
+            console.log('HubSpot Checkbox aktiviert und ConsentManager API gefunden. Setze Zustimmung für s10...');
+            try {
+              // Prevent default form submission
+              event.preventDefault();
+
+              // Grant consent for HubSpot (s10)
+              __cmp('setVendorConsent', ['s10', 1]);
+
+              // Short delay to allow consent processing and cookie setting
+              setTimeout(function() {
+                console.log('Formular wird nach Consent-Setzung gesendet.');
+                // Submit the form programmatically
+                // Check if the submit button has a name and value and add them if needed
+                const submitButton = form.querySelector('[type="submit"][name]');
+                if (submitButton && submitButton.name) {
+                    let hiddenInput = form.querySelector(`input[type="hidden"][name="${submitButton.name}"]`);
+                    if (!hiddenInput) {
+                        hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = submitButton.name;
+                        form.appendChild(hiddenInput);
+                    }
+                    hiddenInput.value = submitButton.value || '1'; // Default value if button has no value
+                }
+                form.submit();
+              }, 350); // 350ms delay (adjust if needed)
+
+            } catch (e) {
+              console.error('Fehler beim Setzen des Consents via ConsentManager API:', e);
+              // Allow form submission to proceed despite the error
+              console.log('Formular wird trotz Fehler gesendet.');
+            }
+          } else {
+            console.warn('ConsentManager API (__cmp) nicht gefunden. Zustimmung kann nicht gesetzt werden. Formular wird normal gesendet.');
+            // API not found, proceed with normal submission
+          }
+        } else {
+          // Checkbox not checked, proceed with normal submission
+          console.log('HubSpot Checkbox nicht aktiviert. Formular wird normal gesendet.');
+        }
+      });
+    });
+  </script>
+<?php $this->endblock(); ?>

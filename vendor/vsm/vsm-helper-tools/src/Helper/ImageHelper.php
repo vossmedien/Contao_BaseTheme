@@ -67,7 +67,7 @@ class ImageHelper
             self::$processedImagesCache = [];
             self::$processedImagesCacheSize = 0;
         }
-        
+
         if (self::$imageFormatCacheSize >= self::$maxFormatCacheSize) {
             self::$imageFormatCache = [];
             self::$imageFormatCacheSize = 0;
@@ -278,7 +278,7 @@ class ImageHelper
             } elseif ($format === 'avif') {
                 // AVIF-spezifische Einstellungen
                 $baseOptions['format'] = 'avif';
-                $baseOptions['quality'] = 80; // AVIF kann niedrigere Quality bei gleicher visueller Qualität
+                $baseOptions['quality'] = 90;
             } else {
                 $baseOptions['format'] = $format;
             }
@@ -292,8 +292,7 @@ class ImageHelper
     {
         if ($width * $factor <= $originalWidth) {
             $retinaConfig = clone $baseConfig;
-            $retinaConfig->setWidth($width * $factor);
-            $retinaConfig->setHeight((int)($baseConfig->getHeight() * $factor));
+            $retinaConfig->setWidth((int)($width * $factor));
 
             // Wenn eine Höhe gesetzt ist, diese auch anpassen
             if ($baseConfig->getHeight()) {
@@ -431,19 +430,19 @@ class ImageHelper
             }
             return ['meta' => $meta, 'path' => $imageObject->path];
         }
-        
+
         return ['meta' => [], 'path' => $imageSource];
     }
 
     /**
-     * Verarbeitet die Bildgröße-Konfiguration 
+     * Verarbeitet die Bildgröße-Konfiguration
      */
     private static function processImageSize($size, int $originalWidth, int $originalHeight): array
     {
         $config = new ResizeConfiguration();
         $baseWidth = $originalWidth;
         $baseHeight = $originalHeight;
-        
+
         if ($size) {
             if (is_string($size) && strpos($size, 'a:') === 0) {
                 $size = StringUtil::deserialize($size);
@@ -455,22 +454,22 @@ class ImageHelper
                 $mode = !empty($size[2]) ? $size[2] : "proportional";
 
                 if ($requestedWidth) {
-                    $config->setWidth($requestedWidth);
+                    $config->setWidth((int)$requestedWidth);
                 }
                 if ($requestedHeight) {
-                    $config->setHeight($requestedHeight);
+                    $config->setHeight((int)$requestedHeight);
                 }
                 if ($mode) {
                     $config->setMode($mode);
                 }
 
-                $baseWidth = $requestedWidth ?? ($requestedHeight ? round($originalWidth * ($requestedHeight / $originalHeight)) : $originalWidth);
-                $baseHeight = $requestedHeight ?? ($requestedWidth ? round($originalHeight * ($requestedWidth / $originalWidth)) : $originalHeight);
+                $baseWidth = $requestedWidth ?? ($requestedHeight ? (int)round($originalWidth * ($requestedHeight / $originalHeight)) : $originalWidth);
+                $baseHeight = $requestedHeight ?? ($requestedWidth ? (int)round($originalHeight * ($requestedWidth / $originalWidth)) : $originalHeight);
             } else {
                 $config->setMode("proportional");
             }
         }
-        
+
         return ['config' => $config, 'width' => $baseWidth, 'height' => $baseHeight];
     }
 
@@ -479,27 +478,30 @@ class ImageHelper
      */
     private static function resolveSizeConfiguration($size): ?array
     {
-        if (!is_array($size) || count($size) < 3) {
-            return $size; // Nicht das erwartete Format, unverändert zurückgeben
+        // Null oder leere Werte zurückgeben
+        if (empty($size)) {
+            return $size;
         }
 
-        $thirdElement = $size[2];
-        
-        // Cache-Check für bessere Performance
-        $cacheKey = 'size_' . $thirdElement;
-        if (isset(self::$sizeConfigCache[$cacheKey])) {
-            return self::$sizeConfigCache[$cacheKey];
+        // Serialisierte Strings deserialisieren
+        if (is_string($size) && strpos($size, 'a:') === 0) {
+            $size = StringUtil::deserialize($size);
         }
-        
-        // Prüfen ob es eine numerische ID ist (gespeicherte Bildgröße)
-        if (is_numeric($thirdElement) && (int)$thirdElement > 0) {
+
+        // Einzelne numerische ID (Bildgröße aus Datenbank)
+        if (is_numeric($size) && (int)$size > 0) {
+            $cacheKey = 'size_id_' . $size;
+            if (isset(self::$sizeConfigCache[$cacheKey])) {
+                return self::$sizeConfigCache[$cacheKey];
+            }
+
             try {
                 $container = self::getContainer();
                 $connection = $container->get('database_connection');
-                
+
                 // Bildgröße aus der Datenbank laden
-                $imageSizeConfig = $connection->fetchAssociative('SELECT * FROM tl_image_size WHERE id = ?', [(int)$thirdElement]);
-                
+                $imageSizeConfig = $connection->fetchAssociative('SELECT * FROM tl_image_size WHERE id = ?', [(int)$size]);
+
                 if ($imageSizeConfig) {
                     $result = [
                         (int)$imageSizeConfig['width'] ?: '',
@@ -511,19 +513,24 @@ class ImageHelper
                 }
             } catch (\Exception $e) {
                 $logger = self::getContainer()->get('monolog.logger.contao');
-                $logger->error('Fehler beim Laden der Bildgröße mit ID ' . $thirdElement . ': ' . $e->getMessage());
+                $logger->error('Fehler beim Laden der Bildgröße mit ID ' . $size . ': ' . $e->getMessage());
             }
         }
-        
-        // Prüfen ob es ein Config-Key ist (beginnt mit _)
-        if (is_string($thirdElement) && strpos($thirdElement, '_') === 0) {
+
+        // String mit underscore (Config-Key)
+        if (is_string($size) && strpos($size, '_') === 0) {
+            $cacheKey = 'size_key_' . $size;
+            if (isset(self::$sizeConfigCache[$cacheKey])) {
+                return self::$sizeConfigCache[$cacheKey];
+            }
+
             try {
                 $container = self::getContainer();
-                $configKey = substr($thirdElement, 1); // Underscore entfernen
-                
+                $configKey = substr($size, 1); // Underscore entfernen
+
                 // Versuche die Konfiguration direkt aus dem Parameter zu laden
                 $imageSizeConfigs = $container->getParameter('contao.image.sizes');
-                
+
                 if (isset($imageSizeConfigs[$configKey])) {
                     $config = $imageSizeConfigs[$configKey];
                     $result = [
@@ -536,11 +543,77 @@ class ImageHelper
                 }
             } catch (\Exception $e) {
                 $logger = self::getContainer()->get('monolog.logger.contao');
-                $logger->error('Fehler beim Laden der Bildgröße mit Key ' . $thirdElement . ': ' . $e->getMessage());
+                $logger->error('Fehler beim Laden der Bildgröße mit Key ' . $size . ': ' . $e->getMessage());
             }
         }
-        
-        // Fallback: Original-Array zurückgeben
+
+        // Array-Verarbeitung
+        if (is_array($size)) {
+            // Array mit mindestens 3 Elementen (dritter Wert könnte ID oder Key sein)
+            if (count($size) >= 3) {
+                $thirdElement = $size[2];
+
+                // Cache-Check für bessere Performance
+                $cacheKey = 'size_array_' . $thirdElement;
+                if (isset(self::$sizeConfigCache[$cacheKey])) {
+                    return self::$sizeConfigCache[$cacheKey];
+                }
+
+                // Prüfen ob es eine numerische ID ist (gespeicherte Bildgröße)
+                if (is_numeric($thirdElement) && (int)$thirdElement > 0) {
+                    try {
+                        $container = self::getContainer();
+                        $connection = $container->get('database_connection');
+
+                        // Bildgröße aus der Datenbank laden
+                        $imageSizeConfig = $connection->fetchAssociative('SELECT * FROM tl_image_size WHERE id = ?', [(int)$thirdElement]);
+
+                        if ($imageSizeConfig) {
+                            $result = [
+                                (int)$imageSizeConfig['width'] ?: '',
+                                (int)$imageSizeConfig['height'] ?: '',
+                                $imageSizeConfig['resizeMode'] ?: 'proportional'
+                            ];
+                            self::$sizeConfigCache[$cacheKey] = $result;
+                            return $result;
+                        }
+                    } catch (\Exception $e) {
+                        $logger = self::getContainer()->get('monolog.logger.contao');
+                        $logger->error('Fehler beim Laden der Bildgröße mit ID ' . $thirdElement . ': ' . $e->getMessage());
+                    }
+                }
+
+                // Prüfen ob es ein Config-Key ist (beginnt mit _)
+                if (is_string($thirdElement) && strpos($thirdElement, '_') === 0) {
+                    try {
+                        $container = self::getContainer();
+                        $configKey = substr($thirdElement, 1); // Underscore entfernen
+
+                        // Versuche die Konfiguration direkt aus dem Parameter zu laden
+                        $imageSizeConfigs = $container->getParameter('contao.image.sizes');
+
+                        if (isset($imageSizeConfigs[$configKey])) {
+                            $config = $imageSizeConfigs[$configKey];
+                            $result = [
+                                isset($config['width']) ? (int)$config['width'] : '',
+                                isset($config['height']) ? (int)$config['height'] : '',
+                                isset($config['resize_mode']) ? $config['resize_mode'] : 'proportional'
+                            ];
+                            self::$sizeConfigCache[$cacheKey] = $result;
+                            return $result;
+                        }
+                    } catch (\Exception $e) {
+                        $logger = self::getContainer()->get('monolog.logger.contao');
+                        $logger->error('Fehler beim Laden der Bildgröße mit Key ' . $thirdElement . ': ' . $e->getMessage());
+                    }
+                }
+            }
+
+            // Array bereits in richtigem Format oder weniger als 3 Elemente - direkt zurückgeben
+            return $size;
+        }
+
+        // Fallback: Original-Wert zurückgeben
         return $size;
     }
 
@@ -720,7 +793,7 @@ class ImageHelper
                 $ratio = $size[1] / $size[0];
                 $height = (int)round($width * $ratio);
                 $config->setWidth((int)$width);
-                $config->setHeight((int)$height);
+                $config->setHeight($height);
                 $config->setMode($mode);
             } else {
                 $config->setWidth((int)$width);
@@ -742,7 +815,7 @@ class ImageHelper
                         $tempAvifSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('avif'))['src']);
                         $tempAvif2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('avif'))['src']) : null;
                         $tempAvif3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions('avif'))['src']) : null;
-                        
+
                         $sources[] = self::generateSource("image/avif", $tempAvifSrc, $tempAvif2x, $tempAvif3x, $mediaQuery);
                     } catch (\Exception $e) {
                         // AVIF fehlgeschlagen - stillschweigendes Fallback
@@ -755,7 +828,7 @@ class ImageHelper
                             $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('webp'))['src']);
                             $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('webp'))['src']) : null;
                             $tempWebp3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions('webp'))['src']) : null;
-                            
+
                             $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x, $tempWebp3x, $mediaQuery);
                         } catch (\Exception $e) {
                             // WebP fehlgeschlagen
@@ -765,12 +838,12 @@ class ImageHelper
                         $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions())['src']);
                         $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions())['src']) : null;
                         $tempWebp3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions())['src']) : null;
-                        
+
                         $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x, $tempWebp3x, $mediaQuery);
                     }
 
                     // JPEG Source entfernt - WebP hat 97%+ Browser-Support in 2025
-                    
+
                 } elseif (!$breakpoint['maxWidth']) {
                     // Fallback ohne Media Query
                     $has2x = $width * 2 <= $originalWidth;
@@ -779,7 +852,7 @@ class ImageHelper
                     try {
                         $tempAvifSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('avif'))['src']);
                         $tempAvif2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('avif'))['src']) : null;
-                        
+
                         $sources[] = self::generateSource("image/avif", $tempAvifSrc, $tempAvif2x);
                     } catch (\Exception $e) {
                         // AVIF fehlgeschlagen - stillschweigendes Fallback
@@ -790,7 +863,7 @@ class ImageHelper
                         try {
                             $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('webp'))['src']);
                             $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('webp'))['src']) : null;
-                            
+
                             $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x);
                         } catch (\Exception $e) {
                             // WebP fehlgeschlagen
@@ -799,7 +872,7 @@ class ImageHelper
                         // Original ist bereits WebP
                         $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions())['src']);
                         $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions())['src']) : null;
-                        
+
                         $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x);
                     }
                 }
@@ -807,20 +880,20 @@ class ImageHelper
                 continue;
             }
         }
-        
+
         // Standard-Image für Lightbox und Fallbacks generieren
         $standardConfig = new ResizeConfiguration();
-        $standardConfig->setWidth($baseWidth);
+        $standardConfig->setWidth((int)$baseWidth);
         if ($baseHeight) {
-            $standardConfig->setHeight($baseHeight);
+            $standardConfig->setHeight((int)$baseHeight);
         }
         if (!empty($size[2])) {
             $standardConfig->setMode($size[2]);
         }
-        
+
         $standardImage = self::processImage($absoluteImagePath, $standardConfig, self::getResizeOptions());
         $standardSrc = self::encodePath($standardImage['src']);
-        
+
         // Lightbox Image
         $lightboxImageSrc = $standardSrc;
         if ($colorBox && ($originalWidth > 1200 || $originalHeight > 1200)) {
@@ -834,7 +907,7 @@ class ImageHelper
                 } elseif (isset($isWebp) && $isWebp) {
                     $lightboxFormat = 'webp';
                 }
-                
+
                 $lightboxImage = self::processImage(
                     $absoluteImagePath,
                     $lightboxConfig,
@@ -976,12 +1049,39 @@ class ImageHelper
 
     public static function generateImageURL($imageSource, array|string|null $size = null): string
     {
-        if (!$imageObject = FilesModel::findByUuid($imageSource)) {
-            return '';
+        $rootDir = self::getContainer()->getParameter('kernel.project_dir');
+        $imageObject = null;
+        $absolutePath = null;
+        
+        // Prüfen, ob $imageSource eine UUID ist
+        if (Uuid::isValid($imageSource)) {
+            $imageObject = FilesModel::findByUuid($imageSource);
+            if ($imageObject) {
+                $absolutePath = $rootDir . '/' . urldecode($imageObject->path);
+            } else {
+                return ''; // UUID ist gültig, aber kein FileModel gefunden
+            }
+        }
+        // Prüfen, ob $imageSource ein gültiger Pfad ist
+        elseif (is_string($imageSource) && strpos($imageSource, '/') !== false) {
+            $relativePath = ltrim($imageSource, '/');
+            $testPath = $rootDir . '/' . $relativePath;
+            
+            if (file_exists($testPath)) {
+                $absolutePath = $testPath;
+                // Versuche, das FilesModel anhand des relativen Pfads zu finden
+                $imageObject = FilesModel::findByPath($relativePath);
+            } else {
+                return ''; // Pfad ungültig oder Datei nicht gefunden
+            }
+        } else {
+            return ''; // Weder gültige UUID noch gültiger Pfad
         }
 
-        $rootDir = self::getContainer()->getParameter('kernel.project_dir');
-        $absolutePath = $rootDir . '/' . urldecode($imageObject->path);
+        // Wenn kein absolutePath gefunden wurde
+        if (!$absolutePath || !file_exists($absolutePath)) {
+            return '';
+        }
 
         // Prüfe auf nicht-Standard-Format
         $imageFormat = self::handleImageFormat($absolutePath);
@@ -1010,8 +1110,8 @@ class ImageHelper
                 $height = !empty($size[1]) ? (int)$size[1] : null;
                 $mode = !empty($size[2]) ? $size[2] : 'proportional';
 
-                if ($width) $config->setWidth($width);
-                if ($height) $config->setHeight($height);
+                if ($width) $config->setWidth((int)$width);
+                if ($height) $config->setHeight((int)$height);
                 if ($mode) $config->setMode($mode);
             } else {
                 // Bei leeren Werten setzen wir nur den proportionalen Modus

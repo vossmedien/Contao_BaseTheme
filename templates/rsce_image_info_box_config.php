@@ -1,13 +1,14 @@
 <?php
 
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 
-return array(
+$config = [
     'label' => array('Custom | Bild mit Info-Box (image_info_box)', 'Zeigt ein Bild oberhalb einer Box mit zwei Informationsspalten an.'),
     'types' => array('content'),
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('cssID'),
+    'standardFields' => array('headline', 'cssID'),
     'wrapper' => array(
         'type' => 'none',
     ),
@@ -80,4 +81,7 @@ return array(
         ),
 
     ),
-); 
+];
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config); 

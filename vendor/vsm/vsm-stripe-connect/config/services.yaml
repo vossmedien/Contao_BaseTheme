@@ -30,22 +30,22 @@ services:
             - _vsm_stripe_connect_attributes
         calls:
             - [ setName, [ vsm_stripe_connect ] ]
-
+            
     # Controller registrieren
     Vsm\VsmStripeConnect\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
-
+        
     # Twig-Extension für Stripe-Connect
     Vsm\VsmStripeConnect\Twig\VsmStripeConnectExtension:
         tags: ['twig.extension']
-
+        
     # EmailHelper konfigurieren
     Vsm\VsmStripeConnect\Service\EmailHelper:
         class: Vsm\VsmStripeConnect\Service\EmailHelper
         calls:
             - [initialize, ['%kernel.project_dir%', '@monolog.logger.contao', '@contao.framework']]
-
+        
     # Service für Stripe Zahlungen
     vsm.stripe_payment_service:
         class: Vsm\VsmStripeConnect\Service\Stripe\StripePaymentService
@@ -54,7 +54,7 @@ services:
             $logger: '@monolog.logger.contao'
             $stripeSecretKey: '%vsm_stripe_connect.stripe.secret_key%'
             $webhookSecret: '%vsm_stripe_connect.stripe.webhook_secret%'
-
+            
     # PaymentProcessor
     vsm.payment_processor_service:
         class: Vsm\VsmStripeConnect\Service\PaymentProcessorService
@@ -63,14 +63,14 @@ services:
             $logger: '@monolog.logger.contao'
             $stripeService: '@vsm.stripe_payment_service'
             $fileDownloadService: '@vsm.file_download_service'
-
+            
     # FileDownloadService
     vsm.file_download_service:
         class: Vsm\VsmStripeConnect\Service\FileDownloadService
         public: true
         arguments:
             $logger: '@monolog.logger.contao'
-
+            
     # DownloadLinkGenerator
     vsm.download_link_generator:
         class: Vsm\VsmStripeConnect\Service\Download\DownloadLinkGenerator
@@ -80,7 +80,7 @@ services:
             $projectDir: '%kernel.project_dir%'
             $db: '@database_connection'
             $framework: '@contao.framework'
-
+            
     # EmailService
     vsm.email_service:
         class: Vsm\VsmStripeConnect\Service\Email\EmailService
@@ -89,7 +89,7 @@ services:
             $logger: '@monolog.logger.contao'
             $projectDir: '%kernel.project_dir%'
             $framework: '@contao.framework'
-
+            
     # UserCreationService
     vsm.user_creation_service:
         class: Vsm\VsmStripeConnect\Service\User\UserCreationService
@@ -99,7 +99,7 @@ services:
             $db: '@database_connection'
             $framework: '@contao.framework'
             $emailService: '@vsm.email_service'
-
+            
     # PaymentSessionManager
     vsm.payment_session_manager:
         class: Vsm\VsmStripeConnect\Service\Payment\PaymentSessionManager

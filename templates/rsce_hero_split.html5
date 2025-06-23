@@ -5,6 +5,10 @@ use Vsm\VsmHelperTools\Helper\HeadlineHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Contao\PageModel;
 
+// Social Media Meta-Tags Helper hinzufügen
+use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+
 // --- Datenaufbereitung --- //
 
 // 1. Headlines
@@ -107,6 +111,18 @@ function render_box($boxData, $boxLink, $bgColor, $textColor, $fontSize, $defaul
 // Eindeutige IDs für JS
 $leftBoxSectionId = 'hero-left-box-' . $this->id;
 $rightBoxesSectionRowId = 'hero-right-boxes-row-' . $this->id; // ID für die innere Row rechts
+
+// Social Media Meta-Tags generieren (nur einmal pro Seite)
+if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
+    $socialMetaData = [
+        'title' => $this->top_headline ?: $this->bottom_headline,
+        'description' => $this->left_text ?: $this->bottom_text,
+        'image' => $leftBoxData ? $leftBoxData->image : null,
+        'type' => 'website'
+    ];
+    
+    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
+}
 
 ?>
 <style>

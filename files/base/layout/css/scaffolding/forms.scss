@@ -24,6 +24,8 @@ form .widget:not(.form-floating) {
  */
 
 
+
+
 .widget {
   *[class*="col"] {
     width: 100%;
@@ -170,9 +172,7 @@ textarea.form-control {
 
   .form-control {
     padding: var(--bs-input-padding-y) var(--bs-input-padding-x);
-    border-radius: var(--bs-input-border-radius);
-    border: var(--bs-input-border);
-    color: var(--bs-input-color);
+
 
     &[type="file"] {
       padding-top: 0px;
@@ -271,10 +271,13 @@ p.error {
 
 .form-select, .form-control {
   box-shadow: var(--bs-input-shadow);
+  border: var(--bs-input-border);
+  border-radius: var(--bs-input-border-radius);
+  color: var(--bs-input-color);
 
   &:focus, &:active {
     box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .2);
-    border-color: var(--bs-primary);
+    border: var(--bs-input-border);
   }
 }
 

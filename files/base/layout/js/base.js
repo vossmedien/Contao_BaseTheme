@@ -42,13 +42,66 @@ if (btn) {
  */
 
 
-
-
 function startCounter(element) {
     if (element.classList.contains("doneCounting")) {
         return;
     }
     element.classList.add("doneCounting");
+
+    // Tausenderpunkte Funktion hier verfügbar machen
+    function tausenderpunkte(zahl = 0, modus = 0, tz = ".") {
+        if (isNaN(zahl)) {
+            return "Eingabe ist keine Zahl!";
+        }
+
+        // Zahl in String umwandeln und Ganzzahl-Teil extrahieren
+        let ganzzahl = Math.floor(Math.abs(zahl)).toString();
+        let nachkomma = "";
+
+        // Nachkommastellen behandeln je nach Modus
+        if (modus === 1) {
+            const originalStr = String(zahl);
+            const dotIndex = originalStr.indexOf(".");
+            if (dotIndex !== -1) {
+                nachkomma = originalStr.slice(dotIndex + 1);
+            } else {
+                nachkomma = "0";
+            }
+        }
+
+        // Tausendertrennung von rechts nach links
+        let result = "";
+        for (let i = ganzzahl.length - 1, count = 0; i >= 0; i--, count++) {
+            if (count > 0 && count % 3 === 0) {
+                result = tz + result;
+            }
+            result = ganzzahl[i] + result;
+        }
+
+        // Vorzeichen wieder hinzufügen falls negativ
+        if (zahl < 0) {
+            result = "-" + result;
+        }
+
+        // Nachkommastellen je nach Modus anhängen
+        switch (modus) {
+            case 1:
+                result += "," + nachkomma;
+                break;
+            case 2:
+                result += ",00";
+                break;
+            case 3:
+                result += ",-";
+                break;
+            case 4:
+                result += ",--";
+                break;
+            // case 0: bleibt ohne Nachkommastellen
+        }
+
+        return result;
+    }
 
     // Finde alle Textknoten innerhalb des Elements
     const textNodes = [];
@@ -66,7 +119,8 @@ function startCounter(element) {
     // Verarbeite jeden Textknoten
     textNodes.forEach(textNode => {
         const fullText = textNode.nodeValue;
-        const regex = /(\d+([.,]\d+)?)([^\d]*)/g;
+        // Regex erweitert um Tausendertrennzeichen (Punkte) zu erkennen
+        const regex = /(\d{1,3}(?:\.\d{3})*(?:,\d+)?|\d+(?:,\d+)?)([^\d]*)/g;
         let matches;
         let lastIndex = 0;
         const fragments = [];
@@ -78,19 +132,22 @@ function startCounter(element) {
             }
 
             // Zahl und nachfolgenden Text extrahieren
-            const originalNumber = matches[1].replace(",", ".");
-            const decimalPlaces = (originalNumber.split(".")[1] || []).length;
-            const targetNumber = parseFloat(originalNumber);
-            const text = matches[3];
+            let numberStr = matches[1];
+            const text = matches[2];
+
+            // Tausendertrennzeichen entfernen und Komma durch Punkt ersetzen für parseFloat
+            const cleanNumber = numberStr.replace(/\./g, '').replace(',', '.');
+            const targetNumber = parseFloat(cleanNumber);
+            const decimalPlaces = (cleanNumber.split(".")[1] || []).length;
 
             // Span für die Zahl erstellen
             const numberSpan = document.createElement("span");
             numberSpan.className = "number-counter";
-            numberSpan.textContent = originalNumber + text;
+            numberSpan.textContent = numberStr + text;
             fragments.push(numberSpan);
 
             // Counter für dieses Span starten
-            animateCounter(numberSpan, targetNumber, decimalPlaces, text);
+            animateCounter(numberSpan, targetNumber, decimalPlaces, text, tausenderpunkte);
 
             lastIndex = regex.lastIndex;
         }
@@ -111,8 +168,8 @@ function startCounter(element) {
     });
 }
 
-function animateCounter(element, targetNumber, decimalPlaces, text) {
-    const duration = 2000;
+function animateCounter(element, targetNumber, decimalPlaces, text, tausenderpunkteFunc) {
+    const duration = 3000;
     let startTime = null;
 
     function step(timestamp) {
@@ -120,13 +177,29 @@ function animateCounter(element, targetNumber, decimalPlaces, text) {
         const progress = timestamp - startTime;
         const progressPercentage = Math.min(progress / duration, 1);
 
-        const current = progressPercentage * targetNumber;
-        element.textContent = current.toFixed(decimalPlaces) + text;
+        let currentDisplayNumber = progressPercentage * targetNumber;
+
+        // Verwende die Tausenderpunkte-Funktion für die Formatierung
+        if (decimalPlaces > 0) {
+            // Runden auf die korrekte Anzahl von Nachkommastellen
+            currentDisplayNumber = parseFloat(currentDisplayNumber.toFixed(decimalPlaces));
+            element.textContent = tausenderpunkteFunc(currentDisplayNumber, 1) + text;
+        } else {
+            currentDisplayNumber = Math.floor(currentDisplayNumber);
+            element.textContent = tausenderpunkteFunc(currentDisplayNumber, 0) + text;
+        }
 
         if (progress < duration) {
             requestAnimationFrame(step);
         } else {
-            element.textContent = targetNumber.toFixed(decimalPlaces) + text;
+            // Finale Zahl mit korrekter Formatierung
+            // targetNumber hat bereits die korrekte Präzision.
+            // tausenderpunkteFunc(targetNumber, 1) extrahiert die Nachkommastellen direkt von targetNumber.
+            if (decimalPlaces > 0) {
+                element.textContent = tausenderpunkteFunc(targetNumber, 1) + text;
+            } else {
+                element.textContent = tausenderpunkteFunc(Math.floor(targetNumber), 0) + text;
+            }
         }
     }
 
@@ -151,8 +224,6 @@ const observer = new IntersectionObserver(
 document.querySelectorAll(".count").forEach((el) => {
     observer.observe(el);
 });
-
-
 
 /*
 window.pushToDataLayer = function (type, position, element, additional) {

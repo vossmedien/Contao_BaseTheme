@@ -8,9 +8,26 @@ if (!defined('MAIN_SLIDER_CLASS')) {
 // Verwendung:
 $sliderClass = defined('MAIN_SLIDER_CLASS') ? MAIN_SLIDER_CLASS : $alternativeSliderClass;
 
+// Social Media Meta-Tags Helper hinzufügen
+use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
+use Vsm\VsmHelperTools\Helper\EnvHelper;
+
 if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_headimagelogo.min.css|static';
     $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_headimagelogo.min.js"></script>';
+}
+
+// Social Media Meta-Tags generieren (nur einmal pro Seite)
+if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags() && !empty($this->slides)) {
+    $firstSlide = $this->slides[0];
+    $socialMetaData = [
+        'title' => $firstSlide->text_firstline,
+        'description' => $firstSlide->text_secondline ?: $firstSlide->text_infotext,
+        'image' => $firstSlide->image ?: null,
+        'type' => 'website'
+    ];
+    
+    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
 }
 
 ?>

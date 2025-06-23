@@ -1,14 +1,15 @@
 <?php
+
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
 //rsce_my_element_config.php
-return array(
+$config = array(
     'label' => array('Custom | Hintergrund für Website / Artikel / Element (bodybg)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('cssID'),
-    'wrapper' => array(
+        'wrapper' => array(
         'type' => 'none',
     ),
     'fields' => array(
@@ -37,6 +38,38 @@ return array(
                 'fieldType' => 'radio',
                 'filesOnly' => true,
                 'extensions' => 'jpg,jpeg,png,mp4,svg,webp',
+            ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '2',
+            ),
+        ),
+
+        'image_size' => array(
+            'label' => array('Bildgröße', ''),
+            'inputType' => 'imageSize',
+            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => 'w50'
+            ),
+            'dependsOn' => array(
+                'field' => 'element_type',
+                'value' => '2',
+            ),
+        ),
+
+        'image_mobile_size' => array(
+            'label' => array('Bildgröße Mobile', ''),
+            'inputType' => 'imageSize',
+            'options' => \Contao\System::getContainer()->get('contao.image.sizes')->getAllOptions(),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => array(
+                'rgxp' => 'digit',
+                'includeBlankOption' => true,
+                'tl_class' => 'w50'
             ),
             'dependsOn' => array(
                 'field' => 'element_type',
@@ -239,3 +272,6 @@ return array(
         ),
     ),
 );
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config);

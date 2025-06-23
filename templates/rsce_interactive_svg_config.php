@@ -1,14 +1,15 @@
 <?php
 
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 
 // Annahme: Diese Klasse existiert und wird benötigt
 
-return array(
+$config = array(
     'label' => array('Custom | Interaktives SVG mit Links', 'Element mit SVG-Grafik und verknüpften Links'),
     'types' => array('content'),
     'contentCategory' => 'Custom',
-    'standardFields' => array('cssID'),
+    'standardFields' => array('headline', 'cssID'),
     'wrapper' => array(
         'type' => 'none',
     ),
@@ -180,4 +181,7 @@ return array(
             'eval' => array('tl_class' => 'w50 clr'),
         ),
     ),
-); 
+);
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config); 

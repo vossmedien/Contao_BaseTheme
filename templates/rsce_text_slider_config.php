@@ -2,13 +2,14 @@
 
 use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\GlobalElementConfig;
+use Vsm\VsmAbTest\Helper\RockSolidConfigHelper;
 
 return array(
     'label' => array('Custom | Headline & Text-Slider (text_slider)', ''),
     'types' => array('content'),
     'contentCategory' => 'Custom',
     'moduleCategory' => 'miscellaneous',
-    'standardFields' => array('cssID'), // Globale Headline-Felder hier nicht als Standard, da sie spezifisch für die linke Spalte sind
+    'standardFields' => array('headline', 'cssID'), // Globale Headline-Felder hier nicht als Standard, da sie spezifisch für die linke Spalte sind
     'wrapper' => array(
         'type' => 'none',
     ),
@@ -188,4 +189,7 @@ return array(
             'dependsOn' => array('field' => 'autoplay'),
         ),
     ),
-); 
+);
+
+// A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config); 

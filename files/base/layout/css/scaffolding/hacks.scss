@@ -25,11 +25,14 @@
 [class*="container"] {
   padding-inline: var(--bs-container-gutter);
 
+  [class*="container"] {
+    padding-inline: 0;
+  }
+
   &:not(.container-wide) {
     [class*="container"]:not([class*="col"]) {
       max-width: none;
       width: auto;
-      padding-inline: 0;
     }
   }
 }
