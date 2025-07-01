@@ -1,5 +1,5 @@
 {# Twig Template für das Auction Filter Modul #}
-<div id="auctionFilter" class="mb-0 mb-sm-gap {% if class is defined and class %} {{ class }}{% endif %}" style="z-index: 6;">
+<div id="auctionFilter" class="mb-0 pt-0 mb-sm-gap {% if class is defined and class %} {{ class }}{% endif %}" style="z-index: 6;">
     <div class="auction-filter-module" data-no-results-text="{{ 'general.no_auctions_for_criteria'|trans|escape('html_attr') }}">
         {# Filter-Formular #}
         <div class="filter-buttons mb-0 mb-sm-4">
@@ -86,7 +86,13 @@
                                                         {# Label-Textfarbe #}
                                                         <label class="form-label mb-0 small">{{ config.label|trans }}</label>
                                                         {# Badge-Farbe anpassen #}
-                                                        <span id="{{ key }}-range-value" class="badge bg-secondary text-body fw-normal small">{{ current_min_val }} - {{ current_max_val }}</span>
+                                                        <span id="{{ key }}-range-value" class="badge bg-secondary text-body fw-normal small">
+                                                            {% if app.request.locale == 'en' %}
+                                                                {{ current_min_val|number_format(key in ['irr', 'internalRateOfReturnBeforeRent'] ? 1 : 0, '.', ',') }} - {{ current_max_val|number_format(key in ['irr', 'internalRateOfReturnBeforeRent'] ? 1 : 0, '.', ',') }}
+                                                            {% else %}
+                                                                {{ current_min_val|number_format(key in ['irr', 'internalRateOfReturnBeforeRent'] ? 1 : 0, ',', '.') }} - {{ current_max_val|number_format(key in ['irr', 'internalRateOfReturnBeforeRent'] ? 1 : 0, ',', '.') }}
+                                                            {% endif %}
+                                                        </span>
                                                     </div>
                                                     {# Range Slider selbst - das Aussehen wird durch Browser/Bootstrap bestimmt #}
                                                     <div class="mb-1">
@@ -109,8 +115,20 @@
                                                     </div>
                                                     <div class="d-flex justify-content-between mt-1 small">
                                                         {# Textfarbe für Min/Max Labels #}
-                                                        <small class="text-white-50">{{ min_cfg }}</small>
-                                                        <small class="text-white-50">{{ max_cfg }}</small>
+                                                        <small class="text-white-50">
+                                                            {% if app.request.locale == 'en' %}
+                                                                {{ min_cfg|number_format(key in ['irr', 'internalRateOfReturnBeforeRent'] ? 1 : 0, '.', ',') }}
+                                                            {% else %}
+                                                                {{ min_cfg|number_format(key in ['irr', 'internalRateOfReturnBeforeRent'] ? 1 : 0, ',', '.') }}
+                                                            {% endif %}
+                                                        </small>
+                                                        <small class="text-white-50">
+                                                            {% if app.request.locale == 'en' %}
+                                                                {{ max_cfg|number_format(key in ['irr', 'internalRateOfReturnBeforeRent'] ? 1 : 0, '.', ',') }}
+                                                            {% else %}
+                                                                {{ max_cfg|number_format(key in ['irr', 'internalRateOfReturnBeforeRent'] ? 1 : 0, ',', '.') }}
+                                                            {% endif %}
+                                                        </small>
                                                     </div>
                                                 </div>
                                             {% endif %}
@@ -291,6 +309,10 @@
                             this.classList.remove('btn-outline-white');
                             this.classList.add('btn-white');
                         }
+
+                        // Zurücksetzen-Button sofort aktualisieren
+                        updateResetButton();
+
                         const formData = new FormData(filterForm);
                         ajaxFilter(formData, true);
                     });
@@ -298,6 +320,7 @@
             }
 
             bindHighlightButtonListener(); // Initial binden
+            updateResetButton(); // Initial prüfen
 
             // Klicks innerhalb des Dropdown-Menüs (auf bestimmte Elemente) sollen es nicht schließen
             document.querySelectorAll('.auction-filter .dropdown-menu').forEach(function (menu) {
@@ -425,10 +448,279 @@
                 return object;
             }
 
-            const auctionListContainerId = 'auctionListContainer'; // ID des Containers, der die Auktionsliste enthält
-            const filterControlsContainerId = 'auctionFilterControls'; // ID des Containers, der die Filter-Steuerelemente enthält
             let openDropdownId = null; // Variable, um die ID des geöffneten Dropdowns zu speichern
             const spinnerContainer = document.getElementById('filterSpinnerContainer');
+
+            // Hilfsfunktionen für bessere Übersichtlichkeit
+            function updateFilterArea(doc) {
+                // Filter-Controls vollständig aktualisieren
+                const newFilterControls = doc.querySelector('.auction-filter .row.g-1.mb-3');
+                const currentFilterControls = filterForm.querySelector('.row.g-1.mb-3');
+
+                if (newFilterControls && currentFilterControls) {
+                    currentFilterControls.innerHTML = newFilterControls.innerHTML;
+
+                    // Event Handler und UI neu initialisieren
+                    initRangeSlidersNew();
+                    bindHighlightButtonListener();
+                    bindDropdownEventHandlers();
+                    initBootstrapDropdowns();
+
+                    // Form Event Listeners neu binden
+                    rebindFormEventListeners();
+
+                    // Zurücksetzen-Button dynamisch hinzufügen/entfernen
+                    updateResetButton();
+
+                    // Dropdown-State wiederherstellen
+                    if (openDropdownId) {
+                        setTimeout(() => {
+                            const dropdownToReopen = document.getElementById(openDropdownId);
+                            if (dropdownToReopen) {
+                                const bsDropdown = bootstrap.Dropdown.getInstance(dropdownToReopen) || new bootstrap.Dropdown(dropdownToReopen);
+                                bsDropdown.show();
+                            }
+                        }, 50);
+                    }
+                }
+            }
+
+            function checkIfFiltersActive() {
+                let hasActiveFilters = false;
+
+                // Debug: Log was wir prüfen
+                console.log('Checking if filters are active...');
+
+                // Prüfe Focus-Filter
+                const focusInput = document.getElementById('focus_hidden_input');
+                if (focusInput && focusInput.value === 'true') {
+                    console.log('Focus filter is active:', focusInput.value);
+                    hasActiveFilters = true;
+                }
+
+                // Prüfe Checkbox-Filter (Select-Filter)
+                if (!hasActiveFilters) {
+                    const checkboxes = filterForm.querySelectorAll('input[type="checkbox"]:checked');
+                    console.log('Checked checkboxes found:', checkboxes.length);
+                    if (checkboxes.length > 0) {
+                        hasActiveFilters = true;
+                    }
+                }
+
+                // Prüfe Range-Slider (ob sie von Default-Werten abweichen)
+                if (!hasActiveFilters && window.jsFilterConfigs) {
+                    console.log('Checking range sliders with configs:', window.jsFilterConfigs);
+                    for (const [key, config] of Object.entries(window.jsFilterConfigs)) {
+                        if (config.type === 'range_slider') {
+                            const minSlider = document.getElementById(`${key}_min_slider`);
+                            const maxSlider = document.getElementById(`${key}_max_slider`);
+
+                            if (minSlider && maxSlider) {
+                                const minValue = parseInt(minSlider.value);
+                                const maxValue = parseInt(maxSlider.value);
+                                const defaultMin = config.min || 0;
+                                const defaultMax = config.max || 100;
+
+                                console.log(`Range slider ${key}: ${minValue}-${maxValue} vs default ${defaultMin}-${defaultMax}`);
+
+                                if (minValue !== defaultMin || maxValue !== defaultMax) {
+                                    console.log(`Range slider ${key} has non-default values`);
+                                    hasActiveFilters = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                console.log('Final result - hasActiveFilters:', hasActiveFilters);
+                return hasActiveFilters;
+            }
+
+            function updateResetButton() {
+                const hasActiveFilters = checkIfFiltersActive();
+
+                // Flexiblere Container-Suche
+                const filterRow = filterForm.querySelector('.row.g-1') ||
+                                 filterForm.querySelector('.row[class*="g-1"]') ||
+                                 filterForm.querySelector('.row') ||
+                                 filterForm.querySelector('div:first-child');
+
+                let resetButtonContainer = filterForm.querySelector('.col-auto.ms-auto');
+
+                if (hasActiveFilters) {
+                    // Zurücksetzen-Button hinzufügen falls nicht vorhanden
+                    if (!resetButtonContainer) {
+                        resetButtonContainer = document.createElement('div');
+                        resetButtonContainer.className = 'col-auto ms-auto';
+                        resetButtonContainer.id = 'dynamic-reset-button-container';
+
+                        const resetButtonsDiv = document.createElement('div');
+                        resetButtonsDiv.className = 'd-flex gap-2 flex-wrap filter-buttons';
+
+                        const resetLink = document.createElement('a');
+                        resetLink.href = `${window.location.pathname}#auctionFilter`;
+                        resetLink.className = 'btn btn-white btn-sm';
+                        resetLink.textContent = '{{ 'filter.button.reset'|trans }}';
+
+                        resetButtonsDiv.appendChild(resetLink);
+                        resetButtonContainer.appendChild(resetButtonsDiv);
+
+                        if (filterRow) {
+                            filterRow.appendChild(resetButtonContainer);
+                        } else {
+                            // Fallback: Container erstellen
+                            const fallbackContainer = document.createElement('div');
+                            fallbackContainer.className = 'row g-1 mb-3';
+                            fallbackContainer.appendChild(resetButtonContainer);
+
+                            const firstRow = filterForm.querySelector('.row');
+                            if (firstRow) {
+                                firstRow.parentNode.insertBefore(fallbackContainer, firstRow.nextSibling);
+                            }
+                        }
+                    }
+                } else {
+                    // Zurücksetzen-Button entfernen falls vorhanden
+                    if (resetButtonContainer) {
+                        resetButtonContainer.remove();
+                    }
+                }
+            }
+
+            function updateListingArea(doc) {
+                const newAuctionListingContainer = doc.querySelector('#auction_listing_container');
+                const currentAuctionListingContainer = document.querySelector('#auction_listing_container');
+                let resultsFound = false;
+
+                if (newAuctionListingContainer && currentAuctionListingContainer) {
+                    currentAuctionListingContainer.innerHTML = newAuctionListingContainer.innerHTML;
+                    currentAuctionListingContainer.querySelectorAll('[data-animation]').forEach(item => {
+                        item.removeAttribute('data-animation');
+                    });
+
+                    if (currentAuctionListingContainer.querySelector('.auction-item')) {
+                        resultsFound = true;
+                    }
+                } else {
+                    // Fallback für alte Struktur
+                    const newItems = doc.querySelector('.auction-items');
+                    const newNoItems = doc.querySelector('.no-auctions');
+                    const currentItems = document.querySelector('.auction-items');
+                    const currentNoItems = document.querySelector('.no-auctions');
+
+                    if (currentItems && newItems && newItems.innerHTML.trim() !== '') {
+                        currentItems.innerHTML = newItems.innerHTML;
+                        currentItems.style.display = '';
+                        if (currentNoItems) currentNoItems.style.display = 'none';
+                        currentItems.querySelectorAll('[data-animation]').forEach(item => {
+                            item.removeAttribute('data-animation');
+                        });
+                        if (currentItems.querySelector('.auction-item')) {
+                            resultsFound = true;
+                        }
+                    } else if (currentNoItems && newNoItems) {
+                        if (currentItems) currentItems.style.display = 'none';
+                        currentNoItems.innerHTML = newNoItems.innerHTML;
+                        currentNoItems.style.display = newNoItems.style.display || 'block';
+                    }
+                }
+
+                // Alert für keine Ergebnisse
+                if (!resultsFound) {
+                    showNoResultsAlert();
+                }
+
+                return resultsFound;
+            }
+
+            function resetPaginationIfNeeded(doc) {
+                const newPagination = doc.querySelector('.pagination');
+                const currentPage = new URLSearchParams(window.location.search).get('page');
+
+                if (currentPage && parseInt(currentPage) > 1 && !newPagination) {
+                    // Zur ersten Seite zurückkehren, wenn Paginierung nicht mehr nötig
+                    const currentUrl = new URL(window.location);
+                    currentUrl.searchParams.delete('page');
+                    window.history.replaceState(null, '', currentUrl.toString());
+                }
+            }
+
+            function showNoResultsAlert() {
+                // Alte Alerts entfernen
+                document.querySelectorAll('.alert-no-results').forEach(alert => alert.remove());
+
+                const targetContainer = document.querySelector('#auction_listing_container') ||
+                                      document.querySelector('.auction-listing') ||
+                                      document.querySelector('.auction-filter-module');
+
+                if (targetContainer) {
+                    const noResultsAlert = document.createElement('div');
+                    noResultsAlert.className = 'alert alert-primary alert-no-results mt-3';
+                    noResultsAlert.setAttribute('role', 'alert');
+                    noResultsAlert.textContent = noResultsText;
+                    targetContainer.appendChild(noResultsAlert);
+                }
+            }
+
+            function bindDropdownEventHandlers() {
+                // Event Listener für Dropdown-Menüs neu binden
+                document.querySelectorAll('.auction-filter .dropdown-menu').forEach(function (menu) {
+                    menu.addEventListener('click', function (e) {
+                        if (e.target.closest('.form-check-input') ||
+                            e.target.closest('.form-range') ||
+                            e.target.closest('label') ||
+                            e.target.closest('.dropdown-header')) {
+                            e.stopPropagation();
+                        }
+                    });
+                });
+            }
+
+            function initBootstrapDropdowns() {
+                // Bootstrap Dropdowns neu initialisieren
+                const dropdownToggles = document.querySelectorAll('.auction-filter .dropdown-toggle');
+                dropdownToggles.forEach(toggle => {
+                    if (!bootstrap.Dropdown.getInstance(toggle)) {
+                        new bootstrap.Dropdown(toggle);
+                    }
+                });
+
+                // Sicherstellen, dass nur ein Dropdown gleichzeitig offen ist
+                dropdownToggles.forEach(function (toggle) {
+                    toggle.addEventListener('show.bs.dropdown', function (event) {
+                        dropdownToggles.forEach(function (otherToggle) {
+                            if (otherToggle !== event.target) {
+                                const dropdownInstance = bootstrap.Dropdown.getInstance(otherToggle);
+                                if (dropdownInstance) {
+                                    dropdownInstance.hide();
+                                }
+                            }
+                        });
+                    });
+                });
+            }
+
+
+
+            function notifyOtherModules(resultsFound) {
+                // Event für andere Module senden
+                window.dispatchEvent(new CustomEvent('filterUpdated', {
+                    detail: {
+                        filters: Object.fromEntries(new FormData(filterForm).entries()),
+                        resultsFound: resultsFound
+                    }
+                }));
+
+                // Auch das Listing-Modul informieren
+                const listingModule = document.querySelector('#auction_listing_container');
+                if (listingModule) {
+                    const updateEvent = new CustomEvent('filterModuleUpdated', {
+                        detail: { source: 'filter', resultsFound: resultsFound }
+                    });
+                    listingModule.dispatchEvent(updateEvent);
+                }
+            }
 
             function ajaxFilter(formData, updateUrl = true) {
                 // Geöffnetes Dropdown merken
@@ -529,7 +821,7 @@
                 // Der Server entscheidet dann, was gefiltert wird.
                 // Die URL ist nur zur "kosmetischen" Anzeige und zum Teilen da.
 
-                fetch(newUrl, { // Die newUrl (mit potenziell reduzierten Parametern) wird für den fetch verwendet
+                fetch(newUrl, {
                     method: 'GET',
                     headers: {'X-Requested-With': 'XMLHttpRequest'}
                 })
@@ -541,261 +833,30 @@
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(html, 'text/html');
 
-                        // ZUERST ALLE alten "Keine Ergebnisse"-Alerts entfernen, egal wo sie sind
-                        document.querySelectorAll('.alert-no-results').forEach(alert => alert.remove());
+                        // 1. Filter-Bereich vollständig aktualisieren
+                        updateFilterArea(doc);
 
-                        // Update Filter Area (die Filter-Buttons und deren Dropdown-Inhalte)
-                        const newFilterControls = doc.querySelector('.auction-filter .row.g-1.mb-3');
-                        const currentFilterControls = filterForm.querySelector('.row.g-1.mb-3');
+                        // 2. Listing-Bereich vollständig aktualisieren
+                        const resultsFound = updateListingArea(doc);
 
-                        if (newFilterControls && currentFilterControls) {
-                            currentFilterControls.innerHTML = newFilterControls.innerHTML;
-                            // Wichtig: Bootstrap Dropdown JS neu initialisieren, falls nötig, oder Event Listener neu binden
-                            // Für Standard-Bootstrap 5 sollten die data-bs-toggle Attribute ausreichen.
-                            initRangeSlidersNew(); // Range Slider neu initialisieren
-                            bindHighlightButtonListener(); // Highlights Button Listener neu binden NACHDEM die Filter-Controls neu gerendert wurden
+                        // 3. Paginierung bei Bedarf zurücksetzen
+                        resetPaginationIfNeeded(doc);
 
-                            // Event Listener für Dropdown-Menüs neu binden
-                            document.querySelectorAll('.auction-filter .dropdown-menu').forEach(function (menu) {
-                                menu.addEventListener('click', function (e) {
-                                    if (e.target.closest('.form-check-input') || e.target.closest('.form-range')) {
-                                        e.stopPropagation();
-                                    }
-                                });
-                            });
-                            // Bootstrap Dropdowns manuell neu initialisieren, wenn sie dynamisch geladen werden
-                            var dropdownElementList = [].slice.call(document.querySelectorAll('.auction-filter .dropdown-toggle'))
-                            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-                                return new bootstrap.Dropdown(dropdownToggleEl)
-                            })
-
-                            // Sicherstellen, dass immer nur ein Filter-Dropdown gleichzeitig geöffnet ist
-                            const allFilterDropdownTogglesAfterAjax = document.querySelectorAll('.auction-filter .col-auto[class*="filter-item-"] .dropdown-toggle');
-
-                            allFilterDropdownTogglesAfterAjax.forEach(function (toggle) {
-                                toggle.addEventListener('show.bs.dropdown', function (event) {
-                                    // Alle anderen Dropdowns im Filterbereich schließen
-                                    allFilterDropdownTogglesAfterAjax.forEach(function (otherToggle) {
-                                        if (otherToggle !== event.target) {
-                                            const dropdownInstance = bootstrap.Dropdown.getInstance(otherToggle);
-                                            if (dropdownInstance) {
-                                                dropdownInstance.hide();
-                                            }
-                                        }
-                                    });
-                                });
-                            });
-
-                            // Klicks innerhalb des Dropdown-Menüs (auf bestimmte Elemente) sollen es nicht schließen - neu binden
-                            document.querySelectorAll('.auction-filter .dropdown-menu').forEach(function (menu) {
-                                menu.addEventListener('click', function (e) {
-                                    if (e.target.closest('.form-check-input') ||
-                                        e.target.closest('.form-range') ||
-                                        e.target.closest('label') ||
-                                        e.target.closest('.dropdown-header')) {
-                                        e.stopPropagation();
-                                    }
-                                });
-                            });
-
-                            // Zuvor geöffnetes Dropdown wieder öffnen
-                            if (openDropdownId) {
-                                const dropdownToReopen = document.getElementById(openDropdownId);
-                                if (dropdownToReopen) {
-                                    const bsDropdownInstance = bootstrap.Dropdown.getInstance(dropdownToReopen);
-                                    if (bsDropdownInstance) {
-                                        bsDropdownInstance.show();
-                                    } else {
-                                        // Fallback, falls die Instanz nach Neuladen nicht sofort da ist
-                                        new bootstrap.Dropdown(dropdownToReopen).show();
-                                    }
-                                }
-                            }
-
-                        } else {
-                            // console.warn('Could not find new or current filter controls row for button dropdowns.');
+                        // 4. URL aktualisieren
+                        if (updateUrl) {
+                            window.history.pushState(null, '', newUrl.toString());
                         }
 
-                        // Update Active State of Highlight Button
-                        const currentHighlightButton = document.getElementById('filterHighlightsButton'); // ID des Buttons
-                        const focusHidden = document.getElementById('focus_hidden_input'); // ID des Hidden Inputs, der gerade aktualisiert wurde
+                        // 5. Events für andere Module senden
+                        notifyOtherModules(resultsFound);
 
-                        if (currentHighlightButton && focusHidden) {
-                            // Den Zustand direkt vom (ggf. gerade per AJAX aktualisierten) Hidden Input lesen
-                            const isFocusActiveAfterAjax = focusHidden.value === 'true';
-
-                            currentHighlightButton.classList.toggle('btn-white', isFocusActiveAfterAjax);
-                            currentHighlightButton.classList.toggle('btn-outline-white', !isFocusActiveAfterAjax);
-                        }
-
-                        // Update der "active" Klasse und des Badges für die Hauptfilter-Buttons
-                        doc.querySelectorAll('.auction-filter .col-auto[class*="filter-item-"]').forEach(newFilterItem => {
-                            const key = newFilterItem.className.match(/filter-item-([^ ]+)/)[1];
-                            if (key === 'highlights') return;
-
-                            const currentFilterButton = document.getElementById(`filterDropdown${key.charAt(0).toUpperCase() + key.slice(1)}`);
-                            const newFilterButton = newFilterItem.querySelector('.dropdown-toggle'); // Der neue Button aus der Antwort
-
-                            if (currentFilterButton && newFilterButton) {
-                                // Klassen für Aktiv/Inaktiv übernehmen
-                                currentFilterButton.className = newFilterButton.className;
-                                // Badge aktualisieren (innerHTML des Buttons)
-                                currentFilterButton.innerHTML = newFilterButton.innerHTML;
-                            }
-                        });
-
-
-                        // --- Update Auction Listing Area ---
-                        const newAuctionListingContainer = doc.querySelector('#auction_listing_container');
-                        const currentAuctionListingContainer = document.querySelector('#auction_listing_container');
-
-                        let resultsFound = false;
-                        let shouldResetPagination = false;
-
-                        if (newAuctionListingContainer && currentAuctionListingContainer) {
-                            currentAuctionListingContainer.innerHTML = newAuctionListingContainer.innerHTML;
-                            currentAuctionListingContainer.querySelectorAll('[data-animation]').forEach(item => {
-                                item.removeAttribute('data-animation');
-                            });
-                            // Prüfen, ob der aktualisierte Container Inhalt hat (außer vielleicht Whitespace oder leere Strukturelemente)
-                            if (currentAuctionListingContainer.querySelector('.auction-item')) { // Annahme: .auction-item existiert pro Ergebnis
-                                resultsFound = true;
-                            }
-
-                            // Prüfen ob Paginierung zurückgesetzt werden muss
-                            const newPagination = newAuctionListingContainer.querySelector('.pagination');
-                            const currentPage = new URLSearchParams(window.location.search).get('page') || new URLSearchParams(window.location.search).get('page_n23');
-
-                            if (currentPage && parseInt(currentPage) > 1 && !newPagination) {
-                                // Wir sind auf Seite 2+, aber die neue Antwort hat keine Paginierung
-                                // Das bedeutet: alle Ergebnisse passen auf eine Seite
-                                shouldResetPagination = true;
-                            }
-
-                        } else if (doc.querySelector('.auction-items') || doc.querySelector('.no-auctions')) {
-                            const newItems = doc.querySelector('.auction-items');
-                            const newNoItems = doc.querySelector('.no-auctions');
-                            const currentItems = document.querySelector('.auction-items');
-                            const currentNoItems = document.querySelector('.no-auctions');
-
-                            if (currentItems && newItems && newItems.innerHTML.trim() !== '') {
-                                currentItems.innerHTML = newItems.innerHTML;
-                                currentItems.style.display = '';
-                                if (currentNoItems) currentNoItems.style.display = 'none';
-                                currentItems.querySelectorAll('[data-animation]').forEach(item => {
-                                    item.removeAttribute('data-animation');
-                                });
-                                if (currentItems.querySelector('.auction-item')) { // Annahme
-                                    resultsFound = true;
-                                }
-
-                                // Prüfen ob Paginierung zurückgesetzt werden muss
-                                const newPagination = doc.querySelector('.pagination');
-                                const currentPage = new URLSearchParams(window.location.search).get('page') || new URLSearchParams(window.location.search).get('page_n23');
-
-                                if (currentPage && parseInt(currentPage) > 1 && !newPagination) {
-                                    shouldResetPagination = true;
-                                }
-
-                            } else if (currentNoItems && newNoItems) {
-                                if (currentItems) currentItems.style.display = 'none';
-                                currentNoItems.innerHTML = newNoItems.innerHTML;
-                                currentNoItems.style.display = newNoItems.style.display || 'block';
-                                // resultsFound bleibt false, da .no-auctions angezeigt wird
-
-                                // Bei "keine Auktionen" auch Paginierung zurücksetzen
-                                const currentPage = new URLSearchParams(window.location.search).get('page') || new URLSearchParams(window.location.search).get('page_n23');
-                                if (currentPage && parseInt(currentPage) > 1) {
-                                    shouldResetPagination = true;
-                                }
-                            } else {
-                                // console.warn("Konnte weder Auktionsitems noch 'Keine Auktionen'-Nachricht im AJAX-Response finden oder der Inhalt war leer.");
-                                if (currentItems) currentItems.innerHTML = '';
-                                if (currentNoItems) {
-                                    currentNoItems.style.display = 'block';
-                                    currentNoItems.innerHTML = 'Fehler beim Laden der Auktionen.'; // Dies ist keine "keine Ergebnisse" Meldung
-                                }
-                            }
-                        } else {
-                            // console.warn('Weder #auction_listing_container noch .auction-items/.no-auctions im AJAX-Response gefunden.');
-                        }
-
-                        // Paginierung zurücksetzen wenn nötig
-                        if (shouldResetPagination) {
-                            const currentUrl = new URL(window.location);
-                            let hasPageParam = false;
-
-                            // Alle möglichen Paginierungs-Parameter entfernen
-                            if (currentUrl.searchParams.has('page')) {
-                                currentUrl.searchParams.delete('page');
-                                hasPageParam = true;
-                            }
-                            if (currentUrl.searchParams.has('page_n23')) {
-                                currentUrl.searchParams.delete('page_n23');
-                                hasPageParam = true;
-                            }
-
-                            // URL aktualisieren und Seite neu laden (da sich die Paginierung geändert hat)
-                            if (hasPageParam) {
-                                const stateObject = formDataToObject(new FormData(filterForm));
-                                delete stateObject.page; // Page-Parameter auch aus dem State entfernen
-                                delete stateObject.page_n23;
-                                history.replaceState({formData: stateObject}, '', currentUrl.toString());
-
-                                // Neue Anfrage ohne Page-Parameter stellen
-                                fetch(currentUrl.toString(), {
-                                    method: 'GET',
-                                    headers: {'X-Requested-With': 'XMLHttpRequest'}
-                                })
-                                    .then(response => response.text())
-                                    .then(html => {
-                                        // Auction Listing nochmal komplett aktualisieren
-                                        const parser = new DOMParser();
-                                        const newDoc = parser.parseFromString(html, 'text/html');
-                                        const newListingContainer = newDoc.querySelector('#auction_listing_container') || newDoc.querySelector('.auction-listing');
-                                        const currentListingContainer = document.querySelector('#auction_listing_container') || document.querySelector('.auction-listing');
-
-                                        if (newListingContainer && currentListingContainer) {
-                                            currentListingContainer.innerHTML = newListingContainer.innerHTML;
-                                            currentListingContainer.querySelectorAll('[data-animation]').forEach(item => {
-                                                item.removeAttribute('data-animation');
-                                            });
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Paginierungs-Reset Fehler:', error);
-                                    });
-                                return; // Früher Ausstieg, da wir eine neue Anfrage stellen
-                            }
-                        }
-
-                        // Alert anzeigen, wenn keine Ergebnisse gefunden wurden
-                        if (!resultsFound && currentAuctionListingContainer) { // Zeige Alert nur, wenn der Container existiert
-                            const noResultsAlert = document.createElement('div');
-                            noResultsAlert.className = 'alert alert-primary alert-no-results mt-3'; // Eigene Klasse zum einfachen Entfernen
-                            noResultsAlert.setAttribute('role', 'alert');
-                            noResultsAlert.textContent = noResultsText; // Twig-Translation im JS-String
-                            // Füge den Alert am Anfang des Auktions-Containers ein
-                            currentAuctionListingContainer.prepend(noResultsAlert);
-                        } else if (!resultsFound && document.querySelector('.auction-filter-module')) {
-                            // Fallback: Wenn currentAuctionListingContainer nicht da ist, versuche es oberhalb des Listing-Bereichs, falls .auction-filter-module da ist
-                            const filterModule = document.querySelector('.auction-filter-module');
-                            const noResultsAlert = document.createElement('div');
-                            noResultsAlert.className = 'alert alert-primary alert-no-results mt-3';
-                            noResultsAlert.setAttribute('role', 'alert');
-                            noResultsAlert.textContent = noResultsText;
-                            // Hier entscheiden, wo genau der Alert hin soll, z.B. nach dem Filter-Container
-                            const filterContainer = filterModule.querySelector('.filter-container');
-                            if (filterContainer) {
-                                filterContainer.parentNode.insertBefore(noResultsAlert, filterContainer.nextSibling);
-                            } else {
-                                filterModule.appendChild(noResultsAlert); // Letzter Ausweg
-                            }
-                        }
                     })
                     .catch(error => {
                         console.error('Filter-Fehler:', error);
-                        // Hier ggf. eine Fehlermeldung für den Benutzer anzeigen
+                        // Fallback: vollständiger Reload
+                        if (updateUrl) {
+                            window.location.href = newUrl;
+                        }
                     })
                     .finally(() => {
                         if (spinnerContainer) {
@@ -808,7 +869,7 @@
                                 const bsDropdown = bootstrap.Dropdown.getInstance(dropdownButton) || new bootstrap.Dropdown(dropdownButton);
                                 bsDropdown.show();
                             }
-                            openDropdownId = null; // Zurücksetzen für den nächsten Lauf
+                            openDropdownId = null;
                         }
                     });
             }
@@ -825,8 +886,19 @@
                 // (nicht der Highlights-Button, der seinen eigenen Listener hat)
                 if (event.target.id !== 'filterHighlightsButton' &&
                     (event.target.matches('.form-check-input') || event.target.matches('input[type="range"]'))) {
+                    // Zurücksetzen-Button sofort aktualisieren
+                    updateResetButton();
+
                     const formData = new FormData(filterForm);
                     ajaxFilter(formData, true);
+                }
+            });
+
+            // Event Listener für Input-Events (Range Slider während dem Ziehen)
+            filterForm.addEventListener('input', function (event) {
+                if (event.target.matches('input[type="range"]')) {
+                    // Zurücksetzen-Button bei Range-Slider Änderungen aktualisieren
+                    updateResetButton();
                 }
             });
 
@@ -880,6 +952,9 @@
                     currentHighlightButton.classList.toggle('btn-white', isFocusActive);
                     currentHighlightButton.classList.toggle('btn-outline-white', !isFocusActive);
                 }
+
+                // Zurücksetzen-Button nach popstate aktualisieren
+                updateResetButton();
 
                 // AJAX-Filterung auslösen, ohne neuen History-Eintrag
                 const currentFormDataForAjax = new FormData(filterForm); // Hole aktuelle Werte aus dem Formular

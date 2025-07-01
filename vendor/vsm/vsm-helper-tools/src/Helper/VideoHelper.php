@@ -30,17 +30,18 @@ class VideoHelper
         ?string $uploadDate = null,
         ?string $posterUrl = null,
         string $videoParams = '',
-        bool $lazy = true
+        bool $lazy = true,
+        bool $posterLazy = true
     ): string {
         $isUrl = filter_var($source, FILTER_VALIDATE_URL) !== false;
         $sources = [];
         $mp4Path = '';
         $posterPath = '';
-        
+
         if ($isUrl) {
             return self::handleExternalUrl($source, $lazy, $sources, $mp4Path);
         }
-        
+
         $fileModel = FilesModel::findByUuid($source);
         if ($fileModel === null) {
             return '';
@@ -53,7 +54,7 @@ class VideoHelper
 
         // Video-Sources generieren
         self::generateVideoSources($baseDir, $fileName, $rootDir, $lazy, $sources, $mp4Path);
-        
+
         if (empty($sources)) {
             return '';
         }
@@ -65,7 +66,7 @@ class VideoHelper
 
         // Metadaten für Structured Data
         $langMeta = self::getLanguageMetadata($fileModel);
-        
+
         return self::buildVideoOutput(
             $sources,
             $classes,
@@ -74,6 +75,7 @@ class VideoHelper
             $posterPath,
             $mp4Path,
             $lazy,
+            $posterLazy,
             $name,
             $description,
             $uploadDate,
@@ -89,7 +91,7 @@ class VideoHelper
         if (!self::isVideoFormat($ext)) {
             return '';
         }
-        
+
         $sources[] = sprintf(
             "<source %s='%s' type='video/%s'>",
             $lazy ? 'data-src' : 'src',
@@ -97,7 +99,7 @@ class VideoHelper
             $ext
         );
         $mp4Path = $source;
-        
+
         // Für externe URLs direkt das Video ausgeben
         return self::buildVideoOutput(
             $sources,
@@ -107,6 +109,7 @@ class VideoHelper
             '',
             $mp4Path,
             $lazy,
+            true, // posterLazy
             null,
             null,
             null,
@@ -129,10 +132,10 @@ class VideoHelper
             if (!file_exists($potentialFile)) {
                 continue;
             }
-            
+
             $relativePath = str_replace($rootDir . '/', '', $potentialFile);
             $potentialFileModel = FilesModel::findByPath($relativePath);
-            
+
             if ($potentialFileModel !== null) {
                 $sources[] = sprintf(
                     "<source %s='%s' type='video/%s'>",
@@ -140,7 +143,7 @@ class VideoHelper
                     $potentialFileModel->path,
                     $format
                 );
-                
+
                 if ($format === 'mp4' && empty($mp4Path)) {
                     $mp4Path = $potentialFileModel->path;
                 }
@@ -150,15 +153,34 @@ class VideoHelper
 
     private static function findPosterImage(string $baseDir, string $fileName, string $rootDir): string
     {
-        $posterFile = $baseDir . '/' . $fileName . '.jpg';
-        if (!file_exists($posterFile)) {
-            return '';
+        // Verschiedene Bildformate für Poster probieren
+        $imageFormats = ['jpg', 'jpeg', 'png', 'webp'];
+
+        foreach ($imageFormats as $format) {
+            $posterFile = $baseDir . '/' . $fileName . '.' . $format;
+            if (file_exists($posterFile)) {
+                $relativePath = str_replace($rootDir . '/', '', $posterFile);
+                $posterFileModel = FilesModel::findByPath($relativePath);
+
+                if ($posterFileModel !== null) {
+                    return $posterFileModel->path;
+                }
+            }
         }
-        
-        $relativePath = str_replace($rootDir . '/', '', $posterFile);
-        $posterFileModel = FilesModel::findByPath($relativePath);
-        
-        return $posterFileModel?->path ?? '';
+
+        return '';
+    }
+
+    private static function generateFallbackThumbnail(string $mp4Path): string
+    {
+        $fallbackImage = 'files/base/layout/img/video-placeholder.webp';
+
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        if (file_exists($rootDir . '/' . $fallbackImage)) {
+            return $fallbackImage;
+        }
+
+        return '';
     }
 
     private static function getLanguageMetadata(?FilesModel $fileModel): array
@@ -166,10 +188,10 @@ class VideoHelper
         if ($fileModel === null) {
             return [];
         }
-        
+
         $currentLanguage = $GLOBALS['TL_LANGUAGE'] ?? 'de';
         $meta = StringUtil::deserialize($fileModel->meta) ?? [];
-        
+
         return $meta[$currentLanguage] ?? [];
     }
 
@@ -181,6 +203,7 @@ class VideoHelper
         string $posterPath,
         string $mp4Path,
         bool $lazy,
+        bool $posterLazy,
         ?string $name,
         ?string $description,
         ?string $uploadDate,
@@ -189,10 +212,10 @@ class VideoHelper
         bool $isUrl
     ): string {
         $sourceString = implode("\n        ", $sources);
-        
+
         // Video-Parameter
         $videoParams = trim($videoParams) ?: self::DEFAULT_VIDEO_PARAMS;
-        
+
         // Structured Data
         $structuredData = self::buildStructuredData(
             $name,
@@ -205,16 +228,26 @@ class VideoHelper
             $mp4Path,
             $isUrl
         );
-        
-        // Poster-Attribut
+
+        // Poster-Attribut mit separatem Lazy-Loading Support
         $posterSrc = $posterUrl ?: $posterPath;
-        $posterAttr = $posterSrc ? 
-            sprintf(" %s='%s'", $lazy ? 'data-poster' : 'poster', $posterSrc) : '';
-        
+        $posterAttr = '';
+        if ($posterSrc) {
+            if ($posterLazy) {
+                // Lazy-Loading: data-poster für JavaScript, placeholder oder leer als poster
+                $posterAttr = sprintf(" data-poster='%s'", $posterSrc);
+                // Optional: kleiner Platzhalter als sofortiges poster
+                // $posterAttr .= " poster='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjY2NjIi8+PC9zdmc+'";
+            } else {
+                // Kein Lazy-Loading: direktes poster Attribut
+                $posterAttr = sprintf(" poster='%s'", $posterSrc);
+            }
+        }
+
         // Video-HTML generieren
         $videoClass = trim($classes . ($lazy ? ' lazy' : ''));
         $srcAttr = !$lazy && $mp4Path ? " src='$mp4Path'" : '';
-        
+
         $videoHtml = sprintf(
             "<div class='content-media'>\n    <video class='%s' %s%s preload='none'%s>\n        %s\n        <p>Your browser does not support HTML5 video. Here is a <a href='%s'>link to the video</a> instead.</p>\n    </video>\n</div>",
             $videoClass,
@@ -236,9 +269,9 @@ class VideoHelper
             </script>";
         }
 
-        $structuredDataScript = $structuredData ? 
+        $structuredDataScript = $structuredData ?
             '<script type="application/ld+json">' . json_encode($structuredData) . '</script>' : '';
-        
+
         return $structuredDataScript . $videoHtml;
     }
 
@@ -253,39 +286,50 @@ class VideoHelper
         string $mp4Path,
         bool $isUrl
     ): ?array {
+        // Strukturierte Daten nur erstellen wenn Video vorhanden ist
+        if (empty($mp4Path)) {
+            return null;
+        }
+
         $structuredData = [
             '@context' => 'https://schema.org',
             '@type' => 'VideoObject'
         ];
 
-        $title = $name ?? $langMeta['title'] ?? null;
-        if ($title) {
-            $structuredData['name'] = strip_tags($title);
-        }
+        // Name ist erforderlich
+        $title = $name ?? $langMeta['title'] ?? 'Video';
+        $structuredData['name'] = strip_tags($title);
 
-        $desc = $description ?? $langMeta['description'] ?? null;
-        if ($desc) {
-            $structuredData['description'] = strip_tags($desc);
-        }
+        // Description mit Fallback - IMMER setzen für Google
+        $desc = $description ?? $langMeta['description'] ?? $langMeta['alt'] ?? 'Video content';
+        $structuredData['description'] = strip_tags($desc);
 
-        $date = $uploadDate ?? (!$isUrl && $fileModel?->tstamp ? date('c', $fileModel->tstamp) : null);
-        if ($date) {
-            $structuredData['uploadDate'] = $date;
-        }
+        // Upload-Datum
+        $date = $uploadDate ?? (!$isUrl && $fileModel?->tstamp ? date('c', $fileModel->tstamp) : date('c'));
+        $structuredData['uploadDate'] = $date;
 
         $host = 'https://' . ($_SERVER['HTTP_HOST'] ?? '');
-        
+
+        // ThumbnailUrl - IMMER setzen für Google
         $posterSrc = $posterUrl ?: $posterPath;
+        if (empty($posterSrc)) {
+            $posterSrc = self::generateFallbackThumbnail($mp4Path);
+        }
+
         if ($posterSrc) {
             $structuredData['thumbnailUrl'] = $host . '/' . ltrim($posterSrc, '/');
+        } else {
+            // Notfall: Video-URL als Thumbnail verwenden
+            $structuredData['thumbnailUrl'] = $host . '/' . ltrim($mp4Path, '/');
         }
 
-        if ($mp4Path) {
-            $structuredData['contentUrl'] = $host . '/' . ltrim($mp4Path, '/');
-        }
+        // Video-URL
+        $structuredData['contentUrl'] = $host . '/' . ltrim($mp4Path, '/');
 
-        // Nur zurückgeben wenn mindestens ein zusätzliches Feld gesetzt ist
-        return count($structuredData) > 2 ? $structuredData : null;
+        // Zusätzliche empfohlene Felder
+        $structuredData['embedUrl'] = $host . '/' . ltrim($mp4Path, '/');
+
+        return $structuredData;
     }
 
     public static function isVideoFormat(string $extension): bool

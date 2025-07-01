@@ -6,18 +6,17 @@
     >
         <div class="position-relative bg-primary ms-auto me-0 mt-gap text-secondary p-sm-7 p-3 col-12 col-sm-10">
             <div class="row align-items-center">
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <div class="row">
-                        <div class="col-12 col-sm-8 col-md-12">
+                        <div class="col-12">
                             <div class="ce--headline hl-h2" data-animation="animate__fadeIn">
-                                <h2><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['title'] ?>
-                                </h2>
+                                <span class="h2"><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['title'] ?></span>
                             </div>
 
                             <div class="widget widget-text" data-animation="animate__fadeIn">
-                                <label class="form-label d-block" for="pachtrechner_ha_input"><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['labelHa'] ?></label>
+                                <label class="form-label d-block" for="pachtrechner_ha_input_box"><?= $GLOBALS['TL_LANG']['pachtrechner']['form']['labelHa'] ?></label>
                                 <div class="input-group w-auto d-inline-flex">
-                                    <input type="number" style="min-width: 90px;" min="1" id="pachtrechner_ha_input" class="form-control text-center text-sm-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
+                                    <input type="number" style="min-width: 90px;" min="1" id="pachtrechner_ha_input_box" class="form-control text-center text-sm-end js-pachtrechner-ha-input" name="search" placeholder="<?= $GLOBALS['TL_LANG']['pachtrechner']['form']['placeholderHa'] ?>" aria-label="Suche">
                                     <button class="btn btn-secondary with-arrow js-pachtrechner-check-btn">
                                         <?= $GLOBALS['TL_LANG']['pachtrechner']['form']['buttonCalculate'] ?>
                                     </button>
@@ -30,7 +29,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 mt-4 mt-md-0 text-center">
+                <div class="col-md-4 mt-4 mt-md-0 text-center">
                     <div class="pachtrechner-badge-in-column text-md-end">
                         <div data-animation="animate__fadeInRight">
                             <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/badges/pachtrechner-badge-de.svg", null), null, null; ?>
@@ -47,7 +46,7 @@
     <div class="result-header">
         <div class="container">
             <div class="headline--wrapper hl-h2">
-                <h3 class="h2 mb-0"><?= $GLOBALS['TL_LANG']['pachtrechner']['title'] ?></h3>
+                <span class="h2 mb-0"><?= $GLOBALS['TL_LANG']['pachtrechner']['title'] ?></span>
             </div>
         </div>
     </div>
@@ -63,7 +62,7 @@
                 <?= $GLOBALS['TL_LANG']['pachtrechner']['result']['usualRange'] ?>
             </span>
 
-            <div class="mt-gap mb-5 pt-gap py-sm-4">
+            <div class="mt-gap mb-3 mb-sm-5 pt-gap py-sm-4">
                 <div class="pachtrechnerBar">
                     <div class="progress" style="height: 34px;">
                         <div style="width: 0px;" class="progress-bar h-100 js-bar-range-percent" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
@@ -89,14 +88,14 @@
             </div>
 
             <div class="mb-gap">
-                <div class="d-sm-flex gap-5">
+                <div class="d-sm-flex gap-3 gap-md-5">
                     <div>
-                        <a href="/kontakt?etcc_cu=onsite&etcc_cmp_onsite=Wunschtermin&etcc_med_onsite=Pachtrechner" style="--bs-btn-padding-left: .75rem;" class="btn btn-outline-primary btn-xl with-arrow pr_wunschtermin" id="" data-css-click-observed-1="true">
+                        <a id="pachtrechner_termin_btn" href="/kontakt?etcc_cu=onsite&etcc_cmp_onsite=Wunschtermin&etcc_med_onsite=Pachtrechner"  class="btn btn-outline-primary btn-xl with-arrow pr_wunschtermin" id="" >
                             <?= $GLOBALS['TL_LANG']['pachtrechner']['button']['bookConsultation'] ?>
                         </a>
                     </div>
                     <div class="mt-3 mt-sm-0">
-                        <a href="/flaechencheck?etcc_cu=onsite&etcc_cmp_onsite=Fl%C3%A4chencheck&etcc_med_onsite=Pachtrechner" style="--bs-btn-padding-left: .75rem;" class="btn btn-outline-primary btn-xl with-arrow pr_flaechencheck" id="" data-css-click-observed-1="true">
+                        <a  id="pachtrechner_flaechencheck_btn" href="/flaechencheck?etcc_cu=onsite&etcc_cmp_onsite=Fl%C3%A4chencheck&etcc_med_onsite=Pachtrechner" class="btn btn-outline-primary btn-xl with-arrow pr_flaechencheck" id="" >
                             <?= $GLOBALS['TL_LANG']['pachtrechner']['button']['areaCheck'] ?>
                         </a>
                     </div>
@@ -112,3 +111,11 @@
         </div>
     </div>
 </div>
+
+<style>
+    .pachtrechner-widget.is-box .js-pachtrechner-check-btn{
+          @media (max-width: 767px) {
+              width: 100%;
+          }
+    }
+</style>

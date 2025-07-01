@@ -17,18 +17,62 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\System;
 
+/**
+ * Environment Helper
+ * 
+ * Stellt Hilfsmethoden zur Verfügung um die aktuelle Contao-Umgebung
+ * (Backend/Frontend) zu ermitteln.
+ */
 class EnvHelper
 {
-    public static function isBackend()
-    {
-        $requestStack = System::getContainer()->get('request_stack');
-        $scopeMatcher = System::getContainer()->get('contao.routing.scope_matcher');
+    // Container Cache für Performance
+    private static $container = null;
 
-        return $scopeMatcher->isBackendRequest($requestStack->getCurrentRequest());
+    /**
+     * Optimierter Container-Zugriff
+     */
+    private static function getContainer()
+    {
+        return self::$container ??= System::getContainer();
     }
 
-    public static function isFrontend()
+    /**
+     * Prüft ob der aktuelle Request im Contao Backend läuft
+     * 
+     * @return bool True wenn Backend, false wenn Frontend
+     */
+    public static function isBackend(): bool
+    {
+        try {
+            $container = self::getContainer();
+            $requestStack = $container->get('request_stack');
+            $scopeMatcher = $container->get('contao.routing.scope_matcher');
+            
+            $currentRequest = $requestStack->getCurrentRequest();
+            
+            return $currentRequest && $scopeMatcher->isBackendRequest($currentRequest);
+        } catch (\Exception $e) {
+            // Bei Fehlern konservativ Backend annehmen
+            self::logError('Fehler bei Backend-Erkennung: ' . $e->getMessage());
+            return true;
+        }
+    }
+
+    /**
+     * Prüft ob der aktuelle Request im Contao Frontend läuft
+     * 
+     * @return bool True wenn Frontend, false wenn Backend
+     */
+    public static function isFrontend(): bool
     {
         return !self::isBackend();
+    }
+
+    /**
+     * Schreibt eine Fehler-Nachricht ins Log
+     */
+    private static function logError(string $message): void
+    {
+        error_log('[EnvHelper ERROR] ' . $message);
     }
 }

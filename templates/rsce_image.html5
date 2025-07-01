@@ -13,7 +13,7 @@
 
         <?php $rand = rand(1, 100); if ($this->image): ?>
             <div data-animation="<?= $this->animation_type;?>" class="image">
-                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image, $this->alt, $this->imageTitle, $this->size, null, false, $this->fullsize ? $rand : false, true, $this->caption, $this->imageUrl); ?>
+                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image, $this->alt, $this->imageTitle, $this->size, null, false, $this->fullsize ? $rand : false, !$this->image_no_lazy, $this->caption, $this->imageUrl); ?>
             </div>
         <?php endif; ?>
     </div>

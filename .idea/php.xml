@@ -30,7 +30,6 @@
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-area-check" />
       <path value="$PROJECT_DIR$/vendor/NEdev/contao-lbd-aiolos-bundle" />
       <path value="$PROJECT_DIR$/vendor/caeli-wind/caeli-area-pdf" />
-      <path value="$PROJECT_DIR$/vendor/backup/caeli-area-pdf" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

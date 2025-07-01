@@ -31,7 +31,7 @@ $GLOBALS['TL_LANG']['caeli_area_pdf']['results'] = [
     'congratulations' => 'Herzlichen Glückwunsch,',
     'recommendation' => 'Ihr Standort eignet sich voraussichtlich für eine wirtschaftliche Nutzung als Windenergiefläche. Wir empfehlen Ihnen eine detaillierte Analyse durch unser Expertenteam.',
     'wind_conditions_title' => 'Windgegebenheiten',
-    'wind_conditions_text' => 'Am angegebenen Standort liegen mit einer Windleistungsdichte von %s W/m² bis %s W/m² gute Windbedingungen vor.',
+    'wind_conditions_text' => 'Am angegebenen Standort liegen mit einer Windleistungsdichte von        %s W/m² bis %s W/m² gute Windbedingungen vor.',
     'restrictions_title' => 'Restriktionen',
     'restrictions_text' => 'Voraussichtlich bis zu %s%% der Grundstücksfläche können unter Berücksichtigung raumordnerischen Restriktionen für die Entwicklung eines Windparks genutzt werden.',
     'grid_connection_title' => 'Netzanschluss',
@@ -45,13 +45,13 @@ $GLOBALS['TL_LANG']['caeli_area_pdf']['results'] = [
 $GLOBALS['TL_LANG']['caeli_area_pdf']['steps'] = [
     'title' => 'So geht es weiter...',
     'subtitle_1' => 'Von der unverbindlichen Ersteinschätzung bis zum',
-    'subtitle_2' => 'Vertragsabschluss – für Sie zu 100% kostenlos!',
+    'subtitle_2' => ' Vertragsabschluss – für Sie 100% kostenlos!',
     'step_1_title' => 'Schritt 1: Persönliches Gespräch & Experteneinschätzung',
     'step_1_text' => 'Am angegebenen Standort liegen mit einer Windleistungsdichte von 400 W/m² bis 510 W/m² gute Windbedingungen vor. In einem virtuellen Gesprächstermin stellen wir Ihnen unsere Leistungen vor und führen mit Ihnen eine genauere Bewertung Ihres Grundstücks mittels Einzeichnung auf einer Karte durch.',
     'step_2_title' => 'Schritt 2: Gemeinsame Planung & Zielsetzung',
     'step_2_text' => 'Sie erhalten die Analyseergebnisse zu Ihrer Fläche, notwendige Information sowie verbindliche Antworten auf Ihre Fragen. Gemeinsam klären wir die nächsten Schritte, um Ihre Potenzialfläche für Windenergie unkompliziert und sicher zu vermarkten – ganz nach Ihren persönlichen Vorstellungen.',
     'step_3_title' => 'Schritt 3: Zugang zum Marktplatz & erfolgreiche Vermittlung',
-    'step_3_text' => 'Im Zuge der professionellen Vermarktung Ihres Grundstücks erhalten Sie exklusiven Zugang zu unserem Online-Marktplatz für Windenergieflächen. Dank der großen Anzahl renommierter Projekt-entwickler finden wir gemeinsam den richtigen Partner für Ihr Windparkprojekt. Im gesamten Prozess begleiten wir Sie Schritt für Schritt – von der ersten Beratung bis zur Endverhandlung.',
+    'step_3_text' => 'Im Zuge der professionellen Vermarktung Ihres Grundstücks erhalten Sie exklusiven Zugang zu unserem Online-Marktplatz für Windenergieflächen. Dank der großen Anzahl renommierter Projekt-Entwickler finden wir gemeinsam den richtigen Partner für Ihr Windparkprojekt. Im gesamten Prozess begleiten wir Sie Schritt für Schritt – von der ersten Beratung bis zur Endverhandlung.',
     'property_data_title' => 'Ihre Flächendaten'
 ];
 

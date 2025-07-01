@@ -28,6 +28,11 @@ $config = [
                 'tl_class' => 'clr'
             ),
         ),
+        'image_no_lazy' => array(
+            'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für dieses Bild'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50'),
+        ),
         'image_size' => array(
             'label' => array('Bildgröße', ''),
             'inputType' => 'imageSize',

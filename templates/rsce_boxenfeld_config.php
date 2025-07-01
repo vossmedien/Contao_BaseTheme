@@ -77,15 +77,20 @@ $config = array(
                 ),
 
                 'image' => array(
-                    'label' => array('Boxen-Bild', ''),
+                    'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
-                        'tl_class' => 'clr',
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
                     ),
+                ),
+                'image_no_lazy' => array(
+                    'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für dieses Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
 

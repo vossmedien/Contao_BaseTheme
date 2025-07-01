@@ -88,7 +88,7 @@ if (!isset($this->size)) {
                                 <?php $file = \Contao\FilesModel::findByUuid($uuid); ?>
                                 <?php if ($file !== null && $file->type === 'file') : ?>
                                     <div class="swiper-slide text-center" data-animation="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
-                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($uuid, null, $this->headline, $this->size, null, false, $this->open_lightbox ? $rand : ""); ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($uuid, null, $this->headline, $this->size, null, false, $this->open_lightbox ? $rand : "", !$file->slide_no_lazy); ?>
                                     </div>
                                     <?php $itemCount++; ?>
                                 <?php endif; ?>
@@ -96,7 +96,7 @@ if (!isset($this->size)) {
                         <?php else : ?>
                             <?php foreach ($this->galery as $slide) : ?>
                                 <div class="swiper-slide text-center" data-animation="<?php if ($this->slide_animation_type) : ?><?php echo $this->slide_animation_type; ?><?php endif; ?>">
-                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($slide->slide, $this->headline, $slide->slide_text, $slide->size, null, false, $this->open_lightbox ? $rand : ""); ?>
+                                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($slide->slide, $this->headline, $slide->slide_text, $slide->size, null, false, $this->open_lightbox ? $rand : "", !$slide->slide_no_lazy); ?>
                                 </div>
                                 <?php $itemCount++; ?>
                             <?php endforeach ?>

@@ -49,7 +49,7 @@
             ?>
 
             <?php if ($showActualImage): ?>
-             <a class="d-block h-100" href="<?= $this->link ?>">
+             <a class="d-block h-100" target="_blank" href="<?= $this->link ?>">
                 <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, $this->headline, '', ["450px", "280px", "crop"], 'img-fluid w-100 h-100 object-fit-cover', false, false); ?>
              </a>
             <?php else: ?>
@@ -142,7 +142,11 @@
                 <time datetime="<?= $formattedNewsDate['datetime'] ?>"><?= $formattedNewsDate['display'] ?></time>
             </p>
 
-            <h3 class="mt-2 mb-3"><?= $this->headline ?></h3>
+            <h3 class="mt-2 mb-3">
+                     <a class="text-secondary" href="<?= $this->link ?>" target="_blank">
+                <?= $this->headline ?>
+                     </a>
+            </h3>
 
             <div class="mt-auto">
                 <?php if ($this->hasText || $this->hasTeaser): ?>

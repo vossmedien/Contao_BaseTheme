@@ -103,14 +103,19 @@ $config = array(
                 ),
 
                 'icon' => array(
-                    'label' => array('Icon', 'innerhalb einer Bubble neben dem Ereignistitel'),
+                    'label' => array('Icon/Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
-                        'multiple' => false,
-                        'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
-                    )
+                        'fieldType' => 'radio',
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
+                    ),
+                ),
+                'icon_no_lazy' => array(
+                    'label' => array('Icon/Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Icon/Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
 
@@ -124,14 +129,19 @@ $config = array(
 
 
                 'image' => array(
-                    'label' => array('Bild', ''),
+                    'label' => array('Vollbreites Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
-                        'multiple' => false,
-                        'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
-                    )
+                        'fieldType' => 'radio',
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
+                    ),
+                ),
+                'image_no_lazy' => array(
+                    'label' => array('Vollbreites Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das vollbreite Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
 

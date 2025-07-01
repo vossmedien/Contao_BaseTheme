@@ -47,6 +47,7 @@ $GLOBALS['TL_LANG']['tl_module']['filter_landkreis'] = ['Filter by district', 'S
 $GLOBALS['TL_LANG']['tl_module']['filter_size'] = ['Filter by area size', 'Shows a filter for area size'];
 $GLOBALS['TL_LANG']['tl_module']['filter_leistung'] = ['Filter by power', 'Shows a filter for power'];
 $GLOBALS['TL_LANG']['tl_module']['auctionItemTemplate'] = ['Auction Item Template', 'Select the template to be used for rendering each individual auction item in the list.'];
+$GLOBALS['TL_LANG']['tl_module']['perPageMobile'] = ['Items per page (Mobile)', 'Number of auctions per page on mobile devices. If 0, the desktop value will be used.'];
 
 /**
  * Miscellaneous

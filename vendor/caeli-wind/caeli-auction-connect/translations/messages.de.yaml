@@ -18,13 +18,18 @@ filter:
   property:
     PRIVATE: "Privat"
     PUBLIC: "Öffentlich" # Beispiel, falls dieser Wert von der API kommt
+    PUBLIC_SECTOR: "Öffentlicher Sektor"
+    PUBLIC_SECTOR_PRIVATE: "Öffentlicher Sektor/Privat"
+  focus:
+    'true': "Ja"
+    'false': "Nein"
   placeholder:
     bundeslaender: "Alle Bundesländer"
     status_values: "Alle Status"
     property_values: "Alle Eigentumsformen"
   button:
     filter: "Filtern"
-    reset: "Zurücksetzen"
+    reset: "Filter zurücksetzen"
     update_data: "Daten aktualisieren"
   highlights_button: "Highlights"
   no_options_available: "Keine Optionen verfügbar"
@@ -53,7 +58,7 @@ auction_listing:
     image_alt_prefix: "Vorschaubild der Auktion"
     countdown_prefix: "Auktionsbeginn in"
     countdown_end_prefix: "Auktionsende in"
-    countdown_suffix_days: "Tage"
+    countdown_suffix_days: "Tagen"
     preview_button: "Vorschau"
     details:
       power: "Leistung"
@@ -81,10 +86,15 @@ detail:
   auction_not_found: "Auktion nicht gefunden oder nicht verfügbar."
   hub_height: "Nabenhöhe"
   wea_count: "Anzahl WEA"
-  avg_wind_speed: "Ø Windgeschwindigkeit:"
+  avg_wind_speed: "Ø Windgeschwindigkeit"
   planning_law_headline: "Planungsrecht"
   planning_law_info_text: "Planungsrechtliche Informationen nach Registrierung"
   area_status_headline: "Flächenstatus"
+  interested_area_headline: "Diese Fläche hat Sie interessiert"
+  no_longer_available:
+    headline: "Frei verfügbare Flächen finden Sie auf unserem Marktplatz"
+    description: "Die von Ihnen aufgerufene Fläche ist bereits erfolgreich vermittelt worden. Auf dem Caeli Marktplatz finden Sie zahlreiche qualifizierte Flächen, die bereits umfassend auf ihr Potenzial und ihre Umsetzbarkeit geprüft wurden."
+    button_text: "Zum Flächenangebot"
   area_progress:
     planning_law: "Planungsrecht"
     faunistics: "Faunistik"
@@ -98,7 +108,7 @@ detail:
     preparation: "Auktionsvorbereitung"
   new_customer_headline: "Ich bin Neukunde"
   new_customer_button: "Termin vereinbaren"
-  existing_customer_headline: "Ich bin Bestandskunde"
+  existing_customer_headline: "Ich bin bereits Kunde"
   existing_customer_button: "Zum Login"
   status_legend:
     title: "Legende"

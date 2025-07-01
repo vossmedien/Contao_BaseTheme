@@ -48,12 +48,12 @@
                                 <div class="button-holder px-3 px-md-5 d-sm-flex d-md-block d-lg-flex flex-row gap-2 justify-content-between py-3">
                                     <div data-animation="animate__fadeInLeft" class="mb-2 mb-sm-0 mb-md-2 mb-lg-0">
                                         <strong class="d-block mb-1 small">{{ 'detail.new_customer_headline'|trans }}</strong>
-                                        <a href="https://meetings-eu1.hubspot.com/pershin/terminbuchung-caeli-wind" target="_blank" class="btn btn-primary with-arrow btn-sm w-100">{{ 'detail.new_customer_button'|trans }}</a>
+                                        <a id="auction_new_customer_{{ auction.id }}" href="https://meetings-eu1.hubspot.com/pershin/terminbuchung-caeli-wind" target="_blank" class="auction_new_customer_btn btn btn-primary with-arrow btn-sm w-100">{{ 'detail.new_customer_button'|trans }}</a>
                                     </div>
 
                                     <div data-animation="animate__fadeInRight">
                                         <strong class="d-block mb-1 small">{{ 'detail.existing_customer_headline'|trans }}</strong>
-                                        <a href="https://auction.caeli-wind.de/" target="_blank" class="btn btn-primary with-arrow btn-sm w-100">{{ 'detail.existing_customer_button'|trans }}</a>
+                                        <a id="auction_existing_customer_{{ auction.id }}" href="https://auction.caeli-wind.de/" target="_blank" class="auction_existing_customer_btn btn btn-primary with-arrow btn-sm w-100">{{ 'detail.existing_customer_button'|trans }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -66,28 +66,44 @@
                                 {{ 'auction_listing.card.details.power'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ raw_data.power }} {{ 'auction_listing.card.unit.mw'|trans }}
+                                    {% if app.request.locale == 'en' %}
+                                        {{ raw_data.power|number_format(1, '.', ',') }} {{ 'auction_listing.card.unit.mw'|trans }}
+                                    {% else %}
+                                        {{ raw_data.power|number_format(1, ',', '.') }} {{ 'auction_listing.card.unit.mw'|trans }}
+                                    {% endif %}
                                 </strong>
 
                                 <span class="auction-detail-label">
                                 {{ 'auction_listing.card.details.area_size'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ raw_data.areaSize }} {{ 'auction_listing.card.unit.ha'|trans }}
+                                    {% if app.request.locale == 'en' %}
+                                        {{ raw_data.areaSize|number_format(1, '.', ',') }} {{ 'auction_listing.card.unit.ha'|trans }}
+                                    {% else %}
+                                        {{ raw_data.areaSize|number_format(1, ',', '.') }} {{ 'auction_listing.card.unit.ha'|trans }}
+                                    {% endif %}
                                 </strong>
 
                                 <span class="auction-detail-label">
                                 {{ 'auction_listing.card.details.full_usage_hours'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ raw_data.fullUsageHours }} {{ 'auction_listing.card.unit.h_per_a'|trans }}
+                                    {% if app.request.locale == 'en' %}
+                                        {{ raw_data.fullUsageHours|number_format(0, '.', ',') }} {{ 'auction_listing.card.unit.h_per_a'|trans }}
+                                    {% else %}
+                                        {{ raw_data.fullUsageHours|number_format(0, ',', '.') }} {{ 'auction_listing.card.unit.h_per_a'|trans }}
+                                    {% endif %}
                                 </strong>
 
                                 <span class="auction-detail-label">
                                 {{ 'auction_listing.card.details.irr_before_rent'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ raw_data.internalRateOfReturnBeforeRent }} {{ 'auction_listing.card.unit.percent'|trans }}
+                                    {% if app.request.locale == 'en' %}
+                                        {{ raw_data.internalRateOfReturnBeforeRent|number_format(1, '.', ',') }} {{ 'auction_listing.card.unit.percent'|trans }}
+                                    {% else %}
+                                        {{ raw_data.internalRateOfReturnBeforeRent|number_format(1, ',', '.') }} {{ 'auction_listing.card.unit.percent'|trans }}
+                                    {% endif %}
                                 </strong>
 
                                 {% if raw_data.weaHubHeight > 0 %}
@@ -95,7 +111,11 @@
                                 {{ 'detail.hub_height'|trans }}
                             </span>
                                     <strong class="auction-detail-value">
-                                        {{ raw_data.weaHubHeight }} m
+                                        {% if app.request.locale == 'en' %}
+                                            {{ raw_data.weaHubHeight|number_format(0, '.', ',') }} m
+                                        {% else %}
+                                            {{ raw_data.weaHubHeight|number_format(0, ',', '.') }} m
+                                        {% endif %}
                                     </strong>
                                 {% endif %}
                                 <span class="auction-detail-label">
@@ -109,7 +129,11 @@
                                 {{ 'detail.avg_wind_speed'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ raw_data.averageWindSpeed }} m/s
+                                    {% if app.request.locale == 'en' %}
+                                        {{ raw_data.averageWindSpeed|number_format(1, '.', ',') }} m/s
+                                    {% else %}
+                                        {{ raw_data.averageWindSpeed|number_format(1, ',', '.') }} m/s
+                                    {% endif %}
                                 </strong>
 
 
@@ -117,7 +141,7 @@
                                 {{ 'auction_listing.card.details.availability'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {% if raw_data.status == 'STARTED' %}
+                                    {% if raw_data.status == 'STARTED' or raw_data.status == 'OPEN_FOR_DIRECT_AWARDING' %}
                                         {{ 'marktplatz.as_of_now'|trans }}
                                     {% else %}
                                         {{ 'auction_listing.card.details.availability_prefix'|trans }} {{ raw_data.availableFrom }}
@@ -140,7 +164,7 @@
                        data-bs-toggle="popover"
                        data-bs-placement="top"
                        data-bs-html="true"
-                       data-bs-content="<div class='text-start'><i class='fak fa-check'></i> {{ 'detail.status_legend.completed'|trans }}<br><i class='fak fa-recycling'></i> {{ 'detail.status_legend.in_progress'|trans }}<br><i class='fak fa-hourglass'></i> {{ 'detail.status_legend.requested'|trans }}</div>"
+                       data-bs-content="<div class='text-start'><span class='d-block'><i class='fak fa-check'></i> {{ 'detail.status_legend.completed'|trans }}</span><span class='d-block my-2'><i class='fak fa-recycling'></i> {{ 'detail.status_legend.in_progress'|trans }}</span><span class='d-block'><i class='fak fa-hourglass'></i> {{ 'detail.status_legend.requested'|trans }}</span></div>"
                        title="{{ 'detail.status_legend.title'|trans }}"></i>
                 </strong>
 
@@ -176,16 +200,47 @@
         </div>
 
     </div>
+    {#
 {% elseif error|default %}
     <div class="my-gap container">
         <div class="alert alert-danger">
             <p>{{ error }}</p>
         </div>
-    </div>
+    </div>#}
 {% else %}
-    <div class="my-gap container">
-        <div class="alert alert-info">
-            <p>{{ 'detail.auction_not_found'|trans }}</p>
+    <div class="content--element  ce_rsce_headline bg-primary is-fullwidth layout-two-columns mb-gap">
+        <div class="ce--inner container">
+            <div>
+                <div class="row  gy-lg-0 gx-lg-3 align-items-center">
+                    <div data-animation="animate__fadeIn" class="col-12 col-lg-6 order-lg-1 order-1 headline-column">
+                        <div class="">
+                            <div class="headline-wrapper">
+                                <div class="ce--headline hl-h2">
+                                    <h2 style="">
+                                        {{ 'detail.no_longer_available.headline'|trans }}
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="text">
+                                <p>{{ 'detail.no_longer_available.description'|trans }}</p>
+                            </div>
+                            <div class="buttons text-lg-start mt-4">
+                                <div class="ce--buttons">
+                                    <a class="btn btn-xl btn-outline-white with-arrow" href="/marktplatz" id="klick-flaechenangebot-pe-seite">{{ 'detail.no_longer_available.button_text'|trans }}</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 order-lg-2 order-2 ">
+                        <div class="content-column mt-4 mt-lg-0">
+                            <div class="text">
+                                <div>
+                                    {{ insert_tag('insert_node::8')|raw }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endif %}

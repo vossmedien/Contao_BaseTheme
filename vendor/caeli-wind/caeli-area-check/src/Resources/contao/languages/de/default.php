@@ -11,12 +11,10 @@ $GLOBALS['TL_LANG']['caeli_area_check']['loading']['texts'] = [
     'checking_area' => 'Wir prüfen Ihre Fläche',
     'wind_conditions' => 'Passen die Windgegebenheiten?',
     'restrictions_check' => 'Gibt es Restriktionen?',
-    'grid_connection' => 'Ist ein Netzanschluss gegeben?',
+    'grid_connection' => 'Ist ein Netzanbindung gegeben?',
     'analyzing_potential' => 'Analysiere Windpotential',
-    'checking_nature' => 'Prüfe Naturschutzgebiete',
-    'calculating_economics' => 'Berechne Wirtschaftlichkeit',
+    'checking_nature' => 'Faunistische Erstprüfung',
     'checking_distances' => 'Überprüfe Abstandsregelungen',
-    'analyzing_capacity' => 'Analysiere Netzkapazität',
     'evaluating_quality' => 'Bewerte Standortqualität',
 ];
 
@@ -53,7 +51,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
     ],
     'polygon_edit' => [
         'title' => 'Schritt 2: Grundstück einzeichnen und prüfen.',
-        'content' => 'Sie sehen nun ein gelbes Polygon, dass Sie an die gewünschte Position verschieben können. Nutzen Sie die Eckpunkte des Polygons zur groben Eingrenzung Ihres Grundstücks und wählen Sie „Ergebnis anzeigen“, sobald sie fertig sind. Wir prüfen in Windeseile die Bedingungen Ihrer Fläche.',
+        'content' => 'Verschieben Sie das gelbe Polygon an die gewünschte Position und nutzen Sie die Eckpunkte zur groben Eingrenzung Ihres Grundstücks. Wählen Sie anschließend „Ergebnis anzeigen“.',
         'button_back' => 'Zurück',
         'button_next' => 'Weiter',
     ],
@@ -61,14 +59,14 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
         'title' => 'Schritt 3: Fast geschafft!',
         'content' => 'Fast geschafft: Verschieben Sie das Polygon an die korrekte Position und richten Sie die Eckpunkte an Ihrem Grundstück aus. Klicken Sie dann auf „Ergebnis anzeigen“. Wir prüfen in Windeseile die Bedingungen auf Ihrer Fläche.',
         'button_back' => 'Zurück',
-        'button_next' => 'Fertig',
+        'button_next' => 'Schließen',
     ],
 ];
 
 // Consent overlay
 $GLOBALS['TL_LANG']['caeli_area_check']['consent']['overlay'] = [
     'title' => 'Ihr Flächencheck <br>startet gleich!',
-    'message' => 'Um Ihnen die interaktive Karte zeigen und Ihre Anfrage bearbeiten zu können, benötigen wir Ihr Einverständnis für notwendige Cookies.',
+    'message' => 'Um Ihnen die interaktive Karte zeigen und Ihre Anfrage bearbeiten zu können, benötigen wir Ihr Einverständnis für den Einsatz von Google Maps. Sie können jederzeit Ihre Einwilligung über den Consent-Manager <a href="#" onclick="var recall = document.querySelector(\'.cmpboxrecalllink\'); if(recall) recall.click(); setTimeout(function(){var tab = document.querySelector(\'[data-cmp-purpose=c55]\'); if(tab) tab.click();}, 100); return false;">widerrufen</a>.',
     'button' => 'Jetzt starten',
 ];
 
@@ -150,7 +148,8 @@ $GLOBALS['TL_LANG']['caeli_area_check']['loading'] = [
         'saving' => 'Ergebnis wird gespeichert...',
         'completed' => 'Verarbeitung abgeschlossen!'
     ],
-    'completed_redirect' => 'Abgeschlossen! Weiterleitung...'
+    'completed_redirect' => 'Abgeschlossen! Weiterleitung...',
+    'please_wait' => 'Bitte haben Sie noch etwas Geduld'
 ];
 
 // Interface elements
@@ -217,6 +216,10 @@ $GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
     'form_section' => [
         'suitable_title' => 'Jetzt Ihre Windkraft-Chance prüfen – kostenlos und unverbindlich:',
         'unsuitable_title' => 'Jetzt gesicherte Aussage zur Windkrafteignung erhalten:',
+    ],
+    'badges' => [
+        'pdf_suitable' => '/files/base/layout/img/caeli_de/badges/flaechencheck-pdf-badge-de.webp',
+        'pdf_unsuitable' => '/files/base/layout/img/caeli_de/badges/flaechencheck-pdf-badge-de_negativ.svg',
     ],
     'error_states' => [
         'check_failed' => [

@@ -113,14 +113,14 @@ class AuctionFilterController extends AbstractFrontendModuleController
                 'label' => 'filter.label.size', // bestehende Übersetzung wiederverwenden
                 'type' => 'range_slider',
                 'min' => 0,
-                'max' => 500,
+                'max' => 1000,
                 'step' => 10,
             ],
             'size' => [
                 'label' => 'filter.label.size',
                 'type' => 'range_slider',
                 'min' => 0,
-                'max' => 500,
+                'max' => 1000,
                 'step' => 10,
             ],
             'power' => [
@@ -285,7 +285,7 @@ class AuctionFilterController extends AbstractFrontendModuleController
         $requestedFilters = array_filter($requestedFilters); // Leere Einträge entfernen
 
         $filteredConfigs = [];
-        
+
         // In der gewünschten Reihenfolge durchgehen
         foreach ($requestedFilters as $filterKey) {
             if (isset($allConfigs[$filterKey])) {

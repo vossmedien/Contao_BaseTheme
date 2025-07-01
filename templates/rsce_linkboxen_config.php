@@ -319,7 +319,26 @@ $config = array(
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,mp4,webm,ogv',
+                        'tl_class' => 'w50 clr',
+                        'submitOnChange' => true
                     ),
+                ),
+
+                'image_poster' => array(
+                    'label' => array('Poster-Bild für Video', 'Wird nur angezeigt, wenn oben ein Video ausgewählt wurde'),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
+                    ),
+                ),
+                'image_video_no_lazy' => array(
+                    'label' => array('Video ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Video'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50 clr'),
                 ),
 
                 'image_grayed' => array(
@@ -556,7 +575,7 @@ $config = array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
                     ),
                     'dependsOn' => array(
                         'field' => 'add_collapsableBox',
@@ -679,7 +698,7 @@ $config = array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
                         'tl_class' => 'w50'
                     ),
 
@@ -691,7 +710,7 @@ $config = array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
                         'tl_class' => 'w50'
                     ),
 

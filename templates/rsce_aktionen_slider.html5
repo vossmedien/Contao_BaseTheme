@@ -34,11 +34,11 @@ if (!isset($this->size)) {
                                 <div class="box box-aktionen" style="--box-color: <?= $action->box_color; ?>;">
                                     <?php if ($action->add_link): ?>
                                         <a <?php if ($action->image_link_target): ?>target="_blank"<?php endif; ?> <?php if ($action->image_link_title): ?>title="<?= $action->image_link_title; ?>"<?php endif; ?> href="<?= $action->image_link_url; ?>">
-                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($action->image, null, $action->title, $this->size, null, false, false); ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($action->image, null, $action->title, $this->size, null, false, false, !$action->image_no_lazy); ?>
                                         </a>
                                     <?php else: ?>
                                         <span>
-                                           <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($action->image, null, $action->title, $this->size, null, false, false); ?>
+                                           <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($action->image, null, $action->title, $this->size, null, false, false, !$action->image_no_lazy); ?>
                                         </span>
                                     <?php endif; ?>
 

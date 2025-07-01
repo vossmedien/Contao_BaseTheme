@@ -1,6 +1,6 @@
 .auction-slider-element-wrapper {
   @include media-breakpoint-down(md) {
-    margin-top: var(--main-gap);
+    //margin-top: var(--main-gap);
   }
 
   .swiper-wrapper {
@@ -128,4 +128,8 @@
       color: var(--bs-link-hover-color)
     }
   }
+}
+
+div.ce_auction_element:empty{
+  display: none;
 }

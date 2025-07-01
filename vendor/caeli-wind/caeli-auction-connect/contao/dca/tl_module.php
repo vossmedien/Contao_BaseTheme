@@ -22,7 +22,7 @@ use CaeliWind\CaeliAuctionConnect\Dca\ModuleDcaHelper;
  * Frontend modules
  */
 // Listing Modul: Mit Weiterleitung zur Detail-Seite
-$GLOBALS['TL_DCA']['tl_module']['palettes'][AuctionListingController::TYPE] = '{title_legend},name,headline,type;{config_legend},jumpTo,auctionItemTemplate,perPage;{api_legend},auctionApiUrlParams;{filter_legend},auctionListingFilters,auctionRawDataPreviewMod;{sort_legend},auctionSortRules;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][AuctionListingController::TYPE] = '{title_legend},name,headline,type;{config_legend},jumpTo,auctionItemTemplate,perPage,perPageMobile;{api_legend},auctionApiUrlParams;{filter_legend},auctionListingFilters,auctionRawDataPreviewMod;{sort_legend},auctionSortRules;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 // Detail Modul: Mit Weiterleitung zurück zur Listing-Seite
 $GLOBALS['TL_DCA']['tl_module']['palettes'][AuctionDetailController::TYPE] = '{title_legend},name,headline,type;{config_legend},jumpTo;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
@@ -90,6 +90,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['perPage'] = [
     'inputType' => 'text',
     'eval'      => ['rgxp' => 'natural', 'tl_class' => 'w50'],
     'sql'       => "smallint(5) unsigned NOT NULL default '12'"
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['perPageMobile'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_module']['perPageMobile'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => ['rgxp' => 'natural', 'tl_class' => 'w50'],
+    'sql'       => "smallint(5) unsigned NOT NULL default '0'"
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['auctionFilterOptions'] = [

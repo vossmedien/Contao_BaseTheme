@@ -37,7 +37,7 @@ h3.popover-header {
     font-size: 20px;
   }
 
-  &:has(.tutorial-close-btn){
+  &:has(.tutorial-close-btn) {
     padding-right: .5rem;
   }
 }
@@ -46,12 +46,14 @@ h3.popover-header {
   --bs-popover-body-padding-x: .75rem;
   --bs-popover-body-padding-y: .75rem;
   font-size: var(--bs-body-font-size);
-
+  line-height: 1.3;
   @media (max-width: 768px) {
     --bs-popover-body-padding-x: 0.5rem;
     --bs-popover-body-padding-y: 0.5rem;
     font-size: 14px;
+    line-height: 1.2;
   }
+
 
   i {
     font-size: .875rem;

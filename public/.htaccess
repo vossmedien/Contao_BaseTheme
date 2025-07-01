@@ -1,4 +1,4 @@
-Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://*.consentmanager.net https://*.googletagmanager.com https://*.google-analytics.com 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://maps.googleapis.com https://*.consentmanager.net https://*.googletagmanager.com https://*.google-analytics.com 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://maps.gstatic.com https://*.googleapis.com https://*.gstatic.com *.google.com *.googleusercontent.com https://*.consentmanager.net https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com *.google.com https://*.gstatic.com data: blob: https://*.consentmanager.net https://nominatim.openstreetmap.org https://*.google-analytics.com https://*.googletagmanager.com; frame-src 'self' *.google.com https://*.consentmanager.net https://*.personio.de https://player.podigee-cdn.net; worker-src blob:;"
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https: data: blob:; frame-src 'self' https:; worker-src blob:;"
 <IfModule mod_headers.c>
     # Security Headers
     Header always set X-Content-Type-Options "nosniff"
@@ -199,6 +199,146 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     RewriteCond %{HTTP:X-Forwarded-Proto} !https
     RewriteCond %{HTTPS} off
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+
+    RewriteCond %{QUERY_STRING} ^getersteinschaetzung=([a-f0-9\-]+)$ [NC]
+    RewriteRule ^start$ /?parkid=%1 [R=301,L]
+
+
+
+    # QUERY PARAMETER REDIRECTS ZUERST (vor den normalen Regeln!)
+    RewriteCond %{QUERY_STRING} ^page_n82=2$
+    RewriteRule ^grundeigentuemer/ratgeber$ /ratgeber? [R=301,L]
+
+    RewriteCond %{QUERY_STRING} ^page_e=2$
+    RewriteRule ^marketplace$ /en/marketplace? [R=301,L]
+
+    RewriteCond %{QUERY_STRING} ^page_e=2$
+    RewriteRule ^oeffentlicher/marktplatz$ /marktplatz? [R=301,L]
+
+    RewriteCond %{QUERY_STRING} ^page_n88=[23]$
+    RewriteRule ^presse$ /presse? [R=301,L]
+
+    RewriteCond %{QUERY_STRING} ^page_n82=[23]$
+    RewriteRule ^ratgeber$ /ratgeber? [R=301,L]
+
+    RewriteCond %{QUERY_STRING} ^page_e=[234]$
+    RewriteRule ^ueber-caeli/presse-spiegel$ /pressespiegel? [R=301,L]
+
+    # DANN: Spezifische URLs (längste zuerst)
+
+    # About/Career URLs
+    RewriteRule ^about-caeli/career/job/process-manager-in$ /karriere [R=301,L]
+    RewriteRule ^about-caeli/board-of-directors$ /en/board-of-directors [R=301,L]
+    RewriteRule ^about-caeli/career/job$ /karriere [R=301,L]
+    RewriteRule ^about-caeli/career/$ /karriere [R=301,L]
+    RewriteRule ^about-caeli/team$ /en/management [R=301,L]
+    RewriteRule ^about-caeli$ /en/about-caeli [R=301,L]
+
+    # Blog URLs (längste zuerst)
+    RewriteRule ^blog/artikel/eeg-ausschreibung-februar-2025-auswirkungen-auf-windkraft-projektentwickler-caeli-wind$ /projektentwickler-blog/artikel/eeg-ausschreibung-februar-2025-auswirkungen-auf-windkraft-projektentwickler-caeli-wind [R=301,L]
+    RewriteRule ^blog/artikel/erfolgsfaktor-repowering-weiterentwicklung-windparks-fuer-projektentwickler-attraktiv$ /projektentwickler-blog/artikel/erfolgsfaktor-repowering-weiterentwicklung-windparks-fuer-projektentwickler-attraktiv [R=301,L]
+    RewriteRule ^blog/artikel/windkraftflaechen-erfolgreich-sichern-strategien-fuer-projektentwickler$ /projektentwickler-blog/artikel/windkraftflaechen-erfolgreich-sichern-strategien-fuer-projektentwickler [R=301,L]
+    RewriteRule ^blog/artikel$ /projektentwickler-blog/ [R=301,L]
+    RewriteRule ^blog-en/article$ /en/ [R=301,L]
+    RewriteRule ^blog-en/$ /en/ [R=301,L]
+    RewriteRule ^blog$ /projektentwickler-blog/ [R=301,L]
+
+    # Bundesland URLs
+    RewriteRule ^bundesland/baden-wuerttemberg$ /windenergie/deutschland/baden-wuerttemberg [R=301,L]
+    RewriteRule ^bundesland/bayern$ /windenergie/deutschland/bayern [R=301,L]
+    RewriteRule ^bundesland/brandenburg$ /windenergie/deutschland/brandenburg [R=301,L]
+    RewriteRule ^bundesland/hessen$ /windenergie/deutschland/hessen [R=301,L]
+    RewriteRule ^bundesland/mecklenburg-vorpommern$ /windenergie/deutschland/mecklenburg-vorpommern [R=301,L]
+    RewriteRule ^bundesland/niedersachsen$ /windenergie/deutschland/niedersachsen [R=301,L]
+    RewriteRule ^bundesland/nordrhein-westfalen$ /windenergie/deutschland/nordrhein-westfalen [R=301,L]
+    RewriteRule ^bundesland/rheinland-pfalz$ /windenergie/deutschland/rheinland-pfalz [R=301,L]
+    RewriteRule ^bundesland/saarland$ /windenergie/deutschland/saarland [R=301,L]
+    RewriteRule ^bundesland/sachsen$ /windenergie/deutschland/sachsen [R=301,L]
+
+    # Spezifische Ratgeber-URLs (vor Wildcards!)
+    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
+    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen-fuer-waldbesitzer$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
+    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windkraft-auf-agrarflaechen$ /ratgeber/detailseite/windkraft-auf-agrarflaechen [R=301,L]
+    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windkraft-auf-agrarflaechen-wie-landwirte-ihren-beitrag-zur-energiewende-leisten-und-selbst-profitieren-koennen$ /ratgeber/detailseite/windkraft-auf-agrarflaechen [R=301,L]
+
+    RewriteRule ^grundeigentuemer/ratgeber/detailseite/argumente-gegen-windkraftanlagen-im-wald-zwischen-mythen-und-fakten$ /ratgeber/detailseite/argumente-gegen-windkraftanlagen-im-wald-zwischen-mythen-und-fakten [R=301,L]
+    RewriteRule ^grundeigentuemer/ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
+    RewriteRule ^grundeigentuemer/ratgeber/detailseite/windkraft-pachtvertrag-so-gestalten-und-verhandeln-sie-erfolgreich$ /ratgeber/detailseite/windkraft-pachtvertrag-so-gestalten-und-verhandeln-sie-erfolgreich [R=301,L]
+
+    RewriteRule ^ratgeber/detailseite/1-wir-sind-caeli-wind-wir-beschleunigen-windkraft$ /ratgeber/detailseite/wir-sind-caeli-wind-wir-beschleunigen-windkraft [R=301,L]
+    RewriteRule ^ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
+    RewriteRule ^ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen-fuer-waldbesitzer$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
+    RewriteRule ^ratgeber/detailseite/windkraft-auf-agrarflaechen-wie-landwirte-ihren-beitrag-zur-energiewende-leisten-und-selbst-profitieren-koennen$ /ratgeber/detailseite/windkraft-auf-agrarflaechen [R=301,L]
+
+    # Weitere spezifische URLs
+    RewriteRule ^events/terminbuchung-branchenevent$ /terminbuchung-branchenevent [R=301,L]
+    RewriteRule ^ratgeber/detailseite/wir-sind-caeli-wind-wir-beschleunigen-windkraft$ /ratgeber [R=301,L]
+    RewriteRule ^fuer-grundbesitzer/ratgeber/ratgeber-elements$ /ratgeber [R=301,L]
+    RewriteRule ^fuer-grundbesitzer/ratgeber-flaechencheck$ /flaechencheck [R=301,L]
+    RewriteRule ^fuer-grundbesitzer/ratgeber$ /ratgeber [R=301,L]
+    RewriteRule ^fuer-grundbesitzer$ /grundeigentuemer [R=301,L]
+
+    RewriteRule ^grundeigentuemer/ratgeber/ratgeber-elements$ /ratgeber [R=301,L]
+    RewriteRule ^grundeigentuemer/ratgeber-flaechencheck$ /flaechencheck [R=301,L]
+    RewriteRule ^grundeigentuemer/ratgeber$ /ratgeber [R=301,L]
+
+    RewriteRule ^ratgeber/category/stimmen-der-branche$ /ratgeber [R=301,L]
+    RewriteRule ^ratgeber/category/wind-auf-agrar$ /ratgeber [R=301,L]
+    RewriteRule ^ratgeber/category/wind-fur-die-gemeinschaft$ /ratgeber [R=301,L]
+    RewriteRule ^ratgeber/category/wind-im-wald$ /ratgeber [R=301,L]
+    RewriteRule ^ratgeber/category/windkraft-fur-mich$ /ratgeber [R=301,L]
+    RewriteRule ^ratgeber/detailseite$ /ratgeber [R=301,L]
+    RewriteRule ^ratgeber/ratgeber-elements$ /ratgeber/ [R=301,L]
+    RewriteRule ^ratgeber/ratgeber-flaechencheck$ /flaechencheck [R=301,L]
+
+    # Marktplatz URLs (spezifische vor Wildcard)
+    RewriteRule ^oeffentlicher/marktplatz/direktvergabe$ /marktplatz [R=301,L]
+    RewriteRule ^oeffentlicher/marktplatz/details/(.*)$ /marktplatz/details/$1 [R=301,L]
+    RewriteRule ^oeffentlicher/marktplatz$ /marktplatz [R=301,L]
+    RewriteRule ^marktplatz/details$ /marktplatz [R=301,L]
+
+    # Weitere URLs
+    RewriteRule ^career/job$ /karriere [R=301,L]
+    RewriteRule ^contact$ /en/contact [R=301,L]
+    RewriteRule ^datenschutzhinweise-social-media$ /datenschutz [R=301,L]
+    RewriteRule ^events$ /veranstaltungen [R=301,L]
+    RewriteRule ^files/images/Ratgeber/Buedinger_Wald\.pdf$ /grundeigentuemer [R=301,L]
+    RewriteRule ^flaechencheck_seite$ /flaechencheck [R=301,L]
+    RewriteRule ^for-landowners$ /en/landowners [R=301,L]
+    RewriteRule ^for-project-developers$ /en/project-developers [R=301,L]
+    RewriteRule ^fuer-projektentwickler$ /projektentwickler [R=301,L]
+    RewriteRule ^grundstueck$ /flaechencheck [R=301,L]
+    RewriteRule ^historie-flaechenvergabe$ /erfolgsgeschichten [R=301,L]
+    RewriteRule ^home$ /en [R=301,L]
+    RewriteRule ^imprint$ /en/imprint [R=301,L]
+    RewriteRule ^marketplace$ /en/marketplace [R=301,L]
+    RewriteRule ^niedersachsen$ /windenergie/deutschland/niedersachsen [R=301,L]
+    RewriteRule ^Potenzialanalyse/78ff0$ /grundeigentuemer [R=301,L]
+    RewriteRule ^Potenzialanalyse/ab776$ /grundeigentuemer [R=301,L]
+    RewriteRule ^Potenzialanalyse/aca50$ /grundeigentuemer [R=301,L]
+    RewriteRule ^potenzialanalyse-neuwied$ /grundeigentuemer [R=301,L]
+    RewriteRule ^presse/category/id-2023$ /presse [R=301,L]
+    RewriteRule ^presse/category/id-2024$ /presse [R=301,L]
+    RewriteRule ^presse/category/id-2025$ /presse [R=301,L]
+    RewriteRule ^privacy-policy-social-media$ /en/privacy-policy [R=301,L]
+    RewriteRule ^privacy-policy$ /en/privacy-policy [R=301,L]
+    RewriteRule ^property$ /en/site-check [R=301,L]
+    RewriteRule ^qr/da-04-24$ /grundeigentuemer [R=301,L]
+    RewriteRule ^qr-da-04-24$ /grundeigentuemer [R=301,L]
+    RewriteRule ^ueber-caeli/presse-spiegel$ /pressespiegel [R=301,L]
+    RewriteRule ^ueber-caeli/team$ /management [R=301,L]
+    RewriteRule ^ueber-caeli/verwaltungsrat$ /verwaltungsrat [R=301,L]
+    RewriteRule ^windfarm-everest$ /en/windfarm-everest [R=301,L]
+    RewriteRule ^wind-symposium$ /grundeigentuemer [R=301,L]
+    RewriteRule ^109$ /en [R=301,L]
+
+    # WILDCARDS (nur für URLs ohne spezifische Regel)
+    RewriteRule ^files/images/Presse/Pressemitteilungen/.*$ /presse [R=301,L]
+    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/.*$ /ratgeber [R=301,L]
+    RewriteRule ^grundeigentuemer/ratgeber/detailseite/.*$ /ratgeber [R=301,L]
+    RewriteRule ^oeffentlicher/marktplatz/.*$ /marktplatz [R=301,L]
+
 
     # Determine the RewriteBase automatically and set it as environment variable.
     # If you are using Apache aliases to do mass virtual hosting or installed the

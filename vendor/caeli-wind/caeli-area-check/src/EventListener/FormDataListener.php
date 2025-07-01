@@ -26,34 +26,8 @@ class FormDataListener
         $this->formIds = $formIds;
         $this->fieldMapping = $fieldMapping;
         
-        // Fallback: Wenn auto_ prefixed IDs fehlen, direkt aus config.yaml laden
-        $autoIds = array_filter($this->formIds, fn($id) => str_starts_with($id, 'auto_'));
-        
-        if (empty($autoIds)) {
-            $this->logger->debug('[FormDataListener] auto_ prefixed IDs fehlen, lade Fallback-Konfiguration');
-            $this->loadFallbackConfiguration();
-        }
-        
-
-    }
-
-    /**
-     * Lädt die Konfiguration direkt aus der config.yaml als Fallback
-     */
-    private function loadFallbackConfiguration(): void
-    {
-        // Einfacher Fallback: auto_ prefixed Versionen der Standard-Form-IDs hinzufügen
-        $standardIds = [
-            'flaechencheckNotSuccessEN',
-            'flaechencheckNotSuccessDE',
-            'flaechencheckSuccessEN',
-            'flaechencheckSuccessDE'
-        ];
-        
-        $autoIds = array_map(fn($id) => 'auto_' . $id, $standardIds);
-        $this->formIds = array_unique(array_merge($this->formIds, $autoIds));
-        
-        $this->logger->debug('[FormDataListener] Fallback: auto_ prefixed IDs hinzugefügt: ' . json_encode($autoIds));
+        $this->logger->debug('[FormDataListener] Konfigurierte Form-IDs: ' . json_encode($this->formIds));
+        $this->logger->debug('[FormDataListener] Feld-Mapping: ' . json_encode($this->fieldMapping));
     }
 
     /**

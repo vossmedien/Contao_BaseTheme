@@ -35,9 +35,9 @@ class AreaCheckController extends AbstractController
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->api_url = getenv('CAELI_INFRA_API_URL') ?: "https://infra.caeli-wind.de/api/";
-        $this->api_user = getenv('CAELI_INFRA_API_USERNAME') ?: "website-2025@caeli-wind.de";
-        $this->api_pass = getenv('CAELI_INFRA_API_PASSWORD') ?: "0wuvgvh>LrpB(ef-";
+        $this->api_url = getenv('CAELI_INFRA_API_URL') ?: "";
+        $this->api_user = getenv('CAELI_INFRA_API_USERNAME') ?: "";
+        $this->api_pass = getenv('CAELI_INFRA_API_PASSWORD') ?: "";
         
         // Debug: Temporär die geladenen Werte loggen
         error_log("API URL: " . $this->api_url);

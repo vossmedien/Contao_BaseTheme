@@ -30,16 +30,10 @@
                 <?php if ($isItemActive): ?>
                     <button data-animation="animate__fadeIn" class="btn btn-sm btn-primary" disabled>
                         <span class="name"><?= $monthData['link'] ?></span>
-                        <?php if ($this->showQuantity): ?>
-                            <span class="quantity">(<?= $monthData['quantity'] ?>)</span>
-                        <?php endif; ?>
                     </button>
                 <?php else: ?>
                     <a data-animation="animate__fadeIn" href="<?= $monthData['href'] ?>#listingAnchor" class="btn btn-sm btn-outline-primary" title="<?= $monthData['title'] ?>">
                         <span class="name"><?= $monthData['link'] ?></span>
-                        <?php if ($this->showQuantity): ?>
-                            <span class="quantity">(<?= $monthData['quantity'] ?>)</span>
-                        <?php endif; ?>
                     </a>
                 <?php endif; ?>
             <?php endforeach; ?>

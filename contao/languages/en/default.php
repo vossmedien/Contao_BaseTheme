@@ -10,7 +10,7 @@ $GLOBALS['TL_LANG']['MSC']['all_categories'] = 'All categories';
 $GLOBALS['TL_LANG']['MSC']['filter_show_all'] = 'All';
 $GLOBALS['TL_LANG']['MSC']['zip_search_error'] = 'Please enter a postal code or location.';
 $GLOBALS['TL_LANG']['MSC']['zip_no_results'] = '<b>No contact persons found in the selected area</b> - Please try with a different postal code.';
-$GLOBALS['TL_LANG']['MSC']['area_check_url'] = '/area-check';
+$GLOBALS['TL_LANG']['MSC']['area_check_url'] = '/en/site-check';
 
 // Event Details
 $GLOBALS['TL_LANG']['MSC']['targetAudienceLabel'] = 'Target audience:';
@@ -38,7 +38,7 @@ $GLOBALS['TL_LANG']['MSC']['footerLegal'] = 'Legal';
 $GLOBALS['TL_LANG']['MSC']['footerInsights'] = 'Info & Insights';
 $GLOBALS['TL_LANG']['MSC']['footerSocialMedia'] = 'Social Media';
 $GLOBALS['TL_LANG']['MSC']['footerCooperations'] = 'Cooperations';
-$GLOBALS['TL_LANG']['MSC']['footerMembers'] = 'Members';
+$GLOBALS['TL_LANG']['MSC']['footerMembers'] = 'Member of';
 
 // Footer Contact Details
 $GLOBALS['TL_LANG']['MSC']['footerCompanyName'] = 'Caeli Wind GmbH'; // Assuming company name is international or specific

@@ -4,12 +4,12 @@ class VSMLazyLoader {
 
         this.options = {
             root: null,
-            rootMargin: this.isMobile ? '20px 0px' : '50px 0px',
-            threshold: 0.01,
+            rootMargin: this.isMobile ? '50px 0px' : '100px 0px',
+            threshold: this.isMobile ? 0.15 : 0.25,
             excludeSelectors: [],
             spinnerEnabled: true,
-            timeout: 8000,
-            maxSimultaneousLoads: this.isMobile ? 3 : 6,
+            timeout: 6000,
+            maxSimultaneousLoads: this.isMobile ? 2 : 4,
             ...options
         };
 
@@ -19,6 +19,10 @@ class VSMLazyLoader {
         this.videoObserver = null;
         this.mutationObserver = null;
 
+        // Performance-Caches
+        this.viewportCache = { width: 0, height: 0, lastUpdate: 0 };
+        this.bestVideoFormat = null;
+        
         // Debug-Flag
         this.debug = false;
 
@@ -38,26 +42,22 @@ class VSMLazyLoader {
     }
 
     _initialize() {
-        // Initialisierung sofort versuchen
+        // Performance: Bestimme Video-Format einmal beim Start
+        this.bestVideoFormat = this.determineBestVideoFormat();
+        
         if (document.readyState === 'loading') {
-            // Dokument wird noch geladen, warten wir auf DOMContentLoaded
             window.addEventListener('DOMContentLoaded', () => this.init());
         } else {
-            // Dokument bereits geladen, sofort initialisieren
             this.init();
         }
 
-        // Sicherheitscheck: Falls init() nicht richtig ausgeführt wurde
-        // oder die Observer nicht initialisiert wurden, versuche es nach einer Verzögerung erneut
+        // Reduzierter Fallback-Check
         setTimeout(() => {
             if (!this.videoObserver || !this.imageObserver) {
                 console.warn('Observer nicht initialisiert, versuche erneut...');
                 this.init();
-
-                // Prüfe auf unbeobachtete Videos nach der Re-Initialisierung
-                setTimeout(() => this.checkUnobservedVideos(), 500);
             }
-        }, 1000);
+        }, 2000);
     }
 
     init() {
@@ -69,7 +69,6 @@ class VSMLazyLoader {
 
         try {
             if ('IntersectionObserver' in window) {
-                // Observers in definierter Reihenfolge initialisieren
                 this.setupImageObserver();
                 this.setupVideoObserver();
                 this.setupMutationObserver();
@@ -78,17 +77,15 @@ class VSMLazyLoader {
                     this.setupScrollListeners();
                 }
 
-                // Prüfe, ob die Observer initialisiert wurden
                 if (!this.videoObserver || !this.imageObserver) {
                     console.error('Observer konnten nicht initialisiert werden');
                     return;
                 }
 
-                // Nun die DOM-Elemente beobachten
                 this.observeElements();
 
                 if (!this.isMobile) {
-                    setInterval(() => this.checkLostElements(), 10000);
+                    setInterval(() => this.checkLostElements(), 15000);
                 }
             } else {
                 console.warn('IntersectionObserver nicht verfügbar, verwende Fallback');
@@ -99,14 +96,22 @@ class VSMLazyLoader {
         }
     }
 
+    // Performance: Gecachte Viewport-Berechnung
+    updateViewportCache() {
+        const now = Date.now();
+        if (now - this.viewportCache.lastUpdate > 100) {
+            this.viewportCache.width = window.innerWidth || document.documentElement.clientWidth;
+            this.viewportCache.height = window.innerHeight || document.documentElement.clientHeight;
+            this.viewportCache.lastUpdate = now;
+        }
+    }
+
     checkUnobservedVideos() {
         const videos = document.querySelectorAll('video.lazy, video[data-poster]');
         videos.forEach(video => {
-            // Prüfe, ob das Video bereits direkt HTML-seitig geladen wurde (ohne src als data-src)
             const hasDirectSources = Array.from(video.querySelectorAll('source')).some(source =>
                 source.hasAttribute('src') && !source.hasAttribute('data-src'));
 
-            // Wenn das Video bereits direkt Quellen hat, markiere es als geladen und nicht erneut beobachten
             if (hasDirectSources) {
                 if (!video.classList.contains('loaded')) {
                     video.classList.add('loaded');
@@ -115,7 +120,6 @@ class VSMLazyLoader {
                 return;
             }
 
-            // Normaler Lazy-Load-Prozess für nicht geladene Videos
             if (!this.loadedElements.has(video) &&
                 !this.loadingVideos.has(video) &&
                 !video.classList.contains('loading') &&
@@ -143,8 +147,8 @@ class VSMLazyLoader {
             });
         }, {
             root: null,
-            rootMargin: this.isMobile ? '50px 0px' : this.options.rootMargin,
-            threshold: 0.01
+            rootMargin: this.options.rootMargin,
+            threshold: this.options.threshold
         });
 
         document.querySelectorAll('.scroll-wrapper').forEach(scrollWrapper => {
@@ -162,8 +166,8 @@ class VSMLazyLoader {
                 });
             }, {
                 root: scrollWrapper,
-                rootMargin: '50% 0px',
-                threshold: 0
+                rootMargin: '100px 0px',
+                threshold: 0.1
             });
 
             scrollWrapper.querySelectorAll('[data-src], [data-bg]').forEach(element => {
@@ -179,15 +183,11 @@ class VSMLazyLoader {
             entries.forEach(entry => {
                 const video = entry.target;
 
-                // Prüfe, ob das Video bereits geladen wurde
                 if (this.loadedElements.has(video) || video.classList.contains('loaded')) {
-                    // Video ist bereits geladen, nur wiedergeben wenn nötig
                     if (entry.isIntersecting && video.paused && video.hasAttribute('autoplay')) {
                         video.play().catch(err => this.log('Autoplay error:', err));
                     } else if (!entry.isIntersecting && video.hasAttribute('autoplay')) {
-                        // Beim Verlassen des Viewports pausieren
                         video.pause();
-                        // Auf Mobile komplett entladen
                         if (this.isMobile) {
                             this.unloadVideo(video);
                         }
@@ -196,8 +196,7 @@ class VSMLazyLoader {
                 }
 
                 if (entry.isIntersecting) {
-                    // Nur laden, wenn ein signifikanter Teil sichtbar ist
-                    if (entry.intersectionRatio >= 0.25 &&
+                    if (entry.intersectionRatio >= this.options.threshold &&
                         !video.classList.contains('loaded') &&
                         !video.classList.contains('loading')) {
                         this.loadVideo(video);
@@ -205,7 +204,6 @@ class VSMLazyLoader {
                         video.play().catch(err => this.log('Autoplay error:', err));
                     }
                 } else if (this.loadingVideos.has(video)) {
-                    // Wenn das Video noch am Laden ist und aus dem Viewport rollt
                     this.log('Video rolled out of viewport, cancelling load:', video);
                     this.cancelVideoLoad(video);
                 } else if (this.isMobile && video.classList.contains('loaded')) {
@@ -214,8 +212,8 @@ class VSMLazyLoader {
             });
         }, {
             root: null,
-            rootMargin: this.isMobile ? '20px 0px' : this.options.rootMargin,
-            threshold: [0, 0.25, 0.5, 0.75, 1.0]
+            rootMargin: this.options.rootMargin,
+            threshold: [0, this.options.threshold, 0.5, 1.0]
         });
     }
 
@@ -230,7 +228,6 @@ class VSMLazyLoader {
             this.removeSpinner(video);
         }
 
-        // Alle Event-Listener entfernen
         const clonedVideo = video.cloneNode(true);
         if (video.parentNode) {
             video.parentNode.replaceChild(clonedVideo, video);
@@ -241,7 +238,6 @@ class VSMLazyLoader {
         video.removeAttribute('src');
         video.load();
 
-        // Speichere das poster-Attribut als data-poster
         if (video.hasAttribute('poster')) {
             video.setAttribute('data-poster', video.getAttribute('poster'));
             video.removeAttribute('poster');
@@ -273,6 +269,7 @@ class VSMLazyLoader {
                 window.cancelAnimationFrame(scrollTimeout);
             }
             scrollTimeout = window.requestAnimationFrame(() => {
+                this.updateViewportCache();
                 this.checkVisibleElements();
             });
         };
@@ -280,23 +277,26 @@ class VSMLazyLoader {
         window.addEventListener('scroll', scrollHandler, {passive: true});
 
         document.querySelectorAll('.scroll-wrapper').forEach(scrollWrapper => {
-            scrollWrapper.addEventListener('scroll', debounce(() => {
+            scrollWrapper.addEventListener('scroll', this.debounce(() => {
                 this.checkVisibleElements(scrollWrapper);
-            }, 100), {passive: true});
+            }, 150), {passive: true});
         });
     }
 
     setupMutationObserver() {
         this.mutationObserver = new MutationObserver((mutations) => {
+            const elementsToProcess = [];
+            
             mutations.forEach(mutation => {
                 if (mutation.addedNodes.length) {
                     mutation.addedNodes.forEach(node => {
                         if (node.nodeType === 1 && this.shouldHandleElement(node)) {
-                            this.handleNewElement(node);
+                            elementsToProcess.push(node);
                             if (node.querySelectorAll) {
-                                node.querySelectorAll('[data-src], [data-bg], video.lazy').forEach(element => {
+                                const childElements = node.querySelectorAll('[data-src], [data-bg], video.lazy');
+                                childElements.forEach(element => {
                                     if (this.shouldHandleElement(element)) {
-                                        this.handleNewElement(element);
+                                        elementsToProcess.push(element);
                                     }
                                 });
                             }
@@ -304,14 +304,19 @@ class VSMLazyLoader {
                     });
                 }
             });
+
+            if (elementsToProcess.length > 0) {
+                requestAnimationFrame(() => {
+                    elementsToProcess.forEach(element => this.handleNewElement(element));
+                });
+            }
         });
 
         try {
             this.mutationObserver.observe(document.body, {
                 childList: true,
                 subtree: true,
-                attributes: true,
-                attributeFilter: ['style', 'class']
+                attributes: false
             });
         } catch (e) {
             console.warn('MutationObserver konnte nicht initialisiert werden:', e);
@@ -321,7 +326,7 @@ class VSMLazyLoader {
     checkVisibleElements(container = document) {
         if (this.isMobile) return;
 
-        const elements = container.querySelectorAll('[data-src], [data-bg], video.lazy');
+        const elements = container.querySelectorAll('[data-src]:not(.loaded), [data-bg]:not(.loaded), video.lazy:not(.loaded)');
         elements.forEach(element => {
             if (!this.loadedElements.has(element) && this.isInViewport(element)) {
                 if (element.hasAttribute('data-bg')) {
@@ -338,7 +343,7 @@ class VSMLazyLoader {
     checkLostElements() {
         if (this.isMobile) return;
 
-        document.querySelectorAll('[data-src]:not(.loaded), [data-bg]:not(.loaded), video.lazy:not(.loaded), video[data-poster]:not(.loaded)').forEach(element => {
+        document.querySelectorAll('[data-src]:not(.loaded), video.lazy:not(.loaded)').forEach(element => {
             if (!this.loadedElements.has(element) && this.isInViewport(element)) {
                 if (element.hasAttribute('data-bg')) {
                     this.loadBackgroundImage(element);
@@ -352,12 +357,12 @@ class VSMLazyLoader {
     }
 
     isInViewport(element) {
-        // Strenge Viewport-Erkennung
+        this.updateViewportCache();
+        
         const rect = element.getBoundingClientRect();
-        const viewHeight = window.innerHeight || document.documentElement.clientHeight;
-        const viewWidth = window.innerWidth || document.documentElement.clientWidth;
+        const viewHeight = this.viewportCache.height;
+        const viewWidth = this.viewportCache.width;
 
-        // Berechne den sichtbaren Bereich
         const visibleHeight = Math.min(rect.bottom, viewHeight) - Math.max(rect.top, 0);
         const visibleWidth = Math.min(rect.right, viewWidth) - Math.max(rect.left, 0);
 
@@ -368,15 +373,13 @@ class VSMLazyLoader {
         const visibleArea = visibleHeight * visibleWidth;
         const elementArea = rect.height * rect.width;
 
-        // Mindestens 30% des Elements müssen sichtbar sein
         const visiblePercentage = elementArea > 0 ? (visibleArea / elementArea) * 100 : 0;
-        return visiblePercentage >= 30;
+        return visiblePercentage >= (this.isMobile ? 15 : 25);
     }
 
     handleNewElement(element) {
         if (!this.shouldHandleElement(element)) return;
 
-        // Wenn das Element bereits geladen ist, nicht erneut verarbeiten
         if (this.loadedElements.has(element) ||
             element.classList.contains('loaded') ||
             element.classList.contains('loading')) {
@@ -387,13 +390,10 @@ class VSMLazyLoader {
             this.handleSpinner(element);
         }
 
-        // Prüfe, ob die Observer initialisiert wurden
         if (!this.videoObserver || !this.imageObserver) {
-            // Wenn nicht, initialisiere sie
             if (!this.videoObserver) this.setupVideoObserver();
             if (!this.imageObserver) this.setupImageObserver();
 
-            // Falls immer noch nicht initialisiert, logge einen Fehler und kehre zurück
             if (!this.videoObserver || !this.imageObserver) {
                 console.error('Observer konnte nicht initialisiert werden');
                 return;
@@ -403,18 +403,15 @@ class VSMLazyLoader {
         if (element.hasAttribute('data-bg')) {
             this.imageObserver.observe(element);
         } else if (element.tagName.toLowerCase() === 'video') {
-            // Prüfe, ob das Video bereits direkt HTML-seitig geladen wurde
             const hasDirectSources = Array.from(element.querySelectorAll('source')).some(source =>
                 source.hasAttribute('src') && !source.hasAttribute('data-src'));
 
-            // Wenn absolut Pfad erkannt und keine data-src Attribute
             if (hasDirectSources) {
                 if (!element.classList.contains('loaded')) {
                     element.classList.add('loaded');
                     this.loadedElements.add(element);
                 }
 
-                // Wenn das Video autoplay haben sollte und im Viewport ist, abspielen
                 if (element.hasAttribute('autoplay') && this.isInViewport(element)) {
                     element.play().catch(() => {
                         element.muted = true;
@@ -428,7 +425,6 @@ class VSMLazyLoader {
                 element.hasAttribute('data-src') ||
                 element.hasAttribute('data-poster') ||
                 element.querySelectorAll('source[data-src]').length > 0) {
-                // Verwende nur den Observer, wenn er existiert
                 if (this.videoObserver) {
                     this.videoObserver.observe(element);
                 } else {
@@ -471,7 +467,6 @@ class VSMLazyLoader {
                 this.addSpinner(element);
             }
         }
-
     }
 
     addSpinner(target) {
@@ -597,7 +592,6 @@ class VSMLazyLoader {
             return Promise.resolve();
         }
 
-        // Stelle sicher, dass das Video wirklich im Viewport ist
         if (!this.isInViewport(video)) {
             this.log('Video nicht im Viewport, lade nicht:', video);
             return Promise.resolve();
@@ -606,12 +600,13 @@ class VSMLazyLoader {
         if (this.isMobile) {
             const currentlyLoading = document.querySelectorAll('video.loading').length;
             if (currentlyLoading >= this.options.maxSimultaneousLoads) {
-                setTimeout(() => this.loadVideo(video), 500);
+                setTimeout(() => this.loadVideo(video), 1000);
                 return Promise.resolve();
             }
         }
 
-        // Originale Quellen vor dem Laden erfassen und speichern
+        const bestFormat = this.bestVideoFormat;
+        
         const originalSources = [];
         video.querySelectorAll('source[data-src]').forEach(source => {
             originalSources.push({
@@ -620,7 +615,6 @@ class VSMLazyLoader {
             });
         });
 
-        // Originale src speichern, falls vorhanden
         if (video.getAttribute('data-src')) {
             video.setAttribute('data-original-src', video.getAttribute('data-src'));
         }
@@ -639,22 +633,15 @@ class VSMLazyLoader {
             video.setAttribute('playsinline', '');
             video.muted = true;
 
-            // Verarbeite das data-poster-Attribut
             if (video.hasAttribute('data-poster')) {
                 video.poster = video.getAttribute('data-poster');
                 video.removeAttribute('data-poster');
             }
 
-            // RADIKALER ANSATZ: Entferne ALLE source-Elemente
             while (video.firstChild) {
                 video.removeChild(video.firstChild);
             }
 
-            // Bestimme das beste Format
-            const bestFormat = this.determineBestVideoFormat();
-            this.log('Bestes Videoformat:', bestFormat);
-
-            // Finde die passende Quelle
             let bestSource = null;
             for (const source of originalSources) {
                 const type = source.type || '';
@@ -664,13 +651,11 @@ class VSMLazyLoader {
                 }
             }
 
-            // Fallback, wenn keine passende Quelle gefunden wurde
             if (!bestSource && originalSources.length > 0) {
                 bestSource = originalSources[0];
             }
 
             if (bestSource) {
-                // Erstelle nur EINEN source-Element mit dem besten Format
                 const newSource = document.createElement('source');
                 newSource.src = bestSource.src;
                 newSource.type = bestSource.type;
@@ -703,31 +688,25 @@ class VSMLazyLoader {
                     this.log('Video load error:', e);
                     cleanup();
 
-                    // Bei Fehler: Versuche ein anderes Format, falls verfügbar
                     const remainingSources = originalSources.filter(s => s !== bestSource);
                     if (remainingSources.length > 0 && video.parentNode) {
                         this.log('Versuche alternatives Format nach Fehler');
-                        // Entferne das fehlerhafte source-Element
                         video.innerHTML = '';
 
-                        // Erstelle ein neues source-Element mit der nächsten verfügbaren Quelle
                         const alternativeSource = document.createElement('source');
                         alternativeSource.src = remainingSources[0].src;
                         alternativeSource.type = remainingSources[0].type;
                         video.appendChild(alternativeSource);
 
-                        // Lade das Video erneut
                         video.load();
                     } else {
                         reject(e);
                     }
                 };
 
-                // Event-Listener für erfolgreiche Ladung
                 video.addEventListener('loadeddata', success, {once: true});
                 video.addEventListener('error', error, {once: true});
 
-                // Timeout für Ladevorgang
                 const timeoutId = setTimeout(() => {
                     if (this.loadingVideos.has(video)) {
                         this.log('Video-Ladevorgang Timeout erreicht');
@@ -735,7 +714,6 @@ class VSMLazyLoader {
                     }
                 }, this.options.timeout);
 
-                // Überwachung: Bleibt Video im Viewport?
                 const checkVisibilityInterval = setInterval(() => {
                     if (!this.loadingVideos.has(video)) {
                         clearInterval(checkVisibilityInterval);
@@ -747,9 +725,8 @@ class VSMLazyLoader {
                         clearInterval(checkVisibilityInterval);
                         this.cancelVideoLoad(video);
                     }
-                }, 300); // Häufigere Prüfung
+                }, 500);
 
-                // Aufräumen der Intervalle und Timeouts
                 video.addEventListener('loadeddata', () => {
                     clearTimeout(timeoutId);
                     clearInterval(checkVisibilityInterval);
@@ -760,10 +737,8 @@ class VSMLazyLoader {
                     clearInterval(checkVisibilityInterval);
                 }, {once: true});
 
-                // Starte den Ladevorgang
                 video.load();
             } else {
-                // Keine Quelle gefunden
                 this.loadingVideos.delete(video);
                 video.classList.remove('loading');
                 this.log('Keine Videoquelle gefunden');
@@ -772,22 +747,19 @@ class VSMLazyLoader {
         });
     }
 
-    // Ermittelt das beste Videoformat für den aktuellen Browser
     determineBestVideoFormat() {
-        // Test-Video-Element erstellen
         const testVideo = document.createElement('video');
 
-        // Formate nach Priorität
         const formats = [
             {
                 name: 'webm',
-                type: 'video/webm; codecs="vp9, opus"', // Moderne WebM-Variante
-                fallback: 'video/webm; codecs="vp8, vorbis"' // Ältere WebM-Variante
+                type: 'video/webm; codecs="vp9, opus"',
+                fallback: 'video/webm; codecs="vp8, vorbis"'
             },
             {
                 name: 'mp4',
-                type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"', // H.264 High Profile
-                fallback: 'video/mp4; codecs="avc1.4D401E, mp4a.40.2"' // H.264 Baseline
+                type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"',
+                fallback: 'video/mp4; codecs="avc1.4D401E, mp4a.40.2"'
             },
             {
                 name: 'ogg',
@@ -795,15 +767,12 @@ class VSMLazyLoader {
             }
         ];
 
-        // Teste Format-Unterstützung
         for (const format of formats) {
-            // Prüfe zuerst die primäre Codec-Variante
             const mainSupport = testVideo.canPlayType(format.type);
             if (mainSupport === 'probably') {
                 return format.name;
             }
 
-            // Prüfe dann die Fallback-Variante, falls vorhanden
             if (format.fallback) {
                 const fallbackSupport = testVideo.canPlayType(format.fallback);
                 if (fallbackSupport === 'probably') {
@@ -812,7 +781,6 @@ class VSMLazyLoader {
             }
         }
 
-        // Zweiter Durchlauf für 'maybe' Support
         for (const format of formats) {
             const mainSupport = testVideo.canPlayType(format.type);
             if (mainSupport === 'maybe') {
@@ -827,7 +795,6 @@ class VSMLazyLoader {
             }
         }
 
-        // Fallback auf MP4, wenn nichts anderes unterstützt wird
         return 'mp4';
     }
 
@@ -836,23 +803,18 @@ class VSMLazyLoader {
 
         this.log('Breche Videoladen ab für:', video);
 
-        // Speichere die Original-Quellen
         const loadingInfo = this.loadingVideos.get(video);
         const originalSources = loadingInfo.originalSources || [];
 
-        // Aus Tracking entfernen
         this.loadingVideos.delete(video);
 
-        // Video stoppen und zurücksetzen
         video.pause();
         video.removeAttribute('src');
 
-        // VOLLSTÄNDIGES Zurücksetzen: Entferne alle Kinder
         while (video.firstChild) {
             video.removeChild(video.firstChild);
         }
 
-        // Stelle die originalen source-Elemente mit data-src wieder her
         originalSources.forEach(sourceInfo => {
             const source = document.createElement('source');
             source.setAttribute('data-src', sourceInfo.src);
@@ -862,10 +824,8 @@ class VSMLazyLoader {
             video.appendChild(source);
         });
 
-        // Video komplett neu laden, um den Download zu stoppen
         video.load();
 
-        // Entferne Statusklassen
         video.classList.remove('loading', 'loaded');
         if (!video.classList.contains('lazy')) {
             video.classList.add('lazy');
@@ -875,14 +835,12 @@ class VSMLazyLoader {
     }
 
     showVideoFallback(video) {
-        // Fallback entfernt, stattdessen nur sauberes Aufräumen
         this.removeSpinner(video);
         console.warn('Video konnte nicht geladen werden:', video);
     }
 
     observeElements() {
         document.querySelectorAll('[data-src], [data-bg], video.lazy, video[data-poster]').forEach(element => {
-            // Prüfe, ob das Element bereits verarbeitet wurde oder direkte src-Attribute hat
             if (element.tagName.toLowerCase() === 'video') {
                 const hasDirectSources = Array.from(element.querySelectorAll('source')).some(source =>
                     source.hasAttribute('src') && !source.hasAttribute('data-src'));
@@ -893,7 +851,6 @@ class VSMLazyLoader {
                         this.loadedElements.add(element);
                     }
 
-                    // Autoplay für Videos im Viewport aktivieren
                     if (element.hasAttribute('autoplay') && this.isInViewport(element)) {
                         element.play().catch(() => {
                             element.muted = true;
@@ -943,37 +900,39 @@ class VSMLazyLoader {
             wrapper.removeEventListener('scroll', this.debouncedCheck);
         });
 
-        // Event-Handler-Referenzen freigeben
         this.scrollHandler = null;
         this.debouncedCheck = null;
     }
 
-    // Hilfsfunktion zum Loggen, nur wenn Debug aktiv ist
     log(...args) {
         if (this.debug) {
             console.log(...args);
         }
     }
+
+    debounce(func, wait) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
 }
 
-// Initialisierung
 window.VSM = window.VSM || {};
 window.VSM.lazyLoader = new VSMLazyLoader();
 
-// Abwärtskompatibilität
 window.VSM.lazyLoadInstance = {
     update: () => {
     }
 };
 
-// Event-Listener für dynamisch nachgeladene Videos
 document.addEventListener('vsm:videoLoaded', function (e) {
     if (window.VSM.lazyLoader && e.detail.videoElement) {
         window.VSM.lazyLoader.handleNewElement(e.detail.videoElement);
     }
 });
 
-// Zusätzlicher Event-Listener für die Seiten-Initialisierung
 document.addEventListener('DOMContentLoaded', function () {
     if (window.VSM && window.VSM.lazyLoader) {
         window.VSM.lazyLoader.checkUnobservedVideos();
@@ -982,11 +941,3 @@ document.addEventListener('DOMContentLoaded', function () {
         window.VSM.lazyLoader = new VSMLazyLoader();
     }
 });
-
-function debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-}

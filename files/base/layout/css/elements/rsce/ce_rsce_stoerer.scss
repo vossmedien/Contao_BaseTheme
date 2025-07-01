@@ -80,9 +80,34 @@
       }
     }
 
-    // Hover-States mit Custom Properties
-    &:hover,
-    &:focus-within,
+    // Hover-States mit Custom Properties (aber nicht bei Mobile)
+    @include media-breakpoint-up(md) {
+      &:hover,
+      &:focus-within {
+        .stoerer-trigger {
+          background-color: var(--trigger-bg-hover, var(--trigger-bg, var(--bs-body-bg)));
+          color: var(--trigger-color-hover, var(--trigger-color, inherit));
+
+          svg, svg path {
+            fill: var(--trigger-color-hover, var(--trigger-color, currentColor));
+          }
+        }
+
+        .stoerer--content {
+          background-color: var(--content-bg-hover, var(--content-bg, transparent));
+          
+          .stoerer-content--inner {
+            color: var(--content-color-hover, var(--content-color, inherit));
+          }
+        }
+
+        .stoerer-footer--elements {
+          background-color: var(--stoerer-footer-bg-hover, var(--stoerer-footer-bg, transparent));
+        }
+      }
+    }
+
+    // Expanded State (für alle Geräte)
     &.is-expanded {
       .stoerer-trigger {
         background-color: var(--trigger-bg-hover, var(--trigger-bg, var(--bs-body-bg)));
@@ -116,8 +141,21 @@
         }
       }
 
-      &:hover,
-      &:focus-within,
+      // Desktop Hover/Focus
+      @include media-breakpoint-up(md) {
+        &:hover,
+        &:focus-within {
+          .stoerer-inner-wrapper {
+            .stoerer--content {
+              max-width: var(--stoerer-content-max-width, 0px);
+              pointer-events: auto;
+              max-height: 999px;
+            }
+          }
+        }
+      }
+
+      // Expanded State (alle Geräte)
       &.is-expanded {
         .stoerer-inner-wrapper {
           .stoerer--content {
@@ -264,6 +302,41 @@
   }
 }
 
+// Force-Collapsed State (überschreibt alle anderen States)
+.ce--stoerer.force-collapsed {
+  .stoerer-trigger {
+    background-color: var(--trigger-bg, var(--bs-body-bg)) !important;
+    color: var(--trigger-color, inherit) !important;
+
+    svg, svg path {
+      fill: var(--trigger-color, currentColor) !important;
+    }
+  }
+
+  .stoerer--content {
+    background-color: var(--content-bg, transparent) !important;
+    
+    .stoerer-content--inner {
+      color: var(--content-color, inherit) !important;
+    }
+  }
+
+  .stoerer-footer--elements {
+    background-color: var(--stoerer-footer-bg, transparent) !important;
+  }
+
+  &.is-expandable {
+    .stoerer-inner-wrapper {
+      .stoerer--content {
+        pointer-events: none !important;
+        overflow: hidden !important;
+        max-height: 0 !important;
+        max-width: 0 !important;
+      }
+    }
+  }
+}
+
 // Media Query für mobile Geräte
 @media (max-width: 767px) {
   .content--element.ce_rsce_stoerer {
@@ -274,6 +347,23 @@
             width: 80vw; // Limit content width on mobile
           }
         }
+      }
+    }
+
+    // Mobile-spezifische Positionierung über CSS Custom Properties
+    .ce--stoerer {
+      // Nur überschreiben wenn tatsächlich Mobile-Werte definiert sind
+      &[style*="--stoerer-top-mobile"] {
+        top: var(--stoerer-top-mobile) !important;
+      }
+      &[style*="--stoerer-bottom-mobile"] {
+        bottom: var(--stoerer-bottom-mobile) !important;
+      }
+      &[style*="--stoerer-right-mobile"] {
+        right: var(--stoerer-right-mobile) !important;
+      }
+      &[style*="--stoerer-left-mobile"] {
+        left: var(--stoerer-left-mobile) !important;
       }
     }
   }

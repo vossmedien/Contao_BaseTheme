@@ -1,0 +1,37 @@
+<div data-animation="animate__fadeIn" class="col d-flex flex-column layout_latest arc_<?= $this->archive->id ?> block<?= $this->class ?>">
+
+    <!--
+    <?php $this->block('info'); ?>
+    <p class="info">
+        <time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?></p>
+    <?php $this->endblock(); ?>
+    -->
+
+    <?php if ($this->listImage): ?>
+        <a href="<?= $this->link ?>">
+            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->listImage, strip_tags($this->teaser), $this->headline, ["550", "330", "crop"], null, false); ?>
+        </a>
+    <?php endif; ?>
+
+    <div class="p-2 d-flex flex-column flex-grow-1">
+        <span class="h3 mb-2 fw-normal"><a href="<?= $this->link ?>"><?= $this->headline ?></a></span>
+
+        <?php if ($this->hasText || $this->hasTeaser): ?>
+            <p class="more mt-auto">
+                <a class="btn btn-link with-arrow" href="<?= $this->link ?>">
+                    <?= $GLOBALS['TL_LANG']['MSC']['more']; ?>
+                </a>
+            </p>
+        <?php endif; ?>
+    </div>
+</div>
+
+
+
+<?php
+
+// This template is used as a news list template by default, so we only add
+// JSON-LD data in case this is a news article without a reader
+if (!$this->hasReader) {
+    $this->addSchemaOrg($this->getSchemaOrgData());
+}

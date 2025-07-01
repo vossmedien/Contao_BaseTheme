@@ -146,12 +146,84 @@ if (!empty($customProperties)) {
             }, array_keys($stoererProperties), $stoererProperties));
         }
 
-        // Position-Styles
+        // Position-Styles: Standard-Positionen
         $positionStyles = [];
-        if (!empty($this->alternate_top_position)) $positionStyles[] = "top: {$this->alternate_top_position}";
-        if (!empty($this->alternate_bottom_position)) $positionStyles[] = "bottom: {$this->alternate_bottom_position}";
-        if (!empty($this->alternate_right_position)) $positionStyles[] = "right: {$this->alternate_right_position}";
-        if (!empty($this->alternate_left_position)) $positionStyles[] = "left: {$this->alternate_left_position}";
+        $standardTop = !empty($this->alternate_top_position) ? $this->alternate_top_position : null;
+        $standardBottom = !empty($this->alternate_bottom_position) ? $this->alternate_bottom_position : null;
+        $standardRight = !empty($this->alternate_right_position) ? $this->alternate_right_position : null;
+        $standardLeft = !empty($this->alternate_left_position) ? $this->alternate_left_position : null;
+
+        // Mobile-Versionen der Standard-Positionen
+        $standardTopMobile = !empty($this->alternate_top_position_mobile) ? $this->alternate_top_position_mobile : null;
+        $standardBottomMobile = !empty($this->alternate_bottom_position_mobile) ? $this->alternate_bottom_position_mobile : null;
+        $standardRightMobile = !empty($this->alternate_right_position_mobile) ? $this->alternate_right_position_mobile : null;
+        $standardLeftMobile = !empty($this->alternate_left_position_mobile) ? $this->alternate_left_position_mobile : null;
+
+        // Prüfung auf seitenspezifische Positionierung
+        global $objPage;
+        $currentPageId = $objPage->id ?? null;
+        $pageSpecificPosition = null;
+        
+        if ($currentPageId && !empty($this->page_specific_positions)) {
+            foreach ($this->page_specific_positions as $position) {
+                if (!empty($position->target_pages)) {
+                    $targetPages = is_array($position->target_pages) ? $position->target_pages : [$position->target_pages];
+                    if (in_array($currentPageId, $targetPages)) {
+                        $pageSpecificPosition = $position;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Desktop-Werte: Verwende seitenspezifische Position falls vorhanden, sonst Standard
+        $finalTop = ($pageSpecificPosition && !empty($pageSpecificPosition->custom_top_position)) 
+            ? $pageSpecificPosition->custom_top_position : $standardTop;
+        $finalBottom = ($pageSpecificPosition && !empty($pageSpecificPosition->custom_bottom_position)) 
+            ? $pageSpecificPosition->custom_bottom_position : $standardBottom;
+        $finalRight = ($pageSpecificPosition && !empty($pageSpecificPosition->custom_right_position)) 
+            ? $pageSpecificPosition->custom_right_position : $standardRight;
+        $finalLeft = ($pageSpecificPosition && !empty($pageSpecificPosition->custom_left_position)) 
+            ? $pageSpecificPosition->custom_left_position : $standardLeft;
+
+        // Mobile-Werte: Verwende seitenspezifische Position falls vorhanden, sonst Standard, sonst Desktop-Wert
+        $finalTopMobile = ($pageSpecificPosition && !empty($pageSpecificPosition->custom_top_position_mobile)) 
+            ? $pageSpecificPosition->custom_top_position_mobile 
+            : ($standardTopMobile ?: $finalTop);
+        $finalBottomMobile = ($pageSpecificPosition && !empty($pageSpecificPosition->custom_bottom_position_mobile)) 
+            ? $pageSpecificPosition->custom_bottom_position_mobile 
+            : ($standardBottomMobile ?: $finalBottom);
+        $finalRightMobile = ($pageSpecificPosition && !empty($pageSpecificPosition->custom_right_position_mobile)) 
+            ? $pageSpecificPosition->custom_right_position_mobile 
+            : ($standardRightMobile ?: $finalRight);
+        $finalLeftMobile = ($pageSpecificPosition && !empty($pageSpecificPosition->custom_left_position_mobile)) 
+            ? $pageSpecificPosition->custom_left_position_mobile 
+            : ($standardLeftMobile ?: $finalLeft);
+
+        // Setze Desktop-Positionen als Standard
+        if ($finalTop) $positionStyles[] = "top: {$finalTop}";
+        if ($finalBottom) $positionStyles[] = "bottom: {$finalBottom}";
+        if ($finalRight) $positionStyles[] = "right: {$finalRight}";
+        if ($finalLeft) $positionStyles[] = "left: {$finalLeft}";
+        
+        // CSS Custom Properties für Mobile-Responsive Verhalten
+        if ($finalTopMobile && $finalTopMobile !== $finalTop) {
+            $positionStyles[] = "--stoerer-top-mobile: {$finalTopMobile}";
+        }
+        if ($finalBottomMobile && $finalBottomMobile !== $finalBottom) {
+            $positionStyles[] = "--stoerer-bottom-mobile: {$finalBottomMobile}";
+        }
+        if ($finalRightMobile && $finalRightMobile !== $finalRight) {
+            $positionStyles[] = "--stoerer-right-mobile: {$finalRightMobile}";
+        }
+        if ($finalLeftMobile && $finalLeftMobile !== $finalLeft) {
+            $positionStyles[] = "--stoerer-left-mobile: {$finalLeftMobile}";
+        }
+        
+        // CSS Custom Property für JavaScript (für Stacking-Berechnung - verwendet Desktop-Wert)
+        if ($finalTop) {
+            $positionStyles[] = "--stoerer-page-top: {$finalTop}";
+        }
         
         $finalStyleString = array_merge($positionStyles, [$stoererStyleString]);
         $finalStyleString = array_filter($finalStyleString);
@@ -165,56 +237,38 @@ if (!empty($customProperties)) {
             <!-- NEUER INNERER WRAPPER -->
             <div class="stoerer-inner-wrapper <?php echo $animationClass; ?>">
                 <div class="stoerer-trigger">
-                    <?php if (isset($stoererElement->img) && $stoererElement->img): ?>
+                    <?php if (isset($stoererElement->image) && $stoererElement->image): ?>
                         <?php
                         $hasMobileImage = isset($stoererElement->img_mobile) && $stoererElement->img_mobile;
                         $desktopImageClasses = $hasMobileImage ? "d-none d-md-block" : "";
-
-                        $desktopImagePath = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($stoererElement->img, $this->size);
-                        if (substr($desktopImagePath, -4) === '.svg') {
-                            echo Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode(
-                                $stoererElement->img,
-                                strip_tags($stoererElement->content ?? ''),
-                                $this->size,
-                                $desktopImageClasses,
-                                'svg-image'
-                            );
-                        } else {
-                            echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
-                                $stoererElement->img,
-                                strip_tags($stoererElement->content ?? ''),
-                                null,
-                                $this->size,
-                                $desktopImageClasses,
-                                false
-                            );
-                        }
+                        
+                        echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
+                            $stoererElement->image,
+                            strip_tags($stoererElement->content ?? ''),
+                            null,
+                            $this->size,
+                            $desktopImageClasses,
+                            false,
+                            false,
+                            !($stoererElement->image_no_lazy ?? false)
+                        );
                         ?>
                     <?php endif; ?>
                     <?php if (isset($stoererElement->img_mobile) && $stoererElement->img_mobile): ?>
                         <?php
                         $mobileSize = !empty($this->size_mobile) ? $this->size_mobile : $this->size;
-                        $mobileImagePath = Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($stoererElement->img_mobile, $mobileSize);
                         $mobileImageClasses = "d-block d-md-none";
 
-                        if (substr($mobileImagePath, -4) === '.svg') {
-                            echo Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode(
-                                $stoererElement->img_mobile,
-                                strip_tags($stoererElement->content ?? ''),
-                                $mobileSize,
-                                $mobileImageClasses,
-                                'svg-image'
-                            );
-                        } else {
-                            echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
-                                $stoererElement->img_mobile,
-                                strip_tags($stoererElement->content ?? ''),
-                                null,
-                                $mobileSize,
-                                $mobileImageClasses,
-                                false
-                            );
-                        }
+                        echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
+                            $stoererElement->img_mobile,
+                            strip_tags($stoererElement->content ?? ''),
+                            null,
+                            $mobileSize,
+                            $mobileImageClasses,
+                            false,
+                            false,
+                            !($stoererElement->img_mobile_no_lazy ?? false)
+                        );
                         ?>
                     <?php endif; ?>
                 </div>
@@ -277,7 +331,8 @@ if (!empty($customProperties)) {
                                                 null,
                                                 $this->footer_size ?? $this->size,
                                                 '',
-                                                false
+                                                false,
+                                                !($footerElement->img_no_lazy ?? false)
                                             );
                                         }
                                         ?>

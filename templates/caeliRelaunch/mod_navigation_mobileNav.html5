@@ -11,15 +11,17 @@ $this->wrapperAttributes = $this
 
 
 <!-- indexer::stop -->
-<nav<?= $this->wrapperAttributes ?>>
+<nav<?= $this->wrapperAttributes ?> role="navigation" aria-label="<?= $this->ariaLabel ?: 'Mobile Navigation' ?>">
 
     <button type="button" class="mmenu-close-btn" aria-label="Navigation schließen">
+        <i class="fak fa-times" aria-hidden="true"></i>
+        <span class="visually-hidden">Schließen</span>
     </button>
 
     <?= $this->items ?>
 
 
-    <div class="extra-content mt-auto mobileNav_footer">
+    <div class="extra-content mt-auto mobileNav_footer" role="complementary" aria-label="Zusätzliche Links">
         {{iflng::de}}
         {{insert_module::16}}
         {{iflng}}

@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use CaeliWind\CaeliAuctionConnect\Service\AuctionService;
+use CaeliWind\CaeliAuctionConnect\Service\DeviceDetectionService;
 use Psr\Log\LoggerInterface;
 
 #[AsFrontendModule(category: 'caeli_wind', template: 'mod_auction_listing', name: 'auction_listing')]
@@ -42,6 +43,7 @@ class AuctionListingController extends AbstractFrontendModuleController
 
     public function __construct(
         private readonly AuctionService $auctionService,
+        private readonly DeviceDetectionService $deviceDetectionService,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -85,9 +87,39 @@ class AuctionListingController extends AbstractFrontendModuleController
     {
         $this->logger->debug('[AuctionListingController] getResponse gestartet für Modul ID ' . $model->id);
 
+        // Performance: HTTP Caching für statische Filterungen
+        $cacheHeaders = [
+            'public' => true,
+            'max_age' => 300, // 5 Minuten Browser-Cache
+            's_maxage' => 900 // 15 Minuten Proxy-Cache
+        ];
+
         // Paginierungs-Parameter
         $page = max(1, (int)$request->query->get('page', 1));
-        $itemsPerPage = (int)($model->perPage ?: 12); // Default 12 Items pro Seite
+        
+        // Mobile/Desktop Erkennung für perPage
+        $isMobileDevice = $this->deviceDetectionService->isMobileDevice($request);
+        $deviceType = $this->deviceDetectionService->getDeviceType($request);
+        
+        $this->logger->debug('[AuctionListingController] Device Detection', [
+            'userAgent' => $request->headers->get('User-Agent', ''),
+            'isMobile' => $isMobileDevice,
+            'deviceType' => $deviceType
+        ]);
+        
+        // Bestimme items per page basierend auf Gerät
+        $itemsPerPageSetting = (int)$model->perPage; // Desktop-Wert
+        $itemsPerPageMobile = (int)$model->perPageMobile; // Mobile-Wert
+        
+        if ($isMobileDevice && $itemsPerPageMobile > 0) {
+            // Mobile-Gerät und Mobile-Wert ist definiert
+            $itemsPerPage = $itemsPerPageMobile;
+            $this->logger->debug('[AuctionListingController] Verwende Mobile perPage: ' . $itemsPerPage);
+        } else {
+            // Desktop oder kein Mobile-Wert definiert -> Fallback zu Desktop
+            $itemsPerPage = $itemsPerPageSetting === 0 ? 0 : ($itemsPerPageSetting ?: 12);
+            $this->logger->debug('[AuctionListingController] Verwende Desktop perPage: ' . $itemsPerPage);
+        }
 
         // 1. Filter aus dem Request lesen und STRUKTURIEREN (für z.B. externes Filter-Modul)
         $rawRequestFilters = $request->query->all();
@@ -142,11 +174,21 @@ class AuctionListingController extends AbstractFrontendModuleController
         
         // 7. Paginierung berechnen
         $totalItems = count($allAuctions);
-        $totalPages = (int)ceil($totalItems / $itemsPerPage);
-        $page = min($page, max(1, $totalPages)); // Page korrigieren falls zu hoch
         
-        $offset = ($page - 1) * $itemsPerPage;
-        $auctions = array_slice($allAuctions, $offset, $itemsPerPage);
+        if ($itemsPerPage === 0) {
+            // Alle Items anzeigen, keine Paginierung
+            $totalPages = 1;
+            $page = 1;
+            $offset = 0;
+            $auctions = $allAuctions;
+        } else {
+            // Normale Paginierung
+            $totalPages = (int)ceil($totalItems / $itemsPerPage);
+            $page = min($page, max(1, $totalPages)); // Page korrigieren falls zu hoch
+            
+            $offset = ($page - 1) * $itemsPerPage;
+            $auctions = array_slice($allAuctions, $offset, $itemsPerPage);
+        }
         
         // Paginierungs-Informationen
         $pagination = [
@@ -159,7 +201,7 @@ class AuctionListingController extends AbstractFrontendModuleController
             'nextPage' => $page < $totalPages ? $page + 1 : null,
             'prevPage' => $page > 1 ? $page - 1 : null,
             'startItem' => $totalItems > 0 ? $offset + 1 : 0,
-            'endItem' => min($offset + $itemsPerPage, $totalItems)
+            'endItem' => $itemsPerPage === 0 ? $totalItems : min($offset + $itemsPerPage, $totalItems)
         ];
         
         // Template-Variablen setzen
@@ -194,6 +236,17 @@ class AuctionListingController extends AbstractFrontendModuleController
         }
 
         $this->logger->debug('[AuctionListingController] Gebe Response zurück.');
-        return $template->getResponse();
+        
+        $response = $template->getResponse();
+        
+        // HTTP-Cache-Headers setzen wenn keine dynamischen Filter
+        if (empty($finalFilters)) {
+            $response->setPublic();
+            $response->setMaxAge($cacheHeaders['max_age']);
+            $response->setSharedMaxAge($cacheHeaders['s_maxage']);
+            $response->headers->set('Cache-Control', 'public, max-age=' . $cacheHeaders['max_age'] . ', s-maxage=' . $cacheHeaders['s_maxage']);
+        }
+        
+        return $response;
     }
 }

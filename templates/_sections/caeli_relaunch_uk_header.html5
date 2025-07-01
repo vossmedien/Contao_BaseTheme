@@ -4,7 +4,9 @@
         <div class="container-wide ">
             <div class="nav-wrapper">
                 <div class="logo">
-                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_uk/logo.svg", null), null, null; ?>
+                    <a href="/" title="Go to homepage">
+                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_uk/logo.svg", "Caeli UK - Go to homepage"); ?>
+                    </a>
                 </div>
                 <div class="navigation d-none d-lg-block">
                     {{insert_module::14}}

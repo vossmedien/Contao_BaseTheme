@@ -39,7 +39,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
                         <?php if ($this->nocolumns && $this->image_content && ($this->image_position === 'above' || !$this->image_position) ): ?>
                             <div class="col-12 mt-4 mt-md-0">
-                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image_content, null, '', $this->size_right_image, null, false, false); ?>
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image_content, null, '', $this->size_right_image, null, false, false, !$this->image_content_no_lazy); ?>
                             </div>
                         <?php endif; ?>
 
@@ -74,7 +74,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
                         <?php if ( (!$this->nocolumns && $this->image_content) || ($this->nocolumns && $this->image_content && $this->image_position === 'below') ): ?>
                             <div class="col-12 <?php if (!$this->nocolumns) : ?>col-md-4<?php endif; ?> mt-4 mt-md-0">
-                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image_content, null, '', $this->size_right_image, null, false, false); ?>
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image_content, null, '', $this->size_right_image, null, false, false, !$this->image_content_no_lazy); ?>
 
                                 <?php if ($this->buttons && !$this->nocolumns) : ?>
                                     <div class="mt-3">

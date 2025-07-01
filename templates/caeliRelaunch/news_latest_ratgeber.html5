@@ -1,3 +1,5 @@
+<?php 
+?>
 <div data-animation="animate__fadeIn" class="col d-flex flex-column layout_latest arc_<?= $this->archive->id ?> block<?= $this->class ?>">
 
     <!--
@@ -6,6 +8,7 @@
         <time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?></p>
     <?php $this->endblock(); ?>
     -->
+
 
     <?php if ($this->listImage): ?>
         <a href="<?= $this->link ?>">
@@ -35,3 +38,5 @@
 if (!$this->hasReader) {
     $this->addSchemaOrg($this->getSchemaOrgData());
 }
+
+?>

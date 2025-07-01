@@ -7,7 +7,7 @@
 
 #map {
     min-height: 600px;
-    height: 100vh;
+    height: calc(100vh - 130px);
 
     @media (min-width: 768px) {
         height: 80vh;

@@ -1,4 +1,20 @@
 <ul class="<?= $this->level ?>">
+    <?php if ($this->level === 'level_1'): ?>
+        <li class="first">
+            {{iflng::de}}
+            <a href="/" title="Startseite" class="">
+                Startseite
+            </a>
+            {{iflng}}
+
+            {{iflng::en}}
+            <a href="/en" title="Home" class="">
+                Home
+            </a>
+            {{iflng}}
+        </li>
+    <?php endif; ?>
+
     <?php foreach ($this->items as $item): ?>
         <li class="<?= $item['class'] ?>">
             <?php if ($this->level === 'level_1' && !empty($item['subitems'])): ?>
@@ -15,18 +31,18 @@
     <?php endforeach; ?>
 
     <?php if ($this->level === 'level_1'): ?>
-        <div class="extra-content mobileNav_contactBtn py-3">
+        <li class="mobileNav_contactBtn">
             {{iflng::de}}
-            <form action="/kontakt">
-                <button type="submit" class="btn btn-outline-primary with-arrow btn-xl"><i class="fasl fa-arrow-right-long"></i> Kontakt</button>
-            </form>
+            <a href="/kontakt" title="Kontakt" class="">
+                Kontakt
+            </a>
             {{iflng}}
 
             {{iflng::en}}
-            <form action="/contact">
-                <button type="submit" class="btn btn-outline-primary with-arrow btn-xl"><i class="fasl fa-arrow-right-long"></i> Contact</button>
-            </form>
+            <a href="/contact" title="Contact" class="">
+                Contact
+            </a>
             {{iflng}}
-        </div>
+        </li>
     <?php endif; ?>
 </ul>

@@ -239,9 +239,19 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                 }
             </style>
 
-            <video class="bgvideo lazy" autoplay muted loop playsinline data-src="{{file::<?php echo $this->image; ?>}}">
-                <source type="video/mp4" src="{{file::<?php echo $this->image; ?>}}">
-            </video>
+            <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo(
+                $this->image,
+                'bgvideo',
+                null,
+                null,
+                null,
+                $this->image_poster ? 
+                    Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($this->image_poster, null) : 
+                    null,
+                'autoplay muted loop playsinline',
+                !$this->image_video_no_lazy,
+                true // posterLazy - da Hintergrund-Video, ist Poster-Lazy meist egal
+            ) ?>
         <?php endif; ?>
     <?php endif; ?>
 

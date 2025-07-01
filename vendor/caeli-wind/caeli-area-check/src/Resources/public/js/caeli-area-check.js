@@ -43,8 +43,6 @@ const CaeliAreaCheck = {
     }
 };
 
-console.log("2");
-
 // Utility Functions
 const Utils = {
     isMobile() {
@@ -204,7 +202,9 @@ function initMap() {
         mapTypeId: 'satellite',
         mapId: mapId,
         scrollwheel: true,
-        gestureHandling: 'greedy' // Bessere Mobile-Bedienung
+        gestureHandling: 'greedy', // Bessere Mobile-Bedienung
+        streetViewControl: false, // Street View Icon ausblenden
+        fullscreenControl: false // Vollbild Icon ausblenden
     });
 
     CaeliAreaCheck.geocoder = new google.maps.Geocoder();
@@ -1338,21 +1338,20 @@ if (parkForm) {
 
 function checkConsent() {
     let hasGoogleMapsConsent = false;
-    let hasHubSpotConsent = false;
 
     if (typeof __cmp === 'function') {
         try {
             const cmpData = __cmp('getCMPData');
             if (cmpData && cmpData.vendorConsents) {
                 hasGoogleMapsConsent = cmpData.vendorConsents.s1104 || false; // Google Maps
-                hasHubSpotConsent = cmpData.vendorConsents.s10 || false; // HubSpot
+                // HubSpot Consent wird nicht mehr geprüft
             }
         } catch (e) {
             console.warn('CMP-Fehler:', e);
         }
     }
 
-    return hasGoogleMapsConsent && hasHubSpotConsent;
+    return hasGoogleMapsConsent; // Nur Google Maps Consent erforderlich
 }
 
 function showConsentOverlay() {
@@ -1369,7 +1368,7 @@ function activateConsent() {
     if (typeof __cmp === 'function') {
         try {
             __cmp('setVendorConsent', ['s1104', 1]); // Google Maps
-            __cmp('setVendorConsent', ['s10', 1]); // HubSpot
+            // HubSpot Consent wird nicht mehr automatisch aktiviert
 
             // Kurz warten und dann Maps laden
             setTimeout(() => {
@@ -1851,19 +1850,18 @@ function startLoadingAnimation() {
     
     // Texte für Wechsel vorbereiten
     const loadingTexts = [
-        loadingTextsObj.checking_area || "Wir prüfen Ihre Fläche",
-        loadingTextsObj.wind_conditions || "Passen die Windgegebenheiten?",
-        loadingTextsObj.restrictions_check || "Gibt es Restriktionen?",
-        loadingTextsObj.grid_connection || "Ist ein Netzanschluss gegeben?",
-        loadingTextsObj.analyzing_potential || "Analysiere Windpotential",
-        loadingTextsObj.checking_nature || "Prüfe Naturschutzgebiete",
-        loadingTextsObj.calculating_economics || "Berechne Wirtschaftlichkeit",
-        loadingTextsObj.checking_distances || "Überprüfe Abstandsregelungen",
-        loadingTextsObj.analyzing_capacity || "Analysiere Netzkapazität",
-        loadingTextsObj.evaluating_quality || "Bewerte Standortqualität"
+        loadingTextsObj.checking_area,
+        loadingTextsObj.wind_conditions,
+        loadingTextsObj.restrictions_check,
+        loadingTextsObj.grid_connection,
+        loadingTextsObj.analyzing_potential,
+        loadingTextsObj.checking_nature,
+        loadingTextsObj.checking_distances,
+        loadingTextsObj.evaluating_quality
     ];
     
     let currentTextIndex = 0;
+    let hasReached100 = false; // Flag für 100% Status
     
     // Spinner initialisieren
     initLoadingSpinner();
@@ -1883,16 +1881,25 @@ function startLoadingAnimation() {
     // Langsamere Progress-Simulation mit kontinuierlichem Fortschritt
     let progress = 0;
     const progressInterval = setInterval(() => {
-        if (progress < 80) {
-            // Schneller bis 80%
-            progress += Math.random() * 2 + 0.7; // 0.7-2.7% pro Schritt
-        } else if (progress < 95) {
-            // Langsamer von 80-95%
-            progress += Math.random() * 0.8 + 0.2; // 0.2-1.0% pro Schritt
-        } else {
-            // Sehr langsam ab 95% aber niemals stoppen
-            progress += Math.random() * 0.3 + 0.1; // 0.1-0.4% pro Schritt
-            progress = Math.min(progress, 99.5); // Maximal 99.5% (niemals 100%)
+        if (progress < 70) {
+            // Etwas schneller bis 70%
+            progress += Math.random() * 1.2 + 0.6; // 0.6-1.8% pro Schritt
+        } else if (progress < 90) {
+            // Etwas schneller von 70-90%
+            progress += Math.random() * 0.7 + 0.3; // 0.3-1.0% pro Schritt
+        } else if (progress < 99) {
+            // Etwas schneller von 90-99%
+            progress += Math.random() * 0.3 + 0.2; // 0.2-0.5% pro Schritt
+        } else if (progress < 100) {
+            // Erreiche 100% nach einer gewissen Zeit
+            progress = 100;
+            hasReached100 = true;
+            
+            // Text ändern wenn 100% erreicht ist
+            if (messageElement) {
+                const pleaseWaitText = loadingTextsObj.please_wait || 'Bitte haben Sie noch etwas Geduld';
+                messageElement.textContent = pleaseWaitText;
+            }
         }
         
         if (percentageElement) {
@@ -1901,11 +1908,16 @@ function startLoadingAnimation() {
         updateSpinnerProgress(progress);
         
         // Intervall niemals stoppen - läuft bis Seitenwechsel
-    }, 300);
+    }, 400); // Etwas schnellere Intervalle: 400ms statt 500ms
     
-    // Text-Wechsel alle 2 Sekunden
+    // Text-Wechsel alle 2 Sekunden (stoppt bei 100%)
     let textChangeCount = 0;
     const textInterval = setInterval(() => {
+        // Text-Wechsel stoppen wenn 100% erreicht ist
+        if (hasReached100) {
+            return;
+        }
+        
         if (messageElement && loadingTexts.length > 1) {
             textChangeCount++;
             
@@ -1914,13 +1926,16 @@ function startLoadingAnimation() {
             messageElement.style.opacity = '0';
             
             setTimeout(() => {
-                // Nächsten Text setzen
-                currentTextIndex = (currentTextIndex + 1) % loadingTexts.length;
-                messageElement.textContent = loadingTexts[currentTextIndex];
-                
-                // Sanftes Einblenden
-                messageElement.style.transition = 'opacity 0.7s ease-in';
-                messageElement.style.opacity = '1';
+                // Nur wechseln wenn noch nicht 100% erreicht
+                if (!hasReached100) {
+                    // Nächsten Text setzen
+                    currentTextIndex = (currentTextIndex + 1) % loadingTexts.length;
+                    messageElement.textContent = loadingTexts[currentTextIndex];
+                    
+                    // Sanftes Einblenden
+                    messageElement.style.transition = 'opacity 0.7s ease-in';
+                    messageElement.style.opacity = '1';
+                }
             }, 500);
         }
     }, 2000);

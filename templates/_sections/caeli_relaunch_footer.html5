@@ -1,7 +1,7 @@
 <div class="footer-top">
     <div class="container">
         <div class="logo">
-            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/logo_secondary.svg", null), null, null; ?>
+            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/layout/img/caeli_de/logo_secondary.svg", "Caeli Wind Logo"); ?>
         </div>
     </div>
 </div>
@@ -31,9 +31,9 @@
             </div>
             <div class="col">
                 <div class="ps-lg-3 footer-accordion-item">
-                    <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerRechtliches" aria-expanded="false" aria-controls="footerRechtliches">
-                        <?= $GLOBALS['TL_LANG']['MSC']['footerLegal'] ?> <span class="indicator d-sm-none float-end">+</span>
-                    </span>
+                    <button class="footer-title btn btn-link p-0 w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#footerRechtliches" aria-expanded="false" aria-controls="footerRechtliches">
+                        <?= $GLOBALS['TL_LANG']['MSC']['footerLegal'] ?> <span class="indicator d-sm-none float-end" aria-hidden="true">+</span>
+                    </button>
                     <div class="collapse" id="footerRechtliches">
                         {{iflng::de}}{{insert_module::16}}{{iflng::en}}{{insert_module::47}}{{iflng}}
                     </div>
@@ -41,18 +41,18 @@
             </div>
 
             {{iflng::de}}<div class="col footer-accordion-item">
-                 <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerCaeli" aria-expanded="false" aria-controls="footerCaeli">
-                    <?= $GLOBALS['TL_LANG']['MSC']['footerInsights'] ?> <span class="indicator d-sm-none float-end">+</span>
-                 </span>
+                 <button class="footer-title btn btn-link p-0 w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#footerCaeli" aria-expanded="false" aria-controls="footerCaeli">
+                    <?= $GLOBALS['TL_LANG']['MSC']['footerInsights'] ?> <span class="indicator d-sm-none float-end" aria-hidden="true">+</span>
+                 </button>
                 <div class="collapse" id="footerCaeli">
                     {{insert_module::36}}
                 </div>
             </div>{{iflng}}
             <!-- {{iflng::en}}
             <div class="col footer-accordion-item">
-                 <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerCaeli" aria-expanded="false" aria-controls="footerCaeli">
-                    <?= $GLOBALS['TL_LANG']['MSC']['footerInsights'] ?> <span class="indicator d-sm-none float-end">+</span>
-                 </span>
+                 <button class="footer-title btn btn-link p-0 w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#footerCaeli" aria-expanded="false" aria-controls="footerCaeli">
+                    <?= $GLOBALS['TL_LANG']['MSC']['footerInsights'] ?> <span class="indicator d-sm-none float-end" aria-hidden="true">+</span>
+                 </button>
                 <div class="collapse" id="footerCaeli">
                     {{insert_module::48}}
                 </div>
@@ -60,9 +60,9 @@
             {{iflng}} -->
 
             <div class="col footer-accordion-item ps-lg-5 pe-lg-0">
-                 <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerSoziales" aria-expanded="false" aria-controls="footerSoziales">
-                    <?= $GLOBALS['TL_LANG']['MSC']['footerSocialMedia'] ?> <span class="indicator d-sm-none float-end">+</span>
-                 </span>
+                 <button class="footer-title btn btn-link p-0 w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#footerSoziales" aria-expanded="false" aria-controls="footerSoziales">
+                    <?= $GLOBALS['TL_LANG']['MSC']['footerSocialMedia'] ?> <span class="indicator d-sm-none float-end" aria-hidden="true">+</span>
+                 </button>
                 <div class="collapse" id="footerSoziales">
                     {{iflng::de}}{{insert_module::15}}{{iflng::en}}{{insert_module::49}}{{iflng}}
                 </div>
@@ -70,29 +70,29 @@
 
             <div class="col footer-accordion-item">
     <div>
-        <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerKoop" aria-expanded="false" aria-controls="footerKoop">
-            <?= $GLOBALS['TL_LANG']['MSC']['footerCooperations'] ?> <span class="indicator d-sm-none float-end">+</span>
-        </span>
+        <button class="footer-title btn btn-link p-0 w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#footerKoop" aria-expanded="false" aria-controls="footerKoop">
+            <?= $GLOBALS['TL_LANG']['MSC']['footerCooperations'] ?> <span class="indicator d-sm-none float-end" aria-hidden="true">+</span>
+        </button>
 
         <div class="collapse" id="footerKoop">
             <ul class="list-inline partner-list">
                 <li class="mb-3 text-nowrap">
-                    <a href="https://wind-turbine.com/" target="_blank" rel="noopener noreferrer">
-                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/wind-turbine-com.svg", null, null, null); ?>
+                    <a href="https://wind-turbine.com/" target="_blank" rel="noopener noreferrer" title="Zur Wind-Turbine Website">
+                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/wind-turbine-com.svg", "Wind-Turbine.com"); ?>
                     </a>
                     <span class="ms-3">
-                        <a href="https://www.impact-factory.de/" target="_blank" rel="noopener noreferrer">
-                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/impact-factory.svg", null, null, null); ?>
+                        <a href="https://www.impact-factory.de/" target="_blank" rel="noopener noreferrer" title="Zur Impact Factory Website">
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/impact-factory.svg", "Impact Factory"); ?>
                         </a>
                     </span>
                 </li>
                 <li class="text-nowrap">
-                    <a href="https://www.hu-berlin.de/de" target="_blank" rel="noopener noreferrer">
-                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/humboldt-uni.svg", null, null, null); ?>
+                    <a href="https://www.hu-berlin.de/de" target="_blank" rel="noopener noreferrer" title="Zur Humboldt-Universität Berlin Website">
+                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/humboldt-uni.svg", "Humboldt-Universität Berlin"); ?>
                     </a>
                     <span class="ms-3">
-                        <a href="https://www.waldeigentuemer.de/" target="_blank" rel="noopener noreferrer">
-                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/die-waldeigentuemer.svg", null, null, null); ?>
+                        <a href="https://www.waldeigentuemer.de/" target="_blank" rel="noopener noreferrer" title="Zur Waldeigentümer Website">
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/die-waldeigentuemer.svg", "Die Waldeigentümer"); ?>
                         </a>
                     </span>
                 </li>
@@ -101,28 +101,28 @@
     </div>
 
     <div style="margin-top: var(--bs-gutter-y);" class="mt-md-5">
-        <span class="footer-title" type="button" data-bs-toggle="collapse" data-bs-target="#footerMembers" aria-expanded="false" aria-controls="footerMembers">
-            <?= $GLOBALS['TL_LANG']['MSC']['footerMembers'] ?> <span class="indicator d-sm-none float-end">+</span>
-        </span>
+        <button class="footer-title btn btn-link p-0 w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#footerMembers" aria-expanded="false" aria-controls="footerMembers">
+            <?= $GLOBALS['TL_LANG']['MSC']['footerMembers'] ?> <span class="indicator d-sm-none float-end" aria-hidden="true">+</span>
+        </button>
         <div class="collapse" id="footerMembers">
             <ul class="list-inline partner-list">
                 <li class="mb-3 text-nowrap">
-                    <a href="https://www.wind-energie.de/" target="_blank" rel="noopener noreferrer">
-                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/bwe.svg", null, null, null); ?>
+                    <a href="https://www.wind-energie.de/" target="_blank" rel="noopener noreferrer" title="Zum Bundesverband WindEnergie">
+                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/bwe.svg", "Bundesverband WindEnergie"); ?>
                     </a>
                     <span class="ms-3">
-                        <a href="https://lee-nds-hb.de/" target="_blank" rel="noopener noreferrer">
-                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/lee.svg", null, null, null); ?>
+                        <a href="https://lee-nds-hb.de/" target="_blank" rel="noopener noreferrer" title="Zum Landesverband Erneuerbare Energien">
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/lee.svg", "Landesverband Erneuerbare Energien"); ?>
                         </a>
                     </span>
                 </li>
                 <li class="text-nowrap">
-                    <a href="https://www.futureforest.de/" target="_blank" rel="noopener noreferrer">
-                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/future-forest-initiative.svg", null, null, null); ?>
+                    <a href="https://www.futureforest.de/" target="_blank" rel="noopener noreferrer" title="Zur Future Forest Initiative">
+                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/future-forest-initiative.svg", "Future Forest Initiative"); ?>
                     </a>
                     <span class="ms-3">
-                        <a href="https://www.maschinenring.de/" target="_blank" rel="noopener noreferrer">
-                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/mr.svg", null, null, null); ?>
+                        <a href="https://www.maschinenring.de/" target="_blank" rel="noopener noreferrer" title="Zum Maschinenring">
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::getSvgCode("files/base/content/caeli_de/bilder/footer-logos/mr.svg", "Maschinenring"); ?>
                         </a>
                     </span>
                 </li>

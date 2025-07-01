@@ -3,7 +3,7 @@
     <?php if ($item['isActive']): ?>
       <li class="<?= $item['class'] ?>" <?php if ($this->level === 'level_1'): ?>data-animation="animate__fadeIn"<?php endif; ?>>
         <?php if ($this->level === 'level_1' && !empty($item['subitems'])): ?>
-          <span class="<?= $item['class'] ?>" aria-haspopup="true"><?= $item['link'] ?></span>
+          <button class="<?= $item['class'] ?> nav-button" aria-expanded="false" aria-haspopup="true"><?= $item['link'] ?></button>
         <?php else: ?>
           <strong class="<?= $item['class'] ?>"<?php if (!empty($item['subitems'])): ?> aria-haspopup="true"<?php endif; ?>><?= $item['link'] ?></strong>
         <?php endif; ?>
@@ -13,7 +13,7 @@
             $containsLevel2 = strpos($item['subitems'], 'level_2') !== false;
             if ($containsLevel2):
           ?>
-            <div class="level_2-wrapper">
+            <div class="level_2-wrapper" role="region" aria-label="Untermenü für <?= strip_tags($item['link']) ?>">
               <?= $item['subitems'] ?? '' ?>
             </div>
           <?php else: ?>
@@ -24,9 +24,9 @@
     <?php else: ?>
       <li<?php if ($item['class']): ?> class="<?= $item['class'] ?>"<?php endif; ?> <?php if ($this->level === 'level_1'): ?>data-animation="animate__fadeIn"<?php endif; ?>>
         <?php if ($this->level === 'level_1' && !empty($item['subitems'])): ?>
-          <span class="<?= $item['class'] ?>" title="<?= $item['link'] ?>"<?php if ('' !== $item['accesskey']): ?> accesskey="<?= $item['accesskey'] ?>"<?php endif; ?> aria-haspopup="true"><?= $item['link'] ?></span>
+          <button class="<?= $item['class'] ?> nav-button" title="<?= strip_tags($item['link']) ?> - Menü öffnen"<?php if ('' !== $item['accesskey']): ?> accesskey="<?= $item['accesskey'] ?>"<?php endif; ?> aria-expanded="false" aria-haspopup="true"><?= $item['link'] ?></button>
         <?php else: ?>
-          <a href="<?= $item['href'] ?>" class="<?= $item['class'] ?>" title="<?= $item['link'] ?>"<?php if ('' !== $item['accesskey']): ?> accesskey="<?= $item['accesskey'] ?>"<?php endif; ?><?= $item['target'] ?><?= $item['rel'] ?? '' ?><?php if (!empty($item['subitems'])): ?> aria-haspopup="true"<?php endif; ?>><?= $item['link'] ?></a>
+          <a href="<?= $item['href'] ?>" class="<?= $item['class'] ?>" title="<?= strip_tags($item['link']) ?>"<?php if ('' !== $item['accesskey']): ?> accesskey="<?= $item['accesskey'] ?>"<?php endif; ?><?= $item['target'] ?><?= $item['rel'] ?? '' ?><?php if (!empty($item['subitems'])): ?> aria-haspopup="true"<?php endif; ?>><?= $item['link'] ?></a>
         <?php endif; ?>
         <?php if (!empty($item['subitems'])): ?>
           <?php 
@@ -34,7 +34,7 @@
             $containsLevel2 = strpos($item['subitems'], 'level_2') !== false;
             if ($containsLevel2):
           ?>
-            <div class="level_2-wrapper">
+            <div class="level_2-wrapper" role="region" aria-label="Untermenü für <?= strip_tags($item['link']) ?>">
               <?= $item['subitems'] ?? '' ?>
             </div>
           <?php else: ?>

@@ -1,6 +1,6 @@
-<div class="content--element mb-0">
+<div class="content--element mb-0 pt-0">
     {% block caeli_area_check_styles %}
-        <link rel="stylesheet" href="{{ asset('bundles/caeliareacheck/css/caeli-area-check.css?v=8') }}">
+        <link rel="stylesheet" href="{{ asset('bundles/caeliareacheck/css/caeli-area-check.css?v=12') }}">
     {% endblock %}
 
     <div class="mod_caeli_area_check" style="position:relative">
@@ -8,7 +8,7 @@
 
         {% if error %}
             <div class="alert alert-danger">
-                <h4>{{ translations.error.title }}</h4>
+                <span class="h4">{{ translations.error.title }}</span>
                 <p>{{ error }}</p>
                 <div class="mt-3">
                     <a href="{{ app.request.uri }}" class="btn btn-primary">{{ translations.error.retry_button }}</a>
@@ -18,8 +18,8 @@
             <!-- Consent-Overlay -->
             <div id="consent-overlay" class="consent-overlay" style="display:none;">
                 <div class="consent-content">
-                    <h4>{{ translations.consent.overlay.title|raw }}</h4>
-                    <p>{{ translations.consent.overlay.message }}</p>
+                    <span class="h4">{{ translations.consent.overlay.title|raw }}</span>
+                    <p>{{ translations.consent.overlay.message|raw }}</p>
                     <button id="activate-consent-btn" class="mt-3 btn btn-primary">{{ translations.consent.overlay.button }}</button>
                 </div>
             </div>
@@ -29,7 +29,7 @@
             <!-- Loading Overlay -->
             <div id="loading-overlay" style="display: none;">
                 <div class="loading-content">
-                    <h2>{{ translations.loading.title }}  <span class="loading-percentage">0%</span></h2>
+                    <span class="h2">{{ translations.loading.title }}  <span class="loading-percentage">0%</span></span>
 
                     <div class="loading-spinner">
                         <svg width="304" height="304" viewBox="0 0 304 304" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,10 +53,10 @@
             </div>
 
             <div id="controls" class="card" style="display:none;">
-                <div class="card-header text-white bg-primary">
+                <h1 class="card-header text-white bg-primary mb-0">
                     <b class="d-block">{{ translations.interface.header.title }}</b>
                     {{ translations.interface.header.subtitle }}
-                </div>
+                </h1>
                 <div class="card-body bg-secondary">
                     <div id="plz-alert" class="alert alert-primary" style="display:none;">
                         <strong>{{ translations.interface.hints.strong }}</strong> {{ translations.form.address_alert }}
@@ -105,7 +105,7 @@
     <div style="display: none;">
         <div id="tutorial-welcome-content" class="tutorial-content">
             {{ translations.tutorial.welcome.content }}
-            <div class="tutorial-buttons mt-2">
+            <div class="tutorial-buttons mt-2 mt-sm-3">
                 <button type="button" class="btn btn-outline-primary btn-sm me-2" id="tutorial-welcome-skip">{{ translations.tutorial.welcome.button_skip }}</button>
                 <button type="button" class="btn btn-primary btn-sm" id="tutorial-welcome-next">{{ translations.tutorial.welcome.button_next }}</button>
             </div>
@@ -113,14 +113,14 @@
 
         <div id="tutorial-plz-content" class="tutorial-content">
             {{ translations.tutorial.plz_input.content }}
-            <div class="tutorial-buttons mt-2">
+            <div class="tutorial-buttons mt-2 mt-sm-3">
                 <button type="button" class="btn btn-outline-primary btn-sm" id="tutorial-plz-back">{{ translations.tutorial.plz_input.button_back }}</button>
             </div>
         </div>
 
         <div id="tutorial-polygon-content" class="tutorial-content">
             {{ translations.tutorial.polygon_edit.content }}
-            <div class="tutorial-buttons mt-2">
+            <div class="tutorial-buttons mt-2 mt-sm-3">
                 <button type="button" class="btn btn-outline-primary btn-sm me-2" id="tutorial-polygon-back">{{ translations.tutorial.polygon_edit.button_back }}</button>
                 <button type="button" class="btn btn-primary btn-sm" id="tutorial-polygon-next">{{ translations.tutorial.area_confirm.button_next }}</button>
             </div>
@@ -145,6 +145,6 @@
         console.log('Translations loaded:', window.CaeliAreaCheckTranslations);
         console.log('Config loaded:', window.CaeliAreaCheckConfig);
     </script>
-    <script src="{{ asset('bundles/caeliareacheck/js/caeli-area-check.js?v=9') }}"></script>
+    <script src="{{ asset('bundles/caeliareacheck/js/caeli-area-check.js?v=12') }}"></script>
     <!-- Google Maps Script wird dynamisch geladen nach Consent-Check -->
 </div> 

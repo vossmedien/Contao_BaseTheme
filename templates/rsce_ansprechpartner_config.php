@@ -143,6 +143,45 @@ $config = array(
                 'field' => 'add_zip_filter',
             ),
         ),
+        'zip_input_placeholder' => array(
+            'label' => array('PLZ-Eingabefeld Placeholder', 'Platzhaltertext im PLZ-Eingabefeld'),
+            'inputType' => 'text',
+            'default' => 'z.B. 12345',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_zip_filter',
+            ),
+        ),
+        'distance_badge_text' => array(
+            'label' => array('Entfernungsanzeige Text', 'Text für die Entfernungsanzeige (verwenden Sie [DISTANCE] als Platzhalter für km-Wert)'),
+            'inputType' => 'text',
+            'default' => 'im Umkreis von ca. [DISTANCE] km',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'show_distance_badge',
+            ),
+        ),
+        'appointment_label' => array(
+            'label' => array('Termin-Link Label', 'Anzeigetext für Termin vereinbaren'),
+            'inputType' => 'text',
+            'default' => 'Termin vereinbaren',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'linkedin_label' => array(
+            'label' => array('LinkedIn-Link Label', 'Anzeigetext für LinkedIn Profil'),
+            'inputType' => 'text',
+            'default' => 'LinkedIn Profil',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'filter_all_button_text' => array(
+            'label' => array('Filter "Alle" Button Text', 'Text für den "Alle" Filter-Button'),
+            'inputType' => 'text',
+            'default' => 'Alle',
+            'eval' => array('tl_class' => 'w50'),
+            'dependsOn' => array(
+                'field' => 'add_filter_form',
+            ),
+        ),
 
         // --- 2. Allgemeines Layout & Raster --- //
         'animation_type' => array(
@@ -360,17 +399,22 @@ $config = array(
                 'title' => array(
                     'label' => array('Titel / Abteilung', 'z.B. "Vertrieb" oder "Technik"'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50', 'mandatory' => false),
+                    'eval' => array('tl_class' => 'w50', 'mandatory' => false, 'allowHtml' => true),
                 ),
                 'image' => array(
                     'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
                         'fieldType' => 'radio',
                         'tl_class' => 'clr'
                     ),
+                ),
+                'image_no_lazy' => array(
+                    'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'name' => array(
                     'label' => array('Name', ''),
@@ -435,6 +479,22 @@ $config = array(
                     'inputType' => 'select',
                     'options' => GlobalElementConfig::getAnimations(),
                     'eval' => array('chosen' => 'true', 'tl_class' => 'w50 clr')
+                ),
+                'profilePicture' => array(
+                    'label' => array('Profilbild', 'Optional - wird neben dem Namen angezeigt'),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
+                    ),
+                ),
+                'profilePicture_no_lazy' => array(
+                    'label' => array('Profilbild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Profilbild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
             ),
         ),

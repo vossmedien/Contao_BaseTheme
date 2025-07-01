@@ -116,7 +116,7 @@
                 ?>
                 <?php if (!empty($learnMoreLink)): ?>
                     <div>
-                        <a href="<?= $learnMoreLink ?>" title="<?= $this->more ?>" class="btn btn-sm btn-outline-primary">
+                        <a target="_blank" href="<?= $learnMoreLink ?>" title="<?= $this->more ?>" class="btn btn-sm btn-outline-primary">
                             <?= $this->more ?>
                         </a>
                     </div>

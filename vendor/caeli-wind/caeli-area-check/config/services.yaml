@@ -25,10 +25,24 @@ services:
 
     # FormDataListener für Formular-Hooks
     CaeliWind\CaeliAreaCheckBundle\EventListener\FormDataListener:
+        autowire: false
+        autoconfigure: false
         arguments:
             - '@monolog.logger.contao'
-            - '%caeli_area_check.form_ids%'
-            - '%caeli_area_check.field_mapping%'
+            - 
+                - 'auto_flaechencheckNotSuccessEN'
+                - 'auto_flaechencheckNotSuccessDE'
+                - 'auto_flaechencheckSuccessEN'
+                - 'auto_flaechencheckSuccessDE'
+                - 'flaechencheckNotSuccessEN'
+                - 'flaechencheckNotSuccessDE'
+                - 'flaechencheckSuccessEN'
+                - 'flaechencheckSuccessDE'
+            - 
+                lastname_field: 'lastname'
+                firstname_field: 'firstname'
+                phone_field: 'phone'
+                email_field: 'email'
         tags:
             - { name: contao.hook, hook: processFormData, method: onProcessFormData }
             - { name: contao.hook, hook: loadFormField, method: onLoadFormField }
@@ -37,8 +51,9 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
-    CaeliWind\CaeliAreaCheckBundle\EventListener\:
-        resource: '../src/EventListener/'
+    # EventListener werden manuell konfiguriert, nicht automatisch
+    # CaeliWind\CaeliAreaCheckBundle\EventListener\:
+    #     resource: '../src/EventListener/'
 
     # Map Image Generator Service
     CaeliWind\CaeliAreaCheckBundle\Service\MapImageGeneratorService:

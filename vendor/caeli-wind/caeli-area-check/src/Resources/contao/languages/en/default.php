@@ -8,15 +8,13 @@ declare(strict_types=1);
 
 // Loading texts
 $GLOBALS['TL_LANG']['caeli_area_check']['loading']['texts'] = [
-    'checking_area' => 'We are checking your area',
-    'wind_conditions' => 'Do the wind conditions fit?',
-    'restrictions_check' => 'Are there restrictions?',
-    'grid_connection' => 'Is a grid connection available?',
+    'checking_area' => 'Analyzing your land area',
+    'wind_conditions' => 'Are the wind conditions suitable?',
+    'restrictions_check' => 'Are there any planning restrictions?',
+    'grid_connection' => 'Evaluating grid connection options',
     'analyzing_potential' => 'Analyzing wind potential',
-    'checking_nature' => 'Checking nature reserves',
-    'calculating_economics' => 'Calculating economics',
-    'checking_distances' => 'Checking distance regulations',
-    'analyzing_capacity' => 'Analyzing grid capacity',
+    'checking_nature' => 'Initial faunistic assessment',
+    'checking_distances' => 'Reviewing distance requirements',
     'evaluating_quality' => 'Evaluating site quality',
 ];
 
@@ -68,7 +66,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['tutorial'] = [
 // Consent overlay
 $GLOBALS['TL_LANG']['caeli_area_check']['consent']['overlay'] = [
     'title' => 'Your site check<br>starts soon!',
-    'message' => 'To show you the interactive map and process your request, we need your consent for necessary cookies.',
+    'message' => 'To show you the interactive map and process your request, we need your consent for necessary cookies. You can revoke your consent at any time via the <a href="#" onclick="var recall = document.querySelector(\'.cmpboxrecalllink\'); if(recall) recall.click(); setTimeout(function(){var tab = document.querySelector(\'[data-cmp-purpose=c55]\'); if(tab) tab.click();}, 100); return false;">consent manager</a>.',
     'button' => 'Start now',
 ];
 
@@ -128,7 +126,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['alerts'] = [
 
 // Loading overlay
 $GLOBALS['TL_LANG']['caeli_area_check']['loading'] = [
-    'title' => 'Your property is being checked...',
+    'title' => 'Your site is being checked...',
     'progress' => 'Progress',
     'texts' => [
         'checking_area' => 'We are checking your area',
@@ -150,7 +148,8 @@ $GLOBALS['TL_LANG']['caeli_area_check']['loading'] = [
         'saving' => 'Result is being saved...',
         'completed' => 'Processing completed!'
     ],
-    'completed_redirect' => 'Completed! Redirecting...'
+    'completed_redirect' => 'Completed! Redirecting...',
+    'please_wait' => 'Please be patient'
 ];
 
 // Interface elements
@@ -160,7 +159,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['interface'] = [
         'subtitle' => 'for Wind Energy Projects',
     ],
     'form' => [
-        'label' => 'Find and mark your property',
+        'label' => 'Find and mark your land',
     ],
     'hints' => [
         'strong' => 'Note:',
@@ -219,6 +218,10 @@ $GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
         'unsuitable_title' => 'Let us analyze your area in detail:',
         'pdf_report_button' => 'Get Your Free PDF Report',
     ],
+    'badges' => [
+        'pdf_suitable' => '/files/base/layout/img/caeli_de/badges/flaechencheck-pdf-badge-en.webp',
+        'pdf_unsuitable' => '/files/base/layout/img/caeli_de/badges/flaechencheck-pdf-badge-en_negativ.svg',
+    ],
     'error_states' => [
         'check_failed' => [
             'title' => 'Evaluation Error',
@@ -249,7 +252,7 @@ $GLOBALS['TL_LANG']['caeli_area_check']['result'] = [
         ],
         'welcome' => [
             'title' => 'Welcome to Area Check',
-            'message' => 'Please first perform an area check.',
+            'message' => 'Please first perform an site check.',
             'button' => 'Start Area Check',
         ],
     ],

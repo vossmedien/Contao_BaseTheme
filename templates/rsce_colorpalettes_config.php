@@ -192,8 +192,13 @@ $config = array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg,webp',
+                'extensions' => Contao\Config::get('validImageTypes'),
             ),
+        ),
+        'base_img_no_lazy' => array(
+            'label' => array('Standard-Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Standard-Bild'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
         'basic_img_title' => array(
@@ -258,10 +263,15 @@ $config = array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
                     ),
                 ),
-
+                'img_no_lazy' => array(
+                    'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
                 'title' => array(
                     'label' => array('Titel', ''),
                     'inputType' => 'text',
@@ -309,8 +319,14 @@ $config = array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
                     ),
+                ),
+                'img_no_lazy' => array(
+                    'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
                 'title' => array(
@@ -336,4 +352,5 @@ $config = array(
 );
 
 // A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config);
 return RockSolidConfigHelper::addAbTestFields($config);

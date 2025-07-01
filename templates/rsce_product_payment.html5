@@ -141,7 +141,9 @@ $isDebug = $_ENV['APP_ENV'] === 'dev';
                                         $product->title,
                                         null,
                                         $product->image_size,
-                                        'img-fluid'
+                                        'img-fluid',
+                                        null,
+                                        !($product->image_no_lazy ?? false)
                                     ); ?>
                                 </div>
                             <?php endif; ?>

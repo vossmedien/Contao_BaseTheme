@@ -1,4 +1,4 @@
-<div class="content--element ">
+<div class="content--element pt-0">
     <!-- Übersetzungen für Template bereitstellen -->
     <script>
         window.CaeliAreaCheckTranslations = {{ translations|json_encode|raw }};
@@ -21,8 +21,12 @@
                 (rating.rating_grid_connection is defined and rating.rating_grid_connection in ['green', 'yellow']) %}
 
             {% if isSuitable %}
-                {{ insert_tag('insert_node::20')|raw }}
 
+                {% if app.request.locale == 'en' %}
+                    {{ insert_tag('insert_node::32')|raw }}
+                {% else %}
+                    {{ insert_tag('insert_node::20')|raw }}
+                {% endif %}
                 <div class="row">
                     <div class="col-md-7">
                         <div class="ce--headline hl-h2 mb-0" data-animation="animate__fadeIn">
@@ -71,7 +75,7 @@
                                 </div>
                                 <div class="col-sm-4  d-none d-sm-block d-md-none">
                                     {% if isSuitable %}
-                                        <img class="pdf-preview" src="/files/base/layout/img/flaechencheck-pdf-badge-de.png">
+                                        <img class="pdf-preview" src="{{ translations.result.badges.pdf_suitable }}">
                                     {% endif %}
                                 </div>
                             </div>
@@ -83,18 +87,19 @@
                                 <div class="row">
                                     <div class="col-md-8" data-animation="animate__fadeIn">
 
-                                        {% if isSuitable %}   <h3 class="mb-0">
+                                        {% if isSuitable %}
+                                            <h3 class="mb-0">
                                             {{ translations.result.form_section.suitable_title }} </h3>
-                                        {% else %} <h3 class="fw-normal mb-0">
+                                        {% else %} <h3 class="mb-0">
                                             {{ translations.result.form_section.unsuitable_title }}</h3>
                                         {% endif %}
 
                                     </div>
                                     <div class="col-md-4" data-animation="animate__fadeInDown">
                                         {% if isSuitable %}
-                                            <img class="pdf-preview d-none d-md-block" src="/files/base/layout/img/flaechencheck-pdf-badge-de.png">
+                                            <img class="pdf-preview d-none d-md-block" src="{{ translations.result.badges.pdf_suitable }}">
                                         {% else %}
-                                            <img class="pdf-preview is-badge" src="/files/base/layout/img/caeli_de/badges/flaechencheck-pdf-badge-de_negativ.svg">
+                                            <img class="pdf-preview is-badge d-none d-md-block" src="{{ translations.result.badges.pdf_unsuitable }}">
                                         {% endif %}
                                     </div>
                                 </div>
@@ -146,7 +151,7 @@
                     {% if mapPage %}
                         <a href="{{ mapPage.getFrontendUrl() }}" class="btn btn-primary">{{ translations.result.error_states.welcome.button }}</a>
                     {% else %}
-                        <a href="/flaechencheck" class="btn btn-primary">{{ translations.result.error_states.welcome.button }}</a>
+                        <a href="{% if app.request.locale == 'en' %}/en/site-check{% else %}/flaechencheck{% endif %}" class="btn btn-primary">{{ translations.result.error_states.welcome.button }}</a>
                     {% endif %}
                 </div>
             </div>

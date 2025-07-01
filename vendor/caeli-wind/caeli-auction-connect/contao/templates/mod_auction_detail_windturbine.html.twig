@@ -4,11 +4,11 @@
 {# Einheitliche Datenstruktur erstellen #}
 {% set raw_data = auction._raw_data|default({}) %}
 {% if auction_var|default %}
-    <div class="bg-primary text-white offset-wrapper">
+    <div class="bg-primary text-white offset-wrapper pt-0">
 
 
 
-        <div class="container"><h2>Diese Fläche hat Sie interessiert</h2></div>
+        <div class="container"><h2>{{ 'detail.interested_area_headline'|trans }}</h2></div>
 
 
         <div class="container-wide auction-detail-box ">
@@ -34,28 +34,44 @@
                                 {{ 'auction_listing.card.details.power'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ raw_data.power }} {{ 'auction_listing.card.unit.mw'|trans }}
+                                    {% if app.request.locale == 'en' %}
+                                        {{ raw_data.power|number_format(1, '.', ',') }} {{ 'auction_listing.card.unit.mw'|trans }}
+                                    {% else %}
+                                        {{ raw_data.power|number_format(1, ',', '.') }} {{ 'auction_listing.card.unit.mw'|trans }}
+                                    {% endif %}
                                 </strong>
 
                                 <span class="auction-detail-label">
                                 {{ 'auction_listing.card.details.area_size'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ raw_data.areaSize }} {{ 'auction_listing.card.unit.ha'|trans }}
+                                    {% if app.request.locale == 'en' %}
+                                        {{ raw_data.areaSize|number_format(1, '.', ',') }} {{ 'auction_listing.card.unit.ha'|trans }}
+                                    {% else %}
+                                        {{ raw_data.areaSize|number_format(1, ',', '.') }} {{ 'auction_listing.card.unit.ha'|trans }}
+                                    {% endif %}
                                 </strong>
 
                                 <span class="auction-detail-label">
                                 {{ 'auction_listing.card.details.full_usage_hours'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ raw_data.fullUsageHours }} {{ 'auction_listing.card.unit.h_per_a'|trans }}
+                                    {% if app.request.locale == 'en' %}
+                                        {{ raw_data.fullUsageHours|number_format(0, '.', ',') }} {{ 'auction_listing.card.unit.h_per_a'|trans }}
+                                    {% else %}
+                                        {{ raw_data.fullUsageHours|number_format(0, ',', '.') }} {{ 'auction_listing.card.unit.h_per_a'|trans }}
+                                    {% endif %}
                                 </strong>
 
                                 <span class="auction-detail-label">
                                 {{ 'auction_listing.card.details.irr_before_rent'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ raw_data.internalRateOfReturnBeforeRent }} {{ 'auction_listing.card.unit.percent'|trans }}
+                                    {% if app.request.locale == 'en' %}
+                                        {{ raw_data.internalRateOfReturnBeforeRent|number_format(1, '.', ',') }} {{ 'auction_listing.card.unit.percent'|trans }}
+                                    {% else %}
+                                        {{ raw_data.internalRateOfReturnBeforeRent|number_format(1, ',', '.') }} {{ 'auction_listing.card.unit.percent'|trans }}
+                                    {% endif %}
                                 </strong>
 
 
@@ -64,7 +80,11 @@
                                 {{ 'detail.hub_height'|trans }}
                             </span>
                                     <strong class="auction-detail-value">
-                                        {{ raw_data.weaHubHeight }} m
+                                        {% if app.request.locale == 'en' %}
+                                            {{ raw_data.weaHubHeight|number_format(0, '.', ',') }} m
+                                        {% else %}
+                                            {{ raw_data.weaHubHeight|number_format(0, ',', '.') }} m
+                                        {% endif %}
                                     </strong>
                                 {% endif %}
 
@@ -79,7 +99,11 @@
                                 {{ 'detail.avg_wind_speed'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {{ raw_data.averageWindSpeed }} m/s
+                                    {% if app.request.locale == 'en' %}
+                                        {{ raw_data.averageWindSpeed|number_format(1, '.', ',') }} m/s
+                                    {% else %}
+                                        {{ raw_data.averageWindSpeed|number_format(1, ',', '.') }} m/s
+                                    {% endif %}
                                 </strong>
 
 
@@ -87,7 +111,7 @@
                                 {{ 'auction_listing.card.details.availability'|trans }}
                             </span>
                                 <strong class="auction-detail-value">
-                                    {% if raw_data.status == 'STARTED' %}
+                                   {% if raw_data.status == 'STARTED' or raw_data.status == 'OPEN_FOR_DIRECT_AWARDING' %}
                                         {{ 'marktplatz.as_of_now'|trans }}
                                     {% else %}
                                         {{ 'auction_listing.card.details.availability_prefix'|trans }} {{ raw_data.availableFrom }}
@@ -97,7 +121,7 @@
 
                             <div class="mt-3">
                                 <strong class="d-block mb-1">{{ 'detail.planning_law_headline'|trans }}</strong>
-                                <span>Planungsrechtliche Informationen nach Registrierung</span> {# Ggf. diesen Text dynamischer gestalten oder spezifischer übersetzen #}
+                                <span>{{ 'detail.planning_law_info_text'|trans }}</span>
                             </div>
                         </div>
                     </div>
@@ -110,7 +134,7 @@
                        data-bs-toggle="popover"
                        data-bs-placement="top"
                        data-bs-html="true"
-                       data-bs-content="<div class='text-start'><i class='fak fa-check'></i> {{ 'detail.status_legend.completed'|trans }}<br><i class='fak fa-recycling'></i> {{ 'detail.status_legend.in_progress'|trans }}<br><i class='fak fa-hourglass'></i> {{ 'detail.status_legend.requested'|trans }}</div>"
+                       data-bs-content="<div class='text-start'><span class='d-block'><i class='fak fa-check'></i> {{ 'detail.status_legend.completed'|trans }}</span><span class='d-block my-2'><i class='fak fa-recycling'></i> {{ 'detail.status_legend.in_progress'|trans }}</span><span class='d-block'><i class='fak fa-hourglass'></i> {{ 'detail.status_legend.requested'|trans }}</span></div>"
                        title="{{ 'detail.status_legend.title'|trans }}"></i>
                 </strong>
 
@@ -144,18 +168,48 @@
                 </div>
             </div>
         </div>
-
     </div>
+    {#
 {% elseif error|default %}
     <div class="my-gap container">
     <div class="alert alert-danger">
         <p>{{ error }}</p>
     </div>
-        </div>
+        </div> #}
 {% else %}
-     <div class="my-gap container">
-    <div class="alert alert-info">
-        <p>{{ 'detail.auction_not_found'|trans }}</p>
+   <div class="content--element  ce_rsce_headline mb-0 is-primary is-fullwidth layout-two-columns my-gap">
+        <div class="ce--inner container">
+            <div>
+                <div class="row  gy-lg-0 gx-lg-3 align-items-center">
+                    <div data-animation="animate__fadeIn" class="col-12 col-lg-6 order-lg-1 order-1 headline-column">
+                        <div class="">
+                            <div class="headline-wrapper">
+                                <div class="ce--headline hl-h2">
+                                    <h2 style="">
+                                        {{ 'detail.no_longer_available.headline'|trans }}
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="text">
+                                <p>{{ 'detail.no_longer_available.description'|trans }}</p>
+                            </div>
+                            <div class="buttons text-lg-start mt-4">
+                                <div class="ce--buttons">
+                                    <a class="btn btn-xl btn-outline-primary with-arrow" href="/marktplatz" id="klick-flaechenangebot-pe-seite">{{ 'detail.no_longer_available.button_text'|trans }}</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 order-lg-2 order-2 ">
+                        <div class="content-column mt-4 mt-lg-0">
+                            <div class="text">
+                                <div>
+                                    {{ insert_tag('insert_node::8')|raw }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-     </div>
 {% endif %}

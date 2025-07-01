@@ -26,10 +26,11 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                 $member->image,
                                 null,
                                 $member->name,
-                                $this->size,
-                                'img-fluid',
+                                null,
+                                'team-member-image',
                                 false,
-                                false
+                                false,
+                                !$member->image_no_lazy
                             ); ?>
                         </div>
                         <div class="col-12 col-md-6 member-info">

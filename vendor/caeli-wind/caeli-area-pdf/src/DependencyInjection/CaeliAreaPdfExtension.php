@@ -19,7 +19,7 @@ class CaeliAreaPdfExtension extends Extension
         $loader->load('services.yaml');
         
         // Default-Parameter setzen
-        $container->setParameter('caeli_area_pdf.api_url', 'https://infra.caeli-wind.de/api/');
+        $container->setParameter('caeli_area_pdf.api_url', '');
         $container->setParameter('caeli_area_pdf.timeout', 30);
         $container->setParameter('caeli_area_pdf.connect_timeout', 10);
     }

@@ -70,6 +70,22 @@ $config = array(
                         'tl_class' => 'clr'
                     ),
                 ),
+                'icon' => array(
+                    'label' => array('Icon/Bild', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
+                    ),
+                ),
+                'icon_no_lazy' => array(
+                    'label' => array('Icon/Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Icon/Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
             ),
         ),
     ),

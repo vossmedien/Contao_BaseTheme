@@ -28,7 +28,7 @@ $this->bodyAttributes = $this
 <head>
     <?php $this->block('head'); ?>
     <meta charset="<?= $this->charset ?>">
-    <title><?= $this->title ?></title>
+    <title><?= str_replace(' - ', ' | ', $this->title) ?></title>
     <base href="<?= $this->base ?>">
 
     <?php $this->block('meta'); ?>
@@ -49,7 +49,7 @@ $this->bodyAttributes = $this
     ?>
 
 
-    <meta name="description" content="<?= Contao\StringUtil::substr($this->description, 320) ?>">
+    <meta name="description" content="<?= mb_substr($this->description, 0, 320) ?>">
     <meta name="generator" content="Contao Open Source CMS">
     <?php $this->endblock(); ?>
 
@@ -61,7 +61,7 @@ $this->bodyAttributes = $this
     <?= $this->framework ?>
 
 
-       <?php
+    <?php
     // Get the current hostname
     $hostname = $_SERVER['HTTP_HOST'];
 
@@ -77,7 +77,7 @@ $this->bodyAttributes = $this
 
 
     <meta name="robots" content="<?= $this->robots ?>">
-    <meta name="description" content="<?= Contao\StringUtil::substr($this->description, 320) ?>">
+    <meta name="description" content="<?= mb_substr($this->description, 0, 320) ?>">
     <meta name="generator" content="Contao Open Source CMS">
     <?php $this->endblock(); ?>
 
@@ -93,10 +93,10 @@ $this->bodyAttributes = $this
 
     // Gewünschte Ladereihenfolge und spezifische Attribute (Schlüssel sind jetzt EntryPoint-Namen)
     $cssLoadConfig = [
-        '_fonts'          => ['preload' => true, 'media' => 'all'],
-        '_vendors'        => ['preload' => false, 'media' => 'all'],
-        '_base'           => ['preload' => false, 'media' => 'all'],
-        '_theme'          => ['preload' => false, 'media' => 'all'],
+        '_fonts' => ['preload' => true, 'media' => 'all'],
+        '_vendors' => ['preload' => false, 'media' => 'all'],
+        '_base' => ['preload' => false, 'media' => 'all'],
+        '_theme' => ['preload' => false, 'media' => 'all'],
         '_root-variables' => ['preload' => false, 'media' => 'all'],
         // '_utilities' wird hier nicht explizit aufgeführt, da es für caeliUk evtl. nicht existiert oder anders gehandhabt wird.
         // Es wird unten durch die Schleife für verbleibende CSS-Dateien abgedeckt.
@@ -165,7 +165,7 @@ $this->bodyAttributes = $this
             if (isset($cssAsset['path'])) {
                 $cssPath = $cssAsset['path'];
                 if (!in_array($cssPath, $outputtedCssPaths)) {
-                     // Korrigierte Pfad-Zusammensetzung für $GLOBALS['TL_CSS']
+                    // Korrigierte Pfad-Zusammensetzung für $GLOBALS['TL_CSS']
                     $GLOBALS['TL_CSS'][] = ltrim($cssPath, '/') . '|static';
                 }
             }
@@ -184,6 +184,41 @@ $this->bodyAttributes = $this
     <?= $this->stylesheets ?>
     <?= $this->mooScripts ?>
     <?= $this->head ?>
+
+    <?php
+    // --- Social Media Meta-Tags generieren (zentral für alle Seiten) ---
+    use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
+    use Vsm\VsmHelperTools\Helper\EnvHelper;
+    
+    if (EnvHelper::isFrontend()) {
+        // Fallback-Daten aus Page-Eigenschaften wenn keine Element-Daten gesammelt wurden
+        if (SocialMetaHelper::getCollectedElementsCount() === 0) {
+            $fallbackData = [];
+            
+            // Page-Titel verwenden
+            if (!empty($this->title)) {
+                $fallbackData['title'] = strip_tags($this->title);
+            }
+            
+            // Page-Beschreibung verwenden  
+            if (!empty($this->description)) {
+                $fallbackData['description'] = strip_tags($this->description);
+            }
+            
+            // Page-Type setzen
+            $fallbackData['type'] = 'website';
+            
+            // Fallback-Daten sammeln (Fallback-Bild wird automatisch in collectElementData() gesetzt)
+            SocialMetaHelper::collectElementData($fallbackData);
+        }
+        
+        // Social Media Meta-Tags generieren (immer, auch mit Fallback-Daten)
+        $metaTagsHTML = SocialMetaHelper::generateSocialMetaTags([]);
+        if (!empty($metaTagsHTML)) {
+            echo $metaTagsHTML . "\n    ";
+        }
+    }
+    ?>
     <?php $this->endblock(); ?>
 
     <script>
@@ -360,8 +395,7 @@ $this->bodyAttributes = $this
             var c = document.getElementsByTagName("html");
             if (c.length > 0) {
                 c = c[0]
-            }
-            else {
+            } else {
                 c = document.documentElement
             }
             if (c && c.getAttribute) {
@@ -373,8 +407,7 @@ $this->bodyAttributes = $this
                     a = a.split("_").join("-").toUpperCase();
                     var b = window.cmp_getsupportedLangs();
                     return b.indexOf(a) != -1 || b.indexOf(a.substr(0, 2)) != -1 ? a : ""
-                }
-                else {
+                } else {
                     return ""
                 }
             }
@@ -414,12 +447,10 @@ $this->bodyAttributes = $this
                 var J = w.indexOf(e);
                 if (u != -1) {
                     d = L.substring(u + l, 9999)
-                }
-                else {
+                } else {
                     if (J != -1) {
                         d = w.substring(J + l, 9999)
-                    }
-                    else {
+                    } else {
                         return i in o && typeof (o[i]) !== "function" ? o[i] : ""
                     }
                 }
@@ -433,8 +464,7 @@ $this->bodyAttributes = $this
             if (j != "") {
                 t = j;
                 k = t
-            }
-            else {
+            } else {
                 if ("cmp_getlang" in o) {
                     t = o.cmp_getlang().toLowerCase();
                     h = o.cmp_getlangs().slice(0, 3).join("_");
@@ -471,12 +501,10 @@ $this->bodyAttributes = $this
                 var K = "body";
                 if (C[w] && C[w][J]) {
                     C[w][J][l](M)
-                }
-                else {
+                } else {
                     if (C[K]) {
                         C[K][l](M)
-                    }
-                    else {
+                    } else {
                         for (var u = 0; u < L.length; u++) {
                             var I = D(L[u]);
                             if (I.length > 0) {
@@ -495,19 +523,16 @@ $this->bodyAttributes = $this
             var g;
             try {
                 g = C.cookie.length > 0
-            }
-            catch (B) {
+            } catch (B) {
                 g = false
             }
             var x = F("darkmode");
             if (x == "0") {
                 x = 0
-            }
-            else {
+            } else {
                 if (x == "1") {
                     x = 1
-                }
-                else {
+                } else {
                     try {
                         if ("matchMedia" in window && window.matchMedia) {
                             var H = window.matchMedia("(prefers-color-scheme: dark)");
@@ -515,8 +540,7 @@ $this->bodyAttributes = $this
                                 x = 1
                             }
                         }
-                    }
-                    catch (B) {
+                    } catch (B) {
                         x = 0
                     }
                 }
@@ -547,8 +571,7 @@ $this->bodyAttributes = $this
             var l;
             try {
                 l = document.cookie
-            }
-            catch (h) {
+            } catch (h) {
                 l = ""
             }
             var j = "";
@@ -562,8 +585,7 @@ $this->bodyAttributes = $this
                 var k = l.substring(0, l.indexOf("="));
                 if (l.indexOf(";") != -1) {
                     var m = l.substring(l.indexOf("=") + 1, l.indexOf(";"))
-                }
-                else {
+                } else {
                     var m = l.substr(l.indexOf("=") + 1, l.length)
                 }
                 if (c == k) {
@@ -586,8 +608,7 @@ $this->bodyAttributes = $this
             __cmp.a = __cmp.a || [];
             if (!a.length) {
                 return __cmp.a
-            }
-            else {
+            } else {
                 if (a[0] === "ping") {
                     if (a[1] === 2) {
                         a[2]({
@@ -598,24 +619,19 @@ $this->bodyAttributes = $this
                             apiVersion: "2.2",
                             cmpId: 31
                         }, true)
-                    }
-                    else {
+                    } else {
                         a[2](false, true)
                     }
-                }
-                else {
+                } else {
                     if (a[0] === "getTCData") {
                         __cmp.a.push([].slice.apply(a))
-                    }
-                    else {
+                    } else {
                         if (a[0] === "addEventListener" || a[0] === "removeEventListener") {
                             __cmp.a.push([].slice.apply(a))
-                        }
-                        else {
+                        } else {
                             if (a.length == 4 && a[3] === false) {
                                 a[2]({}, false)
-                            }
-                            else {
+                            } else {
                                 __cmp.a.push([].slice.apply(a))
                             }
                         }
@@ -642,8 +658,7 @@ $this->bodyAttributes = $this
             if (h === "ping") {
                 a = window.cmp_gpp_ping();
                 j = true
-            }
-            else {
+            } else {
                 if (h === "addEventListener") {
                     __gpp.e = __gpp.e || [];
                     if (!("lastId" in __gpp)) {
@@ -651,11 +666,10 @@ $this->bodyAttributes = $this
                     }
                     __gpp.lastId++;
                     var d = __gpp.lastId;
-                    __gpp.e.push({ id: d, callback: g });
-                    a = { eventName: "listenerRegistered", listenerId: d, data: true, pingData: window.cmp_gpp_ping() };
+                    __gpp.e.push({id: d, callback: g});
+                    a = {eventName: "listenerRegistered", listenerId: d, data: true, pingData: window.cmp_gpp_ping()};
                     j = true
-                }
-                else {
+                } else {
                     if (h === "removeEventListener") {
                         __gpp.e = __gpp.e || [];
                         a = false;
@@ -667,8 +681,7 @@ $this->bodyAttributes = $this
                             }
                         }
                         j = true
-                    }
-                    else {
+                    } else {
                         __gpp.q.push([].slice.apply(c))
                     }
                 }
@@ -704,8 +717,7 @@ $this->bodyAttributes = $this
                     a.setAttribute("role", "none");
                     a.setAttribute("tabindex", "-1");
                     document.body.appendChild(a)
-                }
-                else {
+                } else {
                     window.setTimeout(window.cmp_addFrame, 10, b)
                 }
             }
@@ -714,35 +726,34 @@ $this->bodyAttributes = $this
             var a = typeof d.data === "string";
             try {
                 var c = a ? JSON.parse(d.data) : d.data
-            }
-            catch (f) {
+            } catch (f) {
                 var c = null
             }
             if (typeof (c) === "object" && c !== null && "__cmpCall" in c) {
                 var b = c.__cmpCall;
                 window.__cmp(b.command, b.parameter, function (h, g) {
-                    var e = { __cmpReturn: { returnValue: h, success: g, callId: b.callId } };
+                    var e = {__cmpReturn: {returnValue: h, success: g, callId: b.callId}};
                     d.source.postMessage(a ? JSON.stringify(e) : e, "*")
                 })
             }
             if (typeof (c) === "object" && c !== null && "__tcfapiCall" in c) {
                 var b = c.__tcfapiCall;
                 window.__tcfapi(b.command, b.version, function (h, g) {
-                    var e = { __tcfapiReturn: { returnValue: h, success: g, callId: b.callId } };
+                    var e = {__tcfapiReturn: {returnValue: h, success: g, callId: b.callId}};
                     d.source.postMessage(a ? JSON.stringify(e) : e, "*")
                 }, b.parameter)
             }
             if (typeof (c) === "object" && c !== null && "__gppCall" in c) {
                 var b = c.__gppCall;
                 window.__gpp(b.command, function (h, g) {
-                    var e = { __gppReturn: { returnValue: h, success: g, callId: b.callId } };
+                    var e = {__gppReturn: {returnValue: h, success: g, callId: b.callId}};
                     d.source.postMessage(a ? JSON.stringify(e) : e, "*")
                 }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
             }
             if (typeof (c) === "object" && c !== null && "__dsaCall" in c) {
                 var b = c.__dsaCall;
                 window.__dsa(b.command, function (h, g) {
-                    var e = { __dsaReturn: { returnValue: h, success: g, callId: b.callId } };
+                    var e = {__dsaReturn: {returnValue: h, success: g, callId: b.callId}};
                     d.source.postMessage(a ? JSON.stringify(e) : e, "*")
                 }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
             }
@@ -795,56 +806,67 @@ $this->bodyAttributes = $this
     <!-- End Google Tag Manager -->
 
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Caeli Platform for Renewables Ltd.",
-  "alternateName": "Caeli UK",
-  "url": "https://www.caeli.co.uk/",
-  "logo": "https://www.caeli.co.uk/files/base/layout/img/logo.svg",
-  "email": "info@caeli.co.uk",
-  "description": "Caeli Platform for Renewables is a digital platform accelerating the development of wind energy projects. Combining AI-powered site analysis with a structured marketplace, Caeli helps landowners, developers, and investors collaborate efficiently – from initial assessment to project completion. Founded in Germany and trusted by leading energy providers, Caeli is now expanding across Europe to support the digital transformation of renewable energy development.",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "128 City Road",
-    "addressLocality": "London",
-    "postalCode": "EC1V 2NX",
-    "addressCountry": "GB"
-  },
-  "sameAs": ["https://www.linkedin.com/company/caeli-uk/"],
-  "contactPoint": [
-    {
-      "@type": "ContactPoint",
-      "email": "info@caeli.co.uk",
-      "contactType": "general inquiry",
-      "availableLanguage": ["de", "en"]
-    },
-    {
-      "@type": "ContactPoint",
-      "email": "hans-georg.lewinski@caeli.co.uk",
-      "contactType": "landowner support",
-      "availableLanguage": ["de", "en"]
-    },
-    {
-      "@type": "ContactPoint",
-      "email": "julia.berkenfeld@caeli.co.uk",
-      "contactType": "project developer support",
-      "availableLanguage": ["de", "en"]
-    },
-    {
-      "@type": "ContactPoint",
-      "url": "https://calendly.com/hans-georg-lewinski-caeli-wind/30min",
-      "contactType": "appointment booking for landowners"
-    },
-    {
-      "@type": "ContactPoint",
-      "url": "https://calendly.com/julia-berkenfeld/introduction-caeli",
-      "contactType": "appointment booking for project developers"
-    }
-  ]
-}
-</script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Caeli Platform for Renewables Ltd.",
+            "alternateName": "Caeli UK",
+            "url": "https://www.caeli.co.uk/",
+            "logo": "https://www.caeli.co.uk/files/base/layout/img/logo.svg",
+            "email": "info@caeli.co.uk",
+            "description": "Caeli Platform for Renewables is a digital platform accelerating the development of wind energy projects. Combining AI-powered site analysis with a structured marketplace, Caeli helps landowners, developers, and investors collaborate efficiently – from initial assessment to project completion. Founded in Germany and trusted by leading energy providers, Caeli is now expanding across Europe to support the digital transformation of renewable energy development.",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "128 City Road",
+                "addressLocality": "London",
+                "postalCode": "EC1V 2NX",
+                "addressCountry": "GB"
+            },
+            "sameAs": [
+                "https://www.linkedin.com/company/caeli-uk/"
+            ],
+            "contactPoint": [
+                {
+                    "@type": "ContactPoint",
+                    "email": "info@caeli.co.uk",
+                    "contactType": "general inquiry",
+                    "availableLanguage": [
+                        "de",
+                        "en"
+                    ]
+                },
+                {
+                    "@type": "ContactPoint",
+                    "email": "hans-georg.lewinski@caeli.co.uk",
+                    "contactType": "landowner support",
+                    "availableLanguage": [
+                        "de",
+                        "en"
+                    ]
+                },
+                {
+                    "@type": "ContactPoint",
+                    "email": "julia.berkenfeld@caeli.co.uk",
+                    "contactType": "project developer support",
+                    "availableLanguage": [
+                        "de",
+                        "en"
+                    ]
+                },
+                {
+                    "@type": "ContactPoint",
+                    "url": "https://calendly.com/hans-georg-lewinski-caeli-wind/30min",
+                    "contactType": "appointment booking for landowners"
+                },
+                {
+                    "@type": "ContactPoint",
+                    "url": "https://calendly.com/julia-berkenfeld/introduction-caeli",
+                    "contactType": "appointment booking for project developers"
+                }
+            ]
+        }
+    </script>
 
 </head>
 <body<?= $this->bodyAttributes ?>>
@@ -952,8 +974,8 @@ if (!empty($themeAssets['js_vendor_individual'])) {
         // Stelle sicher, dass die Attribute korrekt formatiert sind für Contao
         $attributesForContao = str_replace('|', '', $js['attributes']); // Entferne die Pipe-Zeichen, Contao fügt sie selbst hinzu
         if (str_contains($attributesForContao, 'defer')) {
-             $attributesForContao = str_replace('defer', '', $attributesForContao); // Entferne defer, da es separat behandelt werden kann oder in Contao anders
-             // Hier könnte man überlegen, ob man für Contao das defer anders setzt, aber für $TL_JAVASCRIPT ist es meist Teil des Strings.
+            $attributesForContao = str_replace('defer', '', $attributesForContao); // Entferne defer, da es separat behandelt werden kann oder in Contao anders
+            // Hier könnte man überlegen, ob man für Contao das defer anders setzt, aber für $TL_JAVASCRIPT ist es meist Teil des Strings.
         }
         // In Contao wird 'static' meist nicht als Attribut im Script-Tag selbst benötigt, sondern steuert das Caching.
         // Die einfachste Variante ist, den String so zu belassen, wie er aus theme.js_vendors.php kommt, Contao sollte das verarbeiten.

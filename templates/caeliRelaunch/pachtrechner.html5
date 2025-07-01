@@ -4,7 +4,7 @@
         <div class="result-header">
             <div class="container">
                 <div class="headline--wrapper hl-h2">
-                    <h3 class="h2 mb-0"><?= $GLOBALS['TL_LANG']['pachtrechner']['title'] ?></h3>
+                    <span class="h2 mb-0"><?= $GLOBALS['TL_LANG']['pachtrechner']['title'] ?></span>
                 </div>
             </div>
         </div>
@@ -48,14 +48,14 @@
                 </div>
 
                 <div class="my-gap">
-                    <div class="d-sm-flex gap-5">
+                    <div class="d-sm-flex gap-3 gap-md-5">
                         <div>
-                            <a href="/kontakt?etcc_cu=onsite&etcc_cmp_onsite=Wunschtermin&etcc_med_onsite=Pachtrechner" style="--bs-btn-padding-left: .75rem;" class="btn btn-outline-primary btn-xl with-arro pr_wunschterminw" id="" data-css-click-observed-1="true">
+                            <a  href="/kontakt?etcc_cu=onsite&etcc_cmp_onsite=Wunschtermin&etcc_med_onsite=Pachtrechner"  class="btn btn-outline-primary btn-xl with-arro pr_wunschterminw" id="" >
                                 <?= $GLOBALS['TL_LANG']['pachtrechner']['button']['bookConsultation'] ?>
                             </a>
                         </div>
                         <div class="mt-3 mt-sm-0">
-                            <a href="/flaechencheck?etcc_cu=onsite&etcc_cmp_onsite=Fl%C3%A4chencheck&etcc_med_onsite=Pachtrechner" style="--bs-btn-padding-left: .75rem;" class="btn btn-outline-primary btn-xl with-arrow pr_flaechencheck" id="" data-css-click-observed-1="true">
+                            <a href="/flaechencheck?etcc_cu=onsite&etcc_cmp_onsite=Fl%C3%A4chencheck&etcc_med_onsite=Pachtrechner" class="btn btn-outline-primary btn-xl with-arrow pr_flaechencheck" id="">
                                 <?= $GLOBALS['TL_LANG']['pachtrechner']['button']['areaCheck'] ?>
                             </a>
                         </div>
@@ -83,12 +83,12 @@
                     <div class="row">
                        <div class="col-12 col-sm-8 col-md-12">
                             <div class="ce--headline hl-h2 mb-md-0 pe-lg-gap pe-xxl-0" data-animation="animate__fadeIn">
-                               <h2><?= $_GET['headline'] ?? $GLOBALS['TL_LANG']['pachtrechner']['form']['title'] ?></h2>
+                               <span class="h2"><?= $_GET['headline'] ?? $GLOBALS['TL_LANG']['pachtrechner']['form']['title'] ?></span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-7 mt-4 mt-lg-0">
+                <div class="col-md-7 ">
                     <div class="ps-lg-gap ">
                         <div class="pachtrechner-badge d-none d-sm-block">
                             <div data-animation="animate__fadeInRight">

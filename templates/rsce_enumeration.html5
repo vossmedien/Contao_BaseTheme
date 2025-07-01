@@ -124,7 +124,7 @@ if ($showTextRight) {
                                                     }
                                                     ?>
                                                     <?php if ($enumerationType === 'normal') : ?>
-                                                        <li <?php if ($animateItemsIndividually && $animationEnumeration): ?>data-animation="<?php echo $animationEnumeration; ?>"<?php endif; ?>>
+                                                        <li class="mb-3" <?php if ($animateItemsIndividually && $animationEnumeration): ?>data-animation="<?php echo $animationEnumeration; ?>"<?php endif; ?>>
                                                             <?php if ($item->item_headline): ?>
                                                                 <strong><?php echo $item->item_headline; ?></strong><br>
                                                             <?php endif; ?>
@@ -133,7 +133,7 @@ if ($showTextRight) {
                                                             <?php endif; ?>
                                                         </li>
                                                     <?php else : ?>
-                                                        <li class="<?php echo $liClasses; ?>" <?php if ($animateItemsIndividually && $animationEnumeration): ?>data-animation="<?php echo $animationEnumeration; ?>"<?php endif; ?>>
+                                                        <li class="mb-3 <?php echo $liClasses; ?>" <?php if ($animateItemsIndividually && $animationEnumeration): ?>data-animation="<?php echo $animationEnumeration; ?>"<?php endif; ?>>
                                                             <?php if ($enumerationType === 'box') : ?>
                                                                 <div class="item--box-indicator" <?php if ($this->box_background_color || $this->box_text_color) : ?>style="<?php if ($this->box_background_color) { echo 'background-color: ' . $this->box_background_color . ';'; } ?> <?php if ($this->box_text_color) { echo 'color: ' . $this->box_text_color . ';'; } ?>"<?php endif; ?>>
                                                                     <?php echo $itemNumberGlobal; // Globale Nummerierung für Boxen ?>

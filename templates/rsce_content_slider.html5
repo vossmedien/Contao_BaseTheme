@@ -101,7 +101,7 @@ if (EnvHelper::isFrontend()) {
                 <div class="<?= $imageColClass ?> order-lg-2 order-1 mb-4 mb-lg-0">
                     <?php if ($this->image_mode === 'fixed' && $this->fixed_image_src): ?>
                         <div class="fixed-image-container">
-                            <?= ImageHelper::generateImageHTML($this->fixed_image_src, null, $this->headline, $this->fixed_image_size, 'w-100 h-auto object-fit-cover', false, true, true) ?>
+                            <?= ImageHelper::generateImageHTML($this->fixed_image_src, null, $this->headline, $this->fixed_image_size, 'w-100 h-auto object-fit-cover', false, true, !$this->fixed_image_no_lazy) ?>
                         </div>
                     <?php elseif ($this->image_mode === 'slide'): ?>
                         <div class="swiper h-100 <?= $uniqueImageSliderId ?>">
@@ -109,7 +109,7 @@ if (EnvHelper::isFrontend()) {
                                 <?php foreach ($this->slides as $slide): ?>
                                     <?php if (!empty($slide->slide_image_src)): ?>
                                         <div class="swiper-slide image-slide">
-                                            <?= ImageHelper::generateImageHTML($slide->slide_image_src, null, null, $slide->slide_image_size, 'w-100 h-100 object-fit-cover', true, true, true) ?>
+                                            <?= ImageHelper::generateImageHTML($slide->slide_image_src, null, null, $slide->slide_image_size, 'w-100 h-100 object-fit-cover', true, true, !$slide->slide_image_no_lazy) ?>
                                         </div>
                                     <?php endif; ?>
                                 <?php endforeach; ?>

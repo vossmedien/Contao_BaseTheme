@@ -18,7 +18,7 @@ if ($this->image) {
         $this->image_size ?? null,  // Gewählte Bildgröße
         null,                       // Keine zusätzlichen CSS-Klassen hier
         true,                       // Figure/Picture erzwingen
-        false                       // Keine Lightbox per Default
+        !($this->image_no_lazy ?? false)  // Lazy-Loading Parameter
     );
 }
 

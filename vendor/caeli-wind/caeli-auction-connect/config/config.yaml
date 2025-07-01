@@ -9,3 +9,15 @@ contao:
     locales:
         - de
         - en 
+
+# Cache-Konfiguration für Auction Module
+framework:
+    cache:
+        pools:
+            caeli_auction_cache:
+                adapter: cache.adapter.filesystem
+                default_lifetime: 3600 # 1 Stunde für Basis-Cache
+                
+            caeli_auction_filtered_cache:
+                adapter: cache.adapter.apcu
+                default_lifetime: 900  # 15 Minuten für gefilterte Ergebnisse 

@@ -16,13 +16,18 @@ filter:
   property:
     PRIVATE: "Private"
     PUBLIC: "Public" # Example if this value comes from API
+    PUBLIC_SECTOR: "Public Sector"
+    PUBLIC_SECTOR_PRIVATE: "Public Sector/Private"
+  focus:
+    'true': "Yes"
+    'false': "No"
   placeholder:
     bundeslaender: "All States"
     status_values: "All Statuses"
     property_values: "All Property Types"
   button:
     filter: "Filter"
-    reset: "Reset"
+    reset: "Reset filter"
     update_data: "Update Data"
   highlights_button: "Highlights"
   no_options_available: "No options available"
@@ -31,7 +36,7 @@ filter:
     max: "Max"
 general:
   no_auctions_for_criteria: "No auctions were found for your filter criteria."
-  household_consumption_note: "*Average consumption of a 2-person household in Germany."
+  household_consumption_note: "* Average electricity consumption of a 2-person household in Germany."
 
 pagination:
   showing: "Showing %start% to %end% of %total% entries"
@@ -84,6 +89,11 @@ detail:
   planning_law_info_text: "Planning law information after registration"
   planning_law_text_placeholder: "According to the planning reference map for Baden-Württemberg, development of 2 wind turbines is immediately feasible."
   area_status_headline: "Area Status"
+  interested_area_headline: "This area has interested you"
+  no_longer_available:
+    headline: "Find available areas on our marketplace"
+    description: "The area you requested has already been successfully brokered. On the Caeli marketplace you will find numerous qualified areas that have already been comprehensively checked for their potential and feasibility."
+    button_text: "To the area offering"
   area_progress:
     planning_law: "Planning Law"
     faunistics: "Faunistics"

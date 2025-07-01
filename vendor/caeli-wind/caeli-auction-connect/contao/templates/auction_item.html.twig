@@ -7,12 +7,14 @@
                     <span class="fw-bold">{{ raw_data.state }}</span>
                 </h3>
             </div>
+
+
             <div class="card-img">
                 {# Bild #}
                 {% set image_path = auction.blurred_picture_path|default(auction.picture_path|default(null)) %}
                 {% if image_path %}
                     <div class="card-img-top auction-image-wrapper">
-                        <a href="{{ detailPageUrl }}/{{ auction.id }}">
+                        <a id="auction_image_{{ auction.id }}" href="{{ detailPageUrl }}/{{ auction.id }}" class="auction_image_link">
                             <img src="{{ image_path }}"
                                  alt="{{ 'auction_listing.card.image_alt_prefix'|trans }} {{ auction.id }}" class="auction-image img-fluid">
 
@@ -34,35 +36,51 @@
                         {{ 'auction_listing.card.details.power'|trans }}
                     </span>
                     <strong class="auction-detail-value">
-                        {{ raw_data.power }} {{ 'auction_listing.card.unit.mw'|trans }}
+                        {% if app.request.locale == 'en' %}
+                            {{ raw_data.power|number_format(1, '.', ',') }} {{ 'auction_listing.card.unit.mw'|trans }}
+                        {% else %}
+                            {{ raw_data.power|number_format(1, ',', '.') }} {{ 'auction_listing.card.unit.mw'|trans }}
+                        {% endif %}
                     </strong>
 
                     <span class="auction-detail-label">
                         {{ 'auction_listing.card.details.area_size'|trans }}
                     </span>
                     <strong class="auction-detail-value">
-                        {{ raw_data.areaSize }} {{ 'auction_listing.card.unit.ha'|trans }}
+                        {% if app.request.locale == 'en' %}
+                            {{ raw_data.areaSize|number_format(1, '.', ',') }} {{ 'auction_listing.card.unit.ha'|trans }}
+                        {% else %}
+                            {{ raw_data.areaSize|number_format(1, ',', '.') }} {{ 'auction_listing.card.unit.ha'|trans }}
+                        {% endif %}
                     </strong>
 
                     <span class="auction-detail-label">
                         {{ 'auction_listing.card.details.full_usage_hours'|trans }}
                     </span>
                     <strong class="auction-detail-value">
-                        {{ raw_data.fullUsageHours }} {{ 'auction_listing.card.unit.h_per_a'|trans }}
+                        {% if app.request.locale == 'en' %}
+                            {{ raw_data.fullUsageHours|number_format(0, '.', ',') }} {{ 'auction_listing.card.unit.h_per_a'|trans }}
+                        {% else %}
+                            {{ raw_data.fullUsageHours|number_format(0, ',', '.') }} {{ 'auction_listing.card.unit.h_per_a'|trans }}
+                        {% endif %}
                     </strong>
 
                     <span class="auction-detail-label">
                         {{ 'auction_listing.card.details.irr_before_rent'|trans }}
                     </span>
                     <strong class="auction-detail-value">
-                        {{ raw_data.internalRateOfReturnBeforeRent }} {{ 'auction_listing.card.unit.percent'|trans }}
+                        {% if app.request.locale == 'en' %}
+                            {{ raw_data.internalRateOfReturnBeforeRent|number_format(1, '.', ',') }} {{ 'auction_listing.card.unit.percent'|trans }}
+                        {% else %}
+                            {{ raw_data.internalRateOfReturnBeforeRent|number_format(1, ',', '.') }} {{ 'auction_listing.card.unit.percent'|trans }}
+                        {% endif %}
                     </strong>
 
                     <span class="auction-detail-label">
                         {{ 'auction_listing.card.details.availability'|trans }}
                     </span>
                     <strong class="auction-detail-value">
-                        {% if raw_data.status == 'STARTED' %}
+                        {% if raw_data.status == 'STARTED' or raw_data.status == 'OPEN_FOR_DIRECT_AWARDING' %}
                             {{ 'marktplatz.as_of_now'|trans }}
                         {% else %}
                             {{ 'auction_listing.card.details.availability_prefix'|trans }} {{ raw_data.availableFrom }}
@@ -75,7 +93,7 @@
             </div>
         </div>
         <div class="more-btn text-end">
-          <a href="{{ detailPageUrl }}/{{ auction.id }}" class="btn {{ btnClass is defined ? btnClass : 'btn-outline-currentColor' }} btn-sm with-arrow">
+          <a id="auction_more_{{ auction.id }}" href="{{ detailPageUrl }}/{{ auction.id }}" class="auction_more_btn btn {{ btnClass is defined ? btnClass : 'btn-outline-currentColor' }} btn-sm with-arrow">
     {{ 'auction_listing.card.more_button'|trans }}
 </a>
         </div>

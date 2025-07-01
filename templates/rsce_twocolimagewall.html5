@@ -324,9 +324,19 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                         <?php endif; ?>
 
                                         <?php if ($row->video) : ?>
-                                            <video autoplay muted loop playsinline controls data-src="{{file::<?= $row->video ?>}}">
-                                                <source type="video/mp4" src="{{file::<?= $row->video ?>}}">
-                                            </video>
+                                            <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo(
+                                                $row->video,
+                                                '',
+                                                $row->ce_headline,
+                                                null,
+                                                null,
+                                                $row->video_poster ? 
+                                                    Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($row->video_poster, null) : 
+                                                    null,
+                                                'autoplay muted loop playsinline controls',
+                                                !$row->video_no_lazy,
+                                                true // posterLazy - kein separates Poster-no_lazy Feld vorhanden
+                                            ) ?>
                                         <?php endif; ?>
 
                                         <?php if (is_array($row->image) && count($row->image) > 1) : ?>

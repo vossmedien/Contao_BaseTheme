@@ -10,8 +10,8 @@ use Vsm\VsmHelperTools\Helper\EnvHelper;
 $uniqueId = 'content-block-' . uniqid();
 $isTwoColumn = $this->layout === 'two_column';
 
-// Social Media Meta-Tags generieren (nur einmal pro Seite)
-if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
+// Social Media Meta-Tags sammeln (neues Pattern)
+if (EnvHelper::isFrontend()) {
     $socialMetaData = [
         'title' => $this->headline,
         'description' => $this->text,
@@ -19,7 +19,11 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
         'type' => 'website'
     ];
     
-    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
+    SocialMetaHelper::collectElementData($socialMetaData);
+    
+    // Nur generieren wenn noch nicht geschehen
+    // NUR Daten sammeln, nicht generieren
+    // Die Meta-Tags werden am Ende der Seite generiert
 }
 ?>
 
@@ -28,7 +32,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
         <div class="row <?php echo $isTwoColumn ? 'g-0 flex-lg-row-reverse' : 'flex-column'; ?>">
             <?php if ($isTwoColumn && $this->image): ?>
             <div class="col-lg-6" data-animation="animate__fadeIn">
-                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image, null, strip_tags($this->headline), $this->size, "img-fluid", false, false); ?>
+                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image, null, strip_tags($this->headline), $this->size, "img-fluid", false, false, !$this->image_no_lazy); ?>
             </div>
             <?php endif; ?>
 
@@ -41,7 +45,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
 
                       <?php if (!$isTwoColumn && $this->image): ?>
                         <div class="img-container" data-animation="animate__fadeIn">
-                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image, null,  str_replace("<wbr>","",$this->headline), $this->size, "img-fluid", false, false); ?>
+                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->image, null,  str_replace("<wbr>","",$this->headline), $this->size, "img-fluid", false, false, !$this->image_no_lazy); ?>
                         </div>
                         <?php endif; ?>
 

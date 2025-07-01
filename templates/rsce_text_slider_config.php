@@ -79,15 +79,20 @@ return array(
             'maxItems' => 99,
             'fields' => array(
                 'slide_image' => array(
-                    'label' => array('Bild', ''),
+                    'label' => array('Slide-Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => Contao\Config::get('validImageTypes'),
-                        'tl_class' => 'clr'
+                        'tl_class' => 'w50',
                     ),
+                ),
+                'slide_image_no_lazy' => array(
+                    'label' => array('Slide-Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Slide-Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'slide_image_size' => array(
                     'label' => array('Bildgröße', ''),

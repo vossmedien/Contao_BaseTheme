@@ -3,6 +3,7 @@
 namespace CaeliWind\CaeliAreaPdfBundle\Module;
 
 use Contao\Controller;
+use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\FrontendTemplate;
 use Contao\Input;
 use Contao\Module;
@@ -13,25 +14,24 @@ use Doctrine\DBAL\Connection;
 use Contao\Database;
 use Contao\Environment;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Psr\Log\LoggerInterface;
 
 class AreaPdfModule extends Module
 {
     protected $strTemplate = 'mod_caeli_area_pdf';
 
-    private string $api_url;
-    private string $api_user;
-    private string $api_pass;
-    private string $google_maps_key;
+    protected $api_url;
+    protected $api_user;
+    protected $api_pass;
 
     public function __construct($module, $column = 'main')
     {
         parent::__construct($module, $column);
-
-        // Umgebungsvariablen mit Fallbacks laden
-        $this->api_url = $this->getEnvironmentVariable('CAELI_INFRA_API_URL', 'https://infra.caeli-wind.de/api/');
-        $this->api_user = $this->getEnvironmentVariable('CAELI_INFRA_API_USERNAME', '');
-        $this->api_pass = $this->getEnvironmentVariable('CAELI_INFRA_API_PASSWORD', '');
-        $this->google_maps_key = $this->getEnvironmentVariable('GOOGLE_MAPS_API_KEY', '');
+        
+        // Environment-Variablen laden
+        $this->api_url = $_ENV['CAELI_INFRA_API_URL'] ?? '';
+        $this->api_user = $_ENV['CAELI_INFRA_API_USERNAME'] ?? '';
+        $this->api_pass = $_ENV['CAELI_INFRA_API_PASSWORD'] ?? '';
     }
 
     /**
@@ -50,59 +50,35 @@ class AreaPdfModule extends Module
         return (bool) preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $uuid);
     }
 
-    /**
-     * API Session ID abrufen mit verbessertem Error Handling
-     */
-    private function getApiSessionId(): ?string
-    {
-        if (empty($this->api_user) || empty($this->api_pass)) {
-            System::log('API credentials not configured', __METHOD__, TL_ERROR);
-            return null;
-        }
+    private function getApiSessionId() {
 
-        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
-        $cookieFile = $rootDir . '/var/tmp/api_session_' . session_id() . '.txt';
+      $rootDir = System::getContainer()->getParameter('kernel.project_dir');
 
-        $fields = json_encode([
-            "email" => $this->api_user,
-            "password" => $this->api_pass,
-        ]);
+      $fields = json_encode(array(
+        "email" =>  $this->api_user,
+        "password" => $this->api_pass,
+      ));
 
-        $curl_session = curl_init();
-        curl_setopt_array($curl_session, [
-            CURLOPT_URL => $this->api_url . "auth/login",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => $fields,
-            CURLOPT_COOKIEJAR => $cookieFile,
-            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_CONNECTTIMEOUT => 10,
-        ]);
+      $curl_session = curl_init();
+      curl_setopt($curl_session ,CURLOPT_URL, $this->api_url."auth/login");
+      curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
+      curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+      curl_setopt($curl_session, CURLOPT_POSTFIELDS, $fields);
+      curl_setopt($curl_session, CURLOPT_COOKIEJAR, $rootDir."/system/tmp/".session_id().'.txt');
+      curl_setopt($curl_session, CURLOPT_HTTPHEADER, array(
+          'Content-Type: application/json')
+      );
+      $result = curl_exec($curl_session );
 
-        $result = curl_exec($curl_session);
-        $httpCode = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
-        
-        if (curl_error($curl_session)) {
-            System::log('API Login cURL Error: ' . curl_error($curl_session), __METHOD__, TL_ERROR);
-            curl_close($curl_session);
-            return null;
-        }
-        
-        curl_close($curl_session);
+      /*
+      if(curl_error($curl_session)) {
+        dump(curl_error($curl_session));
+      }
+      */
+      curl_close($curl_session);
 
-        if ($httpCode !== 200) {
-            System::log('API Login failed with HTTP ' . $httpCode, __METHOD__, TL_ERROR);
-            return null;
-        }
-
-        $response = json_decode($result);
-        if (!$response || !isset($response->tokens->csrf_session_id)) {
-            System::log('Invalid API response structure', __METHOD__, TL_ERROR);
-            return null;
-        }
-
-        return $response->tokens->csrf_session_id;
+      //$_SESSION['new_plot']['api_session'] = json_decode($result)->tokens->csrf_session_id;
+      return json_decode($result)->tokens->csrf_session_id;
     }
 
     /**
@@ -143,7 +119,7 @@ class AreaPdfModule extends Module
         $httpCode = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
         
         if (curl_error($curl_session)) {
-            System::log('Park creation cURL Error: ' . curl_error($curl_session), __METHOD__, TL_ERROR);
+            // Park creation cURL Error
             curl_close($curl_session);
             return null;
         }
@@ -151,7 +127,7 @@ class AreaPdfModule extends Module
         curl_close($curl_session);
         
         if ($httpCode !== 200) {
-            System::log('Park creation failed with HTTP ' . $httpCode, __METHOD__, TL_ERROR);
+            // Park creation failed
             return null;
         }
         
@@ -160,7 +136,7 @@ class AreaPdfModule extends Module
             return str_replace(["[", "]", "'"], ["", "", ""], $response->parks->id);
         }
         
-        System::log('Park creation failed: ' . ($response->message ?? 'Unknown error'), __METHOD__, TL_ERROR);
+        // Park creation failed
         return null;
     }
 
@@ -215,17 +191,17 @@ class AreaPdfModule extends Module
     /**
      * Google Static Map URL erstellen mit Error Handling
      */
-    private function buildStaticMapUrl($geometry): ?string
+    private function buildStaticMapUrl($geometry)
     {
-        $apiKey = $this->google_maps_key;
+        $apiKey = $_ENV['GOOGLE_MAPS_API_KEY']; // oder aus Config
         
         if (empty($apiKey)) {
-            System::log('Google Maps API Key not configured', __METHOD__, TL_ERROR);
+            // Google Maps API Key not configured
             return null;
         }
         
         if (!isset($geometry->coordinates[0][0])) {
-            System::log('Invalid geometry structure for map generation', __METHOD__, TL_ERROR);
+            // Invalid geometry structure for map generation
             return null;   
         }
 
@@ -255,7 +231,7 @@ class AreaPdfModule extends Module
         }
         
         if (empty($path)) {
-            System::log('No valid coordinates found for map generation', __METHOD__, TL_ERROR);
+            // No valid coordinates found for map generation
             return null;
         }
         
@@ -270,7 +246,7 @@ class AreaPdfModule extends Module
             'zoom' => '15',
             'size' => '600x400',
             'maptype' => 'satellite',
-            'path' => "fillcolor:0x00ca9033|color:0x00ca90ff|weight:3|{$pathStr}",
+            'path' => "fillcolor:0x11363433|color:0xffff00ff|weight:3|{$pathStr}",
             'key' => $apiKey
         ];
         
@@ -286,22 +262,9 @@ class AreaPdfModule extends Module
             return;
         }
 
-        // Eingabe-Validierung: UUID-Format prüfen
-        if (!$this->isValidUuid($parkid)) {
-            System::log('Invalid parkid format: ' . $parkid, __METHOD__, TL_ERROR);
-            return;
-        }
-
-        // Parkid validieren (UUID Format)
-        if (!$this->isValidUuid($parkid)) {
-            System::log('Invalid parkid format: ' . $parkid, __METHOD__, TL_ERROR);
-            return;
-        }
-
-        // API-Calls ohne Debug-Output
         $rating = $this->getPlotRating($parkid);
         $plot_info = $this->getPlotInfo($parkid);
-        $plot_from_db = Database::getInstance()->prepare("SELECT * FROM tl_flaechencheck WHERE park_id=?")->execute($parkid);
+        $plot_from_db = Database::getInstance()->prepare("SELECT * FROM tl_flaechencheck WHERE park_id='" . $parkid . "'")->execute();
 
         $pdf = new \CaeliWind\CaeliAreaPdfBundle\Module\WindenergiePDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -473,7 +436,7 @@ class AreaPdfModule extends Module
 
         $pdf->SetX(45);
         $pdf->SetFont($pdf->fontRegular, '', 12);
-        $pdf->SetTextColor(60, 60, 60);
+        $pdf->SetTextColor(17, 53, 52);
         $pdf->MultiCell(140, 6, sprintf($GLOBALS['TL_LANG']['caeli_area_pdf']['results']['wind_conditions_text'], $rating->range_cutdensity[0], $rating->range_cutdensity[1]), 0, 'L');
 
         $pdf->Ln(10);
@@ -490,7 +453,7 @@ class AreaPdfModule extends Module
 
         $pdf->SetX(45);
         $pdf->SetFont($pdf->fontRegular, '', 12);
-        $pdf->SetTextColor(60, 60, 60);
+        $pdf->SetTextColor(17, 53, 52);
         $pdf->MultiCell(140, 6, sprintf($GLOBALS['TL_LANG']['caeli_area_pdf']['results']['restrictions_text'], number_format($rating->range_restrictions[1], 0, ",", ".")), 0, 'L');
 
         $pdf->Ln(10);
@@ -507,7 +470,7 @@ class AreaPdfModule extends Module
 
         $pdf->SetX(45);
         $pdf->SetFont($pdf->fontRegular, '', 12);
-        $pdf->SetTextColor(60, 60, 60);
+        $pdf->SetTextColor(17, 53, 52);
         $pdf->MultiCell(140, 6, sprintf($GLOBALS['TL_LANG']['caeli_area_pdf']['results']['grid_connection_text'], number_format($rating->range_grid_connection[0], 0, ",", "."), number_format($rating->range_grid_connection[1], 0, ",", ".")), 0, 'L');
 
         $pdf->Ln(15);
@@ -530,7 +493,10 @@ class AreaPdfModule extends Module
         $pdf->SetTextColor(0, 0, 0);
         $pdf->Cell(50, 5, $GLOBALS['TL_LANG']['caeli_area_pdf']['results']['copyright'], 0, 0, 'L');
         $pdf->SetFont($pdf->fontRegular, '', 11);
-        $pdf->Cell(50, 5, $GLOBALS['TL_LANG']['caeli_area_pdf']['results']['imprint'], 0, 0, 'L', false, 'https://www.caeli-wind.de/impressum');
+        
+        // Dynamischer Impressums-Link basierend auf der Sprache
+        $imprintUrl = ($GLOBALS['TL_LANGUAGE'] === 'en') ? 'https://www.caeli-wind.de/en/imprint' : 'https://www.caeli-wind.de/impressum';
+        $pdf->Cell(50, 5, $GLOBALS['TL_LANG']['caeli_area_pdf']['results']['imprint'], 0, 0, 'L', false, $imprintUrl);
 
 
 // Page three
@@ -548,7 +514,7 @@ class AreaPdfModule extends Module
 
 // Subtitle
         $pdf->SetFont($pdf->fontRegular, 'B', 18);
-        $pdf->MultiCell(0, 10, $GLOBALS['TL_LANG']['caeli_area_pdf']['steps']['subtitle_1'] . "\n" . $GLOBALS['TL_LANG']['caeli_area_pdf']['steps']['subtitle_2'], 0, 'L');
+        $pdf->MultiCell(0, 10, $GLOBALS['TL_LANG']['caeli_area_pdf']['steps']['subtitle_1'] . $GLOBALS['TL_LANG']['caeli_area_pdf']['steps']['subtitle_2'], 0, 'L');
 
         $pdf->Ln(10);
 
@@ -558,7 +524,7 @@ class AreaPdfModule extends Module
         $pdf->Cell(0, 7, $GLOBALS['TL_LANG']['caeli_area_pdf']['steps']['step_1_title'], 0, 1, 'L');
 
         $pdf->SetFont($pdf->fontRegular, '', 12);
-        $pdf->SetTextColor(60, 60, 60);
+        $pdf->SetTextColor(17, 53, 52);
         $pdf->MultiCell(0, 7, $GLOBALS['TL_LANG']['caeli_area_pdf']['steps']['step_1_text'], 0, 'L');
 
         $pdf->Ln(8);
@@ -569,7 +535,7 @@ class AreaPdfModule extends Module
         $pdf->Cell(0, 10, $GLOBALS['TL_LANG']['caeli_area_pdf']['steps']['step_2_title'], 0, 1, 'L');
 
         $pdf->SetFont($pdf->fontRegular, '', 12);
-        $pdf->SetTextColor(60, 60, 60);
+        $pdf->SetTextColor(17, 53, 52);
         $pdf->MultiCell(0, 7, $GLOBALS['TL_LANG']['caeli_area_pdf']['steps']['step_2_text'], 0, 'L');
 
         $pdf->Ln(8);
@@ -580,7 +546,7 @@ class AreaPdfModule extends Module
         $pdf->Cell(0, 10, $GLOBALS['TL_LANG']['caeli_area_pdf']['steps']['step_3_title'], 0, 1, 'L');
 
         $pdf->SetFont($pdf->fontRegular, '', 12);
-        $pdf->SetTextColor(60, 60, 60);
+        $pdf->SetTextColor(17, 53, 52);
         $pdf->MultiCell(0, 0, $GLOBALS['TL_LANG']['caeli_area_pdf']['steps']['step_3_text'], 0, 'L');
 
         $pdf->Ln(15);
@@ -614,11 +580,16 @@ class AreaPdfModule extends Module
         $pdf->SetTextColor(0, 0, 0);
         $pdf->Cell(50, 5, $GLOBALS['TL_LANG']['caeli_area_pdf']['results']['copyright'], 0, 0, 'L');
         $pdf->SetFont($pdf->fontRegular, '', 11);
-        $pdf->Cell(50, 5, $GLOBALS['TL_LANG']['caeli_area_pdf']['results']['imprint'], 0, 0, 'L', false, 'https://www.caeli-wind.de/impressum');
+        
+        // Dynamischer Impressums-Link basierend auf der Sprache
+        $imprintUrl = ($GLOBALS['TL_LANGUAGE'] === 'en') ? 'https://www.caeli-wind.de/en/imprint' : 'https://www.caeli-wind.de/impressum';
+        $pdf->Cell(50, 5, $GLOBALS['TL_LANG']['caeli_area_pdf']['results']['imprint'], 0, 0, 'L', false, $imprintUrl);
 
+        // Dynamischer Dateiname basierend auf der Sprache
+        $filename = ($GLOBALS['TL_LANGUAGE'] === 'en') ? 'caeli-wind-site-check.pdf' : 'caeli-wind-flaechencheck.pdf';
 
 // Output the PDF
-        $pdf->Output('caeliwind_grundstueck.pdf', 'I');
+        $pdf->Output($filename, 'I');
 
 
         //$pdf->genPDF($parkid,"","","","");

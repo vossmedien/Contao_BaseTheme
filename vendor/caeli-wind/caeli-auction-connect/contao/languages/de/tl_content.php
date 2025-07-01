@@ -7,7 +7,7 @@ $GLOBALS['TL_LANG']['tl_content']['auctionRawDataPreview_label'] = ['Vorschau Au
 // Sortierfelder für Inhaltselement
 $GLOBALS['TL_LANG']['tl_content']['auctionSortByCE'] = ['Sortieren nach Feld (veraltet für CE)', 'Wählen Sie das Feld, nach dem die Auktionen sortiert werden sollen. Bitte verwenden Sie das Feld "Sortierregeln (Inhaltselement)".'];
 $GLOBALS['TL_LANG']['tl_content']['auctionSortDirectionCE'] = ['Sortierrichtung (veraltet für CE)', 'Wählen Sie die Sortierrichtung. Bitte verwenden Sie das Feld "Sortierregeln (Inhaltselement)".'];
-$GLOBALS['TL_LANG']['tl_content']['auctionSortRulesCE'] = ['Sortierregeln (Inhaltselement)', 'Definieren Sie die Sortierreihenfolge der Auktionen für dieses Inhaltselement. Eine Regel pro Zeile im Format "Feldname sortierrichtung" (z.B. "leistung_mw asc" oder "countDown desc"). Die Regeln werden in der angegebenen Reihenfolge angewendet. Gültige Feldnamen sehen Sie in der Rohdaten-Vorschau.'];
+$GLOBALS['TL_LANG']['tl_content']['auctionSortRulesCE'] = ['Sortierregeln (Inhaltselement)', 'Definieren Sie die Sortierreihenfolge der Auktionen für dieses Inhaltselement. Eine Regel pro Zeile im Format "Feldname sortierrichtung" (z.B. "leistung_mw asc" oder "countDown desc"). Die Regeln werden in der angegebenen Reihenfolge angewendet. Gültige Feldnamen können Sie z.B. über die Rohdaten-Vorschau eines Inhaltselements des Typs "Auktionselement" einsehen. Spezialfeld: "status_priority asc" sortiert nach Status-Priorität (STARTED → FIRST_ROUND → SECOND_ROUND → PLANNED → OPEN_FOR_DIRECT_AWARDING).'];
 $GLOBALS['TL_LANG']['tl_content']['auctionSortByCE_options'] = [
     'leistung_mw' => 'Leistung (MW)',
     'flaeche_ha' => 'Fläche (ha)',

@@ -1,11 +1,12 @@
 {# Twig Template für das Auction Listing Modul #}
-<div class="{% if class is defined and class %} {{ class }}{% endif %}">
-    <div class="auction-listing">
+<div id="auction_listing_container" class="{% if class is defined and class %} {{ class }}{% endif %}">
+
         {% if auctions|default and auctions|length > 0 %}
+             <div class="auction-listing">
             {# Filter-Formular - wurde in ein separates Modul ausgelagert #}
 
-            {# Paginierungs-Info oben #}
-            {% if pagination.totalPages|default(0) > 1 %}
+            {# Paginierungs-Info oben - immer anzeigen #}
+            {% if pagination.totalItems|default(0) > 0 %}
                 <div class="pagination-info mb-3">
                     <small>
                         {{ 'pagination.showing'|trans({'%start%': pagination.startItem|default(1), '%end%': pagination.endItem|default(0), '%total%': pagination.totalItems|default(0)}, 'messages') }}
@@ -14,18 +15,124 @@
             {% endif %}
 
             {# Auktionsliste #}
-            <div class="auction-items row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3">
-                {% for auction in auctions %}
-                    {% set raw_data = auction._raw_data|default(auction) %}
+            {% if 'with-quote' in (class|default('')) and pagination.currentPage|default(1) == 1 %}
+                {# Aufteilung in zwei Hälften nur wenn Quote-Element angezeigt wird - Seite 1 #}
+                {% if pagination.itemsPerPage|default(12) == 0 %}
+                    {# Bei perPage=0: Hälfte aller Items #}
+                    {% set halfPoint = (pagination.totalItems / 2)|round(0, 'floor') %}
+                {% else %}
+                    {# Bei normaler Paginierung: Hälfte der Items pro Seite #}
+                    {% set halfPoint = (pagination.itemsPerPage / 2)|round(0, 'floor') %}
+                {% endif %}
 
-                    {% include auctionItemTemplate with {
-                        'auction': auction,
-                        'raw_data': raw_data,
-                        'detailPageUrl': detailPageUrl
-                    } %}
+                {# Erste Hälfte der Auktionen #}
+                <div class="auction-items row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3">
+                    {% for auction in auctions %}
+                        {% if loop.index <= halfPoint %}
+                            {% set raw_data = auction._raw_data|default(auction) %}
 
-                {% endfor %}
-            </div>
+                            {% include auctionItemTemplate with {
+                                'auction': auction,
+                                'raw_data': raw_data,
+                                'detailPageUrl': detailPageUrl
+                            } %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                {# Quote-Element in der Mitte - Seite 1 #}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="quote-container my-4">
+                            {% if app.request.locale == 'en' %}
+                                {{ "{{insert_node::29}}"|raw }}
+                            {% else %}
+                                {{ "{{insert_node::28}}"|raw }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {# Zweite Hälfte der Auktionen #}
+                <div class="auction-items row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3">
+                    {% for auction in auctions %}
+                        {% if loop.index > halfPoint %}
+                            {% set raw_data = auction._raw_data|default(auction) %}
+
+                            {% include auctionItemTemplate with {
+                                'auction': auction,
+                                'raw_data': raw_data,
+                                'detailPageUrl': detailPageUrl
+                            } %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% elseif 'with-quote' in (class|default('')) and pagination.currentPage|default(1) == 2 %}
+                {# Aufteilung in zwei Hälften nur wenn Quote-Element angezeigt wird - Seite 2 #}
+                {% if pagination.itemsPerPage|default(12) == 0 %}
+                    {# Bei perPage=0: Hälfte aller Items #}
+                    {% set halfPoint = (pagination.totalItems / 2)|round(0, 'floor') %}
+                {% else %}
+                    {# Bei normaler Paginierung: Hälfte der Items pro Seite #}
+                    {% set halfPoint = (pagination.itemsPerPage / 2)|round(0, 'floor') %}
+                {% endif %}
+
+                {# Erste Hälfte der Auktionen #}
+                <div class="auction-items row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3">
+                    {% for auction in auctions %}
+                        {% if loop.index <= halfPoint %}
+                            {% set raw_data = auction._raw_data|default(auction) %}
+
+                            {% include auctionItemTemplate with {
+                                'auction': auction,
+                                'raw_data': raw_data,
+                                'detailPageUrl': detailPageUrl
+                            } %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                {# Quote-Element in der Mitte - Seite 2 #}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="quote-container my-4">
+                            {% if app.request.locale == 'en' %}
+                                {{ "{{insert_node::30}}"|raw }}
+                            {% else %}
+                                {{ "{{insert_node::31}}"|raw }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {# Zweite Hälfte der Auktionen #}
+                <div class="auction-items row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3">
+                    {% for auction in auctions %}
+                        {% if loop.index > halfPoint %}
+                            {% set raw_data = auction._raw_data|default(auction) %}
+
+                            {% include auctionItemTemplate with {
+                                'auction': auction,
+                                'raw_data': raw_data,
+                                'detailPageUrl': detailPageUrl
+                            } %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                {# Standard-Layout: Alle Auktionen in einem Container #}
+                <div class="auction-items row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3">
+                    {% for auction in auctions %}
+                        {% set raw_data = auction._raw_data|default(auction) %}
+
+                        {% include auctionItemTemplate with {
+                            'auction': auction,
+                            'raw_data': raw_data,
+                            'detailPageUrl': detailPageUrl
+                        } %}
+                    {% endfor %}
+                </div>
+            {% endif %}
 
 
             {# Haushaltsverbrauchshinweis unterhalb der Pagination - nur wenn Klasse "with-note" vorhanden #}
@@ -83,7 +190,7 @@
                                     </li>
                                 {% endif %}
                                 <li>
-                                    <a href="?page={{ pagination.totalPages }}#listingAnchor" class="link pagination-link" data-page="{{ pagination.totalPages }}" title="{{ 'pagination.go_to_page'|trans({'%page%': pagination.totalPages}) }}">{{ pagination.totalPages }}</a>
+                                    <a href="?page={{ pagination.totalPages }}#listingAnchor" class="link pagination-link" data-page="{{ pagination.totalPages }}" title="{{ 'pagination.go_to_page'|trans({'%page%': pagination.totalPages }) }}">{{ pagination.totalPages }}</a>
                                 </li>
                             {% endif %}
 
@@ -103,11 +210,9 @@
 
 
         {% else %}
-            <div class="no-auctions">
-                <p class="alert alert-warning">{{ 'auction_listing.no_auctions_found'|trans }}</p>
-            </div>
+         </div>
         {% endif %}
-    </div>
+
 </div>
 
 {# JavaScript für AJAX Paginierung #}
@@ -136,11 +241,12 @@
                             const parser = new DOMParser();
                             const doc = parser.parseFromString(html, 'text/html');
 
-                            // Auction Listing Container aktualisieren
-                            const newListingContainer = doc.querySelector('.auction-listing');
-                            const currentListingContainer = document.querySelector('.auction-listing');
+                            // Auction Listing Container vollständig aktualisieren
+                            const newListingContainer = doc.querySelector('#auction_listing_container');
+                            const currentListingContainer = document.querySelector('#auction_listing_container');
 
                             if (newListingContainer && currentListingContainer) {
+                                // Kompletten Container-Inhalt ersetzen (inkl. Paginierung)
                                 currentListingContainer.innerHTML = newListingContainer.innerHTML;
 
                                 // data-animation Attribute von allen Elementen entfernen (wichtig für AJAX-Updates)
@@ -148,56 +254,8 @@
                                     item.removeAttribute('data-animation');
                                 });
 
-                                // Zusätzlich alle .col Elemente in .auction-items prüfen
-                                currentListingContainer.querySelectorAll('.auction-items .col[data-animation]').forEach(item => {
-                                    item.removeAttribute('data-animation');
-                                });
-
                                 // Meta-Tags aus dem neuen HTML aktualisieren
-                                const newDoc = parser.parseFromString(html, 'text/html');
-
-                                // Canonical Tag aktualisieren
-                                const newCanonical = newDoc.querySelector('link[rel="canonical"]');
-                                const currentCanonical = document.querySelector('link[rel="canonical"]');
-                                if (newCanonical && currentCanonical) {
-                                    currentCanonical.href = newCanonical.href;
-                                }
-
-                                // Prev Tag aktualisieren
-                                const newPrev = newDoc.querySelector('link[rel="prev"]');
-                                let currentPrev = document.querySelector('link[rel="prev"]');
-                                if (newPrev) {
-                                    if (currentPrev) {
-                                        currentPrev.href = newPrev.href;
-                                    } else {
-                                        // Prev Tag neu erstellen
-                                        const prevLink = document.createElement('link');
-                                        prevLink.rel = 'prev';
-                                        prevLink.href = newPrev.href;
-                                        document.head.appendChild(prevLink);
-                                    }
-                                } else if (currentPrev) {
-                                    // Prev Tag entfernen (z.B. bei Seite 1)
-                                    currentPrev.remove();
-                                }
-
-                                // Next Tag aktualisieren
-                                const newNext = newDoc.querySelector('link[rel="next"]');
-                                let currentNext = document.querySelector('link[rel="next"]');
-                                if (newNext) {
-                                    if (currentNext) {
-                                        currentNext.href = newNext.href;
-                                    } else {
-                                        // Next Tag neu erstellen
-                                        const nextLink = document.createElement('link');
-                                        nextLink.rel = 'next';
-                                        nextLink.href = newNext.href;
-                                        document.head.appendChild(nextLink);
-                                    }
-                                } else if (currentNext) {
-                                    // Next Tag entfernen (z.B. bei letzter Seite)
-                                    currentNext.remove();
-                                }
+                                updateMetaTags(doc);
 
                                 // Nach dem Update die AJAX-Handler neu initialisieren
                                 initPaginationAjax();
@@ -206,23 +264,10 @@
                                 history.pushState({page: page}, '', currentUrl.toString());
 
                                 // Zum Listing-Anker scrollen mit 100px Offset nach oben
-                                const auctionAnchor = document.getElementById('auctionFilter');
-                                if (auctionAnchor) {
-                                    const elementTop = auctionAnchor.getBoundingClientRect().top + window.pageYOffset;
-                                    const offsetPosition = elementTop - 100;
-                                    window.scrollTo({
-                                        top: offsetPosition,
-                                        behavior: 'smooth'
-                                    });
-                                } else {
-                                    // Fallback: Zum Listing-Container scrollen
-                                    const elementTop = currentListingContainer.getBoundingClientRect().top + window.pageYOffset;
-                                    const offsetPosition = elementTop - 100;
-                                    window.scrollTo({
-                                        top: offsetPosition,
-                                        behavior: 'smooth'
-                                    });
-                                }
+                                scrollToListing();
+
+                                // Filter-Modul über Paginierungs-Änderung informieren
+                                notifyFilterModuleOfUpdate();
                             }
                         })
                         .catch(error => {
@@ -237,12 +282,104 @@
             });
         }
 
+        // Meta-Tags aktualisieren
+        function updateMetaTags(doc) {
+            // Canonical Tag aktualisieren
+            const newCanonical = doc.querySelector('link[rel="canonical"]');
+            const currentCanonical = document.querySelector('link[rel="canonical"]');
+            if (newCanonical && currentCanonical) {
+                currentCanonical.href = newCanonical.href;
+            }
+
+            // Prev Tag aktualisieren
+            const newPrev = doc.querySelector('link[rel="prev"]');
+            let currentPrev = document.querySelector('link[rel="prev"]');
+            if (newPrev) {
+                if (currentPrev) {
+                    currentPrev.href = newPrev.href;
+                } else {
+                    // Prev Tag neu erstellen
+                    const prevLink = document.createElement('link');
+                    prevLink.rel = 'prev';
+                    prevLink.href = newPrev.href;
+                    document.head.appendChild(prevLink);
+                }
+            } else if (currentPrev) {
+                // Prev Tag entfernen (z.B. bei Seite 1)
+                currentPrev.remove();
+            }
+
+            // Next Tag aktualisieren
+            const newNext = doc.querySelector('link[rel="next"]');
+            let currentNext = document.querySelector('link[rel="next"]');
+            if (newNext) {
+                if (currentNext) {
+                    currentNext.href = newNext.href;
+                } else {
+                    // Next Tag neu erstellen
+                    const nextLink = document.createElement('link');
+                    nextLink.rel = 'next';
+                    nextLink.href = newNext.href;
+                    document.head.appendChild(nextLink);
+                }
+            } else if (currentNext) {
+                // Next Tag entfernen (z.B. bei letzter Seite)
+                currentNext.remove();
+            }
+        }
+
+        // Zum Listing scrollen
+        function scrollToListing() {
+            const auctionAnchor = document.getElementById('auctionFilter');
+            if (auctionAnchor) {
+                const elementTop = auctionAnchor.getBoundingClientRect().top + window.pageYOffset;
+                const offsetPosition = elementTop - 100;
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            } else {
+                // Fallback: Zum Listing-Container scrollen
+                const listingContainer = document.querySelector('#auction_listing_container');
+                if (listingContainer) {
+                    const elementTop = listingContainer.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = elementTop - 100;
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        }
+
+        // Filter-Modul über Update informieren
+        function notifyFilterModuleOfUpdate() {
+            // Event für das Filter-Modul senden, falls vorhanden
+            const filterModule = document.querySelector('.auction-filter-module');
+            if (filterModule) {
+                const updateEvent = new CustomEvent('auctionListingUpdated', {
+                    detail: { source: 'pagination' }
+                });
+                filterModule.dispatchEvent(updateEvent);
+            }
+        }
+
         initPaginationAjax();
 
         // Browser Back/Forward-Buttons unterstützen
         window.addEventListener('popstate', function (event) {
             if (event.state && event.state.page) {
                 window.location.reload(); // Einfacher Reload bei Back/Forward
+            }
+        });
+
+        // Event-Listener für Filter-Updates vom Filter-Modul
+        window.addEventListener('filterUpdated', function(event) {
+            // Wenn Filter sich ändern, zur ersten Seite zurückkehren
+            const currentUrl = new URL(window.location);
+            if (currentUrl.searchParams.get('page') && currentUrl.searchParams.get('page') !== '1') {
+                currentUrl.searchParams.set('page', '1');
+                history.pushState({page: 1}, '', currentUrl.toString());
             }
         });
     });

@@ -1,16 +1,57 @@
 <?php
+use Contao\FilesModel;
+use Contao\StringUtil;
 // Social Media Meta-Tags Helper hinzufügen
 use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
 use Vsm\VsmHelperTools\Helper\EnvHelper;
-use Contao\StringUtil;
 
-// Social Media Meta-Tags generieren (nur einmal pro Seite)
-if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
-    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateNewsSocialMeta($this);
+// Social Media Meta-Tags generieren (verbesserte Logik analog zum Headline-Element)
+if (EnvHelper::isFrontend()) {
+    // Verwende extractNewsDataFromTemplate für bessere automatische Erkennung
+    $templateData = SocialMetaHelper::extractNewsDataFromTemplate($this);
+    
+    // Manuelle Überschreibung für spezielle News-Felder
+    $manualData = [];
+    
+    // Bild: Video-Poster hat höchste Priorität, dann src
+    if (!empty($this->videoPosterSRC)) {
+        $manualData['image'] = $this->videoPosterSRC;
+    } elseif (!empty($this->src)) {
+        $manualData['image'] = $this->src;
+    } elseif (!empty($this->authorImage)) {
+        $manualData['image'] = $this->authorImage;
+    }
+    
+    // Beschreibung: teaser hat Priorität vor text
+    if (!empty($this->teaser)) {
+        $manualData['description'] = strip_tags($this->teaser);
+    } elseif (!empty($this->text)) {
+        $manualData['description'] = strip_tags($this->text);
+    }
+    
+    // Titel aus headline
+    if (!empty($this->headline)) {
+        $manualData['title'] = $this->headline;
+    }
+    
+    // Autor
+    if (!empty($this->postAuthor)) {
+        $manualData['author'] = $this->postAuthor;
+    }
+    
+    // Merge: Manuelle Daten überschreiben Template-Daten
+    $finalMetaData = array_merge($templateData, array_filter($manualData, function($value) {
+        return !empty($value);
+    }));
+    
+    // News-spezifische Daten setzen
+    $finalMetaData['type'] = 'article';
+    
+    // Daten sammeln (ohne zu generieren)
+    SocialMetaHelper::collectElementData($finalMetaData);
 }
 ?>
 <div class="layout_full block<?= $this->class ?>">
-
 
     <div class="content--element head-hero ce_rsce_head_hero container-wide">
         <div class="ce--inner">
@@ -31,42 +72,73 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
                     </div>
                 </div>
             </div>
+
+
             <div class="image-section mt-gap" data-animation="animate__fadeIn">
-                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, strip_tags($this->teaser), $this->headline, ["1300", "590", "crop"], null, false); ?>
+                <?php if ($this->videoSRC): ?>
+                    <?php
+                    $videoPosterPath = null;
+                    if ($this->videoPosterSRC) {
+                        $posterModel = FilesModel::findByUuid($this->videoPosterSRC);
+                        if ($posterModel) {
+                            $videoPosterPath = $posterModel->path;
+                        }
+                    }
+                    // Das aktuelle Objekt $this->User->name ist vermutlich ein Platzhalter und sollte durch etwas Sinnvolleres ersetzt werden,
+                    // z.B. den Nachrichten-Titel ($this->headline) oder eine spezifische Beschreibung für das Video, falls vorhanden.
+                    // Für den Moment verwende ich $this->headline für den Namen und $this->teaser für die Beschreibung.
+                    // Der Parameter uploadDate kann aus $this->date oder $this->timestamp generiert werden.
+                    $uploadDate = date('c', (int)$this->timestamp);
+                    echo \Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo(
+                        $this->videoSRC,
+                        'w-100 ratio ratio-16x9', /* Klassen für das Video */
+                        $this->headline, /* Name des Videos */
+                        strip_tags((string)$this->teaser), /* Beschreibung des Videos */
+                        $uploadDate, /* Upload-Datum */
+                        $videoPosterPath, /* Pfad zum Posterbild */
+                        'playsinline controls', /* Video-Parameter ohne Autoplay, Mute, Loop */
+                        true /* Lazy Loading */
+                    );
+                    ?>
+                <?php else: ?>
+                    <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, strip_tags((string)$this->teaser), $this->headline, ["1300", "590", "crop"], null, false); ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 
+    <?php if ($this->text || !$this->hideAuthorAndNav): ?>
     <div class="mt-gap container content--element">
         <div class="row gx-4">
-            <div class="col-12 col-lg-7" data-animation="animate__fadeIn">
+            <div class="col-12 <?php if(!$this->hideAuthorAndNav):?>col-lg-7<?php endif;?>" data-animation="animate__fadeIn">
                   <?php if ($this->hasSubHeadline): ?>
                     <h2 class="mb-4"><?= $this->subHeadline ?></h2>
                 <?php endif; ?>
                 <?= $this->text ?>
             </div>
+            <?php if(!$this->hideAuthorAndNav):?>
             <div class="col12 col-lg-5" data-animation="animate__fadeIn">
-
+                <?php if (!$this->hideAuthorAndNav): ?>
                 <div class="article-info <?php if (!$this->authorImage): ?>pt-1<?php endif;?>">
                     <?php $this->block('info'); ?>
 
                     <?php if ($this->authorImage): ?>
                         <div class="author-img">
-                            <div class="position-relative">
+                            <div class="position-relative d-flex">
                                 <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->authorImage, strip_tags($this->authorTitle), $this->postAuthor, ["370", "170", "proportional"], null, false); ?>
-                                
+
                                 <?php // Icons on Image (if email or LinkedIn is available) ?>
                                 <?php if ($this->authorEmail || $this->authorLinkedIn): ?>
-                                    <div class="author-icons-overlay position-absolute bottom-0 end-0 d-flex flex-column align-items-end">
+                                    <div class="author-icons-overlay d-flex flex-column align-items-end">
                                         <?php // Email Icon ?>
                                         <?php if ($this->authorEmail): ?>
-                                            <a href="mailto:<?= StringUtil::specialchars($this->authorEmail); ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="E-Mail senden">
-                                                <i class="fak fa-mail text-body"></i>
+                                            <a href="mailto:<?= StringUtil::specialchars($this->authorEmail); ?>" class="bg-secondary p-1 mt-lg-auto mb-lg-1  text-decoration-none d-inline-flex align-items-center justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="E-Mail senden">
+                                                <i style="font-size: 1rem;" class="fak fa-mail text-body"></i>
                                             </a>
                                         <?php endif; ?>
                                         <?php // LinkedIn Icon ?>
                                         <?php if ($this->authorLinkedIn): ?>
-                                            <a href="<?= $this->authorLinkedIn; ?>" target="_blank" rel="noopener" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="LinkedIn Profil">
+                                            <a href="<?= $this->authorLinkedIn; ?>" target="_blank" rel="noopener" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="LinkedIn Profil">
                                                 <i style="font-size: 1.5rem;" class="fak fa-linkedin text-body"></i>
                                             </a>
                                         <?php endif; ?>
@@ -106,12 +178,17 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
                         </ul>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
+            <?php endif;?>
         </div>
     </div>
+    <?php endif; ?>
 </div>
 
-<style>#stoerer-130-1 .stoerer-inner-wrapper .stoerer-trigger {
+<style>
+
+    #stoerer-130-1 .stoerer-inner-wrapper .stoerer-trigger {
         color: var(--bs-body-color) !important
     }
 
@@ -200,6 +277,14 @@ $schemaOrg = $this->getSchemaOrgData();
 
 if ($this->hasText) {
     $schemaOrg['text'] = $this->rawHtmlToPlainText($this->text);
+}
+
+// Author überschreiben wenn postAuthor vorhanden ist
+if ($this->postAuthor) {
+    $schemaOrg['author'] = [
+        '@type' => 'Person',
+        'name' => $this->postAuthor
+    ];
 }
 
 $this->addSchemaOrg($schemaOrg);

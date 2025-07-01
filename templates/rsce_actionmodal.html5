@@ -61,9 +61,19 @@ if (!empty($this->animation_type_element) && $this->animation_type_element !== '
                                     <div class="modal-image--wrapper" style="<?php if ($this->fixed_height): ?>min-height: <?php echo $this->fixed_height; ?><?php endif; ?>">
                                 <?php endif; ?>
 
-                                <video class="modal-video lazy" autoplay muted loop playsinline data-src="{{file::<?= $this->image ?>}}">
-                                    <source type="video/mp4" src="{{file::<?= $this->image ?>}}">
-                                </video>
+                                <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo(
+                                    $this->image,
+                                    'modal-video',
+                                    $this->modal_headline,
+                                    null,
+                                    null,
+                                    $this->image_poster ? 
+                                        Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($this->image_poster, null) : 
+                                        null,
+                                    'autoplay muted loop playsinline',
+                                    !$this->image_video_no_lazy,
+                                    true // posterLazy - standardmäßig true da kein Poster-no_lazy Feld vorhanden
+                                ) ?>
 
                                 <?php if ($this->as_bg && $this->fixed_height): ?></div><?php endif; ?>
 

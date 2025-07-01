@@ -16,6 +16,8 @@ namespace CaeliWind\CaeliAuctionConnect\Service;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class AuctionService
 {
@@ -26,6 +28,11 @@ class AuctionService
     private const CACHE_DIR = 'var/caeli-auction-data';
     private const RAW_AUCTIONS_CACHE_FILE = 'auctions.json';
     private const MAPPED_AUCTIONS_CACHE_FILE = 'auctions_mapped.json';
+    
+    // Neue Symfony Cache Keys
+    private const CACHE_KEY_RAW_AUCTIONS = 'caeli_auction_raw_data';
+    private const CACHE_KEY_MAPPED_AUCTIONS = 'caeli_auction_mapped_data';
+    private const CACHE_KEY_FILTERED_RESULTS = 'caeli_auction_filtered_results';
 
     private string $cacheDir;
 
@@ -59,12 +66,24 @@ class AuctionService
 
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly ParameterBagInterface $params
+        private readonly ParameterBagInterface $params,
+        private readonly CacheInterface $cache
     ) {
-        // Cache-Verzeichnis
+        // Cache-Verzeichnis - korrekter Pfad ohne ../ da wir bereits im Root stehen
         $this->cacheDir = $_SERVER['DOCUMENT_ROOT'] . '/../' . self::CACHE_DIR;
+        
+        // Alternative falls der Standard-Pfad nicht funktioniert
         if (!is_dir($this->cacheDir)) {
-            @mkdir($this->cacheDir, 0755, true);
+            $alternativePath = getcwd() . '/' . self::CACHE_DIR;
+            if (is_dir($alternativePath)) {
+                $this->cacheDir = $alternativePath;
+            } else {
+                if (!@mkdir($this->cacheDir, 0755, true)) {
+                    // Fallback zu alternative Pfad
+                    $this->cacheDir = $alternativePath;
+                    @mkdir($this->cacheDir, 0755, true);
+                }
+            }
         }
 
         $this->logger->debug('AuctionService initialisiert, Cache: ' . $this->cacheDir);
@@ -80,12 +99,38 @@ class AuctionService
      */
     private function getPublicAuctions(bool $useCache = true, ?string $urlParams = null): ?array
     {
+        // Symfony Cache für bessere Performance nutzen
+        if ($useCache) {
+            $paramHash = !empty($urlParams) ? '_' . md5($urlParams) : '';
+            $cacheKey = self::CACHE_KEY_MAPPED_AUCTIONS . $paramHash;
+            
+            try {
+                return $this->cache->get($cacheKey, function (ItemInterface $item) use ($urlParams) {
+                    $item->expiresAfter(self::CACHE_LIFETIME);
+                    
+                    // Daten von API holen und mappen
+                    return $this->fetchAndMapAuctionsFromApi($urlParams);
+                });
+            } catch (\Exception $e) {
+                $this->logger->warning('[getPublicAuctions] Symfony Cache-Fehler, Fallback zu File-Cache: ' . $e->getMessage());
+            }
+        }
+        
+        // Fallback: Original File-Cache Logic
+        return $this->getPublicAuctionsFileCache($useCache, $urlParams);
+    }
+
+    /**
+     * Fallback: Original File-Cache Implementation 
+     */
+    private function getPublicAuctionsFileCache(bool $useCache = true, ?string $urlParams = null): ?array
+    {
         // Cache-Dateinamen basierend auf URL-Parametern generieren
         $paramHash = !empty($urlParams) ? '_' . md5($urlParams) : '';
         $rawCacheFile = $this->cacheDir . '/' . str_replace('.json', $paramHash . '.json', self::RAW_AUCTIONS_CACHE_FILE);
         $mappedCacheFile = $this->cacheDir . '/' . str_replace('.json', $paramHash . '.json', self::MAPPED_AUCTIONS_CACHE_FILE);
 
-        $this->logger->debug('[getPublicAuctions] Prüfe Caches. Raw: ' . $rawCacheFile . ', Mapped: ' . $mappedCacheFile . ' | useCache=' . ($useCache ? 'true' : 'false') . ' | urlParams=' . ($urlParams ?: 'null'));
+        $this->logger->debug('[getPublicAuctionsFileCache] Prüfe Caches. Raw: ' . $rawCacheFile . ', Mapped: ' . $mappedCacheFile . ' | useCache=' . ($useCache ? 'true' : 'false') . ' | urlParams=' . ($urlParams ?: 'null'));
 
         // 1. Versuche, gemappte Daten aus dem Cache zu laden
         if ($useCache && file_exists($mappedCacheFile)) {
@@ -147,10 +192,26 @@ class AuctionService
             $apiUrl = rtrim($this->params->get('caeli_auction.marketplace_api_url'), '/');
             $apiAuth = $this->params->get('caeli_auction.marketplace_api_auth');
 
+            // Standardsprache (API-Standard ist EN)
+            $acceptLanguage = 'en';
+
             // URL-Parameter anhängen, falls vorhanden
             if (!empty($urlParams)) {
                 // Sicherstellen, dass der Parameter korrekt formatiert ist
                 $urlParams = ltrim($urlParams, '/');
+                
+                // HTML-Entities ZUERST dekodieren
+                if (strpos($urlParams, '&#') !== false) {
+                    $urlParams = html_entity_decode($urlParams, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                    $this->logger->debug('[getPublicAuctions] URL-Parameter nach HTML-Entity-Decode: ' . $urlParams);
+                }
+                
+                // Sprache aus URL-Parametern extrahieren (NACH der Dekodierung)
+                if (preg_match('/[?&]language=([a-z]{2})/', $urlParams, $matches)) {
+                    $acceptLanguage = $matches[1];
+                    $this->logger->debug('[getPublicAuctions] Sprache aus URL-Parameter extrahiert: ' . $acceptLanguage);
+                }
+                
                 if (!empty($urlParams)) {
                     // Prüfen ob bereits Query-Parameter vorhanden sind
                     if (strpos($urlParams, '?') !== false) {
@@ -162,15 +223,6 @@ class AuctionService
                     }
                 }
                 $this->logger->debug('[getPublicAuctions] URL-Parameter hinzugefügt: ' . $urlParams);
-                $this->logger->debug('[getPublicAuctions] URL-Parameter RAW (vor decode): ' . var_export($urlParams, true));
-                
-                // HTML-Entities dekodieren, falls nötig
-                if (strpos($urlParams, '&#') !== false) {
-                    $urlParams = html_entity_decode($urlParams, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                    $this->logger->debug('[getPublicAuctions] URL-Parameter nach decode: ' . $urlParams);
-                    $apiUrl = rtrim($this->params->get('caeli_auction.marketplace_api_url'), '/') . '/' . ltrim($urlParams, '/');
-                }
-                
                 $this->logger->info('[getPublicAuctions] Finale API-URL: ' . $apiUrl);
             }
 
@@ -188,7 +240,7 @@ class AuctionService
                 'http' => [
                     'method' => 'GET',
                     'header' => "Authorization: " . $authHeader . "\r\n" . 
-                               "Accept-Language: de\r\n" .
+                               "Accept-Language: " . $acceptLanguage . "\r\n" .
                                "Content-Type: application/json\r\n",
                     'timeout' => 30 // Timeout in Sekunden
                 ]
@@ -275,6 +327,89 @@ class AuctionService
         }
 
         return $mappedAuctions;
+    }
+
+    /**
+     * Holt Auktionsdaten von der API und mappt sie
+     */
+    private function fetchAndMapAuctionsFromApi(?string $urlParams = null): ?array
+    {
+        $this->logger->info('[fetchAndMapAuctionsFromApi] Hole frische Daten von API');
+        
+        // API-Aufruf
+        $apiUrl = rtrim($this->params->get('caeli_auction.marketplace_api_url'), '/');
+        $apiAuth = $this->params->get('caeli_auction.marketplace_api_auth');
+
+        // Standardsprache (API-Standard ist EN)
+        $acceptLanguage = 'en';
+
+        if (!empty($urlParams)) {
+            $urlParams = ltrim($urlParams, '/');
+            
+            // HTML-Entities ZUERST dekodieren
+            if (strpos($urlParams, '&#') !== false) {
+                $urlParams = html_entity_decode($urlParams, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $this->logger->debug('[fetchAndMapAuctionsFromApi] URL-Parameter nach HTML-Entity-Decode: ' . $urlParams);
+            }
+            
+            // Sprache aus URL-Parametern extrahieren
+            if (preg_match('/[?&]language=([a-z]{2})/', $urlParams, $matches)) {
+                $acceptLanguage = $matches[1];
+                $this->logger->debug('[fetchAndMapAuctionsFromApi] Sprache aus URL-Parameter extrahiert: ' . $acceptLanguage);
+            }
+            
+            if (!empty($urlParams)) {
+                $apiUrl .= '/' . $urlParams;
+            }
+        }
+
+        if (empty($apiUrl) || empty($apiAuth)) {
+            $this->logger->error('[fetchAndMapAuctionsFromApi] API URL oder Auth Token nicht konfiguriert');
+            return null;
+        }
+
+        $contextOptions = [
+            'http' => [
+                'method' => 'GET',
+                'header' => "Authorization: Basic " . $apiAuth . "\r\n" . 
+                           "Accept-Language: " . $acceptLanguage . "\r\n" .
+                           "Content-Type: application/json\r\n",
+                'timeout' => 30
+            ]
+        ];
+
+        try {
+            $response = @file_get_contents($apiUrl, false, stream_context_create($contextOptions));
+            
+            if ($response === false) {
+                $this->logger->error('[fetchAndMapAuctionsFromApi] API-Anfrage fehlgeschlagen');
+                return null;
+            }
+
+            $rawAuctions = json_decode($response, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $this->logger->error('[fetchAndMapAuctionsFromApi] JSON Parse-Fehler: ' . json_last_error_msg());
+                return null;
+            }
+
+            // Mapping durchführen
+            $mappedAuctions = [];
+            foreach ($rawAuctions as $auction) {
+                if (is_array($auction)) {
+                    $mapped = $this->mapPublicAuctionToInternalFormat($auction);
+                    if ($mapped) {
+                        $mappedAuctions[] = $mapped;
+                    }
+                }
+            }
+
+            $this->logger->info('[fetchAndMapAuctionsFromApi] ' . count($mappedAuctions) . ' Auktionen erfolgreich gemappt');
+            return $mappedAuctions;
+
+        } catch (\Exception $e) {
+            $this->logger->error('[fetchAndMapAuctionsFromApi] Exception: ' . $e->getMessage());
+            return null;
+        }
     }
 
     /**
@@ -434,17 +569,28 @@ class AuctionService
      */
     private function downloadAuctionImage(string $filename, ?string $auctionId = null): string
     {
-        // Zielverzeichnis im Contao-Dateisystem
-        $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/files/auction/images';
-        if (!is_dir($targetDir)) {
-            @mkdir($targetDir, 0755, true);
+        // Zielverzeichnis im Contao-Dateisystem - korrekter Pfad
+        $projectRoot = getcwd();
+        $baseImageDir = $projectRoot . '/files/auction/images';
+        
+        if (!is_dir($baseImageDir)) {
+            if (!@mkdir($baseImageDir, 0755, true)) {
+                $this->logger->error('Konnte Basis-Bildverzeichnis nicht erstellen: ' . $baseImageDir);
+                return '';
+            }
         }
 
         // Wenn eine Auktions-ID übergeben wurde, erstellen wir ein Unterverzeichnis pro Auktion
+        $targetDir = $baseImageDir;
         if ($auctionId) {
-            $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/files/auction/images/' . $auctionId;
+            $targetDir = $baseImageDir . '/' . $auctionId;
             if (!is_dir($targetDir)) {
-                @mkdir($targetDir, 0755, true);
+                if (!@mkdir($targetDir, 0755, true)) {
+                    $this->logger->error('Konnte Auktions-Bildverzeichnis nicht erstellen: ' . $targetDir);
+                    // Fallback: Verwende Basis-Verzeichnis
+                    $targetDir = $baseImageDir;
+                    $this->logger->info('Fallback: Verwende Basis-Bildverzeichnis: ' . $targetDir);
+                }
             }
         }
 
@@ -598,7 +744,7 @@ class AuctionService
      */
     public function getAuctions(array $filters = [], bool $forceRefresh = false, ?string $sortBy = null, string $sortDirection = 'asc', array $sortRules = [], ?string $urlParams = null): array
     {
-        $this->logger->debug('[getAuctions] Auktionen werden abgerufen', [ // Präfix [TESTLOG-ERROR] entfernt
+        $this->logger->debug('[getAuctions] Auktionen werden abgerufen', [
             'raw_filters' => $filters,
             'forceRefresh' => $forceRefresh,
             'sortBy' => $sortBy,
@@ -606,13 +752,44 @@ class AuctionService
             'sortRules' => $sortRules,
         ]);
 
+        // Cache-Key basierend auf Parametern generieren
+        $cacheKey = self::CACHE_KEY_FILTERED_RESULTS . '_' . md5(serialize([
+            'filters' => $filters,
+            'sortBy' => $sortBy,
+            'sortDirection' => $sortDirection,
+            'sortRules' => $sortRules,
+            'urlParams' => $urlParams
+        ]));
+
+        // Versuche aus Cache zu laden (außer bei forceRefresh)
+        if (!$forceRefresh) {
+            try {
+                return $this->cache->get($cacheKey, function (ItemInterface $item) use ($filters, $forceRefresh, $sortBy, $sortDirection, $sortRules, $urlParams) {
+                    $item->expiresAfter(900); // 15 Minuten für gefilterte Ergebnisse
+                    
+                    return $this->processAuctionsData($filters, $forceRefresh, $sortBy, $sortDirection, $sortRules, $urlParams);
+                });
+            } catch (\Exception $e) {
+                $this->logger->warning('[getAuctions] Cache-Fehler, Fallback zu direkter Verarbeitung: ' . $e->getMessage());
+            }
+        }
+        
+        // Fallback ohne Cache
+        return $this->processAuctionsData($filters, $forceRefresh, $sortBy, $sortDirection, $sortRules, $urlParams);
+    }
+
+    /**
+     * Verarbeitet die Auktionsdaten (extrahiert aus getAuctions für bessere Testbarkeit)
+     */
+    private function processAuctionsData(array $filters = [], bool $forceRefresh = false, ?string $sortBy = null, string $sortDirection = 'asc', array $sortRules = [], ?string $urlParams = null): array
+    {
         $auctions = $this->getPublicAuctions(!$forceRefresh, $urlParams);
         if ($auctions === null) {
-            $this->logger->debug('[getAuctions] Keine Auktionsdaten von getPublicAuctions erhalten.'); // War [TESTLOG-ERROR]
+            $this->logger->debug('[processAuctionsData] Keine Auktionsdaten von getPublicAuctions erhalten.');
             return [];
         }
         $initialCount = count($auctions);
-        $this->logger->info('[getAuctions] ' . $initialCount . ' gemapte Auktionen von getPublicAuctions erhalten.');
+        $this->logger->info('[processAuctionsData] ' . $initialCount . ' gemapte Auktionen von getPublicAuctions erhalten.');
 
         $structuredFilters = [];
         foreach ($filters as $key => $value) {
@@ -759,6 +936,33 @@ class AuctionService
                     $direction = $rule['direction'];
                     $valueType = $rule['value_type'];
                     $accessRaw = $rule['access_raw'] ?? false; // Default auf false, falls nicht gesetzt
+
+                    // Spezielle Behandlung für status_priority
+                    if ($field === 'status_priority') {
+                        $statusA = $accessRaw ? ($a['_raw_data']['status'] ?? null) : ($a['status'] ?? null);
+                        $statusB = $accessRaw ? ($b['_raw_data']['status'] ?? null) : ($b['status'] ?? null);
+                        
+                        // Status-Prioritäten definieren: niedrigere Zahl = höhere Priorität
+                        $statusPriority = [
+                            'STARTED' => 1,
+                            'FIRST_ROUND' => 2,
+                            'SECOND_ROUND' => 3,
+                            'PLANNED' => 4,
+                            'OPEN_FOR_DIRECT_AWARDING' => 5
+                        ];
+                        
+                        $priorityA = $statusPriority[$statusA] ?? 999; // Unbekannte Status ganz hinten
+                        $priorityB = $statusPriority[$statusB] ?? 999;
+                        
+                        if ($priorityA != $priorityB) {
+                            if ($direction === 'asc') {
+                                return ($priorityA < $priorityB) ? -1 : 1;
+                            } else {
+                                return ($priorityA > $priorityB) ? -1 : 1;
+                            }
+                        }
+                        continue; // Gleiche Priorität, zur nächsten Regel
+                    }
 
                     $valA = $accessRaw ? ($a['_raw_data'][$field] ?? null) : ($a[$field] ?? null);
                     $valB = $accessRaw ? ($b['_raw_data'][$field] ?? null) : ($b[$field] ?? null);
@@ -1411,3 +1615,4 @@ class AuctionService
         return $structuredRequestFilters;
     }
 }
+

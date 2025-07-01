@@ -36,7 +36,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                         <?php if ($row->icon): ?>
                                             <div class="col-auto">
                                             <span style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>" class="step--icon">
-                                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->icon, strip_tags($row->description), $row->headline, $row->size, null, false); ?>
+                                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->icon, strip_tags($row->description), $row->headline, $row->size, null, false, false, !$row->icon_no_lazy); ?>
                                             </span>
                                             </div>
                                         <?php endif; ?>
@@ -51,7 +51,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                 <div class="right-col--inner" style="<?php if ($row->textcolor): ?>color: <?= $row->textcolor; ?>; <?php endif; ?><?php if ($row->backgroundcolor): ?>background-color: <?= $row->backgroundcolor; ?><?php endif; ?>">
                                     <?php if ($row->image): ?>
                                         <div class="step--image mb-4">
-                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->image, strip_tags($row->description), $row->headline, $row->size, null, false); ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->image, strip_tags($row->description), $row->headline, $row->size, null, false, false, !$row->image_no_lazy); ?>
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($row->headline): ?>

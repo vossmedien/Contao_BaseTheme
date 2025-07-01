@@ -175,7 +175,7 @@ $config = array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg,webp',
+                'extensions' => Contao\Config::get('validImageTypes'),
             ),
 
         ),
@@ -223,8 +223,26 @@ $config = array(
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,mp4,webm,webp',
-
+                        'tl_class' => 'w50 clr',
+                        'submitOnChange' => true
                     ),
+                ),
+
+                'image_poster' => array(
+                    'label' => array('Poster-Bild für Video', 'Wird nur angezeigt, wenn oben ein Video ausgewählt wurde'),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
+                    ),
+                ),
+                'image_video_no_lazy' => array(
+                    'label' => array('Haupt-Video ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Hauptvideo'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50 clr'),
                 ),
 
 
@@ -249,9 +267,27 @@ $config = array(
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => 'jpg,jpeg,png,mp4,webp',
-
+                        'tl_class' => 'w50 clr',
                         'mandatory' => false,
+                        'submitOnChange' => true
                     ),
+                ),
+
+                'mobile_image_poster' => array(
+                    'label' => array('Poster-Bild für Mobile-Video', 'Wird nur angezeigt, wenn oben ein mobiles Video ausgewählt wurde'),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
+                    ),
+                ),
+                'mobile_video_no_lazy' => array(
+                    'label' => array('Mobile-Video ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das mobile Video'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50 clr'),
                 ),
 
 

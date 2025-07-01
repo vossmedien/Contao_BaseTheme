@@ -22,12 +22,13 @@ services:
         resource: '../src/Controller/FrontendModule/'
         tags: ['controller.service_arguments']
     
-    # AuctionService explizit definieren, um Parameter zugänglich zu machen
+    # AuctionService explizit definieren, um Parameter und Cache zugänglich zu machen
     CaeliWind\CaeliAuctionConnect\Service\AuctionService:
         public: true
         arguments:
             $logger: '@monolog.logger.contao'
             $params: '@parameter_bag'
+            $cache: '@cache.app'
 
     # Routing-Konfiguration
     CaeliWind\CaeliAuctionConnect\Routing\AuctionResolver:
@@ -57,6 +58,7 @@ services:
     CaeliWind\CaeliAuctionConnect\Controller\FrontendModule\AuctionListingController:
         arguments:
             $auctionService: '@CaeliWind\CaeliAuctionConnect\Service\AuctionService'
+            $deviceDetectionService: '@CaeliWind\CaeliAuctionConnect\Service\DeviceDetectionService'
             $logger: '@monolog.logger.contao'
 
     # DCA Helper Services - müssen public sein für Callbacks
@@ -80,3 +82,10 @@ services:
             - _caeli_wind_caeli_auction_connect_attributes
         calls:
             - [ setName, [ caeli_wind_caeli_auction_connect ] ]
+
+    # Console Command für manuelles Refresh
+    CaeliWind\CaeliAuctionConnect\Command\RefreshAuctionsCommand:
+        arguments:
+            $auctionService: '@CaeliWind\CaeliAuctionConnect\Service\AuctionService'
+        tags:
+            - { name: 'console.command' }

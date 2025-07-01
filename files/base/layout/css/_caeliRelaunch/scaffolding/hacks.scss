@@ -1,3 +1,7 @@
+// =============================================================================
+// ANIMATIONS & KEYFRAMES
+// =============================================================================
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -7,27 +11,19 @@
   }
 }
 
+// =============================================================================
+// HOVER EFFECTS
+// =============================================================================
+
 .ce--stoerer:hover {
   .stoerer-trigger > svg {
     transform: scale(1.2);
   }
 }
 
-
-.ce_rsce_hero_complex:first-child {
-  @include media-breakpoint-down(lg) {
-    //margin-top: calc(-1 * var(--main-gap));
-  }
-}
-
-
-.ce_rsce_headline[class*="col-"] {
-  .row.g-lg-3 {
-    --bs-gutter-x: 15px;
-    --bs-gutter-y: 15px;
-  }
-}
-
+// =============================================================================
+// PULL SYSTEM (UP/DOWN POSITIONING)
+// =============================================================================
 
 [class*="pull-"] {
   z-index: 5 !important;
@@ -38,6 +34,7 @@
   z-index: 5 !important;
 }
 
+// Basic pull classes
 .pull-down {
   margin-bottom: calc(-1 * (var(--main-gap) * 2)) !important;
 }
@@ -46,6 +43,7 @@
   margin-top: calc(-1 * (var(--main-gap) * 2)) !important;
 }
 
+// Pull system with article content
 [class*="pull-down"].article-content {
   margin-top: var(--main-gap);
 }
@@ -54,6 +52,12 @@
   margin-bottom: var(--main-gap);
 }
 
+// Large pull variant
+.pull-down.pull-down-large {
+  margin-bottom: calc(var(--main-gap) * -1 * 5) !important;
+}
+
+// Pull system spacing adjustments
 .mod_article:has(.content--element:last-child .pull-down, .content--element:last-child.pull-down) {
   & + .mod_article > .article-content {
     padding-top: calc(var(--main-gap) * 2);
@@ -80,18 +84,17 @@
   }
 }
 
-.pull-down.pull-down-large {
-  margin-bottom: calc(var(--main-gap) * -1 * 5) !important;
-}
-
-
 .mod_article:has(.pull-down.pull-down-large) {
   & + .mod_article > .article-content > .content--element:first-child {
-    padding-top: calc(var(--main-gap) * 5);
+    padding-top: var(--main-gap);
+
+    @include media-breakpoint-up(sm) {
+      padding-top: calc(var(--main-gap) * 5);
+    }
   }
 }
 
-
+// Responsive pull classes
 @each $breakpoint, $size in $grid-breakpoints {
   $infix: "-#{$breakpoint}";
 
@@ -100,15 +103,14 @@
       margin-bottom: calc(-1 * (var(--main-gap) * 2)) !important;
     }
 
+    .pull-up#{$infix} {
+      margin-top: calc(-1 * (var(--main-gap) * 2)) !important;
+    }
 
     .mod_article:has(.content--element:last-child .pull-down#{$infix}, .content--element:last-child.pull-down#{$infix}) {
       & + .mod_article > .article-content {
         padding-top: calc(var(--main-gap) * 2);
       }
-    }
-
-    .pull-up#{$infix} {
-      margin-top: calc(-1 * (var(--main-gap) * 2)) !important;
     }
 
     .mod_article:has(.content--element:last-child .pull-up#{$infix}, .content--element:last-child.pull-up#{$infix}) {
@@ -119,13 +121,22 @@
   }
 }
 
+// =============================================================================
+// CONTENT ELEMENT SPECIFIC ADJUSTMENTS
+// =============================================================================
 
-html body .mb-lg-50 {
-  @include media-breakpoint-up(lg) {
-    margin-bottom: 50% !important;
+.ce_rsce_hero_complex:first-child {
+  @include media-breakpoint-down(lg) {
+    //margin-top: calc(-1 * var(--main-gap));
   }
 }
 
+.ce_rsce_headline[class*="col-"] {
+  .row.g-lg-3 {
+    --bs-gutter-x: 15px;
+    --bs-gutter-y: 15px;
+  }
+}
 
 .ce_rsce_twocolimagewall:has(form) {
   @include media-breakpoint-down(lg) {
@@ -143,118 +154,148 @@ html body .mb-lg-50 {
   }
 }
 
+.mod_newsmenu {
+  margin-bottom: 0 !important;
+}
 
-.mod_article:not(:last-child) .article-content[class*=bg-] {
-  @include media-breakpoint-down(sm) {
+// =============================================================================
+// UTILITY CLASSES
+// =============================================================================
+
+html body .mb-lg-50 {
+  @include media-breakpoint-up(lg) {
+    margin-bottom: 50% !important;
+  }
+}
+
+.with-hyphens{
+  h1,.h1{
+      @include media-breakpoint-down(sm) {
+         hyphens: auto;
+      }
+  }
+}
+
+
+
+// =============================================================================
+// MOBILE SPECIFIC ADJUSTMENTS
+// =============================================================================
+
+@include media-breakpoint-down(sm) {
+
+  // Article spacing adjustments
+  .mod_article:not(:last-child) .article-content[class*=bg-]:not(:has(.content--element.mb-0:last-child)) {
     padding-bottom: 0;
   }
-}
+
+  .mod_article > .article-content .content--element.content--element:has(+.content--element.pull-up) {
+    padding-bottom: var(--main-gap);
+  }
 
 
-.mod_article:has(.content--element:last-child .pull-down,.content--element:last-child.pull-down) + .mod_article > .article-content,
-#wrapper #main .mod_article .article-content:not(:has(.moved-content)) > :not(.body-slider,.bgvideo,.ce_rsce_headline:not(:has(.text,.content-column))) {
-  @include media-breakpoint-down(sm) {
+  // Content element spacing
+  .mod_article:has(.content--element:last-child .pull-down,.content--element:last-child.pull-down) + .mod_article > .article-content,
+  #wrapper #main .mod_article .article-content:not(:has(.moved-content)) > :not(.body-slider,.bgvideo,.ce_rsce_headline:not(:has(.text,.content-column))) {
     &:not(.ce_rsce_hero_complex:first-child, .pull-up, .ce_rsce_twocolimagewall, .ce_rsce_head_hero, .mod_newsmenu, .ce_rsce_headline:first-child) {
-      padding-top: calc(var(--main-gap));
-    }
-
-  }
-}
-
-.ce_rsce_headline.mb-0 + .ce_rsce_headimagelogo, .ce_rsce_headline[class*="bg-"] + .ce_rsce_headline, .ce_rsce_hero_complex + .ce_rsce_headline, .article-content[class*="bg-"] > .ce_rsce_headline, .ce_rsce_headimagelogo,
-.ce_rsce_head_hero + .ce_rsce_headline, .ce_rsce_headimagelogo + .ce_rsce_services_overview {
-  @include media-breakpoint-down(sm) {
-    padding-top: 0 !important;
-  }
-}
-
-.ce_rsce_headline [class*="bg-"] {
-  @include media-breakpoint-down(sm) {
-    padding-block: var(--main-gap) !important;
-  }
-}
-
-
-.ce_rsce_twocolimagewall[class*="container"] {
-  @include media-breakpoint-down(sm) {
-    padding-inline: 0;
-  }
-}
-
-[class*="pull-"] {
-  &:has([class*="bg-"]) {
-    @include media-breakpoint-down(sm) {
-      margin-block: 0 !important;
-
-      &[class*="container"] {
-        padding-inline: 0;
+      &:not([class*="mt-"]) {
+        padding-top: calc(var(--main-gap));
       }
     }
   }
-}
 
-#wrapper #main .mod_article .article-content:not(:has(.moved-content)) > :not(.body-slider, .bgvideo, .ce_rsce_ansprechpartner:last-child, .ce_rsce_headline:not(:has(.text, .content-column))) {
-  @include media-breakpoint-down(sm) {
+  // Headline specific adjustments
+  .ce_rsce_headline.mb-0 + .ce_rsce_headimagelogo,
+  .ce_rsce_headline[class*="bg-"] + .ce_rsce_headline:not([class*="bg-"]),
+  .ce_rsce_hero_complex + .ce_rsce_headline,
+  .article-content[class*="bg-"] > .ce_rsce_headline,
+  .ce_rsce_headimagelogo,
+  .ce_rsce_head_hero + .ce_rsce_headline,
+  .ce_rsce_headimagelogo + .ce_rsce_services_overview,
+  .content--element[class*="bg-"]:not(.mb-0) + .content--element {
+    padding-top: 0 !important;
+  }
+
+  .ce_rsce_headline [class*="bg-"]:not(.badge) {
+    padding-block: var(--main-gap) !important;
+  }
+
+  .ce_rsce_headline[class*="mb-"]:has( + .content--element) {
+    & + .content--element:not([class*="bg-"]) {
+      padding-top: 0 !important;
+    }
+  }
+
+  .ce_rsce_headline .ce--inner > [class*="bg-"] {
+    padding-inline: var(--bs-container-gutter) !important;
+  }
+
+  // Container and padding adjustments
+  .ce_rsce_twocolimagewall[class*="container"] {
+    padding-inline: 0;
+  }
+
+  [class*="pull-"]:has([class*="bg-"]) {
+    margin-block: 0 !important;
+
+    &[class*="container"] {
+      padding-inline: 0;
+    }
+  }
+
+  // Form and content adjustments
+  #wrapper #main .mod_article .article-content:not(:has(.moved-content)) > :not(.body-slider, .bgvideo, .ce_rsce_ansprechpartner:last-child, .ce_rsce_headline:not(:has(.text, .content-column))) {
     &:last-child:has(form) {
       margin-bottom: 0;
     }
   }
-}
 
-.ce_rsce_headline .ce--inner > [class*="bg-"] {
-  @include media-breakpoint-down(sm) {
-    padding-inline: var(--bs-container-gutter) !important;
+  // Specific element adjustments
+  .headline-and-text-wrapper {
+    //max-width: calc(100% - 70px);
   }
-}
 
-.headline-and-text-wrapper {
-  @include media-breakpoint-down(sm) {
-    max-width: calc(100% - 70px);
-  }
-}
-
-
-.mod_newsmenu {
-  margin-bottom: 0 !important;
-  @include media-breakpoint-down(sm) {
-
-  }
-}
-
-div + .headline-column:has(+ div) {
-  @include media-breakpoint-down(sm) {
+  div + .headline-column:has(+ div:not(:has(.content-column.mt-4))) {
     margin-bottom: var(--main-gap) !important;
   }
+
+  .ce_rsce_image.pull-up,
+  .content--element[class*="bg-"]:has(+ .pachtrechner-widget) {
+    margin-bottom: 0 !important;
+  }
 }
 
+// =============================================================================
+// LARGE SCREEN ADJUSTMENTS
+// =============================================================================
 
-.ce_rsce_headline[class*="mb-"]:has( + .content--element) {
-  & + .content--element {
-    @include media-breakpoint-down(sm) {
-      padding-top: 0 !important;
+@include media-breakpoint-down(lg) {
+  .content-column:has(.buttons:first-child:last-child) {
+    //margin-top: 1.5rem;
+  }
+
+  .head-hero .image-section {
+    margin-inline: calc(-1 * var(--bs-container-gutter));
+  }
+}
+
+@include media-breakpoint-down(xxl) {
+  .ce--headline {
+    > h1, > .h1 {
+      //max-width: calc(100% - 70px);
     }
   }
 }
 
 
-div:empty {
-  //display: none;
-}
-
-.content-column:has(.buttons:first-child:last-child) {
-  @include media-breakpoint-down(lg) {
-    //margin-top: 1.5rem;
+html body .cmpbox.cmpboxclosed {
+  @include media-breakpoint-down(md) {
+    display: none !important;
   }
 }
 
-.ce_rsce_image.pull-up {
-  @include media-breakpoint-down(sm) {
-    margin-bottom: 0 !important;
-  }
-}
-
-.head-hero .image-section {
-  @include media-breakpoint-down(lg) {
-    margin-inline: calc(-1 * var(--bs-container-gutter));
+.dropdown-menu.bg-primary{
+  .form-check-input, .form-check-input:checked, .form-check-input:focus, .form-check-input:focus-visible{
+    border: 1px solid rgba(255, 255, 255, .15);
   }
 }

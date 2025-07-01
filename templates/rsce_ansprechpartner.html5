@@ -5,18 +5,64 @@ use Vsm\VsmHelperTools\Helper\ButtonHelper;
 use Vsm\VsmHelperTools\Helper\ImageHelper;
 
 
-// Helper function to create safe CSS class names from tags
+// Helper function to create safe names with custom prefix
+if (!function_exists('createSafeName')) {
+    function createSafeName($text, $prefix = '', $fallback = 'item')
+    {
+        $text = strtolower($text ?? '');
+        $text = preg_replace('/ä/', 'ae', $text);
+        $text = preg_replace('/ö/', 'oe', $text);
+        $text = preg_replace('/ü/', 'ue', $text);
+        $text = preg_replace('/ß/', 'ss', $text);
+        $text = preg_replace('/[^a-z0-9]+/', '-', $text);
+        $text = trim($text, '-');
+        return $prefix . ($text ?: $fallback);
+    }
+}
+
+// Wrapper functions for backwards compatibility
 if (!function_exists('createTagClass')) {
     function createTagClass($tag)
     {
-        $tag = strtolower($tag ?? '');
-        $tag = preg_replace('/ä/', 'ae', $tag);
-        $tag = preg_replace('/ö/', 'oe', $tag);
-        $tag = preg_replace('/ü/', 'ue', $tag);
-        $tag = preg_replace('/ß/', 'ss', $tag);
-        $tag = preg_replace('/[^a-z0-9]+/', '-', $tag);
-        $tag = trim($tag, '-');
-        return 'tag-' . ($tag ?: 'uncategorized');
+        return createSafeName($tag, 'tag-', 'uncategorized');
+    }
+}
+
+if (!function_exists('createButtonId')) {
+    function createButtonId($text)
+    {
+        return createSafeName($text, 'filter-', 'button');
+    }
+}
+
+// Helper function to extract last name from full name
+if (!function_exists('getLastName')) {
+    function getLastName($fullName)
+    {
+        if (empty($fullName)) {
+            return '';
+        }
+        $nameParts = explode(' ', trim($fullName));
+        return end($nameParts); // Get the last part as surname
+    }
+}
+
+// Helper function to create unique contact IDs based on surnames
+if (!function_exists('createContactId')) {
+    function createContactId($fullName, $usedNames = [])
+    {
+        $lastName = getLastName($fullName);
+        $baseName = createSafeName($lastName, '', 'partner');
+        
+        // Check if this name is already used
+        $finalName = $baseName;
+        $counter = 2;
+        while (in_array($finalName, $usedNames)) {
+            $finalName = $baseName . '-' . $counter;
+            $counter++;
+        }
+        
+        return $finalName;
     }
 }
 
@@ -129,6 +175,17 @@ if ($this->add_filter_form && !empty($this->partners)) {
     }
 }
 
+// --- Create unique contact IDs based on surnames ---
+$contactIds = [];
+$usedNames = [];
+if (!empty($this->partners)) {
+    foreach ($this->partners as $index => $partner) {
+        $contactId = createContactId($partner->name, $usedNames);
+        $contactIds[$index] = $contactId;
+        $usedNames[] = $contactId;
+    }
+}
+
 // --- Determine if the left text column should be shown ---
 $showTextColumn = !empty($this->topline)
     || (!empty($this->headline) && !empty($this->headline['value']))
@@ -177,25 +234,25 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
             <?php // --- Filter Buttons (if enabled) --- ?>
             <?php if ($this->add_filter_form && (!empty($allTags) || ($this->add_text_filter_option && !empty($this->text_filter_button_label) && !empty($this->text_filter_content)))): ?>
-                <div class="filter-buttons mb-4 justify-content-center justify-content-md-start d-flex gap-1 flex-wrap flex-row">
+                <div class="filter-buttons mb-4 d-flex gap-1 flex-wrap flex-row">
                     <?php // Set initial active state ?>
                     <?php if (!$hideAllButton): ?>
-                        <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all">Alle</button>
+                        <button id="<?= createButtonId($this->filter_all_button_text ?: 'Alle'); ?>" class="btn btn-sm filter-btn <?= ($initialFilterTagClass === 'all') ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="all"><?= $this->filter_all_button_text ?: 'Alle'; ?></button>
                     <?php endif; ?>
                     <?php foreach ($allTags as $tag):
                         $currentTagClass = createTagClass($tag);
                         ?>
-                        <button class="btn btn-sm filter-btn <?= ($initialFilterTagClass === $currentTagClass) ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="<?= $currentTagClass; ?>"><?= \Contao\StringUtil::specialchars($tag); ?></button>
+                        <button id="<?= createButtonId($tag); ?>" class="btn btn-sm filter-btn <?= ($initialFilterTagClass === $currentTagClass) ? 'btn-primary active' : 'btn-outline-primary'; ?>" data-filter-tag="<?= $currentTagClass; ?>"><?= \Contao\StringUtil::specialchars($tag); ?></button>
                     <?php endforeach; ?>
 
                     <?php // --- NEU: Text Filter Button --- ?>
                     <?php if ($this->add_text_filter_option && !empty($this->text_filter_button_label) && !empty($this->text_filter_content)): ?>
-                        <button class="btn btn-sm filter-btn btn-outline-primary" data-filter-tag="text-filter-content"><?= \Contao\StringUtil::specialchars($this->text_filter_button_label); ?></button>
+                        <button id="<?= createButtonId($this->text_filter_button_label); ?>" class="btn btn-sm filter-btn btn-outline-primary" data-filter-tag="text-filter-content"><?= \Contao\StringUtil::specialchars($this->text_filter_button_label); ?></button>
                     <?php endif; ?>
 
                     <?php // --- NEU: Allgemeine Anfrage Button --- ?>
                     <?php if ($this->add_general_inquiry && !empty($this->general_inquiry_button_label) && !empty($this->general_inquiry_content)): ?>
-                        <button class="btn btn-sm filter-btn btn-outline-primary" data-filter-tag="general-inquiry-content"><?= \Contao\StringUtil::specialchars($this->general_inquiry_button_label); ?></button>
+                        <button id="<?= createButtonId($this->general_inquiry_button_label); ?>" class="btn btn-sm filter-btn btn-outline-primary" data-filter-tag="general-inquiry-content"><?= \Contao\StringUtil::specialchars($this->general_inquiry_button_label); ?></button>
                     <?php endif; ?>
                 </div>
 
@@ -213,7 +270,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         <div class="mb-3">
                             <label for="zip-filter-input-<?= $this->id; ?>" class="d-block form-label small"><?= $this->zip_input_label ?: 'PLZ eingeben:'; ?></label>
                             <div class="input-group input-group-sm d-sm-inline-flex w-auto">
-                                <input type="text" id="zip-filter-input-<?= $this->id; ?>" class="form-control" placeholder="z.B. 12345">
+                                <input type="tel" id="zip-filter-input-<?= $this->id; ?>" class="form-control" placeholder="<?= $this->zip_input_placeholder ?: 'z.B. 12345'; ?>">
                                 <button type="button" class="btn btn-outline-primary btn-sm" id="clear-zip-filter-<?= $this->id; ?>">
                                     <?= $this->zip_reset_button_label ?: 'Zurücksetzen'; ?>
                                 </button>
@@ -311,7 +368,8 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                         if (empty($emailLabel)) {
                             $emailLabel = 'Nachricht schreiben';
                         }
-                        $appointmentLabel = 'Termin vereinbaren';
+                        $appointmentLabel = $this->appointment_label ?: 'Termin vereinbaren';
+                        $linkedinLabel = $this->linkedin_label ?: 'LinkedIn Profil';
 
                         // Get image column width style if layout is image-left
                         $imageStyle = '';
@@ -346,40 +404,40 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                             $this->size,
                                             trim($imageClass),
                                             false,
-                                            false,
-                                            true
+                                            !($partner->image_no_lazy ?? false)
                                         );
                                         ?>
                                         <?php // PLZ Distance Badge ?>
                                         <div class="zip-distance-badge badge position-absolute start-0 top-0 bg-primary text-white" style="display: none; margin: 0.5rem;" data-partner-zip="<?= $partner->zip_code ?: ''; ?>">
-                                            im Umkreis von ca.
-                                            <span class="distance-value">0</span>
-                                            km
+                                            <?php 
+                                            $distanceBadgeText = $this->distance_badge_text ?: 'im Umkreis von ca. [DISTANCE] km';
+                                            echo str_replace('[DISTANCE]', '<span class="distance-value">0</span>', $distanceBadgeText);
+                                            ?>
                                         </div>
                                         <?php // Icons on Image (if enabled) ?>
                                         <?php if ($this->show_icons_on_image): ?>
                                             <div class="contact-icons-overlay position-absolute bottom-0 end-0 d-flex flex-column align-items-end">
                                                 <?php // Phone Icon ?>
                                                 <?php if ($partner->phone): ?>
-                                                    <a href="tel:<?= preg_replace('/[^\d+]/', '', $partner->phone);; ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $phoneLabel; ?>">
+                                                    <a id="contact_phone_<?= $contactIds[$index]; ?>" href="tel:<?= preg_replace('/[^\d+]/', '', $partner->phone);; ?>" class="contact_phone bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $phoneLabel; ?>">
                                                         <i style="font-size:1.5rem;" class="fak fa-phone text-body"></i>
                                                     </a>
                                                 <?php endif; ?>
                                                 <?php // Appointment Icon ?>
                                                 <?php if ($partner->appointment_link): ?>
-                                                    <a href="<?= $partner->appointment_link; ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $appointmentLabel; ?>">
+                                                    <a id="contact_appointment_<?= $contactIds[$index]; ?>" target="_blank" href="<?= $partner->appointment_link; ?>" class="contact_appointment bg-secondary p-1 text-decoration-none d-inline-flex align-items-center mt-1 justify-content-center" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $appointmentLabel; ?>">
                                                         <i class="fak fa-calendar text-body"></i>
                                                     </a>
                                                 <?php endif; ?>
                                                 <?php // Email Icon ?>
                                                 <?php if ($partner->email_link): ?>
-                                                    <a href="<?= $partner->email_link; ?>" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $emailLabel; ?>">
+                                                    <a id="contact_email_<?= $contactIds[$index]; ?>" href="mailto:<?= $partner->email_link; ?>" class="contact_email bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em;" data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $emailLabel; ?>">
                                                         <i class="fak fa-mail text-body"></i>
                                                     </a>
                                                 <?php endif; ?>
                                                 <?php // LinkedIn Icon ?>
                                                 <?php if ($partner->linkedin_link): ?>
-                                                    <a href="<?= $partner->linkedin_link; ?>" target="_blank" rel="noopener" class="bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em; " data-bs-placement="left" data-bs-toggle="tooltip" title="LinkedIn Profil">
+                                                    <a id="contact_linkedin_<?= $contactIds[$index]; ?>" href="<?= $partner->linkedin_link; ?>" target="_blank" rel="noopener" class="contact_linkedin bg-secondary p-1 text-decoration-none d-inline-flex align-items-center justify-content-center mt-1" style="width: 2.5em; height: 2.5em; " data-bs-placement="left" data-bs-toggle="tooltip" title="<?= $linkedinLabel; ?>">
                                                         <i style="font-size: 1.5rem;" class="fak fa-linkedin text-body"></i>
                                                     </a>
                                                 <?php endif; ?>
@@ -393,34 +451,34 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                                 <div class="contact-info flex-grow-1 <?php if ($partnerLayoutClass === 'layout-image-left'): ?>mt-2 mt-md-0 ms-md-3<?php else: ?>mt-2<?php endif; ?>">
                                     <?php // Name / Title Output (based on global setting)
                                     ?>
-                                    <?php if ($this->title_below_name): ?>
-                                        <?php // Version: Title below name ?>
-                                        <?php if ($partner->name): ?>
-                                            <h3 class="contact-name h6 fw-bold mb-0"><?= $partner->name; ?></h3>
-                                        <?php endif; ?>
-                                        <?php if ($partner->title): ?>
-                                            <p class="contact-title mb-2"><?= $partner->title; ?></p>
-                                        <?php elseif ($hasAnyTitle): ?>
-                                            <p class="contact-title mb-2">&nbsp;</p>
-                                        <?php endif; ?>
-                                    <?php else: ?>
-                                        <?php // Default version: Title: Name ?>
-                                        <?php if ($partner->title): ?>
-                                            <h3 class="contact-title h6 mb-1"><?= $partner->title; ?></h3>
-                                        <?php elseif ($hasAnyTitle): ?>
-                                            <h3 class="contact-title h6 mb-1">&nbsp;</h3>
-                                        <?php endif; ?>
-                                        <?php if ($partner->name): ?>
-                                            <p class="contact-name fw-bold mb-2"><?= $partner->name; ?></p>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
+                                                        <?php if ($this->title_below_name): ?>
+                        <?php // Version: Title below name ?>
+                        <?php if ($partner->name): ?>
+                            <h3 class="contact-name h6 fw-bold mb-0"><?= $partner->name; ?></h3>
+                        <?php endif; ?>
+                        <?php if ($partner->title): ?>
+                            <p class="contact-title mb-2"><?php echo html_entity_decode($partner->title, ENT_QUOTES, 'UTF-8'); ?></p>
+                        <?php elseif ($hasAnyTitle): ?>
+                            <p class="contact-title mb-2 d-none d-sm-block">&nbsp;</p>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <?php // Default version: Title: Name ?>
+                        <?php if ($partner->title): ?>
+                            <h3 class="contact-title h6 mb-1"><?php echo html_entity_decode($partner->title, ENT_QUOTES, 'UTF-8'); ?></h3>
+                        <?php elseif ($hasAnyTitle): ?>
+                            <h3 class="contact-title h6 mb-1">&nbsp;</h3>
+                        <?php endif; ?>
+                        <?php if ($partner->name): ?>
+                            <p class="contact-name fw-bold mb-2"><?= $partner->name; ?></p>
+                        <?php endif; ?>
+                    <?php endif; ?>
 
                                     <?php // Email & Phone Text (only if not shown as icons on image)
                                     ?>
                                     <?php if (!$this->show_icons_on_image): ?>
                                         <?php if ($partner->email_link): ?>
                                             <p class="contact-email mb-1">
-                                                <a href="<?= $partner->email_link; ?>" class="text-nowrap">
+                                                <a id="contact_email_text_<?= $contactIds[$index]; ?>" href="<?= $partner->email_link; ?>" class="contact_email text-nowrap">
                                                     <i style="width: 20px;" class="fass fa-envelope me-1"></i>
                                                     <span class="text-body text-decoration-underline"><?= $this->email_icon_label; ?></span>
                                                 </a>
@@ -429,7 +487,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
                                         <?php if ($partner->phone): ?>
                                             <p class="contact-phone mb-1">
-                                                <a href="tel:<?= \Contao\StringUtil::standardize($partner->phone); ?>" class="text-nowrap">
+                                                <a id="contact_phone_text_<?= $contactIds[$index]; ?>" href="tel:<?= \Contao\StringUtil::standardize($partner->phone); ?>" class="contact_phone text-nowrap">
                                                     <i style="width: 20px;" class="fak fa-phone me-1"></i>
                                                     <span class="text-body"><?= $this->phone_display_label ?: $partner->phone; ?></span>
                                                 </a>
@@ -438,7 +496,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
                                         <?php if ($partner->appointment_link): ?>
                                             <p class="contact-appointment mb-2">
-                                                <a href="<?= $partner->appointment_link; ?>" class="text-nowrap">
+                                                <a id="contact_appointment_text_<?= $contactIds[$index]; ?>" href="<?= $partner->appointment_link; ?>" class="contact_appointment text-nowrap">
                                                     <i style="width: 20px;" class="fak fa-calendar me-1"></i>
                                                     <span class="text-body text-decoration-underline"><?= $appointmentLabel; ?></span>
                                                 </a>
@@ -454,9 +512,9 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
 
                                         <?php if ($partner->linkedin_link): ?>
                                             <p class="contact-linkedin mb-2">
-                                                <a href="<?= $partner->linkedin_link; ?>" target="_blank" rel="noopener" class="text-nowrap">
+                                                <a id="contact_linkedin_text_<?= $contactIds[$index]; ?>" href="<?= $partner->linkedin_link; ?>" target="_blank" rel="noopener" class="contact_linkedin text-nowrap">
                                                     <i style="width: 20px;  font-size: 1.25rem;" class="fak fa-linkedin me-1"></i>
-                                                    <span class="text-body text-decoration-underline">LinkedIn Profil</span>
+                                                    <span class="text-body text-decoration-underline"><?= $linkedinLabel; ?></span>
                                                 </a>
                                             </p>
                                         <?php endif; ?>
@@ -657,6 +715,7 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                     return false;
                 });
             }
+            
 
             // Filter Button Logic
             const filterButtons = document.querySelectorAll('.rsce-ansprechpartner .filter-btn');

@@ -65,7 +65,7 @@ $jsAutoplayTime = intval($this->autoplay_time ?: 5000);
                                         <div class="slide-content-wrapper">
                                             <?php if ($item->slide_image): ?>
                                                 <div class="slide-image mb-3">
-                                                    <?= ImageHelper::generateImageHTML($item->slide_image, strip_tags($item->slide_headline), null, $item->slide_image_size, null, true, true, false); ?>
+                                                    <?= ImageHelper::generateImageHTML($item->slide_image, strip_tags($item->slide_headline), null, $item->slide_image_size, null, true, true, !$item->slide_image_no_lazy); ?>
                                                 </div>
                                             <?php endif; ?>
 

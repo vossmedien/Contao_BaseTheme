@@ -21,6 +21,53 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Navigation Button Toggle (Accessibility)
+document.addEventListener('DOMContentLoaded', function () {
+    // Desktop Navigation Buttons
+    const navButtons = document.querySelectorAll('.nav-button[aria-expanded]');
+    navButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const expanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', !expanded);
+            
+            // Toggle der level_2-wrapper Sichtbarkeit
+            const wrapper = this.nextElementSibling;
+            if (wrapper && wrapper.classList.contains('level_2-wrapper')) {
+                wrapper.classList.toggle('show');
+            }
+        });
+        
+        // Escape-Taste zum Schließen
+        button.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && this.getAttribute('aria-expanded') === 'true') {
+                this.setAttribute('aria-expanded', 'false');
+                const wrapper = this.nextElementSibling;
+                if (wrapper && wrapper.classList.contains('level_2-wrapper')) {
+                    wrapper.classList.remove('show');
+                }
+                this.focus();
+            }
+        });
+    });
+    
+    // Mobile Navigation Toggle Buttons
+    const mobileNavToggles = document.querySelectorAll('.nav-toggle[aria-expanded]');
+    mobileNavToggles.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const expanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', !expanded);
+            
+            const submenuId = this.getAttribute('aria-controls');
+            const submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.toggle('show');
+            }
+        });
+    });
+});
+
 // Header Scrolling Class (is-scrolling & is-scrolling-up)
 document.addEventListener('DOMContentLoaded', function () {
     const header = document.querySelector('header');
@@ -107,10 +154,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const generateNavList = (listElement) => {
         if (!listElement || headings.length === 0) {
-             // Hide "Direkt zu:" if no headings or list element
+             // Hide entire articleNav if no headings or list element
             if(articleNavContainer) {
-                const direktZuHeading = articleNavContainer.querySelector('strong'); 
-                if(direktZuHeading) direktZuHeading.style.display = 'none';
+                articleNavContainer.style.display = 'none';
             }
             return;
         }
@@ -139,10 +185,9 @@ document.addEventListener('DOMContentLoaded', function () {
             listElement.appendChild(li);
         });
 
-        // Show "Direkt zu:" again
+        // Show articleNav again when headings are available
         if(articleNavContainer) {
-            const direktZuHeading = articleNavContainer.querySelector('strong');
-            if(direktZuHeading) direktZuHeading.style.display = '';
+            articleNavContainer.style.display = '';
         }
 
         // Attach scroll listeners
@@ -161,6 +206,24 @@ document.addEventListener('DOMContentLoaded', function () {
     let isMobileLayoutActive = false;
 
     function createStoerer130_1() {
+        // Größen vom bestehenden Störer ableiten
+        let desktopIconSize = '30px'; // Fallback
+        let mobileIconSize = '30px';  // Fallback
+        
+        if (existingStoerer130_0) {
+            // Desktop-Größe vom bestehenden SVG (d-none d-md-block)
+            const desktopSvg = existingStoerer130_0.querySelector('.stoerer-trigger svg.d-none.d-md-block');
+            if (desktopSvg && desktopSvg.style.width) {
+                desktopIconSize = desktopSvg.style.width;
+            }
+            
+            // Mobile-Größe vom bestehenden SVG (d-block d-md-none)
+            const mobileSvg = existingStoerer130_0.querySelector('.stoerer-trigger svg.d-block.d-md-none');
+            if (mobileSvg && mobileSvg.style.width) {
+                mobileIconSize = mobileSvg.style.width;
+            }
+        }
+
         const newStoerer = document.createElement('div');
         newStoerer.id = 'stoerer-130-1';
         newStoerer.className = 'ce--stoerer is-expandable is-flush-right article-info-nav-stoerer';
@@ -169,11 +232,16 @@ document.addEventListener('DOMContentLoaded', function () {
         newStoerer.style.zIndex = '1';
 
         newStoerer.innerHTML = `
-          <div class="stoerer-inner-wrapper animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
+          <div class="stoerer-inner-wrapper" data-animation="animate__fadeIn">
             <div class="stoerer-trigger">
-                 <svg class="svg-image" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  version="1.1" id="Capa_1" width="40px" height="40px" viewBox="0 0 416.979 416.979" xml:space="preserve">
+                 <svg role="img" class="svg-image d-none d-md-block" style="width: ${desktopIconSize};" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" width="32" height="32" viewBox="0 0 416.979 416.979" xml:space="preserve">
                      <g>
-                     	<path d="M356.004,61.156c-81.37-81.47-213.377-81.551-294.848-0.182c-81.47,81.371-81.552,213.379-0.181,294.85   c81.369,81.47,213.378,81.551,294.849,0.181C437.293,274.636,437.375,142.626,356.004,61.156z M237.6,340.786   c0,3.217-2.607,5.822-5.822,5.822h-46.576c-3.215,0-5.822-2.605-5.822-5.822V167.885c0-3.217,2.607-5.822,5.822-5.822h46.576   c3.215,0,5.822,2.604,5.822,5.822V340.786z M208.49,137.901c-18.618,0-33.766-15.146-33.766-33.765   c0-18.617,15.147-33.766,33.766-33.766c18.619,0,33.766,15.148,33.766,33.766C242.256,122.755,227.107,137.901,208.49,137.901z"/>
+                     	<path d="M356.004,61.156c-81.37-81.47-213.377-81.551-294.848-0.182c-81.47,81.371-81.552,213.379-0.181,294.85   c81.369,81.47,213.378,81.551,294.849,0.181C437.293,274.636,437.375,142.626,356.004,61.156z M237.6,340.786   c0,3.217-2.607,5.822-5.822,5.822h-46.576c-3.215,0-5.822-2.605-5.822-5.822V167.885c0-3.217,2.607-5.822,5.822-5.822h46.576   c3.215,0,5.822,2.604,5.822,5.822V340.786z M208.49,137.901c-18.618,0-33.766-15.146-33.766-33.765   c0-18.617,15.147-33.766,33.766-33.766c18.619,0,33.766,15.148,33.766,33.766C242.256,122.755,227.107,137.901,208.49,137.901z" fill="#F3F3F3"/>
+                     </g>
+                 </svg>
+                 <svg role="img" class="svg-image d-block d-md-none" style="width: ${mobileIconSize};" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" width="32" height="32" viewBox="0 0 416.979 416.979" xml:space="preserve">
+                     <g>
+                     	<path d="M356.004,61.156c-81.37-81.47-213.377-81.551-294.848-0.182c-81.47,81.371-81.552,213.379-0.181,294.85   c81.369,81.47,213.378,81.551,294.849,0.181C437.293,274.636,437.375,142.626,356.004,61.156z M237.6,340.786   c0,3.217-2.607,5.822-5.822,5.822h-46.576c-3.215,0-5.822-2.605-5.822-5.822V167.885c0-3.217,2.607-5.822,5.822-5.822h46.576   c3.215,0,5.822,2.604,5.822,5.822V340.786z M208.49,137.901c-18.618,0-33.766-15.146-33.766-33.765   c0-18.617,15.147-33.766,33.766-33.766c18.619,0,33.766,15.148,33.766,33.766C242.256,122.755,227.107,137.901,208.49,137.901z" fill="#F3F3F3"/>
                      </g>
                  </svg> <!-- Info-Icon -->
             </div>
@@ -278,9 +346,8 @@ document.addEventListener('DOMContentLoaded', function () {
              document.dispatchEvent(new CustomEvent('articleNavGenerated'));
          }
     } else if (articleNavContainer) {
-        // Hide "Direkt zu:" if no headings found initially
-        const direktZuHeading = articleNavContainer.querySelector('strong');
-        if(direktZuHeading) direktZuHeading.style.display = 'none';
+        // Hide entire articleNav if no headings found initially
+        articleNavContainer.style.display = 'none';
     }
 
     // Add listener for Störer logic if relevant elements exist
@@ -370,7 +437,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Erstelle oder finde den Scroll-to-Top Button
     let scrollTopBtn = document.querySelector('.BodyScrollToTop');
-    let progressThrottled = false;
 
     if (!scrollTopBtn) {
         // Button erstellen
@@ -426,20 +492,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Update beim Scrollen mit Throttling
-    window.addEventListener('scroll', function () {
-        if (!progressThrottled) {
-            updateScrollProgress();
-            progressThrottled = true;
-            setTimeout(() => {
-                progressThrottled = false;
-            }, 100); // Gleiche Throttling-Rate wie Header
+    // Update beim Scrollen mit requestAnimationFrame für smoothe Animation
+    let ticking = false;
+    
+    function requestTick() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateScrollProgress);
+            ticking = true;
         }
+    }
+    
+    window.addEventListener('scroll', function () {
+        requestTick();
+        ticking = false;
     });
 });
 
 // Consent Management Form Handling (AGB Toggle & HubSpot Submit Trigger)
 document.addEventListener('DOMContentLoaded', function () {
+    // Konstante zum temporären Deaktivieren des CMP Toggles
+    const CMP_TOGGLING_ENABLED = false; // true = CMP aktiv, false = CMP deaktiviert (normale AGB-Checkbox)
+    
+    // Konstante zum Steuern der AGB Notice Anzeige
+    const SHOW_AGB_NOTICE = false; // true = Notice wird bei Consent angezeigt, false = Notice immer ausgeblendet
+    
     document.querySelectorAll('.ce_form').forEach(formContainer => {
         const form = formContainer.querySelector('form');
         if (!form) return;
@@ -486,8 +562,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (agbHiddenInput && agbCheckbox) {
                     agbHiddenInput.value = agbCheckbox.value;
                 }
-                agbNotice.classList.remove('d-none');
-                agbNotice.classList.add('d-block');
+                
+                // AGB Notice nur anzeigen wenn SHOW_AGB_NOTICE aktiviert ist
+                if (SHOW_AGB_NOTICE) {
+                    agbNotice.classList.remove('d-none');
+                    agbNotice.classList.add('d-block');
+                } else {
+                    agbNotice.classList.remove('d-block');
+                    agbNotice.classList.add('d-none');
+                }
             } else {
                 agbCheckboxContainer.classList.remove('d-none');
                 agbCheckboxContainer.classList.add('d-block', 'mandatory');
@@ -499,6 +582,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (agbHiddenInput) {
                     agbHiddenInput.value = '';
                 }
+                
+                // AGB Notice immer ausblenden wenn kein Consent
                 agbNotice.classList.remove('d-block');
                 agbNotice.classList.add('d-none');
             }
@@ -508,7 +593,8 @@ document.addEventListener('DOMContentLoaded', function () {
             let hasConsent = false;
             let adjustmentNeeded = false;
 
-            if (typeof __cmp === 'function') {
+            // Wenn CMP Toggling deaktiviert ist, immer hasConsent = false verwenden
+            if (CMP_TOGGLING_ENABLED && typeof __cmp === 'function') {
                 try {
                     const cmpData = __cmp('getCMPData');
                     if (cmpData && cmpData.vendorConsents && cmpData.vendorConsents.s10) {
@@ -517,6 +603,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 } catch (e) {
                     hasConsent = false;
                 }
+            } else {
+                // CMP deaktiviert - normales Verhalten (keine automatische Consent-Annahme)
+                hasConsent = false;
             }
 
             adjustmentNeeded = hasConsent !== lastKnownConsentForS10;
@@ -544,7 +633,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function setupInitialConsentListener() {
-            if (typeof __cmp === 'function') {
+            // Wenn CMP Toggling deaktiviert ist, keine Event Listener registrieren
+            if (CMP_TOGGLING_ENABLED && typeof __cmp === 'function') {
                 try {
                     __cmp("addEventListener", ["consent", handleInitialConsent, false], null);
                     return true;
@@ -556,6 +646,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function initializeConsentHandling() {
             cmpCheckCounter++;
+            
+            // Wenn CMP Toggling deaktiviert ist, sofort normales Verhalten aktivieren
+            if (!CMP_TOGGLING_ENABLED) {
+                if (cmpCheckInterval) clearInterval(cmpCheckInterval);
+                if (lastKnownConsentForS10 !== false) {
+                    adjustFormForConsent(false);
+                    lastKnownConsentForS10 = false;
+                }
+                return;
+            }
+            
             if (typeof __cmp === 'function') {
                 if (cmpCheckInterval) clearInterval(cmpCheckInterval);
                 const listenerRegistered = setupInitialConsentListener();
@@ -575,7 +676,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (submitButton) {
             submitButton.addEventListener('click', function () {
-                if (form.checkValidity() && typeof __cmp === 'function') {
+                // Nur wenn CMP Toggling aktiviert ist, CMP Consent setzen
+                if (form.checkValidity() && CMP_TOGGLING_ENABLED && typeof __cmp === 'function') {
                     try {
                         __cmp('setVendorConsent', ['s10', 1]);
                     } catch (e) {
@@ -1104,3 +1206,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+/*
+// Automatische Calendly-Link Verschleierung
+(function() {
+    'use strict';
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Alle Calendly-Links finden
+        const calendlyLinks = document.querySelectorAll('a[href*="calendly.com"]');
+
+        calendlyLinks.forEach(function(link) {
+            // Original URL speichern
+            const originalUrl = link.href;
+
+            // Link "entschärfen"
+            link.href = 'javascript:void(0)';
+            link.removeAttribute('target');
+
+            // Click-Handler hinzufügen
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Direkt zu Calendly weiterleiten (URLs sind jetzt versteckt)
+                window.open(originalUrl, '_blank', 'noopener,noreferrer');
+            });
+        });
+    });
+})();
+ */

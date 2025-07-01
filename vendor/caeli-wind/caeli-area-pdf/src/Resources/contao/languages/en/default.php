@@ -8,51 +8,51 @@ declare(strict_types=1);
 
 // PDF Content - Main Page
 $GLOBALS['TL_LANG']['caeli_area_pdf']['pdf'] = [
-    'document_title' => 'Non-binding Initial Assessment of Your Property',
+    'document_title' => 'Preliminary Site Assessment',
     'document_subject' => 'Land Leasing for Wind Energy',
-    'main_title_1' => 'Non-binding Initial Assessment',
-    'main_title_2' => 'of Your Property',
-    'subtitle' => 'Your first step to successful land leasing for wind energy',
+    'main_title_1' => 'Preliminary Site Assessment',
+    'main_title_2' => '',
+    'subtitle' => 'Your first step toward leasing your land for wind energy',
     'map_placeholder' => 'Map Integration',
-    'property_data_title' => 'Your Property Data',
+    'property_data_title' => 'Your Site Information',
     'municipality' => 'Municipality',
     'district' => 'District',
-    'area_size' => 'Area Size',
+    'area_size' => 'Area size',
     'hectares' => 'ha',
-    'geo_id' => 'Geo ID of the Wind Farm',
+    'geo_id' => 'Site ID',
     'created_for' => 'Created by Caeli Wind for',
     'date_format' => 'm/d/Y - H:i'
 ];
 
 // PDF Content - Results Page
 $GLOBALS['TL_LANG']['caeli_area_pdf']['results'] = [
-    'result_title' => 'Result of the Initial Assessment:',
-    'result_subtitle' => 'Good Conditions with Economic Potential!',
-    'congratulations' => 'Congratulations,',
-    'recommendation' => 'Your location is likely suitable for economic use as a wind energy site. We recommend a detailed analysis by our expert team.',
-    'wind_conditions_title' => 'Wind Conditions',
-    'wind_conditions_text' => 'At the specified location, good wind conditions are present with a wind power density of %s W/m² to %s W/m².',
-    'restrictions_title' => 'Restrictions',
-    'restrictions_text' => 'Potentially up to %s%% of the property area can be used for wind farm development, considering spatial planning restrictions.',
-    'grid_connection_title' => 'Grid Connection',
-    'grid_connection_text' => 'For grid connection to the high-voltage network, between %s m and %s m of line construction is required.',
-    'disclaimer' => 'Note: This assessment is based on rough estimates and does not replace a detailed analysis using precise mapping. This will be done in a personal consultation and through the later provision of your exact property data.',
+    'result_title' => 'Assessment Result:',
+    'result_subtitle' => 'Strong potential for wind energy development',
+    'congratulations' => 'Congratulations!',
+    'recommendation' => 'Our preliminary review suggests your site is well suited for a commercially viable wind energy project. We recommend a more detailed assessment by our expert team.',
+    'wind_conditions_title' => 'Wind conditions',
+    'wind_conditions_text' => 'The specified site shows promising wind conditions, with an estimated wind power density of %s W/m² to %s W/m².',
+    'restrictions_title' => 'Development Potential',
+    'restrictions_text' => 'Taking current spatial planning constraints into account, approximately up to %s%% of the total area is likely usable for wind farm development.',
+    'grid_connection_title' => 'Grid connection',
+    'grid_connection_text' => 'To connect to the high-voltage grid, an estimated line construction of %s to %s metres would be required.',
+    'disclaimer' => 'Please note: This is a non-binding assessment based on preliminary data and does not replace a precise on-site analysis or map-based evaluation. A detailed review will be carried out during a personal consultation and based on your site\'s specific data.',
     'copyright' => '© Caeli Wind GmbH',
     'imprint' => 'Imprint'
 ];
 
 // PDF Content - Steps Page
 $GLOBALS['TL_LANG']['caeli_area_pdf']['steps'] = [
-    'title' => 'What happens next...',
-    'subtitle_1' => 'From non-binding initial assessment to',
-    'subtitle_2' => 'contract completion – 100% free for you!',
-    'step_1_title' => 'Step 1: Personal Consultation & Expert Assessment',
-    'step_1_text' => 'At the specified location, good wind conditions are present with a wind power density of 400 W/m² to 510 W/m². In a virtual consultation appointment, we present our services to you and conduct a more precise evaluation of your property using map marking.',
+    'title' => 'What happens next?',
+    'subtitle_1' => 'From this initial, no-obligation assessment to a signed lease agreement – ',
+    'subtitle_2' => 'at no cost to you.',
+    'step_1_title' => 'Step 1: Personal Consultation & Technical Review',
+    'step_1_text' => 'Your site shows good wind conditions with a power density between 400 W/m² and 510 W/m². We\'ll arrange a virtual meeting to walk you through the results and present a detailed, map-based assessment of your land.',
     'step_2_title' => 'Step 2: Joint Planning & Goal Setting',
-    'step_2_text' => 'You receive the analysis results for your area, necessary information, and binding answers to your questions. Together we clarify the next steps to market your potential wind energy site simply and securely – entirely according to your personal preferences.',
-    'step_3_title' => 'Step 3: Access to the Marketplace & Successful Mediation',
-    'step_3_text' => 'As part of the professional marketing of your property, you receive exclusive access to our online marketplace for wind energy sites. Thanks to the large number of renowned project developers, we find the right partner for your wind farm project together. We accompany you step by step throughout the entire process – from initial consultation to final negotiation.',
-    'property_data_title' => 'Your Property Data'
+    'step_2_text' => 'You\'ll receive a detailed analysis of your land, all relevant information, and clear answers to your questions. Together, we\'ll define the next steps to market your site in a simple, transparent, and secure way – aligned with your preferences.',
+    'step_3_title' => 'Step 3: Access to the Marketplace & Project Matchmaking',
+    'step_3_text' => 'As part of the professional marketing of your property, you will receive exclusive access to our online marketplace for wind energy sites. Thanks to a large number of renowned project developers, we\'ll help you find the right partner for your project – and support you every step of the way, from the first contact to final contract negotiations.',
+    'property_data_title' => 'Your Site Information'
 ];
 
 // API related

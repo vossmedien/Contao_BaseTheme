@@ -5,133 +5,176 @@ use Vsm\VsmHelperTools\Helper\EnvHelper;
 use Contao\StringUtil;
 use Contao\FilesModel;
 
-// Social Media Meta-Tags generieren (nur einmal pro Seite)
-if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
-    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateNewsSocialMeta($this);
+// Social Media Meta-Tags generieren (verbesserte Logik analog zum Headline-Element)
+if (EnvHelper::isFrontend()) {
+    // Verwende extractNewsDataFromTemplate für bessere automatische Erkennung
+    $templateData = SocialMetaHelper::extractNewsDataFromTemplate($this);
+    
+    // Manuelle Überschreibung für spezielle Pressemedien-Felder
+    $manualData = [];
+    
+    // Bild: src hat höchste Priorität, dann multiSRC (erstes Bild aus Galerie)
+    if (!empty($this->src)) {
+        $manualData['image'] = $this->src;
+    } elseif (!empty($this->multiSRC)) {
+        // Erstes Bild aus der Galerie verwenden
+        $galleryImages = StringUtil::deserialize($this->multiSRC, true);
+        if (!empty($galleryImages) && is_array($galleryImages)) {
+            $manualData['image'] = $galleryImages[0];
+        }
+    }
+    
+    // Beschreibung: teaser hat Priorität vor text
+    if (!empty($this->teaser)) {
+        $manualData['description'] = strip_tags($this->teaser);
+    } elseif (!empty($this->text)) {
+        $manualData['description'] = strip_tags($this->text);
+    }
+    
+    // Titel aus headline
+    if (!empty($this->headline)) {
+        $manualData['title'] = $this->headline;
+    }
+    
+    // Autor
+    if (!empty($this->postAuthor)) {
+        $manualData['author'] = $this->postAuthor;
+    }
+    
+    // Merge: Manuelle Daten überschreiben Template-Daten
+    $finalMetaData = array_merge($templateData, array_filter($manualData, function($value) {
+        return !empty($value);
+    }));
+    
+    // News-spezifische Daten setzen
+    $finalMetaData['type'] = 'article';
+    
+    // Daten sammeln (ohne zu generieren)
+    SocialMetaHelper::collectElementData($finalMetaData);
 }
 ?>
-<div class="layout_full block<?= $this->class ?>">
+    <div class="layout_full block<?= $this->class ?>">
 
-    <div class="content--element head-hero ce_rsce_head_hero container-wide">
-        <div class="ce--inner">
-            <div class="breadcrumb-container mb-4 mb-md-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
-                <!-- indexer::stop -->
-                {{insert_module::20}}
-                <!-- indexer::continue -->
-            </div>
-            <div class="row">
-                <div class="col-12 col-xl-10">
-                    <div class="ce--headline hl-h1">
-                        <h1 data-animation="animate__fadeIn">
-                            <?= $this->headline ?>
-                        </h1>
+        <div class="content--element head-hero ce_rsce_head_hero container-wide">
+            <div class="ce--inner">
+                <div class="breadcrumb-container mb-4 mb-md-3 animate__fadeIn animate__animated" data-animation="animate__fadeIn" style="animation-duration: 850ms; animation-delay: 0.1s;">
+                    <!-- indexer::stop -->
+                    {{insert_module::20}}
+                    <!-- indexer::continue -->
+                </div>
+                <div class="row">
+                    <div class="col-12 col-xl-10">
+                        <div class="ce--headline hl-h1 <?php if (!$this->src): ?>mb-gap<?php endif;?>">
+                            <h1 data-animation="animate__fadeIn">
+                                <?= $this->headline ?>
+                            </h1>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="image-section mt-gap" data-animation="animate__fadeIn">
-                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, strip_tags($this->teaser), $this->headline, ["1300", "590", "crop"], null, false); ?>
+                <?php if ($this->src): ?>
+                    <div class="image-section mt-gap" data-animation="animate__fadeIn">
+                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($this->src, strip_tags($this->teaser), $this->headline, ["1300", "590", "crop"], null, false); ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
-    </div>
 
 
-    <div class="container-wide">
+        <div class="container">
 
-        <div class="row g-3 gx-md-5">
-            <div class="col-12 <?php if ($this->multiSRC): ?>col-md-8 <?php endif; ?>">
-                <div class="ps-md-gap">
-                <?php if ($this->hasSubHeadline): ?>
-                    <h2 class="mb-4"><?= $this->subHeadline ?></h2>
-                <?php endif; ?>
+            <div class="row g-3 gx-md-5">
+                <div class="col-12 <?php if ($this->multiSRC): ?>col-md-8 <?php endif; ?>">
+                    <div class="">
+                        <?php if ($this->hasSubHeadline): ?>
+                            <h2 class="mb-4"><?= $this->subHeadline ?></h2>
+                        <?php endif; ?>
 
-                <!--
+                        <!--
                   <?php $this->block('info'); ?>
                     <p class="info"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time> <?= $this->author ?></p>
                   <?php $this->endblock(); ?>
                 -->
 
-                <?php if ($this->hasText): ?>
-                    <?= $this->text ?>
-                <?php else: ?>
-                    <div class="ce_text block">
-                        <?php if (!$this->addBefore): ?>
-                            <?= $this->cspInlineStyles($this->teaser) ?>
+                        <?php if ($this->hasText): ?>
+                            <?= $this->text ?>
+                        <?php else: ?>
+                            <div class="ce_text block">
+                                <?php if (!$this->addBefore): ?>
+                                    <?= $this->cspInlineStyles($this->teaser) ?>
+                                <?php endif; ?>
+
+                                <?php if ($this->addImage): ?>
+                                    <?php $this->insert('image', $this->arrData); ?>
+                                <?php endif; ?>
+
+                                <?php if ($this->addBefore): ?>
+                                    <?= $this->cspInlineStyles($this->teaser) ?>
+                                <?php endif; ?>
+                            </div>
                         <?php endif; ?>
 
-                        <?php if ($this->addImage): ?>
-                            <?php $this->insert('image', $this->arrData); ?>
+                        <?php if ($this->pdfDownload || $this->infographicDownload): ?>
+
+                            <div class="attachments mt-5">
+                                <ul class="list-inline">
+                                    <?php
+                                    if ($this->pdfDownload):
+                                        $pdfFile = FilesModel::findByUuid($this->pdfDownload);
+                                        if ($pdfFile):
+                                            ?>
+                                            <li class="list-inline-item">
+                                                <a href="<?= $pdfFile->path; ?>" target="_blank" class="btn btn-primary" style="--bs-btn-color: var(--bs-body-color-inverse);">PDF-Download</a>
+                                            </li>
+                                        <?php
+                                        endif;
+                                    endif;
+                                    ?>
+                                    <?php
+                                    if ($this->infographicDownload):
+                                        $infographicFile = FilesModel::findByUuid($this->infographicDownload);
+                                        if ($infographicFile):
+                                            ?>
+                                            <li class="list-inline-item">
+                                                <a href="<?= $infographicFile->path; ?>" target="_blank" class="btn btn-primary" style="--bs-btn-color: var(--bs-body-color-inverse);">Infografik-Download</a>
+                                            </li>
+                                        <?php
+                                        endif;
+                                    endif;
+                                    ?>
+                                </ul>
+                            </div>
                         <?php endif; ?>
-
-                        <?php if ($this->addBefore): ?>
-                            <?= $this->cspInlineStyles($this->teaser) ?>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
-
-                <?php if ($this->pdfDownload || $this->infographicDownload): ?>
-
-                    <div class="attachments mt-5">
-                        <ul class="list-inline">
-                            <?php 
-                            if ($this->pdfDownload): 
-                                $pdfFile = FilesModel::findByUuid($this->pdfDownload);
-                                if ($pdfFile): 
-                            ?>
-                                <li class="list-inline-item">
-                                    <a href="<?= $pdfFile->path; ?>" target="_blank" class="btn btn-primary" style="--bs-btn-color: var(--bs-body-color-inverse);">PDF-Download</a>
-                                </li>
-                            <?php 
-                                endif;
-                            endif; 
-                            ?>
-                            <?php 
-                            if ($this->infographicDownload): 
-                                $infographicFile = FilesModel::findByUuid($this->infographicDownload);
-                                if ($infographicFile): 
-                            ?>
-                                <li class="list-inline-item">
-                                    <a href="<?= $infographicFile->path; ?>" target="_blank" class="btn btn-primary" style="--bs-btn-color: var(--bs-body-color-inverse);">Infografik-Download</a>
-                                </li>
-                            <?php 
-                                endif;
-                            endif; 
-                            ?>
-                        </ul>
-                    </div>
-                <?php endif; ?>
-                    </div>
-            </div>
-
-            <?php if ($this->multiSRC): ?>
-                <div class="col-12 col-md-4">
-                    <div class="article-gallery">
-                        <div class="row g-1 g-md-2">
-                            <?php
-                            $galleryImagesUuids = [];
-                            if (!empty($this->multiSRC)) {
-                                // Sicherstellen, dass es sich um einen String handelt, bevor deserialisiert wird
-                                $multiSRCDaten = $this->multiSRC;
-                                if (is_string($multiSRCDaten)) {
-                                    $galleryImagesUuids = StringUtil::deserialize($multiSRCDaten, true);
-                                }
-                            }
-                            ?>
-                            <?php if (!empty($galleryImagesUuids) && is_array($galleryImagesUuids)): ?>
-                                <?php foreach ($galleryImagesUuids as $imageUuid): ?>
-                                    <div class="col-6 col-md-12">
-                                        <figure class="image_container">
-                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($imageUuid, null, $this->headline, ["500", "500", "crop"], '', false, true); ?>
-                                        </figure>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </div>
                     </div>
                 </div>
-            <?php endif; ?>
+
+                <?php if ($this->multiSRC): ?>
+                    <div class="col-12 col-md-4">
+                        <div class="article-gallery">
+                            <div class="row g-1 g-md-2">
+                                <?php
+                                $galleryImagesUuids = [];
+                                if (!empty($this->multiSRC)) {
+                                    // Sicherstellen, dass es sich um einen String handelt, bevor deserialisiert wird
+                                    $multiSRCDaten = $this->multiSRC;
+                                    if (is_string($multiSRCDaten)) {
+                                        $galleryImagesUuids = StringUtil::deserialize($multiSRCDaten, true);
+                                    }
+                                }
+                                ?>
+                                <?php if (!empty($galleryImagesUuids) && is_array($galleryImagesUuids)): ?>
+                                    <?php foreach ($galleryImagesUuids as $imageUuid): ?>
+                                        <div class="col-6 col-md-12">
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($imageUuid, null, $this->headline, ["500", "500", "proportional"], '', false, true); ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
-</div>
 
 <?php
 
@@ -140,6 +183,15 @@ $schemaOrg = $this->getSchemaOrgData();
 if ($this->hasText) {
     $schemaOrg['text'] = $this->rawHtmlToPlainText($this->text);
 }
+
+// Author überschreiben wenn postAuthor vorhanden ist
+if ($this->postAuthor) {
+    $schemaOrg['author'] = [
+        '@type' => 'Person',
+        'name' => $this->postAuthor
+    ];
+}
+
 
 $this->addSchemaOrg($schemaOrg);
 

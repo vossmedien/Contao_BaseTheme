@@ -44,7 +44,7 @@ $config = [
             'inputType' => 'fileTree',
             'eval' => [
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg',
+                'extensions' => Contao\Config::get('validImageTypes'),
                 'fieldType' => 'radio',
                 'tl_class' => 'clr',
             ],
@@ -88,16 +88,22 @@ $config = [
             'options' => GlobalElementConfig::getAnimations(),
             'eval' => ['chosen' => 'true', 'tl_class' => 'w50'],
         ],
-        'image' => [
-            'label' => ['Bild', 'Wählen Sie ein Bild aus'],
+        'image' => array(
+            'label' => array('Bild links', ''),
             'inputType' => 'fileTree',
-            'eval' => [
-                'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg',
+            'eval' => array(
+                'multiple' => false,
                 'fieldType' => 'radio',
-                'tl_class' => 'clr',
-            ],
-        ],
+                'filesOnly' => true,
+                'extensions' => Contao\Config::get('validImageTypes'),
+                'tl_class' => 'w50',
+            ),
+        ),
+        'image_no_lazy' => array(
+            'label' => array('Bild links ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das linke Bild'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50'),
+        ),
         'size' => [
             'label' => ['Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'],
             'inputType' => 'imageSize',

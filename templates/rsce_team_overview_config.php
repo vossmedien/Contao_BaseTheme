@@ -65,15 +65,20 @@ $config = array(
                     'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
                 ),
                 'image' => array(
-                    'label' => array('Bild', ''),
+                    'label' => array('Profilbild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
-                        'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,gif,svg',
+                        'multiple' => false,
                         'fieldType' => 'radio',
-                        'mandatory' => true,
-                        'tl_class' => 'clr'
+                        'filesOnly' => true,
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
                     ),
+                ),
+                'image_no_lazy' => array(
+                    'label' => array('Profilbild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Profilbild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
             ),
         ),

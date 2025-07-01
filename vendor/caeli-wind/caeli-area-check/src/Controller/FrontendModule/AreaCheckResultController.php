@@ -30,72 +30,40 @@ class AreaCheckResultController extends AbstractFrontendModuleController
         private readonly ContaoFramework $framework,
         private readonly LoggerInterface $logger
     ) {
-        $this->api_url = getenv('CAELI_INFRA_API_URL') ?: "https://infra.caeli-wind.de/api/";
-        $this->api_user = getenv('CAELI_INFRA_API_USERNAME') ?: "website@caeli-wind.de";
-        $this->api_pass = getenv('CAELI_INFRA_API_PASSWORD') ?: "d&*D)xm.??s3>vEZ";
+        $this->api_url = getenv('CAELI_INFRA_API_URL') ?: "";
+        $this->api_user = getenv('CAELI_INFRA_API_USERNAME') ?: "";
+        $this->api_pass = getenv('CAELI_INFRA_API_PASSWORD') ?: "";
     }
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
-        $this->logger->info('[AreaCheckResultController] === DEBUGGING START ===');
-        
         // Contao Sprachdatei laden - SOFORT am Anfang
         System::loadLanguageFile('default');
         
         // Übersetzungen aus Contao-Sprachdateien verwenden
         $translations = $GLOBALS['TL_LANG']['caeli_area_check'] ?? [];
         $template->translations = $translations;
-        
-        // Alle URL-Parameter loggen
-        $allParams = $request->query->all();
-        $this->logger->info('[AreaCheckResultController] Alle URL-Parameter: ' . json_encode($allParams));
 
         // Die Check-ID aus dem URL-Parameter abrufen (kann parkid oder DB-ID sein)
         $framework = $this->framework;
         $framework->initialize();
         $checkid = $framework->getAdapter(Input::class)->get('checkid') ?: $framework->getAdapter(Input::class)->get('parkid'); // Fallback für alte URLs
         
-        $this->logger->info('[AreaCheckResultController] Gefundene checkid: ' . var_export($checkid, true));
-        
-        // Prüfe auch direkt über REQUEST_URI
-        $requestUri = $_SERVER['REQUEST_URI'] ?? 'nicht verfügbar';
-        $this->logger->info('[AreaCheckResultController] REQUEST_URI: ' . $requestUri);
-        
         $template->checkid = $checkid;
         $template->mapPage = $model->jumpTo ? $framework->getAdapter(PageModel::class)->findById($model->jumpTo) : null;
         
         if (!$checkid || $checkid === '0') {
-            $this->logger->warning('[AreaCheckResultController] Keine oder ungültige checkid gefunden: ' . var_export($checkid, true));
             $template->error = 'Keine Check-ID gefunden. Bitte führen Sie zunächst eine Flächenprüfung durch.';
             return $template->getResponse();
         }
         
         try {
-            $this->logger->info('[AreaCheckResultController] Verarbeite checkid: ' . $checkid . ' (is_numeric: ' . (is_numeric($checkid) ? 'ja' : 'nein') . ')');
-            
-            // Erst alle Einträge in der Tabelle loggen für Debugging
-            $allEntries = Database::getInstance()
-                ->prepare("SELECT id, park_id, status, tstamp FROM tl_flaechencheck ORDER BY tstamp DESC LIMIT 10")
-                ->execute();
-            
-            $entries = [];
-            while ($allEntries->next()) {
-                $entries[] = [
-                    'id' => $allEntries->id,
-                    'park_id' => $allEntries->park_id,
-                    'status' => $allEntries->status,
-                    'tstamp' => $allEntries->tstamp,
-                    'time' => date('Y-m-d H:i:s', $allEntries->tstamp)
-                ];
-            }
-            $this->logger->info('[AreaCheckResultController] Letzte 10 DB-Einträge: ' . json_encode($entries));
             
             // Zuerst in der Datenbank suchen - entweder über park_id, UUID oder ID (Fallback)
             $dbResult = null;
             
             // 1. Versuch: park_id (für erfolgreiche Parks) - ZUERST prüfen!
             if (!is_numeric($checkid)) {
-                $this->logger->info('[AreaCheckResultController] Suche nach park_id: ' . $checkid);
                 $dbResult = Database::getInstance()
                     ->prepare("SELECT * FROM tl_flaechencheck WHERE park_id = ? ORDER BY tstamp DESC LIMIT 1")
                     ->execute($checkid);
@@ -104,7 +72,6 @@ class AreaCheckResultController extends AbstractFrontendModuleController
                 if ((!$dbResult || $dbResult->numRows === 0) && 
                     (preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i', $checkid) || 
                      preg_match('/^fc-\d+-[a-f0-9]{16}$/', $checkid))) {
-                    $this->logger->info('[AreaCheckResultController] park_id nicht gefunden, versuche UUID: ' . $checkid);
                     $dbResult = Database::getInstance()
                         ->prepare("SELECT * FROM tl_flaechencheck WHERE uuid = ?")
                         ->execute($checkid);
@@ -112,39 +79,26 @@ class AreaCheckResultController extends AbstractFrontendModuleController
             }
             // 2. Fallback: DB-ID (für alte fehlgeschlagene Parks)
             else {
-                $this->logger->info('[AreaCheckResultController] Fallback: Suche nach DB-ID: ' . $checkid);
                 $dbResult = Database::getInstance()
                     ->prepare("SELECT * FROM tl_flaechencheck WHERE id = ?")
                     ->execute($checkid);
             }
             
             if (!$dbResult || $dbResult->numRows === 0) {
-                $this->logger->error('[AreaCheckResultController] KEIN EINTRAG GEFUNDEN für checkid: ' . $checkid);
-                $this->logger->error('[AreaCheckResultController] Gefunden ' . ($dbResult ? $dbResult->numRows : 'NULL') . ' Zeilen');
+                // WARNING statt ERROR - oft sind das Bots/Tests mit ungültigen URLs
+                $this->logger->warning('[AreaCheckResultController] Ungültige checkid aufgerufen: ' . $checkid . ' (möglicherweise Bot/Test/alter Link)');
                 
-                // Auch nach ähnlichen Einträgen suchen
-                $similarEntries = Database::getInstance()
-                    ->prepare("SELECT id, park_id, status FROM tl_flaechencheck WHERE park_id LIKE ? OR id = ? ORDER BY tstamp DESC LIMIT 5")
-                    ->execute('%' . $checkid . '%', intval($checkid));
-                
-                $similar = [];
-                while ($similarEntries->next()) {
-                    $similar[] = [
-                        'id' => $similarEntries->id,
-                        'park_id' => $similarEntries->park_id,
-                        'status' => $similarEntries->status
-                    ];
+                // Nur bei DEBUG-Level zusätzliche Infos loggen
+                if ($this->logger instanceof \Psr\Log\LoggerInterface) {
+                    $this->logger->debug('[AreaCheckResultController] Gefunden ' . ($dbResult ? $dbResult->numRows : 'NULL') . ' Zeilen für checkid: ' . $checkid);
                 }
-                $this->logger->info('[AreaCheckResultController] Ähnliche Einträge: ' . json_encode($similar));
                 
-                $template->error = 'Check-Eintrag für ID ' . $checkid . ' nicht gefunden.';
+                $template->error = 'Diese Flächencheck-ID ist ungültig oder abgelaufen. Bitte führen Sie einen neuen Flächencheck durch.';
                 return $template->getResponse();
             }
             
             $checkData = $dbResult->fetchAssoc();
             $isSuccess = $checkData['status'] === 'success';
-            
-            $this->logger->debug('[AreaCheckResultController] Gefundene Daten: status=' . $checkData['status'] . ', park_id=' . $checkData['park_id'] . ', isSuccess=' . ($isSuccess ? 'true' : 'false'));
             
             // Template-Variablen setzen
             $template->checkData = $checkData;
@@ -157,7 +111,6 @@ class AreaCheckResultController extends AbstractFrontendModuleController
                 $parkData = json_decode($checkData['park_rating'], true);
                 if ($parkData) {
                     $template->rating = (object) $parkData;
-                    $this->logger->debug('[AreaCheckResultController] Rating-Daten aus DB für checkid: ' . $checkid . ' (status: ' . $checkData['status'] . ')');
                 } else {
                     // Fallback auf API falls JSON decode fehlschlägt
                     if ($checkData['park_id']) {
@@ -168,7 +121,6 @@ class AreaCheckResultController extends AbstractFrontendModuleController
                 // Fehlgeschlagener Park ohne Rating-Daten
                 $template->rating = null;
                 $template->errorMessage = $checkData['error_message'] ?? 'Unbekannter Fehler';
-                $this->logger->debug('[AreaCheckResultController] Fehlgeschlagener Park ohne Rating für checkid: ' . $checkid . ', Grund: ' . $template->errorMessage);
             }
             
         } catch (\Throwable $e) {

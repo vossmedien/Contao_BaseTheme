@@ -41,8 +41,13 @@ $config = array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg,tif,webp',
+                'extensions' => Contao\Config::get('validImageTypes'),
             ),
+        ),
+        'image_no_lazy' => array(
+            'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für dieses Bild (z.B. für Above-the-fold Bilder)'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50'),
         ),
         'size' => array(
             'label' => array('Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'),

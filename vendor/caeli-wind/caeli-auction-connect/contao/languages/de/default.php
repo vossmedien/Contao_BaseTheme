@@ -46,6 +46,7 @@ $GLOBALS['TL_LANG']['tl_module']['filter_landkreis'] = ['Nach Landkreis filtern'
 $GLOBALS['TL_LANG']['tl_module']['filter_size'] = ['Nach Flächengröße filtern', 'Zeigt einen Filter für die Flächengröße an'];
 $GLOBALS['TL_LANG']['tl_module']['filter_leistung'] = ['Nach Leistung filtern', 'Zeigt einen Filter für die Leistung an'];
 $GLOBALS['TL_LANG']['tl_module']['auctionItemTemplate'] = ['Template für Auktions-Eintrag', 'Wählen Sie hier das Template aus, das für die Darstellung jedes einzelnen Auktionseintrags in der Liste verwendet werden soll.'];
+$GLOBALS['TL_LANG']['tl_module']['perPageMobile'] = ['Einträge pro Seite (Mobile)', 'Anzahl der Auktionen pro Seite auf mobilen Geräten. Bei 0 wird der Desktop-Wert verwendet.'];
 
 /**
  * Misc

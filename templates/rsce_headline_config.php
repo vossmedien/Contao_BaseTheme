@@ -43,9 +43,17 @@ $config = array(
                 'multiple' => false,
                 'fieldType' => 'radio', // Wichtig für einzelne Auswahl
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg,webp',
+                'extensions' => Contao\Config::get('validImageTypes'),
                 'tl_class' => 'clr'
             ),
+            'dependsOn' => array(
+                'field' => 'add_header_image',
+            ),
+        ),
+        'header_image_no_lazy' => array(
+            'label' => array('Kopfbild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Kopfbild'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50'),
             'dependsOn' => array(
                 'field' => 'add_header_image',
             ),
@@ -232,7 +240,7 @@ $config = array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg,webp',
+                'extensions' => Contao\Config::get('validImageTypes'),
                 'tl_class' => 'clr'
             ),
             'dependsOn' => array(
@@ -413,7 +421,7 @@ $config = array(
                 'files' => true,
                 'mandatory' => false,
                 'isGallery' => true,
-                'extensions' => 'jpg,jpeg,png,svg,webp',
+                'extensions' => Contao\Config::get('validImageTypes'),
             ),
         ),
 
@@ -523,6 +531,23 @@ $config = array(
             ),
             'default' => 'text-lg-end',
             'eval' => array('tl_class' => 'w50 clr'),
+        ),
+
+        'headline_image' => array(
+            'label' => array('Headline-Bild', ''),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => Contao\Config::get('validImageTypes'),
+                'tl_class' => 'w50',
+            ),
+        ),
+        'headline_image_no_lazy' => array(
+            'label' => array('Headline-Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Headline-Bild'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
     ),
