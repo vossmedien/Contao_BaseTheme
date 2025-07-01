@@ -57,6 +57,8 @@ auction_listing:
     countdown_end_prefix: "Auction ends in:"
     countdown_suffix_days: "days"
     preview_button: "Preview"
+    status:
+      open_for_direct_awarding: "Open for direct Awarding"
     details:
       power: "Capacity"
       area_size: "Site Area"

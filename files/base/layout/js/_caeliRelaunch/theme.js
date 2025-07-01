@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   <!-- Placeholder for article info -->
                 </div>
                 <div class="article-nav-content">
-                  <!-- Placeholder for article nav -->
+                  <!-- Placeholder for article nav --> 
                 </div> 
               </div>
             </div>
@@ -751,8 +751,33 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// Open Pachtrechner Modal on Link Click
+// Open Modals via Hash or Link Click
 document.addEventListener('DOMContentLoaded', function() {
+    // Hash-basierte Modal-Öffnung
+    function openModalFromHash() {
+        const hash = window.location.hash;
+        if (hash) {
+            const modalId = hash.substring(1); // # entfernen
+            const modalElement = document.getElementById(modalId);
+            
+            if (modalElement && modalElement.classList.contains('modal')) {
+                try {
+                    const modalInstance = new bootstrap.Modal(modalElement);
+                    modalInstance.show();
+                } catch (e) {
+                    console.warn('Modal konnte nicht geöffnet werden:', modalId, e);
+                }
+            }
+        }
+    }
+
+    // Beim Laden der Seite Hash prüfen
+    openModalFromHash();
+
+    // Bei Hash-Änderung reagieren
+    window.addEventListener('hashchange', openModalFromHash);
+
+    // Bestehende Link-basierte Modal-Öffnung für Pachtrechner (Rückwärtskompatibilität)
     const modalLinks = document.querySelectorAll('a[href$="#pachtrechnerModal"]');
     const modalElement = document.getElementById('pachtrechnerModal');
 
@@ -766,6 +791,39 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Generische Link-basierte Modal-Öffnung für alle Modals
+    const allModalLinks = document.querySelectorAll('a[href^="#"]');
+    allModalLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && href.length > 1) {
+            const targetId = href.substring(1);
+            const targetModal = document.getElementById(targetId);
+            
+            if (targetModal && targetModal.classList.contains('modal')) {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    try {
+                        const modalInstance = new bootstrap.Modal(targetModal);
+                        modalInstance.show();
+                        // Hash zur URL hinzufügen ohne Scroll
+                        history.pushState(null, null, href);
+                    } catch (e) {
+                        console.warn('Modal konnte nicht geöffnet werden:', targetId, e);
+                    }
+                });
+            }
+        }
+    });
+
+    // Hash entfernen wenn Modal geschlossen wird
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('hidden.bs.modal', function() {
+            if (window.location.hash === '#' + modal.id) {
+                history.pushState(null, null, window.location.pathname + window.location.search);
+            }
+        });
+    });
 });
 // Pachtrechner-Funktionalität
 document.addEventListener('DOMContentLoaded', function () {

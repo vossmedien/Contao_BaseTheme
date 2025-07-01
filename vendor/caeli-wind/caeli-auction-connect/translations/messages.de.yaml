@@ -60,6 +60,8 @@ auction_listing:
     countdown_end_prefix: "Auktionsende in"
     countdown_suffix_days: "Tagen"
     preview_button: "Vorschau"
+    status:
+        open_for_direct_awarding: "Offen für Direktvergabe"
     details:
       power: "Leistung"
       area_size: "Flächengröße"

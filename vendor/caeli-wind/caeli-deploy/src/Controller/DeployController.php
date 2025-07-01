@@ -123,6 +123,10 @@ class DeployController extends BackendModule
             if (empty($envConfigForScript['TARGET_EXCLUDES'])) {
                 $envConfigForScript['TARGET_EXCLUDES'] = $this->getEnvConfig('DEPLOY_EXCLUDES', ''); // Fallback auf global
             }
+            $envConfigForScript['TARGET_IGNORE_TABLES'] = $this->getEnvConfig('DEPLOY_' . $selectedEnvironment . '_IGNORE_TABLES');
+            if (empty($envConfigForScript['TARGET_IGNORE_TABLES'])) {
+                $envConfigForScript['TARGET_IGNORE_TABLES'] = $this->getEnvConfig('DEPLOY_IGNORE_TABLES', ''); // Fallback auf global
+            }
 
             // Pfade für Controller/Template-Logik holen
             $targetPath = $envConfigForScript['TARGET_PATH'];

@@ -54,6 +54,10 @@ services:
             $auctionService: '@CaeliWind\CaeliAuctionConnect\Service\AuctionService'
             $logger: '@monolog.logger.contao'
 
+    # DeviceDetectionService explizit definieren
+    CaeliWind\CaeliAuctionConnect\Service\DeviceDetectionService:
+        public: false
+
     # Explizit den AuctionListingController konfigurieren
     CaeliWind\CaeliAuctionConnect\Controller\FrontendModule\AuctionListingController:
         arguments:

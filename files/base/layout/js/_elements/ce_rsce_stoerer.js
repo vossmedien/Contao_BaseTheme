@@ -158,9 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fixedStoererWrappers.forEach(wrapper => {
             const stoerers = Array.from(wrapper.querySelectorAll(':scope > .ce--stoerer.is-expandable'));
             
-            // Debug-Info
-            console.log('Störer Stacking - gefundene Störer:', stoerers.length, stoerers.map(s => ({id: s.id, classes: s.className})));
-            
+
             if (stoerers.length <= 1) {
                 stoerers.forEach(el => {
                     el.style.zIndex = '';

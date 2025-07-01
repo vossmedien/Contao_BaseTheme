@@ -132,13 +132,11 @@ $GLOBALS['TL_LANG']['caeli_area_check']['loading'] = [
         'checking_area' => 'Wir prüfen Ihre Fläche',
         'wind_conditions' => 'Passen die Windgegebenheiten?',
         'restrictions_check' => 'Gibt es Restriktionen?',
-        'grid_connection' => 'Ist ein Netzanschluss gegeben?',
+        'grid_connection' => 'Ist ein Netzanbindung gegeben?',
         'analyzing_potential' => 'Analysiere Windpotential',
-        'checking_nature' => 'Prüfe Naturschutzgebiete',
-        'calculating_economics' => 'Berechne Wirtschaftlichkeit',
+        'checking_nature' => 'Faunistische Erstprüfung',
         'checking_distances' => 'Überprüfe Abstandsregelungen',
-        'analyzing_capacity' => 'Analysiere Netzkapazität',
-        'evaluating_quality' => 'Bewerte Standortqualität'
+        'evaluating_quality' => 'Bewerte Standortqualität',
     ],
     'steps' => [
         'connecting' => 'Verbindung zur API herstellen...',

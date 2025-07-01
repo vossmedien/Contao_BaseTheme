@@ -112,11 +112,45 @@ class SocialMetaHelper
     }
 
     /**
+     * Prüft ob eine Bilddatei ein SVG ist (nicht geeignet für Social Media)
+     */
+    private static function isSvgImage($imageSource): bool
+    {
+        if (empty($imageSource)) {
+            return false;
+        }
+
+        // Prüfe Dateiendung
+        if (is_string($imageSource)) {
+            if (preg_match('/\.svg$/i', $imageSource)) {
+                return true;
+            }
+        }
+
+        // Prüfe über FilesModel wenn UUID
+        try {
+            if ($fileModel = \Contao\FilesModel::findByUuid($imageSource)) {
+                $extension = strtolower(pathinfo($fileModel->path, PATHINFO_EXTENSION));
+                return $extension === 'svg';
+            }
+        } catch (\Exception $e) {
+            // Fehler ignorieren, weitermachen
+        }
+
+        return false;
+    }
+
+    /**
      * Generiert optimiertes Social Media Bild
      */
     private static function generateSocialImage($imageSource, string $type = 'opengraph'): string
     {
         if (empty($imageSource)) {
+            return '';
+        }
+
+        // SVG-Dateien ablehnen - nicht geeignet für Social Media
+        if (self::isSvgImage($imageSource)) {
             return '';
         }
 
@@ -430,6 +464,11 @@ class SocialMetaHelper
      */
     public static function collectElementData(array $data): void
     {
+        // SVG-Bilder entfernen - nicht geeignet für Social Media
+        if (!empty($data['image']) && self::isSvgImage($data['image'])) {
+            $data['image'] = '';
+        }
+
         // Bewertung der Bildqualität: echte Bilder > Fallback
         $imageScore = 0;
         $fallbackPath = self::generateFallbackSocialImage();
@@ -581,6 +620,11 @@ class SocialMetaHelper
             $data['image'] = $templateObject->header_image;
         }
 
+        // SVG-Bilder ablehnen - nicht geeignet für Social Media
+        if (!empty($data['image']) && self::isSvgImage($data['image'])) {
+            $data['image'] = '';
+        }
+
         // Fallback-Bild verwenden wenn kein Bild gefunden wurde
         if (empty($data['image'])) {
             $fallbackImage = self::generateFallbackSocialImage();
@@ -638,8 +682,8 @@ class SocialMetaHelper
             $data['description'] = strip_tags($templateObject->text);
         }
 
-        // Hauptbild der News verwenden
-        if (!empty($templateObject->src)) {
+        // Hauptbild der News verwenden (nur wenn es kein SVG ist)
+        if (!empty($templateObject->src) && !self::isSvgImage($templateObject->src)) {
             $data['image'] = $templateObject->src;
         }
 
@@ -706,9 +750,20 @@ class SocialMetaHelper
             if (is_string($templateObject->multiSRC)) {
                 $galleryImages = \Contao\StringUtil::deserialize($templateObject->multiSRC, true);
                 if (!empty($galleryImages) && is_array($galleryImages)) {
-                    $data['image'] = $galleryImages[0];
+                    // Erstes Nicht-SVG-Bild aus der Galerie finden
+                    foreach ($galleryImages as $galleryImage) {
+                        if (!self::isSvgImage($galleryImage)) {
+                            $data['image'] = $galleryImage;
+                            break;
+                        }
+                    }
                 }
             }
+        }
+
+        // SVG-Bilder ablehnen - nicht geeignet für Social Media
+        if (!empty($data['image']) && self::isSvgImage($data['image'])) {
+            $data['image'] = '';
         }
 
         // Fallback-Bild verwenden wenn kein Bild gefunden wurde

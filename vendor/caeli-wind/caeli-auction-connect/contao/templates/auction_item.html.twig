@@ -17,13 +17,14 @@
                         <a id="auction_image_{{ auction.id }}" href="{{ detailPageUrl }}/{{ auction.id }}" class="auction_image_link">
                             <img src="{{ image_path }}"
                                  alt="{{ 'auction_listing.card.image_alt_prefix'|trans }} {{ auction.id }}" class="auction-image img-fluid">
-
                             {% if raw_data.countDown is defined and raw_data.countDown > 0 %}
                                 {% set days_countdown = (raw_data.countDown / 86400)|round(0, 'ceil') %}
                                 {% if days_countdown > 0 %}
                                     {% set countdown_text = raw_data.status == 'STARTED' ? 'auction_listing.card.countdown_end_prefix' : 'auction_listing.card.countdown_prefix' %}
                                     <span class="badge bg-primary text-secondary countdown-badge">{{ countdown_text|trans }} {{ days_countdown }} {{ 'auction_listing.card.countdown_suffix_days'|trans }}</span>
                                 {% endif %}
+                                {% elseif raw_data.status == "OPEN_FOR_DIRECT_AWARDING" %}
+                                <span class="badge bg-primary text-secondary countdown-badge">{{ 'auction_listing.card.status.open_for_direct_awarding'|trans }}</span>
                             {% endif %}
                             <span class="btn btn-secondary no-button btn-sm preview-btn">{{ 'auction_listing.card.preview_button'|trans }}</span>
                         </a>

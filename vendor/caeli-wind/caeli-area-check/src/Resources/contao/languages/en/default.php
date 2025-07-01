@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 // Loading texts
 $GLOBALS['TL_LANG']['caeli_area_check']['loading']['texts'] = [
-    'checking_area' => 'Analyzing your land area',
+     'checking_area' => 'Analyzing your land area',
     'wind_conditions' => 'Are the wind conditions suitable?',
     'restrictions_check' => 'Are there any planning restrictions?',
     'grid_connection' => 'Evaluating grid connection options',

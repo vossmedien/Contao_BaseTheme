@@ -152,29 +152,29 @@ $this->bodyAttributes = $this
     // --- Social Media Meta-Tags generieren (zentral für alle Seiten) ---
     use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
     use Vsm\VsmHelperTools\Helper\EnvHelper;
-    
+
     if (EnvHelper::isFrontend()) {
         // Fallback-Daten aus Page-Eigenschaften wenn keine Element-Daten gesammelt wurden
         if (SocialMetaHelper::getCollectedElementsCount() === 0) {
             $fallbackData = [];
-            
+
             // Page-Titel verwenden
             if (!empty($this->title)) {
                 $fallbackData['title'] = strip_tags($this->title);
             }
-            
-            // Page-Beschreibung verwenden  
+
+            // Page-Beschreibung verwenden
             if (!empty($this->description)) {
                 $fallbackData['description'] = strip_tags($this->description);
             }
-            
+
             // Page-Type setzen
             $fallbackData['type'] = 'website';
-            
+
             // Fallback-Daten sammeln (Fallback-Bild wird automatisch in collectElementData() gesetzt)
             SocialMetaHelper::collectElementData($fallbackData);
         }
-        
+
         // Social Media Meta-Tags generieren (immer, auch mit Fallback-Daten)
         $metaTagsHTML = SocialMetaHelper::generateSocialMetaTags([]);
         if (!empty($metaTagsHTML)) {
