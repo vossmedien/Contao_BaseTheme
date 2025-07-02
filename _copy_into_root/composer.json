@@ -21,7 +21,9 @@
     "trilobit-gmbh/contao-tiles-bundle": "^2.0",
     "vsm/vsm-helper-tools": "0.1",
     "vsm/vsm-stripe-connect": "0.1",
-    "vsm/vsm-news-event-enhancements": "0.1"
+    "vsm/vsm-news-event-enhancements": "0.1",
+    "vsm/vsm-ab-test": "0.1",
+    "caeli-wind/caeli-deploy": "0.1"
   },
   "extra": {
     "public-dir": "public",
@@ -47,6 +49,14 @@
     {
       "type": "path",
       "url": "vendor/vsm/vsm-news-event-enhancements"
+    },
+    {
+      "type": "path",
+      "url": "vendor/vsm/vsm-ab-test"
+    },
+    {
+      "type": "path",
+      "url": "vendor/caeli-wind/caeli-deploy"
     }
   ],
   "config": {

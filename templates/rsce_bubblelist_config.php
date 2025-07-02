@@ -84,15 +84,20 @@ $config = array(
             'maxItems' => 99,
             'fields' => array(
                 'img' => array(
-                    'label' => array('Bild', ''),
+                    'label' => array('Bild/Icon', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
-                        'tl_class' => 'w50'
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
                     ),
+                ),
+                'img_no_lazy' => array(
+                    'label' => array('Bild/Icon ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild/Icon'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'size' => array(
                     'label' => array('Größe der Bubble (inkl. CSS-Einheit)', 'z.B. 100px oder 8rem. Ist immer quadratisch.'),

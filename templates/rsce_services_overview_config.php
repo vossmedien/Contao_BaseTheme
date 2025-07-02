@@ -105,16 +105,20 @@ $config = array(
                         'extensions' => Contao\Config::get('validImageTypes'),
                         'fieldType' => 'radio',
                         'mandatory' => false,
-                        'tl_class' => 'clr',
-                        // Wichtig für Subpalette
+                        'tl_class' => 'w50',
                     ),
                 ),
-                 'image_animation_type' => array(
-                     'label' => array('Animation des Bildes', ''),
-                     'inputType' => 'select',
-                     'options' => GlobalElementConfig::getAnimations(),
-                     'eval' => array('chosen' => true, 'tl_class' => 'w50 clr')
-                 ),
+                'image_no_lazy' => array(
+                    'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'image_animation_type' => array(
+                    'label' => array('Animation des Bildes', ''),
+                    'inputType' => 'select',
+                    'options' => GlobalElementConfig::getAnimations(),
+                    'eval' => array('chosen' => true, 'tl_class' => 'w50 clr')
+                ),
                 'content_text' => array(
                     'label' => array('Text', 'Optionaler Text im rechten Inhaltsbereich (unterhalb des Bildes).'),
                     'inputType' => 'textarea',
@@ -134,6 +138,22 @@ $config = array(
                     'maxItems' => 20,
                     'eval' => array('tl_class' => 'clr'),
                     'fields' => ButtonHelper::getButtonConfig(),
+                ),
+                'icon' => array(
+                    'label' => array('Icon/Bild', ''),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
+                    ),
+                ),
+                'icon_no_lazy' => array(
+                    'label' => array('Icon/Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Icon/Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
             ),
             'subpalettes' => array(
@@ -162,4 +182,5 @@ $config = array(
 );
 
 // A/B Test Felder hinzufügen
+return RockSolidConfigHelper::addAbTestFields($config);
 return RockSolidConfigHelper::addAbTestFields($config);

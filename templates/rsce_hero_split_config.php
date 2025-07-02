@@ -92,6 +92,11 @@ return [
                         'tl_class' => 'clr'
                     ],
                 ],
+                'image_no_lazy' => [
+                    'label' => ['Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild'],
+                    'inputType' => 'checkbox',
+                    'eval' => ['tl_class' => 'w50'],
+                ],
                 'image_size' => [
                     'label' => ['Bildgröße', 'Optional. Wenn leer, wird Originalbild verwendet.'],
                     'inputType' => 'imageSize',
@@ -213,6 +218,11 @@ return [
                         'mandatory' => true,
                         'tl_class' => 'clr'
                     ],
+                ],
+                'image_no_lazy' => [
+                    'label' => ['Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild'],
+                    'inputType' => 'checkbox',
+                    'eval' => ['tl_class' => 'w50'],
                 ],
                 'image_size' => [
                     'label' => ['Bildgröße', 'Optional. Wenn leer, wird Originalbild verwendet.'],

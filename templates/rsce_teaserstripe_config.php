@@ -151,15 +151,20 @@ $config = array(
         ),
 
         'image_content' => array(
-            'label' => array('Bild', ''),
+            'label' => array('Bild (rechts)', ''),
             'inputType' => 'fileTree',
             'eval' => array(
-                'multiple' => false,
-                'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,webp,svg',
-                'tl_class' => 'clr'
+                'fieldType' => 'radio',
+                'extensions' => Contao\Config::get('validImageTypes'),
+                'tl_class' => 'w50',
             ),
+        ),
+
+        'image_content_no_lazy' => array(
+            'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50'),
         ),
 
         'size_right_image' => array(

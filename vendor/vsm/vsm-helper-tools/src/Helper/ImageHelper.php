@@ -21,11 +21,15 @@ use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeOptions;
 use Contao\CoreBundle\Util\StringUtil as ContaoStringUtil;
 use Symfony\Component\Uid\Uuid;
+use Vsm\VsmHelperTools\Helper\SchemaOrgHelper;
 
 class ImageHelper
 {
     private const DEFAULT_QUALITY = 85;
+    private const LARGE_IMAGE_QUALITY = 75; // Reduzierte Qualität für große Bilder (>1600px)
+    private const RETINA_QUALITY = 70; // Noch geringere Qualität für Retina-Varianten großer Bilder
     private const PNG_COMPRESSION = 6;
+    private const LARGE_IMAGE_THRESHOLD = 1600; // Schwellenwert für "große" Bilder
     private const BREAKPOINTS = [
         ['maxWidth' => 576, 'width' => 576],
         ['maxWidth' => 768, 'width' => 768],
@@ -74,8 +78,39 @@ class ImageHelper
         }
     }
 
+    /**
+     * Bestimmt die optimale Qualität basierend auf der Bildbreite und dem Retina-Faktor
+     */
+    private static function getOptimalQuality(int $width, int $retinaFactor = 1): int
+    {
+        // Berechne die tatsächliche Ausgabebreite
+        $actualWidth = $width * $retinaFactor;
+        
+        // Für sehr große Bilder (über Threshold) reduzierte Qualität verwenden
+        if ($actualWidth > self::LARGE_IMAGE_THRESHOLD) {
+            // Bei Retina-Varianten noch weiter reduzieren
+            if ($retinaFactor >= 2) {
+                return self::RETINA_QUALITY;
+            }
+            return self::LARGE_IMAGE_QUALITY;
+        }
+        
+        // Für normale Größen die Standard-Qualität
+        return self::DEFAULT_QUALITY;
+    }
+
     private static function handleImageFormat(string $imagePath): array
     {
+        // Validierung: Nur wirklich korrupte Pfade abfangen
+        if (!mb_check_encoding($imagePath, 'UTF-8')) {
+            return ['type' => 'unknown', 'path' => $imagePath];
+        }
+        
+        // Prüfe nur auf problematische Kontrollzeichen
+        if (preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $imagePath)) {
+            return ['type' => 'unknown', 'path' => $imagePath];
+        }
+
         // Aus Cache laden, wenn vorhanden
         $cacheKey = md5($imagePath);
         if (isset(self::$imageFormatCache[$cacheKey])) {
@@ -169,37 +204,79 @@ class ImageHelper
         self::$imageFormatCacheSize++;
     }
 
-    private static function handleUnknownFormat($imagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy): string
+    private static function handleUnknownFormat($imagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy, $colorBox = false, $imageUrl = ''): string
     {
-        // SVG direkt ausgeben
+        // SVG direkt ausgeben - mit korrekten Parametern
         if (strtolower(pathinfo($imagePath, PATHINFO_EXTENSION)) === 'svg') {
-            return self::handleSvg($imagePath, $rootDir, $altText, $meta, $headline, [], $class);
+            return self::handleSvg($imagePath, $rootDir, $altText, $meta, $headline, [], $class, $colorBox, $imageUrl, $caption);
         }
 
         $imageSrc = str_replace($rootDir, '', $imagePath);
         $imageSrc = self::encodePath($imageSrc);
 
-        $alt = self::cleanAttribute($altText ?: (!empty($meta['alt']) ? $meta['alt'] : (!empty($headline) ? $headline : '')));
-        $title = self::cleanAttribute(!empty($meta['title']) ? $meta['title'] : (!empty($headline) ? $headline : ''));
+        $metaAlt = (isset($meta['alt']) && !empty(trim($meta['alt']))) ? trim($meta['alt']) : null;
+        $metaTitle = (isset($meta['title']) && !empty(trim($meta['title']))) ? trim($meta['title']) : null;
+        $metaCaption = (isset($meta['caption']) && !empty(trim($meta['caption']))) ? trim($meta['caption']) : null;
+        $metaLink = (isset($meta['link']) && !empty(trim($meta['link']))) ? trim($meta['link']) : null;
+        
+        $alt = self::cleanAttribute($metaAlt ?: $altText ?: $headline ?: '');
+        $title = self::cleanAttribute($metaTitle ?: $headline ?: $caption ?: '');
+        $finalCaption = self::cleanAttribute($metaCaption ?: $caption ?: '');
+        $finalLink = self::cleanAttribute($metaLink ?: $imageUrl ?: '');
+
+        // PageSpeed-Optimierung: Bildabmessungen ermitteln wenn möglich
+        $dimensionAttributes = '';
+        if (file_exists($imagePath) && ($imageInfo = @getimagesize($imagePath)) && is_array($imageInfo)) {
+            $width = (int)$imageInfo[0];
+            $height = (int)$imageInfo[1];
+            if ($width > 0 && $height > 0) {
+                $dimensionAttributes = sprintf(' width="%d" height="%d"', $width, $height);
+            }
+        }
 
         // Picture Tag mit Original-Bild
         $imgTag = '<picture>';
         $imgTag .= sprintf(
-            '<img %ssrc="%s" alt="%s"%s%s%s>',
+            '<img %ssrc="%s" alt="%s"%s%s%s%s>',
             $lazy ? 'data-' : '',
             $imageSrc,
             $alt,
             $class ? ' class="' . ($lazy ? 'lazy ' : '') . htmlspecialchars($class) . '"' : ($lazy ? ' class="lazy"' : ''),
             $title ? ' title="' . htmlspecialchars($title) . '"' : '',
+            $dimensionAttributes,
             $lazy ? ' loading="lazy"' : ''
         );
         $imgTag .= '</picture>';
 
         $finalOutput = '<figure>' . $imgTag;
-        if ($caption) {
-            $finalOutput .= '<figcaption>' . htmlspecialchars($caption) . '</figcaption>';
+        if ($finalCaption) {
+            $finalOutput .= '<figcaption>' . $finalCaption . '</figcaption>';
         }
         $finalOutput .= '</figure>';
+
+        // Link/Lightbox Handling für unbekannte Formate
+        if ($finalLink || $colorBox) {
+            // Für unbekannte Formate: Original-Datei für Lightbox verwenden
+            $lightboxSrc = $colorBox ? $imageSrc : $finalLink;
+            
+            $linkAttributes = [
+                'href' => self::cleanAttribute($lightboxSrc),
+                'title' => $title ?: null,
+                'target' => $finalLink && !$colorBox ? '_blank' : null,
+                'data-gall' => $colorBox ? "group_" . self::cleanAttribute($colorBox) : null,
+                'class' => $colorBox ? "lightbox_" . self::cleanAttribute($colorBox) : null
+            ];
+
+            $linkAttributesString = implode(' ', array_filter(array_map(
+                function ($key, $value) {
+                    return $value !== null ? $key . '="' . $value . '"' : null;
+                },
+                array_keys($linkAttributes),
+                $linkAttributes
+            )));
+
+            $finalOutput = "<a {$linkAttributesString}>{$finalOutput}</a>";
+        }
 
         return $finalOutput;
     }
@@ -207,12 +284,37 @@ class ImageHelper
     private static function convertToJpeg(string $imagePath): ?array
     {
         try {
+            // Validierung: Nur wirklich korrupte Pfade abfangen
+            if (!mb_check_encoding($imagePath, 'UTF-8')) {
+                return null;
+            }
+            
+            // Prüfe nur auf problematische Kontrollzeichen
+            if (preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $imagePath)) {
+                return null;
+            }
+
             $container = self::getContainer();
             $projectDir = $container->getParameter('kernel.project_dir');
             $logger = $container->get('monolog.logger.contao');
 
+            // Existenz-Check ohne Logging - wird bereits vorher geprüft
             if (!file_exists($imagePath)) {
-                $logger->error('Source file does not exist: ' . $imagePath);
+                return null;
+            }
+
+            // Prüfen ob es überhaupt ein unterstütztes Bildformat ist
+            $extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+            $supportedFormats = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'bmp', 'tiff', 'tif'];
+            
+            if (!in_array($extension, $supportedFormats)) {
+                $logger->debug('Bildformat nicht für Konvertierung unterstützt: ' . $extension);
+                return null;
+            }
+
+            // Prüfen ob ImageMagick verfügbar ist
+            if (!extension_loaded('imagick')) {
+                $logger->debug('ImageMagick nicht verfügbar für Konvertierung');
                 return null;
             }
 
@@ -227,47 +329,49 @@ class ImageHelper
             $baseName = pathinfo($imagePath, PATHINFO_FILENAME);
             $targetPath = $targetDir . '/' . $baseName . '_' . uniqid() . '.jpg';
 
-            if (extension_loaded('imagick')) {
-                try {
-                    $image = new \Imagick();
-                    $image->readImage($imagePath);
-                    $image->setImageFormat('jpeg');
-                    $image->setImageCompressionQuality(self::DEFAULT_QUALITY);
-                    $image->writeImage($targetPath);
-                    $image->clear();
-                    $image->destroy();
+            try {
+                $image = new \Imagick();
+                $image->readImage($imagePath);
+                $image->setImageFormat('jpeg');
+                $image->setImageCompressionQuality(self::DEFAULT_QUALITY);
+                $image->writeImage($targetPath);
+                $image->clear();
+                $image->destroy();
 
-                    if (file_exists($targetPath)) {
-                        $logger->info('Successfully converted to: ' . $targetPath);
-                        return [
-                            'path' => $targetPath,
-                            'src' => str_replace($projectDir, '', $targetPath)
-                        ];
-                    }
-                } catch (\ImagickException $e) {
-                    $logger->notice('Conversion failed for ' . $imagePath . ': ' . $e->getMessage());
-                    return null;
+                if (file_exists($targetPath)) {
+                    $logger->info('Successfully converted ' . $extension . ' to JPEG: ' . $targetPath);
+                    return [
+                        'path' => $targetPath,
+                        'src' => str_replace($projectDir, '', $targetPath)
+                    ];
                 }
+            } catch (\ImagickException $e) {
+                $logger->debug('Conversion failed for ' . $imagePath . ': ' . $e->getMessage());
+                return null;
             }
 
             return null;
 
         } catch (\Exception $e) {
             if (isset($logger)) {
-                $logger->error(
+                $logger->debug(
                     'Image conversion exception: ' . $e->getMessage(),
-                    ['file' => $imagePath, 'trace' => $e->getTraceAsString()]
+                    ['file' => $imagePath]
                 );
             }
             return null;
         }
     }
 
-    private static function getResizeOptions($format = null): ResizeOptions
+    private static function getResizeOptions($format = null, int $width = 0, int $retinaFactor = 1): ResizeOptions
     {
         $options = new ResizeOptions();
+        
+        // Dynamische Qualität basierend auf Bildgröße bestimmen
+        $quality = $width > 0 ? self::getOptimalQuality($width, $retinaFactor) : self::DEFAULT_QUALITY;
+        
         $baseOptions = [
-            'quality' => self::DEFAULT_QUALITY,
+            'quality' => $quality,
             'png_compression_level' => self::PNG_COMPRESSION
         ];
 
@@ -276,9 +380,10 @@ class ImageHelper
             if ($format === 'jpeg' || $format === 'jpg') {
                 $baseOptions['format'] = 'jpeg';
             } elseif ($format === 'avif') {
-                // AVIF-spezifische Einstellungen
+                // AVIF-spezifische Einstellungen - aber mit angepasster Qualität
                 $baseOptions['format'] = 'avif';
-                $baseOptions['quality'] = 90;
+                // AVIF ist effizienter, daher können wir eine etwas höhere Qualität verwenden
+                $baseOptions['quality'] = min(95, $quality + 10);
             } else {
                 $baseOptions['format'] = $format;
             }
@@ -345,10 +450,20 @@ class ImageHelper
 
     private static function cleanAttribute($str): string
     {
-        if (empty($str) || is_int($str) || is_bool($str)) {
+        // Null, leere Werte, int, bool und float direkt behandeln
+        if (empty($str) || is_int($str) || is_bool($str) || is_float($str)) {
             return '';
         }
 
+        // Numerische Strings in String umwandeln
+        if (is_numeric($str)) {
+            $str = (string)$str;
+        }
+
+        // Sicherstellen, dass es ein String ist
+        if (!is_string($str)) {
+            return '';
+        }
 
         // Explizit <wbr> in allen Varianten entfernen (vor strip_tags)
         $str = preg_replace('/<wbr\s*\/?>/i', '', $str);
@@ -416,7 +531,29 @@ class ImageHelper
      */
     private static function loadImageMetadata($imageSource, string $currentLanguage): array
     {
-        if ($imageObject = FilesModel::findByUuid($imageSource)) {
+        $imageObject = null;
+        
+
+        
+        // Zuerst versuchen als String-UUID
+        if (is_string($imageSource) && class_exists('Symfony\Component\Uid\Uuid') && \Symfony\Component\Uid\Uuid::isValid($imageSource)) {
+            $imageObject = FilesModel::findByUuid($imageSource);
+        }
+        
+        // Wenn das fehlschlägt, prüfen ob es eine binäre UUID ist (Contao speichert UUIDs als 16-Byte binary)
+        if (!$imageObject && is_string($imageSource) && strlen($imageSource) === 16) {
+            // Könnte eine binäre UUID sein - direkt mit FilesModel versuchen
+            $imageObject = FilesModel::findByUuid($imageSource);
+        }
+        
+        // Falls keine UUID oder kein FilesModel gefunden, versuche als Pfad
+        if (!$imageObject && is_string($imageSource)) {
+            // Pfad normalisieren (führenden Slash entfernen falls vorhanden)
+            $normalizedPath = ltrim($imageSource, '/');
+            $imageObject = FilesModel::findByPath($normalizedPath);
+        }
+
+        if ($imageObject) {
             $imageMeta = StringUtil::deserialize($imageObject->meta, true);
             $meta = [];
 
@@ -424,13 +561,18 @@ class ImageHelper
                 $currentMeta = isset($imageMeta[$currentLanguage]) ? $imageMeta[$currentLanguage] : reset($imageMeta);
                 if (is_array($currentMeta)) {
                     foreach ($currentMeta as $key => $value) {
-                        $meta[$key] = self::cleanAttribute($value);
+                        // Rohe Werte speichern, nicht hier bereits cleanen
+                        if (!empty($value) && is_string($value)) {
+                            $meta[$key] = trim($value);
+                        }
                     }
                 }
             }
             return ['meta' => $meta, 'path' => $imageObject->path];
         }
 
+
+        
         return ['meta' => [], 'path' => $imageSource];
     }
 
@@ -463,8 +605,8 @@ class ImageHelper
                     $config->setMode($mode);
                 }
 
-                $baseWidth = $requestedWidth ?? ($requestedHeight ? (int)round($originalWidth * ($requestedHeight / $originalHeight)) : $originalWidth);
-                $baseHeight = $requestedHeight ?? ($requestedWidth ? (int)round($originalHeight * ($requestedWidth / $originalWidth)) : $originalHeight);
+                $baseWidth = $requestedWidth ?? ($requestedHeight && $originalHeight > 0 ? (int)round($originalWidth * ($requestedHeight / $originalHeight)) : $originalWidth);
+                $baseHeight = $requestedHeight ?? ($requestedWidth && $originalWidth > 0 ? (int)round($originalHeight * ($requestedWidth / $originalWidth)) : $originalHeight);
             } else {
                 $config->setMode("proportional");
             }
@@ -627,7 +769,8 @@ class ImageHelper
         $colorBox = false,
         bool $lazy = true,
         ?string $caption = '',
-        ?string $imageUrl = ''
+        ?string $imageUrl = '',
+        bool $includeSchema = true // Standardmäßig aktiviert für bessere SEO
     ): string
     {
         // Null-Werte in leere Strings umwandeln
@@ -653,98 +796,44 @@ class ImageHelper
         $meta = $imageData['meta'];
         $relativeImagePath = $imageData['path'];
 
-        $absoluteImagePath = $rootDir . '/' . urldecode($relativeImagePath);
-        $baseImagePath = str_replace('\\', '/', urldecode($absoluteImagePath));
+        $absoluteImagePath = $rootDir . '/' . ltrim($relativeImagePath, '/');
 
-// Für file_exists den dekodierten Pfad verwenden
-        if (!file_exists($baseImagePath) ||
-            !($originalImageInfo = @getimagesize($baseImagePath)) ||
-            !is_array($originalImageInfo)) {
-            // return '';
+        // Pfad für Existenz-Check korrekt auflösen
+        if (!file_exists($absoluteImagePath)) {
+            return '';
         }
 
-// NEU:
-        $imageFormat = self::handleImageFormat($baseImagePath);
+        // Bildformat-Prüfung
+        $imageFormat = self::handleImageFormat($absoluteImagePath);
 
         switch ($imageFormat['type']) {
             case 'svg':
-                return self::handleSvg($baseImagePath, $rootDir, $altText, $meta, $headline, $size, $class);
+                return self::handleSvg($absoluteImagePath, $rootDir, $altText, $meta, $headline, $size, $class, $colorBox, $imageUrl, $caption);
             case 'unknown':
-                return self::handleUnknownFormat($baseImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
+                return self::handleUnknownFormat($absoluteImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy, $colorBox, $imageUrl);
             case 'avif':
-                // AVIF-Dateien verarbeiten
-                try {
-                    if (!($imageInfo = @getimagesize($baseImagePath)) || !is_array($imageInfo)) {
-                        $converted = self::convertToJpeg($baseImagePath);
-                        if ($converted) {
-                            $isAvif = false;
-                            $baseImagePath = $converted['path'];
-                            $absoluteImagePath = $converted['path'];
-                        } else {
-                            return self::handleUnknownFormat($baseImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
-                        }
-                    } else {
-                        $isAvif = true;
-                        $baseImagePath = $imageFormat['path'];
-                        $absoluteImagePath = $imageFormat['path'];
-                    }
-                } catch (\Exception $e) {
-                    $logger = self::getContainer()->get('monolog.logger.contao');
-                    $logger->notice('Fehlerhaftes AVIF-Bild gefunden: ' . $baseImagePath . ' - ' . $e->getMessage());
-
-                    $converted = self::convertToJpeg($baseImagePath);
-                    if ($converted) {
-                        $isAvif = false;
-                        $baseImagePath = $converted['path'];
-                        $absoluteImagePath = $converted['path'];
-                    } else {
-                        return self::handleUnknownFormat($baseImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
-                    }
+                // AVIF-Dateien verarbeiten - nur prüfen, ob getimagesize funktioniert
+                if (!($imageInfo = @getimagesize($absoluteImagePath)) || !is_array($imageInfo)) {
+                    // Wenn getimagesize fehlschlägt, als unknown behandeln
+                    return self::handleUnknownFormat($absoluteImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
                 }
+                $isAvif = true;
                 break;
             case 'webp':
-                // WebP-Dateien speziell verarbeiten
-                try {
-                    if (!($imageInfo = @getimagesize($baseImagePath)) || !is_array($imageInfo)) {
-                        $converted = self::convertToJpeg($baseImagePath);
-                        if ($converted) {
-                            $isWebp = false;
-                            $baseImagePath = $converted['path'];
-                            $absoluteImagePath = $converted['path'];
-                        } else {
-                            return self::handleUnknownFormat($baseImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
-                        }
-                    } else {
-                        $isWebp = true;
-                        $baseImagePath = $imageFormat['path'];
-                        $absoluteImagePath = $imageFormat['path'];
-                    }
-                } catch (\Exception $e) {
-                    $logger = self::getContainer()->get('monolog.logger.contao');
-                    $logger->notice('Fehlerhaftes WebP-Bild gefunden: ' . $baseImagePath . ' - ' . $e->getMessage());
-
-                    $converted = self::convertToJpeg($baseImagePath);
-                    if ($converted) {
-                        $isWebp = false;
-                        $baseImagePath = $converted['path'];
-                        $absoluteImagePath = $converted['path'];
-                    } else {
-                        return self::handleUnknownFormat($baseImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
-                    }
+                // WebP-Dateien verarbeiten - nur prüfen, ob getimagesize funktioniert
+                if (!($imageInfo = @getimagesize($absoluteImagePath)) || !is_array($imageInfo)) {
+                    // Wenn getimagesize fehlschlägt, als unknown behandeln
+                    return self::handleUnknownFormat($absoluteImagePath, $rootDir, $altText, $meta, $headline, $class, $caption, $lazy);
                 }
+                $isWebp = true;
                 break;
             default:
                 $isAvif = false;
                 $isWebp = false;
-                $baseImagePath = $imageFormat['path'];
-                $absoluteImagePath = $imageFormat['path'];
         }
 
-
         // Originalbild-Dimensionen prüfen
-        if (!file_exists($baseImagePath) ||
-            !($originalImageInfo = @getimagesize($baseImagePath)) ||
-            !is_array($originalImageInfo)) {
+        if (!($originalImageInfo = @getimagesize($absoluteImagePath)) || !is_array($originalImageInfo)) {
             return '';
         }
 
@@ -762,7 +851,7 @@ class ImageHelper
             $baseImage = self::processImage(
                 $absoluteImagePath,
                 $config,
-                self::getResizeOptions()
+                self::getResizeOptions(null, $baseWidth, 1)
             );
             $baseWidth = $baseWidth ?? $originalWidth;
             $baseHeight = $baseHeight ?? $originalHeight;
@@ -780,6 +869,11 @@ class ImageHelper
 
         $sources = [];
         foreach ($validBreakpoints as $breakpoint) {
+            // Validierung der Breakpoint-Daten
+            if (!isset($breakpoint['width']) || !is_numeric($breakpoint['width']) || (int)$breakpoint['width'] <= 0) {
+                continue;
+            }
+            
             $config = new ResizeConfiguration();
             $width = (int)$breakpoint['width'];
             $mode = $size[2] ?? "proportional";
@@ -789,8 +883,8 @@ class ImageHelper
             }
 
             // Konfiguration für Crop-Mode
-            if ($mode === 'crop' && !empty($size[0]) && !empty($size[1])) {
-                $ratio = $size[1] / $size[0];
+            if ($mode === 'crop' && !empty($size[0]) && !empty($size[1]) && is_numeric($size[0]) && is_numeric($size[1]) && (float)$size[0] > 0) {
+                $ratio = (float)$size[1] / (float)$size[0];
                 $height = (int)round($width * $ratio);
                 $config->setWidth((int)$width);
                 $config->setHeight($height);
@@ -807,14 +901,16 @@ class ImageHelper
                 // Sources für alle Media Queries generieren
                 if ($breakpoint['maxWidth']) {
                     $mediaQuery = "(max-width: {$breakpoint['maxWidth']}px)";
-                    $has3x = $width <= 768 && $width * 3 <= $originalWidth;
-                    $has2x = $width * 2 <= $originalWidth;
+                    
+                    // Optimierung: Keine Retina-Varianten wenn diese zu groß wären
+                    $has3x = ($width * 3) <= 1920 && $width <= 768 && $width * 3 <= $originalWidth;
+                    $has2x = ($width * 2) <= 2048 && $width * 2 <= $originalWidth;
 
                     // AVIF Source (höchste Priorität) - immer versuchen zu konvertieren
                     try {
-                        $tempAvifSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('avif'))['src']);
-                        $tempAvif2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('avif'))['src']) : null;
-                        $tempAvif3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions('avif'))['src']) : null;
+                        $tempAvifSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('avif', $width, 1))['src']);
+                        $tempAvif2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('avif', $width, 2))['src']) : null;
+                        $tempAvif3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions('avif', $width, 3))['src']) : null;
 
                         $sources[] = self::generateSource("image/avif", $tempAvifSrc, $tempAvif2x, $tempAvif3x, $mediaQuery);
                     } catch (\Exception $e) {
@@ -825,9 +921,9 @@ class ImageHelper
                     if (!$isWebp) {
                         // Nur wenn Original NICHT WebP ist
                         try {
-                            $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('webp'))['src']);
-                            $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('webp'))['src']) : null;
-                            $tempWebp3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions('webp'))['src']) : null;
+                            $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('webp', $width, 1))['src']);
+                            $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('webp', $width, 2))['src']) : null;
+                            $tempWebp3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions('webp', $width, 3))['src']) : null;
 
                             $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x, $tempWebp3x, $mediaQuery);
                         } catch (\Exception $e) {
@@ -835,9 +931,9 @@ class ImageHelper
                         }
                     } else {
                         // Original ist bereits WebP - direkt verwenden
-                        $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions())['src']);
-                        $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions())['src']) : null;
-                        $tempWebp3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions())['src']) : null;
+                        $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions(null, $width, 1))['src']);
+                        $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions(null, $width, 2))['src']) : null;
+                        $tempWebp3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions(null, $width, 3))['src']) : null;
 
                         $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x, $tempWebp3x, $mediaQuery);
                     }
@@ -846,12 +942,13 @@ class ImageHelper
 
                 } elseif (!$breakpoint['maxWidth']) {
                     // Fallback ohne Media Query
-                    $has2x = $width * 2 <= $originalWidth;
+                    // Optimierung: Keine Retina-Varianten wenn diese zu groß wären
+                    $has2x = ($width * 2) <= 2048 && $width * 2 <= $originalWidth;
 
                     // AVIF Source (Fallback ohne Media Query)
                     try {
-                        $tempAvifSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('avif'))['src']);
-                        $tempAvif2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('avif'))['src']) : null;
+                        $tempAvifSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('avif', $width, 1))['src']);
+                        $tempAvif2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('avif', $width, 2))['src']) : null;
 
                         $sources[] = self::generateSource("image/avif", $tempAvifSrc, $tempAvif2x);
                     } catch (\Exception $e) {
@@ -861,8 +958,8 @@ class ImageHelper
                     // WebP Source (Universal Fallback da 97%+ Unterstützung)
                     if (!$isWebp) {
                         try {
-                            $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('webp'))['src']);
-                            $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('webp'))['src']) : null;
+                            $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('webp', $width, 1))['src']);
+                            $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('webp', $width, 2))['src']) : null;
 
                             $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x);
                         } catch (\Exception $e) {
@@ -870,8 +967,8 @@ class ImageHelper
                         }
                     } else {
                         // Original ist bereits WebP
-                        $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions())['src']);
-                        $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions())['src']) : null;
+                        $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions(null, $width, 1))['src']);
+                        $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions(null, $width, 2))['src']) : null;
 
                         $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x);
                     }
@@ -891,31 +988,47 @@ class ImageHelper
             $standardConfig->setMode($size[2]);
         }
 
-        $standardImage = self::processImage($absoluteImagePath, $standardConfig, self::getResizeOptions());
+        $standardImage = self::processImage($absoluteImagePath, $standardConfig, self::getResizeOptions(null, $baseWidth, 1));
         $standardSrc = self::encodePath($standardImage['src']);
 
-        // Lightbox Image
+        // Lightbox Image - immer größer als normale Anzeige
         $lightboxImageSrc = $standardSrc;
-        if ($colorBox && ($originalWidth > 1200 || $originalHeight > 1200)) {
+        if ($colorBox) {
             $lightboxConfig = new ResizeConfiguration();
-            $lightboxConfig->setWidth(1200)->setHeight(1200)->setMode('box');
-            try {
-                // Für Lightbox das beste verfügbare Format verwenden
-                $lightboxFormat = null;
-                if (isset($isAvif) && $isAvif) {
-                    $lightboxFormat = 'avif';
-                } elseif (isset($isWebp) && $isWebp) {
-                    $lightboxFormat = 'webp';
-                }
+            
+            // Lightbox-Größe bestimmen: Maximal 1920x1080, aber nicht größer als Original
+            $lightboxMaxWidth = min(1920, $originalWidth);
+            $lightboxMaxHeight = min(1080, $originalHeight);
+            
+            // Nur resizen wenn das Originalbild größer als die normale Anzeige ist
+            // oder wenn eine sinnvolle Lightbox-Größe möglich ist
+            if ($originalWidth > $baseWidth || $originalHeight > $baseHeight || 
+                $lightboxMaxWidth > $baseWidth || $lightboxMaxHeight > $baseHeight) {
+                
+                $lightboxConfig->setWidth($lightboxMaxWidth)->setHeight($lightboxMaxHeight)->setMode('box');
+                
+                try {
+                    // Für Lightbox das beste verfügbare Format verwenden
+                    $lightboxFormat = null;
+                    if (isset($isAvif) && $isAvif) {
+                        $lightboxFormat = 'avif';
+                    } elseif (isset($isWebp) && $isWebp) {
+                        $lightboxFormat = 'webp';
+                    }
 
-                $lightboxImage = self::processImage(
-                    $absoluteImagePath,
-                    $lightboxConfig,
-                    self::getResizeOptions($lightboxFormat)
-                );
-                $lightboxImageSrc = $lightboxImage['src'];
-            } catch (\Exception $e) {
-                // Fallback to original image
+                    $lightboxImage = self::processImage(
+                        $absoluteImagePath,
+                        $lightboxConfig,
+                        self::getResizeOptions($lightboxFormat, $lightboxMaxWidth, 1)
+                    );
+                    $lightboxImageSrc = $lightboxImage['src'];
+                } catch (\Exception $e) {
+                    // Fallback: Original-Bild direkt verwenden
+                    $lightboxImageSrc = self::encodePath(str_replace($rootDir, '', $absoluteImagePath));
+                }
+            } else {
+                // Bei sehr kleinen Originalbildern: Original direkt verwenden
+                $lightboxImageSrc = self::encodePath(str_replace($rootDir, '', $absoluteImagePath));
             }
         }
 
@@ -924,21 +1037,34 @@ class ImageHelper
             ? ($class ? ' class="' . htmlspecialchars($class) . '"' : '')
             : ($class ? ' class="lazy ' . htmlspecialchars($class) . '"' : ' class="lazy"');
 
-        // Attribute vorbereiten
-        $alt = self::cleanAttribute($altText ?: (!empty($meta['alt']) ? $meta['alt'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : ''))));
-        $title = self::cleanAttribute(!empty($meta['title']) ? $meta['title'] : (!empty($headline) ? $headline : (!empty($caption) ? $caption : (!empty($alt) ? $alt : ''))));
-        $finalCaption = self::cleanAttribute($caption ?: (!empty($meta['caption']) ? $meta['caption'] : ''));
-        $finalLink = self::cleanAttribute($imageUrl ?: (!empty($meta['link']) ? $meta['link'] : ''));
+        // Attribute vorbereiten - Meta-Daten haben ABSOLUTE Priorität
+        // Meta-Daten müssen nicht leer sein und als String vorliegen
+        $metaAlt = (isset($meta['alt']) && !empty(trim($meta['alt']))) ? trim($meta['alt']) : null;
+        $metaTitle = (isset($meta['title']) && !empty(trim($meta['title']))) ? trim($meta['title']) : null;
+        $metaCaption = (isset($meta['caption']) && !empty(trim($meta['caption']))) ? trim($meta['caption']) : null;
+        $metaLink = (isset($meta['link']) && !empty(trim($meta['link']))) ? trim($meta['link']) : null;
+
+        $alt = self::cleanAttribute($metaAlt ?: $altText ?: $headline ?: $caption ?: '');
+        $title = self::cleanAttribute($metaTitle ?: $headline ?: $caption ?: $alt ?: '');
+        $finalCaption = self::cleanAttribute($metaCaption ?: $caption ?: '');
+        $finalLink = self::cleanAttribute($metaLink ?: $imageUrl ?: '');
+
+        // PageSpeed-Optimierung: width/height Attribute hinzufügen wenn beide vorhanden
+        $dimensionAttributes = '';
+        if ($baseWidth && $baseHeight && is_numeric($baseWidth) && is_numeric($baseHeight) && $baseWidth > 0 && $baseHeight > 0) {
+            $dimensionAttributes = sprintf(' width="%d" height="%d"', (int)$baseWidth, (int)$baseHeight);
+        }
 
         // Picture Tag zusammenbauen
         $imgTag = '<picture>' . implode("\n", $sources);
 
         $imgTag .= sprintf(
-            '<img %s data-src="%s" alt="%s"%s loading="lazy">',
+            '<img %s data-src="%s" alt="%s"%s%s loading="lazy">',
             $classAttribute,
             self::cleanAttribute($standardSrc),
             $alt,
-            $title ? ' title="' . $title . '"' : ''
+            $title ? ' title="' . $title . '"' : '',
+            $dimensionAttributes
         );
         $imgTag .= '</picture>';
 
@@ -981,6 +1107,89 @@ class ImageHelper
             $finalOutput = str_replace('class=" "', '', $finalOutput);
         }
 
+        // Schema.org hinzufügen wenn aktiviert
+        if ($includeSchema) {
+            try {
+                // Schema.org direkt hier generieren für bessere Integration
+                // Vollständige URL für Schema.org generieren
+                $request = self::getContainer()->get('request_stack')->getCurrentRequest();
+                $baseUrl = '';
+                if ($request) {
+                    $baseUrl = $request->getSchemeAndHttpHost();
+                }
+                
+                $fullImageUrl = $baseUrl . $standardSrc;
+                
+                $schemaData = [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'ImageObject',
+                    'contentUrl' => $fullImageUrl,
+                    'url' => $fullImageUrl
+                ];
+                
+                // Metadaten hinzufügen
+                if (!empty($meta['title']) || !empty($alt)) {
+                    $name = strip_tags($meta['title'] ?? $alt);
+                    // Name sollte kurz sein (max. 60 Zeichen)
+                    if (strlen($name) > 60) {
+                        $name = substr($name, 0, 57) . '...';
+                    }
+                    $schemaData['name'] = $name;
+                }
+                
+                if (!empty($meta['alt']) || !empty($alt)) {
+                    $description = strip_tags($meta['alt'] ?? $alt);
+                    // Description kann länger sein, aber max. 300 Zeichen
+                    if (strlen($description) > 300) {
+                        $description = substr($description, 0, 297) . '...';
+                    }
+                    $schemaData['description'] = $description;
+                }
+                
+                if (!empty($finalCaption)) {
+                    $schemaData['caption'] = strip_tags($finalCaption);
+                }
+                
+                if (!empty($meta['photographer'])) {
+                    $schemaData['creator'] = [
+                        '@type' => 'Person',
+                        'name' => $meta['photographer']
+                    ];
+                }
+                
+                if (!empty($meta['copyright'])) {
+                    $schemaData['copyrightHolder'] = [
+                        '@type' => 'Organization',
+                        'name' => $meta['copyright']
+                    ];
+                }
+                
+                // Bildabmessungen
+                if ($baseWidth && $baseHeight) {
+                    $schemaData['width'] = [
+                        '@type' => 'QuantitativeValue',
+                        'value' => $baseWidth,
+                        'unitCode' => 'PX'
+                    ];
+                    $schemaData['height'] = [
+                        '@type' => 'QuantitativeValue',
+                        'value' => $baseHeight,
+                        'unitCode' => 'PX'
+                    ];
+                }
+                
+                // Repräsentatives Bild markieren
+                $schemaData['representativeOfPage'] = true;
+                
+                $schemaJson = json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $schemaHtml = '<script type="application/ld+json">' . $schemaJson . '</script>';
+                
+                $finalOutput = $schemaHtml . "\n" . $finalOutput;
+            } catch (\Exception $e) {
+                // Schema.org fehlgeschlagen - kein Problem, Bild funktioniert trotzdem
+            }
+        }
+
         return $finalOutput;
     }
 
@@ -1021,30 +1230,79 @@ class ImageHelper
         return '/' . implode('/', $encodedSegments) . '/' . $encodedFileName;
     }
 
-    private static function handleSvg($baseImagePath, $rootDir, $altText, $meta, $headline, $size, $class): string
+    private static function handleSvg($baseImagePath, $rootDir, $altText, $meta, $headline, $size, $class, $colorBox = false, $imageUrl = '', $caption = ''): string
     {
-        $imageSrc = str_replace($rootDir, '', $baseImagePath);
-        $imageSrc = self::encodePath($imageSrc);
+        // Verwende getSvgCode für direkte SVG-Ausgabe (inline SVG - kein Lazy Loading nötig)
+        $relativePath = str_replace($rootDir . '/', '', $baseImagePath);
+        $svgCode = self::getSvgCode($relativePath, $altText, $size, $class);
+        
+        if (empty($svgCode)) {
+            // Fallback zu <img> wenn getSvgCode fehlschlägt (hier könnte Lazy Loading sinnvoll sein)
+            $imageSrc = str_replace($rootDir, '', $baseImagePath);
+            $imageSrc = self::encodePath($imageSrc);
+            $metaAlt = (isset($meta['alt']) && !empty(trim($meta['alt']))) ? trim($meta['alt']) : null;
+            $alt = self::cleanAttribute($metaAlt ?: $altText ?: $headline ?: 'SVG Bild');
+            
+            $style = '';
+            if ($size && is_array($size)) {
+                $width = isset($size[0]) && $size[0] !== '' ? (int)$size[0] : null;
+                // Für SVG-Fallback nur Breite setzen, Höhe sich automatisch ergeben lassen
+                if ($width) $style .= "width: {$width}px; ";
+            }
 
-        $alt = self::cleanAttribute($altText ?: (!empty($meta['alt']) ? $meta['alt'] : (!empty($headline) ? $headline : 'SVG Bild')));
-
-        $style = '';
-        if ($size && is_array($size)) {
-            $width = isset($size[0]) && $size[0] !== '' ? (int)$size[0] : null;
-            $height = isset($size[1]) && $size[1] !== '' ? (int)$size[1] : null;
-            if ($width) $style .= "width: {$width}px; ";
-            if ($height) $style .= "height: {$height}px; ";
+            // Für SVG-Fallback: nur lazy loading wenn das SVG groß/komplex ist
+            $svgCode = sprintf(
+                '<img src="%s" alt="%s" class="%s"%s>',
+                $imageSrc,
+                $alt,
+                htmlspecialchars($class),
+                $style ? ' style="' . htmlspecialchars($style) . '"' : ''
+            );
         }
 
-        $svgTag = sprintf(
-            '<img data-src="%s" alt="%s" class="lazy %s"%s>',
-            $imageSrc,
-            $alt,
-            htmlspecialchars($class),
-            $style ? ' style="' . htmlspecialchars($style) . '"' : ''
-        );
+        // Meta-Daten für Link und Caption verarbeiten
+        $metaCaption = (isset($meta['caption']) && !empty(trim($meta['caption']))) ? trim($meta['caption']) : null;
+        $metaLink = (isset($meta['link']) && !empty(trim($meta['link']))) ? trim($meta['link']) : null;
+        $metaTitle = (isset($meta['title']) && !empty(trim($meta['title']))) ? trim($meta['title']) : null;
+        
+        $finalCaption = self::cleanAttribute($metaCaption ?: $caption ?: '');
+        $finalLink = self::cleanAttribute($metaLink ?: $imageUrl ?: '');
+        $title = self::cleanAttribute($metaTitle ?: $headline ?: $finalCaption ?: $altText ?: '');
+        
+        // Figure Tag erstellen
+        $finalOutput = '<figure>' . $svgCode;
+        
+        if ($finalCaption) {
+            $finalOutput .= '<figcaption>' . $finalCaption . '</figcaption>';
+        }
+        
+        $finalOutput .= '</figure>';
 
-        return '<figure>' . $svgTag . '</figure>';
+        // Link/Lightbox Handling für SVG
+        if ($finalLink || $colorBox) {
+            // Für SVG Lightbox: Immer Original-SVG verwenden (da vektorbasiert und unendlich skalierbar)
+            $lightboxSrc = $colorBox ? self::encodePath(str_replace($rootDir, '', $baseImagePath)) : $finalLink;
+            
+            $linkAttributes = [
+                'href' => self::cleanAttribute($lightboxSrc),
+                'title' => $title ?: null,
+                'target' => $finalLink && !$colorBox ? '_blank' : null,
+                'data-gall' => $colorBox ? "group_" . self::cleanAttribute($colorBox) : null,
+                'class' => $colorBox ? "lightbox_" . self::cleanAttribute($colorBox) : null
+            ];
+
+            $linkAttributesString = implode(' ', array_filter(array_map(
+                function ($key, $value) {
+                    return $value !== null ? $key . '="' . $value . '"' : null;
+                },
+                array_keys($linkAttributes),
+                $linkAttributes
+            )));
+
+            $finalOutput = "<a {$linkAttributesString}>{$finalOutput}</a>";
+        }
+
+        return $finalOutput;
     }
 
     public static function generateImageURL($imageSource, array|string|null $size = null): string
@@ -1053,8 +1311,11 @@ class ImageHelper
         $imageObject = null;
         $absolutePath = null;
         
-        // Prüfen, ob $imageSource eine UUID ist
-        if (Uuid::isValid($imageSource)) {
+
+        
+        // Prüfen, ob $imageSource eine UUID ist (String oder binär)
+        if ((is_string($imageSource) && Uuid::isValid($imageSource)) || 
+            (is_string($imageSource) && strlen($imageSource) === 16)) {
             $imageObject = FilesModel::findByUuid($imageSource);
             if ($imageObject) {
                 $absolutePath = $rootDir . '/' . urldecode($imageObject->path);
@@ -1085,7 +1346,6 @@ class ImageHelper
 
         // Prüfe auf nicht-Standard-Format
         $imageFormat = self::handleImageFormat($absolutePath);
-
         switch ($imageFormat['type']) {
             case 'svg':
             case 'unknown':
@@ -1120,12 +1380,20 @@ class ImageHelper
         }
 
         try {
+            // Bildbreite bestimmen für Qualitätsanpassung
+            $width = $config->getWidth() ?: 0;
+            if ($width === 0 && file_exists($absolutePath)) {
+                if ($imageInfo = @getimagesize($absolutePath)) {
+                    $width = (int)$imageInfo[0];
+                }
+            }
+            
             $processedImage = self::getContainer()
                 ->get('contao.image.factory')
                 ->create(
                     $absolutePath,
                     $config,
-                    self::getResizeOptions()
+                    self::getResizeOptions(null, $width, 1)
                 );
             $path = str_replace($rootDir, "", $processedImage->getPath());
             return self::encodePath($path);
@@ -1144,8 +1412,9 @@ class ImageHelper
         $finalLink = '';
         $finalTitle = '';
 
-        // Prüfen, ob $source eine UUID ist und FilesModel laden
-        if (Uuid::isValid($source)) {
+        // Prüfen, ob $source eine UUID ist (String oder binär) und FilesModel laden
+        if ((is_string($source) && Uuid::isValid($source)) || 
+            (is_string($source) && strlen($source) === 16)) {
             $fileModel = FilesModel::findByUuid($source);
             if ($fileModel) {
                 $relativePath = $fileModel->path;
@@ -1200,21 +1469,21 @@ class ImageHelper
             return '';
         }
 
-        // Alt-Text bestimmen: Priorität hat der Parameter, dann Metadaten
-        $finalAlt = self::cleanAttribute($alt ?: (!empty($meta['alt']) ? $meta['alt'] : ''));
+        // Alt-Text bestimmen: Meta-Daten haben Priorität, dann Parameter
+        $metaAlt = (isset($meta['alt']) && !empty(trim($meta['alt']))) ? trim($meta['alt']) : null;
+        $finalAlt = self::cleanAttribute($metaAlt ?: $alt);
         // Titel bestimmen: Priorität hat Metadaten-Titel, dann $finalAlt
         $svgTitle = self::cleanAttribute($finalTitle ?: $finalAlt);
 
 
-        // Style basierend auf Größe
+        // Style basierend auf Größe - für SVG nur Breite setzen, damit Seitenverhältnis erhalten bleibt
         $style = '';
         if (is_array($size)) {
             if (!empty($size[0])) {
                 $style .= 'width: ' . (int)$size[0] . 'px;';
             }
-            if (isset($size[1]) && !empty($size[1])) { // Prüfe explizit, ob Index 1 existiert
-                $style .= ' height: ' . (int)$size[1] . 'px;';
-            }
+            // Höhe wird bei SVG nicht gesetzt, um das natürliche Seitenverhältnis zu erhalten
+            // Das SVG skaliert automatisch basierend auf der viewBox
         }
 
         // Basis-Klassen für SVG

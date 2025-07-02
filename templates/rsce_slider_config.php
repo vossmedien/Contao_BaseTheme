@@ -259,7 +259,7 @@ $config = array(
                 'files' => true,
                 'mandatory' => false,
                 'isGallery' => true,
-                'extensions' => 'jpg,jpeg,png,svg,webp',
+                'extensions' => Contao\Config::get('validImageTypes'),
             ),
         ),
 
@@ -288,15 +288,20 @@ $config = array(
                 ),
 
                 'slide' => array(
-                    'label' => array('Bild', ''),
+                    'label' => array('Slide-Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
-                        'tl_class' => 'clr'
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
                     ),
+                ),
+                'slide_no_lazy' => array(
+                    'label' => array('Slide-Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Slide-Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'slide_text' => array(
                     'label' => array('Beschreibung', ''),

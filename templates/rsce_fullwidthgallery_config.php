@@ -121,7 +121,7 @@ $config = array(
                 'files' => true,
                 'mandatory' => false,
                 'isGallery' => true,
-                'extensions' => 'jpg,jpeg,png,svg,webp',
+                'extensions' => Contao\Config::get('validImageTypes'),
             ),
             'dependsOn' => array(
                 'field' => 'selecttype',
@@ -221,12 +221,16 @@ $config = array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
-                        'tl_class' => 'clr',
-                        'mandatory' => true,
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
                     ),
                 ),
 
+                'image_no_lazy' => array(
+                    'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
 
                 'show_initial_content' => array(
                     'label' => array('Inhalt initial auf Bild anzeigen', ''),

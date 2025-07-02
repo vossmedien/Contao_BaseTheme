@@ -65,19 +65,20 @@ $config = [
             ],
         ],
         'fixed_image_src' => [
-            'label' => ['Bildquelle', ''],
+            'label' => ['Feststehendes Bild (oben)', ''],
             'inputType' => 'fileTree',
             'eval' => [
+                'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => Config::get('validImageTypes'),
+                'extensions' => Contao\Config::get('validImageTypes'),
                 'tl_class' => 'w50',
-                'mandatory' => true,
             ],
-            'dependsOn' => [
-                'field' => 'image_mode',
-                'value' => 'fixed',
-            ],
+        ],
+        'fixed_image_no_lazy' => [
+            'label' => ['Feststehendes Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das feststehende Bild'],
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50'],
         ],
         'fixed_image_size' => [
             'label' => ['Bildgröße', 'Siehe Backend Einstellungen -> Bildgrößen.'],
@@ -103,12 +104,13 @@ $config = [
             'inputType' => 'list',
             'fields' => [
                 'slide_image_src' => [
-                    'label' => ['Bild für dieses Slide', '(Nur wenn "Jedes Slide hat ein eigenes Bild" gewählt wurde)'],
+                    'label' => ['Slide-Bild', ''],
                     'inputType' => 'fileTree',
                     'eval' => [
+                        'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => Config::get('validImageTypes'),
+                        'extensions' => Contao\Config::get('validImageTypes'),
                         'tl_class' => 'w50',
                     ],
                 ],
@@ -119,7 +121,11 @@ $config = [
                     'reference' => &$GLOBALS['TL_LANG']['MSC'],
                     'eval' => ['includeBlankOption' => true, 'tl_class' => 'w50 clr', 'rgxp' => 'digit'],
                 ],
-
+                'slide_image_no_lazy' => [
+                    'label' => ['Slide-Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Slide-Bild'],
+                    'inputType' => 'checkbox',
+                    'eval' => ['tl_class' => 'w50'],
+                ],
                 'slide_headline' => [
                     'label' => ['Slide-Headline', ''],
                     'inputType' => 'text',

@@ -27,6 +27,13 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
         transition: opacity 0.5s ease-in-out;
     }
 
+    /* Auf Mobile Animation deaktivieren - alle Schritte sofort sichtbar */
+    @media (max-width: 767px) {
+        .process-step .step-content-wrapper {
+            opacity: 1 !important;
+        }
+    }
+
     /* Linie für jeden Schritt (außer dem letzten) */
     .process-step:not(:last-child)::before {
         content: '';
@@ -121,7 +128,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                     <?php if ($row->image): ?>
                                         <div class="col-md-5" data-animation="<?= $row->step_animation_type ?: '' ?>">
                                             <div class="step--image text-center text-md-end">
-                                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->image, strip_tags($row->description), $row->headline, $row->size, null, false); ?>
+                                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($row->image, strip_tags($row->description), $row->headline, $row->size, null, false, false, !$row->image_no_lazy); ?>
                                             </div>
                                         </div>
                                     <?php endif; ?>
@@ -145,6 +152,11 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Animation nur auf Desktop (> 767px)
+        if (window.innerWidth <= 767) {
+            return; // Auf Mobile kein JavaScript
+        }
+
         const steps = document.querySelectorAll('.process-step');
 
         if (steps.length > 0) {

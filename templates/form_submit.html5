@@ -1,5 +1,5 @@
 
-<div class="widget widget-submit col-12">
+<div class="widget widget-submit col-auto me-auto ms-0">
   <?php if ($this->src): ?>
     <input type="image" src="<?= $this->src ?>" id="ctrl_<?= $this->id ?>" class="btn submit<?php if ($this->class): ?> <?= $this->class ?><?php endif; ?>" title="<?= Contao\StringUtil::specialchars($this->slabel) ?>" alt="<?= Contao\StringUtil::specialchars($this->slabel) ?>"<?= $this->getAttributes() ?>>
   <?php else: ?>

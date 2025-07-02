@@ -28,7 +28,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                     >
                         <?php if ($b->image): ?>
                             <div class="col-12 col-lg text-center" data-animation="<?= $b->animation_type_image; ?>">
-                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($b->image, null, $b->headline, $b->size, "box--image", false, true, true, false, false); ?>
+                                <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($b->image, null, $b->headline, $b->size, "box--image", false, true, !$b->image_no_lazy, false, false); ?>
                             </div>
                         <?php endif; ?>
                         <?php if ($b->headline || $b->content || $b->button_url): ?>

@@ -399,17 +399,22 @@ $config = array(
                 'title' => array(
                     'label' => array('Titel / Abteilung', 'z.B. "Vertrieb" oder "Technik"'),
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'w50', 'mandatory' => false),
+                    'eval' => array('tl_class' => 'w50', 'mandatory' => false, 'allowHtml' => true),
                 ),
                 'image' => array(
                     'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
                         'fieldType' => 'radio',
                         'tl_class' => 'clr'
                     ),
+                ),
+                'image_no_lazy' => array(
+                    'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'name' => array(
                     'label' => array('Name', ''),
@@ -474,6 +479,22 @@ $config = array(
                     'inputType' => 'select',
                     'options' => GlobalElementConfig::getAnimations(),
                     'eval' => array('chosen' => 'true', 'tl_class' => 'w50 clr')
+                ),
+                'profilePicture' => array(
+                    'label' => array('Profilbild', 'Optional - wird neben dem Namen angezeigt'),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
+                    ),
+                ),
+                'profilePicture_no_lazy' => array(
+                    'label' => array('Profilbild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Profilbild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
             ),
         ),

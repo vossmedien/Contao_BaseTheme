@@ -13,6 +13,9 @@ use Vsm\VsmHelperTools\Helper\ImageHelper;
 // Social Media Meta-Tags Helper hinzufügen
 use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
 
+// Simple Debug: Prüfe ob Template ausgeführt wird
+
+
 // NEUE LOGIK für globale Animation
 $elementAnimation = null;
 $applyIndividualAnimations = !(!empty($this->animation_type_element) && $this->animation_type_element !== 'no-animation');
@@ -138,7 +141,7 @@ if ($this->add_header_image && $this->header_image) {
         $this->header_image_size,
         null,
         false,
-        false
+        !($this->header_image_no_lazy ?? false)
     );
 }
 
@@ -153,7 +156,8 @@ if ($this->two_columns && $this->add_second_content && $this->add_headline_colum
         $this->headline_column_image_size,
         null,
         false,
-        $lightboxIdHeadlineColumn
+        $lightboxIdHeadlineColumn,
+        !($this->headline_column_image_no_lazy ?? false)
     );
 }
 
@@ -175,15 +179,51 @@ if ($this->two_columns && !$this->headline_above_columns &&
 $assignColumnsContainerClassToInner = !str_contains((string)$this->class, 'container');
 
 // Social Media Meta-Tags generieren (nur einmal pro Seite)
-if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
-    $socialMetaData = [
-        'title' => $this->headline,
-        'description' => $this->desc ?: $this->second_content,
-        'image' => !empty($imageUuids) ? $imageUuids[0] : null,
-        'type' => 'website'
-    ];
+if (EnvHelper::isFrontend()) {
+    // IMMER Daten sammeln (auch wenn bereits generiert wurde)
     
-    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
+    // Verwende extractDataFromTemplate für bessere automatische Erkennung
+    $templateData = SocialMetaHelper::extractDataFromTemplate($this);
+    
+    // Manuelle Überschreibung für spezielle Felder
+    $manualData = [];
+    
+    // Bild: Header-Image hat höchste Priorität
+    if (!empty($this->header_image)) {
+        $manualData['image'] = $this->header_image;
+    } elseif (!empty($imageUuids)) {
+        $manualData['image'] = $imageUuids[0];
+    }
+    
+    // Beschreibung: second_content hat Priorität vor desc
+    if (!empty($this->second_content)) {
+        $manualData['description'] = $this->second_content;
+    } elseif (!empty($this->desc)) {
+        $manualData['description'] = $this->desc;
+    }
+    
+    // Titel: Falls leer, verwende Page-Title
+    if (empty($this->headline) && empty($templateData['title'])) {
+        global $objPage;
+        if ($objPage) {
+            $manualData['title'] = $objPage->pageTitle ?: $objPage->title ?: '';
+        }
+    }
+    
+    // Merge: Manuelle Daten überschreiben Template-Daten
+    $finalMetaData = array_merge($templateData, array_filter($manualData, function($value) {
+        return !empty($value);
+    }));
+    
+    // Grundlegende Daten setzen
+    $finalMetaData['type'] = 'website';
+    
+
+    // Daten sammeln (ohne zu generieren)
+    SocialMetaHelper::collectElementData($finalMetaData);
+    
+    // NUR Daten sammeln, nicht generieren
+    // Die Meta-Tags werden am Ende der Seite generiert
 }
 
 ?>
@@ -202,7 +242,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
             <?php if ($this->two_columns): ?>
                 <?php // --- ZWEISPALTIG --- ?>
 
-                    <div class="row <?php if($this->second_content != "" && $headlineColumnImageHTML != "" && $headlineColumnButtonsHTML != ""):?>gy-2<?php elseif($hasImages):?>gy-1<?php endif;?> gy-lg-0 gx-lg-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
+                    <div class="row <?php if($this->second_content != "" && $headlineColumnImageHTML != "" && $headlineColumnButtonsHTML != ""):?>gy-2<?php elseif($hasImages || $headlineColumnImageHTML):?>gy-1<?php endif;?> gy-lg-0 gx-lg-3 <?php if ($this->column_vertical_alignment): ?><?= $this->column_vertical_alignment ?><?php endif; ?>">
 
                         <?php if ($this->headline_above_columns): ?>
                             <div <?php if ($headlineAnimation): ?>data-animation="<?= $headlineAnimation; ?>"<?php endif; ?> class="col-12">
@@ -258,7 +298,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
 
                         <?php if($this->desc  || $hasImages || $buttonsHTML):?>
                         <div <?php if ($contentColumnAnim): ?>data-animation="<?= $contentColumnAnim; ?>"<?php endif; ?> class="col-12 col-lg-<?= $bsColContent; ?> <?= $orderContentClass; ?> <?php if ($this->content_column_css_class): ?><?= $this->content_column_css_class ?><?php endif; ?>">
-                            <div  class="content-column <?php if ((!$this->headline || $this->second_content) && ($this->column_order == "hl_hl" || $this->column_order == "hl_co")): ?>mt-sm-3 mt-lg-0<?php endif; ?>">
+                            <div  class="content-column <?php if ((!$this->headline || $this->second_content) && ($this->column_order == "hl_hl" || $this->column_order == "hl_co")): ?><?php endif; ?>"><!-- mt-4 mt-lg-0-->
                                 <?php if ($this->desc): ?>
                                     <div class="text">
                                         <?= $this->desc; ?>
@@ -296,7 +336,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
                                                 <div class="image-list-wrapper align-items-center">
                                                     <?php foreach ($imageUuids as $index => $uuid) : ?>
                                                         <div class="image-list-item text-center" <?php if ($slideAnim): ?>data-animation="<?php echo $slideAnim; ?>"<?php endif; ?>>
-                                                            <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id . '_' . $rand : ""); ?>
+                                                            <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id . '_' . $rand : "", !($this->multiSRC_no_lazy ?? false)); ?>
                                                         </div>
                                                     <?php endforeach; ?>
                                                 </div>
@@ -317,7 +357,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
                                     <?php
                                     $buttonAlignmentClass = $this->button_group_text_alignment ?: 'text-start';
                                     ?>
-                                    <div <?php if ($buttonAnimForTwoColumn): ?>data-animation="<?= $buttonAnimForTwoColumn; ?>"<?php endif; ?> class="buttons <?= $buttonAlignmentClass; ?>  <?php if ($hasImages || $this->desc): ?>mt-4<?php endif; ?>">
+                                    <div <?php if ($buttonAnimForTwoColumn): ?>data-animation="<?= $buttonAnimForTwoColumn; ?>"<?php endif; ?> class="buttons <?= $buttonAlignmentClass; ?>  <?php if ($hasImages || $this->desc || $this->second_content): ?>mt-4<?php endif; ?>">
                                         <?= $buttonsHTML; ?>
                                     </div>
                                 <?php endif; ?>
@@ -369,7 +409,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
                                 <div class="image-list-wrapper align-items-center">
                                     <?php foreach ($imageUuids as $index => $uuid) : ?>
                                         <div class="text-center image-list-item" <?php if ($slideAnim): ?>data-animation="<?php echo $slideAnim; ?>"<?php endif; ?>>
-                                            <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id . '_' . $rand : ""); ?>
+                                            <?= ImageHelper::generateImageHTML($uuid, null, null, $this->headline_image_size, null, false, $this->open_lightbox ? $this->id . '_' . $rand : "", !($this->multiSRC_no_lazy ?? false)); ?>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>

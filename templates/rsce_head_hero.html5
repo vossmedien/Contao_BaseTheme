@@ -116,7 +116,7 @@ if ($this->add_header_image && $this->header_image) {
         $this->header_image_size, // Gewählte Bildgröße
         null, // Keine CSS-Klasse extra
         false, // Korrektur: Auf true geändert, um Figure/Picture zu erzwingen
-        false // Keine Lightbox per Default (kann man anpassen)
+        !($this->image_src_no_lazy ?? false) // Lazy-Loading Parameter
     );
 
 }
@@ -127,7 +127,7 @@ if ($this->image_src) {
     $imageHTML = ImageHelper::generateImageHTML(
         $this->image_src,
         $this->headline, // Headline als Alt-Text
-        $this->headline, // Headline als Titel (headline-Parameter)
+        $this->headline, // Headline als Titel (headline-parameter)
         $this->image_size // Gewählte Bildgröße
     // Standardwerte für class, inSlider, colorBox, lazy, caption, imageUrl werden vom Helper gesetzt
     );
@@ -137,7 +137,8 @@ if ($this->image_src) {
 $listItems = StringUtil::deserialize($this->list_items, true);
 
 // Social Media Meta-Tags generieren (nur einmal pro Seite)
-if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
+if (EnvHelper::isFrontend()) {
+    // Daten sammeln (ohne zu generieren)
     $socialMetaData = [
         'title' => $this->headline,
         'description' => $this->text,
@@ -145,7 +146,10 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
         'type' => 'website'
     ];
     
-    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
+    SocialMetaHelper::collectElementData($socialMetaData);
+    
+    // NUR Daten sammeln, nicht generieren
+    // Die Meta-Tags werden am Ende der Seite generiert
 }
 
 ?>
@@ -177,7 +181,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
                             (empty($this->text) && !$this->add_list_items && !$this->buttons ? "mb-0" : "")
                         ); ?>
                     </div>
-                    <?php if ($this->text): ?>
+  <s></s>                  <?php if ($this->text): ?>
                         <div class="text-section fw-semibold<?php if ($this->add_list_items): ?> mb-4<?php endif; ?>" <?php if ($this->animation_headline): ?>data-animation="<?= $this->animation_headline ?>"<?php endif; ?>>
                             <?= $this->text; ?>
                         </div>

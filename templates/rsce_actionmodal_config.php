@@ -238,6 +238,29 @@ $config = array(
             ),
         ),
 
+        'image_poster' => array(
+            'label' => array('Poster-Bild für Video', 'Wird nur angezeigt, wenn oben ein Video ausgewählt wurde'),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => Contao\Config::get('validImageTypes'),
+                'tl_class' => 'w50',
+            ),
+            'dependsOn' => array(
+                'field' => 'image',
+            ),
+        ),
+        'image_video_no_lazy' => array(
+            'label' => array('Kopfbereich-Video ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Video im Kopfbereich'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'image',
+            ),
+        ),
+
         'add_image_right_column_content' => array(
             'label' => array('Rechte Spalte im Kopfbereich hinzufügen', 'Ermöglicht Text und Hintergrundfarbe rechts neben dem Bild/Video.'),
             'inputType' => 'checkbox',
@@ -353,7 +376,7 @@ $config = array(
                 'multiple' => false,
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'extensions' => 'jpg,jpeg,png,svg,webp',
+                'extensions' => Contao\Config::get('validImageTypes'),
             ),
         ),
 
@@ -429,7 +452,7 @@ $config = array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
                     ),
                 ),
                 'link' => array(

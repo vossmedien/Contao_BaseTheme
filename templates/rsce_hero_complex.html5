@@ -29,18 +29,23 @@ if ($this->activate_box_slider) {
 $mainMediaHTML = '';
 $mainImageInfo = null;
 if ($this->media_type === 'image' && $this->main_image) {
-    $mainMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media d-none d-lg-block', false, false, true);
+    $mainMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media d-none d-lg-block', false, false, !$this->main_image_no_lazy);
 } elseif ($this->media_type === 'video' && $this->main_video) {
     $mainImageInfo = BasicHelper::getFileInfo($this->main_video);
     if ($mainImageInfo && isset($mainImageInfo['ext'])) {
         $isMainVideo = VideoHelper::isVideoFormat($mainImageInfo['ext']);
         if ($isMainVideo) {
-            $mainMediaHTML = VideoHelper::renderVideo(
-                $this->main_video,
-                'w-100 h-100 object-fit-cover hero-complex-main-media d-none d-lg-block',
-                $this->main_headline, null, null, null,
-                'autoplay muted loop playsinline', true
-            );
+                    $mainMediaHTML = VideoHelper::renderVideo(
+            $this->main_video,
+            'w-100 h-100 object-fit-cover hero-complex-main-media d-none d-lg-block',
+            $this->main_headline, null, null, 
+            $this->main_video_poster ? 
+                ImageHelper::generateImageURL($this->main_video_poster, null) : 
+                null,
+            'autoplay muted loop playsinline', 
+            !$this->main_video_no_lazy,
+            !($this->main_video_poster_no_lazy ?? false)
+        );
         }
     } else {
         $mainMediaHTML = '<p>Fehler beim Laden des Videos.</p>';
@@ -53,7 +58,7 @@ $mobileMediaHTML = '';
 // Versuche, das spezifische mobile Medium zu laden, basierend auf der Auswahl in 'mobile_media_type'
 // und ob die entsprechende Datei auch wirklich ausgewählt wurde.
 if ($this->mobile_media_type === 'image' && !empty($this->mobile_image)) {
-    $mobileMediaHTML = ImageHelper::generateImageHTML($this->mobile_image, null, $this->main_headline, $this->mobile_image_size, 'w-100 h-100 object-fit-cover hero-complex-mobile-media d-lg-none', false, false, true);
+    $mobileMediaHTML = ImageHelper::generateImageHTML($this->mobile_image, null, $this->main_headline, $this->mobile_image_size, 'w-100 h-100 object-fit-cover hero-complex-mobile-media d-lg-none', false, false, !$this->mobile_image_no_lazy);
 } elseif ($this->mobile_media_type === 'video' && !empty($this->mobile_video)) {
     $mobileImageInfo = BasicHelper::getFileInfo($this->mobile_video);
     if ($mobileImageInfo && isset($mobileImageInfo['ext'])) {
@@ -62,8 +67,13 @@ if ($this->mobile_media_type === 'image' && !empty($this->mobile_image)) {
             $mobileMediaHTML = VideoHelper::renderVideo(
                 $this->mobile_video,
                 'w-100 h-100 object-fit-cover hero-complex-mobile-media d-lg-none',
-                $this->main_headline, null, null, null,
-                'autoplay muted loop playsinline', true
+                $this->main_headline, null, null, 
+                $this->mobile_video_poster ? 
+                    ImageHelper::generateImageURL($this->mobile_video_poster, null) : 
+                    null,
+                'autoplay muted loop playsinline', 
+                !$this->mobile_video_no_lazy,
+                !($this->mobile_video_poster_no_lazy ?? false)
             );
         } else {
             $mobileMediaHTML = '<p>Fehler: Das Format des mobilen Videos wird nicht unterstützt.</p>';
@@ -77,7 +87,7 @@ if ($this->mobile_media_type === 'image' && !empty($this->mobile_image)) {
 // konfiguriert wurde ODER nicht erfolgreich geladen werden konnte (d.h. $mobileMediaHTML ist noch leer).
 if (empty($mobileMediaHTML)) {
     if ($this->media_type === 'image' && !empty($this->main_image)) {
-        $mobileMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media d-lg-none', false, false, true);
+        $mobileMediaHTML = ImageHelper::generateImageHTML($this->main_image, null, $this->main_headline, $this->main_image_size, 'w-100 h-100 object-fit-cover hero-complex-main-media d-lg-none', false, false, !$this->main_image_no_lazy);
     } elseif ($this->media_type === 'video' && !empty($this->main_video)) {
         $mainImageInfo = BasicHelper::getFileInfo($this->main_video); // Erneuter Check, falls $mainImageInfo oben nicht gesetzt wurde
         if ($mainImageInfo && isset($mainImageInfo['ext'])) {
@@ -86,8 +96,13 @@ if (empty($mobileMediaHTML)) {
                 $mobileMediaHTML = VideoHelper::renderVideo(
                     $this->main_video,
                     'w-100 h-100 object-fit-cover hero-complex-main-media d-lg-none',
-                    $this->main_headline, null, null, null,
-                    'autoplay muted loop playsinline', true
+                    $this->main_headline, null, null, 
+                    $this->main_video_poster ? 
+                        ImageHelper::generateImageURL($this->main_video_poster, null) : 
+                        null,
+                    'autoplay muted loop playsinline', 
+                    !$this->main_video_no_lazy,
+                    !($this->main_video_poster_no_lazy ?? false)
                 );
             } else {
                 $mobileMediaHTML = '<p>Fehler: Das Format des Hauptvideos (Fallback für Mobile) wird nicht unterstützt.</p>';
@@ -152,8 +167,8 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_CSS'][] = 'files/base/layout/css/elements/rsce/ce_rsce_hero_complex.min.css|static';
 }
 
-// Social Media Meta-Tags generieren (nur einmal pro Seite)
-if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
+// Social Media Meta-Tags sammeln (neues Pattern)
+if (EnvHelper::isFrontend()) {
     $socialMetaData = [
         'title' => $this->main_headline,
         'description' => $this->left_text_below_headline ?: $this->main_text,
@@ -161,7 +176,11 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
         'type' => 'website'
     ];
 
-    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
+    SocialMetaHelper::collectElementData($socialMetaData);
+    
+    // Nur generieren wenn noch nicht geschehen
+    // NUR Daten sammeln, nicht generieren
+    // Die Meta-Tags werden am Ende der Seite generiert
 }
 
 ?>
@@ -170,7 +189,6 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
     <div class="ce--inner hero-complex-inner_<?= $uniqueId ?> position-relative d-flex flex-column">
 
         <?php if ($mainMediaHTML || $mobileMediaHTML): ?>
-            <!-- Haupt-Medienbereich (Mobile: order-1 / Desktop: order-lg-2, wird dann via CSS zum Hintergrund) -->
             <div class="hero-complex-media-col  mb-lg-0 order-2"
                  <?php if ($this->animation_type_media): ?>data-animation="<?= $this->animation_type_media ?>"<?php endif; ?>>
                 <div class="main-media-wrapper" style="--image-min-height: <?= $desktopMinHeightProcessed ?>; --image-mobile-min-height: <?= $mobileMinHeightProcessed ?>;">
@@ -183,7 +201,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
                 </div>
             </div>
         <?php endif; ?>
-        <!-- Inhalt Wrapper (Texte und Box) (Mobile: order-2 / Desktop: order-lg-1) -->
+
         <div class="hero-complex-content-overlay-wrapper order-1">
             <div class="<?= $this->container_class ?: 'container-wide' ?>">
                 <div class="row <?= $alignmentClass ?>  <?php if (!$showBoxInRight && !$showBoxInLeft): ?>align-items-center<?php endif;?>">
@@ -195,7 +213,7 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
                                 <?= HeadlineHelper::generateHeadlineHTML(
                                     null, $this->main_headline, null, $this->main_headline_type ?: 'h1',
                                     "no-animation", null, (bool)$this->main_headline_onlystyle,
-                                    $this->activate_box_slider ? "mb-3" : "mb-0"
+                                    $this->activate_box_slider ? "mb-gap" : "mb-0"
                                 ) ?>
 
                                 <?php if ($this->left_text_below_headline): ?>

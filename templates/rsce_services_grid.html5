@@ -29,7 +29,8 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                 $this->size,
                                 'img-fluid',
                                 false,
-                                false
+                                false,
+                                !$service->image_no_lazy
                             ); ?>
                         </a>
 

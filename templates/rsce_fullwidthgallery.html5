@@ -168,7 +168,7 @@
                                 <div class="gallery-column gallery-column-<?= $this->id; ?>-<?= $x; ?>">
                                     <div class="gallery-column--inner">
                                         <div class="column--image-holder">
-                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($e->image, null, $e->headline, $this->size, null, false, false); ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($e->image, null, $e->headline, $this->size, null, false, false, !$e->image_no_lazy); ?>
                                         </div>
 
                                         <?php if ($e->box_link_type == '1' && $e->link): ?>
@@ -253,7 +253,7 @@
                                 <div class="gallery-column gallery-column-<?= $this->id; ?>-<?= $x; ?>">
                                     <div class="gallery-column--inner">
                                         <div class="column--image-holder">
-                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($uuid, null, $file->name, $this->size, null, false, $this->open_lightbox ? $rand : false); ?>
+                                            <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($uuid, null, $file->name, $this->size, null, false, $this->open_lightbox ? $rand : false, true); ?>
                                         </div>
                                     </div>
                                 </div>

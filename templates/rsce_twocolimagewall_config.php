@@ -585,7 +585,7 @@ $config = array(
                         'files' => true,
                         'mandatory' => false,
                         'isGallery' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
                         'isSortable' => true
                     ),
                     'dependsOn' => array(
@@ -638,8 +638,34 @@ $config = array(
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'extensions' => 'mp4',
-                        'tl_class' => 'clr'
+                        'tl_class' => 'w50 clr',
+                        'submitOnChange' => true
                     ),
+                    'dependsOn' => array(
+                        'field' => 'contentType',
+                        'value' => '3',
+                    ),
+                ),
+
+                'video_poster' => array(
+                    'label' => array('Poster-Bild für Video', 'Wird nur angezeigt, wenn oben ein Video ausgewählt wurde'),
+                    'inputType' => 'fileTree',
+                    'eval' => array(
+                        'multiple' => false,
+                        'fieldType' => 'radio',
+                        'filesOnly' => true,
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
+                    ),
+                    'dependsOn' => array(
+                        'field' => 'contentType',
+                        'value' => '3',
+                    ),
+                ),
+                'video_no_lazy' => array(
+                    'label' => array('Video ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Video'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50 clr'),
                     'dependsOn' => array(
                         'field' => 'contentType',
                         'value' => '3',

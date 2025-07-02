@@ -185,9 +185,15 @@ $config = array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
                         'mandatory' => true,
+                        'tl_class' => 'w50',
                     ),
+                ),
+                'image_no_lazy' => array(
+                    'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Aktionsbild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'add_link' => array(
                     'label' => array('Link zum Bild hinzufügen', 'z.B. für einen Download'),

@@ -66,27 +66,117 @@ $config = array(
         ),
 
         'alternate_top_position' => array(
-            'label' => array('Abstand von oberer Bildschirmkante', 'Standard: 150px - entweder OBEN oder UNTEN ausfüllen'),
+            'label' => array('Abstand von oberer Bildschirmkante (Desktop)', 'Standard: 150px - entweder OBEN oder UNTEN ausfüllen'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
 
         'alternate_bottom_position' => array(
-            'label' => array('Abstand von unterer Bildschirmkante', 'entweder OBEN oder UNTEN ausfüllen'),
+            'label' => array('Abstand von unterer Bildschirmkante (Desktop)', 'entweder OBEN oder UNTEN ausfüllen'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
 
         'alternate_right_position' => array(
-            'label' => array('Abstand von rechter Bildschirmkante', 'Standard: 25px - entweder RECHTS oder LINKS ausfüllen'),
+            'label' => array('Abstand von rechter Bildschirmkante (Desktop)', 'Standard: 25px - entweder RECHTS oder LINKS ausfüllen'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
 
         'alternate_left_position' => array(
-            'label' => array('Abstand von linker Bildschirmkante', 'entweder RECHTS oder LINKS ausfüllen'),
+            'label' => array('Abstand von linker Bildschirmkante (Desktop)', 'entweder RECHTS oder LINKS ausfüllen'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'settings_position_mobile' => array(
+            'label' => array('Positionierung (Mobile)', 'Spezielle Werte für mobile Geräte (< 768px)'),
+            'inputType' => 'group',
+            'eval' => array('collapsible' => true, 'collapsed' => true),
+        ),
+
+        'alternate_top_position_mobile' => array(
+            'label' => array('Abstand von oberer Bildschirmkante (Mobile)', 'Überschreibt Desktop-Wert auf mobilen Geräten'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'alternate_bottom_position_mobile' => array(
+            'label' => array('Abstand von unterer Bildschirmkante (Mobile)', 'Überschreibt Desktop-Wert auf mobilen Geräten'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'alternate_right_position_mobile' => array(
+            'label' => array('Abstand von rechter Bildschirmkante (Mobile)', 'Überschreibt Desktop-Wert auf mobilen Geräten'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'alternate_left_position_mobile' => array(
+            'label' => array('Abstand von linker Bildschirmkante (Mobile)', 'Überschreibt Desktop-Wert auf mobilen Geräten'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+
+        'page_specific_positions' => array(
+            'label' => array('Seitenspezifische Positionierung', 'Überschreibt die Standard-Position für bestimmte Seiten'),
+            'elementLabel' => '%s. Seitenposition',
+            'inputType' => 'list',
+            'minItems' => 0,
+            'maxItems' => 20,
+            'eval' => array('tl_class' => 'clr'),
+            'fields' => array(
+                'target_pages' => array(
+                    'label' => array('Zielseiten', 'Seiten, für die diese Position gelten soll'),
+                    'inputType' => 'pageTree',
+                    'eval' => array(
+                        'multiple' => true,
+                        'fieldType' => 'checkbox',
+                        'tl_class' => 'clr'
+                    ),
+                ),
+                'custom_top_position' => array(
+                    'label' => array('Abstand von oben (Desktop)', 'z.B. 20vh, 100px, 2rem'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'custom_bottom_position' => array(
+                    'label' => array('Abstand von unten (Desktop)', 'z.B. 20vh, 100px, 2rem'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'custom_right_position' => array(
+                    'label' => array('Abstand von rechts (Desktop)', 'z.B. 25px, 2rem'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'custom_left_position' => array(
+                    'label' => array('Abstand von links (Desktop)', 'z.B. 25px, 2rem'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'custom_top_position_mobile' => array(
+                    'label' => array('Abstand von oben (Mobile)', 'Überschreibt Desktop-Wert auf mobilen Geräten'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'custom_bottom_position_mobile' => array(
+                    'label' => array('Abstand von unten (Mobile)', 'Überschreibt Desktop-Wert auf mobilen Geräten'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'custom_right_position_mobile' => array(
+                    'label' => array('Abstand von rechts (Mobile)', 'Überschreibt Desktop-Wert auf mobilen Geräten'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+                'custom_left_position_mobile' => array(
+                    'label' => array('Abstand von links (Mobile)', 'Überschreibt Desktop-Wert auf mobilen Geräten'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                ),
+            ),
         ),
 
         'expand' => array(
@@ -185,15 +275,21 @@ $config = array(
                     'eval' => array('tl_class' => ' clr'),
                 ),
 
-                'img' => array(
+                'image' => array(
                     'label' => array('Bild', ''),
                     'inputType' => 'fileTree',
                     'eval' => array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
+                        'tl_class' => 'w50',
                     ),
+                ),
+                'image_no_lazy' => array(
+                    'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
 
                 'img_mobile' => array(
@@ -204,8 +300,13 @@ $config = array(
                         'fieldType' => 'radio',
                         'filesOnly' => true,
                         'tl_class' => ' clr',
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
                     ),
+                ),
+                'img_mobile_no_lazy' => array(
+                    'label' => array('Bild (mobile) ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das mobile Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 
                 'content' => array(
@@ -345,9 +446,14 @@ $config = array(
                         'multiple' => false,
                         'fieldType' => 'radio',
                         'filesOnly' => true,
-                        'extensions' => 'jpg,jpeg,png,svg,webp',
+                        'extensions' => Contao\Config::get('validImageTypes'),
                         'tl_class' => 'clr'
                     ),
+                ),
+                'img_no_lazy' => array(
+                    'label' => array('Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild'),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50'),
                 ),
                 'link_url' => array(
                     'label' => array('Verlinkung', ''),

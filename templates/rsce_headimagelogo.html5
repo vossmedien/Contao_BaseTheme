@@ -17,8 +17,8 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
     $GLOBALS['TL_BODY'][] = '<script defer type="module" src="/files/base/layout/js/_elements/ce_rsce_headimagelogo.min.js"></script>';
 }
 
-// Social Media Meta-Tags generieren (nur einmal pro Seite)
-if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags() && !empty($this->slides)) {
+// Social Media Meta-Tags sammeln (neues Pattern)
+if (EnvHelper::isFrontend() && !empty($this->slides)) {
     $firstSlide = $this->slides[0];
     $socialMetaData = [
         'title' => $firstSlide->text_firstline,
@@ -27,7 +27,11 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags() && !emp
         'type' => 'website'
     ];
     
-    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
+    SocialMetaHelper::collectElementData($socialMetaData);
+    
+    // Nur generieren wenn noch nicht geschehen
+    // NUR Daten sammeln, nicht generieren
+    // Die Meta-Tags werden am Ende der Seite generiert
 }
 
 ?>
@@ -116,11 +120,35 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags() && !emp
 
                                 <div class="plain-image-holder <?= !$this->not_as_bg ? 'is-bg' : '' ?>">
                                     <?php if ($isMainVideo): ?>
-                                        <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo($slide->image, $mainImageInfo['ext'], $isMobileVideo ? 'd-none d-md-block' : '') ?>
+                                        <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo(
+                                            $slide->image, 
+                                            $isMobileVideo ? 'd-none d-md-block' : '',
+                                            $slide->text_firstline,
+                                            null,
+                                            null,
+                                            $slide->image_poster ? 
+                                                Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($slide->image_poster, null) : 
+                                                null,
+                                            'autoplay muted loop playsinline',
+                                            !$slide->image_video_no_lazy,
+                                            true // posterLazy - kein separates Poster-no_lazy Feld vorhanden
+                                        ) ?>
                                     <?php endif; ?>
 
                                     <?php if ($isMobileVideo): ?>
-                                        <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo($slide->mobile_image, $mobileImageInfo['ext'], 'd-md-none') ?>
+                                        <?= Vsm\VsmHelperTools\Helper\VideoHelper::renderVideo(
+                                            $slide->mobile_image, 
+                                            'd-md-none',
+                                            $slide->text_firstline,
+                                            null,
+                                            null,
+                                            $slide->mobile_image_poster ? 
+                                                Vsm\VsmHelperTools\Helper\ImageHelper::generateImageURL($slide->mobile_image_poster, null) : 
+                                                null,
+                                            'autoplay muted loop playsinline',
+                                            !$slide->mobile_video_no_lazy,
+                                            true // posterLazy - kein separates mobile Poster-no_lazy Feld vorhanden
+                                        ) ?>
                                     <?php endif; ?>
 
                                     <?php if (!$isMainVideo): ?>

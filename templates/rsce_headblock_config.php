@@ -43,7 +43,18 @@ $config = [
         'image' => [
             'label' => ['Bild', ''],
             'inputType' => 'fileTree',
-            'eval' => ['filesOnly' => true, 'fieldType' => 'radio', 'tl_class' => 'clr']
+            'eval' => [
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => Contao\Config::get('validImageTypes'),
+                'tl_class' => 'w50',
+            ],
+        ],
+        'image_no_lazy' => [
+            'label' => ['Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für dieses Bild'],
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50'],
         ],
         'size' => [
             'label' => ['Bildgröße', 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.'],

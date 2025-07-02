@@ -233,8 +233,8 @@ log "Synchronisiere Dateien von Staging (${SOURCE_PATH}) zu Ziel (${TARGET_PATH}
 
 # Verwende Excludes-Konfiguration für das Ziel
 if [ -z "${TARGET_EXCLUDES}" ]; then
-    # Standard-Ausschlüsse
-    TARGET_EXCLUDES=".env.local public/.htaccess public/.htpasswd xdeploystagingtolive.sh xrollbacklive.sh x_live_db.sql x_live_files.tar.gz deploy_log.txt rollback_log.txt exceptions.sql backup_infos.txt"
+    # Standard-Ausschlüsse - erweitert um wichtige System-Verzeichnisse
+    TARGET_EXCLUDES=".env.local public/.htaccess public/.htpasswd xdeploystagingtolive.sh xrollbacklive.sh x_live_db.sql x_live_files.tar.gz deploy_log.txt rollback_log.txt exceptions.sql backup_infos.txt var/sessions var/logs cleanup_log.txt"
     log "Verwende Standard-Ausschlüsse für rsync"
 else
     log "Verwende konfigurierte Ausschlüsse für rsync: ${TARGET_EXCLUDES}"
@@ -251,12 +251,37 @@ log "Starte rsync mit folgenden Parametern:"
 log "Quelle: ${SOURCE_PATH}/"
 log "Ziel: ${TARGET_PATH}/"
 log "Excludes: ${RSYNC_EXCLUDES}"
-eval "rsync -av --itemize-changes ${RSYNC_EXCLUDES} ${SOURCE_PATH}/ ${TARGET_PATH}/ >> ${LOG_FILE} 2>&1"
+log "HINWEIS: Dateien, die auf Staging gelöscht wurden, werden auch auf Live gelöscht (--delete)"
+eval "rsync -av --delete --itemize-changes ${RSYNC_EXCLUDES} ${SOURCE_PATH}/ ${TARGET_PATH}/ >> ${LOG_FILE} 2>&1"
 log "rsync-Befehl ausgeführt. Exit-Code: $?"
 
 # Übertragen der Staging-Datenbank in die Ziel-Umgebung
 log "Übertrage Datenbank von Staging (${SOURCE_DB_NAME}) zu Ziel (${TARGET_DB_NAME})..."
-mysqldump -u ${SOURCE_DB_USER} -p"${SOURCE_DB_PASSWORD}" -h ${SOURCE_DB_HOST} --port=${SOURCE_DB_PORT:-3306} ${SOURCE_DB_NAME} --ignore-table=${SOURCE_DB_NAME}.tl_user | mysql -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} --port=${TARGET_DB_PORT} ${TARGET_DB_NAME} 2> /dev/null
+
+# Erstelle ignore-table Parameter aus konfigurierten Tabellen
+IGNORE_TABLES_PARAMS=""
+
+# Standard: tl_user immer ignorieren
+IGNORE_TABLES_PARAMS="${IGNORE_TABLES_PARAMS} --ignore-table=${SOURCE_DB_NAME}.tl_user"
+
+# Zusätzliche Tabellen aus Konfiguration
+if [ -n "${TARGET_IGNORE_TABLES}" ]; then
+    log "Verwende konfigurierte Ignore-Tables: ${TARGET_IGNORE_TABLES}"
+    IFS=',' read -ra IGNORE_TABLE_LIST <<< "${TARGET_IGNORE_TABLES}"
+    for table in "${IGNORE_TABLE_LIST[@]}"; do
+        # Entferne eventuelle Leerzeichen
+        table=$(echo "$table" | xargs)
+        if [ -n "$table" ]; then
+            IGNORE_TABLES_PARAMS="${IGNORE_TABLES_PARAMS} --ignore-table=${SOURCE_DB_NAME}.${table}"
+            log "Ignoriere Tabelle: ${table}"
+        fi
+    done
+else
+    log "Keine zusätzlichen Ignore-Tables konfiguriert"
+fi
+
+log "Verwende mysqldump Parameter: ${IGNORE_TABLES_PARAMS}"
+mysqldump -u ${SOURCE_DB_USER} -p"${SOURCE_DB_PASSWORD}" -h ${SOURCE_DB_HOST} --port=${SOURCE_DB_PORT:-3306} ${SOURCE_DB_NAME} ${IGNORE_TABLES_PARAMS} | mysql -u ${TARGET_DB_USER} -p"${TARGET_DB_PASSWORD}" -h ${TARGET_DB_HOST} --port=${TARGET_DB_PORT} ${TARGET_DB_NAME} 2> /dev/null
 log "Datenbank-Übertragung abgeschlossen. $(date)"
 
 # Stelle die Ausnahmen wieder her (in die ZIEL-DB)

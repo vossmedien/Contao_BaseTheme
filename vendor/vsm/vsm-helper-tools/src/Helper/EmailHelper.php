@@ -4,11 +4,27 @@ declare(strict_types=1);
 
 namespace Vsm\VsmHelperTools\Helper;
 
+use Contao\System;
+
 /**
- * Generischer Hilfsklasse zum Laden und Rendern von E-Mail-Templates
+ * Email Helper
+ * 
+ * Hilfsklasse zum Laden und Rendern von E-Mail-Templates mit verschiedenen
+ * Fallback-Pfaden und Template-Verarbeitung.
  */
 class EmailHelper
 {
+    // Container Cache für Performance
+    private static $container = null;
+
+    /**
+     * Optimierter Container-Zugriff
+     */
+    private static function getContainer()
+    {
+        return self::$container ??= System::getContainer();
+    }
+
     /**
      * Lädt ein E-Mail-Template aus dem templates/emails/ Verzeichnis
      * 
@@ -24,7 +40,8 @@ class EmailHelper
         
         try {
             // In Contao 5.x den Projektpfad über Symfony ermitteln
-            $projectDir = \Contao\System::getContainer()->getParameter('kernel.project_dir');
+            $container = self::getContainer();
+            $projectDir = $container->getParameter('kernel.project_dir');
             
             // Mögliche Pfade für Templates definieren
             $paths = [

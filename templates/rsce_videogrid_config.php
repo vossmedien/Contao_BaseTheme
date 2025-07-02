@@ -63,7 +63,11 @@ $config = array(
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50', 'rgxp' => 'natural'),
         ),
-
+        'videos_no_lazy' => array(
+            'label' => array('Videos ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für alle Videos'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+        ),
          'animation_type' => array(
             'label' => array(
                 'de' => array('Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'),

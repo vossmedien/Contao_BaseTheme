@@ -92,7 +92,7 @@ function render_box($boxData, $boxLink, $bgColor, $textColor, $fontSize, $defaul
     $imageHTML = '';
     $sizeToUse = $calculatedSize ?: $boxData->image_size;
     if ($boxData->image) {
-        $imageHTML = ImageHelper::generateImageHTML($boxData->image, $boxData->title ?: $defaultAlt, $boxData->title, $sizeToUse, 'img-fluid', true, false);
+        $imageHTML = ImageHelper::generateImageHTML($boxData->image, $boxData->title ?: $defaultAlt, $boxData->title, $sizeToUse, 'img-fluid', true, !($boxData->image_no_lazy ?? false));
     }
     ob_start();
     ?>
@@ -112,8 +112,8 @@ function render_box($boxData, $boxLink, $bgColor, $textColor, $fontSize, $defaul
 $leftBoxSectionId = 'hero-left-box-' . $this->id;
 $rightBoxesSectionRowId = 'hero-right-boxes-row-' . $this->id; // ID für die innere Row rechts
 
-// Social Media Meta-Tags generieren (nur einmal pro Seite)
-if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
+// Social Media Meta-Tags sammeln (neues Pattern)
+if (EnvHelper::isFrontend()) {
     $socialMetaData = [
         'title' => $this->top_headline ?: $this->bottom_headline,
         'description' => $this->left_text ?: $this->bottom_text,
@@ -121,7 +121,10 @@ if (EnvHelper::isFrontend() && !SocialMetaHelper::hasGeneratedMetaTags()) {
         'type' => 'website'
     ];
     
-    $GLOBALS['TL_HEAD'][] = SocialMetaHelper::generateSocialMetaTags($socialMetaData);
+    SocialMetaHelper::collectElementData($socialMetaData);
+    
+    // NUR Daten sammeln, nicht generieren
+    // Die Meta-Tags werden am Ende der Seite generiert
 }
 
 ?>

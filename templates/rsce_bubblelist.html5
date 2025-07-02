@@ -66,7 +66,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
 
                                     <?php if (!$item->icon && $item->img): ?>
-                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($item->img, '', '', $this->size, '', false, false, false, false, false); ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($item->img, '', '', $this->size, '', false, false, !$item->img_no_lazy, false, false); ?>
                                     <?php endif; ?>
 
 

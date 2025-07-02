@@ -124,12 +124,10 @@ $rand = random_int(0, 99999); // Für eindeutigen Lightbox-Selektor
                                                 null,
                                                 $service->content_headline ?: $service->title,
                                                 $serviceSize,
-                                                'mb-4', // Diese Klasse wird im SCSS bei .no-text überschrieben
+                                                'img-fluid',
                                                 false,
-                                                $openLightbox ? 'lightbox_' . $rand : false,
-                                                true,
-                                                null,
-                                                $openLightbox ? $imageUrl : null
+                                                $service->open_lightbox ? $this->id : false,
+                                                !$service->image_no_lazy
                                             );
                                         }
                                     }
@@ -137,7 +135,7 @@ $rand = random_int(0, 99999); // Für eindeutigen Lightbox-Selektor
 
                                     <?php if ($imageHtml): ?>
                                         <div class="service-image" <?php if ($service->image_animation_type): ?>data-animation="<?= htmlspecialchars($service->image_animation_type, ENT_QUOTES) ?>"<?php endif; ?>>
-                                            <?php if ($openLightbox && $imageUrl): ?>
+                                            <?php if ($service->open_lightbox && $imageUrl): ?>
                                                 <a href="<?= $imageUrl ?>" class="lightbox_<?= $rand; ?>" data-gall="service-gallery-<?= $this->id ?>" data-title="<?= $service->content_headline ?: $service->title ?>">
                                                     <?= $imageHtml ?>
                                                 </a>

@@ -146,6 +146,15 @@ $config = array(
                 'value' => 'image',
             ),
         ),
+        'main_image_no_lazy' => array(
+            'label' => array('Hauptbild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Hauptbild (bessere Performance für Above-the-Fold Bilder)'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'media_type',
+                'value' => 'image',
+            ),
+        ),
         'main_video' => array(
             'label' => array('Hauptvideo auswählen', 'MP4 oder WEBM'),
             'inputType' => 'fileTree',
@@ -154,9 +163,43 @@ $config = array(
                 'fieldType' => 'radio',
                 'filesOnly' => true,
                 'extensions' => 'mp4,webm',
-                'tl_class' => 'clr',
+                'tl_class' => 'w50 clr',
                 'mandatory' => true,
             ),
+            'dependsOn' => array(
+                'field' => 'media_type',
+                'value' => 'video',
+            ),
+        ),
+
+        'main_video_poster' => array(
+            'label' => array('Poster-Bild für Hauptvideo', 'Wird nur angezeigt, wenn oben ein Video ausgewählt wurde'),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => Contao\Config::get('validImageTypes'),
+                'tl_class' => 'w50',
+            ),
+            'dependsOn' => array(
+                'field' => 'media_type',
+                'value' => 'video',
+            ),
+        ),
+        'main_video_poster_no_lazy' => array(
+            'label' => array('Poster-Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Poster-Bild des Hauptvideos'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'media_type',
+                'value' => 'video',
+            ),
+        ),
+        'main_video_no_lazy' => array(
+            'label' => array('Hauptvideo ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Hauptvideo (bessere Performance für Above-the-Fold Videos)'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
             'dependsOn' => array(
                 'field' => 'media_type',
                 'value' => 'video',
@@ -216,6 +259,14 @@ $config = array(
        'field' => 'mobile_media_type', 'value' => 'image'
             ),
         ),
+        'mobile_image_no_lazy' => array(
+            'label' => array('Mobiles Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das mobile Bild'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+                'field' => 'mobile_media_type', 'value' => 'image'
+            ),
+        ),
         'mobile_video' => array(
             'label' => array('Mobiles Video auswählen', 'MP4 oder WEBM'),
             'inputType' => 'fileTree',
@@ -224,8 +275,39 @@ $config = array(
                 'fieldType' => 'radio',
                 'filesOnly' => true,
                 'extensions' => 'mp4,webm',
-                'tl_class' => 'clr',
+                'tl_class' => 'w50 clr',
             ),
+            'dependsOn' => array(
+               'field' => 'mobile_media_type', 'value' => 'video',
+            ),
+        ),
+
+        'mobile_video_poster' => array(
+            'label' => array('Poster-Bild für Mobiles Video', 'Wird nur angezeigt, wenn oben ein mobiles Video ausgewählt wurde'),
+            'inputType' => 'fileTree',
+            'eval' => array(
+                'multiple' => false,
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => Contao\Config::get('validImageTypes'),
+                'tl_class' => 'w50',
+            ),
+            'dependsOn' => array(
+               'field' => 'mobile_media_type', 'value' => 'video',
+            ),
+        ),
+        'mobile_video_poster_no_lazy' => array(
+            'label' => array('Mobiles Poster-Bild ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Poster-Bild des mobilen Videos'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
+            'dependsOn' => array(
+               'field' => 'mobile_media_type', 'value' => 'video',
+            ),
+        ),
+        'mobile_video_no_lazy' => array(
+            'label' => array('Mobiles Video ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das mobile Video'),
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50 clr'),
             'dependsOn' => array(
                'field' => 'mobile_media_type', 'value' => 'video',
             ),

@@ -211,30 +211,23 @@ class GlobalElementConfig
     public static function getButtonConfig($includeAnimation = true)
     {
         $config = [
+            // KERN-FELDER (Pflicht)
             'link_text' => [
                 'label' => ['Link-Beschriftung', ''],
                 'inputType' => 'text',
-                'eval' => ['allowHtml' => true, 'tl_class' => 'w50'],
-            ],
-            'link_id' => [
-                'label' => ['Button-ID', 'Beispielsweise für Analytics-Events'],
-                'inputType' => 'text',
-                'eval' => ['tl_class' => 'w50'],
+                'eval' => ['allowHtml' => true, 'tl_class' => 'w50', 'mandatory' => true],
             ],
             'link_url' => [
                 'label' => ['Verlinkung', ''],
                 'inputType' => 'url',
-                'eval' => ['tl_class' => 'w50'],
+                'eval' => ['tl_class' => 'w50', 'mandatory' => true],
             ],
-            'link_betreff' => [
-                'label' => ['Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'],
-                'inputType' => 'text',
-                'eval' => ['tl_class' => 'w50'],
-            ],
+            
+            // BASIS-OPTIONEN
             'new_tab' => [
                 'label' => ['Link in neuen Tab öffnen', ''],
                 'inputType' => 'checkbox',
-                'eval' => ['tl_class' => 'clr'],
+                'eval' => ['tl_class' => 'w50'],
             ],
             'link_type' => [
                 'label' => ['Optik des Buttons', ''],
@@ -248,32 +241,38 @@ class GlobalElementConfig
                 'options' => self::getButtonSizes(),
                 'eval' => ['tl_class' => 'w50'],
             ],
-            /*
-              'enable_tracking' => array(
-                'label' => array('Klicktracking aktivieren', 'Aktiviert das Klick-Tracking'),
-                'inputType' => 'checkbox',
-                'eval' => array('tl_class' => 'w50'),
-            ),
-             */
-
-            'tracking_position' => array(
-                'label' => array('Tracking-Position', 'Wird im Analytics Tool definiert'),
+            
+            // OPTIONALE FELDER (automatisch optimiert)
+            'link_title' => [
+                'label' => ['Button-Title (optional)', 'Tooltip-Text - wird automatisch aus Link-Text generiert falls leer'],
                 'inputType' => 'text',
-                'eval' => array('tl_class' => 'w50'),
-                'dependsOn' => array(
-                    'field' => 'enable_tracking',
-                ),
-            ),
+                'eval' => ['tl_class' => 'w50'],
+            ],
+            'link_id' => [
+                'label' => ['Button-ID (optional)', 'Für Analytics oder CSS-Targeting'],
+                'inputType' => 'text',
+                'eval' => ['tl_class' => 'w50'],
+            ],
+            'link_betreff' => [
+                'label' => ['E-Mail Betreff (optional)', 'Nur bei mailto:-Links relevant'],
+                'inputType' => 'text',
+                'eval' => ['tl_class' => 'w50'],
+            ],
+            'tracking_position' => [
+                'label' => ['Tracking-Position (optional)', 'Für Analytics-Auswertung'],
+                'inputType' => 'text',
+                'eval' => ['tl_class' => 'w50'],
+            ],
         ];
 
         // Animation nur hinzufügen wenn gewünscht
         if ($includeAnimation) {
             $config = [
                 'animation_type' => [
-                    'label' => ['Art der Einblendeanimation', 'Siehe https://animate.style/ für Beispiele'],
+                    'label' => ['Einblendeanimation (optional)', 'Standard: fadeInUp'],
                     'inputType' => 'select',
                     'options' => self::getAnimations(),
-                    'eval' => ['chosen' => 'true']
+                    'eval' => ['chosen' => 'true', 'tl_class' => 'w50']
                 ]
             ] + $config;
         }
