@@ -709,9 +709,6 @@ $rowJustifyClass = $this->row_justify_content ?: 'justify-content-md-center';
                     // Check if current state is an abbreviation that maps to coverage
                     if (germanStates[stateLower] && germanStates[stateLower].toLowerCase() === coverage) return true;
                     
-                    // Check common state name variations
-                    if (stateLower.includes(coverage) || coverage.includes(stateLower)) return true;
-                    
                     return false;
                 });
             }

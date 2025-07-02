@@ -1,0 +1,21 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # Pagination SEO Listener
+    App\EventListener\PaginationCanonicalListener:
+        tags:
+            - { name: 'contao.hook', hook: 'parseTemplate', priority: 100 }
+
+    # Caeli Area Check AJAX Controllers
+    CaeliWind\CaeliAreaCheckBundle\Controller\FrontendModule\AreaCheckMapController:
+        tags: ['controller.service_arguments']
+        public: true 

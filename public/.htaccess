@@ -292,6 +292,16 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     RewriteRule ^ratgeber/ratgeber-elements$ /ratgeber/ [R=301,L]
     RewriteRule ^ratgeber/ratgeber-flaechencheck$ /flaechencheck [R=301,L]
 
+    Redirect 301 /de/ueber-caeli /ueber-caeli
+    Redirect 301 /de/karriere /karriere
+    Redirect 301 /laender /windenergie/deutschland
+    Redirect 301 /de/impressum /impressum
+    Redirect 301 /kontakt-alt /kontakt
+    Redirect 301 /de/datenschutz /datenschutz
+
+    RewriteRule ^oeffentlicher/marktplatz$ /marktplatz? [R=301,L]
+
+
     # Marktplatz URLs (spezifische vor Wildcard)
     RewriteRule ^oeffentlicher/marktplatz/direktvergabe$ /marktplatz [R=301,L]
     RewriteRule ^oeffentlicher/marktplatz/details/(.*)$ /marktplatz/details/$1 [R=301,L]
@@ -311,7 +321,6 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     RewriteRule ^grundstueck$ /flaechencheck [R=301,L]
     RewriteRule ^historie-flaechenvergabe$ /erfolgsgeschichten [R=301,L]
     RewriteRule ^home$ /en [R=301,L]
-    RewriteRule ^imprint$ /en/imprint [R=301,L]
     RewriteRule ^marketplace$ /en/marketplace [R=301,L]
     RewriteRule ^niedersachsen$ /windenergie/deutschland/niedersachsen [R=301,L]
     RewriteRule ^Potenzialanalyse/78ff0$ /grundeigentuemer [R=301,L]
@@ -322,7 +331,6 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     RewriteRule ^presse/category/id-2024$ /presse [R=301,L]
     RewriteRule ^presse/category/id-2025$ /presse [R=301,L]
     RewriteRule ^privacy-policy-social-media$ /en/privacy-policy [R=301,L]
-    RewriteRule ^privacy-policy$ /en/privacy-policy [R=301,L]
     RewriteRule ^property$ /en/site-check [R=301,L]
     RewriteRule ^qr/da-04-24$ /grundeigentuemer [R=301,L]
     RewriteRule ^qr-da-04-24$ /grundeigentuemer [R=301,L]
@@ -339,6 +347,13 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     RewriteRule ^grundeigentuemer/ratgeber/detailseite/.*$ /ratgeber [R=301,L]
     RewriteRule ^oeffentlicher/marktplatz/.*$ /marktplatz [R=301,L]
 
+
+   # Redirects nur für caeli-wind.de
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli-wind\.de$ [NC]
+    RewriteRule ^privacy-policy$ /en/privacy-policy [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli-wind\.de$ [NC]
+    RewriteRule ^imprint$ /en/imprint [R=301,L]
 
     # Determine the RewriteBase automatically and set it as environment variable.
     # If you are using Apache aliases to do mass virtual hosting or installed the

@@ -34,7 +34,6 @@ services:
     CaeliWind\CaeliAuctionConnect\Routing\AuctionResolver:
         arguments:
             $framework: '@contao.framework'
-            $auctionService: '@CaeliWind\CaeliAuctionConnect\Service\AuctionService'
         tags:
             - { name: 'contao.routing.url_resolver' }
 

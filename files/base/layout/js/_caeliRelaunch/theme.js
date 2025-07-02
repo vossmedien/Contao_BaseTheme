@@ -1292,3 +1292,166 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 })();
  */
+
+// Allgemeine Token-Refresh-Funktionalität für alle Formulare
+document.addEventListener('DOMContentLoaded', function() {
+    'use strict';
+
+    /**
+     * Versucht ein neues REQUEST_TOKEN zu holen um Token-Fehler zu vermeiden
+     * @param {HTMLInputElement} tokenInput - Das Token Input-Feld
+     * @param {Function} callback - Callback-Funktion nach Token-Refresh
+     */
+    function refreshTokenIfNeeded(tokenInput, callback) {
+        const currentToken = tokenInput.value;
+        
+        // Prüfe ob Token vorhanden und gültig aussieht
+        if (!currentToken || currentToken.length < 10) {
+            console.warn('[TokenRefresh] Token fehlt oder ist zu kurz, fahre mit Submit fort');
+            callback();
+            return;
+        }
+        
+        // Versuche über AJAX einen neuen Token zu holen
+        fetch(window.location.href, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Cache-Control': 'no-cache'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            // Extrahiere neuen Token aus Response
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newTokenInput = doc.querySelector('input[name="REQUEST_TOKEN"]');
+            
+            if (newTokenInput && newTokenInput.value && newTokenInput.value !== currentToken) {
+                console.log('[TokenRefresh] Neuen REQUEST_TOKEN erhalten, aktualisiere Formular');
+                tokenInput.value = newTokenInput.value;
+                
+                // Alle TOKEN-Fields im gleichen Formular aktualisieren
+                const form = tokenInput.closest('form');
+                if (form) {
+                    const allTokenInputs = form.querySelectorAll('input[name="REQUEST_TOKEN"]');
+                    allTokenInputs.forEach(input => {
+                        if (input !== tokenInput) {
+                            input.value = newTokenInput.value;
+                        }
+                    });
+                }
+            } else {
+                console.log('[TokenRefresh] Kein neuer Token erhalten oder Token unverändert');
+            }
+            
+            callback();
+        })
+        .catch(error => {
+            console.warn('[TokenRefresh] Token-Refresh fehlgeschlagen, verwende bestehenden Token:', error);
+            callback();
+        });
+    }
+
+    /**
+     * Behandelt Formular-Submit mit Token-Refresh
+     * @param {Event} event - Das Submit-Event
+     */
+    function handleFormSubmitWithTokenRefresh(event) {
+        const form = event.target;
+        const tokenInput = form.querySelector('input[name="REQUEST_TOKEN"]');
+        
+        if (!tokenInput) {
+            // Kein Token-Field vorhanden, normales Submit
+            return true;
+        }
+
+        // Submit verhindern für Token-Refresh
+        event.preventDefault();
+        
+        // Submit-Button temporär deaktivieren
+        const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
+        
+        if (submitButton) {
+            submitButton.disabled = true;
+        }
+
+                 // Token refreshen und dann submitten
+         refreshTokenIfNeeded(tokenInput, () => {
+             // Submit nach Token-Refresh mit kurzer Verzögerung
+             setTimeout(() => {
+                 // Button wieder aktivieren
+                 if (submitButton) {
+                     submitButton.disabled = false;
+                 }
+                 
+                 // Formular wirklich submitten
+                 // Event-Listener temporär entfernen um Endlosschleife zu vermeiden
+                 form.removeEventListener('submit', handleFormSubmitWithTokenRefresh);
+                 form.submit();
+             }, 300);
+         });
+        
+        return false;
+    }
+
+    // Event-Listener für alle Formulare registrieren
+    const forms = document.querySelectorAll('form');
+    
+    forms.forEach(form => {
+        // Nur Formulare mit REQUEST_TOKEN behandeln
+        const tokenInput = form.querySelector('input[name="REQUEST_TOKEN"]');
+        
+        // Area-Check Formular überspringen (hat eigenes Token-Handling)
+        const isAreaCheckForm = 
+            form.id === 'park-form' || 
+            form.closest('.mod_caeli_area_check');
+        
+        if (tokenInput && !isAreaCheckForm) {
+            form.addEventListener('submit', handleFormSubmitWithTokenRefresh);
+            form.dataset.tokenRefreshEnabled = 'theme';
+            console.log('[TokenRefresh] Token-Refresh aktiviert für Formular:', form.id || form.className || 'unnamed');
+        } else if (isAreaCheckForm) {
+            console.log('[TokenRefresh] Überspringe Area-Check Formular (eigenes Token-Handling):', form.id || 'park-form');
+        }
+    });
+
+    // Auch für dynamisch hinzugefügte Formulare (falls vorhanden)
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    // Neue Formulare finden
+                    const newForms = node.tagName === 'FORM' 
+                        ? [node] 
+                        : Array.from(node.querySelectorAll ? node.querySelectorAll('form') : []);
+                    
+                    newForms.forEach(form => {
+                        const tokenInput = form.querySelector('input[name="REQUEST_TOKEN"]');
+                        
+                        // Area-Check Formular überspringen (hat eigenes Token-Handling)
+                        const isAreaCheckForm = 
+                            form.id === 'park-form' || 
+                            form.closest('.mod_caeli_area_check');
+                        
+                        if (tokenInput && !isAreaCheckForm && !form.dataset.tokenRefreshEnabled) {
+                            form.addEventListener('submit', handleFormSubmitWithTokenRefresh);
+                            form.dataset.tokenRefreshEnabled = 'theme';
+                            console.log('[TokenRefresh] Token-Refresh aktiviert für dynamisches Formular:', form.id || form.className || 'unnamed');
+                        } else if (isAreaCheckForm) {
+                            console.log('[TokenRefresh] Überspringe dynamisches Area-Check Formular (eigenes Token-Handling):', form.id || 'park-form');
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+    // Observer für dynamische Inhalte starten
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    console.log('[TokenRefresh] Allgemeine Token-Refresh-Funktionalität initialisiert für', forms.length, 'Formulare');
+});

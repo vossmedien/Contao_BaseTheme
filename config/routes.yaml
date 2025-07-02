@@ -1,0 +1,14 @@
+# Caeli Area Check AJAX Routes
+caeli_area_check_ajax_start:
+    path: /flaechencheck/ajax/start
+    controller: CaeliWind\CaeliAreaCheckBundle\Controller\FrontendModule\AreaCheckMapController::startAsync
+    methods: [POST]
+    defaults:
+        _scope: frontend
+
+caeli_area_check_ajax_status:
+    path: /flaechencheck/ajax/status/{sessionId}
+    controller: CaeliWind\CaeliAreaCheckBundle\Controller\FrontendModule\AreaCheckMapController::checkStatus
+    methods: [GET]
+    defaults:
+        _scope: frontend 

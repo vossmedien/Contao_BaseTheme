@@ -20,7 +20,7 @@ main, footer {
 
 main {
   ul li a {
-      color: var(--bs-tertiary);
+    color: var(--bs-tertiary);
   }
 }
 
@@ -28,9 +28,10 @@ p + ul, p + ol {
   margin-top: 1rem;
 }
 
-p a {
-  //display: inline-block;
-  //margin-inline: .25rem;
+html body p:not(:last-child) {
+  @include media-breakpoint-down(md) {
+      margin-bottom: .5rem;
+  }
 }
 
 main .content--element {
@@ -249,6 +250,6 @@ h2, .h2, h3, .h3 {
   hyphens: auto;
 }
 
-svg{
+svg {
   max-width: 100%;
 }

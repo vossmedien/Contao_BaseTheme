@@ -1947,78 +1947,72 @@ function startLoadingAnimation() {
 function submitFormWithRedirect() {
     //console.log('=== submitFormWithRedirect aufgerufen ===');
     
-    // ROBUSTE LÖSUNG: Token vor Submit validieren und ggf. refreshen
     const parkForm = document.getElementById('park-form');
     if (!parkForm) {
         console.error('Form nicht gefunden');
         return false;
     }
     
+    // Submit-Button finden und deaktivieren (ohne Text zu ändern)
+    const submitButton = document.querySelector('button[onclick*="submitFormWithRedirect"], .btn[onclick*="submitFormWithRedirect"]');
+    if (submitButton) {
+        submitButton.disabled = true;
+    }
+    
     showLoadingOverlay();
     startLoadingAnimation();
     
-    // Token-Handling: Fresh token vom Server holen wenn möglich
+    // Token-Refresh vor Submit (da submitFormWithRedirect direktes .submit() verwendet)
     const tokenInput = parkForm.querySelector('input[name="REQUEST_TOKEN"]');
     if (tokenInput) {
-        // Versuche neuen Token zu holen (falls verfügbar)
         refreshTokenIfNeeded(tokenInput, () => {
-            // Submit nach Token-Refresh
             setTimeout(() => {
                 parkForm.submit();
             }, 300);
         });
     } else {
-        // Direkter Submit wenn kein Token-Field vorhanden
         setTimeout(() => {
             parkForm.submit();
-        }, 500);
+        }, 300);
     }
     
     return false; // Verhindert doppeltes Submit
 }
 
 /**
- * Versucht ein neues REQUEST_TOKEN zu holen um Token-Fehler zu vermeiden
+ * Token-Refresh-Funktion für area-check (vereinfacht)
  */
 function refreshTokenIfNeeded(tokenInput, callback) {
-    // Prüfe ob Token älter als 15 Minuten ist (heuristisch)
     const currentToken = tokenInput.value;
+    
     if (!currentToken || currentToken.length < 10) {
-        console.warn('Token fehlt oder ist zu kurz, fahre mit Submit fort');
+        console.warn('[AreaCheck] Token fehlt oder ist zu kurz, fahre mit Submit fort');
         callback();
         return;
     }
     
-    // Versuche über AJAX einen neuen Token zu holen
-    // Das ist optional - wenn es fehlschlägt, verwenden wir den bestehenden Token
     fetch(window.location.href, {
         method: 'GET',
         headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'Cache-Control': 'no-cache'
         }
     })
     .then(response => response.text())
     .then(html => {
-        // Extrahiere neuen Token aus Response
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         const newTokenInput = doc.querySelector('input[name="REQUEST_TOKEN"]');
         
         if (newTokenInput && newTokenInput.value && newTokenInput.value !== currentToken) {
-            console.log('Neuen REQUEST_TOKEN erhalten, aktualisiere Form');
+            console.log('[AreaCheck] Neuen REQUEST_TOKEN erhalten, aktualisiere Form');
             tokenInput.value = newTokenInput.value;
-            
-            // Auch verstecktes Token-Field aktualisieren falls vorhanden
-            const hiddenToken = document.querySelector('.mod_caeli_area_check input[name="REQUEST_TOKEN"]');
-            if (hiddenToken) {
-                hiddenToken.value = newTokenInput.value;
-            }
         }
         
         callback();
     })
     .catch(error => {
-        console.warn('Token-Refresh fehlgeschlagen, verwende bestehenden Token:', error);
+        console.warn('[AreaCheck] Token-Refresh fehlgeschlagen, verwende bestehenden Token:', error);
         callback();
     });
 }

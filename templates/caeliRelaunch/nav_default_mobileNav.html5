@@ -39,7 +39,7 @@
             {{iflng}}
 
             {{iflng::en}}
-            <a href="/contact" title="Contact" class="">
+            <a href="/en/contact" title="Contact" class="">
                 Contact
             </a>
             {{iflng}}

@@ -486,12 +486,57 @@ class SocialMetaHelper
     }
 
     /**
+     * Extrahiert Meta-Daten aus der aktuellen Seite (Contao PageModel)
+     */
+    private static function getPageMetaData(): array
+    {
+        global $objPage;
+        
+        $pageData = [];
+        
+        if ($objPage) {
+            // Seiten-Titel hat höchste Priorität
+            if (!empty($objPage->pageTitle)) {
+                $pageData['title'] = $objPage->pageTitle;
+            } elseif (!empty($objPage->title)) {
+                $pageData['title'] = $objPage->title;
+            }
+            
+            // Seiten-Beschreibung hat höchste Priorität
+            if (!empty($objPage->description)) {
+                $pageData['description'] = $objPage->description;
+            }
+            
+            // Weitere Meta-Informationen
+            if (!empty($objPage->language)) {
+                $locale = str_replace('-', '_', $objPage->language);
+                $pageData['locale'] = $locale;
+            }
+            
+            // Keywords falls vorhanden
+            if (!empty($objPage->keywords)) {
+                $pageData['keywords'] = $objPage->keywords;
+            }
+            
+            // Robots falls vorhanden
+            if (!empty($objPage->robots)) {
+                $pageData['robots'] = $objPage->robots;
+            }
+        }
+        
+        return $pageData;
+    }
+
+    /**
      * Ermittelt die besten verfügbaren Daten aus allen gesammelten Elementen
      */
     private static function getBestElementData(): array
     {
+        // Seiten-Meta-Daten haben immer Priorität
+        $pageData = self::getPageMetaData();
+        
         if (empty(self::$collectedElementData)) {
-            return [];
+            return $pageData;
         }
 
         // Sortiere nach Bildqualität (höchster Score zuerst)
@@ -499,31 +544,76 @@ class SocialMetaHelper
             return ($b['_imageScore'] ?? 0) <=> ($a['_imageScore'] ?? 0);
         });
 
-        $bestData = self::$collectedElementData[0];
+        $bestElementData = self::$collectedElementData[0];
 
-        // Kombiniere Titel und Beschreibung aus allen Elementen falls nötig
-        if (empty($bestData['title'])) {
+        // Kombiniere: Seiten-Meta-Daten haben Priorität, Element-Daten als Fallback
+        $finalData = [];
+        
+        // Titel: Seite > Element-Daten
+        if (!empty($pageData['title'])) {
+            $finalData['title'] = $pageData['title'];
+        } elseif (!empty($bestElementData['title'])) {
+            $finalData['title'] = $bestElementData['title'];
+        } else {
+            // Fallback: Titel aus anderen Elementen suchen
             foreach (self::$collectedElementData as $elementData) {
                 if (!empty($elementData['title'])) {
-                    $bestData['title'] = $elementData['title'];
+                    $finalData['title'] = $elementData['title'];
                     break;
                 }
             }
         }
 
-        if (empty($bestData['description'])) {
+        // Beschreibung: Seite > Element-Daten
+        if (!empty($pageData['description'])) {
+            $finalData['description'] = $pageData['description'];
+        } elseif (!empty($bestElementData['description'])) {
+            $finalData['description'] = $bestElementData['description'];
+        } else {
+            // Fallback: Beschreibung aus anderen Elementen suchen
             foreach (self::$collectedElementData as $elementData) {
                 if (!empty($elementData['description'])) {
-                    $bestData['description'] = $elementData['description'];
+                    $finalData['description'] = $elementData['description'];
                     break;
                 }
             }
         }
+        
+        // Bild: Verwende das beste verfügbare Bild aus Elementen
+        if (!empty($bestElementData['image'])) {
+            $finalData['image'] = $bestElementData['image'];
+            
+            // Alt-Text für Bild: Priorität Seiten-Titel > Element-Titel
+            if (!empty($finalData['title'])) {
+                $finalData['image_alt'] = $finalData['title'];
+            } elseif (!empty($bestElementData['image_alt'])) {
+                $finalData['image_alt'] = $bestElementData['image_alt'];
+            }
+        }
 
-        // Score-Feld entfernen
-        unset($bestData['_imageScore']);
+        // Fallback-Bild setzen wenn kein Bild aus Elementen gefunden wurde
+        if (empty($finalData['image'])) {
+            $fallbackImage = self::generateFallbackSocialImage();
+            if ($fallbackImage) {
+                $finalData['image'] = $fallbackImage;
+                
+                // Alt-Text für Fallback-Bild
+                if (!empty($finalData['title'])) {
+                    $finalData['image_alt'] = $finalData['title'];
+                }
+            }
+        }
+        
+        // Weitere Meta-Daten von der Seite übernehmen
+        foreach (['locale', 'keywords', 'robots', 'author', 'type'] as $field) {
+            if (!empty($pageData[$field])) {
+                $finalData[$field] = $pageData[$field];
+            } elseif (!empty($bestElementData[$field])) {
+                $finalData[$field] = $bestElementData[$field];
+            }
+        }
 
-        return $bestData;
+        return $finalData;
     }
 
     /**
@@ -584,13 +674,18 @@ class SocialMetaHelper
 
     /**
      * Hilfsmethode: Extrahiert Social Media Daten aus Template-Objekten
+     * Seiten-Meta-Daten haben Priorität über Element-Daten
      */
     public static function extractDataFromTemplate($templateObject): array
     {
+        // Zuerst Seiten-Meta-Daten holen
+        $pageData = self::getPageMetaData();
         $data = [];
 
-        // Titel aus verschiedenen möglichen Feldern
-        if (!empty($templateObject->headline)) {
+        // Titel: Seiten-Meta hat Priorität
+        if (!empty($pageData['title'])) {
+            $data['title'] = $pageData['title'];
+        } elseif (!empty($templateObject->headline)) {
             $data['title'] = $templateObject->headline;
         } elseif (!empty($templateObject->main_headline)) {
             $data['title'] = $templateObject->main_headline;
@@ -598,8 +693,10 @@ class SocialMetaHelper
             $data['title'] = $templateObject->top_headline;
         }
 
-        // Beschreibung aus verschiedenen möglichen Feldern
-        if (!empty($templateObject->text)) {
+        // Beschreibung: Seiten-Meta hat Priorität
+        if (!empty($pageData['description'])) {
+            $data['description'] = $pageData['description'];
+        } elseif (!empty($templateObject->text)) {
             $data['description'] = $templateObject->text;
         } elseif (!empty($templateObject->main_text)) {
             $data['description'] = $templateObject->main_text;
@@ -609,7 +706,7 @@ class SocialMetaHelper
             $data['description'] = $templateObject->left_text_below_headline;
         }
 
-        // Bild aus verschiedenen möglichen Feldern
+        // Bild aus verschiedenen möglichen Feldern (Element-Daten für Bilder)
         if (!empty($templateObject->image_src)) {
             $data['image'] = $templateObject->image_src;
         } elseif (!empty($templateObject->main_image)) {
@@ -633,16 +730,20 @@ class SocialMetaHelper
             }
         }
 
-        // Alt-Text für Bild
-        if (!empty($data['image']) && !empty($data['title'])) {
-            $data['image_alt'] = $data['title'];
+        // Alt-Text für Bild: Priorität Seiten-Titel > Element-Titel
+        if (!empty($data['image'])) {
+            if (!empty($data['title'])) {
+                $data['image_alt'] = $data['title'];
+            } elseif (!empty($templateObject->headline)) {
+                $data['image_alt'] = $templateObject->headline;
+            }
         }
 
-        // Sprache
-        global $objPage;
-        if ($objPage && $objPage->language) {
-            $locale = str_replace('-', '_', $objPage->language);
-            $data['locale'] = $locale;
+        // Weitere Meta-Daten von der Seite übernehmen
+        foreach (['locale', 'keywords', 'robots'] as $field) {
+            if (!empty($pageData[$field])) {
+                $data[$field] = $pageData[$field];
+            }
         }
 
         return $data;
@@ -663,18 +764,25 @@ class SocialMetaHelper
 
     /**
      * Convenience-Methode für News-Templates
+     * Seiten-Meta-Daten haben Priorität über News-Element-Daten
      */
     public static function generateNewsSocialMeta($templateObject): string
     {
+        // Zuerst Seiten-Meta-Daten holen
+        $pageData = self::getPageMetaData();
         $data = [];
 
-        // Titel aus verfügbaren News-Feldern
-        if (!empty($templateObject->headline)) {
+        // Titel: Seiten-Meta hat Priorität über News-Headline
+        if (!empty($pageData['title'])) {
+            $data['title'] = $pageData['title'];
+        } elseif (!empty($templateObject->headline)) {
             $data['title'] = $templateObject->headline;
         }
 
-        // Beschreibung aus verfügbaren News-Feldern
-        if (!empty($templateObject->teaser)) {
+        // Beschreibung: Seiten-Meta hat Priorität über News-Teaser/Text
+        if (!empty($pageData['description'])) {
+            $data['description'] = $pageData['description'];
+        } elseif (!empty($templateObject->teaser)) {
             // HTML-Tags aus teaser entfernen für Meta-Tags
             $data['description'] = strip_tags($templateObject->teaser);
         } elseif (!empty($templateObject->text)) {
@@ -687,9 +795,13 @@ class SocialMetaHelper
             $data['image'] = $templateObject->src;
         }
 
-        // Alt-Text für Bild
-        if (!empty($data['image']) && !empty($data['title'])) {
-            $data['image_alt'] = $data['title'];
+        // Alt-Text für Bild: Priorität Seiten-Titel > News-Titel
+        if (!empty($data['image'])) {
+            if (!empty($data['title'])) {
+                $data['image_alt'] = $data['title'];
+            } elseif (!empty($templateObject->headline)) {
+                $data['image_alt'] = $templateObject->headline;
+            }
         }
 
         // Autor hinzufügen wenn verfügbar
@@ -697,11 +809,11 @@ class SocialMetaHelper
             $data['author'] = $templateObject->postAuthor;
         }
 
-        // Sprache
-        global $objPage;
-        if ($objPage && $objPage->language) {
-            $locale = str_replace('-', '_', $objPage->language);
-            $data['locale'] = $locale;
+        // Meta-Daten von der Seite übernehmen
+        foreach (['locale', 'keywords', 'robots'] as $field) {
+            if (!empty($pageData[$field])) {
+                $data[$field] = $pageData[$field];
+            }
         }
 
         // News-spezifische Anpassungen
@@ -712,18 +824,25 @@ class SocialMetaHelper
 
     /**
      * Extrahiert Social Media Daten spezifisch für News-Templates mit erweiterten Optionen
+     * Seiten-Meta-Daten haben Priorität über News-Element-Daten
      */
     public static function extractNewsDataFromTemplate($templateObject): array
     {
+        // Zuerst Seiten-Meta-Daten holen
+        $pageData = self::getPageMetaData();
         $data = [];
 
-        // Titel aus News-Template
-        if (!empty($templateObject->headline)) {
+        // Titel: Seiten-Meta hat Priorität über News-Headline
+        if (!empty($pageData['title'])) {
+            $data['title'] = $pageData['title'];
+        } elseif (!empty($templateObject->headline)) {
             $data['title'] = $templateObject->headline;
         }
 
-        // Beschreibung: Priorität teaser > text
-        if (!empty($templateObject->teaser)) {
+        // Beschreibung: Seiten-Meta hat Priorität über teaser > text
+        if (!empty($pageData['description'])) {
+            $data['description'] = $pageData['description'];
+        } elseif (!empty($templateObject->teaser)) {
             $data['description'] = strip_tags($templateObject->teaser);
         } elseif (!empty($templateObject->text)) {
             $data['description'] = strip_tags($templateObject->text);
@@ -774,9 +893,13 @@ class SocialMetaHelper
             }
         }
 
-        // Alt-Text für Bild
-        if (!empty($data['image']) && !empty($data['title'])) {
-            $data['image_alt'] = $data['title'];
+        // Alt-Text für Bild: Priorität Seiten-Titel > News-Titel
+        if (!empty($data['image'])) {
+            if (!empty($data['title'])) {
+                $data['image_alt'] = $data['title'];
+            } elseif (!empty($templateObject->headline)) {
+                $data['image_alt'] = $templateObject->headline;
+            }
         }
 
         // Autor hinzufügen
@@ -784,11 +907,11 @@ class SocialMetaHelper
             $data['author'] = $templateObject->postAuthor;
         }
 
-        // Sprache
-        global $objPage;
-        if ($objPage && $objPage->language) {
-            $locale = str_replace('-', '_', $objPage->language);
-            $data['locale'] = $locale;
+        // Meta-Daten von der Seite übernehmen
+        foreach (['locale', 'keywords', 'robots'] as $field) {
+            if (!empty($pageData[$field])) {
+                $data[$field] = $pageData[$field];
+            }
         }
 
         // News-spezifische Metadaten

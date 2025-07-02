@@ -18,13 +18,11 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\Content\ContentUrlResolverInterface;
 use Contao\CoreBundle\Routing\Content\ContentUrlResult;
 use Contao\PageModel;
-use CaeliWind\CaeliAuctionConnect\Service\AuctionService;
 
 class AuctionResolver implements ContentUrlResolverInterface
 {
     public function __construct(
-        private readonly ContaoFramework $framework,
-        private readonly AuctionService $auctionService
+        private readonly ContaoFramework $framework
     ) {
     }
 

@@ -26,7 +26,10 @@ use Vsm\VsmHelperTools\Helper\SchemaOrgHelper;
 class ImageHelper
 {
     private const DEFAULT_QUALITY = 85;
+    private const LARGE_IMAGE_QUALITY = 75; // Reduzierte Qualität für große Bilder (>1600px)
+    private const RETINA_QUALITY = 70; // Noch geringere Qualität für Retina-Varianten großer Bilder
     private const PNG_COMPRESSION = 6;
+    private const LARGE_IMAGE_THRESHOLD = 1600; // Schwellenwert für "große" Bilder
     private const BREAKPOINTS = [
         ['maxWidth' => 576, 'width' => 576],
         ['maxWidth' => 768, 'width' => 768],
@@ -73,6 +76,27 @@ class ImageHelper
             self::$imageFormatCache = [];
             self::$imageFormatCacheSize = 0;
         }
+    }
+
+    /**
+     * Bestimmt die optimale Qualität basierend auf der Bildbreite und dem Retina-Faktor
+     */
+    private static function getOptimalQuality(int $width, int $retinaFactor = 1): int
+    {
+        // Berechne die tatsächliche Ausgabebreite
+        $actualWidth = $width * $retinaFactor;
+        
+        // Für sehr große Bilder (über Threshold) reduzierte Qualität verwenden
+        if ($actualWidth > self::LARGE_IMAGE_THRESHOLD) {
+            // Bei Retina-Varianten noch weiter reduzieren
+            if ($retinaFactor >= 2) {
+                return self::RETINA_QUALITY;
+            }
+            return self::LARGE_IMAGE_QUALITY;
+        }
+        
+        // Für normale Größen die Standard-Qualität
+        return self::DEFAULT_QUALITY;
     }
 
     private static function handleImageFormat(string $imagePath): array
@@ -339,11 +363,15 @@ class ImageHelper
         }
     }
 
-    private static function getResizeOptions($format = null): ResizeOptions
+    private static function getResizeOptions($format = null, int $width = 0, int $retinaFactor = 1): ResizeOptions
     {
         $options = new ResizeOptions();
+        
+        // Dynamische Qualität basierend auf Bildgröße bestimmen
+        $quality = $width > 0 ? self::getOptimalQuality($width, $retinaFactor) : self::DEFAULT_QUALITY;
+        
         $baseOptions = [
-            'quality' => self::DEFAULT_QUALITY,
+            'quality' => $quality,
             'png_compression_level' => self::PNG_COMPRESSION
         ];
 
@@ -352,9 +380,10 @@ class ImageHelper
             if ($format === 'jpeg' || $format === 'jpg') {
                 $baseOptions['format'] = 'jpeg';
             } elseif ($format === 'avif') {
-                // AVIF-spezifische Einstellungen
+                // AVIF-spezifische Einstellungen - aber mit angepasster Qualität
                 $baseOptions['format'] = 'avif';
-                $baseOptions['quality'] = 90;
+                // AVIF ist effizienter, daher können wir eine etwas höhere Qualität verwenden
+                $baseOptions['quality'] = min(95, $quality + 10);
             } else {
                 $baseOptions['format'] = $format;
             }
@@ -822,7 +851,7 @@ class ImageHelper
             $baseImage = self::processImage(
                 $absoluteImagePath,
                 $config,
-                self::getResizeOptions()
+                self::getResizeOptions(null, $baseWidth, 1)
             );
             $baseWidth = $baseWidth ?? $originalWidth;
             $baseHeight = $baseHeight ?? $originalHeight;
@@ -879,9 +908,9 @@ class ImageHelper
 
                     // AVIF Source (höchste Priorität) - immer versuchen zu konvertieren
                     try {
-                        $tempAvifSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('avif'))['src']);
-                        $tempAvif2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('avif'))['src']) : null;
-                        $tempAvif3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions('avif'))['src']) : null;
+                        $tempAvifSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('avif', $width, 1))['src']);
+                        $tempAvif2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('avif', $width, 2))['src']) : null;
+                        $tempAvif3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions('avif', $width, 3))['src']) : null;
 
                         $sources[] = self::generateSource("image/avif", $tempAvifSrc, $tempAvif2x, $tempAvif3x, $mediaQuery);
                     } catch (\Exception $e) {
@@ -892,9 +921,9 @@ class ImageHelper
                     if (!$isWebp) {
                         // Nur wenn Original NICHT WebP ist
                         try {
-                            $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('webp'))['src']);
-                            $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('webp'))['src']) : null;
-                            $tempWebp3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions('webp'))['src']) : null;
+                            $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('webp', $width, 1))['src']);
+                            $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('webp', $width, 2))['src']) : null;
+                            $tempWebp3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions('webp', $width, 3))['src']) : null;
 
                             $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x, $tempWebp3x, $mediaQuery);
                         } catch (\Exception $e) {
@@ -902,9 +931,9 @@ class ImageHelper
                         }
                     } else {
                         // Original ist bereits WebP - direkt verwenden
-                        $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions())['src']);
-                        $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions())['src']) : null;
-                        $tempWebp3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions())['src']) : null;
+                        $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions(null, $width, 1))['src']);
+                        $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions(null, $width, 2))['src']) : null;
+                        $tempWebp3x = $has3x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 3), self::getResizeOptions(null, $width, 3))['src']) : null;
 
                         $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x, $tempWebp3x, $mediaQuery);
                     }
@@ -918,8 +947,8 @@ class ImageHelper
 
                     // AVIF Source (Fallback ohne Media Query)
                     try {
-                        $tempAvifSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('avif'))['src']);
-                        $tempAvif2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('avif'))['src']) : null;
+                        $tempAvifSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('avif', $width, 1))['src']);
+                        $tempAvif2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('avif', $width, 2))['src']) : null;
 
                         $sources[] = self::generateSource("image/avif", $tempAvifSrc, $tempAvif2x);
                     } catch (\Exception $e) {
@@ -929,8 +958,8 @@ class ImageHelper
                     // WebP Source (Universal Fallback da 97%+ Unterstützung)
                     if (!$isWebp) {
                         try {
-                            $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('webp'))['src']);
-                            $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('webp'))['src']) : null;
+                            $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions('webp', $width, 1))['src']);
+                            $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions('webp', $width, 2))['src']) : null;
 
                             $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x);
                         } catch (\Exception $e) {
@@ -938,8 +967,8 @@ class ImageHelper
                         }
                     } else {
                         // Original ist bereits WebP
-                        $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions())['src']);
-                        $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions())['src']) : null;
+                        $tempWebpSrc = self::encodePath(self::processImage($absoluteImagePath, $config, self::getResizeOptions(null, $width, 1))['src']);
+                        $tempWebp2x = $has2x ? self::encodePath(self::processImage($absoluteImagePath, self::getRetinaConfig($config, $width, $originalWidth, 2), self::getResizeOptions(null, $width, 2))['src']) : null;
 
                         $sources[] = self::generateSource("image/webp", $tempWebpSrc, $tempWebp2x);
                     }
@@ -959,7 +988,7 @@ class ImageHelper
             $standardConfig->setMode($size[2]);
         }
 
-        $standardImage = self::processImage($absoluteImagePath, $standardConfig, self::getResizeOptions());
+        $standardImage = self::processImage($absoluteImagePath, $standardConfig, self::getResizeOptions(null, $baseWidth, 1));
         $standardSrc = self::encodePath($standardImage['src']);
 
         // Lightbox Image - immer größer als normale Anzeige
@@ -990,7 +1019,7 @@ class ImageHelper
                     $lightboxImage = self::processImage(
                         $absoluteImagePath,
                         $lightboxConfig,
-                        self::getResizeOptions($lightboxFormat)
+                        self::getResizeOptions($lightboxFormat, $lightboxMaxWidth, 1)
                     );
                     $lightboxImageSrc = $lightboxImage['src'];
                 } catch (\Exception $e) {
@@ -1351,12 +1380,20 @@ class ImageHelper
         }
 
         try {
+            // Bildbreite bestimmen für Qualitätsanpassung
+            $width = $config->getWidth() ?: 0;
+            if ($width === 0 && file_exists($absolutePath)) {
+                if ($imageInfo = @getimagesize($absolutePath)) {
+                    $width = (int)$imageInfo[0];
+                }
+            }
+            
             $processedImage = self::getContainer()
                 ->get('contao.image.factory')
                 ->create(
                     $absolutePath,
                     $config,
-                    self::getResizeOptions()
+                    self::getResizeOptions(null, $width, 1)
                 );
             $path = str_replace($rootDir, "", $processedImage->getPath());
             return self::encodePath($path);

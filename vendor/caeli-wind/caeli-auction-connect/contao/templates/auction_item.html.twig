@@ -15,7 +15,7 @@
                 {% if image_path %}
                     <div class="card-img-top auction-image-wrapper">
                         <a id="auction_image_{{ auction.id }}" href="{{ detailPageUrl }}/{{ auction.id }}" class="auction_image_link">
-                            <img src="{{ image_path }}"
+                            <img src="{{ image_path }}" width="500" height="322"
                                  alt="{{ 'auction_listing.card.image_alt_prefix'|trans }} {{ auction.id }}" class="auction-image img-fluid">
                             {% if raw_data.countDown is defined and raw_data.countDown > 0 %}
                                 {% set days_countdown = (raw_data.countDown / 86400)|round(0, 'ceil') %}
