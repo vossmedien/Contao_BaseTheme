@@ -31,6 +31,15 @@ jobs:
             git checkout -b main
             git reset --hard origin/main
           else
+            echo "Checking remote URL..."
+            CURRENT_URL=$(git remote get-url origin)
+            EXPECTED_URL="git@github.com-website-relaunch:${{ github.repository }}.git"
+            
+            if [ "$CURRENT_URL" != "$EXPECTED_URL" ]; then
+              echo "Updating remote URL from $CURRENT_URL to $EXPECTED_URL"
+              git remote set-url origin $EXPECTED_URL
+            fi
+            
             echo "Pulling latest changes..."
             git fetch origin main
             git reset --hard origin/main
