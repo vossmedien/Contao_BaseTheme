@@ -110,10 +110,10 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     ExpiresActive On
 
     ## CSS and JS expiration: 1 month after request
-    ExpiresByType text/css "access plus 1 month"
-    ExpiresByType application/javascript "access plus 1 month"
-    ExpiresByType application/x-javascript "access plus 1 month"
-    ExpiresByType text/x-javascript "access plus 1 month"
+    ExpiresByType text/css "access plus 3 month"
+    ExpiresByType application/javascript "access plus 3 month"
+    ExpiresByType application/x-javascript "access plus 3 month"
+    ExpiresByType text/x-javascript "access plus 3 month"
 
     ## Image files expiration: 1 year after request
     ExpiresByType image/bmp "access plus 1 year"
@@ -143,27 +143,27 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     ExpiresByType font/woff2 "access plus 1 year"
 
     ## Audio files expiration: 1 month after request
-    ExpiresByType audio/ogg "access plus 1 month"
-    ExpiresByType application/ogg "access plus 1 month"
-    ExpiresByType audio/basic "access plus 1 month"
-    ExpiresByType audio/mid "access plus 1 month"
-    ExpiresByType audio/midi "access plus 1 month"
-    ExpiresByType audio/mpeg "access plus 1 month"
-    ExpiresByType audio/mp3 "access plus 1 month"
-    ExpiresByType audio/x-aiff "access plus 1 month"
-    ExpiresByType audio/x-mpegurl "access plus 1 month"
-    ExpiresByType audio/x-pn-realaudio "access plus 1 month"
-    ExpiresByType audio/x-wav "access plus 1 month"
+    ExpiresByType audio/ogg "access plus 3 month"
+    ExpiresByType application/ogg "access plus 3 month"
+    ExpiresByType audio/basic "access plus 3 month"
+    ExpiresByType audio/mid "access plus 3 month"
+    ExpiresByType audio/midi "access plus 3 month"
+    ExpiresByType audio/mpeg "access plus 3 month"
+    ExpiresByType audio/mp3 "access plus 3 month"
+    ExpiresByType audio/x-aiff "access plus 3 month"
+    ExpiresByType audio/x-mpegurl "access plus 3 month"
+    ExpiresByType audio/x-pn-realaudio "access plus 3 month"
+    ExpiresByType audio/x-wav "access plus 3 month"
 
     ## Movie files expiration: 1 month after request
-    ExpiresByType application/x-shockwave-flash "access plus 1 month"
-    ExpiresByType x-world/x-vrml "access plus 1 month"
-    ExpiresByType video/x-msvideo "access plus 1 month"
-    ExpiresByType video/mpeg "access plus 1 month"
-    ExpiresByType video/mp4 "access plus 1 month"
-    ExpiresByType video/quicktime "access plus 1 month"
-    ExpiresByType video/x-la-asf "access plus 1 month"
-    ExpiresByType video/x-ms-asf "access plus 1 month"
+    ExpiresByType application/x-shockwave-flash "access plus 3 month"
+    ExpiresByType x-world/x-vrml "access plus 3 month"
+    ExpiresByType video/x-msvideo "access plus 3 month"
+    ExpiresByType video/mpeg "access plus 3 month"
+    ExpiresByType video/mp4 "access plus 3 month"
+    ExpiresByType video/quicktime "access plus 3 month"
+    ExpiresByType video/x-la-asf "access plus 3 month"
+    ExpiresByType video/x-ms-asf "access plus 3 month"
 
     ## HTML files expiration: 1 hour for dynamic content
     ExpiresByType text/html "access plus 1 hour"
@@ -171,7 +171,7 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     ExpiresByType text/xml "access plus 1 month"
 
     ## PDF files expiration: 1 month after request
-    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType application/pdf "access plus 3 month"
 </IfModule>
 
 <IfModule mod_security.c>
@@ -201,12 +201,10 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 
+    # ===== QUERY PARAMETER REDIRECTS (höchste Priorität) =====
     RewriteCond %{QUERY_STRING} ^getersteinschaetzung=([a-f0-9\-]+)$ [NC]
     RewriteRule ^start$ /?parkid=%1 [R=301,L]
 
-
-
-    # QUERY PARAMETER REDIRECTS ZUERST (vor den normalen Regeln!)
     RewriteCond %{QUERY_STRING} ^page_n82=2$
     RewriteRule ^grundeigentuemer/ratgeber$ /ratgeber? [R=301,L]
 
@@ -225,26 +223,75 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     RewriteCond %{QUERY_STRING} ^page_e=[234]$
     RewriteRule ^ueber-caeli/presse-spiegel$ /pressespiegel? [R=301,L]
 
-    # DANN: Spezifische URLs (längste zuerst)
+    # ===== DOMAIN-SPEZIFISCHE REDIRECTS =====
+    # caeli-wind.de
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli-wind\.de$ [NC]
+    RewriteRule ^privacy-policy$ /en/privacy-policy [R=301,L]
 
-    # About/Career URLs
-    RewriteRule ^about-caeli/career/job/process-manager-in$ /karriere [R=301,L]
-    RewriteRule ^about-caeli/board-of-directors$ /en/board-of-directors [R=301,L]
-    RewriteRule ^about-caeli/career/job$ /karriere [R=301,L]
-    RewriteRule ^about-caeli/career/$ /karriere [R=301,L]
-    RewriteRule ^about-caeli/team$ /en/management [R=301,L]
-    RewriteRule ^about-caeli$ /en/about-caeli [R=301,L]
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli-wind\.de$ [NC]
+    RewriteRule ^imprint$ /en/imprint [R=301,L]
 
-    # Blog URLs (längste zuerst)
+   # caeli.co.uk
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli\.co\.uk$ [NC]
+    RewriteRule ^en/contact$ /?contact=1 [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli\.co\.uk$ [NC]
+    RewriteRule ^caeli-wind-co-uk$ / [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli\.co\.uk$ [NC]
+    RewriteRule ^en$ / [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli\.co\.uk$ [NC]
+    RewriteRule ^delivery/cmp\.php$ / [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli\.co\.uk$ [NC]
+    RewriteRule ^hans-georg\.lewinski@caeli\.co\.uk$ /?contact=1 [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli\.co\.uk$ [NC]
+    RewriteRule ^delivery/empty\.html$ / [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli\.co\.uk$ [NC]
+    RewriteRule ^julia\.berkenfeld@caeli\.co\.uk$ /?contact=1 [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli\.co\.uk$ [NC]
+    RewriteRule ^delivery/?$ / [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?caeli\.co\.uk$ [NC]
+    RewriteRule ^cmp_final$ / [R=301,L]
+
+    # ===== SPEZIFISCHE REDIRECTS (längste URLs zuerst) =====
+    # Blog URLs
     RewriteRule ^blog/artikel/eeg-ausschreibung-februar-2025-auswirkungen-auf-windkraft-projektentwickler-caeli-wind$ /projektentwickler-blog/artikel/eeg-ausschreibung-februar-2025-auswirkungen-auf-windkraft-projektentwickler-caeli-wind [R=301,L]
     RewriteRule ^blog/artikel/erfolgsfaktor-repowering-weiterentwicklung-windparks-fuer-projektentwickler-attraktiv$ /projektentwickler-blog/artikel/erfolgsfaktor-repowering-weiterentwicklung-windparks-fuer-projektentwickler-attraktiv [R=301,L]
     RewriteRule ^blog/artikel/windkraftflaechen-erfolgreich-sichern-strategien-fuer-projektentwickler$ /projektentwickler-blog/artikel/windkraftflaechen-erfolgreich-sichern-strategien-fuer-projektentwickler [R=301,L]
-    RewriteRule ^blog/artikel$ /projektentwickler-blog/ [R=301,L]
-    RewriteRule ^blog-en/article$ /en/ [R=301,L]
-    RewriteRule ^blog-en/$ /en/ [R=301,L]
-    RewriteRule ^blog$ /projektentwickler-blog/ [R=301,L]
 
-    # Bundesland URLs
+    # Presse URLs
+    RewriteRule ^presse/pressemitteilung/interesse-an-windkraft-zieht-an-caeli-wind-meldet-steigende-zahl-an-flaechenchecks$ /presse/meldung/interesse-an-windkraft-zieht-an-caeli-wind-meldet-steigende-zahl-an-flaechenchecks [R=301,L]
+
+    # Ratgeber URLs (spezifische vor Wildcards)
+    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen-fuer-waldbesitzer$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
+    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windkraft-auf-agrarflaechen-wie-landwirte-ihren-beitrag-zur-energiewende-leisten-und-selbst-profitieren-koennen$ /ratgeber/detailseite/windkraft-auf-agrarflaechen [R=301,L]
+    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
+    RewriteRule ^grundeigentuemer/ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
+    RewriteRule ^ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen-fuer-waldbesitzer$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
+    RewriteRule ^ratgeber/detailseite/windkraft-auf-agrarflaechen-wie-landwirte-ihren-beitrag-zur-energiewende-leisten-und-selbst-profitieren-koennen$ /ratgeber/detailseite/windkraft-auf-agrarflaechen [R=301,L]
+    RewriteRule ^ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
+
+    # Marktplatz URLs
+    RewriteRule ^oeffentlicher/marktplatz/direktvergabe$ /marktplatz [R=301,L]
+    RewriteRule ^oeffentlicher/marktplatz/details/(.*)$ /marktplatz/details/$1 [R=301,L]
+    RewriteRule ^oeffentlicher/marktplatz$ /marktplatz [R=301,L]
+
+    # ===== EINFACHE REDIRECTS =====
+    Redirect 301 /start /
+    Redirect 301 /de/ueber-caeli /ueber-caeli
+    Redirect 301 /de/karriere /karriere
+    Redirect 301 /laender /windenergie/deutschland
+    Redirect 301 /de/impressum /impressum
+    Redirect 301 /kontakt-alt /kontakt
+    Redirect 301 /de/datenschutz /datenschutz
+
+    # ===== BUNDESLAND REDIRECTS =====
     RewriteRule ^bundesland/baden-wuerttemberg$ /windenergie/deutschland/baden-wuerttemberg [R=301,L]
     RewriteRule ^bundesland/bayern$ /windenergie/deutschland/bayern [R=301,L]
     RewriteRule ^bundesland/brandenburg$ /windenergie/deutschland/brandenburg [R=301,L]
@@ -256,59 +303,43 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     RewriteRule ^bundesland/saarland$ /windenergie/deutschland/saarland [R=301,L]
     RewriteRule ^bundesland/sachsen$ /windenergie/deutschland/sachsen [R=301,L]
 
-    # Spezifische Ratgeber-URLs (vor Wildcards!)
-    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
-    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen-fuer-waldbesitzer$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
-    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windkraft-auf-agrarflaechen$ /ratgeber/detailseite/windkraft-auf-agrarflaechen [R=301,L]
-    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windkraft-auf-agrarflaechen-wie-landwirte-ihren-beitrag-zur-energiewende-leisten-und-selbst-profitieren-koennen$ /ratgeber/detailseite/windkraft-auf-agrarflaechen [R=301,L]
-
-    RewriteRule ^grundeigentuemer/ratgeber/detailseite/argumente-gegen-windkraftanlagen-im-wald-zwischen-mythen-und-fakten$ /ratgeber/detailseite/argumente-gegen-windkraftanlagen-im-wald-zwischen-mythen-und-fakten [R=301,L]
-    RewriteRule ^grundeigentuemer/ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
-    RewriteRule ^grundeigentuemer/ratgeber/detailseite/windkraft-pachtvertrag-so-gestalten-und-verhandeln-sie-erfolgreich$ /ratgeber/detailseite/windkraft-pachtvertrag-so-gestalten-und-verhandeln-sie-erfolgreich [R=301,L]
-
-    RewriteRule ^ratgeber/detailseite/1-wir-sind-caeli-wind-wir-beschleunigen-windkraft$ /ratgeber/detailseite/wir-sind-caeli-wind-wir-beschleunigen-windkraft [R=301,L]
-    RewriteRule ^ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
-    RewriteRule ^ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderugen-fuer-waldbesitzer$ /ratgeber/detailseite/windenergie-im-wald-chancen-risiken-und-herausforderungen [R=301,L]
-    RewriteRule ^ratgeber/detailseite/windkraft-auf-agrarflaechen-wie-landwirte-ihren-beitrag-zur-energiewende-leisten-und-selbst-profitieren-koennen$ /ratgeber/detailseite/windkraft-auf-agrarflaechen [R=301,L]
-
-    # Weitere spezifische URLs
+    # ===== WEITERE SPEZIFISCHE REDIRECTS =====
+    RewriteRule ^about-caeli/career/job/process-manager-in$ /karriere [R=301,L]
+    RewriteRule ^about-caeli/board-of-directors$ /en/board-of-directors [R=301,L]
+    RewriteRule ^about-caeli/career/job$ /karriere [R=301,L]
+    RewriteRule ^about-caeli/career/$ /karriere [R=301,L]
+    RewriteRule ^about-caeli/team$ /en/management [R=301,L]
+    RewriteRule ^about-caeli$ /en/about-caeli [R=301,L]
+    RewriteRule ^blog/artikel$ /projektentwickler-blog/ [R=301,L]
+    RewriteRule ^blog-en/article$ /en/ [R=301,L]
+    RewriteRule ^blog-en/$ /en/ [R=301,L]
+    RewriteRule ^blog$ /projektentwickler-blog/ [R=301,L]
     RewriteRule ^events/terminbuchung-branchenevent$ /terminbuchung-branchenevent [R=301,L]
-    RewriteRule ^ratgeber/detailseite/wir-sind-caeli-wind-wir-beschleunigen-windkraft$ /ratgeber [R=301,L]
+    RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/windkraft-auf-agrarflaechen$ /ratgeber/detailseite/windkraft-auf-agrarflaechen [R=301,L]
+    RewriteRule ^grundeigentuemer/ratgeber/detailseite/argumente-gegen-windkraftanlagen-im-wald-zwischen-mythen-und-fakten$ /ratgeber/detailseite/argumente-gegen-windkraftanlagen-im-wald-zwischen-mythen-und-fakten [R=301,L]
+    RewriteRule ^grundeigentuemer/ratgeber/detailseite/windkraft-pachtvertrag-so-gestalten-und-verhandeln-sie-erfolgreich$ /ratgeber/detailseite/windkraft-pachtvertrag-so-gestalten-und-verhandeln-sie-erfolgreich [R=301,L]
+    RewriteRule ^ratgeber/detailseite/1-wir-sind-caeli-wind-wir-beschleunigen-windkraft$ /ratgeber/detailseite/wir-sind-caeli-wind-wir-beschleunigen-windkraft [R=301,L]
+
+    # ===== ALLGEMEINE KATEGORIE REDIRECTS =====
     RewriteRule ^fuer-grundbesitzer/ratgeber/ratgeber-elements$ /ratgeber [R=301,L]
     RewriteRule ^fuer-grundbesitzer/ratgeber-flaechencheck$ /flaechencheck [R=301,L]
     RewriteRule ^fuer-grundbesitzer/ratgeber$ /ratgeber [R=301,L]
     RewriteRule ^fuer-grundbesitzer$ /grundeigentuemer [R=301,L]
-
     RewriteRule ^grundeigentuemer/ratgeber/ratgeber-elements$ /ratgeber [R=301,L]
     RewriteRule ^grundeigentuemer/ratgeber-flaechencheck$ /flaechencheck [R=301,L]
     RewriteRule ^grundeigentuemer/ratgeber$ /ratgeber [R=301,L]
-
     RewriteRule ^ratgeber/category/stimmen-der-branche$ /ratgeber [R=301,L]
     RewriteRule ^ratgeber/category/wind-auf-agrar$ /ratgeber [R=301,L]
     RewriteRule ^ratgeber/category/wind-fur-die-gemeinschaft$ /ratgeber [R=301,L]
     RewriteRule ^ratgeber/category/wind-im-wald$ /ratgeber [R=301,L]
     RewriteRule ^ratgeber/category/windkraft-fur-mich$ /ratgeber [R=301,L]
+    RewriteRule ^ratgeber/detailseite/wir-sind-caeli-wind-wir-beschleunigen-windkraft$ /ratgeber [R=301,L]
     RewriteRule ^ratgeber/detailseite$ /ratgeber [R=301,L]
     RewriteRule ^ratgeber/ratgeber-elements$ /ratgeber/ [R=301,L]
     RewriteRule ^ratgeber/ratgeber-flaechencheck$ /flaechencheck [R=301,L]
 
-    Redirect 301 /de/ueber-caeli /ueber-caeli
-    Redirect 301 /de/karriere /karriere
-    Redirect 301 /laender /windenergie/deutschland
-    Redirect 301 /de/impressum /impressum
-    Redirect 301 /kontakt-alt /kontakt
-    Redirect 301 /de/datenschutz /datenschutz
-
-    RewriteRule ^oeffentlicher/marktplatz$ /marktplatz? [R=301,L]
-
-
-    # Marktplatz URLs (spezifische vor Wildcard)
-    RewriteRule ^oeffentlicher/marktplatz/direktvergabe$ /marktplatz [R=301,L]
-    RewriteRule ^oeffentlicher/marktplatz/details/(.*)$ /marktplatz/details/$1 [R=301,L]
-    RewriteRule ^oeffentlicher/marktplatz$ /marktplatz [R=301,L]
+    # ===== EINFACHE EINZELNE REDIRECTS =====
     RewriteRule ^marktplatz/details$ /marktplatz [R=301,L]
-
-    # Weitere URLs
     RewriteRule ^career/job$ /karriere [R=301,L]
     RewriteRule ^contact$ /en/contact [R=301,L]
     RewriteRule ^datenschutzhinweise-social-media$ /datenschutz [R=301,L]
@@ -341,19 +372,13 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
     RewriteRule ^wind-symposium$ /grundeigentuemer [R=301,L]
     RewriteRule ^109$ /en [R=301,L]
 
-    # WILDCARDS (nur für URLs ohne spezifische Regel)
+    # ===== WILDCARD REDIRECTS (niedrigste Priorität) =====
     RewriteRule ^files/images/Presse/Pressemitteilungen/.*$ /presse [R=301,L]
     RewriteRule ^fuer-grundbesitzer/ratgeber/detailseite/.*$ /ratgeber [R=301,L]
     RewriteRule ^grundeigentuemer/ratgeber/detailseite/.*$ /ratgeber [R=301,L]
     RewriteRule ^oeffentlicher/marktplatz/.*$ /marktplatz [R=301,L]
 
 
-   # Redirects nur für caeli-wind.de
-    RewriteCond %{HTTP_HOST} ^(www\.)?caeli-wind\.de$ [NC]
-    RewriteRule ^privacy-policy$ /en/privacy-policy [R=301,L]
-
-    RewriteCond %{HTTP_HOST} ^(www\.)?caeli-wind\.de$ [NC]
-    RewriteRule ^imprint$ /en/imprint [R=301,L]
 
     # Determine the RewriteBase automatically and set it as environment variable.
     # If you are using Apache aliases to do mass virtual hosting or installed the

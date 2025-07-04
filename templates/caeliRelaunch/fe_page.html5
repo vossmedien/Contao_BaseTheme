@@ -255,16 +255,12 @@ $this->bodyAttributes = $this
             ]
         }
     </script>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-TKFXKWXS');</script>
-    <!-- End Google Tag Manager -->
-</head>
-<body<?= $this->bodyAttributes ?> >
-<script>if (!("gdprAppliesGlobally" in window)) {
+
+    <link rel="preconnect" href="https://delivery.consentmanager.net">
+    <link rel="preconnect" href="https://cdn.consentmanager.net">
+
+    <script>
+    if (!("gdprAppliesGlobally" in window)) {
         window.gdprAppliesGlobally = true
     }
     if (!("cmp_id" in window) || window.cmp_id < 1) {
@@ -836,7 +832,20 @@ $this->bodyAttributes = $this
     if (!("cmp_disabledsa" in window) || !window.cmp_disabledsa) {
         window.cmp_setGppStub("__dsa")
     }
-    ;</script>
+    ;
+</script>
+
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TKFXKWXS');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body<?= $this->bodyAttributes ?> >
+
 
 <div class="body-scroll-top">
 </div>

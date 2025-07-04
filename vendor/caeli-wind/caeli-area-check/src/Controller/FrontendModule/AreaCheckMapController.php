@@ -313,9 +313,10 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             return null;
         }
         
-        // Cookie-File für cURL vorbereiten (auch wenn API keine HTTP-Cookies sendet)
-        if (file_exists($cookieFile)) {
+        // Cookie-File nur löschen wenn kein gültiger Token gecacht ist
+        if (file_exists($cookieFile) && (!$this->cached_token || !$this->token_expires || time() >= $this->token_expires)) {
             unlink($cookieFile);
+            $this->logger->debug('[AreaCheckMapController] Cookie-File gelöscht da Session abgelaufen');
         }
         
         // Leeres Cookie-File für cURL erstellen (für COOKIEJAR/COOKIEFILE Optionen)
@@ -339,8 +340,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($curl_session, CURLOPT_COOKIEJAR, $cookieFile);
         curl_setopt($curl_session, CURLOPT_COOKIEFILE, $cookieFile); // Auch COOKIEFILE setzen
-        curl_setopt($curl_session, CURLOPT_TIMEOUT, 20); // Timeout reduziert
-        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 5); // Verbindungs-Timeout reduziert
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 300); // 5 Minuten für Login
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 30); // Verbindungs-Timeout
         curl_setopt($curl_session, CURLOPT_FOLLOWLOCATION, true); // Redirects folgen
         curl_setopt($curl_session, CURLOPT_SSL_VERIFYPEER, false); // SSL-Verifikation für Tests deaktivieren
         curl_setopt($curl_session, CURLOPT_USERAGENT, 'Caeli-Area-Check/1.0'); // User-Agent setzen
@@ -405,9 +406,9 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         
         $this->logger->info('[AreaCheckMapController] CSRF Token: ' . $token);
         
-        // Token für 5 Minuten cachen (Caeli-API Sessions sind länger gültig)
+        // Token für 15 Minuten cachen (Caeli-API Sessions sind länger gültig)
         $this->cached_token = $token;
-        $this->token_expires = time() + 300; // 5 Minuten
+        $this->token_expires = time() + 900; // 15 Minuten statt 5
         $this->logger->debug('[AreaCheckMapController] API Token gecacht bis: ' . date('H:i:s', $this->token_expires));
         
         return $token;
@@ -427,6 +428,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session ,CURLOPT_URL, $this->api_url."wind/caeli/park");
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 600);
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
@@ -437,12 +440,21 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         ]);
         $result = curl_exec($curl_session);
 
+        // Prüfe auf cURL-Fehler
+        if (curl_error($curl_session)) {
+            $this->logger->error('[AreaCheckMapController] cURL ERROR: ' . curl_error($curl_session));
+            curl_close($curl_session);
+            return "-";
+        }
+
         curl_close($curl_session);
         
-        // Exakt wie Original: Check und Return
-        if(json_decode($result)->status == 'success') {
-            return str_replace(["[","]", "'"], ["","",""], json_decode($result)->parks->id);
-        }else{
+        // Sichere JSON-Dekodierung mit Null-Check
+        $decoded = json_decode($result);
+        if ($decoded && isset($decoded->status) && $decoded->status == 'success') {
+            return str_replace(["[","]", "'"], ["","",""], $decoded->parks->id);
+        } else {
+            $this->logger->warning('[AreaCheckMapController] Ungültige API-Response: ' . $result);
             return "-";
         }
     }
@@ -481,6 +493,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/park");
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 600);
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
@@ -490,6 +504,18 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             'Content-Type: application/json'
         ]);
         $result = curl_exec($curl_session);
+        
+        // Prüfe auf cURL-Fehler
+        if (curl_error($curl_session)) {
+            $this->logger->error('[AreaCheckMapController] cURL ERROR: ' . curl_error($curl_session));
+            curl_close($curl_session);
+            return [
+                'success' => false,
+                'parkid' => '-',
+                'error' => 'API-Verbindungsfehler: ' . curl_error($curl_session)
+            ];
+        }
+        
         curl_close($curl_session);
         
         // Debug: Rohe API-Response loggen
@@ -538,6 +564,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         ]));
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 600);
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_HTTPHEADER, [
@@ -545,6 +573,14 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             'Content-Type: application/json'
         ]);
         $result = curl_exec($curl_session);
+        
+        // Prüfe auf cURL-Fehler
+        if (curl_error($curl_session)) {
+            $this->logger->error('[AreaCheckMapController] cURL ERROR: ' . curl_error($curl_session));
+            curl_close($curl_session);
+            return null;
+        }
+        
         curl_close($curl_session);
         
         $json = json_decode($result, true);
@@ -581,6 +617,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/ratingArea");
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 600);
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
@@ -589,6 +627,14 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             'Content-Type: application/json'
         ]);
         $result = curl_exec($curl_session);
+        
+        // Prüfe auf cURL-Fehler
+        if (curl_error($curl_session)) {
+            $this->logger->error('[AreaCheckMapController] cURL ERROR: ' . curl_error($curl_session));
+            curl_close($curl_session);
+            return null;
+        }
+        
         curl_close($curl_session);
 
         return json_decode($result, true);
@@ -609,6 +655,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         ]));
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 600);
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
@@ -689,6 +737,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         curl_setopt($curl_session, CURLOPT_URL, $this->api_url."wind/caeli/ratingArea");
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 600);
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_POSTFIELDS, json_encode($postData));
@@ -736,6 +786,8 @@ class AreaCheckMapController extends AbstractFrontendModuleController
         ]));
         curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_session, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($curl_session, CURLOPT_TIMEOUT, 600);
+        curl_setopt($curl_session, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($curl_session, CURLOPT_COOKIEJAR, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLOPT_COOKIEFILE, $this->getCookieFilePath());
         curl_setopt($curl_session, CURLINFO_HEADER_OUT, true);
@@ -744,6 +796,14 @@ class AreaCheckMapController extends AbstractFrontendModuleController
             'Content-Type: application/json'
         ]);
         $result = curl_exec($curl_session);
+        
+        // Prüfe auf cURL-Fehler
+        if (curl_error($curl_session)) {
+            $this->logger->error('[AreaCheckMapController] cURL ERROR: ' . curl_error($curl_session));
+            curl_close($curl_session);
+            return null;
+        }
+        
         curl_close($curl_session);
         return json_decode($result);
     }
@@ -796,7 +856,7 @@ class AreaCheckMapController extends AbstractFrontendModuleController
     private function getCookieFilePath(): string
     {
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
-        $sessionHash = md5($this->api_user . date('Y-m-d-H'));
+        $sessionHash = md5($this->api_user . date('Y-m-d')); // Täglich statt stündlich
         return $rootDir."/system/tmp/caeli_api_session_".$sessionHash.'.txt';
     }
 

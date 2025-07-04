@@ -10,8 +10,8 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # Pagination SEO Listener
-    App\EventListener\PaginationCanonicalListener:
+    # Template Optimization Listener (Canonical URLs, Asset Loading, Link Enhancement)
+    App\EventListener\TemplateOptimizationListener:
         tags:
             - { name: 'contao.hook', hook: 'parseTemplate', priority: 100 }
 

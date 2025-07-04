@@ -6,6 +6,12 @@ let imageFormats = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
 // videoFormats = ['mp4', 'webm']; // falls nur diese Formate unterstützt werden sollen
 
 export function initVenoBox () {
+    // Prüfe ob VenoBox verfügbar ist
+    if (typeof VenoBox === 'undefined') {
+        console.log('VenoBox nicht verfügbar - keine .venobox Elemente gefunden oder Bibliothek nicht geladen');
+        return;
+    }
+
     // Erstelle einen Selektor-String für alle unterstützten Formate
     const allFormats = [...videoFormats, ...imageFormats];
     const selector = allFormats.map(format => `a[href$=".${format}"]`).join(',');
@@ -70,6 +76,12 @@ function getVideoAspectRatio(videoUrl, callback) {
 }
 
 export function initVideoLightbox() {
+    // Prüfe ob VenoBox verfügbar ist
+    if (typeof VenoBox === 'undefined') {
+        console.log('VenoBox nicht verfügbar - Video-Lightbox wird übersprungen');
+        return;
+    }
+
     const videoSelector = videoFormats.map(format => `a[href$=".${format}"]`).join(',');
     const videoLinks = document.querySelectorAll(videoSelector);
 
@@ -87,7 +99,14 @@ export function initVideoLightbox() {
         });
     });
 }
+
 export function initImageLightbox () {
+    // Prüfe ob VenoBox verfügbar ist
+    if (typeof VenoBox === 'undefined') {
+        console.log('VenoBox nicht verfügbar - Image-Lightbox wird übersprungen');
+        return;
+    }
+
     const imageSelector = imageFormats.map(format => `a[href$=".${format}"]`).join(',');
     const imageLinks = document.querySelectorAll(imageSelector);
 

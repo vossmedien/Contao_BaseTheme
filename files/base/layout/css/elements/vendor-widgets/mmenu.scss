@@ -9,7 +9,7 @@
   --mm-spn-active-bg: var(--bs-primary);
   --mm-spn-active-color: var(--bs-body-color-inverse);
   --mm-spn-color: var(--bs-body-color);
-  --mm-spn-border-color: rgba(0,0,0,.05);
+  --mm-spn-border-color: rgba(0, 0, 0, .05);
   --mm-spn-footer-bg: var(--bs-primary);
   --mm-spn-arrow-color: var(--bs-body-color);
 
@@ -35,9 +35,9 @@
     color: var(--mm-spn-color);
     border: 0;
     background-color: var(--bs-primary-bg-subtle);
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
+    width: 51px;
+    height: 51px;
+    line-height: 51px;
     transform: rotate(180deg);
     @extend %fa-icon;
     font: var(--fa-font-sharp-light);
@@ -108,7 +108,7 @@
       z-index: 1;
       right: 0;
       border: 0;
-       text-align: center;
+      text-align: center;
       top: 0;
       background-color: var(--bs-primary-bg-subtle);
       box-shadow: $box-shadow-sm;
@@ -167,7 +167,7 @@
     }
   }
 
-  .extra-content{
+  .extra-content {
     text-align: center;
     --mm-spn-active-bg: transparent;
     --mm-spn-active-color: var(--bs-body-color);
@@ -175,16 +175,17 @@
 }
 
 
-
 .mmenu-close-btn {
-  position: absolute;
-  right: -5px;
-  top: -2px;
   background: none;
   border: none;
   cursor: pointer;
-  z-index: 10;
   padding-inline: 0;
+  position: absolute;
+  right: -5px;
+  top: -3px;
+  z-index: 10;
+  width: 55px;
+  height: 55px;
 
   &:before {
     @extend %fa-icon, .fak;
@@ -193,7 +194,7 @@
     transform: none;
     z-index: 50;
     box-shadow: $box-shadow-sm;
-  font-size: 1.25rem;
+    font-size: 1.25rem;
     text-align: center;
     //border-radius: 40%;
     color: var(--mm-spn-color);
@@ -251,7 +252,7 @@
       position: static;
       display: block;
       width: auto;
-          overflow: hidden;
+      overflow: hidden;
 
       > li {
         display: inline-block;

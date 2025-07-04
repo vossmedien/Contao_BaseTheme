@@ -1110,13 +1110,47 @@ function logCoordinates() {
             }
         }
         
-        CaeliAreaCheck.state.formSubmissionInProgress = true;
+        console.log('[AreaCheck] logCoordinates: Führe Token-Refresh vor Submit durch');
         
-        // Alle Popovers schließen vor dem Absenden
-        hideAllPopovers();
+        // TOKEN-REFRESH in logCoordinates() hinzufügen
+        const parkForm = document.getElementById('park-form');
+        const tokenInput = parkForm ? parkForm.querySelector('input[name="REQUEST_TOKEN"]') : null;
         
-        // Loading Overlay anzeigen
-        showLoadingOverlay();
+        if (tokenInput) {
+            console.log('[AreaCheck] logCoordinates: Token Input gefunden, führe Refresh durch');
+            refreshTokenIfNeeded(tokenInput, () => {
+                console.log('[AreaCheck] logCoordinates: Token-Refresh abgeschlossen, setze Flag und fahre fort');
+                CaeliAreaCheck.state.formSubmissionInProgress = true;
+                
+                // Alle Popovers schließen vor dem Absenden
+                hideAllPopovers();
+                
+                // Loading Overlay anzeigen
+                showLoadingOverlay();
+                
+                // Fortsetzung der logCoordinates Funktion
+                continueLogCoordinatesAfterTokenRefresh();
+            });
+        } else {
+            console.warn('[AreaCheck] logCoordinates: Kein Token Input gefunden, fahre ohne Token-Refresh fort');
+            CaeliAreaCheck.state.formSubmissionInProgress = true;
+            
+            // Alle Popovers schließen vor dem Absenden
+            hideAllPopovers();
+            
+            // Loading Overlay anzeigen
+            showLoadingOverlay();
+            
+            // Fortsetzung der logCoordinates Funktion
+            continueLogCoordinatesAfterTokenRefresh();
+        }
+    } else {
+        const translations = window.CaeliAreaCheckTranslations || {};
+        showDynamicAlert('select_area_first', translations);
+    }
+}
+
+function continueLogCoordinatesAfterTokenRefresh() {
         
         const coordinates = CaeliAreaCheck.polygon.getPath().getArray().map(latLng => [latLng.lng(), latLng.lat()]);
         coordinates.push(coordinates[0]); // Polygon schließen
@@ -1184,10 +1218,6 @@ function logCoordinates() {
             // Form-Submit starten
             submitFormWithRedirect();
         }
-    } else {
-        const translations = window.CaeliAreaCheckTranslations || {};
-        showDynamicAlert('select_area_first', translations);
-    }
 }
 
 // Geocoding-Fallback-Funktion entfernt (wird nicht verwendet)
@@ -1329,8 +1359,30 @@ if (parkForm) {
             hiddenAddress.value = searchInput.value;
         }
         
-        // Loading anzeigen und normale Form-Submit
-        submitFormWithRedirect();
+        // TOKEN-REFRESH VOR Submit ausführen
+        console.log('[AreaCheck] Form Submit: Suche nach REQUEST_TOKEN im Formular');
+        console.log('[AreaCheck] Form Submit: Formular Element:', parkForm);
+        console.log('[AreaCheck] Form Submit: Formular ID:', parkForm.id);
+        
+        const tokenInput = parkForm.querySelector('input[name="REQUEST_TOKEN"]');
+        console.log('[AreaCheck] Form Submit: TOKEN Input gefunden:', !!tokenInput);
+        
+        if (tokenInput) {
+            console.log('[AreaCheck] Form Submit: TOKEN Input Wert:', tokenInput.value ? tokenInput.value.substring(0, 20) + '...' : 'NULL');
+            console.log('[AreaCheck] Form Submit: Führe Token-Refresh durch');
+            refreshTokenIfNeeded(tokenInput, () => {
+                console.log('[AreaCheck] Form Submit: Token-Refresh abgeschlossen, starte Submit');
+                submitFormWithRedirect();
+            });
+        } else {
+            console.warn('[AreaCheck] Form Submit: Kein REQUEST_TOKEN gefunden, fahre ohne Token-Refresh fort');
+            console.log('[AreaCheck] Form Submit: Alle Input-Felder im Formular:');
+            const allInputs = parkForm.querySelectorAll('input');
+            allInputs.forEach((input, index) => {
+                console.log(`[AreaCheck] Input ${index}:`, input.name, input.type, input.value ? input.value.substring(0, 20) + '...' : 'NULL');
+            });
+            submitFormWithRedirect();
+        }
     });
 }
 
@@ -1962,34 +2014,51 @@ function submitFormWithRedirect() {
     showLoadingOverlay();
     startLoadingAnimation();
     
-    // Token-Refresh vor Submit (da submitFormWithRedirect direktes .submit() verwendet)
-    const tokenInput = parkForm.querySelector('input[name="REQUEST_TOKEN"]');
-    if (tokenInput) {
-        refreshTokenIfNeeded(tokenInput, () => {
-            setTimeout(() => {
-                parkForm.submit();
-            }, 300);
-        });
-    } else {
+    // Prüfen ob Token-Refresh bereits durch Form Event Listener erfolgt ist
+    // Wenn formSubmissionInProgress = true, dann kam der Aufruf vom Form Event Listener
+    if (CaeliAreaCheck.state.formSubmissionInProgress) {
+        // Kam vom Form Event Listener - Token-Refresh bereits erfolgt
+        console.log('[AreaCheck] submitFormWithRedirect: Token bereits refreshed durch Form Event Listener');
         setTimeout(() => {
             parkForm.submit();
         }, 300);
+    } else {
+iframe        // Direkter Aufruf (z.B. Button onclick) - Token-Refresh erforderlich
+        console.log('[AreaCheck] submitFormWithRedirect: Direkter Aufruf, führe Token-Refresh durch');
+        const tokenInput = parkForm.querySelector('input[name="REQUEST_TOKEN"]');
+        if (tokenInput) {
+            refreshTokenIfNeeded(tokenInput, () => {
+                setTimeout(() => {
+                    parkForm.submit();
+                }, 300);
+            });
+        } else {
+            setTimeout(() => {
+                parkForm.submit();
+            }, 300);
+        }
     }
     
     return false; // Verhindert doppeltes Submit
 }
 
 /**
- * Token-Refresh-Funktion für area-check (vereinfacht)
+ * Token-Refresh-Funktion für area-check (mit ausführlichem Debugging)
  */
 function refreshTokenIfNeeded(tokenInput, callback) {
     const currentToken = tokenInput.value;
+    
+    console.log('[AreaCheck] === TOKEN-REFRESH START ===');
+    console.log('[AreaCheck] Aktueller Token:', currentToken ? currentToken.substring(0, 20) + '...' : 'NULL');
     
     if (!currentToken || currentToken.length < 10) {
         console.warn('[AreaCheck] Token fehlt oder ist zu kurz, fahre mit Submit fort');
         callback();
         return;
     }
+    
+    console.log('[AreaCheck] Führe GET Request aus für Token-Refresh...');
+    console.log('[AreaCheck] URL:', window.location.href);
     
     fetch(window.location.href, {
         method: 'GET',
@@ -1998,21 +2067,56 @@ function refreshTokenIfNeeded(tokenInput, callback) {
             'Cache-Control': 'no-cache'
         }
     })
-    .then(response => response.text())
+    .then(response => {
+        console.log('[AreaCheck] GET Response Status:', response.status);
+        console.log('[AreaCheck] GET Response Headers:', Object.fromEntries(response.headers.entries()));
+        return response.text();
+    })
     .then(html => {
+        console.log('[AreaCheck] HTML Response Länge:', html.length);
+        console.log('[AreaCheck] HTML Response (erste 500 Zeichen):', html.substring(0, 500));
+        
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         const newTokenInput = doc.querySelector('input[name="REQUEST_TOKEN"]');
         
-        if (newTokenInput && newTokenInput.value && newTokenInput.value !== currentToken) {
-            console.log('[AreaCheck] Neuen REQUEST_TOKEN erhalten, aktualisiere Form');
-            tokenInput.value = newTokenInput.value;
+        console.log('[AreaCheck] Neues Token Input gefunden:', !!newTokenInput);
+        
+        if (newTokenInput && newTokenInput.value) {
+            const newToken = newTokenInput.value;
+            console.log('[AreaCheck] Neuer Token:', newToken ? newToken.substring(0, 20) + '...' : 'NULL');
+            console.log('[AreaCheck] Token unterschiedlich?:', newToken !== currentToken);
+            
+            if (newToken !== currentToken) {
+                console.log('[AreaCheck] ✅ Setze neuen REQUEST_TOKEN');
+                tokenInput.value = newToken;
+                
+                // Alle Token-Fields im Formular aktualisieren
+                const form = tokenInput.closest('form');
+                if (form) {
+                    const allTokenInputs = form.querySelectorAll('input[name="REQUEST_TOKEN"]');
+                    console.log('[AreaCheck] Aktualisiere', allTokenInputs.length, 'Token-Fields im Formular');
+                    allTokenInputs.forEach(input => {
+                        if (input !== tokenInput) {
+                            input.value = newToken;
+                        }
+                    });
+                }
+            } else {
+                console.log('[AreaCheck] ⚠️ Token ist identisch, keine Aktualisierung nötig');
+            }
+        } else {
+            console.warn('[AreaCheck] ❌ Kein REQUEST_TOKEN im HTML gefunden oder Wert leer');
+            // HTML-Fragment nach Token durchsuchen für Debug
+            const tokenMatches = html.match(/name=["\']REQUEST_TOKEN["\'].*?value=["\']([^"\']+)["\']/gi);
+            console.log('[AreaCheck] Token Regex Matches:', tokenMatches);
         }
         
+        console.log('[AreaCheck] === TOKEN-REFRESH ENDE ===');
         callback();
     })
     .catch(error => {
-        console.warn('[AreaCheck] Token-Refresh fehlgeschlagen, verwende bestehenden Token:', error);
+        console.error('[AreaCheck] ❌ Token-Refresh fehlgeschlagen:', error);
         callback();
     });
 }

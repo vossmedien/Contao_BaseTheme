@@ -1,6 +1,7 @@
-<?php $this->block('head'); ?><?php
-
+<?php
 require_once __DIR__ . '/../theme_asset_loader.php';
+
+// --- Hilfsfunktionen (könnten auch in eine globale Helper-Klasse) ---
 
 // Ermittle den aktuellen Theme-Namen aus dem Verzeichnis dieses Templates (Groß/Kleinschreibung bleibt hier erhalten)
 $currentThemeName = get_theme_name_from_dir(__DIR__);
@@ -21,19 +22,16 @@ $this->bodyAttributes = $this
     ->mergeWith($this->bodyAttributes);
 
 ?>
-
-
 <!DOCTYPE html>
 <html<?= $this->rootAttributes ?>>
 <head>
+
     <?php $this->block('head'); ?>
     <meta charset="<?= $this->charset ?>">
     <title><?= str_replace(' - ', ' | ', $this->title) ?></title>
     <base href="<?= $this->base ?>">
 
     <?php $this->block('meta'); ?>
-
-
     <?php
     // Get the current hostname
     $hostname = $_SERVER['HTTP_HOST'];
@@ -48,35 +46,6 @@ $this->bodyAttributes = $this
     }
     ?>
 
-
-    <meta name="description" content="<?= mb_substr($this->description, 0, 320) ?>">
-    <meta name="generator" content="Contao Open Source CMS">
-    <?php $this->endblock(); ?>
-
-    <?php if ($this->canonical): ?>
-        <link rel="canonical" href="<?= $this->canonical ?>">
-    <?php endif; ?>
-
-    <?= $this->viewport ?>
-    <?= $this->framework ?>
-
-
-    <?php
-    // Get the current hostname
-    $hostname = $_SERVER['HTTP_HOST'];
-
-    // Check if the hostname starts with "www."
-    if (strpos($hostname, 'www.') === 0) {
-        // If it starts with "www.", use the original robots tag
-        echo '<meta name="robots" content="' . $this->robots . '">';
-    } else {
-        // If it doesn't start with "www.", use the fallback
-        echo '<meta name="robots" content="noindex,nofollow"/>';
-    }
-    ?>
-
-
-    <meta name="robots" content="<?= $this->robots ?>">
     <meta name="description" content="<?= mb_substr($this->description, 0, 320) ?>">
     <meta name="generator" content="Contao Open Source CMS">
     <?php $this->endblock(); ?>
@@ -98,8 +67,7 @@ $this->bodyAttributes = $this
         '_base' => ['preload' => false, 'media' => 'all'],
         '_theme' => ['preload' => false, 'media' => 'all'],
         '_root-variables' => ['preload' => false, 'media' => 'all'],
-        // '_utilities' wird hier nicht explizit aufgeführt, da es für caeliUk evtl. nicht existiert oder anders gehandhabt wird.
-        // Es wird unten durch die Schleife für verbleibende CSS-Dateien abgedeckt.
+        '_utilities' => ['preload' => false, 'media' => 'all'],
     ];
 
     $outputtedCssPaths = []; // Speichert die Pfade der bereits ausgegebenen CSS-Dateien
@@ -119,7 +87,6 @@ $this->bodyAttributes = $this
     // 1. Preload für _fonts CSS (wenn vorhanden)
     $fontsCssAsset = $findAssetByEntryPoint('_fonts', $themeAssets['css'] ?? []);
     if ($fontsCssAsset && isset($fontsCssAsset['path'])) {
-        // Korrigierte Pfad-Zusammensetzung für Preload
         echo '<link rel="preload" href="' . rtrim($this->base, '/') . '/' . ltrim($fontsCssAsset['path'], '/') . '" as="style">' . "\n    ";
     }
 
@@ -138,7 +105,6 @@ $this->bodyAttributes = $this
         if (isset($orderedCssAssetsForOutput[$entryPointKey])) {
             $asset = $orderedCssAssetsForOutput[$entryPointKey];
             $path = $asset['path'];
-            // Korrigierte Pfad-Zusammensetzung für Stylesheets
             $fullPath = rtrim($this->base, '/') . '/' . ltrim($path, '/');
 
             echo '<link rel="stylesheet" href="' . $fullPath . '"';
@@ -165,15 +131,12 @@ $this->bodyAttributes = $this
             if (isset($cssAsset['path'])) {
                 $cssPath = $cssAsset['path'];
                 if (!in_array($cssPath, $outputtedCssPaths)) {
-                    // Korrigierte Pfad-Zusammensetzung für $GLOBALS['TL_CSS']
-                    $GLOBALS['TL_CSS'][] = ltrim($cssPath, '/') . '|static';
+                    $GLOBALS['TL_CSS'][] = $cssPath . '|static';
                 }
             }
         }
     }
     ?>
-
-
     <?php // --- NEU: Font Preloads ---
     if (!empty($themeAssets['fonts_preload'])) {
         foreach ($themeAssets['fonts_preload'] as $font) {
@@ -189,29 +152,29 @@ $this->bodyAttributes = $this
     // --- Social Media Meta-Tags generieren (zentral für alle Seiten) ---
     use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
     use Vsm\VsmHelperTools\Helper\EnvHelper;
-    
+
     if (EnvHelper::isFrontend()) {
         // Fallback-Daten aus Page-Eigenschaften wenn keine Element-Daten gesammelt wurden
         if (SocialMetaHelper::getCollectedElementsCount() === 0) {
             $fallbackData = [];
-            
+
             // Page-Titel verwenden
             if (!empty($this->title)) {
                 $fallbackData['title'] = strip_tags($this->title);
             }
-            
-            // Page-Beschreibung verwenden  
+
+            // Page-Beschreibung verwenden
             if (!empty($this->description)) {
                 $fallbackData['description'] = strip_tags($this->description);
             }
-            
+
             // Page-Type setzen
             $fallbackData['type'] = 'website';
-            
+
             // Fallback-Daten sammeln (Fallback-Bild wird automatisch in collectElementData() gesetzt)
             SocialMetaHelper::collectElementData($fallbackData);
         }
-        
+
         // Social Media Meta-Tags generieren (immer, auch mit Fallback-Daten)
         $metaTagsHTML = SocialMetaHelper::generateSocialMetaTags([]);
         if (!empty($metaTagsHTML)) {
@@ -220,6 +183,9 @@ $this->bodyAttributes = $this
     }
     ?>
     <?php $this->endblock(); ?>
+
+    <link rel="preconnect" href="https://delivery.consentmanager.net">
+    <link rel="preconnect" href="https://cdn.consentmanager.net">
 
     <script>
         if (!("gdprAppliesGlobally" in window)) {
