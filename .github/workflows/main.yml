@@ -52,7 +52,7 @@ jobs:
           # Symfony cache operations
           echo "Clearing Symfony cache..."
           rm -rf var/cache/*
-          php bin/console cache:clear --env=prod --no-debug
+          php bin/console cache:clear --env=prod
           
           # Contao specific operations
           echo "Running Contao maintenance..."
