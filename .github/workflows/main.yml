@@ -19,10 +19,19 @@ jobs:
           echo "Starting deployment..."
           cd public_html/staging.caeli
           
-          # Git operations
-          echo "Pulling latest changes..."
-          git fetch --all
-          git reset --hard origin/main
+          # Check if git repository exists, if not initialize
+          if [ ! -d ".git" ]; then
+            echo "Initializing Git repository..."
+            git init
+            git remote add origin https://github.com/${{ github.repository }}.git
+            git fetch origin
+            git checkout -b main
+            git reset --hard origin/main
+          else
+            echo "Pulling latest changes..."
+            git fetch --all
+            git reset --hard origin/main
+          fi
           
           # Composer dependencies
           echo "Installing/updating composer dependencies..."
