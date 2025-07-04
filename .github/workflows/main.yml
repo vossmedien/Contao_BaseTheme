@@ -1,0 +1,45 @@
+name: Deploy to Staging
+on: 
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Deploy to Staging Server
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+          echo "Starting deployment..."
+          cd public_html/staging.caeli
+          
+          # Git operations
+          echo "Pulling latest changes..."
+          git fetch --all
+          git reset --hard origin/main
+          
+          # Composer dependencies
+          echo "Installing/updating composer dependencies..."
+          composer install --no-dev --optimize-autoloader
+          
+          # Symfony cache operations
+          echo "Clearing Symfony cache..."
+          rm -rf var/cache/*
+          php bin/console cache:clear --env=prod --no-debug
+          
+          # Contao specific operations
+          echo "Running Contao maintenance..."
+          php bin/console contao:migrate --no-interaction
+          php bin/console contao:symlinks
+          
+          # Optional: Warm up cache
+          echo "Warming up cache..."
+          php bin/console cache:warmup --env=prod
+          
+          echo "Deployment completed successfully!"
