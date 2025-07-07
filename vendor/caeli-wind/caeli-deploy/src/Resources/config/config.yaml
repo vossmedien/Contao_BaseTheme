@@ -1,2 +1,0 @@
-caeli_wind_caeli_deploy:
-    public_dir: '%kernel.project_dir%/vendor/caeli-wind/caeli-deploy/src/Resources/public' 

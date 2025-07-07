@@ -1,0 +1,8 @@
+services:
+  vsm_deploy.controller.deploy:
+    class: VSM\VsmDeploy\Controller\DeployController
+    arguments:
+      - '@request_stack'
+    tags:
+      - { name: controller.service_arguments }
+    public: true

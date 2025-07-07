@@ -5,10 +5,8 @@
   "require": {
     "contao/calendar-bundle": "^5.4.0",
     "contao/conflicts": "*@dev",
-    "contao/listing-bundle": "^5.4.0",
     "contao/manager-bundle": "^5.4.0",
     "contao/news-bundle": "^5.4.0",
-    "contao/newsletter-bundle": "^5.4.0",
     "madeyourday/contao-rocksolid-custom-elements": "^2.4",
     "markocupic/contao-bundle-creator-bundle": "^1.8",
     "oveleon/contao-component-style-manager": "^3.5",
@@ -21,9 +19,9 @@
     "trilobit-gmbh/contao-tiles-bundle": "^2.0",
     "vsm/vsm-helper-tools": "0.1",
     "vsm/vsm-stripe-connect": "0.1",
-    "vsm/vsm-news-event-enhancements": "0.1",
+    "vsm/vsm-news-events-enhancements": "0.1",
     "vsm/vsm-ab-test": "0.1",
-    "caeli-wind/caeli-deploy": "0.1"
+    "vsm/vsm-deploy": "0.1"
   },
   "extra": {
     "public-dir": "public",
@@ -48,7 +46,7 @@
     },
     {
       "type": "path",
-      "url": "vendor/vsm/vsm-news-event-enhancements"
+      "url": "vendor/vsm/vsm-news-events-enhancements"
     },
     {
       "type": "path",
@@ -56,7 +54,7 @@
     },
     {
       "type": "path",
-      "url": "vendor/caeli-wind/caeli-deploy"
+      "url": "vendor/vsm/vsm-deploy"
     }
   ],
   "config": {
