@@ -136,19 +136,46 @@ if (!function_exists('load_theme_assets_from_manifest')) {
             $vendorScriptConfigs = require $individualVendorJsConfigFile;
             if (is_array($vendorScriptConfigs)) {
                 $vendorDestWebPathBase = '/files/base/layout/js/dist/' . $themeName . '/vendor/';
+
+                // Prüfe auf bedingte Asset-Ladung
+                $conditionalAssets = $GLOBALS['CONDITIONAL_ASSETS'] ?? [];
+
                 foreach ($vendorScriptConfigs as $scriptConfig) {
                     if (is_array($scriptConfig) && isset($scriptConfig['src']) && isset($scriptConfig['attributes'])) {
-                        $fileName = pathinfo($scriptConfig['src'], PATHINFO_BASENAME);
-                        $finalVendorWebPath = $vendorDestWebPathBase . $fileName;
-                        $themeAssets['js_vendor_individual'][] = [
-                            'src' => $finalVendorWebPath,
-                            'attributes' => $scriptConfig['attributes']
-                        ];
+                        // Prüfe ob das Asset bedingt geladen werden soll
+                        if (shouldLoadVendorAsset($scriptConfig['src'], $conditionalAssets)) {
+                            $fileName = pathinfo($scriptConfig['src'], PATHINFO_BASENAME);
+                            $finalVendorWebPath = $vendorDestWebPathBase . $fileName;
+                            $themeAssets['js_vendor_individual'][] = [
+                                'src' => $finalVendorWebPath,
+                                'attributes' => $scriptConfig['attributes']
+                            ];
+                        }
                     }
                 }
             }
         }
 
         return $themeAssets;
+    }
+}
+
+if (!function_exists('shouldLoadVendorAsset')) {
+    function shouldLoadVendorAsset(string $assetSrc, array $conditionalAssets): bool {
+        // Definiere Assets, die bedingt geladen werden sollen
+        $conditionalVendorAssets = [
+            'swiper/swiper-bundle.min.js' => 'swiper',
+            'venobox/dist/venobox.min.js' => 'venobox'
+        ];
+
+        // Prüfe ob das Asset bedingt geladen werden soll
+        if (isset($conditionalVendorAssets[$assetSrc])) {
+            $assetKey = $conditionalVendorAssets[$assetSrc];
+            // Lade nur wenn das Asset in der Conditional-Liste steht
+            return isset($conditionalAssets[$assetKey]);
+        }
+
+        // Alle anderen Assets werden immer geladen
+        return true;
     }
 } 

@@ -11,6 +11,6 @@ services:
             - '../src/Kernel.php'
 
     # Pagination SEO Listener
-    App\EventListener\PaginationCanonicalListener:
+    App\EventListener\TemplateOptimizationListener:
         tags:
             - { name: 'contao.hook', hook: 'parseTemplate', priority: 100 }

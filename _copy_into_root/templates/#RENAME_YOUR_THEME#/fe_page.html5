@@ -1,12 +1,12 @@
-<?php $this->block('head'); ?><?php
-
+<?php
 require_once __DIR__ . '/../theme_asset_loader.php';
+
+// --- Hilfsfunktionen (könnten auch in eine globale Helper-Klasse) ---
 
 // Ermittle den aktuellen Theme-Namen aus dem Verzeichnis dieses Templates (Groß/Kleinschreibung bleibt hier erhalten)
 $currentThemeName = get_theme_name_from_dir(__DIR__);
 // Übergebe den Originalnamen und das Verzeichnis. Die Funktion kümmert sich ums Lowercasing für den Pfad.
 $themeAssets = load_theme_assets_from_manifest($currentThemeName, __DIR__);
-
 
 $this->rootAttributes = $this
     ->attr()
@@ -28,12 +28,11 @@ $this->bodyAttributes = $this
 
     <?php $this->block('head'); ?>
     <meta charset="<?= $this->charset ?>">
-    <title><?= $this->title ?></title>
+    <title><?= str_replace(' - ', ' | ', $this->title) ?></title>
     <base href="<?= $this->base ?>">
 
     <?php $this->block('meta'); ?>
-
-       <?php
+    <?php
     // Get the current hostname
     $hostname = $_SERVER['HTTP_HOST'];
 
@@ -47,9 +46,7 @@ $this->bodyAttributes = $this
     }
     ?>
 
-
-    <meta name="robots" content="<?= $this->robots ?>">
-    <meta name="description" content="<?= Contao\StringUtil::substr($this->description, 320) ?>">
+    <meta name="description" content="<?= mb_substr($this->description, 0, 320) ?>">
     <meta name="generator" content="Contao Open Source CMS">
     <?php $this->endblock(); ?>
 
@@ -59,6 +56,7 @@ $this->bodyAttributes = $this
 
     <?= $this->viewport ?>
     <?= $this->framework ?>
+
     <?php
     // --- NEU: CSS optimiert einbinden ---
 
@@ -149,15 +147,54 @@ $this->bodyAttributes = $this
     <?= $this->stylesheets ?>
     <?= $this->mooScripts ?>
     <?= $this->head ?>
+
+    <?php
+    // --- Social Media Meta-Tags generieren (zentral für alle Seiten) ---
+    use Vsm\VsmHelperTools\Helper\SocialMetaHelper;
+    use Vsm\VsmHelperTools\Helper\EnvHelper;
+
+    if (EnvHelper::isFrontend()) {
+        // Fallback-Daten aus Page-Eigenschaften wenn keine Element-Daten gesammelt wurden
+        if (SocialMetaHelper::getCollectedElementsCount() === 0) {
+            $fallbackData = [];
+
+            // Page-Titel verwenden
+            if (!empty($this->title)) {
+                $fallbackData['title'] = strip_tags($this->title);
+            }
+
+            // Page-Beschreibung verwenden
+            if (!empty($this->description)) {
+                $fallbackData['description'] = strip_tags($this->description);
+            }
+
+            // Page-Type setzen
+            $fallbackData['type'] = 'website';
+
+            // Fallback-Daten sammeln (Fallback-Bild wird automatisch in collectElementData() gesetzt)
+            SocialMetaHelper::collectElementData($fallbackData);
+        }
+
+        // Social Media Meta-Tags generieren (immer, auch mit Fallback-Daten)
+        $metaTagsHTML = SocialMetaHelper::generateSocialMetaTags([]);
+        if (!empty($metaTagsHTML)) {
+            echo $metaTagsHTML . "\n    ";
+        }
+    }
+    ?>
+
     <?php $this->endblock(); ?>
 
 </head>
-<body<?= $this->bodyAttributes ?>>
-<div class="BodyScrollToTop"></div>
+<body<?= $this->bodyAttributes ?> >
+
+
+<div class="body-scroll-top">
+</div>
 <?php $this->block('body'); ?>
 <?php $this->sections('top'); ?>
 
-<div id="wrapper">
+<div id="wrapper" class="page-{{page::alias}}">
 
     <?php $this->block('header'); ?>
     <?php if ($this->header): ?>
@@ -196,7 +233,8 @@ $this->bodyAttributes = $this
             <?php $this->endblock(); ?>
 
             <?php $this->block('right'); ?>
-            <?php if ($this->right): ?>
+            <?php if ($this->right):
+                ?>
                 <aside id="right" class="col-12 col-md-auto order-md-2">
                     <div class="right-content">
                         <?= $this->right ?>
@@ -211,9 +249,10 @@ $this->bodyAttributes = $this
     <?php $this->sections('after'); ?>
 
     <?php $this->block('footer'); ?>
-    <?php if ($this->footer): ?>
+    <?php if ($this->footer):
+        ?>
         <!-- indexer::stop -->
-        <footer id="footer" itemscope itemtype="http://schema.org/WPFooter">
+        <footer id="footer">
             <?= $this->footer ?>
         </footer>
         <!-- indexer::continue -->
@@ -224,11 +263,6 @@ $this->bodyAttributes = $this
 
 <?php $this->sections('bottom'); ?>
 <?php $this->endblock(); ?>
-
-
-
-
-
 <?php // --- NEU: JS einbinden ---
 // Vendor JS zuerst direkt in TL_BODY
 if (!empty($themeAssets['js_vendor_individual'])) {
@@ -278,8 +312,6 @@ if (!empty($themeAssets['js_app'])) {
 ?>
 
 
-
-
 <?= $this->mootools ?>
 <?= $this->jsonLdScripts ?>
 
@@ -292,5 +324,6 @@ if (!empty($themeAssets['js_app'])) {
         }
     </style>
 </noscript>
+
 </body>
 </html>

@@ -63,6 +63,20 @@ class ImageHelper
     }
 
     /**
+     * Generiert eine eindeutige Gallery-ID für Lightbox-Funktionalität
+     */
+    private static function generateGalleryId($colorBox): string
+    {
+        // Wenn $colorBox bereits ein sinnvoller String ist, verwende ihn
+        if (is_string($colorBox) && !empty(trim($colorBox)) && $colorBox !== '1') {
+            return self::cleanAttribute($colorBox);
+        }
+        
+        // Ansonsten generiere eine eindeutige ID basierend auf Timestamp und Random
+        return 'auto_' . time() . '_' . bin2hex(random_bytes(4));
+    }
+
+    /**
      * Cache-Management für alle Caches
      */
     private static function clearCacheIfNeeded(): void
@@ -258,13 +272,14 @@ class ImageHelper
         if ($finalLink || $colorBox) {
             // Für unbekannte Formate: Original-Datei für Lightbox verwenden
             $lightboxSrc = $colorBox ? $imageSrc : $finalLink;
+            $galleryId = $colorBox ? self::generateGalleryId($colorBox) : null;
             
             $linkAttributes = [
                 'href' => self::cleanAttribute($lightboxSrc),
                 'title' => $title ?: null,
                 'target' => $finalLink && !$colorBox ? '_blank' : null,
-                'data-gall' => $colorBox ? "group_" . self::cleanAttribute($colorBox) : null,
-                'class' => $colorBox ? "lightbox_" . self::cleanAttribute($colorBox) : null
+                'data-gall' => $galleryId ? "group_" . $galleryId : null,
+                'class' => $galleryId ? "lightbox_" . $galleryId : null
             ];
 
             $linkAttributesString = implode(' ', array_filter(array_map(
@@ -1081,12 +1096,14 @@ class ImageHelper
 
         // Link Handling
         if ($finalLink || $colorBox) {
+            $galleryId = $colorBox ? self::generateGalleryId($colorBox) : null;
+            
             $linkAttributes = [
                 'href' => self::cleanAttribute($finalLink ?: $lightboxImageSrc),
                 'title' => $title ?: null,
                 'target' => $finalLink && $colorBox ? '_blank' : null,
-                'data-gall' => $colorBox ? "group_" . self::cleanAttribute($colorBox) : null,
-                'class' => $colorBox ? "lightbox_" . self::cleanAttribute($colorBox) : null
+                'data-gall' => $galleryId ? "group_" . $galleryId : null,
+                'class' => $galleryId ? "lightbox_" . $galleryId : null
             ];
 
             $linkAttributesString = implode(' ', array_filter(array_map(
@@ -1282,13 +1299,14 @@ class ImageHelper
         if ($finalLink || $colorBox) {
             // Für SVG Lightbox: Immer Original-SVG verwenden (da vektorbasiert und unendlich skalierbar)
             $lightboxSrc = $colorBox ? self::encodePath(str_replace($rootDir, '', $baseImagePath)) : $finalLink;
+            $galleryId = $colorBox ? self::generateGalleryId($colorBox) : null;
             
             $linkAttributes = [
                 'href' => self::cleanAttribute($lightboxSrc),
                 'title' => $title ?: null,
                 'target' => $finalLink && !$colorBox ? '_blank' : null,
-                'data-gall' => $colorBox ? "group_" . self::cleanAttribute($colorBox) : null,
-                'class' => $colorBox ? "lightbox_" . self::cleanAttribute($colorBox) : null
+                'data-gall' => $galleryId ? "group_" . $galleryId : null,
+                'class' => $galleryId ? "lightbox_" . $galleryId : null
             ];
 
             $linkAttributesString = implode(' ', array_filter(array_map(

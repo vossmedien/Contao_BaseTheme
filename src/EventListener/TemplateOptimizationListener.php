@@ -9,7 +9,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Template;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class PaginationCanonicalListener
+class TemplateOptimizationListener
 {
     public function __construct(
         private readonly ContaoFramework $framework,
@@ -26,13 +26,100 @@ class PaginationCanonicalListener
             return;
         }
 
-        // 1. Canonical URL Optimierung für Page Templates
+        // 1. Conditional Asset Loading für Page Templates
+        if (in_array($template->getName(), ['fe_page', 'fe_page_uk'])) {
+            $this->analyzeAndSetConditionalAssets($template);
+        }
+
+        // 2. Canonical URL Optimierung für Page Templates
         if (in_array($template->getName(), ['fe_page', 'fe_page_uk'])) {
             $this->optimizeCanonicalUrl($template, $request);
         }
         
-        // 2. Link-Optimierung für alle Templates mit Links
+        // 3. Link-Optimierung für alle Templates mit Links
         $this->optimizeLinks($template, $request);
+    }
+
+    private function analyzeAndSetConditionalAssets(Template $template): void
+    {
+        // Sammle alle Template-Inhalte für die Analyse
+        $content = $this->collectTemplateContent($template);
+        
+        // Analysiere benötigte Assets basierend auf CSS-Klassen
+        $neededAssets = $this->analyzeNeededAssets($content);
+        
+        // Speichere die Analyse in einer globalen Variable für den Asset-Loader
+        $GLOBALS['CONDITIONAL_ASSETS'] = $neededAssets;
+    }
+
+    private function collectTemplateContent(Template $template): string
+    {
+        $content = '';
+        
+        // Sammle relevante Template-Properties
+        $contentProperties = ['text', 'html', 'content', 'body', 'main', 'articles', 'elements'];
+        
+        foreach ($contentProperties as $property) {
+            if (isset($template->$property)) {
+                if (is_string($template->$property)) {
+                    $content .= $template->$property . ' ';
+                } elseif (is_array($template->$property)) {
+                    $content .= json_encode($template->$property) . ' ';
+                }
+            }
+        }
+        
+        return $content;
+    }
+
+    private function analyzeNeededAssets(string $content): array
+    {
+        $neededAssets = [];
+        
+        // Definiere Mapping von CSS-Klassen zu JS-Bibliotheken
+        $assetMap = [
+            'swiper' => [
+                'classes' => ['swiper', 'swiper-container', 'swiper-wrapper', 'swiper-slide'],
+                'vendor' => 'swiper/swiper-bundle.min.js'
+            ],
+            'venobox' => [
+                'classes' => ['venobox', 'vbox-item', 'vbox-content', 'lightbox_'],
+                'attributes' => ['data-gall'],
+                'vendor' => 'venobox/dist/venobox.min.js'
+            ]
+        ];
+        
+        foreach ($assetMap as $assetName => $assetData) {
+            $assetNeeded = false;
+            
+            // Prüfe auf CSS-Klassen
+            if (isset($assetData['classes'])) {
+                foreach ($assetData['classes'] as $className) {
+                    // Prüfe auf CSS-Klassen in verschiedenen Formaten
+                    if (preg_match('/class=["\'][^"\']*\b' . preg_quote($className, '/') . '\b[^"\']*["\']/', $content) ||
+                        preg_match('/\.' . preg_quote($className, '/') . '\b/', $content)) {
+                        $assetNeeded = true;
+                        break;
+                    }
+                }
+            }
+            
+            // Prüfe auf data-Attribute (zusätzlich für venobox)
+            if (!$assetNeeded && isset($assetData['attributes'])) {
+                foreach ($assetData['attributes'] as $attribute) {
+                    if (preg_match('/' . preg_quote($attribute, '/') . '=["\'][^"\']*["\']/', $content)) {
+                        $assetNeeded = true;
+                        break;
+                    }
+                }
+            }
+            
+            if ($assetNeeded) {
+                $neededAssets[$assetName] = $assetData['vendor'];
+            }
+        }
+        
+        return $neededAssets;
     }
 
     private function optimizeCanonicalUrl(Template $template, $request): void
@@ -52,7 +139,7 @@ class PaginationCanonicalListener
         $template->canonical = $canonicalUrl;
         
         // Debug-Ausgabe
-        $GLOBALS['TL_HEAD'][] = '<!-- PaginationCanonical: Template ' . $template->getName() . ' canonical überschrieben auf: ' . $canonicalUrl . ' -->';
+        $GLOBALS['TL_HEAD'][] = '<!-- TemplateOptimization: Template ' . $template->getName() . ' canonical überschrieben auf: ' . $canonicalUrl . ' -->';
     }
 
     private function optimizeLinks(Template $template, $request): void
@@ -152,7 +239,7 @@ class PaginationCanonicalListener
         
         // MAE Event Categories Parameter
         foreach ($query as $key => $value) {
-            if (preg_match('/^mae_/', $key) && $value !== '') {
+            if (is_string($key) && preg_match('/^mae_/', $key) && $value !== '') {
                 $params[$key] = $value;
             }
         }
@@ -175,7 +262,7 @@ class PaginationCanonicalListener
         
         // Entferne Paginierungs-Parameter und MAE Parameter
         foreach ($query as $key => $value) {
-            if (preg_match('/^(page(_n\d+)?|mae_.*)$/', $key)) {
+            if (is_string($key) && preg_match('/^(page(_[a-z]\d+)?|mae_.*)$/', $key)) {
                 unset($query[$key]);
             }
         }

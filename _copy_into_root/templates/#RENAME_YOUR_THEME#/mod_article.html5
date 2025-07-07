@@ -20,8 +20,22 @@
 
 <?php else: ?>
 
-    <div data-articleid="article-<?= $this->id; ?>" class="mod_article block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
-        <div class="article-content <?= str_replace("mod_article", "", $this->class); ?>">
+    <?php
+    $articleClasses = explode(' ', $this->class);
+    $containerClasses = '';
+    $remainingClasses = [];
+    foreach ($articleClasses as $class) {
+        if (str_contains($class, 'container')) {
+            $containerClasses .= ' ' . $class;
+        } else {
+            $remainingClasses[] = $class;
+        }
+    }
+    $this->class = implode(' ', $remainingClasses);
+    ?>
+
+    <div data-articleid="article-<?= $this->id; ?>" class="mod_article block<?= $containerClasses ?>"<?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+        <div <?= $this->cssID ?> class="article-content <?= str_replace("mod_article", "", $this->class); ?>">
 
             <?php if ($this->printable): ?>
                 <?php $this->block('syndication'); ?>
