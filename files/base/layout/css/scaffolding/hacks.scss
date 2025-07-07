@@ -117,7 +117,7 @@ div:has([class*="text-"]):has([class*="-center"]) {
 
 .container-wide {
   @include media-breakpoint-up(xxl) {
-    max-width: calc(1300px + (var(--bs-container-gutter) * 2));
+    max-width: calc(1500px + (var(--bs-container-gutter) * 2));
     margin-inline: auto;
   }
 }

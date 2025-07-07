@@ -217,7 +217,18 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                         </div>
                                     <?php endif; ?>
 
-                                    <?= Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($row->buttons); ?>
+                                    <?php 
+                                    // Button-Daten für ButtonHelper zusammenstellen
+                                    $buttons = [];
+                                    if ($row->button_text && $row->button_url) {
+                                        $buttonObj = new stdClass();
+                                        $buttonObj->link_text = $row->button_text;
+                                        $buttonObj->link_url = $row->button_url;
+                                        $buttonObj->link_type = 'btn-primary';
+                                        $buttons[] = $buttonObj;
+                                    }
+                                    echo Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($buttons);
+                                    ?>
                                     <?php if ($row->darken_content_left) : ?>
                                         <div class="darkened-content"></div><?php endif; ?>
                                 </div>
@@ -306,9 +317,18 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 
                                                                     <?php if ($row->kachel_right_button_text): ?>
                                                                         <div class="kachel--more-button">
-                                                                            <a <?php if ($row->kachel_right_button_new_tab): ?>target="_blank"<?php endif; ?>
-                                                                               class="btn <?php if ($row->kachel_right_button_size) : ?><?= $row->kachel_right_button_size; ?><?php endif; ?> <?= $row->kachel_right_button_type; ?>"
-                                                                               href="<?= $row->kachel_right_button_url; ?><?php if ($row->kachel_right_button_betreff) : ?>?subject=<?= $row->kachel_right_button_betreff; ?><?php endif; ?>"><?= $row->kachel_right_button_text; ?></a>
+                                                                            <?php 
+                                                                            // Kachel-Button für ButtonHelper zusammenstellen
+                                                                            $kachelButtons = [];
+                                                                            if ($row->kachel_right_button_text && $row->kachel_right_button_url) {
+                                                                                $kachelButtonObj = new stdClass();
+                                                                                $kachelButtonObj->link_text = $row->kachel_right_button_text;
+                                                                                $kachelButtonObj->link_url = $row->kachel_right_button_url;
+                                                                                $kachelButtonObj->link_type = 'btn-primary';
+                                                                                $kachelButtons[] = $kachelButtonObj;
+                                                                            }
+                                                                            echo Vsm\VsmHelperTools\Helper\ButtonHelper::generateButtonHTML($kachelButtons);
+                                                                            ?>
                                                                         </div>
                                                                     <?php endif; ?>
                                                                 </div>

@@ -164,7 +164,7 @@ if (EnvHelper::isFrontend() && !empty($this->slides)) {
                                     <div  class="mainimage--content">
                                         <div class="mainimage--content-inner <?= $slide->textbox_position ?> <?= $slide->text_align ?>">
                                             <div class="mainimage--content-inner--wrapper container">
-                                                <div class="mainimage--content-inner--holder" data-animation="<?= $slide->animation_type ?>" style="<?= $slide->text_color ? "color: {$slide->text_color};" : '' ?> <?= $slide->maxWidth ? "width: 100%; max-width: {$slide->maxWidth};" : '' ?>">
+                                                <div class="mainimage--content-inner--holder" data-animation="<?= $slide->animation_type ?>" style="<?= $slide->text_color ? "color: {$slide->text_color};" : '' ?> <?= $slide->maxWidth ? "display: inline-block; max-width: {$slide->maxWidth};" : '' ?>">
                                                     <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
                                                         $slide->text_topline,
                                                         $slide->text_firstline,

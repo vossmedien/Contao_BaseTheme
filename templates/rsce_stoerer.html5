@@ -235,23 +235,73 @@ if (!empty($customProperties)) {
              <?php echo $finalStyleString; ?>
         >
             <!-- NEUER INNERER WRAPPER -->
-            <div class="stoerer-inner-wrapper <?php echo $animationClass; ?>">
+            <?php 
+            $hasContentLink = ($stoererElement->content_type === 'text' && !empty($stoererElement->content_link_url));
+            $linkAttributes = '';
+            if ($hasContentLink) {
+                $linkAttributes = 'href="' . htmlspecialchars($stoererElement->content_link_url) . '"';
+                if (!empty($stoererElement->content_link_target)) {
+                    $linkAttributes .= ' target="_blank" rel="noopener noreferrer"';
+                }
+                if (!empty($stoererElement->content_link_title)) {
+                    $linkAttributes .= ' title="' . htmlspecialchars($stoererElement->content_link_title) . '"';
+                }
+            }
+            ?>
+            
+            <?php if ($hasContentLink): ?>
+                <a <?php echo $linkAttributes; ?> class="stoerer-inner-wrapper <?php echo $animationClass; ?>">
+            <?php else: ?>
+                <div class="stoerer-inner-wrapper <?php echo $animationClass; ?>">
+            <?php endif; ?>
+                
                 <div class="stoerer-trigger">
                     <?php if (isset($stoererElement->image) && $stoererElement->image): ?>
                         <?php
                         $hasMobileImage = isset($stoererElement->img_mobile) && $stoererElement->img_mobile;
-                        $desktopImageClasses = $hasMobileImage ? "d-none d-md-block" : "";
+                        $hasMobileSize = !empty($this->size_mobile);
                         
-                        echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
-                            $stoererElement->image,
-                            strip_tags($stoererElement->content ?? ''),
-                            null,
-                            $this->size,
-                            $desktopImageClasses,
-                            false,
-                            false,
-                            !($stoererElement->image_no_lazy ?? false)
-                        );
+                        if ($hasMobileSize && !$hasMobileImage) {
+                            // Responsive Bilder: Desktop und Mobile-Versionen des gleichen Bildes
+                            
+                            // Desktop-Version
+                            echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
+                                $stoererElement->image,
+                                strip_tags($stoererElement->content ?? ''),
+                                null,
+                                $this->size,
+                                'd-none d-md-block',
+                                false,
+                                false,
+                                !($stoererElement->image_no_lazy ?? false)
+                            );
+                            
+                            // Mobile-Version (gleiche Quelle, andere Größe)
+                            echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
+                                $stoererElement->image,
+                                strip_tags($stoererElement->content ?? ''),
+                                null,
+                                $this->size_mobile,
+                                'd-block d-md-none',
+                                false,
+                                false,
+                                !($stoererElement->image_no_lazy ?? false)
+                            );
+                        } else {
+                            // Standard: ein Bild oder separates Mobile-Bild vorhanden
+                            $desktopImageClasses = $hasMobileImage ? "d-none d-md-block" : "";
+                            
+                            echo Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML(
+                                $stoererElement->image,
+                                strip_tags($stoererElement->content ?? ''),
+                                null,
+                                $this->size,
+                                $desktopImageClasses,
+                                false,
+                                false,
+                                !($stoererElement->image_no_lazy ?? false)
+                            );
+                        }
                         ?>
                     <?php endif; ?>
                     <?php if (isset($stoererElement->img_mobile) && $stoererElement->img_mobile): ?>
@@ -346,7 +396,11 @@ if (!empty($customProperties)) {
                          </div>
                      <?php endif; ?>
                 </div>
-            </div>
+            <?php if ($hasContentLink): ?>
+                </a>
+            <?php else: ?>
+                </div>
+            <?php endif; ?>
             <!-- ENDE INNERER WRAPPER -->
         </div>
 

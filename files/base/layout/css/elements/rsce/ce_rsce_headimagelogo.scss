@@ -5,6 +5,8 @@
 
 
 .ce_rsce_headimagelogo {
+  position: relative;
+
   &.move-content {
     position: fixed !important;
     //z-index: -1 !important;
@@ -117,6 +119,18 @@
             left: 0;
           }
 
+          &.pos-centered {
+            .mainimage--content-inner--holder {
+              margin-inline: auto;
+            }
+          }
+
+          &[class*="pos-"][class*="-right"] {
+            .mainimage--content-inner--holder {
+              margin-left: auto;
+            }
+
+          }
 
           .ce--headline {
             .ce--subline, .ce--topline {

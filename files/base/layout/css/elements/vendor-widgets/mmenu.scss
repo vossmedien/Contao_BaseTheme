@@ -2,7 +2,7 @@
   --mm-spn-item-height: 50px;
   --mm-spn-item-indent: 20px;
   --mm-spn-bg: var(--bs-body-bg);
-  --mm-spn-logoheight: 50px;
+  --mm-spn-logoheight: 100px;
   --mm-spn-logowidth: 125px;
   //--mm-spn-line-height: 24px;
   --mm-spn-panel-offset: 30%;
@@ -37,7 +37,7 @@
     background-color: var(--bs-primary-bg-subtle);
     width: 40px;
     height: 40px;
-    line-height: 40px;
+    line-height: 40px !important;
     transform: rotate(180deg);
     @extend %fa-icon;
     font: var(--fa-font-sharp-light);
@@ -113,8 +113,8 @@
       background-color: var(--bs-primary-bg-subtle);
       box-shadow: $box-shadow-sm;
       width: 50px;
-      height: calc(var(--mm-spn-item-height));
-      line-height: calc(var(--mm-spn-item-height));
+      height: var(--mm-spn-item-height);
+      line-height: var(--mm-spn-item-height) !important;
       transform: none;
       color: var(--mm-spn-color);
       @extend %fa-icon;

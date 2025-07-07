@@ -5,7 +5,7 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
 ?>
 
 
-<div <?php echo $this->cssID; ?> class=" <?php echo $this->class; ?>content--element">
+<div <?php echo $this->cssID; ?> class=" <?php echo $this->class; ?> content--element">
     <div class="ce--inner">
 
         <?= Vsm\VsmHelperTools\Helper\HeadlineHelper::generateHeadlineHTML(
@@ -48,8 +48,24 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                         <div
                                 class="bl--item"
                                 style="
-                                        --vsm-bubblecolor: <?php if ($item->color): ?><?= $item->color; ?><?php else: ?>var(--bs-body-color)<?php endif; ?>;
-                                        --vsm-bubblecolor-hover: <?php if ($item->hover_color): ?><?= $item->hover_color; ?><?php else: ?>var(--bs-secondary)<?php endif; ?>;
+                                        --vsm-bubblecolor: <?php 
+                                            if ($item->color): 
+                                                echo $item->color; 
+                                            elseif ($this->default_bubble_color): 
+                                                echo $this->default_bubble_color; 
+                                            else: 
+                                                echo 'var(--bs-body-color)'; 
+                                            endif; 
+                                        ?>;
+                                        --vsm-bubblecolor-hover: <?php 
+                                            if ($item->hover_color): 
+                                                echo $item->hover_color; 
+                                            elseif ($this->default_hover_color): 
+                                                echo $this->default_hover_color; 
+                                            else: 
+                                                echo 'var(--bs-secondary)'; 
+                                            endif; 
+                                        ?>;
                                         --vsm-bubble-size: <?php if ($item->size): ?><?= $item->size; ?><?php else: ?>100px<?php endif; ?>;
                                         "
 
@@ -61,17 +77,14 @@ if (Vsm\VsmHelperTools\Helper\EnvHelper::isFrontend()) {
                                 <a href="<?php echo $item->url; ?>"></a>
                             <?php endif; ?>
 
-                            <?php if ($item->icon || $item->img): ?>
+                            <?php if ($item->content_type): ?>
                                 <div class="bl-i--image">
-
-
-                                    <?php if (!$item->icon && $item->img): ?>
-                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($item->img, '', '', $this->size, '', false, false, !$item->img_no_lazy, false, false); ?>
-                                    <?php endif; ?>
-
-
-                                    <?php if ($item->icon): ?>
+                                    <?php if ($item->content_type === 'icon'): ?>
                                         <i class="<?= $item->icon; ?>"></i>
+                                    <?php elseif ($item->content_type === 'image'): ?>
+                                        <?= Vsm\VsmHelperTools\Helper\ImageHelper::generateImageHTML($item->img, '', '', $this->size, '', false, false, !$item->img_no_lazy, false, false); ?>
+                                    <?php elseif ($item->content_type === 'number'): ?>
+                                        <span class="count"><?= $item->number; ?></span>
                                     <?php endif; ?>
                                 </div>
                             <?php endif; ?>

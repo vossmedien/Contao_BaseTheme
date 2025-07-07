@@ -27,7 +27,7 @@
           //width: auto; // Usually not needed for col-* but keep for safety?
           display: flex;
           flex-flow: column wrap;
-          justify-content: center;
+          //justify-content: center;
           align-items: center;
           gap: .5rem;
 
@@ -65,6 +65,10 @@
               i {
                 color: var(--vsm-bubblecolor-hover);
               }
+              
+              .count {
+                color: var(--vsm-bubblecolor-hover);
+              }
             }
           }
 
@@ -89,6 +93,14 @@
 
             i {
               font-size: var(--vsm-bubble-font-size);
+              color: var(--vsm-bubblecolor);
+              transition: all 0.3s ease-in-out;
+              line-height: 1;
+            }
+            
+            .count {
+              font-size: calc(var(--vsm-bubble-font-size) * 0.6);
+              font-weight: bold;
               color: var(--vsm-bubblecolor);
               transition: all 0.3s ease-in-out;
               line-height: 1;

@@ -46,12 +46,22 @@ $config = array(
             'eval' => array('includeBlankOption' => true, 'tl_class' => 'w50')
         ),
         'backgroundcolor' => array(
-            'label' => array('Hintergrundfarbe', 'Im Hexformat, z. B. #000 für schwarz (Standard: weiß)'),
+            'label' => array('Hintergrundfarbe', 'Unterstützt Hex (#000), CSS-Variablen (var(--bs-light)) etc. (Standard: transparent)'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
         'linkcolor' => array(
-            'label' => array('Schriftfarbe', 'Im Hexformat, z. B. #000 für schwarz (Standard: Hauptfarbe)'),
+            'label' => array('Schriftfarbe', 'Unterstützt Hex (#000), CSS-Variablen (var(--bs-primary)) etc. (Standard: Hauptfarbe)'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'default_bubble_color' => array(
+            'label' => array('Standard-Farbe für Elemente', 'Wird verwendet, wenn keine individuelle Farbe gesetzt ist. Unterstützt Hex (#000), CSS-Variablen (var(--bs-primary)) etc.'),
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+        ),
+        'default_hover_color' => array(
+            'label' => array('Standard-Hover-Farbe für Elemente', 'Wird verwendet, wenn keine individuelle Hover-Farbe gesetzt ist. Unterstützt Hex (#000), CSS-Variablen (var(--bs-secondary)) etc.'),
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
         ),
@@ -83,6 +93,16 @@ $config = array(
             'minItems' => 1,
             'maxItems' => 99,
             'fields' => array(
+                'content_type' => array(
+                    'label' => array('Inhaltstyp auswählen', 'Was soll in der Bubble angezeigt werden?'),
+                    'inputType' => 'radio',
+                    'options' => array(
+                        'image' => 'Bild',
+                        'icon' => 'Icon (Font Awesome)',
+                        'number' => 'Zahl'
+                    ),
+                    'eval' => array('mandatory' => true, 'tl_class' => 'clr'),
+                ),
                 'img' => array(
                     'label' => array('Bild/Icon', ''),
                     'inputType' => 'fileTree',
@@ -93,11 +113,37 @@ $config = array(
                         'extensions' => Contao\Config::get('validImageTypes'),
                         'tl_class' => 'w50',
                     ),
+                    'dependsOn' => array(
+                        'field' => 'content_type',
+                        'value' => 'image',
+                    ),
+                ),
+                'icon' => array(
+                    'label' => array('Font-Awesome Klasse', 'z. B. fa-facebook fab'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'content_type',
+                        'value' => 'icon',
+                    ),
+                ),
+                'number' => array(
+                    'label' => array('Zahl', 'Zahl die angezeigt werden soll'),
+                    'inputType' => 'text',
+                    'eval' => array('rgxp' => 'digit', 'tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'content_type',
+                        'value' => 'number',
+                    ),
                 ),
                 'img_no_lazy' => array(
                     'label' => array('Bild/Icon ohne Lazy-Loading laden', 'Deaktiviert das Lazy-Loading für das Bild/Icon'),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'content_type',
+                        'value' => 'image',
+                    ),
                 ),
                 'size' => array(
                     'label' => array('Größe der Bubble (inkl. CSS-Einheit)', 'z.B. 100px oder 8rem. Ist immer quadratisch.'),
@@ -105,19 +151,14 @@ $config = array(
                     'eval' => array('tl_class' => 'w50'),
                 ),
                 'color' => array(
-                    'label' => array('Alternative Farbe für Element', 'Standard: Hauptfarbe'),
+                    'label' => array('Alternative Farbe für Element', 'Überschreibt globale Standard-Farbe. Unterstützt Hex (#000), CSS-Variablen (var(--bs-primary)) etc.'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
                 'hover_color' => array(
-                    'label' => array('Alternative Hover-Farbe für Element', 'Standard: Sekundärfarbe'),
+                    'label' => array('Alternative Hover-Farbe für Element', 'Überschreibt globale Standard-Hover-Farbe. Unterstützt Hex (#000), CSS-Variablen (var(--bs-secondary)) etc.'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
-                ),
-                'icon' => array(
-                    'label' => array('Alternativ zum Bild Font-Awesome Klasse angeben', 'überschreibt das Bild, z. B. fa-facebook fab'),
-                    'inputType' => 'text',
-                    'eval' => array('tl_class' => 'clr'),
                 ),
                 'text' => array(
                     'label' => array('Text', ''),

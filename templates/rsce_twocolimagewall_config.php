@@ -328,59 +328,14 @@ $config = array(
 
 
                 'kachel_right_button_text' => array(
-                    'label' => array('Button-Beschriftung', 'Button ist optional'),
-                    'inputType' => 'text',
-                    'eval' => array('allowHtml' => true),
-                ),
-                'kachel_right_button_betreff' => array(
-                    'label' => array('Betreffzeile für "mailto:"-Buttons', '(optional, falls Link eine neue Email öffnen soll)'),
+                    'label' => array('Button-Text', 'Optional'),
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'w50'),
                 ),
                 'kachel_right_button_url' => array(
-                    'label' => array('Verlinkung', ''),
+                    'label' => array('Button-Link', 'Optional'),
                     'inputType' => 'url',
                     'eval' => array('tl_class' => 'w50'),
-                ),
-
-                'kachel_right_button_type' => array(
-                    'label' => array(
-                        'de' => array('Optik des Buttons', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        'options' => array(
-                            'btn-primary' => 'Hauptfarbe',
-                            'btn-outline-primary' => 'Hauptfarbe (Outline)',
-                            'btn-secondary' => 'Sekundär-Farbe',
-                            'btn-outline-secondary' => 'Sekundär-Farbe (Outline)',
-                            'btn-tertiary' => 'Tertiär-Farbe',
-                            'btn-outline-tertiary' => 'Tertiär-Farbe (Outline)',
-                            'btn-link with-arrow' => 'Link-Optik mit Pfeilen',
-                            'btn-outline-black' => 'Transparenter Button mit schwarzer Schrift und Rahmen', 'btn-outline-white' => 'Transparenter Button mit weißer Schrift und Rahmen',
-                            'btn-white' => 'Weißer Button mit schwarzer Schrift',
-                        ),
-                    ),
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-                'kachel_right_button_size' => array(
-                    'label' => array(
-                        'de' => array('Größe des Buttons', ''),
-                    ),
-                    'inputType' => 'select',
-                    'options' => array(
-                        '' => 'Standard',
-                        'btn-sm' => 'Klein',
-                        'btn-lg' => 'Groß',
-                        'btn-xl' => 'Sehr groß',
-                    ),
-                    'eval' => array('tl_class' => 'w50'),
-                ),
-
-                'kachel_right_button_new_tab' => array(
-                    'label' => array('Button-Link in neuen Tab öffnen', ''),
-                    'inputType' => 'checkbox',
-                    'eval' => array('tl_class' => 'clr'),
                 ),
 
 
@@ -490,18 +445,23 @@ $config = array(
                     ),
                 ),
 
-                'buttons' => array(
-                    'label' => array('Buttons', ''),
-                    'elementLabel' => '%s. Button',
-                    'inputType' => 'list',
-                    'minItems' => 0,
-                    'maxItems' => 20,
-                    'eval' => array('tl_class' => 'clr'),
+                'button_text' => array(
+                    'label' => array('Button-Text', 'Optional'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'w50'),
                     'dependsOn' => array(
                         'field' => 'add_buttons',
                         'value' => '1',
                     ),
-                    'fields' => ButtonHelper::getButtonConfig(),
+                ),
+                'button_url' => array(
+                    'label' => array('Button-Link', 'Optional'),
+                    'inputType' => 'url',
+                    'eval' => array('tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'add_buttons',
+                        'value' => '1',
+                    ),
                 ),
 
                 'settings_4' => array(
@@ -538,30 +498,30 @@ $config = array(
                     ),
                 ),
 
-                'image_display_mode' => [
-                    'label' => ['Bild-Darstellungsmodus', 'Wie soll das Bild in der rechten Spalte angezeigt werden?'],
+                'image_display_mode' => array(
+                    'label' => array('Bild-Darstellungsmodus', 'Wie soll das Bild in der rechten Spalte angezeigt werden?'),
                     'inputType' => 'radio',
                     'default' => 'standard',
-                    'options' => [
+                    'options' => array(
                         'standard' => 'Standard (Bild füllt Spalte aus, deckt ab - object-fit: cover)',
                         'contain' => 'Bild nicht strecken (Bild wird vollständig angezeigt, passt sich an - object-fit: contain)',
                         'inline' => 'Bild nicht als Hintergrund (Normal im Fluss, zentriert)',
                         'row_bg' => 'Bild als Hintergrund für beide Spalten'
-                    ],
-                    'eval' => ['tl_class' => 'clr'],
-                    'dependsOn' => [
+                    ),
+                    'eval' => array('tl_class' => 'clr'),
+                    'dependsOn' => array(
                         'field' => 'contentType',
-                        'value' => '1' // Nur anzeigen, wenn Bild ausgewählt ist
-                    ]
-                ],
+                        'value' => '1'
+                    ),
+                ),
 
                 'rotate_image' => array(
                     'label' => array('Bild bei scrollen rotieren', ''),
                     'inputType' => 'checkbox',
                     'eval' => array('tl_class' => ' clr'),
                     'dependsOn' => array(
-                        'field' => 'image_display_mode', // Abhängig vom neuen Radio-Button
-                        'value' => 'inline' // Nur anzeigen, wenn "Nicht als Hintergrund" gewählt ist
+                        'field' => 'image_display_mode',
+                        'value' => 'inline'
                     ),
                 ),
 
@@ -575,7 +535,7 @@ $config = array(
                 ),
 
 
-                'image' => array(
+                 'image' => array(
                     'inputType' => 'fileTree',
                     'label' => array('Bild ', 'Mehrere Bilder auswählen um Slider-Funktion zu aktivieren'),
                     'eval' => array(
@@ -585,12 +545,8 @@ $config = array(
                         'files' => true,
                         'mandatory' => false,
                         'isGallery' => true,
-                        'extensions' => Contao\Config::get('validImageTypes'),
+                         'extensions' => Contao\Config::get('validImageTypes'),
                         'isSortable' => true
-                    ),
-                    'dependsOn' => array(
-                        'field' => 'contentType',
-                        'value' => '1',
                     ),
                 ),
 

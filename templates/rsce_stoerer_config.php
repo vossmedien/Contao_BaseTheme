@@ -319,6 +319,36 @@ $config = array(
                     ),
                 ),
 
+                'content_link_url' => array(
+                    'label' => array('Link-URL für kompletten Störer', 'Optional: Macht den kompletten Störer klickbar'),
+                    'inputType' => 'url',
+                    'eval' => array('tl_class' => 'w50'),
+                    'dependsOn' => array(
+                        'field' => 'content_type',
+                        'value' => 'text',
+                    ),
+                ),
+
+                'content_link_target' => array(
+                    'label' => array('Link in neuen Tab öffnen', ''),
+                    'inputType' => 'checkbox',
+                    'eval' => array('tl_class' => 'w50 m12'),
+                    'dependsOn' => array(
+                        'field' => 'content_type',
+                        'value' => 'text',
+                    ),
+                ),
+
+                'content_link_title' => array(
+                    'label' => array('Link-Titel (Title-Attribut)', 'Optional: Tooltip-Text beim Hovern'),
+                    'inputType' => 'text',
+                    'eval' => array('tl_class' => 'clr'),
+                    'dependsOn' => array(
+                        'field' => 'content_type',
+                        'value' => 'text',
+                    ),
+                ),
+
                 'buttons' => array(
                     'label' => array('Buttons', ''),
                     'elementLabel' => '%s. Button',

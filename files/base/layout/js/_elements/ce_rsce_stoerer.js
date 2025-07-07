@@ -326,6 +326,16 @@ document.addEventListener('DOMContentLoaded', function () {
             const trigger = stoerer.querySelector('.stoerer-trigger');
             if (trigger && !trigger.dataset.listenerAttached) {
                 addSafeEventListener(trigger, 'click', (event) => {
+                    // Prüfe ob der Störer einen Content-Link hat und NICHT expandierbar ist
+                    const hasContentLink = stoerer.parentElement.querySelector('a.stoerer-inner-wrapper');
+                    const isExpandable = stoerer.classList.contains('is-expandable');
+                    
+                    if (hasContentLink && !isExpandable) {
+                        // Trigger den Link-Klick auf den stoerer-inner-wrapper
+                        hasContentLink.click();
+                        return;
+                    }
+                    
                     // Touch-Handling hat Vorrang
                     if (handleTouchClick(event, stoerer)) {
                         return; // Touch-Handler hat das Event behandelt
