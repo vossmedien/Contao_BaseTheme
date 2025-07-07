@@ -126,3 +126,70 @@ files/base/layout/
 - `vsm/vsm-ab-test` - A/B-Test-Funktionalität
 
 Diese befinden sich als lokale Pfad-Repositories im `vendor/`-Verzeichnis.
+
+## Wichtige Abhängigkeiten
+
+### Contao-Bundles
+- `contao/manager-bundle` ^5.4.0 - Contao Manager Integration
+- `contao/news-bundle` ^5.4.0 - News-System
+- `madeyourday/contao-rocksolid-custom-elements` ^2.4 - RSCE-Framework
+- `oveleon/contao-component-style-manager` ^3.5 - Style-Management
+- `oveleon/contao-cookiebar` ^2.0 - Cookie-Consent
+- `terminal42/contao-changelanguage` ^3.6 - Mehrsprachigkeit
+- `terminal42/contao-folderpage` ^3.2 - Ordner-Seiten
+- `terminal42/contao-leads` ^3.0 - Formular-Leads
+- `terminal42/notification_center` ^2.3 - Benachrichtigungen
+- `trilobit-gmbh/contao-tiles-bundle` ^2.0 - Kachel-System
+
+### Frontend-Bibliotheken (über theme.js_vendors.php)
+- **Bootstrap** - CSS-Framework und Komponenten
+- **Swiper** - Touch-Slider und Karussells
+- **Venobox** - Lightbox für Bilder und Videos
+- **Macy** - Masonry-Layout für Galerien
+- **mmenu-light** - Mobile Navigation
+- **js-cookie** - Cookie-Verwaltung
+
+## VSM Helper Utilities - Detaillierte Übersicht
+
+### ImageHelper
+- `vsm_generate_image_html()` - Vollständiges responsives Bild-HTML
+- **Features**: WebP/AVIF-Support, Lazy Loading, Schema.org, dynamische Qualität
+- **Verwendung**: Für alle Bildausgaben in RSCE-Elementen
+
+### ButtonHelper
+- `ButtonHelper::getButtonConfig()` - DCA-Konfiguration für RSCE-Elemente
+- `vsm_generate_button_html()` - Button-HTML aus Array-Konfiguration
+- **Features**: Automatische externe Link-Erkennung, ARIA-Labels, Analytics-Support
+
+### VideoHelper
+- `vsm_render_video()` - HTML5-Video mit Fallbacks und Poster-Unterstützung
+- **Features**: WebM/MP4-Fallbacks, Schema.org VideoObject, Lazy Loading
+
+### HeadlineHelper
+- `vsm_generate_headline_html()` - Strukturierte Headlines (Topline, Hauptüberschrift, Subline)
+- **Features**: Animate.css-Integration, semantische HTML-Tags
+
+### GlobalElementConfig
+- `GlobalElementConfig::getAnimations()` - Vordefinierte Animate.css-Animationen
+- `GlobalElementConfig::getHeadlineTagOptions()` - H1-H6 Optionen
+- **Verwendung**: Für konsistente Konfigurationen in allen RSCE-Elementen
+
+## Testbefehle und Qualitätssicherung
+
+Da keine expliziten Test-Konfigurationsdateien vorhanden sind, prüfe vor Deployment:
+- Contao Backend-Zugriff funktioniert
+- Frontend-Seiten laden korrekt
+- JavaScript-Bibliotheken sind verfügbar
+- Asset-Compilation funktioniert über IDE
+
+## Umgebungskonfiguration
+
+### Wichtige Dateien (nicht im Repository)
+- `.env.local` - Lokale Umgebungsvariablen (niemals committen)
+- `config/parameters.yml` - Datenbankzugangsdaten
+- Deployment-Skripte verwenden eigene Umgebungsvariablen
+
+### Entwicklungsumgebung
+- IDE übernimmt automatisches Deployment
+- Lokale Contao-Befehle sind nicht verfügbar
+- Alle Änderungen werden automatisch auf Server übertragen
