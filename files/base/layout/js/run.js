@@ -22,6 +22,47 @@ const cachedElements = {
     body: document.querySelector('body'),
 };
 
+// Funktion für bedingte Asset-Initialisierung
+const initConditionalAssets = () => {
+    // VenoBox-Initialisierung (nur wenn verfügbar)
+    if (typeof VenoBox !== 'undefined') {
+        initVenoBox();
+        initVideoLightbox();
+        initImageLightbox();
+    }
+
+    // Swiper-Initialisierung (falls vorhanden - hier kann zukünftig Swiper-Code eingefügt werden)
+    if (typeof Swiper !== 'undefined') {
+        // Hier könnte Swiper-Initialisierungscode stehen
+        initSwiperInstances();
+    }
+};
+
+// Placeholder für Swiper-Initialisierung
+const initSwiperInstances = () => {
+    // Suche nach Swiper-Elementen und initialisiere sie
+    const swiperElements = document.querySelectorAll('.swiper');
+    swiperElements.forEach((swiperEl, index) => {
+        if (!swiperEl.swiper) { // Vermeide Doppelinitialisierung
+            new Swiper(swiperEl, {
+                // Standard-Swiper-Konfiguration
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            });
+        }
+    });
+};
+
 if (cachedElements.form) {
     cachedElements.form.addEventListener("submit", (e) => {
        // setTimeout(addPlaceholders, 250);
@@ -383,9 +424,7 @@ DomLoadFunctions.push(
     initializePopovers,
     initializeTooltips,
     loadSearchParams,
-    initVenoBox,
-    initVideoLightbox,
-    initImageLightbox,
+    initConditionalAssets, // Neue bedingte Asset-Initialisierung
     changeNavLinksAfterLoad,
     scrollToTop,
     setupFunctions,
